@@ -1,9 +1,10 @@
 # NPC 對話表：第 1 章首段（老鐘／蕨生／桑姨）＋晨苔鎮互動物件旁白
 
 > 遊策｜週 1｜草稿 v1｜全原創｜給：遊程（匯入對話資料）、遊美（頭像表情）、遊測（分支／旗標測試）
-> 格式說明見 dialogue-format.md。每節點文字 ≤38 字（2 行 × 19 字）；連續節點 ≤6 句。口吻：老鐘＝慢、暖；蕨生＝快、好勝；桑姨＝利落、有耐性。表情 id 只用 `neutral`／`smile`／`surprise`／`serious`（每位 4 張頭像）。
+> 格式說明見 dialogue-format.md。每節點文字 ≤38 字（2 行 × 19 字）；連續節點 ≤6 句。口吻：老鐘＝慢、暖；蕨生＝快、好勝；桑姨＝利落、有耐性。表情 id 只用 `neutral`／`smile`／`surprise`／`serious`（每位 4 張頭像）；對應美術 `expression`：`smile`→`happy`、`surprise`→`surprised`、`serious`→`worried`（暫代）、`neutral` 不變（見 dialogue-format.md §2；頭像以 `portrait_id`＋`expression` 引用）。
 > 旗標／變數：`prologue_done`、`got_mochi`、`captured_badger`、`registered_match`、`formation_done`、`c1r1_won`、`c1r1_lost_last`、`met_fern`、`met_sang`、`fern_attitude`（`rival`／`friendly`）、變數 `leaf`、`party_size`、`elder_gift_count`（老鐘贈款次數，上限 3，見 tuning-params-v2.2.md D 組）。
-> 序章 `d_elder_intro` 見 prologue-script.md。
+> 序章 `d_elder_intro`（見 prologue-script.md）同井邊常駐 `d_elder_hub` 係**兩個獨立節點**（`d_elder_hub` 入口優先 1 只係序章未完成時轉入 `d_elder_intro`）。
+> 角色歸屬：老鐘＝第 1 章村長（`npc_elder`）；石伯＝第 2 章石磯港老領隊，另一角色，唔好混用。
 
 ## 1. 老鐘（`d_elder_hub`，廣場井邊 (21,14)）
 
@@ -80,7 +81,7 @@
 
 ## 4. 晨苔鎮互動物件旁白（M1）
 
-> 對應 maps-and-events.md 第 2 節事件表嘅 6 個 `interact` 物件（JSON `properties.dialog`）。全部係 `narrator` 旁白，每個物件 2 句，每句 ≤38 字；唔設選項、唔設旗標。
+> 對應 maps-and-events.md 第 2 節事件表嘅 6 個 `interact` 物件（JSON `properties.dialog`）。全部係 `narrator` 旁白，每個物件 2 句（`registry_counter_01` 例外：1 句），每句 ≤38 字；唔設選項、唔設旗標。
 > **載入慣例**：`dialog` 屬性值＝節點 id，全部放同一對話集 `d_objects_town`（建議路徑 `data/dialogue/d_objects_town.json`）；格式見 dialogue-format.md（`entry` 為必填，此集只放保底 `goto`，實際由地圖事件直接指定起始節點）。節點 `<id>` 後接 `<id>_b`，點擊推進，結束即關閉。旁白框用斜體、無頭像、無逐字 blip。
 
 | 節點 id | 地圖事件 | 對白（2 句） |
@@ -89,7 +90,7 @@
 | `obj_notice_board_01` | `obj_notice_board`（告示板 (8,12)） | 告示板上寫著：「喚風祭・初葉盃報名中」。／角落有張舊紙：「今年風弱，跑手請多保重。」 |
 | `sign_arena_01` | `obj_sign_arena`（路標 (18,11)） | 木牌寫著：「↑ 迴風場　→ 報名處」。／字旁畫了一面小旗，旗尖指向東邊。 |
 | `obj_sign_east_01` | `obj_sign_east`（東路標 (36,12)） | 木牌寫著：「東：蕨影小徑 → 石磯港」。／牌腳長滿了苔，看來有一陣子沒人經過。 |
-| `registry_counter_01` | `registry_counter`（報名處櫃台 (32,8)） | 櫃台前沒有人。／窗口牌子寫著：「報名請入內，找桑姨。」 |
+| `registry_counter_01` | `registry_counter`（報名處櫃台 (32,8)；職員 `npc_registry` (32,9) 同走此節點） | 櫃台後有位職員低頭整理名冊，見你近前，點頭示意：想報名，就入迴風場。 |
 | `registry_notice_01` | `registry_notice`（報名處告示 (33,8)） | 初葉盃：新手直接報名，沒有資格要求。／報名費二十葉幣，贏了獎金一定更高。 |
 
 M3 起 `obj_notice_board_01` 改為每日賽事入口（M1 只顯示上列旁白）。
@@ -148,12 +149,7 @@ M3 起 `obj_notice_board_01` 改為每日賽事入口（M1 只顯示上列旁白
     },
     "registry_counter_01": {
       "speaker": "narrator",
-      "text": "櫃台前沒有人。",
-      "next": "registry_counter_01_b"
-    },
-    "registry_counter_01_b": {
-      "speaker": "narrator",
-      "text": "窗口牌子寫著：「報名請入內，找桑姨。」",
+      "text": "櫃台後有位職員低頭整理名冊，見你近前，點頭示意：想報名，就入迴風場。",
       "next": null
     },
     "registry_notice_01": {
@@ -169,6 +165,55 @@ M3 起 `obj_notice_board_01` 改為每日賽事入口（M1 只顯示上列旁白
   }
 }
 ```
+
+## 5. 野生碎石獾（`d_capture_intro`，蕨影小徑 `npc_wild_badger` (38,3)）
+
+> 野靈唔講嘢；全部 `narrator` 旁白，3 句，每句 ≤38 字，口語粵語。碎石獾＝懶洋洋發呆嘅野靈：玩家靠近 → 對視 → 開跑。第 3 句後接系統確認（「要唔要挑戰？」，唔計句數）→ `begin_capture`（結緣賽 `cap_trail_badger`，見 maps-and-events.md／match-data-format.md）。
+
+| 節點 | 說話者 | 文字 | 下一節 |
+|---|---|---|---|
+| `cap1` | 旁白 | 一隻碎石獾攤喺草地上發呆，連尾巴都懶得擺。 | → `cap2` |
+| `cap2` | 旁白 | 你行近，牠慢慢抬起頭，同你四目相對。 | → `cap3` |
+| `cap3` | 旁白 | 牠打咗個呵欠，忽然彈起身，沿小徑飛跑——追上去！ | 結束 |
+
+```json
+{
+  "schema": "dialogue/v1",
+  "id": "d_capture_intro",
+  "entry": [
+    {
+      "goto": "cap1"
+    }
+  ],
+  "nodes": {
+    "cap1": {
+      "speaker": "narrator",
+      "text": "一隻碎石獾攤喺草地上發呆，連尾巴都懶得擺。",
+      "next": "cap2"
+    },
+    "cap2": {
+      "speaker": "narrator",
+      "text": "你行近，牠慢慢抬起頭，同你四目相對。",
+      "next": "cap3"
+    },
+    "cap3": {
+      "speaker": "narrator",
+      "text": "牠打咗個呵欠，忽然彈起身，沿小徑飛跑——追上去！",
+      "next": null
+    }
+  }
+}
+```
+
+## 6. 遊程占位（暫收，待替換）
+
+> 以下由遊程自擬（`windrun-m1/data/dialogue/`），**暫收為占位**，之後可由遊策重寫；字數均 ≤38。`fp3` 屬 `d_fern_prematch`（`fp1` 已顯示過 `seen_fern_prematch` 後重入）；`d_elder_intro` 同 `d_elder_hub` 係兩個獨立節點（見檔頭）。
+
+| 節點 | 說話者（表情） | 文字 | 條件 |
+|---|---|---|---|
+| `d_opponent_misc` → `op1` | 對手見習跑手（neutral） | 賽道上見。我哋唔會留手㗎。 | 預設（`not c1r1_won`） |
+| `op_after` | 對手見習跑手（smile） | 你換棒好準。下次我都要練返。 | `c1r1_won` |
+| `fp3` | 蕨生（neutral） | 開賽前記得佈陣，揀好邊隻先跑。 | `d_fern_prematch` 且 `seen_fern_prematch` |
 
 **字數統計**：本檔漢字約 1,000（連條件／事件欄）；純對白約 700 字，連序章 P2 約 1,500 字，低於 M1 劇情字數上限（≈2,000 字）。
 

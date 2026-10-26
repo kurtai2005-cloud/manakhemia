@@ -104,6 +104,7 @@
 | `door_arena` | (19,8) 1×1 | warp → `arena_windrun`，entry `spawn_from_town` | `prologue_done` | 傳送至賽場大廳 (6,13)；否則氣泡「先同老鐘傾下偈」。JSON `hint`＝「迴風場」（地標 `arena_gate`） | M1 |
 | `door_registry` | (30,8) 2×1（x 30–31） | warp → `interior_registry`，entry `door` | — | **報名處**，可入。**定案**：`interior_registry`＝`arena_windrun` 入口大廳（同一室內，唔另做室內圖）；entry `door`＝`spawn_from_town` (6,13)。JSON `hint`＝「報名處」（地標 `registry`） | M1 |
 | `registry_counter` | (32,8) | interact（`dialog=registry_counter_01`） | — | 旁白 `registry_counter_01`（見 npc-dialogue.md §4） | M1 |
+| `npc_registry` | (32,9)，面向上（櫃台前） | npc_spawn（面向上） | — | 報名處職員，**背景角色**；`interact` 走 `registry_counter_01`（同 `registry_counter`），無獨立對話 | M1 |
 | `registry_notice` | (33,8) | interact（`dialog=registry_notice_01`） | — | 旁白 `registry_notice_01`（見 npc-dialogue.md §4） | M1 |
 | `door_elder` | (6,8) 2×1 | warp，`locked` | — | 老鐘屋門；氣泡「鎖咗門」 | M1 |
 | `door_fernhome` | (6,22) 2×1 | warp，`locked` | — | 氣泡「鎖咗門」 | M1 |
@@ -118,9 +119,19 @@
 
 > 刪除（相對 v1）：`obj_windmill`、`door_house`（舊 (32,22) 民居門，現為商店門 `door_store`）；舊 `door_store`（(30,8) 雜貨舖）現為 `door_registry`。
 
-**NPC 站位／行為（M1）**：老鐘 (21,14)、蕨生 (21,10) 原地待機（轉向面向玩家）；M2 起加巡邏路線（用同一套事件資料）；路人 M1 唔做。
+**NPC 站位／行為（M1）**：老鐘 (21,14)、蕨生 (21,10) 原地待機（轉向面向玩家）；職員 (32,9) 面向上、站櫃台前，只播 idle／`stamp`／`flip`（見 ASSET_SPEC_TOWN §N.2），唔轉向；M2 起加巡邏路線（用同一套事件資料）；路人 M1 唔做。
 
-**報名處入口（定案）**：晨苔鎮 `door_registry`（JSON 目標 `interior_registry`）與 `door_arena` 進入**同一個**室內場景＝`arena_windrun` 入口大廳（桑姨 `npc_sang`、報名流程不變，見第 3 節），唔另做室內圖。載入器把 `interior_registry` 視為 `arena_windrun` 別名，entry `door`＝`spawn_from_town` (6,13)（兩個入口同一出生點）。兩道門傳送時各設一次 flag `last_town_door`（`door_arena`／`door_registry`）；賽場 `door_town` 按它返回：`door_arena`→晨苔鎮 (20,9)；`door_registry`→晨苔鎮 (30,9)。（JSON 內 `interior_registry`／`door` 字樣可留待遊美下次更新時改為 `arena_windrun`／`spawn_from_town`，唔影響實作。）
+**`npc_spawn` 欄位**（`properties`；美術規格以 `art-wind/ASSET_SPEC_TOWN.md` §N 為準）：
+
+| 事件 id | `display_name` | `sprite`（路徑） | `portrait_id` | `dialog`／對話集 |
+|---|---|---|---|---|
+| `npc_elder` | 老鐘 | `art-wind/sprites/npc/npc_elder/` | `npc_elder` | `d_elder_hub` |
+| `npc_fern` | 蕨生 | `art-wind/sprites/npc/npc_fern/` | `npc_fern` | `d_fern_idle`（`c1r1_won` 後 `d_fern_after_r1`） |
+| `npc_registry` | 職員 | `art-wind/sprites/npc/npc_registry/` | `npc_registry`（背景角色，不開頭像對話） | 無；`interact` 走 `registry_counter_01` |
+
+頭像以 `portrait_id`＋`expression` 引用，`expression`＝`neutral`／`happy`／`worried`／`surprised`；對話 `emote` 對照（`smile`→`happy`、`surprise`→`surprised`、`serious`→`worried`）見 dialogue-format.md §2。
+
+**報名處入口（定案）**：晨苔鎮 `door_registry`（JSON 目標 `interior_registry`）與 `door_arena` 進入**同一個**室內場景＝`arena_windrun` 入口大廳（桑姨 `npc_sang`、報名流程不變，見第 3 節），唔另做室內圖。載入器把 `interior_registry` 視為 `arena_windrun` 別名，entry `door`＝`spawn_from_town` (6,13)（兩個入口同一出生點）。兩道門傳送時各用 `set_var` 設一次**字串變數** `last_town_door`（值 `door_arena`／`door_registry`；唔係 flag）；賽場 `door_town` 按它返回：`door_arena`→晨苔鎮 (20,9)；`door_registry`→晨苔鎮 (30,9)。（JSON 內 `interior_registry`／`door` 字樣可留待遊美下次更新時改為 `arena_windrun`／`spawn_from_town`，唔影響實作。）
 
 ## 3. 場景二：迴風場 `arena_windrun`（40×15 圖塊）
 
@@ -159,7 +170,7 @@
 | id | 位置 | 類型／觸發 | 條件 | 動作 | M |
 |---|---|---|---|---|---|
 | `spawn_from_town` | (6,13) | 出生（entry `spawn_from_town`／`door` 同點） | 由 `door_arena` 或 `door_registry`（晨苔鎮） | 鏡頭定喺大廳；BGM 保持城鎮 BGM | M1 |
-| `door_town` | (6,14) | touch | — | 傳送 → `town_morningmoss`：按 `last_town_door`＝`door_arena` → (20,9)；`door_registry` → (30,9)（見第 2 節「報名處入口」）；自動存檔 | M1 |
+| `door_town` | (6,14) | touch | — | 傳送 → `town_morningmoss`：按字串變數 `last_town_door`＝`door_arena` → (20,9)；`door_registry` → (30,9)（見第 2 節「報名處入口」）；自動存檔 | M1 |
 | `npc_sang` | (6,3)，互動格 `r` (6,5) | interact | 按 flags | `d_sang_hub`（報名／資格／說明，見 npc-dialogue.md） | M1 |
 | `obj_board_daily` | (11,5) | interact | — | M1：「每日賽事：暫未開放」；M3 起每日賽事入口 | M1／M3 |
 | `obj_scout_hall` ／ `obj_scout_stand` | (3,5)／(22,6) | interact | — | M1 提示「情報位暫未開放」；M3 偵察 UI | M1／M3 |
@@ -229,7 +240,7 @@
 | `deco` | 地面裝飾＋建築牆身／門窗、樹幹、籬笆、物件（碰撞由 `collision` 層決定） | 實體按底線 y-sort；v1 的獨立 `objects` 層已併入此層 |
 | `occlusion` | 屋頂、樹冠、旗、燈頭、蕨叢上半 | 畫喺角色上面；角色行入「背面」即被遮（v1 名 `occlude`） |
 | `collision` | 純邏輯格（值＝gid−544）：`0` 通行／`1` 阻擋／`2` 水／`3` trigger／`4` 慢速 | 16 px 格；玩家碰撞盒 12×8 px、貓 16×8 px（腳底中心，遊美 ASSET_SPEC_TOWN）；**唔係淨係 0／1**；引擎應由 tmj 內 `tilesets[].name=='collision'` 讀 firstgid（晨苔鎮＝545） |
-| `events` | Tiled objectgroup：`name`（＝事件 id）、`type`（`spawn`／`warp`／`trigger`／`npc_spawn`／`interact`／`light`）、矩形（像素，÷16＝格）、`properties`（`cond`、`dialog`／`dialog_node`、`target`／`entry`、`hint`、`locked`、`autosave`、`once`…） | `cond` 為簡單布林字串（解析規則同對話格式，見 dialogue-format.md 第 4、5 節；詳細語法由遊程定）。v1 的 `touch／auto／npc` 對應：warp＝touch 傳送；trigger（`auto_dialog`）＝auto；`npc_spawn`＝npc |
+| `events` | Tiled objectgroup：`name`（＝事件 id）、`type`（`spawn`／`warp`／`trigger`／`npc_spawn`／`interact`／`light`）、矩形（像素，÷16＝格）、`properties`（`cond`、`dialog`／`dialog_node`、`target`／`entry`、`hint`、`locked`、`autosave`、`once`…） | `cond` 為簡單布林字串（解析規則同對話格式，見 dialogue-format.md 第 4、5 節；詳細語法由遊程定）。**事件詞彙／`cond` 以本文檔（dialogue-format.md）格式為準**，引擎現時兩套都收，新資料一律用文檔格式。v1 的 `touch／auto／npc` 對應：warp＝touch 傳送；trigger（`auto_dialog`）＝auto；`npc_spawn`＝npc |
 | （光點） | v1 的獨立 `lights` 層**改為 `events` 內 `type=light` 物件**：`kind`（`lantern／window／chimney／landmark`）、`color`、`radius`（格）、`lit_default` | HD-2D 動態光；夜間全開；低畫質檔改用預烘焙光圖；日夜圖塊以 `tileset_all_gids.json#swap_day_to_lit` 替換 |
 
 **規則**

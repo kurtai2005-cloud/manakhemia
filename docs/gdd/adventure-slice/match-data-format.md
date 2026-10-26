@@ -168,7 +168,6 @@ kind = cup（盃賽） | capture（結緣戰：野生野靈） | field（野地�
   "on_end": {
     "win":  [ { "do": "give_spirit", "species": "gravelbadger", "lv": 4, "nickname_prompt": true },
               { "do": "set_flag", "flag": "captured_badger" },
-              { "do": "add_var", "var": "party_size", "delta": 1 },
               { "do": "set_objective", "id": "c1_register" } ],
     "lose": [ { "do": "set_objective", "id": "c1_capture_retry" } ]
   },
@@ -181,7 +180,7 @@ kind = cup（盃賽） | capture（結緣戰：野生野靈） | field（野地�
 
 ### 5.4 冠軍賽 `c1_r3`（M2 範例，驗證 `script`／蕨生隊／風印欄位）
 
-對手：蕨生（苔團＋碎石獾＋風鼬，全 Lv6），賽道 苔坡/碎礫/碎礫/苔坡/碎礫。M2 內容，此處只作格式驗證。
+對手：蕨生（苔團＋碎石獾＋颯鼬，全 Lv6），賽道 苔坡/碎礫/碎礫/苔坡/碎礫。M2 內容，此處只作格式驗證。
 
 ```json
 {
@@ -256,8 +255,8 @@ kind = cup（盃賽） | capture（結緣戰：野生野靈） | field（野地�
 | 場次 | 資格 | 賽道（5 段） | 對手隊 | 報名費 | 勝獎 | 敗獎 | 經驗 勝／敗 | 建議等級 | 目標勝率 |
 |---|---|---|---|---|---|---|---|---|---|
 | `c1_r1` 初戰 | 持 ≥2 野靈 | 苔／礫／苔／礫／苔 | 見習跑手：汀羽3＋霧蕨3 | 20 | 45 | 10 | 100／45 | 3 | 85% |
-| `c1_r2` 複賽 | 勝 `c1_r1` | 苔／礫／苔／苔／礫 | 霧蕨4＋風鼬4（鎮上選手） | 30 | 75 | 15 | 130／55 | ≥4 | 70% |
-| `c1_r3` 冠軍賽 | 勝 `c1_r2` | 苔／礫／礫／苔／礫 | 蕨生：苔團＋碎石獾＋風鼬（Lv6） | 45 | 110（首勝 +30） | 25 | 170／70 | ≥6–7 | 55–65% |
+| `c1_r2` 複賽 | 勝 `c1_r1` | 苔／礫／苔／苔／礫 | 霧蕨4＋颯鼬4（鎮上選手） | 30 | 75 | 15 | 130／55 | ≥4 | 70% |
+| `c1_r3` 冠軍賽 | 勝 `c1_r2` | 苔／礫／礫／苔／礫 | 蕨生：苔團＋碎石獾＋颯鼬（Lv6） | 45 | 110（首勝 +30） | 25 | 170／70 | ≥6–7 | 55–65% |
 
 `c1_r2` 校準提示：玩家雙隻 Lv4，AI 代打約領先 44 m；唔換人落後約 43 m。
 
@@ -269,12 +268,12 @@ kind = cup（盃賽） | capture（結緣戰：野生野靈） | field（野地�
 4. `team.min ≤ team.max ≤ 6`；`req.party_min ≥ team.min`（資格唔可低過出場最少人數）。
 5. `reward.leaf_win ≥ fee + 5`（勝出必淨賺）、`leaf_lose ≤ fee`（輸唔會賺）。
 6. `unlock`／`req.done` 指向存在的場次，且無環。
-7. `dialogue.*` 指向存在的對話集 id（**範例中 `d_capture_win`／`d_capture_lose`、`d_wild_badger_win`／`_lose`、`d_fern_final_*` 為佔位，對話集 M1 已交 `d_fern_prematch`、`d_fern_after_r1`，`d_capture_intro`（野生碎石獾 3 句）由遊策週 2 補；缺失時 lint 警告而非阻擋**）；`on_end` 的 `do` 在 dialogue-format.md §4 列表內。
+7. `dialogue.*` 指向存在的對話集 id（**範例中 `d_capture_win`／`d_capture_lose`、`d_wild_badger_win`／`_lose`、`d_fern_final_*` 為佔位，對話集 M1 已交 `d_fern_prematch`、`d_fern_after_r1`，`d_capture_intro`（野生碎石獾 3 句）已於 npc-dialogue.md §5 補上；缺失時 lint 警告而非阻擋**）；`on_end` 的 `do` 在 dialogue-format.md §4 列表內。
 8. 旗標名須在 `flags.json` 登記（`c1r1_won`、`c1r1_lost_last`、`captured_badger`、`got_mochi`、`registered_match`…）。
 
 ## 7. 待遊測／遊程確認
 
-- `r1_min_team`（2）：若令新手卡關，改 1＋老鐘借野靈（見 tuning-params-v2.2.md）。
+- `r1_min_team`（2）：**正式流程維持 2**（先結緣碎石獾先可報名）；走路切片／dev 可用 dev 旗標放寬（見 tuning-params-v2.2.md），唔加借野靈對白。
 - 結緣戰保底：連敗 3 次後 `handicap_m` −10？（M1 暫唔做，觀察）。
 - `first_win_leaf_bonus` 是否需要；出場判定（跑過 ≥1 段）是否過鬆。
 - 種子策略：`per_attempt` 時重播要存種子；M1 驗收「同一種子重播一致」用 `fixed` 即可。

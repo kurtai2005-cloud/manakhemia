@@ -20,7 +20,7 @@
 | 欄位 | 型別 | 說明 |
 |---|---|---|
 | `speaker` | string | 說話者 id：`narrator`／`player`／`elder`／`fern`／`sang`；`system` 表示純邏輯節點（無文字） |
-| `emote` | string | 頭像表情：`neutral`／`smile`／`surprise`／`serious`；省略＝`neutral` |
+| `emote` | string | 頭像表情：`neutral`／`smile`／`surprise`／`serious`；省略＝`neutral`。對應美術 `expression`（art-wind/ASSET_SPEC_TOWN.md §N.3）：`neutral`→`neutral`、`smile`→`happy`、`surprise`→`surprised`、`serious`→`worried`（暫代，`serious` 無對應張，美術用 `worried`）；未知表情回退 `neutral`。頭像以 `portrait_id`（＝`npc_id`）＋`expression` 引用 |
 | `text` | string | 對白；支援 `{player}`、`{leaf}`、`{fee}`、`{var:<名>}`；`\n` 換行；≤38 字 |
 | `next` | string／null | 下一節點；`null` 或省略＝對話結束 |
 | `choices` | array | 選項（≤3）；有 `choices` 時忽略 `next` |
@@ -69,7 +69,9 @@ JSON 物件，單一運算子 key：
 | `{"has_value":"registered_match"}` | 字串變數非空 |
 | `{"seen":"sang_first"}` | 該節點曾顯示 |
 
-**變數與旗標**：旗標＝bool（`set_flag`／`clear_flag`）；變數＝int 或 string（`set_var`／`add_var`）。內建變數：`leaf`、`party_size`、`seals`、`registered_match`。作用域＝存檔（全域）。未定義的旗標視為 false、未定義的數值變數視為 0；**載入時遇到未知的旗標名要警告（lint）**，唔好 silent 吞。
+**變數與旗標**：旗標＝bool（`set_flag`／`clear_flag`）；內建變數：`leaf`、`party_size`、`seals`、`registered_match`（字串）、`last_town_door`（字串）；變數＝int 或 string（`set_var`／`add_var`）。作用域＝存檔（全域）。未定義的旗標視為 false、未定義的數值變數視為 0；**載入時遇到未知的旗標名要警告（lint）**，唔好 silent 吞。
+
+**唯讀變數**：`party_size` 由引擎按隊伍人數自動維護，**唯讀、引擎維護**，事件／對話唔可改寫。`last_town_door` 係字串變數，用 `set_var` 設值（`door_arena`／`door_registry`），唔係旗標。
 
 ## 4. 事件動作（`on_enter`／`on_exit`／`on_choose`）
 
