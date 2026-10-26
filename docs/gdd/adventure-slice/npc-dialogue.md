@@ -1,4 +1,4 @@
-# NPC 對話表：第 1 章首段（老鐘／蕨生／桑姨）
+# NPC 對話表：第 1 章首段（老鐘／蕨生／桑姨）＋晨苔鎮互動物件旁白
 
 > 遊策｜週 1｜草稿 v1｜全原創｜給：遊程（匯入對話資料）、遊美（頭像表情）、遊測（分支／旗標測試）
 > 格式說明見 dialogue-format.md。每節點文字 ≤38 字（2 行 × 19 字）；連續節點 ≤6 句。口吻：老鐘＝慢、暖；蕨生＝快、好勝；桑姨＝利落、有耐性。表情 id 只用 `neutral`／`smile`／`surprise`／`serious`（每位 4 張頭像）。
@@ -77,6 +77,98 @@
 | `sang_registered` | 桑姨（neutral） | 你已經報咗名，閘口喺前面，入去佈陣啦。 | 結束 | |
 | `sang_won` | 桑姨（smile） | 恭喜贏出！獎金收好。複賽暫時未開放，等風起再嚟。 | 結束 | |
 | `sang_lost` | 桑姨（smile） | 唔緊要，再報一次就得。下次睇住下一段地形再換人。 | → `sang_menu` | |
+
+## 4. 晨苔鎮互動物件旁白（M1）
+
+> 對應 maps-and-events.md 第 2 節事件表嘅 6 個 `interact` 物件（JSON `properties.dialog`）。全部係 `narrator` 旁白，每個物件 2 句，每句 ≤38 字；唔設選項、唔設旗標。
+> **載入慣例**：`dialog` 屬性值＝節點 id，全部放同一對話集 `d_objects_town`（建議路徑 `data/dialogue/d_objects_town.json`）；格式見 dialogue-format.md（`entry` 為必填，此集只放保底 `goto`，實際由地圖事件直接指定起始節點）。節點 `<id>` 後接 `<id>_b`，點擊推進，結束即關閉。旁白框用斜體、無頭像、無逐字 blip。
+
+| 節點 id | 地圖事件 | 對白（2 句） |
+|---|---|---|
+| `obj_well_01` | `obj_well`（廣場井） | 井水清得見底，水面浮著幾片細小的苔葉。／井底傳來很輕的水聲，像是風在下面打了個轉。 |
+| `obj_notice_board_01` | `obj_notice_board`（告示板 (8,12)） | 告示板上寫著：「喚風祭・初葉盃報名中」。／角落有張舊紙：「今年風弱，跑手請多保重。」 |
+| `sign_arena_01` | `obj_sign_arena`（路標 (18,11)） | 木牌寫著：「↑ 迴風場　→ 報名處」。／字旁畫了一面小旗，旗尖指向東邊。 |
+| `obj_sign_east_01` | `obj_sign_east`（東路標 (36,12)） | 木牌寫著：「東：蕨影小徑 → 石磯港」。／牌腳長滿了苔，看來有一陣子沒人經過。 |
+| `registry_counter_01` | `registry_counter`（報名處櫃台 (32,8)） | 櫃台前沒有人。／窗口牌子寫著：「報名請入內，找桑姨。」 |
+| `registry_notice_01` | `registry_notice`（報名處告示 (33,8)） | 初葉盃：新手直接報名，沒有資格要求。／報名費二十葉幣，贏了獎金一定更高。 |
+
+M3 起 `obj_notice_board_01` 改為每日賽事入口（M1 只顯示上列旁白）。
+
+**JSON（可直接當解析器測試輸入；已用 Python `json.loads` 驗證，`next` 全部指向存在節點／`null`）**
+
+```json
+{
+  "schema": "dialogue/v1",
+  "id": "d_objects_town",
+  "entry": [
+    {
+      "goto": "obj_well_01"
+    }
+  ],
+  "nodes": {
+    "obj_well_01": {
+      "speaker": "narrator",
+      "text": "井水清得見底，水面浮著幾片細小的苔葉。",
+      "next": "obj_well_01_b"
+    },
+    "obj_well_01_b": {
+      "speaker": "narrator",
+      "text": "井底傳來很輕的水聲，像是風在下面打了個轉。",
+      "next": null
+    },
+    "obj_notice_board_01": {
+      "speaker": "narrator",
+      "text": "告示板上寫著：「喚風祭・初葉盃報名中」。",
+      "next": "obj_notice_board_01_b"
+    },
+    "obj_notice_board_01_b": {
+      "speaker": "narrator",
+      "text": "角落有張舊紙：「今年風弱，跑手請多保重。」",
+      "next": null
+    },
+    "sign_arena_01": {
+      "speaker": "narrator",
+      "text": "木牌寫著：「↑ 迴風場　→ 報名處」。",
+      "next": "sign_arena_01_b"
+    },
+    "sign_arena_01_b": {
+      "speaker": "narrator",
+      "text": "字旁畫了一面小旗，旗尖指向東邊。",
+      "next": null
+    },
+    "obj_sign_east_01": {
+      "speaker": "narrator",
+      "text": "木牌寫著：「東：蕨影小徑 → 石磯港」。",
+      "next": "obj_sign_east_01_b"
+    },
+    "obj_sign_east_01_b": {
+      "speaker": "narrator",
+      "text": "牌腳長滿了苔，看來有一陣子沒人經過。",
+      "next": null
+    },
+    "registry_counter_01": {
+      "speaker": "narrator",
+      "text": "櫃台前沒有人。",
+      "next": "registry_counter_01_b"
+    },
+    "registry_counter_01_b": {
+      "speaker": "narrator",
+      "text": "窗口牌子寫著：「報名請入內，找桑姨。」",
+      "next": null
+    },
+    "registry_notice_01": {
+      "speaker": "narrator",
+      "text": "初葉盃：新手直接報名，沒有資格要求。",
+      "next": "registry_notice_01_b"
+    },
+    "registry_notice_01_b": {
+      "speaker": "narrator",
+      "text": "報名費二十葉幣，贏了獎金一定更高。",
+      "next": null
+    }
+  }
+}
+```
 
 **字數統計**：本檔漢字約 1,000（連條件／事件欄）；純對白約 700 字，連序章 P2 約 1,500 字，低於 M1 劇情字數上限（≈2,000 字）。
 
