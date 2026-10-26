@@ -1,0 +1,4106 @@
+{
+ "fails": [
+  "sprites/tuanrong/pet_tuanrong_atlas.png: 2048×134 超出 1024×1024",
+  "sprites/tuanrong/pet_tuanrong_atlas.json: atlas 2048×134 超出 1024×1024（對應 PNG）"
+ ],
+ "warns": [
+  "sprites/tuanrong/pet_tuanrong_atlas.png: atlas 非 2 次冪 2048×134"
+ ],
+ "rows": [
+  {
+   "rel": "concepts/bg_sample.png",
+   "bytes": 1137142,
+   "w": 720,
+   "h": 1280,
+   "gpu": 3686400,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 2
+  },
+  {
+   "rel": "concepts/pet_lampy_concept.png",
+   "bytes": 744762,
+   "w": 1024,
+   "h": 1024,
+   "gpu": 4194304,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 2
+  },
+  {
+   "rel": "concepts/pet_mossback_concept.png",
+   "bytes": 856801,
+   "w": 1024,
+   "h": 1024,
+   "gpu": 4194304,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 2
+  },
+  {
+   "rel": "concepts/pet_mumo_concept.png",
+   "bytes": 694791,
+   "w": 1024,
+   "h": 1024,
+   "gpu": 4194304,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 2
+  },
+  {
+   "rel": "concepts/pet_shelly_concept.png",
+   "bytes": 718337,
+   "w": 1024,
+   "h": 1024,
+   "gpu": 4194304,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 2
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_egg_glow_01.png",
+   "bytes": 600,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_egg_glow_02.png",
+   "bytes": 647,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_egg_idle_01.png",
+   "bytes": 460,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_egg_idle_02.png",
+   "bytes": 468,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_egg_idle_03.png",
+   "bytes": 470,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_egg_idle_04.png",
+   "bytes": 481,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_eat_01.png",
+   "bytes": 1206,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_eat_02.png",
+   "bytes": 1239,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_eat_03.png",
+   "bytes": 1223,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_eat_04.png",
+   "bytes": 1170,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_happy_01.png",
+   "bytes": 1155,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_happy_02.png",
+   "bytes": 1273,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_happy_03.png",
+   "bytes": 1246,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_happy_04.png",
+   "bytes": 1147,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_idle_01.png",
+   "bytes": 1141,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_idle_02.png",
+   "bytes": 1150,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_idle_03.png",
+   "bytes": 1069,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_idle_04.png",
+   "bytes": 1133,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_sick_01.png",
+   "bytes": 809,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_sick_02.png",
+   "bytes": 866,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_sleep_01.png",
+   "bytes": 1083,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_radiant_sleep_02.png",
+   "bytes": 1111,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_eat_01.png",
+   "bytes": 1134,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_eat_02.png",
+   "bytes": 1159,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_eat_03.png",
+   "bytes": 1124,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_eat_04.png",
+   "bytes": 1116,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_happy_01.png",
+   "bytes": 1008,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_happy_02.png",
+   "bytes": 1189,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_happy_03.png",
+   "bytes": 1188,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_happy_04.png",
+   "bytes": 1067,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_idle_01.png",
+   "bytes": 1031,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_idle_02.png",
+   "bytes": 1081,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_idle_03.png",
+   "bytes": 1010,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_idle_04.png",
+   "bytes": 1101,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_sick_01.png",
+   "bytes": 850,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_sick_02.png",
+   "bytes": 883,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_sleep_01.png",
+   "bytes": 989,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_soft_sleep_02.png",
+   "bytes": 1000,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_eat_01.png",
+   "bytes": 661,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_eat_02.png",
+   "bytes": 671,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_eat_03.png",
+   "bytes": 670,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_eat_04.png",
+   "bytes": 610,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_happy_01.png",
+   "bytes": 556,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_happy_02.png",
+   "bytes": 706,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_happy_03.png",
+   "bytes": 683,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_happy_04.png",
+   "bytes": 605,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_idle_01.png",
+   "bytes": 591,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_idle_02.png",
+   "bytes": 629,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_idle_03.png",
+   "bytes": 554,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_idle_04.png",
+   "bytes": 590,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_sick_01.png",
+   "bytes": 515,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_sick_02.png",
+   "bytes": 499,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_sleep_01.png",
+   "bytes": 572,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/frames/pet_tuanrong_sprout_sleep_02.png",
+   "bytes": 580,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/atlas_props.png",
+   "bytes": 2442,
+   "w": 1024,
+   "h": 64,
+   "gpu": 262144,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/atlas_radiant.png",
+   "bytes": 49980,
+   "w": 1024,
+   "h": 512,
+   "gpu": 2097152,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/atlas_soft.png",
+   "bytes": 47499,
+   "w": 1024,
+   "h": 512,
+   "gpu": 2097152,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/atlas_sprout.png",
+   "bytes": 19867,
+   "w": 1024,
+   "h": 256,
+   "gpu": 1048576,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/contact_radiant.png",
+   "bytes": 59162,
+   "w": 2156,
+   "h": 1620,
+   "gpu": 13970880,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/contact_soft.png",
+   "bytes": 56391,
+   "w": 2156,
+   "h": 1620,
+   "gpu": 13970880,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/contact_sprout.png",
+   "bytes": 40044,
+   "w": 2156,
+   "h": 1620,
+   "gpu": 13970880,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/blink_01.png",
+   "bytes": 1141,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/blink_02.png",
+   "bytes": 1097,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/blink_03.png",
+   "bytes": 1082,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/blink_04.png",
+   "bytes": 1118,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/catch_reach_01.png",
+   "bytes": 1135,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/catch_reach_02.png",
+   "bytes": 1232,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/catch_reach_03.png",
+   "bytes": 1191,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/catch_reach_04.png",
+   "bytes": 1208,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/catch_reach_05.png",
+   "bytes": 1095,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/catch_reach_06.png",
+   "bytes": 1224,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/celebrate_01.png",
+   "bytes": 1155,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/celebrate_02.png",
+   "bytes": 1273,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/celebrate_03.png",
+   "bytes": 1246,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/celebrate_04.png",
+   "bytes": 1147,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/cheer_jump_01.png",
+   "bytes": 1101,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/cheer_jump_02.png",
+   "bytes": 1251,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/cheer_jump_03.png",
+   "bytes": 1233,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/cheer_jump_04.png",
+   "bytes": 1211,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/cheer_jump_05.png",
+   "bytes": 1101,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/cheer_jump_06.png",
+   "bytes": 1178,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/droop_01.png",
+   "bytes": 1098,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/droop_02.png",
+   "bytes": 1075,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/droop_03.png",
+   "bytes": 1039,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/droop_04.png",
+   "bytes": 1058,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/droop_05.png",
+   "bytes": 1058,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/droop_06.png",
+   "bytes": 1044,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/eat_01.png",
+   "bytes": 1206,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/eat_02.png",
+   "bytes": 1239,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/eat_03.png",
+   "bytes": 1223,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/eat_04.png",
+   "bytes": 1170,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_cuddly_01.png",
+   "bytes": 1139,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_cuddly_02.png",
+   "bytes": 1143,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_happy_01.png",
+   "bytes": 1098,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_happy_02.png",
+   "bytes": 1227,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_hungry_01.png",
+   "bytes": 1062,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_hungry_02.png",
+   "bytes": 1094,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_sleepy_01.png",
+   "bytes": 1061,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_sleepy_02.png",
+   "bytes": 1037,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_surprised_01.png",
+   "bytes": 1185,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_surprised_02.png",
+   "bytes": 1201,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_wantplay_01.png",
+   "bytes": 1190,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/emo_wantplay_02.png",
+   "bytes": 1220,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/fall_asleep_01.png",
+   "bytes": 1086,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/fall_asleep_02.png",
+   "bytes": 1050,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/fall_asleep_03.png",
+   "bytes": 1053,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/fall_asleep_04.png",
+   "bytes": 1054,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/idle_01.png",
+   "bytes": 1141,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/idle_02.png",
+   "bytes": 1150,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/idle_03.png",
+   "bytes": 1069,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/idle_04.png",
+   "bytes": 1133,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/play_01.png",
+   "bytes": 1168,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/play_02.png",
+   "bytes": 1169,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/play_03.png",
+   "bytes": 1225,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/play_04.png",
+   "bytes": 1203,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/play_05.png",
+   "bytes": 1110,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/play_06.png",
+   "bytes": 1108,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/pot_bump_01.png",
+   "bytes": 1114,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/pot_bump_02.png",
+   "bytes": 1076,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/pot_bump_03.png",
+   "bytes": 1162,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/pot_bump_04.png",
+   "bytes": 1145,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/pot_bump_05.png",
+   "bytes": 1115,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/pot_bump_06.png",
+   "bytes": 1121,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/pot_bump_07.png",
+   "bytes": 1131,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/pot_bump_08.png",
+   "bytes": 1141,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sick_01.png",
+   "bytes": 809,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sick_02.png",
+   "bytes": 866,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sleep_loop_01.png",
+   "bytes": 1013,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sleep_loop_02.png",
+   "bytes": 1019,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sleep_loop_03.png",
+   "bytes": 1016,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sleep_loop_04.png",
+   "bytes": 1040,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sunbathe_01.png",
+   "bytes": 1137,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sunbathe_02.png",
+   "bytes": 1137,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sunbathe_03.png",
+   "bytes": 1184,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sunbathe_04.png",
+   "bytes": 1227,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sunbathe_05.png",
+   "bytes": 1214,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sunbathe_06.png",
+   "bytes": 1170,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sunbathe_07.png",
+   "bytes": 1115,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sunbathe_08.png",
+   "bytes": 1151,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sway_01.png",
+   "bytes": 1141,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sway_02.png",
+   "bytes": 1155,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sway_03.png",
+   "bytes": 1129,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/sway_04.png",
+   "bytes": 1145,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/wake_01.png",
+   "bytes": 1046,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/wake_02.png",
+   "bytes": 1264,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/wake_03.png",
+   "bytes": 1148,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/wake_04.png",
+   "bytes": 1141,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/walk_01.png",
+   "bytes": 1144,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/walk_02.png",
+   "bytes": 1170,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/walk_03.png",
+   "bytes": 1185,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/walk_04.png",
+   "bytes": 1146,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/walk_05.png",
+   "bytes": 1168,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/walk_06.png",
+   "bytes": 1183,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/yawn_01.png",
+   "bytes": 1144,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/yawn_02.png",
+   "bytes": 1297,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/yawn_03.png",
+   "bytes": 1285,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/radiant/yawn_04.png",
+   "bytes": 1143,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/blink_01.png",
+   "bytes": 1031,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/blink_02.png",
+   "bytes": 1011,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/blink_03.png",
+   "bytes": 999,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/blink_04.png",
+   "bytes": 1023,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/catch_reach_01.png",
+   "bytes": 1027,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/catch_reach_02.png",
+   "bytes": 1162,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/catch_reach_03.png",
+   "bytes": 1199,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/catch_reach_04.png",
+   "bytes": 1173,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/catch_reach_05.png",
+   "bytes": 1032,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/catch_reach_06.png",
+   "bytes": 1148,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/celebrate_01.png",
+   "bytes": 1008,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/celebrate_02.png",
+   "bytes": 1189,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/celebrate_03.png",
+   "bytes": 1188,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/celebrate_04.png",
+   "bytes": 1067,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/cheer_jump_01.png",
+   "bytes": 1002,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/cheer_jump_02.png",
+   "bytes": 1182,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/cheer_jump_03.png",
+   "bytes": 1175,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/cheer_jump_04.png",
+   "bytes": 1169,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/cheer_jump_05.png",
+   "bytes": 1002,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/cheer_jump_06.png",
+   "bytes": 1132,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/droop_01.png",
+   "bytes": 1029,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/droop_02.png",
+   "bytes": 1025,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/droop_03.png",
+   "bytes": 936,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/droop_04.png",
+   "bytes": 1011,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/droop_05.png",
+   "bytes": 1013,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/droop_06.png",
+   "bytes": 957,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/eat_01.png",
+   "bytes": 1134,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/eat_02.png",
+   "bytes": 1159,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/eat_03.png",
+   "bytes": 1124,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/eat_04.png",
+   "bytes": 1116,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_cuddly_01.png",
+   "bytes": 1055,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_cuddly_02.png",
+   "bytes": 1049,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_happy_01.png",
+   "bytes": 1077,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_happy_02.png",
+   "bytes": 1181,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_hungry_01.png",
+   "bytes": 1039,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_hungry_02.png",
+   "bytes": 1061,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_sleepy_01.png",
+   "bytes": 1012,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_sleepy_02.png",
+   "bytes": 990,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_surprised_01.png",
+   "bytes": 1151,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_surprised_02.png",
+   "bytes": 1132,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_wantplay_01.png",
+   "bytes": 1136,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/emo_wantplay_02.png",
+   "bytes": 1190,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/fall_asleep_01.png",
+   "bytes": 992,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/fall_asleep_02.png",
+   "bytes": 987,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/fall_asleep_03.png",
+   "bytes": 986,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/fall_asleep_04.png",
+   "bytes": 956,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/idle_01.png",
+   "bytes": 1031,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/idle_02.png",
+   "bytes": 1081,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/idle_03.png",
+   "bytes": 1010,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/idle_04.png",
+   "bytes": 1101,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/play_01.png",
+   "bytes": 1125,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/play_02.png",
+   "bytes": 1098,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/play_03.png",
+   "bytes": 1186,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/play_04.png",
+   "bytes": 1144,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/play_05.png",
+   "bytes": 1024,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/play_06.png",
+   "bytes": 1044,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/pot_bump_01.png",
+   "bytes": 1021,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/pot_bump_02.png",
+   "bytes": 1045,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/pot_bump_03.png",
+   "bytes": 1075,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/pot_bump_04.png",
+   "bytes": 1031,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/pot_bump_05.png",
+   "bytes": 1060,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/pot_bump_06.png",
+   "bytes": 1077,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/pot_bump_07.png",
+   "bytes": 1040,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/pot_bump_08.png",
+   "bytes": 1031,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sick_01.png",
+   "bytes": 850,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sick_02.png",
+   "bytes": 883,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sleep_loop_01.png",
+   "bytes": 935,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sleep_loop_02.png",
+   "bytes": 978,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sleep_loop_03.png",
+   "bytes": 987,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sleep_loop_04.png",
+   "bytes": 994,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sunbathe_01.png",
+   "bytes": 1076,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sunbathe_02.png",
+   "bytes": 1054,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sunbathe_03.png",
+   "bytes": 1102,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sunbathe_04.png",
+   "bytes": 1172,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sunbathe_05.png",
+   "bytes": 1110,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sunbathe_06.png",
+   "bytes": 1057,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sunbathe_07.png",
+   "bytes": 1082,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sunbathe_08.png",
+   "bytes": 1080,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sway_01.png",
+   "bytes": 1043,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sway_02.png",
+   "bytes": 1052,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sway_03.png",
+   "bytes": 1035,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/sway_04.png",
+   "bytes": 1048,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/wake_01.png",
+   "bytes": 1000,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/wake_02.png",
+   "bytes": 1183,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/wake_03.png",
+   "bytes": 1029,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/wake_04.png",
+   "bytes": 1031,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/walk_01.png",
+   "bytes": 1067,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/walk_02.png",
+   "bytes": 1047,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/walk_03.png",
+   "bytes": 1115,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/walk_04.png",
+   "bytes": 1064,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/walk_05.png",
+   "bytes": 1050,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/walk_06.png",
+   "bytes": 1117,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/yawn_01.png",
+   "bytes": 1042,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/yawn_02.png",
+   "bytes": 1164,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/yawn_03.png",
+   "bytes": 1151,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/soft/yawn_04.png",
+   "bytes": 1069,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/blink_01.png",
+   "bytes": 591,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/blink_02.png",
+   "bytes": 587,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/blink_03.png",
+   "bytes": 556,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/blink_04.png",
+   "bytes": 584,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/catch_reach_01.png",
+   "bytes": 608,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/catch_reach_02.png",
+   "bytes": 674,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/catch_reach_03.png",
+   "bytes": 665,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/catch_reach_04.png",
+   "bytes": 682,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/catch_reach_05.png",
+   "bytes": 576,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/catch_reach_06.png",
+   "bytes": 673,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/celebrate_01.png",
+   "bytes": 556,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/celebrate_02.png",
+   "bytes": 706,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/celebrate_03.png",
+   "bytes": 683,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/celebrate_04.png",
+   "bytes": 605,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/cheer_jump_01.png",
+   "bytes": 585,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/cheer_jump_02.png",
+   "bytes": 656,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/cheer_jump_03.png",
+   "bytes": 619,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/cheer_jump_04.png",
+   "bytes": 661,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/cheer_jump_05.png",
+   "bytes": 585,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/cheer_jump_06.png",
+   "bytes": 635,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/droop_01.png",
+   "bytes": 570,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/droop_02.png",
+   "bytes": 580,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/droop_03.png",
+   "bytes": 559,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/droop_04.png",
+   "bytes": 566,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/droop_05.png",
+   "bytes": 564,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/droop_06.png",
+   "bytes": 573,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/eat_01.png",
+   "bytes": 661,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/eat_02.png",
+   "bytes": 671,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/eat_03.png",
+   "bytes": 670,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/eat_04.png",
+   "bytes": 610,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_cuddly_01.png",
+   "bytes": 602,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_cuddly_02.png",
+   "bytes": 604,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_happy_01.png",
+   "bytes": 599,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_happy_02.png",
+   "bytes": 663,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_hungry_01.png",
+   "bytes": 572,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_hungry_02.png",
+   "bytes": 586,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_sleepy_01.png",
+   "bytes": 552,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_sleepy_02.png",
+   "bytes": 554,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_surprised_01.png",
+   "bytes": 638,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_surprised_02.png",
+   "bytes": 645,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_wantplay_01.png",
+   "bytes": 619,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/emo_wantplay_02.png",
+   "bytes": 673,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/fall_asleep_01.png",
+   "bytes": 565,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/fall_asleep_02.png",
+   "bytes": 558,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/fall_asleep_03.png",
+   "bytes": 564,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/fall_asleep_04.png",
+   "bytes": 551,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/idle_01.png",
+   "bytes": 591,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/idle_02.png",
+   "bytes": 629,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/idle_03.png",
+   "bytes": 554,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/idle_04.png",
+   "bytes": 590,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/play_01.png",
+   "bytes": 600,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/play_02.png",
+   "bytes": 649,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/play_03.png",
+   "bytes": 678,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/play_04.png",
+   "bytes": 658,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/play_05.png",
+   "bytes": 615,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/play_06.png",
+   "bytes": 579,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/pot_bump_01.png",
+   "bytes": 571,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/pot_bump_02.png",
+   "bytes": 602,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/pot_bump_03.png",
+   "bytes": 628,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/pot_bump_04.png",
+   "bytes": 619,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/pot_bump_05.png",
+   "bytes": 600,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/pot_bump_06.png",
+   "bytes": 571,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/pot_bump_07.png",
+   "bytes": 606,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/pot_bump_08.png",
+   "bytes": 591,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sick_01.png",
+   "bytes": 515,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sick_02.png",
+   "bytes": 499,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sleep_loop_01.png",
+   "bytes": 584,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sleep_loop_02.png",
+   "bytes": 549,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sleep_loop_03.png",
+   "bytes": 552,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sleep_loop_04.png",
+   "bytes": 558,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sunbathe_01.png",
+   "bytes": 594,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sunbathe_02.png",
+   "bytes": 578,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sunbathe_03.png",
+   "bytes": 622,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sunbathe_04.png",
+   "bytes": 645,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sunbathe_05.png",
+   "bytes": 615,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sunbathe_06.png",
+   "bytes": 595,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sunbathe_07.png",
+   "bytes": 587,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sunbathe_08.png",
+   "bytes": 599,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sway_01.png",
+   "bytes": 591,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sway_02.png",
+   "bytes": 618,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sway_03.png",
+   "bytes": 577,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/sway_04.png",
+   "bytes": 618,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/wake_01.png",
+   "bytes": 579,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/wake_02.png",
+   "bytes": 666,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/wake_03.png",
+   "bytes": 590,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/wake_04.png",
+   "bytes": 591,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/walk_01.png",
+   "bytes": 592,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/walk_02.png",
+   "bytes": 591,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/walk_03.png",
+   "bytes": 643,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/walk_04.png",
+   "bytes": 584,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/walk_05.png",
+   "bytes": 594,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/walk_06.png",
+   "bytes": 642,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/yawn_01.png",
+   "bytes": 576,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/yawn_02.png",
+   "bytes": 650,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/yawn_03.png",
+   "bytes": 698,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/frames/sprout/yawn_04.png",
+   "bytes": 600,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_cuddly_01_noface.png",
+   "bytes": 1040,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_cuddly_01_overlay.png",
+   "bytes": 212,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_cuddly_02_noface.png",
+   "bytes": 1037,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_cuddly_02_overlay.png",
+   "bytes": 213,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_happy_01_noface.png",
+   "bytes": 999,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_happy_01_overlay.png",
+   "bytes": 204,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_happy_02_noface.png",
+   "bytes": 1124,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_happy_02_overlay.png",
+   "bytes": 204,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_hungry_01_noface.png",
+   "bytes": 972,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_hungry_01_overlay.png",
+   "bytes": 221,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_hungry_02_noface.png",
+   "bytes": 952,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_hungry_02_overlay.png",
+   "bytes": 248,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_sleepy_01_noface.png",
+   "bytes": 983,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_sleepy_01_overlay.png",
+   "bytes": 196,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_sleepy_02_noface.png",
+   "bytes": 966,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_sleepy_02_overlay.png",
+   "bytes": 191,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_surprised_01_noface.png",
+   "bytes": 1101,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_surprised_01_overlay.png",
+   "bytes": 242,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_surprised_02_noface.png",
+   "bytes": 1102,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_surprised_02_overlay.png",
+   "bytes": 235,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_wantplay_01_noface.png",
+   "bytes": 1083,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_wantplay_01_overlay.png",
+   "bytes": 249,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_wantplay_02_noface.png",
+   "bytes": 1124,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/radiant/emo_wantplay_02_overlay.png",
+   "bytes": 239,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_cuddly_01_noface.png",
+   "bytes": 975,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_cuddly_01_overlay.png",
+   "bytes": 206,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_cuddly_02_noface.png",
+   "bytes": 954,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_cuddly_02_overlay.png",
+   "bytes": 207,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_happy_01_noface.png",
+   "bytes": 964,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_happy_01_overlay.png",
+   "bytes": 224,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_happy_02_noface.png",
+   "bytes": 1070,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_happy_02_overlay.png",
+   "bytes": 215,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_hungry_01_noface.png",
+   "bytes": 941,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_hungry_01_overlay.png",
+   "bytes": 223,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_hungry_02_noface.png",
+   "bytes": 940,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_hungry_02_overlay.png",
+   "bytes": 244,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_sleepy_01_noface.png",
+   "bytes": 942,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_sleepy_01_overlay.png",
+   "bytes": 196,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_sleepy_02_noface.png",
+   "bytes": 928,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_sleepy_02_overlay.png",
+   "bytes": 185,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_surprised_01_noface.png",
+   "bytes": 1058,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_surprised_01_overlay.png",
+   "bytes": 247,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_surprised_02_noface.png",
+   "bytes": 1045,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_surprised_02_overlay.png",
+   "bytes": 249,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_wantplay_01_noface.png",
+   "bytes": 1017,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_wantplay_01_overlay.png",
+   "bytes": 245,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_wantplay_02_noface.png",
+   "bytes": 1070,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/soft/emo_wantplay_02_overlay.png",
+   "bytes": 253,
+   "w": 64,
+   "h": 64,
+   "gpu": 16384,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_cuddly_01_noface.png",
+   "bytes": 541,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_cuddly_01_overlay.png",
+   "bytes": 142,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_cuddly_02_noface.png",
+   "bytes": 539,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_cuddly_02_overlay.png",
+   "bytes": 146,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_happy_01_noface.png",
+   "bytes": 516,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_happy_01_overlay.png",
+   "bytes": 152,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_happy_02_noface.png",
+   "bytes": 602,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_happy_02_overlay.png",
+   "bytes": 146,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_hungry_01_noface.png",
+   "bytes": 515,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_hungry_01_overlay.png",
+   "bytes": 165,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_hungry_02_noface.png",
+   "bytes": 532,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_hungry_02_overlay.png",
+   "bytes": 163,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_sleepy_01_noface.png",
+   "bytes": 515,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_sleepy_01_overlay.png",
+   "bytes": 144,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_sleepy_02_noface.png",
+   "bytes": 520,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_sleepy_02_overlay.png",
+   "bytes": 135,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_surprised_01_noface.png",
+   "bytes": 578,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_surprised_01_overlay.png",
+   "bytes": 158,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_surprised_02_noface.png",
+   "bytes": 587,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_surprised_02_overlay.png",
+   "bytes": 158,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_wantplay_01_noface.png",
+   "bytes": 562,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_wantplay_01_overlay.png",
+   "bytes": 170,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_wantplay_02_noface.png",
+   "bytes": 602,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/layers/sprout/emo_wantplay_02_overlay.png",
+   "bytes": 171,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/exclaim_01.png",
+   "bytes": 175,
+   "w": 16,
+   "h": 16,
+   "gpu": 1024,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/exclaim_02.png",
+   "bytes": 174,
+   "w": 16,
+   "h": 16,
+   "gpu": 1024,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/flowerpot_bump_01.png",
+   "bytes": 531,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/flowerpot_bump_02.png",
+   "bytes": 539,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/flowerpot_bump_03.png",
+   "bytes": 518,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/flowerpot_bump_04.png",
+   "bytes": 515,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/flowerpot_idle_01.png",
+   "bytes": 509,
+   "w": 32,
+   "h": 32,
+   "gpu": 4096,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/heart_01.png",
+   "bytes": 180,
+   "w": 16,
+   "h": 16,
+   "gpu": 1024,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/heart_02.png",
+   "bytes": 190,
+   "w": 16,
+   "h": 16,
+   "gpu": 1024,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/question_01.png",
+   "bytes": 185,
+   "w": 16,
+   "h": 16,
+   "gpu": 1024,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/question_02.png",
+   "bytes": 185,
+   "w": 16,
+   "h": 16,
+   "gpu": 1024,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/sun_patch_01.png",
+   "bytes": 299,
+   "w": 48,
+   "h": 16,
+   "gpu": 3072,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/sun_patch_02.png",
+   "bytes": 290,
+   "w": 48,
+   "h": 16,
+   "gpu": 3072,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/sweat_01.png",
+   "bytes": 179,
+   "w": 16,
+   "h": 16,
+   "gpu": 1024,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/sweat_02.png",
+   "bytes": 180,
+   "w": 16,
+   "h": 16,
+   "gpu": 1024,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/zzz_01.png",
+   "bytes": 195,
+   "w": 24,
+   "h": 24,
+   "gpu": 2304,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/zzz_02.png",
+   "bytes": 248,
+   "w": 24,
+   "h": 24,
+   "gpu": 2304,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/motion/props/zzz_03.png",
+   "bytes": 249,
+   "w": 24,
+   "h": 24,
+   "gpu": 2304,
+   "skip": "單幀／來源序列（打包入 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/palette.png",
+   "bytes": 1014,
+   "w": 384,
+   "h": 192,
+   "gpu": 294912,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_atlas.png",
+   "bytes": 24098,
+   "w": 2048,
+   "h": 134,
+   "gpu": 1097728,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_egg_preview_8x.png",
+   "bytes": 7605,
+   "w": 1084,
+   "h": 548,
+   "gpu": 2376128,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_egg_sheet.png",
+   "bytes": 1662,
+   "w": 192,
+   "h": 32,
+   "gpu": 24576,
+   "skip": "橫排 sheet（來源／預覽；打包只載 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_radiant_preview_8x.png",
+   "bytes": 51085,
+   "w": 2108,
+   "h": 2632,
+   "gpu": 22193024,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_radiant_sheet.png",
+   "bytes": 8527,
+   "w": 1024,
+   "h": 64,
+   "gpu": 262144,
+   "skip": "橫排 sheet（來源／預覽；打包只載 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_soft_preview_8x.png",
+   "bytes": 49047,
+   "w": 2108,
+   "h": 2632,
+   "gpu": 22193024,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_soft_sheet.png",
+   "bytes": 8025,
+   "w": 1024,
+   "h": 64,
+   "gpu": 262144,
+   "skip": "橫排 sheet（來源／預覽；打包只載 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_sprout_preview_8x.png",
+   "bytes": 18392,
+   "w": 1084,
+   "h": 1352,
+   "gpu": 5862272,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/pet_tuanrong_sprout_sheet.png",
+   "bytes": 3837,
+   "w": 512,
+   "h": 32,
+   "gpu": 65536,
+   "skip": "橫排 sheet（來源／預覽；打包只載 atlas）",
+   "color_type": 6
+  },
+  {
+   "rel": "sprites/tuanrong/tuanrong_contact_sheet.png",
+   "bytes": 10445,
+   "w": 1696,
+   "h": 576,
+   "gpu": 3907584,
+   "skip": "非運行時（preview/concept…）",
+   "color_type": 6
+  }
+ ]
+}

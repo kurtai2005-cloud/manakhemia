@@ -1,0 +1,41 @@
+[
+  {
+    "tier": "low",
+    "cpuThrottle": 6,
+    "viewport": "390x844@2",
+    "started": true,
+    "url": "http://localhost:8124/index.html",
+    "frames": 4822,
+    "avgFps": 47.4,
+    "p50ms": 16.7,
+    "p95ms": 33.4,
+    "p99ms": 33.4,
+    "low1pctFps": 21.2,
+    "over33pct": 5.62,
+    "over50pct": 0.21,
+    "drawAvgMs": 2.77,
+    "drawP95Ms": 3.9,
+    "tickAvgMs": 0.037,
+    "heapMB": 2.2,
+    "domContentLoadedMs": 210,
+    "loadMs": 210,
+    "transferKB": 77,
+    "raceGameSeconds": 98.3,
+    "wallSeconds": 102.5,
+    "consoleErrors": 0,
+    "pass": {
+      "fps": true,
+      "p95": true,
+      "longFrames": false,
+      "heap": true,
+      "raceLen": true,
+      "noErrors": true
+    },
+    "budget": {
+      "fps": 30,
+      "p95": 40,
+      "longPct": 5,
+      "heapMB": 100
+    }
+  }
+]

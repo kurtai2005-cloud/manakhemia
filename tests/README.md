@@ -1,25 +1,15 @@
-# tests/ 測試說明
+# tests/ 總覽（遊測；全部原創、無私人／第三方內容）
 
-目前 repo 尚未決定引擎（HTML5／Godot／Unity 未定），所以本文件列出兩個方案；定案後只保留對應方案。
+環境：Node＋`playwright-core`（`/workspace/tools/pw/node_modules`，可用 `PW_PATH` 覆寫）、`/usr/bin/google-chrome`（`CHROME` 覆寫）、Python 3。被測 proto 以 `python3 -m http.server <port>` 起喺各自目錄。
 
-## 方案 A：HTML5／網頁版
-- **冒煙測試**：Playwright —— 開啟遊戲頁面，確認載入成功及無 console error。
-- **效能**：Lighthouse（Chrome DevTools 或 `npx lighthouse <url> --view`）檢查 Performance、載入時間、主執行緒阻塞；FPS／記憶體用 Chrome Performance 面板另行記錄。
-- 範例指令（遊戲頁面有 `package.json` 後）：
-  ```
-  npm i -D @playwright/test
-  npx playwright install --with-deps chromium
-  GAME_URL=http://localhost:8080 npx playwright test
-  ```
-- 之後可在 `tests/` 加入 `smoke.spec.js` 及 `playwright.config.js`（引擎定案為 HTML5 時才加）。
+| 目錄 | 腳本 | 用途 | 對應文件 |
+|---|---|---|---|
+| perf/ | `fps_probe.js`、`determinism_check.js`、`trace_capture.js`、`lighthouse.sh` | 風野競走 fps／決定性／trace／Lighthouse（CDP CPU 限速：high 1×／mid 4×／low 6×） | `QA/perf-budget-wind-race.md` |
+| perf/ | `pet_fps_probe.js` | 微光小圃 fps 矩陣（畫質×檔位）、`--auto 1` 量自動降級、`--hour`／`--eval` | `QA/pet-deepening-test-plan.md` §5 |
+| touch/ | `mock/index.html`、`touch_move_probe.js` | CDP 真觸控；虛擬搖桿／點擊移動／碰撞／傳送／對話（`window.__qa` 協議） | `QA/touch-move-feel-test.md`、`QA/week2-test-checklist.md` |
+| save/ | `save_fuzz.js` | 存檔損毀／版本／往返／quota fuzz | `QA/save-replay-test-cases.md` |
+| sim/ | `balance_fengye.py`(+`fengye_harness.js`)、`decay_weiguang.py`、`offline_cases.py` | 平衡／需求衰減／離線規則模擬 | `QA/balance-fengye-mvp.md`、`QA/test-plan-weiguang-xiaopu.md` |
+| pet/ | `pet_events_final.py`（定案參數；退出碼 1＝有 FAIL，v5.1 定案參數＝螢火散步＋彩虹 w4＋p_hit 0.34＋首次開 app 即保底＋總事件 ≤2.95＋lastSaveTime 防改時鐘（回撥容差 120 秒；>now+24h 無效重設；前撥／單改時區＝已知風險 M1 唔處理）（117 案例）；`--multi 8` 做多 seed 一致性；目前全 PASS（退出碼 0））、`pet_events_sim_legacy.py`（舊提案參數，僅參考）、`pet_behavior_sim.py`（定案行為參數）、`time_band_probe.js` | 事件池／離線上限／閃光日、行為頻率、就寢建議時段 | `QA/pet-deepening-test-plan.md` §1–4 |
+| art/ | `art_budget_check.py` | 貼圖尺寸／預算／atlas JSON 檢查（FAIL→退出碼 1） | `QA/pet-deepening-test-plan.md` §5 |
 
-## 方案 B：Godot
-- 單元／整合測試：**GUT** 或 **GdUnit4**（二選一），測試放 `tests/`（例如 `tests/unit/test_*.gd`）。
-- 命令列執行（headless）及 CI 設定待有 Godot 專案後補充。
-
-## 方案 C：Unity
-- Unity Test Framework（EditMode／PlayMode），待定案後補充。
-
-## 其他
-- 手動測試及上架前檢查：見 `QA/release-checklist.md`；bug 記錄：見 `QA/bug-list.md`。
-- 公開 repo：請勿放入私人資料或第三方版權素材。
+各 `out/` 為可重生結果；注意結果係「相對基準」（headless 軟體繪圖），真機驗收見各文件。

@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="zh-HK"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>QA touch-move mock（自製，非遊戲）</title>
+<style>html,body{margin:0;height:100%;background:#111;overflow:hidden}body{touch-action:none;user-select:none}canvas{display:block;touch-action:none}</style></head><body>
+<canvas id="c" width="390" height="844"></canvas>
+<script>
+/* QA 專用最小圖塊地圖 mock：浮動搖桿、點擊移動、貼牆滑行、傳送、NPC 對話。僅用嚟驗證 touch_move_probe.js；實際 build 需自行實作 window.__qa。 */
+(()=>{'use strict';
+const T=16,SC=2,cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const params={deadzone:12,maxRadius:48,speed:80,hitW:10,hitH:8,fadeMs:300,tapSlop:8,arriveEps:1.5};
+const MAPS=[
+ {name:'town',rows:['####################','#..................#','#..................#','#..................#','#..................#','#..................#','#..................#','#..###.............#','#..#...............#','#..................#','#.................T#','####################'],npcs:[{x:8*T+8,y:3*T+8,lines:['你好，旅人。','今日風好啱練跑。','去報名處睇下啦。']}]},
+ {name:'route',rows:['####################','#..................#','#..T...............#','####################'],npcs:[]}];
+let mi=0,P={x:7.5*T,y:6.5*T},locked=false,tele=0,tgt=null,joy=null,ptr={},dlg={open:false,i:0,shown:0,total:0,lines:[]},lastDlgT=0,pdown=null;
+const M=()=>MAPS[mi],solidT=(tx,ty)=>{const r=M().rows[ty];return !r||tx<0||ty<0||tx>=r.length||r[tx]==='#'};
+const hit=(x,y)=>{const hw=params.hitW/2,hh=params.hitH/2;for(const [a,b] of [[x-hw,y-hh],[x+hw,y-hh],[x-hw,y+hh],[x+hw,y+hh]])if(solidT(Math.floor(a/T),Math.floor(b/T)))return true;return false};
+const w2s=(x,y)=>({x:x*SC,y:y*SC+60});
+const s2w=(x,y)=>({x:x/SC,y:(y-60)/SC});
+function move(dx,dy){const nx=P.x+dx;if(!hit(nx,P.y))P.x=nx;const ny=P.y+dy;if(!hit(P.x,ny))P.y=ny}
+function openDlg(n){dlg={open:true,i:0,shown:0,total:n.lines[0].length,lines:n.lines,t:0}}
+function closeDlg(){dlg.open=false;dlg.i=Math.max(0,dlg.lines.length-1);tgt=null;lastDlgT=performance.now()}
+function advance(){if(!dlg.open)return;if(dlg.shown<dlg.total){dlg.shown=dlg.total;return}if(dlg.i<dlg.lines.length-1){dlg.i++;dlg.shown=0;dlg.total=dlg.lines[dlg.i].length}else closeDlg()}
+function doTele(){if(locked)return;locked=true;tele++;const old=mi;setTimeout(()=>{mi=1-old;P={x:5*T,y:(mi?1.5:9.5)*T+0};if(hit(P.x,P.y))P.y-=T;tgt=null;joy=null;},params.fadeMs/2);setTimeout(()=>{locked=false;graceTile=true},params.fadeMs)}
+let graceTile=false;
+const isTele=(x,y)=>M().rows[Math.floor(y/T)]&&M().rows[Math.floor(y/T)][Math.floor(x/T)]==='T';
+cv.addEventListener('pointerdown',e=>{e.preventDefault();ptr[e.pointerId]={x:e.offsetX,y:e.offsetY,t:performance.now(),sx:e.offsetX,sy:e.offsetY};
+ if(locked)return;
+ if(dlg.open){pdown={id:e.pointerId,t:performance.now(),dlg:true};return}
+ if(e.offsetX<cv.width*0.55&&e.offsetY>cv.height*0.45&&!joy){joy={id:e.pointerId,ox:e.offsetX,oy:e.offsetY,dx:0,dy:0,mag:0};tgt=null;return}
+ pdown={id:e.pointerId,t:performance.now()};});
+cv.addEventListener('pointermove',e=>{const p=ptr[e.pointerId];if(p){p.x=e.offsetX;p.y=e.offsetY}
+ if(joy&&joy.id===e.pointerId){let dx=e.offsetX-joy.ox,dy=e.offsetY-joy.oy,d=Math.hypot(dx,dy);if(d<=params.deadzone){joy.mag=0;joy.dx=joy.dy=0}else{const m=Math.min(1,(d-params.deadzone)/(params.maxRadius-params.deadzone));joy.mag=m;joy.dx=dx/d;joy.dy=dy/d}}});
+function up(e){e.preventDefault();const p=ptr[e.pointerId];window.__lastUp=performance.now();
+ if(joy&&joy.id===e.pointerId){joy=null}
+ else if(pdown&&pdown.id===e.pointerId&&p&&!locked){const moved=Math.hypot(e.offsetX-p.sx,e.offsetY-p.sy),dt=performance.now()-pdown.t;
+  if(pdown.dlg){if(dt<350&&!pdown.longHandled)advance()}
+  else if(moved<params.tapSlop){const w=s2w(e.offsetX,e.offsetY);const n=M().npcs.find(n=>Math.hypot(n.x-w.x,n.y-w.y)<14);tgt={x:w.x,y:w.y,npc:n||null}}}
+ if(pdown&&pdown.id===e.pointerId)pdown=null;delete ptr[e.pointerId]}
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect();if(dlg.open&&e.clientX>r.right-60&&e.clientY<r.top+60)closeDlg()});
+// 跳過鍵（右上 60×60）用 pointerdown 處理
+cv.addEventListener('pointerdown',e=>{if(dlg.open&&e.offsetX>cv.width-60&&e.offsetY<60){closeDlg();pdown=null}},true);
+let last=performance.now();
+function frame(now){const dt=Math.min(0.1,(now-last)/1000);last=now;
+ if(!locked&&!dlg.open){
+  if(joy&&joy.mag>0){const sp=params.speed*joy.mag*dt;move(joy.dx*sp,joy.dy*sp)}
+  else if(tgt){let dx=tgt.x-P.x,dy=tgt.y-P.y,d=Math.hypot(dx,dy);const stop=tgt.npc?18:params.arriveEps;
+   if(d<=stop){if(tgt.npc)openDlg(tgt.npc);tgt=null}else{const sp=Math.min(d,params.speed*dt),bx=P.x,by=P.y;move(dx/d*sp,dy/d*sp);if(P.x===bx&&P.y===by)tgt=null}}
+  if(isTele(P.x,P.y)){if(!graceTile)doTele()}else graceTile=false;}
+ if(dlg.open&&dlg.shown<dlg.total){dlg.shown=Math.min(dlg.total,dlg.shown+dt*30)}
+ // 長按快進
+ if(pdown&&pdown.dlg&&!pdown.longHandled&&now-pdown.t>500){pdown.longHandled=true;pdown.ff=true}
+ if(pdown&&pdown.ff&&dlg.open){advance();if(dlg.open)advance()}
+ draw();requestAnimationFrame(frame)}
+function draw(){ctx.fillStyle='#223';ctx.fillRect(0,0,cv.width,cv.height);const m=M();
+ m.rows.forEach((r,y)=>[...r].forEach((c,x)=>{ctx.fillStyle=c==='#'?'#556':c==='T'?'#a4f':'#2a3a2a';ctx.fillRect(x*T*SC,y*T*SC+60,T*SC-1,T*SC-1)}));
+ m.npcs.forEach(n=>{const s=w2s(n.x,n.y);ctx.fillStyle='#fa4';ctx.fillRect(s.x-8,s.y-8,16,16)});
+ const s=w2s(P.x,P.y);ctx.fillStyle='#4af';ctx.fillRect(s.x-6,s.y-6,12,12);
+ if(joy){ctx.strokeStyle='#fff';ctx.beginPath();ctx.arc(joy.ox,joy.oy,params.maxRadius,0,7);ctx.stroke()}
+ if(dlg.open){ctx.fillStyle='#000c';ctx.fillRect(10,600,370,120);ctx.fillStyle='#fff';ctx.font='18px sans-serif';ctx.fillText(dlg.lines[dlg.i].slice(0,Math.floor(dlg.shown)),24,640);ctx.fillRect(cv.width-50,10,40,40)}
+ if(locked){ctx.fillStyle='#0008';ctx.fillRect(0,0,cv.width,cv.height)}}
+window.__qa={params,scene:()=>M().name,player:()=>({x:P.x,y:P.y}),locked:()=>locked,teleports:()=>tele,
+ worldToScreen:w2s,solid:solidT,mapSize:()=>({w:M().rows[0].length,h:M().rows.length}),npcs:()=>M().npcs.map(n=>({x:n.x,y:n.y})),
+ dialog:()=>({open:dlg.open,line:dlg.i,shown:Math.floor(dlg.shown),total:dlg.total,lines:dlg.lines.length}),
+ setPlayer:(x,y)=>{P={x,y};tgt=null},setScene:n=>{mi=n;tgt=null;locked=false;dlg.open=false;graceTile=false},joystickRegion:()=>({x:cv.width*0.25,y:cv.height*0.75}),
+ reset:()=>{mi=0;P={x:7.5*T,y:6.5*T};tgt=null;joy=null;locked=false;tele=0;dlg.open=false;graceTile=false}};
+requestAnimationFrame(frame);})();
+</script></body></html>
