@@ -1,0 +1,142 @@
+[
+ {
+  "id": "M1a",
+  "name": "點擊移動啟動延遲 median（放手→移動）",
+  "pass": true,
+  "val": "16 ms",
+  "crit": "≤67 ms"
+ },
+ {
+  "id": "M1b",
+  "name": "點擊移動啟動延遲 p95（放手→移動）",
+  "pass": true,
+  "val": "16 ms",
+  "crit": "≤84 ms"
+ },
+ {
+  "id": "M1c",
+  "name": "點擊移動到達誤差",
+  "pass": true,
+  "val": "1.3 px",
+  "crit": "≤4 px"
+ },
+ {
+  "id": "M2a",
+  "name": "死區內唔郁",
+  "pass": true,
+  "val": "0.00 px",
+  "crit": "≤0.5 px"
+ },
+ {
+  "id": "M2b",
+  "name": "越過死區有反應",
+  "pass": true,
+  "val": "6.9 px",
+  "crit": ">0.5 px"
+ },
+ {
+  "id": "M3",
+  "name": "搖桿越過死區→移動延遲 median",
+  "pass": true,
+  "val": "21 ms",
+  "crit": "≤67 ms"
+ },
+ {
+  "id": "M4a",
+  "name": "滿推速度 vs 規格",
+  "pass": true,
+  "val": "79.5 px/s",
+  "crit": "80 ±12%"
+ },
+ {
+  "id": "M4b",
+  "name": "半推速度比例（類比）",
+  "pass": true,
+  "val": "0.50",
+  "crit": "0.3–0.7"
+ },
+ {
+  "id": "M5",
+  "name": "放手後滑行距離",
+  "pass": true,
+  "val": "0.00 px",
+  "crit": "≤2.87 px（2 幀）"
+ },
+ {
+  "id": "M6a",
+  "name": "貼牆斜推：碰撞盒入牆幀數",
+  "pass": true,
+  "val": "0",
+  "crit": "=0"
+ },
+ {
+  "id": "M6b",
+  "name": "貼牆斜推：沿牆速度／名義",
+  "pass": true,
+  "val": "102%",
+  "crit": "≥40%"
+ },
+ {
+  "id": "M7a",
+  "name": "傳送後可操作時間",
+  "pass": true,
+  "val": "316 ms",
+  "crit": "≤600 ms"
+ },
+ {
+  "id": "M7b",
+  "name": "持續推搖桿只傳送 1 次",
+  "pass": true,
+  "val": "1",
+  "crit": "=1"
+ },
+ {
+  "id": "M7c",
+  "name": "傳送淡出期間輸入鎖",
+  "pass": true,
+  "val": "true",
+  "crit": "鎖定且唔郁"
+ },
+ {
+  "id": "M8a",
+  "name": "點擊 NPC→走近→對話開啟",
+  "pass": true,
+  "val": "{\"open\":true,\"line\":0,\"shown\":6,\"total\":6,\"lines\":3}",
+  "crit": "open"
+ },
+ {
+  "id": "M8b",
+  "name": "打字中點擊：完成成句、唔跳句",
+  "pass": true,
+  "val": "line 0→1",
+  "crit": "line 不變、shown=total"
+ },
+ {
+  "id": "M8c",
+  "name": "句完再點擊→下一句",
+  "pass": true,
+  "val": "line 1",
+  "crit": "line+1"
+ },
+ {
+  "id": "M8d",
+  "name": "長按快進完成對話",
+  "pass": true,
+  "val": "554 ms",
+  "crit": "≤1500 ms"
+ },
+ {
+  "id": "M8e",
+  "name": "跳過鍵一點即關",
+  "pass": true,
+  "val": "closed",
+  "crit": "open=false"
+ },
+ {
+  "id": "M9",
+  "name": "搖桿按住時第二指點擊唔令搖桿失效",
+  "pass": true,
+  "val": "5.3 px",
+  "crit": "仍然移動"
+ }
+]

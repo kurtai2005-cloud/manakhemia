@@ -1,0 +1,32 @@
+{
+ "tier": "low",
+ "cpu": 6,
+ "quality": "low",
+ "auto": false,
+ "seconds": 10,
+ "frames": 188,
+ "avgFps": 19,
+ "p50": 50,
+ "p95": 66.7,
+ "p99": 166.7,
+ "onePctLowFps": 4.3,
+ "over33pct": 92.55,
+ "over50pct": 27.13,
+ "heapMB": 4.6,
+ "heapGrowMB": -0.93,
+ "rendererMs": {
+  "avg": 4.210747663544221,
+  "max": 28.5
+ },
+ "qualityPath": [
+  "low"
+ ],
+ "loadMs": 233,
+ "pageErrors": 0,
+ "pass": false,
+ "fails": [
+  "avg 19 < 30",
+  "p95 66.7 > 40 ms",
+  ">50ms 27.13% > 5%"
+ ]
+}

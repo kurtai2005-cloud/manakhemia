@@ -1,0 +1,142 @@
+[
+ {
+  "id": "F01",
+  "name": "無存檔",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F02",
+  "name": "非 JSON \"{\"",
+  "pass": false,
+  "fails": [
+   "玩家存檔被覆蓋但無 *bak* 備份"
+  ]
+ },
+ {
+  "id": "F03",
+  "name": "null",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F04",
+  "name": "[]",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F05",
+  "name": "空字串",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F06",
+  "name": "最小有效 {\"v\":1}",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F07",
+  "name": "未來版本 v:99",
+  "pass": false,
+  "fails": [
+   "玩家存檔被覆蓋但無 *bak* 備份"
+  ]
+ },
+ {
+  "id": "F08",
+  "name": "舊版 v:0",
+  "pass": false,
+  "fails": [
+   "玩家存檔被覆蓋但無 *bak* 備份"
+  ]
+ },
+ {
+  "id": "F09",
+  "name": "缺 v",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F10",
+  "name": "ribbons 字串／turn 負數／actionsLeft null",
+  "pass": false,
+  "fails": [
+   "超範圍: .turn=-7,turn<1=-7"
+  ]
+ },
+ {
+  "id": "F11",
+  "name": "極端數值 ribbons -1e12／races 1e15",
+  "pass": false,
+  "fails": [
+   "超範圍: .ribbons=-1000000000000,.races=1000000000000000,ribbons<0"
+  ]
+ },
+ {
+  "id": "F12",
+  "name": "野靈欄位損毀 lv 字串／exp 負／cond 1e9／bonus null",
+  "pass": false,
+  "fails": [
+   "超範圍: .creatures.mochi.exp=-5,mochi.cond=1000000000,mochi.exp=-5",
+   "型別錯: mochi.lv=x,mochi.bonus",
+   "再玩一步崩潰: Cannot read properties of null (reading 'stamina')"
+  ]
+ },
+ {
+  "id": "F13",
+  "name": "creatures 為陣列／未知 id",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F14",
+  "name": "cleared 型別錯",
+  "pass": false,
+  "fails": [
+   "型別錯: cleared=yes"
+  ]
+ },
+ {
+  "id": "F15",
+  "name": "__proto__ 污染",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F16",
+  "name": "3 MB 垃圾欄位",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "F17",
+  "name": "JSON 截斷",
+  "pass": false,
+  "fails": [
+   "玩家存檔被覆蓋但無 *bak* 備份"
+  ]
+ },
+ {
+  "id": "R01",
+  "name": "往返一致（存→重載→存）",
+  "pass": true,
+  "fails": []
+ },
+ {
+  "id": "R02",
+  "name": "QuotaExceeded 唔令遊戲崩",
+  "pass": true,
+  "fails": [],
+  "note": "是否有 UI 提示需人手確認"
+ },
+ {
+  "id": "R03",
+  "name": "存檔大小（bytes）",
+  "pass": true,
+  "fails": [],
+  "note": "817 B"
+ }
+]
