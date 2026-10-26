@@ -1,0 +1,103 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_fern_first",
+ "npc": "npc_fern",
+ "entry": [
+  {
+   "cond": {
+    "all": [
+     {
+      "flag": "prologue_done"
+     },
+     {
+      "not": {
+       "flag": "met_fern"
+      }
+     }
+    ]
+   },
+   "goto": "ff1"
+  },
+  {
+   "goto": "fi1"
+  }
+ ],
+ "nodes": {
+  "ff1": {
+   "speaker": "fern",
+   "emote": "smile",
+   "text": "喂，你就係今日新到嘅見習生？我係蕨生，同你一樣想賽初葉盃。",
+   "next": "ff2"
+  },
+  "ff2": {
+   "speaker": "fern",
+   "emote": "neutral",
+   "text": "我兩年前就跟老鐘學接力。你隻苔團……睇落好乖喎。",
+   "next": "ff3"
+  },
+  "ff3": {
+   "speaker": "fern",
+   "emote": "serious",
+   "text": "決賽見真章，你想點？",
+   "choices": [
+    {
+     "id": "rival",
+     "text": "我會贏你",
+     "next": "ff4a"
+    },
+    {
+     "id": "friendly",
+     "text": "一齊加油",
+     "next": "ff4b"
+    }
+   ]
+  },
+  "ff4a": {
+   "speaker": "fern",
+   "emote": "smile",
+   "text": "好！有膽。決賽見，唔好中途就跌出去。",
+   "on_enter": [
+    {
+     "do": "set_var",
+     "var": "fern_attitude",
+     "value": "rival"
+    }
+   ],
+   "next": "ff5"
+  },
+  "ff4b": {
+   "speaker": "fern",
+   "emote": "smile",
+   "text": "哈，客氣咩。不過決賽我唔會讓你。",
+   "on_enter": [
+    {
+     "do": "set_var",
+     "var": "fern_attitude",
+     "value": "friendly"
+    }
+   ],
+   "next": "ff5"
+  },
+  "ff5": {
+   "speaker": "fern",
+   "emote": "neutral",
+   "text": "我再去練習。得閒嚟睇我點換棒啦。",
+   "on_enter": [
+    {
+     "do": "set_flag",
+     "flag": "met_fern"
+    },
+    {
+     "do": "autosave"
+    }
+   ],
+   "next": null
+  },
+  "fi1": {
+   "speaker": "fern",
+   "emote": "smile",
+   "text": "報名要搵桑姨，唔係搵我㗎，哈哈。",
+   "next": null
+  }
+ }
+}

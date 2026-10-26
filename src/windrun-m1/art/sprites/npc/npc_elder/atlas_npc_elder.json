@@ -1,0 +1,351 @@
+{
+ "meta": {
+  "image": "atlas_npc_elder.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "pivot": [
+   16,
+   31
+  ],
+  "pivot_note": "腳底中心 (16,31)；腳底落在 y=30；同玩家",
+  "padding": 2,
+  "extrude": 1,
+  "rows": [
+   "down_idle",
+   "left_idle",
+   "right_idle",
+   "up_idle",
+   "down_walk",
+   "left_walk",
+   "right_walk",
+   "up_walk"
+  ],
+  "left": "right 水平鏡像（已烘焙為獨立列）"
+ },
+ "frames": {
+  "npc_elder_down_idle_0": {
+   "x": 2,
+   "y": 2,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_down_idle_1": {
+   "x": 36,
+   "y": 2,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_left_idle_0": {
+   "x": 2,
+   "y": 36,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_left_idle_1": {
+   "x": 36,
+   "y": 36,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_right_idle_0": {
+   "x": 2,
+   "y": 70,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_right_idle_1": {
+   "x": 36,
+   "y": 70,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_up_idle_0": {
+   "x": 2,
+   "y": 104,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_up_idle_1": {
+   "x": 36,
+   "y": 104,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_down_walk_0": {
+   "x": 2,
+   "y": 138,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_down_walk_1": {
+   "x": 36,
+   "y": 138,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_down_walk_2": {
+   "x": 70,
+   "y": 138,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_down_walk_3": {
+   "x": 104,
+   "y": 138,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_left_walk_0": {
+   "x": 2,
+   "y": 172,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_left_walk_1": {
+   "x": 36,
+   "y": 172,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_left_walk_2": {
+   "x": 70,
+   "y": 172,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_left_walk_3": {
+   "x": 104,
+   "y": 172,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_right_walk_0": {
+   "x": 2,
+   "y": 206,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_right_walk_1": {
+   "x": 36,
+   "y": 206,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_right_walk_2": {
+   "x": 70,
+   "y": 206,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_right_walk_3": {
+   "x": 104,
+   "y": 206,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_up_walk_0": {
+   "x": 2,
+   "y": 240,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_up_walk_1": {
+   "x": 36,
+   "y": 240,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_up_walk_2": {
+   "x": 70,
+   "y": 240,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_elder_up_walk_3": {
+   "x": 104,
+   "y": 240,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  }
+ },
+ "animations": {
+  "idle_down": [
+   "npc_elder_down_idle_0",
+   "npc_elder_down_idle_1"
+  ],
+  "idle_left": [
+   "npc_elder_left_idle_0",
+   "npc_elder_left_idle_1"
+  ],
+  "idle_right": [
+   "npc_elder_right_idle_0",
+   "npc_elder_right_idle_1"
+  ],
+  "idle_up": [
+   "npc_elder_up_idle_0",
+   "npc_elder_up_idle_1"
+  ],
+  "walk_down": [
+   "npc_elder_down_walk_0",
+   "npc_elder_down_walk_1",
+   "npc_elder_down_walk_2",
+   "npc_elder_down_walk_3"
+  ],
+  "walk_left": [
+   "npc_elder_left_walk_0",
+   "npc_elder_left_walk_1",
+   "npc_elder_left_walk_2",
+   "npc_elder_left_walk_3"
+  ],
+  "walk_right": [
+   "npc_elder_right_walk_0",
+   "npc_elder_right_walk_1",
+   "npc_elder_right_walk_2",
+   "npc_elder_right_walk_3"
+  ],
+  "walk_up": [
+   "npc_elder_up_walk_0",
+   "npc_elder_up_walk_1",
+   "npc_elder_up_walk_2",
+   "npc_elder_up_walk_3"
+  ]
+ },
+ "anim_meta": {
+  "idle_down": {
+   "fps": 2,
+   "loop": true,
+   "frames": 2
+  },
+  "idle_left": {
+   "fps": 2,
+   "loop": true,
+   "frames": 2
+  },
+  "idle_right": {
+   "fps": 2,
+   "loop": true,
+   "frames": 2
+  },
+  "idle_up": {
+   "fps": 2,
+   "loop": true,
+   "frames": 2
+  },
+  "walk_down": {
+   "fps": 8,
+   "loop": true,
+   "frames": 4
+  },
+  "walk_left": {
+   "fps": 8,
+   "loop": true,
+   "frames": 4
+  },
+  "walk_right": {
+   "fps": 8,
+   "loop": true,
+   "frames": 4
+  },
+  "walk_up": {
+   "fps": 8,
+   "loop": true,
+   "frames": 4
+  }
+ }
+}

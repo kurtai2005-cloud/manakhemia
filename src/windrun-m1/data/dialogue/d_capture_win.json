@@ -1,0 +1,17 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_capture_win",
+ "npc": "npc_wild_badger",
+ "entry": [
+  {
+   "goto": "cw1"
+  }
+ ],
+ "nodes": {
+  "cw1": {
+   "speaker": "narrator",
+   "text": "碎石獾望咗你一眼，慢慢行到你腳邊。結緣成功！",
+   "next": null
+  }
+ }
+}

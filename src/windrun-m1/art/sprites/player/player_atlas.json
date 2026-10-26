@@ -1,0 +1,268 @@
+{
+ "meta": {
+  "image": "player_sheet.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "pivot": [
+   16,
+   31
+  ],
+  "pivot_note": "腳底中心 (16,31)；腳底落在 y=30；與 64px 精靈 pivot (32,61) 同為『腳底』語意",
+  "dirs": [
+   "down",
+   "left",
+   "right",
+   "up"
+  ],
+  "cols": [
+   "walk_0",
+   "walk_1",
+   "walk_2",
+   "walk_3",
+   "idle"
+  ],
+  "fps_walk": 8,
+  "fps_idle": 1,
+  "left": "right 水平鏡像（已烘焙成獨立列，可用 flipX 省略）"
+ },
+ "frames": {
+  "player_down_walk_0": {
+   "x": 0,
+   "y": 0,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_down_walk_1": {
+   "x": 32,
+   "y": 0,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_down_walk_2": {
+   "x": 64,
+   "y": 0,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_down_walk_3": {
+   "x": 96,
+   "y": 0,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_down_idle": {
+   "x": 128,
+   "y": 0,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_left_walk_0": {
+   "x": 0,
+   "y": 32,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_left_walk_1": {
+   "x": 32,
+   "y": 32,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_left_walk_2": {
+   "x": 64,
+   "y": 32,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_left_walk_3": {
+   "x": 96,
+   "y": 32,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_left_idle": {
+   "x": 128,
+   "y": 32,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_right_walk_0": {
+   "x": 0,
+   "y": 64,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_right_walk_1": {
+   "x": 32,
+   "y": 64,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_right_walk_2": {
+   "x": 64,
+   "y": 64,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_right_walk_3": {
+   "x": 96,
+   "y": 64,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_right_idle": {
+   "x": 128,
+   "y": 64,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_up_walk_0": {
+   "x": 0,
+   "y": 96,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_up_walk_1": {
+   "x": 32,
+   "y": 96,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_up_walk_2": {
+   "x": 64,
+   "y": 96,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_up_walk_3": {
+   "x": 96,
+   "y": 96,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "player_up_idle": {
+   "x": 128,
+   "y": 96,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  }
+ },
+ "animations": {
+  "walk_down": [
+   "player_down_walk_0",
+   "player_down_walk_1",
+   "player_down_walk_2",
+   "player_down_walk_3"
+  ],
+  "idle_down": [
+   "player_down_idle"
+  ],
+  "walk_left": [
+   "player_left_walk_0",
+   "player_left_walk_1",
+   "player_left_walk_2",
+   "player_left_walk_3"
+  ],
+  "idle_left": [
+   "player_left_idle"
+  ],
+  "walk_right": [
+   "player_right_walk_0",
+   "player_right_walk_1",
+   "player_right_walk_2",
+   "player_right_walk_3"
+  ],
+  "idle_right": [
+   "player_right_idle"
+  ],
+  "walk_up": [
+   "player_up_walk_0",
+   "player_up_walk_1",
+   "player_up_walk_2",
+   "player_up_walk_3"
+  ],
+  "idle_up": [
+   "player_up_idle"
+  ]
+ }
+}

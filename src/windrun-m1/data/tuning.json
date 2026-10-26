@@ -1,0 +1,9 @@
+{
+  "_doc": "冒險切片參數（來源：design/adventure-slice/tuning-params-v2.2.md；暫定、可調）。網址參數／dev 面板可覆寫。",
+  "walk_speed_tps": 4.5, "interact_range_tile": 1.5, "player_hitbox_px": [12, 8],
+  "dialog_cps": 30, "dialog_skip_hold_s": 0.4, "dialog_max_chars": 38,
+  "capture_retry_cd_s": 10, "r1_min_team": 2, "entry_fee": [20, 30, 45],
+  "start_leaf": 50, "elder_gift_leaf": 20, "elder_gift_max": 3,
+  "exp_base": 30, "exp_per_level": 12, "level_cap": 20, "touch_target_min_px": 44,
+  "windmill_rpm": 4
+}

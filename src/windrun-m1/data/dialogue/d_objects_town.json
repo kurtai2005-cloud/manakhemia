@@ -1,0 +1,66 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_objects_town",
+ "entry": [
+  {
+   "goto": "obj_well_01"
+  }
+ ],
+ "nodes": {
+  "obj_well_01": {
+   "speaker": "narrator",
+   "text": "井水清得見底，水面浮著幾片細小的苔葉。",
+   "next": "obj_well_01_b"
+  },
+  "obj_well_01_b": {
+   "speaker": "narrator",
+   "text": "井底傳來很輕的水聲，像是風在下面打了個轉。",
+   "next": null
+  },
+  "obj_notice_board_01": {
+   "speaker": "narrator",
+   "text": "告示板上寫著：「喚風祭・初葉盃報名中」。",
+   "next": "obj_notice_board_01_b"
+  },
+  "obj_notice_board_01_b": {
+   "speaker": "narrator",
+   "text": "角落有張舊紙：「今年風弱，跑手請多保重。」",
+   "next": null
+  },
+  "sign_arena_01": {
+   "speaker": "narrator",
+   "text": "木牌寫著：「↑ 迴風場　→ 報名處」。",
+   "next": "sign_arena_01_b"
+  },
+  "sign_arena_01_b": {
+   "speaker": "narrator",
+   "text": "字旁畫了一面小旗，旗尖指向東邊。",
+   "next": null
+  },
+  "obj_sign_east_01": {
+   "speaker": "narrator",
+   "text": "木牌寫著：「東：蕨影小徑 → 石磯港」。",
+   "next": "obj_sign_east_01_b"
+  },
+  "obj_sign_east_01_b": {
+   "speaker": "narrator",
+   "text": "牌腳長滿了苔，看來有一陣子沒人經過。",
+   "next": null
+  },
+  "registry_counter_01": {
+   "speaker": "narrator",
+   "text": "櫃台後有位職員低頭整理名冊，見你近前，點頭示意：想報名，就入迴風場。",
+   "next": null
+  },
+  "registry_notice_01": {
+   "speaker": "narrator",
+   "text": "初葉盃：新手直接報名，沒有資格要求。",
+   "next": "registry_notice_01_b"
+  },
+  "registry_notice_01_b": {
+   "speaker": "narrator",
+   "text": "報名費二十葉幣，贏了獎金一定更高。",
+   "next": null
+  }
+ }
+}

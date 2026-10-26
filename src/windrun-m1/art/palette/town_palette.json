@@ -1,0 +1,231 @@
+{
+ "colors": [
+  {
+   "index": 1,
+   "name": "ink",
+   "hex": "#2B2540"
+  },
+  {
+   "index": 2,
+   "name": "plum",
+   "hex": "#4A4066"
+  },
+  {
+   "index": 3,
+   "name": "g0",
+   "hex": "#244F3A"
+  },
+  {
+   "index": 4,
+   "name": "g1",
+   "hex": "#3E8250"
+  },
+  {
+   "index": 5,
+   "name": "g2",
+   "hex": "#5AA85E"
+  },
+  {
+   "index": 6,
+   "name": "g3",
+   "hex": "#8CD27A"
+  },
+  {
+   "index": 7,
+   "name": "g4",
+   "hex": "#B9EE9A"
+  },
+  {
+   "index": 8,
+   "name": "e0",
+   "hex": "#5E3F3A"
+  },
+  {
+   "index": 9,
+   "name": "e1",
+   "hex": "#8A5A44"
+  },
+  {
+   "index": 10,
+   "name": "e2",
+   "hex": "#B98258"
+  },
+  {
+   "index": 11,
+   "name": "e3",
+   "hex": "#D9B98C"
+  },
+  {
+   "index": 12,
+   "name": "e4",
+   "hex": "#F0D6A8"
+  },
+  {
+   "index": 13,
+   "name": "s0",
+   "hex": "#4F5673"
+  },
+  {
+   "index": 14,
+   "name": "s1",
+   "hex": "#6B7288"
+  },
+  {
+   "index": 15,
+   "name": "s2",
+   "hex": "#9AA3B8"
+  },
+  {
+   "index": 16,
+   "name": "s3",
+   "hex": "#C8D2EE"
+  },
+  {
+   "index": 17,
+   "name": "r0",
+   "hex": "#2F5F5C"
+  },
+  {
+   "index": 18,
+   "name": "r1",
+   "hex": "#477F76"
+  },
+  {
+   "index": 19,
+   "name": "r2",
+   "hex": "#6A9C92"
+  },
+  {
+   "index": 20,
+   "name": "w0",
+   "hex": "#2A5E9A"
+  },
+  {
+   "index": 21,
+   "name": "w1",
+   "hex": "#4FA3D9"
+  },
+  {
+   "index": 22,
+   "name": "w2",
+   "hex": "#A6DAF2"
+  },
+  {
+   "index": 23,
+   "name": "l0",
+   "hex": "#D9692F"
+  },
+  {
+   "index": 24,
+   "name": "l1",
+   "hex": "#FFC87A"
+  },
+  {
+   "index": 25,
+   "name": "l2",
+   "hex": "#FFFBD0"
+  },
+  {
+   "index": 26,
+   "name": "f0",
+   "hex": "#D9667A"
+  },
+  {
+   "index": 27,
+   "name": "f1",
+   "hex": "#F28B9B"
+  },
+  {
+   "index": 28,
+   "name": "f2",
+   "hex": "#FFD45E"
+  },
+  {
+   "index": 29,
+   "name": "f3",
+   "hex": "#A99BE0"
+  },
+  {
+   "index": 30,
+   "name": "frost",
+   "hex": "#F3F6FF"
+  },
+  {
+   "index": 31,
+   "name": "teal",
+   "hex": "#2E8F93"
+  },
+  {
+   "index": 32,
+   "name": "cream",
+   "hex": "#FBEBCB"
+  }
+ ],
+ "tod": {
+  "morning": {
+   "tint": [
+    1.07,
+    0.96,
+    0.82
+   ],
+   "br": 1.0,
+   "sun": "#FFD08A",
+   "sun_amb": "#9FC3D6",
+   "mist": "#E3EDEA",
+   "bloom": 0.34,
+   "mist_amt": 0.72,
+   "shaft": 0.95,
+   "warm": 0.0,
+   "vig": 0.3,
+   "sat": 0.9
+  },
+  "noon": {
+   "tint": [
+    1.0,
+    1.0,
+    0.97
+   ],
+   "br": 1.04,
+   "sun": "#FFF3D6",
+   "sun_amb": "#8FB4E8",
+   "mist": "#EAF2F4",
+   "bloom": 0.18,
+   "mist_amt": 0.06,
+   "shaft": 0.1,
+   "warm": 0.0,
+   "vig": 0.2
+  },
+  "dusk": {
+   "tint": [
+    1.0,
+    0.76,
+    0.7
+   ],
+   "br": 0.86,
+   "sun": "#FFA55C",
+   "sun_amb": "#7A5FA8",
+   "mist": "#E8B8A8",
+   "bloom": 0.42,
+   "mist_amt": 0.16,
+   "shaft": 0.35,
+   "warm": 0.75,
+   "vig": 0.34
+  },
+  "night": {
+   "tint": [
+    0.56,
+    0.62,
+    1.0
+   ],
+   "br": 1.02,
+   "sun": "#7FA8FF",
+   "sun_amb": "#1E2347",
+   "mist": "#6E80C0",
+   "bloom": 0.62,
+   "mist_amt": 0.14,
+   "shaft": 0.0,
+   "warm": 1.0,
+   "vig": 0.45
+  }
+ }
+}

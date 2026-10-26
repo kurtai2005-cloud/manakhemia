@@ -1,0 +1,25 @@
+{
+ "_doc": "由 tools/gen-data-index.js 產生",
+ "matches": [
+  "c1_r1.json",
+  "cap_trail_badger.json"
+ ],
+ "cups": [
+  "c1.json"
+ ],
+ "dialogue": [
+  "d_capture_intro.json",
+  "d_capture_lose.json",
+  "d_capture_win.json",
+  "d_elder_hub.json",
+  "d_elder_intro.json",
+  "d_fern_after_r1.json",
+  "d_fern_first.json",
+  "d_fern_idle.json",
+  "d_fern_prematch.json",
+  "d_objects_town.json",
+  "d_opponent_misc.json",
+  "d_prologue.json",
+  "d_sang_hub.json"
+ ]
+}

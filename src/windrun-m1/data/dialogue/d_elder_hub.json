@@ -1,0 +1,125 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_elder_hub",
+ "npc": "npc_elder",
+ "entry": [
+  {
+   "cond": {
+    "flag": "c1r1_won"
+   },
+   "goto": "elder_won"
+  },
+  {
+   "cond": {
+    "has_value": "registered_match"
+   },
+   "goto": "elder_registered"
+  },
+  {
+   "cond": {
+    "flag": "captured_badger"
+   },
+   "goto": "elder_ready"
+  },
+  {
+   "goto": "elder_capture"
+  }
+ ],
+ "nodes": {
+  "elder_capture": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "出鎮向東行，蕨影小徑空地度有隻碎石獾，同佢跑一場就結到緣。",
+   "next": "elder_capture_2"
+  },
+  "elder_capture_2": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "苔團識得「回氣」，耐力低嗰陣先用，唔好太早放。",
+   "next": "elder_capture_3"
+  },
+  "elder_capture_3": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "輸咗都唔使驚，佢唔會走，歇一陣再試就得。",
+   "next": null
+  },
+  "elder_ready": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "有兩隻啦。去迴風場搵桑姨報名，佢喺櫃台後面。",
+   "next": "elder_ready_menu"
+  },
+  "elder_ready_menu": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "報名費要二十葉幣，你身上夠唔夠？",
+   "choices": [
+    {
+     "id": "enough",
+     "text": "夠，多謝",
+     "next": null
+    },
+    {
+     "id": "short",
+     "text": "唔夠喎",
+     "cond": {
+      "all": [
+       {
+        "var": "leaf",
+        "op": "<",
+        "value": 20
+       },
+       {
+        "var": "elder_gift_count",
+        "op": "<",
+        "value": 3
+       }
+      ]
+     },
+     "next": "elder_gift"
+    }
+   ]
+  },
+  "elder_gift": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "拎去，當係老人家嘅見面禮。",
+   "on_enter": [
+    {
+     "do": "add_var",
+     "var": "leaf",
+     "delta": 20
+    },
+    {
+     "do": "add_var",
+     "var": "elder_gift_count",
+     "delta": 1
+    },
+    {
+     "do": "play_sfx",
+     "id": "sfx_item_get"
+    }
+   ],
+   "next": null
+  },
+  "elder_registered": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "報咗名就好。行過閘口，喺看台佈好陣，再行去起跑線就開賽。",
+   "next": null
+  },
+  "elder_won": {
+   "speaker": "elder",
+   "emote": "surprise",
+   "text": "贏咗？好！苔蘚同碎礫呢兩種路，你已經識得用。",
+   "next": "elder_won_2"
+  },
+  "elder_won_2": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "複賽仲未開，等風再起啦。",
+   "next": null
+  }
+ }
+}

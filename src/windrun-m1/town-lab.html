@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-HK"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="icon" href="data:,"><title>風野競走 · town-lab（遊美 batch2 Tiled 直讀）</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0e22;color:#e8ecff;font:13px/1.4 system-ui,"Noto Sans TC",sans-serif;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+canvas{background:#000;touch-action:none;image-rendering:pixelated}
+#hud{position:fixed;left:6px;top:6px;right:6px;pointer-events:none;font-size:11px;text-shadow:0 1px 2px #000;background:rgba(10,14,40,.55);padding:4px 8px;border-radius:6px;white-space:pre-wrap}
+#bar{position:fixed;left:6px;right:6px;bottom:6px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+#bar a{color:#ffd98a;background:rgba(10,14,40,.75);padding:10px 12px;min-height:24px;border-radius:14px;text-decoration:none;font-size:12px}
+#bar a.on{background:#ffd98a;color:#10163a;font-weight:700}
+#joy,#knob{position:fixed;display:none;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+#joy{width:96px;height:96px;border:2px solid rgba(255,233,138,.6);background:rgba(255,233,138,.08)}
+#knob{width:40px;height:40px;background:rgba(255,233,138,.55);border:2px solid #ffe98a}
+#toast{position:fixed;left:50%;top:44px;transform:translateX(-50%);background:rgba(16,22,58,.92);border:1px solid #ffe98a;border-radius:8px;padding:5px 12px;display:none;pointer-events:none}
+</style></head><body>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="hud">載入中…</div><div id="toast"></div><div id="bar"></div><div id="joy"></div><div id="knob"></div>
+<script src="src/save.js"></script><script src="src/tiled.js"></script><script src="src/town-map.js"></script><script src="src/scene-events.js"></script><script src="src/world.js"></script>
+<script>
+// 直接載入 Tiled tilemap（遊美 batch2 tilemap_town.json；.tsj／extruded；collision firstgid 讀 map 內 tilesets）。
+// 參數：?scene=town|arena|trail  ?map=gen（改用舊 fallback：art/town 生成版請開 town-lab-gen.html；?map=corner＝遊美 20×15 corner；?map=adv＝遊程生成嘅 art/adventure/town）
+//       ?tod=morning|day|dusk|night  ?debug=1（碰撞／事件疊圖） ?extrude=0 ?zoom= ?dpr= ?w= &h= ?bench=1 ?hud=0 ?labels=0
+const Q = new URLSearchParams(location.search), sceneKey = Q.get('scene') || 'town', mapSel = Q.get('map') || '';
+const URLS = { town: { '': 'art/tiles/morningmoss/tilemap_town.json', corner: 'art/tiles/morningmoss/tilemap_corner.json', adv: 'art/adventure/town_morningmoss.json' }, arena: { '': 'art/adventure/arena_windrun.json' }, trail: { '': 'art/adventure/trail_fernshadow.json' } };
+function qs(over) { const p = new URLSearchParams(location.search); for (const k in over) { if (over[k] === null) p.delete(k); else p.set(k, over[k]); } return '?' + p.toString(); }
+(async () => {
+  const hud = document.getElementById('hud'); if (Q.get('hud') === '0') hud.style.display = 'none';
+  try {
+    const url = (URLS[sceneKey] || URLS.town)[mapSel] || (URLS[sceneKey] || URLS.town)[''];
+    const [A, scene, overlay] = await Promise.all([WR.World.loadAssets('art/sprites/'), WR.World.loadScene(url, { extrude: Q.get('extrude') !== '0' }), fetch('data/overlay/town_morningmoss.json').then(r => r.json())]);
+    const dpr = Q.get('dpr') ? +Q.get('dpr') : Math.min(2, window.devicePixelRatio || 1);
+    const W = WR.World.create(document.getElementById('c'), A, { dpr, tod: Q.get('tod') || null, zoom: Q.get('zoom') ? +Q.get('zoom') : 0, debug: Q.get('debug') === '1', labels: Q.get('labels') !== '0', joyEl: document.getElementById('joy'), knobEl: document.getElementById('knob') });
+    const fit = () => W.resize(+Q.get('w') || innerWidth, +Q.get('h') || innerHeight, dpr); fit(); addEventListener('resize', fit);
+    const toast = document.getElementById('toast'); let tt = 0; const say = m => { toast.textContent = m; toast.style.display = 'block'; clearTimeout(tt); tt = setTimeout(() => { toast.style.display = 'none'; }, 2200); };
+    W.hooks.touch = (e) => { if (e.kind === 'touch' || e.kind === 'auto') say('事件 ' + e.name + (e.actions[0] && e.actions[0].text ? '：' + e.actions[0].text : '（' + (e.actions[0] ? e.actions[0].do : '') + '）')); };
+    W.hooks.interact = (t) => say('互動 ' + t.name);
+    addEventListener('keydown', e => { if (e.key === 'e' || e.key === 'E' || e.key === ' ') { const n = W.nearest(); if (n) say('互動 ' + n.name); } });
+    W.enter(scene, { spawn: Q.get('spawn') || undefined }, { overlay, sceneIds: ['town_morningmoss', 'arena_windrun', 'trail_fernshadow'] });
+    const bar = document.getElementById('bar');
+    [['scene', 'town', '鎮'], ['scene', 'arena', '迴風場'], ['scene', 'trail', '小徑']].forEach(([k, v, t]) => { const a = document.createElement('a'); a.textContent = t; a.href = qs({ scene: v, map: null }); if (sceneKey === v) a.className = 'on'; bar.appendChild(a); });
+    [['tod', 'morning'], ['tod', 'day'], ['tod', 'dusk'], ['tod', 'night']].forEach(([k, v]) => { const a = document.createElement('a'); a.textContent = v; a.href = qs({ [k]: v }); if ((Q.get('tod') || 'morning') === v) a.className = 'on'; bar.appendChild(a); });
+    [['debug', Q.get('debug') === '1' ? null : '1', '碰撞'], ['map', mapSel === 'corner' ? null : 'corner', 'corner 舊圖'], ['map', mapSel === 'adv' ? null : 'adv', '生成 fallback']].forEach(([k, v, t]) => { const a = document.createElement('a'); a.textContent = t; a.href = qs({ [k]: v }); bar.appendChild(a); });
+    window.__world = W; window.__townReady = true;
+    const hudT = () => { const s = W.state(); hud.textContent = `${url.split('/').pop()} ${W.S.W}×${W.S.H}@${W.S.dpr} zoom×${W.S.s}  tod=${s.tod} lit=${s.lit}\nfps ${W.S.fps.toFixed(0)}  tile(${s.tx},${s.ty}) path ${s.path}  A* ${(W.S.lastAstar || 0).toFixed(2)}ms  load ${scene.loadMs.toFixed(0)}ms bake ${(W.scene && 0) || ''}\n點擊＝尋路　拖動＝浮動搖桿　WASD／方向鍵　E＝互動`; };
+    if (Q.get('bench') !== '1') { W.start(); setInterval(hudT, 250); } else hud.textContent = 'bench mode';
+    hudT();
+  } catch (e) { window.__townErr = String(e && e.stack || e); hud.textContent = 'ERROR ' + e; throw e; }
+})();
+</script></body></html>

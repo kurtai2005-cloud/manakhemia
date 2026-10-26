@@ -1,0 +1,157 @@
+{
+ "meta": {
+  "image": "atlas_npc_registry.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "pivot": [
+   16,
+   31
+  ],
+  "pivot_note": "腳底中心 (16,31)；腳底落在 y=30；同玩家",
+  "padding": 2,
+  "extrude": 1,
+  "rows": [
+   "down_idle",
+   "down_stamp",
+   "down_flip"
+  ],
+  "left": null
+ },
+ "frames": {
+  "npc_registry_down_idle_0": {
+   "x": 2,
+   "y": 2,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_idle_1": {
+   "x": 36,
+   "y": 2,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_stamp_0": {
+   "x": 2,
+   "y": 36,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_stamp_1": {
+   "x": 36,
+   "y": 36,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_stamp_2": {
+   "x": 70,
+   "y": 36,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_stamp_3": {
+   "x": 104,
+   "y": 36,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_flip_0": {
+   "x": 2,
+   "y": 70,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_flip_1": {
+   "x": 36,
+   "y": 70,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_flip_2": {
+   "x": 70,
+   "y": 70,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  },
+  "npc_registry_down_flip_3": {
+   "x": 104,
+   "y": 70,
+   "w": 32,
+   "h": 32,
+   "pivot": [
+    16,
+    31
+   ]
+  }
+ },
+ "animations": {
+  "idle_down": [
+   "npc_registry_down_idle_0",
+   "npc_registry_down_idle_1"
+  ],
+  "stamp": [
+   "npc_registry_down_stamp_0",
+   "npc_registry_down_stamp_1",
+   "npc_registry_down_stamp_2",
+   "npc_registry_down_stamp_3"
+  ],
+  "flip": [
+   "npc_registry_down_flip_0",
+   "npc_registry_down_flip_1",
+   "npc_registry_down_flip_2",
+   "npc_registry_down_flip_3"
+  ]
+ },
+ "anim_meta": {
+  "idle_down": {
+   "fps": 2,
+   "loop": true,
+   "frames": 2
+  },
+  "stamp": {
+   "fps": 6,
+   "loop": false,
+   "frames": 4
+  },
+  "flip": {
+   "fps": 6,
+   "loop": false,
+   "frames": 4
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_capture_intro",
+ "npc": "npc_wild_badger",
+ "entry": [
+  {
+   "cond": {
+    "var": "capture_cd",
+    "op": ">",
+    "value": 0
+   },
+   "goto": "cap_panting"
+  },
+  {
+   "goto": "cap1"
+  }
+ ],
+ "nodes": {
+  "cap1": {
+   "speaker": "narrator",
+   "text": "一隻碎石獾伏喺空地，耳仔抖緊，睇落好有精神。",
+   "next": "cap2"
+  },
+  "cap2": {
+   "speaker": "narrator",
+   "text": "同佢跑一場，贏咗就可以結緣。苔團要單隻出戰。",
+   "next": "cap3"
+  },
+  "cap3": {
+   "speaker": "narrator",
+   "text": "要唔要挑戰？",
+   "choices": [
+    {
+     "id": "go",
+     "text": "結緣挑戰",
+     "on_choose": [
+      {
+       "do": "begin_capture",
+       "match": "cap_trail_badger"
+      }
+     ],
+     "next": null
+    },
+    {
+     "id": "later",
+     "text": "等一等",
+     "next": null
+    }
+   ]
+  },
+  "cap_panting": {
+   "speaker": "narrator",
+   "text": "牠仲喺度喘氣，等一陣再嚟。",
+   "next": null
+  }
+ }
+}

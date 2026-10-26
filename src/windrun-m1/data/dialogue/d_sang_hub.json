@@ -1,0 +1,207 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_sang_hub",
+ "npc": "npc_sang",
+ "entry": [
+  {
+   "cond": {
+    "flag": "c1r1_won"
+   },
+   "goto": "sang_won"
+  },
+  {
+   "cond": {
+    "all": [
+     {
+      "flag": "c1r1_lost_last"
+     },
+     {
+      "not": {
+       "has_value": "registered_match"
+      }
+     }
+    ]
+   },
+   "goto": "sang_lost"
+  },
+  {
+   "cond": {
+    "has_value": "registered_match"
+   },
+   "goto": "sang_registered"
+  },
+  {
+   "cond": {
+    "not": {
+     "flag": "met_sang"
+    }
+   },
+   "goto": "sang_first"
+  },
+  {
+   "goto": "sang_menu"
+  }
+ ],
+ "nodes": {
+  "sang_first": {
+   "speaker": "sang",
+   "emote": "smile",
+   "text": "歡迎嚟迴風場。我係桑姨，管報名。你係老鐘封信嗰位新人？",
+   "on_enter": [
+    {
+     "do": "set_flag",
+     "flag": "met_sang"
+    }
+   ],
+   "next": "sang_first_2"
+  },
+  "sang_first_2": {
+   "speaker": "sang",
+   "emote": "neutral",
+   "text": "初葉盃對新手開放，冇資格要求。有咩想問？",
+   "next": "sang_menu"
+  },
+  "sang_menu": {
+   "speaker": "sang",
+   "emote": "neutral",
+   "text": "想做咩？",
+   "choices": [
+    {
+     "id": "register",
+     "text": "報名初葉盃・初戰（{fee} 葉幣）",
+     "next": "sang_reg_check"
+    },
+    {
+     "id": "info",
+     "text": "報名須知",
+     "next": "sang_info"
+    },
+    {
+     "id": "bye",
+     "text": "冇嘢喇",
+     "next": null
+    }
+   ]
+  },
+  "sang_reg_check": {
+   "speaker": "system",
+   "on_enter": [
+    {
+     "do": "set_var",
+     "var": "fee",
+     "value": 20
+    }
+   ],
+   "branch": [
+    {
+     "cond": {
+      "var": "party_size",
+      "op": "<",
+      "var2": "r1_min_team"
+     },
+     "goto": "sang_need_two"
+    },
+    {
+     "cond": {
+      "var": "leaf",
+      "op": "<",
+      "var2": "fee"
+     },
+     "goto": "sang_no_leaf"
+    },
+    {
+     "goto": "sang_reg_ok"
+    }
+   ]
+  },
+  "sang_need_two": {
+   "speaker": "sang",
+   "emote": "serious",
+   "text": "你而家得一隻野靈，接力要兩隻。小徑有野生嘅，結緣一隻再嚟啦。",
+   "next": "sang_menu"
+  },
+  "sang_no_leaf": {
+   "speaker": "sang",
+   "emote": "neutral",
+   "text": "葉幣唔夠喎。不如問下老鐘，佢一向好疼新人。",
+   "next": "sang_menu"
+  },
+  "sang_reg_ok": {
+   "speaker": "sang",
+   "emote": "smile",
+   "text": "好，初葉盃・初戰，報名費 {fee} 葉幣，簽咗名喇。",
+   "on_enter": [
+    {
+     "do": "register_match",
+     "match": "c1_r1"
+    },
+    {
+     "do": "set_objective",
+     "id": "c1_enter"
+    },
+    {
+     "do": "play_sfx",
+     "id": "sfx_register_confirm"
+    },
+    {
+     "do": "autosave"
+    }
+   ],
+   "next": "sang_reg_ok_2"
+  },
+  "sang_reg_ok_2": {
+   "speaker": "sang",
+   "emote": "neutral",
+   "text": "閘口開咗。行過通道，喺看台佈陣，再行去起跑線就開賽。",
+   "on_enter": [
+    {
+     "do": "show_hint",
+     "id": "fast_entry"
+    }
+   ],
+   "next": "sang_reg_ok_3"
+  },
+  "sang_reg_ok_3": {
+   "speaker": "sang",
+   "emote": "smile",
+   "text": "加油，{player}。",
+   "next": null
+  },
+  "sang_info": {
+   "speaker": "sang",
+   "emote": "neutral",
+   "text": "接力每邊最少兩隻、最多六隻。賽前喺看台揀邊隻先跑，其餘排後備。",
+   "next": "sang_info_2"
+  },
+  "sang_info_2": {
+   "speaker": "sang",
+   "emote": "neutral",
+   "text": "贏咗獎金一定高過報名費，輸咗都有少少安慰獎。",
+   "next": "sang_info_3"
+  },
+  "sang_info_3": {
+   "speaker": "sang",
+   "emote": "smile",
+   "text": "懶得再行路？第二次起可以按「快速入場」，一下子到起跑區。",
+   "next": "sang_menu"
+  },
+  "sang_registered": {
+   "speaker": "sang",
+   "emote": "neutral",
+   "text": "你已經報咗名，閘口喺前面，入去佈陣啦。",
+   "next": null
+  },
+  "sang_won": {
+   "speaker": "sang",
+   "emote": "smile",
+   "text": "恭喜贏出！獎金收好。複賽暫時未開放，等風起再嚟。",
+   "next": null
+  },
+  "sang_lost": {
+   "speaker": "sang",
+   "emote": "smile",
+   "text": "唔緊要，再報一次就得。下次睇住下一段地形再換人。",
+   "next": "sang_menu"
+  }
+ }
+}

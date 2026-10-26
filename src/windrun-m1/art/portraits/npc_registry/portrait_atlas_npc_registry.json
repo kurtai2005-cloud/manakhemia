@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "image": "npc_registry_sheet.png",
+  "frame_w": 64,
+  "frame_h": 64,
+  "portrait_id": "npc_registry",
+  "name": "報名處職員",
+  "expressions": [
+   "neutral",
+   "happy",
+   "worried",
+   "surprised"
+  ],
+  "layers": {
+   "base": "npc_registry_base.png",
+   "overlay": "overlays/npc_registry_<expr>_overlay.png"
+  }
+ },
+ "frames": {
+  "neutral": {
+   "x": 0,
+   "y": 0,
+   "w": 64,
+   "h": 64,
+   "file": "npc_registry_neutral.png",
+   "label": "平常"
+  },
+  "happy": {
+   "x": 64,
+   "y": 0,
+   "w": 64,
+   "h": 64,
+   "file": "npc_registry_happy.png",
+   "label": "開心"
+  },
+  "worried": {
+   "x": 128,
+   "y": 0,
+   "w": 64,
+   "h": 64,
+   "file": "npc_registry_worried.png",
+   "label": "擔心"
+  },
+  "surprised": {
+   "x": 192,
+   "y": 0,
+   "w": 64,
+   "h": 64,
+   "file": "npc_registry_surprised.png",
+   "label": "驚訝"
+  }
+ }
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0f1a3a">
+<link rel="icon" href="data:,">
+<title>風野競走 · HD-2D 後處理實驗（fx-lab）</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #070b14; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; touch-action: none; user-select: none; -webkit-user-select: none; font-family: "Noto Sans CJK HK","Noto Sans HK","PingFang HK",sans-serif; }
+  #wrap { position: relative; width: 390px; height: 844px; max-width: 100vw; max-height: 100vh; }
+  #wrap.art { width: 960px; height: 540px; }
+  canvas { display: block; width: 100%; height: 100%; }
+  #bar { position: absolute; left: 0; right: 0; top: 56px; display: flex; gap: 6px; padding: 0 10px; z-index: 2; }
+  #bar a { flex: 1; text-align: center; color: #f2f6fa; background: rgba(15,26,58,.82); border: 1px solid #3b5c7c; border-radius: 8px; padding: 6px 0; font-size: 14px; text-decoration: none; }
+  #bar a.on { background: #d1822f; border-color: #ffd166; }
+  #stat { position: absolute; left: 10px; top: 96px; z-index: 2; color: #ffe9a8; font: 600 12px/1.45 monospace; background: rgba(10,18,32,.7); padding: 4px 8px; border-radius: 6px; white-space: pre; }
+  #back { position: absolute; right: 10px; top: 96px; z-index: 2; color: #9fb3c8; font-size: 12px; background: rgba(10,18,32,.7); padding: 4px 8px; border-radius: 6px; text-decoration: none; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c" aria-label="fx-lab"></canvas>
+  <div id="bar"></div>
+  <div id="stat">…</div>
+  <a id="back" href="index.html">← 返回遊戲</a>
+</div>
+<script src="src/fx.js"></script>
+<script src="src/fx-art.js"></script>
+<script>
+/* ?art=1：真素材版（遊美苔坡＋窄樑貓）。參數：fx=off|low|mid|high｜dpr｜tod=day|dusk|night｜t=凍結秒｜catBloom=0..1（預設 0.7＝規格建議 −30%）｜pivot=spec|fix｜bench=1｜moire=1｜hud=0 */
+if (new URLSearchParams(location.search).get('art') === '1') (async function () {
+  const q = new URLSearchParams(location.search);
+  let fxq = q.get('fx') || 'mid'; if (WR.FxArt.QUALITIES.indexOf(fxq) < 0) fxq = 'mid';
+  const dpr = parseFloat(q.get('dpr')) || Math.min(window.devicePixelRatio || 1, 2), tod = q.get('tod') || 'night', frozen = q.has('t') ? parseFloat(q.get('t')) : null;
+  document.getElementById('wrap').className = 'art';
+  const canvas = document.getElementById('c'), bar = document.getElementById('bar'), stat = document.getElementById('stat');
+  bar.style.top = '8px'; stat.style.top = '48px'; document.getElementById('back').style.top = '48px';
+  WR.FxArt.QUALITIES.forEach(k => { const a = document.createElement('a'); a.textContent = k; a.href = '?art=1&fx=' + k + '&tod=' + tod + (q.has('dpr') ? '&dpr=' + q.get('dpr') : ''); if (k === fxq) a.className = 'on'; bar.appendChild(a); });
+  if (q.get('hud') === '0') { stat.style.display = 'none'; bar.style.display = 'none'; document.getElementById('back').style.display = 'none'; }
+  const params = {}; if (q.has('catBloom')) params.catBloom = parseFloat(q.get('catBloom')); if (q.has('pivot')) params.catPivot = q.get('pivot'); if (q.get('shreds') === '0') params.shreds = false; if (q.get('ff') === '0') params.fireflies = false; if (q.get('breathe') === '0') params.breathe = false;
+  try {
+    if (q.get('moire') === '1') {
+      const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = 'art/tracks/mossy_slope/sky_far_night.png'; });
+      const raw = document.createElement('canvas'); raw.width = 1024; raw.height = 540; raw.getContext('2d').drawImage(im, 0, 0);
+      const variants = [{ name: 'raw_bilinear', q: 'low' }, { name: 'raw_nearest', smooth: false }, { name: 'box4_bilinear', q: 'low', src: WR.FxArt.box4(raw) }];
+      [1.5, 2, 2.5].forEach(s => variants.push({ name: 'blur' + s, q: 'low', src: WR.FxArt.blurOnce(raw, s, true) }));
+      window.__moire = WR.FxArt.moire(raw, [0.5, 0.6667, 0.75, 0.8788, 1, 1.25, 1.3333, 1.5, 2, 2.6667, 3], variants); stat.textContent = 'moire done'; return;
+    }
+    if (q.get('bench') === '1') {
+      const res = {}, c0 = canvas;
+      for (const k of WR.FxArt.QUALITIES) { const c = document.createElement('canvas'); const A = await WR.FxArt.load({ quality: k, tod }); const fx = WR.FxArt.create(c, A, { dpr, willRead: true, params }); res[k] = fx.bench(240, 30); res[k].loadMs = A.loadMs; res[k].files = A.files.length; }
+      window.__fxBench = { dpr, tod, results: res }; stat.textContent = 'bench done'; void c0; return;
+    }
+    const A = await WR.FxArt.load({ quality: fxq, tod }), fx = WR.FxArt.create(canvas, A, { dpr, params });
+    window.__fx = fx; let last = performance.now(), ema = 16.7, rem = 0;
+    function frame(now) {
+      const dt = now - last; last = now; ema = ema * 0.95 + dt * 0.05; const t0 = performance.now(); fx.render(frozen != null ? frozen : now / 1000); rem = rem * 0.95 + (performance.now() - t0) * 0.05;
+      stat.textContent = 'ART fx=' + fx.quality + ' tod=' + tod + ' dpr=' + dpr + ' ' + fx.RW + '×' + fx.RH + '\nfps≈' + (1000 / ema).toFixed(0) + ' js-ms≈' + rem.toFixed(2) + '\ntex≈' + (fx.stats.texBytes / 1048576).toFixed(1) + ' MB  shreds=' + fx.stats.shredsLive;
+      if (frozen == null) requestAnimationFrame(frame);
+    }
+    if (frozen != null) { for (let tt = Math.max(0, frozen - 0.6); tt < frozen; tt += 1 / 30) fx.render(tt); }   // 凍結截圖：預跑 0.6s 令腳步粒子存在
+    requestAnimationFrame(frame); window.__fxReady = true;
+  } catch (e) { stat.textContent = 'ART ERROR ' + e.message; window.__fxError = e.message; console.error(e); }
+})();
+
+/* URL 參數：?fx=off|low|mid|high（預設 mid）｜?dpr=1|2（預設 min(devicePixelRatio,2)）｜?t=秒（凍結時間，截圖用）｜?bench=1（跑量度，結果寫入 window.__fxBench）｜?hud=0（隱藏統計） */
+(function () {
+  if (new URLSearchParams(location.search).get('art') === '1') return;
+  const q = new URLSearchParams(location.search);
+  let fxq = q.get('fx') || 'mid'; if (WR.Fx.QUALITIES.indexOf(fxq) < 0) fxq = 'mid';
+  const dpr = parseFloat(q.get('dpr')) || Math.min(window.devicePixelRatio || 1, 2);
+  const frozen = q.has('t') ? parseFloat(q.get('t')) : null;
+  const canvas = document.getElementById('c');
+  const fx = WR.Fx.create(canvas, { quality: fxq, dpr, willRead: q.get('bench') === '1' });
+  const bar = document.getElementById('bar'), stat = document.getElementById('stat');
+  WR.Fx.QUALITIES.forEach(k => { const a = document.createElement('a'); a.textContent = k; a.href = '?fx=' + k + (q.has('dpr') ? '&dpr=' + q.get('dpr') : ''); if (k === fxq) a.className = 'on'; bar.appendChild(a); });
+  if (q.get('hud') === '0') { stat.style.display = 'none'; bar.style.display = 'none'; document.getElementById('back').style.display = 'none'; }
+  window.__fx = fx;
+  if (q.get('bench') === '1') {
+    const cal = WR.Fx.calibrate(dpr);
+    const res = {}; WR.Fx.QUALITIES.forEach(k => { fx.setQuality(k); res[k] = fx.bench(240, 30); });
+    window.__fxBench = { dpr, canvas: fx.RW + 'x' + fx.RH, calibrate: cal, results: res };
+    stat.textContent = 'bench done'; return;
+  }
+  let last = performance.now(), ema = 16.7, rem = 0;
+  function frame(now) {
+    const dt = now - last; last = now; ema = ema * 0.95 + dt * 0.05;
+    const t0 = performance.now(); fx.render(frozen != null ? frozen : now / 1000); const cost = performance.now() - t0;
+    rem = rem * 0.95 + cost * 0.05;
+    stat.textContent = 'fx=' + fx.quality + '  dpr=' + dpr + '  ' + fx.RW + '×' + fx.RH + '\nfps≈' + (1000 / ema).toFixed(0) + '  js-ms≈' + rem.toFixed(2) + '\nfill≈' + fx.stats.px.toFixed(2) + '×螢幕  passes=' + fx.stats.passes + '\ntex≈' + (fx.stats.texBytes / 1048576).toFixed(1) + ' MB';
+    if (frozen == null) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

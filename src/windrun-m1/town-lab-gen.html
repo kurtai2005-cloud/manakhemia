@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-HK"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="icon" href="data:,"><title>風野競走 · town-lab-gen（舊：程序生成圖塊版，fallback）</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0e22;color:#e8ecff;font:13px/1.4 system-ui,"Noto Sans TC",sans-serif;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+canvas{background:#000;touch-action:none;image-rendering:pixelated}
+#hud{position:fixed;left:6px;top:6px;right:6px;pointer-events:none;font-size:11px;text-shadow:0 1px 2px #000;background:rgba(10,14,40,.55);padding:4px 8px;border-radius:6px;white-space:pre-wrap}
+#bar{position:fixed;left:6px;right:6px;bottom:6px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+#bar a{pointer-events:auto;color:#ffd98a;background:rgba(10,14,40,.7);padding:4px 9px;border-radius:12px;text-decoration:none;font-size:12px}
+#bar a.on{background:#ffd98a;color:#10163a;font-weight:700}
+#joy,#knob{position:fixed;display:none;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+#joy{width:96px;height:96px;border:2px solid rgba(255,233,138,.6);background:rgba(255,233,138,.08)}
+#knob{width:40px;height:40px;background:rgba(255,233,138,.55);border:2px solid #ffe98a}
+#dlg{position:fixed;left:12px;right:12px;bottom:56px;display:none;background:rgba(16,22,58,.92);border:2px solid #ffe98a;border-radius:8px;padding:8px 12px;font-size:14px}
+#dlg b{display:block;color:#ffe98a;margin-bottom:2px}
+</style></head><body>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="hud">載入中…</div><div id="bar"></div><div id="joy"></div><div id="knob"></div><div id="dlg"></div>
+<script src="src/town-map.js"></script><script src="src/town.js"></script>
+<script>
+// 參數：?q=off|low|mid|high  ?chunk=0|1  ?light=none|baked|live  ?dof=0|1  ?dpr=  ?tod=night|dusk|day  ?map=town_morningmoss|route_fernshade  ?src=gen  ?bench=1  ?hud=0  ?w= &h=（固定 css 尺寸）
+const Q = new URLSearchParams(location.search), q = Q.get('q') || 'high', mapId = Q.get('map') || 'town_morningmoss';
+function qs(over) { const p = new URLSearchParams(location.search); for (const k in over) { if (over[k] === null) p.delete(k); else p.set(k, over[k]); } return '?' + p.toString(); }
+(async () => {
+  const hud = document.getElementById('hud'); if (Q.get('hud') === '0') hud.style.display = 'none';
+  const canvas = document.getElementById('c');
+  try {
+    const A = await WR.Town.load('art/town/', Q.get('src'));
+    const dpr = Q.get('dpr') ? +Q.get('dpr') : Math.min(2, window.devicePixelRatio || 1);
+    const T = WR.Town.create(canvas, A, { q, chunk: Q.get('chunk') === '0' ? 0 : 1, tod: Q.get('tod') || 'night', dpr, willRead: Q.get('bench') === '1', joyEl: document.getElementById('joy'), knobEl: document.getElementById('knob') });
+    T.setQ(q, { light: Q.get('light') || undefined, dof: Q.get('dof') !== null ? +Q.get('dof') : undefined, chunk: Q.get('chunk') === '0' ? 0 : 1 });
+    const fit = () => { const w = +Q.get('w') || innerWidth, h = +Q.get('h') || innerHeight; T.resize(w, h, dpr); };
+    fit(); addEventListener('resize', () => { fit(); });
+    T.enter(mapId, Q.get('spawn') || undefined);
+    const bar = document.getElementById('bar');
+    ['off', 'low', 'mid', 'high'].forEach(k => { const a = document.createElement('a'); a.textContent = k; a.href = qs({ q: k }); if (k === q) a.className = 'on'; bar.appendChild(a); });
+    [['chunk', Q.get('chunk') === '0' ? '1' : '0', 'chunk ' + (Q.get('chunk') === '0' ? '關' : '開')], ['tod', Q.get('tod') === 'day' ? 'night' : 'day', Q.get('tod') === 'day' ? '日' : '夜'], ['map', mapId === 'town_morningmoss' ? 'route_fernshade' : 'town_morningmoss', '換圖']].forEach(([k, v, t]) => { const a = document.createElement('a'); a.textContent = t; a.href = qs({ [k]: v }); bar.appendChild(a); });
+    window.__town = T; window.__townReady = true;
+    const hudT = () => { const s = T.state(), c = T.cfg(); hud.textContent = `${s.map} ${T.S.W}×${T.S.H}@${T.S.dpr}  q=${s.q} light=${c.light} dof=${c.dof} chunk=${s.chunk ? 1 : 0}\nfps ${T.S.perf.fps.toFixed(0)}  tile(${s.tx},${s.ty}) path ${s.path}  A* ${T.S.lastAstar.toFixed(2)}ms  load ${A.loadMs.toFixed(0)}ms/${A.from}\n點擊＝尋路　拖動＝浮動搖桿　WASD／方向鍵　E＝對話`; };
+    if (Q.get('bench') !== '1') { T.start(); setInterval(hudT, 250); } else hud.textContent = 'bench mode';
+    hudT();
+  } catch (e) { window.__townErr = String(e && e.stack || e); hud.textContent = 'ERROR ' + e; throw e; }
+})();
+</script></body></html>

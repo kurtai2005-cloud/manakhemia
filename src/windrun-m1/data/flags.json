@@ -1,0 +1,154 @@
+{
+ "_doc": "旗標／變數登記表（dialogue-format §5-5、match-data-format §6-8）。命名規則見 docs/flags.md。lint 遇未登記名稱出警告。",
+ "flags": {
+  "prologue_done": {
+   "doc": "序章 P3 完結；解鎖出鎮／入迴風場",
+   "set_by": [
+    "d_elder_intro:p3_end"
+   ]
+  },
+  "intro_p1_done": {
+   "doc": "（遊程新增）開場字幕＋P1 旁白已播；新遊戲只播一次",
+   "set_by": [
+    "d_prologue:p1_end"
+   ]
+  },
+  "got_mochi": {
+   "doc": "已取得苔團",
+   "set_by": [
+    "d_elder_intro:e_give"
+   ]
+  },
+  "captured_badger": {
+   "doc": "已結緣碎石獾",
+   "set_by": [
+    "cap_trail_badger.on_end.win"
+   ]
+  },
+  "formation_done": {
+   "doc": "本場已佈陣；register_match 時重設 false",
+   "set_by": [
+    "open_ui formation",
+    "register_match"
+   ]
+  },
+  "c1r1_won": {
+   "doc": "初葉盃初戰已勝",
+   "set_by": [
+    "c1_r1.on_end.win"
+   ]
+  },
+  "c1r1_lost_last": {
+   "doc": "上一次初戰敗北（勝出時清除）",
+   "set_by": [
+    "c1_r1.on_end"
+   ]
+  },
+  "met_fern": {
+   "doc": "已同蕨生首次對話",
+   "set_by": [
+    "d_fern_first:ff5"
+   ]
+  },
+  "met_sang": {
+   "doc": "已同桑姨首次對話",
+   "set_by": [
+    "d_sang_hub:sang_first"
+   ]
+  },
+  "seen_fern_prematch": {
+   "doc": "已睇過蕨生賽前對話",
+   "set_by": [
+    "d_fern_prematch:fp2"
+   ]
+  }
+ },
+ "vars": {
+  "leaf": {
+   "type": "int",
+   "builtin": "player.leaf",
+   "doc": "葉幣（≥0）"
+  },
+  "party_size": {
+   "type": "int",
+   "builtin": "party.length",
+   "doc": "派生值＝隊伍野靈數（唯讀；give_spirit 自動 +1；舊資料 add_var party_size 由引擎靜默忽略、唔警告）"
+  },
+  "seals": {
+   "type": "int",
+   "builtin": "player.seals.length",
+   "doc": "風印數（唯讀）"
+  },
+  "registered_match": {
+   "type": "string",
+   "doc": "已報名場次 id；空字串＝未報名"
+  },
+  "fern_attitude": {
+   "type": "string",
+   "enum": [
+    "rival",
+    "friendly"
+   ],
+   "doc": "蕨生態度"
+  },
+  "elder_gift_count": {
+   "type": "int",
+   "doc": "老鐘贈款次數（上限 elder_gift_max）"
+  },
+  "fee": {
+   "type": "int",
+   "session": true,
+   "doc": "對話模板用報名費；預設取 c1_r1.fee；唔入存檔"
+  },
+  "r1_min_team": {
+   "type": "int",
+   "builtin": "tuning.r1_min_team",
+   "doc": "初戰最少野靈數（唯讀，預設 2）"
+  },
+  "capture_cd": {
+   "type": "int",
+   "builtin": "runtime",
+   "doc": "結緣失敗後再挑戰冷卻剩餘秒數（唯讀，runtime，唔入存檔）"
+  },
+  "objective": {
+   "type": "string",
+   "builtin": "chapter.step",
+   "doc": "當前任務 id（set_objective）"
+  },
+  "last_town_door": {
+   "type": "string",
+   "enum": [
+    "door_arena",
+    "door_registry"
+   ],
+   "doc": "最近一次入迴風場嘅鎮門（door_arena／door_registry）；賽場 door_town 按它返鎮 (20,9)／(30,9)。遊策 11:25 定案為字串變數（set_var），故放 vars。"
+  }
+ },
+ "objectives": {
+  "c1_start": "①去蕨影小徑結緣第二隻野靈　②去迴風場報名初葉盃（初戰）",
+  "c1_register": "去迴風場搵桑姨報名初葉盃（初戰）",
+  "c1_capture_retry": "去蕨影小徑再挑戰碎石獾",
+  "c1_enter": "行過閘口，喺看台佈陣，再去起跑線",
+  "c1_done_m1": "初葉盃初戰完成（複賽等風起）"
+ },
+ "speakers": {
+  "narrator": "（旁白）",
+  "player": "{player}",
+  "elder": "老鐘",
+  "fern": "蕨生",
+  "sang": "桑姨",
+  "system": "（系統，純邏輯節點）",
+  "opponent": "見習跑手",
+  "wild": "碎石獾"
+ },
+ "emotes": [
+  "neutral",
+  "smile",
+  "surprise",
+  "serious"
+ ],
+ "hints": {
+  "tap_to_walk": "點一下地面，就可以走過去。",
+  "fast_entry": "第二次起可以按「快速入場」，一下子到起跑區。"
+ }
+}
