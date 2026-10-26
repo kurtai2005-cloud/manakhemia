@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""pet_events_sim.py — 《微光小圃》加深方案 模組 2「日常事件／隨機驚喜」抽取模擬（遊測）
+"""【舊版（提案參數）；定案版見 pet_events_final.py】pet_events_sim.py — 《微光小圃》加深方案 模組 2「日常事件／隨機驚喜」抽取模擬（遊測）
 驗證：①抽取頻率（2–4h 一次）②每事件冷卻 ③每日保底 ≥1 ④閃光日 3% 統計 ⑤離線返嚟唔爆事件（catch-up 策略）⑥事件重複感
 用法：python3 pet_events_sim.py [--days 40000] [--seed 7] [--md out/events_results.md]
 全部參數為「提案」（pet-deepening-plan.md 只寫：池 8 個、每 2–4h 抽一次、每日保底 1、閃光日 3%；p_hit／冷卻／catch-up 上限未定）。
