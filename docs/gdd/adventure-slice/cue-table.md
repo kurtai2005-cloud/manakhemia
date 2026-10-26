@@ -21,7 +21,7 @@
 | `cue_reg_denied` | 資格／葉幣不足 | 不變 | 介面輕抖 4 px | `sfx_register_denied` | 0.67 s | M1 |
 | `cue_entry_tunnel` | `ev_gate_entry`（已報名，見 maps-and-events.md；同一張賽場地圖，唔切場景） | 跟拍玩家行過入場通道 (14–20,7–9)；可點擊跳過 | 閘口向兩側打開，通道燈帶逐盞亮起 | `sfx_interact_door`（閘口）；腳步 `sfx_step_wood_floor_*` | 閘口 0.6 s＋行路 ≈4 s | M1 |
 | `cue_fast_entry` | `ev_fast_entry`（按「快速入場」） | 黑幕 0.3 s → 直切起跑區 (31,7) | 風掃過渡 | `sfx_zone_enter`（由黑幕開始觸發） | ≤1.2 s | M1 |
-| `cue_team_intro` | `ev_stand_intro`（每場首次進入看台區，可跳過） | 先 pan 對手隊（1.5 s），再 pan 玩家隊（1.5 s），≤5 s | 隊名條由兩側滑入；頭像逐一亮起 | ★`stinger_entry`（入場 stinger，約 3 s；P1） | ≤5 s | M1 |
+| `cue_team_intro` | `ev_stand_intro`（每場首次進入看台區，可跳過） | 先 pan 對手隊（1.875 s，對齊 stinger 重拍），再 pan 玩家隊（1.5 s），≤5 s | 隊名條由兩側滑入；頭像逐一亮起 | ★`stinger_entry`（入場 stinger，約 3 s；P1） | ≤5 s | M1 |
 | `cue_formation_open` | `ev_formation` 佈陣介面打開 | UI 疊層，場景 BGM 低通 | 首發格高亮 | `sfx_dialog_open`（借用，P3 想要專用可★） | — | M1 |
 | `cue_start_line` | `ev_start_line`（玩家站上起跑線，已佈陣） | 拉遠至全景（0.6 s） | 起跑線發光；NPC 看台揮手 | `sfx_interact_confirm` | 0.6 s | M1 |
 | `cue_countdown` | 起跑線確認後倒數 3-2-1 | 固定全景→貼地 | 大數字（光色）；GO 時閘門打開光柱 | ★`sfx_countdown_tick`（3、2、1 各一下，P1）；GO＝`sfx_countdown_go` | 3.0 s＋0.9 s | M1 |
