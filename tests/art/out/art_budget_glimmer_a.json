@@ -1,0 +1,134 @@
+{
+ "fails": [],
+ "warns": [
+  "atlas_events.json: 填充率 24%"
+ ],
+ "rows": [
+  {
+   "rel": "atlas_egg.png",
+   "bytes": 2212,
+   "w": 1024,
+   "h": 64,
+   "gpu": 262144,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "atlas_events.png",
+   "bytes": 8864,
+   "w": 1024,
+   "h": 128,
+   "gpu": 524288,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "atlas_props.png",
+   "bytes": 2442,
+   "w": 1024,
+   "h": 64,
+   "gpu": 262144,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "atlas_radiant.png",
+   "bytes": 49870,
+   "w": 1024,
+   "h": 512,
+   "gpu": 2097152,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "atlas_soft.png",
+   "bytes": 47331,
+   "w": 1024,
+   "h": 512,
+   "gpu": 2097152,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "atlas_sprout.png",
+   "bytes": 19802,
+   "w": 1024,
+   "h": 256,
+   "gpu": 1048576,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "daylight/bg_dusk.png",
+   "bytes": 22283,
+   "w": 480,
+   "h": 270,
+   "gpu": 518400,
+   "skip": null,
+   "color_type": 2
+  },
+  {
+   "rel": "daylight/bg_early.png",
+   "bytes": 18262,
+   "w": 480,
+   "h": 270,
+   "gpu": 518400,
+   "skip": null,
+   "color_type": 2
+  },
+  {
+   "rel": "daylight/bg_night.png",
+   "bytes": 17357,
+   "w": 480,
+   "h": 270,
+   "gpu": 518400,
+   "skip": null,
+   "color_type": 2
+  },
+  {
+   "rel": "daylight/bg_noon.png",
+   "bytes": 12703,
+   "w": 480,
+   "h": 270,
+   "gpu": 518400,
+   "skip": null,
+   "color_type": 2
+  },
+  {
+   "rel": "daylight/light_dusk.png",
+   "bytes": 73804,
+   "w": 480,
+   "h": 270,
+   "gpu": 518400,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "daylight/light_early.png",
+   "bytes": 101083,
+   "w": 480,
+   "h": 270,
+   "gpu": 518400,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "daylight/light_night.png",
+   "bytes": 71147,
+   "w": 480,
+   "h": 270,
+   "gpu": 518400,
+   "skip": null,
+   "color_type": 6
+  },
+  {
+   "rel": "daylight/light_noon.png",
+   "bytes": 23050,
+   "w": 480,
+   "h": 270,
+   "gpu": 518400,
+   "skip": null,
+   "color_type": 6
+  }
+ ]
+}
