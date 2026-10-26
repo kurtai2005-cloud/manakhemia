@@ -18,7 +18,7 @@
 | `cue_reg_open` | 同報名處 NPC 互動、報名介面打開 | 固定（對話鏡頭，桑姨居中） | 木枱／紙張小動畫 | `sfx_register_open` | ≈1.0 s | M1 |
 | `cue_reg_menu_move` | 報名介面移動選項游標 | — | 游標高亮 | `sfx_menu_move` | — | M1 |
 | `cue_reg_ok` | `register_match` 成功 | 同上 | 蓋章閃光；葉幣數字扣減 | `sfx_register_confirm`；扣費後延遲 ≈0.3 s 不播幣聲 | ≈1.3 s | M1 |
-| `cue_reg_denied` | 資格／葉幣不足 | 不變 | 介面輕抖 4 px | `sfx_register_denied` | ≈0.5 s | M1 |
+| `cue_reg_denied` | 資格／葉幣不足 | 不變 | 介面輕抖 4 px | `sfx_register_denied` | 0.67 s | M1 |
 | `cue_entry_tunnel` | `ev_gate_entry`（已報名，見 maps-and-events.md；同一張賽場地圖，唔切場景） | 跟拍玩家行過入場通道 (14–20,7–9)；可點擊跳過 | 閘口向兩側打開，通道燈帶逐盞亮起 | `sfx_interact_door`（閘口）；腳步 `sfx_step_wood_floor_*` | 閘口 0.6 s＋行路 ≈4 s | M1 |
 | `cue_fast_entry` | `ev_fast_entry`（按「快速入場」） | 黑幕 0.3 s → 直切起跑區 (31,7) | 風掃過渡 | `sfx_zone_enter`（由黑幕開始觸發） | ≤1.2 s | M1 |
 | `cue_team_intro` | `ev_stand_intro`（每場首次進入看台區，可跳過） | 先 pan 對手隊（1.5 s），再 pan 玩家隊（1.5 s），≤5 s | 隊名條由兩側滑入；頭像逐一亮起 | ★`stinger_entry`（入場 stinger，約 3 s；P1） | ≤5 s | M1 |
@@ -76,7 +76,7 @@
 | `cue_finish` | `event: finish`（領先者越線，**越線一幀即響**） | 切衝線特寫：低機位側拍，領先者衝入畫面中央（0.8 s）；落後者仍在後方入鏡 | 布帶斷開、彩葉紙屑噴發；白閃一幀 | `sfx_finish_line`（BGM 淡出 ≥0.3 s） | 1.8 s | M1 |
 | `cue_finish_close` | 衝線時兩隊差距 <3 m（M3） | 慢鏡 0.8 s（模擬時間不變，只放慢表現） | 暈影 | 同上；BGM 同時降低 | 0.8 s | M3 |
 | `cue_finish_other` | 落後者越線 | 回全景，不特寫 | 小紙屑 | 無 | 1.0 s | M1 |
-| `cue_finish_hold` | 衝線後 0.8 s | 全景定格兩隊位置，顯示「勝／敗」標示（光色） | 勝方光柱／敗方柔光 | `sfx_stinger_win` 或 `sfx_stinger_lose`（**建議喺 `sfx_finish_line` 後 ≥0.8 s 起**；stinger 期間 BGM 已淡出） | 2.8–3.0 s | M1 |
+| `cue_finish_hold` | 衝線後 0.8 s | 全景定格兩隊位置，顯示「勝／敗」標示（光色） | 勝方光柱／敗方柔光 | `sfx_stinger_win` 或 `sfx_stinger_lose`（**建議喺 `sfx_finish_line` 後 ≥1.0 s 起，finish_line 尾巴自然淡出**；stinger 期間 BGM 已淡出） | 2.8–3.0 s | M1 |
 
 ## 6. 結算（6.4a⑦／1.6）
 
