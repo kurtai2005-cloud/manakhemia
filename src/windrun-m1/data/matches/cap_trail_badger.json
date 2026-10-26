@@ -1,0 +1,17 @@
+{
+  "schema": "match/v1", "id": "cap_trail_badger", "kind": "capture", "name": "結緣：碎石獾", "venue": "trail_fernshadow", "m_milestone": "M1",
+  "req": { "flags": ["got_mochi"], "not_flags": ["captured_badger"], "lv_hint": 3 },
+  "team": { "min": 1, "max": 1 },
+  "track": { "len": 1000, "segs": ["moss", "moss", "gravel", "gravel", "moss"] },
+  "opponent": { "name": "野生碎石獾", "npc": "npc_wild_badger", "ai": "balanced", "team": [ { "species": "gravelbadger", "lv": 4 } ], "script": null },
+  "handicap_m": 50, "rules": { "swap": false, "skill": true, "timeout_s": 120 }, "fee": 0,
+  "reward": { "leaf_win": 0, "leaf_lose": 0, "exp_win": 60, "exp_lose": 25, "first_win_leaf_bonus": 0 },
+  "capture": { "species": "gravelbadger", "lv": 4 }, "seed_policy": "per_attempt",
+  "dialogue": { "pre": "d_capture_intro", "post_win": "d_capture_win", "post_lose": "d_capture_lose" },
+  "on_end": {
+    "win": [ { "do": "give_spirit", "species": "gravelbadger", "lv": 4, "nickname_prompt": true }, { "do": "set_flag", "flag": "captured_badger" }, { "do": "set_objective", "id": "c1_register" } ],
+    "lose": [ { "do": "set_objective", "id": "c1_capture_retry" } ]
+  },
+  "unlock": [],
+  "target": { "winrate_pct": 70, "player_lv_rec": 3, "margin_note": "苔團3 單打：放『回氣』勝約 +17 m；唔放技能勝約 +0.5 m（極險）→ 教曉玩家用技能時機；唔可以換人" }
+}

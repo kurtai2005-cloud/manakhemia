@@ -1,0 +1,118 @@
+{
+ "mossy_slope": {
+  "ridge_far": "#8FB3B8",
+  "ridge_near": "#6E9AA0",
+  "hill_mist": "#A9C7C4",
+  "tree_far": "#4E7E7A",
+  "tree_far_hi": "#6A9C92",
+  "tree_mid": "#2F5F5C",
+  "tree_mid_hi": "#477F76",
+  "tree_dark": "#1F3F45",
+  "trunk": "#2B2540",
+  "trunk_hi": "#4A4066",
+  "lantern_frame": "#2B2540",
+  "lantern_body": "#FFC87A",
+  "lantern_core": "#FFFBD0",
+  "lantern_rim": "#D9692F",
+  "moss_dark": "#244F3A",
+  "moss_base": "#3E8250",
+  "moss_mid": "#5AA85E",
+  "moss_light": "#8CD27A",
+  "moss_hi": "#B9EE9A",
+  "soil_dark": "#5E3F3A",
+  "soil": "#8A5A44",
+  "path_base": "#B98258",
+  "path_light": "#D9B98C",
+  "path_hi": "#F0D6A8",
+  "stone_dark": "#6B7288",
+  "stone": "#9AA3B8",
+  "stone_light": "#C8D2EE",
+  "fore_dark": "#1B3B35",
+  "fore_mid": "#2F6B45",
+  "fore_light": "#6FBF6A",
+  "fore_hi": "#B9EE9A",
+  "firefly": "#FFE98A",
+  "firefly_core": "#FFFBD0"
+ },
+ "terrains": {
+  "mossy_slope": {
+   "name": "苔坡",
+   "main": "#5AA85E",
+   "dark": "#244F3A",
+   "light": "#B9EE9A",
+   "accent": "#FFC87A"
+  },
+  "gravel": {
+   "name": "碎礫",
+   "main": "#8E8479",
+   "dark": "#5B5046",
+   "light": "#C9B79C",
+   "accent": "#E0A458"
+  },
+  "shallows": {
+   "name": "淺灘",
+   "main": "#4FA3D9",
+   "dark": "#2A5E9A",
+   "light": "#A6DAF2",
+   "accent": "#EAD7A8"
+  },
+  "frost": {
+   "name": "霜面",
+   "main": "#DCEBFA",
+   "dark": "#6A7FB8",
+   "light": "#FFFFFF",
+   "accent": "#B5F0FF"
+  },
+  "bridge": {
+   "name": "懸橋",
+   "main": "#8A5A44",
+   "dark": "#3A2F5C",
+   "light": "#D9B98C",
+   "accent": "#E5584D"
+  }
+ },
+ "skill_light": {
+  "疾風衝": [
+   "#2E8F93",
+   "#4FD0C8",
+   "#A8F5E8"
+  ],
+  "絆草": [
+   "#2F6B45",
+   "#8CD27A",
+   "#6A5BAA"
+  ],
+  "回氣": [
+   "#D9692F",
+   "#FFD45E",
+   "#FFFBD0"
+  ],
+  "風罩": [
+   "#2A5E9A",
+   "#A6DAF2",
+   "#F3F6FF"
+  ]
+ },
+ "aptitude": [
+  {
+   "level": 1,
+   "name": "陌路",
+   "hex": "#8F85C2"
+  },
+  {
+   "level": 2,
+   "name": "識路",
+   "hex": "#4FA3D9"
+  },
+  {
+   "level": 3,
+   "name": "熟路",
+   "hex": "#6BBF6A"
+  },
+  {
+   "level": 4,
+   "name": "乘風",
+   "hex": "#FFD45E"
+  }
+ ]
+}

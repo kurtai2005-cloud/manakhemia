@@ -1,0 +1,148 @@
+{
+ "meta": {
+  "size": [
+   64,
+   64
+  ],
+  "expressions": [
+   "neutral",
+   "happy",
+   "worried",
+   "surprised"
+  ],
+  "palette": "palette/portrait_palette.json",
+  "usage": "對話資料用 {portrait_id, expression}；portrait_id＝npc_id（npc_elder／npc_fern／npc_registry）；expression ∈ neutral|happy|worried|surprised；缺省 neutral",
+  "fallback": "未知 expression → neutral"
+ },
+ "portraits": {
+  "npc_elder": {
+   "name": "老鐘",
+   "sheet": "npc_elder/npc_elder_sheet.png",
+   "atlas": "npc_elder/portrait_atlas_npc_elder.json",
+   "expressions": {
+    "neutral": {
+     "file": "npc_elder/npc_elder_neutral.png",
+     "rect": [
+      0,
+      0,
+      64,
+      64
+     ]
+    },
+    "happy": {
+     "file": "npc_elder/npc_elder_happy.png",
+     "rect": [
+      64,
+      0,
+      64,
+      64
+     ]
+    },
+    "worried": {
+     "file": "npc_elder/npc_elder_worried.png",
+     "rect": [
+      128,
+      0,
+      64,
+      64
+     ]
+    },
+    "surprised": {
+     "file": "npc_elder/npc_elder_surprised.png",
+     "rect": [
+      192,
+      0,
+      64,
+      64
+     ]
+    }
+   }
+  },
+  "npc_fern": {
+   "name": "蕨生",
+   "sheet": "npc_fern/npc_fern_sheet.png",
+   "atlas": "npc_fern/portrait_atlas_npc_fern.json",
+   "expressions": {
+    "neutral": {
+     "file": "npc_fern/npc_fern_neutral.png",
+     "rect": [
+      0,
+      0,
+      64,
+      64
+     ]
+    },
+    "happy": {
+     "file": "npc_fern/npc_fern_happy.png",
+     "rect": [
+      64,
+      0,
+      64,
+      64
+     ]
+    },
+    "worried": {
+     "file": "npc_fern/npc_fern_worried.png",
+     "rect": [
+      128,
+      0,
+      64,
+      64
+     ]
+    },
+    "surprised": {
+     "file": "npc_fern/npc_fern_surprised.png",
+     "rect": [
+      192,
+      0,
+      64,
+      64
+     ]
+    }
+   }
+  },
+  "npc_registry": {
+   "name": "報名處職員",
+   "sheet": "npc_registry/npc_registry_sheet.png",
+   "atlas": "npc_registry/portrait_atlas_npc_registry.json",
+   "expressions": {
+    "neutral": {
+     "file": "npc_registry/npc_registry_neutral.png",
+     "rect": [
+      0,
+      0,
+      64,
+      64
+     ]
+    },
+    "happy": {
+     "file": "npc_registry/npc_registry_happy.png",
+     "rect": [
+      64,
+      0,
+      64,
+      64
+     ]
+    },
+    "worried": {
+     "file": "npc_registry/npc_registry_worried.png",
+     "rect": [
+      128,
+      0,
+      64,
+      64
+     ]
+    },
+    "surprised": {
+     "file": "npc_registry/npc_registry_surprised.png",
+     "rect": [
+      192,
+      0,
+      64,
+      64
+     ]
+    }
+   }
+  }
+ }
+}

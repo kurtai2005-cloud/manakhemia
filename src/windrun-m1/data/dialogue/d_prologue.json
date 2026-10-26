@@ -1,0 +1,114 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_prologue",
+ "entry": [
+  {
+   "cond": {
+    "not": {
+     "flag": "intro_p1_done"
+    }
+   },
+   "goto": "p0_1"
+  },
+  {
+   "goto": "p_none"
+  }
+ ],
+ "nodes": {
+  "p0_1": {
+   "speaker": "narrator",
+   "text": "風谷的人說，風有脈。",
+   "next": "p0_2",
+   "autoadvance_ms": 2200
+  },
+  "p0_2": {
+   "speaker": "narrator",
+   "text": "風脈在山脊、在地底、在每一條小路下面流動，",
+   "next": "p0_3",
+   "autoadvance_ms": 2200
+  },
+  "p0_3": {
+   "speaker": "narrator",
+   "text": "把氣流送到谷中每個角落。",
+   "next": "p0_4",
+   "autoadvance_ms": 2200
+  },
+  "p0_4": {
+   "speaker": "narrator",
+   "text": "野靈借著風奔跑——牠們不是被馴服的，",
+   "next": "p0_5",
+   "autoadvance_ms": 2200
+  },
+  "p0_5": {
+   "speaker": "narrator",
+   "text": "是被風叫出來的。",
+   "next": "p0_6",
+   "autoadvance_ms": 2200
+  },
+  "p0_6": {
+   "speaker": "narrator",
+   "text": "可是這幾年，風脈一年比一年弱了。",
+   "next": "p1_1",
+   "autoadvance_ms": 2200
+  },
+  "p1_1": {
+   "speaker": "narrator",
+   "text": "你背著一個舊布袋，沿著石徑走進晨苔鎮。",
+   "next": "p1_2",
+   "on_enter": [
+    {
+     "do": "show_hint",
+     "id": "tap_to_walk"
+    }
+   ]
+  },
+  "p1_2": {
+   "speaker": "narrator",
+   "text": "路旁的青苔軟軟地鋪滿了牆腳，連屋簷上都長著小小的蕨葉。",
+   "next": "p1_3"
+  },
+  "p1_3": {
+   "speaker": "narrator",
+   "text": "迴風場門樓上的旗子慢慢飄著，飄得比你想像中慢。",
+   "next": "p1_4"
+  },
+  "p1_4": {
+   "speaker": "narrator",
+   "text": "街上很靜，只聽見遠處迴風場傳來木板被風拍響的聲音。",
+   "next": "p1_5"
+  },
+  "p1_5": {
+   "speaker": "player",
+   "text": "「就是這裡了。見習育成師的第一站。」",
+   "next": "p1_6"
+  },
+  "p1_6": {
+   "speaker": "player",
+   "text": "「信上說，鎮上的村長會在廣場等我。」",
+   "next": "p1_7"
+  },
+  "p1_7": {
+   "speaker": "narrator",
+   "text": "廣場中央有口老井，井邊站著一位拄著竹杖的老人，彷彿已經等了很久。",
+   "next": "p1_end"
+  },
+  "p1_end": {
+   "speaker": "system",
+   "on_enter": [
+    {
+     "do": "set_flag",
+     "flag": "intro_p1_done"
+    },
+    {
+     "do": "set_objective",
+     "id": "c1_start"
+    }
+   ],
+   "next": null
+  },
+  "p_none": {
+   "speaker": "system",
+   "next": null
+  }
+ }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "match/v1", "id": "c1_r1", "kind": "cup", "cup": "c1", "round": 1, "name": "初葉盃・初戰", "venue": "arena_windrun", "m_milestone": "M1",
+  "req": { "seals_min": 0, "flags": ["got_mochi"], "party_min": 2, "lv_hint": 3, "not_done": true },
+  "team": { "min": 2, "max": 6 },
+  "track": { "len": 1000, "segs": ["moss", "gravel", "moss", "gravel", "moss"] },
+  "opponent": { "name": "見習跑手", "npc": null, "ai": "balanced", "team": [ { "species": "tingyu", "lv": 3 }, { "species": "mistfern", "lv": 3 } ], "script": null },
+  "handicap_m": 0, "rules": { "swap": true, "skill": true, "timeout_s": 120 }, "fee": 20,
+  "reward": { "leaf_win": 45, "leaf_lose": 10, "exp_win": 100, "exp_lose": 45, "first_win_leaf_bonus": 0 },
+  "seed_policy": "per_attempt",
+  "dialogue": { "pre": "d_fern_prematch", "post_win": "d_fern_after_r1", "post_lose": "d_fern_after_r1" },
+  "on_end": {
+    "win": [ { "do": "set_flag", "flag": "c1r1_won" }, { "do": "clear_flag", "flag": "c1r1_lost_last" }, { "do": "set_objective", "id": "c1_done_m1" } ],
+    "lose": [ { "do": "set_flag", "flag": "c1r1_lost_last" }, { "do": "set_objective", "id": "c1_enter" } ]
+  },
+  "unlock": ["c1_r2"],
+  "target": { "winrate_pct": 85, "player_lv_rec": 3, "margin_note": "苔團3＋碎石獾3：AI 代打約領先 55 m；全程唔換人約落後 12 m（換棒決策可決定勝負）" }
+}

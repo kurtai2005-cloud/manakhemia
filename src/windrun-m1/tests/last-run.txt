@@ -1,0 +1,5 @@
+race end {"scene":"race","over":true,"t":93.7,"pos":[1000,975]}
+save {"v":1,"creatures":{"mochi":{"lv":5,"exp":0,"bonus":{"speed":1,"power":0,"calm":0,"stamina":6},"cond":95},"namifin":{"lv":3,"exp":0,"bonus":{"speed":0,"power":0
+stage 2 {"scene":"race","over":true,"t":98.8,"pos":[749,1000]}
+stage 3 {"scene":"race","over":true,"t":83.3,"pos":[777,1000]}
+NO CONSOLE ERRORS / WARNINGS

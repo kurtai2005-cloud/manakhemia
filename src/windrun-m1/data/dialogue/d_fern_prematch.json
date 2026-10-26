@@ -1,0 +1,44 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_fern_prematch",
+ "npc": "npc_fern",
+ "entry": [
+  {
+   "cond": {
+    "not": {
+     "flag": "seen_fern_prematch"
+    }
+   },
+   "goto": "fp1"
+  },
+  {
+   "goto": "fp3"
+  }
+ ],
+ "nodes": {
+  "fp1": {
+   "speaker": "fern",
+   "emote": "smile",
+   "text": "你報咗名？好！我企喺旁邊睇你比賽。",
+   "next": "fp2"
+  },
+  "fp2": {
+   "speaker": "fern",
+   "emote": "serious",
+   "text": "對手係鎮上嘅見習跑手，換棒好穩。你睇住佢幾時換人。",
+   "on_enter": [
+    {
+     "do": "set_flag",
+     "flag": "seen_fern_prematch"
+    }
+   ],
+   "next": null
+  },
+  "fp3": {
+   "speaker": "fern",
+   "emote": "neutral",
+   "text": "開賽前記得佈陣，揀好邊隻先跑。",
+   "next": null
+  }
+ }
+}

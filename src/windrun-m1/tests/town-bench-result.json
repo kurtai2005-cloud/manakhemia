@@ -1,0 +1,833 @@
+{
+ "env": {
+  "chrome": "156.0.8078.47",
+  "cpus": "8x Intel(R) Xeon(R) Processor",
+  "note": "headless 桌面 Chrome（軟件渲染）；非真機",
+  "node": "v20.19.2"
+ },
+ "runs": [
+  {
+   "set": "phone390x844@dpr1",
+   "label": "off",
+   "q": "off",
+   "chunk": 1,
+   "b": {
+    "avg": 0.432500000000194,
+    "p50": 0.40000000002328306,
+    "p95": 0.5999999999767169,
+    "max": 1.5,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 2.799999999930151,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.400000000023283,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "none",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 4
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "off 無chunk",
+   "q": "off",
+   "chunk": 0,
+   "b": {
+    "avg": 1.6270833333338184,
+    "p50": 1.599999999976717,
+    "p95": 2,
+    "max": 3.200000000069849,
+    "n": 240
+   },
+   "tilesDrawn": 429,
+   "chunkMs": 3.199999999953434,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.900000000023283,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "none",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 4
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "low",
+   "q": "low",
+   "chunk": 1,
+   "b": {
+    "avg": 2.0158333333344975,
+    "p50": 1.8000000000465661,
+    "p95": 2.900000000023283,
+    "max": 6.299999999930151,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 3.099999999976717,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.5,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "low 無chunk",
+   "q": "low",
+   "chunk": 0,
+   "b": {
+    "avg": 2.7558333333329452,
+    "p50": 2.699999999953434,
+    "p95": 3.200000000069849,
+    "max": 3.700000000069849,
+    "n": 240
+   },
+   "tilesDrawn": 390,
+   "chunkMs": 2.699999999953434,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.399999999906868,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "mid",
+   "q": "mid",
+   "chunk": 1,
+   "b": {
+    "avg": 2.1120833333329454,
+    "p50": 2,
+    "p95": 2.400000000023283,
+    "max": 4.200000000069849,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 4.099999999976717,
+   "chunkPx": 372736,
+   "mapLoadMs": 6.200000000069849,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 0,
+    "vig": 1,
+    "lres": 4
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "mid 無chunk",
+   "q": "mid",
+   "chunk": 0,
+   "b": {
+    "avg": 3.3158333333340124,
+    "p50": 3.200000000069849,
+    "p95": 4.300000000046566,
+    "max": 5.900000000023283,
+    "n": 240
+   },
+   "tilesDrawn": 429,
+   "chunkMs": 4.700000000069849,
+   "chunkPx": 372736,
+   "mapLoadMs": 6.800000000046566,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 0,
+    "vig": 1,
+    "lres": 4
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "high",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 4.487083333333915,
+    "p50": 4.400000000023283,
+    "p95": 5.300000000046566,
+    "max": 6.700000000069849,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 2.900000000023283,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.300000000046566,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "live",
+    "dof": 1,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "high 無chunk",
+   "q": "high",
+   "chunk": 0,
+   "b": {
+    "avg": 5.571250000000388,
+    "p50": 5.5,
+    "p95": 6.5,
+    "max": 8.300000000046566,
+    "n": 240
+   },
+   "tilesDrawn": 429,
+   "chunkMs": 4.200000000069849,
+   "chunkPx": 372736,
+   "mapLoadMs": 6,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "live",
+    "dof": 1,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "high−dof",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 3.885833333332751,
+    "p50": 3.800000000046566,
+    "p95": 4.5,
+    "max": 5.5,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 4.199999999953434,
+   "chunkPx": 372736,
+   "mapLoadMs": 5.900000000023283,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr1",
+   "label": "high→baked light，無 dof",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 1.8120833333334303,
+    "p50": 1.7000000000698492,
+    "p95": 2.199999999953434,
+    "max": 2.800000000046566,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 2.5,
+   "chunkPx": 372736,
+   "mapLoadMs": 4,
+   "W": 390,
+   "H": 844,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "off",
+   "q": "off",
+   "chunk": 1,
+   "b": {
+    "avg": 1.442499999998836,
+    "p50": 1.400000000023283,
+    "p95": 1.6999999999534339,
+    "max": 2.799999999930151,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 3.099999999976717,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.700000000069849,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "none",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 4
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "off 無chunk",
+   "q": "off",
+   "chunk": 0,
+   "b": {
+    "avg": 2.6741666666663755,
+    "p50": 2.599999999976717,
+    "p95": 3.099999999976717,
+    "max": 4.300000000046566,
+    "n": 240
+   },
+   "tilesDrawn": 390,
+   "chunkMs": 3.800000000046566,
+   "chunkPx": 372736,
+   "mapLoadMs": 5.700000000069849,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "none",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 4
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "low",
+   "q": "low",
+   "chunk": 1,
+   "b": {
+    "avg": 6.234999999999612,
+    "p50": 6.100000000093132,
+    "p95": 7.100000000093132,
+    "max": 8.100000000093132,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 3.5,
+   "chunkPx": 372736,
+   "mapLoadMs": 5,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "low 無chunk",
+   "q": "low",
+   "chunk": 0,
+   "b": {
+    "avg": 7.539583333333819,
+    "p50": 7.400000000023283,
+    "p95": 8.599999999976717,
+    "max": 9.599999999976717,
+    "n": 240
+   },
+   "tilesDrawn": 429,
+   "chunkMs": 3,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.600000000093132,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "mid",
+   "q": "mid",
+   "chunk": 1,
+   "b": {
+    "avg": 6.854999999998351,
+    "p50": 6.700000000069849,
+    "p95": 7.800000000046566,
+    "max": 8.199999999953434,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 3.099999999976717,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.400000000023283,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 0,
+    "vig": 1,
+    "lres": 4
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "mid 無chunk",
+   "q": "mid",
+   "chunk": 0,
+   "b": {
+    "avg": 8.276666666665308,
+    "p50": 8,
+    "p95": 9.899999999906868,
+    "max": 12.100000000093132,
+    "n": 240
+   },
+   "tilesDrawn": 429,
+   "chunkMs": 2.900000000023283,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.399999999906868,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 0,
+    "vig": 1,
+    "lres": 4
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "high",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 14.356666666666085,
+    "p50": 13.900000000023283,
+    "p95": 16.599999999976717,
+    "max": 18.099999999976717,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 3,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.400000000023283,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "live",
+    "dof": 1,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "high 無chunk",
+   "q": "high",
+   "chunk": 0,
+   "b": {
+    "avg": 15.638749999999224,
+    "p50": 15.099999999976717,
+    "p95": 18.099999999976717,
+    "max": 20.900000000023283,
+    "n": 240
+   },
+   "tilesDrawn": 429,
+   "chunkMs": 3.200000000069849,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.899999999906868,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "live",
+    "dof": 1,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "high−dof",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 13.943333333333916,
+    "p50": 12.20000000006985,
+    "p95": 29.099999999976717,
+    "max": 35.70000000006985,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 6.300000000046566,
+   "chunkPx": 372736,
+   "mapLoadMs": 7.699999999953434,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "phone390x844@dpr2",
+   "label": "high→baked light，無 dof",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 6.670833333333333,
+    "p50": 6.5,
+    "p95": 7.599999999976717,
+    "max": 8.70000000006985,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 2.800000000046566,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.5,
+   "W": 780,
+   "H": 1688,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "off",
+   "q": "off",
+   "chunk": 1,
+   "b": {
+    "avg": 1.1170833333337213,
+    "p50": 1.099999999976717,
+    "p95": 1.400000000023283,
+    "max": 5,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 2.700000000069849,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.100000000093132,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "none",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 4
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "off 無chunk",
+   "q": "off",
+   "chunk": 0,
+   "b": {
+    "avg": 2.482499999999709,
+    "p50": 2.300000000046566,
+    "p95": 2.900000000023283,
+    "max": 11,
+    "n": 240
+   },
+   "tilesDrawn": 480,
+   "chunkMs": 2.800000000046566,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.200000000069849,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "none",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 4
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "low",
+   "q": "low",
+   "chunk": 1,
+   "b": {
+    "avg": 4.316249999999612,
+    "p50": 4.200000000069849,
+    "p95": 5.099999999976717,
+    "max": 6.599999999976717,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 3,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.5,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 2
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "low 無chunk",
+   "q": "low",
+   "chunk": 0,
+   "b": {
+    "avg": 5.84958333333343,
+    "p50": 5.699999999953434,
+    "p95": 7,
+    "max": 8.29999999993015,
+    "n": 240
+   },
+   "tilesDrawn": 501,
+   "chunkMs": 2.800000000046566,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.299999999930151,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 0,
+    "vig": 0,
+    "lres": 2
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "mid",
+   "q": "mid",
+   "chunk": 1,
+   "b": {
+    "avg": 5.095833333333333,
+    "p50": 5,
+    "p95": 5.800000000046566,
+    "max": 9.100000000093132,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 2.900000000023283,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.199999999953434,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 0,
+    "vig": 1,
+    "lres": 4
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "mid 無chunk",
+   "q": "mid",
+   "chunk": 0,
+   "b": {
+    "avg": 6.505000000000291,
+    "p50": 6.400000000023283,
+    "p95": 7.400000000023283,
+    "max": 8.5,
+    "n": 240
+   },
+   "tilesDrawn": 501,
+   "chunkMs": 2.799999999930151,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.199999999953434,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 0,
+    "vig": 1,
+    "lres": 4
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "high",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 11.209999999998642,
+    "p50": 10.699999999953434,
+    "p95": 13.199999999953434,
+    "max": 14.70000000006985,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 3,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.400000000023283,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "live",
+    "dof": 1,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "high 無chunk",
+   "q": "high",
+   "chunk": 0,
+   "b": {
+    "avg": 12.634166666666472,
+    "p50": 12.100000000093132,
+    "p95": 14.79999999993015,
+    "max": 18,
+    "n": 240
+   },
+   "tilesDrawn": 501,
+   "chunkMs": 6.900000000023283,
+   "chunkPx": 372736,
+   "mapLoadMs": 8.300000000046566,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "live",
+    "dof": 1,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "high−dof",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 9.397499999999127,
+    "p50": 9.100000000093132,
+    "p95": 10.699999999953434,
+    "max": 12.70000000006985,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 2.799999999930151,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.199999999953434,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "live",
+    "dof": 0,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  },
+  {
+   "set": "desktop1280x720@dpr1",
+   "label": "high→baked light，無 dof",
+   "q": "high",
+   "chunk": 1,
+   "b": {
+    "avg": 4.682083333334594,
+    "p50": 4.599999999976717,
+    "p95": 5.300000000046566,
+    "max": 10,
+    "n": 240
+   },
+   "tilesDrawn": 4,
+   "chunkMs": 3.300000000046566,
+   "chunkPx": 372736,
+   "mapLoadMs": 4.800000000046566,
+   "W": 1280,
+   "H": 720,
+   "cfg": {
+    "light": "baked",
+    "dof": 0,
+    "glow": 1,
+    "vig": 1,
+    "lres": 2
+   }
+  }
+ ],
+ "astar": {
+  "town": {
+   "n": 500,
+   "avgMs": 0.033200000001117586,
+   "p95Ms": 0.10000000009313226,
+   "maxMs": 0.8000000000465661,
+   "avgLen": 17.786,
+   "avgExpanded": 49.996,
+   "freeTiles": 895
+  },
+  "route": {
+   "n": 500,
+   "avgMs": 0.023199999999487773,
+   "p95Ms": 0.10000000009313226,
+   "maxMs": 0.30000000004656613,
+   "avgLen": 17.904,
+   "avgExpanded": 38.238,
+   "freeTiles": 606
+  }
+ },
+ "load": {
+  "enterTownMs": 2.400000000023283,
+  "enterRouteMs": 1.400000000023283,
+  "chunkMsTown": null,
+  "assetsMs": 2.800000000046566
+ },
+ "mem": {
+  "chunkPx": 372736,
+  "chunkMB": 1.421875,
+  "bakedLightPx": 76800,
+  "bakedLightMB": 0.29296875,
+  "tilesetMB": 0.046875
+ },
+ "diskKB": {
+  "char_clerk.png": 0.7,
+  "char_elder.png": 0.7,
+  "char_fern.png": 0.7,
+  "char_player.png": 0.7,
+  "route_fernshade.json": 12.9,
+  "town_morningmoss.json": 24.2,
+  "town_tiles.names.txt": 0.4,
+  "town_tiles.png": 4.2
+ }
+}

@@ -1,0 +1,30 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_opponent_misc",
+ "npc": "npc_opponent",
+ "entry": [
+  {
+   "cond": {
+    "flag": "c1r1_won"
+   },
+   "goto": "op_after"
+  },
+  {
+   "goto": "op1"
+  }
+ ],
+ "nodes": {
+  "op1": {
+   "speaker": "opponent",
+   "emote": "neutral",
+   "text": "賽道上見。我哋唔會留手㗎。",
+   "next": null
+  },
+  "op_after": {
+   "speaker": "opponent",
+   "emote": "smile",
+   "text": "你換棒好準。下次我都要練返。",
+   "next": null
+  }
+ }
+}

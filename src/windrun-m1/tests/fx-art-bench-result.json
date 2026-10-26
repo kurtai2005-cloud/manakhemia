@@ -1,0 +1,682 @@
+{
+  "env": {
+    "chrome": "156.0.8078.47",
+    "cpus": "8x Intel(R) Xeon(R) Processor",
+    "note": "headless 桌面 Chrome（軟件光柵）；非真 Android／非真機",
+    "date": "2026-10-26T03:22:38.527Z",
+    "webgl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "bench": {
+    "dpr1": {
+      "dpr": 1,
+      "tod": "night",
+      "results": {
+        "off": {
+          "quality": "off",
+          "dpr": 1,
+          "canvas": "960x540",
+          "frames": 240,
+          "avg": 1.5495833333348856,
+          "p50": 1.400000000372529,
+          "p95": 2.400000000372529,
+          "max": 5.099999999627471,
+          "texMB": 6.88671875,
+          "mem": {
+            "decodedRGBA_MB": 6.8681640625,
+            "pngBytes_MB": 0.0909109115600586,
+            "jsHeapDelta_MB": 7.571628570556641,
+            "note": "解碼後 RGBA＝寬×高×4 加總（估）；png＝resource timing encodedBodySize（實測）；heap＝performance.memory（Chrome 專有，canvas 後備緩衝唔計入）"
+          },
+          "loadMs": 57.89999999944121,
+          "files": 8
+        },
+        "low": {
+          "quality": "low",
+          "dpr": 1,
+          "canvas": "960x540",
+          "frames": 240,
+          "avg": 2.026249999999224,
+          "p50": 1.900000000372529,
+          "p95": 2.699999999254942,
+          "max": 5.5,
+          "texMB": 10.1142578125,
+          "mem": {
+            "decodedRGBA_MB": 10.095703125,
+            "pngBytes_MB": 0.4363737106323242,
+            "jsHeapDelta_MB": 7.426486968994141,
+            "note": "解碼後 RGBA＝寬×高×4 加總（估）；png＝resource timing encodedBodySize（實測）；heap＝performance.memory（Chrome 專有，canvas 後備緩衝唔計入）"
+          },
+          "loadMs": 50.39999999944121,
+          "files": 10
+        },
+        "mid": {
+          "quality": "mid",
+          "dpr": 1,
+          "canvas": "960x540",
+          "frames": 240,
+          "avg": 8.891666666666667,
+          "p50": 8.599999999627471,
+          "p95": 10.5,
+          "max": 15.200000000186265,
+          "texMB": 14.611328125,
+          "mem": {
+            "decodedRGBA_MB": 14.314453125,
+            "pngBytes_MB": 0.5541667938232422,
+            "jsHeapDelta_MB": 0,
+            "note": "解碼後 RGBA＝寬×高×4 加總（估）；png＝resource timing encodedBodySize（實測）；heap＝performance.memory（Chrome 專有，canvas 後備緩衝唔計入）"
+          },
+          "loadMs": 41.59999999962747,
+          "files": 13
+        },
+        "high": {
+          "quality": "high",
+          "dpr": 1,
+          "canvas": "960x540",
+          "frames": 240,
+          "avg": 26.47500000000776,
+          "p50": 25.40000000037253,
+          "p95": 32.09999999962747,
+          "max": 37.700000000186265,
+          "texMB": 14.800384521484375,
+          "mem": {
+            "decodedRGBA_MB": 12.3369140625,
+            "pngBytes_MB": 0.561772346496582,
+            "jsHeapDelta_MB": 0,
+            "note": "解碼後 RGBA＝寬×高×4 加總（估）；png＝resource timing encodedBodySize（實測）；heap＝performance.memory（Chrome 專有，canvas 後備緩衝唔計入）"
+          },
+          "loadMs": 29.90000000037253,
+          "files": 12
+        }
+      }
+    },
+    "dpr2": {
+      "dpr": 2,
+      "tod": "night",
+      "results": {
+        "off": {
+          "quality": "off",
+          "dpr": 2,
+          "canvas": "1920x1080",
+          "frames": 240,
+          "avg": 5.900416666665114,
+          "p50": 5.7999999998137355,
+          "p95": 6.7999999998137355,
+          "max": 8.5,
+          "texMB": 6.88671875,
+          "mem": {
+            "decodedRGBA_MB": 6.8681640625,
+            "pngBytes_MB": 0.0909109115600586,
+            "jsHeapDelta_MB": 0,
+            "note": "解碼後 RGBA＝寬×高×4 加總（估）；png＝resource timing encodedBodySize（實測）；heap＝performance.memory（Chrome 專有，canvas 後備緩衝唔計入）"
+          },
+          "loadMs": 47.40000000037253,
+          "files": 8
+        },
+        "low": {
+          "quality": "low",
+          "dpr": 2,
+          "canvas": "1920x1080",
+          "frames": 240,
+          "avg": 21.147916666662788,
+          "p50": 20.100000000558794,
+          "p95": 27,
+          "max": 34.799999999813735,
+          "texMB": 10.1142578125,
+          "mem": {
+            "decodedRGBA_MB": 10.095703125,
+            "pngBytes_MB": 0.4363737106323242,
+            "jsHeapDelta_MB": 7.442483901977539,
+            "note": "解碼後 RGBA＝寬×高×4 加總（估）；png＝resource timing encodedBodySize（實測）；heap＝performance.memory（Chrome 專有，canvas 後備緩衝唔計入）"
+          },
+          "loadMs": 60.200000000186265,
+          "files": 10
+        },
+        "mid": {
+          "quality": "mid",
+          "dpr": 2,
+          "canvas": "1920x1080",
+          "frames": 240,
+          "avg": 52.872083333328675,
+          "p50": 51.09999999962747,
+          "p95": 62,
+          "max": 84.09999999962747,
+          "texMB": 15.44537353515625,
+          "mem": {
+            "decodedRGBA_MB": 14.314453125,
+            "pngBytes_MB": 0.5541667938232422,
+            "jsHeapDelta_MB": 6.899675369262695,
+            "note": "解碼後 RGBA＝寬×高×4 加總（估）；png＝resource timing encodedBodySize（實測）；heap＝performance.memory（Chrome 專有，canvas 後備緩衝唔計入）"
+          },
+          "loadMs": 57.09999999962747,
+          "files": 13
+        },
+        "high": {
+          "quality": "high",
+          "dpr": 2,
+          "canvas": "1920x1080",
+          "frames": 240,
+          "avg": 100.73583333333566,
+          "p50": 99,
+          "p95": 112.8999999994412,
+          "max": 137,
+          "texMB": 22.13238525390625,
+          "mem": {
+            "decodedRGBA_MB": 12.3369140625,
+            "pngBytes_MB": 0.5951070785522461,
+            "jsHeapDelta_MB": 6.530965805053711,
+            "note": "解碼後 RGBA＝寬×高×4 加總（估）；png＝resource timing encodedBodySize（實測）；heap＝performance.memory（Chrome 專有，canvas 後備緩衝唔計入）"
+          },
+          "loadMs": 51.700000000186265,
+          "files": 12
+        }
+      }
+    }
+  },
+  "memory": {},
+  "moire": [
+    {
+      "scale": 0.5,
+      "variant": "raw_bilinear",
+      "amp": 0.819,
+      "period": 23,
+      "rms": 3.306
+    },
+    {
+      "scale": 0.5,
+      "variant": "raw_nearest",
+      "amp": 0.812,
+      "period": 23.5,
+      "rms": 3.636
+    },
+    {
+      "scale": 0.5,
+      "variant": "box4_bilinear",
+      "amp": 0.742,
+      "period": 23.5,
+      "rms": 2.399
+    },
+    {
+      "scale": 0.5,
+      "variant": "blur1.5",
+      "amp": 0.693,
+      "period": 23.5,
+      "rms": 2.199
+    },
+    {
+      "scale": 0.5,
+      "variant": "blur2",
+      "amp": 0.636,
+      "period": 23.5,
+      "rms": 1.886
+    },
+    {
+      "scale": 0.5,
+      "variant": "blur2.5",
+      "amp": 0.605,
+      "period": 32,
+      "rms": 1.772
+    },
+    {
+      "scale": 0.6667,
+      "variant": "raw_bilinear",
+      "amp": 0.896,
+      "period": 28,
+      "rms": 3.968
+    },
+    {
+      "scale": 0.6667,
+      "variant": "raw_nearest",
+      "amp": 1.015,
+      "period": 28,
+      "rms": 5.342
+    },
+    {
+      "scale": 0.6667,
+      "variant": "box4_bilinear",
+      "amp": 0.776,
+      "period": 28,
+      "rms": 2.27
+    },
+    {
+      "scale": 0.6667,
+      "variant": "blur1.5",
+      "amp": 0.723,
+      "period": 28,
+      "rms": 2.029
+    },
+    {
+      "scale": 0.6667,
+      "variant": "blur2",
+      "amp": 0.634,
+      "period": 28,
+      "rms": 1.659
+    },
+    {
+      "scale": 0.6667,
+      "variant": "blur2.5",
+      "amp": 0.598,
+      "period": 31,
+      "rms": 1.539
+    },
+    {
+      "scale": 0.75,
+      "variant": "raw_bilinear",
+      "amp": 0.819,
+      "period": 31.5,
+      "rms": 3.229
+    },
+    {
+      "scale": 0.75,
+      "variant": "raw_nearest",
+      "amp": 0.804,
+      "period": 31,
+      "rms": 3.596
+    },
+    {
+      "scale": 0.75,
+      "variant": "box4_bilinear",
+      "amp": 0.728,
+      "period": 31.5,
+      "rms": 2.086
+    },
+    {
+      "scale": 0.75,
+      "variant": "blur1.5",
+      "amp": 0.673,
+      "period": 31.5,
+      "rms": 1.844
+    },
+    {
+      "scale": 0.75,
+      "variant": "blur2",
+      "amp": 0.584,
+      "period": 31.5,
+      "rms": 1.505
+    },
+    {
+      "scale": 0.75,
+      "variant": "blur2.5",
+      "amp": 0.546,
+      "period": 31.5,
+      "rms": 1.392
+    },
+    {
+      "scale": 0.8788,
+      "variant": "raw_bilinear",
+      "amp": 0.574,
+      "period": 23.5,
+      "rms": 2.832
+    },
+    {
+      "scale": 0.8788,
+      "variant": "raw_nearest",
+      "amp": 0.622,
+      "period": 23,
+      "rms": 3.226
+    },
+    {
+      "scale": 0.8788,
+      "variant": "box4_bilinear",
+      "amp": 0.466,
+      "period": 23,
+      "rms": 1.701
+    },
+    {
+      "scale": 0.8788,
+      "variant": "blur1.5",
+      "amp": 0.405,
+      "period": 23.5,
+      "rms": 1.488
+    },
+    {
+      "scale": 0.8788,
+      "variant": "blur2",
+      "amp": 0.323,
+      "period": 23.5,
+      "rms": 1.183
+    },
+    {
+      "scale": 0.8788,
+      "variant": "blur2.5",
+      "amp": 0.297,
+      "period": 30.5,
+      "rms": 1.091
+    },
+    {
+      "scale": 1,
+      "variant": "raw_bilinear",
+      "amp": 0.9,
+      "period": 2,
+      "rms": 3.199
+    },
+    {
+      "scale": 1,
+      "variant": "raw_nearest",
+      "amp": 0.9,
+      "period": 2,
+      "rms": 3.199
+    },
+    {
+      "scale": 1,
+      "variant": "box4_bilinear",
+      "amp": 0.474,
+      "period": 27,
+      "rms": 1.62
+    },
+    {
+      "scale": 1,
+      "variant": "blur1.5",
+      "amp": 0.428,
+      "period": 27,
+      "rms": 1.428
+    },
+    {
+      "scale": 1,
+      "variant": "blur2",
+      "amp": 0.346,
+      "period": 27,
+      "rms": 1.141
+    },
+    {
+      "scale": 1,
+      "variant": "blur2.5",
+      "amp": 0.302,
+      "period": 27,
+      "rms": 1.047
+    },
+    {
+      "scale": 1.25,
+      "variant": "raw_bilinear",
+      "amp": 0.567,
+      "period": 31.5,
+      "rms": 2.435
+    },
+    {
+      "scale": 1.25,
+      "variant": "raw_nearest",
+      "amp": 0.644,
+      "period": 2.5,
+      "rms": 2.964
+    },
+    {
+      "scale": 1.25,
+      "variant": "box4_bilinear",
+      "amp": 0.46,
+      "period": 30.5,
+      "rms": 1.47
+    },
+    {
+      "scale": 1.25,
+      "variant": "blur1.5",
+      "amp": 0.417,
+      "period": 30.5,
+      "rms": 1.285
+    },
+    {
+      "scale": 1.25,
+      "variant": "blur2",
+      "amp": 0.337,
+      "period": 30.5,
+      "rms": 0.996
+    },
+    {
+      "scale": 1.25,
+      "variant": "blur2.5",
+      "amp": 0.311,
+      "period": 30.5,
+      "rms": 0.896
+    },
+    {
+      "scale": 1.3333,
+      "variant": "raw_bilinear",
+      "amp": 0.57,
+      "period": 24.5,
+      "rms": 2.601
+    },
+    {
+      "scale": 1.3333,
+      "variant": "raw_nearest",
+      "amp": 0.562,
+      "period": 32,
+      "rms": 2.861
+    },
+    {
+      "scale": 1.3333,
+      "variant": "box4_bilinear",
+      "amp": 0.448,
+      "period": 32,
+      "rms": 1.471
+    },
+    {
+      "scale": 1.3333,
+      "variant": "blur1.5",
+      "amp": 0.402,
+      "period": 32,
+      "rms": 1.284
+    },
+    {
+      "scale": 1.3333,
+      "variant": "blur2",
+      "amp": 0.327,
+      "period": 32,
+      "rms": 0.981
+    },
+    {
+      "scale": 1.3333,
+      "variant": "blur2.5",
+      "amp": 0.297,
+      "period": 32,
+      "rms": 0.876
+    },
+    {
+      "scale": 1.5,
+      "variant": "raw_bilinear",
+      "amp": 0.524,
+      "period": 28,
+      "rms": 2.14
+    },
+    {
+      "scale": 1.5,
+      "variant": "raw_nearest",
+      "amp": 0.634,
+      "period": 3,
+      "rms": 2.945
+    },
+    {
+      "scale": 1.5,
+      "variant": "box4_bilinear",
+      "amp": 0.417,
+      "period": 27.5,
+      "rms": 1.278
+    },
+    {
+      "scale": 1.5,
+      "variant": "blur1.5",
+      "amp": 0.379,
+      "period": 27.5,
+      "rms": 1.125
+    },
+    {
+      "scale": 1.5,
+      "variant": "blur2",
+      "amp": 0.311,
+      "period": 27.5,
+      "rms": 0.87
+    },
+    {
+      "scale": 1.5,
+      "variant": "blur2.5",
+      "amp": 0.277,
+      "period": 27.5,
+      "rms": 0.78
+    },
+    {
+      "scale": 2,
+      "variant": "raw_bilinear",
+      "amp": 0.317,
+      "period": 24.5,
+      "rms": 1.399
+    },
+    {
+      "scale": 2,
+      "variant": "raw_nearest",
+      "amp": 0.659,
+      "period": 4,
+      "rms": 2.039
+    },
+    {
+      "scale": 2,
+      "variant": "box4_bilinear",
+      "amp": 0.23,
+      "period": 24.5,
+      "rms": 0.705
+    },
+    {
+      "scale": 2,
+      "variant": "blur1.5",
+      "amp": 0.203,
+      "period": 30,
+      "rms": 0.606
+    },
+    {
+      "scale": 2,
+      "variant": "blur2",
+      "amp": 0.158,
+      "period": 30,
+      "rms": 0.449
+    },
+    {
+      "scale": 2,
+      "variant": "blur2.5",
+      "amp": 0.136,
+      "period": 30.5,
+      "rms": 0.399
+    },
+    {
+      "scale": 2.6667,
+      "variant": "raw_bilinear",
+      "amp": 0.25,
+      "period": 26,
+      "rms": 1.193
+    },
+    {
+      "scale": 2.6667,
+      "variant": "raw_nearest",
+      "amp": 0.354,
+      "period": 16,
+      "rms": 1.938
+    },
+    {
+      "scale": 2.6667,
+      "variant": "box4_bilinear",
+      "amp": 0.172,
+      "period": 29,
+      "rms": 0.328
+    },
+    {
+      "scale": 2.6667,
+      "variant": "blur1.5",
+      "amp": 0.15,
+      "period": 29,
+      "rms": 0.271
+    },
+    {
+      "scale": 2.6667,
+      "variant": "blur2",
+      "amp": 0.098,
+      "period": 29,
+      "rms": 0.172
+    },
+    {
+      "scale": 2.6667,
+      "variant": "blur2.5",
+      "amp": 0.081,
+      "period": 29,
+      "rms": 0.176
+    },
+    {
+      "scale": 3,
+      "variant": "raw_bilinear",
+      "amp": 0.369,
+      "period": 6,
+      "rms": 1.297
+    },
+    {
+      "scale": 3,
+      "variant": "raw_nearest",
+      "amp": 0.753,
+      "period": 6,
+      "rms": 1.9
+    },
+    {
+      "scale": 3,
+      "variant": "box4_bilinear",
+      "amp": 0.174,
+      "period": 29.5,
+      "rms": 0.34
+    },
+    {
+      "scale": 3,
+      "variant": "blur1.5",
+      "amp": 0.148,
+      "period": 29.5,
+      "rms": 0.276
+    },
+    {
+      "scale": 3,
+      "variant": "blur2",
+      "amp": 0.094,
+      "period": 32,
+      "rms": 0.169
+    },
+    {
+      "scale": 3,
+      "variant": "blur2.5",
+      "amp": 0.076,
+      "period": 32,
+      "rms": 0.181
+    }
+  ],
+  "pyramidSigma": {
+    "quarter_only": 1.7,
+    "half_only": 0.87,
+    "half+quarter_a0.3": 1.29,
+    "half+quarter_a0.5": 1.52,
+    "half+quarter_a0.7": 1.69,
+    "half+quarter_a1": 1.87
+  },
+  "catWhite": {
+    "mid_catBloom1": {
+      "meanLum": 118.1,
+      "nearWhitePct": 4.35
+    },
+    "mid_catBloom0.7": {
+      "meanLum": 112.9,
+      "nearWhitePct": 2.12
+    },
+    "mid_catBloom0.4": {
+      "meanLum": 107.6,
+      "nearWhitePct": 1.3
+    },
+    "mid_catBloom0": {
+      "meanLum": 100.2,
+      "nearWhitePct": 0.66
+    },
+    "high_catBloom1": {
+      "meanLum": 123.7,
+      "nearWhitePct": 7.75
+    },
+    "high_catBloom0.7": {
+      "meanLum": 115.7,
+      "nearWhitePct": 3.84
+    },
+    "high_catBloom0.4": {
+      "meanLum": 107.2,
+      "nearWhitePct": 1.49
+    },
+    "high_catBloom0": {
+      "meanLum": 95.1,
+      "nearWhitePct": 0.6
+    }
+  }
+}

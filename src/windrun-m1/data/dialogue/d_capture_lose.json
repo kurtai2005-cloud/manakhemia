@@ -1,0 +1,17 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_capture_lose",
+ "npc": "npc_wild_badger",
+ "entry": [
+  {
+   "goto": "cl1"
+  }
+ ],
+ "nodes": {
+  "cl1": {
+   "speaker": "narrator",
+   "text": "碎石獾喘住氣，冇走開。過一陣再試啦。",
+   "next": null
+  }
+ }
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-HK"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="icon" href="data:,"><title>風野競走 · walk（走路→傾偈→報名）</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0e22;color:#e8ecff;font:13px/1.4 system-ui,"Noto Sans TC",sans-serif;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+canvas{background:#000;touch-action:none;image-rendering:pixelated}
+#hud{position:fixed;left:6px;top:calc(6px + env(safe-area-inset-top,0px));right:6px;pointer-events:none;font-size:12px;text-shadow:0 1px 2px #000;background:rgba(10,14,40,.7);padding:5px 9px;border-radius:8px;display:flex;flex-direction:column;gap:1px}
+#hud .s{opacity:.85;font-size:11px}
+#joy,#knob{position:fixed;display:none;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+#joy{width:96px;height:96px;border:2px solid rgba(255,233,138,.6);background:rgba(255,233,138,.08)}
+#knob{width:40px;height:40px;background:rgba(255,233,138,.55);border:2px solid #ffe98a}
+#toast{position:fixed;left:50%;top:78px;transform:translateX(-50%);background:rgba(16,22,58,.94);border:1px solid #ffe98a;border-radius:8px;padding:6px 12px;display:none;pointer-events:none;max-width:84vw;text-align:center;z-index:25}
+#act{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom,0px));min-width:72px;min-height:56px;border-radius:28px;border:2px solid #ffe98a;background:rgba(16,22,58,.92);color:#fff;font:14px system-ui,"Noto Sans TC",sans-serif;display:none;z-index:20}
+#fade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .15s;z-index:50}
+#panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#10163a;border:2px solid #ffe98a;border-radius:12px;padding:14px;width:min(320px,86vw);display:none;z-index:45}
+#panel .t{color:#ffe98a;font-weight:700;margin-bottom:6px}#panel .l{margin:3px 0}
+#panel .row{display:flex;gap:8px;margin-top:10px}#panel button{flex:1;min-height:48px;border-radius:10px;border:2px solid #ffe98a;background:#232c6b;color:#fff;font:inherit}
+#devbtn{position:fixed;left:6px;bottom:calc(6px + env(safe-area-inset-bottom,0px));min-width:44px;min-height:44px;border-radius:22px;border:1px solid #556;background:rgba(10,14,40,.75);color:#bcd;z-index:22;font-size:16px}
+#dev{position:fixed;left:6px;bottom:56px;background:rgba(10,14,40,.94);border:1px solid #556;border-radius:10px;padding:8px;display:none;z-index:60;max-width:calc(100vw - 20px);max-height:60vh;overflow:auto}
+#dev .h{color:#ffb;font-size:11px;margin-bottom:4px}#dev .g{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+#dev button{min-height:44px;padding:4px 10px;border-radius:8px;border:1px solid #889;background:#1c2354;color:#fff;font:12px system-ui,"Noto Sans TC",sans-serif}
+#dev pre{font-size:10px;white-space:pre-wrap;max-width:300px;margin:4px 0 0}
+</style></head><body>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="hud"><div id="obj">載入中…</div><div class="s"><span id="leaf"></span> ｜ <span id="party"></span></div></div>
+<div id="toast"></div><button id="act"></button><div id="joy"></div><div id="knob"></div><div id="fade"></div><div id="panel"></div>
+<button id="devbtn" aria-label="dev">⚙</button><div id="dev"></div>
+<script src="src/save.js"></script><script src="src/tiled.js"></script><script src="src/town-map.js"></script><script src="src/scene-events.js"></script><script src="src/logic.js"></script><script src="src/dialogue.js"></script><script src="src/dialogue-ui.js"></script><script src="src/world.js"></script><script src="src/adventure.js"></script>
+<script>
+// walk：走路→傾偈→報名。參數：?new=1 重新開始 ?town=adv（生成 fallback 鎮）?cps=（打字機速度，測試用 9999）?tod= ?zoom= ?dpr= ?w= &h= ?slot=（存檔鍵）?dev=1（開 dev 面板）
+// 比賽／結緣戰鬥 sim 未接：用「〔占位〕勝／敗」面板；dev 面板內所有按鈕都係測試工具，唔屬遊戲內容。
+(async () => {
+  const $ = id => document.getElementById(id), Q = new URLSearchParams(location.search);
+  try {
+    const A = await WR.Adventure.create({ el: { canvas: $('c'), joy: $('joy'), knob: $('knob'), toast: $('toast'), act: $('act'), obj: $('obj'), leaf: $('leaf'), party: $('party'), panel: $('panel'), fade: $('fade') } });
+    window.__adv = A; window.__world = A.W;
+    const dev = $('dev'), box = document.createElement('pre');
+    const grp = (title, items) => { const h = document.createElement('div'); h.className = 'h'; h.textContent = title; dev.appendChild(h); const g = document.createElement('div'); g.className = 'g'; items.forEach(([t, f]) => { const b = document.createElement('button'); b.textContent = t; b.onclick = function () { f.call(this); A.objectiveHud(); }; g.appendChild(b); }); dev.appendChild(g); };
+    grp('DEV（測試工具，非遊戲內容）', [['+50 葉', () => { A.G.save.player.leaf += 50; }], ['跳過對話(揀第一個)', () => { A.UI.skipAll(); }], ['存檔', () => A.G.autosave()], ['新遊戲', () => A.newGame()]]);
+    grp('DEV 放寬（預設關；正式流程報名需 2 隻）', [['報名人數放寬到 1：關', function () { const on = !A.devRelax; A.setRelax(on); this.textContent = '報名人數放寬到 1：' + (on ? '開' : '關'); }]]);
+    grp('占位戰鬥（dev stub）', [['結緣戰(碎石獾)', () => A.runMatchStub('cap_trail_badger', 'capture')], ['初戰 c1_r1', () => A.runMatchStub('c1_r1', 'cup')]]);
+    grp('時間', ['morning', 'day', 'dusk', 'night'].map(t => [t, () => A.W.setTod(t)]));
+    grp('傳送', [['鎮', () => A.G.runAll([{ do: 'teleport', scene: 'town_morningmoss', entry: 'spawn_start' }])], ['迴風場', () => A.G.runAll([{ do: 'teleport', scene: 'arena_windrun', entry: 'spawn_from_town' }])], ['小徑', () => A.G.runAll([{ do: 'teleport', scene: 'trail_fernshadow', entry: 'spawn_from_town' }])]]);
+    grp('除錯', [['dump save', () => { box.textContent = JSON.stringify(A.G.save, null, 1).slice(0, 1800); }], ['warnings', () => { box.textContent = (A.warnings.concat(A.G.warns)).join('\n') || '（無）'; }]]);
+    dev.appendChild(box); $('devbtn').onclick = () => { dev.style.display = dev.style.display === 'block' ? 'none' : 'block'; }; if (Q.get('dev') === '1') { dev.style.display = 'block'; const rb = [...dev.querySelectorAll('button')].find(b => /放寬/.test(b.textContent)); if (rb) rb.textContent = '報名人數放寬到 1：開'; }
+    await A.start(); window.__walkReady = true;
+  } catch (e) { window.__walkErr = String(e && e.stack || e); $('obj').textContent = 'ERROR ' + e; throw e; }
+})();
+</script></body></html>

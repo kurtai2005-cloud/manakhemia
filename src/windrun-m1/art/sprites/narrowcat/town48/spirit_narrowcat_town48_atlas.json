@@ -1,0 +1,161 @@
+{
+ "meta": {
+  "image": "spirit_narrowcat_town48_sheet.png",
+  "frame_w": 48,
+  "frame_h": 48,
+  "pivot": [
+   24,
+   47
+  ],
+  "pivot_note": "腳底中心；爪底最後一行 y=46，pivot y=47（下緣）",
+  "facing": "right（left=mirror 已烘焙）",
+  "fps": {
+   "idle": 2,
+   "walk": 8
+  }
+ },
+ "frames": {
+  "spirit_narrowcat_town48_idle_right_00": {
+   "x": 0,
+   "y": 0,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_idle_right_01": {
+   "x": 48,
+   "y": 0,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_walk_right_00": {
+   "x": 0,
+   "y": 48,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_walk_right_01": {
+   "x": 48,
+   "y": 48,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_walk_right_02": {
+   "x": 96,
+   "y": 48,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_walk_right_03": {
+   "x": 144,
+   "y": 48,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_idle_left_00": {
+   "x": 0,
+   "y": 96,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_idle_left_01": {
+   "x": 48,
+   "y": 96,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_walk_left_00": {
+   "x": 0,
+   "y": 144,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_walk_left_01": {
+   "x": 48,
+   "y": 144,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_walk_left_02": {
+   "x": 96,
+   "y": 144,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  },
+  "spirit_narrowcat_town48_walk_left_03": {
+   "x": 144,
+   "y": 144,
+   "w": 48,
+   "h": 48,
+   "pivot": [
+    24,
+    47
+   ]
+  }
+ },
+ "animations": {
+  "idle_right": [
+   "spirit_narrowcat_town48_idle_right_00",
+   "spirit_narrowcat_town48_idle_right_01"
+  ],
+  "walk_right": [
+   "spirit_narrowcat_town48_walk_right_00",
+   "spirit_narrowcat_town48_walk_right_01",
+   "spirit_narrowcat_town48_walk_right_02",
+   "spirit_narrowcat_town48_walk_right_03"
+  ],
+  "idle_left": [
+   "spirit_narrowcat_town48_idle_left_00",
+   "spirit_narrowcat_town48_idle_left_01"
+  ],
+  "walk_left": [
+   "spirit_narrowcat_town48_walk_left_00",
+   "spirit_narrowcat_town48_walk_left_01",
+   "spirit_narrowcat_town48_walk_left_02",
+   "spirit_narrowcat_town48_walk_left_03"
+  ]
+ }
+}

@@ -1,0 +1,51 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_fern_after_r1",
+ "npc": "npc_fern",
+ "entry": [
+  {
+   "cond": {
+    "all": [
+     {
+      "flag": "c1r1_lost_last"
+     },
+     {
+      "not": {
+       "flag": "c1r1_won"
+      }
+     }
+    ]
+   },
+   "goto": "fl1"
+  },
+  {
+   "goto": "fw1"
+  }
+ ],
+ "nodes": {
+  "fw1": {
+   "speaker": "fern",
+   "emote": "surprise",
+   "text": "贏咗？唔錯。你換棒嗰下，我睇到有啲野。",
+   "next": "fw2"
+  },
+  "fw2": {
+   "speaker": "fern",
+   "emote": "smile",
+   "text": "我嘅初戰都贏咗。決賽，我哋跑過先知。",
+   "next": null
+  },
+  "fl1": {
+   "speaker": "fern",
+   "emote": "neutral",
+   "text": "輸咗唔緊要，我第一場都輸過。睇下你邊度換遲咗？",
+   "next": "fl2"
+  },
+  "fl2": {
+   "speaker": "fern",
+   "emote": "smile",
+   "text": "再報一次啦，今次我陪你睇。",
+   "next": null
+  }
+ }
+}

@@ -1,0 +1,165 @@
+{
+ "transparent_index": 0,
+ "colors": [
+  {
+   "index": 1,
+   "name": "ink",
+   "hex": "#2B2540"
+  },
+  {
+   "index": 2,
+   "name": "plum",
+   "hex": "#4A4066"
+  },
+  {
+   "index": 3,
+   "name": "slate0",
+   "hex": "#55618A"
+  },
+  {
+   "index": 4,
+   "name": "slate1",
+   "hex": "#7482B0"
+  },
+  {
+   "index": 5,
+   "name": "slate2",
+   "hex": "#9AA8D0"
+  },
+  {
+   "index": 6,
+   "name": "slate3",
+   "hex": "#C8D2EE"
+  },
+  {
+   "index": 7,
+   "name": "frost",
+   "hex": "#F3F6FF"
+  },
+  {
+   "index": 8,
+   "name": "sand0",
+   "hex": "#D9B98C"
+  },
+  {
+   "index": 9,
+   "name": "sand1",
+   "hex": "#F0D6A8"
+  },
+  {
+   "index": 10,
+   "name": "sand2",
+   "hex": "#FBEBCB"
+  },
+  {
+   "index": 11,
+   "name": "brown0",
+   "hex": "#5E3F3A"
+  },
+  {
+   "index": 12,
+   "name": "brown1",
+   "hex": "#8A5A44"
+  },
+  {
+   "index": 13,
+   "name": "brown2",
+   "hex": "#B98258"
+  },
+  {
+   "index": 14,
+   "name": "orange0",
+   "hex": "#D9692F"
+  },
+  {
+   "index": 15,
+   "name": "orange1",
+   "hex": "#F2A65A"
+  },
+  {
+   "index": 16,
+   "name": "orange2",
+   "hex": "#FFC87A"
+  },
+  {
+   "index": 17,
+   "name": "glow0",
+   "hex": "#FFD45E"
+  },
+  {
+   "index": 18,
+   "name": "glow1",
+   "hex": "#FFE98A"
+  },
+  {
+   "index": 19,
+   "name": "glow2",
+   "hex": "#FFFBD0"
+  },
+  {
+   "index": 20,
+   "name": "rose0",
+   "hex": "#D9667A"
+  },
+  {
+   "index": 21,
+   "name": "rose1",
+   "hex": "#F28B9B"
+  },
+  {
+   "index": 22,
+   "name": "moss0",
+   "hex": "#2F6B45"
+  },
+  {
+   "index": 23,
+   "name": "moss1",
+   "hex": "#4FA05A"
+  },
+  {
+   "index": 24,
+   "name": "moss2",
+   "hex": "#8CD27A"
+  },
+  {
+   "index": 25,
+   "name": "teal0",
+   "hex": "#2E8F93"
+  },
+  {
+   "index": 26,
+   "name": "teal1",
+   "hex": "#4FD0C8"
+  },
+  {
+   "index": 27,
+   "name": "teal2",
+   "hex": "#A8F5E8"
+  },
+  {
+   "index": 28,
+   "name": "sea0",
+   "hex": "#2A5E9A"
+  },
+  {
+   "index": 29,
+   "name": "sea1",
+   "hex": "#4FA3D9"
+  },
+  {
+   "index": 30,
+   "name": "sea2",
+   "hex": "#A6DAF2"
+  },
+  {
+   "index": 31,
+   "name": "violet0",
+   "hex": "#6A5BAA"
+  },
+  {
+   "index": 32,
+   "name": "violet1",
+   "hex": "#A99BE0"
+  }
+ ]
+}

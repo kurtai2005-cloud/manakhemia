@@ -1,0 +1,39 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_fern_idle",
+ "npc": "npc_fern",
+ "entry": [
+  {
+   "cond": {
+    "all": [
+     {
+      "flag": "captured_badger"
+     },
+     {
+      "not": {
+       "flag": "c1r1_won"
+      }
+     }
+    ]
+   },
+   "goto": "fi2"
+  },
+  {
+   "goto": "fi1"
+  }
+ ],
+ "nodes": {
+  "fi1": {
+   "speaker": "fern",
+   "emote": "smile",
+   "text": "報名要搵桑姨，唔係搵我㗎，哈哈。",
+   "next": null
+  },
+  "fi2": {
+   "speaker": "fern",
+   "emote": "surprise",
+   "text": "有第二隻啦？嗰隻碎石獾好跑得喎，下一場見真章。",
+   "next": null
+  }
+ }
+}

@@ -1,0 +1,101 @@
+{
+ "_doc": "遊程疊加層：遊美 tilemap_town.json 嘅 events 只有「位置＋類型＋少量屬性」，遊戲語意（NPC 顯示名／對話清單／互動文字／鎖門提示）由此補上。所有文字均為遊程占位（遊策 §5 events 表仍有 TBD），標 placeholder:true。 2026-10-26 10:57 起按遊策同步版：interior_registry＝arena_windrun 別名；last_town_door 返回 (20,9)／(30,9)；6 個互動旁白改用 d_objects_town（不再用占位文字）。 10:59 起：npc 精靈改用遊美 npc 圖集（npc:<npc_id>），speaker→portrait_id 與 emote→expression 對照（emote_map 係遊程〔估〕：serious→worried）。 11:25／11:27 起：移除 dialog_alias；遊策定案 d_elder_intro（序章 P2/P3）同 d_elder_hub 係兩個獨立對話集，唔做 alias。npc_elder 對話清單按 cond 揀：not prologue_done → d_elder_intro，否則 d_elder_hub；trigger ev_elder_intro 嘅 dialog_node=d_elder_intro 直接解析。",
+ "placeholder": true,
+ "scene_alias": {
+  "interior_registry": "arena_windrun"
+ },
+ "cond_fail_default": "先同老鐘傾下偈",
+ "warp_text": {
+  "door_elder": "鎖咗門",
+  "door_store": "鎖咗門（M2 開放）",
+  "door_fernhome": "鎖咗門"
+ },
+ "auto_extra": {
+  "ev_fern_first": [
+   {
+    "do": "npc_face",
+    "npc": "npc_fern",
+    "dir": "d"
+   }
+  ]
+ },
+ "npcs": {
+  "npc_elder": {
+   "display": "老鐘",
+   "dialogs": [
+    {
+     "id": "d_elder_intro",
+     "cond": {
+      "not": {
+       "flag": "prologue_done"
+      }
+     }
+    },
+    {
+     "id": "d_elder_hub"
+    }
+   ]
+  },
+  "npc_fern": {
+   "display": "蕨生",
+   "dialogs": [
+    {
+     "cond": {
+      "flag": "c1r1_won"
+     },
+     "id": "d_fern_after_r1"
+    },
+    {
+     "cond": {
+      "flag": "met_fern"
+     },
+     "id": "d_fern_idle"
+    },
+    {
+     "id": "d_fern_first"
+    }
+   ]
+  }
+ },
+ "arrive": {
+  "trail_fernshadow": {
+   "x": 38,
+   "y": 13,
+   "dir": "l"
+  }
+ },
+ "entry_alias": {
+  "arena_windrun:door": "spawn_from_town"
+ },
+ "last_door_events": [
+  "door_arena",
+  "door_registry"
+ ],
+ "arrive_by_var": {
+  "from": "arena_windrun",
+  "var": "last_town_door",
+  "map": {
+   "door_arena": {
+    "x": 20,
+    "y": 9,
+    "dir": "d"
+   },
+   "door_registry": {
+    "x": 30,
+    "y": 9,
+    "dir": "d"
+   }
+  },
+  "default": "door_arena"
+ },
+ "speaker_portrait": {
+  "elder": "npc_elder",
+  "fern": "npc_fern"
+ },
+ "emote_map": {
+  "neutral": "neutral",
+  "smile": "happy",
+  "surprise": "surprised",
+  "serious": "worried"
+ }
+}

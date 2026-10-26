@@ -1,0 +1,1081 @@
+{
+ "firstgid": 385,
+ "frame_ms": 150,
+ "swap_day_to_lit": {
+  "386": 387,
+  "390": 391,
+  "440": 441,
+  "444": 445,
+  "457": 458,
+  "459": 460,
+  "463": 464,
+  "469": 470,
+  "538": 539,
+  "540": 541
+ },
+ "landmarks": {
+  "registry": {
+   "w": 6,
+   "h": 6,
+   "origin": [
+    28,
+    3
+   ],
+   "frame_ms": 150,
+   "anim": true,
+   "body": [
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     {
+      "day": 385,
+      "lit": 385,
+      "animated": false
+     },
+     {
+      "day": 386,
+      "lit": 387,
+      "animated": false
+     },
+     {
+      "day": 388,
+      "lit": 388,
+      "animated": false
+     },
+     {
+      "day": 389,
+      "lit": 389,
+      "animated": false
+     },
+     {
+      "day": 390,
+      "lit": 391,
+      "animated": false
+     },
+     {
+      "day": 392,
+      "lit": 392,
+      "animated": false
+     }
+    ],
+    [
+     {
+      "day": 393,
+      "lit": 393,
+      "animated": false
+     },
+     {
+      "day": 394,
+      "lit": 394,
+      "animated": false
+     },
+     {
+      "day": 395,
+      "lit": 395,
+      "animated": false
+     },
+     {
+      "day": 396,
+      "lit": 396,
+      "animated": false
+     },
+     {
+      "day": 397,
+      "lit": 397,
+      "animated": false
+     },
+     {
+      "day": 398,
+      "lit": 398,
+      "animated": false
+     }
+    ]
+   ],
+   "over": [
+    [
+     {
+      "day": 399,
+      "lit": 399,
+      "animated": true
+     },
+     {
+      "day": 403,
+      "lit": 403,
+      "animated": true
+     },
+     {
+      "day": 407,
+      "lit": 407,
+      "animated": true
+     },
+     {
+      "day": 411,
+      "lit": 411,
+      "animated": true
+     },
+     {
+      "day": 415,
+      "lit": 415,
+      "animated": true
+     },
+     null
+    ],
+    [
+     {
+      "day": 419,
+      "lit": 419,
+      "animated": true
+     },
+     {
+      "day": 423,
+      "lit": 423,
+      "animated": true
+     },
+     {
+      "day": 427,
+      "lit": 427,
+      "animated": true
+     },
+     {
+      "day": 431,
+      "lit": 431,
+      "animated": false
+     },
+     {
+      "day": 432,
+      "lit": 432,
+      "animated": false
+     },
+     {
+      "day": 433,
+      "lit": 433,
+      "animated": false
+     }
+    ],
+    [
+     {
+      "day": 434,
+      "lit": 434,
+      "animated": false
+     },
+     {
+      "day": 435,
+      "lit": 435,
+      "animated": false
+     },
+     {
+      "day": 436,
+      "lit": 436,
+      "animated": false
+     },
+     {
+      "day": 435,
+      "lit": 435,
+      "animated": false
+     },
+     {
+      "day": 437,
+      "lit": 437,
+      "animated": false
+     },
+     {
+      "day": 438,
+      "lit": 438,
+      "animated": false
+     }
+    ],
+    [
+     {
+      "day": 439,
+      "lit": 439,
+      "animated": false
+     },
+     {
+      "day": 440,
+      "lit": 441,
+      "animated": false
+     },
+     {
+      "day": 442,
+      "lit": 442,
+      "animated": false
+     },
+     {
+      "day": 443,
+      "lit": 443,
+      "animated": false
+     },
+     {
+      "day": 444,
+      "lit": 445,
+      "animated": false
+     },
+     {
+      "day": 446,
+      "lit": 446,
+      "animated": false
+     }
+    ],
+    [
+     null,
+     {
+      "day": 447,
+      "lit": 447,
+      "animated": false
+     },
+     {
+      "day": 448,
+      "lit": 448,
+      "animated": false
+     },
+     {
+      "day": 449,
+      "lit": 449,
+      "animated": false
+     },
+     {
+      "day": 450,
+      "lit": 450,
+      "animated": false
+     },
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   ],
+   "anim_tiles": {},
+   "collision": [
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     0,
+     0,
+     1,
+     1
+    ]
+   ],
+   "events": [
+    {
+     "name": "door_registry",
+     "type": "warp",
+     "cell": [
+      2,
+      5
+     ],
+     "w": 2,
+     "h": 1,
+     "target": "interior_registry",
+     "entry": "door",
+     "hint": "報名處"
+    },
+    {
+     "name": "registry_counter",
+     "type": "interact",
+     "cell": [
+      4,
+      5
+     ],
+     "w": 1,
+     "h": 1,
+     "dialog": "registry_counter_01",
+     "hint": "報名櫃台"
+    },
+    {
+     "name": "registry_notice",
+     "type": "interact",
+     "cell": [
+      5,
+      5
+     ],
+     "w": 1,
+     "h": 1,
+     "dialog": "registry_notice_01",
+     "hint": "告示板"
+    }
+   ]
+  },
+  "arena_gate": {
+   "w": 12,
+   "h": 7,
+   "origin": [
+    14,
+    2
+   ],
+   "frame_ms": 150,
+   "anim": true,
+   "body": [
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     {
+      "day": 451,
+      "lit": 451,
+      "animated": false
+     },
+     {
+      "day": 452,
+      "lit": 452,
+      "animated": false
+     },
+     {
+      "day": 452,
+      "lit": 452,
+      "animated": false
+     },
+     {
+      "day": 452,
+      "lit": 452,
+      "animated": false
+     },
+     {
+      "day": 453,
+      "lit": 453,
+      "animated": false
+     },
+     {
+      "day": 454,
+      "lit": 454,
+      "animated": false
+     },
+     {
+      "day": 455,
+      "lit": 455,
+      "animated": false
+     },
+     {
+      "day": 452,
+      "lit": 452,
+      "animated": false
+     },
+     {
+      "day": 452,
+      "lit": 452,
+      "animated": false
+     },
+     {
+      "day": 452,
+      "lit": 452,
+      "animated": false
+     },
+     {
+      "day": 452,
+      "lit": 452,
+      "animated": false
+     },
+     {
+      "day": 456,
+      "lit": 456,
+      "animated": false
+     }
+    ],
+    [
+     {
+      "day": 451,
+      "lit": 451,
+      "animated": false
+     },
+     {
+      "day": 457,
+      "lit": 458,
+      "animated": false
+     },
+     {
+      "day": 459,
+      "lit": 460,
+      "animated": false
+     },
+     {
+      "day": 461,
+      "lit": 461,
+      "animated": false
+     },
+     {
+      "day": 462,
+      "lit": 462,
+      "animated": false
+     },
+     {
+      "day": 463,
+      "lit": 464,
+      "animated": false
+     },
+     {
+      "day": 465,
+      "lit": 465,
+      "animated": false
+     },
+     {
+      "day": 461,
+      "lit": 461,
+      "animated": false
+     },
+     {
+      "day": 457,
+      "lit": 458,
+      "animated": false
+     },
+     {
+      "day": 459,
+      "lit": 460,
+      "animated": false
+     },
+     {
+      "day": 461,
+      "lit": 461,
+      "animated": false
+     },
+     {
+      "day": 456,
+      "lit": 456,
+      "animated": false
+     }
+    ],
+    [
+     {
+      "day": 466,
+      "lit": 466,
+      "animated": false
+     },
+     {
+      "day": 467,
+      "lit": 467,
+      "animated": false
+     },
+     {
+      "day": 467,
+      "lit": 467,
+      "animated": false
+     },
+     {
+      "day": 467,
+      "lit": 467,
+      "animated": false
+     },
+     {
+      "day": 468,
+      "lit": 468,
+      "animated": false
+     },
+     {
+      "day": 469,
+      "lit": 470,
+      "animated": false
+     },
+     {
+      "day": 471,
+      "lit": 471,
+      "animated": false
+     },
+     {
+      "day": 467,
+      "lit": 467,
+      "animated": false
+     },
+     {
+      "day": 467,
+      "lit": 467,
+      "animated": false
+     },
+     {
+      "day": 467,
+      "lit": 467,
+      "animated": false
+     },
+     {
+      "day": 467,
+      "lit": 467,
+      "animated": false
+     },
+     {
+      "day": 472,
+      "lit": 472,
+      "animated": false
+     }
+    ]
+   ],
+   "over": [
+    [
+     null,
+     null,
+     null,
+     {
+      "day": 473,
+      "lit": 473,
+      "animated": true
+     },
+     {
+      "day": 477,
+      "lit": 477,
+      "animated": true
+     },
+     {
+      "day": 481,
+      "lit": 481,
+      "animated": true
+     },
+     {
+      "day": 485,
+      "lit": 485,
+      "animated": true
+     },
+     null,
+     {
+      "day": 489,
+      "lit": 489,
+      "animated": true
+     },
+     {
+      "day": 493,
+      "lit": 493,
+      "animated": true
+     },
+     {
+      "day": 497,
+      "lit": 497,
+      "animated": true
+     },
+     null
+    ],
+    [
+     {
+      "day": 501,
+      "lit": 501,
+      "animated": false
+     },
+     {
+      "day": 502,
+      "lit": 502,
+      "animated": false
+     },
+     {
+      "day": 502,
+      "lit": 502,
+      "animated": false
+     },
+     {
+      "day": 503,
+      "lit": 503,
+      "animated": true
+     },
+     {
+      "day": 507,
+      "lit": 507,
+      "animated": true
+     },
+     {
+      "day": 511,
+      "lit": 511,
+      "animated": true
+     },
+     {
+      "day": 515,
+      "lit": 515,
+      "animated": false
+     },
+     {
+      "day": 502,
+      "lit": 502,
+      "animated": false
+     },
+     {
+      "day": 516,
+      "lit": 516,
+      "animated": true
+     },
+     {
+      "day": 520,
+      "lit": 520,
+      "animated": true
+     },
+     {
+      "day": 524,
+      "lit": 524,
+      "animated": true
+     },
+     {
+      "day": 528,
+      "lit": 528,
+      "animated": false
+     }
+    ],
+    [
+     {
+      "day": 529,
+      "lit": 529,
+      "animated": false
+     },
+     {
+      "day": 530,
+      "lit": 530,
+      "animated": false
+     },
+     {
+      "day": 531,
+      "lit": 531,
+      "animated": false
+     },
+     {
+      "day": 532,
+      "lit": 532,
+      "animated": false
+     },
+     {
+      "day": 530,
+      "lit": 530,
+      "animated": false
+     },
+     {
+      "day": 530,
+      "lit": 530,
+      "animated": false
+     },
+     {
+      "day": 530,
+      "lit": 530,
+      "animated": false
+     },
+     {
+      "day": 530,
+      "lit": 530,
+      "animated": false
+     },
+     {
+      "day": 532,
+      "lit": 532,
+      "animated": false
+     },
+     {
+      "day": 533,
+      "lit": 533,
+      "animated": false
+     },
+     {
+      "day": 530,
+      "lit": 530,
+      "animated": false
+     },
+     {
+      "day": 534,
+      "lit": 534,
+      "animated": false
+     }
+    ],
+    [
+     {
+      "day": 535,
+      "lit": 535,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 536,
+      "lit": 536,
+      "animated": false
+     },
+     {
+      "day": 537,
+      "lit": 537,
+      "animated": false
+     }
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     {
+      "day": 538,
+      "lit": 539,
+      "animated": false
+     },
+     null,
+     null,
+     null,
+     {
+      "day": 538,
+      "lit": 539,
+      "animated": false
+     },
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   ],
+   "anim_tiles": {},
+   "collision": [
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ]
+   ],
+   "events": [
+    {
+     "name": "door_arena",
+     "type": "warp",
+     "cell": [
+      5,
+      6
+     ],
+     "w": 1,
+     "h": 1,
+     "target": "arena_windrun",
+     "entry": "spawn_from_town",
+     "hint": "迴風場"
+    }
+   ]
+  },
+  "signpost_arena": {
+   "w": 1,
+   "h": 2,
+   "origin": [
+    18,
+    10
+   ],
+   "frame_ms": 150,
+   "anim": false,
+   "body": [
+    [
+     null
+    ],
+    [
+     {
+      "day": 540,
+      "lit": 541,
+      "animated": false
+     }
+    ]
+   ],
+   "over": [
+    [
+     {
+      "day": 542,
+      "lit": 542,
+      "animated": false
+     }
+    ],
+    [
+     null
+    ]
+   ],
+   "anim_tiles": {},
+   "collision": [
+    [
+     0
+    ],
+    [
+     1
+    ]
+   ],
+   "events": [
+    {
+     "name": "obj_sign_arena",
+     "type": "interact",
+     "cell": [
+      0,
+      1
+     ],
+     "w": 1,
+     "h": 1,
+     "dialog": "sign_arena_01",
+     "hint": "迴風場 ↑／報名處 →"
+    }
+   ]
+  }
+ }
+}

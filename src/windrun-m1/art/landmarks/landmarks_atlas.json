@@ -1,0 +1,266 @@
+{
+ "image": "landmarks_atlas.png",
+ "size": {
+  "w": 776,
+  "h": 492
+ },
+ "tile": 16,
+ "frame_ms": 150,
+ "loop": "pingpong_off",
+ "frames": {
+  "registry_day_f1": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "duration": 150
+  },
+  "registry_day_f2": {
+   "frame": {
+    "x": 98,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "duration": 150
+  },
+  "registry_day_f3": {
+   "frame": {
+    "x": 196,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "duration": 150
+  },
+  "registry_day_f4": {
+   "frame": {
+    "x": 294,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "duration": 150
+  },
+  "registry_lit_f1": {
+   "frame": {
+    "x": 0,
+    "y": 98,
+    "w": 96,
+    "h": 96
+   },
+   "duration": 150
+  },
+  "registry_lit_f2": {
+   "frame": {
+    "x": 98,
+    "y": 98,
+    "w": 96,
+    "h": 96
+   },
+   "duration": 150
+  },
+  "registry_lit_f3": {
+   "frame": {
+    "x": 196,
+    "y": 98,
+    "w": 96,
+    "h": 96
+   },
+   "duration": 150
+  },
+  "registry_lit_f4": {
+   "frame": {
+    "x": 294,
+    "y": 98,
+    "w": 96,
+    "h": 96
+   },
+   "duration": 150
+  },
+  "arena_gate_day_f1": {
+   "frame": {
+    "x": 0,
+    "y": 196,
+    "w": 192,
+    "h": 112
+   },
+   "duration": 150
+  },
+  "arena_gate_day_f2": {
+   "frame": {
+    "x": 194,
+    "y": 196,
+    "w": 192,
+    "h": 112
+   },
+   "duration": 150
+  },
+  "arena_gate_day_f3": {
+   "frame": {
+    "x": 388,
+    "y": 196,
+    "w": 192,
+    "h": 112
+   },
+   "duration": 150
+  },
+  "arena_gate_day_f4": {
+   "frame": {
+    "x": 582,
+    "y": 196,
+    "w": 192,
+    "h": 112
+   },
+   "duration": 150
+  },
+  "arena_gate_lit_f1": {
+   "frame": {
+    "x": 0,
+    "y": 310,
+    "w": 192,
+    "h": 112
+   },
+   "duration": 150
+  },
+  "arena_gate_lit_f2": {
+   "frame": {
+    "x": 194,
+    "y": 310,
+    "w": 192,
+    "h": 112
+   },
+   "duration": 150
+  },
+  "arena_gate_lit_f3": {
+   "frame": {
+    "x": 388,
+    "y": 310,
+    "w": 192,
+    "h": 112
+   },
+   "duration": 150
+  },
+  "arena_gate_lit_f4": {
+   "frame": {
+    "x": 582,
+    "y": 310,
+    "w": 192,
+    "h": 112
+   },
+   "duration": 150
+  },
+  "signpost_arena_day_f1": {
+   "frame": {
+    "x": 0,
+    "y": 424,
+    "w": 16,
+    "h": 32
+   },
+   "duration": 150
+  },
+  "signpost_arena_day_f2": {
+   "frame": {
+    "x": 18,
+    "y": 424,
+    "w": 16,
+    "h": 32
+   },
+   "duration": 150
+  },
+  "signpost_arena_day_f3": {
+   "frame": {
+    "x": 36,
+    "y": 424,
+    "w": 16,
+    "h": 32
+   },
+   "duration": 150
+  },
+  "signpost_arena_day_f4": {
+   "frame": {
+    "x": 54,
+    "y": 424,
+    "w": 16,
+    "h": 32
+   },
+   "duration": 150
+  },
+  "signpost_arena_lit_f1": {
+   "frame": {
+    "x": 0,
+    "y": 458,
+    "w": 16,
+    "h": 32
+   },
+   "duration": 150
+  },
+  "signpost_arena_lit_f2": {
+   "frame": {
+    "x": 18,
+    "y": 458,
+    "w": 16,
+    "h": 32
+   },
+   "duration": 150
+  },
+  "signpost_arena_lit_f3": {
+   "frame": {
+    "x": 36,
+    "y": 458,
+    "w": 16,
+    "h": 32
+   },
+   "duration": 150
+  },
+  "signpost_arena_lit_f4": {
+   "frame": {
+    "x": 54,
+    "y": 458,
+    "w": 16,
+    "h": 32
+   },
+   "duration": 150
+  }
+ },
+ "tags": {
+  "registry_day": [
+   "registry_day_f1",
+   "registry_day_f2",
+   "registry_day_f3",
+   "registry_day_f4"
+  ],
+  "registry_lit": [
+   "registry_lit_f1",
+   "registry_lit_f2",
+   "registry_lit_f3",
+   "registry_lit_f4"
+  ],
+  "arena_gate_day": [
+   "arena_gate_day_f1",
+   "arena_gate_day_f2",
+   "arena_gate_day_f3",
+   "arena_gate_day_f4"
+  ],
+  "arena_gate_lit": [
+   "arena_gate_lit_f1",
+   "arena_gate_lit_f2",
+   "arena_gate_lit_f3",
+   "arena_gate_lit_f4"
+  ],
+  "signpost_arena_day": [
+   "signpost_arena_day_f1",
+   "signpost_arena_day_f2",
+   "signpost_arena_day_f3",
+   "signpost_arena_day_f4"
+  ],
+  "signpost_arena_lit": [
+   "signpost_arena_lit_f1",
+   "signpost_arena_lit_f2",
+   "signpost_arena_lit_f3",
+   "signpost_arena_lit_f4"
+  ]
+ }
+}

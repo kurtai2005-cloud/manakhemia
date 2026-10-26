@@ -1,0 +1,221 @@
+{
+ "schema": "dialogue/v1",
+ "id": "d_elder_intro",
+ "npc": "npc_elder",
+ "entry": [
+  {
+   "goto": "e_p2_1"
+  }
+ ],
+ "nodes": {
+  "e_p2_1": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "你就係寫信嚟嗰位見習生？{player}，啱唔啱？",
+   "next": "e_p2_2"
+  },
+  "e_p2_2": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "我係老鐘，呢條鎮嘅村長——名頭大，其實就係日日睇住迴風場嗰兩面旗嗰個。",
+   "next": "e_p2_3"
+  },
+  "e_p2_3": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "你睇吓迴風場門樓嗰兩面旗。以前一陣風就獵獵作響，而家要等成半日。",
+   "next": "e_p2_4"
+  },
+  "e_p2_4": {
+   "speaker": "elder",
+   "emote": "serious",
+   "text": "風脈弱咗，野靈跑唔郁，成條鎮都靜晒。",
+   "next": "e_p2_5"
+  },
+  "e_p2_5": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "所以今年谷入面要辦喚風祭。每個鎮辦一個盃賽，冠軍就得一枚風印；",
+   "next": "e_p2_6"
+  },
+  "e_p2_6": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "集齊三枚，就可以去風眼，將風脈喚返嚟。",
+   "next": "e_p2_7"
+  },
+  "e_p2_7": {
+   "speaker": "player",
+   "text": "「我只係見習生，幫得上忙嗎？」",
+   "next": "e_p2_8"
+  },
+  "e_p2_8": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "幫唔幫得上，跑過先知。",
+   "next": "e_p2_9"
+  },
+  "e_p2_9": {
+   "speaker": "narrator",
+   "text": "老鐘從腰間解下一個小竹籃。籃子裡，一團圓滾滾的苔綠色小東西打了個呵欠。",
+   "next": "e_p2_10"
+  },
+  "e_p2_10": {
+   "speaker": "narrator",
+   "text": "牠睜開眼，看了你一眼，又閉上。",
+   "next": "e_p2_11"
+  },
+  "e_p2_11": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "牠叫苔團。跑得唔算快，不過脾氣好，肯聽人講。",
+   "next": "e_give"
+  },
+  "e_give": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "我退咗休就冇再帶隊，交畀你啦。",
+   "on_enter": [
+    {
+     "do": "give_spirit",
+     "species": "mochi",
+     "lv": 3,
+     "nickname_prompt": true
+    },
+    {
+     "do": "set_flag",
+     "flag": "got_mochi"
+    },
+    {
+     "do": "play_sfx",
+     "id": "sfx_item_get"
+    },
+    {
+     "do": "open_ui",
+     "name": "naming"
+    }
+   ],
+   "next": "e_got"
+  },
+  "e_got": {
+   "speaker": "narrator",
+   "text": "取得野靈：苔團（Lv3）",
+   "next": "e_react"
+  },
+  "e_react": {
+   "speaker": "player",
+   "text": "（你想講啲咩？）",
+   "choices": [
+    {
+     "id": "sleepy",
+     "text": "牠看起來好睏。",
+     "next": "e_rA"
+    },
+    {
+     "id": "care",
+     "text": "我會好好照顧牠。",
+     "next": "e_rB"
+    }
+   ]
+  },
+  "e_rA": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "哈哈，苔團同我一樣，要曬夠太陽先郁得。你耐心啲。",
+   "next": "e_p2b_1"
+  },
+  "e_rB": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "好。野靈識分邊個係真心嘅，你一定行得好遠。",
+   "next": "e_p2b_1"
+  },
+  "e_p2b_1": {
+   "speaker": "elder",
+   "emote": "serious",
+   "text": "仲有，接力賽最少要兩隻野靈輪流跑。你而家得一隻，唔夠㗎。",
+   "next": "e_p2b_2"
+  },
+  "e_p2b_2": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "出鎮向東行，蕨影小徑嗰邊有隻野生嘅碎石獾，常常喺空地度發呆。",
+   "next": "e_p2b_3"
+  },
+  "e_p2b_3": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "同佢跑一場，贏咗就可以結緣，佢就係你嘅隊友。",
+   "next": "e_p2b_4"
+  },
+  "e_p2b_4": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "跑輸都唔使驚，佢唔會走，隔一陣再試就得。",
+   "next": "e_p2b_5"
+  },
+  "e_p2b_5": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "記住，野靈唔使你牽住佢跑。你企喺場邊睇住，",
+   "next": "e_p2b_6"
+  },
+  "e_p2b_6": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "啱嘅時候叫佢換人、放招，就係育成師嘅本事。",
+   "next": "e_p2b_7"
+  },
+  "e_p2b_7": {
+   "speaker": "elder",
+   "emote": "neutral",
+   "text": "初葉盃新手可以直接報名。去迴風場搵報名處嘅桑姨，",
+   "next": "e_p2b_8"
+  },
+  "e_p2b_8": {
+   "speaker": "elder",
+   "emote": "smile",
+   "text": "佢會教你點入場。",
+   "next": "e_p3_1",
+   "on_enter": [
+    {
+     "do": "set_objective",
+     "id": "c1_start"
+    }
+   ]
+  },
+  "e_p3_1": {
+   "speaker": "narrator",
+   "text": "門樓上的旗慢慢揚起半幅，停了一下，又揚。",
+   "next": "e_p3_2"
+  },
+  "e_p3_2": {
+   "speaker": "narrator",
+   "text": "苔團在你腳邊打了個噴嚏，吹起一小撮苔絮，飄向迴風場的方向。",
+   "next": "e_p3_3"
+  },
+  "e_p3_3": {
+   "speaker": "narrator",
+   "text": "你低頭看著牠圓圓的背，忽然覺得，這陣風雖然慢，卻好像認得你。",
+   "next": "e_p3_4"
+  },
+  "e_p3_4": {
+   "speaker": "player",
+   "text": "「走吧，苔團。先找第二位隊友。」",
+   "next": "p3_end"
+  },
+  "p3_end": {
+   "speaker": "system",
+   "on_enter": [
+    {
+     "do": "set_flag",
+     "flag": "prologue_done"
+    },
+    {
+     "do": "autosave"
+    }
+   ],
+   "next": null
+  }
+ }
+}
