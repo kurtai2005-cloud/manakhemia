@@ -1,41 +1,41 @@
 #!/usr/bin/env python3
-"""pet_events_final.py — 《微光小圃》方案 A 模組 2「日常事件」最終定案參數（v3）模擬＋規則參考實作（遊測）
-最終定案（遊策 2026-10-26 v3）：
-  命中率＝0.35（每次抽取，2–4 h 一次）；「≈2.3」＝池抽取事件（目標 2.2–2.4）；鬧脾氣另計，加保底合共 ≤2.8 個／日；
-  鬧脾氣＝任一需求 <30 持續 ≥2 小時，或 10 秒內連點寵物 5 次；冷卻 48 h；睡眠中連點＝輕喚醒（睏睏表情，唔鬧脾氣，唔扣需求）；
-  閃光日＝hash(saveSeed, 本機日期) 決定（3%，獨立每日抽）；環境互動冷卻 260 s（見 pet_behavior_sim.py）；
-  彩虹＝傍晚（17–23）抽取時入池（唔另擲 10%），目標約 13 日一次；稀有＝流星夜＋雨後彩虹；
-  離線最多彈 2 個（稀有優先），其餘入「日記」留 14 日；第 12 日起提示「2 日後作廢」；每條 +3 光粒；單次領取上限 60 光粒；同類合併顯示 ×N；
-  保底＝16:00 後或當日第 2 次開 app 仍冇事件即觸發；防重複 ×0.25；全域間隔 ≥20 分鐘；單事件冷卻 24 h（稀有 72 h）；
-  時段：早 07–11／午 11–17／晚 17–23／夜 23–07。
-遊測仍然自行補嘅假設（標 [假設]）：池內權重（彩虹權重按「約 13 日一次」反推）；睡眠＝夜段 23–07；離線需求衰減＝設計 v1（飽腹 6／心情 4／清潔 3／精力 5 每小時；
-  8h 全額＋16h×25%、24h 封頂、保底 20）；「持續 ≥2 小時」按真實時間；連點窗口第 1 至第 5 下 ≤10.0 s；玩家連點機率 2%／次開 app；日記玩家 70% 下次開 app 領取；
-  日記超上限時按「最舊先領」。
-用法：python3 pet_events_final.py [--days 3000] [--seed 7] [--md out/events_results.md]（退出碼 1＝有 FAIL）
+"""pet_events_final.py — 《微光小圃》方案 A 模組 2「日常事件」最終定案參數（v4）模擬＋規則參考實作（遊測）
+v4 定案（遊策 2026-10-26）：
+  池抽取事件 7 個（禮物、蝴蝶、流星夜、彩虹、夢話、尋寶、螢火散步）＋鬧脾氣（條件觸發）＋閃光日（每日狀態）＝9；
+  新增傍晚（17–23）普通事件「螢火散步」（權重 20；獎勵光粒 +5、心情 +10）；彩虹權重 3；命中率 p_hit＝0.33（2–4 h 抽取一次）；
+  池抽取事件目標 2.2–2.4／日；總事件（抽取＋鬧脾氣＋保底）驗收 ≤2.85（>2.8 要報告）；彩虹目標約 13 日一次（11–15）；
+  閃光日 hash(saveSeed, date)＋按日期存「已領」（撥日期去已領閃光日唔可重領獎）；
+  其餘維持 v3：鬧脾氣＝需求 <30 持續 ≥2 h 或 10 秒連點 5 下、冷卻 48 h、睡眠中連點＝輕喚醒；離線最多彈 2（稀有優先）；日記 14 日、第 12 日起提示、
+  +3 光粒／條、單次 60 上限、×N 合併；保底 16:00 後或當日第 2 次開 app；防重複 ×0.25；全域間隔 ≥20 分鐘；冷卻 24 h（稀有 72 h）；時段 早07–11／午11–17／晚17–23／夜23–07。
+仍屬遊測 [假設]：池權重（螢火 20、彩虹 3 係遊策定，其餘沿用提案）；睡眠＝23–07；離線需求衰減＝設計 v1；日記每條獎勵一律 +3 光粒（唔分事件種類）；
+  螢火散步「心情 +10」只喺彈窗領取時生效（日記條目冇心情獎勵）；玩家 85% 照顧需求、2% 連點、70% 領日記；日記超上限時最舊先領。
+用法：python3 pet_events_final.py [--days 3000] [--seed 7] [--multi 8] [--md out/events_results.md]（退出碼 1＝有 FAIL）
 """
 import argparse, random, math, statistics as st, collections, os, sys, hashlib
 
 # ── 定案參數 ─────────────────────────────────────────────
-P_HIT = 0.35
+P_HIT = 0.33
 INTERVAL = (2.0, 4.0)            # 小時
 GLOBAL_GAP_H = 20 / 60           # ≥20 分鐘
 CD_H = {'normal': 24.0, 'rare': 72.0, 'tantrum': 48.0}
 P_SHINY_DAY = 0.03
 RAINBOW_WIN = (17, 23)
-RAINBOW_W = 1                    # [假設] 彩虹池權重；實測頻率對權重唔敏感（見 F2），1＝最接近目標嘅合理值
+RAINBOW_W = 3                    # 遊策定案
 TANTRUM_NEED_H = 2.0
 SLEEP_WIN = (23, 7)
 DIARY_TIP_DAY = 12
 LIGHT_PER = 3
 CLAIM_CAP = 60
-TARGET_POOL = (2.2, 2.4); TARGET_TOTAL = 2.8
+TARGET_POOL = (2.2, 2.4); TARGET_TOTAL = 2.85; TOTAL_REPORT = 2.8
+FIREFLY = dict(w=20, win=(17, 23), lights=5, mood=10)
 POPUP_MAX = 2
 DIARY_DAYS = 14
 ANTI = 0.25
 BANDS = {'早': (7, 11), '午': (11, 17), '晚': (17, 23), '夜': (23, 7)}
 # id, 權重, 稀有?, 可觸發時段(時)；rainbow／tantrum 為獨立觸發，不入權重池
 POOL = [('gift', 22, False, (7, 23)), ('butterfly', 20, False, (7, 17)), ('meteor', 10, True, (19, 5)),
-        ('sleeptalk', 11, False, (23, 7)), ('treasure', 18, False, (8, 22)), ('rainbow', RAINBOW_W, True, RAINBOW_WIN)]
+        ('sleeptalk', 11, False, (23, 7)), ('treasure', 18, False, (8, 22)), ('rainbow', RAINBOW_W, True, RAINBOW_WIN),
+        ('firefly', FIREFLY['w'], False, FIREFLY['win'])]
 RARE = {'meteor', 'rainbow'}
 ALL_IDS = [e[0] for e in POOL] + ['tantrum']
 DECAY = dict(food=6.0, mood=4.0, clean=3.0, energy=5.0)
@@ -57,6 +57,18 @@ def shiny_of(save_seed, day):
     """閃光日＝hash(saveSeed, 本機日期)；3%；同 seed 同日永遠同結果"""
     h = hashlib.sha256(f'{save_seed}:{day}'.encode()).digest()
     return int.from_bytes(h[:8], 'big') / 2**64 < P_SHINY_DAY
+
+def firefly_reward(mood):
+    """螢火散步彈窗領取：光粒 +5、心情 +10（上限 100）"""
+    return FIREFLY['lights'], min(100, mood + FIREFLY['mood'])
+
+def claim_valued(values, cap=CLAIM_CAP):
+    """[備選] 日記條目按各自獎勵值領（螢火 5／其他 3）：最舊先領，下一條會超上限就停；回傳（領咗幾條, 光粒, 剩餘）"""
+    tot = k = 0
+    for v in values:
+        if tot + v > cap: break
+        tot += v; k += 1
+    return k, tot, len(values) - k
 
 def is_sleeping(hour): return in_win(hour % 24, SLEEP_WIN)
 
@@ -116,7 +128,7 @@ class Sim:
         s.log = []                  # 全部產生嘅事件 dict(t,id,kind)
         s.gen_day = collections.Counter(); s.seen_day = collections.Counter(); s.opens_day = collections.Counter()
         s.shiny_rolled = {}         # 日期 → bool（存檔）
-        s.shiny_rolls = 0; s.shiny_days_seen = set()
+        s.shiny_rolls = 0; s.shiny_days_seen = set(); s.shiny_claimed = set(); s.shiny_reward_claims = 0
         s.diary = []                # dict(t,id,claimed,seen_t)
         s.stats = collections.Counter(); s.popups_per_open = []; s.diary_sizes = []; s.diary_max_age = 0.0
         s.needs = dict(food=90.0, mood=90.0, clean=90.0, energy=90.0)
@@ -209,11 +221,20 @@ class Sim:
         for d in s.diary:
             if t - d['t'] >= DIARY_TIP_DAY * 24: d['warned'] = True      # 開 app 時日記頁面顯示「N 日後作廢」
         for d in s.diary: s.diary_max_age = max(s.diary_max_age, t - d['t'])
+        for e in pop:
+            if e['id'] == 'firefly':
+                s.stats['firefly_pop'] += 1; s.stats['firefly_lights'] += FIREFLY['lights']; s.needs['mood'] = min(100, s.needs['mood'] + FIREFLY['mood'])
+        s.stats['firefly_diary'] += sum(1 for e in rest if e['id'] == 'firefly')
         # 玩家照顧
         for k in s.needs:
             if s.rng.random() < care_prob: s.needs[k] = s.rng.uniform(80, 100)
         s.last_open = t
         return pop, rest
+
+    def claim_shiny(s, day):
+        """閃光日獎勵：該日期係閃光日且未領過先俾；已領日期存檔（撥日期去已領閃光日唔可重領）"""
+        if not shiny_of(s.save_seed, day) or day in s.shiny_claimed: return False
+        s.shiny_claimed.add(day); s.shiny_reward_claims += 1; return True
 
     def _claim(s, t):
         """一次領取：最舊先領，每條 +3 光粒，單次上限 60 光粒（＝20 條）"""
@@ -360,7 +381,7 @@ def case_tests():
     add('DK-01', '領取：1 條＝+3 光粒', claim_calc(1), (1, 3, 0))
     add('DK-02', '領取：20 條＝60 光粒（剛好上限）', claim_calc(20), (20, 60, 0))
     add('DK-03', '領取：21 條＝領 20 條 60 光粒，剩 1 條', claim_calc(21), (20, 60, 1))
-    add('DK-04', '領取：14 日缺席 36 條＝第 1 次 60（剩 16）、第 2 次 48（剩 0）', (claim_calc(36), claim_calc(16)), ((20, 60, 16), (16, 48, 0)))
+    add('DK-04', '領取：14 日缺席約 32 條＝第 1 次 60（剩 12）、第 2 次 36（剩 0）', (claim_calc(32), claim_calc(12)), ((20, 60, 12), (12, 36, 0)))
     g = diary_groups([dict(id='gift')] * 5 + [dict(id='butterfly')] * 3)
     add('DK-05', '×N 合併顯示：禮物×5、蝴蝶×3；總獎勵＝8×3＝24 光粒（唔 cap）', (g, claim_calc(8)[1]), ([('gift', 5), ('butterfly', 3)], 24))
     g = diary_groups([dict(id='gift')] * 25)
@@ -368,6 +389,29 @@ def case_tests():
     add('DK-07', '×N 合併後獎勵＝N×3（唔係每組 3）：×7＝21 光粒', claim_calc(7)[1], 21)
     s1 = Sim(random.Random(2)); s1.diary = [dict(t=float(i), id='gift', claimed=False, warned=False) for i in range(30)]; s1._claim(100.0)
     add('DK-08', '領取最舊先領＋冪等（同一條唔重複領）', (s1.stats['lights'], len(s1.diary), min(d['t'] for d in s1.diary)), (60, 10, 20.0))
+    # 螢火散步（傍晚 17–23 普通事件；+5 光粒、心情 +10）
+    for i, (h, exp) in enumerate([(16.99, False), (17.0, True), (20.0, True), (22.99, True), (23.0, False), (3.0, False), (10.0, False)], 1):
+        add(f'FF-0{i}', f'螢火散步入池時段 {int(h)}:{int(round((h % 1) * 60)):02d}', 'firefly' in [e[0] for e in POOL if in_win(h, e[3])], exp)
+    add('FF-08', '螢火散步獎勵：光粒 +5、心情 50→60', firefly_reward(50), (5, 60))
+    add('FF-09', '螢火散步心情 95→100（上限 100）', firefly_reward(95)[1], 100)
+    add('FF-10', '螢火散步屬普通事件（非稀有）、冷卻 24 h、權重 20', ('firefly' in RARE, cd_of('firefly'), [e[1] for e in POOL if e[0] == 'firefly'][0]), (False, 24.0, 20))
+    add('FF-11', '日記×N 合併：螢火×6＋禮物×3 → 螢火散步×6、禮物×3；光粒＝9 條×3＝27 [假設：日記一律 +3／條]', (diary_groups([dict(id='firefly')] * 6 + [dict(id='gift')] * 3), claim_calc(9)[1]), ([('firefly', 6), ('gift', 3)], 27))
+    add('FF-12', '日記×N 觸頂：螢火×25 → 領 20 條＝60 光粒，剩螢火×5', (diary_groups([dict(id='firefly')] * 25), claim_calc(25)), ([('firefly', 25)], (20, 60, 5)))
+    add('FF-13', '[備選規則：日記螢火條目按 +5 計] 螢火×13＋禮物×2（螢火較舊）→ 領 12 條螢火＝60，剩螢火×1＋禮物×2', claim_valued([5] * 13 + [3] * 2), (12, 60, 3))
+    add('FF-14', '[備選] 混合 螢火×4（20）＋禮物×10（30）＝50 光粒、14 條，未觸頂', claim_valued([5] * 4 + [3] * 10), (14, 50, 0))
+    # 閃光日「已領」按日期存檔
+    seedA = 20261026; sd_days = [d for d in range(2000) if shiny_of(seedA, d)]; nd_day = next(d for d in range(2000) if not shiny_of(seedA, d))
+    sc = Sim(random.Random(1), save_seed=seedA)
+    add('SC-01', f'閃光日（第 {sd_days[0]} 日）首次領獎', sc.claim_shiny(sd_days[0]), True)
+    add('SC-02', '同日期再領（重開 app／殺 app 後）→ 唔可重領', sc.claim_shiny(sd_days[0]), False)
+    for d in range(sd_days[0], sd_days[0] + 5): sc.opens_day[d] = 1          # 日期前撥 5 日
+    add('SC-03', f'前撥幾日後撥返去已領閃光日（第 {sd_days[0]} 日）→ 唔可重領', sc.claim_shiny(sd_days[0]), False)
+    import json as _j; saved = _j.dumps(sorted(sc.shiny_claimed)); sc2 = Sim(random.Random(7), save_seed=seedA); sc2.shiny_claimed = set(_j.loads(saved))
+    add('SC-04', '存檔→重載後（已領集合序列化）同日期仍唔可重領', sc2.claim_shiny(sd_days[0]), False)
+    add('SC-05', f'撥去未領嘅另一個閃光日（第 {sd_days[1]} 日）→ 可領一次（唔同日期）', (sc.claim_shiny(sd_days[1]), sc.claim_shiny(sd_days[1])), (True, False))
+    add('SC-06', f'撥去非閃光日（第 {nd_day} 日）→ 冇獎', sc.claim_shiny(nd_day), False)
+    sc3 = Sim(random.Random(8), save_seed=seedA); got = sum(1 for d in range(365) if sc3.claim_shiny(d)); exp = sum(1 for d in range(365) if shiny_of(seedA, d))
+    add('SC-07', f'[已知限制，資訊] 逐日前撥 365 日可領 {got} 次＝該段所有閃光日各 1 次（≈3%；單調時鐘／前撥上限仍屬 P2）', got, exp)
     return rows
 
 # ── 主程式 ────────────────────────────────────────────────
@@ -385,15 +429,15 @@ class patched:
 def kinds(sm): return collections.Counter(e['kind'] for e in sm.log)
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--days', type=int, default=3000); ap.add_argument('--seed', type=int, default=7); ap.add_argument('--md', default=None)
+    ap = argparse.ArgumentParser(); ap.add_argument('--days', type=int, default=3000); ap.add_argument('--seed', type=int, default=7); ap.add_argument('--md', default=None); ap.add_argument('--multi', type=int, default=8)
     a = ap.parse_args(); out = []; P = out.append; D = a.days
     fails = []; warns = []
-    P('# 事件池抽取模擬結果（pet_events_final.py；遊策最終定案 v3）\n')
-    P(f'> {D} 日／作息；seed={a.seed}。參數：命中率 {P_HIT}、抽取 2–4 h、全域間隔 ≥20 分鐘、單事件冷卻 24 h（稀有 72 h，鬧脾氣 48 h）、離線最多彈 {POPUP_MAX} 個（稀有優先）、日記留 {DIARY_DAYS} 日（第 {DIARY_TIP_DAY} 日起提示；每條 +{LIGHT_PER} 光粒；單次上限 {CLAIM_CAP}）、保底＝16:00 後或當日第 2 次開 app 仍冇事件即觸發、防重複 ×{ANTI}、閃光日 hash(saveSeed,date) {P_SHINY_DAY:.0%}。\n')
-    P('> 事件池（模擬）：禮物／蝴蝶／流星夜（稀有）／夢話／尋寶／雨後彩虹（稀有，17–23 入池，權重 %s）＋鬧脾氣（條件觸發，唔入池）；閃光日為每日狀態，**唔計入事件數**。\n' % RAINBOW_W)
+    P('# 事件池抽取模擬結果（pet_events_final.py；遊策最終定案 v4）\n')
+    P(f'> {D} 日／作息；seed={a.seed}。參數：命中率 {P_HIT}、抽取 2–4 h、全域間隔 ≥20 分鐘、單事件冷卻 24 h（稀有 72 h，鬧脾氣 48 h）、彩虹權重 {RAINBOW_W}、螢火散步權重 {FIREFLY['w']}、離線最多彈 {POPUP_MAX} 個（稀有優先）、日記留 {DIARY_DAYS} 日（第 {DIARY_TIP_DAY} 日起提示；每條 +{LIGHT_PER} 光粒；單次上限 {CLAIM_CAP}）、保底＝16:00 後或當日第 2 次開 app 仍冇事件即觸發、防重複 ×{ANTI}、閃光日 hash(saveSeed,date) {P_SHINY_DAY:.0%}。\n')
+    P('> 事件池（9）＝7 個池抽取事件：禮物／蝴蝶／流星夜（稀有）／夢話／尋寶／雨後彩虹（稀有，17–23，權重 %s）／螢火散步（17–23，權重 %s，+5 光粒＋心情 +10）＋鬧脾氣（條件觸發）＋閃光日（每日狀態，**唔計入事件數**）。\n' % (RAINBOW_W, FIREFLY['w']))
     runs = {pn: run_profile(prof, D, random.Random(a.seed)) for pn, prof in PROFILES.items()}
     # A
-    P(f'## A. 每日事件數 — pass：池抽取事件 {TARGET_POOL[0]}–{TARGET_POOL[1]} 個／日；總事件（抽取＋鬧脾氣＋保底）≤{TARGET_TOTAL}；單次返嚟彈窗 ≤{POPUP_MAX}\n')
+    P(f'## A. 每日事件數 — pass：池抽取事件 {TARGET_POOL[0]}–{TARGET_POOL[1]} 個／日；總事件（抽取＋鬧脾氣＋保底）≤{TARGET_TOTAL}（>{TOTAL_REPORT} 要報告）；單次返嚟彈窗 ≤{POPUP_MAX}\n')
     P('| 作息 | 池抽取事件/日 | 鬧脾氣/日 | 保底/日 | **總事件/日** | 鬧脾氣佔總% | 活躍日見到 0 事件% | p10／p90（總） | 單次最多彈 | 彈窗佔比 | 日記佔比 | 判定 |'); P('|---|---|---|---|---|---|---|---|---|---|---|---|')
     for pn, (s, sess) in runs.items():
         k = kinds(s); pool_d = k['draw'] / D; tan_d = k['tantrum'] / D; gu_d = k['guarantee'] / D; tot_d = len(s.log) / D
@@ -401,6 +445,7 @@ def main():
         zero = 100 * sum(1 for x in seen if x == 0) / len(act); mx = max(s.popups_per_open); tot = s.stats['popups'] + s.stats['to_diary']
         ok = TARGET_POOL[0] <= pool_d <= TARGET_POOL[1] and tot_d <= TARGET_TOTAL and mx <= POPUP_MAX
         if not ok: fails.append(f'A:{pn}')
+        if tot_d > TOTAL_REPORT: warns.append(f'A:{pn} 總事件 {tot_d:.2f} >{TOTAL_REPORT}（≤{TARGET_TOTAL} 放寬內）')
         P(f"| {pn} | {pool_d:.2f} | {tan_d:.2f} | {gu_d:.2f} | **{tot_d:.2f}** | {100*tan_d/tot_d:.0f}% | {zero:.1f} | {gen[int(0.1*D)]}／{gen[int(0.9*D)]} | {mx} | {100*s.stats['popups']/tot:.0f}% | {100*s.stats['to_diary']/tot:.0f}% | **{'PASS' if ok else 'FAIL'}** |")
     P('\n（「池抽取事件」＝定時抽取命中；總事件含鬧脾氣同保底；以事件發生時間計、含離線期間。）\n')
     # B
@@ -436,7 +481,7 @@ def main():
         first.append(kq)
     q = lambda m: 100 * sum(1 for x in first if x <= m) / len(first)
     P(f"\n新玩家首次見到閃光日：7 日內 {q(7):.0f}%、14 日內 {q(14):.0f}%、30 日內 {q(30):.0f}%、60 日內 {q(60):.0f}%；中位 {sorted(first)[len(first)//2]} 日，p95 {sorted(first)[int(0.95*len(first))]} 日。")
-    P('\n**已知限制（P2）**：hash 令「重開 app／逐日前撥」唔再增加抽中機會（SH-03／04），但玩家仍可將系統日期撥去一個已知閃光日（hash 可預測）；需「已領閃光日」按日期存檔（同日期只領一次）＋單調時鐘檢查（日期後退唔重領）。')
+    P('\n**閃光日已領存檔（v4 採納 P2）**：獎勵按日期存「已領」，撥日期去已領閃光日唔可重領（SC-01…06）；hash 令「重開 app／逐日前撥」唔增加抽中機會（SH-03／04）。**仍存在嘅限制**：每個未領閃光日仍可各領一次，玩家前撥日期可逐個掃走（SC-07：前撥 365 日＝可領約 3% 嘅日子）；要徹底防止需單調時鐘／前撥上限（P2）。')
     # D
     P('\n## D. 冷卻／全域間隔違規（獨立驗證器掃全部事件）— pass：違規 =0；最小間隔 ≥20 分鐘；同事件最小間隔 ≥24 h（稀有 ≥72 h）；鬧脾氣 ≥48 h\n')
     P('| 作息 | 事件總數 | 單事件冷卻違規 | 全域間隔違規 | 最小事件間隔（分鐘） | 同事件最小間隔 h（普通／稀有） | 鬧脾氣最小間隔 h | 全域間隔擋咗嘅抽取 | 判定 |'); P('|---|---|---|---|---|---|---|---|---|')
@@ -488,7 +533,7 @@ def main():
         if not ok_f: fails.append(f'F:頻率:{pn}')
         P(f"| {pn} | {per_day:.3f} | {days:.1f} | {'是' if inwin else '否'} | 時段 **{'PASS' if ok_win else 'FAIL'}**／頻率 **{'PASS' if ok_f else 'FAIL'}** |")
     P('\n### F2. 彩虹頻率敏感度（一般 4 次/日）— 頻率取決於「傍晚可用事件嘅數量」，而唔係彩虹權重\n')
-    P('原因：傍晚（17–23）可入池嘅普通事件只有禮物、尋寶（流星夜 19 後）；2.3 個／日＋24 h 冷卻令佢哋傍晚多數已冷卻，彩虹變成「剩低嘅唯一選擇」。\n')
+    P('彩虹頻率主要取決於傍晚（17–23）可入池嘅普通事件數量（24 h 冷卻令佢哋傍晚多數已冷卻，彩虹變成「剩低嘅唯一選擇」）。v3＝禮物、尋寶；v4 加螢火散步。\n')
     P('| 池設定 | 彩虹權重 | 彩虹幾日一次（6 作息範圍） | 池抽取/日 | 總事件/日 |'); P('|---|---|---|---|---|')
     mk = lambda w, extra=(): [e if e[0] != 'rainbow' else ('rainbow', w, True, RAINBOW_WIN) for e in POOL] + list(extra)
     base_pool = list(POOL)
@@ -499,10 +544,12 @@ def main():
             for pn, prof in PROFILES.items():
                 sm, _ = run_profile(prof, D, random.Random(a.seed)); k = kinds(sm); n_r = sum(1 for e in sm.log if e['id'] == 'rainbow'); r.append((D / max(n_r, 1), k['draw'] / D, len(sm.log) / D))
         P(f"| {label} | {w} | {min(x[0] for x in r):.1f}–{max(x[0] for x in r):.1f} | {min(x[1] for x in r):.2f}–{max(x[1] for x in r):.2f} | {min(x[2] for x in r):.2f}–{max(x[2] for x in r):.2f} |")
-    for w in (0.1, 1, 3, 8): sweep('現有 6 池事件（定案）' + (' ←模擬用' if w == RAINBOW_W else ''), mk(w), w)
-    sweep('稀有冷卻 120 h', mk(RAINBOW_W), RAINBOW_W, rare_cd=120); sweep('稀有冷卻 168 h', mk(RAINBOW_W), RAINBOW_W, rare_cd=168)
-    sweep('＋1 個傍晚普通事件（螢火蟲，權重 20）', mk(3, [ff]), 3); sweep('＋1 個傍晚普通事件', mk(8, [ff]), 8); sweep('＋2 個傍晚普通事件', mk(8, [ff, ln]), 8)
-    P('\n→ 要達「約 13 日一次」：加 1 個傍晚（17–23）普通池事件，彩虹權重約 3；或接受現時約每 8 日一次（權重無用）。')
+    nofire = [e for e in POOL if e[0] != 'firefly']
+    mk0 = lambda w: [e if e[0] != 'rainbow' else ('rainbow', w, True, RAINBOW_WIN) for e in nofire]
+    sweep('v3（無螢火散步）', mk0(1), 1)
+    for w in (1, 2, 3, 4, 8): sweep('v4（含螢火散步）' + (' ←定案' if w == RAINBOW_W else ''), mk(w), w)
+    sweep('v4＋稀有冷卻 120 h', mk(RAINBOW_W), RAINBOW_W, rare_cd=120)
+    P('\n→ 彩虹約 13 日一次要靠「傍晚普通事件夠多」；定案（螢火散步＋彩虹權重 3）見上表 ←定案 行。')
     # G
     P('\n## G. 鬧脾氣（任一需求 <30 持續 ≥2 小時，或 10 秒內連點 5 次；冷卻 48 h）— pass：頻率同佔比報告；佔總事件 ≤15%、≤0.40 次/日（建議值）\n')
     P('| 作息 | 鬧脾氣次/日 | 佔總事件% | 來源：需求 | 來源：連點 | 睡眠中連點→輕喚醒（次） | 被冷卻／間隔擋住次 | 判定 |'); P('|---|---|---|---|---|---|---|---|')
@@ -535,7 +582,7 @@ def main():
     # J
     P('\n## J. 命中率敏感度（一般 4 次/日；保底 eve2）— 池抽取目標 2.2–2.4、總 ≤2.8\n')
     P('| p_hit | 池抽取/日 | 鬧脾氣/日 | 保底/日 | 總事件/日 | 活躍日零事件% | 保底觸發日% |'); P('|---|---|---|---|---|---|---|')
-    for ph in (0.25, 0.30, 0.35, 0.40, 0.45):
+    for ph in (0.28, 0.30, 0.33, 0.35, 0.38, 0.40):
         sm, ss = run_profile(PROFILES['一般 4次/日'], D, random.Random(a.seed), p_hit=ph); act = sorted(set(int(t // 24) for t in ss)); kc = kinds(sm)
         P(f"| {ph}{' ←定案' if ph == P_HIT else ''} | {kc['draw']/D:.2f} | {kc['tantrum']/D:.2f} | {kc['guarantee']/D:.2f} | {len(sm.log)/D:.2f} | {100*sum(1 for d in act if sm.seen_day[d]==0)/len(act):.2f} | {100*len(sm.guar_days)/len(act):.1f} |")
     P('\n## K. 鬧脾氣對需求衰減／冷卻嘅敏感度（一般 4 次/日、p_hit 0.35）\n')
@@ -544,6 +591,53 @@ def main():
         with patched(decay=dd):
             sm, ss = run_profile(PROFILES['一般 4次/日'], D, random.Random(a.seed)); kc = kinds(sm)
             P(f"| {nm} | {kc['tantrum']/D:.2f} | {len(sm.log)/D:.2f} |")
+    P('\n## L. 螢火散步統計（一般 4 次/日及全部作息）— pass：全部喺 17:00–22:59；占比／日；光粒收入計入\n')
+    P('| 作息 | 螢火散步/日 | 占池抽取% | 全部喺 17–23？ | 彈窗領取次 | 日記條目 | 光粒收入/日（彈窗 +5） | 判定 |'); P('|---|---|---|---|---|---|---|---|')
+    for pn, (s, sess) in runs.items():
+        ff_ev = [e for e in s.log if e['id'] == 'firefly']; inw = all(in_win(e['t'] % 24, FIREFLY['win']) for e in ff_ev); k = kinds(s)
+        ok = inw and len(ff_ev) > 0
+        if not ok: fails.append(f'L:{pn}')
+        P(f"| {pn} | {len(ff_ev)/D:.3f} | {100*len(ff_ev)/max(1,k['draw']+k['guarantee']):.1f}% | {'是' if inw else '否'} | {s.stats['firefly_pop']} | {s.stats['firefly_diary']} | {s.stats['firefly_lights']/D:.2f} | **{'PASS' if ok else 'FAIL'}** |")
+    P('\n（彈窗 +5 光粒、心情 +10 已計入模擬；日記條目按 [假設] 一律 +3 光粒、冇心情獎勵；備選規則「日記螢火 +5」見案例 FF-13／14。）')
+    # M. 多 seed 一致性
+    seeds = [7, 3, 5, 11, 13, 17, 19, 23][:a.multi]
+    P(f'\n## M. 多 seed 一致性（{len(seeds)} 個 seed × 6 作息 × {D} 日；各項取 seed 間 min–max，並列通過 seed 數）\n')
+    P('| 指標 | 要求 | 範圍（6 作息 × 各 seed） | 通過 seed 數 |'); P('|---|---|---|---|')
+    agg = collections.defaultdict(list); passes = collections.defaultdict(int)
+    for sd in seeds:
+        chk = collections.defaultdict(lambda: True)
+        for pn, prof in PROFILES.items():
+            sm, ss = run_profile(prof, D, random.Random(sd)); k = kinds(sm); act = sorted(set(int(t // 24) for t in ss))
+            pool_d = k['draw'] / D; tot_d = len(sm.log) / D; tan_d = k['tantrum'] / D; zero = 100 * sum(1 for d in act if sm.seen_day[d] == 0) / len(act)
+            rb = sum(1 for e in sm.log if e['id'] == 'rainbow'); rbd = D / max(rb, 1); cdv, gapv, mg, ms = validate(sm)
+            sh = 100 * sum(1 for d in act if sm.shiny_rolled.get(d)) / len(act)
+            for key, val, ok in (('池抽取事件/日', pool_d, TARGET_POOL[0] <= pool_d <= TARGET_POOL[1]), ('總事件/日', tot_d, tot_d <= TARGET_TOTAL), ('其中 >2.8 嘅作息數', float(tot_d > TOTAL_REPORT), True),
+                                 ('鬧脾氣/日', tan_d, tan_d <= 0.40), ('彩虹幾日一次', rbd, 11 <= rbd <= 15), ('活躍日零事件%', zero, zero <= (3.0 if len(prof['times']) < 3 and not prof.get('every_other') else 1.0)),
+                                 ('冷卻＋間隔違規', float(cdv + gapv), cdv + gapv == 0), ('閃光日比例%', sh, lo(len(act)) <= sh <= hi(len(act))), ('彈窗最多', float(max(sm.popups_per_open)), max(sm.popups_per_open) <= POPUP_MAX)):
+                agg[key].append(val); chk[key] = chk[key] and ok
+        for key in chk: passes[key] += chk[key]
+    req = {'池抽取事件/日': '2.2–2.4', '總事件/日': '≤2.85（>2.8 報告）', '其中 >2.8 嘅作息數': '資訊', '鬧脾氣/日': '≤0.40（建議）', '彩虹幾日一次': '11–15', '活躍日零事件%': '≤1%（≥3 次/日）／≤3%（輕度、早鳥）', '冷卻＋間隔違規': '0', '閃光日比例%': '3% ±3σ', '彈窗最多': '≤2'}
+    for key in req:
+        v = agg[key]; P(f"| {key} | {req[key]} | {min(v):.2f}–{max(v):.2f} | {passes[key]}/{len(seeds)} |")
+        if key != '其中 >2.8 嘅作息數' and passes[key] < len(seeds): fails.append(f'M:{key}（{passes[key]}/{len(seeds)}）')
+    # N. 方案對比（定案偏差時嘅建議）
+    P(f'\n## N. 偏差時嘅方案對比（{len(seeds[:4])} 個 seed × 6 作息；範圍＝min–max）— 定案參數 vs 建議微調\n')
+    P('| 方案 | 池抽取/日（2.2–2.4） | 總事件/日（≤2.85） | 彩虹幾日一次（11–15） | 輕度零事件%（≤3） | 早鳥零事件%（≤3） |'); P('|---|---|---|---|---|---|')
+    def variant(label, w=RAINBOW_W, ph=P_HIT, g='eve2'):
+        pool = [e if e[0] != 'rainbow' else ('rainbow', w, True, RAINBOW_WIN) for e in POOL]; R = []
+        for sd in seeds[:4]:
+            for pn, prof in PROFILES.items():
+                with patched(pool=pool):
+                    sm, ss = run_profile(prof, D, random.Random(sd), p_hit=ph, guarantee=g)
+                k = kinds(sm); act = sorted(set(int(t // 24) for t in ss)); rb = sum(1 for e in sm.log if e['id'] == 'rainbow')
+                R.append((pn, k['draw'] / D, len(sm.log) / D, D / max(rb, 1), 100 * sum(1 for d in act if sm.seen_day[d] == 0) / len(act)))
+        rg = lambda i, names=None: (lambda v: f'{min(v):.2f}–{max(v):.2f}')([r[i] for r in R if names is None or r[0] in names])
+        P(f"| {label} | {rg(1)} | {rg(2)} | {rg(3)} | {rg(4, ['輕度 2次/日'])} | {rg(4, ['早鳥只朝午'])} |")
+    variant(f'**定案**：彩虹 w{RAINBOW_W}、p_hit {P_HIT}、保底 eve2')
+    variant('彩虹 w4、p_hit 0.33', w=4); variant('彩虹 w5、p_hit 0.33', w=5)
+    variant('彩虹 w4、p_hit 0.34', w=4, ph=0.34); variant('彩虹 w4、p_hit 0.35', w=4, ph=0.35)
+    variant('彩虹 w3、保底改「首次開 app 即保底」', g='first'); variant('彩虹 w4、保底改「首次開 app 即保底」', w=4, g='first')
+    P('\n（「首次開 app 即保底」＝當日首次開 app 仍冇事件就即時觸發；保底觸發率升至約 0.2–0.3 次/日，總事件上升，上班族可到 2.87。）')
     P('\n## 總判定\n')
     P(('**全部 PASS**' if not fails else '**有 FAIL：** ' + ', '.join(fails)))
     if warns: P('\n**留意（非 FAIL）：** ' + '；'.join(warns))
