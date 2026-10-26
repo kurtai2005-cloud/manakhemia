@@ -1,7 +1,7 @@
 # NPC 對話表：第 1 章首段（老鐘／蕨生／桑姨）＋晨苔鎮互動物件旁白
 
 > 遊策｜週 1｜草稿 v1｜全原創｜給：遊程（匯入對話資料）、遊美（頭像表情）、遊測（分支／旗標測試）
-> 格式說明見 dialogue-format.md。每節點文字 ≤38 字（2 行 × 19 字）；連續節點 ≤6 句。口吻：老鐘＝慢、暖；蕨生＝快、好勝；桑姨＝利落、有耐性。表情 id 只用 `neutral`／`smile`／`surprise`／`serious`（每位 4 張頭像）；對應美術 `expression`：`smile`→`happy`、`surprise`→`surprised`、`serious`→`worried`（暫代）、`neutral` 不變（見 dialogue-format.md §2；頭像以 `portrait_id`＋`expression` 引用）。
+> 格式說明見 dialogue-format.md。每節點文字 ≤38 字（2 行 × 19 字）；連續節點 ≤6 句。口吻：老鐘＝慢、暖；蕨生＝快、好勝；桑姨＝利落、有耐性。表情 id 用 `neutral`／`smile`／`surprise`／`serious`／`worried`（每位 5 張頭像）；對應美術 `expression`：`smile`→`happy`、`surprise`→`surprised`、`serious`→`serious`、`worried`→`worried`、`neutral` 不變（見 dialogue-format.md §2；頭像以 `portrait_id`＋`expression` 引用；`portrait_id`：老鐘＝`npc_elder`、蕨生＝`npc_fern`、桑姨＝`npc_sang`）。
 > 旗標／變數：`prologue_done`、`got_mochi`、`captured_badger`、`registered_match`、`formation_done`、`c1r1_won`、`c1r1_lost_last`、`met_fern`、`met_sang`、`fern_attitude`（`rival`／`friendly`）、變數 `leaf`、`party_size`、`elder_gift_count`（老鐘贈款次數，上限 3，見 tuning-params-v2.2.md D 組）。
 > 序章 `d_elder_intro`（見 prologue-script.md）同井邊常駐 `d_elder_hub` 係**兩個獨立節點**（`d_elder_hub` 入口優先 1 只係序章未完成時轉入 `d_elder_intro`）。
 > 角色歸屬：老鐘＝第 1 章村長（`npc_elder`）；石伯＝第 2 章石磯港老領隊，另一角色，唔好混用。
@@ -90,7 +90,7 @@
 | `obj_notice_board_01` | `obj_notice_board`（告示板 (8,12)） | 告示板上寫著：「喚風祭・初葉盃報名中」。／角落有張舊紙：「今年風弱，跑手請多保重。」 |
 | `sign_arena_01` | `obj_sign_arena`（路標 (18,11)） | 木牌寫著：「↑ 迴風場　→ 報名處」。／字旁畫了一面小旗，旗尖指向東邊。 |
 | `obj_sign_east_01` | `obj_sign_east`（東路標 (36,12)） | 木牌寫著：「東：蕨影小徑 → 石磯港」。／牌腳長滿了苔，看來有一陣子沒人經過。 |
-| `registry_counter_01` | `registry_counter`（報名處櫃台 (32,8)；職員 `npc_registry` (32,9) 同走此節點） | 櫃台後有位職員低頭整理名冊，見你近前，點頭示意：想報名，就入迴風場。 |
+| `registry_counter_01` | `registry_counter`（報名處櫃台 (32,8)；晨苔鎮無職員 spawn） | 櫃台後面空無一人，只有一本攤開嘅名冊。報名要入迴風場搵桑姨。 |
 | `registry_notice_01` | `registry_notice`（報名處告示 (33,8)） | 初葉盃：新手直接報名，沒有資格要求。／報名費二十葉幣，贏了獎金一定更高。 |
 
 M3 起 `obj_notice_board_01` 改為每日賽事入口（M1 只顯示上列旁白）。
@@ -149,7 +149,7 @@ M3 起 `obj_notice_board_01` 改為每日賽事入口（M1 只顯示上列旁白
     },
     "registry_counter_01": {
       "speaker": "narrator",
-      "text": "櫃台後有位職員低頭整理名冊，見你近前，點頭示意：想報名，就入迴風場。",
+      "text": "櫃台後面空無一人，只有一本攤開嘅名冊。報名要入迴風場搵桑姨。",
       "next": null
     },
     "registry_notice_01": {
@@ -218,3 +218,44 @@ M3 起 `obj_notice_board_01` 改為每日賽事入口（M1 只顯示上列旁白
 **字數統計**：本檔漢字約 1,000（連條件／事件欄）；純對白約 700 字，連序章 P2 約 1,500 字，低於 M1 劇情字數上限（≈2,000 字）。
 
 **旗標生命週期**：賽事結束時 `registered_match` 清空；勝＝`c1r1_won=true`、`c1r1_lost_last=false`；敗＝`c1r1_lost_last=true`。（見 match-data-format.md 的 `on_end`）
+
+## 7. 賽場／小徑互動物件旁白（M1）
+
+> 對應遊美 `tilemap_arena.json`（迴風場 3 個）、`tilemap_trail.json`（蕨影小徑 2 個）嘅 `interact` 物件 `properties.dialog`；**節點 id 以 tilemap 現有值為準**（文檔跟 tilemap）。全部 `narrator` 旁白，每個物件 1 句、≤38 字；唔設選項、唔設旗標；風格同 §4。
+> **載入慣例**：同 §4。迴風場 3 個放對話集 `d_objects_arena`（`data/dialogue/d_objects_arena.json`），小徑 2 個放 `d_objects_trail`（`data/dialogue/d_objects_trail.json`）；`entry` 只放保底 `goto`。
+> **唔屬本節**：`ev_capture_retry`（「牠仲喺度喘氣」）、`ev_trail_block`（「倒塌嘅樹幹擋住路」）兩個 tilemap 物件只有氣泡 `text`、無 `dialog` id，維持氣泡提示。迴風場 9 格擺設（盆栽 (1,2)(12,2)(21,2)(1,13)(12,13)、獎盃 (1,6)、木桶 (21,13)(38,2)、木箱 (38,13)）tilemap 無互動事件 id，**唔補旁白**。
+
+| 節點 id | 地圖事件（場景） | 對白（1 句） |
+|---|---|---|
+| `obj_board_daily_01` | `obj_board_daily`（迴風場，告示板 (11,5)；M3 起改為每日賽事入口） | 「每日賽事」的告示板還是空的，要等風再起，才會貼上新單。 |
+| `obj_scout_hall_01` | `obj_scout_hall`（迴風場大廳，情報位 (3,5)；M3 偵察 UI） | 情報桌上蓋著一塊舊布，今天沒有人當值。 |
+| `obj_scout_stand_01` | `obj_scout_stand`（迴風場看台，情報位 (22,6)；M3 偵察 UI） | 看台邊的情報位空著，只留下一張落了灰的小凳。 |
+| `obj_sign_hint_01` | `obj_sign_hint`（蕨影小徑，告示牌 (3,6)） | 木牌寫著：「前方空地有野靈，走近輕點一下，或許能結緣。」 |
+| `obj_sign_east_trail_01` | `obj_sign_east`（蕨影小徑，東路標 (56,6)） | 木牌寫著：「前往石磯港」，下面一行小字：風停了，路暫時未通。 |
+
+**JSON（已用 Python `json.loads` 驗證，`next` 全部為 `null`）**
+
+```json
+{
+  "schema": "dialogue/v1",
+  "id": "d_objects_arena",
+  "entry": [ { "goto": "obj_board_daily_01" } ],
+  "nodes": {
+    "obj_board_daily_01": { "speaker": "narrator", "text": "「每日賽事」的告示板還是空的，要等風再起，才會貼上新單。", "next": null },
+    "obj_scout_hall_01": { "speaker": "narrator", "text": "情報桌上蓋著一塊舊布，今天沒有人當值。", "next": null },
+    "obj_scout_stand_01": { "speaker": "narrator", "text": "看台邊的情報位空著，只留下一張落了灰的小凳。", "next": null }
+  }
+}
+```
+
+```json
+{
+  "schema": "dialogue/v1",
+  "id": "d_objects_trail",
+  "entry": [ { "goto": "obj_sign_hint_01" } ],
+  "nodes": {
+    "obj_sign_hint_01": { "speaker": "narrator", "text": "木牌寫著：「前方空地有野靈，走近輕點一下，或許能結緣。」", "next": null },
+    "obj_sign_east_trail_01": { "speaker": "narrator", "text": "木牌寫著：「前往石磯港」，下面一行小字：風停了，路暫時未通。", "next": null }
+  }
+}
+```

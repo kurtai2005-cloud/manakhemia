@@ -21,7 +21,7 @@
 ## 各角色快速入口
 
 - **遊程**：先讀 `dialogue-format.md`、`match-data-format.md`（資料載入）→ `maps-and-events.md`（地圖 id、事件 id、圖層）→ `cue-table.md` §1（賽前觸發）。範例 JSON 可直接當單元測試輸入（已用 Python `json.loads` 驗證可解析）。
-- **遊美**：`maps-and-events.md` 的圖塊／圖層與碰撞規則、`npc-dialogue.md` 的表情清單（每位 NPC 4 張頭像：美術 `neutral`／`happy`／`worried`／`surprised`，與對話 `emote` 對照見 dialogue-format.md §2）、`cue-table.md` 特效欄。
+- **遊美**：`maps-and-events.md` 的圖塊／圖層與碰撞規則、`npc-dialogue.md` 的表情清單（每位 NPC 5 張頭像：美術 `neutral`／`happy`／`worried`／`surprised`／`serious`，與對話 `emote` 對照見 dialogue-format.md §2）、`cue-table.md` 特效欄。
 - **遊音**：`cue-table.md`（音效 id 已對照 `windrun-audio/README.md`；**§8 列出 ★ 建議新增**，M1 必須者：`stinger_entry`、`sfx_countdown_tick`、`jingle_capture`）、`dialogue-format.md` §2 說話者 blip 對應。
 - **遊測**：`tuning-params-v2.2.md` F／H 組（校準＋待測）、`match-data-format.md` §6 lint、`cue-table.md` §9 檢查清單、`maps-and-events.md` 觸控／碰撞提示。
 

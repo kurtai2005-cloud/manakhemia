@@ -16,7 +16,7 @@
 | `=` | 石徑／泥徑／隧道地面 | ✘ | 腳步音按地面物料（見 cue-table.md） |
 | `.` | 草地／空地／室內地板 | ✘ | |
 | `,` | 苔叢／蕨叢（高草） | ✘ | 可行走；上半部入遮擋層（蕨影效果），可加輕微搖曳 |
-| `C` | 報名櫃台 | ✔ | 職員站喺櫃台後 |
+| `C` | 報名櫃台 | ✔ | 迴風場：桑姨站喺櫃台後；晨苔鎮櫃台後無人（無職員 spawn） |
 | `b` | 長凳／看台座位 | ✔ | |
 | `G` | 入場閘口 | 條件 | 未報名＝碰撞；已報名＝開放（見 `ev_gate_entry`） |
 | `S` | 起跑線（觸發線） | 事件 | 6 格高 |
@@ -104,7 +104,6 @@
 | `door_arena` | (19,8) 1×1 | warp → `arena_windrun`，entry `spawn_from_town` | `prologue_done` | 傳送至賽場大廳 (6,13)；否則氣泡「先同老鐘傾下偈」。JSON `hint`＝「迴風場」（地標 `arena_gate`） | M1 |
 | `door_registry` | (30,8) 2×1（x 30–31） | warp → `interior_registry`，entry `door` | — | **報名處**，可入。**定案**：`interior_registry`＝`arena_windrun` 入口大廳（同一室內，唔另做室內圖）；entry `door`＝`spawn_from_town` (6,13)。JSON `hint`＝「報名處」（地標 `registry`） | M1 |
 | `registry_counter` | (32,8) | interact（`dialog=registry_counter_01`） | — | 旁白 `registry_counter_01`（見 npc-dialogue.md §4） | M1 |
-| `npc_registry` | (32,9)，面向上（櫃台前） | npc_spawn（面向上） | — | 報名處職員，**背景角色**；`interact` 走 `registry_counter_01`（同 `registry_counter`），無獨立對話 | M1 |
 | `registry_notice` | (33,8) | interact（`dialog=registry_notice_01`） | — | 旁白 `registry_notice_01`（見 npc-dialogue.md §4） | M1 |
 | `door_elder` | (6,8) 2×1 | warp，`locked` | — | 老鐘屋門；氣泡「鎖咗門」 | M1 |
 | `door_fernhome` | (6,22) 2×1 | warp，`locked` | — | 氣泡「鎖咗門」 | M1 |
@@ -119,7 +118,7 @@
 
 > 刪除（相對 v1）：`obj_windmill`、`door_house`（舊 (32,22) 民居門，現為商店門 `door_store`）；舊 `door_store`（(30,8) 雜貨舖）現為 `door_registry`。
 
-**NPC 站位／行為（M1）**：老鐘 (21,14)、蕨生 (21,10) 原地待機（轉向面向玩家）；職員 (32,9) 面向上、站櫃台前，只播 idle／`stamp`／`flip`（見 ASSET_SPEC_TOWN §N.2），唔轉向；M2 起加巡邏路線（用同一套事件資料）；路人 M1 唔做。
+**NPC 站位／行為（M1）**：老鐘 (21,14)、蕨生 (21,10) 原地待機（轉向面向玩家）；晨苔鎮**冇職員 spawn**（桑姨 `npc_sang` 只在 `arena_windrun` 大廳，見第 3 節）；M2 起加巡邏路線（用同一套事件資料）；路人 M1 唔做。
 
 **`npc_spawn` 欄位**（`properties`；美術規格以 `art-wind/ASSET_SPEC_TOWN.md` §N 為準）：
 
@@ -127,9 +126,8 @@
 |---|---|---|---|---|
 | `npc_elder` | 老鐘 | `art-wind/sprites/npc/npc_elder/` | `npc_elder` | `d_elder_hub` |
 | `npc_fern` | 蕨生 | `art-wind/sprites/npc/npc_fern/` | `npc_fern` | `d_fern_idle`（`c1r1_won` 後 `d_fern_after_r1`） |
-| `npc_registry` | 職員 | `art-wind/sprites/npc/npc_registry/` | `npc_registry`（背景角色，不開頭像對話） | 無；`interact` 走 `registry_counter_01` |
 
-頭像以 `portrait_id`＋`expression` 引用，`expression`＝`neutral`／`happy`／`worried`／`surprised`；對話 `emote` 對照（`smile`→`happy`、`surprise`→`surprised`、`serious`→`worried`）見 dialogue-format.md §2。
+頭像以 `portrait_id`＋`expression` 引用，`expression`＝`neutral`／`happy`／`worried`／`surprised`／`serious`（5 個）；對話 `emote` 對照（`smile`→`happy`、`surprise`→`surprised`、`serious`→`serious`、`worried`→`worried`）見 dialogue-format.md §2。桑姨 `npc_sang`（`portrait_id`＝`npc_sang`）只在 `arena_windrun` 大廳，見第 3 節。
 
 **報名處入口（定案）**：晨苔鎮 `door_registry`（JSON 目標 `interior_registry`）與 `door_arena` 進入**同一個**室內場景＝`arena_windrun` 入口大廳（桑姨 `npc_sang`、報名流程不變，見第 3 節），唔另做室內圖。載入器把 `interior_registry` 視為 `arena_windrun` 別名，entry `door`＝`spawn_from_town` (6,13)（兩個入口同一出生點）。兩道門傳送時各用 `set_var` 設一次**字串變數** `last_town_door`（值 `door_arena`／`door_registry`；唔係 flag）；賽場 `door_town` 按它返回：`door_arena`→晨苔鎮 (20,9)；`door_registry`→晨苔鎮 (30,9)。（JSON 內 `interior_registry`／`door` 字樣可留待遊美下次更新時改為 `arena_windrun`／`spawn_from_town`，唔影響實作。）
 
@@ -172,8 +170,8 @@
 | `spawn_from_town` | (6,13) | 出生（entry `spawn_from_town`／`door` 同點） | 由 `door_arena` 或 `door_registry`（晨苔鎮） | 鏡頭定喺大廳；BGM 保持城鎮 BGM | M1 |
 | `door_town` | (6,14) | touch | — | 傳送 → `town_morningmoss`：按字串變數 `last_town_door`＝`door_arena` → (20,9)；`door_registry` → (30,9)（見第 2 節「報名處入口」）；自動存檔 | M1 |
 | `npc_sang` | (6,3)，互動格 `r` (6,5) | interact | 按 flags | `d_sang_hub`（報名／資格／說明，見 npc-dialogue.md） | M1 |
-| `obj_board_daily` | (11,5) | interact | — | M1：「每日賽事：暫未開放」；M3 起每日賽事入口 | M1／M3 |
-| `obj_scout_hall` ／ `obj_scout_stand` | (3,5)／(22,6) | interact | — | M1 提示「情報位暫未開放」；M3 偵察 UI | M1／M3 |
+| `obj_board_daily` | (11,5) | interact（`dialog=obj_board_daily_01`） | — | M1：「每日賽事：暫未開放」；M3 起每日賽事入口 | M1／M3 |
+| `obj_scout_hall` ／ `obj_scout_stand` | (3,5)／(22,6) | interact（`dialog=obj_scout_hall_01`／`obj_scout_stand_01`） | — | M1 提示「情報位暫未開放」；M3 偵察 UI | M1／M3 |
 | `ev_gate_entry` | 閘口 (13,7–9) | touch | `registered_match` 有值 | 閘口打開 → 入場演出 `cue_entry_tunnel`（可跳過）；否則氣泡「未報名」並提示去桑姨 | M1 |
 | `ev_stand_intro` | 區域 (21–27,2–13) | auto（每場首次進入） | `registered_match` | 隊伍介紹 ≤5 秒（`cue_team_intro`，可跳過） | M1 |
 | `ev_formation` | `F` (24,8) | interact | `registered_match` | 開佈陣介面（首發＋後備排序）；完成後 `formation_done=true` | M1 |
@@ -220,10 +218,10 @@
 |---|---|---|---|---|---|
 | `west` | (1,7) | 出生（**舊稱 `spawn_from_town`＝`west`**，統一用 JSON 的 `west`；賽場大廳的 `spawn_from_town` 係另一場景，保持不變） | 由 `ev_town_east`（entry `west`） | 鏡頭向右微移；小徑 BGM（M1 可沿用城鎮 BGM） | M1 |
 | `ev_trail_west` | (0,7–8) | touch | — | 傳送 → `town_morningmoss` (38,13)（東出口 (39,13–14) 西側一格）；自動存檔 | M1 |
-| `obj_sign_hint` | (3,6) | interact | — | 「前方空地有野靈，走近點一下可結緣」（提示，可關） | M1 |
+| `obj_sign_hint` | (3,6) | interact（`dialog=obj_sign_hint_01`） | — | 「前方空地有野靈，走近點一下可結緣」（提示，可關） | M1 |
 | `npc_wild_badger` | (38,3) | interact（半徑 2） | `not captured_badger` | `d_capture_intro` → 確認後 `begin_capture`（結緣賽 `cap_trail_badger`，見 match-data-format.md） | M1 |
 | `ev_capture_retry` | (38,3) | interact | 結緣失敗後 | 冷卻 `capture_retry_cd` 秒內顯示「牠仲喺度喘氣」；之後可重試 | M1 |
-| `obj_sign_east` | (56,6) | interact | — | 「前往石磯港（風停咗，路暫時未通）」 | M1 |
+| `obj_sign_east` | (56,6) | interact（`dialog=obj_sign_east_trail_01`；與晨苔鎮 `obj_sign_east_01` 係兩個節點） | — | 「前往石磯港（風停咗，路暫時未通）」 | M1 |
 | `ev_trail_block` | (58–59,7–8) | interact／touch | — | 氣泡「倒塌嘅樹幹擋住路」（M2 換成劇情事件並開路） | M1 |
 
 捕獲成功後：野生野靈消失；`captured_badger=true`；彈出命名（可略過）→入隊；自動存檔。
@@ -242,6 +240,11 @@
 | `collision` | 純邏輯格（值＝gid−544）：`0` 通行／`1` 阻擋／`2` 水／`3` trigger／`4` 慢速 | 16 px 格；玩家碰撞盒 12×8 px、貓 16×8 px（腳底中心，遊美 ASSET_SPEC_TOWN）；**唔係淨係 0／1**；引擎應由 tmj 內 `tilesets[].name=='collision'` 讀 firstgid（晨苔鎮＝545） |
 | `events` | Tiled objectgroup：`name`（＝事件 id）、`type`（`spawn`／`warp`／`trigger`／`npc_spawn`／`interact`／`light`）、矩形（像素，÷16＝格）、`properties`（`cond`、`dialog`／`dialog_node`、`target`／`entry`、`hint`、`locked`、`autosave`、`once`…） | `cond` 為簡單布林字串（解析規則同對話格式，見 dialogue-format.md 第 4、5 節；詳細語法由遊程定）。**事件詞彙／`cond` 以本文檔（dialogue-format.md）格式為準**，引擎現時兩套都收，新資料一律用文檔格式。v1 的 `touch／auto／npc` 對應：warp＝touch 傳送；trigger（`auto_dialog`）＝auto；`npc_spawn`＝npc |
 | （光點） | v1 的獨立 `lights` 層**改為 `events` 內 `type=light` 物件**：`kind`（`lantern／window／chimney／landmark`）、`color`、`radius`（格）、`lit_default` | HD-2D 動態光；夜間全開；低畫質檔改用預烘焙光圖；日夜圖塊以 `tileset_all_gids.json#swap_day_to_lit` 替換 |
+
+**迴風場／小徑匯出備註（以遊美 JSON 為準）**
+- **牆身層**：迴風場（arena）牆身放 `ground` 層，招牌／旗放 `deco` 層（透明疊圖）；晨苔鎮建築牆身則放 `deco` 層。載入器唔好假設兩場景牆身同層。
+- **閘口動畫**：`ev_gate_entry` 嘅閘口 `G` (13,7–9) 按 `art-wind/tiles/arena_windrun/tileset_arena_gids.json` 嘅 `anim.gate_once`（top／mid／bot 三列，每列 4 幀，每幀 150 ms，播一次）。**gid 不連續**（每幀相隔 3：top＝663、666、669、672；mid＝664、667、670、673；bot＝665、668、671、674），逐幀讀表，唔好用「首 gid＋幀序」。
+- **小徑碰撞**：蕨影小徑（trail）**無斜坡**，未用 collision 4（慢速）；只用 0／1／2／3。迴風場只用 0／1／3。
 
 **規則**
 - **碰撞**：格子制；高物件（樹、燈柱、告示板）只喺底座格設 1；玩家碰撞盒細過一格，可貼牆滑行（唔卡角）。NPC 同野生野靈佔 1 格。

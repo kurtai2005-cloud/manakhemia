@@ -19,8 +19,8 @@
 
 | 欄位 | 型別 | 說明 |
 |---|---|---|
-| `speaker` | string | 說話者 id：`narrator`／`player`／`elder`／`fern`／`sang`；`system` 表示純邏輯節點（無文字） |
-| `emote` | string | 頭像表情：`neutral`／`smile`／`surprise`／`serious`；省略＝`neutral`。對應美術 `expression`（art-wind/ASSET_SPEC_TOWN.md §N.3）：`neutral`→`neutral`、`smile`→`happy`、`surprise`→`surprised`、`serious`→`worried`（暫代，`serious` 無對應張，美術用 `worried`）；未知表情回退 `neutral`。頭像以 `portrait_id`（＝`npc_id`）＋`expression` 引用 |
+| `speaker` | string | 說話者 id：`narrator`／`player`／`elder`／`fern`／`sang`（對應 `portrait_id`，見下方說話者表）；`system` 表示純邏輯節點（無文字） |
+| `emote` | string | 頭像表情（5 個）：`neutral`／`smile`／`surprise`／`serious`／`worried`；省略＝`neutral`。對應美術 `expression`（art-wind/ASSET_SPEC_TOWN.md §N.3，每位 NPC 5 張）：`neutral`→`neutral`、`smile`→`happy`、`surprise`→`surprised`、`serious`→`serious`、`worried`→`worried`；未知表情回退 `neutral`。頭像以 `portrait_id`（＝`npc_id`）＋`expression` 引用（見下方說話者表） |
 | `text` | string | 對白；支援 `{player}`、`{leaf}`、`{fee}`、`{var:<名>}`；`\n` 換行；≤38 字 |
 | `next` | string／null | 下一節點；`null` 或省略＝對話結束 |
 | `choices` | array | 選項（≤3）；有 `choices` 時忽略 `next` |
@@ -41,16 +41,16 @@
 | `next` | 目標節點；`null`＝結束 |
 | `on_choose` | 事件陣列 |
 
-**說話者表**（音效 id 對應遊音現有 `sfx_dialog_blip_*`，頭像由遊美出，每位 4 表情）：
+**說話者表**（音效 id 對應遊音現有 `sfx_dialog_blip_*`，頭像由遊美出，每位 5 表情：`neutral`／`happy`／`worried`／`surprised`／`serious`）：
 
-| `speaker` | 顯示名 | 逐字 blip | 備註 |
-|---|---|---|---|
-| `narrator` | （無名，斜體框） | 無 | 旁白 |
-| `player` | `{player}` | `sfx_dialog_blip_b` | 無頭像，只顯示文字框 |
-| `elder` | 老鐘 | `sfx_dialog_blip_a`（低、暖） | |
-| `fern` | 蕨生 | `sfx_dialog_blip_b` | |
-| `sang` | 桑姨 | `sfx_dialog_blip_c`（略輕） | |
-| 其他 NPC | 見 NPC 表 | 預設 `blip_b` | |
+| `speaker` | `portrait_id` | 顯示名 | 逐字 blip | 備註 |
+|---|---|---|---|---|
+| `narrator` | — | （無名，斜體框） | 無 | 旁白 |
+| `player` | — | `{player}` | `sfx_dialog_blip_b` | 無頭像，只顯示文字框 |
+| `elder` | `npc_elder` | 老鐘 | `sfx_dialog_blip_a`（低、暖） | |
+| `fern` | `npc_fern` | 蕨生 | `sfx_dialog_blip_b` | |
+| `sang` | `npc_sang` | 桑姨 | `sfx_dialog_blip_c`（略輕） | 只在 `arena_windrun` 大廳 |
+| 其他 NPC | 見 NPC 表 | 見 NPC 表 | 預設 `blip_b` | |
 
 對話框音效：打開 `sfx_dialog_open`、推進 `sfx_dialog_next`、關閉 `sfx_dialog_close`、選項游標 `sfx_menu_move`（建議；BGM 於對話期間壓低約 3 dB，遊音建議值）。
 
