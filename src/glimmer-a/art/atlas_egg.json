@@ -1,0 +1,155 @@
+{
+ "frames": {
+  "pet_tuanrong_egg_glow_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pet_tuanrong_egg_glow_02": {
+   "frame": {
+    "x": 38,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pet_tuanrong_egg_idle_01": {
+   "frame": {
+    "x": 74,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pet_tuanrong_egg_idle_02": {
+   "frame": {
+    "x": 110,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pet_tuanrong_egg_idle_03": {
+   "frame": {
+    "x": 146,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  },
+  "pet_tuanrong_egg_idle_04": {
+   "frame": {
+    "x": 182,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  }
+ },
+ "animations": {
+  "egg_idle": {
+   "frames": [
+    "pet_tuanrong_egg_idle_01",
+    "pet_tuanrong_egg_idle_02",
+    "pet_tuanrong_egg_idle_03",
+    "pet_tuanrong_egg_idle_04"
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "egg_glow": {
+   "frames": [
+    "pet_tuanrong_egg_glow_01",
+    "pet_tuanrong_egg_glow_02"
+   ],
+   "fps": 4,
+   "loop": true
+  }
+ },
+ "meta": {
+  "image": "atlas_egg.png",
+  "size": {
+   "w": 1024,
+   "h": 64
+  },
+  "scale": 1,
+  "format": "RGBA8888",
+  "padding": 2,
+  "extrude": 1
+ }
+}
