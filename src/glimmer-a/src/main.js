@@ -39,20 +39,22 @@
   G.renderer = new R.Renderer(canvas);
   function layout() {
     const vw = window.innerWidth, vh = window.innerHeight, dpr = window.devicePixelRatio || 1;
-    let kdev = Math.floor(Math.min(vw * dpr / R.W, vh * dpr / R.H));
-    let cssW, cssH, kb;
-    if (kdev >= 2) { kb = Math.min(kdev, 4); cssW = R.W * kdev / dpr; cssH = R.H * kdev / dpr; }
-    else { const f = Math.min(vw / R.W, vh / R.H); cssW = R.W * f; cssH = R.H * f; kb = 2; kdev = 0; }
+    // P1-5：按短邊 fit（直向＝闊度、闊螢幕＝高度；唔再 floor 到整數倍而留大黑邊），畫面外由 #bgfill 延伸填滿
+    const f = Math.min(vw / R.W, vh / R.H), fd = f * dpr;
+    let kdev = Math.abs(fd - Math.round(fd)) < 0.02 && Math.round(fd) >= 2 ? Math.round(fd) : 0;
+    const kb = kdev ? Math.min(kdev, 4) : Math.max(2, Math.min(4, Math.ceil(fd)));
+    const cssW = R.W * f, cssH = R.H * f;
     if (G.renderer.k !== kb) G.renderer.setScale(kb);
     canvas.style.width = cssW + 'px'; canvas.style.height = cssH + 'px';
-    canvas.style.imageRendering = (kdev && kb === kdev) ? 'pixelated' : 'auto';
+    canvas.style.imageRendering = (kdev && kb === kdev) || fd >= 3 ? 'pixelated' : 'auto';
+    if (qs.get('orient') === 'landscape') document.documentElement.classList.add('force-landscape');
     const wrap = document.getElementById('stagewrap'); wrap.style.width = cssW + 'px'; wrap.style.height = cssH + 'px';
     const uiScale = cssW / 390;
     document.getElementById('ui').style.transform = 'scale(' + uiScale + ')';
     // 熱區以縮放後嘅 CSS px 計。390 版面再乘 uiScale；360 闊直向（含整數倍像素縮放）都要 ≥44。
     const hit = Math.ceil((44 + 0.5) / uiScale);
     document.querySelectorAll('.ibtn').forEach((el) => { el.style.width = hit + 'px'; el.style.height = hit + 'px'; });
-    G.layoutInfo = { vw, vh, dpr, kdev, kb, cssW, cssH };
+    G.layoutInfo = { vw, vh, dpr, kdev, kb, cssW, cssH, hit, fit: vw / R.W <= vh / R.H ? 'width' : 'height', barsX: vw - cssW, barsY: vh - cssH };
   }
   window.addEventListener('resize', layout); layout();
 
@@ -74,6 +76,8 @@
     D.CLIPS.turn_back.ready = !!(lv && ['sprout', 'radiant', 'soft'].every(f => lv.atlas[f] && lv.atlas[f].json.animations.turn_back_noface));
     G.liveReady = !!lv; return lv;
   }) : Promise.resolve(null);
+  // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
+  if (NS.hd2d) NS.hd2d.install(G, NS);
   UI.init(G);
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
@@ -87,17 +91,24 @@
   const qm = { sum: 0, n: 0, slow: 0, grace: P.quality.graceFrames, lastAvg: 0, drops: 0 };   // rAF 幀間隔量度
   G.qm = qm;
   G.paused = false;
+  const bgfill = document.getElementById('bgfill'), bgx = bgfill ? bgfill.getContext('2d') : null; let bgN = 0;
   function loop(ts) {
     const rawMs = ts - last, dtReal = Math.min(0.25, rawMs / 1000); last = ts;
     const s = G.state;
     if (!document.hidden) {
       const dtW = G.paused ? 0 : dtReal;
-      SIM.advance(s, dtW * G.timeScale, { hour: (G.hourOverride != null || G.timeScale === 1) ? G.hour() : null, now: G.now() }, 30);
+      if (G.clockRun && G.clock.fake) G.clock.t += dtW * G.timeScale * 1000;   // 開發模式快進：假時鐘跟 ×N 行 → 時段／HD-2D 場景跟住變
+      SIM.advance(s, dtW * G.timeScale, { hour: (G.hourOverride != null || G.timeScale === 1 || G.clockRun) ? G.hour() : null, now: G.now() }, 30);
       saveT += dtReal; if (saveT >= P.autosaveSec) { saveT = 0; G.save(); }
       UI.update(dtW);
       const view = G.tickWorld(dtW);
       AUD.update(dtW, G.audioWorld);
       G.renderer.frame(dtReal, view);
+      if (bgfill && (++bgN % 6 === 0 || bgN < 3)) {   // P1-5：每 6 幀將畫面「cover」縮細入 24×52 → CSS 放大＝模糊延伸背景（極平）
+        const want = Math.max(8, Math.round(52 * window.innerWidth / Math.max(1, window.innerHeight))); if (bgfill.width !== want) bgfill.width = want;
+        const bw = bgfill.width, bh = bgfill.height, sc = Math.max(bw / canvas.width, bh / canvas.height), dw = canvas.width * sc, dh = canvas.height * sc;
+        bgx.imageSmoothingEnabled = true; bgx.drawImage(canvas, (bw - dw) / 2, (bh - dh) / 2, dw, dh); G.bgfillN = bgN;
+      }
       // 自動降畫質（非 debug）：用 rAF 幀間隔（唔再用連續掉幀計）。每 windowFrames 幀取平均間隔，連續 slowWindows 個窗口 > slowMs 先降一級
       if (G.autoDowngrade && s.settings.quality !== 'off') {
         if (qm.grace > 0) qm.grace--;
@@ -137,7 +148,7 @@
     G.behCtx = { s, pw: G.light, sun: G.light.sun, override: act, event: evView };
     if (!mg) { BEH.update(G.beh, dt, G.behCtx); rd.behFx(G.beh); }
     if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 獨立事件 grumpy_tap（唔共用需求鬧脾氣冷卻）
-    if (!mg) G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur } : null, mode: G.mode };
+    if (!mg) G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur } : null, mode: G.mode, rain: !!(G.hd && G.hd.on() && G.hd.st && G.hd.st.cur === 'H3rain') };
     else G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: null, mode: G.mode };
     G.view = { state: s, quality: s.settings.quality, hour: hr, mode: G.mode, mg: UI.mgState() && UI.mgState().mg, light: G.light, beh: mg ? null : G.beh, event: evView };
     return G.view;
@@ -203,7 +214,12 @@
     tap(x, y) { BEH.tap(G.beh, 'pet', x, y == null ? -20 : y); },               // 指定觸點（相對地面中心 CX／GROUND_Y，art px）
     gaze() { const L = G.beh.look; return { q: L.q, ql: L.ql, src: L.src, x: +L.x.toFixed(3), y: +L.y.toFixed(3), tx: +L.tx.toFixed(3), ty: +L.ty.toFixed(3), force: L.force, dir: G.beh.dir, turn: G.beh.turn ? Object.assign({}, G.beh.turn) : null }; },
     face() { const f = G.beh.face, r = G.renderer, l = r.faceStat.last || {}; return { eyes: f.eyes, mouth: f.mouth, gaze: f.gaze, closed: f.closed, clip: f.clip, frame: f.frame, blink: f.blink, mode: P.face.mode, live: !!l.live, liveReady: !!G.liveReady, liveError: r.lvError, drawnClip: l.clip, drawnFrame: l.frame, faceVisible: !!l.faceVisible, pieces: l.eyes ? l.eyes.concat([l.mouth]) : [], placeholder: (l.placeholder || []).slice(), derived: !!l.derived, bulb: l.bulb || null, stat: { draws: r.faceStat.draws, tints: r.faceStat.tints, overlays: r.faceStat.overlays, faceDrawn: r.faceStat.faceDrawn, faceHidden: r.faceStat.faceHidden, placeholder: r.faceStat.placeholder, bulb: r.faceStat.bulb } }; },
-    setGaze(q) { G.beh.look.force = q || null; return q; },                    // QA：強制 gaze 格（null＝自動）
+    setGaze(q) { G.beh.look.force = q || null; return q; },
+    hitBox() {                                          // P2：寵物觸控區（art 座標＋CSS px 尺寸）
+      const h = NS.ui.petHitBox ? NS.ui.petHitBox() : null; if (!h) return null; const r = canvas.getBoundingClientRect(), k = r.width / R.W;
+      return Object.assign({}, h, { css: { x: r.left + h.x * k, y: r.top + h.y * k, w: h.w * k, h: h.h * k }, bodyCss: h.body ? { x: r.left + h.body.x * k, y: r.top + h.body.y * k, w: h.body.w * k, h: h.body.h * k } : null });
+    },
+    drag(x, y) { BEH.drag(G.beh, x, y); }, dragEnd() { BEH.dragEnd(G.beh); },                    // QA：強制 gaze 格（null＝自動）
     setFace(o) { G.beh.faceForce = o || null; return o; },                     // QA：強制 {eyes, mouth}（null＝自動）
     faceMode(m) { P.face.mode = m || 'auto'; return P.face.mode; },             // auto｜native（舊 atlas 原臉）｜off（唔畫臉）
     faceStatReset() { const fs = G.renderer.faceStat; for (const k in fs) if (typeof fs[k] === 'number') fs[k] = 0; },   // 模擬點寵物（睡眠中＝輕喚醒）
@@ -219,4 +235,6 @@
     audio() { return AUD.status(); },
     audioLog() { return AUD.log; },
   };
+  // 隱藏開發模式（src/devpanel.js）：標題／左上角 1.5 秒內點 5 下開關；?dev=1 預設打開
+  if (NS.devpanel) NS.devpanel.install(G, NS);
 })();

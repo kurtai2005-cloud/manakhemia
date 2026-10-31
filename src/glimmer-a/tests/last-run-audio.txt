@@ -3,7 +3,7 @@
   ✓ 4 條時段 BGM 都存在
   ✓ 小節長 3.5294s（68 BPM 4/4），小節數 16/20/16/12
   ✓ 池內 9 個事件各有 cue（含 firefly_walk）；grumpy_tap 共用 sulk 音、唔係新文案
-  - staging 不存在，跳過 sha 比對
+  ✓ 音訊檔同遊音最新版逐檔相同（未被改動）
     未接駁嘅 sfx：sfx_coin, sfx_hit, sfx_lose, sfx_win
 # 規則
   ✓ 點擊→tap；餵飯→feed_meal＋稍後 pet_content
@@ -29,5 +29,13 @@
   ✓ turn_huh a/b 隨機（a 15／b 25）
   ✓ 回頭嗰下唔疊 touch 聲
   ✓ turn_huh 共用冷卻 ≥1.5s
+# H3 雨層細雨環境聲（遊音 7.10）
+  ✓ 雨聲 cue：short／loop 檔名＋amb 軌
+  ✓ 時序：雨開始播 short，1.5s 後 crossfade（1.5s）入 loop；停雨 loop 淡出 1.75s（1.5–2）
+  ✓ 雨聲檔（v2）同遊音 staging sha256 逐 byte 相同（原檔不改）
+  ✓ 長度：short 6.000s／loop 24.706s（ffprobe）
+  ✓ 導演：rain 世界旗（HD-2D 現款 H3rain）→ rain＝true；冇雨／迷你遊戲 → false
+  ✓ amb_ 檔由 audio/amb/ 載入
+  ✓ loop 用 AudioBufferSourceNode.loop＝true（loopStart 0／loopEnd＝buffer 長），冇 <audio> 元素
 
-結果：27 通過，0 失敗
+結果：35 通過，0 失敗

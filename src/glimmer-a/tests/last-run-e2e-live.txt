@@ -4,7 +4,7 @@
   ✓ 三形態 atlas＋anchors 齊
 # F1：真五官 overlay（三形態）＋單次 tint
   ✓ soft：真 noface 身體＋eyeL/eyeR/mouth（0 placeholder、用 anchors）
-  ✓ soft：每次畫寵物 tint 剛好 1 次（overlay 唔加多一次）draws 42 tints 42
+  ✓ soft：每次畫寵物 tint 剛好 1 次（overlay 唔加多一次）draws 43 tints 43
   ✓ soft：燈泡情緒 happy（需求全滿）
   📷 live-f1-soft
   ✓ bright：真 noface 身體＋eyeL/eyeR/mouth（0 placeholder、用 anchors）

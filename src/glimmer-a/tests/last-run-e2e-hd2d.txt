@@ -1,0 +1,70 @@
+# 純邏輯（Node）
+  ✓ 時段映射 06–10 H1／10–16 H3／16–19 H2／19–06 H4
+  ✓ 落雨：只有日間 10–16 變 H3rain
+  ✓ crossfade ≈2 秒（0→0.5→1）
+  ✓ rim w = max(0,n·dir)，scaleX −1 時 nx 取反
+  ✓ H4：引擎月／燈籠關（fallback 時開）
+  ✓ 手勢：1.2 秒內 5 下觸發；1.6 秒 5 下唔觸發
+# HD-2D：時段／雨／crossfade
+  ✓ HD-2D 載入，08:00 → H1
+  ✓ 8:00 → H1
+  📷 hd2d-H1
+  ✓ 17:00 → H2
+  📷 hd2d-H2
+  ✓ 13:00 → H3
+  📷 hd2d-H3
+  ✓ 13:00 落雨 → H3rain
+  📷 hd2d-H3rain
+  ✓ 22:00 → H4
+  📷 hd2d-H4
+  ✓ 雨：rain_tile 4 幀＋地面 ripple
+  ✓ 雨：light_add alpha 0.3
+  ✓ weather hook（lighting.addModifier）：雨 → light.hd2d.weather＝rain、唔曬太陽
+  ✓ crossfade 開始：H3 → H4
+  ✓ crossfade ~1 秒時約一半
+  ✓ crossfade ~2 秒完成
+# H4：引擎月 (150,76)／燈籠關、tint 次數
+  ✓ H4：引擎月＋星／燈籠串一幀都冇畫
+  ✓ sprout：每次畫寵物只 tint 1 次（HD tint 取代 daylight tint）＋生命感 rim mask
+  ✓ soft：每次畫寵物只 tint 1 次（HD tint 取代 daylight tint）＋生命感 rim mask
+  ✓ bright：每次畫寵物只 tint 1 次（HD tint 取代 daylight tint）＋生命感 rim mask
+  ✓ lumi：每次畫寵物只 tint 1 次（HD tint 取代 daylight tint）＋生命感 rim mask
+  📷 hd2d-H4-lumi
+  ✓ 低端（q=low）：rim 關、tint 照做
+  ✓ 粒子跟 grade.json：H1 mote／H2 gold／H3 petal／H4 firefly
+# ?hd2d=0 fallback／?scene=
+  ✓ ?hd2d=0：舊程序化背景（引擎月／燈籠照畫）、daylight tint 每次 1 次
+  ✓ 團絨尺寸 HD-2D 同舊背景一樣
+  📷 hd2d-off-fallback-H4
+  ✓ ?scene=H4 強制款
+# 開發模式：手勢
+  ✓ 預設收埋（無 ?dev=1）
+  ✓ 標題點 4 下：唔開
+  ✓ 標題 1.5 秒內點 5 下：打開
+  ✓ 左上角 5 下：收埋
+  ✓ 慢點（2 秒內 5 下）：唔開
+  ✓ ?dev=1 預設打開
+  ✓ 抽屜喺底、唔遮團絨（頂 ≥ 寵物腳底）
+  📷 devpanel-open
+  ✓ 可摺：摺起後只剩標題列
+  📷 devpanel-folded
+# 開發模式：每個掣都叫 API
+  ✓ 全部 35 個掣都經 __qa.dev API
+  ✓ 時間 ×60：假時鐘快進（1.5 秒 ≈ 1.5 分鐘）
+  ✓ 時間 ×1：返實時鐘
+  ✓ 跳 1 日：行離線結算（需求跌、補抽／日記、出總結）
+  ✓ 直接設定隱藏形態「螢絨」
+  ✓ 播進化場面（evolve 彈窗）
+  📷 devpanel-evolve
+  ✓ 需求／CQ 滑桿
+  ✓ 性格切換（大膽獨立）
+  ✓ 觸發全 EVENTS 表（含鬧脾氣／閃光日／螢火散步），無視冷卻
+  ✓ 時段／天氣：H3 雨
+  ✓ 時段：Auto
+# 開發模式：重設存檔（二次確認）
+  ✓ 第一下：只係「再撳一次確認」，存檔仲喺度
+  ✓ 3 秒唔撳：自動取消
+  ✓ 第二下：清存檔＋重新開始（光卵、光粒 0）
+  ✓ console 無錯誤／警告
+
+51 passed, 0 failed

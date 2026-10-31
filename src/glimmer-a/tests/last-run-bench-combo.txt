@@ -1,0 +1,12 @@
+中端（4× throttle） q=mid | before 原版（無 HD-2D） | {"med":82.31,"runs":[82.17,82.31,82.76],"maxMs":1521.1,"cache":null}
+中端（4× throttle） q=mid | after HD-2D cache 開 | {"med":4.89,"runs":[5.1,4.89,4.78],"maxMs":242.9,"cache":{"on":true,"builds":11,"hits":1021}}
+中端（4× throttle） q=mid | after HD-2D cache 關（?hdcache=0） | {"med":5.44,"runs":[5.67,5.44,5.38],"maxMs":241.5,"cache":{"on":false,"builds":0,"hits":0}}
+中端（4× throttle） q=mid | after ?hd2d=0 fallback | {"med":81.55,"runs":[80.72,82.24,81.55],"maxMs":1559,"cache":{"on":true,"builds":0,"hits":0}}
+中端（4× throttle） q=mid | after H3rain cache 開 | {"med":5.95,"runs":[6.19,5.89,5.95],"maxMs":252.6,"cache":{"on":true,"builds":11,"hits":1021}}
+中端（4× throttle） q=mid | after H3rain cache 關 | {"med":6.63,"runs":[6.66,6.51,6.63],"maxMs":251.9,"cache":{"on":false,"builds":0,"hits":0}}
+低端（6× throttle） q=low | before 原版（無 HD-2D） | {"med":49.44,"runs":[49.44,48.97,49.65],"maxMs":910.2,"cache":null}
+低端（6× throttle） q=low | after HD-2D cache 開 | {"med":7.65,"runs":[8.11,7.65,7.65],"maxMs":375.7,"cache":{"on":true,"builds":11,"hits":1021}}
+低端（6× throttle） q=low | after HD-2D cache 關（?hdcache=0） | {"med":8.16,"runs":[8.37,8.16,8.16],"maxMs":371.3,"cache":{"on":false,"builds":0,"hits":0}}
+低端（6× throttle） q=low | after ?hd2d=0 fallback | {"med":49.16,"runs":[54.65,49.16,47.84],"maxMs":1550.3,"cache":{"on":true,"builds":0,"hits":0}}
+低端（6× throttle） q=low | after H3rain cache 開 | {"med":8.94,"runs":[8.94,8.72,9.11],"maxMs":405,"cache":{"on":true,"builds":11,"hits":1023}}
+低端（6× throttle） q=low | after H3rain cache 關 | {"med":9.12,"runs":[9.12,9.01,9.86],"maxMs":433.7,"cache":{"on":false,"builds":0,"hits":0}}

@@ -122,5 +122,22 @@ console.log('# 規則');
   ok(cdOk && AU.cues.pet_turn_huh_a.cd >= 1.5 && AU.cues.pet_turn_huh_a.cdKey === AU.cues.pet_turn_huh_b.cdKey, 'turn_huh 共用冷卻 ≥1.5s');
 }
 
+console.log('# H3 雨層細雨環境聲（遊音 7.10）');
+{
+  const fs = require('fs'), cp = require('child_process'), crypto = require('crypto'), R = AU.amb && AU.amb.rain, dir = __dirname + '/../audio/amb/';
+  ok(R && R.short === 'amb_rain_light_short' && R.loop === 'amb_rain_light_loop' && R.bus === 'amb' && D.PARAMS.audio.bus.amb > 0, '雨聲 cue：short／loop 檔名＋amb 軌');
+  ok(R.xfadeAt === 1.5 && R.xfadeSec >= 1 && R.xfadeSec <= 2 && R.fadeOutSec >= 1.5 && R.fadeOutSec <= 2, '時序：雨開始播 short，1.5s 後 crossfade（' + R.xfadeSec + 's）入 loop；停雨 loop 淡出 ' + R.fadeOutSec + 's（1.5–2）');
+  const sha = (f) => crypto.createHash('sha256').update(fs.readFileSync(dir + f + '.ogg')).digest('hex');
+  ok(sha(R.loop) === '307d0eb30d788ebd45487415d109646862f3569b57705e619be2cfbe2f13902d' && sha(R.short) === 'f5ffc6d5a375f1afed5203f1eff458847d60d4c511148adf4507283389e30ce4', '雨聲檔（v2）同遊音 staging sha256 逐 byte 相同（原檔不改）');
+  let du = null; try { du = [R.short, R.loop].map(f => +cp.execSync('ffprobe -v error -show_entries stream=duration -of csv=p=0 ' + JSON.stringify(dir + f + '.ogg')).toString().trim()); } catch (e) { }
+  if (du) ok(Math.abs(du[0] - 6) < 0.01 && Math.abs(du[1] - 24.706) < 0.01, '長度：short 6.000s／loop 24.706s（ffprobe）', JSON.stringify(du)); else console.log('    （冇 ffprobe，跳過長度）');
+  const s = mkS(), b = BEH.create(9), d = AUD.createDirector(9);
+  const w0 = world(s, b, 13), r0 = AUD.update(d, 0.03, w0), r1 = AUD.update(d, 0.03, Object.assign({}, w0, { rain: true })), r2 = AUD.update(d, 0.03, Object.assign({}, w0, { rain: true, mode: 'minigame' }));
+  ok(r0.rain === false && r1.rain === true && r2.rain === false, '導演：rain 世界旗（HD-2D 現款 H3rain）→ rain＝true；冇雨／迷你遊戲 → false');
+  ok(AUD.Engine.url.call({ base: 'audio/' }, R.loop) === 'audio/amb/amb_rain_light_loop.ogg' && AUD.Engine.url.call({ base: 'audio/' }, 'bgm_noon') === 'audio/bgm/bgm_noon.ogg', 'amb_ 檔由 audio/amb/ 載入');
+  const src = fs.readFileSync(__dirname + '/../src/audio.js', 'utf8');
+  ok(/ls\.loop = true; ls\.loopStart = 0; ls\.loopEnd = bl\.duration/.test(src) && !/new Audio\(|createElement\('audio'\)/.test(src), 'loop 用 AudioBufferSourceNode.loop＝true（loopStart 0／loopEnd＝buffer 長），冇 <audio> 元素');
+}
+
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);
 process.exit(fail ? 1 : 0);

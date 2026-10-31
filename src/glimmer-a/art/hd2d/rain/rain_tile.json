@@ -1,0 +1,68 @@
+{
+ "frames": {
+  "rain_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   }
+  },
+  "rain_02": {
+   "frame": {
+    "x": 68,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   }
+  },
+  "rain_03": {
+   "frame": {
+    "x": 134,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   }
+  },
+  "rain_04": {
+   "frame": {
+    "x": 200,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   }
+  }
+ },
+ "meta": {
+  "image": "rain_tile.png",
+  "size": {
+   "w": 266,
+   "h": 68
+  },
+  "format": "RGBA8888",
+  "padding": 2,
+  "tile": [
+   64,
+   64
+  ],
+  "fps": 12,
+  "loop": true,
+  "note": "可平鋪；每幀向下 16px，4 幀循環無縫。建議 globalAlpha 0.55，畫喺 fore 之後、lightmap 之前；可疊兩層（1x 速／0.6x 速、偏移 32px）做深度。"
+ }
+}

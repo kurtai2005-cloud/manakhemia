@@ -514,6 +514,18 @@ console.log('# QA 修正（PR #17）：P0 回撥日離線補抽／P1 重設日�
   ok(maxGap <= 14, '彩虹最長間隔 ≤14 日（由第一次開 app 計）', maxGap.toFixed(2));
   ok(badHour === 0 && cdV === 0, 'pity 彩虹仍守 17–23 窗、240h 冷卻零違規', JSON.stringify([badHour, cdV]));
   ok(rbDays / rbN >= 11 && rbDays / rbN <= 15, '彩虹平均 11–15 日一次（加 pity 後）', (rbDays / rbN).toFixed(1));
+
+  // PR#17 QA3：彩虹 240h 冷卻（權重 1、14 日 pity 不變）；3000 日模擬平均間隔 11–15 日；drawChance 0.33
+  ok(EV.DEF.rainbow.cooldownH === 240 && EV.DEF.rainbow.weight === 1 && P.rainbowPityDays === 14, 'QA3：彩虹 cooldownH 240、權重 1、pity 14 日');
+  ok(P.drawChance === 0.33, 'QA3：drawChance 0.33');
+  { const t0 = Date.now(), sim = simulate(30001, 3000, [8, 12.5, 18.5, 22]);
+    const rb = sim.recs.filter(x => x.id === 'rainbow').concat(sim.s.evs.diary.filter(x => x.id === 'rainbow')).sort((x, y) => x.ts - y.ts);
+    const at = sim.recs.filter(x => x.id === 'rainbow').map(x => x.at).sort((a, b) => a - b); let v240 = 0; for (let i = 1; i < at.length; i++) if (at[i] - at[i - 1] < 240 * H - 1) v240++;
+    const ts = [...new Set(rb.map(x => x.ts))]; let gs = 0, gmin = 1e9, gmax = 0; for (let i = 1; i < ts.length; i++) { const g = (ts[i] - ts[i - 1]) / DAY; gs += g; gmin = Math.min(gmin, g); gmax = Math.max(gmax, g); }
+    const avg = gs / Math.max(1, ts.length - 1);
+    console.log('    QA3 彩虹 3000 日：' + ts.length + ' 次、平均間隔 ' + avg.toFixed(2) + ' 日（最短 ' + gmin.toFixed(2) + '、最長 ' + gmax.toFixed(2) + '），' + ((Date.now() - t0) / 1000).toFixed(1) + 's');
+    ok(avg >= 11 && avg <= 15, 'QA3：3000 日模擬彩虹平均間隔 11–15 日', avg.toFixed(2));
+    ok(v240 === 0 && gmin >= 10 - 1e-6, 'QA3：彩虹間隔零次 <240h', JSON.stringify([v240, gmin.toFixed(2)])); }
   { const s = adult(34); SIM.advance(s, 60, { hour: 12, now: T0 }, 30); const E = s.evs; E.rbAt = E.clock - 13.5 * 86400; E.cd = {};
     ok(EV.rainbowPity(s, E, 18) === EV.DEF.rainbow && EV.rainbowPity(s, E, 12) === null && EV.rainbowPity(s, E, 23.5) === null, 'rainbowPity：到期時窗內回傳彩虹、窗外 null');
     E.cd.rainbow = E.clock + 3600; ok(EV.rainbowPity(s, E, 18) === null, 'rainbowPity：唔打穿冷卻');

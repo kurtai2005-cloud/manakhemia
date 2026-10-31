@@ -8,7 +8,7 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   let G, rd;
-  const NS_BEH = { tap: (b, k, x) => window.Glimmer.behavior.tap(b, k, x) };
+  const NS_BEH = { tap: (b, k, x, y, o) => window.Glimmer.behavior.tap(b, k, x, o && o.hold ? y : undefined, o), drag: (b, x, y) => window.Glimmer.behavior.drag(b, x, y), dragEnd: (b) => window.Glimmer.behavior.dragEnd(b) };
   const EVN = () => window.Glimmer.events, LT = () => window.Glimmer.light;
   const SND = (k, i) => { const a = window.Glimmer.audio; if (a && a.Engine) a.Engine.notify(k, i); };   // 音訊 cue 通知（audio.js Director 決定播咩）
   const UI = {};
@@ -69,7 +69,7 @@
         modal({ title: '孵化咗！', kind: 'hatch', lines: ['光卵裂開，一團暖暖嘅絨球探出頭嚟。', '佢係「團絨」，頭頂有撮會發光嘅小絨芽。', '餵食、玩耍、清潔、關燈瞓覺——慢慢陪佢長大。'], onClose: () => { rd.act('celebrate', 1.0); } });
       } else if (e.type === 'evolve') {
         SND('evolve'); rd.flash = 1.4; rd.burst('spark', R.CX, R.GROUND_Y - 40, 18, 110);
-        const t = { bright: ['燦光形態！', '絨芽放射出光芒，你照顧得好好，佢成為最亮嘅守夜者。'], soft: ['柔光形態', '圓潤又溫柔，伴你度過每個夜晚。'], dust: ['微塵形態', '素素地都好靚。呢個唔係失敗結局，日後可以再重養。'] }[e.form];
+        const t = { bright: ['燦光形態！', '絨芽放射出光芒，你照顧得好好，佢成為最亮嘅守夜者。'], soft: ['柔光形態', '圓潤又溫柔，伴你度過每個夜晚。'], dust: ['微塵形態', '素素地都好靚。呢個唔係失敗結局，日後可以再重養。'], lumi: ['螢絨形態（隱藏）', '你陪佢喺夜晚追過螢火，佢身上嘅絨毛開始發出淡淡螢光。'] }[e.form] || [D.FORM_NAME[e.form] || e.form, ''];
         modal({ title: '成長為守夜者：' + t[0], kind: 'evolve', lines: [t[1], '（照顧品質 CQ ＝ ' + Math.round(e.cq) + '）'], onClose: () => rd.act('celebrate', 1.0) });
       }
     }
@@ -237,28 +237,50 @@
     // 指標：視差、拖動籃子、輕點
     const hit = $('#hit');
     const toArt = (e) => rd.screenToArt(e.clientX, e.clientY);
+    // P2：寵物觸控區＝真身實色框，按需要撐到 ≥44 CSS px（唔大過身體太多：每邊最多多 pad 到 44px 或 3 art px）
+    const MIN_CSS = 44;
+    function petHitBox() {
+      const r = rd.petRect, cssPerArt = (G.layoutInfo ? G.layoutInfo.cssW : 390) / R.W, minA = MIN_CSS / cssPerArt, pv = rd.par.x * -1.5;
+      if (!r || !(r.w > 0)) { const b = rd.petBox(); return { x: b.x, y: b.y, w: b.w, h: b.h, fallback: true, minArt: minA, cssPerArt }; }
+      const pad = 3, w = Math.max(minA, r.w + pad * 2), h = Math.max(minA, r.h + pad * 2);
+      return { x: r.x + pv + r.w / 2 - w / 2, y: r.y + r.h / 2 - h / 2, w, h, body: { x: r.x + pv, y: r.y, w: r.w, h: r.h }, minArt: minA, cssPerArt };
+    }
+    const inBox = (a, b) => a.x >= b.x && a.x <= b.x + b.w && a.y >= b.y && a.y <= b.y + b.h;
+    let press = null, down = false;
+    const SHORT_MS = (P.beh.look && P.beh.look.shortTapMs) || 300;
     hit.addEventListener('pointermove', (e) => {
       const a = toArt(e);
       if (G.mode === 'minigame' && mgs) { if (e.buttons || e.pointerType === 'touch' || true) mgs.target = a.x; return; }
+      if (down && G.beh && !G.state.sleeping && G.state.stage !== 'egg') NS_BEH.drag(G.beh, a.x - R.CX, a.y - R.GROUND_Y);   // P2：拖動手指 → 眼神跟手指
       rd.parT.x = clamp((a.x / R.W - 0.5) * 2, -1, 1); rd.parT.y = clamp((a.y / R.H - 0.5) * 2, -1, 1); rd.parT.active = true; rd.parT.last = rd.t;
     });
     hit.addEventListener('pointerdown', (e) => {
       const a = toArt(e);
       if (G.mode === 'minigame') { if (mgs) mgs.target = a.x; return; }
-      closePop();
+      closePop(); down = true; press = null; try { hit.setPointerCapture(e.pointerId); } catch (er) { }   // 拖出 #hit（例：經過 HUD）都繼續收 move／up
       const s = G.state;
       // 便便
       for (let i = s.poops - 1; i >= 0; i--) { const p = rd.poopPos(i); if (Math.abs(a.x - (p.x + rd.par.x * -1.5)) < 11 && a.y > p.y - 18 && a.y < p.y + 8) { SIM.clearPoop(s); processEvents(); G.save(); return; } }
-      const b = rd.petBox();
-      if (a.x > b.x - 6 && a.x < b.x + b.w + 6 && a.y > b.y - 6 && a.y < b.y + b.h + 6) {
+      const b = petHitBox();
+      if (inBox(a, b)) {
         if (s.stage === 'egg') { SIM.tapEgg(s); processEvents(); G.save(); }
-        else if (!s.sleeping) {  if (G.beh) NS_BEH.tap(G.beh, 'pet', a.x - R.CX, a.y - R.GROUND_Y); else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }
+        else if (!s.sleeping) { if (G.beh) press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y }; else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
         else if (G.lightWake && G.lightWake()) { toast('團絨揉揉眼醒咗…仲有啲睏睏'); SND('sleep', { on: false }); }
       } else if (s.stage !== 'egg' && !s.sleeping && G.beh && a.y > R.GROUND_Y - 50 && a.y < R.GROUND_Y + 40) {
         NS_BEH.tap(G.beh, 'ground', clamp(a.x - R.CX, -70, 70), a.y - R.GROUND_Y);
       }
     });
-    hit.addEventListener('pointerleave', () => { rd.parT.active = false; });
+    const release = (e, cancel) => {
+      down = false; if (G.beh) NS_BEH.dragEnd(G.beh);
+      const p = press; press = null; if (!p || cancel || G.mode === 'minigame' || !G.beh || G.state.sleeping) return;
+      const ms = performance.now() - p.t0; G.lastPetPress = { ms: Math.round(ms), short: ms < SHORT_MS };
+      if (ms < SHORT_MS) NS_BEH.tap(G.beh, 'pet', p.x, p.y);             // 短 tap：照舊（望向＋回頭 D2＋反應／連點）
+      else NS_BEH.tap(G.beh, 'pet', p.x, p.y, { hold: true });           // 長按：只望住，唔回頭唔反應（蹭手留第三段）
+    };
+    hit.addEventListener('pointerup', (e) => release(e, false));
+    hit.addEventListener('pointercancel', (e) => release(e, true));
+    hit.addEventListener('pointerleave', () => { rd.parT.active = false; if (down) { down = false; press = null; if (G.beh) NS_BEH.dragEnd(G.beh); } });
+    UI.petHitBox = petHitBox;
     window.addEventListener('deviceorientation', (e) => { if (e.gamma == null || G.mode === 'minigame') return; rd.parT.x = clamp(e.gamma / 22, -1, 1); rd.parT.y = clamp(((e.beta || 45) - 45) / 25, -1, 1); rd.parT.active = true; rd.parT.last = rd.t; });
     if (G.debug) buildDebug();
   };

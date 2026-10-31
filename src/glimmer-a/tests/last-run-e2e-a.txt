@@ -50,13 +50,13 @@
   ✓ 傍晚燈強度 > 午間（1.15 vs 0.4）
   ✓ 邊界：07 早／11 午／17 晚／23 夜
 # 確定性（同種子＋假時鐘 → 行為日誌一致）
-    日誌長度 3718 字元
+    日誌長度 3334 字元
   ✓ 重設種子後快進 600 秒，日誌條數一致（需求會衰減，故只比長度）
   ✓ 假時鐘 advance(3600) = +1 小時
 # 事件（可視）：蝴蝶／彩虹／流星
   ✓ 事件 butterfly 出現（提示卡＋畫面特效）
   📷 a-event-butterfly
-  ✓ 提示卡顯示遊美動畫 icon（butterfly，非透明像素 373）
+  ✓ 提示卡顯示遊美動畫 icon（butterfly，非透明像素 290）
   ✓ icon 會播動畫（兩個時間點幀唔同）
   ✓ 事件 rainbow 出現（提示卡＋畫面特效）
   📷 a-event-rainbow
@@ -96,10 +96,11 @@
   ✓ 一鍵領取：4 條 × ✦3 = +12
   📷 a-diary-claimed
 # PR #19：14 日離線補抽／連點鬧脾氣 48h／睡眠點擊輕喚醒／壞存檔回退
-  ✓ 14 日離線：彈窗 2、入日記 26 條（≤50）
+  ✓ 14 日離線：彈窗 2、入日記 33 條（≤50）
   📷 a-offline-14d
   ✓ __qa.pet.tapPet(5)：獨立 grumpy_tap（48h、冇獎勵、唔計上限、唔共用鬧脾氣）
   ✓ 冷卻內再連點：唔再觸發 grumpy_tap
+  ✓ CI 情境：需求鬧脾氣（48h）之後（過咗全域間隔）連點仍觸發 grumpy_tap（各自 cd）
   ✓ 瞓緊點寵物：輕喚醒＋睏睏（tired），冇鬧脾氣
   📷 a-light-wake
   ✓ 壞日記／缺 stats.byId 回退唔爆
@@ -112,7 +113,7 @@
   ✓ AudioContext 手勢後 running
   ✓ SFX 解碼 55 個
   ✓ cue：tap／feed／bgm:start:noon
-  ✓ BGM 午→夜 crossfade，目標 offset 對齊小節線（7.0588s＝第 2 小節）
+  ✓ BGM 午→夜 crossfade，目標 offset 對齊小節線（3.5294s＝第 1 小節）
   ✓ （關燈 sleep_breath loop：）
 # 低端機預設 low／rAF 幀間隔降畫質
   ✓ 低端機（2 核）新存檔預設畫質 low
@@ -155,4 +156,4 @@
 # console 錯誤／警告
   ✓ console 無 error／warning
 
-結果：93 通過，0 失敗
+結果：94 通過，0 失敗
