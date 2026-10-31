@@ -3,6 +3,8 @@
  *   evo6（v2）：加 stage／evoForm／size（px）／pivot／sizeDp（跟 __glimmer.evo.overlayInfo()；舊 Kotlin 照讀 form，唔識新欄都唔會壞）
  *   v3（Kurt 10-31 批：懸浮同步心情／瞌覺／需求）：加 moodBand（happy／ok／sad）、sleeping、needs{urgent,level,warnAt,vals,rate,rateAwake,floor,wakeAt}
  *   （跟 __glimmer.evo.overlayStatus()；舊 www 冇呢個就由 state.needs 簡單計，冇推算率）。狀態一變（每 2 秒比較簽名）即寫，唔止靠 30 秒。
+ *   v4（Kurt 10-31 22:50：長按顯示遊戲狀態）：加 info{name,gen,stage,stageName,sub,form,formName,evoForm,progress,stageH,leftH,ageSec,days,unwell,fadeReady}
+ *   （overlayStatus().info；冇就保持 v3）。evoForm／階段／日數一變都即寫（懸浮即刻換同遊戲一樣嘅形態）。
  * - 返 app 時 replay overlay queue：每次互動 mood +1，每日最多 +5（按互動發生嗰日，本地時間），冇獎勵、冇事件。 */
 (function () {
   var C = window.Capacitor;
@@ -25,7 +27,8 @@
     if (ov) { snap.v = 2; snap.stage = ov.stage; snap.evoForm = ov.evoForm; snap.size = ov.size; snap.pivot = ov.pivot; snap.sizeDp = ov.sizeDp; }
     var st = statusOf(g);
     if (st) { snap.v = 3; snap.moodBand = st.moodBand; snap.sleeping = !!st.sleeping; snap.egg = !!st.egg;
-      snap.needs = { urgent: st.urgent || null, level: st.level, warnAt: st.warnAt, vals: st.vals || null, rate: st.rate || null, rateAwake: st.rateAwake || null, floor: st.floor, wakeAt: st.wakeAt }; }
+      snap.needs = { urgent: st.urgent || null, level: st.level, warnAt: st.warnAt, vals: st.vals || null, rate: st.rate || null, rateAwake: st.rateAwake || null, floor: st.floor, wakeAt: st.wakeAt };
+      if (st.info && typeof st.info === 'object') { snap.v = 4; snap.info = st.info; } }
     lastSig = sigOf(g);
     Pref.set({ key: 'glimmer.snapshot', value: JSON.stringify(snap) }).catch(function () {});
   }
@@ -41,7 +44,8 @@
   var lastSig = '';
   function sigOf(g) {
     var st = statusOf(g) || {}, ov = g.evo && g.evo.overlayInfo ? g.evo.overlayInfo() : {}, s = g.state || {};
-    return [formOf(s), ov.sizeDp, st.moodBand, !!st.sleeping, st.urgent || '-', !!st.egg].join('|');
+    var inf = st.info || {};
+    return [formOf(s), ov.sizeDp, ov.evoForm || '-', st.moodBand, !!st.sleeping, st.urgent || '-', !!st.egg, inf.stage || '-', inf.days == null ? '-' : inf.days, !!inf.unwell, !!inf.fadeReady].join('|');
   }
   function maybeWrite() { var g = G(); if (!g || !g.state) return; if (sigOf(g) !== lastSig) writeSnapshot(); }
   var busy = false;

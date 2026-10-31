@@ -747,6 +747,7 @@ class PetOverlayService : Service() {
                 setOnClickListener { hideMenu(); on() }
             })
         }
+        addStatusHeader(box)
         fun mk(m: String, l: String) = (if (mode == m) "✓ " else "　 ") + l
         item(mk(PetPrefs.MODE_EDGE, "沿底邊行")) { applyMode(PetPrefs.MODE_EDGE) }
         item(mk(PetPrefs.MODE_FREE, "全畫面自由行")) { applyMode(PetPrefs.MODE_FREE) }
@@ -769,5 +770,50 @@ class PetOverlayService : Service() {
         wm.addView(box, p); menu = box
         Log.i(TAG, "long press → menu")
     }
+    // ── 長按狀態區（snapshot v4；Kurt 10-31 22:50）：名／階段名、形態、心情、瞓覺、四項需求（遊戲 HUD icon＋細條）、階段進度／幾日大。只顯示，唔撳得。
+    private var menuIcons: PetAtlas? = null
+    private fun addStatusHeader(box: LinearLayout) {
+        refreshStatus(true)
+        val snap = PetPrefs.snapshotStatus(this)
+        val m = PetStatus.menu(PetPrefs.snapshotInfo(this), PetPrefs.snapshotStage(this), snap, status)
+        val ink = Color.rgb(90, 60, 40); val w = dp(232f).toInt(); val ph = dp(14f).toInt()
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(ph, dp(8f).toInt(), ph, dp(6f).toInt()); minimumWidth = w; contentDescription = "status"; importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES }
+        col.addView(TextView(this).apply { text = m.title; textSize = 16f; setTextColor(ink); setTypeface(typeface, android.graphics.Typeface.BOLD) })
+        m.sub?.let { t -> col.addView(TextView(this).apply { text = t; textSize = 12.5f; setTextColor(Color.rgb(140, 105, 70)) }) }
+        col.addView(TextView(this).apply { text = m.moodLine; textSize = 13f; setTextColor(ink); setPadding(0, dp(3f).toInt(), 0, dp(2f).toInt()) })
+        if (menuIcons == null) menuIcons = try { PetAtlas.load(this, "fx") } catch (e: Exception) { null }
+        for (n in m.needs) {
+            val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(0, dp(2f).toInt(), 0, dp(2f).toInt()) }
+            menuIcons?.clips?.get("need_${n.key}")?.frames?.firstOrNull()?.let { f ->
+                val bm = android.graphics.Bitmap.createBitmap(menuIcons!!.bitmap, f.src.left, f.src.top, f.src.width(), f.src.height())
+                row.addView(android.widget.ImageView(this).apply { setImageDrawable(android.graphics.drawable.BitmapDrawable(resources, bm).apply { isFilterBitmap = false }); scaleType = android.widget.ImageView.ScaleType.FIT_CENTER },
+                    LinearLayout.LayoutParams(dp(20f).toInt(), dp(20f).toInt()))
+            }
+            row.addView(TextView(this).apply { text = n.label; textSize = 12.5f; setTextColor(ink); setPadding(dp(4f).toInt(), 0, dp(6f).toInt(), 0) }, LinearLayout.LayoutParams(dp(44f).toInt(), LinearLayout.LayoutParams.WRAP_CONTENT))
+            row.addView(BarView(this, n.value / 100f, n.color), LinearLayout.LayoutParams(0, dp(9f).toInt(), 1f))
+            row.addView(TextView(this).apply { text = n.value.toString(); textSize = 12f; setTextColor(ink); gravity = Gravity.END }, LinearLayout.LayoutParams(dp(30f).toInt(), LinearLayout.LayoutParams.WRAP_CONTENT))
+            col.addView(row)
+        }
+        if (m.progress != null) {
+            col.addView(TextView(this).apply { text = m.progressText; textSize = 12.5f; setTextColor(ink); setPadding(0, dp(4f).toInt(), 0, dp(2f).toInt()) })
+            col.addView(BarView(this, m.progress.toFloat(), 0xFFFFD36A.toInt()), LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(7f).toInt()))
+        }
+        box.addView(col)
+        box.addView(View(this).apply { setBackgroundColor(Color.rgb(230, 200, 160)) }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(1f).toInt()).apply { topMargin = dp(4f).toInt() })
+        Log.i(TAG, "menu status: ${m.title} | ${m.sub} | ${m.moodLine} | ${m.needs.joinToString { it.key + "=" + it.value }} | ${m.progressText}")
+    }
+
+    /** 遊戲 HUD 需求條（index.html .track：深藍底＋啡邊，圓角）。 */
+    private class BarView(ctx: Context, val frac: Float, val color: Int) : View(ctx) {
+        private val p = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+        private val r = android.graphics.RectF()
+        override fun onDraw(c: android.graphics.Canvas) {
+            val w = width.toFloat(); val h = height.toFloat(); val rad = h / 2f
+            r.set(0f, 0f, w, h); p.style = android.graphics.Paint.Style.FILL; p.color = 0xFF0B1030.toInt(); c.drawRoundRect(r, rad, rad, p)
+            val f = frac.coerceIn(0f, 1f); if (f > 0f) { r.set(1f, 1f, 1f + (w - 2f) * f, h - 1f); p.color = color; c.drawRoundRect(r, rad, rad, p) }
+            r.set(0.5f, 0.5f, w - 0.5f, h - 0.5f); p.style = android.graphics.Paint.Style.STROKE; p.strokeWidth = 1f; p.color = 0xFF6A5A3A.toInt(); c.drawRoundRect(r, rad, rad, p)
+        }
+    }
+
     private fun hideMenu() { menu?.let { try { wm.removeView(it) } catch (_: Exception) {} }; menu = null }
 }

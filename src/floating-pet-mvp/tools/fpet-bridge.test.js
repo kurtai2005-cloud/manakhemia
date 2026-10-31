@@ -1,4 +1,4 @@
-/* node tools/fpet-bridge.test.js — snapshot v1/v2/v3＋狀態一變即寫（mock Capacitor、假計時器） */
+/* node tools/fpet-bridge.test.js — snapshot v1/v2/v3/v4＋狀態一變即寫（mock Capacitor、假計時器） */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const src = fs.readFileSync(path.join(__dirname, 'fpet-bridge.js'), 'utf8');
 let pass = 0, fail = 0;
@@ -37,5 +37,16 @@ const needs = (o) => Object.assign({ hunger: 80, mood: 80, clean: 80, energy: 80
   st.urgent = 'hunger'; st.level = 25; r.tick(2000); ok(r.writes.length === n0 + 2 && r.writes[n0 + 1].needs.urgent === 'hunger', '肚餓 → 即寫');
   st.moodBand = 'sad'; r.tick(2000); ok(r.writes.length === n0 + 3 && r.writes[n0 + 2].moodBand === 'sad', '唔開心 → 即寫');
   r.tick(30000); ok(r.writes.length === n0 + 4, '30 秒定時照寫（舊行為保留）');
+  // v4：overlayStatus().info → snap.info；evoForm／日數一變即寫
+  const info = { name: '團絨', gen: 1, stage: 'adult', stageName: '守夜者', sub: '柔光形態', form: 'soft', formName: '柔光', evoForm: 'evo_guard_soft', progress: 0.25, stageH: 168, leftH: 126, ageSec: 400000, days: 4, unwell: false, fadeReady: false };
+  const st4 = Object.assign({}, st, { sleeping: false, urgent: null, moodBand: 'happy', info });
+  let ev = 'evo_guard_soft';
+  g = { state: { stage: 'adult', form: 'soft', needs: needs(), sleeping: false }, evo: { overlayInfo: () => ({ stage: 'adult', evoForm: ev, size: 44, sizeDp: 72 }), overlayStatus: () => st4 } };
+  r = run(g); await new Promise(s => setImmediate(s));
+  let m0 = r.writes.length; w = r.writes[m0 - 1];
+  ok(w.v === 4 && w.info.stageName === '守夜者' && w.info.formName === '柔光' && w.info.days === 4 && w.evoForm === 'evo_guard_soft' && w.needs.vals, 'v4：info＋v3 欄照寫', w);
+  ev = 'evo_guard_dust'; g.state.form = 'dust'; r.tick(2000); ok(r.writes.length === m0 + 1 && r.writes[m0].evoForm === 'evo_guard_dust', '同大細換分支（柔光→微塵）→ 即寫', r.writes.length);
+  info.days = 5; r.tick(2000); ok(r.writes.length === m0 + 2 && r.writes[m0 + 1].info.days === 5, '幾日大變 → 即寫');
+  r.tick(2000); ok(r.writes.length === m0 + 2, 'v4 冇變 → 唔寫');
   console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail ? 1 : 0);
 })();

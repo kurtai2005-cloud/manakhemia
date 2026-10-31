@@ -64,6 +64,22 @@ object PetPrefs {
         }
     } catch (e: Exception) { null }
 
+    /** snapshot v4 info（長按選單狀態）；v1–v3 → null。 */
+    fun snapshotInfo(c: Context): PetStatus.Info? = try {
+        val s = cap(c).getString(KEY_SNAPSHOT, null)
+        val o = s?.let { JSONObject(it) }; val i = o?.optJSONObject("info")
+        if (o == null || o.optInt("v", 1) < 4 || i == null) null else {
+            fun str(k: String) = if (i.isNull(k)) null else i.optString(k, "").ifEmpty { null }
+            fun dbl(k: String) = i.optDouble(k, Double.NaN).takeIf { it.isFinite() }
+            PetStatus.Info(str("name") ?: "團絨", i.optInt("gen", 1), str("stage"), str("stageName"), str("sub"), str("formName"), str("evoForm"),
+                dbl("progress"), dbl("leftH"), dbl("ageSec")?.toLong(), if (i.has("days") && !i.isNull("days")) i.optInt("days") else null,
+                i.optBoolean("unwell", false), i.optBoolean("fadeReady", false))
+        }
+    } catch (e: Exception) { null }
+
+    /** snapshot stage（v2+）；v1 → null。 */
+    fun snapshotStage(c: Context): String? = try { cap(c).getString(KEY_SNAPSHOT, null)?.let { JSONObject(it).optString("stage", "").ifEmpty { null } } } catch (e: Exception) { null }
+
     fun appendQueue(c: Context, kind: String) = synchronized(lock) {
         val p = cap(c)
         val arr = try { JSONArray(p.getString(KEY_QUEUE, "[]")) } catch (e: Exception) { JSONArray() }
