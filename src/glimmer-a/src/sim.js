@@ -74,9 +74,21 @@
   //  moodBand：happy（心情 >60）／ok／sad（<30，同 needBand 一致）；sleeping＝遊戲入面瞓緊（關燈）；
   //  urgent＝最低嗰項需求（低過 warnAt=30 先提，同 HUD 泡泡「好肚餓…」一樣）；rate／rateAwake＝每小時變化（Kotlin 喺 app 背景時推算，
   //  同 step() 一樣：階段倍率、瞓覺 ×0.3、便便扣清潔；精力瞓覺回升）；floor＝離線保底 20（只喺原本高過先保）。
+  // snapshot v4（Kurt 10-31 22:50：長按選單顯示遊戲狀態）：info＝名／階段名／形態名／進度／幾日大，同遊戲 HUD 階段標籤同一套字（只讀）。
+  function overlayInfoText(s) {
+    if (!s) return null;
+    const st = s.stage, sec = P.stageSec[st], prog = stageProgress(s), age = Math.max(0, +s.ageSec || 0);
+    const big = D.isBig(st), formName = big ? (D.FORM_NAME[s.form] || null) : null;
+    const sub = st === 'egg' ? '光卵' : D.STAGE_SUB[st] ? D.STAGE_SUB[st] : (formName ? formName + '形態' + (s.fadeReady ? ' · 準備化光' : '') : '');
+    return { name: '團絨', gen: s.gen || 1, stage: st, stageName: D.STAGE_NAME[st] || st, sub, form: big ? (s.form || null) : null, formName,
+      evoForm: D.evoForm(st, s.form), progress: Math.round(prog * 1000) / 1000, stageH: sec ? Math.round(sec / 36) / 100 : null,
+      leftH: sec ? Math.round(Math.max(0, sec - (+s.growthSec || 0)) / 36) / 100 : null,
+      ageSec: Math.round(age), days: Math.floor(age / 86400), unwell: isUnwell(s), fadeReady: !!s.fadeReady };
+  }
   function overlayStatus(s) {
     const warnAt = 30;
-    if (!s || s.stage === 'egg') return { egg: true, moodBand: 'ok', sleeping: false, urgent: null, level: null, warnAt, vals: null, rate: null, rateAwake: null, floor: P.offlineNeedFloor, wakeAt: P.sleepWakeAt };
+    const info = overlayInfoText(s);
+    if (!s || s.stage === 'egg') return { info, egg: true, moodBand: 'ok', sleeping: false, urgent: null, level: null, warnAt, vals: null, rate: null, rateAwake: null, floor: P.offlineNeedFloor, wakeAt: P.sleepWakeAt };
     const n = s.needs, dm = P.stageDecayMul[s.stage] == null ? 1 : P.stageDecayMul[s.stage];
     const r1 = (v) => Math.round(v * 1000) / 1000;
     const rates = (slp) => { const mul = slp ? P.sleepDecayMul : 1; return {
@@ -85,7 +97,7 @@
       energy: r1(slp ? P.sleepRegenPerHour * P.traitSleepRegenMul : -P.decayPerHour.energy * dm) }; };
     const vals = {}; for (const k of KEYS) vals[k] = Math.round(clamp(+n[k] || 0, 0, 100) * 10) / 10;
     const lk = lowestNeed(s), mv = vals.mood;
-    return { egg: false, moodBand: mv > 60 ? 'happy' : mv < 30 ? 'sad' : 'ok', sleeping: !!s.sleeping,
+    return { info, egg: false, moodBand: mv > 60 ? 'happy' : mv < 30 ? 'sad' : 'ok', sleeping: !!s.sleeping,
       urgent: vals[lk] < warnAt ? lk : null, level: vals[lk], warnAt, vals, rate: rates(!!s.sleeping), rateAwake: rates(false), floor: P.offlineNeedFloor, wakeAt: P.sleepWakeAt };
   }
 

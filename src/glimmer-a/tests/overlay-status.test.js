@@ -1,4 +1,4 @@
-/* 浮動 overlay snapshot v3：node tests/overlay-status.test.js（心情／瞌覺／需求＋推算率同 step() 一致） */
+/* 浮動 overlay snapshot v3／v4：node tests/overlay-status.test.js（心情／瞌覺／需求＋推算率同 step() 一致） */
 const S = require('../src/sim.js');
 const D = require('../src/data.js');
 let pass = 0, fail = 0;
@@ -26,5 +26,18 @@ for (const [st, slp, poops] of [['sprout', false, 0], ['juvenile', false, 2], ['
   const diff = D.NEED_KEYS.map(k => Math.abs((s.needs[k] - before[k]) - r.rate[k]));
   ok(diff.every(d => d < 0.01), `${st}${slp ? '（瞓）' : ''} poops=${poops}：rate＝step 1h 實際變化`, { rate: r.rate, got: D.NEED_KEYS.map(k => +(s.needs[k] - before[k]).toFixed(3)) });
 }
+// v4：info（長按選單狀態：名／階段名／形態名／進度／幾日大），只讀
+{ const s0 = S.newState(1e12, 3); const j0 = JSON.stringify(s0); const i0 = S.overlayStatus(s0).info;
+  ok(i0 && i0.name === '團絨' && i0.stageName === '光卵' && i0.evoForm === 'evo_egg' && i0.days === 0 && i0.form === null, 'v4 光卵 info', i0);
+  ok(JSON.stringify(s0) === j0, 'v4 overlayStatus 只讀（唔改 state）'); }
+for (const [st, name, sub, ev] of [['newborn', '絨點', '絨點仔', 'evo_dot'], ['sprout', '芽崽', '絨芽', 'evo_sprout'], ['juvenile', '跳跳期', '跳跳絨', 'evo_hop']]) {
+  const i = S.overlayStatus(at(st)).info; ok(i.stageName === name && i.sub === sub && i.evoForm === ev && i.formName === null, `v4 ${name} 階段名＋sub`, i); }
+{ const s = at('adult', {}, { form: 'dust', growthSec: 3.5 * 86400, ageSec: 5.2 * 86400 }); const i = S.overlayStatus(s).info;
+  ok(i.stageName === '守夜者' && i.formName === '微塵' && i.sub === '微塵形態' && i.evoForm === 'evo_guard_dust', 'v4 守夜者・微塵', i);
+  ok(Math.abs(i.progress - 0.5) < 0.001 && i.stageH === 168 && Math.abs(i.leftH - 84) < 0.01 && i.days === 5, 'v4 進度 50%／剩 84h／5 日大', i); }
+{ const s = at('elder', {}, { form: 'lumi', fadeReady: true }); const i = S.overlayStatus(s).info;
+  ok(i.stageName === '靜光' && i.formName === '螢絨' && i.sub === '螢絨形態 · 準備化光' && i.evoForm === 'evo_still_lumi', 'v4 靜光・螢絨（準備化光）', i); }
+{ const s = at('adult', {}, { form: 'bright' }); const i = S.overlayStatus(s).info; ok(i.formName === '燦光' && i.evoForm === 'evo_guard_radiant', 'v4 燦光 → evo_guard_radiant', i); }
+{ const i = S.overlayStatus(at('adult', { hunger: 5 })).info; ok(i.unwell === (5 < D.PARAMS.sickThreshold), 'v4 unwell 跟 isUnwell', i); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
