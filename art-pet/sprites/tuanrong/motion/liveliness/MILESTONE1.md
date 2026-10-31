@@ -11,9 +11,9 @@
 ## 檔案數量
 | form | noface 幀 | faceov | 新 clip 完整幀 | kit 散件 | atlas |
 |---|---|---|---|---|---|
-| sprout | 153 | 153 | 57 | 86 | atlas_sprout_live.png |
-| radiant | 153 | 153 | 57 | 86 | atlas_radiant_live.png |
-| soft | 153 | 153 | 57 | 86 | atlas_soft_live.png |
+| sprout | 171 | 171 | 75 | 86 | atlas_sprout_live.png, atlas_sprout_live_s2.png |
+| radiant | 171 | 171 | 75 | 86 | atlas_radiant_live.png, atlas_radiant_live_s2.png |
+| soft | 171 | 171 | 75 | 86 | atlas_soft_live.png, atlas_soft_live_s2.png |
 
 ## piece 尺寸／pivotPx
 - sprout: eyes 7x6 pivot (3, 3)；mouth 5x3 pivot (2, 0)；bulb 5x5 pivot (2, 2)

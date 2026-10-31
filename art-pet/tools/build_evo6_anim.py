@@ -679,7 +679,7 @@ def write_atlas(form, order, clips, kit):
     S = fsize(form); nm = "光卵" if form == "evo_egg" else FORMS[form]["name"]
     m = {"image": base + ".png", "emissive": base + "_emissive.png", "size": {"w": W, "h": H}, "scale": 1, "format": "RGBA8888",
          "padding": 2, "extrude": 1, "form": form, "name": nm, "stage": FORM_IDS.index(form) + 1, "frameSize": S, "pivotPx": list(piv),
-         "palette": "../palette.json",
+         "palette": "palette_base.json",
          "pivotRule": f"body frames bottom-center {tuple(piv)}；picked_up* pivotPx = anchors.grab（頭頂拎點）；kit pieces pivotPx = anchor point",
          "note": (f"{nm}：<clip>_NN 完整幀" + ("" if form == "evo_egg" else "、<clip>_noface_NN 無臉身體、五官 eyes_*/mouth_*（" + ("4×5 L" if FORMS[form]["tier"] == "L" else "4×4 S") + " 級 kit）")
                   + ("、bulb_base/bulb_glow（第一粒燈芽）" if form == "evo_hop" else "") + f"。{base}_emissive.png 同 layout，白＝發光（glow_core/glow_mid）。")}
@@ -762,7 +762,7 @@ def update_docs(res, ainfo):
         ent = {"name": nm, "stage": FORM_IDS.index(form) + 1, "evo6": True, "batch": "A", "frameSize": S, "pivotPx": list(fpiv(form)),
                "atlas": f"../evo6/atlas_{form}.png", "json": f"../evo6/atlas_{form}.json", "emissive": f"../evo6/atlas_{form}_emissive.png",
                "atlasSize": [W, H], "atlasPieces": n, "frames": sum(len(clips[c]["full"]) for c in order),
-               "palette": "../palette.json", "faceAnchors": f"../evo6/{form}/face_anchors_{form}.json", "clips": order,
+               "palette": "../evo6/palette_base.json", "faceAnchors": f"../evo6/{form}/face_anchors_{form}.json", "clips": order,
                "concept": "../evo6_concept/（v3 lumi feel）"}
         if form == "evo_egg":
             ent.update({"faceRig": False, "hasBulb": False, "clipDefs": {c: {"frames": len(clips[c]["full"]), "fps": EGG_META[c][0], "loop": EGG_META[c][1],
@@ -841,7 +841,7 @@ def main():
                        "fit_adjustments": [f"{b}:{'/'.join(c)}" for a, b, c in M.FIT_LOG if a == form]}
         print(form, "clips", len(order), "frames", stats[form]["frames"], "atlas", ainfo[form], "edge", edge)
     batch_contact(res)
-    shutil.copy(os.path.join(TR, "palette.json"), os.path.join(OUT, "palette_base.json"))
+    shutil.copy(next(p for p in (os.path.join(MOT, "palette.json"), os.path.join(TR, "palette.json")) if os.path.exists(p)), os.path.join(OUT, "palette_base.json"))
     update_docs(res, ainfo)
     json.dump(stats, open(os.path.join(OUT, "_stats.json"), "w"), indent=1, ensure_ascii=False)
     return res

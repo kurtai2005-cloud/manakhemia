@@ -1,0 +1,114 @@
+{
+ "frames": {
+  "fx_bug_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "pivotPx": {
+    "x": 4,
+    "y": 4
+   }
+  },
+  "fx_bug_02": {
+   "frame": {
+    "x": 12,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "pivotPx": {
+    "x": 4,
+    "y": 4
+   }
+  },
+  "fx_bug_03": {
+   "frame": {
+    "x": 22,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "pivotPx": {
+    "x": 4,
+    "y": 4
+   }
+  }
+ },
+ "animations": {
+  "fx_bug": {
+   "frames": [
+    "fx_bug_01",
+    "fx_bug_02",
+    "fx_bug_03",
+    "fx_bug_02"
+   ],
+   "fps": 10,
+   "loop": true
+  }
+ },
+ "meta": {
+  "image": "atlas_fx_live.png",
+  "size": {
+   "w": 1024,
+   "h": 16
+  },
+  "scale": 1,
+  "format": "RGBA8888",
+  "padding": 2,
+  "extrude": 1,
+  "frameSize": 8,
+  "pivotRule": "centre (4,4)",
+  "note": "蟲仔 fx：拍翼 上→平→落→平 循環（4 步用 3 幀）；向右（scaleX −1 向左）；engine 飛近 anchors.head_r，swat 第 3 幀（索引 2）判定打中／撲空"
+ }
+}

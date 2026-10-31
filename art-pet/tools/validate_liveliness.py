@@ -40,7 +40,7 @@ pov_n = [0]
 pngs = 0
 for p in glob.glob(LV + "/**/*.png", recursive=True):
     rel = os.path.relpath(p, LV)
-    if rel.startswith(("preview", "contact", "kit_")) or "_backup" in rel: continue
+    if rel.startswith(("preview", "contact", "kit_", "live_s2_contact", "live_s3_contact")) or "_backup" in rel: continue
     form = next((f for f in FORMS if f"/{f}/" in "/" + rel), None)
     sz = (FORMS[form],) * 2 if form and rel.split("/")[0] in ("layers", "frames") else None
     chk_png(p, sz); pngs += 1
@@ -134,6 +134,55 @@ for c in CL["clips"]:
     if c.get("category") == "生命感":
         for key in ("fps", "loop", "priority", "trigger"):
             if key not in c: F(f"meta {c['name']} {key}")
+# 生命感第二段 (s2)：clip 規格、獨立 atlas、hold、fx bug
+S2_SPEC = {"smug_pose": (4, 6), "act_cool": (4, 5), "lookup_tip": (4, 6), "getup": (4, 6), "sniff_itch": (2, 6)}
+byname = {c["name"]: c for c in CL["clips"]}
+for form, S in FORMS.items():
+    s2 = {}
+    for js in glob.glob(f"{LV}/atlas_{form}_live_s2*.json"): s2.update(json.load(open(js))["animations"])
+    main = json.load(open(f"{LV}/atlas_{form}_live.json"))
+    for n, (nf, fps) in S2_SPEC.items():
+        c = byname.get(n)
+        if not c: F(f"s2 clip missing in CLIPS {n}"); continue
+        if c["frames"] != nf or c["fps"] != fps: F(f"s2 spec {n} {c['frames']}/{c['fps']} want {nf}/{fps}")
+        if len(c["anchors"][form]) != nf: F(f"s2 anchors {form} {n}")
+        for an_ in (n, n + "_noface"):
+            if an_ not in s2 or len(s2[an_]["frames"]) != nf: F(f"s2 atlas anim {form} {an_}")
+            if an_ in main["animations"]: F(f"s2 clip leaked into main atlas {form} {an_}")
+        for k in range(1, nf + 1):
+            if not os.path.exists(os.path.join(LV, "frames", form, f"{n}_{k:02d}.png")): F(f"s2 full missing {form} {n} {k}")
+if byname.get("smug_pose", {}).get("holdLast_s") != 0.8: F("smug_pose holdLast_s != 0.8")
+# 生命感第三段 (s3)：nuzzle_purr／reunion_happy，獨立 atlas_<form>_live_s3（build_tuanrong_live_s3.py）
+S3_SPEC = {"nuzzle_purr": (4, 6, True), "reunion_happy": (5, 8, False)}
+for form, S in FORMS.items():
+    s3 = {}
+    for js in glob.glob(f"{LV}/atlas_{form}_live_s3*.json"): s3.update(json.load(open(js))["animations"])
+    if not s3: F(f"s3 atlas missing {form}"); continue
+    other = dict(json.load(open(f"{LV}/atlas_{form}_live.json"))["animations"])
+    for js in glob.glob(f"{LV}/atlas_{form}_live_s2*.json"): other.update(json.load(open(js))["animations"])
+    for n, (nf, fps, loop) in S3_SPEC.items():
+        c = byname.get(n)
+        if not c: F(f"s3 clip missing in CLIPS {n}"); continue
+        if c["frames"] != nf or c["fps"] != fps or c["loop"] != loop: F(f"s3 spec {n} {c['frames']}/{c['fps']}/{c['loop']} want {nf}/{fps}/{loop}")
+        if c.get("category") != "生命感" or c.get("phase") != 3: F(f"s3 meta {n}")
+        if len(c["anchors"][form]) != nf: F(f"s3 anchors {form} {n}")
+        for an_ in (n, n + "_noface"):
+            if an_ not in s3 or len(s3[an_]["frames"]) != nf or s3[an_].get("fps") != fps: F(f"s3 atlas anim {form} {an_}")
+            if an_ in other: F(f"s3 clip leaked into s1/s2 atlas {form} {an_}")
+        for k in range(1, nf + 1):
+            if not os.path.exists(os.path.join(LV, "frames", form, f"{n}_{k:02d}.png")): F(f"s3 full missing {form} {n} {k}")
+info.append(f"第三段 clip：{', '.join(f'{n} {v[0]}幀/{v[1]}fps' for n, v in S3_SPEC.items())}（3 form，atlas_<form>_live_s3）")
+fxj = os.path.join(LV, "fx", "atlas_fx_live.json")
+if not os.path.exists(fxj): F("fx bug atlas missing")
+else:
+    d = json.load(open(fxj)); im = load(fxj.replace(".json", ".png"))
+    fr = d["animations"].get("fx_bug", {}).get("frames", [])
+    if not (2 <= len(set(fr)) <= 3) or d["animations"]["fx_bug"].get("fps") != 10: F("fx bug anim spec")
+    for k, v in d["frames"].items():
+        a = chk_png(os.path.join(LV, "fx", k + ".png"), (8, 8)); r = v["frame"]
+        if not np.array_equal(im[r["y"]:r["y"] + r["h"], r["x"]:r["x"] + r["w"]], a): F(f"fx atlas px {k}")
+    info.append(f"fx bug：{len(d['frames'])} 幀 8×8，anim {fr}")
+info.append(f"第二段 clip：{', '.join(f'{n} {v[0]}幀/{v[1]}fps' for n, v in S2_SPEC.items())}（3 form，atlas_<form>_live_s2）")
 info.append(f"pivot override：{PIVOT_OV}；atlas 幀 pivotPx＝grab 已核 {pov_n[0]} 塊")
 info.append(f"錨點 {anc_n} 幀；noface+faceov＝原幀 {recon}；新 clip kit 合成＝完整幀 {recon_new}")
 if kitfit:

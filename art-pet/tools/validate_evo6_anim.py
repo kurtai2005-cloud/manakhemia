@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""validate_evo6_anim.py — 團絨 evo6 batch A（光卵／絨點／絨芽／絨跳）動畫交付驗證（獨立於 build，只讀檔案）。
+"""validate_evo6_anim.py — 團絨 evo6 動畫交付驗證（獨立於 build，只讀檔案）。
+batch A（光卵／絨點／絨芽／絨跳）必驗；batch B（守夜者 44 ×4）／C（靜光 48 ×4 MVP）喺 CLIPS.json 有 evo6B／evo6C 段就必驗齊 4 分支
+（分支各自色盤＝atlas meta palette；emissive 色＝meta emissiveColors；燈 bulb 錨點：絨跳＋守夜者＋靜光必有，bulb2／tail 可選）。
 檢查：基本 31 色（palette.json）、alpha 0/255（無 AA）、尺寸（24/28/32/38）、pivot（身體 (w/2,h-3)；picked_up＝grab）、
 錨點齊全＋界內（bulb 只限絨跳；光卵 faceVisible=false）、幀數 == CLIPS.json == face_anchors、CLIPS anchors == face_anchors、
 noface+faceov == 完整幀、生命感新 clip 完整幀 == noface + kit（按錨點，含 bulb）、emissive == glow_core/glow_mid 像素、
@@ -10,6 +12,10 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 TR = os.path.normpath(os.path.join(HERE, "..", "sprites", "tuanrong")); MOT = os.path.join(TR, "motion"); EV = os.path.join(TR, "evo6")
 SIZES = {"evo_egg": 24, "evo_dot": 28, "evo_sprout": 32, "evo_hop": 38}
+BRANCHES = ("lumi", "radiant", "soft", "dust")
+GUARD = {f"evo_guard_{b}": 44 for b in BRANCHES}; STILL = {f"evo_still_{b}": 48 for b in BRANCHES}
+STILL_MVP = ["idle", "blink", "emo_happy", "fall_asleep", "sleep_loop", "wake", "picked_up"]
+S3 = ["nuzzle_purr", "reunion_happy"]
 EGG_WANT = {"idle": 4, "glow": 2, "tap": 4, "hatch": 6, "picked_up": 4}
 LIVE_S2 = ("smug_pose", "act_cool", "lookup_tip", "getup", "sniff_itch")
 MOVING = ("neutral", "surprised", "squint", "angry", "sad")
@@ -18,16 +24,32 @@ load = lambda p: np.array(Image.open(p).convert("RGBA"))
 
 def run():
     fails = []; info = []; F = fails.append
-    pal = json.load(open(os.path.join(TR, "palette.json")))["colors"]
+    pp = next((p for p in (os.path.join(MOT, "palette.json"), os.path.join(TR, "palette.json")) if os.path.exists(p)), None)
+    if not pp: return [f"palette.json not found (motion/ or tuanrong/)"], info
+    pal = json.load(open(pp))["colors"]
     hx = lambda h: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
     PAL = {hx(c["hex"]) for c in pal}
     EM = {hx(c["hex"]) for c in pal if c["name"] in ("glow_core", "glow_mid")}
     if len(pal) != 31: F(f"palette size {len(pal)}")
     if len(EM) != 2: F("emissive colours not found in palette")
     CL = json.load(open(os.path.join(MOT, "CLIPS.json"))); byname = {c["name"]: c for c in CL["clips"]}
-    for k in ("evo6",): 
+    for k in ("evo6",):
         if k not in CL: F("CLIPS.json evo6 section missing")
-    def chk(p, size=None, emissive=False):
+    if "evo6B" in CL: SIZES.update(GUARD)
+    if "evo6C" in CL: SIZES.update(STILL)
+    BASE_PAL, BASE_EM = PAL, EM
+    def load_pal(fn, emn):
+        """分支色盤（evo6/<palette>）＋emissive 色名 → (PAL, EM)"""
+        if not fn or fn == "palette_base.json" and not os.path.exists(os.path.join(EV, fn)): return BASE_PAL, BASE_EM
+        p_ = os.path.join(EV, fn)
+        if not os.path.exists(p_): F(f"palette file missing evo6/{fn}"); return BASE_PAL, BASE_EM
+        cl = json.load(open(p_))["colors"]
+        if len(cl) != 31: F(f"palette size {fn} {len(cl)}")
+        em_ = {hx(c["hex"]) for c in cl if c["name"] in emn}
+        if len(em_) != len(emn): F(f"emissive colours {emn} not in {fn}")
+        return {hx(c["hex"]) for c in cl}, em_
+    def chk(p, size=None, emissive=False, PAL=None):
+        PAL = PAL or BASE_PAL
         im = Image.open(p)
         if im.mode != "RGBA": F(f"mode {im.mode} {p}")
         a = np.array(im.convert("RGBA"))
@@ -42,13 +64,17 @@ def run():
     total_png = 0
     for form, S in SIZES.items():
         D = os.path.join(EV, form); PIV = (S // 2, S - 3); egg = form == "evo_egg"; tag = f"[{form}]"
+        adult = form in GUARD or form in STILL; still = form in STILL; hasbulb = form == "evo_hop" or adult
         fe = CL.get("forms", {}).get(form)
         if not fe: F(f"CLIPS.json forms.{form} missing"); continue
+        aj = json.load(open(os.path.join(EV, f"atlas_{form}.json")))
+        PAL, EM = load_pal(aj["meta"].get("palette"), tuple(aj["meta"].get("emissiveColors", ("glow_core", "glow_mid"))))
+        if adult and fe.get("palette") != "../evo6/" + aj["meta"].get("palette", ""): F(f"{tag} CLIPS palette != atlas meta palette")
         if fe.get("frameSize") != S or tuple(fe.get("pivotPx", ())) != PIV: F(f"{tag} CLIPS frameSize/pivot")
         n = 0
         for p in glob.glob(D + "/**/*.png", recursive=True):
             top = os.path.relpath(p, D).split("/")[0]
-            chk(p, S if top in ("frames", "layers", "emissive") else None, emissive=top == "emissive"); n += 1
+            chk(p, S if top in ("frames", "layers", "emissive") else None, emissive=top == "emissive", PAL=PAL); n += 1
         total_png += n
         FAJ = json.load(open(os.path.join(D, f"face_anchors_{form}.json"))); FA = FAJ["anchors"]
         if FAJ.get("frameSize") != S or tuple(FAJ.get("pivotPx", ())) != PIV: F(f"{tag} face_anchors frameSize/pivot")
@@ -66,16 +92,19 @@ def run():
                 want[c] = ent["frames"]
                 if byname[c].get("anchors", {}).get(form) != FA.get(c): F(f"{tag} CLIPS anchors.{form} != face_anchors {c}")
                 if byname[c]["frames"] != ent["frames"] and not byname[c].get("perForm"): pass
-            need = set(fe.get("std23", [])) | set(fe.get("liveliness", []))
-            if len(fe.get("std23", [])) != 23: F(f"{tag} std23 count {len(fe.get('std23', []))}")
-            if "picked_up" not in need or not set(LIVE_S2) <= need: F(f"{tag} liveliness s1/s2 incomplete")
-            if need != set(fe["clips"]): F(f"{tag} clip list != std23+liveliness")
+            if still:
+                if fe.get("mvp") != STILL_MVP or set(fe["clips"]) != set(STILL_MVP): F(f"{tag} 靜光 MVP clip set {fe.get('clips')}")
+            else:
+                need = set(fe.get("std23", [])) | set(fe.get("liveliness", [])) | set(fe.get("s3", []))
+                if len(fe.get("std23", [])) != 23: F(f"{tag} std23 count {len(fe.get('std23', []))}")
+                if "picked_up" not in need or not set(LIVE_S2) <= need: F(f"{tag} liveliness s1/s2 incomplete")
+                if form == "evo_guard_dust" and fe.get("s3") != S3: F(f"{tag} 微塵 s3 clips missing {fe.get('s3')}")
+                if need != set(fe["clips"]): F(f"{tag} clip list != std23+liveliness(+s3)")
         if set(want) != set(FA): F(f"{tag} clip set CLIPS vs face_anchors {set(want) ^ set(FA)}")
         for c, nf in want.items():
             if len(FA.get(c, [])) != nf: F(f"{tag} frame count {c} {len(FA.get(c, []))} != {nf}")
-        live = set() if egg else set(fe.get("liveliness", []))
+        live = set() if egg else set(fe.get("liveliness", [])) | set(fe.get("s3", []))
         # kit
-        aj = json.load(open(os.path.join(EV, f"atlas_{form}.json")))
         kit = {os.path.basename(p)[:-4]: load(p) for p in glob.glob(D + "/kit/*.png")}
         if egg and kit: F(f"{tag} egg should have no kit")
         if not egg:
@@ -99,11 +128,11 @@ def run():
                 req = ("head_r", "faceVisible", "face") + (() if egg else ("eyeL", "eyeR", "mouth"))
                 for key in req:
                     if key not in an: F(f"{tag} missing {key} {cn} {k}")
-                if form == "evo_hop" and "bulb" not in an: F(f"{tag} missing bulb {cn} {k}")
-                if form != "evo_hop" and "bulb" in an: F(f"{tag} unexpected bulb {cn} {k}")
+                if hasbulb and "bulb" not in an: F(f"{tag} missing bulb {cn} {k}")
+                if not hasbulb and ("bulb" in an or "bulb2" in an or "tail" in an): F(f"{tag} unexpected bulb {cn} {k}")
                 if egg and (an.get("faceVisible") or an.get("face") is not None): F(f"{tag} egg face rig present {cn} {k}")
                 if cn == "picked_up" and "grab" not in an: F(f"{tag} missing grab {cn} {k}")
-                for key in ("eyeL", "eyeR", "mouth", "head_r", "bulb", "grab", "crack"):
+                for key in ("eyeL", "eyeR", "mouth", "head_r", "bulb", "bulb2", "tail", "grab", "crack"):
                     if key not in an: continue
                     x, y = an[key]
                     if not (isinstance(x, int) and isinstance(y, int) and 0 <= x < S and 0 <= y < S): F(f"{tag} anchor out {cn} {k} {key} {an[key]}")
@@ -143,7 +172,7 @@ def run():
             place(img, "eyes_neutral_C_l", an["eyeL"]); place(img, "eyes_neutral_C_r", an["eyeR"]); place(img, "mouth_" + an["face"]["mouth"], an["mouth"])
             diff = int((img != full).any(-1).sum())
             if diff: F(f"{tag} kit alignment: idle_01 neutral compose differs by {diff}px")
-        if form == "evo_hop":
+        if hasbulb:
             em_idle = [load(os.path.join(D, "emissive", f"idle_{k:02d}_emissive.png"))[..., 3].sum() for k in range(1, 5)]
             if not all(em_idle): F(f"{tag} idle has no glow")
         if egg:
@@ -154,7 +183,7 @@ def run():
                     + ("光卵冇 face rig" if egg else f"生命感 kit 合成＝完整 {kit_ok}/{kit_n}；std23 face≈kit {std_kit[0]}/{std_kit[1]}（info）") + f"；掂邊 {edge}")
         # atlases
         for png, em in ((f"atlas_{form}.png", False), (f"atlas_{form}_emissive.png", True)):
-            pth = os.path.join(EV, png); chk(pth, emissive=em); im = load(pth); H, W = im.shape[:2]
+            pth = os.path.join(EV, png); chk(pth, emissive=em, PAL=PAL); im = load(pth); H, W = im.shape[:2]
             if W != 1024 or H > 1024: F(f"{tag} atlas size {png} {W}x{H}")
             if aj["meta"].get("padding") != 2 or aj["meta"].get("extrude") != 1: F(f"{tag} atlas meta pad/extrude")
             if aj["meta"].get("size") != {"w": W, "h": H}: F(f"{tag} atlas meta size")
@@ -197,7 +226,8 @@ def run():
             for fr in a["frames"]:
                 if fr not in aj["frames"]: F(f"{tag} anim frame missing {an_name} {fr}")
         if aj["animations"].get("picked_up", {}).get("pivot") != "grab": F(f"{tag} picked_up anim pivot != grab")
-    info.append(f"PNG 總數 {total_png}（＋atlas 8 張）")
+    info.append(f"形態 {len(SIZES)}：{'、'.join(SIZES)}")
+    info.append(f"PNG 總數 {total_png}（＋atlas {2 * len(SIZES)} 張）")
     return fails, info
 
 if __name__ == "__main__":

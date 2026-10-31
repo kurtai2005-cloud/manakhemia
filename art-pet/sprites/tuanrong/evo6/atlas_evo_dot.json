@@ -12766,7 +12766,7 @@
    14,
    25
   ],
-  "palette": "../palette.json",
+  "palette": "palette_base.json",
   "pivotRule": "body frames bottom-center (14, 25)；picked_up* pivotPx = anchors.grab（頭頂拎點）；kit pieces pivotPx = anchor point",
   "note": "絨點：<clip>_NN 完整幀、<clip>_noface_NN 無臉身體、五官 eyes_*/mouth_*（4×4 S 級 kit）。atlas_evo_dot_emissive.png 同 layout，白＝發光（glow_core/glow_mid）。"
  }

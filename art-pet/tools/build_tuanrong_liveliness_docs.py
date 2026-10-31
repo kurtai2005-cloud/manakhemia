@@ -42,6 +42,14 @@ def update_clips():
         "anchorKeys": {"grab": "頭頂拎點（只 picked_up 有；亦係該 clip pivot）", "eyeL": "左眼（畫面左）kit piece pivot 對準點", "eyeR": "右眼", "mouth": "口 pivot 對準點", "head_r": "頭右上圖示（zzz／心等，取代固定 headRightAnchor）",
                        "bulb": "光芽燈泡中心（bulb_base／bulb_glow pivot）", "faceVisible": "false＝背面，唔好疊五官", "face": "呢幀預設表情（kit 名；舊 clip 由原幀推斷，src＝原 eyes/mouth 模板）"},
         "atlas": {f: cnt[f]["atlas"] for f in L.FORM_LIST},
+        "phase2": {"clips": L.S2_ORDER, "atlas": "atlas_<form>_live_s2.png/json（第二段 clip 另出；第一段 atlas_<form>_live 版面不變；五官 kit 仍喺 atlas_<form>_live）",
+                   "personality": "蠢蠢地但覺得自己好醒", "holdLast_s": L.HOLD_LAST_S, "smugPreset": L.PRESETS.get("smug"),
+                   "flow": {"swatMiss": "swat（撲空）→ smug_pose（hold 0.8s）→ idle", "lookupFall": "lookup → lookup_tip → getup → act_cool（60%）／idle",
+                            "sneeze": "sniff → sniff_itch → sneeze →（40%）act_cool"},
+                   "rot": "lookup_tip／getup 用 rot（以後腳為軸向後轉 5–16°，烙入幀；錨點已跟住轉）"},
+        "fx": {"bug": {"atlas": "liveliness/fx/atlas_fx_live.png/json", "frames": ["fx_bug_01", "fx_bug_02", "fx_bug_03"], "size": [8, 8], "pivotPx": [4, 4],
+                       "animation": "fx_bug（01→02→03→02 循環，10fps）", "facing": "right（向左 scaleX −1）",
+                       "use": "A2 蟲仔：engine 飛近 anchors.head_r；swat 第 3 幀（索引 2）判定；撲空 → smug_pose"}},
     }
     for f in L.FORM_LIST:
         D["forms"][f]["liveAtlas"] = cnt[f]["atlas"]
@@ -83,6 +91,12 @@ def update_clips():
             d["layers"]["previewGrab"] = f"liveliness/preview/<form>/{n}_grab_8x.gif"
             d["layers"]["previewStrip"] = f"liveliness/preview/<form>/{n}_strip_8x.png"
         if n in ("walk_happy", "walk_drag"): d["variantOf"] = "walk"
+        if n in L.S2_ORDER:
+            d["status"] = "已交付（liveliness s2）"; d["phase"] = 2
+            d["layers"]["atlas"] = "liveliness/atlas_<form>_live_s2.json"
+            d["layers"]["kitAtlas"] = "liveliness/atlas_<form>_live.json（eyes_*/mouth_*/bulb_*）"
+            d["layers"]["previewStrip"] = f"liveliness/preview/<form>/{n}_strip_8x.png"
+        if n in L.HOLD_LAST_S: d["holdLast_s"] = L.HOLD_LAST_S[n]
         if n in names: D["clips"] = [x for x in D["clips"] if x["name"] != n]
         D["clips"].append(d)
     sm = D.setdefault("stateMachine", {})

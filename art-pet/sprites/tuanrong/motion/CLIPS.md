@@ -176,6 +176,20 @@
 5 守夜者 44、6 靜光 48 ＝ batch B／C（未出）。
 <!-- EVO6A-END -->
 
+<!-- EVO6B-START -->
+## 進化 6 階 守夜者 44 ×4（batch B）
+- 外觀＝`../evo6_concept/`（v3 lumi feel，lf5_* 畫法逐幀 pose-aware 重畫）；姿勢＝現有同名 clip，只換外觀層；4×5 L 級 kit；picked_up pivot＝grab。
+- 每幀 frames／layers（_noface／_faceov）／emissive；錨點 `../evo6/<form>/face_anchors_<form>.json`（bulb＝主燈；螢絨另有 bulb2／tail；靜光微塵 bulb2＝軌道吊燈）。
+- 微塵另加 s3：nuzzle_purr 4、reunion_happy 5。
+
+| 形態 | px | pivot | clip | 幀 | atlas | 色盤 |
+|---|---|---|---|---|---|---|
+| 守夜者・螢絨 `evo_guard_lumi` | 44 | (22, 41) | 39 | 171 | `../evo6/atlas_evo_guard_lumi.png`（1024×1024，426 塊）＋ `_emissive` | palette_lumi.json |
+| 守夜者・燦光 `evo_guard_radiant` | 44 | (22, 41) | 39 | 171 | `../evo6/atlas_evo_guard_radiant.png`（1024×1024，426 塊）＋ `_emissive` | palette_base.json |
+| 守夜者・柔光 `evo_guard_soft` | 44 | (22, 41) | 39 | 171 | `../evo6/atlas_evo_guard_soft.png`（1024×1024，426 塊）＋ `_emissive` | palette_base.json |
+| 守夜者・微塵 `evo_guard_dust` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_dust.png`（1024×1024，444 塊）＋ `_emissive` | palette_dust.json |
+<!-- EVO6B-END -->
+
 <!-- LUMI-START -->
 ## 螢絨 lumi（隱藏稀有成年形態，round_s）
 - atlas：`../atlas_lumi.png/.json`（1024×1024，290 塊，padding 2、extrude 1）＋ `../atlas_lumi_emissive.png`（同 layout，白＝發光）
@@ -212,3 +226,14 @@
 | picked_up | 6 | 8 | loop | 生命感（浮動） |
 
 std23 餘下：冇（已齊）
+
+<!-- LIVE-S3-START -->
+## 生命感第三段（s3）— 遊美 2026-10-31
+
+3 form（sprout 32×32 pivot (16,29)／radiant、soft 64×64 pivot (32,61)）；atlas `liveliness/atlas_<form>_live_s3.png/json`（1024 寬、pad 2、extrude 1、pivotPx）；五官 kit 仍喺 `atlas_<form>_live`；錨點 `clips[].anchors[form]`＝`liveliness/face_anchors.json`。詳見 `liveliness/LIVE_S3_NOTES.md`。
+
+| clip | 幀／fps | loop | 優先 | 觸發 | 備註 |
+|---|---|---|---|---|---|
+| nuzzle_purr | 4／6fps | 循環 | 4 | nuzzle 連續 ≥1.2s（長按未放）→ 由 nuzzle 當前幀切去 nuzzle_purr 循環，直至放手 | 挨住右邊手指、合眼笑（eyes happy＋ω 口），身體細細震（sx/sy 交替＋shear 1px），背後呼嚕震線 ( ( 烙入幀（第 1/3 幀近、第 2/4 幀遠），第 2–4 幀頭頂右邊細心心升起（烙入幀）；放手播完當前幀 → idle（或 act_cool 30%：扮冇事）。可配 6fps 呼嚕 loop 音效。 |
+| reunion_happy | 5／8fps | 單次 | 6 | rush（煞停）→ 衝過頭 → act_cool → reunion_happy（D5 久別重逢鏈最後一步） | 蠢蠢地但覺得自己好醒：第 1 幀扮冷靜側眼回望（ft 向後、gaze L）、第 2 幀破功（壓扁、驚喜眼）、第 3 幀彈起舉手（細心心）、第 4 幀最高點大心心 pop＋閃光、第 5 幀落地得意 ω 臉（細心心飄高）。引擎：播之前按玩家位置設 scaleX（衝過頭即係玩家喺後面 → 鏡像），第 1 幀先『望返轉頭』。心心烙入幀。 |
+<!-- LIVE-S3-END -->

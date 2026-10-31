@@ -57,3 +57,23 @@
 - 驗證：validate_evo6_anim.py → ALL PASS；validate_liveliness／validate_lumi／validate_motion／validate_hd2d_scenes 照樣 PASS
 - 注意：build_tuanrong_liveliness_docs.py 由 _backup_v1 重砌 CLIPS.json → 之後要再跑 build_lumi.py 同 build_evo6_anim.py
 - Pillow／numpy 程式繪製、31 色、alpha 0/255、無 AA、無 AI
+
+<!-- LIVE-S3-LOG-START -->
+## 2026-10-31 — 團絨生命感第三段（s3）
+- nuzzle_purr 4幀/6fps 循環、reunion_happy 5幀/8fps；sprout／radiant／soft 各 9 幀（noface＋faceov＋full＋anchors）。
+- `sprites/tuanrong/motion/liveliness/atlas_<form>_live_s3.png/json`；預覽 `preview/<form>/<clip>_strip_8x.png`、`live_s3_contact_4x.png`。
+- 工具 `tools/build_tuanrong_live_s3.py`（Pillow/numpy 程式繪製，無 AI）；驗證 `tools/validate_liveliness.py`（加 s3 檢查）。
+- 微塵（dust）現有尺寸冇身體美術 → 未出 live atlas（見 LIVE_S3_NOTES.md 建議）。
+<!-- LIVE-S3-LOG-END -->
+
+<!-- EVO6BC-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch B（守夜者 44 ×4；batch C 另一個 staging）
+- 守夜者・螢絨 `evo_guard_lumi`：39 clip／171 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×1024／426 塊。
+- 守夜者・燦光 `evo_guard_radiant`：39 clip／171 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×1024／426 塊。
+- 守夜者・柔光 `evo_guard_soft`：39 clip／171 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×1024／426 塊。
+- 守夜者・微塵 `evo_guard_dust`：41 clip／180 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×1024／444 塊。
+- `sprites/tuanrong/evo6/atlas_<form>(.png/_emissive.png/.json)`、`evo6/<form>/`；色盤 `evo6/palette_{base,lumi,dust}.json`；預覽 `preview/evo6/<form>_contact_4x.png`、`gif/`、`evo6_batchB_contact_4x.png`。
+- 工具 `tools/build_evo6_animBC.py`（Pillow/numpy 程式繪製，無 AI）；驗證 `tools/validate_evo6_anim.py`（擴展到 B/C，C 段只喺 CLIPS 有 evo6C 先驗：分支色盤、emissive、bulb/bulb2/tail、MVP、s3）。CLIPS.json 只新增（forms＋clips[].<form>＋anchors.<form>＋evo6B 段）；備份 `_backups/pre_evo6_animBC_20261031/`。
+
+- 守夜者：std23＋生命感 s1/s2（含 picked_up）；微塵另加 s3 nuzzle_purr／reunion_happy。
+<!-- EVO6BC-LOG-END -->
