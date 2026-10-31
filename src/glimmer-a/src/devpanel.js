@@ -39,7 +39,7 @@
   #devp .dr.dlive button{background:#3a2c66}
   #devp .dr.dlive button.on{background:#c79a2c;border-color:#ffd86b;color:#1a1530}
   #devp .dr>i{font-style:normal;width:44px;opacity:.7;font-size:11px}
-  #devp button{font:12px system-ui,sans-serif;color:#fff;background:#2c3266;border:1px solid #5560b0;border-radius:6px;padding:3px 7px;min-height:24px}
+  #devp button{font:12px system-ui,sans-serif;color:#fff;background:#2c3266;border:1px solid #5560b0;border-radius:6px;padding:3px 9px;min-height:var(--devhit,48px);min-width:var(--devhit,48px)}   /* P2：熱區 ≥48dp（main.layout 按 uiScale 計 --devhit） */
   #devp button.on{background:#ffd86b;color:#222;border-color:#ffd86b}
   #devp button.warn{background:#7a2a3a;border-color:#d05068}
   #devp label{display:flex;align-items:center;gap:4px;width:100%}
@@ -110,6 +110,10 @@
         S.ev.push({ type: 'foreshadow', form: f, act: P.evo6.route.foreshadow[f] || null, dev: true }); sync(); return f; },
       drowsy() { note('drowsy'); const S = s(); if (S.stage === 'egg') throw new Error('dev.drowsy: egg'); S.sleeping = false; S.needs.energy = Math.max(0, D.PARAMS.evo6.branch.lull.drowsyEnergy - 5); G.save(); sync(); return SIM.isDrowsy(S); },   // v5：令團絨眼瞓（測哄瞓）
       lull() { note('lull'); const ok = G.lull ? G.lull() : false; sync(); return ok; },
+      // v7 晶角：手動「上線」（開即清窗口）／出一粒便便；v8 火苗：模擬浮動團絨撳兩下開 game（＝一局）
+      login() { note('login'); const L = G.login(); sync(); return L; },
+      addPoop() { note('addPoop'); const S = s(); if (S.stage === 'egg') throw new Error('dev.addPoop: egg'); if (S.poops < P.poopMax) { S.poops++; SIM.poopAges(S).push(0); } G.save(); sync(); return S.poops; },
+      overlayGame() { note('overlayGame'); const r = G.evo.overlayOpenGame(); sync(); return r; },
       weather(w) { note('weather', w); const W = D.PARAMS.evo6.branch.weather.states; G.weather = W.includes(w) && w !== 'clear' ? w : null; sync(); return SIM.weatherNow(); },   // v4：天氣系統未做 → DEV 設定（之後由天氣系統驅動）
       careDays(n) { note('careDays', n); const S = s(); n = Math.max(0, n | 0); const now = G.now ? G.now() : Date.now(), have = new Set(S.careDays || []); for (let i = 0; i < n; i++) have.add(SIM.dayKey(now - i * 86400000)); if (n === 0) have.clear(); S.careDays = [...have].sort(); if (n && S.evo) S.evo.day0 = SIM.dayKey(now - (n - 1) * 86400000); G.save(); sync(); return SIM.careDaysCheck(S); },   // v4 燦光：補最近 n 日照顧日（0＝清）
       dexUnlock(f) { note('dexUnlock', f); const S = s(); if (f === 'none') S.dex = []; else (f === 'all' ? D.BRANCHES : [f]).forEach(x => SIM.unlockDex(S, x)); G.save(); sync(); return (S.dex || []).slice(); },
@@ -175,7 +179,9 @@
         <div class="dr" data-testid="dev-stage-row"><i>階段</i>${D.STAGES.map(st => btn(D.STAGE_NAME[st], 'evoStage:' + st, 'dev-stage-' + st)).join('')}${btn('▶下一階段', 'evoNext', 'dev-stage-next')}${btn('化光', 'evoFade', 'dev-fade')}</div>
         <div class="dr" data-testid="dev-branch-row"><i>分支</i>${['lumi', 'bright', 'soft', 'dust'].map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'evoBranch:' + f, 'dev-branch-' + f)).join('')}<em class="dmst" data-testid="dev-lumi-state"></em></div>
         <div class="dr" data-testid="dev-force-row"><i>強制支線</i>${D.BRANCHES.map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'forceBranch:' + f, 'dev-force-' + f)).join('')}${btn('清除', 'forceBranch:off', 'dev-force-off')}<em class="dmst" data-testid="dev-b5-state"></em></div>
-        <div class="dr" data-testid="dev-weather-row"><i>天氣</i>${D.PARAMS.evo6.branch.weather.states.map(w => btn({ clear: '晴', overcast: '陰', rain: '雨' }[w] || w, 'weather:' + w, 'dev-weather-' + w)).join('')}${btn('照顧日 7', 'careDays:7', 'dev-care-days-7')}${btn('清照顧日', 'careDays:0', 'dev-care-days-0')}<span data-testid="dev-weather-state"></span></div>
+        <div class="dr" data-testid="dev-weather-row"><i>天氣</i>${D.PARAMS.evo6.branch.weather.states.map(w => btn({ clear: '晴', overcast: '陰', fog: '霧', rain: '雨' }[w] || w, 'weather:' + w, 'dev-weather-' + w)).join('')}${btn('照顧日 7', 'careDays:7', 'dev-care-days-7')}${btn('清照顧日', 'careDays:0', 'dev-care-days-0')}<span data-testid="dev-weather-state"></span></div>
+        <div class="dr" data-testid="dev-crystal-row"><i>晶角</i>${btn('上線', 'login', 'dev-login')}${btn('出便便', 'addPoop', 'dev-add-poop')}<span data-testid="dev-crystal-state"></span></div>
+        <div class="dr" data-testid="dev-ember-row"><i>火苗</i>${btn('浮動開 game', 'overlayGame', 'dev-overlay-game')}<span data-testid="dev-ember-state"></span></div>
         <div class="dr" data-testid="dev-lull-row"><i>月眠</i>${btn('眼瞓', 'drowsy', 'dev-drowsy')}${btn('哄瞓', 'lull', 'dev-lull')}<span data-testid="dev-lull-state"></span></div>
         <div class="dr" data-testid="dev-route-row"><i>路線</i>${btn('預告', 'foreshadow', 'dev-foreshadow')}${btn('圖鑑', 'openDex', 'dev-dex')}${btn('解鎖全部', 'dexUnlock:all', 'dev-dex-all')}${btn('清圖鑑', 'dexUnlock:none', 'dev-dex-none')}</div>
         <div class="dr"><i>進化</i>${D.EVOLUTION.map(e => btn('▶' + e.name, 'playEvolve:' + e.form, 'dev-evolve-' + e.form)).join('')}</div>
@@ -199,10 +205,14 @@
       el.querySelectorAll('button[data-a^="evoStage:"]').forEach(b => b.classList.toggle('on', b.dataset.a.split(':')[1] === S.stage));
       el.querySelectorAll('button[data-a^="evoBranch:"]').forEach(b => b.classList.toggle('on', D.isBig(S.stage) && b.dataset.a.split(':')[1] === S.form));
       const lsx = q('[data-testid="dev-lull-state"]'); if (lsx && SIM.isDrowsy) { const L = S.evo && S.evo.lull; lsx.textContent = `${SIM.isDrowsy(S) ? '眼瞓' : S.sleeping ? '瞓緊' : '醒'}｜今晚哄瞓 ${L ? L.n : 0}/${D.PARAMS.evo6.branch.lull.perNight}`; }
+      const cs = q('[data-testid="dev-crystal-state"]'); if (cs && SIM.branch5Check) { const B = SIM.branch5Check(S), Lg = S.evo && S.evo.login, W = D.PARAMS.evo6.branch.crystal, left = Lg ? Math.max(0, Math.ceil(W.windowSec - (G.now() - Lg.at) / 1000)) : 0;
+        cs.textContent = `便便${S.poops}｜窗口${Lg ? (Lg.done ? '已即清' : !Lg.had ? '（上線冇便便）' : left ? '剩' + left + 's' : '過咗') : '-'}｜即清 ${B.raw.quickLogin}/${B.raw.loginPoop} → ${B.score.crystal}分`; }
+      const es = q('[data-testid="dev-ember-state"]'); if (es && SIM.branch5Check) { const B = SIM.branch5Check(S), O = D.PARAMS.evo6.branch.overlayMg, at = S.mg && S.mg.overlayAt, cd = at ? Math.max(0, Math.ceil(O.cooldownSec - (G.now() - at) / 1000)) : 0;
+        es.textContent = `火苗${B.score.ember}分｜今日小遊戲 ${S.mg ? S.mg.plays : 0}｜冷卻${cd ? cd + 's' : '無'}`; }
       const ws = q('[data-testid="dev-weather-state"]'); if (ws && SIM.weatherNow) { const C = SIM.careDaysCheck(S); ws.textContent = `${SIM.weatherNow()}｜照顧日 ${C.days}/${C.need}（${C.span} 日）${C.ok ? '✓' : '✗'}`; }
       const ls = q('[data-testid="dev-lumi-state"]'); if (ls && SIM.lumiCheck) { const L = SIM.lumiCheck(S); ls.textContent = `螢絨：螢火${L.firefly}${L.fireflyOk ? '✓' : '✗'} CQ${Math.round(L.cq)}${L.cqOk ? '✓' : '✗'} 夜${Math.round(L.night * 100)}%/${L.nightAll} 機會${Math.round(L.chance * 100)}% roll${L.roll}${L.ok ? '✓' : '✗'}`; }
       el.querySelectorAll('button[data-a^="forceBranch:"]').forEach(b => { const f = b.dataset.a.split(':')[1], fo = S.evo && S.evo.force; b.classList.toggle('on', fo ? f === fo : D.isBig(S.stage) && f === S.form); });
-      const b5 = q('[data-testid="dev-b5-state"]'); if (b5 && SIM.branch5Check) { const B = SIM.branch5Check(S), fo = S.evo && S.evo.force; b5.textContent = (fo ? '強制→' + D.FORM_NAME[fo] + '　' : '') + `新5：${D.FORM_NAME[B.top]}${Math.round(B.topShare * 100)}% 次${D.FORM_NAME[B.second]}${Math.round(B.secondShare * 100)}% /${B.all} 淨${B.cleanAvg == null ? '-' : Math.round(B.cleanAvg)} ${B.ok ? '✓' : '✗'}`; }
+      const b5 = q('[data-testid="dev-b5-state"]'); if (b5 && SIM.branch5Check) { const B = SIM.branch5Check(S), fo = S.evo && S.evo.force; b5.textContent = (fo ? '強制→' + D.FORM_NAME[fo] + '　' : '') + `新5：${D.FORM_NAME[B.top]}${Math.round(B.topShare * 100)}% 次${D.FORM_NAME[B.second]}${Math.round(B.secondShare * 100)}% /${B.all} CQ${Math.round(B.cq)}/${B.cqNeed}${B.cqOk ? '✓' : '✗'} ${B.ok ? '✓' : '✗'}`; }
       const bb = q('[data-a="live:bulb"]'); if (bb) { const m = G.beh && G.beh.bulbForce; bb.classList.toggle('on', !!m); bb.textContent = '燈泡 ' + (m ? BULB_ZH[m] || m : '自動'); }
       const dm = q('[data-a="demo"]'); if (dm) { dm.classList.toggle('on', !!G.liveDemo); dm.textContent = '展示模式 ' + (G.liveDemo ? '開' : '關'); }
       const dst = q('.dmst'); if (dst) dst.textContent = G.liveDemo ? '×' + (P.beh.live.demoMul || 5) + ' 頻率／冷卻 ÷' + (P.beh.live.demoMul || 5) : '正常頻率';

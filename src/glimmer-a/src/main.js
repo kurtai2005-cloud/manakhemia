@@ -19,8 +19,8 @@
   G.lowEnd = function () { const Q = P.quality, n = navigator, hc = n.hardwareConcurrency, dm = n.deviceMemory; return (hc != null && hc <= Q.lowEndCores) || (dm != null && dm <= Q.lowEndMemGB); };
 
   SIM.setHourFn(() => (G.hour ? G.hour() : new Date().getHours()));   // evo6：夜晚照顧（17:00–07:00）用遊戲本地鐘
-  if (SIM.setWeatherFn) SIM.setWeatherFn(() => G.weather || 'clear');   // v4 天氣狀態 clear／overcast／rain（G.weather；天氣系統未做 → DEV 抽屜／?weather=）；陰天／落雨照顧 → 菇傘
-  { const w = qs.get('weather'); if (w && P.evo6.branch.weather.states.includes(w)) G.weather = w === 'clear' ? null : w; }   // v4：?weather=clear|overcast|rain
+  if (SIM.setWeatherFn) SIM.setWeatherFn(() => G.weather || 'clear');   // v4／v10 天氣狀態 clear／overcast／fog／rain（G.weather；天氣系統未做 → DEV 抽屜／?weather=）；陰天／落雨照顧 → 菇傘
+  { const w = qs.get('weather'); if (w && P.evo6.branch.weather.states.includes(w)) G.weather = w === 'clear' ? null : w; }   // v4／v10：?weather=clear|overcast|fog|rain
   if (SIM.setNowFn) SIM.setNowFn(() => G.now());                     // v4 照顧日用遊戲時鐘（DEV 快轉一致）
   // ── 存檔 ──
   function load() {
@@ -43,7 +43,10 @@
     // 浮動 overlay：只傳大細（Kotlin 照讀 form；sizeDp／size／pivot 係新欄）
     overlayInfo() { const s = G.state, ek = D.evoForm(s.stage, s.form), F = D.FORMS[ek], fs = F ? F.frameSize : 32;
       return { stage: s.stage, form: s.stage === 'egg' ? 'egg' : D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : 'soft') : 'sprout', evoForm: ek, size: fs, pivot: [fs / 2, fs - 3], sizeDp: Math.round(fs * P.overlayDpPerPx) }; },
-    overlayStatus() { return SIM.overlayStatus(G.state); },   // snapshot v3：心情／瞌覺／需求；v4：info（名／階段名／形態名／進度／幾日大）（fpet-bridge 讀，只讀）
+    overlayStatus() { return SIM.overlayStatus(G.state); },
+    // v8 火苗：浮動團絨撳兩下開 game ＝ 一局小遊戲（fpet-bridge replay 見到 queue k==='open_game' 就叫；t＝撳嘅時間）。config evo6.branch.overlayMg
+    overlayOpenGame(t) { const r = SIM.overlayOpenGame(G.state, t == null ? G.now() : +t); if (r.ok) G.save(); return r; },
+    login(t) { return G.login(t); },   // v7 晶角：DEV／測試手動「上線」   // snapshot v3：心情／瞌覺／需求；v4：info（名／階段名／形態名／進度／幾日大）（fpet-bridge 讀，只讀）
     setStage(st, branch) {          // DEV：跳去某階段（成年／靜光可指定分支）；保留需求，成長歸零
       const s = G.state; if (!D.STAGES.includes(st)) throw new Error('evo.setStage: ' + st);
       if (branch && !D.BRANCHES.includes(branch)) throw new Error('evo.setStage branch: ' + branch);
@@ -75,6 +78,8 @@
     // 熱區以縮放後嘅 CSS px 計。390 版面再乘 uiScale；360 闊直向（含整數倍像素縮放）都要 ≥44。
     const hit = Math.ceil((44 + 0.5) / uiScale);
     document.querySelectorAll('.ibtn').forEach((el) => { el.style.width = hit + 'px'; el.style.height = hit + 'px'; });
+    // P2：DEV 抽屜掣 ≥48dp（同 .ibtn 一樣按 uiScale 反算；#devp 喺 #ui 入面）
+    const ui = document.getElementById('ui'); ui.style.setProperty('--devhit', Math.ceil((48 + 0.5) / uiScale) + 'px');
     G.layoutInfo = { vw, vh, dpr, kdev, kb, cssW, cssH, hit, fit: vw / R.W <= vh / R.H ? 'width' : 'height', barsX: vw - cssW, barsY: vh - cssH };
   }
   window.addEventListener('resize', layout); layout();
@@ -228,10 +233,15 @@
   G.setPeriod = function (p) { G.hourOverride = p ? LIGHT.representativeHour(p) : null; };
 
   // ── 離開／返嚟 ──
+  // v7 晶角「上線」：開 app（boot）或者離開 ≥ crystal.loginGapSec 再返嚟 → 開即清窗口（sim.noteLogin）
+  G.login = function (t) { const L = SIM.noteLogin(G.state, t == null ? G.now() : t); if (L) G.save(); return L; };
+  G.login();
+  let hiddenAt = null;
   function onHide() { if (!window.__noSaveOnHide) G.save(); }
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) onHide();
-    else { const rep = SIM.applyOffline(G.state, G.now()); if (rep.show) EV.noteOpen(G.state, { hour: G.hour(), now: G.now() }); G.save(); last = performance.now(); if (rep.show) UI.showSummary(rep); G.reunionCheck(rep); }
+    if (document.hidden) { hiddenAt = G.now(); onHide(); }
+    else { const rep = SIM.applyOffline(G.state, G.now());
+      if (hiddenAt != null && G.now() - hiddenAt >= P.evo6.branch.crystal.loginGapSec * 1000) G.login(); hiddenAt = null; if (rep.show) EV.noteOpen(G.state, { hour: G.hour(), now: G.now() }); G.save(); last = performance.now(); if (rep.show) UI.showSummary(rep); G.reunionCheck(rep); }
   });
   window.addEventListener('pagehide', onHide);
   window.addEventListener('beforeunload', onHide);
