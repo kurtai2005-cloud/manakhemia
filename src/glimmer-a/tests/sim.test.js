@@ -122,6 +122,10 @@ console.log('# CQ 規則');
   s = sprout(); s.cq = 50; s.cqIdleSec = 0; s.lastSeen = 1e12 - 400 * H * 1000; S.applyOffline(s, 1e12); ok(s.cq >= Q.floor, `離線好耐 → 跌到 floor ${Q.floor} 為止（疏玩唔會 0）`, s.cq);
   s = sprout(); s.cq = 50; s.cqIdleSec = (Q.decayAfterH + 1) * H; S.cqDecay(s, H); ok(near2(s.cq, 50 - Q.decayPerH), '線上冇理都會跌（每個鐘）', s.cq);
   s.needs.hunger = 10; S.feed(s, 'meal'); const c2 = s.cq; S.cqDecay(s, H); ok(s.cq === c2, '照顧後重新計時（頭幾個鐘唔扣）');
+  { // v3 目標：疏玩（每日上線一次、餵＋玩）唔會直接 0，CQ 大約 15–35（文件目標）
+    const t = S.newState(1e12, 5); t.stage = 'juvenile'; t.growthSec = 0; t.cq = P.cqStart; t.needs = { hunger: 70, mood: 70, clean: 70, energy: 80 }; let now = 1e12;
+    for (let d = 0; d < 10 && t.stage === 'juvenile'; d++) { t.needs.hunger = Math.min(t.needs.hunger, 50); S.feed(t, 'meal'); S.play(t); S.advance(t, 600, {}, 30); now += 600e3; t.lastSeen = now; now += (24 * H - 600) * 1000; S.applyOffline(t, now); }
+    const ev = t.ev.find(e => e.type === 'evolve'); ok(ev && ev.cq >= Math.max(Q.floor, 15) && ev.cq <= 35 && ev.cq > 0, `疏玩（每日一次）→ 判定 CQ ${ev && ev.cq.toFixed(1)}（15–35，唔係 0）`, ev && ev.cq); }
 }
 console.log('# 分支門檻（config evo6.branch：燦光 ' + P.evo6.branch.brightCQ + '／柔光 ' + P.evo6.branch.softCQ + '；evo6：跳跳期完先分支）');
 {
