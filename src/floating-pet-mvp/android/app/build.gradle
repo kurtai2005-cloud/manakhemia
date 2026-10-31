@@ -19,8 +19,27 @@ android {
     }
     kotlinOptions { jvmTarget = '17' }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    // Play Protect：測試 APK 用固定 release key（唔再用共用 Android Debug key）、非 debuggable、v1+v2+v3 簽名。
+    // key 喺 repo 外：GLIMMER_SIGNING 指向 properties（storeFile／storePassword／keyAlias／keyPassword）；冇就照舊 debug key。
+    def signingProps = new Properties()
+    def signingFile = file(System.getenv('GLIMMER_SIGNING') ?: '/home/box/keys/glimmer-release.properties')
+    if (signingFile.exists()) { signingFile.withInputStream { signingProps.load(it) } }
+    signingConfigs {
+        if (signingProps['storeFile']) {
+            glimmer {
+                storeFile file(signingProps['storeFile'])
+                storePassword signingProps['storePassword']
+                keyAlias signingProps['keyAlias']
+                keyPassword signingProps['keyPassword']
+                enableV1Signing true
+                enableV2Signing true
+                enableV3Signing true
+            }
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingProps['storeFile'] ? signingConfigs.glimmer : signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
