@@ -25,7 +25,7 @@ console.log('① 系統 7 天氣：14 日連續模擬（每週 1–3 場雨、�
   ok(fogP > 2 && fogP < 9, `霧 ≈ ${W.weights.fog}%（${fogP.toFixed(1)}%）`); ok(clP > 50 && clP < 70, `晴 ≈ ${W.weights.clear}%（${clP.toFixed(1)}%）`); ok(ovP > 18 && ovP < 40, `陰（含落雨日底色）（${ovP.toFixed(1)}%）`);
   const t = mon + 5 * 3600e3 + 123456; ok(X.weatherAt(t, 99) === X.weatherAt(t, 99) && X.simulate(99, mon, 14).spells.length === X.simulate(99, mon, 14).spells.length, '同 seed 同時刻 → 同天氣（決定性）');
   const one = X.simulate(4242, mon, 14, 10); ok(one.spells.every(x => x.from >= W.rainFromH - 0.01 && x.from + x.hours <= W.rainToH + 0.01), `雨只喺 ${W.rainFromH}:00–${W.rainToH}:00`, JSON.stringify(one.spells));
-  ok(P.evo6.branch.weather.states.includes('fog') && !P.evo6.branch.weather.route.fog, 'fog 加入天氣狀態，唔計路線分');
+  ok(P.evo6.branch.weather.states.includes('fog') && P.evo6.branch.weather.route.fog && P.evo6.branch.weather.route.fog.w === P.evo6.branch.weather.route.overcast.w, 'fog 喺天氣狀態；v10：霧當陰（菇傘 0.5）');
   ok(P.evo6.branch.weather.route.rain.to === 'shroom', '落雨路線照 v4/v5 config（菇傘）— 見報告詮釋');
 }
 console.log('② 系統 7 季節：香港月份');
@@ -48,7 +48,11 @@ console.log('③ 系統 1 每日小委託＋星星碎錢包（每日 30＝委託
   s = mk(); for (let i = 0; i < 6; i++) S.noteCare(s, 12, 'rinse'); s.evo.b5sys = null; s.sys12 = null; X.st(s); now = day0 + 86400e3; X.questTick(s, now, s.ev); q = X.quests(s, now);
   const rq = q.list.find(x => x.route);
   ok(rq && rq.route === S.routeLead(s).form || (rq && rq.route === 'tide'), '領先水珠 → 其中 1 個委託偏向（淋水，標路線）', JSON.stringify(q.list));
-  for (const r of ['shroom', 'crystal', 'moon', 'ember']) { const s2 = mk(); s2.evo = { evIn: {}, care: {}, b5: { sprout: { all: 10, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, [r]: 8 } }, cl: { sprout: { sum: 95 * 100, sec: 100 } } }; const L = X.genQuests(s2, '2026-11-05'); ok(L[0].route === r && L[0].k === Q.routeKind[r] && L.length === 3 && new Set(L.map(x => x.k)).size === 3, `領先 ${r} → 委託 ${Q.routeKind[r]}`, JSON.stringify(L)); }
+  for (const r of ['shroom', 'crystal', 'moon', 'ember']) { const s2 = mk(); s2.evo = { evIn: {}, care: {}, b5: { sprout: Object.assign({ all: 10, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, [r]: 8 }, r === 'crystal' ? { crystal: 0, loginPoop: 5, quickLogin: 5 } : {}) }, cl: { sprout: { sum: 95 * 100, sec: 100 } } }; const L = X.genQuests(s2, '2026-11-05'); ok(L[0].route === r && L[0].k === Q.routeKind[r] && L.length === 3 && new Set(L.map(x => x.k)).size === 3, `領先 ${r} → 委託 ${Q.routeKind[r]}`, JSON.stringify(L)); }
+  { const s3 = mk(); s3.poops = 1; S.poopAges(s3).push(0); const got = []; S.addCareHook((x, k) => { if (x === s3) got.push(k); }); const b0 = X.bond(s3, now).v;
+    S.noteLogin(s3, now); S.clearPoop(s3); const b1 = X.bond(s3, now).v;
+    ok(got.join() === 'poop,poopQuick', 'v10 即清上線 → hook 收 poop 再收 poopQuick（推委託）', got.join());
+    ok(b1 - b0 === P.systems12.bond.care, '即清只當 1 次照顧計親密度（poopQuick 唔重覆加）', b0 + '→' + b1); }
   ok(JSON.stringify(X.genQuests(s, '2026-11-09')) === JSON.stringify(X.genQuests(s, '2026-11-09')), '同 seed 同日 → 委託一樣');
   // 做齊 → 即刻發 15（部份完成唔發）
   s = mk(); now = day0; X.questTick(s, now, s.ev); const before = X.wallet(s, now).total;

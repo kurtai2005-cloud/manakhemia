@@ -119,7 +119,7 @@
           feed: { n: 2, counts: ['feed'], icon: 'icon_commission_feed', label: '餵佢食嘢' },
           rinse: { n: 1, counts: ['rinse'], icon: 'icon_commission_water', label: '幫佢淋水沖身' },
           play: { n: 1, counts: ['play', 'mg'], icon: 'icon_commission_play', label: '陪佢玩一陣' },
-          poopQuick: { n: 1, counts: ['poopQuick'], icon: 'sticker_heart', label: '便便一出即刻清' },
+          poopQuick: { n: 1, counts: ['poopQuick'], icon: 'sticker_heart', label: '返嚟 2 分鐘內執晒便便' },   // v10 晶角＝上線即清（sim.checkQuickClean 通知 'poopQuick'）
           lull: { n: 1, counts: ['lull', 'petSleep'], icon: 'sticker_sleep', label: '夜晚哄佢瞓／陪瞓' },
         },
         routeKind: { tide: 'rinse', shroom: 'feed', crystal: 'poopQuick', moon: 'lull', ember: 'play' } },

@@ -165,7 +165,9 @@
   function checkQuickClean(s) {
     const E = evoOf(s), L = E.login; if (!L || !L.had || L.done || (s.poops | 0) > 0 || L.stage === 'egg') return false;
     if (nowMs() - L.at > BR().crystal.windowSec * 1000) return false;
-    L.done = true; const b = b5Bucket(s, L.stage); b.quickLogin = (b.quickLogin | 0) + 1; return true;
+    L.done = true; const b = b5Bucket(s, L.stage); b.quickLogin = (b.quickLogin | 0) + 1;
+    for (let i = 0; i < careHooks.length; i++) careHooks[i](s, 'poopQuick', nowHour());   // systems12：v7 即清上線 → 委託「poopQuick」（唔係額外照顧；清便便本身已經以 'poop' 通知）
+    return true;
   }
   // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night；kind＝feed／play／rinse／poop／mg（§7 分數）
   function noteCare(s, h, kind, rain) {

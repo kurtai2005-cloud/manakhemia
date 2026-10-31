@@ -314,7 +314,7 @@
   function diary(s, nowMs) { const tr = diaryTrack(s, nowMs, null), L = dy(s).list.filter(e => e.gen === (s.gen || 1)); return { list: L.slice(), all: dy(s).list.length, today: worth(tr) || s.stage !== 'egg' ? Object.assign(buildEntry(s, tr), { draft: true }) : null, keepDays: DC().keepDays }; }
 
   // sim 照顧 hook：遊戲時鐘（sim.setNowFn）計日
-  SIM.addCareHook((s, kind) => { const now = SIM.nowMs(), ev = Array.isArray(s.ev) ? s.ev : null; onCare(s, kind, now, ev); bondAdd(s, BC().care, now, 'care', ev); diaryNote(s, 'care', kind, now); });
+  SIM.addCareHook((s, kind) => { const now = SIM.nowMs(), ev = Array.isArray(s.ev) ? s.ev : null; onCare(s, kind, now, ev); if (kind === 'poopQuick') return;   /* v10 即清上線：只推委託；親密／日記已經由 'poop' 計 */ bondAdd(s, BC().care, now, 'care', ev); diaryNote(s, 'care', kind, now); });
   SIM.addStepHook((s) => { if (s && s.stage) diaryStep(s, SIM.nowMs()); });
   // 化光：紀念冊記低親密度（靜光入面嗰陣＋化光嗰陣）
   SIM.addFadeHook((s, m) => { const b = bondOf(s); m.bond = Math.round(b.v); if (b.elder != null) m.bondElder = b.elder; });
