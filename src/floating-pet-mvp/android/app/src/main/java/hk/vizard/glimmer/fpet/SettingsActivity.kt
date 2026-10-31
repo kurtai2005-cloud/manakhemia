@@ -43,7 +43,7 @@ class SettingsActivity : Activity() {
         val modes = listOf(PetPrefs.MODE_EDGE to "沿底邊行（預設）", PetPrefs.MODE_FREE to "全畫面自由行（避開狀態列／導航列）", PetPrefs.MODE_PIN to "定點（企定）")
         val cur = PetPrefs.mode(this)
         modes.forEachIndexed { i, (m, l) ->
-            rg.addView(RadioButton(this).apply { id = 100 + i; text = l; textSize = 15f; minHeight = dp(44f); isChecked = m == cur })
+            rg.addView(RadioButton(this).apply { id = 100 + i; text = l; textSize = 15f; minHeight = dp(48f); isChecked = m == cur })
         }
         rg.setOnCheckedChangeListener { _, id ->
             val m = modes[id - 100].first

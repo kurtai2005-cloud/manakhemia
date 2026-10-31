@@ -27,9 +27,9 @@
 
         </activity>
 
-        <activity android:name=".SettingsActivity" android:label="浮動團絨" android:exported="true"
+        <activity android:name=".SettingsActivity" android:screenOrientation="portrait" android:label="浮動團絨" android:exported="true"
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
-        <activity android:name=".PowerGuideActivity" android:label="自啟動／省電白名單" android:exported="false"
+        <activity android:name=".PowerGuideActivity" android:screenOrientation="portrait" android:label="自啟動／省電白名單" android:exported="false"
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
 
         <service android:name=".PetOverlayService" android:exported="false"
