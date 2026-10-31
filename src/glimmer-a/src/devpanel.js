@@ -188,6 +188,7 @@
         <div class="dr" data-testid="dev-crystal-row"><i>晶角</i>${btn('上線', 'login', 'dev-login')}${btn('出便便', 'addPoop', 'dev-add-poop')}<span data-testid="dev-crystal-state"></span></div>
         <div class="dr" data-testid="dev-ember-row"><i>火苗</i>${btn('浮動開 game', 'overlayGame', 'dev-overlay-game')}<span data-testid="dev-ember-state"></span></div>
         <div class="dr" data-testid="dev-s12q-row"><i>委託</i>${btn('面板', 's12:open', 'dev-s12-open')}${btn('做#1', 's12:q0', 'dev-s12-q0')}${btn('做#2', 's12:q1', 'dev-s12-q1')}${btn('做#3', 's12:q2', 'dev-s12-q2')}${btn('全做', 's12:qall', 'dev-s12-qall')}${btn('重抽', 's12:qreset', 'dev-s12-qreset')}${btn('+5碎', 's12:shard5', 'dev-s12-shard5')}<span data-testid="dev-s12q-state"></span></div>
+        <div class="dr" data-testid="dev-s12b-row"><i>親密</i>${btn('面板', 's12:bondOpen', 'dev-s12-bond-open')}${btn('+10', 's12:bondUp', 'dev-s12-bond-up')}${btn('−10', 's12:bondDown', 'dev-s12-bond-down')}${btn('心聲', 's12:voice', 'dev-s12-voice')}${btn('唔理一日', 's12:ignore', 'dev-s12-ignore')}<span data-testid="dev-s12b-state"></span></div>
         <div class="dr" data-testid="dev-lull-row"><i>月眠</i>${btn('眼瞓', 'drowsy', 'dev-drowsy')}${btn('哄瞓', 'lull', 'dev-lull')}<span data-testid="dev-lull-state"></span></div>
         <div class="dr" data-testid="dev-route-row"><i>路線</i>${btn('預告', 'foreshadow', 'dev-foreshadow')}${btn('圖鑑', 'openDex', 'dev-dex')}${btn('解鎖全部', 'dexUnlock:all', 'dev-dex-all')}${btn('清圖鑑', 'dexUnlock:none', 'dev-dex-none')}</div>
         <div class="dr"><i>進化</i>${D.EVOLUTION.map(e => btn('▶' + e.name, 'playEvolve:' + e.form, 'dev-evolve-' + e.form)).join('')}</div>
@@ -216,6 +217,7 @@
       const es = q('[data-testid="dev-ember-state"]'); if (es && SIM.branch5Check) { const B = SIM.branch5Check(S), O = D.PARAMS.evo6.branch.overlayMg, at = S.mg && S.mg.overlayAt, cd = at ? Math.max(0, Math.ceil(O.cooldownSec - (G.now() - at) / 1000)) : 0;
         es.textContent = `火苗${B.score.ember}分｜今日小遊戲 ${S.mg ? S.mg.plays : 0}｜冷卻${cd ? cd + 's' : '無'}`; }
       const s1q = q('[data-testid="dev-s12q-state"]'); if (s1q && window.__qa && __qa.sys12 && __qa.sys12.quests) { const Q = __qa.sys12.quests(), W = __qa.sys12.wallet(); s1q.textContent = `${Q.list.map(x => x.k + (x.route ? '*' : '') + ' ' + x.n + '/' + x.need).join('、') || '—'}${Q.paid ? '（已發）' : ''}｜碎 ${W.total}（今日 ${W.today}/${W.cap}）`; }
+      const s1b = q('[data-testid="dev-s12b-state"]'); if (s1b && window.__qa && __qa.sys12 && __qa.sys12.bond) { const B = __qa.sys12.bond(), cd = Math.max(0, Math.ceil((B.lastVoice + B.cooldownSec * 1000 - G.now()) / 1000)); s1b.textContent = `${Math.round(B.v)}（第 ${B.tier} 段｜今日 +${B.todayGain}/${B.cap}｜心聲冷卻 ${cd}s）`; }
       const ss = q('[data-testid="dev-season-state"]'); if (ss && G.wx) ss.textContent = `${G.wx.season || '基本'}（${G.wx.seasonMode}）`;
       el.querySelectorAll('button[data-a^="season:"]').forEach(b => b.classList.toggle('on', !!G.wx && b.dataset.a.split(':')[1] === G.wx.seasonMode));
       const wa = q('[data-a="weather:auto"]'); if (wa && G.wx) wa.classList.toggle('on', G.wx.auto && !G.wx.manual);

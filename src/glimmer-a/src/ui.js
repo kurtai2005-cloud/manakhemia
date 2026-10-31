@@ -89,7 +89,7 @@
           buttons: [{ text: '陪佢化光', primary: true, onClick: () => { setTimeout(() => { if (G.fade) G.fade(); }, 0); } }, { text: '再陪多陣' }] });
       } else if (e.type === 'fade') {
         SND('hatch'); rd.flash = 1.6; rd.burst('spark', R.CX, R.GROUND_Y - 40, 22, 120);
-        modal({ title: '化光', kind: 'fadeDone', lines: ['佢化成好多細細粒光點，飄上天之前仲回頭扮咗個好醒嘅樣。', '紀念：第 ' + e.memorial.gen + ' 代・' + (D.FORM_NAME[e.memorial.form] || '') + '。新嘅光卵已經喺花圃度。'] });
+        modal({ title: '化光', kind: 'fadeDone', lines: ['佢化成好多細細粒光點，飄上天之前仲回頭扮咗個好醒嘅樣。', '紀念：第 ' + e.memorial.gen + ' 代・' + (D.FORM_NAME[e.memorial.form] || '') + '。新嘅光卵已經喺花圃度。'].concat(e.memorial.bond != null ? ['紀念冊記低：親密度 ' + e.memorial.bond + (e.memorial.diary ? '、日記 ' + e.memorial.diary.length + ' 篇' : '') + '。'] : []) });
       }
     }
   }
@@ -336,6 +336,7 @@
       down = false; if (G.beh) NS_BEH.dragEnd(G.beh);
       const p = press; press = null; endNuzzle(p); if (!p || cancel || G.mode === 'minigame' || !G.beh || G.state.sleeping) return;
       const ms = performance.now() - p.t0; G.lastPetPress = { ms: Math.round(ms), short: ms < SHORT_MS, nuzzle: !!p.nuzzle };
+      if (G.sysPress) G.sysPress(G.lastPetPress);                        // systems12 親密：長撳 +2；短撳 → 心聲（30%、冷卻）
       if (ms >= SHORT_MS && G.lull && G.lull()) return;                  // v5 哄瞓：眼瞓時長撳／撫摸（磨蹭）→ 哄佢瞓著
       if (ms < SHORT_MS) NS_BEH.tap(G.beh, 'pet', p.x, p.y);             // 短 tap：照舊（望向＋回頭 D2＋反應／連點）
       else NS_BEH.tap(G.beh, 'pet', p.x, p.y, { hold: true });           // 長按：唔回頭唔反應（≥0.4s 已經由 timer 開始磨蹭 D3）

@@ -62,6 +62,11 @@
       .s12row { display:flex; align-items:center; gap:8px; margin:0 0 6px; min-height:28px; box-sizing:border-box; image-rendering:pixelated; }
       .s12row .t { flex:1; } .s12row small { opacity:.75; } .s12row .rt { font-size:10px; padding:1px 5px; border-radius:6px; color:#fff; margin-left:4px; }
       .s12foot { display:flex; align-items:center; gap:6px; justify-content:space-between; margin-top:8px; font-size:12px; }
+      #s12voice { position:absolute; z-index:9; max-width:230px; padding:0; font:600 13px/1.4 sans-serif; color:#4a2e1a; pointer-events:none; opacity:0; transition:opacity .35s; image-rendering:pixelated; box-sizing:border-box; text-align:center; }
+      #s12voice .tail { position:absolute; width:32px; height:28px; bottom:-24px; left:calc(50% - 16px); image-rendering:pixelated; }
+      .s12bar { height:12px; background:#e9d6ae; border:2px solid #c0783f; border-radius:6px; overflow:hidden; margin:2px 0 8px; } .s12bar i { display:block; height:100%; background:linear-gradient(90deg,#ff9fb5,#ffd36a); }
+      .s12line { font-size:12px; margin:0 0 3px; } .s12line.lock { opacity:.45; } .s12tier { font-weight:700; margin:8px 0 3px; font-size:12px; color:#8a4f2a; }
+      .s12mem { font-size:12px; padding:3px 0; border-top:1px dashed rgba(74,46,26,.3); }
       .s12x { position:absolute; right:22px; top:16px; cursor:pointer; font:700 18px sans-serif; color:#fff6dc; }
     `; document.head.appendChild(css);
     const chip = document.createElement('div'); chip.id = 's12chip'; chip.className = 'panel'; chip.dataset.testid = 's12-chip';
@@ -71,7 +76,7 @@
     pan.innerHTML = `<div id="s12box" style="position:relative"><h3 data-testid="s12-title">每日小委託</h3><div class="s12tabs" data-testid="s12-tabs"></div><div id="s12body"></div></div><i class="s12x" data-testid="s12-close">✕</i>`;
     if (uiRoot) { uiRoot.appendChild(chip); uiRoot.appendChild(gain); uiRoot.appendChild(pan); }
     nine(pan.querySelector('#s12box'), 'panel_commission_9s', [18, 12, 12, 12]);
-    const S12 = G.s12 = { tab: 'quest', tabs: [['quest', '委託']], open: false, log: [] };
+    const S12 = G.s12 = { tab: 'quest', tabs: [['quest', '委託'], ['bond', '親密']], open: false, log: [] };
     const now = () => G.now();
     function shardTxt() { const w = X.wallet(G.state, now()); return w; }
     function renderQuest() {
@@ -80,13 +85,40 @@
       return q.list.map((x, i) => `<div class="s12row s12q" data-testid="s12-q-${i}" data-k="${x.k}" data-done="${x.n >= x.need ? 1 : 0}">${pimg(x.icon, 24)}<span class="t">${x.label}<small> ${Math.min(x.n, x.need)}/${x.need}</small>${x.route ? `<span class="rt" style="background:${RC[x.route] || '#888'}" data-testid="s12-q-route">${D.FORM_NAME[x.route] || x.route}</span>` : ''}</span>${pimg(x.n >= x.need ? 'checkbox_done' : 'checkbox_empty', 20)}</div>`).join('') +
         `<div class="s12foot"><span>3 個齊即刻 ${pimg('icon_star_shard_16', 16)} +${q.reward * q.list.length}${q.paid ? '（已領）' : ''}</span><span data-testid="s12-wallet">${pimg('icon_star_shard_16', 16)} ${w.total}｜今日 ${w.today}/${w.cap}</span></div>`;
     }
-    const RENDER = { quest: renderQuest }; G.s12render = RENDER;
+    // ── 系統 6：親密度＋心聲（心聲泡＝遊美 bubble_thought_9s＋tail）──
+    const vb = document.createElement('div'); vb.id = 's12voice'; vb.dataset.testid = 's12-voice';
+    vb.innerHTML = `<span data-testid="s12-voice-text"></span><img class="tail" src="${ART}bubble_thought_tail.png" alt="">`;
+    if (uiRoot) uiRoot.appendChild(vb); nine(vb, 'bubble_thought_9s', [11, 11, 11, 11], 2);
+    let vbHide = 0;
+    function showVoice(r) {
+      const b = NS.ui.petHitBox ? NS.ui.petHitBox() : { x: 80, y: 120, w: 36, h: 40 }; vb.querySelector('span').textContent = r.line;
+      vb.style.opacity = 0; vb.style.left = '0px'; vb.style.top = '0px'; vb.style.display = 'block';
+      const w = vb.offsetWidth, h = vb.offsetHeight, cx = (b.x + b.w / 2) * 2, x = Math.max(8, Math.min(390 - 8 - w, cx - w / 2)), y = Math.max(130, b.y * 2 - h - 26);
+      vb.style.left = x + 'px'; vb.style.top = y + 'px'; vb.querySelector('.tail').style.left = Math.max(8, Math.min(w - 40, cx - x - 16)) + 'px'; vb.style.opacity = 1;
+      clearTimeout(vbHide); vbHide = setTimeout(() => { vb.style.opacity = 0; }, C.bond.voice.showSec * 1000);
+      S12.lastVoice = r; G.state.ev.push({ type: 'sys12', sys: 'bond', what: 'voice', line: r.line, tier: r.tier, src: r.src });
+    }
+    G.sysVoice = function (o) { const r = X.voiceTry(G.state, now(), o); if (r.ok) showVoice(r); S12.lastTry = r; return r; };
+    /* ui.js 撳寵物鬆手：長撳（≥ SHORT_MS）→ 親密 +2；短撳 → 心聲（30%、冷卻 10 分鐘、同懸浮共用） */
+    G.sysPress = function (p) { if (!p || G.state.stage === 'egg') return null; if (!p.short) return { bond: X.onLongPress(G.state, now(), G.state.ev) }; return { voice: G.sysVoice({ src: 'app' }) }; };
+    function renderBond() {
+      const s = G.state, b = X.bond(s, now()), L = C.bond.lines, mem = (s.memorial || []).slice(-6).reverse();
+      return `<div data-testid="s12-bond-v">親密度 <b>${Math.round(b.v)}</b> / 100　第 ${b.tier} 段心聲<small>（今日 +${b.todayGain}/${b.cap}）</small></div><div class="s12bar"><i style="width:${b.v}%"></i></div>` +
+        L.map((arr, i) => `<div class="s12tier">第 ${i + 1} 段（${(i + 1) * C.bond.tierEvery}）${i < b.tier ? '' : '🔒'}</div>` + arr.map(l => `<div class="s12line${i < b.tier ? '' : ' lock'}">${i < b.tier ? l : '？？？'}</div>`).join('')).join('') +
+        `<div class="s12tier">紀念冊</div>` + (mem.length ? mem.map(m => `<div class="s12mem" data-testid="s12-mem">第 ${m.gen} 代・${D.FORM_NAME[m.form] || m.form || ''}　親密度 ${m.bond != null ? m.bond : '—'}${m.bondElder != null ? '（靜光 ' + m.bondElder + '）' : ''}${m.diary ? '　日記 ' + m.diary.length + ' 篇' : ''}</div>`).join('') : `<div class="s12mem">未有紀念</div>`);
+    }
+    const RENDER = { quest: renderQuest, bond: renderBond }; G.s12render = RENDER;
+    G.s12dev = Object.assign(G.s12dev || {}, {   // DEV 抽屜（devpanel s12:<名>）
+      bondUp: () => { const b = X.bondOf(G.state); b.v = Math.min(100, b.v + 10); lastChip = ''; return X.bond(G.state, now()); },
+      bondDown: () => { const b = X.bondOf(G.state); b.v = Math.max(0, b.v - 10); return X.bond(G.state, now()); },
+      voice: () => G.sysVoice({ force: true, src: 'dev' }), ignore: () => window.__qa.sys12.ignoreDay(), bondOpen: () => G.s12open('bond'),
+    });
     function draw() {
       if (!S12.open) return; const body = pan.querySelector('#s12body'), tabs = pan.querySelector('.s12tabs');
       tabs.innerHTML = S12.tabs.length > 1 ? S12.tabs.map(([k, l]) => `<b data-tab="${k}" data-testid="s12-tab-${k}" class="${k === S12.tab ? 'on' : ''}">${l}</b>`).join('') : '';
       pan.querySelector('h3').textContent = { quest: '每日小委託', diary: '團絨日記', bond: '親密度', set: '小驚喜設定' }[S12.tab] || '';
       body.innerHTML = (RENDER[S12.tab] || renderQuest)();
-      body.querySelectorAll('.s12row').forEach(r => { if (!r.dataset.nine) { r.dataset.nine = 1; nine(r, 'panel_commission_row_9s', [4, 4, 4, 4], 2); } });
+      body.querySelectorAll('.s12row').forEach(r => { if (!r.dataset.nine) { r.dataset.nine = 1; nine(r, 'panel_commission_row_9s', [6, 6, 6, 6], 1.5); } });
     }
     G.s12open = function (tab) { S12.open = true; if (tab) S12.tab = tab; pan.style.display = 'flex'; draw(); return true; };
     G.s12close = function () { S12.open = false; pan.style.display = 'none'; };
@@ -102,15 +134,16 @@
       chip.querySelector('[data-testid="s12-qprog"]').textContent = q.list.length ? `委託 ${dn}/${q.list.length}` : '';
       if (S12.open) draw();
     }
-    function showGain(n, why) { gain.textContent = `+${n} 星星碎${why ? '　' + why : ''}`; gain.style.transition = 'none'; gain.style.opacity = 1; gain.style.transform = 'translateY(0)'; void gain.offsetWidth; gain.style.transition = 'opacity .6s 1.4s, transform 2s'; gain.style.opacity = 0; gain.style.transform = 'translateY(-14px)'; chip.classList.remove('pulse'); void chip.offsetWidth; chip.classList.add('pulse'); }
+    function showGain(n, why) { gain.textContent = n ? `+${n} 星星碎${why ? '　' + why : ''}` : why; gain.style.transition = 'none'; gain.style.opacity = 1; gain.style.transform = 'translateY(0)'; void gain.offsetWidth; gain.style.transition = 'opacity .6s 1.4s, transform 2s'; gain.style.opacity = 0; gain.style.transform = 'translateY(-14px)'; chip.classList.remove('pulse'); void chip.offsetWidth; chip.classList.add('pulse'); }
     G.sysEvent = function (e) {
       S12.log.push(Object.assign({ t: now() }, e)); if (S12.log.length > 60) S12.log.shift();
       if (e.sys === 'quest' && e.what === 'paid' && e.n > 0) showGain(e.n, e.late ? '（委託補發）' : '（委託完成）');
+      if (e.sys === 'bond' && e.what === 'tier') showGain(0, '親密度 ' + Math.round(e.v) + '：解鎖第 ' + e.tier + ' 段心聲');
       if (e.sys === 'quest' && e.what === 'step') { chip.classList.remove('pulse'); void chip.offsetWidth; chip.classList.add('pulse'); }
       lastChip = ''; chipTick();
       (G.sysListeners || []).forEach(fn => { try { fn(e); } catch (er) { } });
     };
-    function questTick() { const ev = G.state.ev; X.questTick(G.state, now(), ev); }
+    function questTick() { const ev = G.state.ev; X.questTick(G.state, now(), ev); X.bondTick(G.state, now(), ev); }
     G.sysTick = function (dt) { wx.acc += dt; if (wx.acc >= 1) { wx.acc = 0; G.wxTick(); questTick(); chipTick(); } petTick(dt); };
     questTick(); chipTick();
     G.wxTick(true);
@@ -123,7 +156,9 @@
       questDo: (i) => { const x = X.st(G.state).quests.list[i]; if (!x) return null; X.onCare(G.state, P.systems12.quests.kinds[x.k].counts[0], G.now(), G.state.ev); return X.quests(G.state, G.now()); },   // DEV：當做咗 1 次（走真 hook 路徑）
       questFill: () => { const q = X.st(G.state).quests; q.list.forEach(x => { let g = 9; while (x.n < x.need && g--) X.onCare(G.state, P.systems12.quests.kinds[x.k].counts[0], G.now(), G.state.ev); }); return X.quests(G.state, G.now()); },
       questReset: () => { const q = X.st(G.state).quests; q.day = ''; return X.questTick(G.state, G.now(), G.state.ev); },
-      grant: (n, src) => X.grant(G.state, n, src || 'dev', G.now()), open: (tab) => G.s12open(tab), close: () => G.s12close(), log: () => S12.log.slice(),
+      grant: (n, src) => X.grant(G.state, n, src || 'dev', G.now()),
+      bond: () => X.bond(G.state, G.now()), bondSet: (v) => { X.bondOf(G.state).v = Math.max(0, Math.min(100, v)); return X.bond(G.state, G.now()); }, voice: (o) => G.sysVoice(o || { force: true, src: 'dev' }), lastVoice: () => S12.lastVoice || null, lastTry: () => S12.lastTry || null,
+      ignoreDay: () => { const b = X.bondOf(G.state), d = new Date(G.now()); d.setDate(d.getDate() - 2); b.chk = NS.sim.dayKey(d.getTime()); G.state.careDays = (G.state.careDays || []).filter(k => k !== NS.sim.dayKey(G.now() - 86400e3)); return X.bondTick(G.state, G.now(), G.state.ev); }, open: (tab) => G.s12open(tab), close: () => G.s12close(), log: () => S12.log.slice(),
     });
   }
   window.Glimmer = window.Glimmer || {}; window.Glimmer.sys12ui = { install };

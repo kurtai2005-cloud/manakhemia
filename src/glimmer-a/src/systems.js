@@ -79,6 +79,10 @@
     if (typeof q.day !== 'string') q.day = ''; if (!Array.isArray(q.list)) q.list = [];
     q.list = q.list.filter(x => x && typeof x === 'object' && C().quests.kinds[x.k]).map(x => ({ k: x.k, need: Math.max(1, num(x.need, 1)), n: Math.max(0, num(x.n, 0)), route: D.BRANCH5.includes(x.route) ? x.route : null }));
     q.paid = !!q.paid; q.routePaid = !!q.routePaid;
+    const B = C().bond, b = o.bond && typeof o.bond === 'object' ? o.bond : (o.bond = {});
+    b.v = Math.max(0, Math.min(B.max, num(b.v, B.start))); b.gain = Math.max(0, num(b.gain, 0)); if (typeof b.day !== 'string') b.day = ''; if (typeof b.chk !== 'string') b.chk = '';
+    b.gen = Math.max(1, Math.floor(num(b.gen, s.gen || 1))); b.lastVoice = Math.max(0, num(b.lastVoice, 0)); b.elder = b.elder == null ? null : num(b.elder, null);
+    if (!Array.isArray(b.heard)) b.heard = []; b.heard = b.heard.filter(x => typeof x === 'string').slice(-60);
     return o;
   }
   const SYS = () => P.evo6.branch.systems;
@@ -143,9 +147,58 @@
   }
   function quests(s, nowMs) { const q = st(s).quests; return { day: q.day, paid: q.paid, done: questsDone(q), list: q.list.map(x => Object.assign({ label: C().quests.kinds[x.k].label, icon: C().quests.kinds[x.k].icon }, x)), reward: C().quests.reward }; }
 
+  // ── 系統 6：親密度＋心聲 ──
+  const BC = () => C().bond;
+  function bondOf(s) { const b = st(s).bond; if (b.gen !== (s.gen || 1)) { b.gen = s.gen || 1; b.v = BC().start; b.gain = 0; b.day = ''; b.chk = ''; b.elder = null; b.heard = []; } return b; }   // 新一代由 start 開始
+  function tierOf(v) { return Math.max(0, Math.min(BC().lines.length, Math.floor(v / BC().tierEvery))); }
+  /* 加親密度（照顧 +1／長撳 +2）：每日加最多 dailyGainCap；回實際加咗幾多 */
+  function bondAdd(s, n, nowMs, why, ev) {
+    if (s.stage === 'egg') return 0; const B = BC(), b = bondOf(s), key = SIM.dayKey(nowMs);
+    if (b.day !== key) { b.day = key; b.gain = 0; }
+    const g = Math.max(0, Math.min(n, B.dailyGainCap - b.gain, B.max - b.v)); if (!g) return 0;
+    const t0 = tierOf(b.v); b.v = +(b.v + g).toFixed(2); b.gain += g;
+    const t1 = tierOf(b.v); if (ev && t1 > t0) ev.push({ type: 'sys12', sys: 'bond', what: 'tier', tier: t1, v: b.v });
+    return g;
+  }
+  /* 每日檢查（tick／開 app）：由上次檢查到琴日，每個「完全冇照顧」嘅日 −ignoreDecay（最低 floor）；光卵唔計 */
+  function bondTick(s, nowMs, ev) {
+    const B = BC(), b = bondOf(s), today = dayNum(nowMs), out = { lost: 0, days: 0 };
+    if (s.stage === 'elder' && b.elder == null) b.elder = Math.round(b.v);
+    if (!b.chk) { b.chk = SIM.dayKey(nowMs - DAY); return out; }
+    const care = new Set(Array.isArray(s.careDays) ? s.careDays : []);
+    let dn = Math.round(Date.parse(b.chk + 'T00:00:00Z') / DAY) + 1; const maxN = 60;
+    for (let n = 0; dn < today && n < maxN; dn++, n++) {
+      const k = new Date(dn * DAY).toISOString().slice(0, 10);   // dayNum ↔ 本機日期 key
+      if (s.stage !== 'egg' && !care.has(k)) { const nv = Math.max(B.floor, b.v - B.ignoreDecay); out.lost += b.v - nv; out.days++; b.v = nv; }
+    }
+    b.chk = SIM.dayKey(nowMs - DAY);
+    if (out.lost && ev) ev.push({ type: 'sys12', sys: 'bond', what: 'decay', lost: out.lost, days: out.days, v: b.v });
+    return out;
+  }
+  /* 心聲：撳一下 → chance 機會（冷卻 cooldownSec，懸浮＋主程式共用 b.lastVoice）；已解鎖段落入面抽，newestTierPct% 抽最新嗰段 */
+  function voiceLines(s) { const b = bondOf(s), T = tierOf(b.v); return BC().lines.slice(0, T); }
+  function voicePick(s, r) {
+    const L = voiceLines(s); if (!L.length) return null; r = r || Math.random;
+    const tier = r() * 100 < BC().voice.newestTierPct ? L.length - 1 : Math.floor(r() * L.length), arr = L[tier];
+    return { tier: tier + 1, line: arr[Math.floor(r() * arr.length)] };
+  }
+  function voiceTry(s, nowMs, o) {
+    o = o || {}; const V = BC().voice, b = bondOf(s), r = o.rng || Math.random;
+    if (s.stage === 'egg') return { ok: false, why: 'egg' };
+    if (!o.force && nowMs - b.lastVoice < V.cooldownSec * 1000) return { ok: false, why: 'cooldown', left: Math.ceil((V.cooldownSec * 1000 - (nowMs - b.lastVoice)) / 1000) };
+    if (!o.force && r() >= V.chance) return { ok: false, why: 'roll' };
+    const p = voicePick(s, r); if (!p) return { ok: false, why: 'locked' };
+    b.lastVoice = nowMs; b.heard.push(p.line); if (b.heard.length > 60) b.heard.shift();
+    return Object.assign({ ok: true, src: o.src || 'app' }, p);
+  }
+  function bond(s, nowMs) { const B = BC(), b = bondOf(s); return { v: b.v, tier: tierOf(b.v), tiers: B.lines.length, todayGain: b.day === SIM.dayKey(nowMs) ? b.gain : 0, cap: B.dailyGainCap, floor: B.floor, lastVoice: b.lastVoice, cooldownSec: B.voice.cooldownSec, chance: B.voice.chance, elder: b.elder, heard: b.heard.length }; }
+  function onLongPress(s, nowMs, ev) { return bondAdd(s, BC().longPress, nowMs, 'press', ev); }
+
   // sim 照顧 hook：遊戲時鐘（sim.setNowFn）計日
-  SIM.addCareHook((s, kind) => { onCare(s, kind, SIM.nowMs(), Array.isArray(s.ev) ? s.ev : null); });
+  SIM.addCareHook((s, kind) => { const now = SIM.nowMs(), ev = Array.isArray(s.ev) ? s.ev : null; onCare(s, kind, now, ev); bondAdd(s, BC().care, now, 'care', ev); });
+  // 化光：紀念冊記低親密度（靜光入面嗰陣＋化光嗰陣）
+  SIM.addFadeHook((s, m) => { const b = bondOf(s); m.bond = Math.round(b.v); if (b.elder != null) m.bondElder = b.elder; });
 
   return { dayNum, dayStart, weekOf, hash, rngFor, rainSpells, dayBase, weatherAt, simulate, seasonOf, shiverMul, SEASON_NAME, WEATHER_NAME,
-    st, grant, wallet, spend, questRoute, genQuests, questTick, onCare, payQuests, addRoutePts, quests };
+    st, grant, wallet, spend, bondOf, tierOf, bondAdd, bondTick, voiceLines, voicePick, voiceTry, bond, onLongPress, questRoute, genQuests, questTick, onCare, payQuests, addRoutePts, quests };
 });

@@ -35,7 +35,7 @@ console.log('② 系統 7 季節：香港月份');
   ok(X.shiverMul('fog', 'winter') === W.shiverFogMul * W.shiverWinterMul && X.shiverMul('clear', 'summer') === 1, '打冷震：霧／冬機率倍數');
 }
 
-console.log('② 系統 1 每日小委託＋星星碎錢包（每日 30＝委託 15＋其他 15）');
+console.log('③ 系統 1 每日小委託＋星星碎錢包（每日 30＝委託 15＋其他 15）');
 {
   const Q = C.quests, SY = P.evo6.branch.systems, day0 = new Date(2026, 10, 2, 10, 0).getTime();
   let now = day0; S.setNowFn(() => now); S.setHourFn(() => new Date(now).getHours() + new Date(now).getMinutes() / 60); S.setWeatherFn(() => null);
@@ -88,6 +88,42 @@ console.log('② 系統 1 每日小委託＋星星碎錢包（每日 30＝委託
   s = mk(); s.sys12 = { wallet: { total: 'x', q: -5, log: 'bad', days: { 'bad': 1, '2026-11-02': { q: -3, o: 'x' } } }, quests: { list: [{ k: 'zzz' }, { k: 'feed', need: 2, n: 1, route: 'evil' }] } }; X.st(s);
   ok(s.sys12.wallet.total === 0 && s.sys12.wallet.q === undefined && Object.keys(s.sys12.wallet.days).join() === '2026-11-02' && s.sys12.wallet.days['2026-11-02'].q === 0 && s.sys12.wallet.days['2026-11-02'].o === 0 && Array.isArray(s.sys12.wallet.log) && s.sys12.quests.list.length === 1 && s.sys12.quests.list[0].route === null, '存檔 sanitize（錢包／委託）');
   const s5 = S.deserialize(S.serialize(Object.assign(mk(), { sys12: { wallet: { total: 7 } } })), now); ok(X.wallet(s5, now).total === 7, '存檔來回保留星星碎');
+  S.setNowFn(null); S.setHourFn(null); S.setWeatherFn(null);
+}
+console.log('④ 系統 6 親密度＋心聲');
+{
+  const B = C.bond, day0 = new Date(2026, 10, 2, 10, 0).getTime(); let now = day0;
+  S.setNowFn(() => now); S.setHourFn(() => 12); S.setWeatherFn(() => null);
+  const mk = () => { const s = S.newState(day0, 99); s.stage = 'sprout'; s.cq = 60; s.ev = []; s.needs.hunger = 10; return s; };
+  let s = mk(); ok(X.bond(s, now).v === B.start && B.start === 20, `新團絨親密度 ${B.start}`);
+  ok(B.lines.length === 5 && B.lines.every(a => a.length >= 6 && a.every(l => typeof l === 'string' && l.length >= 6)) && new Set(B.lines.flat()).size === 30, '5 段心聲 × 各 6 句（唔重覆）');
+  S.rinse(s); ok(X.bond(s, now).v === B.start + B.care, '照顧 +1（經 sim hook）');
+  X.onLongPress(s, now, s.ev); ok(X.bond(s, now).v === B.start + B.care + B.longPress, '長撳 +2');
+  for (let i = 0; i < 30; i++) S.rinse(s); ok(X.bond(s, now).v === B.start + B.dailyGainCap && X.bond(s, now).todayGain === B.dailyGainCap, `每日最多 +${B.dailyGainCap}`, X.bond(s, now).v);
+  now += 86400e3; S.rinse(s); ok(X.bond(s, now).v === B.start + B.dailyGainCap + 1, '第二日再加得');
+  // 冇照顧嘅日 −2（最低 20）
+  X.bondTick(s, now, s.ev); const v0 = X.bond(s, now).v; now += 4 * 86400e3; const r = X.bondTick(s, now, s.ev);
+  ok(r.days === 3 && X.bond(s, now).v === v0 - 3 * B.ignoreDecay, '3 日冇照顧 → −6（今日唔計）', JSON.stringify(r));
+  ok(X.bondTick(s, now + 3600e3, s.ev).days === 0, '同日再檢查唔重扣');
+  now += 30 * 86400e3; X.bondTick(s, now, s.ev); ok(X.bond(s, now).v === B.floor, `長期唔理 → 最低 ${B.floor}`);
+  { const s2 = mk(); X.bondTick(s2, now, s2.ev); s2.careDays = [S.dayKey(now), S.dayKey(now + 86400e3)]; now += 2 * 86400e3; S.rinse(s2); const v = X.bond(s2, now).v; X.bondTick(s2, now, s2.ev); ok(X.bond(s2, now).v === Math.max(B.floor, v), '有照顧嘅日唔扣'); }
+  // 段落
+  s = mk(); X.bondOf(s).v = 19; ok(X.voiceLines(s).length === 0, '親密度 < 20 → 未有心聲');
+  X.bondOf(s).v = 20; ok(X.voiceLines(s).length === 1, '20 → 解鎖第 1 段');
+  X.bondOf(s).v = 100; ok(X.voiceLines(s).length === 5, '100 → 5 段全解鎖');
+  // 30%＋冷卻 10 分鐘
+  { let hit = 0, n = 0, t0 = day0; const s3 = mk(); X.bondOf(s3).v = 60; let seed = 1; const rng = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (let i = 0; i < 4000; i++) { t0 += B.voice.cooldownSec * 1000; n++; if (X.voiceTry(s3, t0, { rng }).ok) hit++; }
+    ok(Math.abs(hit / n - B.voice.chance) < 0.03, `撳一下 ≈ ${B.voice.chance * 100}% 出心聲（${(hit / n * 100).toFixed(1)}%）`);
+    const s4 = mk(); const a = X.voiceTry(s4, day0, { force: true }), b = X.voiceTry(s4, day0 + 599e3, { rng: () => 0 }), c = X.voiceTry(s4, day0 + 600e3, { rng: () => 0 });
+    ok(a.ok && !b.ok && b.why === 'cooldown' && c.ok, `冷卻 ${B.voice.cooldownSec / 60} 分鐘`, JSON.stringify([a.ok, b, c.ok]));
+    ok(B.lines[a.tier - 1].includes(a.line), '心聲出自已解鎖段落'); }
+  // 紀念冊＋新一代
+  s = mk(); s.stage = 'elder'; s.form = 'soft'; s.fadeReady = true; X.bondOf(s).v = 77; X.bondTick(s, now, s.ev); X.bondOf(s).v = 80;
+  const f = S.fade(s, now); ok(f.ok && f.memorial.bond === 80 && f.memorial.bondElder === 77, '化光紀念冊記低親密度（靜光＋化光）', JSON.stringify(f.memorial));
+  ok(X.bond(s, now).v === B.start, '新一代親密度由 20 開始');
+  s = mk(); s.stage = 'egg'; ok(X.bondAdd(s, 5, now) === 0 && !X.voiceTry(s, now, { force: true }).ok, '光卵：唔加親密、冇心聲');
+  s = mk(); s.sys12 = { bond: { v: 'x', heard: 5, lastVoice: -1 } }; X.st(s); ok(s.sys12.bond.v === B.start && Array.isArray(s.sys12.bond.heard) && s.sys12.bond.lastVoice === 0, '存檔 sanitize（親密）');
   S.setNowFn(null); S.setHourFn(null); S.setWeatherFn(null);
 }
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);

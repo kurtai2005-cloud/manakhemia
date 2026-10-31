@@ -120,6 +120,43 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     const lg = await E(() => __qa.sys12.log().filter(e => e.what === 'paid')); ok(lg.some(e => e.late), '補發有記錄（late）', lg);
     await dev('dev-s12-shard5'); ok((await E(() => __qa.sys12.wallet().total)) === tot1 + 20, 'DEV +5 星星碎');
   }
+  if (want('bond')) {
+    console.log('# ⑤ 系統 6：親密度＋心聲（照顧 +1、長撳 +2、每日上限、唔理 −2、心聲 30%／冷卻、面板、化光紀念）');
+    await go('?q=high&hour=13&seed=21&ev=0&dev=1'); await dev('dev-stage-sprout'); await closeModals(); await juv(); await E(() => { __glimmer.state.stage = 'sprout'; });
+    const BC = await E(() => Glimmer.data.PARAMS.systems12.bond);
+    let b = await E(() => __qa.sys12.bond()); ok(b.v === BC.start && b.tier === 1, `起步 ${BC.start}（第 1 段心聲）`, b);
+    await E(() => { const S = Glimmer.sim, s = __glimmer.state; s.needs.hunger = 20; S.feed(s, Glimmer.data.FOODS[0].id); });
+    b = await E(() => __qa.sys12.bond()); ok(b.v === BC.start + BC.care, '照顧一次 → +' + BC.care, b);
+    const c = await E(() => { const r = document.getElementById('gl').getBoundingClientRect(), k = r.width / 195, h = Glimmer.ui.petHitBox(); return { x: r.left + (h.x + h.w / 2) * k, y: r.top + (h.y + h.h / 2) * k }; });
+    await page.mouse.move(c.x, c.y); await page.mouse.down(); await page.waitForTimeout(900); await page.mouse.up(); await page.waitForTimeout(500);
+    b = await E(() => __qa.sys12.bond()); ok(b.v === BC.start + BC.care + BC.longPress, '真長撳寵物 → +' + BC.longPress, b);
+    await E(() => { for (let i = 0; i < 12; i++) Glimmer.sys12.onLongPress(__glimmer.state, __glimmer.now(), __glimmer.state.ev); });
+    b = await E(() => __qa.sys12.bond()); ok(b.todayGain === BC.dailyGainCap && b.v === BC.start + BC.dailyGainCap, `每日最多 +${BC.dailyGainCap}`, b);
+    const ig = await E(() => __qa.sys12.ignoreDay()); b = await E(() => __qa.sys12.bond()); ok(ig.lost === BC.ignoreDecay && b.v === BC.start + BC.dailyGainCap - BC.ignoreDecay, `一日冇照顧 → −${BC.ignoreDecay}`, { ig, b });
+    await dev('dev-s12-bond-down'); await dev('dev-s12-bond-down'); await E(() => __qa.sys12.ignoreDay()); b = await E(() => __qa.sys12.bond()); ok(b.v >= BC.floor, `跌唔落 ${BC.floor} 以下`, b);
+    // 心聲：真短撳（Math.random 鎖死做 0.1 → 中；0.9 → 唔中），冷卻
+    await E(() => { __qa.sys12.bondSet(66); Glimmer.sys12.bondOf(__glimmer.state).lastVoice = 0; window.__mr = Math.random; Math.random = () => 0.9; });
+    await page.mouse.click(c.x, c.y); await page.waitForTimeout(400); let tr = await E(() => __qa.sys12.lastTry()); ok(tr && tr.why === 'roll', '短撳：抽唔中（> 30%）→ 冇心聲', tr);
+    await E(() => { Math.random = () => 0.1; }); await page.mouse.click(c.x, c.y); await page.waitForTimeout(500);
+    tr = await E(() => __qa.sys12.lastTry()); const vb = await E(() => { const v = document.querySelector('[data-testid="s12-voice"]'), r = v.getBoundingClientRect(); return { op: getComputedStyle(v).opacity, txt: v.textContent, bi: getComputedStyle(v).borderImageSource.slice(0, 26), r: [r.x, r.y, r.width, r.height] }; });
+    const unlocked = BC.lines.slice(0, 3).flat();
+    ok(tr && tr.ok && unlocked.includes(tr.line) && vb.op === '1' && vb.txt.includes(tr.line) && /data:image\/png/.test(vb.bi), '短撳抽中 → 頭頂心聲泡（遊美 bubble_thought、已解鎖段）', { tr, vb });
+    await shot('bond-voice');
+    await page.waitForTimeout(300); await page.mouse.click(c.x, c.y); await page.waitForTimeout(300); tr = await E(() => __qa.sys12.lastTry()); ok(tr && tr.why === 'cooldown' && tr.left > BC.voice.cooldownSec - 30, `冷卻 ${BC.voice.cooldownSec / 60} 分鐘`, tr);
+    await E(() => { Math.random = window.__mr; });
+    await dev('dev-s12-bond-open'); await page.waitForTimeout(400);
+    const pv = await E(() => ({ tab: __glimmer.s12.tab, lk: document.querySelectorAll('.s12line.lock').length, un: document.querySelectorAll('.s12line:not(.lock)').length, v: document.querySelector('[data-testid="s12-bond-v"]').textContent }));
+    ok(pv.tab === 'bond' && pv.un === 18 && pv.lk === 12 && /66/.test(pv.v), '親密面板：66 → 解鎖 3 段（18 句），其餘 ？？？', pv);
+    await shot('bond-panel'); await E(() => __qa.sys12.close());
+    const tier = await E(() => { __qa.sys12.bondSet(79); Glimmer.sys12.bondOf(__glimmer.state).day = ''; Glimmer.sys12.onLongPress(__glimmer.state, __glimmer.now(), __glimmer.state.ev); return new Promise(r => setTimeout(() => r({ b: __qa.sys12.bond(), g: document.querySelector('[data-testid="s12-gain"]').textContent }), 1300)); });
+    ok(tier.b.tier === 4 && /解鎖第 4 段/.test(tier.g), '升段 → 浮字「解鎖第 4 段心聲」', tier);
+    // 化光：紀念冊記親密度
+    const fm = await E(() => { const s = __glimmer.state; s.stage = 'elder'; s.fadeReady = true; Glimmer.sys12.bondTick(s, __glimmer.now(), s.ev); Glimmer.sim.fade(s); return { m: s.memorial[s.memorial.length - 1], b: __qa.sys12.bond() }; });
+    ok(fm.m.bond === 81 && fm.m.bondElder === 81 && fm.b.v === BC.start, '化光 → 紀念冊記親密度 81；新一代由 20 起', fm);
+    await page.waitForTimeout(1200); const md = await E(() => document.getElementById('mbox') && document.getElementById('mbox').textContent); ok(/親密度 81/.test(md || ''), '化光彈窗多一句「紀念冊記低：親密度 81」', md && md.slice(0, 200));
+    await shot('bond-fade'); await closeModals();
+    await E(() => __qa.sys12.open('bond')); await page.waitForTimeout(300); ok(await E(() => document.querySelectorAll('[data-testid="s12-mem"]').length >= 1), '親密面板紀念冊列出上一代');
+  }
   ok(!errs.length, '冇 console error', errs.slice(0, 5));
   console.log(`\n結果：${pass} 通過，${fail} 失敗`);
   await browser.close(); process.exit(fail ? 1 : 0);

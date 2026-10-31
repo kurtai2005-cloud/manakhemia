@@ -205,7 +205,7 @@
     // systems12：新系統路線分（E.b5sys，委託等）每條路線 ≤ maxRouteSharePct%（sys ≤ 照顧分 × pct/(100−pct)）；加入分數同總數（config evo6.branch.systems）
     const SY = C.systems; let sysAdd = 0; const sysRaw = {}, sysCap = {};
     if (SY && SY.enabled && E.b5sys) { EV6.careStages.forEach(st => { const b = E.b5sys[st]; if (b) for (const k in b) if (k in score) sysRaw[k] = (sysRaw[k] || 0) + (+b[k] || 0); });
-      for (const k in sysRaw) { const cap = score[k] * SY.maxRouteSharePct / (100 - SY.maxRouteSharePct), v = +Math.min(sysRaw[k], cap).toFixed(4); sysCap[k] = v; score[k] = +(score[k] + v).toFixed(4); sysAdd += v; } }
+      for (const k in sysRaw) { const sh = SY.maxRouteSharePct * 0.01, cap = score[k] * sh / (1 - sh), v = +Math.min(sysRaw[k], cap).toFixed(4); sysCap[k] = v; score[k] = +(score[k] + v).toFixed(4); sysAdd += v; } }
     T.all = +(T.all + sysAdd).toFixed(4);
     const rank = D.BRANCH5.map(id => ({ id, n: score[id], share: T.all ? score[id] / T.all : 0 })).sort((a, b) => b.n - a.n || D.BRANCH5.indexOf(a.id) - D.BRANCH5.indexOf(b.id));
     const top = rank[0], second = rank[1], N = T.all;
@@ -288,9 +288,12 @@
     }
   }
   // 化光：留低紀念（形態／代數／照顧數），生一粒新光卵（gen+1）；需求／CQ 重設，光粒／設定／統計保留
+  const fadeHooks = [];
+  function addFadeHook(fn) { if (!fadeHooks.includes(fn)) fadeHooks.push(fn); }
   function fade(s, nowMs) {
     if (s.stage !== 'elder' || !s.fadeReady) return { ok: false, reason: 'notReady' };
     const m = { gen: s.gen || 1, form: s.form, at: nowMs || Date.now(), ageSec: Math.round(s.ageSec) };
+    for (let i = 0; i < fadeHooks.length; i++) fadeHooks[i](s, m);   // systems12：紀念冊記低親密度／日記
     s.memorial = (s.memorial || []).concat([m]); s.gen = (s.gen || 1) + 1;
     s.stage = 'egg'; s.form = null; s.growthSec = 0; s.fadeReady = false; s.sleeping = false; s.poops = 0; s.poopTimer = 0;
     s.needs = { hunger: 100, mood: 100, clean: 100, energy: 100 }; s.cq = P.cqStart; s.cqTimer = 0; s.withdrawn = { on: false, fed: false, played: false };
@@ -637,7 +640,7 @@
 
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
-    step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, addCareHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
+    step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, addCareHook, addFadeHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
     eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });
