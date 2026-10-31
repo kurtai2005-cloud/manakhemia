@@ -110,14 +110,15 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await dclick('dev-weather-overcast'); await page.waitForTimeout(150);
     let r = await E(() => ({ w: Glimmer.sim.weatherNow(), g: __glimmer.weather, txt: (document.querySelector('[data-testid="dev-weather-state"]') || {}).textContent || '', on: document.querySelector('[data-testid="dev-weather-overcast"]').classList.contains('on') }));
     ok(r.w === 'overcast' && r.g === 'overcast' && /overcast/.test(r.txt) && r.on, 'DEV「陰」→ overcast', r);
-    let b = await care('play'); ok(b.shroom === 0.5 && b.ember === 1 && !b.tide, '陰天玩 → 菇傘 +0.5（v5 權重）＋火苗', b);
-    await dclick('dev-weather-rain'); b = await care('rinse'); ok(b.tide === 1 && b.shroom === 1, '落雨沖洗 → 水珠＋菇傘', b);
-    b = await care('play'); ok(!b.tide && b.shroom === 1, '落雨玩 → 唔計水珠（v4）', b);
-    b = await care('feed'); ok(b.shroom === 1 && !b.tide, '落雨餵 → 菇傘 +1（v8：天氣分）', b);
+    const WR = await E(() => Glimmer.data.PARAMS.evo6.branch.weather.route);   // v10.3：權重讀 config（雨 0.8／陰霧 0.4）
+    let b = await care('play'); ok(b.shroom === WR.overcast.w && b.ember === 1 && !b.tide, `陰天玩 → 菇傘 +${WR.overcast.w}（config 權重）＋火苗`, b);
+    await dclick('dev-weather-rain'); b = await care('rinse'); ok(b.tide === 1 && b.shroom === WR.rain.w, `落雨沖洗 → 水珠＋菇傘 +${WR.rain.w}`, b);
+    b = await care('play'); ok(!b.tide && b.shroom === WR.rain.w, '落雨玩 → 唔計水珠（v4）', b);
+    b = await care('feed'); ok(b.shroom === WR.rain.w && !b.tide, `落雨餵 → 菇傘 +${WR.rain.w}（v8 天氣分；v10.3 權重）`, b);
     await dclick('dev-weather-fog'); await page.waitForTimeout(150);
     r = await E(() => ({ w: Glimmer.sim.weatherNow(), g: __glimmer.weather, on: document.querySelector('[data-testid="dev-weather-fog"]').classList.contains('on'), lbl: document.querySelector('[data-testid="dev-weather-fog"]').textContent }));
     ok(r.w === 'fog' && r.g === 'fog' && r.on && r.lbl === '霧', 'DEV「霧」→ fog（v10）', r);
-    b = await care('feed'); ok(b.shroom === 0.5 && !b.tide, '霧天餵 → 菇傘 +0.5（霧當陰）', b);
+    b = await care('feed'); ok(b.shroom === WR.fog.w && !b.tide, `霧天餵 → 菇傘 +${WR.fog.w}（霧當陰）`, b);
     await dclick('dev-weather-clear'); b = await care('play'); r = await E(() => Glimmer.sim.weatherNow()); ok(r === 'clear' && !b.shroom, 'DEV「晴」→ clear、玩唔計菇傘', [r, b]);
     b = await care('feed'); ok(!b.shroom && b.all === 1, '晴天餵 → 菇傘 0（v8：淨係多餵唔入菇傘）', b);
     await dclick('dev-care-days-7'); r = await E(() => Glimmer.sim.careDaysCheck(__glimmer.state)); ok(r.ok && r.days >= r.need, 'DEV「照顧日 7」→ 燦光照顧日 ✓', r);
