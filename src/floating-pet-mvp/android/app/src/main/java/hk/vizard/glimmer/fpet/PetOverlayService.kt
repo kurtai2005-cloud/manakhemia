@@ -211,6 +211,15 @@ class PetOverlayService : Service() {
         scale = max(1, (target / atlas.size).roundToInt())
     }
 
+    // 懸浮窗即時變大細（Kurt 10-31 批）：form 唔同，或者同 form 但 snapshot sizeDp 計出嘅 scale 唔同 → 都要 swapForm（同 loadAtlas 一樣計法）
+    private fun needSwap(form: String): Boolean {
+        if (form != atlas.form) return true
+        val target = dp(try { org.json.JSONObject(PetPrefs.cap(this).getString(PetPrefs.KEY_SNAPSHOT, null) ?: "{}").optDouble("sizeDp", Double.NaN).toFloat().takeIf { it.isFinite() && it > 0f } } catch (e: Exception) { null } ?: if (form == "sprout") 52f else 72f)
+        val s = max(1, (target / atlas.size).roundToInt())
+        if (s != scale) Log.i(TAG, "resize form=$form scale $scale → $s")
+        return s != scale
+    }
+
     private fun computeBounds() {
         if (Build.VERSION.SDK_INT >= 30) {
             val m = wm.currentWindowMetrics
@@ -303,14 +312,14 @@ class PetOverlayService : Service() {
         else {
             // 返嚟可能已轉形態／改模式
             val f = PetPrefs.snapshotForm(this)
-            if (f != atlas.form) swapForm(f)
+            if (needSwap(f)) swapForm(f)
             val m = PetPrefs.mode(this); if (m != mode) applyMode(m)
             v.visibility = View.VISIBLE; startTicking()
         }
     }
 
     private val snapRx = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == PetPrefs.KEY_SNAPSHOT) h.post { val f = PetPrefs.snapshotForm(this); if (view != null && f != atlas.form) swapForm(f) }
+        if (key == PetPrefs.KEY_SNAPSHOT) h.post { val f = PetPrefs.snapshotForm(this); if (view != null && needSwap(f)) swapForm(f) }
     }
 
     private fun swapForm(form: String) {
