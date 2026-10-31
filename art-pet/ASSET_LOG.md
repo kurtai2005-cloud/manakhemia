@@ -67,13 +67,16 @@
 <!-- LIVE-S3-LOG-END -->
 
 <!-- EVO6BC-LOG-START -->
-## 2026-10-31 — 團絨 evo6 動畫 batch B（守夜者 44 ×4；batch C 另一個 staging）
+## 2026-10-31 — 團絨 evo6 動畫 batch B（守夜者 44 ×4）＋ batch C（靜光 48 ×4 MVP）
 - 守夜者・螢絨 `evo_guard_lumi`：39 clip／171 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×1024／426 塊。
 - 守夜者・燦光 `evo_guard_radiant`：39 clip／171 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×1024／426 塊。
 - 守夜者・柔光 `evo_guard_soft`：39 clip／171 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×1024／426 塊。
 - 守夜者・微塵 `evo_guard_dust`：41 clip／180 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×1024／444 塊。
-- `sprites/tuanrong/evo6/atlas_<form>(.png/_emissive.png/.json)`、`evo6/<form>/`；色盤 `evo6/palette_{base,lumi,dust}.json`；預覽 `preview/evo6/<form>_contact_4x.png`、`gif/`、`evo6_batchB_contact_4x.png`。
-- 工具 `tools/build_evo6_animBC.py`（Pillow/numpy 程式繪製，無 AI）；驗證 `tools/validate_evo6_anim.py`（擴展到 B/C，C 段只喺 CLIPS 有 evo6C 先驗：分支色盤、emissive、bulb/bulb2/tail、MVP、s3）。CLIPS.json 只新增（forms＋clips[].<form>＋anchors.<form>＋evo6B 段）；備份 `_backups/pre_evo6_animBC_20261031/`。
-
-- 守夜者：std23＋生命感 s1/s2（含 picked_up）；微塵另加 s3 nuzzle_purr／reunion_happy。
+- 靜光・螢絨 `evo_still_lumi`：7 clip／28 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×256／140 塊。
+- 靜光・燦光 `evo_still_radiant`：7 clip／28 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×256／140 塊。
+- 靜光・柔光 `evo_still_soft`：7 clip／28 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×256／140 塊。
+- 靜光・微塵 `evo_still_dust`：7 clip／28 幀（noface＋faceov＋full＋emissive＋anchors），atlas 1024×256／140 塊。
+- 守夜者：std23＋生命感 s1/s2（含 picked_up）；微塵另加 s3 nuzzle_purr／reunion_happy。靜光 MVP：idle、blink、emo_happy、fall_asleep、sleep_loop、wake、picked_up。
+- `sprites/tuanrong/evo6/atlas_<form>(.png/_emissive.png/.json)`、`evo6/<form>/`；色盤 `evo6/palette_{base,lumi,dust}.json`；預覽 `preview/evo6/<form>_contact_4x.png`、`gif/`、`evo6_batchB_contact_4x.png`、`evo6_batchC_contact_4x.png`。
+- 工具 `tools/build_evo6_animBC.py`（Pillow/numpy 程式繪製，無 AI）；驗證 `tools/validate_evo6_anim.py`（擴展到 B/C：分支色盤、emissive、bulb/bulb2/tail、MVP、s3）。CLIPS.json 只新增（forms＋clips[].<form>＋anchors.<form>＋evo6B／evo6C 段）；備份 `_backups/pre_evo6_animBC_20261031/`。
 <!-- EVO6BC-LOG-END -->

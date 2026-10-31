@@ -1,0 +1,84 @@
+{
+ "evo_still_lumi": {
+  "clips": {
+   "idle": 4,
+   "blink": 4,
+   "emo_happy": 2,
+   "fall_asleep": 4,
+   "sleep_loop": 4,
+   "wake": 4,
+   "picked_up": 6
+  },
+  "nClips": 7,
+  "frames": 28,
+  "atlas": [
+   1024,
+   256
+  ],
+  "pieces": 140,
+  "edgeTouch": [],
+  "fit_adjustments": [
+   "picked_up_05:pend"
+  ]
+ },
+ "evo_still_radiant": {
+  "clips": {
+   "idle": 4,
+   "blink": 4,
+   "emo_happy": 2,
+   "fall_asleep": 4,
+   "sleep_loop": 4,
+   "wake": 4,
+   "picked_up": 6
+  },
+  "nClips": 7,
+  "frames": 28,
+  "atlas": [
+   1024,
+   256
+  ],
+  "pieces": 140,
+  "edgeTouch": [],
+  "fit_adjustments": []
+ },
+ "evo_still_soft": {
+  "clips": {
+   "idle": 4,
+   "blink": 4,
+   "emo_happy": 2,
+   "fall_asleep": 4,
+   "sleep_loop": 4,
+   "wake": 4,
+   "picked_up": 6
+  },
+  "nClips": 7,
+  "frames": 28,
+  "atlas": [
+   1024,
+   256
+  ],
+  "pieces": 140,
+  "edgeTouch": [],
+  "fit_adjustments": []
+ },
+ "evo_still_dust": {
+  "clips": {
+   "idle": 4,
+   "blink": 4,
+   "emo_happy": 2,
+   "fall_asleep": 4,
+   "sleep_loop": 4,
+   "wake": 4,
+   "picked_up": 6
+  },
+  "nClips": 7,
+  "frames": 28,
+  "atlas": [
+   1024,
+   256
+  ],
+  "pieces": 140,
+  "edgeTouch": [],
+  "fit_adjustments": []
+ }
+}
