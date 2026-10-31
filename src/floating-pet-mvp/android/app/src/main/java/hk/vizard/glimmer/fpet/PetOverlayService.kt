@@ -591,9 +591,12 @@ class PetOverlayService : Service() {
         place()
     }
 
-    private fun onDoubleTap() {
+    // evo6 v8 火苗：真・撳兩下開 game ＝ 一局小遊戲（第 2 批未出）→ queue "open_game"，返 app 時 fpet-bridge 叫 __glimmer.evo.overlayOpenGame(t)
+    // 選單「開返遊戲」唔係撳兩下 → fromMenu=true 唔入 queue
+    private fun onDoubleTap(fromMenu: Boolean = false) {
         interact()
-        Log.i(TAG, "double tap → open game")
+        if (!fromMenu) PetPrefs.appendQueue(this, "open_game")
+        Log.i(TAG, "double tap → open game" + if (fromMenu) " (menu)" else "")
         startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
     }
 
@@ -752,7 +755,7 @@ class PetOverlayService : Service() {
         item(mk(PetPrefs.MODE_EDGE, "沿底邊行")) { applyMode(PetPrefs.MODE_EDGE) }
         item(mk(PetPrefs.MODE_FREE, "全畫面自由行")) { applyMode(PetPrefs.MODE_FREE) }
         item(mk(PetPrefs.MODE_PIN, "定點")) { applyMode(PetPrefs.MODE_PIN) }
-        item("　 開返遊戲") { onDoubleTap() }
+        item("　 開返遊戲") { onDoubleTap(true) }
         item("　 收起團絨") { PetPrefs.setEnabled(this, false); stopSelf() }
         box.setOnTouchListener { _, e -> if (e.actionMasked == MotionEvent.ACTION_OUTSIDE) { hideMenu(); true } else false }
         val p = WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,

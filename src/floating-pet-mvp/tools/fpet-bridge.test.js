@@ -3,11 +3,11 @@ const fs = require('fs'), vm = require('vm'), path = require('path');
 const src = fs.readFileSync(path.join(__dirname, 'fpet-bridge.js'), 'utf8');
 let pass = 0, fail = 0;
 const ok = (c, n, i) => { if (c) { pass++; console.log('  ✓ ' + n); } else { fail++; console.log('  ✗ ' + n + (i !== undefined ? ' → ' + JSON.stringify(i) : '')); } };
-function run(glimmer) {
+function run(glimmer, items) {
   const timers = []; const writes = [];
   const win = { Capacitor: { isNativePlatform: () => true, Plugins: {
     Preferences: { set: (o) => { writes.push(JSON.parse(o.value)); return Promise.resolve(); } },
-    FloatingPet: { drainQueue: () => Promise.resolve({ items: [] }) } } }, __glimmer: glimmer };
+    FloatingPet: { drainQueue: () => Promise.resolve({ items: items || [] }) } } }, __glimmer: glimmer };
   const ctx = { window: win, document: { addEventListener() {}, visibilityState: 'visible' }, localStorage: { getItem: () => null, setItem() {} }, console: { log() {}, warn() {} },
     setInterval: (f, ms) => timers.push({ f, ms }), setTimeout: (f) => f(), Date, Math, JSON, Promise };
   vm.runInNewContext(src, ctx);
@@ -48,5 +48,13 @@ const needs = (o) => Object.assign({ hunger: 80, mood: 80, clean: 80, energy: 80
   ev = 'evo_guard_dust'; g.state.form = 'dust'; r.tick(2000); ok(r.writes.length === m0 + 1 && r.writes[m0].evoForm === 'evo_guard_dust', '同大細換分支（柔光→微塵）→ 即寫', r.writes.length);
   info.days = 5; r.tick(2000); ok(r.writes.length === m0 + 2 && r.writes[m0 + 1].info.days === 5, '幾日大變 → 即寫');
   r.tick(2000); ok(r.writes.length === m0 + 2, 'v4 冇變 → 唔寫');
+  // evo6 v8：open_game（撳兩下開 game）→ overlayOpenGame(t)；唔佔 mood 上限；舊 www 冇 API → 當普通互動
+  { const calls = []; let saved = 0;
+    g = { state: { stage: 'juvenile', needs: needs({ mood: 50 }), sleeping: false }, save: () => { saved++; }, evo: { overlayInfo: () => ({ stage: 'juvenile', size: 38, sizeDp: 62 }), overlayOpenGame: (t) => { calls.push(t); return { ok: calls.length === 1 }; } } };
+    r = run(g, [{ t: 1000, k: 'tap' }, { t: 2000, k: 'open_game' }, { t: 3000, k: 'open_game' }]); await new Promise(s => setImmediate(s)); await new Promise(s => setImmediate(s));
+    ok(calls.join() === '2000,3000' && g.state.needs.mood === 51 && saved === 1, 'open_game → overlayOpenGame(t) ×2（遊戲管冷卻）；tap → mood +1', { calls, mood: g.state.needs.mood, saved });
+    const g2 = { state: { stage: 'juvenile', needs: needs({ mood: 50 }), sleeping: false }, save() {} };
+    r = run(g2, [{ t: 2000, k: 'open_game' }]); await new Promise(s => setImmediate(s)); await new Promise(s => setImmediate(s));
+    ok(g2.state.needs.mood === 51, '舊 www（冇 overlayOpenGame）→ open_game 當普通互動 mood +1', g2.state.needs.mood); }
   console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail ? 1 : 0);
 })();

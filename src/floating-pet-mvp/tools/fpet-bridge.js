@@ -5,7 +5,8 @@
  *   （跟 __glimmer.evo.overlayStatus()；舊 www 冇呢個就由 state.needs 簡單計，冇推算率）。狀態一變（每 2 秒比較簽名）即寫，唔止靠 30 秒。
  *   v4（Kurt 10-31 22:50：長按顯示遊戲狀態）：加 info{name,gen,stage,stageName,sub,form,formName,evoForm,progress,stageH,leftH,ageSec,days,unwell,fadeReady}
  *   （overlayStatus().info；冇就保持 v3）。evoForm／階段／日數一變都即寫（懸浮即刻換同遊戲一樣嘅形態）。
- * - 返 app 時 replay overlay queue：每次互動 mood +1，每日最多 +5（按互動發生嗰日，本地時間），冇獎勵、冇事件。 */
+ * - 返 app 時 replay overlay queue：每次互動 mood +1，每日最多 +5（按互動發生嗰日，本地時間），冇獎勵、冇事件。
+ * - evo6 v8：queue k==='open_game'（浮動團絨撳兩下開 game）→ __glimmer.evo.overlayOpenGame(t) ＝ 一局小遊戲（火苗 +2；冷卻／獎勵由遊戲 config 管），唔佔 mood 上限。 */
 (function () {
   var C = window.Capacitor;
   if (!C || !C.isNativePlatform || !C.isNativePlatform()) return;
@@ -57,7 +58,10 @@
       if (items.length) {
         var daily = {}; try { daily = JSON.parse(localStorage.getItem(DAILY_KEY) || '{}') || {}; } catch (e) {}
         var s = g.state, applied = 0;
+        var games = 0;
         items.forEach(function (it) {
+          // evo6 v8：撳兩下開 game（k==='open_game'）＝ 一局小遊戲（遊戲 config overlayMg 管冷卻／獎勵）；唔計入每日 mood +1 上限。舊 www 冇呢個 API → 當普通互動
+          if (it.k === 'open_game' && g.evo && typeof g.evo.overlayOpenGame === 'function') { try { var res = g.evo.overlayOpenGame(+it.t || Date.now()); if (res && res.ok) games++; } catch (e) { console.warn('[fpet] open_game fail', e); } return; }
           var k = dayKey(+it.t || Date.now()), n = daily[k] || 0;
           if (n >= CAP) return;
           daily[k] = n + 1; applied++;
@@ -65,8 +69,8 @@
         });
         var keep = {}, today = dayKey(Date.now()); Object.keys(daily).slice(-7).forEach(function (k) { keep[k] = daily[k]; }); keep[today] = keep[today] || daily[today] || 0;
         try { localStorage.setItem(DAILY_KEY, JSON.stringify(keep)); } catch (e) {}
-        if (applied && g.save) g.save();
-        console.log('[fpet] replay', items.length, 'interactions, mood +' + applied);
+        if ((applied || games) && g.save) g.save();
+        console.log('[fpet] replay', items.length, 'interactions, mood +' + applied + ', mini-game rounds +' + games);
       }
       writeSnapshot();
     }).catch(function (e) { console.warn('[fpet] replay fail', e); }).then(function () { busy = false; });
