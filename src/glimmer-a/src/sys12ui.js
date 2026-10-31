@@ -56,6 +56,7 @@
     const hyd = (root) => { if (root) root.querySelectorAll('img[data-s12]').forEach(i => { i.src = ART + i.dataset.s12 + '.png'; i.removeAttribute('data-s12'); }); return root; };
     const pimg = (name, px, cls) => `<img data-s12="${name}" width="${px}" height="${px}" class="${cls || ''}" style="image-rendering:pixelated;width:${px}px;height:${px}px" alt="">`;
     const css = document.createElement('style'); css.textContent = `
+      #devp [data-testid^="dev-s12"] button,#devp [data-testid="dev-season-row"] button,#devp [data-testid="dev-weather-auto"]{min-height:48px;min-width:48px}   /* systems12 DEV 掣 ≥48dp（同 v10 一致；只加唔改 devpanel） */
       #s12chip { position:absolute; right:10px; top:122px; padding:3px 8px 3px 5px; display:flex; align-items:center; gap:4px; font:700 12px/1 sans-serif; color:var(--warm); cursor:pointer; pointer-events:auto; z-index:6; }
       #s12chip img { display:block; } #s12chip.pulse { animation:s12p .5s 2; } @keyframes s12p { 50% { transform:scale(1.12); } }
       #s12chip .q { opacity:.85; font-weight:600; }

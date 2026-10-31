@@ -130,6 +130,7 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     let b = await E(() => __qa.sys12.bond()); ok(b.v === BC.start && b.tier === 1, `起步 ${BC.start}（第 1 段心聲）`, b);
     await E(() => { const S = Glimmer.sim, s = __glimmer.state; s.needs.hunger = 20; S.feed(s, Glimmer.data.FOODS[0].id); });
     b = await E(() => __qa.sys12.bond()); ok(b.v === BC.start + BC.care, '照顧一次 → +' + BC.care, b);
+    await E(() => { const p = document.getElementById('devp'); if (p) p.classList.add('fold'); });   // DEV 掣 48dp 之後 panel 高咗 → 收埋先撳寵物
     const c = await E(() => { const r = document.getElementById('gl').getBoundingClientRect(), k = r.width / 195, h = Glimmer.ui.petHitBox(); return { x: r.left + (h.x + h.w / 2) * k, y: r.top + (h.y + h.h / 2) * k }; });
     await page.mouse.move(c.x, c.y); await page.mouse.down(); await page.waitForTimeout(900); await page.mouse.up(); await page.waitForTimeout(500);
     b = await E(() => __qa.sys12.bond()); ok(b.v === BC.start + BC.care + BC.longPress, '真長撳寵物 → +' + BC.longPress, b);
