@@ -117,7 +117,9 @@
   "hs": "頭高／idle 頭高",
   "glowCut": "bulb／bulb2 ±1 飾品層一律挖空",
   "headCut": "head slot：頭頂以上、axis ±0.45hw 嘅身體像素（莖／燈／光芒）挖空",
-  "visibility": "一個 clip 任何一幀 fit 唔成立／遮五官／挖空後剩 <65% → 成段收起"
+  "visibility": "一個 clip 任何一幀 fit 唔成立／遮五官／挖空後剩 <65% → 成段收起",
+  "headL": "ACC3 side_l：head_r 以兩眼中垂線鏡像（側面眼距 <0.75×idle 或冇眼就用 fit 中軸）；撞五官向左上推，最多 6px",
+  "glasses": "ACC3 face：鏡片中心＝eyeL／eyeR＋clip 平均眼 blob 偏移；半軸＝max(idle, clip) 眼 blob 半寬／半高＋1.5；跟兩眼連線傾角；L 級框粗 2；¾ 圓框（近口內下角開口，dot 用上半框）；faceVisible=false／冇眼成段收起；成個 clip 逐級試（收窄／壓扁／上移／向外，再試逐幀跟眼），全部幀過晒先用"
  },
  "items": {
   "straw": {
@@ -1451,7 +1453,221 @@
    "anchor": "head_l",
    "obtain": "星星碎商店 60",
    "batch": "ACC3",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/starclip/fit_starclip.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/starclip/atlas_starclip_sprout.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/starclip/atlas_starclip_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/starclip/atlas_starclip_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/starclip/atlas_starclip_lumi.json",
+     "clips": 26,
+     "visibleClips": 26,
+     "frames": 112,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/starclip/atlas_starclip_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/starclip/atlas_starclip_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/starclip/atlas_starclip_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 50,
+     "frames": 237,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_moon": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/starclip/atlas_starclip_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/starclip/atlas_starclip_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_starclip_S.png",
+    "M": "ref/acc_starclip_M.png",
+    "L": "ref/acc_starclip_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1055,
+    "clips": 1055,
+    "frames": 4674
+   }
   },
   "sakura": {
    "key": "sakura",
@@ -1460,7 +1676,221 @@
    "anchor": "head_l",
    "obtain": "春（3–5 月）執夠櫻花瓣 ×5",
    "batch": "ACC3",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/sakura/fit_sakura.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/sakura/atlas_sakura_sprout.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/sakura/atlas_sakura_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/sakura/atlas_sakura_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/sakura/atlas_sakura_lumi.json",
+     "clips": 26,
+     "visibleClips": 26,
+     "frames": 112,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/sakura/atlas_sakura_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/sakura/atlas_sakura_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/sakura/atlas_sakura_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 50,
+     "frames": 237,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_moon": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/sakura/atlas_sakura_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/sakura/atlas_sakura_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_sakura_S.png",
+    "M": "ref/acc_sakura_M.png",
+    "L": "ref/acc_sakura_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1055,
+    "clips": 1055,
+    "frames": 4674
+   }
   },
   "glasses": {
    "key": "glasses",
@@ -1469,7 +1899,321 @@
    "anchor": "eyeL/eyeR",
    "obtain": "日記翻舊頁 30 日／捉迷藏累計 10 局",
    "batch": "ACC3",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/glasses/fit_glasses.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/glasses/atlas_glasses_sprout.json",
+     "clips": 43,
+     "visibleClips": 39,
+     "frames": 173,
+     "hidden": {
+      "emo_sleepy": "emo_sleepy_01: 會遮五官",
+      "walk_drag": "walk_drag_01: 會遮五官",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "reunion_happy": "reunion_happy_01: 眼距 6.0px 太窄（側面），戴唔落"
+     },
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/glasses/atlas_glasses_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 186,
+     "hidden": {
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）"
+     },
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/glasses/atlas_glasses_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 186,
+     "hidden": {
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）"
+     },
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/glasses/atlas_glasses_lumi.json",
+     "clips": 26,
+     "visibleClips": 26,
+     "frames": 112,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/glasses/atlas_glasses_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 29,
+     "frames": 119,
+     "hidden": {
+      "walk": "walk_01: 鏡框會壓到眼",
+      "play": "play_01: 會遮五官",
+      "pot_bump": "pot_bump_01: 會遮五官",
+      "eat": "eat_03: 會遮五官",
+      "walk_happy": "walk_happy_02: 會遮五官",
+      "sniff": "sniff_01: 會遮五官",
+      "nuzzle": "nuzzle_01: 會遮五官",
+      "rush": "rush_03: 會遮五官",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "smug_pose": "smug_pose_01: 會遮五官",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼",
+      "shiver": "shiver_01: 會遮五官"
+     },
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/glasses/atlas_glasses_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 36,
+     "frames": 159,
+     "hidden": {
+      "lookup": "lookup_02: 鏡框會壓到眼",
+      "swat": "swat_01: 鏡框會壓到眼",
+      "scratch": "scratch_01: 眼距 8.5px 太窄（側面），戴唔落",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 會遮五官"
+     },
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/glasses/atlas_glasses_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 48,
+     "frames": 229,
+     "hidden": {
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 38,
+     "frames": 169,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 38,
+     "frames": 169,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 39,
+     "frames": 173,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 41,
+     "frames": 182,
+     "hidden": {
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_moon": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 41,
+     "frames": 182,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/glasses/atlas_glasses_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/glasses/atlas_glasses_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 40,
+     "frames": 178,
+     "hidden": {
+      "swat": "swat_02: 鏡框會壓到眼",
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
+      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼"
+     },
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_glasses_S.png",
+    "M": "ref/acc_glasses_M.png",
+    "L": "ref/acc_glasses_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 979,
+    "clips": 1055,
+    "frames": 4353
+   }
   },
   "scarf": {
    "key": "scarf",

@@ -201,6 +201,12 @@ FIT = {
     "acorn": {f: {"dx": 0, "dy": 0, "sc": 1.0} for f in FORMS},
     "crown": {f: {"dx": 0, "dy": 0, "sc": 1.0} for f in FORMS},
 }
+FIT["starclip"] = {f: {"dx": 0, "dy": 0, "sc": 1.0} for f in FORMS}
+FIT["sakura"] = {f: {"dx": 0, "dy": 0, "sc": 1.0} for f in FORMS}
+FIT["glasses"] = {f: {"r": 0.0} for f in FORMS}
+FIT["glasses"]["evo_dot"]["half"] = True   # dot：口喺兩眼之間只低 2px，¾ 框都撞 → 半框（上半圈）；其餘形態一律 ¾ 圓框（近口內下角開口）
+for it_ in ("starclip", "sakura"):
+    for f_, k_ in {"evo_still_moon": 0.62, "evo_guard_moon": 1.4, "evo_still_radiant": 0.8, "evo_still_ember": 0.85, "evo_still_soft": 0.9}.items(): FIT[it_][f_]["sc"] = k_
 for it_ in ("beanie", "acorn", "crown"):
     for f in HATFORMS: FIT[it_][f] = {"dx": 0, "dy": 0, "sc": 1.0, "variant": "hatpin"}
     for f in ("evo_guard_moon", "evo_still_moon"): FIT[it_][f]["pin"] = "r"
@@ -348,6 +354,196 @@ def draw_bow(body, an, f, ref, form, prev=None):
     place(can, spr, x + PAD, y + PAD)
     return can, {"pos": [cx, cy], "W": W, "H": H, "ang": round(f["ang"] + 12, 1)}
 
+# ---- side_l（ACC3）：head_l＝head_r 以 axis 為鏡反射（跟傾角）
+def head_l(an, f, ed0=None):
+    """head_r 嘅鏡像：有兩隻眼就以兩眼中垂線做鏡（月眠呢類闊剪影都準）；冇眼先用 fit 中軸"""
+    hr = np.array(an["head_r"], float)
+    if "eyeL" in an and "eyeR" in an:
+        a, b = np.array(an["eyeL"], float), np.array(an["eyeR"], float); m = (a + b) / 2; e = b - a
+        if np.hypot(*e) >= max(4, 0.75 * (ed0 or 0)):      # 側面（眼距縮）就用返 fit 中軸
+            e = e / np.hypot(*e); return tuple(hr - 2 * ((hr - m) @ e) * e)
+    em = np.array(f["em"], float); u = np.array(f["u"], float); v = hr - em
+    par = (v @ u) * u; return tuple(em + par - (v - par))
+# 細尺寸手點模板（7／9px 用 polygon 會糊成一團）：G 金、W 白、B 藍、P 粉、D 深粉
+TPL_LAB = {"G": GOLD, "W": WHITE, "B": BLUE, "P": PINK, "D": PINKD, ".": 0}
+TPL = {
+    ("star", 7): ["...G...", "..GGG..", "GGGGGGG", ".GGGGG.", ".GG.GG.", ".G...G.", "..BBB..", "..BBB.."],
+    ("star", 9): ["....G....", "...GGG...", "...GGG...", "GGGGGGGGG", ".GGGWGGG.", "..GGGGG..", "..GG.GG..", ".GG...GG.", "...BBB...", "...BBB..."],
+    ("sakura", 7): [".......", ".PP.PP.", "PPPDPPP", ".PDGDP.", "PPPDPPP", ".PP.PP.", "......."],
+    ("sakura", 9): ["...PDP...", "..PPPPP..", "PP.PPP.PP", "DPPPGPPPD", "PPPGGGPPP", ".PPPGPPP.", "..PP.PP..", ".PPP.PPP.", ".DP...PD."],
+}
+def tpl(key, W, H):
+    rows = TPL[key]; s = Spr(W, H); y0 = (H - len(rows)) // 2 if key[0] == "sakura" else H - len(rows)
+    for j, r in enumerate(rows):
+        for i, ch in enumerate(r):
+            if TPL_LAB[ch]: s.m[y0 + j, i] = TPL_LAB[ch]
+    return s
+def gen_star(W, H, L=False):
+    if ("star", W) in TPL and H == W + 1: return tpl(("star", W), W, H).m, ((W - 1) / 2, H - 1.5)
+    s = Spr(W, H); c = (W - 1) / 2; cy = (H - 2) / 2; R = W / 2 - .2; r = R * 0.45
+    pts = [(c + (R if i % 2 == 0 else r) * math.sin(math.radians(36 * i)), cy + .3 - (R if i % 2 == 0 else r) * math.cos(math.radians(36 * i))) for i in range(10)]
+    s.poly(pts, GOLD)
+    if W >= 11: s.px(c, cy, WHITE)                      # 星心反光
+    s.rect(int(c) - max(1, W // 5), H - 2, int(c) + max(1, W // 5), H - 1, BLUE)   # 髮夾金屬片
+    return s.m, (c, H - 1.5)
+def gen_sakura(W, H, L=False):
+    if ("sakura", W) in TPL and H == W: return tpl(("sakura", W), W, H).m, ((W - 1) / 2, (H - 1) / 2)
+    s = Spr(W, H); c = (W - 1) / 2; cy = (H - 1) / 2; R = W / 2 - .3; pr = R * 0.46
+    for i in range(5):                                  # 5 塊花瓣
+        a = math.radians(72 * i - 90 + 18); s.ell(c + math.cos(a) * R * 0.52, cy + math.sin(a) * R * 0.52, pr, pr, PINK)
+    s.ell(c, cy, max(.7, R * 0.22), max(.7, R * 0.22), GOLD)
+    if W >= 11:                                         # 花瓣尖小缺口（櫻花）＋花蕊
+        for i in range(5):
+            a = math.radians(72 * i - 90 + 18); s.px(c + math.cos(a) * (R - .3), cy + math.sin(a) * (R - .3), PINKD)
+    return s.m, (c, cy)
+SIDE = {   # k：闊＝k×頭闊；rot：額外斜角；gen
+    "starclip": {"gen": gen_star, "k": 0.42, "hr": 1.0, "rot": -14, "minW": 7},
+    "sakura": {"gen": gen_sakura, "k": 0.46, "hr": 1.0, "rot": -10, "minW": 7},
+}
+def make_side_draw(item):
+    P = SIDE[item]
+    def draw(body, an, f, ref, form, prev=None):
+        S = body.shape[0]; cfg = FIT[item][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
+        ws = min(max(f["ws"], 0.85), 1.15)
+        W = odd(ref["hw"] * P["k"] * cfg["sc"] * ws, P["minW"]); H = W if item == "sakura" else W + 1
+        m, piv = P["gen"](W, H, L=S >= 64)
+        if item == "sakura" and W >= 11:               # M／L：加片葉；L：再加個花蕾
+            m2 = np.zeros((H + 3, W + 4), m.dtype); m2[:H, 3:3 + W] = m
+            sp = Spr(W + 4, H + 3); sp.m = m2
+            sp.ell(1.6, H - 0.2, 1.6, 1.0, LEAF)
+            if S >= 64: sp.ell(W + 2.2, H + 0.8, 1.3, 1.3, PINK)
+            m, piv = sp.m, (piv[0] + 3, piv[1])
+        m, piv = rotate_labels(m, piv, f["ang"] + P["rot"])
+        spr = render(m); px_, py_ = piv[0] + 1, piv[1] + 1
+        a0 = anchors(form)["idle"][0]; ed0 = abs(a0["eyeR"][0] - a0["eyeL"][0]) if "eyeL" in a0 else None
+        hx, hy = head_l(an, f, ed0); cx, cy = hx + cfg["dx"], hy + 1 + cfg["dy"]
+        x, y = int(round(cx - px_)), int(round(cy - py_))
+        fp = face_px(an, S)
+        for _ in range(6):     # 撞五官 → 向左上移
+            tmp = np.zeros_like(can); place(tmp, spr, x + PAD, y + PAD)
+            if not any(tmp[py + PAD, px + PAD, 3] for px, py in fp if 0 <= px + PAD < tmp.shape[1] and 0 <= py + PAD < tmp.shape[0]): break
+            x -= 1; y -= 1
+        place(can, spr, x + PAD, y + PAD)
+        return can, {"pos": [round(cx, 1), round(cy, 1)], "W": W, "H": H, "ang": round(f["ang"] + P["rot"], 1)}
+    return draw
+
+# ---- face（ACC3）：圓框眼鏡，圈住 eyeL／eyeR，跟眼距同傾角；鏡片透明
+EYE_REF = {}
+def eye_blob(body, an, k):
+    """eyeL／eyeR：由 anchor 附近深色像素做 8-連通 flood（±3 框內）→ 眼 blob 像素"""
+    d = (body[..., 3] > 0) & (body[..., :3].astype(int).sum(-1) < 200); H, W = d.shape; x0, y0 = an[k]
+    seeds = [(x0 + i, y0 + j) for r in range(0, 3) for i in range(-r, r + 1) for j in range(-r, r + 1) if 0 <= x0 + i < W and 0 <= y0 + j < H and d[y0 + j, x0 + i]]
+    if not seeds: return []
+    mx, my = an.get("mouth", (-99, -99))
+    def near_m(x, y): return max(abs(x - mx), abs(y - my)) <= 2 and max(abs(x - x0), abs(y - y0)) > 1   # 唔好連埋個口
+    st = [seeds[0]]; seen = {seeds[0]}
+    while st:
+        x, y = st.pop()
+        for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1), (x + 1, y + 1), (x - 1, y - 1), (x + 1, y - 1), (x - 1, y + 1)):
+            if (nx, ny) not in seen and 0 <= nx < W and 0 <= ny < H and d[ny, nx] and abs(nx - x0) <= 3 and abs(ny - y0) <= 3 and not near_m(nx, ny):
+                seen.add((nx, ny)); st.append((nx, ny))
+    return list(seen)
+def _eye_stats(bodies, alist, base_off=None):
+    """每隻眼：clip 內眼 blob 中心相對 anchor 嘅平均偏移（取 0.5px）＋以呢個中心計嘅最大半寬 bx／半高 by"""
+    offs = {"eyeL": [], "eyeR": []}; blobs = []
+    for b, an in zip(bodies, alist):
+        if not an.get("faceVisible", True) or "eyeL" not in an or "eyeR" not in an: continue
+        for k in offs:
+            px = eye_blob(b, an, k)
+            if px:
+                px = np.array(px, float); c = (px.min(0) + px.max(0)) / 2
+                offs[k].append(c - np.array(an[k], float)); blobs.append((k, an[k], px))
+    off = []
+    for k in ("eyeL", "eyeR"):
+        o = np.mean(offs[k], 0) if offs[k] else np.zeros(2)
+        off.append(tuple(float(np.round(v * 2) / 2) for v in o)) if base_off is None else off.append(base_off[len(off)])
+    bx = by = 0.0
+    for k, a_, px in blobs:
+        c = np.array(a_, float) + np.array(off[0 if k == "eyeL" else 1])
+        bx = max(bx, float(np.abs(px[:, 0] - c[0]).max())); by = max(by, float(np.abs(px[:, 1] - c[1]).max()))
+    return off, bx, by
+def eye_ref(form):
+    """idle 嘅眼 blob（每形態最細鏡片尺寸，全部 clip 唔會細過佢）"""
+    if form in EYE_REF: return EYE_REF[form]
+    A = anchors(form)["idle"]; B_ = [load(frame_path(form, "idle", k)) for k in range(1, len(A) + 1)]
+    off, bx, by = _eye_stats(B_[:1], A[:1]); EYE_REF[form] = {"off": off, "bx": bx, "by": by}; return EYE_REF[form]
+# 眼鏡逐 clip 試：(收窄, 壓扁, 上移, 向外, 逐幀跟眼)。先試標準大小，唔得先慢慢收；S 級細臉可以貼眼框
+GL_RETRY = tuple((a, b, c, d, pf) for pf in (0, 1) for a, b, c, d in (
+    (0, 0, 0, 0), (0, 0, .5, .3), (-.5, -.5, .5, .3), (0, -1, .5, .3), (-.5, -1, .5, .5), (-.5, -1.5, 1, .5), (-1, -1, .5, .3),
+    (-1, -1, 0, 0), (-1, -1, .5, 0)))
+def glasses_pre(fs, bodies, alist, form):
+    """成個 clip 用同一副眼鏡：中心＝anchor＋clip 平均偏移；鏡片半軸 ≥ idle"""
+    er = eye_ref(form); off, bx, by = _eye_stats(bodies, alist)
+    g = {"off": off, "bx": max(bx, er["bx"]), "by": max(by, er["by"])}
+    # 逐幀跟眼模式用：以每幀自己中心計嘅最大半寬／半高
+    pbx = pby = 0.0
+    for b, an in zip(bodies, alist):
+        if not an.get("faceVisible", True) or "eyeL" not in an or "eyeR" not in an: continue
+        for k in ("eyeL", "eyeR"):
+            px = eye_blob(b, an, k)
+            if px: px = np.array(px, float); h = (px.max(0) - px.min(0)) / 2; pbx = max(pbx, float(h[0])); pby = max(pby, float(h[1]))
+    g["pbx"] = max(pbx, er["bx"]); g["pby"] = max(pby, er["by"])
+    for f in fs: f["gl"] = g
+def draw_glasses(body, an, f, ref, form, prev=None):
+    S = body.shape[0]; cfg = FIT["glasses"][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
+    if not an.get("faceVisible", True): return None, {"why": "faceVisible=false（背面／遮面）"}
+    if "eyeL" not in an or "eyeR" not in an: return None, {"why": "冇眼錨點"}
+    th = 2 if S >= 64 else 1; g = f.get("gl") or dict(eye_ref(form))
+    drx, dry, lift, out, pf = (tuple(f.get("adj", ())) + (0, 0, 0, 0, 0))[:5]   # retry：收窄／壓扁／上移／向外／逐幀跟眼（成個 clip 一齊）
+    offs = g["off"]
+    if pf:                                                  # 動作 clip：每幀跟返眼 blob 中心（取 0.5px），鏡片尺寸不變
+        offs = []
+        for k, o in zip(("eyeL", "eyeR"), g["off"]):
+            px = eye_blob(body, an, k)
+            if px: px = np.array(px, float); c = (px.min(0) + px.max(0)) / 2; offs.append(tuple(c - np.array(an[k], float)))
+            else: offs.append(o)
+    cs = [np.array(an[k], float) + np.array(o) for k, o in zip(("eyeL", "eyeR"), offs)]
+    dvec = cs[1] - cs[0]; dist = float(np.hypot(*dvec))
+    e = dvec / max(dist, 1e-6); nrm = np.array([e[1], -e[0]])   # nrm 向上
+    cs = [cs[0] + nrm * lift - e * out, cs[1] + nrm * lift + e * out]
+    gbx, gby = (g["pbx"], g["pby"]) if pf else (g["bx"], g["by"])
+    ax = gbx + 1.5 + cfg["r"] + drx; ay = gby + 1.5 + cfg["r"] + dry   # 圓角鏡片：眼外留約 1px
+    lim = (dist + 2 * out) / 2 - th * 0.5                 # 兩片外框最多共用 1px（窄臉＝連框）
+    if ax > lim: ax = lim
+    if ax < gbx + 0.45 + out or ay < gby + 0.45 + lift: return None, {"why": f"眼距 {dist:.1f}px 太窄（側面），戴唔落"}
+    r = (ax + ay) / 2
+    H, W = S + 2 * PAD, S + 2 * PAD; yy, xx = np.mgrid[0:H, 0:W]; xx = xx - PAD; yy = yy - PAD
+    ring = np.zeros((H, W), bool); inner = np.zeros((H, W), bool)
+    for c in cs:
+        uu = (xx - c[0]) * e[0] + (yy - c[1]) * e[1]; vv = (xx - c[0]) * nrm[0] + (yy - c[1]) * nrm[1]
+        n0 = (uu / ax) ** 2 + (vv / ay) ** 2; n1 = (uu / (ax + th)) ** 2 + (vv / (ay + th)) ** 2
+        rr = (n0 >= 1) & (n1 < 1)
+        inw = uu * (1 if c is cs[0] else -1)                # >0＝向鼻樑嗰邊
+        if cfg.get("half"): rr &= vv >= -0.25 * ay          # 細臉：半框（只畫上半圈），口喺兩片之間都唔撞
+        elif cfg.get("notch", True): rr &= ~((vv < -0.25 * ay) & (inw > 0.2 * ax))   # 近口嗰角開口（¾ 圓框，全部形態一致）
+        ring |= rr
+        if th == 2: inner |= (n0 >= 1) & ((uu / (ax + 1)) ** 2 + (vv / (ay + 1)) ** 2 < 1)
+    ex_ = ax
+    # 鼻橋：兩圈內側、略高過眼中線
+    a0 = cs[0] + e * (ex_ + th * .5) + nrm * ay * 0.35; a1 = cs[1] - e * (ex_ + th * .5) + nrm * ay * 0.35
+    n_ = int(max(2, np.hypot(*(a1 - a0)) * 2)) + 1
+    for t in np.linspace(0, 1, n_):
+        q = a0 + (a1 - a0) * t; ring[int(round(q[1])) + PAD, int(round(q[0])) + PAD] = True
+    # 鏡腳：外側向耳仔方向 2–3px，只畫喺身體上面
+    arm = 3 if S >= 64 else 2; a = body[..., 3] > 0
+    for c, sg in ((cs[0], -1), (cs[1], 1)):
+        st = c + e * sg * (ex_ + th - .5) + nrm * ay * 0.35
+        for t in range(1, arm + 1):
+            q = st + e * sg * t + nrm * t * 0.3; qx, qy = int(round(q[0])), int(round(q[1]))
+            if 0 <= qx < S and 0 <= qy < S and a[qy, qx]: ring[qy + PAD, qx + PAD] = True
+    can[ring, :3] = rgb("orange_dd"); can[ring, 3] = 255
+    if th == 2: can[inner & ring, :3] = rgb("orange_d")     # L：鏡框加粗，內圈淺一級
+    if r >= 3.5:                                             # 鏡片反光一點（唔掂眼）
+        for c in cs:
+            q_ = c + (-0.62 * (ax - 1), -0.62 * (ay - 1)); gx, gy = int(round(q_[0])), int(round(q_[1]))
+            if 0 <= gx < S and 0 <= gy < S and a[gy, gx] and not can[gy + PAD, gx + PAD, 3]:
+                can[gy + PAD, gx + PAD, :3] = rgb("white"); can[gy + PAD, gx + PAD, 3] = 255
+    # 唔可以遮眼本身（深色 blob）同五官保護區
+    d = a & (body[..., :3].astype(int).sum(-1) < 200)
+    for k in ("eyeL", "eyeR"):
+        if any(can[y + PAD, x + PAD, 3] for x, y in eye_blob(body, an, k)): return None, {"why": "鏡框會壓到眼"}
+    return can, {"c": [[round(float(c[0]), 2), round(float(c[1]), 2)] for c in cs], "r": round(float(r), 2), "ax": round(float(ax), 2), "ay": round(float(ay), 2), "th": th}
+
 def neck_gap(ref): return max(2, min(3, int(round(ref["hw"] * 0.14))))
 def draw_scarf(body, an, f, ref, form, prev=None):
     S = body.shape[0]; cfg = FIT["scarf"][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
@@ -404,6 +600,9 @@ ITEMS = {
     "beanie": {"name": "毛冷帽", "slot": "head", "anchor": "top", "draw": make_head_draw("beanie"), "batch": "ACC2"},
     "acorn": {"name": "橡果帽", "slot": "head", "anchor": "top", "draw": make_head_draw("acorn"), "batch": "ACC2"},
     "crown": {"name": "小皇冠", "slot": "head", "anchor": "top", "draw": make_head_draw("crown"), "batch": "ACC2"},
+    "starclip": {"name": "星星髮夾", "slot": "side_l", "anchor": "head_l", "draw": make_side_draw("starclip"), "batch": "ACC3"},
+    "sakura": {"name": "櫻花髮飾", "slot": "side_l", "anchor": "head_l", "draw": make_side_draw("sakura"), "batch": "ACC3"},
+    "glasses": {"name": "圓框眼鏡", "slot": "face", "anchor": "eyeL/eyeR", "draw": draw_glasses, "batch": "ACC3", "pre": glasses_pre, "retry": GL_RETRY},
 }
 
 # ================================================================ 收藏品 12 件（16／32 各自 raster）
@@ -596,18 +795,25 @@ def gen_item_form(item, form):
             w = raw[max(0, i - 1):i + 2]; f["ang"] = max(-28.0, min(28.0, (sum(w) + raw[i]) / (len(w) + 1)))
             if abs(f["ang"]) < 4: f["ang"] = 0.0
         if ITEMS[item]["slot"] == "head": stabilise_head(fs, bodies)
-        for k, an in enumerate(alist, 1):
-            body = bodies[k - 1]; f = fs[k - 1]
-            ov, info = draw(body, an, f, ref, form, prev)
-            if ov is None: why = f"{clip}_{k:02d}: {info['why']}"; break
-            if not ov[..., 3].any(): why = f"{clip}_{k:02d}: 飾品完全被遮"; break
-            n0 = int((ov[..., 3] > 0).sum()); cut_glow(ov, an)
-            if (ov[..., 3] > 0).sum() < 0.65 * n0: why = f"{clip}_{k:02d}: 燈泡位置喺飾品正中（挖空後剩唔夠 65%）"; break
-            if overlaps_face(ov, an, S): why = f"{clip}_{k:02d}: 會遮五官"; break
-            if overlaps_bulb(ov, body, an): why = f"{clip}_{k:02d}: 會遮燈泡"; break
-            info.update({"top": list(f["top"]), "hw": f["hw"], "ws": round(f["ws"], 3), "hs": round(f["hs"], 3)})
-            out.append((f"{clip}_{k:02d}", ov, info)); prev = f
-        if why: hidden[clip] = why; continue
+        if ITEMS[item].get("pre"): ITEMS[item]["pre"](fs, bodies, alist, form)
+        why0 = None
+        for adj in ITEMS[item].get("retry", (0,)):     # 例：眼鏡圈逐 0.5px 收細再試（成個 clip 一齊）
+            if why and why0 is None: why0 = why
+            out = []; why = None; prev = None
+            for f in fs: f["adj"] = adj
+            for k, an in enumerate(alist, 1):
+                body = bodies[k - 1]; f = fs[k - 1]
+                ov, info = draw(body, an, f, ref, form, prev)
+                if ov is None: why = f"{clip}_{k:02d}: {info['why']}"; break
+                if not ov[..., 3].any(): why = f"{clip}_{k:02d}: 飾品完全被遮"; break
+                n0 = int((ov[..., 3] > 0).sum()); cut_glow(ov, an)
+                if (ov[..., 3] > 0).sum() < 0.65 * n0: why = f"{clip}_{k:02d}: 燈泡位置喺飾品正中（挖空後剩唔夠 65%）"; break
+                if overlaps_face(ov, an, S): why = f"{clip}_{k:02d}: 會遮五官"; break
+                if overlaps_bulb(ov, body, an): why = f"{clip}_{k:02d}: 會遮燈泡"; break
+                info.update({"top": list(f["top"]), "hw": f["hw"], "ws": round(f["ws"], 3), "hs": round(f["hs"], 3)})
+                out.append((f"{clip}_{k:02d}", ov, info)); prev = f
+            if not why: break
+        if why: hidden[clip] = why0 or why; continue
         for n, ov, info in out: frames[n] = ov
         fits[clip] = [i for _, _, i in out]
     return frames, fits, hidden, S
@@ -736,7 +942,11 @@ def write_accessories_json(summary):
     d["fitRules"] = {"axis": "眼中點→燈泡（燈泡同眼線垂直方向差 ≤40° 先用；lumi 系用眼線）", "top": "沿 axis 向上，最後一個 ±0.11S 全實嘅點",
                      "hw": "頭頂下 2px 頭闊", "ang": "axis 相對 idle_01，3-tap 平滑，夾 ±28°，<4° 當 0", "hs": "頭高／idle 頭高",
                      "glowCut": "bulb／bulb2 ±1 飾品層一律挖空", "headCut": "head slot：頭頂以上、axis ±0.45hw 嘅身體像素（莖／燈／光芒）挖空",
-                     "visibility": "一個 clip 任何一幀 fit 唔成立／遮五官／挖空後剩 <65% → 成段收起"}
+                     "visibility": "一個 clip 任何一幀 fit 唔成立／遮五官／挖空後剩 <65% → 成段收起",
+                     "headL": "ACC3 side_l：head_r 以兩眼中垂線鏡像（側面眼距 <0.75×idle 或冇眼就用 fit 中軸）；撞五官向左上推，最多 6px",
+                     "glasses": "ACC3 face：鏡片中心＝eyeL／eyeR＋clip 平均眼 blob 偏移；半軸＝max(idle, clip) 眼 blob 半寬／半高＋1.5；"
+                                "跟兩眼連線傾角；L 級框粗 2；¾ 圓框（近口內下角開口，dot 用上半框）；faceVisible=false／冇眼成段收起；"
+                                "成個 clip 逐級試（收窄／壓扁／上移／向外，再試逐幀跟眼），全部幀過晒先用"}
     items = {it["key"]: it for it in old.get("items", [])} if isinstance(old.get("items"), list) else dict(old.get("items", {}))
     for key, name, slot, anc, obtain, batch in ALL_ITEMS:
         e = dict(items.get(key, {})); e.update({"key": key, "name": name, "slot": slot, "anchor": anc, "obtain": obtain, "batch": batch})
@@ -761,10 +971,36 @@ def build_refs(items):
             ov = frames["idle_01"]; ys, xs = np.nonzero(ov[..., 3])
             Image.fromarray(ov[ys.min():ys.max() + 1, xs.min():xs.max() + 1], "RGBA").save(os.path.join(rd, f"acc_{it}_{sc}.png"), optimize=True)
 
+FACE_CLIPS = [("idle", 1), ("blink", 2), ("blink", 3), ("emo_happy", 1), ("emo_sleepy", 2), ("sleep_loop", 1), ("cheer_jump", 2), ("walk", 3), ("emo_surprised", 1), ("turn_back", 2)]
+def preview_face(item, forms, path, clips=FACE_CLIPS, sc=6):
+    """面部近鏡：以兩眼中點做中心，26×20 px 一格"""
+    cw, ch = 26, 20; rows = []
+    for form in forms:
+        frames, _, _, S = CACHE.get((item, form)) or CACHE.setdefault((item, form), gen_item_form(item, form)); A = anchors(form); row = []
+        for c, k in clips:
+            cell = np.zeros((ch, cw, 4), np.uint8); cell[...] = (120, 120, 120, 255)
+            if c in A and k <= len(A[c]):
+                b = load(frame_path(form, c, k)); n = f"{c}_{k:02d}"; an = A[c][k - 1]; im = b.copy()
+                if n in frames:
+                    o = frames[n][PAD:PAD + S, PAD:PAD + S]; m = o[..., 3] > 0; im[m] = o[m]
+                a0 = an if "eyeL" in an else A["idle"][0]; cy = a0["eyeL"][1]; cx = (a0["eyeL"][0] + a0["eyeR"][0]) // 2
+                cell[...] = (245, 240, 230, 255) if n in frames else (190, 190, 190, 255)
+                y0, x0 = cy - 9, cx - 13
+                for yy in range(ch):
+                    for xx in range(cw):
+                        Y, X = y0 + yy, x0 + xx
+                        if 0 <= Y < S and 0 <= X < S and im[Y, X, 3] > 0: cell[yy, xx] = im[Y, X]
+            row.append(cell)
+        rows.append(row)
+    W = Image.new("RGBA", ((cw * sc + 4) * len(clips), (ch * sc + 4) * len(rows)), (255, 255, 255, 255))
+    for j, row in enumerate(rows):
+        for i, cell in enumerate(row): W.paste(Image.fromarray(cell).resize((cw * sc, ch * sc), Image.NEAREST), (i * (cw * sc + 4), j * (ch * sc + 4)))
+    W.save(path, optimize=True); return path
+
 def build_previews(items):
     os.makedirs(PREV, exist_ok=True); out = []
     half = (len(FORMS) + 1) // 2
-    for bt in ("ACC1", "ACC2"):    # 每批一套：idle／walk_03 × 25 形態（A／B 兩半）
+    for bt in ("ACC1", "ACC2", "ACC3"):    # 每批一套：idle／walk_03 × 25 形態（A／B 兩半）
         its = [i for i in items if ITEMS[i]["batch"] == bt]
         if not its: continue
         p_ = bt.lower()
@@ -779,7 +1015,10 @@ def build_previews(items):
             ("acc2", "beanie"): (["evo_sprout", "soft", "evo_guard_lumi"], ["cheer_jump", "lookup_tip", "getup", "shiver", "turn_back"]),
             ("acc2", "acorn"): (["sprout", "evo_still_ember", "evo_guard_crystal"], ["cheer_jump", "lookup_tip", "getup", "rush", "picked_up"]),
             ("acc2", "crown"): (["evo_dot", "radiant", "lumi"], ["cheer_jump", "lookup_tip", "getup", "rush", "turn_back"]),
-            ("acc2", "hatpin"): (["evo_guard_moon", "evo_still_moon", "evo_guard_shroom", "evo_still_shroom"], ["idle", "cheer_jump", "lookup_tip"])}
+            ("acc2", "hatpin"): (["evo_guard_moon", "evo_still_moon", "evo_guard_shroom", "evo_still_shroom"], ["idle", "cheer_jump", "lookup_tip"]),
+            ("acc3", "starclip"): (["sprout", "evo_guard_radiant", "soft"], ["cheer_jump", "lookup_tip", "getup", "rush", "turn_back"]),
+            ("acc3", "sakura"): (["evo_hop", "evo_still_moon", "lumi"], ["cheer_jump", "lookup_tip", "walk", "picked_up", "sleep_loop"]),
+            ("acc3", "glasses"): (["evo_guard_radiant", "radiant", "evo_sprout"], ["blink", "sleep_loop", "cheer_jump", "walk", "turn_back"])}
     for (bt, k), (forms, clips) in sets.items():
         if k == "hatpin":
             for it in ("beanie", "acorn", "crown"):
@@ -787,6 +1026,11 @@ def build_previews(items):
             continue
         it = k.split("_")[0]
         if it in items: out.append(preview_motion(it, forms, clips, os.path.join(PREV, f"{bt}_motion_{k}_3x.png"), scale=3, maxf=6))
+    if "glasses" in items:   # 眼鏡：面部近鏡（6x），睇眨眼／閉眼／表情；灰底＝呢個 clip 收起
+        out.append(preview_face("glasses", ["sprout", "evo_dot", "evo_sprout", "evo_hop", "evo_guard_radiant", "evo_still_moon", "evo_guard_shroom"],
+                                os.path.join(PREV, "acc3_glasses_face_a_6x.png")))
+        out.append(preview_face("glasses", ["evo_still_tide", "evo_guard_ember", "soft", "radiant", "lumi", "evo_still_lumi", "evo_guard_crystal"],
+                                os.path.join(PREV, "acc3_glasses_face_b_6x.png")))
     # 收藏品
     cells = []; labs = []
     for key, name, cat in COL:

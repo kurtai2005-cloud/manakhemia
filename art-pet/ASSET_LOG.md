@@ -180,3 +180,20 @@
 - validator：head slot 通用化，加咗傾角跳 ≤8° 同 ws 0.85–1.12 檢查。
 - 預覽：`sprites/tuanrong/preview/accessories/acc2_*.png`，包括草帽 before／after 兩張。備份：`_backups/pre_acc2_20261101/`。全部 Pillow／numpy，冇 AI，v3 色盤，alpha 0/255。
 <!-- ACC2-LOG-END -->
+
+<!-- ACC3-LOG-START -->
+## 2026-11-01 — 飾品完整版 ACC3（星星髮夾／櫻花髮飾／圓框眼鏡）
+- 依 `sprites/tuanrong/accessories/ACC_PLAN.md` 第 3 批，三件 × 25 形態 × 全 clip：
+  - 星星髮夾 4674 幀（1055/1055 clip）
+  - 櫻花髮飾 4674 幀（1055/1055 clip）
+  - 圓框眼鏡 4353 幀（979/1055 clip）
+- side_l：`head_l` 用兩眼中垂線鏡像 head_r（側面眼距 <0.75×idle 就用 fit 中軸），月眠新月形態唔會再跌落月牙底。細尺寸星星（7×8／9×10）同櫻花（7×7／9×9）用手繪模板，避免糊成一舊。
+- 眼鏡：
+  - 鏡片中心跟 eyeL／eyeR＋眼 blob 偏移，半軸由眼 blob 半寬／半高＋1.5，傾角跟兩眼連線。
+  - L 級（64px）框粗 2＋內圈 orange_d，其餘 1；框色 orange_dd；r≥3.5 加白色反光點。
+  - ¾ 圓框：近口內下角開口，唔會撞腮紅／口；evo_dot 太細，用上半框。
+  - 每個 clip 逐級試候選（收窄／壓扁／上移／向外，再試逐幀跟眼），全部幀過晒先用；眨眼／閉眼／sleep clip 鏡片大細固定（用 clip 同 idle 最大眼 blob）。
+  - 收起 clip 統計（形態數）：turn_back×24、lookup_tip×19、swat×18、emo_sleepy×1、walk_drag×1、reunion_happy×1、walk×1、play×1、pot_bump×1、eat×1、walk_happy×1、sniff×1、nuzzle×1、rush×1、smug_pose×1、shiver×1、lookup×1、scratch×1。
+- validator：加 side_l（bbox 中心近 head_l）同 face（faceVisible、鏡片中點 ≤2.5px、傾角 ≤12°、L 級框粗 2、框唔壓眼 blob）檢查。
+- 預覽：`sprites/tuanrong/preview/accessories/acc3_*.png`（包括 `acc3_glasses_face_a／b_6x` 臉部特寫）。備份：`_backups/pre_acc3_20261101/`。全部 Pillow／numpy，冇 AI，v3 色盤，alpha 0/255。
+<!-- ACC3-LOG-END -->

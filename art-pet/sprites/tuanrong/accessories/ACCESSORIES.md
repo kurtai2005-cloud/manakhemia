@@ -43,3 +43,17 @@
 - `CUT_FULL`：lumi 系只挖葉同葉描邊。
 - `FIT`：新三件沿用草帽嘅靜光燦光／柔光／火苗 sc；月眠守護帽針 sc 1.8，月眠靜光 0.8。
 <!-- ACC2-END -->
+
+<!-- ACC3-START -->
+## ACC3 數量（2026-11-01）
+| item | 名 | slot | 幀 | clip（可見／總） | 備註 |
+|---|---|---|---|---|---|
+| starclip | 星星髮夾 | side_l | 4674 | 1055/1055 | 金星＋藍夾；細尺寸手繪模板 |
+| sakura | 櫻花髮飾 | side_l | 4674 | 1055/1055 | 5 瓣（細尺寸 4 瓣模板）＋金花芯 |
+| glasses | 圓框眼鏡 | face | 4353 | 979/1055 | 跟眼距／傾角；L 級框粗 2；¾ 框；dot 半框；faceVisible=false 收起 |
+
+### face／side_l 規則（ACC3 起）
+- `head_l`：head_r 以兩眼中垂線鏡像；側面眼距太近用 fit 中軸。
+- 眼鏡 `glasses_pre`＋`GL_RETRY`：clip 級鏡片大細，候選逐級試；`draw_glasses` 任何框像素落喺眼 blob 就當失敗。
+- 已知（留 ACC5）：背面 side_l／side_r 唔對調（同 ACC1 蝴蝶結一樣）；月眠／菇傘帽針（head_l 鏡像）同 side_l 撞位要喺多 slot 衝突處理；evo_dot 用半框。
+<!-- ACC3-END -->

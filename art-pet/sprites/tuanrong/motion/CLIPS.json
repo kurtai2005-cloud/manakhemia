@@ -156130,20 +156130,20 @@
   "spec": "sprites/tuanrong/accessories/ACCESSORIES.json",
   "doc": "sprites/tuanrong/accessories/ACCESSORIES.md",
   "plan": "sprites/tuanrong/accessories/ACC_PLAN.md",
-  "batch": "ACC2",
+  "batch": "ACC3",
   "done": [
    "straw",
    "beanie",
    "crown",
    "acorn",
    "bow",
+   "starclip",
+   "sakura",
+   "glasses",
    "scarf"
   ],
   "planned": [
    "nightcap",
-   "starclip",
-   "sakura",
-   "glasses",
    "leafcollar",
    "bell",
    "halo"
@@ -156160,6 +156160,11 @@
     "beanie",
     "acorn",
     "crown"
+   ],
+   "ACC3": [
+    "starclip",
+    "sakura",
+    "glasses"
    ]
   }
  }

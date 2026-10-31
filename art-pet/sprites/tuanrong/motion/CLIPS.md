@@ -345,3 +345,10 @@ std23 餘下：冇（已齊）
 - 三件都喺 `leaf_umbrella` 收起（同草帽一樣，撐葉時葉蓋住頭頂）；其餘 1,030/1,055 個 clip 全部有 overlay，合共 13,572 幀。
 - 草帽 polish：頭飾跳幀穩定化（lookup_tip_04／getup_01／turn_back_02 等），月眠守護帽針加大，lumi 系莖洞執靚。草帽 25 個 atlas 已更新，幀名同數量不變。身體 clip 定義冇改。
 <!-- ACC2-END -->
+
+<!-- ACC3-START -->
+## 飾品 overlay（ACC3，2026-11-01）
+- 加咗星星髮夾 starclip、櫻花髮飾 sakura（side_l，anchor head_l）同圓框眼鏡 glasses（face，anchor eyeL／eyeR）。格式同 ACC1／2 一樣，幀名＝身體幀名。
+- 髮夾／櫻花：1,055/1,055 clip 全部有 overlay。眼鏡：979/1,055 clip；faceVisible=false（turn_back）同鏡框會壓眼／遮五官嘅 clip 成段收起。
+- 合共 13,701 幀。身體 clip 定義冇改。
+<!-- ACC3-END -->

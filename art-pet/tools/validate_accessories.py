@@ -2,7 +2,7 @@
 """validate_accessories — 團絨飾品＋收藏品（ACC 批次）。檢查：
 schema／13 件總表／slot；每個 done item × 25 形態都有 atlas＋json；身體每一幀都要有 overlay，除非個 clip 喺 hiddenClips（有原因）；
 atlas 像素 v3＋alpha 0/255；幀 rect 喺 atlas 內；唔遮五官（eyeL/eyeR/mouth ±1，faceVisible）；唔遮燈泡（bulb/bulb2 ±1）；
-overlay 同 fit 一致（head slot 通用：草帽／毛冷帽／橡果帽／小皇冠；ACC2 起加傾角每幀 ≤8°、ws 0.85–1.12；帽底中心 ≤3px／蝴蝶結中心 ≤3px／頸巾頂行 = fit.ny）；動畫 frames 對得上身體 clip 幀數；counts；
+overlay 同 fit 一致（head slot 通用：草帽／毛冷帽／橡果帽／小皇冠；ACC2 起加傾角每幀 ≤8°、ws 0.85–1.12；帽底中心 ≤3px／蝴蝶結中心 ≤3px／頸巾頂行 = fit.ny；ACC3 side_l 中心跟 head_l；眼鏡 faceVisible＋跟兩眼中點同傾角＋L 級框粗 2＋唔壓眼 blob）；動畫 frames 對得上身體 clip 幀數；counts；
 收藏品 12 件 × 16／32＋剪影、atlas、v3／alpha；CLIPS.json additive accessories key。"""
 import json, os, sys, math
 import numpy as np
@@ -91,6 +91,22 @@ def main():
                     elif it == "bow":
                         cx, cy = fi["pos"]
                         if abs((xs.min() + xs.max()) / 2 - cx) > 4 + 0.3 * fi["W"] or abs((ys.min() + ys.max()) / 2 - cy) > 4 + 0.3 * fi["W"]: err(f"{it}/{form}/{n}: 結位同 head_r 唔一致")
+                    elif B.ITEMS.get(it, {}).get("slot") == "side_l":   # ACC3 髮夾／髮飾：中心跟 head_l（撞五官最多推開 6px）
+                        cx, cy = fi["pos"]
+                        if abs((xs.min() + xs.max()) / 2 - cx) > 6 + 0.3 * fi["W"] or abs((ys.min() + ys.max()) / 2 - cy) > 6 + 0.3 * fi["W"]: err(f"{it}/{form}/{n}: 髮飾位同 head_l 唔一致")
+                    elif B.ITEMS.get(it, {}).get("slot") == "face":     # ACC3 眼鏡：faceVisible、跟兩眼、唔壓眼
+                        if not a.get("faceVisible", True) or "eyeL" not in a or "eyeR" not in a: err(f"{it}/{form}/{n}: faceVisible=false／冇眼都畫咗眼鏡")
+                        else:
+                            (lx, ly), (rx, ry) = fi["c"]; mx, my = (lx + rx) / 2, (ly + ry) / 2
+                            emx, emy = (a["eyeL"][0] + a["eyeR"][0]) / 2, (a["eyeL"][1] + a["eyeR"][1]) / 2
+                            if abs(mx - emx) > 2.5 or abs(my - emy) > 2.5: err(f"{it}/{form}/{n}: 鏡片中心 ({mx:.1f},{my:.1f}) 離兩眼中點太遠")
+                            ea = np.degrees(np.arctan2(a["eyeR"][1] - a["eyeL"][1], a["eyeR"][0] - a["eyeL"][0])); ga = np.degrees(np.arctan2(ry - ly, rx - lx))
+                            if abs(ea - ga) > 12: err(f"{it}/{form}/{n}: 鏡框傾角 {ga:.0f}° 唔跟眼 {ea:.0f}°")
+                            if abs((xs.min() + xs.max()) / 2 - mx) > 2 + 0.5 * fi.get("th", 1) + 3: err(f"{it}/{form}/{n}: 眼鏡位同 fit 唔一致")
+                            if fi.get("th") != (2 if S >= 64 else 1): err(f"{it}/{form}/{n}: 鏡框粗 {fi.get('th')}（L 級要 2）")
+                            body = B.load(B.frame_path(form, clip, k))
+                            for kk in ("eyeL", "eyeR"):
+                                if any(ov[y + B.PAD, x + B.PAD, 3] for x, y in B.eye_blob(body, a, kk)): err(f"{it}/{form}/{n}: 鏡框壓到眼 {kk}"); break
                     elif it == "scarf":
                         if abs(ys.min() - (fi["ny"] - 1)) > 3 + abs(fi["ang"]) * 0.4: err(f"{it}/{form}/{n}: 頸巾頂 {ys.min()} vs ny {fi['ny']}")
                     tot["frames"] += 1
