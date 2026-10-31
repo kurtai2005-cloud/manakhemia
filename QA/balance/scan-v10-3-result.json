@@ -1,0 +1,342 @@
+{
+  "doc": "§7 v10.3。真 sim 669bc46 decideBranch＋systems.js。",
+  "sim": "669bc46efd27402e4a6411643816b9276eb8c143",
+  "float": "19ebcc9adbfd14f51f19a84be3a16c2ac5e99301",
+  "N": 1000,
+  "ECON_N": 200,
+  "fpats": 2,
+  "drops": 5,
+  "code": [
+    {
+      "name": "菇傘雨 0.8",
+      "ok": true,
+      "info": {
+        "to": "shroom",
+        "w": 0.8
+      }
+    },
+    {
+      "name": "菇傘陰 0.4",
+      "ok": true,
+      "info": {
+        "to": "shroom",
+        "w": 0.4
+      }
+    },
+    {
+      "name": "菇傘霧 0.4",
+      "ok": true,
+      "info": {
+        "to": "shroom",
+        "w": 0.4
+      }
+    },
+    {
+      "name": "委託池餵／玩／摸頭",
+      "ok": true,
+      "info": [
+        "feed",
+        "play",
+        "pat"
+      ]
+    },
+    {
+      "name": "淋水只係水珠領先",
+      "ok": true,
+      "info": "tide"
+    },
+    {
+      "name": "每張 4 碎",
+      "ok": true,
+      "info": 4
+    },
+    {
+      "name": "3 張齊 +3",
+      "ok": true,
+      "info": 3
+    },
+    {
+      "name": "委託日上限 15",
+      "ok": true,
+      "info": 15
+    },
+    {
+      "name": "總上限 30",
+      "ok": true,
+      "info": 30
+    },
+    {
+      "name": "未完成留 1 日、最多 6 張",
+      "ok": true,
+      "info": {
+        "keepDays": 1,
+        "maxHeld": 6
+      }
+    },
+    {
+      "name": "每張路線分 ⅓",
+      "ok": true,
+      "info": "perItem"
+    },
+    {
+      "name": "懸浮摸頭每日最多 12",
+      "ok": true,
+      "info": 12
+    },
+    {
+      "name": "天氣一日一抽 60/20/15/5",
+      "ok": true,
+      "info": {
+        "perDay": true,
+        "pr": {
+          "clear": 60,
+          "overcast": 20,
+          "fog": 5,
+          "rain": 15
+        }
+      }
+    },
+    {
+      "name": "懸浮有撐葉／打冷震",
+      "ok": true,
+      "info": {
+        "files": 22,
+        "withBoth": 22
+      }
+    }
+  ],
+  "checks": [
+    [
+      "9 條路出齊（每條≥2%）",
+      "✅",
+      "齊"
+    ],
+    [
+      "每表≥2 結局（每個≥2%）",
+      "✅",
+      null
+    ],
+    [
+      "單一≤85%",
+      "✅",
+      null
+    ],
+    [
+      "螢絨 3–10%",
+      "✅",
+      5.32
+    ],
+    [
+      "每表菇傘≤30%",
+      "✅",
+      25.3
+    ],
+    [
+      "晶角全體≥5%",
+      "✅",
+      14
+    ],
+    [
+      "月眠全體≥5%",
+      "✅",
+      16.65
+    ],
+    [
+      "每表燦光≤50%",
+      "✅",
+      21.5
+    ],
+    [
+      "疏玩柔光＋微塵",
+      "✅",
+      "37.6/45.5"
+    ],
+    [
+      "疏玩 CQ 15–35",
+      "✅",
+      18
+    ],
+    [
+      "新系統路線分≤25%",
+      "✅",
+      25
+    ],
+    [
+      "疏玩上線日星碎 15–30",
+      "✅",
+      17
+    ],
+    [
+      "其他 5 表每日星碎 15–30",
+      "✅",
+      "勤力 20 普通 20 夜貓 20 早起 20 餵食狂 20"
+    ],
+    [
+      "冇一日穿 30",
+      "✅",
+      0
+    ]
+  ],
+  "passN": 14,
+  "total": {
+    "lumi": 5.32,
+    "tide": 15.32,
+    "shroom": 7.57,
+    "crystal": 14,
+    "moon": 16.65,
+    "ember": 14.53,
+    "bright": 6.73,
+    "soft": 12.3,
+    "dust": 7.58
+  },
+  "tables": {
+    "勤力": {
+      "lumi": 4.9,
+      "tide": 10.5,
+      "shroom": 8.6,
+      "crystal": 36.9,
+      "moon": 2.1,
+      "ember": 14.7,
+      "bright": 21.5,
+      "soft": 0.8,
+      "dust": 0
+    },
+    "普通": {
+      "lumi": 5.2,
+      "tide": 7.9,
+      "shroom": 8.2,
+      "crystal": 45.1,
+      "moon": 7.4,
+      "ember": 21.6,
+      "bright": 2.6,
+      "soft": 2,
+      "dust": 0
+    },
+    "疏玩": {
+      "lumi": 0,
+      "tide": 0,
+      "shroom": 1,
+      "crystal": 1.9,
+      "moon": 8,
+      "ember": 6,
+      "bright": 0,
+      "soft": 37.6,
+      "dust": 45.5
+    },
+    "夜貓": {
+      "lumi": 17.3,
+      "tide": 0,
+      "shroom": 0,
+      "crystal": 0,
+      "moon": 82,
+      "ember": 0.6,
+      "bright": 0.1,
+      "soft": 0,
+      "dust": 0
+    },
+    "早起": {
+      "lumi": 4.1,
+      "tide": 69.7,
+      "shroom": 2.3,
+      "crystal": 0.1,
+      "moon": 0.4,
+      "ember": 8.9,
+      "bright": 14.3,
+      "soft": 0.2,
+      "dust": 0
+    },
+    "餵食狂": {
+      "lumi": 0.4,
+      "tide": 3.8,
+      "shroom": 25.3,
+      "crystal": 0,
+      "moon": 0,
+      "ember": 35.4,
+      "bright": 1.9,
+      "soft": 33.2,
+      "dust": 0
+    }
+  },
+  "cqMed": 18,
+  "brightMax": 21.5,
+  "shroomMax": 25.3,
+  "maxSys": 0,
+  "econ": {
+    "勤力": {
+      "playMed": 20,
+      "allMed": 20,
+      "max": 20,
+      "nPlay": 1400
+    },
+    "普通": {
+      "playMed": 20,
+      "allMed": 20,
+      "max": 20,
+      "nPlay": 1398
+    },
+    "疏玩": {
+      "playMed": 17,
+      "allMed": 9,
+      "max": 20,
+      "nPlay": 589
+    },
+    "夜貓": {
+      "playMed": 20,
+      "allMed": 20,
+      "max": 20,
+      "nPlay": 1396
+    },
+    "早起": {
+      "playMed": 20,
+      "allMed": 20,
+      "max": 20,
+      "nPlay": 1388
+    },
+    "餵食狂": {
+      "playMed": 20,
+      "allMed": 20,
+      "max": 20,
+      "nPlay": 1400
+    }
+  },
+  "over30": 0,
+  "prog": {
+    "shroom": {
+      "prog": 7.57,
+      "qa": 7.57,
+      "d": 0
+    },
+    "bright": {
+      "prog": 6.73,
+      "qa": 6.73,
+      "d": 0
+    },
+    "crystal": {
+      "prog": 14,
+      "qa": 14,
+      "d": 0
+    },
+    "feedShroom": {
+      "prog": 25.3,
+      "qa": 25.3,
+      "d": 0
+    },
+    "sparseMed": {
+      "prog": 17,
+      "qa": 17
+    },
+    "otherMed": {
+      "prog": 20,
+      "qa": [
+        20,
+        20,
+        20,
+        20,
+        20
+      ]
+    }
+  },
+  "ms": 58851,
+  "maxSysFixture": 25,
+  "maxSysNote": "內部 decideBranch 唔經出口掛鉤，掃描 maxSys=0。fixture 灌 50 分，tide 照顧 3 → 封頂 1，佔 25%，冇穿。"
+}
