@@ -1,6 +1,6 @@
 {
- "version": 1,
- "spec": "docs-gdd/systems12-v1.md 系統 7：季節跟香港月份換場景色調",
+ "version": 2,
+ "spec": "docs-gdd/systems12-v1.md 系統 7：季節跟香港月份換場景色調（v2：每季有自己場景內容＋粒子疊層，Kurt 02:12「4季唔夠明顯分別」）",
  "seasons": {
   "spring": {
    "name": "春",
@@ -10,17 +10,26 @@
     5
    ],
    "dir": "seasons/spring/",
-   "note": "春（3–5 月）：微粉暖、嫩綠；花瓣粒子",
+   "note": "春（3–5 月）：櫻花樹（樹冠粉紅花團）、嫩綠草地、地上小花同落花瓣、吊藤開花、遠樹粉紅；花瓣粒子",
    "params": {
-    "tint": "#fff4f4",
-    "sat": 1.04,
+    "tint": "#fff4f6",
+    "sat": 1.05,
     "con": 1.0,
     "lift": 0.0,
     "shadow": "#f2e8f4",
     "shadowK": 1.0,
+    "lightTint": "#fff2f4",
     "green": [
      "#8fd07a",
-     0.25
+     0.0
+    ]
+   },
+   "particleOverlay": {
+    "dir": "seasons/spring/particles/",
+    "sheet": "sheet.png",
+    "meta": "particles.json",
+    "types": [
+     "petal"
     ]
    }
   },
@@ -32,17 +41,27 @@
     8
    ],
    "dir": "seasons/summer/",
-   "note": "夏（6–8 月）：高飽和、暖白日光、深綠、陰影實啲；光塵粒子",
+   "note": "夏（6–8 月）：深綠濃密、天空深藍＋大積雨雲、籬笆後向日葵、前景大向日葵、樹幹有蟬；強光（陰影實啲）；熱浪光點／黃昏夜晚螢火蟲",
    "params": {
-    "tint": "#fffae6",
-    "sat": 1.12,
-    "con": 1.06,
+    "tint": "#fffbe8",
+    "sat": 1.14,
+    "con": 1.08,
     "lift": 0.0,
-    "shadow": "#e8ecf8",
-    "shadowK": 1.12,
+    "shadow": "#e4e8f8",
+    "shadowK": 1.22,
+    "lightTint": "#fff4d8",
     "green": [
      "#4fb04a",
-     0.3
+     0.0
+    ]
+   },
+   "particleOverlay": {
+    "dir": "seasons/summer/particles/",
+    "sheet": "sheet.png",
+    "meta": "particles.json",
+    "types": [
+     "firefly",
+     "sunmote"
     ]
    }
   },
@@ -54,17 +73,26 @@
     11
    ],
    "dir": "seasons/autumn/",
-   "note": "秋（9–11 月）：綠葉轉琥珀橙、暖調；金色飄粒",
+   "note": "秋（9–11 月）：紅／橙／黃葉樹冠、遠樹紅葉、金黃草地、滿地落葉＋樹頭葉堆、南瓜 ×2、紅藤；金色光；落葉粒子",
    "params": {
-    "tint": "#fff0dc",
-    "sat": 1.0,
-    "con": 1.03,
+    "tint": "#ffeccc",
+    "sat": 1.04,
+    "con": 1.04,
     "lift": 0.0,
-    "shadow": "#f4e4d8",
+    "shadow": "#f4e0d0",
     "shadowK": 1.0,
+    "lightTint": "#ffe2b0",
     "green": [
      "#e0963c",
-     0.62
+     0.25
+    ]
+   },
+   "particleOverlay": {
+    "dir": "seasons/autumn/particles/",
+    "sheet": "sheet.png",
+    "meta": "particles.json",
+    "types": [
+     "leaf"
     ]
    }
   },
@@ -76,17 +104,26 @@
     2
    ],
    "dir": "seasons/winter/",
-   "note": "冬（12–2 月）：冷藍、低飽和、綠轉灰青、稍為光啲（冬日薄光）；白色細粒（似霜塵）；團絨打冷震 clip 機率加大",
+   "note": "冬（12–2 月）：光禿樹枝（枝頂積雪）、雪地＋腳印、屋頂／籬笆／盆／石積雪、冰柱、遠山雪頂、盆栽聖誕紅、前景雪堆；冷藍；落雪粒子；團絨打冷震 clip 機率加大",
    "params": {
-    "tint": "#eef2ff",
-    "sat": 0.8,
-    "con": 0.96,
-    "lift": 0.035,
-    "shadow": "#dce4f8",
-    "shadowK": 0.85,
+    "tint": "#eaf0ff",
+    "sat": 0.86,
+    "con": 0.98,
+    "lift": 0.03,
+    "shadow": "#d8e2f8",
+    "shadowK": 0.8,
+    "lightTint": "#e4ecff",
     "green": [
      "#9ab4ae",
-     0.45
+     0.3
+    ]
+   },
+   "particleOverlay": {
+    "dir": "seasons/winter/particles/",
+    "sheet": "sheet.png",
+    "meta": "particles.json",
+    "types": [
+     "snow"
     ]
    }
   }
@@ -97,7 +134,7 @@
   "H3",
   "H4"
  ],
- "files": "seasons/<season>/<H#>/{sky,far,mid,fore}.png（223×446 RGBA，已預烘 LUT＋DoF）、lightmap.png（multiply）、lut.png（256×16）、grade.json",
+ "files": "seasons/<season>/<H#>/{sky,far,mid,fore}.png（223×446 RGBA，已預烘 LUT＋DoF）、lightmap.png（multiply）、lut.png（256×16）、grade.json；raw/*.png＋palette.json（季節版未烘層，驗證／重烘用）；seasons/<season>/particles/{sheet.png,particles.json}（粒子疊層 sprite 幀＋emitter）",
  "weatherRule": "天氣層（H3 rain／overcast／fog）優先：落雨／陰／霧時用 H3/<weather>/*，季節只影響 ambientTint／petTint／粒子；晴天先用季節層",
  "crossfade": "換季（每月 1 號 00:00 跨季）→ 3s crossfade；同 crossfade/ 時段轉換一樣做法"
 }

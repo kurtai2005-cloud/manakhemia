@@ -485,15 +485,15 @@ def compose_w(layers, lm, add, eb, vg, g, form, frame, fx):
     fc = hx(g["fog"]["color"]); img = img * (1 - g["fog"]["density"]) + fc * g["fog"]["density"]
     return np.clip(B.over(np.clip(img, 0, 1), vg), 0, 1)
 
-SEASONS = {   # 香港月份
- "spring": dict(name="春", months=[3, 4, 5], tint="#fff4f4", sat=1.04, con=1.00, green=("#8fd07a", 0.25), lift=0.0, shadow="#f2e8f4", shadowK=1.0,
-                particles=("petal", "#ffe0ec"), note="春（3–5 月）：微粉暖、嫩綠；花瓣粒子"),
- "summer": dict(name="夏", months=[6, 7, 8], tint="#fffae6", sat=1.12, con=1.06, green=("#4fb04a", 0.30), lift=0.0, shadow="#e8ecf8", shadowK=1.12,
-                particles=("mote", "#fff6c8"), note="夏（6–8 月）：高飽和、暖白日光、深綠、陰影實啲；光塵粒子"),
- "autumn": dict(name="秋", months=[9, 10, 11], tint="#fff0dc", sat=1.00, con=1.03, green=("#e0963c", 0.62), lift=0.0, shadow="#f4e4d8", shadowK=1.0,
-                particles=("gold", "#ffc878"), note="秋（9–11 月）：綠葉轉琥珀橙、暖調；金色飄粒"),
- "winter": dict(name="冬", months=[12, 1, 2], tint="#eef2ff", sat=0.80, con=0.96, green=("#9ab4ae", 0.45), lift=0.035, shadow="#dce4f8", shadowK=0.85,
-                particles=("mote", "#f4f8ff"), note="冬（12–2 月）：冷藍、低飽和、綠轉灰青、稍為光啲（冬日薄光）；白色細粒（似霜塵）；團絨打冷震 clip 機率加大"),
+SEASONS = {   # 香港月份（v2：LUT 只做輔助，主要靠 seasons v2 場景內容，見 build_seasons_v2.py）
+ "spring": dict(name="春", months=[3, 4, 5], tint="#fff4f6", sat=1.05, con=1.00, green=("#8fd07a", 0.0), lift=0.0, shadow="#f2e8f4", shadowK=1.0, lightTint="#fff2f4",
+                particles=("petal", "#ffd0dc"), note="春（3–5 月）：櫻花樹（樹冠粉紅花團）、嫩綠草地、地上小花同落花瓣、吊藤開花、遠樹粉紅；花瓣粒子"),
+ "summer": dict(name="夏", months=[6, 7, 8], tint="#fffbe8", sat=1.14, con=1.08, green=("#4fb04a", 0.0), lift=0.0, shadow="#e4e8f8", shadowK=1.22, lightTint="#fff4d8",
+                particles=("mote", "#fff6c8"), note="夏（6–8 月）：深綠濃密、天空深藍＋大積雨雲、籬笆後向日葵、前景大向日葵、樹幹有蟬；強光（陰影實啲）；熱浪光點／黃昏夜晚螢火蟲"),
+ "autumn": dict(name="秋", months=[9, 10, 11], tint="#ffeccc", sat=1.04, con=1.04, green=("#e0963c", 0.25), lift=0.0, shadow="#f4e0d0", shadowK=1.0, lightTint="#ffe2b0",
+                particles=("petal", "#f2a65a"), note="秋（9–11 月）：紅／橙／黃葉樹冠、遠樹紅葉、金黃草地、滿地落葉＋樹頭葉堆、南瓜 ×2、紅藤；金色光；落葉粒子"),
+ "winter": dict(name="冬", months=[12, 1, 2], tint="#eaf0ff", sat=0.86, con=0.98, green=("#9ab4ae", 0.3), lift=0.03, shadow="#d8e2f8", shadowK=0.8, lightTint="#e4ecff",
+                particles=("mote", "#f4f8ff"), note="冬（12–2 月）：光禿樹枝（枝頂積雪）、雪地＋腳印、屋頂／籬笆／盆／石積雪、冰柱、遠山雪頂、盆栽聖誕紅、前景雪堆；冷藍；落雪粒子；團絨打冷震 clip 機率加大"),
 }
 
 def season_fn(c, S):
@@ -515,34 +515,38 @@ def season_lightmap(lm, S):
     sh = (1 - lm.mean(-1, keepdims=True))
     out = 1 - (1 - lm) * S["shadowK"]
     out = out * (1 - sh * (1 - hx(S["shadow"])) * 0.8)
+    out = out * (1 - (1 - sh) * (1 - hx(S.get("lightTint", "#ffffff"))))   # v2：受光位染季節光色
     return np.clip(out, 0, 1)
 
 def build_seasons():
-    os.makedirs(SEA, exist_ok=True); pet_frame_loader(None); res = {}
+    import build_seasons_v2 as S2
+    os.makedirs(SEA, exist_ok=True); pet_frame_loader(None); res = {}; S2.PCACHE.update(S2.build_particles())
     for sk, S in SEASONS.items():
         for key in ("H1", "H2", "H3", "H4"):
             d = os.path.join(SCN, key); od = os.path.join(SEA, sk, key); os.makedirs(od, exist_ok=True)
             g = json.load(open(os.path.join(d, "grade.json")))
             lut = season_lut(g, S); B.save_rgb(lut, os.path.join(od, "lut.png"))
-            layers = {}
+            layers = {}; sraw = S2.season_raw(sk, key, od)
             for nm in ("sky", "far", "mid", "fore"):
-                raw = load_rgba(os.path.join(d, "raw", f"{nm}.png"))
+                raw = sraw[nm]
                 layers[nm] = B.bake(raw, g, nm, lut); B.save_rgba(layers[nm], os.path.join(od, f"{nm}.png"))
             lm = np.asarray(Image.open(os.path.join(d, "lightmap.png"))).astype(float) / 255
             lms = season_lightmap(lm, S); B.save_rgb(lms, os.path.join(od, "lightmap.png"))
             g2 = dict(baseVariant=key, note=f"{S['name']}（{'／'.join(str(m) for m in S['months'])} 月）× {key}：sky/far/mid/fore/lightmap 用 seasons/{sk}/{key}/*；"
-                      "lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；light_add／emissive／vignette 沿用 variant")
+                      "lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；raw/ ＝ 季節版未烘層（v2 場景內容）；light_add／emissive／vignette 沿用 variant；粒子疊層見 ../particles/")
             gg = json.loads(json.dumps(g)); [gg.pop(k, None) for k in ("variant", "name", "hours")]
             g2.update(gg)
             g2["ambientTint"] = tohex(hx(g["ambientTint"]) * hx(S["tint"])); g2["petTint"] = tohex(np.clip(hx(g["petTint"]) * (0.5 + 0.5 * hx(S["tint"])), 0, 1))
             if key != "H4": g2["particles"] = dict(type=S["particles"][0], rate=g["particles"]["rate"], color=S["particles"][1])
             json.dump(g2, open(os.path.join(od, "grade.json"), "w"), ensure_ascii=False, indent=1)
             res[(sk, key)] = dict(layers=layers, lm=lms, g=g2)
-    json.dump({"version": 1, "spec": "docs-gdd/systems12-v1.md 系統 7：季節跟香港月份換場景色調",
+    json.dump({"version": 2, "spec": "docs-gdd/systems12-v1.md 系統 7：季節跟香港月份換場景色調（v2：每季有自己場景內容＋粒子疊層，Kurt 02:12「4季唔夠明顯分別」）",
                "seasons": {sk: dict(name=S["name"], months=S["months"], dir=f"seasons/{sk}/", note=S["note"],
-                                    params={k: S[k] for k in ("tint", "sat", "con", "lift", "shadow", "shadowK")} | {"green": list(S["green"])}) for sk, S in SEASONS.items()},
+                                    params={k: S[k] for k in ("tint", "sat", "con", "lift", "shadow", "shadowK", "lightTint")} | {"green": list(S["green"])},
+                                    particleOverlay=dict(dir=f"seasons/{sk}/particles/", sheet="sheet.png", meta="particles.json",
+                                                         types=[t["name"] for t in S2.PARTICLES[sk]])) for sk, S in SEASONS.items()},
                "variants": ["H1", "H2", "H3", "H4"],
-               "files": "seasons/<season>/<H#>/{sky,far,mid,fore}.png（223×446 RGBA，已預烘 LUT＋DoF）、lightmap.png（multiply）、lut.png（256×16）、grade.json",
+               "files": "seasons/<season>/<H#>/{sky,far,mid,fore}.png（223×446 RGBA，已預烘 LUT＋DoF）、lightmap.png（multiply）、lut.png（256×16）、grade.json；raw/*.png＋palette.json（季節版未烘層，驗證／重烘用）；seasons/<season>/particles/{sheet.png,particles.json}（粒子疊層 sprite 幀＋emitter）",
                "weatherRule": "天氣層（H3 rain／overcast／fog）優先：落雨／陰／霧時用 H3/<weather>/*，季節只影響 ambientTint／petTint／粒子；晴天先用季節層",
                "crossfade": "換季（每月 1 號 00:00 跨季）→ 3s crossfade；同 crossfade/ 時段轉換一樣做法"},
               open(os.path.join(SEA, "seasons.json"), "w"), indent=1, ensure_ascii=False)
@@ -567,8 +571,54 @@ def season_preview(res):
         for i, im in enumerate(row): sheet.paste(im, (4 + i * (W_ + 4), 4 + j * (H_ + 4)))
     os.makedirs(PREV, exist_ok=True); p = os.path.join(PREV, "seasons_4x4_1x.png"); sheet.save(p); return p
 
+def seasons_compare(res):
+    """v1（備份）vs v2：欄＝春夏秋冬；行＝v1 H1、v2 H1–H4（v2 加粒子 snapshot）"""
+    import build_seasons_v2 as S2
+    from PIL import ImageFont
+    V1 = os.path.join(ROOT, "_backups", "pre_seasons2_20261101", "scenes", "hd2d", "seasons")
+    if not os.path.isdir(V1): return "(v1 備份唔喺度 → 保留現有 seasons_v1_vs_v2_compare.png)"
+    def comp(layers, lm, key, g):
+        d = os.path.join(SCN, key)
+        add = np.asarray(Image.open(os.path.join(d, "light_add.png"))).astype(float) / 255
+        eb = np.asarray(Image.open(os.path.join(d, "emissive_blur.png"))).astype(float) / 255
+        vg = load_rgba(os.path.join(d, "vignette.png"))
+        return Image.fromarray(B.to8(B.compose(key, layers, lm, add, eb, vg, g, "radiant", particles=False)))
+    W_, H_ = B.AW, B.AH; G = 6; TOP = 22; LAB = 64
+    rows = [("v1  H1", "v1", "H1"), ("v2  H1", "v2", "H1"), ("v2  H2", "v2", "H2"), ("v2  H3", "v2", "H3"), ("v2  H4", "v2", "H4")]
+    sheet = Image.new("RGB", (LAB + 4 * (W_ + G), TOP + len(rows) * (H_ + G)), (34, 30, 44)); dr = ImageDraw.Draw(sheet)
+    for i, sk in enumerate(SEASONS): dr.text((LAB + i * (W_ + G) + 80, 5), sk.upper(), fill=(240, 236, 250))
+    for j, (lab, ver, key) in enumerate(rows):
+        dr.text((6, TOP + j * (H_ + G) + H_ // 2), lab, fill=(240, 236, 250))
+        for i, sk in enumerate(SEASONS):
+            if ver == "v1":
+                dd = os.path.join(V1, sk, key); g = json.load(open(os.path.join(dd, "grade.json")))
+                lay = {nm: load_rgba(os.path.join(dd, f"{nm}.png")) for nm in ("sky", "far", "mid", "fore")}
+                lm = np.asarray(Image.open(os.path.join(dd, "lightmap.png"))).astype(float) / 255
+                im = comp(lay, lm, key, g)
+            else:
+                r = res[(sk, key)]; im = comp(r["layers"], r["lm"], key, r["g"])
+                # 粒子 snapshot（畫面座標 = 層座標 − offset）
+                big = Image.new("RGBA", (B.LW, B.LH), (0, 0, 0, 0)); big = S2.scatter_particles(big, sk, key)
+                im = im.convert("RGBA"); im.alpha_composite(big.crop((B.MX, B.MY, B.MX + W_, B.MY + H_))); im = im.convert("RGB")
+            sheet.paste(im, (LAB + i * (W_ + G), TOP + j * (H_ + G)))
+    p = os.path.join(PREV, "seasons_v1_vs_v2_compare.png"); sheet.save(p); return p
+
+def particles_preview():
+    rows = []
+    for sk in SEASONS:
+        d = os.path.join(SCN, "seasons", sk, "particles"); sh = Image.open(os.path.join(d, "sheet.png")).convert("RGBA")
+        bg = Image.new("RGBA", sh.size, (44, 40, 58, 255)); bg.alpha_composite(sh); rows.append(bg)
+    W_ = max(r.width for r in rows) * 6; H_ = sum(r.height * 6 + 14 for r in rows)
+    out = Image.new("RGB", (W_ + 60, H_), (30, 26, 40)); dr = ImageDraw.Draw(out); y = 0
+    for sk, r in zip(SEASONS, rows):
+        dr.text((4, y + 4), sk, fill=(240, 236, 250)); out.paste(r.resize((r.width * 6, r.height * 6), Image.NEAREST), (60, y + 7)); y += r.height * 6 + 14
+    p = os.path.join(PREV, "seasons_particles_6x.png"); out.save(p); return p
+
+def run_seasons():
+    s = build_seasons(); print(season_preview(s)); print(seasons_compare(s)); print(particles_preview())
+
 def run_ui():
-    items = build_ui(); w = build_weather(); s = build_seasons(); sp = season_preview(s)
+    items = build_ui(); w = build_weather(); s = build_seasons(); sp = season_preview(s); seasons_compare(s); particles_preview()
     json.dump({"ui": list(items), "weather": list(w), "seasons": [f"{a}/{b}" for a, b in s]}, open("/workspace/_sys12/stats_ui.json", "w"), indent=1, ensure_ascii=False)
     print("ui", len(items), "weather", list(w), "seasons", len(s), sp)
 
@@ -589,7 +639,9 @@ def _stats():
             json.load(open("/workspace/_sys12/stats_ui.json")))
 
 def _section(md, a_, b_, sec, after=None):
-    if a_ in md: md = md[:md.index(a_)].rstrip() + "\n\n" + md[md.index(b_) + len(b_):].lstrip()
+    if a_ in md and b_ in md:   # 原位替換（唔郁其他段落次序）
+        i, j = md.index(a_), md.index(b_) + len(b_); tail = md[j:].lstrip("\n")
+        return md[:i] + sec.rstrip("\n") + ("\n\n" + tail if tail else "\n")
     anchor = next((m for m in (after or []) if m in md), None)
     if anchor: i = md.index(anchor) + len(anchor); return md[:i] + "\n\n" + sec + md[i:]
     return md.rstrip() + "\n\n" + sec
@@ -672,6 +724,15 @@ def run_docs():
            "- 季節：`scenes/hd2d/seasons/<spring|summer|autumn|winter>/H1–H4/`（LUT＋預烘層＋lightmap＋grade）＋`seasons.json`（香港月份）。\n"
            f"- 預覽 `sprites/tuanrong/preview/systems12/`；工具 `tools/build_systems12_b1.py`＋`tools/build_systems12_b1_ui.py`；驗證 `tools/validate_systems12_b1.py`；備份 `_backups/pre_systems12_b1_20261101/`。Pillow/numpy 程式繪製，無 AI。\n{b_}\n")
     _atomic(lp, _section(lg, a_, b_, ent))
+    lg = open(lp, encoding="utf-8").read()   # 寫之前再讀
+    a_, b_ = "<!-- SYS12S2-LOG-START -->", "<!-- SYS12S2-LOG-END -->"
+    ent = (f"{a_}\n## 2026-11-01 — 季節 v2（四季一眼分得出）\n"
+           "- Kurt 02:12「4季唔夠明顯分別」→ 4 季 × H1–H4 全部重做場景內容（唔止 LUT）：春櫻花／粉遠樹／花瓣；夏深綠／積雲／向日葵／蟬；秋紅橙金葉／落葉堆／南瓜；冬禿枝積雪／雪地／屋頂欄杆積雪／冰柱。\n"
+           "- 新：`seasons/<season>/<H#>/raw/*.png`＋`palette.json`；`seasons/<season>/particles/{sheet.png,particles.json}`（花瓣／螢火蟲＋熱浪光點／落葉／雪）；`seasons.json` v2（particleOverlay、lightTint）。層格式唔變。\n"
+           "- 色彩：季節色喺 H1 日光空間定，經 H1→H# 仿射（最小二乘）帶入時段光；H4 夜晚同保色相縮暗各半，免淺色變飽和藍。\n"
+           "- 預覽：`sprites/tuanrong/preview/systems12/seasons_v1_vs_v2_compare.png`、`seasons_4x4_1x.png`、`seasons_particles_6x.png`。工具 `tools/build_seasons_v2.py`（`build_systems12_b1.py seasons`）；驗證 `tools/validate_systems12_b1.py`；備份 `_backups/pre_seasons2_20261101/`。Pillow/numpy 程式繪製，無 AI。\n"
+           f"{b_}\n")
+    _atomic(lp, _section(lg, a_, b_, ent))
     fp = os.path.join(SCN, "FORMAT.md"); fm = open(fp, encoding="utf-8").read()
     a_, b_ = "<!-- SYS12-START -->", "<!-- SYS12-END -->"
     W_ = json.load(open(os.path.join(WXD, "weather.json")))
@@ -681,6 +742,9 @@ def run_docs():
            "- 霧：`H3/grade_fog.json`＋`H3/fog/{sky,far,mid,fore}.png`（遠景預烘淡出）＋ `weather/fog_bank.png`（far／near 兩帶）：" + W_["fog_bank"]["draw"] + "\n"
            "- 季節（香港月份：春 3–5／夏 6–8／秋 9–11／冬 12–2）：`seasons/<season>/<H#>/{sky,far,mid,fore,lightmap}.png`＋`lut.png`（256×16）＋`grade.json`（同 §5 schema）。晴天先用季節層；雨／陰／霧時用 H3/<weather>/*。換季 3s crossfade。\n"
            "- 團絨：落雨 → `leaf_umbrella`；霧／冬 → `shiver` 抽中率加大（CLIPS.json `systems12B1`）。\n"
+           "- 季節 v2（Kurt 02:12「4季唔夠明顯分別」）：每季每時段有自己場景內容，預烘層照舊（code 唔使改）。`seasons/<season>/<H#>/raw/{sky,far,mid,fore}.png`＝季節版未烘層（alpha 0/255），`palette.json`＝佢哋用色；預烘層＝`bake(raw, grade, lut)`。"
+           "春：櫻花樹冠＋粉色遠樹＋地面花瓣；夏：深綠＋積雲＋向日葵＋蟬；秋：紅／橙／金樹冠＋落葉堆＋南瓜＋金草；冬：禿枝積雪＋雪地＋屋頂／欄杆積雪＋冰柱＋聖誕花。\n"
+           "- 季節粒子疊層：`seasons/<season>/particles/sheet.png`（8px 格，v3 色盤，alpha 0/255）＋`particles.json`（frames／anims／types[emitter：spawn、ratePerSec、max、vx/vy、sway、lifeSec、perVariant H1–H4 倍率]）。春 petal、夏 firefly＋sunmote、秋 leaf、冬 snow。畫喺 fore 之上、UI 之下，唔乘 lightmap（H4 乘 0.75）。`seasons.json` v2 每季有 `particleOverlay`。\n"
            f"{b_}\n")
     _atomic(fp, _section(fm, a_, b_, sec))
     print("docs ok")

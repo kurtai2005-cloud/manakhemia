@@ -6,7 +6,7 @@
    葉色喺第 2–6 幀出現、五官／燈錨點冇被葉蓋；shiver 有震線（drop_d）、第 2／4 幀有白氣。
 2. UI（ui/systems12）：v3 31 色、alpha 0/255、尺寸（星星碎 16／32）、9-slice 數值合理、atlas 像素＝散檔＋extrude 1。
 3. 天氣 陰／霧：grade schema（同 validate_hd2d_scenes）、4 層 223×446、lut 256×16＝make_lut(grade)、sky＝LUT(霧淡出(raw))、天氣 tile alpha 0/255＋尺寸。
-4. 季節 4×4：grade schema、層尺寸、lut＝season_fn(make_lut(variant grade))、sky＝LUT(raw)、lightmap 尺寸；seasons.json 月份＝香港（全年 12 個月各一次）。"""
+4. 季節 4×4：grade schema、層尺寸、lut＝season_fn(make_lut(variant grade))、sky＝LUT(季節 raw/sky)、季節 raw alpha＋用色；v2 粒子 sheet（v3／alpha）＋particles.json frames／anims；seasons.json v2 particleOverlay、lightmap 尺寸；seasons.json 月份＝香港（全年 12 個月各一次）。"""
 import json, os, sys, glob
 import numpy as np
 from PIL import Image
@@ -178,14 +178,47 @@ for sk in SJ["seasons"]:
         lut = np.asarray(Image.open(os.path.join(d, "lut.png"))).astype(float) / 255; ref = U.season_lut(vg, S)
         if lut.shape != (16, 256, 3): F(f"season lut shape {sk}/{key}")
         if np.abs(lut - ref).max() > 1.5 / 255: F(f"season lut formula {sk}/{key} Δ{np.abs(lut - ref).max() * 255:.2f}")
-        raw = np.asarray(Image.open(os.path.join(SCN, key, "raw", "sky.png")).convert("RGB")).astype(float) / 255
+        # v2：每季有自己嘅 raw/（季節內容），sky＝LUT(季節 raw sky)；raw alpha 0/255、尺寸、palette.json（usedColors）涵蓋 raw 色
+        rp = json.load(open(os.path.join(d, "palette.json"))); rset = {tuple(int(c[i:i + 2], 16) for i in (1, 3, 5)) for c in rp["colors"]}
+        for nm in ("sky", "far", "mid", "fore"):
+            ra = np.asarray(Image.open(os.path.join(d, "raw", f"{nm}.png")).convert("RGBA"))
+            if ra.shape[:2] != (B.LH, B.LW): F(f"season raw size {sk}/{key}/{nm}")
+            if not np.isin(ra[..., 3], (0, 255)).all(): F(f"season raw alpha {sk}/{key}/{nm}")
+            cs = {tuple(c) for c in ra[ra[..., 3] == 255][:, :3].tolist()}
+            if cs - rset: F(f"season raw colours not in raw/palette.json {sk}/{key}/{nm} ({len(cs - rset)})")
+        raw = np.asarray(Image.open(os.path.join(d, "raw", "sky.png")).convert("RGB")).astype(float) / 255
         bk = np.asarray(Image.open(os.path.join(d, "sky.png")).convert("RGB")).astype(float) / 255
         dl = np.abs(B.apply_lut(raw, lut) - bk).max() * 255
         if dl > 2: F(f"season sky {sk}/{key} Δ{dl:.2f}")
         lm = Image.open(os.path.join(d, "lightmap.png"))
         if lm.size != (B.LW, B.LH) or lm.mode != "RGB": F(f"season lightmap {sk}/{key}")
         ns += 1
-info.append(f"季節 {ns} 套（4 季 × H1–H4；香港月份）")
+info.append(f"季節 {ns} 套（4 季 × H1–H4；香港月份；季節 raw/）")
+# v2：particleOverlay — sheet v3 色盤＋alpha 0/255、frames 喺 sheet 內、emitter 有齊 4 時段
+if SJ.get("version") != 2: F("seasons.json version != 2")
+for sk, sv in SJ["seasons"].items():
+    po = sv.get("particleOverlay") or {}
+    if po.get("dir") != f"seasons/{sk}/particles/" or po.get("sheet") != "sheet.png" or po.get("meta") != "particles.json": F(f"seasons.json particleOverlay {sk}")
+npf = 0
+for sk in SJ["seasons"]:
+    pd = os.path.join(SCN, "seasons", sk, "particles"); sh = np.asarray(Image.open(os.path.join(pd, "sheet.png")).convert("RGBA"))
+    pj = json.load(open(os.path.join(pd, "particles.json")))
+    if not np.isin(sh[..., 3], (0, 255)).all(): F(f"particle alpha {sk}")
+    cs = {tuple(c) for c in sh[sh[..., 3] == 255][:, :3].tolist()}
+    if cs - V3SET: F(f"particle offpalette {sk} {len(cs - V3SET)}")
+    for fn, fr in pj["frames"].items():
+        if fr["x"] < 0 or fr["y"] < 0 or fr["x"] + fr["w"] > sh.shape[1] or fr["y"] + fr["h"] > sh.shape[0]: F(f"particle frame outside {sk}/{fn}")
+        elif not sh[fr["y"]:fr["y"] + fr["h"], fr["x"]:fr["x"] + fr["w"], 3].any(): F(f"particle frame empty {sk}/{fn}")
+        npf += 1
+    for an, fl in pj["anims"].items():
+        if any(f not in pj["frames"] for f in fl): F(f"particle anim frame missing {sk}/{an}")
+    for ty in pj["types"]:
+        if any(v not in pj["anims"] or len(pj["anims"][v]) != ty["frames"] for v in ty["variants"]): F(f"particle variants {sk}/{ty['name']}")
+        if set(ty["emitter"]["perVariant"]) != {"H1", "H2", "H3", "H4"}: F(f"particle perVariant {sk}/{ty['name']}")
+    for key in ("H1", "H2", "H3", "H4"):
+        g = json.load(open(os.path.join(SCN, "seasons", sk, key, "grade.json")))
+        if g.get("particles", {}).get("type") not in ("mote", "gold", "petal", "firefly"): F(f"grade particle type {sk}/{key}")
+info.append(f"季節粒子疊層 {len(SJ['seasons'])} 季、{npf} 幀（v3／alpha 0/255／frames 喺 sheet 內）")
 if V.res["FAIL"]: F(f"hd2d schema checks FAIL {V.res['FAIL']}")
 info.append(f"hd2d schema 檢查 PASS {V.res['PASS']} FAIL {V.res['FAIL']}")
 for i in info: print(i)

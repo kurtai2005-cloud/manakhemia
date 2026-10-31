@@ -1,8 +1,8 @@
 {
  "baseVariant": "H4",
- "note": "夏（6／7／8 月）× H4：sky/far/mid/fore/lightmap 用 seasons/summer/H4/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；light_add／emissive／vignette 沿用 variant",
- "ambientTint": "#c8c8d8",
- "petTint": "#fff0d9",
+ "note": "夏（6／7／8 月）× H4：sky/far/mid/fore/lightmap 用 seasons/summer/H4/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；raw/ ＝ 季節版未烘層（v2 場景內容）；light_add／emissive／vignette 沿用 variant；粒子疊層見 ../particles/",
+ "ambientTint": "#c8c9da",
+ "petTint": "#fff0da",
  "saturation": 1.05,
  "contrast": 1.06,
  "bloom": {

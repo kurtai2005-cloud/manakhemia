@@ -1,7 +1,7 @@
 {
  "baseVariant": "H3",
- "note": "春（3／4／5 月）× H3：sky/far/mid/fore/lightmap 用 seasons/spring/H3/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；light_add／emissive／vignette 沿用 variant",
- "ambientTint": "#f2f0f4",
+ "note": "春（3／4／5 月）× H3：sky/far/mid/fore/lightmap 用 seasons/spring/H3/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；raw/ ＝ 季節版未烘層（v2 場景內容）；light_add／emissive／vignette 沿用 variant；粒子疊層見 ../particles/",
+ "ambientTint": "#f2f0f6",
  "petTint": "#ecd7c4",
  "saturation": 0.94,
  "contrast": 1.08,
@@ -31,7 +31,7 @@
  "particles": {
   "type": "petal",
   "rate": 0.5,
-  "color": "#ffe0ec"
+  "color": "#ffd0dc"
  },
  "rain": {
   "saturation": 0.72,

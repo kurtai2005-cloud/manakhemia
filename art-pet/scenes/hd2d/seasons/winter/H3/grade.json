@@ -1,8 +1,8 @@
 {
  "baseVariant": "H3",
- "note": "冬（12／1／2 月）× H3：sky/far/mid/fore/lightmap 用 seasons/winter/H3/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；light_add／emissive／vignette 沿用 variant",
- "ambientTint": "#e2eeff",
- "petTint": "#e4d6c8",
+ "note": "冬（12／1／2 月）× H3：sky/far/mid/fore/lightmap 用 seasons/winter/H3/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；raw/ ＝ 季節版未烘層（v2 場景內容）；light_add／emissive／vignette 沿用 variant；粒子疊層見 ../particles/",
+ "ambientTint": "#deecff",
+ "petTint": "#e2d6c8",
  "saturation": 0.94,
  "contrast": 1.08,
  "bloom": {

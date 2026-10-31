@@ -105,4 +105,6 @@ draw fore  @ offs.fore
 - 霧：`H3/grade_fog.json`＋`H3/fog/{sky,far,mid,fore}.png`（遠景預烘淡出）＋ `weather/fog_bank.png`（far／near 兩帶）：霧天：far 帶畫喺 far 之後（art y 200–272，0.35 parallax，飄 3 px/s，globalAlpha 0.7）；near 帶畫喺 fore 之前（art y 300–372，飄 6 px/s 反方向，globalAlpha 0.45）；Bayer 抖色 alpha 0/255
 - 季節（香港月份：春 3–5／夏 6–8／秋 9–11／冬 12–2）：`seasons/<season>/<H#>/{sky,far,mid,fore,lightmap}.png`＋`lut.png`（256×16）＋`grade.json`（同 §5 schema）。晴天先用季節層；雨／陰／霧時用 H3/<weather>/*。換季 3s crossfade。
 - 團絨：落雨 → `leaf_umbrella`；霧／冬 → `shiver` 抽中率加大（CLIPS.json `systems12B1`）。
+- 季節 v2（Kurt 02:12「4季唔夠明顯分別」）：每季每時段有自己場景內容，預烘層照舊（code 唔使改）。`seasons/<season>/<H#>/raw/{sky,far,mid,fore}.png`＝季節版未烘層（alpha 0/255），`palette.json`＝佢哋用色；預烘層＝`bake(raw, grade, lut)`。春：櫻花樹冠＋粉色遠樹＋地面花瓣；夏：深綠＋積雲＋向日葵＋蟬；秋：紅／橙／金樹冠＋落葉堆＋南瓜＋金草；冬：禿枝積雪＋雪地＋屋頂／欄杆積雪＋冰柱＋聖誕花。
+- 季節粒子疊層：`seasons/<season>/particles/sheet.png`（8px 格，v3 色盤，alpha 0/255）＋`particles.json`（frames／anims／types[emitter：spawn、ratePerSec、max、vx/vy、sway、lifeSec、perVariant H1–H4 倍率]）。春 petal、夏 firefly＋sunmote、秋 leaf、冬 snow。畫喺 fore 之上、UI 之下，唔乘 lightmap（H4 乘 0.75）。`seasons.json` v2 每季有 `particleOverlay`。
 <!-- SYS12-END -->

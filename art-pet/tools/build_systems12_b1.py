@@ -442,7 +442,7 @@ if __name__ == "__main__":
     if cmd == "base": run_base()
     elif cmd == "lumi": run_lumi()
     elif cmd == "evo": run_evo(sys.argv[2:] or None)
-    elif cmd in ("ui", "docs", "preview"):
+    elif cmd in ("ui", "docs", "preview", "seasons"):
         import build_systems12_b1_ui as U
         getattr(U, "run_" + cmd)()
     elif cmd == "all":

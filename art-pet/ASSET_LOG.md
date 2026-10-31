@@ -147,3 +147,11 @@
 - 季節：`scenes/hd2d/seasons/<spring|summer|autumn|winter>/H1–H4/`（LUT＋預烘層＋lightmap＋grade）＋`seasons.json`（香港月份）。
 - 預覽 `sprites/tuanrong/preview/systems12/`；工具 `tools/build_systems12_b1.py`＋`tools/build_systems12_b1_ui.py`；驗證 `tools/validate_systems12_b1.py`；備份 `_backups/pre_systems12_b1_20261101/`。Pillow/numpy 程式繪製，無 AI。
 <!-- SYS12B1-LOG-END -->
+
+<!-- SYS12S2-LOG-START -->
+## 2026-11-01 — 季節 v2（四季一眼分得出）
+- Kurt 02:12「4季唔夠明顯分別」→ 4 季 × H1–H4 全部重做場景內容（唔止 LUT）：春櫻花／粉遠樹／花瓣；夏深綠／積雲／向日葵／蟬；秋紅橙金葉／落葉堆／南瓜；冬禿枝積雪／雪地／屋頂欄杆積雪／冰柱。
+- 新：`seasons/<season>/<H#>/raw/*.png`＋`palette.json`；`seasons/<season>/particles/{sheet.png,particles.json}`（花瓣／螢火蟲＋熱浪光點／落葉／雪）；`seasons.json` v2（particleOverlay、lightTint）。層格式唔變。
+- 色彩：季節色喺 H1 日光空間定，經 H1→H# 仿射（最小二乘）帶入時段光；H4 夜晚同保色相縮暗各半，免淺色變飽和藍。
+- 預覽：`sprites/tuanrong/preview/systems12/seasons_v1_vs_v2_compare.png`、`seasons_4x4_1x.png`、`seasons_particles_6x.png`。工具 `tools/build_seasons_v2.py`（`build_systems12_b1.py seasons`）；驗證 `tools/validate_systems12_b1.py`；備份 `_backups/pre_seasons2_20261101/`。Pillow/numpy 程式繪製，無 AI。
+<!-- SYS12S2-LOG-END -->
