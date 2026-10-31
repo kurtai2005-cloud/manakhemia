@@ -1,0 +1,95 @@
+# 確定性／DOM-free
+  ✓ behavior.js 冇 Math.random／Date／DOM 依賴
+  ✓ 同種子 → 日誌完全一致（266 條）
+  ✓ 不同種子 → 日誌不同
+  ✓ 固定步長：不同幀率（60／30 fps）餵入 → 結果一致
+# 待機變體 ×3（眨眼／搖擺／呵欠），間隔 6–15 秒
+  ✓ 三種變體都出現：{"blink":116,"sway":58,"yawn":49}
+    間隔（變體結束→下一個開始）：最短 6.0s，中位 12.9s
+  ✓ 多數變體間隔 ≥ 6s（其餘為被別嘅動作打斷後重設）
+  ✓ 每個變體 ≤ 3 秒
+  ✓ 冇卡死（最長間隔 61s，包括其他活動）
+  ✓ 精力 <60 呵欠比例上升（0.20 → 0.38）
+# 6 表情綁需求狀態（優先序 unwell(sick) > hungry > tired > wantplay > …）
+  ✓ 表情表 ≥ 6 種：happy,neutral,hungry,tired,bored,dirty,unwell
+    需求→表情：happy,hungry,tired,bored,dirty,unwell
+  ✓ 不同需求狀態可到達 ≥ 5 種表情
+  ✓ 同時餓同睏 → 餓（hungry）優先於 tired
+  ✓ 極低需求 → unwell（sick clip）最優先
+  ✓ 表情→ clip 對應 art：hungry＝emo_hungry、tired＝emo_sleepy
+# 個性權重（團絨：黏人、愛睏、膽小）
+  ✓ 個性：黏人→多停留、愛睏→多小睡、膽小→少跳／少行
+  ✓ 日間大部分時間喺原地（stay 0.74）
+# 時段權重（早／午／晚／夜）
+  ✓ 深夜：小睡權重上升、行走下降
+  ✓ 深夜小睡時間比例 > 早上（0.29 vs 0.05）
+  ✓ 傍晚／深夜冇日光 → 唔曬太陽
+  ✓ 午間會曬太陽（0.065）
+  ✓ 傍晚玩得多過深夜
+# 環境互動：曬太陽＋撞花盆（冷卻 260 秒）
+  ✓ 曬太陽狀態
+  ✓ 走到日照位置並躺低
+  ✓ 曬完設冷卻 ≈ 260s（剩 221s）
+  ✓ 冷卻中權重＝0
+  ✓ 撞花盆：播 pot_bump／撞擊
+  ✓ 撞花盆掉出 2 件園圃小物（目標 2–3）
+  ✓ 撞完冷卻 260s，冷卻內唔再自主觸發
+  ✓ 小物有壽命，會自行消失
+  ✓ 5000 秒內任何兩次環境互動間隔 ≥ 260s（bump 3 次／sun 4 次）
+# 觸摸：摸、連點、睡眠中連點
+  ✓ 單點摸：反應（startle）
+  ✓ 2 秒內連摸 3 下 → 撒嬌（cuddly）
+  ✓ 10 秒內連點 5 下 → 鬧脾氣（grumpy）
+  ✓ 只點 4 下 → 唔鬧脾氣
+  ✓ 點得慢（>10 秒先 5 下）→ 唔鬧脾氣
+  ✓ 鬧完有冷卻 8s，唔會連環鬧
+  ✓ 點地面：黏人→多數但非全部跟隨（35/60）
+  ✓ 入咗小睡
+  ✓ 小睡中連點 6 下：唔鬧脾氣
+  ✓ 輕喚醒（wake）
+  ✓ 醒後睏睏表情（emo_sleepy）仍喺 4s 內
+  ✓ 之後回復正常表情（happy）
+  ✓ 關燈瞓覺中連點 7 下：維持睡眠、唔鬧脾氣（翻身 7 次）
+  ✓ 連點 5 下：發出 1 次鬧脾氣事件請求（tantrumReq）
+  ✓ 4 下：冇事件請求
+  ✓ 需求 <15 → 不適
+  ✓ 不適中連點 5 下仍然發出 tantrumReq
+  ✓ 睡眠點擊＝輕喚醒（lightWake），冇鬧脾氣請求
+  ✓ 輕喚醒後起身＋睏睏表情（stay／tired）
+  ✓ 輕喚醒唔扣需求
+  ✓ 4s 後睏睏表情完結（neutral）
+# clip 表同 遊美 art/CLIPS.json 對齊
+  ✓ art CLIPS.json 有 23 個 clip
+  ✓ data.js CLIPS 同 art 一致（frames／fps／loop／priority／cooldown／ready）
+  ✓ 額外 clip（jump,grumpy,lookup,dig）全部標 extra:true
+  ✓ 全部圖集 ≤ 1024×1024
+  ✓ atlas_egg（遊美 atlas_legacy，1024 寬）：egg_idle ×4／egg_glow ×2
+  ✓ 冇引用／冇附帶舊 2048 寬 pet_tuanrong_atlas
+  ✓ 每個 ready clip 喺三個形態圖集都有、幀數一致
+  ✓ 遊美 23 個 clip 已全數交付（ready:true，冇待定／placeholder）
+  ✓ 額外 clip（jump,grumpy,lookup,dig）仍冇美術 → 保持程序化 placeholder
+  ✓ play root-motion：frame4–5（idx 3,4）64px +4／32px +2（遊美 play 位移為 0）
+  ✓ atlas_props 有 flowerpot／sun_patch 系列
+# 螢火散步（firefly_walk）事件腳本
+  ✓ 日誌有 event:firefly_walk
+  ✓ 用現有 walk／play clip：walk,play
+  ✓ 所有用到嘅 clip 喺 clip 表有定義
+# 遊美 daylight.json 時段 hook（lighting.setDaylight／daylightAt）
+  ✓ 未載入 daylight.json → daylight:null（fallback 舊 grade）
+  ✓ setDaylight 載入 daylight.json
+  ✓ JSON：4 時段、blendSeconds 1800
+  ✓ 遊策時段 → daylight：早→early／午→noon／晚→dusk／夜→night
+  ✓ 各鐘點對應時段（以遊策 07／11／17／23 為界）
+  ✓ 時段穩定後 mix=1
+  ✓ blendSeconds 1800：新時段開始後 30 分鐘 mix 0→1（07:15＝0.5）
+  ✓ ambientMultiply 由夜色線性過渡到早色（mix 0／0.5／1）
+  ✓ bloom／vignette 同步 blend
+  ✓ 穩定時直接採用 JSON 數值（night bloom .65／noon vignette .1／dusk bloom .45）
+  ✓ pet tint（multiply／add／rim）＋ bg／overlay 檔名
+  ✓ art/daylight bg／light_early.png 存在
+  ✓ art/daylight bg／light_noon.png 存在
+  ✓ art/daylight bg／light_dusk.png 存在
+  ✓ art/daylight bg／light_night.png 存在
+  ✓ JSON 缺失 → 退返舊 grade（唔爆）
+
+結果：81 通過，0 失敗

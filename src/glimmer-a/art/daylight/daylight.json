@@ -1,0 +1,154 @@
+{
+ "version": 1,
+ "logicalSize": [
+  480,
+  270
+ ],
+ "note": "bg_<t>.png ＝ 烘咗窗光光斑／檯燈嘅場景底圖（4 時段同構圖，可直接切換或 cross-fade）；light_<t>.png ＝ 疊喺整個畫面（連寵物）嘅 RGBA overlay（暗角＋窗光暈＋檯燈暈＋環境色，alpha 8 階，normal blend）；pet 另用 pet.mult／add／rim 做 tint（寵物 sprite 不預烘）。",
+ "blendSeconds": 1800,
+ "periods": {
+  "early": {
+   "zh": "早晨",
+   "hours": "05:30–09:30",
+   "bg": "bg_early.png",
+   "overlay": "light_early.png",
+   "ambientMultiply": "#E6E4F4",
+   "mainLight": {
+    "color": "#FFDCC0",
+    "strength": 0.78,
+    "direction": "from window (left-top), shaft falls right-down"
+   },
+   "sky": {
+    "top": "#A8C4EE",
+    "bottom": "#FFDCC8"
+   },
+   "lamp": {
+    "pos": [
+     27,
+     104
+    ],
+    "color": "#FFC870",
+    "intensity": 0.0
+   },
+   "bloom": 0.3,
+   "vignette": 0.22,
+   "pet": {
+    "multiply": "#FFF2F0",
+    "add": "#1A0C08",
+    "rimColor": "#FFD6B0",
+    "rimSide": "left (window side), 1px",
+    "shadowColor": "#3A2F5C"
+   },
+   "bgColors": 128
+  },
+  "noon": {
+   "zh": "正午",
+   "hours": "09:30–16:00",
+   "bg": "bg_noon.png",
+   "overlay": "light_noon.png",
+   "ambientMultiply": "#FFFFFF",
+   "mainLight": {
+    "color": "#FFF1CC",
+    "strength": 0.78,
+    "direction": "from window (left-top), shaft falls right-down"
+   },
+   "sky": {
+    "top": "#8CCBF5",
+    "bottom": "#FDF3D8"
+   },
+   "lamp": {
+    "pos": [
+     27,
+     104
+    ],
+    "color": "#FFC870",
+    "intensity": 0.0
+   },
+   "bloom": 0.25,
+   "vignette": 0.1,
+   "pet": {
+    "multiply": "#FFFFFF",
+    "add": "#000000",
+    "rimColor": "#FFF1CC",
+    "rimSide": "left (window side), 1px",
+    "shadowColor": "#3A2F5C"
+   },
+   "bgColors": 101
+  },
+  "dusk": {
+   "zh": "傍晚",
+   "hours": "16:00–19:30",
+   "bg": "bg_dusk.png",
+   "overlay": "light_dusk.png",
+   "ambientMultiply": "#C48CB8",
+   "mainLight": {
+    "color": "#FF9444",
+    "strength": 0.9,
+    "direction": "from window (left-top), shaft falls right-down"
+   },
+   "sky": {
+    "top": "#5C5C9E",
+    "bottom": "#FFB27A"
+   },
+   "lamp": {
+    "pos": [
+     27,
+     104
+    ],
+    "color": "#FFC870",
+    "intensity": 0.45
+   },
+   "bloom": 0.45,
+   "vignette": 0.34,
+   "pet": {
+    "multiply": "#F2C8C4",
+    "add": "#2A0E00",
+    "rimColor": "#FFA55C",
+    "rimSide": "left (window side), 1px",
+    "shadowColor": "#3A2F5C"
+   },
+   "bgColors": 178
+  },
+  "night": {
+   "zh": "夜",
+   "hours": "19:30–05:30",
+   "bg": "bg_night.png",
+   "overlay": "light_night.png",
+   "ambientMultiply": "#5C68B0",
+   "mainLight": {
+    "color": "#8FB4FF",
+    "strength": 0.55,
+    "direction": "from window (left-top), shaft falls right-down"
+   },
+   "sky": {
+    "top": "#141A3D",
+    "bottom": "#2E3A72"
+   },
+   "lamp": {
+    "pos": [
+     27,
+     104
+    ],
+    "color": "#FFC870",
+    "intensity": 1.0
+   },
+   "bloom": 0.65,
+   "vignette": 0.5,
+   "pet": {
+    "multiply": "#9AA6E0",
+    "add": "#000814",
+    "rimColor": "#7FA8FF",
+    "rimSide": "left (window side), 1px",
+    "shadowColor": "#3A2F5C"
+   },
+   "bgColors": 148
+  }
+ },
+ "petSpot": {
+  "pivot": [
+   240,
+   232
+  ],
+  "scale": "pet 64px 以 1x 放入 480x270；整體再整數倍放大"
+ }
+}

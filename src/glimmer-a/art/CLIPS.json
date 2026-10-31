@@ -1,0 +1,706 @@
+{
+ "version": 1,
+ "pet": "tuanrong",
+ "forms": {
+  "sprout": {
+   "frameSize": 32,
+   "pivotPx": [
+    16,
+    29
+   ],
+   "atlas": "atlas_sprout.png",
+   "json": "atlas_sprout.json",
+   "frames": 96,
+   "headRightAnchor": [
+    9,
+    -14
+   ],
+   "potAnchor": [
+    22,
+    0
+   ],
+   "sunAnchor": [
+    0,
+    0
+   ]
+  },
+  "radiant": {
+   "frameSize": 64,
+   "pivotPx": [
+    32,
+    61
+   ],
+   "atlas": "atlas_radiant.png",
+   "json": "atlas_radiant.json",
+   "frames": 96,
+   "headRightAnchor": [
+    16,
+    -28
+   ],
+   "potAnchor": [
+    31,
+    0
+   ],
+   "sunAnchor": [
+    0,
+    0
+   ]
+  },
+  "soft": {
+   "frameSize": 64,
+   "pivotPx": [
+    32,
+    61
+   ],
+   "atlas": "atlas_soft.png",
+   "json": "atlas_soft.json",
+   "frames": 96,
+   "headRightAnchor": [
+    18,
+    -30
+   ],
+   "potAnchor": [
+    34,
+    0
+   ],
+   "sunAnchor": [
+    0,
+    0
+   ]
+  }
+ },
+ "facing": "right (clips drawn facing right; mirror with scaleX=-1)",
+ "scale": "整數倍、Nearest、關 mipmap",
+ "priorityNote": "數字越大越高；高優先級可打斷低優先級嘅「可中斷」clip；「否」嘅 clip 必須播完（或至 hold 完）先處理下一個。",
+ "clips": [
+  {
+   "name": "idle",
+   "status": "已交付",
+   "category": "待機",
+   "frames": 4,
+   "fps": 6,
+   "loop": true,
+   "priority": 0,
+   "interruptible": true,
+   "trigger": "預設基礎動畫；無其他 clip 時循環",
+   "cooldown_s": 0,
+   "next": null,
+   "notes": "沿用舊 idle（4 幀）。引擎冇指令時回到呢個。",
+   "attachments": []
+  },
+  {
+   "name": "blink",
+   "status": "已交付",
+   "category": "待機變化",
+   "frames": 4,
+   "fps": 10,
+   "loop": false,
+   "priority": 1,
+   "interruptible": true,
+   "trigger": "待機 6–15 秒隨機抽一次（權重 blink 50／sway 30／yawn 20）",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "一次過播完回 idle；每次抽籤間隔 random(6,15) 秒。",
+   "attachments": []
+  },
+  {
+   "name": "sway",
+   "status": "已交付",
+   "category": "待機變化",
+   "frames": 4,
+   "fps": 5,
+   "loop": false,
+   "priority": 1,
+   "interruptible": true,
+   "trigger": "同上（權重 30）",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "光芽左右擺；愛睏時（精力<60）權重減半。",
+   "attachments": []
+  },
+  {
+   "name": "yawn",
+   "status": "已交付",
+   "category": "待機變化",
+   "frames": 4,
+   "fps": 4,
+   "loop": false,
+   "priority": 1,
+   "interruptible": true,
+   "trigger": "同上（權重 20；精力<60 時權重 ×2，精力<30 時 ×3）",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "第 2–3 幀張口最大；可配 0.8 秒呵欠音效。",
+   "attachments": []
+  },
+  {
+   "name": "emo_happy",
+   "status": "已交付",
+   "category": "表情",
+   "frames": 2,
+   "fps": 4,
+   "loop": false,
+   "priority": 4,
+   "interruptible": true,
+   "trigger": "剛被照顧（餵食／清潔／玩耍完成後）",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "2 幀循環 ×4（≈2 秒）；無圖示；可疊 fx 開心星星。",
+   "attachments": [],
+   "repeat": 4,
+   "layers": {
+    "noface": "layers/<form>/emo_happy_NN_noface.png",
+    "overlay": "layers/<form>/emo_happy_NN_overlay.png"
+   }
+  },
+  {
+   "name": "emo_hungry",
+   "status": "已交付",
+   "category": "表情",
+   "frames": 2,
+   "fps": 3,
+   "loop": true,
+   "priority": 3,
+   "interruptible": true,
+   "trigger": "飽腹 < 30 持續",
+   "cooldown_s": 0,
+   "next": null,
+   "notes": "狀態成立期間取代 idle 循環；光芽變暗；掛 sweat 圖示（head_r）。",
+   "attachments": [
+    {
+     "prop": "sweat",
+     "anchor": "head_r",
+     "startFrame": 0,
+     "behind": false
+    }
+   ],
+   "layers": {
+    "noface": "layers/<form>/emo_hungry_NN_noface.png",
+    "overlay": "layers/<form>/emo_hungry_NN_overlay.png"
+   }
+  },
+  {
+   "name": "emo_wantplay",
+   "status": "已交付",
+   "category": "表情",
+   "frames": 2,
+   "fps": 4,
+   "loop": true,
+   "priority": 3,
+   "interruptible": true,
+   "trigger": "心情 < 30 持續（且未飢餓／未睏）",
+   "cooldown_s": 0,
+   "next": null,
+   "notes": "取代 idle 循環；掛 question 圖示；舉手期待。",
+   "attachments": [
+    {
+     "prop": "question",
+     "anchor": "head_r",
+     "startFrame": 0,
+     "behind": false
+    }
+   ],
+   "layers": {
+    "noface": "layers/<form>/emo_wantplay_NN_noface.png",
+    "overlay": "layers/<form>/emo_wantplay_NN_overlay.png"
+   }
+  },
+  {
+   "name": "emo_sleepy",
+   "status": "已交付",
+   "category": "表情",
+   "frames": 2,
+   "fps": 2,
+   "loop": true,
+   "priority": 3,
+   "interruptible": true,
+   "trigger": "精力 < 30 持續",
+   "cooldown_s": 0,
+   "next": null,
+   "notes": "取代 idle 循環；掛 zzz 圖層；精力 < 15 可直接進 fall_asleep。",
+   "attachments": [
+    {
+     "prop": "zzz",
+     "anchor": "head_r",
+     "startFrame": 0,
+     "behind": false
+    }
+   ],
+   "layers": {
+    "noface": "layers/<form>/emo_sleepy_NN_noface.png",
+    "overlay": "layers/<form>/emo_sleepy_NN_overlay.png"
+   }
+  },
+  {
+   "name": "emo_cuddly",
+   "status": "已交付",
+   "category": "表情",
+   "frames": 2,
+   "fps": 3,
+   "loop": true,
+   "priority": 4,
+   "interruptible": true,
+   "trigger": "連續摸（2 秒內 ≥3 次，持續按摸）",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "撒嬌磨蹭；摸停後再播完當前幀回 idle；掛 heart 圖示；最少播 1.5 秒。",
+   "attachments": [
+    {
+     "prop": "heart",
+     "anchor": "head_r",
+     "startFrame": 0,
+     "behind": false
+    }
+   ],
+   "layers": {
+    "noface": "layers/<form>/emo_cuddly_NN_noface.png",
+    "overlay": "layers/<form>/emo_cuddly_NN_overlay.png"
+   }
+  },
+  {
+   "name": "emo_surprised",
+   "status": "已交付",
+   "category": "表情",
+   "frames": 2,
+   "fps": 6,
+   "loop": false,
+   "priority": 4,
+   "interruptible": false,
+   "trigger": "突然點擊（閒置 >5 秒後首點）／事件彈出／被嚇",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "只播 1 次，停喺最後幀 0.6 秒；掛 exclaim。膽小：之後 60% 機會接 walk 離開觸點。",
+   "attachments": [
+    {
+     "prop": "exclaim",
+     "anchor": "head_r",
+     "startFrame": 0,
+     "behind": false
+    }
+   ],
+   "layers": {
+    "noface": "layers/<form>/emo_surprised_NN_noface.png",
+    "overlay": "layers/<form>/emo_surprised_NN_overlay.png"
+   }
+  },
+  {
+   "name": "walk",
+   "status": "已交付",
+   "category": "自主動作",
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "priority": 2,
+   "interruptible": true,
+   "trigger": "狀態機抽中：隨機走動，或朝最近觸點（5 秒內）",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "朝右；朝左由引擎 scaleX=-1。位移建議每循環 6 幀 ≈ 12px（64px 形態）／6px（32px 形態）；原地播，由引擎移動 x。",
+   "attachments": []
+  },
+  {
+   "name": "play",
+   "status": "已交付",
+   "category": "自主動作",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "priority": 3,
+   "interruptible": false,
+   "trigger": "狀態機抽中（心情<70 或被逗玩）／玩具互動",
+   "cooldown_s": 8,
+   "next": "idle",
+   "notes": "前撲：蹲→扭→彈→撲→落地；朝右，引擎可跟位移（第 3–5 幀向右約 4px）。",
+   "attachments": []
+  },
+  {
+   "name": "fall_asleep",
+   "status": "已交付",
+   "category": "睡眠流程",
+   "frames": 4,
+   "fps": 3,
+   "loop": false,
+   "priority": 5,
+   "interruptible": false,
+   "trigger": "精力 < 30 且閒置 >10 秒；晚／夜時段機率 ×3；或玩家按「睡覺」",
+   "cooldown_s": 0,
+   "next": "sleep_loop",
+   "notes": "第 2 幀起掛 zzz。",
+   "attachments": [
+    {
+     "prop": "zzz",
+     "anchor": "head_r",
+     "startFrame": 1,
+     "behind": false
+    }
+   ]
+  },
+  {
+   "name": "sleep_loop",
+   "status": "已交付",
+   "category": "睡眠流程",
+   "frames": 4,
+   "fps": 2,
+   "loop": true,
+   "priority": 5,
+   "interruptible": true,
+   "trigger": "fall_asleep 播完自動接",
+   "cooldown_s": 0,
+   "next": null,
+   "notes": "循環至精力 ≥ 90 或被點擊／事件／鬧鐘；掛 zzz；月光夜光效果由引擎做。",
+   "attachments": [
+    {
+     "prop": "zzz",
+     "anchor": "head_r",
+     "startFrame": 0,
+     "behind": false
+    }
+   ]
+  },
+  {
+   "name": "wake",
+   "status": "已交付",
+   "category": "睡眠流程",
+   "frames": 4,
+   "fps": 5,
+   "loop": false,
+   "priority": 5,
+   "interruptible": false,
+   "trigger": "sleep_loop 結束（精力滿／被摸／事件）",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "伸懶腰；被摸醒可接 emo_surprised 之前先播 wake 第 1–2 幀（引擎可截短）。",
+   "attachments": []
+  },
+  {
+   "name": "sunbathe",
+   "status": "已交付",
+   "category": "環境互動",
+   "frames": 8,
+   "fps": 4,
+   "loop": true,
+   "priority": 2,
+   "interruptible": true,
+   "trigger": "晴天＋早／午時段，狀態機隨機；寵物行到光斑上才播",
+   "cooldown_s": 120,
+   "next": "idle",
+   "notes": "掛 sun_patch（ground，墊底）；持續 8–20 秒（循環 8 幀）；被點擊中斷→emo_surprised。團絨怕冷：冷天機率 ×1.5。",
+   "attachments": [
+    {
+     "prop": "sun_patch",
+     "anchor": "sun",
+     "startFrame": 0,
+     "behind": true
+    }
+   ]
+  },
+  {
+   "name": "pot_bump",
+   "status": "已交付",
+   "category": "環境互動",
+   "frames": 8,
+   "fps": 8,
+   "loop": false,
+   "priority": 2,
+   "interruptible": false,
+   "trigger": "狀態機隨機（場景有花盆）；先 walk 到花盆左側 anchor",
+   "cooldown_s": 180,
+   "next": "idle",
+   "notes": "第 4 幀（索引 3）撞擊；同一刻起播 flowerpot_bump（4 幀）。花盆喺寵物右邊；如花盆喺左邊整個合成 scaleX=-1。",
+   "attachments": [
+    {
+     "prop": "flowerpot_idle",
+     "anchor": "pot",
+     "startFrame": 0,
+     "behind": false
+    },
+    {
+     "prop": "flowerpot_bump",
+     "anchor": "pot",
+     "startFrame": 3,
+     "behind": false
+    }
+   ]
+  },
+  {
+   "name": "catch_reach",
+   "status": "已交付",
+   "category": "小遊戲／事件",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "priority": 6,
+   "interruptible": false,
+   "trigger": "接星屑小遊戲：星屑進接取範圍／玩家點擊接取",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "第 4 幀（索引 3）判定「接到」；第 5–6 幀慶祝。接失敗唔播（改播 droop 或 emo_surprised）。",
+   "attachments": []
+  },
+  {
+   "name": "cheer_jump",
+   "status": "已交付",
+   "category": "小遊戲／事件",
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "priority": 6,
+   "interruptible": false,
+   "trigger": "小遊戲過關／高分結算／事件獎勵",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "單次；第 3 幀頂點；可配 fx 開心星星。",
+   "attachments": []
+  },
+  {
+   "name": "droop",
+   "status": "已交付",
+   "category": "小遊戲／事件",
+   "frames": 6,
+   "fps": 4,
+   "loop": true,
+   "priority": 6,
+   "interruptible": true,
+   "trigger": "小遊戲失敗／未達標／任務失敗",
+   "cooldown_s": 0,
+   "next": null,
+   "notes": "第 1–3 幀進入，之後第 4–6 幀（loopFrom=3）循環抽泣直至離開結算畫面；掛 sweat。",
+   "attachments": [
+    {
+     "prop": "sweat",
+     "anchor": "head_r",
+     "startFrame": 3,
+     "behind": false
+    }
+   ],
+   "loopFrom": 3
+  },
+  {
+   "name": "eat",
+   "status": "已交付",
+   "category": "既有",
+   "frames": 4,
+   "fps": 8,
+   "loop": false,
+   "priority": 5,
+   "interruptible": false,
+   "trigger": "餵食",
+   "cooldown_s": 0,
+   "next": "emo_happy",
+   "notes": "舊 eat 4 幀（原 build_tuanrong.py）。",
+   "attachments": []
+  },
+  {
+   "name": "celebrate",
+   "status": "已交付",
+   "category": "既有",
+   "frames": 4,
+   "fps": 8,
+   "loop": false,
+   "priority": 5,
+   "interruptible": false,
+   "trigger": "進化完成／升級／慶祝（舊 happy 4 幀）",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "舊 `happy` 改名 celebrate（避免同表情 emo_happy 撞名）。",
+   "attachments": []
+  },
+  {
+   "name": "sick",
+   "status": "已交付",
+   "category": "既有",
+   "frames": 2,
+   "fps": 3,
+   "loop": true,
+   "priority": 5,
+   "interruptible": true,
+   "trigger": "生病狀態持續",
+   "cooldown_s": 0,
+   "next": null,
+   "notes": "舊 sick 2 幀；優先級高過所有表情；可配 fx 汗滴。",
+   "attachments": []
+  }
+ ],
+ "props": {
+  "flowerpot_idle": {
+   "status": "已交付",
+   "frames": 1,
+   "pivotPx": [
+    16,
+    29
+   ],
+   "fps": 1,
+   "loop": true,
+   "size": [
+    32,
+    32
+   ],
+   "note": "花盆（靜態）",
+   "anchorKey": "pot",
+   "use": "pot_bump 期間常駐；場景亦可獨立擺放"
+  },
+  "flowerpot_bump": {
+   "status": "已交付",
+   "frames": 4,
+   "pivotPx": [
+    16,
+    29
+   ],
+   "fps": 8,
+   "loop": false,
+   "size": [
+    32,
+    32
+   ],
+   "note": "花盆被碰搖動 4 幀",
+   "anchorKey": "pot",
+   "use": "pet pot_bump 第 4 幀（索引 3）起播；fps 8、播 1 次後回 flowerpot_idle"
+  },
+  "sun_patch": {
+   "status": "已交付",
+   "frames": 2,
+   "pivotPx": [
+    24,
+    8
+   ],
+   "fps": 2,
+   "loop": true,
+   "size": [
+    48,
+    16
+   ],
+   "note": "曬太陽光斑 2 幀 loop",
+   "anchorKey": "sun",
+   "use": "sunbathe 期間墊喺寵物腳下（pivot＝光斑中心）；引擎可再疊 additive 暖光"
+  },
+  "zzz": {
+   "status": "已交付",
+   "frames": 3,
+   "pivotPx": [
+    2,
+    22
+   ],
+   "fps": 2,
+   "loop": true,
+   "size": [
+    24,
+    24
+   ],
+   "note": "Zzz 3 幀 loop（獨立圖層）",
+   "anchorKey": "head_r",
+   "use": "sleep_loop／fall_asleep／emo_sleepy；pivot 左下"
+  },
+  "heart": {
+   "status": "已交付",
+   "frames": 2,
+   "pivotPx": [
+    8,
+    14
+   ],
+   "fps": 3,
+   "loop": true,
+   "size": [
+    16,
+    16
+   ],
+   "note": "心 2 幀",
+   "anchorKey": "head_r",
+   "use": "emo_cuddly"
+  },
+  "sweat": {
+   "status": "已交付",
+   "frames": 2,
+   "pivotPx": [
+    8,
+    14
+   ],
+   "fps": 3,
+   "loop": true,
+   "size": [
+    16,
+    16
+   ],
+   "note": "汗滴 2 幀",
+   "anchorKey": "head_r",
+   "use": "emo_hungry／droop"
+  },
+  "exclaim": {
+   "status": "已交付",
+   "frames": 2,
+   "pivotPx": [
+    8,
+    14
+   ],
+   "fps": 4,
+   "loop": true,
+   "size": [
+    16,
+    16
+   ],
+   "note": "驚嘆號 2 幀",
+   "anchorKey": "head_r",
+   "use": "emo_surprised"
+  },
+  "question": {
+   "status": "已交付",
+   "frames": 2,
+   "pivotPx": [
+    8,
+    14
+   ],
+   "fps": 3,
+   "loop": true,
+   "size": [
+    16,
+    16
+   ],
+   "note": "問號 2 幀",
+   "anchorKey": "head_r",
+   "use": "emo_wantplay"
+  }
+ },
+ "stateMachine": {
+  "idleVariantIntervalSec": [
+   6,
+   15
+  ],
+  "idleVariantWeights": {
+   "blink": 50,
+   "sway": 30,
+   "yawn": 20
+  },
+  "needStatePriority": [
+   "sick",
+   "emo_hungry",
+   "emo_sleepy",
+   "emo_wantplay",
+   "idle"
+  ],
+  "needThresholds": {
+   "emo_hungry": "飽腹<30",
+   "emo_sleepy": "精力<30",
+   "emo_wantplay": "心情<30"
+  },
+  "autonomousTickSec": [
+   4,
+   10
+  ],
+  "tuanrongWeights": {
+   "idle": 40,
+   "walk_random": 15,
+   "walk_to_touch": 25,
+   "play": 8,
+   "sunbathe": 10,
+   "pot_bump": 6,
+   "fall_asleep": 12
+  },
+  "weightMods": {
+   "walk_to_touch": "5 秒內有觸點才啟用，否則權重 0",
+   "sunbathe": "晴天且早／午時段，否則 0",
+   "pot_bump": "場景有花盆，否則 0",
+   "fall_asleep": "精力<60 ×2；晚／夜 ×3；精力<30 且閒置>10s 必定",
+   "play": "心情<70 ×2；被逗玩必定"
+  },
+  "personality": "團絨：黏人愛睏膽小 → walk_to_touch 偏高、睡意權重高、驚嚇後 60% 走開"
+ }
+}

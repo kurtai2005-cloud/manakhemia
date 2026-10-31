@@ -1,0 +1,158 @@
+# 載入：真 atlas、__qa.pet
+  ✓ 遊美真 atlas 載入（atlasReady）
+  ✓ atlas 全部 ≤1024×1024（含 atlas_egg）
+  ✓ 網絡請求冇舊 2048 pet_tuanrong_atlas
+  ✓ __qa.pet 暴露：seed／log／step／clock
+# 6 表情綁需求
+  ✓ 需求 {} → 表情 happy
+  📷 a-expr-happy
+  ✓ 需求 {"hunger":20} → 表情 hungry
+  📷 a-expr-hungry
+  ✓ 需求 {"energy":20} → 表情 tired
+  📷 a-expr-tired
+  ✓ 需求 {"mood":20} → 表情 bored
+  📷 a-expr-bored
+  ✓ 需求 {"clean":20} → 表情 dirty
+  📷 a-expr-dirty
+  ✓ 需求 {"hunger":5,"mood":5,"clean":5,"energy":5} → 表情 unwell
+  📷 a-expr-unwell
+# 待機變體 blink／sway／yawn
+  ✓ 強制變體 blink
+  📷 a-idle-blink
+  ✓ 強制變體 sway
+  📷 a-idle-sway
+  ✓ 強制變體 yawn
+  📷 a-idle-yawn
+  ✓ 15 分鐘自然待機三種變體都出現（共 67 次）
+# 曬太陽／撞花盆（placeholder）
+  ✓ 曬太陽中（phase lie）
+  📷 a-sunbathe
+  ✓ （sunbathe loop 由音訊引擎處理）
+  ✓ 撞花盆撞擊（pot_bump／impact）
+  📷 a-flowerpot-bump
+  ✓ 花盆掉出園圃小物 ≥ 2
+  📷 a-flowerpot-props
+# 觸摸：連點鬧脾氣／睡眠中輕喚醒
+  ✓ 10 秒內連點 5 下 → 鬧脾氣
+  📷 a-grumpy
+  📷 a-nap
+  ✓ 睡眠中連點 → 輕喚醒（睏睏表情），唔鬧脾氣
+  📷 a-sleep-tap-wake
+# 四時段（早／午／晚／夜）光色＋行為權重
+  ✓ 時段 morning（代表鐘點 9）
+  📷 a-period-morning
+  ✓ 時段 noon（代表鐘點 14）
+  📷 a-period-noon
+  ✓ 時段 evening（代表鐘點 20）
+  📷 a-period-evening
+  ✓ 時段 night（代表鐘點 1）
+  📷 a-period-night
+  ✓ 傍晚燈強度 > 午間（1.15 vs 0.4）
+  ✓ 邊界：07 早／11 午／17 晚／23 夜
+# 確定性（同種子＋假時鐘 → 行為日誌一致）
+    日誌長度 3718 字元
+  ✓ 重設種子後快進 600 秒，日誌條數一致（需求會衰減，故只比長度）
+  ✓ 假時鐘 advance(3600) = +1 小時
+# 事件（可視）：蝴蝶／彩虹／流星
+  ✓ 事件 butterfly 出現（提示卡＋畫面特效）
+  📷 a-event-butterfly
+  ✓ 提示卡顯示遊美動畫 icon（butterfly，非透明像素 373）
+  ✓ icon 會播動畫（兩個時間點幀唔同）
+  ✓ 事件 rainbow 出現（提示卡＋畫面特效）
+  📷 a-event-rainbow
+  ✓ 提示卡顯示遊美動畫 icon（rainbow，非透明像素 458）
+  ✓ 事件 firefly_walk 出現（提示卡＋畫面特效）
+  📷 a-event-firefly_walk
+  ✓ 提示卡顯示遊美動畫 icon（firefly_walk，非透明像素 464）
+  ✓ __qa.pet：eventLog／行為日誌見到 firefly_walk
+  ✓ __qa.pet.pool()：9 個、firefly 14、rainbow 1（QA pity）、gift 22
+  ✓ __qa.pet.claimedFlashDates() 可讀
+  ✓ __qa.pet.lastSaveTime()／suppressed() 可讀；正常時間唔 suppress
+  ✓ P1：G.save 唔會將 lastSeen 向後拉（只取 max）
+  ✓ 提示卡冇 placeholder 前綴
+  ✓ 事件 meteor 出現（提示卡＋畫面特效）
+  📷 a-event-meteor
+  ✓ 提示卡顯示遊美動畫 icon（meteor，非透明像素 132）
+  ✓ 事件 gift 出現（提示卡＋畫面特效）
+  📷 a-event-gift
+  ✓ 提示卡顯示遊美動畫 icon（gift，非透明像素 458）
+  ✓ 事件 treasure 出現（提示卡＋畫面特效）
+  📷 a-event-treasure
+  ✓ 提示卡顯示遊美動畫 icon（treasure，非透明像素 637）
+  ✓ 事件 sleeptalk 出現（提示卡＋畫面特效）
+  📷 a-event-sleeptalk
+  ✓ 提示卡顯示遊美動畫 icon（sleeptalk，非透明像素 493）
+  ✓ 事件 grumpy 出現（提示卡＋畫面特效）
+  📷 a-event-grumpy
+  ✓ 提示卡顯示遊美動畫 icon（grumpy，非透明像素 601）
+  ✓ 事件 flash 出現（提示卡＋畫面特效）
+  📷 a-event-flash
+  ✓ 提示卡顯示遊美動畫 icon（flash，非透明像素 293）
+# 離線日記（溢出事件）
+  ✓ 日記角標顯示 4
+  📷 a-diary
+  ✓ 第 12 日起提示「2 日後作廢」
+  ✓ 同類事件合併（禮物 ×2）
+  ✓ 一鍵領取：4 條 × ✦3 = +12
+  📷 a-diary-claimed
+# PR #19：14 日離線補抽／連點鬧脾氣 48h／睡眠點擊輕喚醒／壞存檔回退
+  ✓ 14 日離線：彈窗 2、入日記 33 條（≤50）
+  📷 a-offline-14d
+  ✓ __qa.pet.tapPet(5)：獨立 grumpy_tap（48h、冇獎勵、唔計上限、唔共用鬧脾氣）
+  ✓ 冷卻內再連點：唔再觸發 grumpy_tap
+  ✓ 瞓緊點寵物：輕喚醒＋睏睏（tired），冇鬧脾氣
+  📷 a-light-wake
+  ✓ 壞日記／缺 stats.byId 回退唔爆
+# 設定：聲音開關／音量
+  📷 a-settings-sound
+  ✓ 關聲音 → 引擎靜音
+  ✓ 開返聲音、音量 細
+# 音訊：手勢解鎖、cue、BGM 按時段 crossfade
+  ✓ （載入時未解鎖或已解鎖皆可）
+  ✓ AudioContext 手勢後 running
+  ✓ SFX 解碼 39 個
+  ✓ cue：tap／feed／bgm:start:noon
+  ✓ BGM 午→夜 crossfade，目標 offset 對齊小節線（7.0588s＝第 2 小節）
+  ✓ （關燈 sleep_breath loop：）
+# 低端機預設 low／rAF 幀間隔降畫質
+  ✓ 低端機（2 核）新存檔預設畫質 low
+  ✓ rAF 幀間隔（窗口平均 > slowMs，連續 2 窗）→ 自動降一級（{"q":"low","drops":2,"auto":true}）
+# 光卵（遊美 atlas_egg）＋閃光日已領旗標
+  ✓ 光卵用 atlas_egg 幀（32×32）繪畫
+  📷 a-egg
+  ✓ 閃光日觸發 → claimedFlashDates 記日期、claimed=true
+  ✓ 系統時間早於 lastSaveTime：suppressed＝true，p_hit=1 下 1 小時零事件
+  ✓ 對照：lastSaveTime 正常 → 同條件有事件
+  ✓ ② 重載：lastSaveTime 重設為現在、離線 5 小時唔派獎／唔扣需求
+# 遊美 daylight.json 時段 hook（4 時段 tint／bloom／vignette／blend）
+  ✓ early：daylight.json 同 bg／overlay 圖已載入，hook 用 early
+  📷 a-daylight-early
+  ✓ noon：daylight.json 同 bg／overlay 圖已載入，hook 用 noon
+  📷 a-daylight-noon
+  ✓ dusk：daylight.json 同 bg／overlay 圖已載入，hook 用 dusk
+  📷 a-daylight-dusk
+  ✓ night：daylight.json 同 bg／overlay 圖已載入，hook 用 night
+  📷 a-daylight-night
+  ✓ bloom／vignette 隨時段變化（night>dusk>early>noon）
+  ✓ pet tint multiply：noon＝白（唔變色）、night 偏藍
+  ✓ 寵物 sprite 套咗時段 tint：night 比 noon 暗且偏藍
+  ✓ blendSeconds 1800：07:15 由 night 過渡到 early（mix≈0.5）
+  📷 a-daylight-blend
+# 可選房間皮膚（?room=1：遊美 bg／light overlay）
+  ✓ room 皮膚 early 啟用
+  📷 a-room-early
+  ✓ room 皮膚 noon 啟用
+  📷 a-room-noon
+  ✓ room 皮膚 dusk 啟用
+  📷 a-room-dusk
+  ✓ room 皮膚 night 啟用
+  📷 a-room-night
+# P2 .ibtn 熱區（縮放後 ≥44 CSS px，含 360 闊直向）
+  ✓ 360×780 dpr1 .ibtn ≥44 CSS px
+  ✓ 360×800 dpr2 .ibtn ≥44 CSS px
+  ✓ 360×640 dpr1 .ibtn ≥44 CSS px
+
+# console 錯誤／警告
+  ✓ console 無 error／warning
+
+結果：93 通過，0 失敗
