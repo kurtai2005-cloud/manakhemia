@@ -1,0 +1,483 @@
+[
+ {
+  "id": "池權重 螢火14 彩虹1",
+  "pass": true,
+  "ff": 14,
+  "rb": 1
+ },
+ {
+  "id": "回撥 119s",
+  "pass": true,
+  "sup": false,
+  "lastSave": true,
+  "noDraw": null
+ },
+ {
+  "id": "回撥 120s",
+  "pass": true,
+  "sup": false,
+  "lastSave": true,
+  "noDraw": null
+ },
+ {
+  "id": "回撥 121s",
+  "pass": true,
+  "sup": true,
+  "lastSave": true,
+  "noDraw": 20619
+ },
+ {
+  "id": "P0 noDrawDay 離線補抽 0",
+  "pass": false,
+  "n": 0,
+  "note": null,
+  "grains": 5,
+  "sup": true,
+  "gift": 5
+ },
+ {
+  "id": "P1 G.save 唔拉後 lastSeen／恢復後冇離線禮物",
+  "pass": false,
+  "mid": {
+   "lastSeen": 1781496000000,
+   "lastSave": 1781496000000
+  },
+  "T": 0,
+  "gift": 0,
+  "grains": 3,
+  "off": 0,
+  "note": "meteor"
+ },
+ {
+  "id": "P1 超前重設同一次開啟冇 +3",
+  "pass": true,
+  "tampered": true,
+  "T": 0,
+  "gift": 0,
+  "grains": 0,
+  "note": null
+ },
+ {
+  "id": "tapPet(5) → grumpy 48h",
+  "pass": false,
+  "state": "event",
+  "ids": [
+   "grumpy:tap"
+  ],
+  "cdH": 47.99993055555556,
+  "needsSame": false
+ },
+ {
+  "id": "睡眠 tapPet → lightWake 睏睏",
+  "pass": false,
+  "sleeping": false,
+  "expr": "tired",
+  "state": "event"
+ },
+ {
+  "id": "PW 行為頁無 pageerror",
+  "pass": true,
+  "errors": []
+ },
+ {
+  "id": "壞檔 非 JSON",
+  "pass": true,
+  "errors": [],
+  "navErr": null,
+  "alive": {
+   "qa": true,
+   "stage": "egg"
+  }
+ },
+ {
+  "id": "壞檔 diary 字串",
+  "pass": true,
+  "errors": [],
+  "navErr": null,
+  "alive": {
+   "qa": true,
+   "stage": "adult"
+  }
+ },
+ {
+  "id": "壞檔 diary [null]",
+  "pass": true,
+  "errors": [],
+  "navErr": null,
+  "alive": {
+   "qa": true,
+   "stage": "adult"
+  }
+ },
+ {
+  "id": "壞檔 stats 缺 byId",
+  "pass": true,
+  "errors": [],
+  "navErr": null,
+  "alive": {
+   "qa": true,
+   "stage": "adult"
+  }
+ },
+ {
+  "id": "直向 360x640 無溢出／裁切",
+  "pass": true,
+  "scroll": {
+   "sw": 360,
+   "sh": 640,
+   "overflow": false
+  },
+  "clip": [],
+  "ui": {
+   "x": 32.1,
+   "y": 0,
+   "w": 295.7,
+   "h": 640,
+   "r": 327.9,
+   "b": 640
+  },
+  "stage": {
+   "x": 32.1,
+   "y": 0,
+   "w": 295.7,
+   "h": 640,
+   "r": 327.9,
+   "b": 640
+  }
+ },
+ {
+  "id": "直向 360x640 無重疊",
+  "pass": true,
+  "pairs": []
+ },
+ {
+  "id": "直向 360x640 點擊目標 ≥44px",
+  "pass": false,
+  "taps": [
+   {
+    "sel": "#diary",
+    "w": 27.3,
+    "h": 27.3
+   },
+   {
+    "sel": "#gear",
+    "w": 27.3,
+    "h": 27.3
+   },
+   {
+    "sel": "#btn-feed",
+    "w": 65.6,
+    "h": 56.1
+   },
+   {
+    "sel": "#btn-play",
+    "w": 65.6,
+    "h": 56.1
+   },
+   {
+    "sel": "#btn-clean",
+    "w": 65.6,
+    "h": 56.1
+   },
+   {
+    "sel": "#btn-sleep",
+    "w": 65.6,
+    "h": 56.1
+   }
+  ]
+ },
+ {
+  "id": "直向 360x640 四個照顧掣 ≥44",
+  "pass": true,
+  "care": [
+   "65.6x56.1",
+   "65.6x56.1",
+   "65.6x56.1",
+   "65.6x56.1"
+  ],
+  "icons": [
+   "#diary 27.3x27.3",
+   "#gear 27.3x27.3"
+  ]
+ },
+ {
+  "id": "版面 360x640 無 pageerror",
+  "pass": true,
+  "errors": []
+ },
+ {
+  "id": "直向 390x844 無溢出／裁切",
+  "pass": true,
+  "scroll": {
+   "sw": 390,
+   "sh": 844,
+   "overflow": false
+  },
+  "clip": [],
+  "ui": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "r": 390,
+   "b": 844
+  },
+  "stage": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "r": 390,
+   "b": 844
+  }
+ },
+ {
+  "id": "直向 390x844 無重疊",
+  "pass": true,
+  "pairs": []
+ },
+ {
+  "id": "直向 390x844 點擊目標 ≥44px",
+  "pass": false,
+  "taps": [
+   {
+    "sel": "#diary",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "sel": "#gear",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "sel": "#btn-feed",
+    "w": 86.5,
+    "h": 74
+   },
+   {
+    "sel": "#btn-play",
+    "w": 86.5,
+    "h": 74
+   },
+   {
+    "sel": "#btn-clean",
+    "w": 86.5,
+    "h": 74
+   },
+   {
+    "sel": "#btn-sleep",
+    "w": 86.5,
+    "h": 74
+   }
+  ]
+ },
+ {
+  "id": "直向 390x844 四個照顧掣 ≥44",
+  "pass": true,
+  "care": [
+   "86.5x74",
+   "86.5x74",
+   "86.5x74",
+   "86.5x74"
+  ],
+  "icons": [
+   "#diary 36x36",
+   "#gear 36x36"
+  ]
+ },
+ {
+  "id": "版面 390x844 無 pageerror",
+  "pass": true,
+  "errors": []
+ },
+ {
+  "id": "直向 412x915 無溢出／裁切",
+  "pass": true,
+  "scroll": {
+   "sw": 412,
+   "sh": 915,
+   "overflow": false
+  },
+  "clip": [],
+  "ui": {
+   "x": 11,
+   "y": 35.5,
+   "w": 390,
+   "h": 844,
+   "r": 401,
+   "b": 879.5
+  },
+  "stage": {
+   "x": 11,
+   "y": 35.5,
+   "w": 390,
+   "h": 844,
+   "r": 401,
+   "b": 879.5
+  }
+ },
+ {
+  "id": "直向 412x915 無重疊",
+  "pass": true,
+  "pairs": []
+ },
+ {
+  "id": "直向 412x915 點擊目標 ≥44px",
+  "pass": false,
+  "taps": [
+   {
+    "sel": "#diary",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "sel": "#gear",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "sel": "#btn-feed",
+    "w": 86.5,
+    "h": 74
+   },
+   {
+    "sel": "#btn-play",
+    "w": 86.5,
+    "h": 74
+   },
+   {
+    "sel": "#btn-clean",
+    "w": 86.5,
+    "h": 74
+   },
+   {
+    "sel": "#btn-sleep",
+    "w": 86.5,
+    "h": 74
+   }
+  ]
+ },
+ {
+  "id": "直向 412x915 四個照顧掣 ≥44",
+  "pass": true,
+  "care": [
+   "86.5x74",
+   "86.5x74",
+   "86.5x74",
+   "86.5x74"
+  ],
+  "icons": [
+   "#diary 36x36",
+   "#gear 36x36"
+  ]
+ },
+ {
+  "id": "版面 412x915 無 pageerror",
+  "pass": true,
+  "errors": []
+ },
+ {
+  "id": "橫向 844x390 唔係橫向排版",
+  "pass": true,
+  "stage": {
+   "x": 331.9,
+   "y": 0,
+   "w": 180.2,
+   "h": 390,
+   "r": 512.1,
+   "b": 390
+  },
+  "ui": {
+   "x": 331.9,
+   "y": 0,
+   "w": 180.2,
+   "h": 390,
+   "r": 512.1,
+   "b": 390
+  },
+  "rotatePrompt": false,
+  "portraitStrip": true,
+  "transform": "scale(0.462085)",
+  "taps": [
+   {
+    "sel": "#diary",
+    "w": 16.6,
+    "h": 16.6
+   },
+   {
+    "sel": "#gear",
+    "w": 16.6,
+    "h": 16.6
+   },
+   {
+    "sel": "#btn-feed",
+    "w": 40,
+    "h": 34.2
+   },
+   {
+    "sel": "#btn-play",
+    "w": 40,
+    "h": 34.2
+   },
+   {
+    "sel": "#btn-clean",
+    "w": 40,
+    "h": 34.2
+   },
+   {
+    "sel": "#btn-sleep",
+    "w": 40,
+    "h": 34.2
+   }
+  ],
+  "bugIfLandscape": false
+ },
+ {
+  "id": "版面 844x390 無 pageerror",
+  "pass": true,
+  "errors": []
+ },
+ {
+  "id": "餵食選單打開且唔嚴重疊底欄",
+  "pass": true,
+  "display": "flex",
+  "items": [
+   {
+    "w": 350,
+    "h": 46,
+    "y": 586
+   },
+   {
+    "w": 350,
+    "h": 46,
+    "y": 638
+   },
+   {
+    "w": 350,
+    "h": 46,
+    "y": 690
+   }
+  ],
+  "overlap": 0,
+  "popb": {
+   "x": 10,
+   "y": 576,
+   "w": 370,
+   "h": 170,
+   "b": 746
+  },
+  "bar": {
+   "x": 10,
+   "y": 756,
+   "w": 370,
+   "h": 74,
+   "b": 830
+  }
+ },
+ {
+  "id": "餵食頁無 pageerror",
+  "pass": true,
+  "errors": []
+ }
+]
