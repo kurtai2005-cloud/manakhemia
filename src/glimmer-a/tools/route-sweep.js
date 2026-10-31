@@ -2,7 +2,7 @@
    6 個代表時間表 × N 個 seed，由芽崽行到守夜者，用真 code（sim.decideBranch）統計 9 條路分佈，同遊測鎖定目標（QA/balance/scan-v10.js，PR #19）比較。
    玩家隨機性同 scan-v10 一樣：主 rng（seed*7919+13）、±90 分鐘、漏上線 15%、動作跳 20%、加動作 30%、眼瞓時 50% 哄瞓、每 6 小時天氣；
    小遊戲用獨立 rng（seed*7919+97）：表定鐘點（MG_AT）到場 80% 開一局（第 2 批未出 → 浮動團絨撳兩下＝一局，走 sim.overlayOpenGame 同一條 mgApply 路）。
-   天氣讀 config weather.probs（晴60／陰20／霧5／雨15；霧當陰 → 同 scan-v10 陰 25% 等價）。每次上線 sim.noteLogin（v7 晶角即清窗口）。
+   天氣讀 config weather.probs（v10.1：晴60／陰20／雨15／霧5，抽籤次序 晴→陰→霧→雨；霧當陰 → 同 scan-v10 陰 25% 等價）。每次上線 sim.noteLogin（v7 晶角即清窗口）。
    數值全部讀 PARAMS.evo6.branch；唔改 config。 */
 const S = require('../src/sim.js'), D = require('../src/data.js'), P = D.PARAMS, C = P.evo6.branch;
 const args = process.argv.slice(2), N = +(args.find(a => /^\d+$/.test(a))) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;

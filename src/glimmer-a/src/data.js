@@ -59,7 +59,7 @@
         // 晶角分＝（即清上線 ÷ 有便便上線）×k × 總照顧次數（即佔比＝比率×k×100%，同其他路線同一尺度）。上線＝開 app，或者離開 ≥ loginGapSec 再返嚟
         crystal: { windowSec: 120, k: 0.45, loginGapSec: 300 },
         // v4 天氣：clear／overcast／fog／rain（天氣系統未做 → DEV 抽屜／?weather= 設定）；route＝呢種天氣下任何照顧（包括餵食）再計嗰條（v4：陰天／落雨 → 菇傘；落雨唔再計水珠）
-        // v5／v8：權重陰 0.5、霧（當陰）0.5、雨 1.0；晴天 0。probs＝systems12 系統 7 自動天氣機率（%，晴60／陰20／霧5／雨15；次序＝抽籤次序，霧排喺陰之後＝同遊測 sim 陰 25% 等價）
+        // v5／v8：權重陰 0.5、霧（當陰）0.5、雨 1.0；晴天 0。probs＝systems12 系統 7 自動天氣機率（%，v10.1 遊策確認：晴60／陰20／雨15／霧5；次序＝抽籤次序，霧排喺陰之後＝同遊測 sim 陰 25% 等價）
         weather: { states: ['clear', 'overcast', 'fog', 'rain'], probs: [['clear', 60], ['overcast', 20], ['fog', 5], ['rain', 15]],
           route: { overcast: { to: 'shroom', w: 0.5 }, fog: { to: 'shroom', w: 0.5 }, rain: { to: 'shroom', w: 1 } } },
         // §7 每種照顧本身計嘅路線分（時段窗口外先計）。v8：菇傘一定要有陰／雨照顧分 → 餵食本身 0（淨係多餵唔會入菇傘）；火苗：玩耍 +1、小遊戲每局 +2
@@ -541,7 +541,7 @@
   const STAGE_NAME = { egg: '光卵', newborn: '絨點', sprout: '芽崽', juvenile: '跳跳期', adult: '守夜者', elder: '靜光' };   // evo6 六階段（pet-template-v1 §6）
   const FORM_NAME = { bright: '燦光', soft: '柔光', dust: '微塵', lumi: '螢絨', tide: '水珠', shroom: '菇傘', crystal: '晶角', moon: '月眠', ember: '火苗' };
   // §7 路線清晰化：圖鑑一句提示（文件原文）
-  const ROUTE_HINT = { tide: '朝早 6–9 點照顧，或者成日淋水', moon: '夜晚 9 點至凌晨 3 點陪佢', shroom: '餵得最多', crystal: '一返嚟就執乾淨',   /* v6 圖鑑提示 */ ember: '玩得最多（包括小遊戲）',
+  const ROUTE_HINT = { tide: '朝早 6–9 點照顧，或者成日淋水', moon: '夜晚 8 點後陪佢、哄佢瞓', shroom: '落雨陰天陪佢食多啲',   /* v10.1 遊策 */ crystal: '一返嚟就執乾淨',   /* v6 圖鑑提示 */ ember: '玩得最多（包括小遊戲）',
     bright: '樣樣都照顧好', soft: '普通照顧', dust: '好少理佢', lumi: '？？？' };
   /* 進化表（開發模式「進化」用；條件以 sim.decideForm 為準）。螢絨＝隱藏形態（docs-gdd/pet-template-v1.md）：
      芽崽／跳跳期見過螢火散步先有資格，v3 改機率（evo6.branch.lumi）。自動條件未實裝（只可經開發模式設定）；未有專屬美術 → 借柔光 atlas＋螢綠 tint。 */

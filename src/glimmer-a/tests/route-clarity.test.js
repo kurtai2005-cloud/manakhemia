@@ -32,6 +32,7 @@ ok(R.bulbStage === 'juvenile' && R.bulbMaxMix > 0 && R.bulbMaxMix <= 1 && R.bulb
 ok(D.BRANCHES.every(f => typeof D.ROUTE_HINT[f] === 'string' && D.ROUTE_HINT[f].length) && D.ROUTE_HINT.lumi === '？？？', '圖鑑一句提示：9 條（螢絨＝？？？）');
 { const doc = fs.readFileSync(path.join(__dirname, '../../../docs-gdd/pet-template-v1.md'), 'utf8'), sec = doc.slice(doc.indexOf('§7 路線清晰化'));
   ok(D.BRANCHES.filter(f => f !== 'lumi').every(f => sec.includes('「' + D.ROUTE_HINT[f] + '」')), '提示文字同文件 §7 路線清晰化原文一樣'); }
+ok(D.ROUTE_HINT.shroom === '落雨陰天陪佢食多啲' && D.ROUTE_HINT.moon === '夜晚 8 點後陪佢、哄佢瞓' && D.ROUTE_HINT.crystal === '一返嚟就執乾淨', 'v10.1 圖鑑提示：菇傘／月眠新文字、晶角照舊', JSON.stringify(D.ROUTE_HINT));
 ok(/^#[0-9A-Fa-f]{6}$/.test(R.silhouette), '剪影色喺 config');
 { const fs = require('fs'), path = require('path'); ok(R.silArt && D.BRANCHES.every(id => fs.existsSync(path.join(__dirname, '../art', R.silArt + (id === 'bright' ? 'radiant' : id) + '_48.png'))), '遊美 batch G 剪影圖 ×9 喺 art/（bright→radiant）'); }
 

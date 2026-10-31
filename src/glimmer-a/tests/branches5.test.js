@@ -204,7 +204,8 @@ console.log('⑧ v4：天氣（陰天／落雨 → 菇傘、落雨唔計水珠�
   const W = C.weather, ST = W.states;
   ok(ST.join() === 'clear,overcast,fog,rain', '天氣狀態：clear／overcast／fog／rain（v10 加霧）', ST.join());
   ok(W.route.overcast.to === 'shroom' && W.route.rain.to === 'shroom' && W.route.fog.to === 'shroom' && W.route.overcast.w === 0.5 && W.route.fog.w === W.route.overcast.w && W.route.rain.w === 1 && !W.route.clear, 'config：晴 0／陰 0.5／霧（當陰）0.5／落雨 1.0 → 菇傘（v5／v8）');
-  { const pr = Object.fromEntries(W.probs); ok(W.probs.length === 4 && pr.clear === 60 && pr.overcast === 20 && pr.fog === 5 && pr.rain === 15 && W.probs.every(([w]) => ST.includes(w)), 'config 天氣機率：晴60／陰20／霧5／雨15（systems12 系統 7）', JSON.stringify(W.probs)); }
+  { const pr = Object.fromEntries(W.probs); ok(W.probs.length === 4 && pr.clear === 60 && pr.overcast === 20 && pr.fog === 5 && pr.rain === 15 && W.probs.every(([w]) => ST.includes(w)), 'config 天氣機率：晴60／陰20／雨15／霧5（v10.1 遊策；systems12 系統 7）', JSON.stringify(W.probs));
+    ok(W.probs.reduce((t, [, p]) => t + p, 0) === 100 && pr.rain > pr.fog, 'v10.1：機率加埋 100、雨（15）多過霧（5）— 唔好倒轉', JSON.stringify(W.probs)); }
   WX = 'fog'; ok(S.weatherNow() === 'fog' && !S.isRaining(), 'fog：weatherNow／isRaining'); WX = 'clear';
   WX = 'bogus'; ok(S.weatherNow() === 'clear', '唔識嘅天氣 → clear'); WX = 'overcast'; ok(S.weatherNow() === 'overcast' && !S.isRaining(), 'overcast：weatherNow／isRaining'); WX = 'clear';
   let b = build({ feed: 2 }, { wx: 'overcast' }).evo.b5.sprout; ok(b.shroom === 2 * W.route.overcast.w && b.tide === 0, `陰天餵 ×2 → 菇傘 +${2 * W.route.overcast.w}（v8 餵食本身 0）`, JSON.stringify(b));
