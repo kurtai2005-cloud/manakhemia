@@ -30,7 +30,8 @@ function setClean(s, avg, st) { const E = s.evo || (s.evo = { evIn: {}, care: {}
 function build(counts, o) {
   o = o || {}; const s = pet(o.stage || 'sprout'); HOUR = o.h == null ? DAY : o.h; WX = o.wx || (o.rain ? 'rain' : 'clear');
   const wx0 = WX;
-  for (const k in counts) for (let i = 0; i < counts[k]; i++) { WX = k === 'feed' && !o.wx && !o.rain && !o.clearFeed ? 'rain' : wx0; S.noteCare(s, null, k); }   // v8：feed＝落雨餵（菇傘 +1）
+  const RW = C.weather.route.rain, rw0 = RW.w;   // v10.3：落雨權重 0.8；fixture 嘅 feed 係「1 單位菇傘照顧」→ 呢度暫時當 1（只限 fixture，比例測試唔受權重影響）
+  for (const k in counts) for (let i = 0; i < counts[k]; i++) { const fx = k === 'feed' && !o.wx && !o.rain && !o.clearFeed; WX = fx ? 'rain' : wx0; if (fx) RW.w = 1; try { S.noteCare(s, null, k); } finally { RW.w = rw0; } }   // v8：feed＝落雨餵（菇傘 +1 單位）
   setClean(s, o.clean == null ? LOWCLEAN : o.clean); HOUR = DAY; WX = 'clear'; return s;
 }
 function toAdult(s, cq) { s.stage = 'juvenile'; s.cq = cq; s.growthSec = P.stageSec.juvenile - 1; HOUR = DAY; WX = 'clear'; S.step(s, 5, {}); return s; }
@@ -111,7 +112,7 @@ console.log('# ③ 分數來源（只計芽崽＋跳跳期）');
     ok(r.form === b, `${k} → ${D.FORM_NAME[b]}`, JSON.stringify(r.score));
   }
   { const s = build({ mg: 6, play: 4, feed: 3 }); s.cq = cq; ok(S.branch5Check(s).score.ember === 6 * C.kinds.mg.w + 4 * C.kinds.play.w && S.branch5Check(s).form === 'ember', `play＋mg → 火苗（玩 +${C.kinds.play.w}、小遊戲 +${C.kinds.mg.w}）`, S.branch5Check(s).score.ember); }
-  { const s = build({ feed: 3 }, { rain: true }); s.cq = cq; const r = S.branch5Check(s); ok(r.score.tide === 0 && r.score.shroom === 3, '（平時鐘點）落雨時餵食 → 菇傘只計一次、唔計水珠（v4）'); }
+  { const s = build({ feed: 3 }, { rain: true }); s.cq = cq; const r = S.branch5Check(s); ok(r.score.tide === 0 && Math.abs(r.score.shroom - 3 * C.weather.route.rain.w) < 1e-9, `（平時鐘點）落雨時餵食 → 菇傘只計一次（×${C.weather.route.rain.w}）、唔計水珠（v4／v10.3）`); }
   { const s = build({ feed: 3, rinse: 6 }); s.cq = cq; ok(S.branch5Check(s).form === 'tide', 'rinse → 水珠'); }
   // v7 晶角：清潔度唔再係門檻；分＝即清上線 ÷ 有便便上線 × k × 總數
   { const s = build({ poop: 8, feed: 2 }, { clean: 0 }); s.cq = cq; const r = S.branch5Check(s); ok(r.score.crystal === 0 && !r.ok && r.raw.loginPoop === 0, '冇上線紀錄 → 晶角 0 分（清便便本身唔計）', JSON.stringify(r.score)); }
@@ -150,13 +151,13 @@ console.log('# ④ 時段規則（config windows）：21–03 只計月眠（§7
       ok(b[w.only] === 1 && others && b.all === 1, `${w.id} ${w.from}:00 落雨 ${k} → 只計${D.FORM_NAME[w.only]} 1（唔計本身類型／落雨）`, JSON.stringify(b)); }
   }
   { const s = build({ rinse: 1 }, { rain: true }); const b = s.evo.b5.sprout; ok(b.tide === 1 && b.all === 1, '平時落雨 rinse → 水珠 +1（唔係 +2）', JSON.stringify(b)); }
-  { const s = build({ play: 1 }, { rain: true }); const b = s.evo.b5.sprout; ok(b.tide === 0 && b.shroom === 1 && b.ember === 1 && b.all === 1, '平時落雨玩 → 菇傘 +1、火苗 +1、水珠 0（v4）'); }
+  { const s = build({ play: 1 }, { rain: true }); const b = s.evo.b5.sprout; ok(b.tide === 0 && b.shroom === C.weather.route.rain.w && b.ember === 1 && b.all === 1, `平時落雨玩 → 菇傘 +${C.weather.route.rain.w}、火苗 +1、水珠 0（v4／v10.3）`); }
   { const s = build({}); HOUR = MH; s.sleeping = true; S.notePetSleep(s); HOUR = DAY; ok(s.evo.b5.sprout.moon === 1, `${MH}:00 瞓覺撫摸 → 月眠只 +1`); }
   { const s = build({}); HOUR = DH; s.sleeping = true; S.notePetSleep(s); HOUR = DAY; const b = s.evo.b5.sprout; ok(b.moon === 1 && b.tide === 0, `${DH}:00 瞓覺撫摸 → 仍然計月眠（唔係水珠）`, JSON.stringify(b)); }
   // 夜晚淫餵 → 月眠
   { const s = build({ feed: 10 }, { h: MH2 }); s.cq = NEED; const r = S.branch5Check(s); ok(r.ok && r.form === 'moon' && r.score.shroom === 0 && r.score.moon === 10, '夜晚淨係餵 → 月眠 100%（菇傘唔計）', JSON.stringify(r.score)); }
   { const s = toAdult(build({ feed: 12, play: 2 }, { h: MH2 }), Math.max(C.brightCQ, C.b5CQ) + 20); ok(s.form === 'moon' && evOf(s).why === 'b5', `夜晚淫餵（${MH2}:00 餵 12 玩 2，高 CQ）→ 月眠（≥ 上限唔去燦光）`, s.form); }
-  { const s = build({ feed: 6 }, { h: MH }); HOUR = DAY; WX = 'rain'; for (let i = 0; i < 4; i++) S.noteCare(s, null, 'feed'); WX = 'clear'; s.cq = NEED; const r = S.branch5Check(s);
+  { const s = build({ feed: 6 }, { h: MH }); HOUR = DAY; WX = 'rain'; const rw0 = C.weather.route.rain.w; C.weather.route.rain.w = 1; for (let i = 0; i < 4; i++) S.noteCare(s, null, 'feed'); C.weather.route.rain.w = rw0; WX = 'clear'; /* fixture：1 單位菇傘照顧 */ s.cq = NEED; const r = S.branch5Check(s);
     ok(r.score.moon === 6 && r.score.shroom === 4 && r.form === (60 - 40 >= C.drawGapPt && 60 >= C.b5TopPct ? 'moon' : null), '夜晚 6 次＋白天 4 次餵 → 月眠 60%、菇傘 40%'); }
   { const s = build({ feed: 2, play: 8 }, { h: MH2 }); s.cq = NEED; ok(S.branch5Check(s).form === 'moon', `夜深陪玩（${MH2}:00 玩 8 餵 2）→ 月眠 100%（火苗唔計）`); }
   // 早起玩家 → 水珠
@@ -203,7 +204,7 @@ console.log('⑧ v4：天氣（陰天／落雨 → 菇傘、落雨唔計水珠�
 {
   const W = C.weather, ST = W.states;
   ok(ST.join() === 'clear,overcast,fog,rain', '天氣狀態：clear／overcast／fog／rain（v10 加霧）', ST.join());
-  ok(W.route.overcast.to === 'shroom' && W.route.rain.to === 'shroom' && W.route.fog.to === 'shroom' && W.route.overcast.w === 0.5 && W.route.fog.w === W.route.overcast.w && W.route.rain.w === 1 && !W.route.clear, 'config：晴 0／陰 0.5／霧（當陰）0.5／落雨 1.0 → 菇傘（v5／v8）');
+  ok(W.route.overcast.to === 'shroom' && W.route.rain.to === 'shroom' && W.route.fog.to === 'shroom' && W.route.overcast.w === 0.4 && W.route.fog.w === W.route.overcast.w && W.route.rain.w === 0.8 && !W.route.clear, 'config：晴 0／陰 0.4／霧（當陰）0.4／落雨 0.8 → 菇傘（v10.3）');
   { const pr = Object.fromEntries(W.probs); ok(W.probs.length === 4 && pr.clear === 60 && pr.overcast === 20 && pr.fog === 5 && pr.rain === 15 && W.probs.every(([w]) => ST.includes(w)), 'config 天氣機率：晴60／陰20／雨15／霧5（v10.1 遊策；systems12 系統 7）', JSON.stringify(W.probs));
     ok(W.probs.reduce((t, [, p]) => t + p, 0) === 100 && pr.rain > pr.fog, 'v10.1：機率加埋 100、雨（15）多過霧（5）— 唔好倒轉', JSON.stringify(W.probs)); }
   WX = 'fog'; ok(S.weatherNow() === 'fog' && !S.isRaining(), 'fog：weatherNow／isRaining'); WX = 'clear';
@@ -215,7 +216,7 @@ console.log('⑧ v4：天氣（陰天／落雨 → 菇傘、落雨唔計水珠�
   b = build({ play: 2 }, { wx: 'fog' }).evo.b5.sprout; ok(b.shroom === 2 * W.route.fog.w && b.ember === 2, '霧天玩 → 火苗＋菇傘（霧）', JSON.stringify(b));
   b = build({ play: 1 }, { wx: 'overcast' }).evo.b5.sprout; ok(b.shroom === W.route.overcast.w && b.ember === 1 && b.all === 1, `陰天玩 → 菇傘 +${W.route.overcast.w}、火苗 +1`, JSON.stringify(b));
   b = build({ play: 2 }, { wx: 'rain' }).evo.b5.sprout; ok(b.shroom === 2 * W.route.rain.w && b.ember === 2, `落雨玩 ×2 → 菇傘 +${2 * W.route.rain.w}`, JSON.stringify(b));
-  b = build({ rinse: 1 }, { wx: 'rain' }).evo.b5.sprout; ok(b.tide === 1 && b.shroom === 1, '落雨沖洗 → 水珠（本身）＋菇傘', JSON.stringify(b));
+  b = build({ rinse: 1 }, { wx: 'rain' }).evo.b5.sprout; ok(b.tide === 1 && b.shroom === W.route.rain.w, '落雨沖洗 → 水珠（本身）＋菇傘', JSON.stringify(b));
   b = build({ play: 1 }).evo.b5.sprout; ok(!b.shroom && !b.tide, '晴天玩 → 冇菇傘／水珠', JSON.stringify(b));
   b = build({ play: 1, feed: 1 }, { wx: 'rain', h: DH }).evo.b5.sprout; ok(b.tide === 2 && !b.shroom && !b.ember, `${DEW.from}–${DEW.to} 落雨 → 時段規則優先：只計水珠`, JSON.stringify(b));
   b = build({ feed: 1 }, { wx: 'overcast', h: MH }).evo.b5.sprout; ok(b.moon === 1 && !b.shroom, `${MOON.from}–${MOON.to} 陰天 → 只計月眠`, JSON.stringify(b));

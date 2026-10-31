@@ -61,7 +61,7 @@
         // v4 天氣：clear／overcast／fog／rain（天氣系統未做 → DEV 抽屜／?weather= 設定）；route＝呢種天氣下任何照顧（包括餵食）再計嗰條（v4：陰天／落雨 → 菇傘；落雨唔再計水珠）
         // v5／v8：權重陰 0.5、霧（當陰）0.5、雨 1.0；晴天 0。probs＝systems12 系統 7 自動天氣機率（%，v10.1 遊策確認：晴60／陰20／雨15／霧5；次序＝抽籤次序，霧排喺陰之後＝同遊測 sim 陰 25% 等價）
         weather: { states: ['clear', 'overcast', 'fog', 'rain'], probs: [['clear', 60], ['overcast', 20], ['fog', 5], ['rain', 15]],
-          route: { overcast: { to: 'shroom', w: 0.5 }, fog: { to: 'shroom', w: 0.5 }, rain: { to: 'shroom', w: 1 } } },
+          route: { overcast: { to: 'shroom', w: 0.4 }, fog: { to: 'shroom', w: 0.4 }, rain: { to: 'shroom', w: 0.8 } } },
         // §7 每種照顧本身計嘅路線分（時段窗口外先計）。v8：菇傘一定要有陰／雨照顧分 → 餵食本身 0（淨係多餵唔會入菇傘）；火苗：玩耍 +1、小遊戲每局 +2
         kinds: { feed: { to: 'shroom', w: 0 }, play: { to: 'ember', w: 1 }, mg: { to: 'ember', w: 2 }, rinse: { to: 'tide', w: 1 }, poop: null },
         // v5 月眠「哄瞓」：團絨眼瞓（醒住、精力 < drowsyEnergy）時長撳／撫摸 → 瞓著，每次計月眠 pts（v8：2），每晚（nightCutH 前算前一晚）最多 perNight 次

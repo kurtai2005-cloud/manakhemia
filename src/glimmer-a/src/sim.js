@@ -138,7 +138,7 @@
   function careWindow(h) { return BR().windows.find(w => inWindow(w, h)) || null; }   // 時段規則（21–03 月眠、06–09 水珠…）
   function isMoonHour(h) { const w = BR().windows.find(x => x.id === 'moon'); return !!w && inWindow(w, h); }
   // §7 新支線分數：每次照顧 all +1；時段規則（config windows）：20–03 只計月眠、06–09 只計水珠（+1，唔計本身類型／天氣）；
-  // 時段外：本身類型（config kinds：v8 餵食 0、玩耍 +1、小遊戲 +2、沖洗 +1；清便便只計總數）＋天氣（config weather.route：陰／霧 0.5、雨 1.0 → 菇傘，包括餵食）；
+  // 時段外：本身類型（config kinds：v8 餵食 0、玩耍 +1、小遊戲 +2、沖洗 +1；清便便只計總數）＋天氣（config weather.route：陰／霧 0.4、雨 0.8（v10.3） → 菇傘，包括餵食）；
   // 瞓覺撫摸 → 月眠 +1；v8 哄瞓 → 月眠 +lull.pts（唔受時段影響）
   function addPts(b, k, w) { if (k && w) b[k] = +((+b[k] || 0) + w).toFixed(4); }
   function b5Bucket(s, st) { const E = evoOf(s); st = st || s.stage; return E.b5[st] || (E.b5[st] = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, loginPoop: 0, quickLogin: 0 }); }
