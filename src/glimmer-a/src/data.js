@@ -41,16 +41,20 @@
       migrateAdultKeepSec: 24 * 3600,
       // §7 進化判定 config（pet-template-v1 §7＋§7 修訂＋§7 平衡修訂 v2）：邏輯同測試都讀呢度，改數唔使改 code／測試。
       // 百分比用整數（避免 0.03×100 浮點誤差）；時段＝遊戲鐘 [from, to)，to < from 即跨午夜。統計範圍＝careStages；分數＝佔總照顧次數 %。
-      // 次序：DEV 強制 → 螢絨 → 燦光（CQ ≥ brightCQ 且最高分 < brightMaxTopPct%）→ 新 5 條 → 柔光（CQ ≥ softCQ）→ 微塵
+      // 次序：DEV 強制 → 螢絨 → 燦光（CQ ≥ brightCQ＋最近 brightDays.window 日有 ≥ brightDays.min 日照顧＋最高分 < brightMaxTopPct%）→ 新 5 條 → 柔光（CQ ≥ softCQ）→ 微塵
       branch: {
-        brightCQ: 60,           // 燦光 CQ（v2 建議；舊 70）
+        brightCQ: 30,           // 燦光 CQ（v4；v2 60、舊 70）
+        // v4 燦光：連續照顧（最近 window 日有 ≥ min 日有照顧；照顧日跨世代記錄）。scaleToAge：寵物出世未夠 window 日 → 按已過日數比例（ceil(min×日數/window)），否則第一代永遠唔夠 5 日
+        brightDays: { window: 7, min: 5, scaleToAge: true },
         brightMaxTopPct: 45,    // 燦光：新 5 條最高分要 < 呢個 %（全面照顧）；≥ 就交新 5 條
         b5CQ: 40,               // 新 5 條 CQ（v2；舊 55）
         b5TopPct: 30,           // 新 5 條最高分 ≥ %（v2；舊 35）
         drawGapPt: 5,           // v3：第一同第二名差 < 呢個 pt → 按兩者分數比例抽（seed 決定）；否則最高分贏（取代 v2 b5GapPt）
-        softCQ: 30,             // 柔光 CQ（v2；舊 40）；以下＝微塵
+        softCQ: 20,             // 柔光 CQ（v4；v2 30、舊 40）；以下＝微塵
         crystalCleanAvg: 60,    // 晶角：清潔度時間加權平均 ≥（v2；舊 70）
-        // 時段規則：喺時段內嘅照顧只計 only 嗰條（唔計本身類型、唔計落雨水珠）；瞓覺撫摸永遠計月眠
+        // v4 天氣：clear／overcast／rain（天氣系統未做 → DEV 抽屜／?weather= 設定）；route＝呢種天氣下任何照顧再計嗰條（v4：陰天／落雨 → 菇傘；落雨唔再計水珠）
+        weather: { states: ['clear', 'overcast', 'rain'], route: { overcast: 'shroom', rain: 'shroom' } },
+        // 時段規則：喺時段內嘅照顧只計 only 嗰條（唔計本身類型、唔計天氣）；瞓覺撫摸永遠計月眠
         windows: [
           { id: 'moon', from: 21, to: 3, only: 'moon' },   // 21:00–03:00 → 只計月眠（§7 修訂）
           { id: 'dew', from: 6, to: 9, only: 'tide' },     // 06:00–09:00 晨露 → 只計水珠（v2）

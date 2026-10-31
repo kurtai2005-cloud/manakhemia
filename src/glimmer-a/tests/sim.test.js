@@ -129,7 +129,7 @@ console.log('# CQ 規則');
 }
 console.log('# 分支門檻（config evo6.branch：燦光 ' + P.evo6.branch.brightCQ + '／柔光 ' + P.evo6.branch.softCQ + '；evo6：跳跳期完先分支）');
 {
-  const evo = (cq) => { const s = sprout(); s.stage = 'juvenile'; s.cq = cq; s.growthSec = P.stageSec.juvenile - 1; S.step(s, 5, {}); return s; };
+  const evo = (cq) => { const s = sprout(); s.stage = 'juvenile'; s.cq = cq; s.growthSec = P.stageSec.juvenile - 1; S.noteDay(s); S.step(s, 5, {}); return s; };   // v4：燦光要有照顧日
   for (const [cq, f] of (({ brightCQ: hi, softCQ: lo }) => [[100, 'bright'], [hi, 'bright'], [hi - 1, 'soft'], [lo, 'soft'], [lo - 1, 'dust'], [0, 'dust']])(P.evo6.branch)) {
     const s = evo(cq); ok(s.stage === 'adult' && s.form === f, `CQ=${cq} → ${f}`, s.form);
   }

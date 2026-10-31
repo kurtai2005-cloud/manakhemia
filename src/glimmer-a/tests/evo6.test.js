@@ -32,7 +32,7 @@ console.log('# 時長表（pet-template-v1 §6）');
   const r = S.fade(e, 2e12); ok(r.ok && e.stage === 'egg' && e.gen === 2 && e.memorial.length === 1 && e.memorial[0].form === 'bright' && !e.fadeReady, '化光 → 新光卵 gen 2＋紀念（燦光）');
   ok(!S.fade(at('adult')).ok, '未到靜光唔可以化光');
   // 遊策 10-31：離線成長真實計、單次上限 24h、每次最多升 1 階、升後進度 0、唔夠唔升
-  const offAt = (stage, g, hrs, extra) => { const x = at(stage, Object.assign({ growthSec: g }, extra || {})); x.lastSeen = 1e12 - hrs * H * 1000; const r = S.applyOffline(x, 1e12); return { x, r }; };
+  const offAt = (stage, g, hrs, extra) => { const x = at(stage, Object.assign({ growthSec: g }, extra || {})); x.lastSeen = 1e12 - hrs * H * 1000; S.noteDay(x); const r = S.applyOffline(x, 1e12); return { x, r }; };
   ok(P.offlineGrowCapH === 24, 'offlineGrowCapH = 24');
   let o = offAt('juvenile', 0, 23.9); ok(o.x.stage === 'juvenile' && Math.abs(o.x.growthSec - 23.9 * H) < 1, '23.9h → 成長 23.9h（未到 cap）', o.x.growthSec / H);
   o = offAt('juvenile', 0, 24); ok(o.x.stage === 'juvenile' && Math.abs(o.x.growthSec - 24 * H) < 1, '24h → 成長 24h', o.x.growthSec / H);
@@ -54,7 +54,7 @@ console.log('# 時長表（pet-template-v1 §6）');
 
 console.log('# 分支判定（跳跳期完先判；次序 螢絨 → 燦光 → 柔光 → 微塵；門檻讀 config evo6.branch）');
 {
-  const evo = (cq, lumi) => { const s = at('juvenile', { cq, growthSec: P.stageSec.juvenile - 1 });
+  const evo = (cq, lumi) => { const s = at('juvenile', { cq, growthSec: P.stageSec.juvenile - 1 }); S.noteDay(s);   // v4：燦光要有照顧日
     if (lumi) { s.evo.evIn.juvenile = { firefly_walk: 1 }; s.evo.care.juvenile = { all: 10, night: 10 }; }
     S.step(s, 5, {}); return s; };
   for (const [cq, f] of (({ brightCQ: hi, softCQ: lo }) => [[100, 'bright'], [hi, 'bright'], [hi - 1, 'soft'], [lo, 'soft'], [lo - 1, 'dust'], [0, 'dust']])(P.evo6.branch)) { const s = evo(cq); ok(s.stage === 'adult' && s.form === f, `CQ ${cq} → ${D.FORM_NAME[f]}`, s.form); }
@@ -99,7 +99,7 @@ console.log(`# 螢絨條件 v3（機率）：芽崽／跳跳期 firefly_walk 先
   const z = at('sprout', { cq: 70 }); z.evo.evIn.sprout = { firefly_walk: 1 }; S.setHourFn(() => 21);
   runUntil(z, x => x.stage === 'adult', 200); ok(z.stage === 'adult', '芽崽→守夜者（自動）'); S.setHourFn(() => 12);
   // 冇照顧紀錄（all=0）→ 夜晚 ✗
-  ok(z.form === 'bright', '有螢火但冇照顧紀錄 → 唔係螢絨（燦光）', z.form);
+  ok(z.form === 'soft', '有螢火但冇照顧紀錄 → 唔係螢絨（v4：冇照顧日 → 唔係燦光 → 柔光）', z.form);
   S.setHourFn(() => 12);
 }
 
