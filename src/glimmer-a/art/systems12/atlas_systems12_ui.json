@@ -1,0 +1,393 @@
+{
+ "frames": {
+  "diary_page_9s": {
+   "frame": {
+    "x": 3,
+    "y": 3,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "kind": "nineSlice",
+   "slice": {
+    "left": 18,
+    "top": 12,
+    "right": 10,
+    "bottom": 12
+   },
+   "center": "tile",
+   "edges": "tile",
+   "note": "日記頁：左邊釘裝孔＋紅 margin（left 18px；中間 40px＝tile 週期 8 嘅倍數）、右上摺角；中間橫線 tile（週期 8）"
+  },
+  "diary_page_special_9s": {
+   "frame": {
+    "x": 71,
+    "y": 3,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "kind": "nineSlice",
+   "slice": {
+    "left": 18,
+    "top": 12,
+    "right": 10,
+    "bottom": 12
+   },
+   "center": "tile",
+   "edges": "tile",
+   "note": "日記頁：左邊釘裝孔＋紅 margin（left 18px；中間 40px＝tile 週期 8 嘅倍數）、右上摺角；中間橫線 tile（週期 8）；特別頁（進化／化光嗰日）金邊"
+  },
+  "panel_commission_9s": {
+   "frame": {
+    "x": 139,
+    "y": 3,
+    "w": 48,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 48,
+    "h": 48
+   },
+   "kind": "nineSlice",
+   "slice": {
+    "left": 12,
+    "top": 18,
+    "right": 12,
+    "bottom": 12
+   },
+   "center": "tile",
+   "edges": "tile",
+   "note": "每日委託面板：頭帶 13px（top slice 18 包埋上面兩粒釘）（標題「每日小委託」由引擎寫字，leaf 底 cream4 字）；中間 tile；建議 179×96 放 3 行"
+  },
+  "icon_star_shard_32": {
+   "frame": {
+    "x": 191,
+    "y": 3,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   },
+   "kind": "icon",
+   "use": "星星碎 32px：入帳彈出／懸浮掉落"
+  },
+  "bubble_thought_9s": {
+   "frame": {
+    "x": 3,
+    "y": 73,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   },
+   "kind": "nineSlice",
+   "slice": {
+    "left": 11,
+    "top": 11,
+    "right": 11,
+    "bottom": 11
+   },
+   "center": "tile",
+   "edges": "tile",
+   "note": "心聲泡：四角雲朵（角 11px）、直邊；中間 tile；字用 outline 色；尾巴 bubble_tail（右下出，指去團絨頭）"
+  },
+  "sticker_sun": {
+   "frame": {
+    "x": 39,
+    "y": 73,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "kind": "sticker",
+   "use": "日記貼紙：晴"
+  },
+  "sticker_rain": {
+   "frame": {
+    "x": 67,
+    "y": 73,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "kind": "sticker",
+   "use": "日記貼紙：落雨"
+  },
+  "sticker_food": {
+   "frame": {
+    "x": 95,
+    "y": 73,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "kind": "sticker",
+   "use": "日記貼紙：食咗乜（飯糰）"
+  },
+  "sticker_heart": {
+   "frame": {
+    "x": 123,
+    "y": 73,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "kind": "sticker",
+   "use": "日記貼紙：心情好／親密度"
+  },
+  "sticker_evolve": {
+   "frame": {
+    "x": 151,
+    "y": 73,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "kind": "sticker",
+   "use": "日記貼紙：進化／化光"
+  },
+  "sticker_sleep": {
+   "frame": {
+    "x": 179,
+    "y": 73,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "kind": "sticker",
+   "use": "日記貼紙：瞓覺／早瞓"
+  },
+  "panel_commission_row_9s": {
+   "frame": {
+    "x": 207,
+    "y": 73,
+    "w": 24,
+    "h": 20
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 24,
+    "h": 20
+   },
+   "kind": "nineSlice",
+   "slice": {
+    "left": 6,
+    "top": 6,
+    "right": 6,
+    "bottom": 6
+   },
+   "center": "tile",
+   "edges": "tile",
+   "note": "委託一行底（icon 16 喺左 x=4、文字、右邊 checkbox＋星星碎 ×5）"
+  },
+  "icon_star_shard_16": {
+   "frame": {
+    "x": 235,
+    "y": 73,
+    "w": 16,
+    "h": 16
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 16,
+    "h": 16
+   },
+   "kind": "icon",
+   "use": "星星碎（貨幣）16px：HUD／委託獎勵"
+  },
+  "icon_commission_feed": {
+   "frame": {
+    "x": 3,
+    "y": 111,
+    "w": 16,
+    "h": 16
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 16,
+    "h": 16
+   },
+   "kind": "icon",
+   "use": "委託：餵食（例：餵 2 次）"
+  },
+  "icon_commission_water": {
+   "frame": {
+    "x": 23,
+    "y": 111,
+    "w": 16,
+    "h": 16
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 16,
+    "h": 16
+   },
+   "kind": "icon",
+   "use": "委託：淋水（例：淋水 1 次）"
+  },
+  "icon_commission_play": {
+   "frame": {
+    "x": 43,
+    "y": 111,
+    "w": 16,
+    "h": 16
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 16,
+    "h": 16
+   },
+   "kind": "icon",
+   "use": "委託：陪玩（例：陪玩 1 次）"
+  },
+  "icon_remind_water": {
+   "frame": {
+    "x": 63,
+    "y": 111,
+    "w": 16,
+    "h": 16
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 16,
+    "h": 16
+   },
+   "kind": "icon",
+   "use": "飲水提醒（懸浮，可設 1–3h）"
+  },
+  "icon_remind_sleep": {
+   "frame": {
+    "x": 83,
+    "y": 111,
+    "w": 16,
+    "h": 16
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 16,
+    "h": 16
+   },
+   "kind": "icon",
+   "use": "早瞓提醒（懸浮，可設時間）"
+  },
+  "bubble_thought_tail": {
+   "frame": {
+    "x": 103,
+    "y": 111,
+    "w": 16,
+    "h": 14
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 16,
+    "h": 14
+   },
+   "kind": "piece",
+   "use": "心聲泡尾巴（3 粒細泡），pivot 左下 (1,12) 對準團絨 head_r 錨點"
+  },
+  "checkbox_empty": {
+   "frame": {
+    "x": 123,
+    "y": 111,
+    "w": 12,
+    "h": 12
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 12,
+    "h": 12
+   },
+   "kind": "icon",
+   "use": "委託未完成"
+  },
+  "checkbox_done": {
+   "frame": {
+    "x": 139,
+    "y": 111,
+    "w": 12,
+    "h": 12
+   },
+   "rotated": false,
+   "trimmed": false,
+   "sourceSize": {
+    "w": 12,
+    "h": 12
+   },
+   "kind": "icon",
+   "use": "委託完成（剔）"
+  }
+ },
+ "meta": {
+  "image": "atlas_systems12_ui.png",
+  "size": {
+   "w": 256,
+   "h": 256
+  },
+  "format": "RGBA8888",
+  "padding": 2,
+  "extrude": 1,
+  "palette": "../../sprites/tuanrong/motion/palette.json",
+  "spec": "docs-gdd/systems12-v1.md 遊美素材清單 第 1 批",
+  "rules": "v3 31 色、alpha 0/255、無 AA；整數倍放大、Nearest；9-slice center／edges 用 tile（唔好 stretch）"
+ }
+}

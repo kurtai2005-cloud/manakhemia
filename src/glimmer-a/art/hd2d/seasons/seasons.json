@@ -1,0 +1,103 @@
+{
+ "version": 1,
+ "spec": "docs-gdd/systems12-v1.md 系統 7：季節跟香港月份換場景色調",
+ "seasons": {
+  "spring": {
+   "name": "春",
+   "months": [
+    3,
+    4,
+    5
+   ],
+   "dir": "seasons/spring/",
+   "note": "春（3–5 月）：微粉暖、嫩綠；花瓣粒子",
+   "params": {
+    "tint": "#fff4f4",
+    "sat": 1.04,
+    "con": 1.0,
+    "lift": 0.0,
+    "shadow": "#f2e8f4",
+    "shadowK": 1.0,
+    "green": [
+     "#8fd07a",
+     0.25
+    ]
+   }
+  },
+  "summer": {
+   "name": "夏",
+   "months": [
+    6,
+    7,
+    8
+   ],
+   "dir": "seasons/summer/",
+   "note": "夏（6–8 月）：高飽和、暖白日光、深綠、陰影實啲；光塵粒子",
+   "params": {
+    "tint": "#fffae6",
+    "sat": 1.12,
+    "con": 1.06,
+    "lift": 0.0,
+    "shadow": "#e8ecf8",
+    "shadowK": 1.12,
+    "green": [
+     "#4fb04a",
+     0.3
+    ]
+   }
+  },
+  "autumn": {
+   "name": "秋",
+   "months": [
+    9,
+    10,
+    11
+   ],
+   "dir": "seasons/autumn/",
+   "note": "秋（9–11 月）：綠葉轉琥珀橙、暖調；金色飄粒",
+   "params": {
+    "tint": "#fff0dc",
+    "sat": 1.0,
+    "con": 1.03,
+    "lift": 0.0,
+    "shadow": "#f4e4d8",
+    "shadowK": 1.0,
+    "green": [
+     "#e0963c",
+     0.62
+    ]
+   }
+  },
+  "winter": {
+   "name": "冬",
+   "months": [
+    12,
+    1,
+    2
+   ],
+   "dir": "seasons/winter/",
+   "note": "冬（12–2 月）：冷藍、低飽和、綠轉灰青、稍為光啲（冬日薄光）；白色細粒（似霜塵）；團絨打冷震 clip 機率加大",
+   "params": {
+    "tint": "#eef2ff",
+    "sat": 0.8,
+    "con": 0.96,
+    "lift": 0.035,
+    "shadow": "#dce4f8",
+    "shadowK": 0.85,
+    "green": [
+     "#9ab4ae",
+     0.45
+    ]
+   }
+  }
+ },
+ "variants": [
+  "H1",
+  "H2",
+  "H3",
+  "H4"
+ ],
+ "files": "seasons/<season>/<H#>/{sky,far,mid,fore}.png（223×446 RGBA，已預烘 LUT＋DoF）、lightmap.png（multiply）、lut.png（256×16）、grade.json",
+ "weatherRule": "天氣層（H3 rain／overcast／fog）優先：落雨／陰／霧時用 H3/<weather>/*，季節只影響 ambientTint／petTint／粒子；晴天先用季節層",
+ "crossfade": "換季（每月 1 號 00:00 跨季）→ 3s crossfade；同 crossfade/ 時段轉換一樣做法"
+}

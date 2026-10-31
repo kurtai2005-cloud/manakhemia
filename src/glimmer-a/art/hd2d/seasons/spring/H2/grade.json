@@ -1,0 +1,41 @@
+{
+ "baseVariant": "H2",
+ "note": "春（3／4／5 月）× H2：sky/far/mid/fore/lightmap 用 seasons/spring/H2/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；light_add／emissive／vignette 沿用 variant",
+ "ambientTint": "#ffcfbc",
+ "petTint": "#f4d7d3",
+ "saturation": 1.12,
+ "contrast": 1.1,
+ "bloom": {
+  "threshold": 0.66,
+  "intensity": 0.75
+ },
+ "fog": {
+  "color": "#9a5a8a",
+  "density": 0.07
+ },
+ "dof": {
+  "far": 2.6,
+  "mid": 1.6,
+  "fore": 4.5
+ },
+ "vignette": 0.48,
+ "rim": {
+  "color": "#ffc070",
+  "intensity": 0.85,
+  "dir": [
+   0.2,
+   -0.98
+  ]
+ },
+ "bulbGlowTint": "#ffb860",
+ "particles": {
+  "type": "petal",
+  "rate": 0.6,
+  "color": "#ffe0ec"
+ },
+ "rain": {
+  "saturation": 0.8,
+  "contrast": 0.95,
+  "tint": "#c8b0c8"
+ }
+}

@@ -1,0 +1,41 @@
+{
+ "baseVariant": "H3",
+ "note": "霧天（5%）最終值；sky/far/mid/fore 用 H3/fog/*（遠景已預烘淡出）；lightmap 沿用 H3（globalAlpha 0.5）；light_add globalAlpha 0.25；霧帶 weather/fog_bank.png 兩層（遠：far 之後；近：fore 之前）橫向慢飄",
+ "ambientTint": "#dce9f0",
+ "petTint": "#f2e8dc",
+ "saturation": 0.658,
+ "contrast": 0.886,
+ "bloom": {
+  "threshold": 0.95,
+  "intensity": 0.06
+ },
+ "fog": {
+  "color": "#e2e8ea",
+  "density": 0.24
+ },
+ "dof": {
+  "far": 2.4,
+  "mid": 1.0,
+  "fore": 2.6
+ },
+ "vignette": 0.12,
+ "rim": {
+  "color": "#7a8aa0",
+  "intensity": 0.35,
+  "dir": [
+   0.6,
+   0.8
+  ]
+ },
+ "bulbGlowTint": "#fff2b0",
+ "particles": {
+  "type": "petal",
+  "rate": 0.0,
+  "color": "#ffe0ec"
+ },
+ "rain": {
+  "saturation": 0.72,
+  "contrast": 0.9,
+  "tint": "#c8d8e4"
+ }
+}
