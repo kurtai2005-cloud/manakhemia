@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-/* 對 PR #17 真 build（src/glimmer-a 的 events.js／sim.js）做 v5.1 驗收。
+/* 對 PR #17 真 build（src/glimmer-a 的 events.js／sim.js）做驗收。
+ * Round 2：離線按實時日補抽；日記事件唔經 listener，要由 offLog 計。
  * 唔改遊戲檔。用法：
  *   TZ=Asia/Hong_Kong node tests/pet/qa_glimmer_build.js \
  *     --src /path/to/src/glimmer-a --days 3000 --seeds 7,3,5,11,13,17,19,23 \
- *     --json tests/pet/out/glimmer_build.json
+ *     --json tests/pet/out/glimmer_build.json --whatif 0
  */
 'use strict';
 const fs = require('fs');
@@ -87,15 +88,14 @@ function freshBucket() {
     eveN: 0, eve: {}, rainbow: 0, fireflyOut: 0,
     openDates: new Set(), seenDay: {}, shinySeen: new Set(), shinyEval: 0, shinyYes: 0,
     lastAt: {}, minSame: {}, prevAt: null, prevId: null, minGap: Infinity,
-    cdViol: 0, gapViol: 0, cdByKind: {}, cdSamples: [], gapSamples: [],
+    cdViol: 0, gapViol: 0, cdByKind: {}, cdById: {}, cdSamples: [], gapSamples: [],
     returns: 0, maxPop: 0, popOver: 0, rareViol: 0, rareSamples: [],
     diaryNew: 0, popN: 0, rollbacks: 0,
-    curDay: '',
+    curDay: '', skipListen: false,
+    onlineDrawByDay: {},
   };
 }
-function attach(s, bucket) {
-  const fn = (st, r) => {
-    if (st !== s) return;
+function score(bucket, r) {
     const id = r.id, isFlash = id === 'flash', isGrumpy = id === 'grumpy';
     const isGuar = r.kind === 'guarantee' && !isFlash;
     const isPool = r.kind === 'draw' && !isGrumpy && !isFlash;
@@ -116,6 +116,7 @@ function attach(s, bucket) {
       if (dlt < need - 0.5) {
         bucket.cdViol++;
         bucket.cdByKind[r.kind] = (bucket.cdByKind[r.kind] || 0) + 1;
+        bucket.cdById[id] = (bucket.cdById[id] || 0) + 1;
         if (bucket.cdSamples.length < 6) bucket.cdSamples.push({ id, kind: r.kind, gapH: +(dlt / H).toFixed(3), needH: need / H });
       }
       if (bucket.minSame[id] == null || dlt < bucket.minSame[id]) bucket.minSame[id] = dlt;
@@ -130,25 +131,38 @@ function attach(s, bucket) {
       if (g < bucket.minGap) bucket.minGap = g;
     }
     bucket.prevAt = r.at; bucket.prevId = id; bucket.n++;
-  };
+    if (!r.offline && r.kind === 'draw' && !isFlash && !isGrumpy) {
+      bucket.onlineDrawByDay[bucket.curDay] = (bucket.onlineDrawByDay[bucket.curDay] || 0) + 1;
+    }
+}
+function rareFirstOk(offLog) {
+  const all = (offLog || []).filter(x => x && x.offline);
+  if (!all.length) return { ok: true, pops: 0, expect: [], got: [] };
+  const rank = (x) => x.id === 'flash' ? 2 : (RARE_POP[x.id] ? 1 : 0);
+  const expect = all.slice().sort((a, b) => (rank(b) - rank(a)) || ((b.ts || 0) - (a.ts || 0)) || (b.at - a.at)).slice(0, Math.min(P.offlinePopupMax, all.length));
+  const pops = all.filter(x => !x.diary);
+  const key = (x) => x.id + '@' + x.ts + '@' + x.at;
+  const set = new Set(pops.map(key));
+  return { ok: pops.length <= P.offlinePopupMax && expect.every(e => set.has(key(e))), pops: pops.length, expect: expect.map(e => e.id), got: pops.map(e => e.id) };
+}
+function attach(s, bucket) {
+  const fn = (st, r) => { if (st !== s || bucket.skipListen) return; score(bucket, r); };
   EV.listeners.push(fn);
   return () => { const i = EV.listeners.indexOf(fn); if (i >= 0) EV.listeners.splice(i, 1); };
 }
-function noteReturn(rep, bucket) {
+function noteReturn(rep, bucket, offLog) {
   const ev = (rep && rep.events) || [];
-  if (!ev.length) return;
+  if (!ev.length && !(offLog && offLog.length)) return;
   bucket.returns++;
-  const pops = ev.filter(e => !e.diary);
-  if (pops.length > bucket.maxPop) bucket.maxPop = pops.length;
-  if (pops.length > 2) bucket.popOver++;
-  const rareDue = ev.filter(e => RARE_POP[e.id]).length;
-  const rarePop = pops.filter(e => RARE_POP[e.id]).length;
-  if (rarePop !== Math.min(2, rareDue)) {
+  const rf = rareFirstOk(offLog);
+  if (rf.pops > bucket.maxPop) bucket.maxPop = rf.pops;
+  if (rf.pops > 2) bucket.popOver++;
+  if (!rf.ok) {
     bucket.rareViol++;
-    if (bucket.rareSamples.length < 5) bucket.rareSamples.push(ev.map(e => e.id + (e.diary ? '/日記' : '/彈窗')));
+    if (bucket.rareSamples.length < 5) bucket.rareSamples.push({ expect: rf.expect, got: rf.got });
   }
   bucket.diaryNew += ev.filter(e => e.diary).length;
-  bucket.popN += pops.length;
+  bucket.popN += rf.pops;
 }
 function runProfile(profile, days, seed, base) {
   const rngS = mulberry32(seed * 1000 + profile.times.length * 17 + (profile.everyOther ? 9 : 0));
@@ -161,8 +175,12 @@ function runProfile(profile, days, seed, base) {
     for (const now of sess) {
       bucket.curDay = dateKey(now);
       bucket.openDates.add(bucket.curDay);
+      bucket.skipListen = true;
       const rep = SIM.applyOffline(s, now);
-      noteReturn(rep, bucket);
+      bucket.skipListen = false;
+      const offLog = (s.evs && s.evs.offLog) ? s.evs.offLog.slice().sort((a, b) => a.at - b.at) : [];
+      for (const rec of offLog) score(bucket, rec);
+      noteReturn(rep, bucket, offLog);
       if (s.evs && s.evs.diary.length && rngC() < 0.70) EV.claim(s);
       care(s, rngC);
       EV.noteOpen(s, { hour: SIM.hourOf(now), now });
@@ -199,7 +217,7 @@ function runProfile(profile, days, seed, base) {
     eveningN: bucket.eveN,
     eveningSharePct: eveShare,
     eveningCounts: bucket.eve,
-    cdViol: bucket.cdViol, cdByKind: bucket.cdByKind, gapViol: bucket.gapViol,
+    cdViol: bucket.cdViol, cdByKind: bucket.cdByKind, cdById: bucket.cdById, gapViol: bucket.gapViol,
     cdSamples: bucket.cdSamples, gapSamples: bucket.gapSamples,
     minGapMin: bucket.minGap === Infinity ? null : +(bucket.minGap / 60).toFixed(2),
     minSameH,
@@ -208,6 +226,7 @@ function runProfile(profile, days, seed, base) {
     shinyEval: bucket.shinyEval, shinyYes: bucket.shinyYes,
     rollbacks: bucket.rollbacks,
     sessions: sess.length,
+    maxOnlineDraws: Math.max(0, ...Object.values(bucket.onlineDrawByDay)),
   };
 }
 
@@ -270,8 +289,7 @@ function absenceTrial(nDays, seed, base) {
   const ev = rep.events || [];
   const pops = ev.filter(e => !e.diary);
   const diary = ev.filter(e => e.diary);
-  const rareDue = ev.filter(e => RARE_POP[e.id]).length;
-  const rarePop = pops.filter(e => RARE_POP[e.id]).length;
+  const rf = rareFirstOk(s.evs && s.evs.offLog);
   const tsSet = {};
   (s.evs ? s.evs.diary : []).forEach(d => { tsSet[d.ts] = (tsSet[d.ts] || 0) + 1; });
   const ages = (s.evs ? s.evs.diary : []).map(d => d.ts ? (back - d.ts) / DAYMS : null);
@@ -279,7 +297,8 @@ function absenceTrial(nDays, seed, base) {
     nDays, gen: ev.length, popups: pops.length, diaryNew: diary.length,
     diaryTotal: s.evs ? s.evs.diary.length : 0, diaryBefore,
     maxPopOk: pops.length <= 2,
-    rareViol: rarePop !== Math.min(2, rareDue),
+    rareViol: !rf.ok,
+    rareExpect: rf.expect, rareGot: rf.got,
     order: ev.map(e => e.id + (e.diary ? '/d' : '/p')),
     gift: rep.gift, tampered: !!rep.tampered, EHours: +(rep.E / H).toFixed(2), THours: +(rep.T / H).toFixed(2),
     diaryTsUnique: Object.keys(tsSet).length,
@@ -517,6 +536,147 @@ function diaryCases(base) {
   return rows;
 }
 
+function coldAbsence(nSeeds, nDays) {
+  const diaries = [], tots = [], dayMaxes = [];
+  let rareFail = 0, popOver = 0, tsCollapsed = 0, daysOver4 = 0, grainsGot = 0;
+  const T1 = new Date(2026, 5, 1, 21, 0, 0).getTime();
+  for (let sd = 1; sd <= nSeeds; sd++) {
+    const s = adult(sd, T1);
+    SIM.advance(s, 30, { hour: 21, now: T1 }, 30);
+    s.lastSeen = T1; s.lastSaveTime = T1; s.grains = 0;
+    const back = T1 + nDays * DAYMS;
+    SIM.applyOffline(s, back);
+    diaries.push(s.evs.diary.length);
+    tots.push(s.evs.offLog.length);
+    const by = {};
+    for (const e of s.evs.offLog) {
+      const d = e.ts ? dateKey(e.ts) : 'na';
+      by[d] = (by[d] || 0) + 1;
+    }
+    const vals = Object.values(by);
+    dayMaxes.push(vals.length ? Math.max(...vals) : 0);
+    daysOver4 += vals.filter(n => n > P.dailyMax).length;
+    const rf = rareFirstOk(s.evs.offLog);
+    if (!rf.ok) rareFail++;
+    if (rf.pops > 2) popOver++;
+    const ages = s.evs.diary.map(d => (d.ts ? (back - d.ts) / DAYMS : 0));
+    if (s.evs.diary.length && ages.every(a => a < 0.05)) tsCollapsed++;
+    const g0 = s.grains;
+    EV.claim(s); EV.claim(s); EV.claim(s);
+    grainsGot += s.grains - g0;
+  }
+  diaries.sort((a, b) => a - b); tots.sort((a, b) => a - b);
+  const mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
+  const q = (a, p) => a[Math.min(a.length - 1, Math.floor(a.length * p))];
+  return {
+    n: nSeeds, nDays,
+    diaryMean: +mean(diaries).toFixed(2), diaryMed: q(diaries, 0.5), diaryP95: q(diaries, 0.95), diaryMax: diaries[diaries.length - 1], diaryMin: diaries[0],
+    totMean: +mean(tots).toFixed(2), totMed: q(tots, 0.5), totMax: tots[tots.length - 1],
+    perDay: +(mean(tots) / nDays).toFixed(3),
+    offlineDayMax: Math.max(...dayMaxes),
+    daysOver4, rareFail, popOver, tsCollapsed,
+    claimGrainsMean: +(grainsGot / nSeeds).toFixed(2),
+    diaryCap: P.diaryMax, dailyMax: P.dailyMax,
+  };
+}
+function onlineCapProbe(base) {
+  const savedC = P.drawChance, savedE = P.drawEveryH.slice();
+  P.drawChance = 1; P.drawEveryH = [0.5, 0.5];
+  try {
+    const s = adult(7, base);
+    const by = {};
+    const fn = (st, r) => {
+      if (st !== s || r.offline || r.kind !== 'draw' || r.id === 'flash' || r.id === 'grumpy') return;
+      const day = dateKey(r.ts || base);
+      by[day] = (by[day] || 0) + 1;
+    };
+    EV.listeners.push(fn);
+    let now = base + 19 * H * 1000;
+    s.lastSeen = now; s.lastSaveTime = now;
+    EV.ensure(s);
+    s.evs.gDone = true; s.evs.flashToday = false; s.evs.flashDone = true; s.evs.dayCount = 0; s.evs.next = 0; s.evs.dayIdx = null;
+    for (let i = 0; i < 10; i++) {
+      const nxt = now + 0.25 * H * 1000;
+      SIM.advance(s, 0.25 * H, { hour: SIM.hourOf(nxt), now: nxt }, 60);
+      now = nxt; s.lastSeen = now; EV.markSave(s, now);
+    }
+    EV.listeners.splice(EV.listeners.indexOf(fn), 1);
+    const counts = Object.values(by);
+    const max = counts.length ? Math.max(...counts) : 0;
+    const eligible = ['gift', 'meteor', 'rainbow', 'firefly_walk', 'treasure'];
+    return { id: '上線傍晚池抽取封頂 4（5 個事件喺時段內）', pass: max === P.dailyMax, max, by, dayCount: s.evs.dayCount, dailyMax: P.dailyMax, eligible, hours: 2.5 };
+  } finally { P.drawChance = savedC; P.drawEveryH = savedE; }
+}
+function behaviorCases(base) {
+  const BEH = require(path.join(SRC, 'src/behavior.js'));
+  const rows = [];
+  const ctxOf = (s) => ({ s, pw: { period: 'noon' }, sun: 1, override: null, event: null });
+  {
+    const s = adult(11, base);
+    EV.ensure(s); s.evs.lastAt = -1e9; s.evs.cd = {};
+    const b = BEH.create(s.seed);
+    for (let i = 0; i < 5; i++) BEH.tap(b, 'pet', 0);
+    BEH.update(b, 0.2, ctxOf(s));
+    const req = b.tantrumReq || 0;
+    let rec = null;
+    if (req) { b.tantrumReq = 0; rec = EV.tapTantrum(s, { now: base + 12 * H * 1000, hour: 12 }); }
+    const cdH = s.evs.cd.grumpy != null ? (s.evs.cd.grumpy - s.evs.clock) / H : null;
+    rows.push({
+      id: 'tapPet(5) 同一幀（<10秒）→ 鬧脾氣事件 48h',
+      pass: req >= 1 && rec && rec.id === 'grumpy' && rec.kind === 'tap' && b.state === 'grumpy' && cdH != null && Math.abs(cdH - 48) < 0.05,
+      state: b.state, tantrumReq: req, event: rec && rec.id, cdH: cdH == null ? null : +cdH.toFixed(3),
+    });
+  }
+  {
+    const s = adult(12, base);
+    EV.ensure(s);
+    s.sleeping = true;
+    const needs = Object.assign({}, s.needs);
+    const grains = s.grains;
+    const b = BEH.create(s.seed);
+    SIM.toggleSleep(s);
+    BEH.tap(b, 'wake', 0);
+    BEH.update(b, 0.2, ctxOf(s));
+    const needsSame = ['hunger', 'mood', 'clean', 'energy'].every(k => s.needs[k] === needs[k]);
+    rows.push({
+      id: '睡眠 lightWake：睏睏、唔鬧脾氣、唔扣需求',
+      pass: s.sleeping === false && (b.log.enters.lightWake || 0) >= 1 && b.expr === 'tired' && !(b.tantrumReq) && needsSame && s.grains === grains && !(s.evs.log || []).some(x => x.id === 'grumpy'),
+      sleeping: s.sleeping, lightWake: b.log.enters.lightWake || 0, expr: b.expr, state: b.state, needsSame,
+    });
+  }
+  {
+    const s = adult(13, base);
+    s.sleeping = true;
+    const needs = Object.assign({}, s.needs);
+    const b = BEH.create(s.seed);
+    for (let i = 0; i < 5; i++) BEH.tap(b, 'pet', 0);
+    BEH.update(b, 0.2, ctxOf(s));
+    const needsSame = ['hunger', 'mood', 'clean', 'energy'].every(k => s.needs[k] === needs[k]);
+    rows.push({
+      id: '睡眠中連點 5 下：只翻身、唔鬧脾氣、唔扣需求',
+      pass: (b.tantrumReq || 0) === 0 && b.state !== 'grumpy' && needsSame && (b.log.enters.sleepStir || 0) >= 1,
+      state: b.state, stir: b.log.enters.sleepStir || 0, tantrum: b.tantrumReq || 0, needsSame,
+    });
+  }
+  return rows;
+}
+function lastSeenRewind(base) {
+  const now = base + 20 * DAYMS + 15 * H * 1000;
+  const s = adult(7, now);
+  EV.ensure(s);
+  s.lastSaveTime = now; s.lastSeen = now; s.grains = 0;
+  const rolled = now - 30 * 60 * 1000;
+  s.lastSeen = rolled;
+  EV.markSave(s, rolled);
+  const rep = SIM.applyOffline(s, now);
+  return {
+    id: '回撥 30 分鐘期間 save 拉低 lastSeen，恢復後派離線禮物',
+    pass: s.lastSaveTime === now && rep.gift === 0,
+    lastSaveTimeUnchanged: s.lastSaveTime === now,
+    Tmin: +(rep.T / 60).toFixed(1), gift: rep.gift, sup: s.evs ? EV.suppressed(s, s.evs) : null,
+    note: '期望：篡改期間唔好用被拉低嘅 lastSeen 派離線禮物。pass＝恢復後禮物 0。',
+  };
+}
 function summarize(rows) {
   const by = {};
   for (const r of rows) {
@@ -549,11 +709,13 @@ function summarize(rows) {
       shiny: [+min('shinyPct').toFixed(3), +max('shinyPct').toFixed(3)],
       cdViol: list.reduce((a, r) => a + r.cdViol, 0),
       cdByKind: list.reduce((a, r) => { for (const k of Object.keys(r.cdByKind || {})) a[k] = (a[k] || 0) + r.cdByKind[k]; return a; }, {}),
+      cdById: list.reduce((a, r) => { for (const k of Object.keys(r.cdById || {})) a[k] = (a[k] || 0) + r.cdById[k]; return a; }, {}),
       gapViol: list.reduce((a, r) => a + r.gapViol, 0),
       rareViol: list.reduce((a, r) => a + r.rareViol, 0),
       maxPop: Math.max(...list.map(r => r.maxPop)),
       rollbacks: list.reduce((a, r) => a + r.rollbacks, 0),
       fireflyOut: list.reduce((a, r) => a + r.fireflyOutOfWindow, 0),
+      maxOnlineDraws: Math.max(...list.map(r => r.maxOnlineDraws || 0)),
       eveningShareAvg: eve,
       eveningNSeed7: seed7 ? seed7.eveningN : 0,
       seed7: seed7 ? {
@@ -570,8 +732,11 @@ function summarize(rows) {
 function main() {
   const base = new Date(2026, 0, 5, 0, 0, 0).getTime();
   const t0 = Date.now();
+  let commit = null;
+  try { commit = require('child_process').execSync('git rev-parse HEAD', { cwd: path.resolve(SRC, '../..'), encoding: 'utf8' }).trim(); } catch (e) { commit = null; }
   console.log('# qa_glimmer_build');
   console.log('src', SRC);
+  console.log('commit', commit);
   console.log('tz', process.env.TZ || '(unset)', 'baseLocal', new Date(base).toString());
   console.log('weights', D.EVENTS.map(e => e.id + ':' + e.weight + (e.hours ? '@' + e.hours.join('-') : '')).join(' '));
   console.log('params', JSON.stringify({
@@ -591,6 +756,21 @@ function main() {
   console.log('\n# 日記／損毀');
   const diary = diaryCases(base);
   for (const c of diary) console.log((c.pass ? 'PASS ' : 'FAIL ') + c.id);
+
+  console.log('\n# 連點／輕喚醒');
+  const behavior = behaviorCases(base);
+  for (const c of behavior) console.log((c.pass ? 'PASS ' : 'FAIL ') + c.id, JSON.stringify(c));
+
+  console.log('\n# 上線每日上限');
+  const onlineCap = onlineCapProbe(base);
+  console.log((onlineCap.pass ? 'PASS ' : 'FAIL ') + onlineCap.id, JSON.stringify(onlineCap));
+
+  const rewind = lastSeenRewind(base);
+  console.log((rewind.pass ? 'PASS ' : 'FAIL ') + rewind.id, JSON.stringify(rewind));
+
+  console.log('\n# 冷啟動 14 日離線 ×1000（同 sim-report ①）');
+  const cold14 = coldAbsence(1000, 14);
+  console.log(JSON.stringify(cold14));
 
   console.log('\n# 缺席（一般玩家暖機 14 日後）×40');
   const absLengths = [1, 3, 7, 14, 21, 30];
@@ -645,7 +825,7 @@ function main() {
 
   const out = {
     src: SRC, days: DAYS, seeds: SEEDS, tz: process.env.TZ || null,
-    commitNote: 'measured against events.js/sim.js of the given --src tree',
+    commit, commitNote: 'measured against events.js/sim.js of the given --src tree',
     params: {
       drawChance: P.drawChance, minGapSec: P.minGapSec, cooldownH: P.cooldownH, cooldownRareH: P.cooldownRareH,
       lastSaveTolSec: P.lastSaveTolSec, lastSaveMaxAheadH: P.lastSaveMaxAheadH, guaranteeOpens: P.guaranteeOpens,
@@ -654,7 +834,7 @@ function main() {
       weights: shippedSnap,
     },
     theoreticalEveningShipped: weightShareShipped,
-    clock, diary, absence: abs,
+    clock, diary, behavior, onlineCap, rewind, cold14, absence: abs,
     shippedSummary, whatif,
     ms: Date.now() - t0,
   };
