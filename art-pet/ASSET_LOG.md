@@ -45,3 +45,15 @@
 - 備份：/workspace/game-design/_backups/pre_lumi_std23_20261031/
 - 驗證：validate_lumi.py → ALL PASS；validate_liveliness.py（含 lumi）→ ALL PASS（FAIL 0）
 - Pillow／numpy 程式繪製、lumi 31 色、alpha 0/255、無 AA、無 AI
+
+## 2026-10-31 15:43 — 團絨 evo6 batch A 動畫（光卵 24／絨點 28／絨芽 32／絨跳 38，v3 lumi feel）
+- 新腳本：tools/build_evo6_anim.py（import tuanrong／motion／liveliness／evo6_concept 做 module；姿勢＝現有同名 clip，只換外觀層）、tools/validate_evo6_anim.py
+- 光卵 evo_egg：5 clip／20 幀（idle 4、glow 2、tap 4、hatch 6 hold last、picked_up 4 pivot＝grab），冇 face rig
+- 絨點 evo_dot／絨芽 evo_sprout／絨跳 evo_hop：各 39 clip／171 幀（std23 ＋ 生命感 s1 含 picked_up ＋ s2 smug_pose/act_cool/lookup_tip/getup/sniff_itch）；face kit 重出（絨點/絨芽 S 4×4、絨跳 L 4×5）；bulb 只限絨跳
+- 新檔：sprites/tuanrong/evo6/（<form>/{frames,layers,emissive,kit}、face_anchors_<form>.json、atlas_<form>.png/.json/_emissive.png、palette_base.json、_stats.json）、sprites/tuanrong/preview/evo6/（<form>_contact_4x.png、evo6_batchA_contact_4x.png、gif/）
+- 改檔（只加）：motion/CLIPS.json（forms.evo_*、clips[].anchors.evo_*、clips[].evo_*、evo6 段）、motion/CLIPS.md（EVO6A 段）
+- 冇改：舊 sprout／radiant／soft／lumi 任何幀、atlas
+- 備份：art-pet/_backups/pre_evo6_animA_20261031/（同 /workspace/game-design/_backups/pre_evo6_animA_20261031/）
+- 驗證：validate_evo6_anim.py → ALL PASS；validate_liveliness／validate_lumi／validate_motion／validate_hd2d_scenes 照樣 PASS
+- 注意：build_tuanrong_liveliness_docs.py 由 _backup_v1 重砌 CLIPS.json → 之後要再跑 build_lumi.py 同 build_evo6_anim.py
+- Pillow／numpy 程式繪製、31 色、alpha 0/255、無 AA、無 AI

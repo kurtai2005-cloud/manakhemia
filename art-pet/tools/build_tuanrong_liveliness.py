@@ -159,6 +159,7 @@ PRESETS = {
  "grumpy":    dict(eyes="angry", gaze="C", mouth="angry"),
  "curious":   dict(eyes="neutral", gaze="U", mouth="sleepy", prop="question"),
  "wink":      dict(eyes="neutral", gaze="C", eyesR="wink", mouth="wink"),
+ "smug":      dict(eyes="sleepy", gaze="C", mouth="squint"),
 }
 BULB_TINT = {  # engine multiply tint for bulb_glow layer (white->tint), intensity = brightness / alpha of glow
  "happy":   dict(tint="#FFD45E", intensity=1.0, pulse="1.2s 呼吸 0.85–1.0", palettePreview=["glow_core", "glow_warm"]),
@@ -257,9 +258,38 @@ def pend_anchors(form, p, an):
     an["grab"] = [gx, gy]
     return an
 
+def rot_pivot(form, p):
+    """tip-back pivot = back (left) foot contact point"""
+    f, S, big, rx, ry, cx, cy = _geo(form, p)
+    return cx - rx * 0.45, f["G"] - 1.0
+
+def rot_pt(form, p, x, y):
+    th = math.radians(p.get("rot", 0)); px, py = rot_pivot(form, p)
+    dx, dy = x - px, y - py
+    return int(round(px + dx * math.cos(th) + dy * math.sin(th))), int(round(py - dx * math.sin(th) + dy * math.cos(th)))
+
+def rot_arr(a, form, p):
+    """rigid nearest-neighbour rotation about the back foot (rot>0 = tips backwards, top goes left)"""
+    deg = p.get("rot", 0)
+    if not deg: return a
+    th = math.radians(deg); px, py = rot_pivot(form, p); H, W = a.shape
+    ys, xs = np.mgrid[0:H, 0:W].astype(float)
+    dx, dy = xs + 0.5 - px, ys + 0.5 - py            # inverse map dest -> src
+    sx = px + dx * math.cos(th) - dy * math.sin(th); sy = py + dx * math.sin(th) + dy * math.cos(th)
+    ix, iy = np.floor(sx).astype(int), np.floor(sy).astype(int)
+    ok = (ix >= 0) & (ix < W) & (iy >= 0) & (iy < H)
+    out = np.zeros_like(a); out[ok] = a[iy[ok], ix[ok]]
+    return out
+
+def rot_anchors(form, p, an):
+    if not p.get("rot"): return an
+    for key in ("eyeL", "eyeR", "mouth", "head_r", "bulb"):
+        an[key] = list(rot_pt(form, p, *an[key]))
+    return an
+
 def body_render(form, p):
-    q = dict(p); q.pop("pend", None)
-    return pend_shear(M.render(form, noface_params(q)), form, p)
+    q = dict(p); q.pop("pend", None); q.pop("rot", None)
+    return rot_arr(pend_shear(M.render(form, noface_params(q)), form, p), form, p)
 
 # ============================================================ extra body drawing for new clips
 def _ring(m):
@@ -361,6 +391,108 @@ def ex_legs(form, flift, feet_in):
         rg = _ring(leg) & (cv.a == 0)
         cv.a[rg] = IDX["outline"]
     return f
+
+
+# ------------------------------------------------------------ 生命感第二段 (s2) extras
+def _put_empty(cv, x, y, c):
+    x, y = int(round(x)), int(round(y))
+    if 1 <= x < cv.n - 1 and 1 <= y < cv.n - 1 and cv.a[y, x] == 0: cv.put(x, y, c)
+
+def ex_sparkle(form, k):
+    """small 4-point twinkle above head-right (smug 'ding'); k: 0 small, 1 big"""
+    big = FORMS[form]["big"]
+    def f(cv, cx, cy, rx, ry):
+        x, y = cx + rx * (0.95 if big else 0.9), cy - ry * (1.05 if big else 0.95)
+        _put_empty(cv, x, y, "glow_core" if k else "white")
+        arm = (2 if k else 1) if big else (1 if k else 0)
+        for d in range(1, arm + 1):
+            c = "white" if d == 1 else "glow_mid"
+            for ox, oy in ((d, 0), (-d, 0), (0, d), (0, -d)): _put_empty(cv, x + ox, y + oy, c)
+        if big and k:   # second tiny twinkle
+            _put_empty(cv, x + 5, y + 4, "white")
+    return f
+
+def ex_puff(form, side, yfrac, k, color="white"):
+    """few loose pixels just outside the body (cough puff side=-1 / pat dust side=+1)"""
+    big = FORMS[form]["big"]
+    def f(cv, cx, cy, rx, ry):
+        y = cy + ry * yfrac
+        if big: pts = [(1, 0), (2, -1), (3, 1)] if k == 0 else [(3, -1), (5, 0), (4, 2), (2, -2)]
+        else: pts = [(1, 0)] if k == 0 else [(2, -1), (1, 1)]
+        for dx, dy in pts:
+            _put_empty(cv, cx + side * (rx + dx), y + dy, color)
+    return f
+
+def ex_hip(form, side):
+    """hand-on-hip arm (akimbo): elbow sticks out at the side, paw tucked on the lower belly"""
+    big = FORMS[form]["big"]
+    def f(cv, cx, cy, rx, ry):
+        ramp = bt.RAMPS[FORMS[form]["ramp"]]; col, hi = ramp[2], ramp[3]
+        if big: ex_, ey_, er, hx_, hy_, hr = cx + side * (rx + 1.2), cy + ry * 0.22, 2.4, cx + side * (rx - 1.8), cy + ry * 0.50, 2.2
+        else:   ex_, ey_, er, hx_, hy_, hr = cx + side * (rx + 0.6), cy + ry * 0.22, 1.5, cx + side * (rx - 1.2), cy + ry * 0.52, 1.4
+        m = cv.ell(ex_, ey_, er, er) | cv.ell((ex_ + hx_) / 2, (ey_ + hy_) / 2, (er + hr) / 2, (er + hr) / 2) | cv.ell(hx_, hy_, hr, hr)
+        rg = _ring(m); cv.a[rg] = IDX["outline"]; cv.a[m] = IDX[col]
+        cv.put(ex_ - side * 0.4, ey_ - er * 0.5, hi)
+    return f
+
+def ex_pat(form, k):
+    """paw patting the lower belly (act_cool); k 0 = paw lifted, 1 = paw down on belly"""
+    big = FORMS[form]["big"]
+    def f(cv, cx, cy, rx, ry):
+        ramp = bt.RAMPS[FORMS[form]["ramp"]]; col, hi = ramp[2], ramp[3]
+        if big: e, h, er, hr = (cx + rx - 0.8, cy + ry * 0.42), (cx + rx * 0.52, cy + ry * (0.38 if k == 0 else 0.56)), 2.2, 2.3
+        else:   e, h, er, hr = (cx + rx - 0.6, cy + ry * 0.40), (cx + rx * 0.58, cy + ry * (0.52 if k == 0 else 0.66)), 1.4, 1.3
+        h = (h[0] - (1.5 if big else 0.8), h[1])
+        m = cv.ell(*h, hr * 1.15, hr * 0.95)
+        rg = _ring(m); cv.a[rg] = IDX["outline"]; cv.a[m] = IDX[col]
+        cv.put(h[0] - 0.6, h[1] - hr * 0.45, hi)
+        if big: cv.put(h[0] + 0.6, h[1] - hr * 0.45, hi)
+    return f
+
+def ex_twitch(form):
+    """nose-itch twitch ticks in front of the snout (sniff_itch)"""
+    big = FORMS[form]["big"]
+    def f(cv, cx, cy, rx, ry):
+        y = cy + ry * 0.35
+        pts = [(1, -2), (2, -3), (2, 0), (3, 0), (1, 2), (2, 3)] if big else [(1, -1), (2, 0)]
+        for dx, dy in pts: _put_empty(cv, cx + rx + dx, y + dy, "white")
+    return f
+
+def s2_clips(form, LB):
+    """生命感第二段：蠢蠢地但覺得自己好醒。returns C, FACE dicts"""
+    big = FORMS[form]["big"]; u = 2 if big else 1
+    C = {}; FACE = {}
+    akL = ex_hip(form, -1); akR = ex_hip(form, 1)     # hands-on-hips nubs
+    # 1 smug_pose: whiffed pounce -> straighten -> chest out, nose up, ω -> HOLD (ding sparkle)
+    C["smug_pose"] = [dict(sy=.86, sx=1.10, shear=2 * u, dx=u, fdx=u, fdy=1, arms="none", extras=[LB, ex_arm(form, 1, 62, reach=1.35)], bud=.9, sway=2 * u),
+                      dict(sy=1.02, sx=.98, shear=0, bud=1.0, fdx=0),
+                      dict(sy=1.07, sx=.96, shear=-u, fdy=-1, fdx=-1, arms="none", extras=[akL, akR], bud=1.2, sway=-u, fluff=.5),
+                      dict(sy=1.09, sx=.95, shear=-u, fdy=-2 if big else -1, fdx=-1, arms="none", extras=[akL, akR, ex_sparkle(form, 1)], bud=1.3, sway=-u, fluff=1.0, twinkle=2)]
+    FACE["smug_pose"] = [F("neutral", "D", "neutral"), F("squint", "C", "neutral"), F("sleepy", "C", "squint"), F("sleepy", "C", "squint")]
+    # 2 act_cool: look away -> tiny cough -> pat pat (dust) -> composed side-eye, nose up
+    T = -0.16
+    C["act_cool"] = [dict(ft=T, sway=-u, shear=-u // 2 if big else 0, bud=1.0),
+                     dict(ft=T, sy=.93, sx=1.05, fdy=1, sway=-u, bud=.95, extras=[ex_puff(form, -1, .45, 0)]),
+                     dict(ft=T, sy=1.0, arms="none", extras=[ex_pat(form, 0), ex_puff(form, 1, .35, 1, "cream3")], bud=1.0, fluff=.6),
+                     dict(ft=T, sy=1.04, sx=.97, fdy=-1, arms="none", extras=[ex_pat(form, 1), ex_puff(form, 1, .45, 0, "cream3")], bud=1.1, fluff=1.2, sway=-u)]
+    FACE["act_cool"] = [F("squint", "L", "neutral"), F("sleepy", "C", "surprised"), F("squint", "L", "neutral"), F("squint", "L", "sleepy")]
+    # 3 lookup_tip: from lookup peak keep leaning back -> front foot lifts -> wobble -> plop on bum
+    C["lookup_tip"] = [dict(sy=1.07, sx=.96, shear=-u, fdy=-1, sway=-2 * u, bud=1.2, arms="upx", twinkle=1, rot=5),
+                       dict(sy=1.05, sx=.97, shear=-u, fdy=-1, sway=-2 * u, bud=1.15, arms="upx", twinkle=2, rot=10),
+                       dict(sy=1.03, sx=.98, shear=-u, fdy=-1, sway=-3 * u if big else -2, bud=1.1, arms="upx", fluff=.6, rot=16),
+                       dict(sy=.88, sx=1.09, dx=-u, sway=2 * u, bud=.9, droop=1, fluff=1.2, rot=12)]
+    FACE["lookup_tip"] = [F("surprised", "U", "surprised"), F("surprised", "U", "surprised"), F("surprised", "CL", "surprised"), F("squint", "C", "surprised")]
+    # 4 getup: sitting back -> paw pushes on ground (effort) -> pop up overshoot -> settle
+    C["getup"] = [dict(sy=.88, sx=1.09, dx=-u, sway=2 * u, bud=.9, droop=1, fluff=1.2, rot=12, arms="none", extras=[ex_arm(form, -1, 75, behind=True, reach=1.2), ex_down_arm_behind(form, 1)]),
+                  dict(sy=.92, sx=1.06, dx=-u // 2 if big else 0, bud=.95, arms="none", rot=6, extras=[ex_arm(form, -1, 90, behind=True, reach=1.3), ex_down_arm_behind(form, 1)], fluff=.5),
+                  dict(sy=1.06, sx=.96, shear=u, lift=u // 2, bud=1.15, sway=u, fluff=1.0),
+                  dict(sy=.98, sx=1.02, bud=1.0, fluff=1.4)]
+    FACE["getup"] = [F("squint", "C", "sleepy"), F("angry", "C", "angry"), F("neutral", "CR", "neutral"), F("neutral", "C", "neutral")]
+    # 6 sniff_itch: nose on ground, twitch -> head rises, squint up (hands over to sneeze_01)
+    C["sniff_itch"] = [dict(sy=.87, sx=1.09, shear=2 * u, fdx=u, fdy=2 if big else 1, bud=.85, sway=u, droop=1, extras=[ex_twitch(form)]),
+                       dict(sy=1.0, sx=.99, shear=0, fdy=0, bud=1.0, sway=0, extras=[ex_twitch(form)])]
+    FACE["sniff_itch"] = [F("squint", "D", "sleepy"), F("squint", "U", "sleepy")]
+    return C, FACE
 
 # ============================================================ new clips
 F = lambda e, g="C", m="neutral", eR=None: dict(eyes=e, gaze=g, mouth=m, **({"eyesR": eR} if eR else {}))
@@ -464,13 +596,17 @@ def new_clips(form):
                        extras=[ex_legs(form, fl, 0.18)]))
         fc.append(F("happy", "C", "happy"))
     C["picked_up"] = PU; FACE["picked_up"] = fc
+    C2, FACE2 = s2_clips(form, LB); C.update(C2); FACE.update(FACE2)
     if not big:
         for cn in C:
             for p_ in C[cn]:
                 if p_.get("lift", 0) > 0: p_["bud"] = min(p_.get("bud", 1.0), 1.0)
     return C, FACE, VIS
 
-NEW_ORDER = ["walk_happy", "walk_drag", "sniff", "lookup", "swat", "scratch", "sneeze", "nuzzle", "rush", "turn_back", "picked_up"]
+S1_ORDER = ["walk_happy", "walk_drag", "sniff", "lookup", "swat", "scratch", "sneeze", "nuzzle", "rush", "turn_back", "picked_up"]
+S2_ORDER = ["smug_pose", "act_cool", "lookup_tip", "getup", "sniff_itch"]   # 生命感第二段 -> atlas_<form>_live_s2
+NEW_ORDER = S1_ORDER + S2_ORDER
+HOLD_LAST_S = {"smug_pose": 0.8}                                            # 最後一幀 hold（秒）
 PIVOT_OVERRIDE = {"picked_up": "grab"}      # clip pivot = anchors[k].grab instead of foot pivot (w/2, h-3)
 FACE_ON_ENTER = {"picked_up": dict(eyes="surprised", gaze="D", mouth="surprised", loops=1,
                                    note="第一個循環（≈0.75s）用 surprised（gaze D 望地下），之後轉 happy（預設幀表情）；放低前可換 neutral/sad 自由")}
@@ -496,6 +632,16 @@ NEW_META = {
           "第 1 幀起步；第 2–5 幀（loopRange [1,4]）跑步循環直至到達玩家前位置；第 6 幀煞停 → 接 cheer_jump。速度線同塵烙入幀。"),
  "picked_up": (8, True, 0, 7, False, 0, "idle", "D6 被拎起（浮動團絨）", "Android 浮動寵物：手指按住寵物頭頂拖動／長按拎起（拖曳開始）時播；直至放手",
                "pivot＝anchors.grab（頭頂拎點），唔係腳底 pivot：引擎將 grab 對準手指位置。身體吊住微拉長、成個以 grab 為軸左右擺（鐘擺 shear）、兩隻腳交替輕踢。第一個循環建議 surprised（faceOnEnter），之後 happy。放手 → 引擎跌落／彈返地面再接 idle（或 emo_surprised）。可按拖動速度改 fps 6–12。"),
+ "smug_pose": (6, False, 0, 3, False, 30, "idle", "S2 撲空扮醒（得意 pose）", "swat／撲蟲撲空之後（蟲仔 fx 飛走）；或 catch_reach 接唔到時 50% 改播",
+               "蠢蠢地但覺得自己好醒：第 1 幀撲空落地、第 2 幀企直、第 3–4 幀挺胸仰頭合眼 ω 口（雙手叉腰）；最後一幀 hold 0.8s（holdLast_s），第 4 幀頭頂閃一下（烙入幀）。表情 preset smug。"),
+ "act_cool": (5, False, 0, 3, False, 20, "idle", "S2 扮冷靜", "sneeze 之後 40%／lookup_tip→getup 之後／picked_up 放低後 30%",
+              "扮冇事：第 1 幀別過頭（面向後偏 ft，眼 squint 望 L）、第 2 幀輕咳（咳氣烙入幀，向左）、第 3–4 幀拍拍身（塵烙入幀），最後仰少少頭側眼。"),
+ "lookup_tip": (6, False, 0, 2, False, 60, "getup", "S2 望天望到跌", "lookup 播完後 20%（夜晚／流星 ×2）；接住 lookup 第 3 幀姿勢",
+                "望天望到向後倒：前腳離地、搖兩搖、第 4 幀一屁股坐低（停住，接 getup）。"),
+ "getup": (6, False, 0, 2, False, 0, "act_cool", "S2 起返身", "lookup_tip 播完自動接（或任何跌低／坐低後）",
+           "後手撐地（第 2 幀用力 angry 臉）→ 彈起 → 企定。播完 60% 接 act_cool，否則 idle。"),
+ "sniff_itch": (6, False, 0, 1, False, 0, "sneeze", "S2 嗅到鼻癢（過渡）", "sniff 第 3 幀之後如抽中 sneeze（機率 25%）",
+                "sniff → sniff_itch → sneeze 過渡：第 1 幀鼻貼地抽兩抽（鼻癢線烙入幀）、第 2 幀抬頭瞇眼，下一幀直接接 sneeze_01。"),
  "turn_back": (8, False, 0, 4, False, 0, "emo_happy", "D2 點一下回頭", "寵物背向／行緊路時被點一下；或 walk 中被點",
                "第 1 幀背面（faceVisible=false，唔好疊五官）、第 2 幀 3/4 側（眼距收窄）、第 3 幀轉正彈起、第 4 幀定。之後按心情接 emo_happy（心情≥50）或 emo_surprised。"),
 }
@@ -565,13 +711,14 @@ def pack_pages(items, maxw=1024, maxh=1024, pad=2):
         out.append((maxw, H, pg))
     return out
 
-def write_atlas(form, items, anims, tag_meta):
+def write_atlas(form, items, anims, tag_meta, base=None, outdir=None):
     pages = pack_pages(items)
     lut = {n: (a, piv) for n, a, piv in items}
     files = []
+    base = base or f"atlas_{form}_live"
     for pi, (W, H, pos) in enumerate(pages):
         suf = "" if len(pages) == 1 else "_" + "abcdefgh"[pi]
-        png = os.path.join(OUT, f"atlas_{form}_live{suf}.png")
+        png = os.path.join(outdir or OUT, f"{base}{suf}.png")
         img = Image.new("RGBA", (W, H), (0, 0, 0, 0)); jf = {}
         for name, (x, y, w, h) in pos.items():
             a, piv = lut[name]; im = to_img(a); e = np.array(im)
@@ -599,6 +746,36 @@ def big_img(a, Z, bg=BG, pad=0):
     S = a.shape[0]
     m = Image.new("RGBA", (a.shape[1] + 2 * pad, S + 2 * pad), bg); m.alpha_composite(to_img(a), (pad, pad))
     return m.resize((m.width * Z, m.height * Z), Image.NEAREST)
+
+# ============================================================ fx bug (A2 swat／smug_pose 嘅蟲仔，8×8，向右)
+BUG_T = [  # o outline  b berry_d  B berry  w white  c cyan  e glow_core(眼)
+ ["..c.c...", ".cwcwc..", "..cwc..o", ".oooo.o.", "obBBbooo", "obbbboeo", ".oooo.o.", "........"],   # 翼上
+ ["........", "........", ".cwwc..o", "ccwwco..", "obBBbooo", "obbbboeo", ".oooo.o.", "........"],   # 翼平
+ ["........", "........", ".......o", ".oooo.o.", "obBBbooo", "obbbboeo", "cwwcoo..", ".cc....."],   # 翼落
+]
+BUG_C = {"o": "outline", "b": "berry_d", "B": "berry", "w": "white", "c": "cyan", "e": "glow_core"}
+def fx_bug_frames():
+    out = []
+    for rows in BUG_T:
+        a = np.zeros((8, 8), np.uint8)
+        for j, r in enumerate(rows):
+            for i, ch in enumerate(r):
+                if ch != ".": a[j, i] = IDX[BUG_C[ch]]
+        out.append(a)
+    return out
+
+def build_fx():
+    d = os.path.join(OUT, "fx"); os.makedirs(d, exist_ok=True)
+    fr = fx_bug_frames(); names = [f"fx_bug_{k + 1:02d}" for k in range(len(fr))]
+    for n, a in zip(names, fr): to_img(a).save(os.path.join(d, n + ".png"))
+    items = [(n, a, (4, 4)) for n, a in zip(names, fr)]
+    write_atlas("fx", items, {"fx_bug": {"frames": names + [names[1]], "fps": 10, "loop": True}},
+                {"frameSize": 8, "pivotRule": "centre (4,4)", "note": "蟲仔 fx：拍翼 上→平→落→平 循環（4 步用 3 幀）；向右（scaleX −1 向左）；engine 飛近 anchors.head_r，swat 第 3 幀（索引 2）判定打中／撲空"},
+                base="atlas_fx_live", outdir=d)
+    big = Image.new("RGBA", (len(fr) * 8 * 16 + (len(fr) + 1) * 8, 8 * 16 + 16), BG)
+    for k, a in enumerate(fr): big.alpha_composite(to_img(a).resize((128, 128), Image.NEAREST), (8 + k * 136, 8))
+    big.save(os.path.join(OUT, "preview", "fx_bug_16x.png"))
+    return names
 
 # ============================================================ main build
 def build(stage1=False):
@@ -630,6 +807,7 @@ def build(stage1=False):
                     vis = VIS.get(clip, [True] * 99)[k]
                     an = anchors(form, p, vis)
                     if clip in PIVOT_OVERRIDE: an = pend_anchors(form, p, an)
+                    an = rot_anchors(form, p, an)
                     face = FACE[clip][k]
                     an["face"] = dict(face) if face else None
                     full = compose_face(body, an, face, kit)
@@ -646,21 +824,27 @@ def build(stage1=False):
         for name, (a, pv) in kit.items():
             to_img(a).save(os.path.join(OUT, "kit", form, name + ".png"))
         # atlas
-        items = []; anims = {}
+        items = []; anims = {}; items2 = []; anims2 = {}
         for clip, c in clips.items():
+            its, ans = (items2, anims2) if clip in S2_ORDER else (items, anims)
             fps = (NEW_META[clip][0] if c["new"] else M.META[clip][0]); loop = (NEW_META[clip][1] if c["new"] else M.META[clip][1])
             pv = (lambda k: tuple(c["anchors"][k][PIVOT_OVERRIDE[clip]])) if clip in PIVOT_OVERRIDE else (lambda k: piv)
             extra = {"pivot": PIVOT_OVERRIDE[clip]} if clip in PIVOT_OVERRIDE else {}
+            if clip in HOLD_LAST_S: extra["holdLast_s"] = HOLD_LAST_S[clip]
             nf = [f"{clip}_noface_{k + 1:02d}" for k in range(len(c["noface"]))]
-            for k, (n, a) in enumerate(zip(nf, c["noface"])): items.append((n, a, pv(k)))
-            anims[f"{clip}_noface"] = {"frames": nf, "fps": fps, "loop": loop, **extra}
+            for k, (n, a) in enumerate(zip(nf, c["noface"])): its.append((n, a, pv(k)))
+            ans[f"{clip}_noface"] = {"frames": nf, "fps": fps, "loop": loop, **extra}
             if c["new"]:
                 ff = [f"{clip}_{k + 1:02d}" for k in range(len(c["full"]))]
-                for k, (n, a) in enumerate(zip(ff, c["full"])): items.append((n, a, pv(k)))
-                anims[clip] = {"frames": ff, "fps": fps, "loop": loop, **extra}
+                for k, (n, a) in enumerate(zip(ff, c["full"])): its.append((n, a, pv(k)))
+                ans[clip] = {"frames": ff, "fps": fps, "loop": loop, **extra}
         for name, (a, pv) in kit.items(): items.append((name, a, pv))
         files = write_atlas(form, items, anims, {"form": form, "frameSize": S, "pivotRule": "body frames bottom-center (w/2, h-3); kit pieces pivotPx = anchor point; picked_up* frames pivotPx = anchors.grab (頭頂拎點，animation pivot=grab)",
                                                     "note": "團絨生命感：<clip>_noface 無臉身體、新 clip 完整幀、五官套 eyes_*/mouth_*、燈泡 bulb_base/bulb_glow"})
+        if items2:   # 第二段 clip 另出一張 atlas（第一段 atlas 版面不變）；五官 kit 喺主 atlas
+            files += write_atlas(form, items2, anims2, {"form": form, "frameSize": S, "phase": 2, "pivotRule": "body frames bottom-center (w/2, h-3)",
+                                                        "note": "團絨生命感第二段：<clip>_noface 無臉身體＋完整幀；五官 kit 用 atlas_<form>_live.json 嘅 eyes_*/mouth_*/bulb_*"},
+                                 base=f"atlas_{form}_live_s2")
         anchors_all[form] = {clip: c["anchors"] for clip, c in clips.items()}
         result["forms"][form] = dict(clips=clips, kit=kit, atlas=files)
     # face_anchors.json (mirror of CLIPS.json anchors)
@@ -683,6 +867,7 @@ def build(stage1=False):
             fl.append('  ' + json.dumps(form) + ':{\n' + ',\n'.join(cl) + '}')
         fh.write(',\n'.join(fl) + '}}\n')
     json.loads(open(os.path.join(OUT, "face_anchors.json")).read())
+    if not stage1: result["fx"] = build_fx()
     return result
 
 # ============================================================ previews
@@ -704,7 +889,8 @@ def previews(res, stage1=False):
         for clip in NEW_ORDER:
             c = clips[clip]; fps = NEW_META[clip][0]
             fr = [big_img(c["full"][k], Z, pad=2) for k in range(len(c["full"]))]
-            save_gif(os.path.join(pdir, f"{clip}_8x.gif"), fr, fps, loops=(3 if len(fr) <= 5 else 2), hold_last_ms=250)
+            save_gif(os.path.join(pdir, f"{clip}_8x.gif"), fr, fps, loops=(3 if len(fr) <= 5 else 2), hold_last_ms=int(HOLD_LAST_S.get(clip, 0.25) * 1000))
+            if clip in S2_ORDER: s2_strip(form, c, kit, pdir, clip)
         # picked_up: grab-aligned preview (pivot = grab fixed on screen), entry surprised loop -> happy loops; + strip
         pickup_preview(form, clips["picked_up"], kit, pdir)
         # G1 bulb moods on idle
@@ -724,6 +910,38 @@ def previews(res, stage1=False):
         save_gif(os.path.join(pdir, "face_presets_on_idle_8x.gif"), fr, 6, loops=1, durs=durs)
     if not stage1:
         contact_sheets(res)
+        s2_contact(res)
+
+def s2_strip(form, c, kit, pdir, clip, Z=8):
+    """preview/<form>/<clip>_strip_8x.png  row1 = full (default face), row2 = noface body + anchor dots (preview only)"""
+    S = FORMS[form]["S"]; n = len(c["full"]); P = 2; W = S + 2 * P
+    strip = Image.new("RGBA", (W * Z * n, W * Z * 2), BG)
+    for k in range(n):
+        strip.paste(big_img(c["full"][k], Z, pad=P), (k * W * Z, 0))
+        m = big_img(c["noface"][k], Z, pad=P); an = c["anchors"][k]
+        for key, col in (("eyeL", (90, 220, 255, 255)), ("eyeR", (90, 220, 255, 255)), ("mouth", (255, 120, 200, 255)), ("head_r", (120, 255, 120, 255)), ("bulb", (255, 80, 80, 255))):
+            x, y = an[key]; x0, y0 = (x + P) * Z + 1, (y + P) * Z + 1
+            for yy in range(y0, y0 + Z - 2):
+                for xx in range(x0, x0 + Z - 2): m.putpixel((xx, yy), col)
+        strip.paste(m, (k * W * Z, W * Z))
+    strip.save(os.path.join(pdir, f"{clip}_strip_8x.png"))
+
+def s2_contact(res, Z=4):
+    """live_s2_contact_4x.png：每行一個第二段 clip，3 form 並排（sprout 用 2× 同 64 對齊）＋ fx bug"""
+    cell = 64 * Z + 8
+    rows = S2_ORDER
+    maxn = max(len(res["forms"]["radiant"]["clips"][c]["full"]) for c in rows)
+    W = 8 + len(FORM_LIST) * (maxn * cell + 16); H = 8 + (len(rows) + 1) * cell
+    img = Image.new("RGBA", (W, H), BG)
+    for r, clip in enumerate(rows):
+        for fi, form in enumerate(FORM_LIST):
+            c = res["forms"][form]["clips"][clip]; S = FORMS[form]["S"]; z = Z * (64 // S)
+            for k, a in enumerate(c["full"]):
+                img.alpha_composite(to_img(a).resize((S * z, S * z), Image.NEAREST), (8 + fi * (maxn * cell + 16) + k * cell, 8 + r * cell))
+    bug = fx_bug_frames()
+    for k, a in enumerate(bug):
+        img.alpha_composite(to_img(a).resize((8 * Z * 4, 8 * Z * 4), Image.NEAREST), (8 + k * (8 * Z * 4 + 16), 8 + len(rows) * cell + 40))
+    img.save(os.path.join(OUT, "live_s2_contact_4x.png"))
 
 def pickup_preview(form, c, kit, pdir, Z=8):
     S = FORMS[form]["S"]; n = len(c["noface"])

@@ -125,6 +125,11 @@
 | `rush` | D5 久未見衝埋嚟 | 6 | 12 | 否 | 6 | 否 | — | 開 app 時離線 ≥6h（每日最多 1 次） | cheer_jump | 第 1 幀起步；第 2–5 幀（loopRange [1,4]）跑步循環直至到達玩家前位置；第 6 幀煞停 → 接 cheer_jump。速度線同塵烙入幀。 |
 | `turn_back` | D2 點一下回頭 | 4 | 8 | 否 | 4 | 否 | — | 寵物背向／行緊路時被點一下；或 walk 中被點 | emo_happy | 第 1 幀背面（faceVisible=false，唔好疊五官）、第 2 幀 3/4 側（眼距收窄）、第 3 幀轉正彈起、第 4 幀定。之後按心情接 emo_happy（心情≥50）或 emo_surprised。 |
 | `picked_up` | D6 被拎起（浮動團絨） | 6 | 8 | 是 | 7 | 否 | — | Android 浮動寵物：手指按住寵物頭頂拖動／長按拎起（拖曳開始）時播；直至放手 | idle | pivot＝anchors.grab（頭頂拎點），唔係腳底 pivot：引擎將 grab 對準手指位置。身體吊住微拉長、成個以 grab 為軸左右擺（鐘擺 shear）、兩隻腳交替輕踢。第一個循環建議 surprised（faceOnEnter），之後 happy。放手 → 引擎跌落／彈返地面再接 idle（或 emo_surprised）。可按拖動速度改 fps 6–12。 |
+| `smug_pose` | S2 撲空扮醒（得意 pose） | 4 | 6 | 否 | 3 | 否 | 30 | swat／撲蟲撲空之後（蟲仔 fx 飛走）；或 catch_reach 接唔到時 50% 改播 | idle | 蠢蠢地但覺得自己好醒：第 1 幀撲空落地、第 2 幀企直、第 3–4 幀挺胸仰頭合眼 ω 口（雙手叉腰）；最後一幀 hold 0.8s（holdLast_s），第 4 幀頭頂閃一下（烙入幀）。表情 preset smug。 |
+| `act_cool` | S2 扮冷靜 | 4 | 5 | 否 | 3 | 否 | 20 | sneeze 之後 40%／lookup_tip→getup 之後／picked_up 放低後 30% | idle | 扮冇事：第 1 幀別過頭（面向後偏 ft，眼 squint 望 L）、第 2 幀輕咳（咳氣烙入幀，向左）、第 3–4 幀拍拍身（塵烙入幀），最後仰少少頭側眼。 |
+| `lookup_tip` | S2 望天望到跌 | 4 | 6 | 否 | 2 | 否 | 60 | lookup 播完後 20%（夜晚／流星 ×2）；接住 lookup 第 3 幀姿勢 | getup | 望天望到向後倒：前腳離地、搖兩搖、第 4 幀一屁股坐低（停住，接 getup）。 |
+| `getup` | S2 起返身 | 4 | 6 | 否 | 2 | 否 | — | lookup_tip 播完自動接（或任何跌低／坐低後） | act_cool | 後手撐地（第 2 幀用力 angry 臉）→ 彈起 → 企定。播完 60% 接 act_cool，否則 idle。 |
+| `sniff_itch` | S2 嗅到鼻癢（過渡） | 2 | 6 | 否 | 1 | 否 | — | sniff 第 3 幀之後如抽中 sneeze（機率 25%） | sneeze | sniff → sniff_itch → sneeze 過渡：第 1 幀鼻貼地抽兩抽（鼻癢線烙入幀）、第 2 幀抬頭瞇眼，下一幀直接接 sneeze_01。 |
 
 名稱對照（策劃稿 → clip）：hop_walk→`walk_happy`、drag_walk→`walk_drag`、look_up→`lookup`、swat_bug→`swat`、dash→`rush`、D2 回頭→`turn_back`。A1／D1 邊行邊望＝gaze（唔使新 clip）。G1＝燈泡 overlay。
 
@@ -151,6 +156,25 @@
 | grumpy | angry | C | angry | — |
 | curious | neutral | U | sleepy | question |
 | wink | neutral（右眼 wink） | C | wink | — |
+| smug | sleepy | C | squint | — |
+
+<!-- EVO6A-START -->
+## 進化 6 階 batch A（光卵／絨點／絨芽／絨跳，evo6 v3 lumi feel）
+- 外觀＝`../evo6_concept/`（v3 lumi feel）；姿勢＝現有同名 clip（std23 ＋ 生命感 s1/s2，同 sprout/radiant/soft 一樣 fps／priority／anchors 結構），只換外觀層。
+- 基本 31 色（`../palette.json`）、alpha 0/255、無 AA、向右；每形態一張 atlas（1024 闊、padding 2、extrude 1、每幀 pivotPx）＋ 同 layout emissive（白＝glow_core/glow_mid）。
+- 每幀：`frames/<clip>_NN.png`、`layers/<clip>_NN_noface.png`／`_faceov.png`、`emissive/…`；錨點 `../evo6/<form>/face_anchors_<form>.json`（＝本檔 clips[].anchors.<form>）。
+- face kit 按新尺寸重出：絨點／絨芽 4×4 豆眼（S 級）、絨跳 4×5（L 級＝燦光原裝）；bulb 只限絨跳（第一粒著燈）；picked_up pivot＝grab。
+- 光卵冇 face rig（同舊蛋）：idle 4、glow 2、tap 4、hatch 6、picked_up 4（定義喺 `forms.evo_egg.clipDefs`）。
+
+| 階 | 形態 | px | pivot | clip | 幀 | atlas |
+|---|---|---|---|---|---|---|
+| 1 | 光卵 `evo_egg` | 24 | (12, 21) | 5 | 20 | `../evo6/atlas_evo_egg.png`（1024×32，20 塊）＋ `_emissive` |
+| 2 | 絨點 `evo_dot` | 28 | (14, 25) | 39 | 171 | `../evo6/atlas_evo_dot.png`（1024×512，426 塊）＋ `_emissive` |
+| 3 | 絨芽 `evo_sprout` | 32 | (16, 29) | 39 | 171 | `../evo6/atlas_evo_sprout.png`（1024×512，426 塊）＋ `_emissive` |
+| 4 | 絨跳 `evo_hop` | 38 | (19, 35) | 39 | 171 | `../evo6/atlas_evo_hop.png`（1024×1024，428 塊）＋ `_emissive` |
+
+5 守夜者 44、6 靜光 48 ＝ batch B／C（未出）。
+<!-- EVO6A-END -->
 
 <!-- LUMI-START -->
 ## 螢絨 lumi（隱藏稀有成年形態，round_s）
