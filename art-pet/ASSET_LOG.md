@@ -35,3 +35,13 @@
 - 驗證：validate_lumi.py → ALL PASS；validate_liveliness.py（含 lumi）→ ALL PASS（FAIL 0）
 - 注意：build_tuanrong_liveliness_docs.py 會由 _backup_v1 重砌 CLIPS.json → 重跑後要再跑 build_lumi.py 補返 lumi 段
 - Pillow／numpy 程式繪製、alpha 0/255、無 AA、無 AI
+
+## 2026-10-31 13:11 — 螢絨 lumi std23 補齊（+9 clip／42 幀）
+- 新 clip（pose＝radiant 同名 clip，只換外觀層）：sway 4、yawn 4、emo_wantplay 2、emo_cuddly 2、emo_surprised 2、cheer_jump 6、catch_reach 6、sunbathe 8、pot_bump 8；grumpy：radiant 冇呢個 clip（只係 face preset）→ 冇出
+- 合共 24 clip／102 幀（std23 23 clip＋picked_up）；每幀 emissive、_noface/_faceov、錨點；冇幀掂 64px 邊（只 play_04 自動收 shear，同上一版）
+- sunbathe：新 `sun_lumi` ramp（lumi_fur0/1/2＋cream4 亮部暖光）
+- 改檔：sprites/tuanrong/atlas_lumi.png/.json、atlas_lumi_emissive.png（重 pack，仍 1024×1024 單頁，290 塊；舊幀 rect 位置有變，名同像素不變）、lumi/face_anchors_lumi.json、lumi/contact_lumi_4x.png、lumi/_stats.json、motion/CLIPS.json（forms.lumi＋9 clip anchors.lumi）、motion/CLIPS.md、tools/build_lumi.py、tools/build_lumi_concept.py（sun_lumi ramp）、tools/validate_lumi.py（24/102、掂邊檢查）、lumi_concept/NOTES.md
+- 新檔：lumi/{frames,layers,emissive}/ 9 clip 嘅幀、preview/<clip>_8x.gif、preview/strips/<clip>_strip_8x.png
+- 備份：/workspace/game-design/_backups/pre_lumi_std23_20261031/
+- 驗證：validate_lumi.py → ALL PASS；validate_liveliness.py（含 lumi）→ ALL PASS（FAIL 0）
+- Pillow／numpy 程式繪製、lumi 31 色、alpha 0/255、無 AA、無 AI

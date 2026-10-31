@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """validate_lumi.py — 螢絨 (lumi) 動畫交付驗證（獨立於 build；validate_liveliness.py 結尾會調用）。
-檢查：lumi 31 色、alpha 0/255、64×64、clip／幀數（MVP 12/46 ＋ picked_up、fall_asleep、wake ＝ 16/60）、
+檢查：lumi 31 色、alpha 0/255、64×64、clip／幀數（std23 23 clip ＋ picked_up ＝ 24/102；MVP 12/46）、邊界唔掂 64px 邊、
 錨點齊全＋界內、noface+faceov == 完整幀、picked_up 完整幀 == noface + kit（按錨點）、
 emissive == 完整幀內 fly/fly_core 像素（白／透明）、atlas ≤1024²／padding 2／extrude 1／無重疊／像素＝散檔、
 pivotPx（身體 (32,61)；picked_up＝grab）、atlas_lumi_emissive 同 layout 且像素＝ emissive 散檔、
@@ -12,7 +12,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TR = os.path.normpath(os.path.join(HERE, "..", "sprites", "tuanrong")); MOT = os.path.join(TR, "motion"); LU = os.path.join(TR, "lumi")
 MVP = {"idle": 4, "blink": 4, "walk": 6, "play": 6, "eat": 4, "sleep_loop": 4, "emo_happy": 2, "emo_hungry": 2, "emo_sleepy": 2, "celebrate": 4, "droop": 6, "sick": 2}
 EXTRA = {"picked_up": 6, "fall_asleep": 4, "wake": 4}
-WANT = {**MVP, **EXTRA}
+STD23_ADD = {"sway": 4, "yawn": 4, "emo_wantplay": 2, "emo_cuddly": 2, "emo_surprised": 2, "cheer_jump": 6, "catch_reach": 6, "sunbathe": 8, "pot_bump": 8}
+WANT = {**MVP, **EXTRA, **STD23_ADD}   # std23 全套 23 clip ＋ picked_up ＝ 24 clip／102 幀
 KEYS = ("eyeL", "eyeR", "mouth", "head_r", "bulb", "faceVisible", "face")
 MOVING = ("neutral", "surprised", "squint", "angry", "sad")
 S = 64; PIV = (32, 61)
@@ -58,7 +59,9 @@ def run():
     extra = set(FA) - set(WANT)
     if extra: F(f"unexpected clips {extra}")
     tot = sum(len(v) for v in FA.values())
-    info.append(f"[lumi] clip {len(FA)}／幀 {tot}（MVP {sum(len(FA[c]) for c in MVP if c in FA)} 幀）")
+    info.append(f"[lumi] clip {len(FA)}／幀 {tot}（MVP {sum(len(FA[c]) for c in MVP if c in FA)} 幀；std23 補 {sum(len(FA[c]) for c in STD23_ADD if c in FA)} 幀）")
+    std23 = CL["forms"].get("lumi", {}).get("std23", [])
+    if std23 and set(std23) - set(FA): F(f"std23 clips missing {set(std23) - set(FA)}")
     # kit
     aj = json.load(open(os.path.join(TR, "atlas_lumi.json")))
     kit = {os.path.basename(p)[:-4]: load(p) for p in glob.glob(LU + "/kit/*.png")}
@@ -82,6 +85,8 @@ def run():
             ef = os.path.join(LU, "emissive", f"{cn}_{k:02d}_emissive.png")
             if not all(os.path.exists(x) for x in (fr, nf, ov, ef)): F(f"missing file {cn} {k}"); continue
             full = load(fr); body = load(nf); o = load(ov)
+            al = full[..., 3] > 0
+            if al[0].any() or al[:, 0].any() or al[:, -1].any(): F(f"frame touches edge {cn} {k}")
             comp = body.copy(); m = o[..., 3] == 255; comp[m] = o[m]
             if np.array_equal(comp, full): recon += 1
             else: F(f"noface+faceov != full {cn} {k}")

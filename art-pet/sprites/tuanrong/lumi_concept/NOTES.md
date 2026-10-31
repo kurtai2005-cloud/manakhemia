@@ -48,5 +48,6 @@
 - renderer 已改成 parametric `render_lumi(p)`（同 render_pet 參數），概念圖＝`render_lumi({})`。
 
 ## 狀態
-- ✅ MVP 12 clip／46 幀＋picked_up、fall_asleep、wake（共 15 clip／60 幀）→ `../atlas_lumi.png/.json`＋`../atlas_lumi_emissive.png`；散檔 `../lumi/`；build `tools/build_lumi.py`、驗證 `tools/validate_lumi.py`。
-- ⏳ std23 餘下：sway、yawn、emo_wantplay、emo_cuddly、emo_surprised、cheer_jump、catch_reach、sunbathe、pot_bump。
+- ✅ std23 全套 23 clip＋picked_up（共 24 clip／102 幀；MVP 12／46）→ `../atlas_lumi.png/.json`＋`../atlas_lumi_emissive.png`（1024×1024 單頁）；散檔 `../lumi/`；build `tools/build_lumi.py`、驗證 `tools/validate_lumi.py`。
+- sunbathe 用 `sun_lumi` ramp（lumi_fur0→fur1→fur2→cream4：亮部暖光，夜藍紫唔變色）。
+- radiant 冇 grumpy clip（grumpy 只係 face preset），所以 lumi 都冇出。

@@ -35,8 +35,10 @@ M.ANCH[FORM] = dict(M.ANCH["radiant"])     # head_r / pot / sun anchors = radian
 
 MVP = ["idle", "blink", "walk", "play", "eat", "sleep_loop", "emo_happy", "emo_hungry", "emo_sleepy", "celebrate", "droop", "sick"]
 EXTRA = ["picked_up", "fall_asleep", "wake"]
-ORDER = MVP[:5] + ["fall_asleep", "sleep_loop", "wake"] + MVP[6:] + ["picked_up"]
-STD23_REMAIN = [c for c in M.ORDER if c not in ORDER]
+STD23_ADD = ["sway", "yawn", "emo_wantplay", "emo_cuddly", "emo_surprised", "cheer_jump", "catch_reach", "sunbathe", "pot_bump"]
+ORDER = [c for c in M.ORDER] + ["picked_up"]          # std23 全套（＝radiant M.ORDER）＋ picked_up
+STD23_REMAIN = [c for c in M.ORDER if c not in ORDER]  # 已清零
+# radiant 冇 grumpy clip（grumpy 只係 face preset）→ 唔出
 
 def to_img(a):
     rgba = np.zeros(a.shape + (4,), np.uint8)
@@ -219,16 +221,22 @@ def _props():
     return _PROPS
 
 def with_props(clip, k, a, Z=8):
-    """pet + shared props (zzz/sweat/... from motion/atlas_props, shared palette) at head_r anchor — preview only"""
-    TOP = 14
-    m = Image.new("RGBA", (64, 64 + TOP), BG)
-    m.alpha_composite(to_img(a), (0, TOP))
-    for (pn, anc, st, behind) in M.ATT.get(clip, []):
-        if k < st: continue
+    """pet + shared props (zzz/sweat/heart/sun_patch/flowerpot … from motion/atlas_props, shared palette) — preview only"""
+    TOP = 14; XW = 24 if clip == "pot_bump" else 0      # pot 喺右邊 → 預覽畫布加闊
+    m = Image.new("RGBA", (64 + XW, 64 + TOP), BG)
+    att = M.ATT.get(clip, [])
+    def put(t):
+        pn, anc, st, behind = t
+        if k < st: return
         ims, piv, loop = _props()[pn]
         kk = (k - st) % len(ims) if loop else min(k - st, len(ims) - 1)
         ox, oy = M.ANCH[FORM][anc]
         m.alpha_composite(ims[kk], (int(32 + ox - piv[0]), int(TOP + 61 + oy - piv[1])))
+    for t in att:
+        if t[3]: put(t)
+    m.alpha_composite(to_img(a), (0, TOP))
+    for t in att:
+        if not t[3]: put(t)
     return m.resize((m.width * Z, m.height * Z), Image.NEAREST)
 
 def previews(clips, kit):
@@ -264,7 +272,7 @@ def previews(clips, kit):
             c = clips["idle"]; fr.append(big(L.compose_face(c["noface"][k], c["anchors"][k], L.PRESETS[nm], kit), Z)); durs.append(160)
     L.save_gif(os.path.join(P, "face_presets_on_idle_8x.gif"), fr, 6, loops=1, durs=durs)
     # main contact sheet (4x): one row per clip + H4 night row
-    Zc = 4; cell = 64 * Zc + 8; cols = 6
+    Zc = 4; cell = 64 * Zc + 8; cols = max(len(clips[c]['full']) for c in ORDER)
     rows = [[clips[c]["full"][k] for k in range(len(clips[c]["full"]))] for c in ORDER]
     Hn = len(rows) + 1
     cs = Image.new("RGBA", (cols * cell + 8, Hn * cell + 8), BG)
@@ -295,7 +303,7 @@ def update_docs(clips, atlas_info):
                         "atlasSize": [W, H], "atlasPieces": nitems, "frames": sum(len(c["full"]) for c in clips.values()),
                         "headRightAnchor": list(M.ANCH[FORM]["head_r"]), "potAnchor": list(M.ANCH[FORM]["pot"]), "sunAnchor": [0, 0],
                         "palette": "../lumi/palette_lumi.json", "faceAnchors": "../lumi/face_anchors_lumi.json",
-                        "clips": ORDER, "mvp": MVP, "extra": EXTRA, "std23Remaining": STD23_REMAIN,
+                        "clips": ORDER, "mvp": MVP, "extra": EXTRA, "std23": list(M.ORDER), "clipSet": "std23 + picked_up", "std23Remaining": STD23_REMAIN,
                         "emissiveRule": "白＝發光（palette fly #CFF26A、fly_core #F2FFB8）：尾燈、觸角燈頭、身上光點、眼高光。發光像素唔食場景 petTint×ambientTint；glow = emissive Gaussian σ3 × #cff26a ×1.4 ＋ σ1 × #f2ffb8 ×0.35",
                         "note": "姿勢參數同 radiant 一樣（round_s），只換外觀層；尾燈脈衝（bud＋幀相位）、光點閃爍已烙入幀。"}
     for c in D["clips"]:
@@ -314,7 +322,7 @@ def update_docs(clips, atlas_info):
     mp = os.path.join(MOT, "CLIPS.md"); md = open(mp, encoding="utf-8").read()
     if MD_MARK in md: md = md[:md.index(MD_MARK)].rstrip() + "\n"
     tot = sum(len(clips[c]["full"]) for c in ORDER); mvpn = sum(len(clips[c]["full"]) for c in MVP)
-    rows = "\n".join(f"| {c} | {len(clips[c]['full'])} | {meta(c)[0]} | {'loop' if meta(c)[1] else 'once'} | {'MVP' if c in MVP else '加（浮動／睡眠）'} |" for c in ORDER)
+    rows = "\n".join(f"| {c} | {len(clips[c]['full'])} | {meta(c)[0]} | {'loop' if meta(c)[1] else 'once'} | {'MVP' if c in MVP else ('std23' if c in STD23_ADD + ['fall_asleep', 'wake'] else '生命感（浮動）')} |" for c in ORDER)
     md += f"""
 {MD_MARK}
 ## 螢絨 lumi（隱藏稀有成年形態，round_s）
@@ -322,13 +330,13 @@ def update_docs(clips, atlas_info):
 - 64×64、pivot (32,61)、lumi 31 色（`../lumi/palette_lumi.json`）、alpha 0/255、向右。姿勢＝radiant 同名 clip（只換外觀層）。
 - 五官：`<clip>_noface` ＋ kit（eyes_*/mouth_*，64px，眼高光 fly_core），錨點 `../lumi/face_anchors_lumi.json`（＝本檔 clips[].anchors.lumi）；bulb＝前觸角燈頭、另有 bulb2／tail。
 - picked_up：pivot＝anchors.grab（同 radiant）。
-- 共 {len(ORDER)} clip／{tot} 幀（MVP 12 clip／{mvpn} 幀＋picked_up、fall_asleep、wake）。
+- 共 {len(ORDER)} clip／{tot} 幀：std23 全套 23 clip（MVP 12 clip／{mvpn} 幀）＋ picked_up。radiant 冇 grumpy clip（只係 face preset），所以冇出。
 
 | clip | 幀 | fps | | 類 |
 |---|---|---|---|---|
 {rows}
 
-未做（std23 餘下）：{"、".join(STD23_REMAIN)}
+std23 餘下：{"、".join(STD23_REMAIN) or "冇（已齊）"}
 """
     open(mp, "w", encoding="utf-8").write(md)
 

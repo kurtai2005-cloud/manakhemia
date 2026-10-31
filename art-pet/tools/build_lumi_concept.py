@@ -38,7 +38,7 @@ EMIS = {IDX["fly"], IDX["fly_core"]}        # emissive = 亮兩級
 RAMP = ["zzz", "lumi_fur0", "lumi_fur1", "lumi_fur2"]   # 暗→亮（夜藍紫絨）
 TH = bt.TH
 bt.RAMPS["lumi"] = RAMP
-bt.RAMPS["sun_lumi"] = ["lumi_fur0", "lumi_fur1", "lumi_fur2", "white"]
+bt.RAMPS["sun_lumi"] = ["lumi_fur0", "lumi_fur1", "lumi_fur2", "cream4"]   # 曬太陽：亮部暖光（sunbathe）
 # round_s 骨架：同燦光 rx/ry/G/pivot；N/rb = lumi 外觀（較順滑「蟲殼」絨）
 bt.FORMS["lumi"] = dict(S=64, rx=19.0, ry=16.0, G=61, ramp="lumi", N=14, rb=3.0, big=True, stem=7)
 FACE_DX = 2                                   # 面整體右移 2px（向右睇）；anchors 亦 +2
