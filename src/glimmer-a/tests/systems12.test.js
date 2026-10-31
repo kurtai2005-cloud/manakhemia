@@ -210,6 +210,9 @@ console.log('⑤ 系統 12：懸浮小驚喜（設定、replay 入帳、每日 5
   s = mk(); X.grant(s, 13, 'mg', now); r = X.applyOverlay(s, [1, 2, 3].map(i => ({ k: 'drop', t: now - i })), now); ok(r.drop === 2 && X.wallet(s, now).o === 15, 'otherCap 15 同小遊戲共用');
   s = mk(); X.surpSet(s, 'drop', false, now); r = X.applyOverlay(s, [{ k: 'drop', t: now }], now); ok(r.drop === 0 && X.wallet(s, now).total === 0, '閂咗星星碎 → 唔入帳');
   ok(X.overlaySys12(s, now).surp.on.drop === false, 'snapshot 帶埋開關（懸浮閂咗就完全唔掉）');
+  { const sp = mk(); X.questTick(sp, now); const o = X.overlaySys12(sp, now).pat, want = X.st(sp).quests.list.filter(x => x.k === 'pat').reduce((t, x) => t + x.need - x.n, 0);
+    ok(o && o.day === S.dayKey(now) && o.left === want && o.cap === D.PARAMS.systems12.quests.overlayPatPerDay && o.cap > 0, 'v10.3 snapshot.sys12.pat：left＝摸頭委託仲差幾下、cap 讀 config', o);
+    const eg = mk(); eg.stage = 'egg'; ok(X.overlaySys12(eg, now).pat.left === 0, 'v10.3 snapshot：蛋 → pat.left 0'); }
   s = mk(); s.stage = 'egg'; r = X.applyOverlay(s, [{ k: 'drop', t: now }], now); ok(r.drop === 0, '光卵唔掉');
   // voice sync
   s = mk(); r = X.applyOverlay(s, [{ k: 'voice', t: now - 5000, line: C.bond.lines[0][0] }], now);

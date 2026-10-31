@@ -278,7 +278,13 @@
     const room = Math.max(0, Math.min(U.drop.perDay - (u.drops[key] || 0), wl.otherCap - wl.o, wl.cap - wl.today));
     return { v: 1, egg, bond: { v: Math.round(b.v), tier }, voice: { chance: B.voice.chance, cooldownSec: B.voice.cooldownSec, showSec: B.voice.showSec, newestTierPct: B.voice.newestTierPct, lastAt: b.lastVoice, lines: egg ? [] : B.lines.slice(0, tier) },
       surp: { on: Object.assign({}, u.on), waterH: u.waterH, sleepAt: u.sleepAt, ts: u.ts, drop: { minH: U.drop.minH, maxH: U.drop.maxH, perDay: U.drop.perDay, showSec: U.drop.showSec, day: key, room },
-        water: { fromH: U.water.fromH, toH: U.water.toH }, sleepWinMin: U.sleep.winMin, showSec: U.showSec, lines: U.lines }, shards: wl.total, wx: overlayWx(s, nowMs) };
+        water: { fromH: U.water.fromH, toH: U.water.toH }, sleepWinMin: U.sleep.winMin, showSec: U.showSec, lines: U.lines }, shards: wl.total, wx: overlayWx(s, nowMs), pat: overlayPat(s, nowMs) };
+  }
+  /* v10.3：懸浮摸頭 → 摸頭委託。left＝手上（≤今日）摸頭委託仲差幾下；cap＝懸浮每日最多 queue 幾下（config quests.overlayPatPerDay）。JS 照樣係唯一記帳者。 */
+  function overlayPat(s, nowMs) {
+    const Q = C().quests, key = SIM.dayKey(nowMs), q = s && s.stage !== 'egg' ? st(s).quests : null; let left = 0;
+    if (q) for (const x of q.list) if (x.k === 'pat' && kDn(x.d) <= kDn(key)) left += Math.max(0, x.need - x.n);
+    return { day: key, left, cap: Q.overlayPatPerDay || 0 };
   }
 
   // ── 系統 3：團絨日記（每日 1 篇：範本＋當日事件；進化／化光有特別頁；離線日一句；留 30 日；化光入紀念冊）──
