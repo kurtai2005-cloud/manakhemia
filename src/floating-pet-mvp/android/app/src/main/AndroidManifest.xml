@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:name=".GlimmerApp"
@@ -35,6 +36,10 @@
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Floating virtual pet overlay drawn above other apps while the user has it switched on (desktop companion)." />
         </service>
+
+        <!-- QA P2：android.permission.DUMP 係 androidx.profileinstaller:1.3.0 帶入（ProfileInstallReceiver 嘅 android:permission，
+             淨係俾 adb／benchmark 裝 baseline profile 用）。浮動寵物用唔著 → 合併時移除；ProfileInstallerInitializer（startup）照留。 -->
+        <receiver android:name="androidx.profileinstaller.ProfileInstallReceiver" tools:node="remove" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

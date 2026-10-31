@@ -1,5 +1,6 @@
 /* 浮動團絨最細 bridge（冇 Capacitor 時乜都唔做）。
  * - 寫 snapshot：Preferences 'glimmer.snapshot' = {v,form,mood,ts}（form 只限 sprout／radiant／soft，螢絨唔入）
+ *   evo6（v2）：加 stage／evoForm／size（px）／pivot／sizeDp（跟 __glimmer.evo.overlayInfo()；舊 Kotlin 照讀 form，唔識新欄都唔會壞）
  * - 返 app 時 replay overlay queue：每次互動 mood +1，每日最多 +5（按互動發生嗰日，本地時間），冇獎勵、冇事件。 */
 (function () {
   var C = window.Capacitor;
@@ -9,7 +10,7 @@
   var DAILY_KEY = 'fpet_daily_v1', CAP = 5;
   function G() { return window.__glimmer; }
   function formOf(s) {
-    if (!s || s.stage !== 'adult') return 'sprout';
+    if (!s || (s.stage !== 'adult' && s.stage !== 'elder')) return 'sprout';   // evo6：靜光當成年
     if (s.form === 'bright') return 'radiant';
     return 'soft';   // soft；其他（含螢絨／dust）一律柔光
   }
@@ -18,6 +19,8 @@
     var g = G(); if (!g || !g.state) return;
     var s = g.state;
     var snap = { v: 1, form: formOf(s), mood: Math.round((s.needs && s.needs.mood) || 0), ts: Date.now() };
+    var ov = g.evo && g.evo.overlayInfo ? g.evo.overlayInfo() : null;
+    if (ov) { snap.v = 2; snap.stage = ov.stage; snap.evoForm = ov.evoForm; snap.size = ov.size; snap.pivot = ov.pivot; snap.sizeDp = ov.sizeDp; }
     Pref.set({ key: 'glimmer.snapshot', value: JSON.stringify(snap) }).catch(function () {});
   }
   var busy = false;

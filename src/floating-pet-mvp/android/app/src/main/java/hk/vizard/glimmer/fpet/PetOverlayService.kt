@@ -207,7 +207,7 @@ class PetOverlayService : Service() {
 
     private fun loadAtlas(form: String) {
         atlas = PetAtlas.load(this, form)
-        val target = dp(if (form == "sprout") 52f else 72f)   // 顯示大細（dp）
+        val target = dp(try { org.json.JSONObject(PetPrefs.cap(this).getString(PetPrefs.KEY_SNAPSHOT, null) ?: "{}").optDouble("sizeDp", Double.NaN).toFloat().takeIf { it.isFinite() && it > 0f } } catch (e: Exception) { null } ?: if (form == "sprout") 52f else 72f)   // 顯示大細（dp）：evo6 snapshot v2 sizeDp 跟階段；舊 snapshot 冇 sizeDp → 舊尺寸
         scale = max(1, (target / atlas.size).roundToInt())
     }
 
