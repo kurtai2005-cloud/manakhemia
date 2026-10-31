@@ -253,3 +253,11 @@ v3：心情 `happy／ok／sad`、`sleeping`、最急需求 **低過 30** 先 `ur
 簽名仍然 v1＋v2＋v3，release 預設非 debuggable。權限冇加，DUMP 仍然刪。v3 低過 30 先出需求。玩圖示預設 4×6，可揀唔玩。螢絨／微塵仍然 soft atlas。`fadeReady` 仍然喺遊戲側，浮動 snapshot 冇呢欄。bridge 測試 **10／0**。API 30 路徑冇改。
 
 冇新 P0／P1。已知 P2 未收。APK 未測。
+
+## 浮動層再測（1648f8a）
+
+活動模式三粒 radio 而家係 **48dp**。全 repo 觸控件：長按選單、活動模式 radio、玩圖示 radio、設定掣、省電頁掣都係 48dp。冇再低過 48dp 嘅掣。`dp(40)` 係拋出停速同行路距離，唔係觸控。
+
+`MainActivity`、`SettingsActivity`、`PowerGuideActivity` 都有 `screenOrientation="portrait"`。`PetOverlayService` 對 `6fc62ed` 冇改。簽名、權限、v3、拋出、邊坐、撚、4×6、soft atlas、`fadeReady` 無回歸。bridge 測試 **10／0**。API 30 路徑冇改。
+
+已知 P2 已收。冇新 P0／P1／P2。APK 未測。
