@@ -91,6 +91,7 @@ PY=python3 bash tools/build_all.sh      # 需要 numpy、scipy、soundfile、ffm
 | `measure_pet2.py` | 方案 A 新檔驗證：解碼後長度／LUFS／TP／循環接縫 |
 | `gen_bgm_tod.py` | 方案 A ③：`bgm_care_{morning,evening,night}_loop.ogg`（派生自照顧版和弦／旋律；疊尾無縫；迭代增益至目標 LUFS；ogg 編碼）。`build_all.sh` 已包含 |
 | `gen_sfx_env.py` / `build_env.sh` | 方案 A ④：`sfx_env_flowerpot_bump`、`sfx_env_sunbathe_loop`（用 `norm_pet2.py` 純增益歸一＋ ogg 編碼）。`build_all.sh` 已包含 |
+| `gen_sfx_life.py` / `build_life.sh` / `measure_life.py` | 團絨生命感（精簡）16 檔（第 7.9 節）：同 `gen_sfx_pet2.py` 同一套共振峰聲線；4.2 kHz 低通、10 ms 淡入／40 ms 淡出＋10 ms 靜音；純增益迭代至 LUFS20 目標（峰值上限 -6 dBFS）；`-fflags +bitexact` 令重跑結果 byte 一致；`measure_life.py` 報 LUFS4s／LUFS20／TP／peak／>4 kHz 比／首尾電平。`build_all.sh` 已包含 |
 | `measure_tod.py` | 時段 BGM（立體聲）驗證：樣本數／小節數／LUFS／TP／循環接縫 |
 | `norm.py` | SFX 響度：`--linear name:目標LUFS`（純增益，峰值上限 -2 dBFS）；舊模式為 tanh 軟飽和 |
 | `build_sfx.sh` / `build_all.sh` | 一鍵生成＋編碼＋量度 |
@@ -217,6 +218,37 @@ README 7.5 原本只列呢 2 個，冇其他 ④ 項（蝴蝶振翅、雨聲等�
 | `sfx_error` | ③ -1.6 dB | -12.0→-13.6 | -13.2→-14.7 | -4.9→-6.1 | |
 
 ③ 目標：LUFS20 ≤ -13.3（中位數 -15.3 +2 LU），取約 -13.5，唔過度壓低。`sfx_coin`／`sfx_win`／`sfx_lose` 等其他檔唔動。④ `sfx_event_shiny_day` 保持 3.0 s、不改；⑤ `sfx_pet_uncomfortable` 不改（等耳測；如聽似哭聲再降 2–3 半音）。**以上全部只做數值檢查，未有人聽過**——尤其 grumpy 起音變鈍後仲有冇「悶哼」感，同 dream_talk 喺手機喇叭 -23 LUFS 聽唔聽得到。
+
+### 7.9 團絨生命感（精簡）（已做，2026-10-31）
+
+Kurt 揀「精簡」級（經遊策轉達）。8 款 × 2 個變化（`_a`／`_b`，音高、節奏、質感略唔同）＝ 16 檔，`sfx/` 內，`tools/gen_sfx_life.py`（`build_life.sh`）生成。**聲線同 7.1 寵物聲一樣**（同一個共振峰 `voice()`、同一組母音、基頻 midi 70–88），所以係同一隻團絨。全部原創程式合成，無取樣。
+
+規格：ogg Vorbis 44.1 kHz 單聲道（`-q:a 3`）；每個 ≤ 0.59 s；sample peak ≤ -5.9 dBFS（上限 -6，TP 同值）；4.2 kHz 低通，>4 kHz 能量 ≤ 1.9 %（大部分 < 0.4 %）；檔頭 10 ms 餘弦淡入（首 5 ms 峰值 ≤ -15.6 dBFS），檔尾 40 ms 淡出＋10 ms 靜音（尾 10 ms ≤ -43.5 dBFS）。純增益，冇 limiter／壓縮。16 檔共 92,232 bytes。
+
+響度兩法：**LUFS20**＝遊測循環等效（解碼後無間隔重複 20 次）＝**目標值**；**LUFS4s**＝`measure_pet2.py` 方法（重複約 4 s、間隔 0.1 s）。目標：一般 -20、腳步／抓癢／拍蟲 -22、重逢 -18（LUFS20）。
+
+| 檔名（a / b） | 用途 | 觸發建議 | 長度 a / b | LUFS4s a / b | LUFS20 a / b | peak dBFS a / b |
+|---|---|---|---|---|---|---|
+| `sfx_pet_sneeze_a/b` | 噴嚏：吸氣 →「啾」（b：吸氣中途抽一下＋尾後細「嗯」） | 待機隨機（低機率，冷卻 ≥20 s）；花粉／灰塵事件 | 0.360 / 0.470 s | -21.1 / -20.3 | -20.1 / -20.1 | -7.9 / -5.9 |
+| `sfx_pet_scratch_a/b` | 抓癢沙沙（a：6 下約 11 Hz，偏亮；b：5 下約 9 Hz，偏低厚） | 抓癢動畫開始；同動畫對拍可用 a（快）／b（慢） | 0.525 / 0.523 s | -22.7 / -22.6 | -22.0 / -21.9 | -7.2 / -8.0 |
+| `sfx_pet_step_hop_a/b` | 蹦跳腳步：軟彈「噗」（低頻下滑落地＋極輕上揚彈） | 每次落地播一次，a/b 交替或隨機＋`playbackRate` 0.95–1.05 | 0.150 / 0.140 s | -24.3 / -24.2 | -22.1 / -21.9 | -8.7 / -8.2 |
+| `sfx_pet_step_drag_a/b` | 拖步：輕落地＋慢擦地 | 疲倦／不開心行路，每步一次（步距 ≥0.4 s，唔好疊） | 0.390 / 0.470 s | -23.0 / -22.7 | -22.0 / -21.9 | -7.8 / -8.0 |
+| `sfx_pet_turn_huh_a/b` | 點一下回頭「咦？」上揚（a：嗯→咦；b：先輕跌再升） | 單擊身體以外（或背向時）點一下；a/b 隨機；冷卻 ≥1.5 s，連點交畀 grumpy | 0.290 / 0.330 s | -21.3 / -21.2 | -20.0 / -20.0 | -11.7 / -13.1 |
+| `sfx_pet_nuzzle_purr_a/b` | 長按蹭手呼嚕（同 `sfx_pet_content` 同類「唔嚕」，a 約 21 Hz、b 約 18 Hz 振幅調變） | 長按 ≥0.4 s 開始；按住期間 a→b→a… **無間隔連播**（首尾近零：首 5 ms ≤ -63 dBFS、尾 ≤ -85 dBFS，接駁無 click），或每 0.6–0.9 s 重播一次；放手等當前一個播完（唔好硬切） | 0.590 / 0.570 s | -20.6 / -20.7 | -20.0 / -20.0 | -11.7 / -11.2 |
+| `sfx_pet_reunion_happy_a/b` | 久未見衝埋嚟開心叫「啾啾啾—！」（比 `sfx_pet_happy` 更快更高；a：4 聲，b：3 聲） | 離開 ≥N 小時（遊策定）後首次開 app，衝向玩家時播一次；a/b 隨機 | 0.560 / 0.560 s | -18.7 / -18.7 | -18.0 / -18.0 | -9.0 / -8.7 |
+| `sfx_pet_bug_pat_a/b` | 拍蟲：軟「啪」＋細微反應（a：「噗」；b：兩下拍＋細「咿」上揚） | 拍中蟲一刻；a/b 隨機 | 0.280 / 0.330 s | -23.4 / -23.1 | -22.1 / -22.0 | -5.9 / -7.4 |
+
+一般規則：a/b 隨機但唔好連續兩次同一個；每次 `playbackRate` 隨機 0.95–1.05；同其他寵物聲同時只播一個（事件音優先）；全部細過 BGM（-16 LUFS）2–8 LU。
+
+**偏差（如實）**：
+1. 長度用 ≤0.59 s（10 ms 尾靜音計埋），全部 ≤ 0.6 s。
+2. 腳步／拍蟲嘅 LUFS4s 係 -23 至 -24（因為好短，0.1 s 間隔拉低），LUFS20 先係 -22；目標按 LUFS20 計。
+3. 腳步、拍蟲、重逢起音較實：10 ms 淡入有做，但首 5 ms 已升到約 -16 至 -23 dBFS（即峰值下 8–14 dB）；冇由數碼靜音硬跳。sneeze／scratch／purr 首 5 ms ≤ -39.8 dBFS。
+4. 加咗 4.2 kHz 低通，所以同 7.1 寵物聲（冇低通）比較，會略暗少少；聲線（基頻、母音）一樣。
+5. `sfx_pet_scratch_a` 尾 10 ms -43.5 dBFS（其他 ≤ -60），仍符合 ≤ -40。
+6. 峰值上限 -6 dBFS 係編碼前；ogg 解碼後 `sfx_pet_bug_pat_a`／`sfx_pet_sneeze_b` 為 -5.90／-5.92 dBFS（過 0.1 dB，編碼過衝），遠低於 -1 dBFS 硬上限。
+
+**未有人聽過**——尤其：`sfx_pet_nuzzle_purr_a/b` 連播似唔似持續呼嚕（有冇 0.6 s 脈動感）、`sfx_pet_sneeze_a/b` 似唔似噴嚏（定似咳）、`sfx_pet_step_hop/drag` 喺手機喇叭 -22 LUFS 低頻軟身聲聽唔聽到。
 
 ### 7.7 如實聲明
 
