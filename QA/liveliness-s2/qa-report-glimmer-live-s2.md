@@ -208,3 +208,38 @@ evo6 測試 **136／0**（分支、遷移、化光都喺入面）。經濟同之
 `needSwap`：form 唔同，或者同一 form 計出嚟嘅 scale 唔同，先 `swapForm`。`tick` 唔會叫佢。snapshot 冇變 scale 就唔 `updateViewLayout`，唔會每幀重加視窗。`swapForm` 用 `updateViewLayout`，腳位 `feetX／feetY` 留低。舊功能（拖、點、選單、釘、通知、queue）冇刪。
 
 冇真機。冇新 P0／P1／P2。APK 未測。
+
+## evo6 overlayStatus（67f98b5）
+
+`G.evo.overlayStatus()` 只讀。十個階段／分支：`egg` 旗同階段一致，`evoForm` 同 `D.evoForm` 一致，唔改狀態。肚餓 22 低過 30 先出 `urgent`。
+
+| 套件 | 通過 | 失敗 |
+|---|---|---|
+| overlay-status | 14 | 0 |
+| evo6 | 136 | 0 |
+| behavior | 187 | 0 |
+| events | 161 | 0 |
+| sim | 85 | 0 |
+| audio | 46 | 0 |
+
+分支次序、螢絨、24 小時上限、每次最多升 1 階、§6 尺寸都喺 evo6 套件入面。冇回歸。
+
+## 浮動層（fecb0ea，含 a528c7f）
+
+冇真機、冇 Android SDK，gradle 冇跑。`fpet-bridge.test.js` **10／0**。`PetStatusTest` 係 JUnit，呢度跑唔到。
+
+簽名：有 key 先用 release key，v1＋v2＋v3。`release` 冇寫 `debuggable`，AGP 預設 false。冇 key 就用 debug key 簽 release。權限仍然係 INTERNET、SYSTEM_ALERT_WINDOW、FOREGROUND_SERVICE、FOREGROUND_SERVICE_SPECIAL_USE、POST_NOTIFICATIONS、REQUEST_IGNORE_BATTERY_OPTIMIZATIONS。DUMP receiver 仍然刪走。冇新權限。
+
+v3：心情 `happy／ok／sad`、`sleeping`、最急需求 **低過 30** 先 `urgent`（30 唔出）。氣泡用 `need_*`。v1／v2／爛 JSON：`project` 返回中性或者 `catch` 變 null，唔炸。
+
+拋出：速度上限 `dp(2600)`，摩擦減速，低過 `dp(40)` 就停。腳位夾喺安全區，撞邊速度打 0.6 反向，飛唔出畫面。邊位坐係 `MODE_EDGE` 行去左右角。撚一下 `turn_back`，跟心情開心／唔開心。玩圖示預設 `4x6`，可以揀 `off`。
+
+舊路仲喺：snapshot 變就 `needSwap`、整數 `scale`、螢絨／微塵用 soft atlas。`fadeReady` 喺遊戲側（evo6 套件有），浮動 snapshot 冇呢個欄。
+
+直向：冇寫死橫向寬高。API 30 用 `currentWindowMetrics`。
+
+| 級 | 項 | 修法 |
+|---|---|---|
+| **P2** | 長按選單列同玩圖示 radio 係 **44dp**，低過 48dp。設定主掣係 48dp。 | `minHeight` 改 `48dp`。 |
+
+冇 P0／P1。APK 未測。
