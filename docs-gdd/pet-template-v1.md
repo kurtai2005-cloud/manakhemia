@@ -238,6 +238,7 @@ DEV 抽屜：加「強制去某支線」掣（9 條）。
 - **委託路線分**：唔再跟「領先路線」。每日有一條輪值路線（水珠→菇傘→晶角→月眠→火苗逐日輪，每隻團絨 seed 定起點；任何連續 5 日每條各 1 次），3 個委託齊 → 輪值路線 +`evo6.branch.systems.sources.questRoute.pts`（1），5 條路線同分——火苗唔再因為領先而日日攞分。單路線 25% cap（`maxRouteSharePct`）保留。舊存檔當日嘅舊式委託照做照計，聽日起換新式。
 - **天氣一日一抽**：每日（本機 00:00）用 seed＋日數抽一次，晴 60／陰 20／雨 15／霧 5（`evo6.branch.weather.probs`；霧當陰，菇傘權重 0.5），成日唔變。刪除「每週落雨 1–3 次、每次 1–3h」（`rainPerWeek`／`rainHours`／`rainFromH`／`rainToH`／`rainDayBase`／`weights`）。抽法只有一個（`sim.dayWeatherN`），遊戲自動天氣、日記、route-sweep 共用。
 - **存檔**：天氣由 seed＋日期計，從來冇入存檔；舊存檔喺「落緊雨」中途讀入 → 即跟當日抽籤。`sys12` 入面如有舊／外來雨窗欄位（`wx`／`rain`／`rainWin`／`weather`）遷移時清走；日記今日已記低嘅天氣照留。DEV 天氣覆蓋（晴／陰／雨／霧／自動）同 `?weather=` 照舊，唔入存檔。
+- **懸浮撐葉／打冷震（遊測 40fe202 P2-1）**：`overlaySys12().wx` = 今日起 7 日一日一抽天氣（app 閂咗都知）＋`manual`（DEV／`?weather=` 覆蓋；自動天氣閂 → 晴）＋季節＋打冷震參數。懸浮（fpet `bake_evo_atlas.py`）加烤 `leaf_umbrella_in`（開葉 0–1，一次）、`leaf_umbrella`（2–5 loop，對應 SYS_CLIPS loopRange）、`shiver`（×3、唔 loop）；落雨 IDLE → 撐葉，霧／冬每 25–50 秒按 base×mul 間中打冷震；光卵／瞓覺唔撐；舊 snapshot 冇 wx → 晴。
 - **晶角委託文案**「返嚟 2 分鐘內執晒便便」不變；遊策 A 之後呢個委託唔再每日出，文案留俾舊存檔。
 - **測試**：`tests/economy-v102.test.js`：6 個玩家類型 × 200 seed × 7 日，每日星星碎中位要喺 15–30；路線分佈（N＝1000 × 6 表，有委託分）要喺遊測鎖定目標 ±3pt。
 - **掃描結果**：見 v10.2 報告；一日一抽令落雨／陰天變成成日連續，菇傘全體比目標高（約 +4.9pt），其餘 8 條喺 ±3pt 內；疏玩（隔日 20:00 一次）上線日星星碎中位 5。目標表照 v10 鎖定，唔改數值，待遊策決定。
