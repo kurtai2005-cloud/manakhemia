@@ -137,6 +137,7 @@
     if (s.stage === 'egg') return; const E = evoOf(s), c = E.care[s.stage] || (E.care[s.stage] = { all: 0, night: 0 });
     c.all++; if (isNightHour(h == null ? nowHour() : h)) c.night++;
     noteB5(s, kind, h, rain);
+    cqCare(s);
   }
   // §7 月眠：瞓緊覺時撫摸（點寵物＝輕喚醒，所以每次瞓覺最多一次）；只入 §7 分數，唔改螢絨嘅夜晚照顧比例
   function notePetSleep(s, h, rain) { if (!s || s.stage === 'egg' || !s.sleeping) return false; noteB5(s, 'petSleep', h, rain); return true; }
@@ -144,7 +145,7 @@
     if (s.stage === 'egg' || !(dt > 0)) return; const E = evoOf(s), c = E.cl[s.stage] || (E.cl[s.stage] = { sum: 0, sec: 0 });
     c.sum += s.needs.clean * dt; c.sec += dt;
   }
-  function branch5Check(s) {                             // §7：CQ ≥ b5CQ、最高分 ≥ b5TopPct%、同第二名差 ≥ b5GapPt 個百分點；平手／唔夠 → null（config）
+  function branch5Check(s) {                             // §7：CQ ≥ b5CQ、最高分 ≥ b5TopPct%；v3：同第二名差 < drawGapPt → 兩者比例抽；唔夠 → null（config）
     const C = BR();
     const E = evoOf(s), T = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0 }; let cs = 0, cn = 0;
     EV6.careStages.forEach(st => { const b = E.b5[st]; if (b) for (const k in T) T[k] += +b[k] || 0; const c = E.cl[st]; if (c) { cs += c.sum; cn += c.sec; } });
@@ -154,19 +155,32 @@
     const top = rank[0], second = rank[1], N = T.all;
     const r = { all: N, score, raw: { crystal: T.crystal }, cleanAvg: cleanAvg == null ? null : +cleanAvg.toFixed(1), crystalOk, cq: s.cq, cqOk: s.cq >= C.b5CQ,
       top: top.id, topN: top.n, topShare: +top.share.toFixed(4), second: second.id, secondShare: +second.share.toFixed(4),
-      topOk: N > 0 && top.n * 100 >= C.b5TopPct * N, gapOk: N > 0 && (top.n - second.n) * 100 >= C.b5GapPt * N, tie: top.n === second.n,
+      topOk: N > 0 && top.n * 100 >= C.b5TopPct * N, gapOk: N > 0 && (top.n - second.n) * 100 >= C.drawGapPt * N, tie: top.n === second.n,
       brightTopOk: !(N > 0 && top.n * 100 >= C.brightMaxTopPct * N) };
-    r.ok = r.cqOk && r.topOk && r.gapOk && !r.tie; r.form = r.ok ? top.id : null; return r;
+    // v3：差 ≥ drawGapPt → 最高分贏；差 < drawGapPt（包括平手）→ 按兩者分數比例抽（seed）
+    r.draw = null; let pick = top.id;
+    if (N > 0 && !r.gapOk && top.n + second.n > 0) { const u = branchRoll(s, 'b5draw'), pTop = top.n / (top.n + second.n); pick = u < pTop ? top.id : second.id; r.draw = { a: top.id, b: second.id, pTop: +pTop.toFixed(4), roll: +u.toFixed(4) }; }
+    r.ok = r.cqOk && r.topOk; r.form = r.ok ? pick : null; return r;
   }
   function noteEvent(s, id) { if (!s || s.stage === 'egg') return; const E = evoOf(s), m = E.evIn[s.stage] || (E.evIn[s.stage] = {}); m[id] = (m[id] || 0) + 1; }   // events.js trigger 掛
   function careShare(s) {                                // 夜晚照顧佔比（careStages＝芽崽＋跳跳期）
     const E = evoOf(s); let all = 0, night = 0; EV6.careStages.forEach(st => { const c = E.care[st]; if (c) { all += c.all; night += c.night; } });
     return { all, night, share: all ? night / all : 0 };
   }
-  function lumiCheck(s) {                                // 螢絨三條件
-    const E = evoOf(s), ev = EV6.lumiEvStages.reduce((a, st) => a + ((E.evIn[st] && E.evIn[st][EV6.lumiEvent]) || 0), 0), cs = careShare(s);
-    const r = { firefly: ev, fireflyOk: ev > 0, cq: s.cq, cqOk: s.cq >= EV6.lumiCQ, night: +cs.share.toFixed(3), nightAll: cs.all, nightOk: cs.all > 0 && cs.share >= EV6.lumiNightShare };
-    r.ok = r.fireflyOk && r.cqOk && r.nightOk; return r;
+  // v3：判定用嘅隨機數（seed 決定，同一隻寵物同一個 tag 永遠一樣 → 測試／重開一致；測試可 setBranchRoll 注入）
+  let rollFn = null;
+  function setBranchRoll(fn) { rollFn = typeof fn === 'function' ? fn : null; }
+  function branchRoll(s, tag) {
+    if (rollFn) { const v = rollFn(tag, s); if (v != null) return v; }   // 注入嘅回 null → 用返 seed
+    let h = 2166136261; const k = tag + ':' + (s.seed >>> 0) + ':' + (s.gen || 1); for (let i = 0; i < k.length; i++) h = Math.imul(h ^ k.charCodeAt(i), 16777619);
+    return makeRng(h >>> 0)();
+  }
+  function lumiCheck(s) {                                // v3 螢絨：機率（firefly_walk 資格；夜晚佔比 30→50% ⇒ 0→25%；CQ < 40 冇）
+    const E = evoOf(s), LC = BR().lumi, ev = EV6.lumiEvStages.reduce((a, st) => a + ((E.evIn[st] && E.evIn[st][EV6.lumiEvent]) || 0), 0), cs = careShare(s);
+    const r = { firefly: ev, fireflyOk: ev > 0, cq: s.cq, cqOk: s.cq >= LC.minCQ, night: +cs.share.toFixed(3), nightAll: cs.all };
+    const t = cs.all > 0 ? clamp((cs.share * 100 - LC.fromPct) / (LC.toPct - LC.fromPct), 0, 1) : 0;
+    r.chance = r.fireflyOk && r.cqOk ? +(t * LC.maxChancePct / 100).toFixed(4) : 0; r.nightOk = r.chance > 0;
+    r.roll = +branchRoll(s, 'lumi').toFixed(4); r.ok = r.chance > 0 && r.roll < r.chance; return r;
   }
   function decideBranch(s) {                             // 次序（§7 修訂）：DEV 強制 → 螢絨 → 燦光（CQ ≥ brightCQ 且最高分 < brightMaxTopPct%）→ 新 5 條 → 柔光（CQ ≥ softCQ）→ 微塵（數值見 config）
     const E = evoOf(s), L = lumiCheck(s), B = branch5Check(s);
@@ -236,12 +250,23 @@
     return o;
   }
 
-  function settleCQ(s) {
-    const avg = (s.needs.hunger + s.needs.mood + s.needs.clean + s.needs.energy) / 4;
+  function settleCQ(s) {                                 // 每個鐘結算（v3：部分照顧按比例加；扣分唔會跌穿 floor）
+    const Q = BR().cq, avg = (s.needs.hunger + s.needs.mood + s.needs.clean + s.needs.energy) / 4, c0 = s.cq;
     if (avg >= P.cqGoodAt) s.cq += 1;
-    else if (avg < P.cqBadBelow) s.cq -= 1;
+    else if (avg >= P.cqBadBelow) s.cq += Q.partialMax * (avg - P.cqBadBelow) / (P.cqGoodAt - P.cqBadBelow);
+    else s.cq -= 1;
     if (isUnwell(s)) s.cq -= P.cqSickPenalty;
-    s.cq = clamp(s.cq, P.cqMin, P.cqMax);
+    if (s.cq < c0) s.cq = Math.max(s.cq, Math.min(c0, Q.floor));
+    s.cq = clamp(Math.round(s.cq * 1e4) / 1e4, P.cqMin, P.cqMax); s.cqCareH = 0;
+  }
+  function cqCare(s) {                                   // v3：每次照顧都計分（每個鐘上限）＋重置「冇理」計時
+    const Q = BR().cq; s.cqIdleSec = 0; if (s.stage === 'egg') return;
+    const g = Math.min(Q.careGain, Math.max(0, Q.careGainPerHourMax - (s.cqCareH || 0))); s.cqCareH = (s.cqCareH || 0) + g; s.cq = clamp(s.cq + g, P.cqMin, P.cqMax);
+  }
+  function cqDecay(s, dt) {                              // v3：連續 decayAfterH 個鐘冇照顧 → 慢慢跌（線上＋離線），唔跌穿 floor
+    const Q = BR().cq, before = s.cqIdleSec || 0, after = before + dt; s.cqIdleSec = after;
+    const over = Math.max(0, after - Math.max(before, Q.decayAfterH * 3600)); if (!(over > 0) || s.cq <= Q.floor) return;
+    s.cq = Math.max(Q.floor, s.cq - Q.decayPerH * over / 3600);
   }
 
   /* 推進 dt 秒（建議 dt <= 60）。opts: { offline:bool, growthMul:number } */
@@ -282,6 +307,7 @@
     }
 
     if (!isUnwell(s) || opts.offline) s.growthSec += dt * gm;
+    if (s.stage !== 'egg') cqDecay(s, dt);
     checkForeshadow(s);
 
     if (!opts.offline) {
@@ -538,6 +564,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

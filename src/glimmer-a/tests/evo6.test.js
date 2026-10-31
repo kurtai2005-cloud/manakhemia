@@ -11,6 +11,7 @@ function at(stage, extra) { const s = S.newState(1e12, 7); s.stage = stage; s.fo
 // 線上推進（需求維持滿，唔病 → 成長 100%）；返回 {s, h}（用咗幾多個鐘）
 function runUntil(s, pred, maxH) { let h = 0; while (!pred(s) && h < maxH) { full(s); S.advance(s, 1800, {}, 60); h += 0.5; } return h; }
 S.setHourFn(() => 12);
+const LC = P.evo6.branch.lumi; let ROLL = {}; S.setBranchRoll((tag) => (tag in ROLL ? ROLL[tag] : null));   // v3 螢絨機率：注入 roll
 
 console.log('# 時長表（pet-template-v1 §6）');
 {
@@ -54,18 +55,19 @@ console.log('# 時長表（pet-template-v1 §6）');
 console.log('# 分支判定（跳跳期完先判；次序 螢絨 → 燦光 → 柔光 → 微塵；門檻讀 config evo6.branch）');
 {
   const evo = (cq, lumi) => { const s = at('juvenile', { cq, growthSec: P.stageSec.juvenile - 1 });
-    if (lumi) { s.evo.evIn.juvenile = { firefly_walk: 1 }; s.evo.care.juvenile = { all: 10, night: 4 }; }
+    if (lumi) { s.evo.evIn.juvenile = { firefly_walk: 1 }; s.evo.care.juvenile = { all: 10, night: 10 }; }
     S.step(s, 5, {}); return s; };
   for (const [cq, f] of (({ brightCQ: hi, softCQ: lo }) => [[100, 'bright'], [hi, 'bright'], [hi - 1, 'soft'], [lo, 'soft'], [lo - 1, 'dust'], [0, 'dust']])(P.evo6.branch)) { const s = evo(cq); ok(s.stage === 'adult' && s.form === f, `CQ ${cq} → ${D.FORM_NAME[f]}`, s.form); }
-  const a = evo(90, true); ok(a.form === 'lumi', '螢絨優先過燦光（CQ 90＋條件齊）', a.form);
-  const b = evo(55, true); ok(b.form === 'lumi', 'CQ 55 啱啱夠 → 螢絨', b.form);
-  const c = evo(54, true); ok(c.form === 'soft', 'CQ 54 → 唔夠螢絨 → 柔光', c.form);
+  ROLL.lumi = 0; const a = evo(90, true); ok(a.form === 'lumi', '螢絨（抽中）優先過燦光（CQ 90＋條件齊）', a.form);
+  const b = evo(LC.minCQ, true); ok(b.form === 'lumi', `CQ ${LC.minCQ} 啱啱夠 → 有機會 → 抽中 → 螢絨`, b.form);
+  const c = evo(LC.minCQ - 1, true); ok(c.form !== 'lumi' && c.ev.find(e => e.type === 'evolve').lumi.chance === 0, `CQ ${LC.minCQ - 1} → 冇機會（抽中都唔係螢絨）`, c.form);
+  ROLL.lumi = 0.999; const a2 = evo(90, true); ok(a2.form === 'bright', '條件齊但抽唔中 → 照落燦光', a2.form); ROLL.lumi = 0;
   const ev = a.ev.find(e => e.type === 'evolve'); ok(ev && ev.why === 'lumi' && ev.lumi && ev.lumi.ok, 'evolve 事件記低 why＋螢絨檢查');
-  ok(a.cq === P.cqStart, '入守夜者 CQ 重設');
+  ok(a.cq === P.cqStart, '入守夜者 CQ 重設'); delete ROLL.lumi;
   const sp = at('sprout', { cq: 80, growthSec: P.stageSec.sprout - 1 }); S.step(sp, 5, {}); ok(sp.stage === 'juvenile' && sp.form === null && sp.cq === 80, '芽崽 → 跳跳期：未分支、CQ 延續');
 }
 
-console.log('# 螢絨條件（芽崽／跳跳期 firefly_walk、CQ ≥55、夜晚照顧 ≥40%）');
+console.log(`# 螢絨條件 v3（機率）：芽崽／跳跳期 firefly_walk 先有資格；夜晚佔比 ${LC.fromPct}%→${LC.toPct}% ＝ 0→${LC.maxChancePct}% 機會；CQ <${LC.minCQ} 冇機會`);
 {
   const mk = () => at('sprout', { cq: 60 });
   let s = mk(); ok(!S.lumiCheck(s).ok && !S.lumiCheck(s).fireflyOk, '冇螢火 → 唔得');
@@ -76,13 +78,23 @@ console.log('# 螢絨條件（芽崽／跳跳期 firefly_walk、CQ ≥55、夜�
   // 夜晚佔比：noteCare 用鐘點（17:00–07:00＝夜）
   s = mk(); s.evo.evIn.sprout = { firefly_walk: 1 };
   const care = (h, n) => { S.setHourFn(() => h); for (let i = 0; i < n; i++) { s.needs.hunger = 10; S.feed(s, 'meal'); } };
-  care(12, 6); care(22, 4); let L = S.lumiCheck(s); ok(L.nightAll === 10 && Math.abs(L.night - 0.4) < 1e-9 && L.nightOk && L.ok, '夜 4／總 10 ＝40% → 螢絨 ✓', JSON.stringify(L));
-  care(12, 1); L = S.lumiCheck(s); ok(!L.nightOk && !L.ok, '夜 4／總 11 ＜40% → ✗', L.night);
+  const want = (sh) => Math.max(0, Math.min(1, (sh * 100 - LC.fromPct) / (LC.toPct - LC.fromPct))) * LC.maxChancePct / 100;
+  care(12, 6); care(22, 4); let L = S.lumiCheck(s); ok(L.nightAll === 10 && Math.abs(L.night - 0.4) < 1e-9 && Math.abs(L.chance - want(0.4)) < 1e-4, `夜 4／總 10 ＝40% → 機會 ${(want(0.4) * 100).toFixed(1)}%（線性）`, JSON.stringify(L));
+  ROLL.lumi = want(0.4) - 0.001; ok(S.lumiCheck(s).ok, 'roll < 機會 → 螢絨 ✓'); ROLL.lumi = want(0.4) + 0.001; ok(!S.lumiCheck(s).ok, 'roll ≥ 機會 → ✗'); delete ROLL.lumi;
+  const sh = (n, all) => { const t = mk(); t.evo.evIn.sprout = { firefly_walk: 1 }; t.evo.care.sprout = { all, night: n }; return S.lumiCheck(t).chance; };
+  ok(sh(LC.fromPct, 100) === 0 && sh(LC.fromPct - 10, 100) === 0, `夜晚 ≤${LC.fromPct}% → 0%`);
+  ok(Math.abs(sh(LC.toPct, 100) - LC.maxChancePct / 100) < 1e-9 && Math.abs(sh(100, 100) - LC.maxChancePct / 100) < 1e-9, `夜晚 ≥${LC.toPct}% → ${LC.maxChancePct}%（封頂）`);
+  { const m = (LC.fromPct + LC.toPct) / 2; ok(Math.abs(sh(m, 100) - LC.maxChancePct / 200) < 1e-4, `夜晚 ${m}% → ${LC.maxChancePct / 2}%（中間）`); }
+  { const t = mk(); t.evo.care.sprout = { all: 10, night: 10 }; ok(S.lumiCheck(t).chance === 0, '冇 firefly_walk → 0%'); }
+  { const t = mk(); t.seed = 99; t.evo.evIn.sprout = { firefly_walk: 1 }; t.evo.care.sprout = { all: 10, night: 10 }; ok(S.lumiCheck(t).roll === S.lumiCheck(t).roll, 'roll 由 seed 決定（重複判一樣）');
+    let n = 0; const N = 800; for (let i = 1; i <= N; i++) { t.seed = i * 104729; if (S.lumiCheck(t).ok) n++; } ok(Math.abs(n / N - LC.maxChancePct / 100) < 0.05, `唔同 seed：螢絨率 ≈ ${LC.maxChancePct}%（實際 ${(100 * n / N).toFixed(1)}%）`); }
+  care(12, 1); L = S.lumiCheck(s); ok(L.chance < want(0.4) && L.night < 0.4, '夜 4／總 11 → 機會跌', L.chance);
   ok(S.isNightHour(17) && S.isNightHour(6.99) && !S.isNightHour(7) && !S.isNightHour(16.99), '夜晚＝17:00–07:00');
   s = mk(); S.setHourFn(() => 23); S.play(s); s.needs.clean = 10; S.rinse(s); s.poops = 1; S.clearPoop(s); S.mgApply(s, 100, 1e12);
   ok(s.evo.care.sprout.all === 4 && s.evo.care.sprout.night === 4, '照顧＝餵／玩／沖洗／清便便／接星屑（4 種都記）', JSON.stringify(s.evo.care));
   const n2 = at('newborn'); S.setHourFn(() => 23); S.play(n2); ok(S.careShare(n2).all === 0, '絨點期照顧唔計入佔比（只計芽崽＋跳跳期）');
-  s = mk(); s.cq = 54; s.evo.evIn.sprout = { firefly_walk: 2 }; s.evo.care.sprout = { all: 2, night: 2 }; ok(!S.lumiCheck(s).ok && !S.lumiCheck(s).cqOk, 'CQ 54 → ✗');
+  ROLL.lumi = 0; s = mk(); s.cq = LC.minCQ - 1; s.evo.evIn.sprout = { firefly_walk: 2 }; s.evo.care.sprout = { all: 2, night: 2 }; ok(!S.lumiCheck(s).ok && !S.lumiCheck(s).cqOk && S.lumiCheck(s).chance === 0, `CQ ${LC.minCQ - 1} → ✗（roll 0 都唔得）`);
+  s.cq = LC.minCQ; ok(S.lumiCheck(s).ok, `CQ ${LC.minCQ} → ✓`); delete ROLL.lumi;
   // 全程：芽崽期夜晚照顧＋螢火 → 跳跳期完自動螢絨
   const z = at('sprout', { cq: 70 }); z.evo.evIn.sprout = { firefly_walk: 1 }; S.setHourFn(() => 21);
   runUntil(z, x => x.stage === 'adult', 200); ok(z.stage === 'adult', '芽崽→守夜者（自動）'); S.setHourFn(() => 12);

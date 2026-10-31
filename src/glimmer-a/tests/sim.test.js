@@ -100,11 +100,28 @@ console.log('# CQ 規則');
   const mk = (v) => { const s = sprout({ hunger: v, mood: v, clean: v, energy: v }); s.cq = 50; return s; };
   let s = mk(80); S.settleCQ(s); ok(s.cq === 51, '平均 ≥60 → +1');
   s = mk(60); S.settleCQ(s); ok(s.cq === 51, '平均 =60 → +1');
-  s = mk(45); S.settleCQ(s); ok(s.cq === 50, '平均 30–60 → 0');
+  const Q = P.evo6.branch.cq, near2 = (a, b) => Math.abs(a - b) < 1e-6;
+  s = mk(45); S.settleCQ(s); ok(near2(s.cq, 50 + Q.partialMax * (45 - P.cqBadBelow) / (P.cqGoodAt - P.cqBadBelow)), `v3 部分照顧：平均 45 → +${Q.partialMax}×比例`, s.cq);
+  s = mk(P.cqBadBelow); S.settleCQ(s); ok(s.cq === 50, `平均 =${P.cqBadBelow} → +0`);
   s = mk(20); S.settleCQ(s); ok(s.cq === 49, '平均 <30 → −1');
   s = mk(10); S.settleCQ(s); ok(s.cq === 48, '病中再 −1（<30 −1，不適 −1）');
   s = sprout({ hunger: 100, mood: 100, clean: 100, energy: 100 }); S.advance(s, H, {}, 30); ok(s.cq === 51, '每小時結算一次（線上）');
-  s = sprout(); s.lastSeen = 1e12 - 8 * H * 1000; S.applyOffline(s, 1e12); ok(s.cq === 50, '離線唔改 CQ（假設）');
+  // v3：底線（扣分唔跌穿 floor）
+  s = mk(20); s.cq = Q.floor; S.settleCQ(s); ok(s.cq === Q.floor, `CQ ${Q.floor}（floor）＋平均 <30 → 唔再跌`, s.cq);
+  s = mk(10); s.cq = Q.floor + 1; S.settleCQ(s); ok(s.cq === Q.floor, `CQ ${Q.floor + 1}＋病 → 最多跌到 ${Q.floor}`, s.cq);
+  s = mk(10); s.cq = Q.floor - 5; S.settleCQ(s); ok(s.cq === Q.floor - 5, '本身低過 floor → 唔再扣（亦唔會自動補返）', s.cq);
+  // v3：每次照顧都計分（每個鐘上限）
+  s = mk(50); s.needs.hunger = 10; S.feed(s, 'meal'); ok(near2(s.cq, 50 + Q.careGain) && s.cqIdleSec === 0, `餵一次 → +${Q.careGain}`, s.cq);
+  for (let i = 0; i < 20; i++) S.play(s); ok(near2(s.cq, 50 + Q.careGainPerHourMax), `一個鐘內照顧好多次 → 最多 +${Q.careGainPerHourMax}`, s.cq);
+  S.settleCQ(s); const c1 = s.cq; S.play(s); ok(near2(s.cq, c1 + Q.careGain), '每小時結算後上限重計');
+  { const e = S.newState(1e12, 1); const c0 = e.cq; S.play(e); ok(e.cq === c0, '光卵期照顧唔加 CQ'); }
+  // v3：衰減（連續 decayAfterH 個鐘冇照顧 → 每個鐘 −decayPerH；線上＋離線；唔跌穿 floor）
+  s = sprout(); s.cq = 50; s.cqIdleSec = 0; s.lastSeen = 1e12 - 8 * H * 1000; S.applyOffline(s, 1e12);
+  ok(near2(s.cq, 50 - Q.decayPerH * Math.max(0, 8 - Q.decayAfterH)), `離線 8 個鐘冇照顧 → −${Q.decayPerH}×${8 - Q.decayAfterH}（頭 ${Q.decayAfterH} 個鐘唔扣）`, s.cq);
+  s = sprout(); s.cq = 50; s.cqIdleSec = 0; s.lastSeen = 1e12 - (Q.decayAfterH - 1) * H * 1000; S.applyOffline(s, 1e12); ok(s.cq === 50, `離線 ${Q.decayAfterH - 1} 個鐘 → 唔扣`, s.cq);
+  s = sprout(); s.cq = 50; s.cqIdleSec = 0; s.lastSeen = 1e12 - 400 * H * 1000; S.applyOffline(s, 1e12); ok(s.cq >= Q.floor, `離線好耐 → 跌到 floor ${Q.floor} 為止（疏玩唔會 0）`, s.cq);
+  s = sprout(); s.cq = 50; s.cqIdleSec = (Q.decayAfterH + 1) * H; S.cqDecay(s, H); ok(near2(s.cq, 50 - Q.decayPerH), '線上冇理都會跌（每個鐘）', s.cq);
+  s.needs.hunger = 10; S.feed(s, 'meal'); const c2 = s.cq; S.cqDecay(s, H); ok(s.cq === c2, '照顧後重新計時（頭幾個鐘唔扣）');
 }
 console.log('# 分支門檻（config evo6.branch：燦光 ' + P.evo6.branch.brightCQ + '／柔光 ' + P.evo6.branch.softCQ + '；evo6：跳跳期完先分支）');
 {

@@ -35,8 +35,8 @@
     // 燦光／柔光／微塵門檻 → 搬咗去 evo6.branch（§7 平衡修訂 v2）
     // ── 階段時長（成長秒數；需成長，離線只計 50%）──
     stageSec: { egg: 10 * 60, newborn: 6 * 3600, sprout: 18 * 3600, juvenile: 3 * 86400, adult: 7 * 86400, elder: 4 * 86400 },   // evo6（pet-template-v1 §6）：光卵 10 分／絨點 6h／芽崽 18h／跳跳期 3 日／守夜者 7 日／靜光 4 日 → 化光
-    // evo6：螢絨（隱藏）＝芽崽或跳跳期見過 firefly_walk、分支判定時 CQ ≥55、夜晚照顧 ≥40%（晚 17:00–07:00 本機時間＝lighting 嘅「晚＋夜」）
-    evo6: { lumiCQ: 55, lumiNightShare: 0.4, lumiEvent: 'firefly_walk', lumiEvStages: ['sprout', 'juvenile'], careStages: ['sprout', 'juvenile'], nightFrom: 17, nightTo: 7,
+    // evo6：螢絨（隱藏）＝芽崽或跳跳期見過 firefly_walk 先有資格；v3 改機率（見 branch.lumi；夜晚＝17:00–07:00 本機時間＝lighting 嘅「晚＋夜」）
+    evo6: { lumiEvent: 'firefly_walk', lumiEvStages: ['sprout', 'juvenile'], careStages: ['sprout', 'juvenile'], nightFrom: 17, nightTo: 7,
       kitOnLiveClips: true,   // 遊美：evo 形態 std23 clip 用原幀（臉已畫好）；五官 kit 只用喺生命感 clip（s1/s2）
       migrateAdultKeepSec: 24 * 3600,
       // §7 進化判定 config（pet-template-v1 §7＋§7 修訂＋§7 平衡修訂 v2）：邏輯同測試都讀呢度，改數唔使改 code／測試。
@@ -47,7 +47,7 @@
         brightMaxTopPct: 45,    // 燦光：新 5 條最高分要 < 呢個 %（全面照顧）；≥ 就交新 5 條
         b5CQ: 40,               // 新 5 條 CQ（v2；舊 55）
         b5TopPct: 30,           // 新 5 條最高分 ≥ %（v2；舊 35）
-        b5GapPt: 3,             // 同第二名差 ≥ 個百分點（v2；舊 5）
+        drawGapPt: 5,           // v3：第一同第二名差 < 呢個 pt → 按兩者分數比例抽（seed 決定）；否則最高分贏（取代 v2 b5GapPt）
         softCQ: 30,             // 柔光 CQ（v2；舊 40）；以下＝微塵
         crystalCleanAvg: 60,    // 晶角：清潔度時間加權平均 ≥（v2；舊 70）
         // 時段規則：喺時段內嘅照顧只計 only 嗰條（唔計本身類型、唔計落雨水珠）；瞓覺撫摸永遠計月眠
@@ -55,6 +55,11 @@
           { id: 'moon', from: 21, to: 3, only: 'moon' },   // 21:00–03:00 → 只計月眠（§7 修訂）
           { id: 'dew', from: 6, to: 9, only: 'tide' },     // 06:00–09:00 晨露 → 只計水珠（v2）
         ],
+        // v3 螢絨（機率）：芽崽＋跳跳期見過 firefly_walk 先有資格；夜晚照顧佔比 fromPct→toPct 線性對應 0→maxChancePct% 機會；CQ < minCQ 冇機會
+        lumi: { fromPct: 30, toPct: 50, maxChancePct: 25, minCQ: 40 },
+        // v3 CQ：部分照顧＋衰減（疏玩唔會直接 0）。每次照顧 +careGain（每個鐘最多 careGainPerHourMax）；每個鐘結算：需求平均 ≥ goodAt +1、
+        // badBelow–goodAt 之間按比例 +0–partialMax、< badBelow −1；連續 decayAfterH 個鐘冇照顧 → 每個鐘 −decayPerH（線上＋離線都計）；結算／衰減唔會跌穿 floor
+        cq: { careGain: 0.5, careGainPerHourMax: 2, partialMax: 0.5, decayAfterH: 6, decayPerH: 1, floor: 15 },
         // 預留（systems12-v1.md，未用）：新系統（委託／種花／小遊戲／收集…）加嘅路線分；判定暫時唔讀
         systems: {
           enabled: false,          // 未接入
@@ -520,12 +525,12 @@
   const ROUTE_HINT = { tide: '朝早 6–9 點照顧，或者成日淋水', moon: '夜晚 9 點至凌晨 3 點陪佢', shroom: '餵得最多', crystal: '執得最乾淨', ember: '玩得最多（包括小遊戲）',
     bright: '樣樣都照顧好', soft: '普通照顧', dust: '好少理佢', lumi: '？？？' };
   /* 進化表（開發模式「進化」用；條件以 sim.decideForm 為準）。螢絨＝隱藏形態（docs-gdd/pet-template-v1.md）：
-     芽崽期見過螢火散步、CQ ≥55、夜晚照顧 ≥40%。自動條件未實裝（只可經開發模式設定）；未有專屬美術 → 借柔光 atlas＋螢綠 tint。 */
+     芽崽／跳跳期見過螢火散步先有資格，v3 改機率（evo6.branch.lumi）。自動條件未實裝（只可經開發模式設定）；未有專屬美術 → 借柔光 atlas＋螢綠 tint。 */
   const EVOLUTION = [
     { form: 'bright', name: '燦光', from: 'sprout', cond: 'CQ ≥ evo6.branch.brightCQ 且最高分 < brightMaxTopPct%', atlas: 'radiant' },
     { form: 'soft', name: '柔光', from: 'sprout', cond: 'CQ ≥ evo6.branch.softCQ', atlas: 'soft' },
     { form: 'dust', name: '微塵', from: 'sprout', cond: '其餘', atlas: null },
-    { form: 'lumi', name: '螢絨', from: 'sprout', hidden: true, cond: '芽崽期 firefly_walk、CQ ≥55、夜晚照顧 ≥40%（未自動）', atlas: 'soft', tint: 'lumi' },    // §7 新支線 ×5：CQ ≥55、最高分 ≥35%、同第二名差 ≥5 個百分點（sim.branch5Check）
+    { form: 'lumi', name: '螢絨', from: 'sprout', hidden: true, cond: '芽崽／跳跳期 firefly_walk 先有資格；夜晚照顧 30→50% ＝ 0→25% 機會；CQ <40 冇（v3，數值見 evo6.branch.lumi）', atlas: 'soft', tint: 'lumi' },    // §7 新支線 ×5：CQ ≥55、最高分 ≥35%、同第二名差 ≥5 個百分點（sim.branch5Check）
     { form: 'tide', name: '水珠', from: 'juvenile', b5: true, cond: 'rinse＋落雨時嘅照顧（落雨 rinse 只計一次）' },
     { form: 'shroom', name: '菇傘', from: 'juvenile', b5: true, cond: 'feed' },
     { form: 'crystal', name: '晶角', from: 'juvenile', b5: true, cond: 'clearPoop（清潔度平均 ≥70 先計）' },

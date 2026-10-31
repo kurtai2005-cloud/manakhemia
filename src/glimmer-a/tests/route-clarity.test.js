@@ -39,8 +39,9 @@ console.log('# ② 領先路線（routeLead）＝ 判定邏輯但螢絨隱藏');
     [{ feed: 3, play: 3, rinse: 3 }, C.brightCQ, 'bright'], [{ feed: 3, play: 3, rinse: 3 }, C.softCQ, C.softCQ >= C.brightCQ ? 'bright' : 'soft'], [{ feed: 3, play: 3, rinse: 3 }, C.softCQ - 1, 'dust']];
   for (const [c, cq, f] of cases) { const s = juv(c, cq); ok(S.routeLead(s).form === f && S.decideBranch(s).form === f, `${JSON.stringify(c)} CQ ${cq} → 領先 ${D.FORM_NAME[f]}（同判定一致）`, S.routeLead(s).form); }
   { HOUR = C.windows.find(w => w.id === 'moon').from; const s = juv({ feed: 6 }, hiCQ); HOUR = DAY; ok(S.routeLead(s).form === 'moon', '夜晚照顧 → 領先月眠'); }
-  { const s = juv({ feed: 10, play: 2 }, Math.max(EV6.lumiCQ, hiCQ)); s.evo.evIn.juvenile = { [EV6.lumiEvent]: 1 }; s.evo.care.juvenile = { all: 10, night: 10 };
-    ok(S.decideBranch(s).form === 'lumi' && S.routeLead(s).form === 'shroom', '符合螢絨 → 判定係螢絨，但領先路線唔顯示螢絨（顯示菇傘）', S.routeLead(s).form); }
+  { const s = juv({ feed: 10, play: 2 }, Math.max(EV6.branch.lumi.minCQ, hiCQ)); s.evo.evIn.juvenile = { [EV6.lumiEvent]: 1 }; s.evo.care.juvenile = { all: 10, night: 10 };
+    S.setBranchRoll(() => 0); const dl = S.decideBranch(s).form; S.setBranchRoll(null);
+    ok(dl === 'lumi' && S.routeLead(s).form === 'shroom', '符合螢絨 → 判定係螢絨，但領先路線唔顯示螢絨（顯示菇傘）', S.routeLead(s).form); }
   { const s = juv({ feed: 10 }, hiCQ); s.evo.force = 'ember'; ok(S.routeLead(s).form === 'shroom', 'DEV 強制唔影響領先路線顯示'); }
 }
 
@@ -71,7 +72,7 @@ console.log('# ④ 判定前 12h 預告（每隻一次）');
     const r = run(c, hiCQ); for (let i = 0; i < 3; i++) { S.step(r.s, 10, {}); r.evs.push(...r.s.ev.splice(0)); }
     const e = r.evs.find(x => x.type === 'foreshadow'); ok(e && e.form === f && e.act === R.foreshadow[f], `${D.FORM_NAME[f]} 路線 → 預告 ${JSON.stringify(R.foreshadow[f])}`, e && e.form);
   }
-  { const s2 = juv({ feed: 10, play: 2 }, Math.max(EV6.lumiCQ, hiCQ), 0); s2.evo.evIn.juvenile = { [EV6.lumiEvent]: 1 }; s2.evo.care.juvenile = { all: 10, night: 10 }; s2.growthSec = JUV - R.foreshadowLeadSec + 1; S.step(s2, 1, {});
+  { const s2 = juv({ feed: 10, play: 2 }, Math.max(EV6.branch.lumi.minCQ, hiCQ), 0); s2.evo.evIn.juvenile = { [EV6.lumiEvent]: 1 }; s2.evo.care.juvenile = { all: 10, night: 10 }; s2.growthSec = JUV - R.foreshadowLeadSec + 1; S.step(s2, 1, {});
     const e = s2.ev.find(x => x.type === 'foreshadow'); ok(e && e.form !== 'lumi', '螢絨隱藏：預告做下一條路，唔洩露', e && e.form); }
   { const s3 = juv({ feed: 10 }, hiCQ, 0); s3.stage = 'sprout'; s3.growthSec = P.stageSec.sprout - 1; S.step(s3, 5, {}); ok(!s3.ev.some(e => e.type === 'foreshadow'), '芽崽 → 跳跳期一刻唔預告'); }
   { const s4 = juv({ feed: 10 }, hiCQ, 0); s4.growthSec = JUV - R.foreshadowLeadSec - 1; S.step(s4, 5, {}); s4.ev.length = 0; s4.growthSec = JUV - 1; S.step(s4, 5, {});

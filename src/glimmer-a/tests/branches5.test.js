@@ -1,5 +1,5 @@
 /* §7 新支線 ×5（tide／shroom／crystal／moon／ember）Node 無依賴測試：node tests/branches5.test.js
-   覆蓋：① 判定次序 ② 門檻（CQ／最高分／差距／平手）③ 分數來源（芽崽＋跳跳期）④ 時段規則（21–03 只計月眠、06–09 只計水珠）＋落雨
+   覆蓋：① 判定次序 ② 門檻（CQ／最高分；v3 差 < drawGapPt → seed 比例抽）③ 分數來源（芽崽＋跳跳期）④ 時段規則（21–03 只計月眠、06–09 只計水珠）＋落雨
          ⑦ 燦光最高分上限 ⑤ 靜光對應 ⑥ DEV 強制支線
    所有門檻／時段都讀 PARAMS.evo6.branch（config）；改 config 唔使改測試。 */
 const fs = require('fs'), path = require('path');
@@ -16,6 +16,8 @@ const MH = MOON.from, MH2 = (MOON.from + 1) % 24, DH = DEW.from;                
 const LOWCLEAN = C.crystalCleanAvg - 10;                                             // 晶角唔計分嘅清潔平均
 let HOUR = DAY, RAIN = false;
 S.setHourFn(() => HOUR); S.setRainFn(() => RAIN);
+let ROLL = {};                                                                        // v3：注入判定隨機數（tag → 0–1）；冇 → 用 seed
+S.setBranchRoll((tag) => (tag in ROLL ? ROLL[tag] : null));
 const KIND = { shroom: 'feed', ember: 'play', tide: 'rinse', crystal: 'poop' };
 function pet(stage) { const s = S.newState(1e12, 7); s.stage = stage || 'sprout'; Object.assign(s.needs, { hunger: 60, mood: 60, clean: 90, energy: 80 }); return s; }
 function setClean(s, avg, st) { const E = s.evo || (s.evo = { evIn: {}, care: {} }); E.cl = E.cl || {}; E.cl[st || 'sprout'] = { sum: avg * 1e6, sec: 1e6 }; }
@@ -34,9 +36,12 @@ const evOf = (s) => s.ev.find(e => e.type === 'evolve') || {};
 console.log('# 資料：9 條支線、config（PARAMS.evo6.branch）');
 ok(D.BRANCH5.join() === 'tide,shroom,crystal,moon,ember', 'BRANCH5 = tide／shroom／crystal／moon／ember');
 ok(D.BRANCHES.length === 9 && D.BRANCHES[0] === 'lumi' && D.BRANCHES.slice(-3).join() === 'bright,soft,dust', 'BRANCHES 9 條（螢絨＋新 5＋燦光／柔光／微塵）');
-ok(['brightCQ', 'brightMaxTopPct', 'b5CQ', 'b5TopPct', 'b5GapPt', 'softCQ', 'crystalCleanAvg'].every(k => Number.isInteger(C[k])) && C.brightCQ > C.softCQ && C.b5TopPct < C.brightMaxTopPct
+ok(['brightCQ', 'brightMaxTopPct', 'b5CQ', 'b5TopPct', 'drawGapPt', 'softCQ', 'crystalCleanAvg'].every(k => Number.isInteger(C[k])) && C.brightCQ > C.softCQ && C.b5TopPct < C.brightMaxTopPct
   && C.windows.every(w => Number.isInteger(w.from) && Number.isInteger(w.to) && D.BRANCH5.includes(w.only)) && MOON.only === 'moon' && DEW.only === 'tide',
   'config 齊（整數門檻＋時段 windows：moon→月眠、dew→水珠）', JSON.stringify(C));
+ok(C.lumi && ['fromPct', 'toPct', 'maxChancePct', 'minCQ'].every(k => Number.isFinite(C.lumi[k])) && C.lumi.toPct > C.lumi.fromPct && C.cq && ['careGain', 'careGainPerHourMax', 'partialMax', 'decayAfterH', 'decayPerH', 'floor'].every(k => Number.isFinite(C.cq[k])),
+  'config v3：drawGapPt、lumi（機率）、cq（部分照顧＋衰減）', JSON.stringify({ d: C.drawGapPt, l: C.lumi, q: C.cq }));
+ok(!('lumiCQ' in EV6) && !('lumiNightShare' in EV6) && !('b5GapPt' in C), '舊螢絨門檻（lumiCQ／lumiNightShare）同 b5GapPt 已移除');
 ok(C.systems && C.systems.enabled === false && C.systems.maxRouteSharePct === 25 && C.systems.stardustDailyCap === 30 && Object.keys(C.systems.sources).length === 0, 'config 預留 systems（systems12-v1：每路線新系統分 ≤25%、星星碎每日 30；未用）', JSON.stringify(C.systems));
 { const a = (() => { const s = S.newState(1e12, 1); s.stage = 'sprout'; S.noteCare(s, null, 'feed'); s.cq = 80; return JSON.stringify(S.branch5Check(s)); })();
   const keep = C.systems.enabled; C.systems.enabled = true; C.systems.sources = { x: { route: 'moon', pts: 99 } };
@@ -47,34 +52,45 @@ ok(!('b5CQ' in EV6) && !('branchBright' in P) && !('branchSoft' in P), '舊散�
   const fn = (n) => (src.match(new RegExp('function ' + n + '\\([^]*?\\n  }')) || [''])[0];
   ok(['decideBranch', 'openBranch', 'branch5Check', 'noteB5', 'decideForm'].every(n => fn(n) && !/[^\w.](?:[2-9]\d|1\d\d)\b/.test(fn(n).replace(/\* 100/g, ''))), 'sim 判定函數冇寫死門檻數字（全部讀 config）'); }
 ok(['水珠', '菇傘', '晶角', '月眠', '火苗'].every((n, i) => D.FORM_NAME[D.BRANCH5[i]] === n), 'FORM_NAME 水珠／菇傘／晶角／月眠／火苗');
-console.log(`  · config：燦光 CQ ≥${C.brightCQ} 且最高 <${C.brightMaxTopPct}%；新 5 條 CQ ≥${C.b5CQ}／≥${C.b5TopPct}%／差 ≥${C.b5GapPt}pt；柔光 CQ ≥${C.softCQ}；晶角清潔 ≥${C.crystalCleanAvg}；時段 ${C.windows.map(w => w.id + ' ' + w.from + '–' + w.to + '→' + w.only).join('、')}`);
+console.log(`  · config：燦光 CQ ≥${C.brightCQ} 且最高 <${C.brightMaxTopPct}%；新 5 條 CQ ≥${C.b5CQ}／≥${C.b5TopPct}%／差 <${C.drawGapPt}pt 比例抽；柔光 CQ ≥${C.softCQ}；晶角清潔 ≥${C.crystalCleanAvg}；時段 ${C.windows.map(w => w.id + ' ' + w.from + '–' + w.to + '→' + w.only).join('、')}`);
 
 console.log('# ① 判定次序（§7 修訂）：螢絨 → 燦光（最高分 < 上限）→ 新 5 條 → 柔光 → 微塵');
 {
-  const hi = Math.max(C.brightCQ, C.b5CQ, EV6.lumiCQ) + 10;
+  const hi = Math.max(C.brightCQ, C.b5CQ, C.lumi.minCQ) + 10;
   // 符合螢絨（夜晚照顧 ≥40%＋螢火散步＋CQ）同時又符合新 5 條 → 螢絨
   const s = build({ feed: 10, play: 2 }, { h: MH2 }); s.evo.evIn.juvenile = { [EV6.lumiEvent]: 1 };
   ok(S.branch5Check(Object.assign(pet(), { evo: JSON.parse(JSON.stringify(s.evo)), cq: hi })).ok, '（前提）新 5 條本身成立');
-  toAdult(s, hi); ok(s.form === 'lumi' && evOf(s).why === 'lumi', '螢絨優先過新 5 條', s.form);
+  const s0 = JSON.parse(JSON.stringify(s)); ROLL.lumi = 0; toAdult(s, hi); ok(s.form === 'lumi' && evOf(s).why === 'lumi', '螢絨（抽中）優先過新 5 條', s.form);
+  ROLL.lumi = 0.999; toAdult(s0, hi); ok(s0.form === 'moon' && evOf(s0).lumi.chance > 0 && !evOf(s0).lumi.ok, '螢絨有資格但抽唔中 → 照落新 5 條（夜晚 → 月眠）', s0.form); delete ROLL.lumi;
   const t = toAdult(build({ feed: 10, play: 2 }), hi); ok(t.form === 'shroom' && evOf(t).why === 'b5', `專注（菇傘 83% ≥ ${C.brightMaxTopPct}%）＋CQ ${hi} → 新 5 條（菇傘）唔係燦光`, t.form);
-  const flat = { feed: 3, play: 3, rinse: 3 };   // 三條平手（33%）→ 新 5 條唔成立
-  for (const [cq, f] of [[100, 'bright'], [C.brightCQ, 'bright'], [C.brightCQ - 1, baseForm(C.brightCQ - 1)], [C.softCQ, 'soft'], [C.softCQ - 1, 'dust']]) {
-    const u = toAdult(build(flat), cq); ok(u.form === f && evOf(u).why === 'cq', `全面照顧（平手 33%）→ CQ ${cq} → ${D.FORM_NAME[f]}`, u.form);
+  const flat = { feed: 3, play: 3, rinse: 3 };   // 三條平手（33%）：v3 → 新 5 條會喺頭兩名之間抽
+  for (const cq of [100, C.brightCQ, C.brightCQ - 1, C.b5CQ, C.softCQ, C.softCQ - 1]) {
+    const u = toAdult(build(flat), cq), B = evOf(u).b5, f = cq >= C.brightCQ ? 'bright' : cq >= C.b5CQ ? B.form : baseForm(cq);
+    ok(u.form === f && (cq >= C.b5CQ && cq < C.brightCQ ? evOf(u).why === 'b5' && !!B.draw && ['feed', 'play', 'rinse'].map(k => ({ feed: 'shroom', play: 'ember', rinse: 'tide' })[k]).includes(f) : evOf(u).why === 'cq'), `全面照顧（平手 33%）→ CQ ${cq} → ${D.FORM_NAME[f] || f}`, u.form);
   }
-  const lumiOnly = build(flat, { h: 18 }); lumiOnly.evo.evIn.sprout = { [EV6.lumiEvent]: 2 }; toAdult(lumiOnly, EV6.lumiCQ);
-  ok(lumiOnly.form === 'lumi', '螢絨條件照舊（新 5 條唔郁到）', lumiOnly.form);
+  const lumiOnly = build(flat, { h: 18 }); lumiOnly.evo.evIn.sprout = { [EV6.lumiEvent]: 2 }; ROLL.lumi = 0; toAdult(lumiOnly, C.lumi.minCQ); delete ROLL.lumi;
+  ok(lumiOnly.form === 'lumi', `螢絨（CQ ${C.lumi.minCQ}＋夜晚 100%＋抽中）→ 螢絨`, lumiOnly.form);
 }
 
-console.log(`# ② 新 5 條門檻：CQ ≥${C.b5CQ}、最高 ≥${C.b5TopPct}%、差 ≥${C.b5GapPt}pt；平手 → 柔光／微塵`);
+console.log(`# ② 新 5 條門檻：CQ ≥${C.b5CQ}、最高 ≥${C.b5TopPct}%；v3：差 <${C.drawGapPt}pt（包括平手）→ 兩者分數比例抽（seed）`);
 {
-  const T = C.b5TopPct, G = C.b5GapPt, c = (counts, cq, o) => { const s = build(counts, o); s.cq = cq; return S.branch5Check(s); };
+  const T = C.b5TopPct, G = C.drawGapPt, c = (counts, cq, o) => { const s = build(counts, o); s.cq = cq; return S.branch5Check(s); };
   ok(!c(mk(T, T - G), C.b5CQ - 1).ok && c(mk(T, T - G), C.b5CQ).ok, `CQ ${C.b5CQ - 1} ✗／${C.b5CQ} ✓`);
   ok(toAdult(build(mk(T, T - G)), C.b5CQ - 1).form === baseForm(C.b5CQ - 1), `CQ ${C.b5CQ - 1} → ${D.FORM_NAME[baseForm(C.b5CQ - 1)]}（唔去新支線）`);
   let r = c(mk(T, T - G), C.b5CQ);
   ok(r.ok && r.form === 'shroom' && Math.round(r.topShare * 100) === T && Math.round(r.secondShare * 100) === T - G, `最高 = ${T}%、差 = ${G}pt（啱啱好）→ 成立`, JSON.stringify(r.score));
   r = c(mk(T - 1, T - 1 - G), C.b5CQ); ok(!r.ok && !r.topOk && r.top === 'shroom', `最高 ${T - 1}% → 唔成立`, r.topShare);
-  r = c(mk(T, T - G + 1), C.b5CQ); ok(!r.ok && r.topOk && !r.gapOk, `差 ${G - 1}pt → 唔成立`, r.topShare + '/' + r.secondShare);
-  r = c(mk(T, T), 90); ok(!r.ok && r.tie, `平手（${T}／${T}）→ 唔成立`, JSON.stringify(r.score));
+  ok(!r.draw, `差 = ${G}pt → 唔抽（最高分贏）`);
+  { const pT = T / (2 * T - G + 1);
+    ROLL.b5draw = pT - 0.001; r = c(mk(T, T - G + 1), C.b5CQ); ok(r.ok && !r.gapOk && r.draw && r.form === 'shroom' && Math.abs(r.draw.pTop - pT) < 1e-3, `差 ${G - 1}pt → 抽：roll < ${pT.toFixed(3)} → 第一名（菇傘）`, JSON.stringify(r.draw));
+    ROLL.b5draw = pT + 0.001; r = c(mk(T, T - G + 1), C.b5CQ); ok(r.ok && r.form === 'ember', `差 ${G - 1}pt → roll ≥ ${pT.toFixed(3)} → 第二名（火苗）`, r.form); delete ROLL.b5draw; }
+  r = c(mk(T, T), 90); ok(r.ok && r.tie && r.draw && r.draw.pTop === 0.5 && [r.draw.a, r.draw.b].sort().join() === 'ember,shroom' && r.form === (r.draw.roll < 0.5 ? r.draw.a : r.draw.b), `平手（${T}／${T}）→ 50／50 抽`, JSON.stringify(r.draw));
+  { // seed 決定：同一隻寵物重複判都一樣；唔同 seed 大致按比例
+    const one = (seed) => { const s = build(mk(T, T - G + 1)); s.seed = seed; s.cq = C.b5CQ; return S.branch5Check(s).form; };
+    ok([1, 2, 3].every(() => one(42) === one(42)), 'seed 一樣 → 抽嘅結果一樣（可重現）');
+    const N = 400; let top = 0; for (let i = 1; i <= N; i++) if (one(i * 7919) === 'shroom') top++;
+    const pT = T / (2 * T - G + 1); ok(Math.abs(top / N - pT) < 0.08, `唔同 seed：第一名機率 ≈ ${pT.toFixed(2)}（實際 ${(top / N).toFixed(2)}）`); }
+  r = c(mk(T - G, T - G - 1), C.b5CQ); ok(!r.ok && !r.topOk, `抽都要最高 ≥ ${T}%（${T - G}% → 唔成立）`);
   ok(toAdult(build(mk(T, T)), 90).form === (T < C.brightMaxTopPct ? 'bright' : 'soft'), '平手 → 照次序（最高 < 上限 → 燦光）');
   ok(toAdult(build({}), 90).form === 'bright' && !S.branch5Check(build({})).ok, '冇照顧（總數 0）→ 燦光（CQ 90）');
 }
@@ -132,7 +148,7 @@ console.log('# ④ 時段規則（config windows）：21–03 只計月眠（§7
   { const s = build({ feed: 10 }, { h: MH2 }); s.cq = C.b5CQ; const r = S.branch5Check(s); ok(r.ok && r.form === 'moon' && r.score.shroom === 0 && r.score.moon === 10, '夜晚淨係餵 → 月眠 100%（菇傘唔計）', JSON.stringify(r.score)); }
   { const s = toAdult(build({ feed: 12, play: 2 }, { h: MH2 }), Math.max(C.brightCQ, C.b5CQ) + 20); ok(s.form === 'moon' && evOf(s).why === 'b5', `夜晚淫餵（${MH2}:00 餵 12 玩 2，高 CQ）→ 月眠（≥ 上限唔去燦光）`, s.form); }
   { const s = build({ feed: 6 }, { h: MH }); HOUR = DAY; for (let i = 0; i < 4; i++) S.noteCare(s, null, 'feed'); s.cq = C.b5CQ; const r = S.branch5Check(s);
-    ok(r.score.moon === 6 && r.score.shroom === 4 && r.form === (60 - 40 >= C.b5GapPt && 60 >= C.b5TopPct ? 'moon' : null), '夜晚 6 次＋白天 4 次餵 → 月眠 60%、菇傘 40%'); }
+    ok(r.score.moon === 6 && r.score.shroom === 4 && r.form === (60 - 40 >= C.drawGapPt && 60 >= C.b5TopPct ? 'moon' : null), '夜晚 6 次＋白天 4 次餵 → 月眠 60%、菇傘 40%'); }
   { const s = build({ feed: 2, play: 8 }, { h: MH2 }); s.cq = C.b5CQ; ok(S.branch5Check(s).form === 'moon', `夜深陪玩（${MH2}:00 玩 8 餵 2）→ 月眠 100%（火苗唔計）`); }
   // 早起玩家 → 水珠
   { const s = build({ feed: 6, play: 4 }, { h: DH }); s.cq = C.b5CQ; const r = S.branch5Check(s); ok(r.form === 'tide' && r.score.tide === 10 && r.score.shroom === 0 && r.score.ember === 0, `晨露：${DH}:00 餵 6 玩 4 → 水珠 100%`, JSON.stringify(r.score)); }
@@ -142,15 +158,15 @@ console.log('# ④ 時段規則（config windows）：21–03 只計月眠（§7
 
 console.log(`# ⑦ 燦光：CQ ≥${C.brightCQ} 且最高分 <${C.brightMaxTopPct}%（全面照顧）先過新 5 條`);
 {
-  const M = C.brightMaxTopPct, G = C.b5GapPt, hi = Math.max(C.brightCQ, C.b5CQ) + 10, go = (counts, cq, o) => toAdult(build(counts, o), cq);
+  const M = C.brightMaxTopPct, G = C.drawGapPt, hi = Math.max(C.brightCQ, C.b5CQ) + 10, go = (counts, cq, o) => toAdult(build(counts, o), cq);
   let s = go(mk(M - 1, M - 1 - G), hi); ok(s.form === 'bright' && evOf(s).b5.ok && Math.round(evOf(s).b5.topShare * 100) === M - 1, `最高 ${M - 1}%（新 5 條本身成立）＋CQ ${hi} → 燦光`, s.form);
   s = go(mk(M, M - G), hi); ok(s.form === 'shroom' && evOf(s).why === 'b5', `最高 ${M}%（啱啱好）＋CQ ${hi} → 菇傘`, s.form);
   s = go({ feed: 9, play: 4, rinse: 4, poop: 3 }, C.brightCQ); ok(s.form === (9 * 100 >= M * 20 ? 'shroom' : 'bright'), `9/20（45%）＋CQ ${C.brightCQ} → 照上限判`, s.form);
   if (C.brightCQ - 1 >= C.b5CQ) { s = go(mk(M - 1, M - 1 - G), C.brightCQ - 1); ok(s.form === 'shroom', `CQ ${C.brightCQ - 1}（唔夠燦光）＋最高 ${M - 1}% → 菇傘`, s.form); }
   s = go(mk(M - 1, M - 1 - G), C.brightCQ); ok(s.form === 'bright', `CQ ${C.brightCQ}（啱啱好）＋最高 ${M - 1}% → 燦光`, s.form);
   s = go({ feed: 8, poop: 2 }, hi, { clean: 100 }); ok(s.form === 'shroom', '清便便都計晶角，但最高係菇傘 80% → 菇傘', s.form);
-  if (2 * M + 2 - G <= 100) { s = go(mk(M + 1, M + 2 - G), 90); ok(s.form === 'soft' && !evOf(s).b5.ok, `最高 ${M + 1}%（燦光唔合）＋差 ${G - 1}pt（新 5 條唔成立）→ 照次序落柔光（CQ 90）`, s.form); }
-  s = go({ feed: 50, play: 50 }, 90); ok(s.form === 'soft' && evOf(s).b5.tie, '50／50 平手＋CQ 90 → 柔光（照次序）', s.form);
+  if (2 * M + 2 - G <= 100) { ROLL.b5draw = 0.999; s = go(mk(M + 1, M + 2 - G), 90); ok(s.form === 'ember' && evOf(s).b5.draw, `最高 ${M + 1}%（燦光唔合）＋差 ${G - 1}pt → 抽（roll 大 → 第二名火苗）`, s.form); delete ROLL.b5draw; }
+  for (const u of [0, 0.999]) { ROLL.b5draw = u; s = go({ feed: 50, play: 50 }, 90); const d = evOf(s).b5.draw; ok(evOf(s).b5.tie && d && s.form === (u < 0.5 ? d.a : d.b), `50／50 平手＋CQ 90 → 抽（roll ${u} → ${s.form}）`, s.form); } delete ROLL.b5draw;
   s = go({}, 90); ok(s.form === 'bright', '冇照顧紀錄＋CQ 90 → 燦光', s.form);
 }
 
