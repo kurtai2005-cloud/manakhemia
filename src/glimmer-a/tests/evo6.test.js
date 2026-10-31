@@ -51,12 +51,12 @@ console.log('# 時長表（pet-template-v1 §6）');
   ok(Math.abs(S.stageProgress(Object.assign(at('juvenile'), { growthSec: 1.5 * DAY })) - 0.5) < 1e-9, 'stageProgress 通用（跳跳期一半＝0.5）');
 }
 
-console.log('# 分支判定（跳跳期完先判；次序 螢絨 → 燦光 ≥70 → 柔光 ≥40 → 微塵）');
+console.log('# 分支判定（跳跳期完先判；次序 螢絨 → 燦光 → 柔光 → 微塵；門檻讀 config evo6.branch）');
 {
   const evo = (cq, lumi) => { const s = at('juvenile', { cq, growthSec: P.stageSec.juvenile - 1 });
     if (lumi) { s.evo.evIn.juvenile = { firefly_walk: 1 }; s.evo.care.juvenile = { all: 10, night: 4 }; }
     S.step(s, 5, {}); return s; };
-  for (const [cq, f] of [[100, 'bright'], [70, 'bright'], [69, 'soft'], [40, 'soft'], [39, 'dust'], [0, 'dust']]) { const s = evo(cq); ok(s.stage === 'adult' && s.form === f, `CQ ${cq} → ${D.FORM_NAME[f]}`, s.form); }
+  for (const [cq, f] of (({ brightCQ: hi, softCQ: lo }) => [[100, 'bright'], [hi, 'bright'], [hi - 1, 'soft'], [lo, 'soft'], [lo - 1, 'dust'], [0, 'dust']])(P.evo6.branch)) { const s = evo(cq); ok(s.stage === 'adult' && s.form === f, `CQ ${cq} → ${D.FORM_NAME[f]}`, s.form); }
   const a = evo(90, true); ok(a.form === 'lumi', '螢絨優先過燦光（CQ 90＋條件齊）', a.form);
   const b = evo(55, true); ok(b.form === 'lumi', 'CQ 55 啱啱夠 → 螢絨', b.form);
   const c = evo(54, true); ok(c.form === 'soft', 'CQ 54 → 唔夠螢絨 → 柔光', c.form);

@@ -101,8 +101,8 @@
       urgent: vals[lk] < warnAt ? lk : null, level: vals[lk], warnAt, vals, rate: rates(!!s.sleeping), rateAwake: rates(false), floor: P.offlineNeedFloor, wakeAt: P.sleepWakeAt };
   }
 
-  function decideForm(cq) {
-    return cq >= P.branchBright ? 'bright' : cq >= P.branchSoft ? 'soft' : 'dust';
+  function decideForm(cq) {                              // 淨睇 CQ（DEV 預覽用）；正式判定睇 decideBranch
+    const C = P.evo6.branch; return cq >= C.brightCQ ? 'bright' : cq >= C.softCQ ? 'soft' : 'dust';
   }
 
   // ── evo6 六階段（pet-template-v1 §6）：egg 光卵 → newborn 絨點 → sprout 芽崽 → juvenile 跳跳期 →（分支）adult 守夜者 → elder 靜光 →（玩家確認）化光 ──
@@ -117,14 +117,18 @@
   let rainFn = null;                                     // §7：落雨（main 設做 G.weather === 'rain'；Node 測試可注入）
   function setRainFn(fn) { rainFn = typeof fn === 'function' ? fn : null; }
   function isRaining() { return !!(rainFn && rainFn()); }
-  function isMoonHour(h) { return h >= EV6.b5MoonFrom || h < EV6.b5MoonTo; }   // 月眠：21:00–03:00（遊戲鐘）
-  // §7 新支線分數：每次照顧 all +1；本身類型照計；落雨時任何照顧再計水珠（rinse 本身已歸水珠 → 只計一次）；§7 修訂：21–03 或瞓覺時撫摸只計月眠（唔計本身類型）
+  const BR = () => EV6.branch;                          // §7 判定 config（data.js PARAMS.evo6.branch）
+  function inWindow(w, h) { return w.from <= w.to ? h >= w.from && h < w.to : h >= w.from || h < w.to; }
+  function careWindow(h) { return BR().windows.find(w => inWindow(w, h)) || null; }   // 時段規則（21–03 月眠、06–09 水珠…）
+  function isMoonHour(h) { const w = BR().windows.find(x => x.id === 'moon'); return !!w && inWindow(w, h); }
+  // §7 新支線分數：每次照顧 all +1；本身類型照計；落雨時任何照顧再計水珠（rinse 本身已歸水珠 → 只計一次）；時段規則（config windows）：21–03 只計月眠、06–09 只計水珠；瞓覺撫摸只計月眠
   const B5_KIND = { feed: 'shroom', play: 'ember', mg: 'ember', rinse: 'tide', poop: 'crystal' };
   function noteB5(s, kind, h, rain) {
     if (s.stage === 'egg') return; const E = evoOf(s), b = E.b5[s.stage] || (E.b5[s.stage] = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0 });
     h = h == null ? nowHour() : h; rain = rain == null ? isRaining() : !!rain;
     b.all++;
-    if (kind === 'petSleep' || isMoonHour(h)) { b.moon++; return; }   // §7 修訂：21–03（同瞓覺撫摸）只計月眠，唔再計本身類型／落雨
+    if (kind === 'petSleep') { b.moon++; return; }          // 瞓覺撫摸 → 月眠
+    const w = careWindow(h); if (w) { b[w.only]++; return; }   // §7 修訂／v2：時段內只計嗰條（21–03 月眠、06–09 水珠），唔計本身類型／落雨
     const own = B5_KIND[kind]; if (own) b[own]++;
     if (rain && kind !== 'rinse') b.tide++;
   }
@@ -140,16 +144,18 @@
     if (s.stage === 'egg' || !(dt > 0)) return; const E = evoOf(s), c = E.cl[s.stage] || (E.cl[s.stage] = { sum: 0, sec: 0 });
     c.sum += s.needs.clean * dt; c.sec += dt;
   }
-  function branch5Check(s) {                             // §7：CQ ≥55、最高分 ≥35%、同第二名差 ≥5 個百分點；平手／唔夠 → null
+  function branch5Check(s) {                             // §7：CQ ≥ b5CQ、最高分 ≥ b5TopPct%、同第二名差 ≥ b5GapPt 個百分點；平手／唔夠 → null（config）
+    const C = BR();
     const E = evoOf(s), T = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0 }; let cs = 0, cn = 0;
     EV6.careStages.forEach(st => { const b = E.b5[st]; if (b) for (const k in T) T[k] += +b[k] || 0; const c = E.cl[st]; if (c) { cs += c.sum; cn += c.sec; } });
-    const cleanAvg = cn > 0 ? cs / cn : null, crystalOk = cleanAvg != null && cleanAvg >= EV6.b5CrystalCleanAvg;
+    const cleanAvg = cn > 0 ? cs / cn : null, crystalOk = cleanAvg != null && cleanAvg >= C.crystalCleanAvg;
     const score = { tide: T.tide, shroom: T.shroom, crystal: crystalOk ? T.crystal : 0, moon: T.moon, ember: T.ember };
     const rank = D.BRANCH5.map(id => ({ id, n: score[id], share: T.all ? score[id] / T.all : 0 })).sort((a, b) => b.n - a.n || D.BRANCH5.indexOf(a.id) - D.BRANCH5.indexOf(b.id));
     const top = rank[0], second = rank[1], N = T.all;
-    const r = { all: N, score, raw: { crystal: T.crystal }, cleanAvg: cleanAvg == null ? null : +cleanAvg.toFixed(1), crystalOk, cq: s.cq, cqOk: s.cq >= EV6.b5CQ,
+    const r = { all: N, score, raw: { crystal: T.crystal }, cleanAvg: cleanAvg == null ? null : +cleanAvg.toFixed(1), crystalOk, cq: s.cq, cqOk: s.cq >= C.b5CQ,
       top: top.id, topN: top.n, topShare: +top.share.toFixed(4), second: second.id, secondShare: +second.share.toFixed(4),
-      topOk: N > 0 && top.n * 100 >= EV6.b5TopShare * 100 * N, gapOk: N > 0 && (top.n - second.n) * 100 >= EV6.b5Gap * 100 * N, tie: top.n === second.n };
+      topOk: N > 0 && top.n * 100 >= C.b5TopPct * N, gapOk: N > 0 && (top.n - second.n) * 100 >= C.b5GapPt * N, tie: top.n === second.n,
+      brightTopOk: !(N > 0 && top.n * 100 >= C.brightMaxTopPct * N) };
     r.ok = r.cqOk && r.topOk && r.gapOk && !r.tie; r.form = r.ok ? top.id : null; return r;
   }
   function noteEvent(s, id) { if (!s || s.stage === 'egg') return; const E = evoOf(s), m = E.evIn[s.stage] || (E.evIn[s.stage] = {}); m[id] = (m[id] || 0) + 1; }   // events.js trigger 掛
@@ -162,14 +168,14 @@
     const r = { firefly: ev, fireflyOk: ev > 0, cq: s.cq, cqOk: s.cq >= EV6.lumiCQ, night: +cs.share.toFixed(3), nightAll: cs.all, nightOk: cs.all > 0 && cs.share >= EV6.lumiNightShare };
     r.ok = r.fireflyOk && r.cqOk && r.nightOk; return r;
   }
-  function decideBranch(s) {                             // 次序（§7 修訂）：DEV 強制 → 螢絨 → 燦光（CQ≥70 且最高分 <45%）→ 新 5 條 → 柔光（CQ≥40）→ 微塵
+  function decideBranch(s) {                             // 次序（§7 修訂）：DEV 強制 → 螢絨 → 燦光（CQ ≥ brightCQ 且最高分 < brightMaxTopPct%）→ 新 5 條 → 柔光（CQ ≥ softCQ）→ 微塵（數值見 config）
     const E = evoOf(s), L = lumiCheck(s), B = branch5Check(s);
     if (E.force && D.BRANCHES.includes(E.force)) return { form: E.force, why: 'dev', lumi: L, b5: B };
     if (L.ok) return { form: 'lumi', why: 'lumi', lumi: L, b5: B };
-    // §7 修訂：燦光（CQ ≥70 而且最高分 <45%＝全面照顧）先過新 5 條；專注某類 ≥45% 先去新支線
-    if (s.cq >= P.branchBright && !(B.all > 0 && B.topN * 100 >= EV6.b5BrightMaxShare * 100 * B.all)) return { form: 'bright', why: 'cq', lumi: L, b5: B };
+    const C = BR();                                      // §7 修訂：燦光（全面照顧＝最高分 < 上限）先過新 5 條；專注某類就去新支線
+    if (s.cq >= C.brightCQ && B.brightTopOk) return { form: 'bright', why: 'cq', lumi: L, b5: B };
     if (B.ok) return { form: B.form, why: 'b5', lumi: L, b5: B };
-    const f = s.cq >= P.branchBright ? 'soft' : decideForm(s.cq);   // 照次序：燦光已唔合（最高 ≥45%）、新 5 條又唔成立（差 <5pt／平手）→ 柔光
+    const f = s.cq >= C.softCQ ? 'soft' : 'dust';        // 照次序：燦光／新 5 條都唔成立 → 柔光（CQ ≥ softCQ）→ 微塵
     return { form: f, why: 'cq', lumi: L, b5: B };
   }
   function enterStage(s, st) {
@@ -509,6 +515,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

@@ -106,10 +106,10 @@ console.log('# CQ 規則');
   s = sprout({ hunger: 100, mood: 100, clean: 100, energy: 100 }); S.advance(s, H, {}, 30); ok(s.cq === 51, '每小時結算一次（線上）');
   s = sprout(); s.lastSeen = 1e12 - 8 * H * 1000; S.applyOffline(s, 1e12); ok(s.cq === 50, '離線唔改 CQ（假設）');
 }
-console.log('# 分支門檻 70 / 40（evo6：跳跳期完先分支）');
+console.log('# 分支門檻（config evo6.branch：燦光 ' + P.evo6.branch.brightCQ + '／柔光 ' + P.evo6.branch.softCQ + '；evo6：跳跳期完先分支）');
 {
   const evo = (cq) => { const s = sprout(); s.stage = 'juvenile'; s.cq = cq; s.growthSec = P.stageSec.juvenile - 1; S.step(s, 5, {}); return s; };
-  for (const [cq, f] of [[100, 'bright'], [70, 'bright'], [69, 'soft'], [40, 'soft'], [39, 'dust'], [0, 'dust']]) {
+  for (const [cq, f] of (({ brightCQ: hi, softCQ: lo }) => [[100, 'bright'], [hi, 'bright'], [hi - 1, 'soft'], [lo, 'soft'], [lo - 1, 'dust'], [0, 'dust']])(P.evo6.branch)) {
     const s = evo(cq); ok(s.stage === 'adult' && s.form === f, `CQ=${cq} → ${f}`, s.form);
   }
   const s = evo(75); ok(s.ev.some(e => e.type === 'evolve' && e.form === 'bright'), '產生 evolve 事件'); ok(s.cq === P.cqStart, '進入新階段 CQ 重置');
@@ -141,7 +141,7 @@ console.log('# 好／差照顧（芽崽 18h＋跳跳期 3 日）→ 分支');
   if (a.ev) { const ev = a.ev.find(e => e.type === 'evolve'); if (ev && ev.b5) console.log('  · 勤力照顧 §7 分數', JSON.stringify(ev.b5.score), 'all', ev.b5.all, 'top', ev.b5.top, ev.b5.topShare, ev.b5.secondShare, 'clean', ev.b5.cleanAvg); }
   ok(a.stage === 'adult' && a.form === 'bright', '勤力照顧 → 燦光', a.form + ' cq=' + a.cq);
   { const ev = a.ev.find(e => e.type === 'evolve') || {};   // §7 修訂：清便便 39%＋清潔 85 → 全面照顧（最高 <45%）→ 燦光先過新 5 條
-    ok(ev.cq >= 70 && ev.b5 && ev.b5.top === 'crystal' && ev.b5.topShare < 0.45 && ev.b5.ok, '勤力照顧：晶角 39%（新 5 條本身成立）但 <45% → 燦光優先', ev.b5 && ev.b5.topShare); }
+    ok(ev.cq >= P.evo6.branch.brightCQ && ev.b5 && ev.b5.top === 'crystal' && ev.b5.topShare * 100 < P.evo6.branch.brightMaxTopPct && ev.b5.ok, '勤力照顧：晶角 39%（新 5 條本身成立）但 < 燦光上限 → 燦光優先', ev.b5 && ev.b5.topShare); }
   ok(b.stage === 'adult' && b.form === 'dust', '極少照顧（<20 先補到 30）→ 微塵（可重養，非失敗）', b.form);
 }
 console.log('# 迷你遊戲');
