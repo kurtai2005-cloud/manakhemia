@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* §7 平衡掃描 v7。外掛，唔改 code/glimmer-evo6。
  * 真 sim：a7f0d878（route-sweep.js 同一套時間表、隨機、CQ、scaleToAge）。
- * 晶角只改計分：有便便嘅上線入面，即清比例 ×100×k。取消清潔 ≥60。只掃 k。
+ * 外掛只改：晶角分＝有便便嘅上線入面即清比例 ×100×k（取消清潔 ≥60）；
+ * 螢絨機會按 20/25 縮（CQ 仍然 25）；柔光門檻 28。差距 5pt、專線、scaleToAge 跟真 code。只掃 k。
  */
 'use strict';
 const fs = require('fs');
@@ -53,14 +54,14 @@ function run(name, seed) {
     if (snap || s.stage !== 'adult') return;
     const ev = (s.ev || []).find(e => e.type === 'evolve');
     const days = S.careDaysCheck(s);
-    const T = { tide: 0, shroom: 0, moon: 0, ember: 0, all: 0 };
+    const T = { tide: 0, shroom: 0, moon: 0, ember: 0, crystalRaw: 0, all: 0 };
     for (const st of P.evo6.careStages) {
       const b = s.evo && s.evo.b5 && s.evo.b5[st];
       if (!b) continue;
-      T.all += +b.all || 0; T.tide += +b.tide || 0; T.shroom += +b.shroom || 0; T.moon += +b.moon || 0; T.ember += +b.ember || 0;
+      T.all += +b.all || 0; T.tide += +b.tide || 0; T.shroom += +b.shroom || 0; T.moon += +b.moon || 0; T.ember += +b.ember || 0; T.crystalRaw += +b.crystal || 0;
     }
     snap = {
-      lumi: !!(ev && ev.lumi && ev.lumi.ok),
+      lumiEv: ev && ev.lumi ? { ok: !!ev.lumi.ok, chance: ev.lumi.chance || 0, roll: ev.lumi.roll || 0, cqOk: !!ev.lumi.cqOk, fireflyOk: !!ev.lumi.fireflyOk } : null,
       cq: ev ? ev.cq : s.cq,
       daysOk: days.ok, days: days.days, span: days.span, need: days.need,
       roll: S.branchRoll(s, 'b5draw'),
@@ -103,11 +104,16 @@ function run(name, seed) {
     }
   }
   S.setHourFn(null); S.setNowFn(null); S.setWeatherFn(null);
-  if (!snap) snap = { lumi: false, cq: s.cq, daysOk: false, days: 0, span: 0, need: 0, roll: 0, T: { tide: 0, shroom: 0, moon: 0, ember: 0, all: 0 }, nWith, nQuick, simForm: s.form || 'none' };
+  if (!snap) snap = { lumiEv: null, cq: s.cq, daysOk: false, days: 0, span: 0, need: 0, roll: 0, T: { tide: 0, shroom: 0, moon: 0, ember: 0, crystalRaw: 0, all: 0 }, nWith, nQuick, simForm: s.form || 'none' };
   return snap;
 }
+function lumiOk(f) {
+  const L = f.lumiEv; if (!L || !L.fireflyOk || !L.cqOk) return false;
+  const chance = (L.chance || 0) * (20 / C.lumi.maxChancePct);
+  return L.roll < chance;
+}
 function judge(f, k) {
-  if (f.lumi) return 'lumi';
+  if (lumiOk(f)) return 'lumi';
   if (!f.T || f.simForm === 'none') return f.simForm || 'none';
   const all = f.T.all;
   const rate = f.nWith ? f.nQuick / f.nWith : 0;
@@ -124,7 +130,7 @@ function judge(f, k) {
     }
     return top.id;
   }
-  return f.cq >= C.softCQ ? 'soft' : 'dust';
+  return f.cq >= 28 ? 'soft' : 'dust';
 }
 function evaluate(rows, k) {
   const tables = {};
@@ -194,15 +200,40 @@ function main() {
   const pick = passed.length ? passed.slice().sort((a, b) => Math.abs(a.k - 0.45) - Math.abs(b.k - 0.45))[0] : null;
   const start = sweep.find(r => r.k === 0.45);
   const simDist = {};
+  const legacyDist = {};
+  function legacy(f) {
+    if (f.lumiEv && f.lumiEv.ok) return 'lumi';
+    const all = f.T.all || 0;
+    const score = { tide: f.T.tide, shroom: f.T.shroom, crystal: f.T.crystalRaw, moon: f.T.moon, ember: f.T.ember };
+    const rank = IDS.map(id => ({ id, n: score[id] })).sort((a, b) => b.n - a.n || IDS.indexOf(a.id) - IDS.indexOf(b.id));
+    const top = rank[0], second = rank[1];
+    const share = all ? top.n / all : 0;
+    const gap = all ? (top.n - second.n) / all * 100 : 100;
+    if (f.cq >= 30 && f.days >= 5 && share < 0.45) return 'bright';
+    if (all > 0 && share >= 0.45) {
+      if (gap < 5 && top.n + second.n > 0) return f.roll < top.n / (top.n + second.n) ? top.id : second.id;
+      return top.id;
+    }
+    return f.cq >= 28 ? 'soft' : 'dust';
+  }
+  const diffs = [];
   for (const name of NAMES) {
-    const c = {};
-    for (const f of rows[name]) c[f.simForm] = (c[f.simForm] || 0) + 1;
-    simDist[name] = c;
+    const c = {}, L = {};
+    for (const f of rows[name]) {
+      c[f.simForm] = (c[f.simForm] || 0) + 1;
+      const g = legacy(f); L[g] = (L[g] || 0) + 1;
+    }
+    simDist[name] = c; legacyDist[name] = L;
+    const n = rows[name].length;
+    for (const id of PATHS) {
+      const a = ((c[id] || 0) / n) * 100, b = ((L[id] || 0) / n) * 100;
+      if (Math.abs(a - b) > 3) diffs.push({ name, id, real: +a.toFixed(1), qaV5rules: +b.toFixed(1), d: +(a - b).toFixed(1) });
+    }
   }
   const out = {
     doc: '附件 §7 平衡修訂 v7。真 sim a7f0d878 route-sweep。',
     sim: 'a7f0d87878db15e09da426bed04d60f668bcbcac',
-    N, quick, simDist,
+    N, quick, simDist, legacyDist, diffs,
     codeParams: { brightCQ: C.brightCQ, softCQ: C.softCQ, b5CQ: C.b5CQ, b5TopPct: C.b5TopPct, drawGapPt: C.drawGapPt, lumiMax: C.lumi.maxChancePct, lumiCQ: C.lumi.minCQ, scaleToAge: C.brightDays.scaleToAge },
     sweep: sweep.map(r => ({ k: r.k, crystal: r.crystal, brightMax: r.brightMax, passN: r.passN, nChecks: r.nChecks, fail: r.fail })),
     solved: !!pick,
@@ -215,7 +246,7 @@ function main() {
   console.log(JSON.stringify({
     N, ms: out.ms, solved: out.solved, k: pick && pick.k, quick,
     sweep: out.sweep.map(r => ({ k: r.k, crystal: r.crystal, brightMax: r.brightMax, passN: r.passN })),
-    startLumi: start.sc.totalPct.lumi, startBright: start.brightMax, cq: start.sc.cqMed['疏玩'], simDist,
+    startLumi: start.sc.totalPct.lumi, startBright: start.brightMax, cq: start.sc.cqMed['疏玩'], diffs: diffs.length,
   }));
 }
 main();
