@@ -27,3 +27,19 @@
 - `FIT`：逐形態 dx／dy／sc／variant。帽針版放月眠帽右邊、菇傘帽左邊；靜光燦光、柔光、火苗、月眠嘅帽同結大細有手調。
 - `NECK_LIM`：靜光月眠頸巾唔包月牙。
 - `HIDE`：手動收起嘅 clip 連原因。
+
+<!-- ACC2-START -->
+## ACC2 數量（2026-11-01）
+| item | 名 | slot | 幀 | clip（可見／總） | 備註 |
+|---|---|---|---|---|---|
+| beanie | 毛冷帽 | head | 4524 | 1030/1055 | 針織直坑、反邊、pompom 偏左；月眠／菇傘帽針版；leaf_umbrella 收起 |
+| acorn | 橡果帽 | head | 4524 | 1030/1055 | 鱗片紋＋帽邊＋帽蒂；帽針版；leaf_umbrella 收起 |
+| crown | 小皇冠 | head | 4524 | 1030/1055 | 64px 形態加細節；帽針版；leaf_umbrella 收起 |
+| straw（polish） | 草帽 | head | 4524 | 1030/1055 | 穩定化＋月眠守護帽針加大＋lumi 系莖洞執靚（幀名同數量不變） |
+
+### head slot 手調（ACC2 起）
+- `HEAD`：每件頭飾嘅闊（k×頭闊）、高闊比、沉落深度、帽針版大細同斜角。
+- `stabilise_head`：頭頂點對中＋相對身體 bbox 平滑、ws median-3 夾 0.85–1.12、傾角每幀 ≤8°。validator 會檢查後兩項。
+- `CUT_FULL`：lumi 系只挖葉同葉描邊。
+- `FIT`：新三件沿用草帽嘅靜光燦光／柔光／火苗 sc；月眠守護帽針 sc 1.8，月眠靜光 0.8。
+<!-- ACC2-END -->

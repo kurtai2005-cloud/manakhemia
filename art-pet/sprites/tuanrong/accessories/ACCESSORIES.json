@@ -400,7 +400,271 @@
    "anchor": "top",
    "obtain": "冬（12–2 月）第一次觸發 shiver 嗰日送（「凍親呀？」）",
    "batch": "ACC2",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/beanie/fit_beanie.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/beanie/atlas_beanie_sprout.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/beanie/atlas_beanie_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/beanie/atlas_beanie_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/beanie/atlas_beanie_lumi.json",
+     "clips": 26,
+     "visibleClips": 25,
+     "frames": 106,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/beanie/atlas_beanie_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/beanie/atlas_beanie_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/beanie/atlas_beanie_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 49,
+     "frames": 231,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_moon": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/beanie/atlas_beanie_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/beanie/atlas_beanie_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_beanie_S.png",
+    "M": "ref/acc_beanie_M.png",
+    "L": "ref/acc_beanie_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1030,
+    "clips": 1055,
+    "frames": 4524
+   }
   },
   "nightcap": {
    "key": "nightcap",
@@ -418,7 +682,271 @@
    "anchor": "top",
    "obtain": "成就徽章 20 個（終局獎勵之一）",
    "batch": "ACC2",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/crown/fit_crown.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/crown/atlas_crown_sprout.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/crown/atlas_crown_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/crown/atlas_crown_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/crown/atlas_crown_lumi.json",
+     "clips": 26,
+     "visibleClips": 25,
+     "frames": 106,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/crown/atlas_crown_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/crown/atlas_crown_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/crown/atlas_crown_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 49,
+     "frames": 231,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/crown/atlas_crown_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/crown/atlas_crown_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/crown/atlas_crown_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/crown/atlas_crown_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/crown/atlas_crown_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/crown/atlas_crown_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/crown/atlas_crown_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/crown/atlas_crown_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/crown/atlas_crown_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/crown/atlas_crown_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/crown/atlas_crown_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/crown/atlas_crown_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/crown/atlas_crown_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/crown/atlas_crown_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/crown/atlas_crown_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_moon": {
+     "atlas": "items/crown/atlas_crown_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/crown/atlas_crown_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/crown/atlas_crown_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_crown_S.png",
+    "M": "ref/acc_crown_M.png",
+    "L": "ref/acc_crown_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1030,
+    "clips": 1055,
+    "frames": 4524
+   }
   },
   "acorn": {
    "key": "acorn",
@@ -427,7 +955,271 @@
    "anchor": "top",
    "obtain": "秋（9–11 月）散步執夠橡果 ×5 自動合成",
    "batch": "ACC2",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/acorn/fit_acorn.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/acorn/atlas_acorn_sprout.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/acorn/atlas_acorn_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/acorn/atlas_acorn_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/acorn/atlas_acorn_lumi.json",
+     "clips": 26,
+     "visibleClips": 25,
+     "frames": 106,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/acorn/atlas_acorn_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/acorn/atlas_acorn_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/acorn/atlas_acorn_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 49,
+     "frames": 231,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_moon": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/acorn/atlas_acorn_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/acorn/atlas_acorn_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_acorn_S.png",
+    "M": "ref/acc_acorn_M.png",
+    "L": "ref/acc_acorn_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1030,
+    "clips": 1055,
+    "frames": 4524
+   }
   },
   "bow": {
    "key": "bow",

@@ -23,3 +23,12 @@
 - 13 件嘅攞法同數值見 `ACCESSORIES.json` 嘅 `items[].obtain`，暫時只係建議值。
 - 衣櫃 UI 未畫，建議同第 3 批房間 UI 一齊做。
 - 引擎要做嘅嘢：飾品層畫喺 face 之上、emissive 之下；scaleX 鏡像同身體一齊做；spriteSourceSize 可以係負數，即係超出 frame 邊。
+
+<!-- ACC-PROGRESS-START -->
+## 進度
+- ACC1 ✅ 2026-11-01：框架、收藏品 12 件、草帽／蝴蝶結／頸巾（`/workspace/acc1-staging`）。
+- ACC2 ✅ 2026-11-01：毛冷帽／橡果帽／小皇冠，加草帽 polish（`/workspace/acc2-staging`）。
+- ACC3 ⏳ 星星髮夾、櫻花髮飾、圓框眼鏡。
+- ACC4 ⏳ 葉仔領、燈泡小鈴、燈泡光環、睡帽。
+- ACC5 ⏳ 多 slot 衝突、25×13 contact sheet、總覆核、文件定稿。
+<!-- ACC-PROGRESS-END -->

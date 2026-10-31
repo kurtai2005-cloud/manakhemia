@@ -338,3 +338,10 @@ std23 餘下：冇（已齊）
 - `hiddenClips`：成個 clip 唔畫飾品，原因寫埋入去。ACC1 只有草帽喺 `leaf_umbrella` 收起（撐葉時葉蓋住頭，25 個形態都係咁）。
 - ACC1 完成：草帽、蝴蝶結、頸巾 × 25 形態，合共 13,872 幀 overlay；收藏品 12 件放 `ui/collectibles/`。計劃見 `accessories/ACC_PLAN.md`。
 <!-- ACC1-END -->
+
+<!-- ACC2-START -->
+## 飾品 overlay（ACC2，2026-11-01）
+- 加咗毛冷帽 beanie、橡果帽 acorn、小皇冠 crown（全部 head slot），格式同 ACC1 一樣：`accessories/items/<item>/atlas_<item>_<form>.json`，幀名＝身體幀名。
+- 三件都喺 `leaf_umbrella` 收起（同草帽一樣，撐葉時葉蓋住頭頂）；其餘 1,030/1,055 個 clip 全部有 overlay，合共 13,572 幀。
+- 草帽 polish：頭飾跳幀穩定化（lookup_tip_04／getup_01／turn_back_02 等），月眠守護帽針加大，lumi 系莖洞執靚。草帽 25 個 atlas 已更新，幀名同數量不變。身體 clip 定義冇改。
+<!-- ACC2-END -->

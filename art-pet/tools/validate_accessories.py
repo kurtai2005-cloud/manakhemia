@@ -2,7 +2,7 @@
 """validate_accessories — 團絨飾品＋收藏品（ACC 批次）。檢查：
 schema／13 件總表／slot；每個 done item × 25 形態都有 atlas＋json；身體每一幀都要有 overlay，除非個 clip 喺 hiddenClips（有原因）；
 atlas 像素 v3＋alpha 0/255；幀 rect 喺 atlas 內；唔遮五官（eyeL/eyeR/mouth ±1，faceVisible）；唔遮燈泡（bulb/bulb2 ±1）；
-overlay 同 fit 一致（帽底中心 ≤3px／蝴蝶結中心 ≤3px／頸巾頂行 = fit.ny）；動畫 frames 對得上身體 clip 幀數；counts；
+overlay 同 fit 一致（head slot 通用：草帽／毛冷帽／橡果帽／小皇冠；ACC2 起加傾角每幀 ≤8°、ws 0.85–1.12；帽底中心 ≤3px／蝴蝶結中心 ≤3px／頸巾頂行 = fit.ny）；動畫 frames 對得上身體 clip 幀數；counts；
 收藏品 12 件 × 16／32＋剪影、atlas、v3／alpha；CLIPS.json additive accessories key。"""
 import json, os, sys, math
 import numpy as np
@@ -78,10 +78,14 @@ def main():
                             if ov[max(0, y - 1 + B.PAD):y + 2 + B.PAD, max(0, x - 1 + B.PAD):x + 2 + B.PAD, 3].any(): err(f"{it}/{form}/{n}: 遮 {g}")
                     # 同 fit 一致（跟變形）
                     fi = fl[k - 1]; ys, xs = np.nonzero(ov[..., 3]); xs = xs - B.PAD; ys = ys - B.PAD
-                    if it == "straw" and fi.get("variant") == "hat":
+                    head = B.ITEMS.get(it, {}).get("slot") == "head"
+                    if head and fi.get("variant") == "hat":
+                        if fi.get("ws", 1) > 1.1201 or fi.get("ws", 1) < 0.8499: err(f"{it}/{form}/{n}: ws {fi.get('ws')} 出 0.85–1.12（頭飾闊度跳）")
+                        pa = fl[k - 2]["ang"] if k > 1 and fl[k - 2].get("variant") == "hat" else 0.0
+                        if abs(fi["ang"] - pa) > 8.01: err(f"{it}/{form}/{n}: 傾角跳 {pa}→{fi['ang']}（>8°）")
                         bx, by = fi["piv"]
                         if abs(np.median(xs) - bx) > max(3, 0.25 * fi["W"]) or abs(ys.max() - by) > 4 + 0.5 * fi["W"] * abs(np.sin(np.radians(fi["ang"]))): err(f"{it}/{form}/{n}: 帽位同 fit 唔一致 ({np.median(xs):.1f},{ys.max()}) vs {fi['piv']}")
-                    elif it == "straw":
+                    elif head:
                         cx, cy = fi["pos"]
                         if abs(np.median(xs) - cx) > 6 or abs(np.median(ys) - cy) > 6: err(f"{it}/{form}/{n}: 帽針位唔一致")
                     elif it == "bow":

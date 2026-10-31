@@ -156130,17 +156130,17 @@
   "spec": "sprites/tuanrong/accessories/ACCESSORIES.json",
   "doc": "sprites/tuanrong/accessories/ACCESSORIES.md",
   "plan": "sprites/tuanrong/accessories/ACC_PLAN.md",
-  "batch": "ACC1",
+  "batch": "ACC2",
   "done": [
    "straw",
+   "beanie",
+   "crown",
+   "acorn",
    "bow",
    "scarf"
   ],
   "planned": [
-   "beanie",
    "nightcap",
-   "crown",
-   "acorn",
    "starclip",
    "sakura",
    "glasses",
@@ -156149,6 +156149,18 @@
    "halo"
   ],
   "collectibles": "ui/collectibles/collectibles.json",
-  "note": "飾品 overlay 幀名同身體 clip 幀一樣；hiddenClips 成段唔畫。身體 clip 定義唔改。"
+  "note": "飾品 overlay 幀名同身體 clip 幀一樣；hiddenClips 成段唔畫。身體 clip 定義唔改。",
+  "batches": {
+   "ACC1": [
+    "straw",
+    "bow",
+    "scarf"
+   ],
+   "ACC2": [
+    "beanie",
+    "acorn",
+    "crown"
+   ]
+  }
  }
 }

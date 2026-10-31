@@ -165,3 +165,18 @@
 - 收藏品：`ui/collectibles/col_<key>_{16,32}.png`＋`_sil` 剪影、`atlas_collectibles.png/json`、`collectibles.json`（名、季節、稀有度、攞法建議）。
 - 預覽：`sprites/tuanrong/preview/accessories/acc1_*.png`。驗證：`tools/validate_accessories.py`。備份：`_backups/pre_acc1_20261101/`。全部 Pillow／numpy，冇 AI，v3 色盤，alpha 0/255。
 <!-- ACC1-LOG-END -->
+
+<!-- ACC2-LOG-START -->
+## 2026-11-01 — 飾品完整版 ACC2（毛冷帽／橡果帽／小皇冠＋草帽 polish）
+- 依 `sprites/tuanrong/accessories/ACC_PLAN.md` 第 2 批。三件 head slot × 25 形態 × 全 clip：毛冷帽 4524 幀、橡果帽 4524 幀、小皇冠 4524 幀（各 1030/1055 clip；leaf_umbrella 收起）。
+- `tools/build_accessories.py`：草帽畫法抽成通用 head drawer（`HEAD` 參數表＋`make_head_draw`）。
+  - 毛冷帽：直坑針織紋、白色反邊、pompom 偏左（燈泡位喺正中），沉落頭頂多啲但唔遮眼。
+  - 橡果帽：鱗片交叉紋、深啡帽邊、帽蒂（有燈泡嘅形態俾燈挖走）。
+  - 小皇冠：細（0.68×頭闊），S／M 3 支尖、闊啲 5 支；64px 形態加大紅寶石、帶底刻紋同尖頂小珠。
+  - 月眠／菇傘 4 個形態逐件出帽針版。
+- 頭飾穩定化（`stabilise_head`，所有 head 飾品共用）：頭頂點橫向對返頭頂中點（±2px），相對身體 bbox 做 3-tap 平滑；ws 用 median-3，夾 0.85–1.12；傾角每幀變化 ≤8°，clip 第一幀相對 idle 計。
+  - 草帽 lookup_tip_04 最大傾角跳由 13.2° 降到 8.0°，闊度跳由 6 降到 2 px；turn_back_02 闊度跳由 14 降到 8 px，位移由 6.4 降到 4.2 px；getup_01 傾角跳由 9.9° 降到 8.0°，闊度跳由 10 降到 4 px。
+- 草帽其他 polish：月眠守護帽針 sc 1.45→1.8；lumi 系 3 個形態只挖葉（綠）同葉描邊，莖同淺紫毛唔挖，帽身唔再有碎洞；guard／still_lumi 草帽唔加織紋。
+- validator：head slot 通用化，加咗傾角跳 ≤8° 同 ws 0.85–1.12 檢查。
+- 預覽：`sprites/tuanrong/preview/accessories/acc2_*.png`，包括草帽 before／after 兩張。備份：`_backups/pre_acc2_20261101/`。全部 Pillow／numpy，冇 AI，v3 色盤，alpha 0/255。
+<!-- ACC2-LOG-END -->
