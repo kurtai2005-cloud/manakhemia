@@ -31,7 +31,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   console.log('# 載入 evo 美術（12 form）');
   await load('q=high&hour=13&seed=21&ev=0&dev=1', true);
   const ld = await E(() => ({ ok: Object.keys(__glimmer.renderer.evoOK || {}).sort(), err: __glimmer.renderer.evoError, ready: __glimmer.evoReady, lv: __glimmer.renderer.lv ? Object.keys(__glimmer.renderer.lv.atlas) : [] }));
-  ok(ld.ok.length === 12 && !ld.err && ld.ready, '12 個 evo form atlas 全部載入', ld);
+  ok(ld.ok.length === 22 && !ld.err && ld.ready, '22 個 evo form atlas 全部載入（12＋§7 新 10）', ld);
   ok(['evo_dot', 'evo_guard_soft', 'evo_still_lumi'].every(k => ld.lv.includes(k)), 'evo form 掛入生命感 lv.atlas（noface＋kit 五官）', ld.lv);
 
   console.log('# DEV 抽屜：階段／分支掣（舊「形態」「進化」掣保留）');

@@ -80,7 +80,10 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await fresh('debug=1&q=high&hour=13&seed=11&ev=0', 'soft');
   const walk = await E(() => new Promise(res => { __qa.pet.force('walk'); const out = []; const t0 = performance.now(); const f = () => { const b = __glimmer.beh; if (b.state === 'walk') out.push({ src: b.look.src, q: b.look.q, dir: b.dir }); if (performance.now() - t0 < 2500) requestAnimationFrame(f); else res(out); }; requestAnimationFrame(f); }));
   const wsrc = walk.filter(w => w.src === 'walk' || w.src === 'cam');
-  const fwd = walk.filter(w => w.src === 'walk' && w.q !== 'C');
+  // 由之前望緊嘅方向平滑轉過去（LK.smooth＋候選穩定期）：起步嗰幾幀可能仲係 CL，等第一次轉到 R／CR 之後先驗（要喺頭 25% 樣本內轉到）
+  const w0 = walk.findIndex(w => w.src === 'walk' && ['R', 'CR'].includes(w.q));
+  ok(w0 >= 0 && w0 <= walk.length * 0.25, 'walk gaze 起步平滑轉向前（第 ' + w0 + '/' + walk.length + ' 個樣本）');
+  const fwd = walk.slice(Math.max(0, w0)).filter(w => w.src === 'walk' && w.q !== 'C');
   ok(walk.length > 20 && wsrc.length / walk.length > 0.9, 'walk 期間 gaze 來源＝walk／cam（' + wsrc.length + '/' + walk.length + '）');
   ok(fwd.length > 0 && fwd.every(w => ['R', 'CR'].includes(w.q)), 'walk gaze（幀內，向前）＝R／CR', JSON.stringify(fwd.slice(0, 5)));
   await shot('a1-walk');

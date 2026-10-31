@@ -31,7 +31,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await fresh('debug=1&q=high&hour=13&seed=7&ev=0');
   ok(await E(() => __glimmer.renderer.atlasReady === true), '遊美真 atlas 載入（atlasReady）');
   const at = await E(() => Object.fromEntries(Object.entries(__glimmer.renderer.atlas).map(([k, v]) => [k, [v.img.naturalWidth, v.img.naturalHeight]])));
-  ok(Object.keys(at).filter(k => !/^atlas_evo_/.test(k)).sort().join() === 'atlas_egg,atlas_events,atlas_props,atlas_radiant,atlas_soft,atlas_sprout' && Object.keys(at).filter(k => /^atlas_evo_/.test(k)).length === 12 && Object.values(at).every(([w, h]) => w <= 1024 && h <= 1024), 'atlas 全部 ≤1024×1024（含 atlas_egg）', JSON.stringify(at));
+  ok(Object.keys(at).filter(k => !/^atlas_evo_/.test(k)).sort().join() === 'atlas_egg,atlas_events,atlas_props,atlas_radiant,atlas_soft,atlas_sprout' && Object.keys(at).filter(k => /^atlas_evo_/.test(k)).length === 22 && Object.values(at).every(([w, h]) => w <= 1024 && h <= 1024), 'atlas 全部 ≤1024×1024（含 atlas_egg）', JSON.stringify(at));
   const urls = await page.evaluate(() => performance.getEntriesByType('resource').map(r => r.name));
   ok(!urls.some(u => /pet_tuanrong_atlas/.test(u)), '網絡請求冇舊 2048 pet_tuanrong_atlas');
   ok(await E(() => typeof __qa.pet.step === 'function' && __qa.pet.seed === 7 && Array.isArray(__qa.pet.log)), '__qa.pet 暴露：seed／log／step／clock');
