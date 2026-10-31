@@ -116,6 +116,13 @@ console.log('# DEV 跳階段（資料層：evo 形態對應＋美術檔）');
   ok(['nuzzle_purr', 'reunion_happy', 'walk', 'play', 'act_cool'].every(c => st.animations[c]), 'evo_still_* 有 nuzzle_purr／reunion_happy／walk／play／act_cool（batch D 全套）');
   ok(D.isBig('elder') && D.isBig('adult') && !D.isBig('juvenile') && D.legacyStage('newborn') === 'sprout' && D.legacyStage('elder') === 'adult', 'legacyStage／isBig');
   ok(D.EVO_CLIP_FALLBACK.nuzzle_purr === 'nuzzle' && D.EVO_CLIP_FALLBACK.reunion_happy === 'emo_happy', '缺 clip fallback：nuzzle_purr→nuzzle、reunion_happy→emo_happy');
+  // 遊策 17:34：靜光（elder）每項需求消耗唔可以高過守夜者（adult）— 慢慢品
+  ok(P.stageDecayMul.elder <= P.stageDecayMul.adult, `stageDecayMul elder ${P.stageDecayMul.elder} ≤ adult ${P.stageDecayMul.adult}`);
+  for (const slp of [false, true]) for (const poops of [0, 2]) {
+    const drop = (stg) => { const x = S.newState(0); x.stage = stg; x.form = 'soft'; x.growthSec = 3600; for (const k of D.NEED_KEYS) x.needs[k] = 90; x.poops = poops; x.sleeping = slp; x.poopTimer = 0; const b = Object.assign({}, x.needs); S.step(x, 60); const o = {}; for (const k of D.NEED_KEYS) o[k] = b[k] - x.needs[k]; return o; };
+    const A = drop('adult'), El = drop('elder');
+    ok(D.NEED_KEYS.every(k => El[k] <= A[k] + 1e-9), `靜光每項需求 1 分鐘消耗 ≤ 守夜者（sleeping=${slp} poops=${poops}）`, JSON.stringify({ adult: A, elder: El }));
+  }
   // HD-2D rim mask：每個 evo 形態（除光卵）有 rim_<form>_live，覆蓋全部 noface 幀、rect 一致
   for (const k of D.EVO_FORMS.filter(k => k !== 'evo_egg')) {
     const rp = path.join(__dirname, '..', 'art', 'rim', 'rim_' + k + '_live.json'), aj = JSON.parse(fs.readFileSync(path.join(dir, 'atlas_' + k + '.json'), 'utf8'));

@@ -15,7 +15,7 @@
     // ── 團絨性格偏好 ──
     traitSleepRegenMul: 1.2,      // 睡眠回復 +20%
     traitCleanDecayMul: 1.3,      // 清潔衰減較快（估計值，可調）
-    stageDecayMul: { egg: 0, newborn: 1.2, sprout: 1.2, juvenile: 1.1, adult: 1.0, elder: 1.0 }, // 芽崽衰減較快（估計值）；evo6：絨點同芽崽、跳跳期 1.1、靜光同守夜者（估計值）
+    stageDecayMul: { egg: 0, newborn: 1.2, sprout: 1.2, juvenile: 1.1, adult: 1.0, elder: 1.0 }, // 芽崽衰減較快（估計值）；evo6：絨點同芽崽、跳跳期 1.1；靜光必須 ≤ 守夜者（遊策 10/31：慢慢品，evo6.test 斷言）
     // ── 行動回升 ──
     feedSnack: 20, feedMeal: 40, feedSoup: 20,
     foodMoodBonusWarm: 3,         // 愛暖食：暖菇飯／暖湯額外心情
