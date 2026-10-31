@@ -1,4 +1,4 @@
-/* node tools/fpet-bridge.test.js — snapshot v1/v2/v3/v4＋狀態一變即寫（mock Capacitor、假計時器） */
+/* node tools/fpet-bridge.test.js — snapshot v1/v2/v3/v4/v5＋狀態一變即寫（mock Capacitor、假計時器） */
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const src = fs.readFileSync(path.join(__dirname, 'fpet-bridge.js'), 'utf8');
 let pass = 0, fail = 0;
@@ -56,5 +56,25 @@ const needs = (o) => Object.assign({ hunger: 80, mood: 80, clean: 80, energy: 80
     const g2 = { state: { stage: 'juvenile', needs: needs({ mood: 50 }), sleeping: false }, save() {} };
     r = run(g2, [{ t: 2000, k: 'open_game' }]); await new Promise(s => setImmediate(s)); await new Promise(s => setImmediate(s));
     ok(g2.state.needs.mood === 51, '舊 www（冇 overlayOpenGame）→ open_game 當普通互動 mood +1', g2.state.needs.mood); }
+  // v5（systems12）：snap.sys12＋簽名（設定 ts／tier／room 一變即寫）
+  const x12 = { v: 1, egg: false, bond: { v: 46, tier: 2 }, voice: { chance: 0.3, cooldownSec: 600, showSec: 4, newestTierPct: 50, lastAt: 0, lines: [['a'], ['b']] },
+    surp: { on: { drop: true, water: false, sleep: false }, waterH: 2, sleepAt: '23:00', ts: 0, drop: { minH: 2, maxH: 4, perDay: 5, showSec: 30, day: '2026-11-01', room: 5 }, water: { fromH: 9, toH: 22 }, sleepWinMin: 60, showSec: 6, lines: {} }, shards: 3 };
+  const applied = [];
+  g = { state: { stage: 'adult', form: 'soft', needs: needs({ mood: 50 }), sleeping: false }, save() { g.saved = (g.saved || 0) + 1; },
+    evo: { overlayInfo: () => ({ stage: 'adult', evoForm: 'evo_guard_soft', size: 44, sizeDp: 72 }), overlayStatus: () => st4, sys12Overlay: () => JSON.parse(JSON.stringify(x12)), sys12Apply: (items) => { applied.push(items); return { drop: 1, voice: 1, set: 1 }; } } };
+  const q = [{ t: Date.now(), k: 'tap' }, { t: Date.now(), k: 'drop' }, { t: Date.now(), k: 'voice', line: 'a' }, { t: Date.now(), k: 'menu' }, { t: Date.now(), k: 'set', key: 'water', val: true }, { t: Date.now(), k: 'remind', what: 'water' }];
+  r = run(g, q); await new Promise(s => setImmediate(s)); await new Promise(s => setImmediate(s));
+  m0 = r.writes.length; w = r.writes[m0 - 1];
+  ok(w.v === 5 && w.sys12 && w.sys12.bond.tier === 2 && w.sys12.surp.drop.room === 5 && w.sys12.voice.lines.length === 2 && w.info, 'v5：snap.sys12（親密／心聲句／小驚喜設定）＋v4 欄照寫', w);
+  ok(applied.length === 1 && applied[0].map(i => i.k).join() === 'drop,voice,set,remind', 'replay：systems12 item 交俾 sys12Apply', applied);
+  ok(g.state.needs.mood === 52, 'replay：只有舊互動計 mood（2 個 → +2；systems12 item 唔加）', g.state.needs.mood);
+  x12.surp.ts = 123; r.tick(2000); ok(r.writes.length === m0 + 1 && r.writes[m0].sys12.surp.ts === 123, '設定改咗（ts）→ 即寫');
+  x12.surp.drop.room = 4; r.tick(2000); ok(r.writes.length === m0 + 2, '今日星星碎餘額變 → 即寫');
+  x12.bond.tier = 3; r.tick(2000); ok(r.writes.length === m0 + 3, '親密 tier 升 → 即寫');
+  r.tick(2000); ok(r.writes.length === m0 + 3, 'v5 冇變 → 唔寫');
+  // 舊 www 冇 sys12Apply：systems12 item 照丟（唔當互動加 mood）
+  g = { state: { stage: 'adult', form: 'soft', needs: needs({ mood: 50 }), sleeping: false }, save() {} };
+  r = run(g, [{ t: Date.now(), k: 'drop' }, { t: Date.now(), k: 'tap' }]); await new Promise(s => setImmediate(s)); await new Promise(s => setImmediate(s));
+  ok(g.state.needs.mood === 51 && r.writes[r.writes.length - 1].v === 3 && !r.writes[r.writes.length - 1].sys12, '舊 www：冇 sys12 → v3，drop 唔加 mood', g.state.needs.mood);
   console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail ? 1 : 0);
 })();

@@ -5,7 +5,9 @@
  *   （跟 __glimmer.evo.overlayStatus()；舊 www 冇呢個就由 state.needs 簡單計，冇推算率）。狀態一變（每 2 秒比較簽名）即寫，唔止靠 30 秒。
  *   v4（Kurt 10-31 22:50：長按顯示遊戲狀態）：加 info{name,gen,stage,stageName,sub,form,formName,evoForm,progress,stageH,leftH,ageSec,days,unwell,fadeReady}
  *   （overlayStatus().info；冇就保持 v3）。evoForm／階段／日數一變都即寫（懸浮即刻換同遊戲一樣嘅形態）。
+ *   v5（systems12 第 1 批）：加 sys12（__glimmer.evo.sys12Overlay()：親密度／心聲已解鎖句＋冷卻、小驚喜設定＋今日星星碎餘額）；簽名包 bond tier／設定 ts／room。
  * - 返 app 時 replay overlay queue：每次互動 mood +1，每日最多 +5（按互動發生嗰日，本地時間），冇獎勵、冇事件。
+ *   systems12 item（k＝drop／voice／set／remind）唔計 mood，交俾 __glimmer.evo.sys12Apply（星星碎每日 5 粒＋上限、心聲冷卻、設定後改贏）。
  * - evo6 v8：queue k==='open_game'（浮動團絨撳兩下開 game）→ __glimmer.evo.overlayOpenGame(t) ＝ 一局小遊戲（火苗 +2；冷卻／獎勵由遊戲 config 管），唔佔 mood 上限。 */
 (function () {
   var C = window.Capacitor;
@@ -30,6 +32,7 @@
     if (st) { snap.v = 3; snap.moodBand = st.moodBand; snap.sleeping = !!st.sleeping; snap.egg = !!st.egg;
       snap.needs = { urgent: st.urgent || null, level: st.level, warnAt: st.warnAt, vals: st.vals || null, rate: st.rate || null, rateAwake: st.rateAwake || null, floor: st.floor, wakeAt: st.wakeAt };
       if (st.info && typeof st.info === 'object') { snap.v = 4; snap.info = st.info; } }
+    var s12 = sys12Of(g); if (s12) { snap.v = 5; snap.sys12 = s12; }
     lastSig = sigOf(g);
     Pref.set({ key: 'glimmer.snapshot', value: JSON.stringify(snap) }).catch(function () {});
   }
@@ -42,11 +45,15 @@
       return { egg: false, moodBand: n.mood > 60 ? 'happy' : n.mood < 30 ? 'sad' : 'ok', sleeping: !!s.sleeping, urgent: n[lk] < 30 ? lk : null, level: Math.round(n[lk]), warnAt: 30 };
     } catch (e) { return null; }
   }
+  function sys12Of(g) { try { return g.evo && g.evo.sys12Overlay ? g.evo.sys12Overlay() : null; } catch (e) { return null; } }
+  var S12K = { drop: 1, voice: 1, set: 1, remind: 1 };
+  /* queue 分兩份：舊互動（mood +1）同 systems12 item（交俾 sys12Apply） */
+  function splitItems(items) { var a = [], b = []; (items || []).forEach(function (it) { (it && S12K[it.k] ? b : a).push(it); }); return { mood: a, sys12: b }; }
   var lastSig = '';
   function sigOf(g) {
     var st = statusOf(g) || {}, ov = g.evo && g.evo.overlayInfo ? g.evo.overlayInfo() : {}, s = g.state || {};
-    var inf = st.info || {};
-    return [formOf(s), ov.sizeDp, ov.evoForm || '-', st.moodBand, !!st.sleeping, st.urgent || '-', !!st.egg, inf.stage || '-', inf.days == null ? '-' : inf.days, !!inf.unwell, !!inf.fadeReady].join('|');
+    var inf = st.info || {}, x = sys12Of(g) || {}, xs = x.surp || {}, xb = x.bond || {};
+    return [formOf(s), ov.sizeDp, ov.evoForm || '-', st.moodBand, !!st.sleeping, st.urgent || '-', !!st.egg, inf.stage || '-', inf.days == null ? '-' : inf.days, !!inf.unwell, !!inf.fadeReady, xb.tier == null ? '-' : xb.tier, xs.ts || 0, xs.drop ? xs.drop.room : '-', xs.drop ? xs.drop.day : '-', x.egg ? 1 : 0].join('|');
   }
   function maybeWrite() { var g = G(); if (!g || !g.state) return; if (sigOf(g) !== lastSig) writeSnapshot(); }
   var busy = false;
@@ -54,7 +61,8 @@
     var g = G(); if (!g || !g.state || busy) return;
     busy = true;
     FP.drainQueue().then(function (r) {
-      var items = (r && r.items) || [];
+      var all = (r && r.items) || [], sp = splitItems(all), items = sp.mood, xr = null;
+      if (sp.sys12.length && g.evo && g.evo.sys12Apply) { try { xr = g.evo.sys12Apply(sp.sys12); console.log('[fpet] replay sys12', sp.sys12.length, JSON.stringify(xr)); } catch (e) { console.warn('[fpet] sys12 replay fail', e); } }
       if (items.length) {
         var daily = {}; try { daily = JSON.parse(localStorage.getItem(DAILY_KEY) || '{}') || {}; } catch (e) {}
         var s = g.state, applied = 0;
@@ -77,6 +85,6 @@
   }
   function boot(n) { if (G() && G().state) { replay(); setInterval(writeSnapshot, 30000); setInterval(maybeWrite, 2000); return; } if (n < 100) setTimeout(function () { boot(n + 1); }, 200); }
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') replay(); else writeSnapshot(); });
-  window.__fpetBridge = { replay: replay, writeSnapshot: writeSnapshot, maybeWrite: maybeWrite, statusOf: function () { return statusOf(G()); } };
+  window.__fpetBridge = { replay: replay, splitItems: splitItems, writeSnapshot: writeSnapshot, maybeWrite: maybeWrite, statusOf: function () { return statusOf(G()); } };
   boot(0);
 })();
