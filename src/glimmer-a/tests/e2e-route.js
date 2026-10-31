@@ -113,16 +113,24 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     let b = await care('play'); ok(b.shroom === 0.5 && b.ember === 1 && !b.tide, '陰天玩 → 菇傘 +0.5（v5 權重）＋火苗', b);
     await dclick('dev-weather-rain'); b = await care('rinse'); ok(b.tide === 1 && b.shroom === 1, '落雨沖洗 → 水珠＋菇傘', b);
     b = await care('play'); ok(!b.tide && b.shroom === 1, '落雨玩 → 唔計水珠（v4）', b);
+    b = await care('feed'); ok(b.shroom === 1 && !b.tide, '落雨餵 → 菇傘 +1（v8：天氣分）', b);
+    await dclick('dev-weather-fog'); await page.waitForTimeout(150);
+    r = await E(() => ({ w: Glimmer.sim.weatherNow(), g: __glimmer.weather, on: document.querySelector('[data-testid="dev-weather-fog"]').classList.contains('on'), lbl: document.querySelector('[data-testid="dev-weather-fog"]').textContent }));
+    ok(r.w === 'fog' && r.g === 'fog' && r.on && r.lbl === '霧', 'DEV「霧」→ fog（v10）', r);
+    b = await care('feed'); ok(b.shroom === 0.5 && !b.tide, '霧天餵 → 菇傘 +0.5（霧當陰）', b);
     await dclick('dev-weather-clear'); b = await care('play'); r = await E(() => Glimmer.sim.weatherNow()); ok(r === 'clear' && !b.shroom, 'DEV「晴」→ clear、玩唔計菇傘', [r, b]);
+    b = await care('feed'); ok(!b.shroom && b.all === 1, '晴天餵 → 菇傘 0（v8：淨係多餵唔入菇傘）', b);
     await dclick('dev-care-days-7'); r = await E(() => Glimmer.sim.careDaysCheck(__glimmer.state)); ok(r.ok && r.days >= r.need, 'DEV「照顧日 7」→ 燦光照顧日 ✓', r);
     await dclick('dev-care-days-0'); r = await E(() => Glimmer.sim.careDaysCheck(__glimmer.state)); ok(!r.ok && r.days === 0, 'DEV「清照顧日」→ ✗', r);
     await page.goto(BASE + (BASE.includes('?') ? '&' : '?') + 'weather=overcast'); await ready();
     r = await E(() => ({ w: Glimmer.sim.weatherNow(), g: __glimmer.weather })); ok(r.w === 'overcast', '?weather=overcast → overcast', r);
     await page.goto(BASE + (BASE.includes('?') ? '&' : '?') + 'weather=bogus'); await ready();
     r = await E(() => Glimmer.sim.weatherNow()); ok(r === 'clear', '?weather=bogus → clear', r);
+    await page.goto(BASE + (BASE.includes('?') ? '&' : '?') + 'weather=fog'); await ready();
+    r = await E(() => Glimmer.sim.weatherNow()); ok(r === 'fog', '?weather=fog → fog（v10）', r);
   }
 
-  console.log('# ⑤ v5 哄瞓（DEV 眼瞓 → 長撳團絨 → 瞓著、月眠 +1）');
+  console.log('# ⑤ v5／v8 哄瞓（DEV 眼瞓 → 長撳團絨 → 瞓著、月眠 +lull.pts）');
   { await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); await E(() => { window.__noSaveOnHide = true; });
     await juv({ cq: 40, prog: 0.3, b5: {} }); await closeModals();
     const dclick = (tid) => E((t) => document.querySelector('[data-testid="' + t + '"]').click(), tid);
@@ -136,13 +144,50 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     const m0 = await E(() => ((__glimmer.state.evo.b5 || {}).juvenile || {}).moon || 0);
     await page.mouse.move(c.x, c.y); await page.mouse.down(); await page.waitForTimeout(900); await page.mouse.move(c.x + 6, c.y + 2); await page.waitForTimeout(150); await page.mouse.up(); await page.waitForTimeout(400);
     r = await E(() => ({ slp: __glimmer.state.sleeping, moon: ((__glimmer.state.evo.b5 || {}).juvenile || {}).moon || 0, lull: __glimmer.state.evo.lull, press: __glimmer.lastPetPress }));
-    ok(r.slp && r.moon === m0 + 1 && r.lull && r.lull.n === 1, '長撳眼瞓團絨 → 瞓著＋月眠 +1', r);
+    const pts = await E(() => Glimmer.data.PARAMS.evo6.branch.lull.pts);
+    ok(r.slp && r.moon === m0 + pts && r.lull && r.lull.n === 1, `長撳眼瞓團絨 → 瞓著＋月眠 +${pts}（v8）`, r);
     await page.waitForTimeout(800); await shot('lull-asleep', true);
     const per = await E(() => Glimmer.data.PARAMS.evo6.branch.lull.perNight);
     for (let i = 0; i < per + 1; i++) { await dclick('dev-drowsy'); await dclick('dev-lull'); }
-    r = await E(() => ({ moon: __glimmer.state.evo.b5.juvenile.moon, n: __glimmer.state.evo.lull.n })); ok(r.n === per && r.moon === m0 + per, `每晚最多 ${per} 次計月眠`, r);
+    r = await E(() => ({ moon: __glimmer.state.evo.b5.juvenile.moon, n: __glimmer.state.evo.lull.n })); ok(r.n === per && r.moon === m0 + per * pts, `每晚最多 ${per} 次計月眠（${per * pts} 分）`, r);
     await E(() => { const dp = document.getElementById('devp'); if (dp) dp.style.pointerEvents = ''; });
   }
+
+  console.log('# ⑥ v7 晶角上線即清＋v8 火苗浮動團絨開 game（DEV）');
+  { await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); await E(() => { window.__noSaveOnHide = true; });
+    await juv({ cq: 40, prog: 0.3, b5: {} }); await closeModals();
+    const dclick = (tid) => E((t) => document.querySelector('[data-testid="' + t + '"]').click(), tid);
+    ok(await E(() => !!document.querySelector('[data-testid="dev-crystal-row"]') && !!document.querySelector('[data-testid="dev-ember-row"]')), 'DEV 抽屜有晶角／火苗列');
+    await dclick('dev-add-poop'); await dclick('dev-add-poop'); await dclick('dev-login');
+    let r = await E(() => ({ L: __glimmer.state.evo.login, b: __glimmer.state.evo.b5.juvenile, p: __glimmer.state.poops }));
+    ok(r.L && r.L.had && !r.L.done && r.b.loginPoop === 1 && r.p === 2, 'DEV 出 2 粒便便＋「上線」→ 有便便上線 +1、窗口開', r);
+    await E(() => { Glimmer.sim.clearPoop(__glimmer.state); }); r = await E(() => __glimmer.state.evo.b5.juvenile.quickLogin || 0); ok(r === 0, '清 1 粒（未到 0）→ 未計', r);
+    await E(() => { Glimmer.sim.clearPoop(__glimmer.state); });
+    r = await E(() => ({ b: __glimmer.state.evo.b5.juvenile, txt: document.querySelector('[data-testid="dev-crystal-state"]').textContent, B: Glimmer.sim.branch5Check(__glimmer.state) }));
+    ok(r.b.quickLogin === 1 && r.B.raw.quickRate === 1 && Math.abs(r.B.score.crystal - CFG.C.crystal.k * r.B.all) < 1e-6, '窗口內清到 0 → 即清 1/1 → 晶角＝k×總數', r);
+    await E((w) => __glimmer.fastForward(w + 5), CFG.C.crystal.windowSec); await dclick('dev-add-poop'); await E(() => { Glimmer.sim.clearPoop(__glimmer.state); });
+    ok(await E(() => __glimmer.state.evo.b5.juvenile.quickLogin) === 1, '同一次上線再清 → 唔再計');
+    // 離開 ≥ loginGapSec 返嚟 ＝ 新上線
+    await dclick('dev-add-poop');
+    await E((gap) => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); __glimmer.clock = { fake: true, t: Date.now() + gap * 1000 + 5000 }; Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); }, CFG.C.crystal.loginGapSec);
+    r = await E(() => ({ b: __glimmer.state.evo.b5.juvenile, L: __glimmer.state.evo.login })); ok(r.b.loginPoop === 2 && r.L && r.L.had && !r.L.done, `離開 ≥${CFG.C.crystal.loginGapSec}s 返嚟 → 新上線（分母 2）`, r);
+    await E(() => { __glimmer.clock = { fake: false, t: 0 }; });
+    // v8 火苗：浮動團絨開 game
+    const e0 = await E(() => Glimmer.sim.branch5Check(__glimmer.state).score.ember);
+    await dclick('dev-overlay-game'); r = await E(() => ({ e: Glimmer.sim.branch5Check(__glimmer.state).score.ember, at: __glimmer.state.mg.overlayAt, txt: document.querySelector('[data-testid="dev-ember-state"]').textContent }));
+    ok(r.e === e0 + CFG.C.kinds.mg.w && r.at > 0 && /冷卻\d+s/.test(r.txt), `DEV「浮動開 game」→ 火苗 +${CFG.C.kinds.mg.w}（一局）＋冷卻`, r);
+    await dclick('dev-overlay-game'); ok(await E(() => Glimmer.sim.branch5Check(__glimmer.state).score.ember) === e0 + CFG.C.kinds.mg.w, '冷卻內再撳 → 唔計');
+    r = await E(() => __glimmer.evo.overlayOpenGame(Date.now() + 3600e3)); ok(r.ok, '__glimmer.evo.overlayOpenGame(t)（fpet-bridge 用）→ ok', r);
+  }
+
+  console.log('# ⑦ P2：DEV 抽屜全部掣 ≥48dp（390／360 闊）');
+  for (const w of [390, 360]) {
+    await page.setViewportSize({ width: w, height: 844 }); await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); await closeModals(); await page.waitForTimeout(300);
+    const r = await E(() => { const bs = [...document.querySelectorAll('#devp button')]; const hs = bs.map(b => b.getBoundingClientRect()).filter(x => x.width > 0); return { n: bs.length, vis: hs.length, minH: Math.min(...hs.map(x => x.height)), minW: Math.min(...hs.map(x => x.width)), open: document.getElementById('devp').classList.contains('open') }; });
+    ok(r.open && r.n >= 90 && r.vis === r.n && r.minH >= 48 && r.minW >= 48, `${w} 闊：${r.n} 個掣，最矮 ${r.minH.toFixed(1)}px、最窄 ${r.minW.toFixed(1)}px（≥48）`, r);
+    if (w === 390) { await E(() => { const d = document.querySelector('#devp .db'); d.scrollTop = d.scrollHeight * 0.3; }); await page.waitForTimeout(150); await page.screenshot({ path: SHOTS + 'route-dev-drawer-48dp.png' }); console.log('  📷 route-dev-drawer-48dp'); }
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
 
   ok(!errs.length, '冇 console error', errs.slice(0, 5));
   await browser.close();
