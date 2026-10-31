@@ -37,6 +37,11 @@ ok(D.BRANCHES.length === 9 && D.BRANCHES[0] === 'lumi' && D.BRANCHES.slice(-3).j
 ok(['brightCQ', 'brightMaxTopPct', 'b5CQ', 'b5TopPct', 'b5GapPt', 'softCQ', 'crystalCleanAvg'].every(k => Number.isInteger(C[k])) && C.brightCQ > C.softCQ && C.b5TopPct < C.brightMaxTopPct
   && C.windows.every(w => Number.isInteger(w.from) && Number.isInteger(w.to) && D.BRANCH5.includes(w.only)) && MOON.only === 'moon' && DEW.only === 'tide',
   'config 齊（整數門檻＋時段 windows：moon→月眠、dew→水珠）', JSON.stringify(C));
+ok(C.systems && C.systems.enabled === false && C.systems.maxRouteSharePct === 25 && C.systems.stardustDailyCap === 30 && Object.keys(C.systems.sources).length === 0, 'config 預留 systems（systems12-v1：每路線新系統分 ≤25%、星星碎每日 30；未用）', JSON.stringify(C.systems));
+{ const a = (() => { const s = S.newState(1e12, 1); s.stage = 'sprout'; S.noteCare(s, null, 'feed'); s.cq = 80; return JSON.stringify(S.branch5Check(s)); })();
+  const keep = C.systems.enabled; C.systems.enabled = true; C.systems.sources = { x: { route: 'moon', pts: 99 } };
+  const b = (() => { const s = S.newState(1e12, 1); s.stage = 'sprout'; S.noteCare(s, null, 'feed'); s.cq = 80; return JSON.stringify(S.branch5Check(s)); })();
+  C.systems.enabled = keep; C.systems.sources = {}; ok(a === b, 'systems 預留未接入判定（開咗都唔影響分數）'); }
 ok(!('b5CQ' in EV6) && !('branchBright' in P) && !('branchSoft' in P), '舊散落門檻（evo6.b5*、branchBright／Soft）已收入 config');
 { const src = fs.readFileSync(path.join(__dirname, '../src/sim.js'), 'utf8').replace(/\/\/.*$/gm, '');
   const fn = (n) => (src.match(new RegExp('function ' + n + '\\([^]*?\\n  }')) || [''])[0];

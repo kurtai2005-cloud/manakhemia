@@ -55,6 +55,13 @@
           { id: 'moon', from: 21, to: 3, only: 'moon' },   // 21:00–03:00 → 只計月眠（§7 修訂）
           { id: 'dew', from: 6, to: 9, only: 'tide' },     // 06:00–09:00 晨露 → 只計水珠（v2）
         ],
+        // 預留（systems12-v1.md，未用）：新系統（委託／種花／小遊戲／收集…）加嘅路線分；判定暫時唔讀
+        systems: {
+          enabled: false,          // 未接入
+          maxRouteSharePct: 25,    // 新系統分最多佔該路線分 25%（唔好蓋過照顧本身）
+          stardustDailyCap: 30,    // 星星碎每日入帳上限（委託 15＋其他 15）
+          sources: {},             // 之後：{ flower_bluebell: { route: 'moon', pts: n }, … }
+        },
       },
       // §7 路線清晰化（pet-template-v1「§7 路線清晰化」）：顏色／時間全部喺度；螢絨隱藏（燈泡唔顯示、預告唔洩露）
       route: {
