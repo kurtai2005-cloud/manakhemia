@@ -2,8 +2,8 @@
   ✓ cue 表 54 個 cue／55 個檔全部存在於 audio/sfx
   ✓ 4 條時段 BGM 都存在
   ✓ 小節長 3.5294s（68 BPM 4/4），小節數 16/20/16/12
-  ✓ 9 個事件各有 cue（含 firefly_walk）
-  ✓ 音訊檔同遊音最新版逐檔相同（未被改動）
+  ✓ 池內 9 個事件各有 cue（含 firefly_walk）；grumpy_tap 共用 sulk 音、唔係新文案
+  - staging 不存在，跳過 sha 比對
     未接駁嘅 sfx：sfx_coin, sfx_hit, sfx_lose, sfx_win
 # 規則
   ✓ 點擊→tap；餵飯→feed_meal＋稍後 pet_content
@@ -30,4 +30,4 @@
   ✓ 回頭嗰下唔疊 touch 聲
   ✓ turn_huh 共用冷卻 ≥1.5s
 
-結果：28 通過，0 失敗
+結果：27 通過，0 失敗

@@ -739,7 +739,7 @@
     }
     // 事件 icon（遊美 fx/events：32×32、pivot 置中、動畫 animations[icon]）
     eventIconSrc(id, t) {
-      const A = this.atlas.atlas_events, df = D.EVENTS.find(e => e.id === id); if (!A || !df || !df.icon) return null;
+      const A = this.atlas.atlas_events, df = D.EVENTS.find(e => e.id === id) || (id === 'grumpy_tap' ? D.EVENTS.find(e => e.id === 'grumpy') : null); if (!A || !df || !df.icon) return null;
       const an = A.json.animations[df.icon]; if (!an) return null;
       return this.atlasSrc('atlas_events', df.icon, Math.floor(t * an.fps));
     }

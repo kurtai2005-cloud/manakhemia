@@ -27,7 +27,7 @@
   #progf { height:100%; width:0; background:linear-gradient(90deg,#ffd36a,#ffb23a); }
   #top-r { position:absolute; right:0; top:0; display:flex; gap:6px; align-items:center; pointer-events:auto; }
   #grains { padding:6px 10px; font-size:14px; font-weight:700; color:var(--warm); }
-  .ibtn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:var(--warm); }
+  .ibtn { width:44px; height:44px; min-width:44px; min-height:44px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:var(--warm); }
   #needs { position:absolute; left:0; right:0; top:72px; display:flex; gap:6px; pointer-events:none; }
   .need { flex:1; padding:4px 6px 6px; }
   .need span { font-size:11px; display:block; opacity:.9; margin-bottom:3px; }
@@ -239,7 +239,7 @@
     events: {
       enabled: true,
       drawEveryH: [2, 4],                    // 每 2–4 小時有效時間抽一次
-      drawChance: 0.34,                      // 每次抽取命中事件嘅機率 p_hit（遊策 v4：0.34）
+      drawChance: 0.33,                      // 每次抽取命中事件嘅機率 p_hit（QA：0.34→0.33，各作息池仍 2.2–2.4／日）
       minGapSec: 1200,                       // 全域間隔：任何兩個事件之間 ≥20 分鐘有效時間
       cooldownH: 24, cooldownRareH: 72,      // 單事件冷卻（稀有事件見 EVENTS[].rare）
       repeatWeightMul: 0.25,                 // 防重複：上一個事件嘅權重 ×0.25
@@ -256,6 +256,7 @@
       offlineIgnoreDailyMax: true,           // 遊策 10-31：離線補抽唔計每日上限 dailyMax（對齊 QA v5.1）；冷卻／全域間隔照計，彈窗仍最多 2
       // QA 修正（10-31）
       earlyBird: { hours: [5, 9], hitMul: 1.1 },   // 早鳥時段（本機 05–09）抽選命中率倍數（p_hit × hitMul，上限 1）；令早鳥作息池抽取/日 落 2.2–2.4
+      rainbowCooldownH: 240,                 // 彩虹冷卻：距上次彩虹 240h 內唔再出（權重維持 1；14 日 pity 唔改、唔打穿呢個冷卻）
       rainbowPityDays: 14, rainbowPityLeadH: 26,   // 彩虹 pity：距上次彩虹（或開始）≥14 日 − 26h 起（前一次喺窗內任何鐘點，第 13 日個窗都必有機會），時段窗（17–23）內嘅抽選必出彩虹（唔打穿冷卻／全域間隔／回撥日）→ 保證 ≤14 日一次
       flashCooldownH: 72,                    // 閃光日 72h 冷卻：上次閃光日觸發後 72 小時（有效時間）內唔再觸發
       offlineMaxDays: 14,                    // 離線事件按「日」模擬，最多補 14 日（實時鐘）；需求衰減／離線禮物仍用有效時間 E
@@ -390,7 +391,7 @@
     soft:    { atlas: 'atlas_soft',    frameSize: 64, pivot: [32, 61], headR: [18, -30], pot: [34, 0], sun: [0, 0] },
   };
   const PROP_KINDS = ['petal', 'flower', 'pebble'];
-  // 事件池 9 個＝7 個池抽取（權重對齊遊測 v5.1：禮物 22／蝴蝶 20／流星 10／夢話 11／尋寶 18／彩虹 4／螢火 14）＋鬧脾氣（cond：唔入池，需求 <30 持續 ≥2h 或 10 秒連點 5 下，冷卻 48h）＋閃光日。
+  // 事件池 9 個＝7 個池抽取（權重對齊遊測 v5.1：禮物 22／蝴蝶 20／流星 10／夢話 11／尋寶 18／彩虹 1／螢火 14）＋鬧脾氣（cond：唔入池，需求 <30 持續 ≥2h，冷卻 48h）＋閃光日。連點 5 下係獨立事件 grumpy_tap（events.js，唔入呢個表）。
   // 條件：hours=[由,至)（可跨午夜）、sleeping、moodAtLeast、energyAtLeast；
   // rare＝冷卻 72h（其餘 24h）；雨後彩虹＝傍晚 17–23 入普通池（方案 A 無天氣）；special＝閃光日（hash(存檔種子,日期) 3%）
   const EVENTS = [
@@ -403,7 +404,7 @@
     { id: 'meteor', icon: 'meteor_night', name: '流星夜', weight: 10, rare: true, hours: [19, 5], sleeping: false,
       grains: [3, 4], mood: [3, 5], dur: 6, visual: true, off: '睇到流星劃過夜空',
       flavor: ['幾顆流星劃過夜空，團絨仰高頭睇到入神。'] },
-    { id: 'rainbow', icon: 'rainbow', name: '雨後彩虹', weight: 1,  /* QA：4→1（pity 補底後平均 11–12.5 日一次）*/ rare: true, hours: [17, 23], sleeping: false,
+    { id: 'rainbow', icon: 'rainbow', name: '雨後彩虹', weight: 1,  /* QA：權重維持 1；冷卻 240h（pity 14 日補底）→ 平均 11–15 日一次 */ rare: true, cooldownH: 240, hours: [17, 23], sleeping: false,
       grains: [3, 4], mood: [4, 6], dur: 7, visual: true, off: '見到雨後出咗條彩虹',
       flavor: ['陣雨過後，園圃上空掛住一條淡淡嘅彩虹。'] },
     { id: 'firefly_walk', icon: 'firefly_walk', name: '螢火散步', weight: 14, hours: [17, 23], sleeping: false, clipHint: 'play',
@@ -473,7 +474,7 @@
       sleep_breath: { file: 'sfx_pet_sleep_breath_loop', bus: 'pet', gain: 0.7 },      // README：建議再 ×0.7
       sunbathe: { file: 'sfx_env_sunbathe_loop', bus: 'env', gain: 1 },
     },
-    eventCue: { gift: 'event_gift', butterfly: 'event_butterfly', meteor: 'event_meteor', rainbow: 'event_rainbow', sleeptalk: 'event_sleeptalk', grumpy: 'event_grumpy', treasure: 'event_treasure', flash: 'event_flash', firefly_walk: 'event_firefly_walk' },
+    eventCue: { gift: 'event_gift', butterfly: 'event_butterfly', meteor: 'event_meteor', rainbow: 'event_rainbow', sleeptalk: 'event_sleeptalk', grumpy: 'event_grumpy', grumpy_tap: 'event_grumpy', treasure: 'event_treasure', flash: 'event_flash', firefly_walk: 'event_firefly_walk' },
     // 未用（舊通用／無對應功能）：sfx_coin／hit／win／lose（風野競走遺留）、（fade_light：MVP 無「化光」階段，cue 已備）
   };
 
@@ -953,7 +954,7 @@
    - 上線：事件時鐘＝實時（sim step hook）。離線：唔再用有效時間 E 抽事件，改由 sim.addOfflineHook 按「實時日」補抽（offlineReplay）：
      最多補 offlineMaxDays（14）日、步長 offlineStepSec，唔計 dailyMax（offlineIgnoreDailyMax），冷卻／全域間隔照計，鐘點／日界按本機時間；離線日唔觸發保底／閃光日。補抽結果取「稀有度最高 2 個（同級取最新）」做彈窗（即時領獎），其餘入日記（每條 +3）。
    - 保底只揀冷卻已過（24h／稀有 72h）嘅事件，唔打穿冷卻；揀唔到就當日保底落空。
-   - 鬧脾氣唔入池（cond）：需求 <30 持續 ≥2h，或 10 秒內連點 5 下（tapTantrum）；冷卻 48h、受全域 20 分鐘間隔限制。
+   - 鬧脾氣唔入池（cond）：需求 <30 持續 ≥2h → id grumpy、冷卻 48h、有獎勵、計每日上限。10 秒內連點 5 下（tapTantrum）係獨立事件 grumpy_tap：唔計每日上限、冇獎勵、唔共用 grumpy 嘅冷卻同文案；仍受全域 20 分鐘間隔限制（唔推後其他事件）。
    - 全部隨機只用存檔內可還原嘅種子 RNG（state.evs.rs）；不用 Date／Math.random。
    - 掛喺 sim.step（addStepHook），亦可直接 EV.advance(s, dt, ctx) 單獨測試。原創代碼。 */
 (function (root, factory) {
@@ -965,6 +966,13 @@
   const CX = 97;                       // 同 render.CX 一致（事件視覺座標用）
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const DEF = {}; D.EVENTS.forEach(e => { DEF[e.id] = e; });
+  // 連點 5 下。唔入 D.EVENTS（池維持 9），所以唔會被抽選／保底／pool() 數到。
+  DEF.grumpy_tap = {
+    id: 'grumpy_tap', icon: 'tantrum', name: '連點發脾氣', weight: 0, cond: true, tapOnly: true, cooldownH: 48,
+    noReward: true, outsideCap: true, sleeping: false,
+    grains: [0, 0], mood: [0, 0], dur: 4.5, visual: true, off: '連點太密，鼓起腮幫（冇獎勵）',
+    flavor: ['你連點得太密，團絨掉頭鼓起腮幫，今次冇光粒。'],
+  };
   const listeners = [];
 
   const rf = (r, a) => a[0] + (a[1] - a[0]) * r();
@@ -1098,16 +1106,18 @@
     const collect = offline === 'collect';                      // 離線補抽：先收集，最後先揀彈窗／日記（finishOffline）
     const toDiary = !collect && !!offline && E.offPop >= P.offlinePopupMax;
     if (toDiary) { grains = P.diaryGrains; mood = 0; }        // 日記：每條固定 +diaryGrains 光粒
+    if (def.noReward) { grains = 0; mood = 0; }
     const rec = { id: def.id, grains, mood, flavor, off: def.off, day: E.day, at: E.clock, hour: E.lastHour == null ? null : +E.lastHour.toFixed(2), kind: kind || 'draw', ts: E.nowMs || 0, offline: !!offline, diary: toDiary };
-    if (!toDiary && !collect) { s.grains += grains; s.needs.mood = clamp(s.needs.mood + mood, 0, 100); }   // 只加唔減
+    if (!toDiary && !collect && !def.noReward) { s.grains += grains; s.needs.mood = clamp(s.needs.mood + mood, 0, 100); }   // 只加唔減；連點鬧脾氣冇獎勵
     if (def.id === 'flash') { const k = dateKey(E); if (E.claimedFlashDates.indexOf(k) < 0) E.claimedFlashDates.push(k); while (E.claimedFlashDates.length > 60) E.claimedFlashDates.shift(); }   // 已領旗標：同一日唔可重領
     E.log.push({ id: def.id, kind: kind || 'draw', day: E.day, date: dateKey(E), hour: rec.hour, at: Math.round(E.clock), offline: !!offline, diary: collect ? null : toDiary }); if (E.log.length > 80) E.log.shift();
     if (def.id === 'rainbow') E.rbAt = E.clock;
     if (def.id === 'flash' && E.nowMs) E.flashAtMs = E.nowMs;
-    E.last = def.id; E.lastAt = E.clock; E.hist.push(def.id); if (E.hist.length > P.historyLen) E.hist.shift();
+    if (!def.outsideCap) { E.last = def.id; E.lastAt = E.clock; }   // 連點鬧脾氣唔佔全域間隔、唔改「上一個事件」
+    E.hist.push(def.id); if (E.hist.length > P.historyLen) E.hist.shift();
     E.cd[def.id] = E.clock + (def.cooldownH || (def.rare ? P.cooldownRareH : P.cooldownH)) * 3600;
-    E.dayCount++; E.stats.events++; E.stats.byId[def.id] = (E.stats.byId[def.id] || 0) + 1;
-    if (s.stats) s.stats.events = (s.stats.events || 0) + 1;
+    if (!def.outsideCap) { E.dayCount++; E.stats.events++; if (s.stats) s.stats.events = (s.stats.events || 0) + 1; }
+    E.stats.byId[def.id] = (E.stats.byId[def.id] || 0) + 1;
     if (collect) { rec.rare = !!def.rare; E.offLog.push(rec); return rec; }
     if (offline) {
       E.offLog.push(rec);
@@ -1313,16 +1323,19 @@
   }
   SIM.addOfflineHook(offlineReplay);
 
-  /* 連點：10 秒內 5 下（behavior 判定）→ 鬧脾氣事件（冷卻 48h、全域間隔 20 分鐘；回撥 suppress 時唔觸發）。睡眠中連點唔會嚟到呢度（輕喚醒）。 */
+  /* 連點：10 秒內 5 下（behavior 判定）→ 獨立事件 grumpy_tap。
+     自己嘅 48h 冷卻（cd.grumpy_tap），唔睇 cd.grumpy、唔用鬧脾氣文案、唔加光粒／心情、唔計 dayCount／stats.events。
+     全域間隔未夠就唔疊卡，但觸發本身唔改 lastAt。文案只有一句，唔使抽 RNG。睡眠中連點唔會嚟到呢度（輕喚醒）。 */
   function tapTantrum(s, ctx) {
     if (!api.enabled || !P.enabled || s.stage === 'egg') return null;
     ctx = ctx || {};
     const E = ensure(s);
     if (ctx.now != null) E.nowMs = ctx.now;
     if (s.sleeping) { E.stats.tapSleepWake = (E.stats.tapSleepWake || 0) + 1; return null; }
-    if (suppressed(s, E) || cdLeft(E, 'grumpy') > 0 || !gapOk(E)) { E.stats.tantrumBlocked = (E.stats.tantrumBlocked || 0) + 1; return null; }
+    const def = DEF.grumpy_tap;
+    if (suppressed(s, E) || cdLeft(E, def.id) > 0 || !gapOk(E)) { E.stats.tantrumBlocked = (E.stats.tantrumBlocked || 0) + 1; return null; }
     const r = SIM.makeRng(E.rs);
-    const rec = trigger(s, E, DEF.grumpy, r, false, 'tap'); E.stats.tantrumTap = (E.stats.tantrumTap || 0) + 1;
+    const rec = trigger(s, E, def, r, false, 'tap'); E.stats.tantrumTap = (E.stats.tantrumTap || 0) + 1;
     E.rs = r.getSeed(); return rec;
   }
 
@@ -1582,6 +1595,17 @@
         continue;
       }
       if (forced && ctx.s.sleeping && tp.kind === 'pet') { b.petTaps.length = 0; b.stir = b.t + 1.2; note(b, 'tap', 'sleepStir'); b.log.enters.sleepStir = (b.log.enters.sleepStir || 0) + 1; continue; }   // 睡眠中連點：唔鬧脾氣，只係翻身（zzz 加快）
+      // 不適／事件／撞花盆／已經鬧緊都會吞普通觸摸。連點 5 下仍然要出獨立事件請求。
+      // wake 唔計：小睡輕喚醒嗰陣嘅連點要保持「唔鬧脾氣」（wake 動畫期間原本就忽略觸摸）。
+      if (tp.kind === 'pet' && !ctx.s.sleeping && b.state !== 'nap' && b.state !== 'wake' && (forced || b.state === 'bump' || b.state === 'grumpy')) {
+        lookAtTap(b, tp, false);   // 呢啲狀態唔轉身，但視線仍然跟觸點（D2）
+        b.petTaps.push(b.t); b.petTaps = b.petTaps.filter(t => b.t - t <= T.rapidWindow);
+        const rapid = b.petTaps.length; note(b, 'tap', 'pet', String(rapid));
+        if (rapid >= T.rapidCount && b.t >= b.grumpyCool) {
+          b.petTaps.length = 0; b.grumpyCool = b.t + T.grumpyDur + T.grumpyCooldown; b.tantrumReq = (b.tantrumReq || 0) + 1; note(b, 'tap', 'tantrum');
+        }
+        b.log.enters.tapIgnored = (b.log.enters.tapIgnored || 0) + 1; continue;
+      }
       if (!forced && tp.kind === 'pet' && (b.state === 'startle' || b.state === 'play')) {      // 不可中斷動作期間嘅連點：照計，夠數就升級（撒嬌／鬧脾氣）
         b.lastTouch = b.t; b.petTaps.push(b.t); b.petTaps = b.petTaps.filter(t => b.t - t <= Math.max(T.cuddlyWindow, T.rapidWindow));
         const rapid = b.petTaps.length, quick = b.petTaps.filter(t => b.t - t <= T.cuddlyWindow).length; note(b, 'tap', 'pet', String(rapid));
@@ -1690,7 +1714,7 @@
     } else if (id === 'treasure') {
       if (!v.found) { const a = moveTo(b, v.digX, P.walkSpeed * 1.6); setClip(b, a ? 'dig' : 'walk'); if (a) loopClip(b, 'dig'); }
       else { b.hopT += FIX; if (b.hopT >= P.hopDur) b.hopT = 0; hopLift(b, H_OF(b) * 0.6, P.hopDur); loopClip(b, 'cheer_jump'); }
-    } else if (id === 'grumpy') {
+    } else if (id === 'grumpy' || id === 'grumpy_tap') {
       b.steamT += FIX; if (b.steamT >= 0.45) { b.steamT = 0; fx(b, 'steam', (b.rng() - 0.5) * 18, -40); } loopClip(b, 'grumpy'); b.x += Math.sin(b.t * 50) * 0.15;
     } else if (id === 'sleeptalk') {
       if (b.phase === 'go' || b.phase === '') { const a = moveTo(b, 0, P.walkSpeed * 1.3); setClip(b, 'walk'); if (a) { setPhase(b, 'fall'); b.clipT = 0; } }
@@ -2843,7 +2867,7 @@
     }
     // 事件 icon（遊美 fx/events：32×32、pivot 置中、動畫 animations[icon]）
     eventIconSrc(id, t) {
-      const A = this.atlas.atlas_events, df = D.EVENTS.find(e => e.id === id); if (!A || !df || !df.icon) return null;
+      const A = this.atlas.atlas_events, df = D.EVENTS.find(e => e.id === id) || (id === 'grumpy_tap' ? D.EVENTS.find(e => e.id === 'grumpy') : null); if (!A || !df || !df.icon) return null;
       const an = A.json.animations[df.icon]; if (!an) return null;
       return this.atlasSrc('atlas_events', df.icon, Math.floor(t * an.fps));
     }
@@ -3322,7 +3346,7 @@
     const groups = EV.diaryGroups(s), total = EV.diary(s).length, node = document.createElement('div');
     if (!groups.length) { const p = document.createElement('p'); p.textContent = '日記入面暫時冇未領嘅小事。你唔喺度嘅時候，團絨如果有多過兩件事，就會記喺呢度，留 ' + P.events.diaryKeepDays + ' 日。'; p.style.fontSize = '13px'; node.appendChild(p); }
     const warn = EV.diaryWarn(s, G.now());
-    if (warn) { const w = document.createElement('p'); w.dataset.testid = 'diary-warn'; w.textContent = '⚠ 有 ' + warn + ' 件小事就快過期（日記只留 ' + P.events.diaryKeepDays + ' 日），記得領。'; w.style.cssText = 'font-size:12px;color:#ffd27a;margin:0 0 6px'; node.appendChild(w); }
+    if (warn) { const w = document.createElement('p'); w.dataset.testid = 'diary-warn'; w.textContent = '⚠ 有 ' + warn + ' 件小事 2 日後作廢（日記只留 ' + P.events.diaryKeepDays + ' 日），記得領。'; w.style.cssText = 'font-size:12px;color:#ffd27a;margin:0 0 6px'; node.appendChild(w); }
     groups.forEach((d, i) => {
       const row = document.createElement('div'); row.className = 'row'; row.dataset.testid = 'diary-row-' + d.id; row.style.cssText += ';font-size:13px';
       row.innerHTML = '<span><b>' + d.name + (d.n > 1 ? ' ×' + d.n : '') + '</b><br><small style="opacity:.8">' + d.flavor + '</small></span>';
@@ -3343,7 +3367,7 @@
     const c = $('#evcard'); if (!c) return;
     { const df = EVN().DEF[rec.id]; $('#evname').textContent = (df ? df.name : rec.id); }
     $('#evtext').textContent = rec.flavor;
-    $('#evgain').textContent = '光粒 ✦ +' + rec.grains + (rec.mood ? '　心情 +' + rec.mood : '');
+    $('#evgain').textContent = (rec.grains || rec.mood) ? ('光粒 ✦ +' + rec.grains + (rec.mood ? '　心情 +' + rec.mood : '')) : '';
     c.dataset.event = rec.id; c.style.display = 'block';
   };
   UI.hideEventCard = function () { const c = $('#evcard'); if (c) { c.style.display = 'none'; c.dataset.event = ''; } };
@@ -3526,7 +3550,11 @@
     canvas.style.width = cssW + 'px'; canvas.style.height = cssH + 'px';
     canvas.style.imageRendering = (kdev && kb === kdev) ? 'pixelated' : 'auto';
     const wrap = document.getElementById('stagewrap'); wrap.style.width = cssW + 'px'; wrap.style.height = cssH + 'px';
-    document.getElementById('ui').style.transform = 'scale(' + (cssW / 390) + ')';
+    const uiScale = cssW / 390;
+    document.getElementById('ui').style.transform = 'scale(' + uiScale + ')';
+    // 熱區以縮放後嘅 CSS px 計。390 版面再乘 uiScale；360 闊直向（含整數倍像素縮放）都要 ≥44。
+    const hit = Math.ceil((44 + 0.5) / uiScale);
+    document.querySelectorAll('.ibtn').forEach((el) => { el.style.width = hit + 'px'; el.style.height = hit + 'px'; });
     G.layoutInfo = { vw, vh, dpr, kdev, kb, cssW, cssH };
   }
   window.addEventListener('resize', layout); layout();
@@ -3552,7 +3580,7 @@
   UI.init(G);
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
-  { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事就快過期，記得領'), 1500); }
+  { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事 2 日後作廢，記得領'), 1500); }
   if (boot.rep && boot.rep.show) UI.showSummary(boot.rep);
   G.save();
   G.bootReport = boot.rep;
@@ -3611,7 +3639,7 @@
     const act = rd.pet.act && rd.t < rd.pet.until ? rd.pet.act : null;
     G.behCtx = { s, pw: G.light, sun: G.light.sun, override: act, event: evView };
     if (!mg) { BEH.update(G.beh, dt, G.behCtx); rd.behFx(G.beh); }
-    if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 鬧脾氣事件（48h 冷卻）
+    if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 獨立事件 grumpy_tap（唔共用需求鬧脾氣冷卻）
     if (!mg) G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur } : null, mode: G.mode };
     else G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: null, mode: G.mode };
     G.view = { state: s, quality: s.settings.quality, hour: hr, mode: G.mode, mg: UI.mgState() && UI.mgState().mg, light: G.light, beh: mg ? null : G.beh, event: evView };

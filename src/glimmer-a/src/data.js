@@ -110,7 +110,7 @@
     events: {
       enabled: true,
       drawEveryH: [2, 4],                    // 每 2–4 小時有效時間抽一次
-      drawChance: 0.34,                      // 每次抽取命中事件嘅機率 p_hit（遊策 v4：0.34）
+      drawChance: 0.33,                      // 每次抽取命中事件嘅機率 p_hit（QA：0.34→0.33，各作息池仍 2.2–2.4／日）
       minGapSec: 1200,                       // 全域間隔：任何兩個事件之間 ≥20 分鐘有效時間
       cooldownH: 24, cooldownRareH: 72,      // 單事件冷卻（稀有事件見 EVENTS[].rare）
       repeatWeightMul: 0.25,                 // 防重複：上一個事件嘅權重 ×0.25
@@ -127,6 +127,7 @@
       offlineIgnoreDailyMax: true,           // 遊策 10-31：離線補抽唔計每日上限 dailyMax（對齊 QA v5.1）；冷卻／全域間隔照計，彈窗仍最多 2
       // QA 修正（10-31）
       earlyBird: { hours: [5, 9], hitMul: 1.1 },   // 早鳥時段（本機 05–09）抽選命中率倍數（p_hit × hitMul，上限 1）；令早鳥作息池抽取/日 落 2.2–2.4
+      rainbowCooldownH: 240,                 // 彩虹冷卻：距上次彩虹 240h 內唔再出（權重維持 1；14 日 pity 唔改、唔打穿呢個冷卻）
       rainbowPityDays: 14, rainbowPityLeadH: 26,   // 彩虹 pity：距上次彩虹（或開始）≥14 日 − 26h 起（前一次喺窗內任何鐘點，第 13 日個窗都必有機會），時段窗（17–23）內嘅抽選必出彩虹（唔打穿冷卻／全域間隔／回撥日）→ 保證 ≤14 日一次
       flashCooldownH: 72,                    // 閃光日 72h 冷卻：上次閃光日觸發後 72 小時（有效時間）內唔再觸發
       offlineMaxDays: 14,                    // 離線事件按「日」模擬，最多補 14 日（實時鐘）；需求衰減／離線禮物仍用有效時間 E
@@ -261,7 +262,7 @@
     soft:    { atlas: 'atlas_soft',    frameSize: 64, pivot: [32, 61], headR: [18, -30], pot: [34, 0], sun: [0, 0] },
   };
   const PROP_KINDS = ['petal', 'flower', 'pebble'];
-  // 事件池 9 個＝7 個池抽取（權重對齊遊測 v5.1：禮物 22／蝴蝶 20／流星 10／夢話 11／尋寶 18／彩虹 4／螢火 14）＋鬧脾氣（cond：唔入池，需求 <30 持續 ≥2h 或 10 秒連點 5 下，冷卻 48h）＋閃光日。
+  // 事件池 9 個＝7 個池抽取（權重對齊遊測 v5.1：禮物 22／蝴蝶 20／流星 10／夢話 11／尋寶 18／彩虹 1／螢火 14）＋鬧脾氣（cond：唔入池，需求 <30 持續 ≥2h，冷卻 48h）＋閃光日。連點 5 下係獨立事件 grumpy_tap（events.js，唔入呢個表）。
   // 條件：hours=[由,至)（可跨午夜）、sleeping、moodAtLeast、energyAtLeast；
   // rare＝冷卻 72h（其餘 24h）；雨後彩虹＝傍晚 17–23 入普通池（方案 A 無天氣）；special＝閃光日（hash(存檔種子,日期) 3%）
   const EVENTS = [
@@ -274,7 +275,7 @@
     { id: 'meteor', icon: 'meteor_night', name: '流星夜', weight: 10, rare: true, hours: [19, 5], sleeping: false,
       grains: [3, 4], mood: [3, 5], dur: 6, visual: true, off: '睇到流星劃過夜空',
       flavor: ['幾顆流星劃過夜空，團絨仰高頭睇到入神。'] },
-    { id: 'rainbow', icon: 'rainbow', name: '雨後彩虹', weight: 1,  /* QA：4→1（pity 補底後平均 11–12.5 日一次）*/ rare: true, hours: [17, 23], sleeping: false,
+    { id: 'rainbow', icon: 'rainbow', name: '雨後彩虹', weight: 1,  /* QA：權重維持 1；冷卻 240h（pity 14 日補底）→ 平均 11–15 日一次 */ rare: true, cooldownH: 240, hours: [17, 23], sleeping: false,
       grains: [3, 4], mood: [4, 6], dur: 7, visual: true, off: '見到雨後出咗條彩虹',
       flavor: ['陣雨過後，園圃上空掛住一條淡淡嘅彩虹。'] },
     { id: 'firefly_walk', icon: 'firefly_walk', name: '螢火散步', weight: 14, hours: [17, 23], sleeping: false, clipHint: 'play',
@@ -344,7 +345,7 @@
       sleep_breath: { file: 'sfx_pet_sleep_breath_loop', bus: 'pet', gain: 0.7 },      // README：建議再 ×0.7
       sunbathe: { file: 'sfx_env_sunbathe_loop', bus: 'env', gain: 1 },
     },
-    eventCue: { gift: 'event_gift', butterfly: 'event_butterfly', meteor: 'event_meteor', rainbow: 'event_rainbow', sleeptalk: 'event_sleeptalk', grumpy: 'event_grumpy', treasure: 'event_treasure', flash: 'event_flash', firefly_walk: 'event_firefly_walk' },
+    eventCue: { gift: 'event_gift', butterfly: 'event_butterfly', meteor: 'event_meteor', rainbow: 'event_rainbow', sleeptalk: 'event_sleeptalk', grumpy: 'event_grumpy', grumpy_tap: 'event_grumpy', treasure: 'event_treasure', flash: 'event_flash', firefly_walk: 'event_firefly_walk' },
     // 未用（舊通用／無對應功能）：sfx_coin／hit／win／lose（風野競走遺留）、（fade_light：MVP 無「化光」階段，cue 已備）
   };
 

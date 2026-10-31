@@ -18,7 +18,7 @@ console.log('# cue 表／檔案');
   const bm = Object.values(AU.bgm).filter(f => !fs.existsSync(path.join(root, 'audio/bgm', f + '.ogg')));
   ok(bm.length === 0 && Object.keys(AU.bgm).join() === 'morning,noon,evening,night', '4 條時段 BGM 都存在');
   ok(Math.abs(AU.barSec - 3.5294) < 1e-3 && AU.bgmBars.noon === 20 && AU.bgmBars.night === 12, '小節長 3.5294s（68 BPM 4/4），小節數 16/20/16/12');
-  ok(Object.values(AU.eventCue).length === 9 && Object.values(AU.eventCue).every(c => AU.cues[c]), '9 個事件各有 cue（含 firefly_walk）');
+  ok(Object.keys(AU.eventCue).length === 10 && AU.eventCue.grumpy_tap === AU.eventCue.grumpy && Object.values(AU.eventCue).every(c => AU.cues[c]), '池內 9 個事件各有 cue（含 firefly_walk）；grumpy_tap 共用 sulk 音、唔係新文案');
   // 音訊檔勿改：同遊音 staging 逐檔 sha256 比對（staging 唔存在就跳過）
   const stg = '/workspace/遊音-staging/audio'; let diff = [];
   if (fs.existsSync(stg)) {

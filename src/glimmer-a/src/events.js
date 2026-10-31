@@ -3,7 +3,7 @@
    - 上線：事件時鐘＝實時（sim step hook）。離線：唔再用有效時間 E 抽事件，改由 sim.addOfflineHook 按「實時日」補抽（offlineReplay）：
      最多補 offlineMaxDays（14）日、步長 offlineStepSec，唔計 dailyMax（offlineIgnoreDailyMax），冷卻／全域間隔照計，鐘點／日界按本機時間；離線日唔觸發保底／閃光日。補抽結果取「稀有度最高 2 個（同級取最新）」做彈窗（即時領獎），其餘入日記（每條 +3）。
    - 保底只揀冷卻已過（24h／稀有 72h）嘅事件，唔打穿冷卻；揀唔到就當日保底落空。
-   - 鬧脾氣唔入池（cond）：需求 <30 持續 ≥2h，或 10 秒內連點 5 下（tapTantrum）；冷卻 48h、受全域 20 分鐘間隔限制。
+   - 鬧脾氣唔入池（cond）：需求 <30 持續 ≥2h → id grumpy、冷卻 48h、有獎勵、計每日上限。10 秒內連點 5 下（tapTantrum）係獨立事件 grumpy_tap：唔計每日上限、冇獎勵、唔共用 grumpy 嘅冷卻同文案；仍受全域 20 分鐘間隔限制（唔推後其他事件）。
    - 全部隨機只用存檔內可還原嘅種子 RNG（state.evs.rs）；不用 Date／Math.random。
    - 掛喺 sim.step（addStepHook），亦可直接 EV.advance(s, dt, ctx) 單獨測試。原創代碼。 */
 (function (root, factory) {
@@ -15,6 +15,13 @@
   const CX = 97;                       // 同 render.CX 一致（事件視覺座標用）
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const DEF = {}; D.EVENTS.forEach(e => { DEF[e.id] = e; });
+  // 連點 5 下。唔入 D.EVENTS（池維持 9），所以唔會被抽選／保底／pool() 數到。
+  DEF.grumpy_tap = {
+    id: 'grumpy_tap', icon: 'tantrum', name: '連點發脾氣', weight: 0, cond: true, tapOnly: true, cooldownH: 48,
+    noReward: true, outsideCap: true, sleeping: false,
+    grains: [0, 0], mood: [0, 0], dur: 4.5, visual: true, off: '連點太密，鼓起腮幫（冇獎勵）',
+    flavor: ['你連點得太密，團絨掉頭鼓起腮幫，今次冇光粒。'],
+  };
   const listeners = [];
 
   const rf = (r, a) => a[0] + (a[1] - a[0]) * r();
@@ -148,16 +155,18 @@
     const collect = offline === 'collect';                      // 離線補抽：先收集，最後先揀彈窗／日記（finishOffline）
     const toDiary = !collect && !!offline && E.offPop >= P.offlinePopupMax;
     if (toDiary) { grains = P.diaryGrains; mood = 0; }        // 日記：每條固定 +diaryGrains 光粒
+    if (def.noReward) { grains = 0; mood = 0; }
     const rec = { id: def.id, grains, mood, flavor, off: def.off, day: E.day, at: E.clock, hour: E.lastHour == null ? null : +E.lastHour.toFixed(2), kind: kind || 'draw', ts: E.nowMs || 0, offline: !!offline, diary: toDiary };
-    if (!toDiary && !collect) { s.grains += grains; s.needs.mood = clamp(s.needs.mood + mood, 0, 100); }   // 只加唔減
+    if (!toDiary && !collect && !def.noReward) { s.grains += grains; s.needs.mood = clamp(s.needs.mood + mood, 0, 100); }   // 只加唔減；連點鬧脾氣冇獎勵
     if (def.id === 'flash') { const k = dateKey(E); if (E.claimedFlashDates.indexOf(k) < 0) E.claimedFlashDates.push(k); while (E.claimedFlashDates.length > 60) E.claimedFlashDates.shift(); }   // 已領旗標：同一日唔可重領
     E.log.push({ id: def.id, kind: kind || 'draw', day: E.day, date: dateKey(E), hour: rec.hour, at: Math.round(E.clock), offline: !!offline, diary: collect ? null : toDiary }); if (E.log.length > 80) E.log.shift();
     if (def.id === 'rainbow') E.rbAt = E.clock;
     if (def.id === 'flash' && E.nowMs) E.flashAtMs = E.nowMs;
-    E.last = def.id; E.lastAt = E.clock; E.hist.push(def.id); if (E.hist.length > P.historyLen) E.hist.shift();
+    if (!def.outsideCap) { E.last = def.id; E.lastAt = E.clock; }   // 連點鬧脾氣唔佔全域間隔、唔改「上一個事件」
+    E.hist.push(def.id); if (E.hist.length > P.historyLen) E.hist.shift();
     E.cd[def.id] = E.clock + (def.cooldownH || (def.rare ? P.cooldownRareH : P.cooldownH)) * 3600;
-    E.dayCount++; E.stats.events++; E.stats.byId[def.id] = (E.stats.byId[def.id] || 0) + 1;
-    if (s.stats) s.stats.events = (s.stats.events || 0) + 1;
+    if (!def.outsideCap) { E.dayCount++; E.stats.events++; if (s.stats) s.stats.events = (s.stats.events || 0) + 1; }
+    E.stats.byId[def.id] = (E.stats.byId[def.id] || 0) + 1;
     if (collect) { rec.rare = !!def.rare; E.offLog.push(rec); return rec; }
     if (offline) {
       E.offLog.push(rec);
@@ -363,16 +372,19 @@
   }
   SIM.addOfflineHook(offlineReplay);
 
-  /* 連點：10 秒內 5 下（behavior 判定）→ 鬧脾氣事件（冷卻 48h、全域間隔 20 分鐘；回撥 suppress 時唔觸發）。睡眠中連點唔會嚟到呢度（輕喚醒）。 */
+  /* 連點：10 秒內 5 下（behavior 判定）→ 獨立事件 grumpy_tap。
+     自己嘅 48h 冷卻（cd.grumpy_tap），唔睇 cd.grumpy、唔用鬧脾氣文案、唔加光粒／心情、唔計 dayCount／stats.events。
+     全域間隔未夠就唔疊卡，但觸發本身唔改 lastAt。文案只有一句，唔使抽 RNG。睡眠中連點唔會嚟到呢度（輕喚醒）。 */
   function tapTantrum(s, ctx) {
     if (!api.enabled || !P.enabled || s.stage === 'egg') return null;
     ctx = ctx || {};
     const E = ensure(s);
     if (ctx.now != null) E.nowMs = ctx.now;
     if (s.sleeping) { E.stats.tapSleepWake = (E.stats.tapSleepWake || 0) + 1; return null; }
-    if (suppressed(s, E) || cdLeft(E, 'grumpy') > 0 || !gapOk(E)) { E.stats.tantrumBlocked = (E.stats.tantrumBlocked || 0) + 1; return null; }
+    const def = DEF.grumpy_tap;
+    if (suppressed(s, E) || cdLeft(E, def.id) > 0 || !gapOk(E)) { E.stats.tantrumBlocked = (E.stats.tantrumBlocked || 0) + 1; return null; }
     const r = SIM.makeRng(E.rs);
-    const rec = trigger(s, E, DEF.grumpy, r, false, 'tap'); E.stats.tantrumTap = (E.stats.tantrumTap || 0) + 1;
+    const rec = trigger(s, E, def, r, false, 'tap'); E.stats.tantrumTap = (E.stats.tantrumTap || 0) + 1;
     E.rs = r.getSeed(); return rec;
   }
 

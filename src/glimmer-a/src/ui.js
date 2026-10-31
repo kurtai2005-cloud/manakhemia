@@ -161,7 +161,7 @@
     const groups = EV.diaryGroups(s), total = EV.diary(s).length, node = document.createElement('div');
     if (!groups.length) { const p = document.createElement('p'); p.textContent = '日記入面暫時冇未領嘅小事。你唔喺度嘅時候，團絨如果有多過兩件事，就會記喺呢度，留 ' + P.events.diaryKeepDays + ' 日。'; p.style.fontSize = '13px'; node.appendChild(p); }
     const warn = EV.diaryWarn(s, G.now());
-    if (warn) { const w = document.createElement('p'); w.dataset.testid = 'diary-warn'; w.textContent = '⚠ 有 ' + warn + ' 件小事就快過期（日記只留 ' + P.events.diaryKeepDays + ' 日），記得領。'; w.style.cssText = 'font-size:12px;color:#ffd27a;margin:0 0 6px'; node.appendChild(w); }
+    if (warn) { const w = document.createElement('p'); w.dataset.testid = 'diary-warn'; w.textContent = '⚠ 有 ' + warn + ' 件小事 2 日後作廢（日記只留 ' + P.events.diaryKeepDays + ' 日），記得領。'; w.style.cssText = 'font-size:12px;color:#ffd27a;margin:0 0 6px'; node.appendChild(w); }
     groups.forEach((d, i) => {
       const row = document.createElement('div'); row.className = 'row'; row.dataset.testid = 'diary-row-' + d.id; row.style.cssText += ';font-size:13px';
       row.innerHTML = '<span><b>' + d.name + (d.n > 1 ? ' ×' + d.n : '') + '</b><br><small style="opacity:.8">' + d.flavor + '</small></span>';
@@ -182,7 +182,7 @@
     const c = $('#evcard'); if (!c) return;
     { const df = EVN().DEF[rec.id]; $('#evname').textContent = (df ? df.name : rec.id); }
     $('#evtext').textContent = rec.flavor;
-    $('#evgain').textContent = '光粒 ✦ +' + rec.grains + (rec.mood ? '　心情 +' + rec.mood : '');
+    $('#evgain').textContent = (rec.grains || rec.mood) ? ('光粒 ✦ +' + rec.grains + (rec.mood ? '　心情 +' + rec.mood : '')) : '';
     c.dataset.event = rec.id; c.style.display = 'block';
   };
   UI.hideEventCard = function () { const c = $('#evcard'); if (c) { c.style.display = 'none'; c.dataset.event = ''; } };
