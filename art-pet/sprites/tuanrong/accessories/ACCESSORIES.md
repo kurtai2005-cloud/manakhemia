@@ -76,3 +76,43 @@
   - moon 嘅 hatpin 睡帽細，似羽毛。
   - dust 個鈴吊喺尾燈下面，近地面。
 <!-- ACC4-END -->
+
+<!-- ACC5-START -->
+## ACC5 定稿（2026-11-01）
+### 可見度總覆核
+| item | 名 | slot | clip 可見／總 | % | 全 clip 形態 |
+|---|---|---|---|---|---|
+| straw | 草帽 | head | 1030/1055 | 97.6% | 0/25 |
+| bow | 蝴蝶結 | side_r | 1055/1055 | 100.0% | 25/25 |
+| scarf | 頸巾 | neck | 1055/1055 | 100.0% | 25/25 |
+| beanie | 毛冷帽 | head | 1030/1055 | 97.6% | 0/25 |
+| acorn | 橡果帽 | head | 1030/1055 | 97.6% | 0/25 |
+| crown | 小皇冠 | head | 1030/1055 | 97.6% | 0/25 |
+| starclip | 星星髮夾 | side_l | 1055/1055 | 100.0% | 25/25 |
+| sakura | 櫻花髮飾 | side_l | 1055/1055 | 100.0% | 25/25 |
+| glasses | 圓框眼鏡 | face | 990/1055 | 93.8% | 1/25 |
+| leafcollar | 葉仔領 | neck | 1055/1055 | 100.0% | 25/25 |
+| bell | 燈泡小鈴 | bulb | 1055/1055 | 100.0% | 25/25 |
+| halo | 燈泡光環 | bulb | 1055/1055 | 100.0% | 25/25 |
+| nightcap | 睡帽 | head | 1030/1055 | 97.6% | 0/25 |
+
+收起原因：撐葉傘：葉蓋住頭頂，頭飾收起 ×125、鏡框會壓到眼 ×36、faceVisible=false ×24、會遮五官 ×3、眼距 ×2。
+
+### 同時戴（`COMBOS.json`）
+- 每 slot 最多 1 件，最多 5 件；同 slot 換件。
+- 讓位次序：halo > bell > starclip > sakura > bow > leafcollar > scarf > glasses > straw > beanie > acorn > crown > nightcap。
+- 引擎查表：
+  1. 戴住嘅每對 (a,b) 查 `forms[form]["a+b"][clip]`（冇就試 "b+a"）→ `{yield, off:[dx,dy]}` 或者 `{yield, hide:true}`。
+  2. 每件讓位件取最大位移（|dx|+|dy|）；任何 hide 贏。
+  3. 再查 `outfitOverrides[form][排好序用 + 連嘅組合][clip]`，列明嘅件收起。
+  4. 位移係成段 clip 用（唔會逐幀跳）。
+- 統計：344 對有規則；4,473 clip 位移、426 clip 收起；override 279。
+
+### emissive
+- 飾品畫喺 emissive 之前；emissive 用飾品 alpha 聯集遮走，燈泡 ±1 一直挖空。
+- 平均遮咗：sakura 12.7%、nightcap 10.0%、beanie 9.0%、starclip 8.0%、acorn 7.4%、straw 7.2%、bow 5.8%、leafcollar 4.5%、scarf 4.5%、bell 3.7%、crown 3.3%、halo 2.0%、glasses 0.7%（`ACCESSORIES.json` → `emissive.overlap`，逐 item × form）。
+
+### 其他 ACC5 改動
+- 背面（turn_back_01）左右 slot 鏡像；moon 帽針睡帽 pincap；dust 鈴吊頭頂（top_low）；dot 眼鏡推上額頭。
+- 預覽：`preview/accessories/acc5_contact_25x13_idle_2x.png`、`acc5_contact_25x13_walk03_2x.png`、`acc5_outfits_idle_3x.png` 等。
+<!-- ACC5-END -->

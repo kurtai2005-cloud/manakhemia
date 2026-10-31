@@ -2216,21 +2216,10 @@
     "evo_dot": {
      "atlas": "items/glasses/atlas_glasses_evo_dot.json",
      "clips": 41,
-     "visibleClips": 29,
-     "frames": 119,
+     "visibleClips": 40,
+     "frames": 177,
      "hidden": {
-      "walk": "walk_01: 鏡框會壓到眼",
-      "play": "play_01: 會遮五官",
-      "pot_bump": "pot_bump_01: 會遮五官",
-      "eat": "eat_03: 會遮五官",
-      "walk_happy": "walk_happy_02: 會遮五官",
-      "sniff": "sniff_01: 會遮五官",
-      "nuzzle": "nuzzle_01: 會遮五官",
-      "rush": "rush_03: 會遮五官",
-      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）",
-      "smug_pose": "smug_pose_01: 會遮五官",
-      "lookup_tip": "lookup_tip_01: 鏡框會壓到眼",
-      "shiver": "shiver_01: 會遮五官"
+      "turn_back": "turn_back_01: faceVisible=false（背面／遮面）"
      },
      "variant": "default"
     },
@@ -2480,9 +2469,9 @@
    },
    "counts": {
     "forms": 25,
-    "visibleClips": 979,
+    "visibleClips": 990,
     "clips": 1055,
-    "frames": 4353
+    "frames": 4411
    }
   },
   "scarf": {
@@ -3375,6 +3364,2523 @@
     "visibleClips": 1055,
     "clips": 1055,
     "frames": 4674
+   }
+  }
+ },
+ "emissive": {
+  "rule": "飾品本身冇 emissive 層；引擎 emissive 照畫喺飾品之後，但用（已解決讓位嘅）飾品 alpha 聯集遮走，即係發光唔會透過帽／頸巾；燈泡 ±1 飾品層已挖空，所以燈泡光一定睇到。sprout／radiant／soft 冇 emissive。",
+  "overlap": {
+   "sprout": null,
+   "radiant": null,
+   "soft": null,
+   "lumi": {
+    "straw": {
+     "frames": 106,
+     "emissivePx": 9156,
+     "coveredPx": 83,
+     "coveredFrac": 0.0091,
+     "maxFrameFrac": 0.0312
+    },
+    "bow": {
+     "frames": 112,
+     "emissivePx": 9693,
+     "coveredPx": 91,
+     "coveredFrac": 0.0094,
+     "maxFrameFrac": 0.0308
+    },
+    "scarf": {
+     "frames": 112,
+     "emissivePx": 9693,
+     "coveredPx": 2147,
+     "coveredFrac": 0.2215,
+     "maxFrameFrac": 0.3232
+    },
+    "beanie": {
+     "frames": 106,
+     "emissivePx": 9156,
+     "coveredPx": 334,
+     "coveredFrac": 0.0365,
+     "maxFrameFrac": 0.1562
+    },
+    "acorn": {
+     "frames": 106,
+     "emissivePx": 9156,
+     "coveredPx": 211,
+     "coveredFrac": 0.023,
+     "maxFrameFrac": 0.0959
+    },
+    "crown": {
+     "frames": 106,
+     "emissivePx": 9156,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "starclip": {
+     "frames": 112,
+     "emissivePx": 9693,
+     "coveredPx": 11,
+     "coveredFrac": 0.0011,
+     "maxFrameFrac": 0.0375
+    },
+    "sakura": {
+     "frames": 112,
+     "emissivePx": 9693,
+     "coveredPx": 126,
+     "coveredFrac": 0.013,
+     "maxFrameFrac": 0.0769
+    },
+    "glasses": {
+     "frames": 112,
+     "emissivePx": 9693,
+     "coveredPx": 92,
+     "coveredFrac": 0.0095,
+     "maxFrameFrac": 0.0556
+    },
+    "leafcollar": {
+     "frames": 112,
+     "emissivePx": 9693,
+     "coveredPx": 2129,
+     "coveredFrac": 0.2196,
+     "maxFrameFrac": 0.3131
+    },
+    "bell": {
+     "frames": 112,
+     "emissivePx": 9693,
+     "coveredPx": 104,
+     "coveredFrac": 0.0107,
+     "maxFrameFrac": 0.0308
+    },
+    "halo": {
+     "frames": 112,
+     "emissivePx": 9693,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 106,
+     "emissivePx": 9156,
+     "coveredPx": 334,
+     "coveredFrac": 0.0365,
+     "maxFrameFrac": 0.1562
+    }
+   },
+   "evo_dot": {
+    "straw": {
+     "frames": 175,
+     "emissivePx": 485,
+     "coveredPx": 201,
+     "coveredFrac": 0.4144,
+     "maxFrameFrac": 0.7073
+    },
+    "bow": {
+     "frames": 181,
+     "emissivePx": 491,
+     "coveredPx": 5,
+     "coveredFrac": 0.0102,
+     "maxFrameFrac": 0.5
+    },
+    "scarf": {
+     "frames": 181,
+     "emissivePx": 491,
+     "coveredPx": 149,
+     "coveredFrac": 0.3035,
+     "maxFrameFrac": 1.0
+    },
+    "beanie": {
+     "frames": 175,
+     "emissivePx": 485,
+     "coveredPx": 239,
+     "coveredFrac": 0.4928,
+     "maxFrameFrac": 0.825
+    },
+    "acorn": {
+     "frames": 175,
+     "emissivePx": 485,
+     "coveredPx": 195,
+     "coveredFrac": 0.4021,
+     "maxFrameFrac": 0.6829
+    },
+    "crown": {
+     "frames": 175,
+     "emissivePx": 485,
+     "coveredPx": 123,
+     "coveredFrac": 0.2536,
+     "maxFrameFrac": 0.5
+    },
+    "starclip": {
+     "frames": 181,
+     "emissivePx": 491,
+     "coveredPx": 88,
+     "coveredFrac": 0.1792,
+     "maxFrameFrac": 0.3529
+    },
+    "sakura": {
+     "frames": 181,
+     "emissivePx": 491,
+     "coveredPx": 165,
+     "coveredFrac": 0.336,
+     "maxFrameFrac": 0.5882
+    },
+    "glasses": {
+     "frames": 177,
+     "emissivePx": 487,
+     "coveredPx": 62,
+     "coveredFrac": 0.1273,
+     "maxFrameFrac": 0.4
+    },
+    "leafcollar": {
+     "frames": 181,
+     "emissivePx": 491,
+     "coveredPx": 98,
+     "coveredFrac": 0.1996,
+     "maxFrameFrac": 1.0
+    },
+    "bell": {
+     "frames": 181,
+     "emissivePx": 491,
+     "coveredPx": 3,
+     "coveredFrac": 0.0061,
+     "maxFrameFrac": 0.5
+    },
+    "halo": {
+     "frames": 181,
+     "emissivePx": 491,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 175,
+     "emissivePx": 485,
+     "coveredPx": 239,
+     "coveredFrac": 0.4928,
+     "maxFrameFrac": 0.825
+    }
+   },
+   "evo_sprout": {
+    "straw": {
+     "frames": 175,
+     "emissivePx": 22,
+     "coveredPx": 6,
+     "coveredFrac": 0.2727,
+     "maxFrameFrac": 1.0
+    },
+    "bow": {
+     "frames": 181,
+     "emissivePx": 22,
+     "coveredPx": 7,
+     "coveredFrac": 0.3182,
+     "maxFrameFrac": 1.0
+    },
+    "scarf": {
+     "frames": 181,
+     "emissivePx": 22,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "beanie": {
+     "frames": 175,
+     "emissivePx": 22,
+     "coveredPx": 14,
+     "coveredFrac": 0.6364,
+     "maxFrameFrac": 1.0
+    },
+    "acorn": {
+     "frames": 175,
+     "emissivePx": 22,
+     "coveredPx": 11,
+     "coveredFrac": 0.5,
+     "maxFrameFrac": 1.0
+    },
+    "crown": {
+     "frames": 175,
+     "emissivePx": 22,
+     "coveredPx": 3,
+     "coveredFrac": 0.1364,
+     "maxFrameFrac": 0.5
+    },
+    "starclip": {
+     "frames": 181,
+     "emissivePx": 22,
+     "coveredPx": 3,
+     "coveredFrac": 0.1364,
+     "maxFrameFrac": 0.5
+    },
+    "sakura": {
+     "frames": 181,
+     "emissivePx": 22,
+     "coveredPx": 3,
+     "coveredFrac": 0.1364,
+     "maxFrameFrac": 0.5
+    },
+    "glasses": {
+     "frames": 159,
+     "emissivePx": 22,
+     "coveredPx": 4,
+     "coveredFrac": 0.1818,
+     "maxFrameFrac": 0.5
+    },
+    "leafcollar": {
+     "frames": 181,
+     "emissivePx": 22,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bell": {
+     "frames": 181,
+     "emissivePx": 22,
+     "coveredPx": 5,
+     "coveredFrac": 0.2273,
+     "maxFrameFrac": 0.5
+    },
+    "halo": {
+     "frames": 181,
+     "emissivePx": 22,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 175,
+     "emissivePx": 22,
+     "coveredPx": 14,
+     "coveredFrac": 0.6364,
+     "maxFrameFrac": 1.0
+    }
+   },
+   "evo_hop": {
+    "straw": {
+     "frames": 231,
+     "emissivePx": 3427,
+     "coveredPx": 5,
+     "coveredFrac": 0.0015,
+     "maxFrameFrac": 0.0714
+    },
+    "bow": {
+     "frames": 237,
+     "emissivePx": 3525,
+     "coveredPx": 7,
+     "coveredFrac": 0.002,
+     "maxFrameFrac": 0.2174
+    },
+    "scarf": {
+     "frames": 237,
+     "emissivePx": 3525,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "beanie": {
+     "frames": 231,
+     "emissivePx": 3427,
+     "coveredPx": 6,
+     "coveredFrac": 0.0018,
+     "maxFrameFrac": 0.0714
+    },
+    "acorn": {
+     "frames": 231,
+     "emissivePx": 3427,
+     "coveredPx": 5,
+     "coveredFrac": 0.0015,
+     "maxFrameFrac": 0.0714
+    },
+    "crown": {
+     "frames": 231,
+     "emissivePx": 3427,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "starclip": {
+     "frames": 237,
+     "emissivePx": 3525,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "sakura": {
+     "frames": 237,
+     "emissivePx": 3525,
+     "coveredPx": 5,
+     "coveredFrac": 0.0014,
+     "maxFrameFrac": 0.1333
+    },
+    "glasses": {
+     "frames": 229,
+     "emissivePx": 3396,
+     "coveredPx": 3,
+     "coveredFrac": 0.0009,
+     "maxFrameFrac": 0.0667
+    },
+    "leafcollar": {
+     "frames": 237,
+     "emissivePx": 3525,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bell": {
+     "frames": 237,
+     "emissivePx": 3525,
+     "coveredPx": 5,
+     "coveredFrac": 0.0014,
+     "maxFrameFrac": 0.0667
+    },
+    "halo": {
+     "frames": 237,
+     "emissivePx": 3525,
+     "coveredPx": 2,
+     "coveredFrac": 0.0006,
+     "maxFrameFrac": 0.1111
+    },
+    "nightcap": {
+     "frames": 231,
+     "emissivePx": 3427,
+     "coveredPx": 6,
+     "coveredFrac": 0.0018,
+     "maxFrameFrac": 0.0714
+    }
+   },
+   "evo_guard_lumi": {
+    "straw": {
+     "frames": 175,
+     "emissivePx": 7750,
+     "coveredPx": 483,
+     "coveredFrac": 0.0623,
+     "maxFrameFrac": 0.1111
+    },
+    "bow": {
+     "frames": 181,
+     "emissivePx": 8051,
+     "coveredPx": 153,
+     "coveredFrac": 0.019,
+     "maxFrameFrac": 0.0732
+    },
+    "scarf": {
+     "frames": 181,
+     "emissivePx": 8051,
+     "coveredPx": 953,
+     "coveredFrac": 0.1184,
+     "maxFrameFrac": 0.3667
+    },
+    "beanie": {
+     "frames": 175,
+     "emissivePx": 7750,
+     "coveredPx": 634,
+     "coveredFrac": 0.0818,
+     "maxFrameFrac": 0.1463
+    },
+    "acorn": {
+     "frames": 175,
+     "emissivePx": 7750,
+     "coveredPx": 506,
+     "coveredFrac": 0.0653,
+     "maxFrameFrac": 0.1364
+    },
+    "crown": {
+     "frames": 175,
+     "emissivePx": 7750,
+     "coveredPx": 33,
+     "coveredFrac": 0.0043,
+     "maxFrameFrac": 0.0455
+    },
+    "starclip": {
+     "frames": 181,
+     "emissivePx": 8051,
+     "coveredPx": 1,
+     "coveredFrac": 0.0001,
+     "maxFrameFrac": 0.0233
+    },
+    "sakura": {
+     "frames": 181,
+     "emissivePx": 8051,
+     "coveredPx": 232,
+     "coveredFrac": 0.0288,
+     "maxFrameFrac": 0.1667
+    },
+    "glasses": {
+     "frames": 169,
+     "emissivePx": 7504,
+     "coveredPx": 117,
+     "coveredFrac": 0.0156,
+     "maxFrameFrac": 0.1042
+    },
+    "leafcollar": {
+     "frames": 181,
+     "emissivePx": 8051,
+     "coveredPx": 951,
+     "coveredFrac": 0.1181,
+     "maxFrameFrac": 0.3667
+    },
+    "bell": {
+     "frames": 181,
+     "emissivePx": 8051,
+     "coveredPx": 233,
+     "coveredFrac": 0.0289,
+     "maxFrameFrac": 0.0698
+    },
+    "halo": {
+     "frames": 181,
+     "emissivePx": 8051,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 175,
+     "emissivePx": 7750,
+     "coveredPx": 549,
+     "coveredFrac": 0.0708,
+     "maxFrameFrac": 0.1364
+    }
+   },
+   "evo_guard_radiant": {
+    "straw": {
+     "frames": 175,
+     "emissivePx": 9889,
+     "coveredPx": 415,
+     "coveredFrac": 0.042,
+     "maxFrameFrac": 0.3893
+    },
+    "bow": {
+     "frames": 181,
+     "emissivePx": 10254,
+     "coveredPx": 36,
+     "coveredFrac": 0.0035,
+     "maxFrameFrac": 0.1159
+    },
+    "scarf": {
+     "frames": 181,
+     "emissivePx": 10254,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "beanie": {
+     "frames": 175,
+     "emissivePx": 9889,
+     "coveredPx": 584,
+     "coveredFrac": 0.0591,
+     "maxFrameFrac": 0.4899
+    },
+    "acorn": {
+     "frames": 175,
+     "emissivePx": 9889,
+     "coveredPx": 496,
+     "coveredFrac": 0.0502,
+     "maxFrameFrac": 0.4362
+    },
+    "crown": {
+     "frames": 175,
+     "emissivePx": 9889,
+     "coveredPx": 221,
+     "coveredFrac": 0.0223,
+     "maxFrameFrac": 0.2215
+    },
+    "starclip": {
+     "frames": 181,
+     "emissivePx": 10254,
+     "coveredPx": 139,
+     "coveredFrac": 0.0136,
+     "maxFrameFrac": 0.094
+    },
+    "sakura": {
+     "frames": 181,
+     "emissivePx": 10254,
+     "coveredPx": 417,
+     "coveredFrac": 0.0407,
+     "maxFrameFrac": 0.362
+    },
+    "glasses": {
+     "frames": 169,
+     "emissivePx": 9555,
+     "coveredPx": 76,
+     "coveredFrac": 0.008,
+     "maxFrameFrac": 0.0798
+    },
+    "leafcollar": {
+     "frames": 181,
+     "emissivePx": 10254,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bell": {
+     "frames": 181,
+     "emissivePx": 10254,
+     "coveredPx": 113,
+     "coveredFrac": 0.011,
+     "maxFrameFrac": 0.1043
+    },
+    "halo": {
+     "frames": 181,
+     "emissivePx": 10254,
+     "coveredPx": 879,
+     "coveredFrac": 0.0857,
+     "maxFrameFrac": 0.15
+    },
+    "nightcap": {
+     "frames": 175,
+     "emissivePx": 9889,
+     "coveredPx": 610,
+     "coveredFrac": 0.0617,
+     "maxFrameFrac": 0.4847
+    }
+   },
+   "evo_guard_soft": {
+    "straw": {
+     "frames": 175,
+     "emissivePx": 2067,
+     "coveredPx": 27,
+     "coveredFrac": 0.0131,
+     "maxFrameFrac": 0.2174
+    },
+    "bow": {
+     "frames": 181,
+     "emissivePx": 2146,
+     "coveredPx": 5,
+     "coveredFrac": 0.0023,
+     "maxFrameFrac": 0.087
+    },
+    "scarf": {
+     "frames": 181,
+     "emissivePx": 2146,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "beanie": {
+     "frames": 175,
+     "emissivePx": 2067,
+     "coveredPx": 47,
+     "coveredFrac": 0.0227,
+     "maxFrameFrac": 0.3913
+    },
+    "acorn": {
+     "frames": 175,
+     "emissivePx": 2067,
+     "coveredPx": 27,
+     "coveredFrac": 0.0131,
+     "maxFrameFrac": 0.2174
+    },
+    "crown": {
+     "frames": 175,
+     "emissivePx": 2067,
+     "coveredPx": 6,
+     "coveredFrac": 0.0029,
+     "maxFrameFrac": 0.1739
+    },
+    "starclip": {
+     "frames": 181,
+     "emissivePx": 2146,
+     "coveredPx": 1,
+     "coveredFrac": 0.0005,
+     "maxFrameFrac": 0.0769
+    },
+    "sakura": {
+     "frames": 181,
+     "emissivePx": 2146,
+     "coveredPx": 10,
+     "coveredFrac": 0.0047,
+     "maxFrameFrac": 0.1739
+    },
+    "glasses": {
+     "frames": 173,
+     "emissivePx": 2044,
+     "coveredPx": 9,
+     "coveredFrac": 0.0044,
+     "maxFrameFrac": 0.087
+    },
+    "leafcollar": {
+     "frames": 181,
+     "emissivePx": 2146,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bell": {
+     "frames": 181,
+     "emissivePx": 2146,
+     "coveredPx": 17,
+     "coveredFrac": 0.0079,
+     "maxFrameFrac": 0.2381
+    },
+    "halo": {
+     "frames": 181,
+     "emissivePx": 2146,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 175,
+     "emissivePx": 2067,
+     "coveredPx": 34,
+     "coveredFrac": 0.0164,
+     "maxFrameFrac": 0.2609
+    }
+   },
+   "evo_guard_dust": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 1529,
+     "coveredPx": 29,
+     "coveredFrac": 0.019,
+     "maxFrameFrac": 0.3333
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 1580,
+     "coveredPx": 26,
+     "coveredFrac": 0.0165,
+     "maxFrameFrac": 0.375
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 1580,
+     "coveredPx": 34,
+     "coveredFrac": 0.0215,
+     "maxFrameFrac": 0.25
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 1529,
+     "coveredPx": 45,
+     "coveredFrac": 0.0294,
+     "maxFrameFrac": 0.4667
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 1529,
+     "coveredPx": 32,
+     "coveredFrac": 0.0209,
+     "maxFrameFrac": 0.4
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 1529,
+     "coveredPx": 4,
+     "coveredFrac": 0.0026,
+     "maxFrameFrac": 0.125
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 1580,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 1580,
+     "coveredPx": 16,
+     "coveredFrac": 0.0101,
+     "maxFrameFrac": 0.4737
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 1484,
+     "coveredPx": 10,
+     "coveredFrac": 0.0067,
+     "maxFrameFrac": 0.125
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 1580,
+     "coveredPx": 34,
+     "coveredFrac": 0.0215,
+     "maxFrameFrac": 0.25
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 1580,
+     "coveredPx": 13,
+     "coveredFrac": 0.0082,
+     "maxFrameFrac": 0.2353
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 1580,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 1529,
+     "coveredPx": 45,
+     "coveredFrac": 0.0294,
+     "maxFrameFrac": 0.4667
+    }
+   },
+   "evo_still_lumi": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 18629,
+     "coveredPx": 555,
+     "coveredFrac": 0.0298,
+     "maxFrameFrac": 0.1596
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 19285,
+     "coveredPx": 608,
+     "coveredFrac": 0.0315,
+     "maxFrameFrac": 0.1034
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 19285,
+     "coveredPx": 2760,
+     "coveredFrac": 0.1431,
+     "maxFrameFrac": 0.2535
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 18629,
+     "coveredPx": 789,
+     "coveredFrac": 0.0424,
+     "maxFrameFrac": 0.1818
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 18629,
+     "coveredPx": 557,
+     "coveredFrac": 0.0299,
+     "maxFrameFrac": 0.1596
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 18629,
+     "coveredPx": 248,
+     "coveredFrac": 0.0133,
+     "maxFrameFrac": 0.1277
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 19285,
+     "coveredPx": 744,
+     "coveredFrac": 0.0386,
+     "maxFrameFrac": 0.1296
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 19285,
+     "coveredPx": 206,
+     "coveredFrac": 0.0107,
+     "maxFrameFrac": 0.0476
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 18054,
+     "coveredPx": 88,
+     "coveredFrac": 0.0049,
+     "maxFrameFrac": 0.0388
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 19285,
+     "coveredPx": 2816,
+     "coveredFrac": 0.146,
+     "maxFrameFrac": 0.2933
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 19285,
+     "coveredPx": 287,
+     "coveredFrac": 0.0149,
+     "maxFrameFrac": 0.04
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 19285,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 18629,
+     "coveredPx": 1299,
+     "coveredFrac": 0.0697,
+     "maxFrameFrac": 0.2039
+    }
+   },
+   "evo_still_radiant": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 21931,
+     "coveredPx": 1546,
+     "coveredFrac": 0.0705,
+     "maxFrameFrac": 0.3469
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 22698,
+     "coveredPx": 818,
+     "coveredFrac": 0.036,
+     "maxFrameFrac": 0.1473
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 22698,
+     "coveredPx": 125,
+     "coveredFrac": 0.0055,
+     "maxFrameFrac": 0.02
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 21931,
+     "coveredPx": 1519,
+     "coveredFrac": 0.0693,
+     "maxFrameFrac": 0.4395
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 21931,
+     "coveredPx": 989,
+     "coveredFrac": 0.0451,
+     "maxFrameFrac": 0.3602
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 21931,
+     "coveredPx": 235,
+     "coveredFrac": 0.0107,
+     "maxFrameFrac": 0.1699
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 22698,
+     "coveredPx": 1248,
+     "coveredFrac": 0.055,
+     "maxFrameFrac": 0.2625
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 22698,
+     "coveredPx": 2662,
+     "coveredFrac": 0.1173,
+     "maxFrameFrac": 0.3462
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 21292,
+     "coveredPx": 59,
+     "coveredFrac": 0.0028,
+     "maxFrameFrac": 0.0521
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 22698,
+     "coveredPx": 131,
+     "coveredFrac": 0.0058,
+     "maxFrameFrac": 0.02
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 22698,
+     "coveredPx": 77,
+     "coveredFrac": 0.0034,
+     "maxFrameFrac": 0.0571
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 22698,
+     "coveredPx": 1431,
+     "coveredFrac": 0.063,
+     "maxFrameFrac": 0.1261
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 21931,
+     "coveredPx": 1855,
+     "coveredFrac": 0.0846,
+     "maxFrameFrac": 0.4476
+    }
+   },
+   "evo_still_soft": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 2542,
+     "coveredPx": 87,
+     "coveredFrac": 0.0342,
+     "maxFrameFrac": 0.24
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 2630,
+     "coveredPx": 12,
+     "coveredFrac": 0.0046,
+     "maxFrameFrac": 0.1667
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 2630,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 2542,
+     "coveredPx": 111,
+     "coveredFrac": 0.0437,
+     "maxFrameFrac": 0.24
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 2542,
+     "coveredPx": 86,
+     "coveredFrac": 0.0338,
+     "maxFrameFrac": 0.24
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 2542,
+     "coveredPx": 73,
+     "coveredFrac": 0.0287,
+     "maxFrameFrac": 0.2308
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 2630,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 2630,
+     "coveredPx": 16,
+     "coveredFrac": 0.0061,
+     "maxFrameFrac": 0.24
+    },
+    "glasses": {
+     "frames": 182,
+     "emissivePx": 2514,
+     "coveredPx": 8,
+     "coveredFrac": 0.0032,
+     "maxFrameFrac": 0.08
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 2630,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 2630,
+     "coveredPx": 17,
+     "coveredFrac": 0.0065,
+     "maxFrameFrac": 0.2174
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 2630,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 2542,
+     "coveredPx": 99,
+     "coveredFrac": 0.0389,
+     "maxFrameFrac": 0.24
+    }
+   },
+   "evo_still_dust": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 7540,
+     "coveredPx": 322,
+     "coveredFrac": 0.0427,
+     "maxFrameFrac": 0.2093
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 7778,
+     "coveredPx": 439,
+     "coveredFrac": 0.0564,
+     "maxFrameFrac": 0.1951
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 7778,
+     "coveredPx": 234,
+     "coveredFrac": 0.0301,
+     "maxFrameFrac": 0.125
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 7540,
+     "coveredPx": 401,
+     "coveredFrac": 0.0532,
+     "maxFrameFrac": 0.25
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 7540,
+     "coveredPx": 393,
+     "coveredFrac": 0.0521,
+     "maxFrameFrac": 0.25
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 7540,
+     "coveredPx": 126,
+     "coveredFrac": 0.0167,
+     "maxFrameFrac": 0.2045
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 7778,
+     "coveredPx": 314,
+     "coveredFrac": 0.0404,
+     "maxFrameFrac": 0.1163
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 7778,
+     "coveredPx": 200,
+     "coveredFrac": 0.0257,
+     "maxFrameFrac": 0.1228
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 7297,
+     "coveredPx": 6,
+     "coveredFrac": 0.0008,
+     "maxFrameFrac": 0.0377
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 7778,
+     "coveredPx": 244,
+     "coveredFrac": 0.0314,
+     "maxFrameFrac": 0.125
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 7778,
+     "coveredPx": 58,
+     "coveredFrac": 0.0075,
+     "maxFrameFrac": 0.0769
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 7778,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 7540,
+     "coveredPx": 445,
+     "coveredFrac": 0.059,
+     "maxFrameFrac": 0.25
+    }
+   },
+   "evo_guard_tide": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 1747,
+     "coveredPx": 26,
+     "coveredFrac": 0.0149,
+     "maxFrameFrac": 0.3158
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 1795,
+     "coveredPx": 15,
+     "coveredFrac": 0.0084,
+     "maxFrameFrac": 0.4444
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 1795,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 1747,
+     "coveredPx": 53,
+     "coveredFrac": 0.0303,
+     "maxFrameFrac": 0.5263
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 1747,
+     "coveredPx": 40,
+     "coveredFrac": 0.0229,
+     "maxFrameFrac": 0.4737
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 1747,
+     "coveredPx": 7,
+     "coveredFrac": 0.004,
+     "maxFrameFrac": 0.2105
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 1795,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 1795,
+     "coveredPx": 17,
+     "coveredFrac": 0.0095,
+     "maxFrameFrac": 0.3158
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 1684,
+     "coveredPx": 12,
+     "coveredFrac": 0.0071,
+     "maxFrameFrac": 0.1579
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 1795,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 1795,
+     "coveredPx": 23,
+     "coveredFrac": 0.0128,
+     "maxFrameFrac": 0.2632
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 1795,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 1747,
+     "coveredPx": 40,
+     "coveredFrac": 0.0229,
+     "maxFrameFrac": 0.4737
+    }
+   },
+   "evo_still_tide": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 3224,
+     "coveredPx": 46,
+     "coveredFrac": 0.0143,
+     "maxFrameFrac": 0.1852
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 3326,
+     "coveredPx": 105,
+     "coveredFrac": 0.0316,
+     "maxFrameFrac": 0.1852
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 3326,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 3224,
+     "coveredPx": 69,
+     "coveredFrac": 0.0214,
+     "maxFrameFrac": 0.2308
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 3224,
+     "coveredPx": 60,
+     "coveredFrac": 0.0186,
+     "maxFrameFrac": 0.1923
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 3224,
+     "coveredPx": 22,
+     "coveredFrac": 0.0068,
+     "maxFrameFrac": 0.1176
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 3326,
+     "coveredPx": 3,
+     "coveredFrac": 0.0009,
+     "maxFrameFrac": 0.1053
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 3326,
+     "coveredPx": 19,
+     "coveredFrac": 0.0057,
+     "maxFrameFrac": 0.2143
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 3120,
+     "coveredPx": 7,
+     "coveredFrac": 0.0022,
+     "maxFrameFrac": 0.0741
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 3326,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 3326,
+     "coveredPx": 22,
+     "coveredFrac": 0.0066,
+     "maxFrameFrac": 0.2
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 3326,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 3224,
+     "coveredPx": 61,
+     "coveredFrac": 0.0189,
+     "maxFrameFrac": 0.1923
+    }
+   },
+   "evo_guard_shroom": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 1944,
+     "coveredPx": 15,
+     "coveredFrac": 0.0077,
+     "maxFrameFrac": 0.3
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 2005,
+     "coveredPx": 313,
+     "coveredFrac": 0.1561,
+     "maxFrameFrac": 0.5263
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 2005,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 1944,
+     "coveredPx": 16,
+     "coveredFrac": 0.0082,
+     "maxFrameFrac": 0.3
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 1944,
+     "coveredPx": 15,
+     "coveredFrac": 0.0077,
+     "maxFrameFrac": 0.3
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 1944,
+     "coveredPx": 16,
+     "coveredFrac": 0.0082,
+     "maxFrameFrac": 0.3
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 2005,
+     "coveredPx": 1,
+     "coveredFrac": 0.0005,
+     "maxFrameFrac": 0.0833
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 2005,
+     "coveredPx": 19,
+     "coveredFrac": 0.0095,
+     "maxFrameFrac": 0.3
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 1887,
+     "coveredPx": 12,
+     "coveredFrac": 0.0064,
+     "maxFrameFrac": 0.15
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 2005,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 2005,
+     "coveredPx": 34,
+     "coveredFrac": 0.017,
+     "maxFrameFrac": 0.2857
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 2005,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 1944,
+     "coveredPx": 15,
+     "coveredFrac": 0.0077,
+     "maxFrameFrac": 0.3
+    }
+   },
+   "evo_still_shroom": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 10057,
+     "coveredPx": 606,
+     "coveredFrac": 0.0603,
+     "maxFrameFrac": 0.16
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 10396,
+     "coveredPx": 1319,
+     "coveredFrac": 0.1269,
+     "maxFrameFrac": 0.2203
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 10396,
+     "coveredPx": 47,
+     "coveredFrac": 0.0045,
+     "maxFrameFrac": 0.1333
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 10057,
+     "coveredPx": 745,
+     "coveredFrac": 0.0741,
+     "maxFrameFrac": 0.18
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 10057,
+     "coveredPx": 698,
+     "coveredFrac": 0.0694,
+     "maxFrameFrac": 0.18
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 10057,
+     "coveredPx": 635,
+     "coveredFrac": 0.0631,
+     "maxFrameFrac": 0.16
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 10396,
+     "coveredPx": 391,
+     "coveredFrac": 0.0376,
+     "maxFrameFrac": 0.0781
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 10396,
+     "coveredPx": 881,
+     "coveredFrac": 0.0847,
+     "maxFrameFrac": 0.1831
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 9750,
+     "coveredPx": 174,
+     "coveredFrac": 0.0178,
+     "maxFrameFrac": 0.0741
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 10396,
+     "coveredPx": 61,
+     "coveredFrac": 0.0059,
+     "maxFrameFrac": 0.0926
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 10396,
+     "coveredPx": 537,
+     "coveredFrac": 0.0517,
+     "maxFrameFrac": 0.1455
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 10396,
+     "coveredPx": 283,
+     "coveredFrac": 0.0272,
+     "maxFrameFrac": 0.0816
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 10057,
+     "coveredPx": 735,
+     "coveredFrac": 0.0731,
+     "maxFrameFrac": 0.16
+    }
+   },
+   "evo_guard_crystal": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 8625,
+     "coveredPx": 1796,
+     "coveredFrac": 0.2082,
+     "maxFrameFrac": 0.4412
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 8930,
+     "coveredPx": 996,
+     "coveredFrac": 0.1115,
+     "maxFrameFrac": 0.3684
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 8930,
+     "coveredPx": 237,
+     "coveredFrac": 0.0265,
+     "maxFrameFrac": 0.0625
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 8625,
+     "coveredPx": 2554,
+     "coveredFrac": 0.2961,
+     "maxFrameFrac": 0.6765
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 8625,
+     "coveredPx": 2109,
+     "coveredFrac": 0.2445,
+     "maxFrameFrac": 0.5294
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 8625,
+     "coveredPx": 639,
+     "coveredFrac": 0.0741,
+     "maxFrameFrac": 0.2105
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 8930,
+     "coveredPx": 2233,
+     "coveredFrac": 0.2501,
+     "maxFrameFrac": 0.4054
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 8930,
+     "coveredPx": 3729,
+     "coveredFrac": 0.4176,
+     "maxFrameFrac": 0.7059
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 8367,
+     "coveredPx": 85,
+     "coveredFrac": 0.0102,
+     "maxFrameFrac": 0.1296
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 8930,
+     "coveredPx": 240,
+     "coveredFrac": 0.0269,
+     "maxFrameFrac": 0.0625
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 8930,
+     "coveredPx": 437,
+     "coveredFrac": 0.0489,
+     "maxFrameFrac": 0.1228
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 8930,
+     "coveredPx": 124,
+     "coveredFrac": 0.0139,
+     "maxFrameFrac": 0.0417
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 8625,
+     "coveredPx": 2554,
+     "coveredFrac": 0.2961,
+     "maxFrameFrac": 0.6765
+    }
+   },
+   "evo_still_crystal": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 14464,
+     "coveredPx": 2951,
+     "coveredFrac": 0.204,
+     "maxFrameFrac": 0.3786
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 14970,
+     "coveredPx": 2259,
+     "coveredFrac": 0.1509,
+     "maxFrameFrac": 0.2841
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 14970,
+     "coveredPx": 261,
+     "coveredFrac": 0.0174,
+     "maxFrameFrac": 0.1667
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 14464,
+     "coveredPx": 3589,
+     "coveredFrac": 0.2481,
+     "maxFrameFrac": 0.4563
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 14464,
+     "coveredPx": 3226,
+     "coveredFrac": 0.223,
+     "maxFrameFrac": 0.4272
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 14464,
+     "coveredPx": 1717,
+     "coveredFrac": 0.1187,
+     "maxFrameFrac": 0.2889
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 14970,
+     "coveredPx": 2651,
+     "coveredFrac": 0.1771,
+     "maxFrameFrac": 0.2933
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 14970,
+     "coveredPx": 4204,
+     "coveredFrac": 0.2808,
+     "maxFrameFrac": 0.46
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 14004,
+     "coveredPx": 70,
+     "coveredFrac": 0.005,
+     "maxFrameFrac": 0.0562
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 14970,
+     "coveredPx": 271,
+     "coveredFrac": 0.0181,
+     "maxFrameFrac": 0.1667
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 14970,
+     "coveredPx": 541,
+     "coveredFrac": 0.0361,
+     "maxFrameFrac": 0.1125
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 14970,
+     "coveredPx": 128,
+     "coveredFrac": 0.0086,
+     "maxFrameFrac": 0.0366
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 14464,
+     "coveredPx": 4023,
+     "coveredFrac": 0.2781,
+     "maxFrameFrac": 0.466
+    }
+   },
+   "evo_guard_moon": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 2825,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 2928,
+     "coveredPx": 127,
+     "coveredFrac": 0.0434,
+     "maxFrameFrac": 0.3571
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 2928,
+     "coveredPx": 182,
+     "coveredFrac": 0.0622,
+     "maxFrameFrac": 0.25
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 2825,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 2825,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 2825,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 2928,
+     "coveredPx": 296,
+     "coveredFrac": 0.1011,
+     "maxFrameFrac": 0.5455
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 2928,
+     "coveredPx": 88,
+     "coveredFrac": 0.0301,
+     "maxFrameFrac": 0.6429
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 2763,
+     "coveredPx": 56,
+     "coveredFrac": 0.0203,
+     "maxFrameFrac": 0.1538
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 2928,
+     "coveredPx": 189,
+     "coveredFrac": 0.0645,
+     "maxFrameFrac": 0.3333
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 2928,
+     "coveredPx": 27,
+     "coveredFrac": 0.0092,
+     "maxFrameFrac": 0.2
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 2928,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 2825,
+     "coveredPx": 1,
+     "coveredFrac": 0.0004,
+     "maxFrameFrac": 0.05
+    }
+   },
+   "evo_still_moon": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 15651,
+     "coveredPx": 348,
+     "coveredFrac": 0.0222,
+     "maxFrameFrac": 0.0536
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 16239,
+     "coveredPx": 907,
+     "coveredFrac": 0.0559,
+     "maxFrameFrac": 0.3131
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 16239,
+     "coveredPx": 137,
+     "coveredFrac": 0.0084,
+     "maxFrameFrac": 0.1429
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 15651,
+     "coveredPx": 504,
+     "coveredFrac": 0.0322,
+     "maxFrameFrac": 0.0877
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 15651,
+     "coveredPx": 397,
+     "coveredFrac": 0.0254,
+     "maxFrameFrac": 0.0877
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 15651,
+     "coveredPx": 394,
+     "coveredFrac": 0.0252,
+     "maxFrameFrac": 0.0702
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 16239,
+     "coveredPx": 3712,
+     "coveredFrac": 0.2286,
+     "maxFrameFrac": 0.4189
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 16239,
+     "coveredPx": 4757,
+     "coveredFrac": 0.2929,
+     "maxFrameFrac": 0.4944
+    },
+    "glasses": {
+     "frames": 182,
+     "emissivePx": 15498,
+     "coveredPx": 50,
+     "coveredFrac": 0.0032,
+     "maxFrameFrac": 0.125
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 16239,
+     "coveredPx": 127,
+     "coveredFrac": 0.0078,
+     "maxFrameFrac": 0.1429
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 16239,
+     "coveredPx": 3107,
+     "coveredFrac": 0.1913,
+     "maxFrameFrac": 0.4059
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 16239,
+     "coveredPx": 0,
+     "coveredFrac": 0.0,
+     "maxFrameFrac": 0.0
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 15651,
+     "coveredPx": 427,
+     "coveredFrac": 0.0273,
+     "maxFrameFrac": 0.0877
+    }
+   },
+   "evo_guard_ember": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 3174,
+     "coveredPx": 39,
+     "coveredFrac": 0.0123,
+     "maxFrameFrac": 0.2308
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 3292,
+     "coveredPx": 245,
+     "coveredFrac": 0.0744,
+     "maxFrameFrac": 0.2593
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 3292,
+     "coveredPx": 4,
+     "coveredFrac": 0.0012,
+     "maxFrameFrac": 0.0909
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 3174,
+     "coveredPx": 66,
+     "coveredFrac": 0.0208,
+     "maxFrameFrac": 0.3913
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 3174,
+     "coveredPx": 50,
+     "coveredFrac": 0.0158,
+     "maxFrameFrac": 0.3462
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 3174,
+     "coveredPx": 9,
+     "coveredFrac": 0.0028,
+     "maxFrameFrac": 0.1538
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 3292,
+     "coveredPx": 1,
+     "coveredFrac": 0.0003,
+     "maxFrameFrac": 0.0588
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 3292,
+     "coveredPx": 564,
+     "coveredFrac": 0.1713,
+     "maxFrameFrac": 0.3913
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 3103,
+     "coveredPx": 54,
+     "coveredFrac": 0.0174,
+     "maxFrameFrac": 0.1739
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 3292,
+     "coveredPx": 4,
+     "coveredFrac": 0.0012,
+     "maxFrameFrac": 0.0909
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 3292,
+     "coveredPx": 192,
+     "coveredFrac": 0.0583,
+     "maxFrameFrac": 0.2609
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 3292,
+     "coveredPx": 9,
+     "coveredFrac": 0.0027,
+     "maxFrameFrac": 0.0714
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 3174,
+     "coveredPx": 66,
+     "coveredFrac": 0.0208,
+     "maxFrameFrac": 0.3913
+    }
+   },
+   "evo_still_ember": {
+    "straw": {
+     "frames": 184,
+     "emissivePx": 11876,
+     "coveredPx": 1808,
+     "coveredFrac": 0.1522,
+     "maxFrameFrac": 0.3537
+    },
+    "bow": {
+     "frames": 190,
+     "emissivePx": 12293,
+     "coveredPx": 1076,
+     "coveredFrac": 0.0875,
+     "maxFrameFrac": 0.2836
+    },
+    "scarf": {
+     "frames": 190,
+     "emissivePx": 12293,
+     "coveredPx": 46,
+     "coveredFrac": 0.0037,
+     "maxFrameFrac": 0.0536
+    },
+    "beanie": {
+     "frames": 184,
+     "emissivePx": 11876,
+     "coveredPx": 2021,
+     "coveredFrac": 0.1702,
+     "maxFrameFrac": 0.3659
+    },
+    "acorn": {
+     "frames": 184,
+     "emissivePx": 11876,
+     "coveredPx": 1617,
+     "coveredFrac": 0.1362,
+     "maxFrameFrac": 0.3171
+    },
+    "crown": {
+     "frames": 184,
+     "emissivePx": 11876,
+     "coveredPx": 762,
+     "coveredFrac": 0.0642,
+     "maxFrameFrac": 0.1569
+    },
+    "starclip": {
+     "frames": 190,
+     "emissivePx": 12293,
+     "coveredPx": 1365,
+     "coveredFrac": 0.111,
+     "maxFrameFrac": 0.274
+    },
+    "sakura": {
+     "frames": 190,
+     "emissivePx": 12293,
+     "coveredPx": 2552,
+     "coveredFrac": 0.2076,
+     "maxFrameFrac": 0.4
+    },
+    "glasses": {
+     "frames": 178,
+     "emissivePx": 11582,
+     "coveredPx": 54,
+     "coveredFrac": 0.0047,
+     "maxFrameFrac": 0.0526
+    },
+    "leafcollar": {
+     "frames": 190,
+     "emissivePx": 12293,
+     "coveredPx": 48,
+     "coveredFrac": 0.0039,
+     "maxFrameFrac": 0.0635
+    },
+    "bell": {
+     "frames": 190,
+     "emissivePx": 12293,
+     "coveredPx": 162,
+     "coveredFrac": 0.0132,
+     "maxFrameFrac": 0.0806
+    },
+    "halo": {
+     "frames": 190,
+     "emissivePx": 12293,
+     "coveredPx": 357,
+     "coveredFrac": 0.029,
+     "maxFrameFrac": 0.0667
+    },
+    "nightcap": {
+     "frames": 184,
+     "emissivePx": 11876,
+     "coveredPx": 2371,
+     "coveredFrac": 0.1996,
+     "maxFrameFrac": 0.3902
+    }
+   }
+  }
+ },
+ "visibilityReview": {
+  "items": {
+   "straw": {
+    "visibleClips": 1030,
+    "clips": 1055,
+    "formsFull": 0,
+    "byForm": {
+     "sprout": "42/43",
+     "radiant": "42/43",
+     "soft": "42/43",
+     "lumi": "25/26",
+     "evo_dot": "40/41",
+     "evo_sprout": "40/41",
+     "evo_hop": "49/50",
+     "evo_guard_lumi": "40/41",
+     "evo_guard_radiant": "40/41",
+     "evo_guard_soft": "40/41",
+     "evo_guard_dust": "42/43",
+     "evo_still_lumi": "42/43",
+     "evo_still_radiant": "42/43",
+     "evo_still_soft": "42/43",
+     "evo_still_dust": "42/43",
+     "evo_guard_tide": "42/43",
+     "evo_still_tide": "42/43",
+     "evo_guard_shroom": "42/43",
+     "evo_still_shroom": "42/43",
+     "evo_guard_crystal": "42/43",
+     "evo_still_crystal": "42/43",
+     "evo_guard_moon": "42/43",
+     "evo_still_moon": "42/43",
+     "evo_guard_ember": "42/43",
+     "evo_still_ember": "42/43"
+    },
+    "pct": 97.6
+   },
+   "bow": {
+    "visibleClips": 1055,
+    "clips": 1055,
+    "formsFull": 25,
+    "byForm": {
+     "sprout": "43/43",
+     "radiant": "43/43",
+     "soft": "43/43",
+     "lumi": "26/26",
+     "evo_dot": "41/41",
+     "evo_sprout": "41/41",
+     "evo_hop": "50/50",
+     "evo_guard_lumi": "41/41",
+     "evo_guard_radiant": "41/41",
+     "evo_guard_soft": "41/41",
+     "evo_guard_dust": "43/43",
+     "evo_still_lumi": "43/43",
+     "evo_still_radiant": "43/43",
+     "evo_still_soft": "43/43",
+     "evo_still_dust": "43/43",
+     "evo_guard_tide": "43/43",
+     "evo_still_tide": "43/43",
+     "evo_guard_shroom": "43/43",
+     "evo_still_shroom": "43/43",
+     "evo_guard_crystal": "43/43",
+     "evo_still_crystal": "43/43",
+     "evo_guard_moon": "43/43",
+     "evo_still_moon": "43/43",
+     "evo_guard_ember": "43/43",
+     "evo_still_ember": "43/43"
+    },
+    "pct": 100.0
+   },
+   "scarf": {
+    "visibleClips": 1055,
+    "clips": 1055,
+    "formsFull": 25,
+    "byForm": {
+     "sprout": "43/43",
+     "radiant": "43/43",
+     "soft": "43/43",
+     "lumi": "26/26",
+     "evo_dot": "41/41",
+     "evo_sprout": "41/41",
+     "evo_hop": "50/50",
+     "evo_guard_lumi": "41/41",
+     "evo_guard_radiant": "41/41",
+     "evo_guard_soft": "41/41",
+     "evo_guard_dust": "43/43",
+     "evo_still_lumi": "43/43",
+     "evo_still_radiant": "43/43",
+     "evo_still_soft": "43/43",
+     "evo_still_dust": "43/43",
+     "evo_guard_tide": "43/43",
+     "evo_still_tide": "43/43",
+     "evo_guard_shroom": "43/43",
+     "evo_still_shroom": "43/43",
+     "evo_guard_crystal": "43/43",
+     "evo_still_crystal": "43/43",
+     "evo_guard_moon": "43/43",
+     "evo_still_moon": "43/43",
+     "evo_guard_ember": "43/43",
+     "evo_still_ember": "43/43"
+    },
+    "pct": 100.0
+   },
+   "beanie": {
+    "visibleClips": 1030,
+    "clips": 1055,
+    "formsFull": 0,
+    "byForm": {
+     "sprout": "42/43",
+     "radiant": "42/43",
+     "soft": "42/43",
+     "lumi": "25/26",
+     "evo_dot": "40/41",
+     "evo_sprout": "40/41",
+     "evo_hop": "49/50",
+     "evo_guard_lumi": "40/41",
+     "evo_guard_radiant": "40/41",
+     "evo_guard_soft": "40/41",
+     "evo_guard_dust": "42/43",
+     "evo_still_lumi": "42/43",
+     "evo_still_radiant": "42/43",
+     "evo_still_soft": "42/43",
+     "evo_still_dust": "42/43",
+     "evo_guard_tide": "42/43",
+     "evo_still_tide": "42/43",
+     "evo_guard_shroom": "42/43",
+     "evo_still_shroom": "42/43",
+     "evo_guard_crystal": "42/43",
+     "evo_still_crystal": "42/43",
+     "evo_guard_moon": "42/43",
+     "evo_still_moon": "42/43",
+     "evo_guard_ember": "42/43",
+     "evo_still_ember": "42/43"
+    },
+    "pct": 97.6
+   },
+   "acorn": {
+    "visibleClips": 1030,
+    "clips": 1055,
+    "formsFull": 0,
+    "byForm": {
+     "sprout": "42/43",
+     "radiant": "42/43",
+     "soft": "42/43",
+     "lumi": "25/26",
+     "evo_dot": "40/41",
+     "evo_sprout": "40/41",
+     "evo_hop": "49/50",
+     "evo_guard_lumi": "40/41",
+     "evo_guard_radiant": "40/41",
+     "evo_guard_soft": "40/41",
+     "evo_guard_dust": "42/43",
+     "evo_still_lumi": "42/43",
+     "evo_still_radiant": "42/43",
+     "evo_still_soft": "42/43",
+     "evo_still_dust": "42/43",
+     "evo_guard_tide": "42/43",
+     "evo_still_tide": "42/43",
+     "evo_guard_shroom": "42/43",
+     "evo_still_shroom": "42/43",
+     "evo_guard_crystal": "42/43",
+     "evo_still_crystal": "42/43",
+     "evo_guard_moon": "42/43",
+     "evo_still_moon": "42/43",
+     "evo_guard_ember": "42/43",
+     "evo_still_ember": "42/43"
+    },
+    "pct": 97.6
+   },
+   "crown": {
+    "visibleClips": 1030,
+    "clips": 1055,
+    "formsFull": 0,
+    "byForm": {
+     "sprout": "42/43",
+     "radiant": "42/43",
+     "soft": "42/43",
+     "lumi": "25/26",
+     "evo_dot": "40/41",
+     "evo_sprout": "40/41",
+     "evo_hop": "49/50",
+     "evo_guard_lumi": "40/41",
+     "evo_guard_radiant": "40/41",
+     "evo_guard_soft": "40/41",
+     "evo_guard_dust": "42/43",
+     "evo_still_lumi": "42/43",
+     "evo_still_radiant": "42/43",
+     "evo_still_soft": "42/43",
+     "evo_still_dust": "42/43",
+     "evo_guard_tide": "42/43",
+     "evo_still_tide": "42/43",
+     "evo_guard_shroom": "42/43",
+     "evo_still_shroom": "42/43",
+     "evo_guard_crystal": "42/43",
+     "evo_still_crystal": "42/43",
+     "evo_guard_moon": "42/43",
+     "evo_still_moon": "42/43",
+     "evo_guard_ember": "42/43",
+     "evo_still_ember": "42/43"
+    },
+    "pct": 97.6
+   },
+   "starclip": {
+    "visibleClips": 1055,
+    "clips": 1055,
+    "formsFull": 25,
+    "byForm": {
+     "sprout": "43/43",
+     "radiant": "43/43",
+     "soft": "43/43",
+     "lumi": "26/26",
+     "evo_dot": "41/41",
+     "evo_sprout": "41/41",
+     "evo_hop": "50/50",
+     "evo_guard_lumi": "41/41",
+     "evo_guard_radiant": "41/41",
+     "evo_guard_soft": "41/41",
+     "evo_guard_dust": "43/43",
+     "evo_still_lumi": "43/43",
+     "evo_still_radiant": "43/43",
+     "evo_still_soft": "43/43",
+     "evo_still_dust": "43/43",
+     "evo_guard_tide": "43/43",
+     "evo_still_tide": "43/43",
+     "evo_guard_shroom": "43/43",
+     "evo_still_shroom": "43/43",
+     "evo_guard_crystal": "43/43",
+     "evo_still_crystal": "43/43",
+     "evo_guard_moon": "43/43",
+     "evo_still_moon": "43/43",
+     "evo_guard_ember": "43/43",
+     "evo_still_ember": "43/43"
+    },
+    "pct": 100.0
+   },
+   "sakura": {
+    "visibleClips": 1055,
+    "clips": 1055,
+    "formsFull": 25,
+    "byForm": {
+     "sprout": "43/43",
+     "radiant": "43/43",
+     "soft": "43/43",
+     "lumi": "26/26",
+     "evo_dot": "41/41",
+     "evo_sprout": "41/41",
+     "evo_hop": "50/50",
+     "evo_guard_lumi": "41/41",
+     "evo_guard_radiant": "41/41",
+     "evo_guard_soft": "41/41",
+     "evo_guard_dust": "43/43",
+     "evo_still_lumi": "43/43",
+     "evo_still_radiant": "43/43",
+     "evo_still_soft": "43/43",
+     "evo_still_dust": "43/43",
+     "evo_guard_tide": "43/43",
+     "evo_still_tide": "43/43",
+     "evo_guard_shroom": "43/43",
+     "evo_still_shroom": "43/43",
+     "evo_guard_crystal": "43/43",
+     "evo_still_crystal": "43/43",
+     "evo_guard_moon": "43/43",
+     "evo_still_moon": "43/43",
+     "evo_guard_ember": "43/43",
+     "evo_still_ember": "43/43"
+    },
+    "pct": 100.0
+   },
+   "glasses": {
+    "visibleClips": 990,
+    "clips": 1055,
+    "formsFull": 1,
+    "byForm": {
+     "sprout": "39/43",
+     "radiant": "42/43",
+     "soft": "42/43",
+     "lumi": "26/26",
+     "evo_dot": "40/41",
+     "evo_sprout": "36/41",
+     "evo_hop": "48/50",
+     "evo_guard_lumi": "38/41",
+     "evo_guard_radiant": "38/41",
+     "evo_guard_soft": "39/41",
+     "evo_guard_dust": "40/43",
+     "evo_still_lumi": "40/43",
+     "evo_still_radiant": "40/43",
+     "evo_still_soft": "41/43",
+     "evo_still_dust": "40/43",
+     "evo_guard_tide": "40/43",
+     "evo_still_tide": "40/43",
+     "evo_guard_shroom": "40/43",
+     "evo_still_shroom": "40/43",
+     "evo_guard_crystal": "40/43",
+     "evo_still_crystal": "40/43",
+     "evo_guard_moon": "40/43",
+     "evo_still_moon": "41/43",
+     "evo_guard_ember": "40/43",
+     "evo_still_ember": "40/43"
+    },
+    "pct": 93.8
+   },
+   "leafcollar": {
+    "visibleClips": 1055,
+    "clips": 1055,
+    "formsFull": 25,
+    "byForm": {
+     "sprout": "43/43",
+     "radiant": "43/43",
+     "soft": "43/43",
+     "lumi": "26/26",
+     "evo_dot": "41/41",
+     "evo_sprout": "41/41",
+     "evo_hop": "50/50",
+     "evo_guard_lumi": "41/41",
+     "evo_guard_radiant": "41/41",
+     "evo_guard_soft": "41/41",
+     "evo_guard_dust": "43/43",
+     "evo_still_lumi": "43/43",
+     "evo_still_radiant": "43/43",
+     "evo_still_soft": "43/43",
+     "evo_still_dust": "43/43",
+     "evo_guard_tide": "43/43",
+     "evo_still_tide": "43/43",
+     "evo_guard_shroom": "43/43",
+     "evo_still_shroom": "43/43",
+     "evo_guard_crystal": "43/43",
+     "evo_still_crystal": "43/43",
+     "evo_guard_moon": "43/43",
+     "evo_still_moon": "43/43",
+     "evo_guard_ember": "43/43",
+     "evo_still_ember": "43/43"
+    },
+    "pct": 100.0
+   },
+   "bell": {
+    "visibleClips": 1055,
+    "clips": 1055,
+    "formsFull": 25,
+    "byForm": {
+     "sprout": "43/43",
+     "radiant": "43/43",
+     "soft": "43/43",
+     "lumi": "26/26",
+     "evo_dot": "41/41",
+     "evo_sprout": "41/41",
+     "evo_hop": "50/50",
+     "evo_guard_lumi": "41/41",
+     "evo_guard_radiant": "41/41",
+     "evo_guard_soft": "41/41",
+     "evo_guard_dust": "43/43",
+     "evo_still_lumi": "43/43",
+     "evo_still_radiant": "43/43",
+     "evo_still_soft": "43/43",
+     "evo_still_dust": "43/43",
+     "evo_guard_tide": "43/43",
+     "evo_still_tide": "43/43",
+     "evo_guard_shroom": "43/43",
+     "evo_still_shroom": "43/43",
+     "evo_guard_crystal": "43/43",
+     "evo_still_crystal": "43/43",
+     "evo_guard_moon": "43/43",
+     "evo_still_moon": "43/43",
+     "evo_guard_ember": "43/43",
+     "evo_still_ember": "43/43"
+    },
+    "pct": 100.0
+   },
+   "halo": {
+    "visibleClips": 1055,
+    "clips": 1055,
+    "formsFull": 25,
+    "byForm": {
+     "sprout": "43/43",
+     "radiant": "43/43",
+     "soft": "43/43",
+     "lumi": "26/26",
+     "evo_dot": "41/41",
+     "evo_sprout": "41/41",
+     "evo_hop": "50/50",
+     "evo_guard_lumi": "41/41",
+     "evo_guard_radiant": "41/41",
+     "evo_guard_soft": "41/41",
+     "evo_guard_dust": "43/43",
+     "evo_still_lumi": "43/43",
+     "evo_still_radiant": "43/43",
+     "evo_still_soft": "43/43",
+     "evo_still_dust": "43/43",
+     "evo_guard_tide": "43/43",
+     "evo_still_tide": "43/43",
+     "evo_guard_shroom": "43/43",
+     "evo_still_shroom": "43/43",
+     "evo_guard_crystal": "43/43",
+     "evo_still_crystal": "43/43",
+     "evo_guard_moon": "43/43",
+     "evo_still_moon": "43/43",
+     "evo_guard_ember": "43/43",
+     "evo_still_ember": "43/43"
+    },
+    "pct": 100.0
+   },
+   "nightcap": {
+    "visibleClips": 1030,
+    "clips": 1055,
+    "formsFull": 0,
+    "byForm": {
+     "sprout": "42/43",
+     "radiant": "42/43",
+     "soft": "42/43",
+     "lumi": "25/26",
+     "evo_dot": "40/41",
+     "evo_sprout": "40/41",
+     "evo_hop": "49/50",
+     "evo_guard_lumi": "40/41",
+     "evo_guard_radiant": "40/41",
+     "evo_guard_soft": "40/41",
+     "evo_guard_dust": "42/43",
+     "evo_still_lumi": "42/43",
+     "evo_still_radiant": "42/43",
+     "evo_still_soft": "42/43",
+     "evo_still_dust": "42/43",
+     "evo_guard_tide": "42/43",
+     "evo_still_tide": "42/43",
+     "evo_guard_shroom": "42/43",
+     "evo_still_shroom": "42/43",
+     "evo_guard_crystal": "42/43",
+     "evo_still_crystal": "42/43",
+     "evo_guard_moon": "42/43",
+     "evo_still_moon": "42/43",
+     "evo_guard_ember": "42/43",
+     "evo_still_ember": "42/43"
+    },
+    "pct": 97.6
+   }
+  },
+  "hiddenReasons": {
+   "撐葉傘：葉蓋住頭頂，頭飾收起": 125,
+   "鏡框會壓到眼": 36,
+   "faceVisible=false": 24,
+   "會遮五官": 3,
+   "眼距": 2
+  },
+  "total": {
+   "visibleClips": 13525,
+   "clips": 13715
+  }
+ },
+ "combos": {
+  "file": "COMBOS.json",
+  "maxWorn": 5,
+  "perSlot": 1,
+  "totals": {
+   "pairs": 1625,
+   "pairsWithRule": 344,
+   "clipsOffset": 4473,
+   "clipsHide": 426,
+   "frames": 294654,
+   "conflictFrames": 12895,
+   "outfits": 594,
+   "overrideClips": 279,
+   "overrideHides": {
+    "halo": 37,
+    "bell": 242
    }
   }
  }

@@ -212,7 +212,7 @@ for f in HATFORMS: FIT["nightcap"][f] = {"dx": 0, "dy": 0, "sc": 1.0, "variant":
 for f in ("evo_guard_moon", "evo_still_moon"): FIT["nightcap"][f]["pin"] = "r"
 FIT["nightcap"]["evo_guard_moon"]["sc"] = 1.8; FIT["nightcap"]["evo_still_moon"]["sc"] = 0.8
 for f_, k_ in {"evo_still_radiant": 0.8, "evo_still_soft": 0.9, "evo_still_ember": 0.85}.items(): FIT["nightcap"][f_]["sc"] = k_
-FIT["glasses"]["evo_dot"]["half"] = True   # dot：口喺兩眼之間只低 2px，¾ 框都撞 → 半框（上半圈）；其餘形態一律 ¾ 圓框（近口內下角開口）
+FIT["glasses"]["evo_dot"]["forehead"] = True   # ACC5：dot 口喺兩眼之間只低 2px，全框／¾ 框都撞，ACC3 半框睇落似眉毛 → 改做「眼鏡推上額頭」（全圓框，戴喺眼上面）；其餘形態一律 ¾ 圓框
 for it_ in ("starclip", "sakura"):
     for f_, k_ in {"evo_still_moon": 0.62, "evo_guard_moon": 1.4, "evo_still_radiant": 0.8, "evo_still_ember": 0.85, "evo_still_soft": 0.9}.items(): FIT[it_][f_]["sc"] = k_
 for it_ in ("beanie", "acorn", "crown"):
@@ -346,21 +346,33 @@ def make_head_draw(item):
     return draw
 draw_straw = make_head_draw("straw")
 
+def is_back(an): return not an.get("faceVisible", True)
+def flip_lab(m, piv):
+    """ACC5 背面：模板左右反轉（pivot 跟住反）"""
+    return m[:, ::-1].copy(), (m.shape[1] - 1 - piv[0], piv[1])
 def draw_bow(body, an, f, ref, form, prev=None):
     S = body.shape[0]; cfg = FIT["bow"][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
     ws = min(max(f["ws"], 0.8), 1.25)
     W = odd(ref["hw"] * 0.6 * cfg["sc"] * ws, 7); H = odd(W * 0.56, 5)
-    m, piv = gen_bow(W, H); m, piv = rotate_labels(m, piv, f["ang"] + 12)
+    bk = is_back(an); sg = -1 if bk else 1              # ACC5：背面（faceVisible=false）＝左右鏡像，結去返畫面左邊
+    m, piv = gen_bow(W, H)
+    if bk: m, piv = flip_lab(m, piv)
+    m, piv = rotate_labels(m, piv, f["ang"] + 12 * sg)
     spr = render(m); px_, py_ = piv[0] + 1, piv[1] + 1
-    cx, cy = an["head_r"][0] + cfg["dx"], an["head_r"][1] + 1 + cfg["dy"]
+    if bk:
+        a0 = anchors(form)["idle"][0]; ed0 = abs(a0["eyeR"][0] - a0["eyeL"][0]) if "eyeL" in a0 else None
+        hx, hy = head_l(an, f, ed0); cx, cy = hx - cfg["dx"], hy + 1 + cfg["dy"]
+    else: cx, cy = an["head_r"][0] + cfg["dx"], an["head_r"][1] + 1 + cfg["dy"]
     x, y = int(round(cx - px_)), int(round(cy - py_))
     fp = face_px(an, S)
     for _ in range(6):
         tmp = np.zeros_like(can); place(tmp, spr, x + PAD, y + PAD)
         if not any(tmp[py + PAD, px + PAD, 3] for px, py in fp if 0 <= px + PAD < tmp.shape[1] and 0 <= py + PAD < tmp.shape[0]): break
-        x += 1; y -= 1
+        x += sg; y -= 1
     place(can, spr, x + PAD, y + PAD)
-    return can, {"pos": [cx, cy], "W": W, "H": H, "ang": round(f["ang"] + 12, 1)}
+    info = {"pos": [cx, cy], "W": W, "H": H, "ang": round(f["ang"] + 12 * sg, 1)}
+    if bk: info["mirrored"] = True; info["pos"] = [round(float(cx), 1), round(float(cy), 1)]
+    return can, info
 
 # ---- side_l（ACC3）：head_l＝head_r 以 axis 為鏡反射（跟傾角）
 def head_l(an, f, ed0=None):
@@ -421,18 +433,24 @@ def make_side_draw(item):
             sp.ell(1.6, H - 0.2, 1.6, 1.0, LEAF)
             if S >= 64: sp.ell(W + 2.2, H + 0.8, 1.3, 1.3, PINK)
             m, piv = sp.m, (piv[0] + 3, piv[1])
-        m, piv = rotate_labels(m, piv, f["ang"] + P["rot"])
+        bk = is_back(an); sg = -1 if bk else 1          # ACC5：背面＝左右鏡像，夾去返畫面右邊（head_r 側）
+        if bk: m, piv = flip_lab(m, piv)
+        m, piv = rotate_labels(m, piv, f["ang"] + P["rot"] * sg)
         spr = render(m); px_, py_ = piv[0] + 1, piv[1] + 1
-        a0 = anchors(form)["idle"][0]; ed0 = abs(a0["eyeR"][0] - a0["eyeL"][0]) if "eyeL" in a0 else None
-        hx, hy = head_l(an, f, ed0); cx, cy = hx + cfg["dx"], hy + 1 + cfg["dy"]
+        if bk: hx, hy = an["head_r"]; cx, cy = hx - cfg["dx"], hy + 1 + cfg["dy"]
+        else:
+            a0 = anchors(form)["idle"][0]; ed0 = abs(a0["eyeR"][0] - a0["eyeL"][0]) if "eyeL" in a0 else None
+            hx, hy = head_l(an, f, ed0); cx, cy = hx + cfg["dx"], hy + 1 + cfg["dy"]
         x, y = int(round(cx - px_)), int(round(cy - py_))
         fp = face_px(an, S)
-        for _ in range(6):     # 撞五官 → 向左上移
+        for _ in range(6):     # 撞五官 → 向左上移（背面向右上）
             tmp = np.zeros_like(can); place(tmp, spr, x + PAD, y + PAD)
             if not any(tmp[py + PAD, px + PAD, 3] for px, py in fp if 0 <= px + PAD < tmp.shape[1] and 0 <= py + PAD < tmp.shape[0]): break
-            x -= 1; y -= 1
+            x -= sg; y -= 1
         place(can, spr, x + PAD, y + PAD)
-        return can, {"pos": [round(cx, 1), round(cy, 1)], "W": W, "H": H, "ang": round(f["ang"] + P["rot"], 1)}
+        info = {"pos": [round(cx, 1), round(cy, 1)], "W": W, "H": H, "ang": round(f["ang"] + P["rot"] * sg, 1)}
+        if bk: info["mirrored"] = True
+        return can, info
     return draw
 
 # ---- face（ACC3）：圓框眼鏡，圈住 eyeL／eyeR，跟眼距同傾角；鏡片透明
@@ -492,6 +510,7 @@ def glasses_pre(fs, bodies, alist, form, clip=None):
             if px: px = np.array(px, float); h = (px.max(0) - px.min(0)) / 2; pbx = max(pbx, float(h[0])); pby = max(pby, float(h[1]))
     g["pbx"] = max(pbx, er["bx"]); g["pby"] = max(pby, er["by"])
     for f in fs: f["gl"] = g
+FH_MIN = 0.50
 def draw_glasses(body, an, f, ref, form, prev=None):
     S = body.shape[0]; cfg = FIT["glasses"][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
     if not an.get("faceVisible", True): return None, {"why": "faceVisible=false（背面／遮面）"}
@@ -511,6 +530,15 @@ def draw_glasses(body, an, f, ref, form, prev=None):
     cs = [cs[0] + nrm * lift - e * out, cs[1] + nrm * lift + e * out]
     gbx, gby = (g["pbx"], g["pby"]) if pf else (g["bx"], g["by"])
     ax = gbx + 1.5 + cfg["r"] + drx; ay = gby + 1.5 + cfg["r"] + dry   # 圓角鏡片：眼外留約 1px
+    if cfg.get("forehead"):                                 # 推上額頭：鏡片細圈，成副升到眼 blob 上面（框底離眼頂 ≥1px）
+        # 細圈（ay 1.5）擱喺頭頂：框底離眼 blob 頂 1px，框頂可以略出頭頂剪影（似推上頭嘅眼鏡），但大部分要貼住頭
+        ey_ = [min(p_[1] for p_ in eye_blob(body, an, k)) if eye_blob(body, an, k) else an[k][1] - 1 for k in ("eyeL", "eyeR")]
+        ay = 1.5 + dry; ax = min(2.5 + drx, (dist + 2 * out) / 2 - th * 0.5)
+        if ay < 0.9: return None, {"why": "額頭位唔夠（眼鏡會浮出個頭）"}
+        # 兩片一齊沿 nrm 升（保持同眼線平行），升到兩隻眼都過：鏡心 y ≤ 眼頂 − 2.5 − ay
+        L_ = max((c[1] - (ey - 2.5 - ay)) / max(1e-6, -nrm[1]) for c, ey in zip(cs, ey_))
+        ncs = [c + nrm * L_ for c in cs]
+        cs = ncs; gbx = gby = -9                             # 下面「眼太窄」檢查唔適用
     lim = (dist + 2 * out) / 2 - th * 0.5                 # 兩片外框最多共用 1px（窄臉＝連框）
     if ax > lim: ax = lim
     if ax < gbx + 0.45 + out or ay < gby + 0.45 + lift: return None, {"why": f"眼距 {dist:.1f}px 太窄（側面），戴唔落"}
@@ -522,7 +550,8 @@ def draw_glasses(body, an, f, ref, form, prev=None):
         n0 = (uu / ax) ** 2 + (vv / ay) ** 2; n1 = (uu / (ax + th)) ** 2 + (vv / (ay + th)) ** 2
         rr = (n0 >= 1) & (n1 < 1)
         inw = uu * (1 if c is cs[0] else -1)                # >0＝向鼻樑嗰邊
-        if cfg.get("half"): rr &= vv >= -0.25 * ay          # 細臉：半框（只畫上半圈），口喺兩片之間都唔撞
+        if cfg.get("forehead"): pass                         # 額頭版：全圓框（離晒五官）
+        elif cfg.get("half"): rr &= vv >= -0.25 * ay        # 細臉：半框（只畫上半圈）（ACC5 起冇形態用）
         elif cfg.get("notch", True): rr &= ~((vv < -0.25 * ay) & (inw > 0.2 * ax))   # 近口嗰角開口（¾ 圓框，全部形態一致）
         ring |= rr
         if th == 2: inner |= (n0 >= 1) & ((uu / (ax + 1)) ** 2 + (vv / (ay + 1)) ** 2 < 1)
@@ -539,6 +568,10 @@ def draw_glasses(body, an, f, ref, form, prev=None):
         for t in range(1, arm + 1):
             q = st + e * sg * t + nrm * t * 0.3; qx, qy = int(round(q[0])), int(round(q[1]))
             if 0 <= qx < S and 0 <= qy < S and a[qy, qx]: ring[qy + PAD, qx + PAD] = True
+    if cfg.get("forehead"):                                 # 額頭版：框要大部分貼喺頭上（唔好浮出剪影）
+        bb = np.zeros((H, W), bool); bb[PAD:PAD + S, PAD:PAD + S] = a
+        fh = float((ring & bb).sum() / max(1, ring.sum()))
+        if fh < FH_MIN: return None, {"why": "額頭位唔夠（眼鏡會浮出個頭）"}
     can[ring, :3] = rgb("orange_dd"); can[ring, 3] = 255
     if th == 2: can[inner & ring, :3] = rgb("orange_d")     # L：鏡框加粗，內圈淺一級
     if r >= 3.5:                                             # 鏡片反光一點（唔掂眼）
@@ -550,7 +583,9 @@ def draw_glasses(body, an, f, ref, form, prev=None):
     d = a & (body[..., :3].astype(int).sum(-1) < 200)
     for k in ("eyeL", "eyeR"):
         if any(can[y + PAD, x + PAD, 3] for x, y in eye_blob(body, an, k)): return None, {"why": "鏡框會壓到眼"}
-    return can, {"c": [[round(float(c[0]), 2), round(float(c[1]), 2)] for c in cs], "r": round(float(r), 2), "ax": round(float(ax), 2), "ay": round(float(ay), 2), "th": th}
+    info = {"c": [[round(float(c[0]), 2), round(float(c[1]), 2)] for c in cs], "r": round(float(r), 2), "ax": round(float(ax), 2), "ay": round(float(ay), 2), "th": th}
+    if cfg.get("forehead"): info["forehead"] = True; info["onHead"] = round(fh, 2)
+    return can, info
 
 def neck_gap(ref): return max(2, min(3, int(round(ref["hw"] * 0.14))))
 def draw_scarf(body, an, f, ref, form, prev=None):
@@ -694,17 +729,27 @@ BELL_LAB = {"G": GOLD, "W": WHITE, "R": RED, "K": INK, "D": GOLDD, ".": 0}
 def bell_pre(fs, bodies, alist, form, clip=None):
     pts = [tuple(a["bulb"]) if "bulb" in a else f["top"] for a, f in zip(alist, fs)]
     for f, s in zip(fs, _swing(pts, _loop(form, clip), 7.0, 0.0, 0.5, 25.0)): f["swing"] = s
+BELL_LOW = {}
+def bell_low(form):
+    """ACC5：燈泡錨點太低（鈴底離地 < max(6, 25%S)，例：guard_dust／still_dust 側邊低位燈）→ 成個形態改用頭頂 fallback（用 idle_01 判斷，全 clip 一致）"""
+    if form in BELL_LOW: return BELL_LOW[form]
+    an = anchors(form)["idle"][0]; low = False
+    if "bulb" in an:
+        b = load(frame_path(form, "idle", 1)); S = b.shape[0]; n = 5 if S <= 32 else (7 if S <= 48 else 9)
+        g = int(np.nonzero(b[..., 3].any(1))[0].max()); hy = an["bulb"][1] + int(math.ceil(BR[form])) + 1 + FIT["bell"][form]["dy"]
+        low = (g - (hy + n + 1)) < max(6, S * 0.25)
+    BELL_LOW[form] = low; return low
 def draw_bell(body, an, f, ref, form, prev=None):
     S = body.shape[0]; cfg = FIT["bell"][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
     n = 5 if S <= 32 else (7 if S <= 48 else 9); rows = BELL_TPL[n]
     m = np.array([[BELL_LAB[c] for c in r] for r in rows], np.int16); piv = ((n - 1) / 2, 0)
     sw = f.get("swing", 0.0); m, piv = rotate_labels(m, piv, sw)
     spr = render(m); px_, py_ = piv[0] + 1, piv[1] + 1
-    if "bulb" in an:
+    if "bulb" in an and not bell_low(form):
         bx, by = an["bulb"]; br = BR[form]; base = "bulb"
         hx = bx + int(round(br * 0.6)) + cfg["dx"]; hy = by + int(math.ceil(br)) + 1 + cfg["dy"]
-    else:   # fallback：冇燈泡（dot／evo_sprout）→ 綁喺頭頂芽／毛嘅右邊
-        base = "top"; hx = f["top"][0] + f["pp"][0] * ref["hw"] * 0.22 + cfg["dx"]; hy = f["top"][1] + f["pp"][1] * ref["hw"] * 0.22 + cfg["dy"]
+    else:   # fallback：冇燈泡（dot／evo_sprout）或者燈泡太低（dust）→ 綁喺頭頂芽／毛嘅右邊
+        base = "top" if "bulb" not in an else "top_low"; hx = f["top"][0] + f["pp"][0] * ref["hw"] * 0.22 + cfg["dx"]; hy = f["top"][1] + f["pp"][1] * ref["hw"] * 0.22 + cfg["dy"]
     x, y = int(round(hx - px_)), int(round(hy - py_)); fp = face_px(an, S)
     for _ in range(6):
         tmp = np.zeros_like(can); place(tmp, spr, x + PAD, y + PAD)
@@ -768,6 +813,20 @@ def gen_nightcap(W, H, L=False):
         sx, sy = int(round(c + W * 0.22)), int(round(H * 0.55))
         if 0 <= sy < H - cuff: s.px(sx, sy, GOLD); s.px(sx - 1, sy, GOLD); s.px(sx + 1, sy, GOLD); s.px(sx, sy - 1, GOLD); s.px(sx, sy + 1, GOLD)
     return s.m, ((W - 1) / 2, H - 1), (tipx, tipy + .6)
+def gen_pincap(W, H, L=False):
+    """ACC5 月眠別針版迷你睡帽：窄底高錐、帽尖向右彎；橫間（唔用斜間，細尺寸斜間似羽毛）；回傳同 gen_nightcap"""
+    s = Spr(W, H); c = (W - 1) / 2; cuff = 2
+    tipx = c + W * 0.30; tipy = 0.3
+    s.poly([(-.2, H - cuff + .6), (W + .2, H - cuff + .6), (W * 0.80, H * 0.45), (tipx + .6, tipy + 1.2), (tipx, tipy), (c - W * 0.05, H * 0.18), (W * 0.10, H * 0.50)], NIGHT)
+    by_ = int(round(H * 0.52))                                          # 中間一條白間
+    for x in range(W):
+        if s.m[by_, x] == NIGHT: s.m[by_, x] = WHITE
+    s.rect(0, H - cuff, W - 1, H - 1, WHITE)
+    for x in range(1, W - 1, 2): s.m[H - 1, x] = CREAMD
+    if W >= 11:
+        sx, sy = int(round(c - W * 0.08)), int(round(H * 0.32))
+        if s.m[sy, sx] == NIGHT: s.px(sx, sy, GOLD)
+    return s.m, ((W - 1) / 2, H - 1), (tipx, tipy + .6)
 def cap_pre(fs, bodies, alist, form, clip=None):
     pts = [f["top"] for f in fs]
     for f, s in zip(fs, _swing(pts, _loop(form, clip), 6.0, 4.0, 0.55, 30.0)): f["swing"] = s
@@ -787,11 +846,16 @@ def draw_nightcap(body, an, f, ref, form, prev=None):
         W = odd(ref["hw"] * P["k"] * cfg["sc"] * ws, P["minW"]); H = max(5, int(round(ref["hw"] * P["k"] * cfg["sc"] * P["hr"] * (0.5 + 0.5 * hs))))
         ang = f["ang"]; sink = max(1, int(round(ref["hw"] * P["sink"])))
         bx = f["top"][0] - f["u"][0] * sink + cfg["dx"]; by = f["top"][1] - f["u"][1] * sink + cfg["dy"]
-    m0, piv0, tip0 = gen_nightcap(W, H, L=S >= 64)
+    mir = pin and cfg.get("pin") == "r"                     # ACC5：月眠右邊別針版＝迷你直身睡帽（帽尖向外、尾向右下垂＋白波波），唔再似條羽毛
+    if mir:
+        W = odd(W * 0.75, 7); H = max(6, int(round(W * 1.05))); ang = 6 + f["ang"]
+        m0, piv0, tip0 = gen_pincap(W, H, L=S >= 64)
+    else: m0, piv0, tip0 = gen_nightcap(W, H, L=S >= 64)
     m, piv = rotate_labels(m0, piv0, ang)
     tdx, tdy = _rot_pt(tip0, piv0, ang)
     sw = f.get("swing", 0.0); tl = max(4.0, W * (0.55 if pin else 0.62)) * cfg.get("tail", 1.0)
     th0 = max(1.5, W * 0.11); pr = max(1.1, W * 0.085)
+    if mir: tl = max(4.0, W * 0.85) * cfg.get("tail", 1.0); th0 = max(1.8, W * 0.2); pr = max(1.4, W * 0.15)
     fp = face_px(an, S); best = None
     tl0 = tl
     for tk, dphi in [(k_, d_) for k_ in (1.0, 0.75, 0.55) for d_ in (0, 15, 30, -15, 45, 60, -30)]:   # 尾撞五官／出 padding → 向外擺、再唔得就縮短條尾
@@ -804,6 +868,7 @@ def draw_nightcap(body, an, f, ref, form, prev=None):
             if 0 <= Y < lab.shape[0] and 0 <= X < lab.shape[1]: lab[Y, X] = m[yy_, xx_]
         tx, ty = bx + tdx + PAD, by + tdy + PAD
         phi0 = 200 + ang + dphi; phi1 = 112 + dphi * 0.5          # 帽尖向左上 → 垂落（畫面角度：90＝向下，180＝向左）
+        if mir: phi0 = 330 + ang - dphi; phi1 = 445 - dphi * 0.5    # 迷你帽：帽尖向右 → 經 0° 順時針垂落到 85°（讀得出係軟布）
         x_, y_ = tx, ty; nseg = int(math.ceil(tl * 2)); pts = []; out = False
         for i in range(nseg + 1):
             r_ = i / nseg; phi = math.radians(phi0 + (phi1 - phi0) * (r_ ** 0.7) + sw * r_)
@@ -814,7 +879,9 @@ def draw_nightcap(body, an, f, ref, form, prev=None):
                 for xx in range(int(math.floor(x_ - rr)), int(math.ceil(x_ + rr)) + 1):
                     if (xx - x_) ** 2 + (yy - y_) ** 2 <= rr * rr + .25:
                         if not (1 <= yy < lab.shape[0] - 1 and 1 <= xx < lab.shape[1] - 1): out = True; continue
-                        if lab[yy, xx] in (0, NIGHT, WHITE): lab[yy, xx] = WHITE if int(i / (3 if W >= 17 else 2)) % 2 else NIGHT
+                        if lab[yy, xx] in (0, NIGHT, WHITE):
+                            if mir: lab[yy, xx] = NIGHT if lab[yy, xx] != WHITE else WHITE   # 迷你帽尾：實色（唔間條）
+                            else: lab[yy, xx] = WHITE if int(i / (3 if W >= 17 else 2)) % 2 else NIGHT
         ex, ey = pts[-1]
         for yy in range(int(math.floor(ey - pr - 1)), int(math.ceil(ey + pr + 1)) + 1):
             for xx in range(int(math.floor(ex - pr - 1)), int(math.ceil(ex + pr + 1)) + 1):
@@ -837,7 +904,8 @@ def draw_nightcap(body, an, f, ref, form, prev=None):
     info = {"variant": "hatpin" if pin else "cap", "W": W, "H": H, "ang": round(ang, 1), "swing": sw, "dphi": dphi, "tailK": tk,
             "tailEnd": [round(float(tend[0]), 1), round(float(tend[1]), 1)]}
     if pin: info["pos"] = [round(float(bx), 1), round(float(by), 1)]
-    else: info["piv"] = [round(float(bx), 1), round(float(by - lift), 1)]
+    if mir: info["mirrored"] = True
+    if not pin: info["piv"] = [round(float(bx), 1), round(float(by - lift), 1)]
     return img, info
 HEAD["nightcap"] = {"gen": None, "k": 1.06, "hr": 0.56, "sink": 0.2, "minW": 9, "pin": 0.55, "pin_ang": -16}
 
@@ -1117,7 +1185,8 @@ def build_items(items):
         od = os.path.join(ACCD, "items", item); os.makedirs(od, exist_ok=True)
         fitall = {}; summary[item] = {}
         for form in FORMS:
-            frames, fits, hidden, S = gen_item_form(item, form)
+            frames, fits, hidden, S = gen_item_form(item, form); _store_masks(item, form, frames, fits, S)
+            cached_put(item, form, frames, fits, hidden, S)
             img, fj = pack_atlas(frames, S)
             base = f"atlas_{item}_{form}"; img.save(os.path.join(od, base + ".png"), optimize=True)
             fa = form_anims(form); anims = {}
@@ -1155,10 +1224,23 @@ def preview_idle(items, path, forms=None, clip="idle", k=1, scale=3):
         b = load(frame_path(form, clip, k)); S = b.shape[0]; bb = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8); bb[PAD:PAD + S, PAD:PAD + S] = b
         cells.append(bb); labs.append(form.replace("evo_", ""))
         for it in items:
-            frames, fits, hidden, _ = CACHE.get((it, form)) or CACHE.setdefault((it, form), gen_item_form(it, form))
+            frames, fits, hidden, _ = cached(it, form)
             n = f"{clip}_{k:02d}"; cells.append(comp(b, frames[n]) if n in frames else bb); labs.append(ITEMS[it]["name"] + ("" if n in frames else " 隱"))
     im = sheet(cells, (len(items) + 1) * 2, 64 + 2 * PAD, scale, labs, f"飾品 × 25 形態 — {clip}_{k:02d}"); im.save(path); return path
 CACHE = {}
+CACHE_KEEP = None   # ACC5：CACHE 只留 preview／ref 用到嘅幀（25×13 全存 RGBA 太食記憶體）
+def cached(item, form):
+    global CACHE_KEEP
+    if CACHE_KEEP is None: CACHE_KEEP = {"idle_01", "walk_03"} | {f"{c}_{k:02d}" for c, k in FACE_CLIPS}
+    if (item, form) not in CACHE:
+        fr, fi, hid, S = gen_item_form(item, form)
+        if (item, form) not in MASKS: _store_masks(item, form, fr, fi, S)
+        CACHE[(item, form)] = ({n: v for n, v in fr.items() if n in CACHE_KEEP}, fi, hid, S)
+    return CACHE[(item, form)]
+def cached_put(item, form, fr, fi, hid, S):
+    global CACHE_KEEP
+    if CACHE_KEEP is None: CACHE_KEEP = {"idle_01", "walk_03"} | {f"{c}_{k:02d}" for c, k in FACE_CLIPS}
+    CACHE[(item, form)] = ({n: v for n, v in fr.items() if n in CACHE_KEEP}, fi, hid, S)
 
 # ================================================================ ACCESSORIES.json（merge-safe：保留其他批嘅 items／forms）
 ALL_ITEMS = [  # 13 件總表（batch 未到嘅 status＝planned）
@@ -1231,7 +1313,7 @@ def build_refs(items):
     rep = {"S": "sprout", "M": "evo_guard_radiant", "L": "radiant"}
     for it in items:
         for sc, form in rep.items():
-            frames, _, _, S = CACHE.get((it, form)) or CACHE.setdefault((it, form), gen_item_form(it, form))
+            frames, _, _, S = cached(it, form)
             ov = frames["idle_01"]; ys, xs = np.nonzero(ov[..., 3])
             Image.fromarray(ov[ys.min():ys.max() + 1, xs.min():xs.max() + 1], "RGBA").save(os.path.join(rd, f"acc_{it}_{sc}.png"), optimize=True)
 
@@ -1240,7 +1322,7 @@ def preview_face(item, forms, path, clips=FACE_CLIPS, sc=6):
     """面部近鏡：以兩眼中點做中心，26×20 px 一格"""
     cw, ch = 26, 20; rows = []
     for form in forms:
-        frames, _, _, S = CACHE.get((item, form)) or CACHE.setdefault((item, form), gen_item_form(item, form)); A = anchors(form); row = []
+        frames, _, _, S = cached(item, form); A = anchors(form); row = []
         for c, k in clips:
             cell = np.zeros((ch, cw, 4), np.uint8); cell[...] = (120, 120, 120, 255)
             if c in A and k <= len(A[c]):
@@ -1261,6 +1343,50 @@ def preview_face(item, forms, path, clips=FACE_CLIPS, sc=6):
         for i, cell in enumerate(row): W.paste(Image.fromarray(cell).resize((cw * sc, ch * sc), Image.NEAREST), (i * (cw * sc + 4), j * (ch * sc + 4)))
     W.save(path, optimize=True); return path
 
+def preview_contact(items, path, clip="idle", k=1, scale=2):
+    """ACC5：25 形態（行）× 13 件（列）全表；第一列係冇戴；灰格＝呢個 clip 收起"""
+    cell = 64 + 2 * PAD; lw = 120; th = 40; cs = cell * scale
+    W_ = lw + (len(items) + 1) * cs; H_ = th + len(FORMS) * cs + 24
+    im = Image.new("RGB", (W_, H_), (246, 240, 230)); d = ImageDraw.Draw(im); f = font(12); fb = font(14)
+    d.text((6, 4), f"團絨飾品 25 形態 × {len(items)} 件 — {clip}_{k:02d}（{scale}x；灰格＝收起；第一列＝冇戴）", fill=(59, 42, 62), font=fb)
+    for i, it in enumerate(["—"] + list(items)):
+        d.text((lw + i * cs + 4, 22), "冇戴" if it == "—" else f"{ITEMS[it]['name']}", fill=(59, 42, 62), font=f)
+    for j, form in enumerate(FORMS):
+        y0 = th + j * cs; d.text((4, y0 + cs // 2 - 7), form.replace("evo_", ""), fill=(59, 42, 62), font=f)
+        b = load(frame_path(form, clip, k)); S = b.shape[0]
+        for i, it in enumerate([None] + list(items)):
+            x0 = lw + i * cs; n = f"{clip}_{k:02d}"
+            if it is None: c = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8); c[PAD:PAD + S, PAD:PAD + S] = b; hid = False
+            else:
+                frames, _, _, _ = cached(it, form); hid = n not in frames
+                c = comp(b, frames[n]) if not hid else None
+                if hid: c = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8); c[PAD:PAD + S, PAD:PAD + S] = b
+            bg = (196, 192, 188) if hid else ((236, 228, 216) if (i + j) % 2 else (246, 240, 230))
+            d.rectangle([x0, y0, x0 + cs - 1, y0 + cs - 1], fill=bg)
+            t = Image.fromarray(c); t = t.resize((t.width * scale, t.height * scale), Image.NEAREST)
+            im.paste(t, (x0 + (cs - t.width) // 2, y0 + (cs - t.height) // 2), t)
+    im.save(path, optimize=True); return path
+def preview_outfits(combos, path, scale=3, ov=None):
+    """ACC5：同戴組合示範（每形態 3 套，規則套用後）：帽＋光環＋蝴蝶結＋頸巾＋眼鏡 等"""
+    sets = [("straw", "halo", "bow", "scarf", "glasses"), ("crown", "bell", "starclip", "leafcollar", "glasses"),
+            ("nightcap", "halo", "sakura", "bow", "scarf"), ("beanie", "halo", "starclip", "bow", "leafcollar"), ("acorn", "bell", "sakura", "bow", "scarf")]
+    forms = ["sprout", "evo_dot", "evo_hop", "evo_guard_radiant", "evo_guard_moon", "evo_still_moon", "evo_guard_shroom", "evo_still_shroom",
+             "evo_guard_dust", "evo_still_ember", "radiant", "lumi"]
+    cells = []; labs = []
+    for form in forms:
+        b = load(frame_path(form, "idle", 1)); S = b.shape[0]
+        for st in sets:
+            off, hide = resolve_outfit(combos, form, list(st), "idle", ov)
+            c = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8); c[PAD:PAD + S, PAD:PAD + S] = b
+            for it in sorted(st, key=lambda x: SLOT_ORDER.index(ITEMS[x]["slot"])):
+                if it in hide: continue
+                fr, _, _, _ = cached(it, form)
+                if "idle_01" not in fr: continue
+                o = fr["idle_01"]; dx, dy = off[it]
+                if dx or dy: o = np.roll(np.roll(o, dy, 0), dx, 1)
+                m = o[..., 3] > 0; c[m] = o[m]
+            cells.append(c); labs.append(form.replace("evo_", "")[:9] + " " + "".join(ITEMS[i]["name"][0] for i in st))
+    im = sheet(cells, len(sets), 64 + 2 * PAD, scale, labs, "ACC5 同戴示範（idle_01，COMBOS 規則套用後）"); im.save(path, optimize=True); return path
 def build_previews(items):
     os.makedirs(PREV, exist_ok=True); out = []
     half = (len(FORMS) + 1) // 2
@@ -1300,6 +1426,18 @@ def build_previews(items):
                                 os.path.join(PREV, "acc3_glasses_face_a_6x.png")))
         out.append(preview_face("glasses", ["evo_still_tide", "evo_guard_ember", "soft", "radiant", "lumi", "evo_still_lumi", "evo_guard_crystal"],
                                 os.path.join(PREV, "acc3_glasses_face_b_6x.png")))
+    if len(items) == len(ITEMS):   # ACC5：全表 contact sheet（idle_01／walk_03）＋同戴示範
+        out.append(preview_contact(items, os.path.join(PREV, "acc5_contact_25x13_idle_2x.png")))
+        out.append(preview_contact(items, os.path.join(PREV, "acc5_contact_25x13_walk03_2x.png"), clip="walk", k=3))
+        cp = os.path.join(ACCD, "COMBOS.json")
+        if os.path.exists(cp):
+            cj = json.load(open(cp)); out.append(preview_outfits(cj["forms"], os.path.join(PREV, "acc5_outfits_idle_3x.png"), ov=cj.get("outfitOverrides")))
+        out.append(preview_motion("bow", ["sprout", "evo_guard_radiant", "evo_guard_moon"], ["turn_back"], os.path.join(PREV, "acc5_backview_bow_3x.png"), scale=3, maxf=4))
+        out.append(preview_motion("starclip", ["sprout", "evo_guard_radiant", "lumi"], ["turn_back"], os.path.join(PREV, "acc5_backview_starclip_3x.png"), scale=3, maxf=4))
+        out.append(preview_motion("sakura", ["evo_hop", "evo_still_moon", "soft"], ["turn_back"], os.path.join(PREV, "acc5_backview_sakura_3x.png"), scale=3, maxf=4))
+        out.append(preview_motion("nightcap", ["evo_guard_moon", "evo_still_moon"], ["idle", "walk", "cheer_jump", "sleep_loop"], os.path.join(PREV, "acc5_motion_nightcap_moon_3x.png"), scale=3, maxf=6))
+        out.append(preview_motion("bell", ["evo_guard_dust", "evo_still_dust"], ["idle", "walk", "cheer_jump", "rush"], os.path.join(PREV, "acc5_motion_bell_dust_3x.png"), scale=3, maxf=6))
+        out.append(preview_face("glasses", ["evo_dot"], os.path.join(PREV, "acc5_glasses_dot_face_6x.png")))
     # 收藏品
     cells = []; labs = []
     for key, name, cat in COL:
@@ -1308,10 +1446,274 @@ def build_previews(items):
     im = sheet(cells, 8, 36, 4, labs, "收藏品 12 件 — 32／剪影／16／剪影（4x）"); p = os.path.join(PREV, "acc1_collectibles_4x.png"); im.save(p); out.append(p)
     return out
 
+# ================================================================ ACC5：多 slot 同戴（COMBOS）
+# 規則：每 slot 最多 1 件、全身最多 5 件（6 個 slot 唔可以全滿）。兩件交疊時，按 YIELD 次序靠前嗰件「讓位」：
+#   · 底下嗰件（drawOrder 較前）俾上面嗰件遮咗 > COVER_MAX → 衝突
+#   · halo 係浮喺頭頂嘅光環：同任何飾品有交疊都當衝突（要升到帽頂上面）
+#   讓位＝成個 clip 用同一個整數位移（候選按 YIELD_STEPS 由細到大試）；位移後唔可以遮五官／燈泡、唔可以出 overlay 畫布；
+#   試晒都唔得 → 呢個組合喺呢個 clip 收起讓位嗰件（hide）。
+SLOT_ORDER = ["neck", "head", "side_r", "side_l", "face", "bulb"]        # 同 drawOrder（body, face, neck, head, side_r, side_l, face_acc, bulb）
+YIELD = ["halo", "bell", "starclip", "sakura", "bow", "leafcollar", "scarf", "glasses", "straw", "beanie", "acorn", "crown", "nightcap"]
+COVER_MAX = 0.30
+COVER_MAX_PAIR = {"bell": 0.50}   # 鈴細粒、吊住燈泡：畫喺帽上面可以，帽要留 ≥50%
+FLOAT_OK = {"halo"}               # 浮喺頭頂；其餘讓位後一定要仲貼住身體或者對方（唔可以飄走）
+MAX_WORN = 5
+def _steps(dirs, n):
+    out = []
+    for k in range(1, n + 1):
+        for dx, dy in dirs: out.append((dx * k, dy * k))
+    return out
+YIELD_STEPS = {
+    "halo": [(0, -k) for k in range(1, 9)],
+    "bell": _steps([(1, 0), (1, 1), (0, 1), (1, -1)], 2),
+    "starclip": _steps([(-1, 0), (-1, 1), (-1, -1), (0, 1)], 4), "sakura": _steps([(-1, 0), (-1, 1), (-1, -1), (0, 1)], 4),
+    "bow": _steps([(1, 0), (1, 1), (1, -1), (0, 1)], 4),
+    "leafcollar": [(0, 1), (0, 2)], "scarf": [(0, 1), (0, 2)], "glasses": [],
+    "straw": [(0, -1), (0, -2)], "beanie": [(0, -1), (0, -2)], "acorn": [(0, -1), (0, -2)], "crown": [(0, -1), (0, -2)], "nightcap": [(0, -1), (0, -2)],
+}
+def _shift(m, dx, dy):
+    """bool mask 整數位移；有像素會出畫布就回傳 None"""
+    if not dx and not dy: return m
+    H, W = m.shape; ys, xs = np.nonzero(m)
+    if len(ys) and (ys.min() + dy < 0 or ys.max() + dy >= H or xs.min() + dx < 0 or xs.max() + dx >= W): return None
+    o = np.zeros_like(m); o[ys + dy, xs + dx] = True; return o
+def _under_over(a, b):
+    sa, sb = SLOT_ORDER.index(ITEMS[a]["slot"]), SLOT_ORDER.index(ITEMS[b]["slot"]); return (a, b) if sa < sb else (b, a)
+def _conflict(ma, mb, a, b):
+    """回傳 (衝突?, 遮咗底下嗰件幾多比例)"""
+    ov = int((ma & mb).sum())
+    if not ov: return False, 0.0
+    if "halo" in (a, b): return True, 1.0
+    u, o = _under_over(a, b); mu = ma if u == a else mb
+    lim = min([COVER_MAX_PAIR.get(x, COVER_MAX) for x in (a, b)] + [COVER_MAX]) if not any(x in COVER_MAX_PAIR for x in (a, b)) else max(COVER_MAX_PAIR.get(x, COVER_MAX) for x in (a, b))
+    r = ov / max(1, int(mu.sum())); return r > lim, r
+def _attached(m, body, other):
+    """讓位後仲貼住：位移後 mask（擴 1px）掂到身體或者對方"""
+    S = body.shape[0]; base = other.copy(); base[PAD:PAD + S, PAD:PAD + S] |= body[..., 3] > 0
+    g = m.copy(); g[1:] |= m[:-1]; g[:-1] |= m[1:]; g[:, 1:] |= m[:, :-1]; g[:, :-1] |= m[:, 1:]
+    return bool((g & base).any())
+def _bad_spot(m, body, an, S):
+    for x, y in face_px(an, S):
+        if m[y + PAD, x + PAD]: return True
+    if "bulb" in an:
+        x, y = an["bulb"]
+        if body[y, x, 3] and any(m[y + j + PAD, x + i + PAD] and body[y + j, x + i, 3] for i in (-1, 0, 1) for j in (-1, 0, 1)
+                                 if 0 <= y + j < body.shape[0] and 0 <= x + i < body.shape[1]): return True
+    return False
+MASKS = {}   # (item, form) → ({frame: packbits alpha}, fits, S, shape)；build_items 順手存（慳記憶體，唔存 RGBA）
+def _store_masks(item, form, frames, fits, S):
+    MASKS[(item, form)] = ({n: np.packbits(ov[..., 3] > 0) for n, ov in frames.items()}, fits, S, (S + 2 * PAD, S + 2 * PAD))
+def item_masks(item, form):
+    if (item, form) not in MASKS:
+        fr, fi, hid, S = gen_item_form(item, form); _store_masks(item, form, fr, fi, S)
+    pk, fi, S, sh = MASKS[(item, form)]; n_ = sh[0] * sh[1]
+    return {n: np.unpackbits(v, count=n_).reshape(sh).astype(bool) for n, v in pk.items()}, fi, S
+def combo_pair(form, a, b, MA, MB, FA, FB, bodies, anl, S):
+    """一對 item（唔同 slot）喺一個形態：逐 clip 搵讓位；回傳 {clip: {"yield": y, "off": [dx,dy]} | {"yield": y, "hide": True}}"""
+    y_ = a if YIELD.index(a) < YIELD.index(b) else b; st = b if y_ == a else a
+    MY, MS = (MA, MB) if y_ == a else (MB, MA)
+    res = {}; stats = {"frames": 0, "conflictFrames": 0, "maxCover": 0.0}
+    for clip in sorted(set(FA) & set(FB)):
+        names = [f"{clip}_{k:02d}" for k in range(1, len(FA[clip]) + 1) if f"{clip}_{k:02d}" in MY and f"{clip}_{k:02d}" in MS]
+        bad = []
+        for n in names:
+            c, r = _conflict(MY[n], MS[n], y_, st); stats["frames"] += 1; stats["maxCover"] = max(stats["maxCover"], r)
+            if c: bad.append(n)
+        if not bad: continue
+        stats["conflictFrames"] += len(bad); ok = None
+        for dx, dy in YIELD_STEPS[y_]:
+            good = True
+            for n in names:
+                m2 = _shift(MY[n], dx, dy)
+                if m2 is None or _conflict(m2, MS[n], y_, st)[0] or _bad_spot(m2, bodies[n], anl[n], S) or \
+                   (y_ not in FLOAT_OK and not _attached(m2, bodies[n], MS[n])): good = False; break
+            if good: ok = (dx, dy); break
+        res[clip] = {"yield": y_, "off": list(ok)} if ok else {"yield": y_, "hide": True}
+    return res, stats
+def build_combos(items):
+    """全部形態 × 唔同 slot 嘅 item 對；寫 accessories/COMBOS.json（只記有讓位嘅 clip）"""
+    out = {}; tot = {"pairs": 0, "pairsWithRule": 0, "clipsOffset": 0, "clipsHide": 0, "frames": 0, "conflictFrames": 0}
+    per_pair = {}
+    for form in FORMS:
+        an = anchors(form); bodies = {}; anl = {}
+        for clip, alist in clips_of(form):
+            for k, a_ in enumerate(alist, 1):
+                n = f"{clip}_{k:02d}"; bodies[n] = load(frame_path(form, clip, k)); anl[n] = a_
+        M = {}; F = {}; S = None
+        for it in items: M[it], F[it], S = item_masks(it, form)
+        fo = {}
+        for i, a in enumerate(items):
+            for b in items[i + 1:]:
+                if ITEMS[a]["slot"] == ITEMS[b]["slot"]: continue
+                tot["pairs"] += 1
+                r, st = combo_pair(form, a, b, M[a], M[b], F[a], F[b], bodies, anl, S)
+                tot["frames"] += st["frames"]; tot["conflictFrames"] += st["conflictFrames"]
+                k_ = f"{a}+{b}"; pp = per_pair.setdefault(k_, {"forms": 0, "clipsOffset": 0, "clipsHide": 0, "maxCover": 0.0})
+                pp["maxCover"] = round(max(pp["maxCover"], st["maxCover"]), 3)
+                if r:
+                    fo[k_] = r; tot["pairsWithRule"] += 1; pp["forms"] += 1
+                    for v in r.values():
+                        if v.get("hide"): tot["clipsHide"] += 1; pp["clipsHide"] += 1
+                        else: tot["clipsOffset"] += 1; pp["clipsOffset"] += 1
+        out[form] = fo
+        print("combos", form, len(fo), "pairs with rules", flush=True)
+    return out, tot, per_pair
+def outfit_key(worn): return "+".join(sorted(worn))
+def resolve_outfit(combos, form, worn, clip, ov=None):
+    """引擎規則（validator 同 sim 用）：每件讓位 item 取所有相關對入面位移最大（|dx|+|dy|，同分取 YIELD 對嘅字典序先）；任何一對 hide → 收起；
+    最後再套 outfitOverrides[form][outfit_key][clip]（多件疊埋先出現嘅殘留衝突 → 收起指定 item）"""
+    off = {it: (0, 0) for it in worn}; hide = set((ov or {}).get(form, {}).get(outfit_key(worn), {}).get(clip, []))
+    for i, a in enumerate(sorted(worn)):
+        for b in sorted(worn)[i + 1:]:
+            k_ = f"{a}+{b}" if f"{a}+{b}" in combos.get(form, {}) else f"{b}+{a}"
+            r = combos.get(form, {}).get(k_, {}).get(clip)
+            if not r: continue
+            if r.get("hide"): hide.add(r["yield"]); continue
+            o = tuple(r["off"]); cur = off[r["yield"]]
+            if abs(o[0]) + abs(o[1]) > abs(cur[0]) + abs(cur[1]): off[r["yield"]] = o
+    return off, hide
+def outfits(items):
+    """全部合法組合（每 slot ≤1、總數 2..MAX_WORN）"""
+    by = {}
+    for it in items: by.setdefault(ITEMS[it]["slot"], []).append(it)
+    sl = [s_ for s_ in SLOT_ORDER if s_ in by]; res = []
+    def rec(i, cur):
+        if i == len(sl):
+            if 2 <= len(cur) <= MAX_WORN: res.append(tuple(cur))
+            return
+        rec(i + 1, cur)
+        for it in by[sl[i]]: rec(i + 1, cur + [it])
+    rec(0, []); return res
+def check_outfits(combos, items, forms=None, log=None, ov=None):
+    """套用 resolve_outfit 之後，逐組合逐 clip 逐幀再驗：兩兩冇衝突、讓位件冇遮五官／燈泡、冇出畫布、仲貼住。回傳 (組合數, 驗過幀數, 殘留 list)"""
+    forms = forms or FORMS; OUT = outfits(items); nchk = 0; bad = []
+    for form in forms:
+        fc = combos.get(form, {})
+        rel = [o for o in OUT if sum(1 for i, a in enumerate(o) for b in o[i + 1:] if f"{a}+{b}" in fc or f"{b}+{a}" in fc) >= 1]
+        if not rel: continue
+        M = {}; F = {}; S = None
+        for it in items: M[it], F[it], S = item_masks(it, form)
+        an = anchors(form); bodies = {}; anl = {}
+        for clip, alist in clips_of(form):
+            for k, a_ in enumerate(alist, 1): n = f"{clip}_{k:02d}"; bodies[n] = None; anl[n] = a_
+        def body(n):
+            if bodies[n] is None: c_, k_ = n.rsplit("_", 1); bodies[n] = load(frame_path(form, c_, int(k_)))
+            return bodies[n]
+        for o in rel:
+            for clip in sorted(set.intersection(*[set(F[it]) for it in o])) if o else []:
+                off, hide = resolve_outfit(combos, form, o, clip, ov)
+                if not any(off[i] != (0, 0) for i in off) and not hide: continue
+                vis = [i for i in o if i not in hide]
+                for k in range(1, len(F[vis[0]][clip]) + 1 if vis else 1):
+                    n = f"{clip}_{k:02d}"; ms = {}
+                    for it in vis:
+                        m = M[it].get(n)
+                        if m is None: continue
+                        dx, dy = off[it]; m2 = _shift(m, dx, dy)
+                        if m2 is None: bad.append((form, o, n, it, "出畫布")); continue
+                        if (dx or dy) and _bad_spot(m2, body(n), anl[n], S): bad.append((form, o, n, it, "遮五官／燈泡"))
+                        ms[it] = m2
+                    ks = sorted(ms)
+                    for i, a in enumerate(ks):
+                        for b in ks[i + 1:]:
+                            if ITEMS[a]["slot"] == ITEMS[b]["slot"]: continue
+                            nchk += 1
+                            if _conflict(ms[a], ms[b], a, b)[0]: bad.append((form, o, n, f"{a}+{b}", "殘留衝突"))
+        if log: log(f"outfits {form}: {len(rel)} 組合要驗，累計殘留 {len(bad)}")
+    return len(OUT), nchk, bad
+def fix_outfits(combos, items, log=None, rounds=4):
+    """check_outfits 有殘留 → 收起該對入面 YIELD 排先嗰件（單件問題就收起嗰件），寫入 overrides，再驗受影響 forms，直到 0"""
+    ov = {}; forms = None; hist = []
+    for r in range(rounds):
+        n, nchk, bad = check_outfits(combos, items, forms, log, ov); hist.append((len(forms or FORMS), nchk, len(bad)))
+        if not bad:   # 固定次序（唔靠 set／hash 次序 → rebuild byte-identical）
+            ov = {f: {k: {c: ov[f][k][c] for c in sorted(ov[f][k])} for k in sorted(ov[f])} for f in FORMS if f in ov}
+            return ov, n, hist
+        touched = set()
+        for form, o, fr, what, why in bad:
+            clip = fr.rsplit("_", 1)[0]
+            if "+" in what:
+                a, b = what.split("+"); h = a if YIELD.index(a) < YIELD.index(b) else b
+            else: h = what
+            lst = ov.setdefault(form, {}).setdefault(outfit_key(o), {}).setdefault(clip, [])
+            if h not in lst: lst.append(h); lst.sort()
+            touched.add(form)
+        forms = [f for f in FORMS if f in touched]
+    raise SystemExit(f"outfit overrides 收唔到斂：{hist}")
+def emissive_path(form, n):
+    if form == "lumi": return os.path.join(LU, "emissive", f"{n}_emissive.png")
+    if form in ("sprout", "radiant", "soft"): return None
+    return os.path.join(EV, form, "emissive", f"{n}_emissive.png")
+def emissive_stats(items):
+    """ACC5：每個 item × form，飾品 alpha 蓋住幾多 emissive 像素（引擎規則：emissive 畫喺飾品之後，但用飾品 alpha 聯集遮走；燈泡 ±1 本身已挖空）"""
+    out = {}
+    for form in FORMS:
+        an = anchors(form); em = {}
+        for clip, alist in clips_of(form):
+            for k in range(1, len(alist) + 1):
+                n = f"{clip}_{k:02d}"; p_ = emissive_path(form, n)
+                if p_ and os.path.exists(p_): em[n] = np.array(Image.open(p_).convert("RGBA"))[..., 3] > 0
+        if not em: out[form] = None; continue
+        fo = {}
+        for it in items:
+            M, F, S = item_masks(it, form); tot = cov = 0; mx = 0.0; nf = 0
+            for n, m in M.items():
+                e = em.get(n)
+                if e is None: continue
+                h, w = e.shape; c = m[PAD:PAD + h, PAD:PAD + w] & e
+                t_, c_ = int(e.sum()), int(c.sum()); tot += t_; cov += c_; nf += 1
+                if t_: mx = max(mx, c_ / t_)
+            fo[it] = {"frames": nf, "emissivePx": tot, "coveredPx": cov, "coveredFrac": round(cov / tot, 4) if tot else 0.0, "maxFrameFrac": round(mx, 4)}
+        out[form] = fo; print("emissive", form, sum(v["coveredPx"] for v in fo.values()), flush=True)
+    return out
+def visibility_review(summary):
+    """ACC5：可見度總覆核（item × form 可見 clip／總 clip，收起原因分類）"""
+    rv = {}; reasons = {}
+    for it, fs in summary.items():
+        r = {"visibleClips": 0, "clips": 0, "formsFull": 0, "byForm": {}}
+        for form, v in fs.items():
+            r["visibleClips"] += v["visibleClips"]; r["clips"] += v["clips"]; r["formsFull"] += v["visibleClips"] == v["clips"]
+            r["byForm"][form] = f"{v['visibleClips']}/{v['clips']}"
+            for c, why in v["hidden"].items():
+                k_ = why if isinstance(why, str) else json.dumps(why, ensure_ascii=False)
+                k_ = k_.split(": ", 1)[-1] if k_.startswith(c) else k_
+                k_ = k_.split("（")[0].split(" ")[0][:40]
+                reasons.setdefault(k_, 0); reasons[k_] += 1
+        r["pct"] = round(100 * r["visibleClips"] / r["clips"], 1); rv[it] = r
+    return {"items": rv, "hiddenReasons": dict(sorted(reasons.items(), key=lambda x: -x[1])),
+            "total": {"visibleClips": sum(v["visibleClips"] for v in rv.values()), "clips": sum(v["clips"] for v in rv.values())}}
+def write_combos(items, summary):
+    """ACC5：多 slot 同戴衝突 → COMBOS.json；emissive／可見度 → ACCESSORIES.json（merge-safe）"""
+    combos, tot, per_pair = build_combos(items)
+    ov, n_out, hist = fix_outfits(combos, items, log=lambda m: None)
+    rules = {"perSlot": 1, "maxWorn": MAX_WORN, "slotOrder": SLOT_ORDER, "yieldPriority": YIELD,
+             "coverMax": COVER_MAX, "coverMaxPair": COVER_MAX_PAIR, "floatOk": sorted(FLOAT_OK),
+             "yieldSteps": {k: [list(x) for x in v] for k, v in YIELD_STEPS.items()},
+             "conflict": "兩件唔同 slot 嘅 item 同一幀：halo 任何重疊都算撞；其餘＝被遮嗰件（讓位件以外）被蓋 > coverMax（bell 對 0.5）",
+             "pairRule": "每對只有 YIELD 排先嗰件讓位；逐 clip 試 yieldSteps（整數 px，成段 clip 全部幀都過：唔撞、唔遮五官／燈泡±1、唔出 overlay 畫布、"
+                         "除 floatOk 外仲貼住身體或者對方）；全部唔得 → 嗰段 clip 收起讓位件",
+             "resolve": "引擎：戴住嘅每對 (a,b) 查 forms[form][a+b][clip]；讓位件取位移最大（|dx|+|dy|，sorted 對次序先到先得）；任何 hide 贏；"
+                        "最後套 outfitOverrides[form][sorted items 用 + 連][clip] 列明要收起嘅 item",
+             "pairsKey": "a+b 按 ITEMS 次序；查唔到就試 b+a"}
+    d = {"version": 1, "batch": "ACC5", "rules": rules, "forms": combos, "outfitOverrides": ov,
+         "totals": dict(tot, outfits=n_out, overrideClips=sum(len(o) for f in ov.values() for o in f.values()),
+                        overrideHides={h: sum(1 for f in ov.values() for o in f.values() for v in o.values() if h in v) for h in YIELD}),
+         "outfitCheck": [{"forms": a, "pairChecks": b, "residual": c} for a, b, c in hist], "perPair": per_pair}
+    d["totals"]["overrideHides"] = {k: v for k, v in d["totals"]["overrideHides"].items() if v}
+    json.dump(d, open(os.path.join(ACCD, "COMBOS.json"), "w"), ensure_ascii=False, separators=(",", ":"))
+    p = os.path.join(ACCD, "ACCESSORIES.json"); A = json.load(open(p))
+    A["emissive"] = {"rule": "飾品本身冇 emissive 層；引擎 emissive 照畫喺飾品之後，但用（已解決讓位嘅）飾品 alpha 聯集遮走，即係發光唔會透過帽／頸巾；"
+                             "燈泡 ±1 飾品層已挖空，所以燈泡光一定睇到。sprout／radiant／soft 冇 emissive。",
+                     "overlap": emissive_stats(items)}
+    A["visibilityReview"] = visibility_review(summary)
+    A["combos"] = {"file": "COMBOS.json", "maxWorn": MAX_WORN, "perSlot": 1, "totals": d["totals"]}
+    json.dump(A, open(p, "w"), ensure_ascii=False, indent=1)
+    print("COMBOS", d["totals"], hist, flush=True)
 def main(argv):
     what = argv[1] if len(argv) > 1 else "all"; items = [a for a in argv[2:]] or [k for k in ITEMS]
     if what in ("all", "collectibles"): build_collectibles()
     if what in ("all", "items"):
         summ = build_items(items); write_accessories_json(summ); build_refs(items)
+        if set(items) == set(ITEMS): write_combos(items, summ)
     if what in ("all", "preview"): print("\n".join(build_previews(items)))
 if __name__ == "__main__": main(sys.argv)

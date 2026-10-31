@@ -20,7 +20,7 @@
   },
   "moon": {
    "name": "月眠",
-   "hint": "「夜晚 9 點至凌晨 3 點陪佢」",
+   "hint": "「夜晚 8 點後陪佢、哄佢瞓」",
    "hidden": false,
    "lockedName": "？？？",
    "silhouette": "route_clarity/silhouette/sil_moon_48.png",
@@ -33,7 +33,7 @@
   },
   "shroom": {
    "name": "菇傘",
-   "hint": "「餵得最多」",
+   "hint": "「落雨陰天陪佢食多啲」",
    "hidden": false,
    "lockedName": "？？？",
    "silhouette": "route_clarity/silhouette/sil_shroom_48.png",
@@ -46,7 +46,7 @@
   },
   "crystal": {
    "name": "晶角",
-   "hint": "「執得最乾淨」",
+   "hint": "「一返嚟就執乾淨」",
    "hidden": false,
    "lockedName": "？？？",
    "silhouette": "route_clarity/silhouette/sil_crystal_48.png",

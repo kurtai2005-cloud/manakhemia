@@ -30,5 +30,6 @@
 - ACC2 ✅ 2026-11-01：毛冷帽／橡果帽／小皇冠，加草帽 polish（`/workspace/acc2-staging`）。
 - ACC3 ✅ 2026-11-01：星星髮夾、櫻花髮飾、圓框眼鏡（`/workspace/acc3-staging`）。
 - ACC4 ✅ 2026-11-01：葉仔領、燈泡小鈴、燈泡光環、睡帽（`/workspace/acc4-staging`）。
-- ACC5 ⏳ 多 slot 衝突、25×13 contact sheet、總覆核、文件定稿。
+- ACC5 ✅ 2026-11-01：同戴衝突（COMBOS.json）、25×13 contact sheet、可見度總覆核、emissive 規則、背面鏡像、moon 睡帽／dust 鈴／dot 眼鏡修正、文件定稿（`/workspace/acc5-staging`）。
+- 13 件全部完成。剩低交遊策／遊程：攞法數值、衣櫃 UI、引擎實作（drawOrder、COMBOS 查表、emissive 遮罩）。
 <!-- ACC-PROGRESS-END -->

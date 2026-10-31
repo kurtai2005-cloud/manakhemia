@@ -259,9 +259,9 @@
 | 路線 | 提示 | 燈色 | glow / mid / core | 預告 |
 |---|---|---|---|---|
 | 水珠 `tide` | 「朝早 6–9 點照顧，或者成日淋水」 | 水藍 | #2FA0DC / #6CD8F4 / #D8F8FF | `tell_tide` 6 幀 8fps：甩水：左右擰身甩走頭頂水點（朝早露水／淋水），甩完笑。 |
-| 月眠 `moon` | 「夜晚 9 點至凌晨 3 點陪佢」 | 夜藍紫 | #5562E0 / #8D98FF / #DDE1FF | `tell_moon` 6 幀 6fps：打喊路：伸手打大喊路，頭頂飄 z，點一點頭似瞓唔瞓（月眠）。 |
-| 菇傘 `shroom` | 「餵得最多」 | 草綠 | #46B536 / #8AE466 / #DDFBC8 | `tell_shroom` 6 幀 8fps：見嘢就話食得：望地下一嘢、撲埋去扮咬落口、咀嚼完滿足 ω。 |
-| 晶角 `crystal` | 「執得最乾淨」 | 晶紫 | #A24CDC / #CD88FF / #F2DEFF | `tell_crystal` 6 幀 8fps：執乾淨：雙手掃身，身上逐粒閃光點，執完挺胸（晶角）。 |
+| 月眠 `moon` | 「夜晚 8 點後陪佢、哄佢瞓」 | 夜藍紫 | #5562E0 / #8D98FF / #DDE1FF | `tell_moon` 6 幀 6fps：打喊路：伸手打大喊路，頭頂飄 z，點一點頭似瞓唔瞓（月眠）。 |
+| 菇傘 `shroom` | 「落雨陰天陪佢食多啲」 | 草綠 | #46B536 / #8AE466 / #DDFBC8 | `tell_shroom` 6 幀 8fps：見嘢就話食得：望地下一嘢、撲埋去扮咬落口、咀嚼完滿足 ω。 |
+| 晶角 `crystal` | 「一返嚟就執乾淨」 | 晶紫 | #A24CDC / #CD88FF / #F2DEFF | `tell_crystal` 6 幀 8fps：執乾淨：雙手掃身，身上逐粒閃光點，執完挺胸（晶角）。 |
 | 火苗 `ember` | 「玩得最多（包括小遊戲）」 | 火紅 | #E2402C / #FF7A4A / #FFD2BC | `tell_ember` 8 幀 10fps：原地跳：連跳兩下（壓扁→彈起），好興奮（火苗）。 |
 | 燦光 `radiant` | 「樣樣都照顧好」 | 金橙 | #EE8A14 / #FFB443 / #FFE6B4 | `tell_radiant` 6 幀 6fps：曬太陽伸懶腰：雙手舉高，四圍閃太陽光點（燦光：樣樣都好）。 |
 | 柔光 `soft` | 「普通照顧」 | 粉紅 | #EC5A9A / #FF9AC4 / #FFE2EF | `tell_soft` 6 幀 6fps：軟綿綿：左右挨身、合眼笑 ω、飄細心心（柔光）。 |
@@ -360,3 +360,11 @@ std23 餘下：冇（已齊）
 - 睡帽 `sleepKeep: true`：sleep_*／fall_asleep／wake 都照戴。鈴同睡帽尾有擺動，fit 檔每幀有 `swing`（度數，＋＝順時針）。
 - 合共 18,546 幀。身體 clip 定義冇改。
 <!-- ACC4-END -->
+
+<!-- ACC5-START -->
+## 飾品 overlay（ACC5 收尾，2026-11-01）
+- 13 件全部完成：59,749 幀 overlay，13,525/13,715 clip 睇到。身體 clip 定義冇改。
+- 同時戴：每 slot 最多 1 件、最多 5 件；衝突規則喺 `accessories/COMBOS.json`（逐 clip 整數位移或者收起讓位件）。
+- turn_back_01（背面）：蝴蝶結／髮夾／髮飾左右鏡像，fit 有 `mirrored: true`。
+- route 提示字（遊策新版）：菇傘「落雨陰天陪佢食多啲」、月眠「夜晚 8 點後陪佢、哄佢瞓」、晶角「一返嚟就執乾淨」（呢度 route 表同 palette_route_bulbs.json／collection_route.json 已更新）。
+<!-- ACC5-END -->

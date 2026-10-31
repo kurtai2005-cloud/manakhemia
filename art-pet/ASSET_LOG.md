@@ -224,3 +224,22 @@
   - 睡帽位跟 fit，傾角每幀 ≤8°，尾擺 ≤30°，每幀 ≤14°，尾端有波波
 - 預覽：`sprites/tuanrong/preview/accessories/acc4_*.png`。備份：`_backups/pre_acc4_20261101/`。全部 Pillow／numpy 做，冇用 AI，v3 色盤，alpha 0/255。
 <!-- ACC4-LOG-END -->
+
+<!-- ACC5-LOG-START -->
+## 2026-11-01 — 飾品完整版 ACC5（收尾：同戴衝突、contact sheet、總覆核、定稿）
+- 同戴衝突（`sprites/tuanrong/accessories/COMBOS.json`）：
+  - 每 slot ≤1、最多 5 件；讓位次序 halo > bell > starclip > sakura > bow > leafcollar > scarf > glasses > straw > beanie > acorn > crown > nightcap（排先嗰件讓）。
+  - 衝突＝halo 任何重疊，或者被遮嗰件被蓋 >30%（鈴對 50%）。讓位件逐 clip 試細整數位移（成段 clip 全部幀都要過、唔遮五官／燈泡、唔出畫布、除光環外仲要貼住身體或者對方），唔得就成段收起。
+  - 1,625 對（item 對 × 形態），344 對有規則；4,473 個 clip 位移、426 個 clip 收起；驗咗 294,654 幀，有衝突 12,895 幀。
+  - 多啲：straw+halo（位移 500／收起 1）、halo+nightcap（位移 447／收起 5）、acorn+sakura（位移 372／收起 4）、beanie+halo（位移 354／收起 1）、acorn+halo（位移 315／收起 0）、straw+sakura（位移 298／收起 4）、beanie+sakura（位移 289／收起 1）、crown+halo（位移 284／收起 0）。
+  - 594 個合法同戴組合 × 25 形態全部再驗：兩兩套規則後仲有 391 幀殘留（鈴位移後撞蝴蝶結等），所以加 `outfitOverrides`：279 個（組合 × clip）收起 {'halo': 37, 'bell': 242}；再驗 0 殘留。
+- 背面鏡像：turn_back_01（24 形態 faceVisible=false）蝴蝶結 side_r 改去左邊、髮夾／髮飾 side_l 改去右邊（模板左右翻）。帽針頭飾跟返形態本身頂帽，冇鏡像。
+- 月眠帽針睡帽：改用直身細圓錐 pincap（白間、白帽邊、W≥11 有金點），尾垂向右下，唔再似羽毛；guard_moon／still_moon 42/43 clip（leaf_umbrella 收起）。
+- dust 小鈴：尾燈太近地面（鈴底離地 < max(6, 25%S)）→ guard_dust／still_dust 改吊頭頂（base `top_low`），43/43 clip。
+- evo_dot 眼鏡：ACC3 半框似眉毛 → 改做「推上額頭」全圓框（細鏡片、兩片一齊沿眼線法線升到框底喺眼頂上 ≥1px、≥50% 貼頭），40/41 clip（只係 turn_back 收起）。
+- 可見度總覆核：撐葉傘：葉蓋住頭頂，頭飾收起 ×125、鏡框會壓到眼 ×36、faceVisible=false ×24、會遮五官 ×3、眼距 ×2。
+- emissive：飾品冇自己嘅 emissive；引擎 emissive 畫喺飾品之後但用飾品 alpha 聯集遮走（發光唔透過帽），燈泡 ±1 一直挖空。平均遮咗：sakura 12.7%、nightcap 10.0%、beanie 9.0%、starclip 8.0%、acorn 7.4%、straw 7.2%、bow 5.8%、leafcollar 4.5%、scarf 4.5%、bell 3.7%、crown 3.3%、halo 2.0%、glasses 0.7%。sprout／radiant／soft 冇 emissive。
+- 改動範圍：bow／starclip／sakura 嘅 turn_back（24 形態）、moon 睡帽（2）、dust 鈴（2）、dot 眼鏡（1）；其他 atlas byte-identical（md5 對過 `_backups/pre_acc5_20261101/`）。
+- 同場：route 提示字跟遊策新版更新（`build_evo6_routeG.py --hints`、`validate_route_clarity.py` 檢查新字＋舊字唔可以再出現）。
+- 預覽：`sprites/tuanrong/preview/accessories/acc5_*.png`（25×13 contact sheet idle／walk_03、同戴示範、背面、moon 睡帽、dust 鈴、dot 眼鏡）。全部 Pillow／numpy，冇用 AI，v3 色盤，alpha 0/255。
+<!-- ACC5-LOG-END -->

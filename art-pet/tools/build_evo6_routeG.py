@@ -6,7 +6,7 @@
    現有 evo_hop 散檔一粒像素都冇改（只係 atlas 重新排咗加 tell clip）。emissive 遮罩唔變（燈 glow_mid/glow_core 位照舊發光，色跟 albedo）。
 2) 圖鑑未解鎖剪影 ×9：靜光 48（完全體）idle_01 實心剪影（去走 aura 碎點），原尺寸 48px；collection_route.json 帶一句提示。
 3) 判定前 12h「預告」小動作 ×9：由絨跳（跳跳期，判定前嗰個形態）播；tell_<id>，同 std 標準：frames／layers（_noface／_faceov）／emissive／anchors（含 bulb）／atlas。
-Pillow＋numpy 程式逐像素繪製，原創，無 AI。用法：python3 build_evo6_routeG.py [--no-docs]
+Pillow＋numpy 程式逐像素繪製，原創，無 AI。用法：python3 build_evo6_routeG.py [--no-docs]；只改提示字：python3 build_evo6_routeG.py --hints
 """
 import json, math, os, sys, shutil
 import numpy as np
@@ -20,11 +20,11 @@ RC = os.path.join(OUT, "route_clarity"); os.makedirs(RC, exist_ok=True)
 FORM = "evo_hop"; HD = os.path.join(OUT, FORM)
 
 # ============================================================ 路線＋燈色（§7 一句提示照抄）
-PATHS = [  # id, 名, 提示, (glow, glow_mid, glow_core) or None, 色名
+PATHS = [  # id, 名, 提示, (glow, glow_mid, glow_core) or None, 色名（提示跟 §7 v10 補充／v10.1：菇傘／月眠 v10.1、晶角 v6；同遊戲 data.js ROUTE_HINT 一致）
  ("tide", "水珠", "「朝早 6–9 點照顧，或者成日淋水」", ("#2FA0DC", "#6CD8F4", "#D8F8FF"), "水藍"),
- ("moon", "月眠", "「夜晚 9 點至凌晨 3 點陪佢」", ("#5562E0", "#8D98FF", "#DDE1FF"), "夜藍紫"),
- ("shroom", "菇傘", "「餵得最多」", ("#46B536", "#8AE466", "#DDFBC8"), "草綠"),
- ("crystal", "晶角", "「執得最乾淨」", ("#A24CDC", "#CD88FF", "#F2DEFF"), "晶紫"),
+ ("moon", "月眠", "「夜晚 8 點後陪佢、哄佢瞓」", ("#5562E0", "#8D98FF", "#DDE1FF"), "夜藍紫"),
+ ("shroom", "菇傘", "「落雨陰天陪佢食多啲」", ("#46B536", "#8AE466", "#DDFBC8"), "草綠"),
+ ("crystal", "晶角", "「一返嚟就執乾淨」", ("#A24CDC", "#CD88FF", "#F2DEFF"), "晶紫"),
  ("ember", "火苗", "「玩得最多（包括小遊戲）」", ("#E2402C", "#FF7A4A", "#FFD2BC"), "火紅"),
  ("radiant", "燦光", "「樣樣都照顧好」", ("#EE8A14", "#FFB443", "#FFE6B4"), "金橙"),
  ("soft", "柔光", "「普通照顧」", ("#EC5A9A", "#FF9AC4", "#FFE2EF"), "粉紅"),
@@ -394,7 +394,22 @@ def update_docs(T, ainfo, spec, col, nfr, tot):
            f"- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchG_route_clarity_4x.png`；工具 `tools/build_evo6_routeG.py`；驗證 `tools/validate_route_clarity.py`；備份 `_backups/pre_evo6_route_clarity_20261101/`。Pillow/numpy 程式繪製，無 AI。\n{b_}\n")
     BC.atomic_write(lp, lg.rstrip() + "\n\n" + ent)
 
+def hints_only():
+    """--hints：淨係重出提示文字相關輸出（palette_route_bulbs.json、collection_route.json、剪影、預覽圖）＋ CLIPS.json／CLIPS.md 嘅提示字；
+    唔重寫 atlas_evo_hop／tell 幀（避免動到之後批次加落 evo_hop 嘅嘢）。"""
+    T = build_tells(); spec = write_route_palette(); col = write_silhouettes(); pv = contact(T, spec, col)
+    p = os.path.join(MOT, "CLIPS.json"); raw = open(p, encoding="utf-8").read(); D = json.loads(raw)
+    for pid, nm, hint, ramp, cn in PATHS: D["evo6G"]["paths"][pid]["hint"] = hint
+    BC.atomic_write(p, json.dumps(D, indent=1, ensure_ascii=False))
+    mp = os.path.join(MOT, "CLIPS.md"); md = open(mp, encoding="utf-8").read()
+    a_, b_ = "<!-- EVO6G-START -->", "<!-- EVO6G-END -->"; i, j = md.index(a_), md.index(b_); sec = md[i:j]
+    for pid, nm, hint, ramp, cn in PATHS:
+        k = sec.index(f"| {nm} `{pid}` | "); e = sec.index(" | ", k + len(f"| {nm} `{pid}` | "))
+        sec = sec[:k] + f"| {nm} `{pid}` | {hint}" + sec[e:]
+    BC.atomic_write(mp, md[:i] + sec + md[j:])
+    print("hints", {pid: hint for pid, _n, hint, *_r in PATHS}, "preview", pv)
 def main():
+    if "--hints" in sys.argv: return hints_only()
     order, clips, kit = load_existing()
     T = build_tells(); write_tells(T)
     allc = dict(clips)

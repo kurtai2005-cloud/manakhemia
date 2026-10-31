@@ -3,6 +3,8 @@
 schema／13 件總表／slot；每個 done item × 25 形態都有 atlas＋json；身體每一幀都要有 overlay，除非個 clip 喺 hiddenClips（有原因）；
 atlas 像素 v3＋alpha 0/255；幀 rect 喺 atlas 內；唔遮五官（eyeL/eyeR/mouth ±1，faceVisible）；唔遮燈泡（bulb/bulb2 ±1）；
 overlay 同 fit 一致（head slot 通用：草帽／毛冷帽／橡果帽／小皇冠；ACC2 起加傾角每幀 ≤8°、ws 0.85–1.12；帽底中心 ≤3px／蝴蝶結中心 ≤3px／頸巾頂行 = fit.ny；ACC3 side_l 中心跟 head_l；眼鏡 faceVisible＋跟兩眼中點同傾角＋L 級框粗 2＋唔壓眼 blob；ACC4 葉仔領頂行 = fit.ny、鈴中心跟 fit＋喺燈泡下＋擺 ≤25°／每幀 ≤14°、光環中心跟 fit＋喺燈泡／頭頂上、睡帽位跟 fit＋傾角每幀 ≤8°＋尾擺 ≤30°／每幀 ≤14°＋尾端有波波）；動畫 frames 對得上身體 clip 幀數；counts；
+ACC5：dot 額頭眼鏡（中心喺兩眼上、貼頭 ≥FH_MIN、框底唔落眼位）；背面幀 side_r／side_l 鏡像（蝴蝶結喺左、髮飾喺右）；
+dust 低燈形態鈴用 top_low；moon 帽針 pincap 鏡像；COMBOS.json（schema、讓位件、yieldSteps、由 atlas 重算一致、594 個同戴組合 0 殘留）；emissive overlap＋visibilityReview；
 收藏品 12 件 × 16／32＋剪影、atlas、v3／alpha；CLIPS.json additive accessories key。"""
 import json, os, sys, math
 import numpy as np
@@ -19,6 +21,62 @@ def chk_px(arr, where):
         cols = {tuple(int(v) for v in c) for c in np.unique(op, axis=0)}
         bad = cols - B.V3
         if bad: err(f"{where}: 非 v3 色 {sorted(bad)[:3]}")
+def masks_from_atlas(it, form, e):
+    """由 atlas 還原 overlay alpha（同 build 一樣嘅 S+2PAD 畫布），塞入 B.MASKS，等 build_combos／check_outfits 用 repo 入面嘅成品再驗"""
+    jp = os.path.join(B.ACCD, e["forms"][form]["atlas"]); aj = json.load(open(jp)); atl = np.array(Image.open(jp[:-5] + ".png"))[..., 3] > 0
+    S = aj["meta"]["frameSize"]; sh = (S + 2 * B.PAD, S + 2 * B.PAD); pk = {}
+    for n, fr in aj["frames"].items():
+        r = fr["frame"]; ss = fr["spriteSourceSize"]; m = np.zeros(sh, bool)
+        m[ss["y"] + B.PAD:ss["y"] + B.PAD + r["h"], ss["x"] + B.PAD:ss["x"] + B.PAD + r["w"]] = atl[r["y"]:r["y"] + r["h"], r["x"]:r["x"] + r["w"]]
+        pk[n] = np.packbits(m)
+    fits = {c: [None] * len(aj["animations"][c]["frames"]) for c in aj["animations"]}
+    B.MASKS[(it, form)] = (pk, fits, S, sh)
+def chk_combos(d, items):
+    """ACC5 COMBOS.json：schema、每 slot ≤1／最多 5 件、讓位件＝YIELD 排先、位移喺 yieldSteps、clip 兩件都睇到；
+    用 atlas 重算全部對（未列明嘅衝突＝錯；列明嘅規則要一模一樣）＋全部同戴組合套規則後 0 殘留；emissive／可見度總覆核齊"""
+    cp = os.path.join(B.ACCD, "COMBOS.json")
+    if not os.path.exists(cp): err("冇 COMBOS.json"); return
+    C = json.load(open(cp)); R = C.get("rules", {})
+    for k in ("rules", "forms", "outfitOverrides", "totals", "outfitCheck", "perPair"):
+        if k not in C: err(f"COMBOS.json 缺 {k}")
+    if R.get("perSlot") != 1 or R.get("maxWorn") != 5: err("COMBOS rules：perSlot 1／maxWorn 5 唔啱")
+    if R.get("yieldPriority") != B.YIELD or sorted(R.get("yieldPriority", [])) != sorted(items): err("COMBOS yieldPriority 唔等於 13 件")
+    if sorted(C.get("forms", {})) != sorted(B.FORMS): err("COMBOS forms ≠ 25 形態")
+    for form, fo in C.get("forms", {}).items():
+        for pk_, cl in fo.items():
+            a, b = pk_.split("+")
+            if items[a]["slot"] == items[b]["slot"]: err(f"COMBOS {form}/{pk_}: 同 slot 唔應該有對")
+            y_ = a if B.YIELD.index(a) < B.YIELD.index(b) else b
+            for clip, r in cl.items():
+                if r.get("yield") != y_: err(f"COMBOS {form}/{pk_}/{clip}: 讓位件 {r.get('yield')} ≠ {y_}")
+                if clip in items[a]["forms"][form]["hidden"] or clip in items[b]["forms"][form]["hidden"]: err(f"COMBOS {form}/{pk_}/{clip}: clip 本身已收起")
+                if not r.get("hide") and tuple(r.get("off", ())) not in [tuple(x) for x in B.YIELD_STEPS[y_]]: err(f"COMBOS {form}/{pk_}/{clip}: 位移 {r.get('off')} 唔喺 yieldSteps")
+    for form, fo in C.get("outfitOverrides", {}).items():
+        for ok_, cl in fo.items():
+            w = ok_.split("+"); sl = [items[x]["slot"] for x in w]
+            if len(set(sl)) != len(sl) or not 2 <= len(w) <= 5: err(f"COMBOS override {form}/{ok_}: 唔係合法組合")
+            for clip, hs in cl.items():
+                if not set(hs) <= set(w): err(f"COMBOS override {form}/{ok_}/{clip}: 收起件唔喺組合入面")
+    B.MASKS.clear()
+    for it in items:
+        for form in B.FORMS: masks_from_atlas(it, form, items[it])
+    combos, tot, _ = B.build_combos(list(B.ITEMS))
+    if combos != C.get("forms"):
+        diff = [(f, k) for f in B.FORMS for k in set(combos.get(f, {})) | set(C["forms"].get(f, {})) if combos.get(f, {}).get(k) != C["forms"].get(f, {}).get(k)]
+        err(f"COMBOS 同 atlas 重算唔一致（{len(diff)} 對，例 {diff[:3]}）——有未列明衝突或者規則過時")
+    n, nchk, bad = B.check_outfits(C.get("forms", {}), list(B.ITEMS), ov=C.get("outfitOverrides"))
+    if n != 594: err(f"同戴組合 {n} ≠ 594")
+    for b_ in bad[:10]: err(f"同戴殘留：{b_}")
+    if bad: err(f"同戴殘留共 {len(bad)}")
+    print(f"combos: pairs {tot['pairs']}，有規則 {tot['pairsWithRule']}，位移 clip {tot['clipsOffset']}，收起 clip {tot['clipsHide']}；同戴 {n} 組合 {nchk} 對幀驗過，殘留 {len(bad)}；override {C['totals'].get('overrideClips')}")
+    em = d.get("emissive", {}); vr = d.get("visibilityReview", {})
+    if "rule" not in em or sorted(em.get("overlap", {})) != sorted(B.FORMS): err("ACCESSORIES.json emissive 唔齊")
+    for f in ("sprout", "radiant", "soft"):
+        if em.get("overlap", {}).get(f) is not None: err(f"emissive {f} 應該係 null（冇 emissive）")
+    if sorted(vr.get("items", {})) != sorted(items): err("visibilityReview 唔齊 13 件")
+    for it, v in vr.get("items", {}).items():
+        vis = sum(items[it]["forms"][f]["visibleClips"] for f in B.FORMS)
+        if v.get("visibleClips") != vis: err(f"visibilityReview {it}: {v.get('visibleClips')} ≠ {vis}")
 def main():
     p = os.path.join(B.ACCD, "ACCESSORIES.json")
     if not os.path.exists(p): err("冇 ACCESSORIES.json"); return
@@ -121,7 +179,16 @@ def main():
                         else:
                             (lx, ly), (rx, ry) = fi["c"]; mx, my = (lx + rx) / 2, (ly + ry) / 2
                             emx, emy = (a["eyeL"][0] + a["eyeR"][0]) / 2, (a["eyeL"][1] + a["eyeR"][1]) / 2
-                            if abs(mx - emx) > 2.5 or abs(my - emy) > 2.5: err(f"{it}/{form}/{n}: 鏡片中心 ({mx:.1f},{my:.1f}) 離兩眼中點太遠")
+                            if fi.get("forehead"):   # ACC5 dot：推上額頭（全圓框喺眼上面、大部分貼頭）
+                                if abs(mx - emx) > 2.5 or my >= emy - 1: err(f"{it}/{form}/{n}: 額頭眼鏡中心 ({mx:.1f},{my:.1f}) 唔喺兩眼上面")
+                                if fi.get("onHead", 0) < B.FH_MIN - 1e-6: err(f"{it}/{form}/{n}: 額頭眼鏡貼頭 {fi.get('onHead')} < {B.FH_MIN}")
+                                bd_ = B.load(B.frame_path(form, clip, k))
+                                for kk in ("eyeL", "eyeR"):
+                                    bl = B.eye_blob(bd_, a, kk)
+                                    if not bl: continue
+                                    bx0, bx1, by0 = min(x for x, y in bl), max(x for x, y in bl), min(y for x, y in bl)
+                                    if ((xs >= bx0) & (xs <= bx1) & (ys >= by0)).any(): err(f"{it}/{form}/{n}: 額頭眼鏡框底落到 {kk} 位"); break
+                            elif abs(mx - emx) > 2.5 or abs(my - emy) > 2.5: err(f"{it}/{form}/{n}: 鏡片中心 ({mx:.1f},{my:.1f}) 離兩眼中點太遠")
                             ea = np.degrees(np.arctan2(a["eyeR"][1] - a["eyeL"][1], a["eyeR"][0] - a["eyeL"][0])); ga = np.degrees(np.arctan2(ry - ly, rx - lx))
                             if abs(ea - ga) > 12: err(f"{it}/{form}/{n}: 鏡框傾角 {ga:.0f}° 唔跟眼 {ea:.0f}°")
                             if abs((xs.min() + xs.max()) / 2 - mx) > 2 + 0.5 * fi.get("th", 1) + 3: err(f"{it}/{form}/{n}: 眼鏡位同 fit 唔一致")
@@ -131,6 +198,16 @@ def main():
                                 if any(ov[y + B.PAD, x + B.PAD, 3] for x, y in B.eye_blob(body, a, kk)): err(f"{it}/{form}/{n}: 鏡框壓到眼 {kk}"); break
                     elif it in ("scarf", "leafcollar"):
                         if abs(ys.min() - (fi["ny"] - 1)) > 3 + abs(fi["ang"]) * 0.4: err(f"{it}/{form}/{n}: 頸巾頂 {ys.min()} vs ny {fi['ny']}")
+                    # ACC5：背面（faceVisible=false）左右 slot 鏡像；dust 鈴改頭頂；moon 帽針鏡像
+                    slot_ = B.ITEMS.get(it, {}).get("slot")
+                    if slot_ in ("side_r", "side_l") and not a.get("faceVisible", True):
+                        bx_ = np.nonzero(B.load(B.frame_path(form, clip, k))[..., 3].any(0))[0]; bc = (bx_.min() + bx_.max()) / 2
+                        if not fi.get("mirrored"): err(f"{it}/{form}/{n}: 背面 {slot_} 冇鏡像")
+                        ic = (xs.min() + xs.max()) / 2
+                        if slot_ == "side_r" and ic >= bc: err(f"{it}/{form}/{n}: 背面蝴蝶結應該喺左邊（{ic:.1f} vs 身體中 {bc:.1f}）")
+                        if slot_ == "side_l" and ic <= bc: err(f"{it}/{form}/{n}: 背面髮飾應該喺右邊（{ic:.1f} vs 身體中 {bc:.1f}）")
+                    if it == "bell" and B.bell_low(form) and fi.get("base") != "top_low": err(f"{it}/{form}/{n}: 低燈形態鈴應該用 top_low（而家 {fi.get('base')}）")
+                    if it == "nightcap" and form in ("evo_guard_moon", "evo_still_moon") and not fi.get("mirrored"): err(f"{it}/{form}/{n}: moon 帽針版冇用鏡像 pincap")
                     tot["frames"] += 1
             extra = set(aj["frames"]) - {f"{c}_{k:02d}" for c, al in an.items() if c not in hid for k in range(1, len(al) + 1)}
             if extra: err(f"{it}/{form}: 多咗 frames {sorted(extra)[:3]}")
@@ -161,6 +238,7 @@ def main():
         for n, fr in aj["frames"].items():
             r = fr["frame"]; ref = np.array(Image.open(os.path.join(B.COLD, n + ".png")).convert("RGBA"))
             if (atl[r["y"]:r["y"] + r["h"], r["x"]:r["x"] + r["w"]] != ref).any(): err(f"atlas {n} 同單檔唔一致")
+    if len(done) == 13: chk_combos(d, items)
     cl = json.load(open(os.path.join(B.MOT, "CLIPS.json")))
     if "accessories" not in cl: err("CLIPS.json 冇 accessories key")
     for k in ("nuzzle_purr", "reunion_happy"):

@@ -10,7 +10,7 @@ F = fails.append
 hx = lambda h: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
 load = lambda p: np.array(Image.open(p).convert("RGBA"))
 IDS = ["tide", "moon", "shroom", "crystal", "ember", "radiant", "soft", "dust", "lumi"]
-HINT = {"tide": "「朝早 6–9 點照顧，或者成日淋水」", "moon": "「夜晚 9 點至凌晨 3 點陪佢」", "shroom": "「餵得最多」", "crystal": "「執得最乾淨」",
+HINT = {"tide": "「朝早 6–9 點照顧，或者成日淋水」", "moon": "「夜晚 8 點後陪佢、哄佢瞓」", "shroom": "「落雨陰天陪佢食多啲」", "crystal": "「一返嚟就執乾淨」",
         "ember": "「玩得最多（包括小遊戲）」", "radiant": "「樣樣都照顧好」", "soft": "「普通照顧」", "dust": "「好少理佢」", "lumi": "隱藏：「？？？」"}
 SLOTS = ("glow", "glow_mid", "glow_core")
 def lab(rgb):
@@ -110,6 +110,16 @@ for c, e in TC.items():
         a_ = an.get(key)
         if not a_ or len(a_["frames"]) != n or a_.get("fps") != e["fps"]: F(f"atlas anim {key}")
 info.append(f"tell clip {len(TC)} 個／{nfr} 幀（evo_hop atlas 已包）")
+# 提示字（§7 v10 補充／v10.1）：CLIPS.json evo6G.paths＋CLIPS.md 表要同 HINT 一樣；舊字唔准再出現
+for pid in IDS:
+    if G.get("paths", {}).get(pid, {}).get("hint") != HINT[pid]: F(f"CLIPS.json evo6G hint {pid}")
+STALE = ("餵得最多", "夜晚 9 點至凌晨 3 點", "執得最乾淨")
+md_ = open(os.path.join(MOT, "CLIPS.md"), encoding="utf-8").read()
+for nm_, txt in (("CLIPS.md", md_), ("CLIPS.json", json.dumps(CL, ensure_ascii=False)),
+                 ("palette_route_bulbs.json", json.dumps(spec, ensure_ascii=False)), ("collection_route.json", json.dumps(col, ensure_ascii=False))):
+    for st in STALE:
+        if st in txt: F(f"{nm_} 仲有舊提示「{st}」")
+info.append("提示字：菇傘／月眠 v10.1、晶角 v6（冇舊字）")
 print("\n".join(info))
 if fails: print("FAIL", len(fails)); print("\n".join(fails[:40])); sys.exit(1)
 print("OK validate_route_clarity")
