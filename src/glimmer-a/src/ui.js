@@ -209,11 +209,18 @@
     grp('行為', ['blink', 'sway', 'yawn', 'walk', 'jump', 'play', 'nap', 'sunbathe', 'bump', 'grumpy', 'startle', 'cuddly', 'react'].map(n => [n, () => G.forceBeh(n), 'dbg-beh-' + n]));
     grp('事件（強制）', D.EVENTS.filter(e => !e.special).map(e => [e.name, () => G.forceEvent(e.id), 'dbg-ev-' + e.id]).concat([['閃光日', () => { EVN().setFlashDay(s(), true); EVN().force(s(), 'flash'); }, 'dbg-ev-flash']]));
     grp('時段（早午晚深夜）', LT().ORDER.map(p => [D.PARAMS.light.periods[p].name, () => G.setPeriod(p), 'dbg-per-' + p]).concat([['實時', () => G.setPeriod(null), 'dbg-per-real']]));
+    // 生命感第一段：表情／gaze／臉模式／點一下回頭（QA）
+    const Q = () => window.__qa.pet;
+    grp('臉 mode（F1）', ['auto', 'native', 'off'].map(m => [m, () => Q().faceMode(m), 'dbg-fm-' + m]));
+    grp('眼款（F1）', D.PARAMS.face.eyes.map(e => [e, () => Q().setFace({ eyes: e }), 'dbg-eye-' + e]).concat([['自動', () => Q().setFace(null), 'dbg-eye-auto']]));
+    grp('口款（F1）', D.PARAMS.face.mouths.map(m => [m, () => Q().setFace(Object.assign({}, G.beh.faceForce || {}, { mouth: m })), 'dbg-mouth-' + m]));
+    grp('gaze（F2）', D.PARAMS.face.gazeBins.map(g => [g, () => Q().setGaze(g), 'dbg-gaze-' + g]).concat([['自動', () => Q().setGaze(null), 'dbg-gaze-auto']]));
+    grp('觸摸（D2）', [['點背後', () => Q().tap(G.beh.x - G.beh.dir * 12, -20), 'dbg-tap-back'], ['點前面', () => Q().tap(G.beh.x + G.beh.dir * 8, -20), 'dbg-tap-front'], ['點頭頂', () => Q().tap(G.beh.x, -60), 'dbg-tap-up'], ['燈泡開關', () => { D.PARAMS.face.bulb.enabled = !D.PARAMS.face.bulb.enabled; }, 'dbg-bulb']]);
     const info = document.createElement('div'); info.id = 'dinfo'; d.appendChild(info);
   }
   function refreshDbg() {
     const i = $('#dinfo'); if (!i) return; const s = G.state, p = rd.perf;
-    i.textContent = `stage ${s.stage}/${s.form || '-'}\nCQ ${s.cq.toFixed(0)} grow ${(s.growthSec / 3600).toFixed(2)}h\npoops ${s.poops} sleep ${s.sleeping ? 1 : 0}\nneeds ${D.NEED_KEYS.map(k => s.needs[k].toFixed(0)).join('/')}\nscale x${G.timeScale} hr ${G.hour().toFixed(1)}\nperiod ${G.light ? G.light.period : '-'} expr ${G.beh ? G.beh.expr : '-'}\nbeh ${G.beh ? G.beh.state + '/' + G.beh.clip + '#' + G.beh.frame : '-'}\nev ${G.ev ? G.ev.rec.id : '-'} atlas ${rd.atlasReady ? 1 : 0}\naud ${(() => { const a = window.Glimmer.audio.Engine.status(); return a.ctx + ' bgm ' + a.bgm + ' loops ' + a.loops.join(','); })()}\nq ${s.settings.quality} ${p.n ? (p.sum / p.n).toFixed(1) : '-'}ms`;
+    i.textContent = `stage ${s.stage}/${s.form || '-'}\nCQ ${s.cq.toFixed(0)} grow ${(s.growthSec / 3600).toFixed(2)}h\npoops ${s.poops} sleep ${s.sleeping ? 1 : 0}\nneeds ${D.NEED_KEYS.map(k => s.needs[k].toFixed(0)).join('/')}\nscale x${G.timeScale} hr ${G.hour().toFixed(1)}\nperiod ${G.light ? G.light.period : '-'} expr ${G.beh ? G.beh.expr : '-'}\nbeh ${G.beh ? G.beh.state + '/' + G.beh.clip + '#' + G.beh.frame : '-'}\nev ${G.ev ? G.ev.rec.id : '-'} atlas ${rd.atlasReady ? 1 : 0}\naud ${(() => { const a = window.Glimmer.audio.Engine.status(); return a.ctx + ' bgm ' + a.bgm + ' loops ' + a.loops.join(','); })()}\nq ${s.settings.quality} ${p.n ? (p.sum / p.n).toFixed(1) : '-'}ms\nface ${(() => { const f = window.__qa && window.__qa.pet && window.__qa.pet.face ? window.__qa.pet.face() : null; return f ? f.eyes + '/' + f.mouth + ' gaze ' + f.gaze + (f.faceVisible ? '' : ' (hidden)') + (f.live ? ' live' : ' native') : '-'; })()}\nlook ${G.beh ? G.beh.look.q + '(' + G.beh.look.src + ')' : '-'}`;
   }
 
   // ── 初始化 ──
@@ -245,10 +252,10 @@
       const b = rd.petBox();
       if (a.x > b.x - 6 && a.x < b.x + b.w + 6 && a.y > b.y - 6 && a.y < b.y + b.h + 6) {
         if (s.stage === 'egg') { SIM.tapEgg(s); processEvents(); G.save(); }
-        else if (!s.sleeping) {  if (G.beh) NS_BEH.tap(G.beh, 'pet', a.x - R.CX); else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }
+        else if (!s.sleeping) {  if (G.beh) NS_BEH.tap(G.beh, 'pet', a.x - R.CX, a.y - R.GROUND_Y); else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }
         else if (G.lightWake && G.lightWake()) { toast('團絨揉揉眼醒咗…仲有啲睏睏'); SND('sleep', { on: false }); }
       } else if (s.stage !== 'egg' && !s.sleeping && G.beh && a.y > R.GROUND_Y - 50 && a.y < R.GROUND_Y + 40) {
-        NS_BEH.tap(G.beh, 'ground', clamp(a.x - R.CX, -70, 70));
+        NS_BEH.tap(G.beh, 'ground', clamp(a.x - R.CX, -70, 70), a.y - R.GROUND_Y);
       }
     });
     hit.addEventListener('pointerleave', () => { rd.parT.active = false; });

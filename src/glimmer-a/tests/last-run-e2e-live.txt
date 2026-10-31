@@ -1,0 +1,65 @@
+# 載入：生命感 atlas＋face_anchors
+  ✓ 生命感資產載入（3 atlas＋anchors，無錯）
+  ✓ CLIPS.turn_back.ready＝true（三形態都有 turn_back_noface）
+  ✓ 三形態 atlas＋anchors 齊
+# F1：真五官 overlay（三形態）＋單次 tint
+  ✓ soft：真 noface 身體＋eyeL/eyeR/mouth（0 placeholder、用 anchors）
+  ✓ soft：每次畫寵物 tint 剛好 1 次（overlay 唔加多一次）draws 42 tints 42
+  ✓ soft：燈泡情緒 happy（需求全滿）
+  📷 live-f1-soft
+  ✓ bright：真 noface 身體＋eyeL/eyeR/mouth（0 placeholder、用 anchors）
+  ✓ bright：每次畫寵物 tint 剛好 1 次（overlay 唔加多一次）draws 42 tints 42
+  ✓ bright：燈泡情緒 happy（需求全滿）
+  📷 live-f1-bright
+  ✓ sprout：真 noface 身體＋eyeL/eyeR/mouth（0 placeholder、用 anchors）
+  ✓ sprout：每次畫寵物 tint 剛好 1 次（overlay 唔加多一次）draws 42 tints 42
+  ✓ sprout：燈泡情緒 happy（需求全滿）
+  📷 live-f1-sprout
+# F1：表情款式（強制）＋wink 規則
+  ✓ 表情 neutral/neutral → eyes_neutral_L_l,eyes_neutral_L_r,mouth_neutral
+  ✓ 表情 surprised/surprised → eyes_surprised_L_l,eyes_surprised_L_r,mouth_surprised
+  ✓ 表情 sleepy/sleepy → eyes_sleepy_C_l,eyes_sleepy_C_r,mouth_sleepy
+  ✓ 表情 wink/wink → eyes_neutral_C_l,eyes_wink_C_r,mouth_wink
+  ✓ 表情 sad/sad → eyes_sad_L_l,eyes_sad_L_r,mouth_sad
+  ✓ 表情 angry/angry → eyes_angry_L_l,eyes_angry_L_r,mouth_angry
+  ✓ 表情 squint/squint → eyes_squint_L_l,eyes_squint_L_r,mouth_squint
+  ✓ 表情 happy/happy → eyes_happy_C_l,eyes_happy_C_r,mouth_happy
+  📷 live-f1-neutral-gazeL
+# F2：gaze 強制、量化 7 格、讀數
+  ✓ gaze L（dir 1）→ 幀內 L 件 eyes_neutral_L_l
+  ✓ gaze CL（dir 1）→ 幀內 CL 件 eyes_neutral_CL_l
+  ✓ gaze C（dir 1）→ 幀內 C 件 eyes_neutral_C_l
+  ✓ gaze CR（dir 1）→ 幀內 CR 件 eyes_neutral_CR_l
+  ✓ gaze R（dir 1）→ 幀內 R 件 eyes_neutral_R_l
+  ✓ gaze U（dir 1）→ 幀內 U 件 eyes_neutral_U_l
+  ✓ gaze D（dir 1）→ 幀內 D 件 eyes_neutral_D_l
+  ✓ __qa.pet.gaze() 讀數 {q,ql,src,x,y}
+# A1：邊行邊望（walk 時 gaze 跟方向）
+  ✓ walk 期間 gaze 來源＝walk／cam（68/68）
+  ✓ walk gaze（幀內，向前）＝R／CR
+  📷 live-a1-walk
+# D2：點一下回頭（turn_back clip＋咦？音效）
+  ✓ 點背後 → 播 turn_back clip（31 幀）
+  ✓ turn_back 第 0 幀 faceVisible=false → 唔畫眼／口
+  ✓ turn_back 第 1–3 幀轉返正面 → 有臉
+  ✓ D2 後 dir 轉向觸點（-1）
+  ✓ D2 播 sfx_pet_turn_huh_a/b（pet_turn_huh_b，played）
+  ✓ SFX 解碼數（含 16 個生命感）55
+  ✓ 行為日誌記錄 clip turn_back
+  ✓ 點前面：唔轉身、唔播 huh
+  📷 live-d2-turn
+# 臉 mode：off／native
+  ✓ faceMode off → 唔畫臉（faceDrawn 0），tint 仍 1 次
+  📷 live-face-off
+  ✓ faceMode native → 用 PR #17 原 atlas（無 overlay）
+# 燈泡情緒
+  ✓ 肚餓 → 燈泡 hungry
+# ?live=0 fallback
+  ✓ ?live=0：唔載生命感、turn_back 唔 ready（點背後只翻轉＋gaze）
+  ✓ ?live=0：D2 翻轉（無 clip）
+# debug 面板
+  ✓ debug 面板：眼款 surprised＋gaze U
+  📷 live-debug-panel
+  ✓ console 無錯誤／警告
+
+45 passed, 0 failed

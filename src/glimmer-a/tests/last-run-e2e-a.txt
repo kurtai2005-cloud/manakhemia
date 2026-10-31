@@ -96,7 +96,7 @@
   ✓ 一鍵領取：4 條 × ✦3 = +12
   📷 a-diary-claimed
 # PR #19：14 日離線補抽／連點鬧脾氣 48h／睡眠點擊輕喚醒／壞存檔回退
-  ✓ 14 日離線：彈窗 2、入日記 30 條（≤50）
+  ✓ 14 日離線：彈窗 2、入日記 36 條（≤50）
   📷 a-offline-14d
   ✓ __qa.pet.tapPet(5)：觸發鬧脾氣事件，冷卻 48h
   ✓ 冷卻內再連點：唔再觸發事件
@@ -110,7 +110,7 @@
 # 音訊：手勢解鎖、cue、BGM 按時段 crossfade
   ✓ （載入時未解鎖或已解鎖皆可）
   ✓ AudioContext 手勢後 running
-  ✓ SFX 解碼 39 個
+  ✓ SFX 解碼 55 個
   ✓ cue：tap／feed／bgm:start:noon
   ✓ BGM 午→夜 crossfade，目標 offset 對齊小節線（7.0588s＝第 2 小節）
   ✓ （關燈 sleep_breath loop：）

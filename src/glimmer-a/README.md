@@ -1,4 +1,21 @@
-# 微光小圃（Glimmer Garden）— MVP 原型
+# 微光小圃（Glimmer Garden）— glimmer-live（生命感第一段 S1）
+
+> 呢個資料夾由 PR #17 修好版 glimmer-a 複製（10:57 HKT 版），之後只喺度加「生命感」。第一段改動集中喺 **寵物繪製（render.js `drawPetBeh`＋新 `loadLive`／`liveFrame`／`liveAnchors`／`bulb*`）／behavior／main（`__qa.pet`）／ui（debug 面板）**，背景／場景繪製未郁（方便之後合併 glimmer-hd2d 嘅 HD-2D 場景模組）。
+
+## 生命感第一段（F1＋F2＋A1＋D2）
+- **玩法**：本機 `python3 -m http.server 8138` → `http://localhost:8138/index.html?debug=1`；或者雙擊 **`dist/glimmer-live-s1.html`**（單檔，資產＋音效 base64 內嵌，file:// 可開，手機可用）。重 build：`python3 tools/build-single.py`。
+- **F1 表情 overlay**：遊美 `art/liveliness/atlas_<form>_live`（`<clip>_noface` 身體）喺 `tmpPet` 先合成身體＋eyeL／eyeR／mouth（逐幀 `face_anchors.json` 錨點，位置＝anchor − piece.pivotPx），之後先 **tint 一次**；朝左成個合成 scaleX −1。閉眼款（happy／sleepy／wink）只用 `_C_`；wink＝左 `eyes_neutral_<g>_l`＋右 `eyes_wink_C_r`。`faceVisible=false`（turn_back 第 0 幀背面）唔畫臉。容錯：缺 piece → 色塊 placeholder；缺 anchors → 由 `FORMS.headR` 推算；未有 noface 嘅 clip → idle_noface＋程序化變形；整套載唔到 → 返回 PR #17 原 atlas。
+- **燈泡**：`bulb_base` 喺 tint 前（跟時段光），`bulb_glow` 喺 tint 後按情緒（happy／neutral／sleepy／hungry／grumpy，CLIPS.json bulb 表）上色＋呼吸，0.4 秒漸變；sick 唔顯示。頂部道具（attach props）改用逐幀 `head_r` 錨點。
+- **F2 gaze／A1 邊行邊望**：目標＝行路方向／觸點／花盆／螢火／鏡頭，平滑後量化 L/CL/C/CR/R/U/D，換格最少停 0.25 秒；walk 時跟方向，偶爾望鏡頭。
+- **D2 點一下回頭**：點寵物背後 → 轉向觸點＋播 `turn_back` clip（4 幀 8fps）＋隨機 `sfx_pet_turn_huh_a/b`（經 audio.js，跟 pet bus 音量／1.5 秒冷卻）；點前面只 gaze 望觸點。16 個生命感音效全部已 copy＋註冊，第一段只觸發 turn_huh。
+- **URL**：`?live=0`（停用生命感，用回原 atlas）、`?face=off|native`、`?bulb=0`。
+- **debug 面板**（`?debug=1` → DBG）：臉 mode（auto／native／off）、眼款 8 款、口款 8 款、gaze 7 格（＋自動）、觸摸（點背後／前面／頭頂）、燈泡開關；資訊欄顯示 face／look。
+- **`__qa.pet` 新增**：`gaze()`（q, ql, src, x, y, tx, ty, force, dir, turn）、`face()`（eyes, mouth, gaze, clip, frame, faceVisible, live, pieces, placeholder, bulb, stat{draws,tints,overlays,faceDrawn,faceHidden,placeholder,bulb}）、`tap(x,y)`、`setGaze(q|null)`、`setFace({eyes,mouth}|null)`、`faceMode(m)`、`faceStatReset()`。`tapPet()` 改為點寵物前面（唔觸發 D2）。
+- **測試**：`node tests/e2e-live.js`（45 項，BASE 預設 8138；`BASE=file:///…/dist/glimmer-live-s1.html` 可測單檔版）。
+
+---
+
+# （以下沿用 PR #17 README）微光小圃（Glimmer Garden）— MVP 原型
 
 原創養成遊戲《微光小圃》嘅可玩最小原型：HTML5 Canvas + 原生 JS，**無 build、無依賴、無外部素材**。
 所有像素美術都係用程式喺 canvas 即時生成（原創）。設計依據：`game-design/docs-gdd/pet-one-pager.md`（第 12 節 MVP 範圍）。
@@ -57,12 +74,13 @@ docs/engine-eval.md        引擎評估（Godot／Unity／Web）
 
 ## 測試
 ```
-node tests/sim.test.js                                   # 82 項
+node tests/sim.test.js                                   # 85 項
 node tests/events.test.js                                # 事件／保底／閃光日已領／lastSaveTime 回撥／PR #19 P0–P1＋離線唔計上限＋PR #17 QA 修正（154 項）
-node tests/behavior.test.js                              # 行為（含 atlas／無舊 2048 圖檢查、23 clip 全交付、daylight 時段 hook、連點請求／輕喚醒，63 項）
-node tests/audio.test.js                                 # 音訊 Director＋檔案 sha256 對照 staging（22 項）
+node tests/behavior.test.js                              # 行為（含 atlas、23 clip、daylight hook、輕喚醒＋生命感 gaze 量化／dwell／A1／D2／F1 款式／資產齊全，78 項）
+node tests/audio.test.js                                 # 音訊 Director＋檔案 sha256 對照 staging＋生命感 16 音效（28 項）
 node tests/sim-report.js                                 # PR #19 自跑模擬（14 日離線條數／彩虹日數／螢火傍晚佔比）
-node tests/e2e-a.js                                      # 方案 A 端到端（~90 秒，截圖 screens/a-*.png）
+node tests/e2e-a.js                                      # 方案 A 端到端（90 項，~150 秒）
+node tests/e2e-live.js                                   # 生命感第一段（45 項，截圖 screens/live-*.png）
 python3 -m http.server 8137 &                            # 於本資料夾（方案 A 用 8137；8125 係別個 agent 用）
 node tests/e2e-playwright.js                             # 需 playwright-core 與 /usr/bin/google-chrome（可用 PW／CHROME／BASE 覆寫）
 ```
