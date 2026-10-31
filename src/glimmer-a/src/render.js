@@ -404,13 +404,20 @@
       const img = (src) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error(src)); im.src = src; });
       const jget = (u) => fetch(u).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); });
       const jobs = [jget(base + cfg.anchors).then(j => { lv.anchors = j.anchors; lv.pivotPx = j.pivotPx; }).catch(e => lv.errors.push(String(e.message || e)))];
-      Object.keys(cfg.atlases).forEach(f => { const n = cfg.atlases[f]; jobs.push(Promise.all([jget(base + n + '.json'), img(base + n + '.png')]).then(([json, im]) => { lv.atlas[f] = { json, img: im }; }).catch(e => lv.errors.push(String(e.message || e)))); });
+      // s2：每 form 可有多張 atlas（atlas_<form>_live＋atlas_<form>_live_s2）→ 合併 frames／animations（每幀記住自己張圖）；第一張（五官 kit）必須有，後面缺就照用 fallback
+      Object.keys(cfg.atlases).forEach(f => { const ns = [].concat(cfg.atlases[f]);
+        jobs.push(Promise.all(ns.map((n, i) => Promise.all([jget(base + n + '.json'), img(base + n + '.png')]).catch(e => { lv.errors.push(String(e.message || e)); if (i === 0) throw e; return null; }))).then(parts => {
+          const m = { frames: {}, animations: {}, meta: parts[0][0].meta, parts: [] };
+          parts.forEach((pt, i) => { if (!pt) return; const [json, im] = pt; m.parts.push(ns[i]); for (const k in json.frames) m.frames[k] = Object.assign({ _img: im }, json.frames[k]); Object.assign(m.animations, json.animations || {}); });
+          lv.atlas[f] = { json: m, img: parts[0][1] };
+        }).catch(() => { })); });
+      if (cfg.fx) jobs.push(Promise.all([jget(base + cfg.fx + '.json'), img(base + cfg.fx + '.png')]).then(([json, im]) => { lv.fx = { json, img: im }; }).catch(e => lv.errors.push(String(e.message || e))));   // fx bug（8×8，3 幀，pivot (4,4)）
       return Promise.all(jobs).then(() => { this.lv = Object.keys(lv.atlas).length ? lv : null; this.lvError = lv.errors.length ? lv.errors.join('; ') : null; return this.lv; });
     }
     liveFrame(fk, name) {               // kit piece／幀：{img,sx,sy,sw,sh,px,py}
       const A = this.lv && this.lv.atlas[fk]; const f = A && A.json.frames[name]; if (!f) return null;
       const pv = f.pivotPx || { x: f.frame.w >> 1, y: f.frame.h >> 1 };
-      return { img: A.img, sx: f.frame.x, sy: f.frame.y, sw: f.frame.w, sh: f.frame.h, px: pv.x, py: pv.y, name };
+      return { img: f._img || A.img, sx: f.frame.x, sy: f.frame.y, sw: f.frame.w, sh: f.frame.h, px: pv.x, py: pv.y, name };
     }
     liveAnchors(fk, clip, frame, src) {  // 錨點：face_anchors；冇就由 FORMS.headR 推算
       const L = this.lv && this.lv.anchors && this.lv.anchors[fk] && this.lv.anchors[fk][clip];
@@ -874,10 +881,19 @@
         if (gl) { x.globalAlpha = Math.max(0, Math.min(1, S.i)); x.drawImage(gl.c, -src.px + anc.bulb[0] - gl.px, -src.py + anc.bulb[1] - gl.py); x.globalAlpha = 1; this.faceStat.bulb++; fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)) }; }
       }
       x.restore();
-      if (b.bug) {                                    // A2 swat 蟲仔 fx（缺 bug 美術 → 程序化 2×2 點＋1px 翼閃）
-        const bx = Math.round(px + b.bug.x), by = Math.round(py + b.bug.y), wf = Math.floor(t * 18) & 1;
-        x.fillStyle = '#2a2230'; x.fillRect(ox(bx), oy(by), 2, 2);
-        x.fillStyle = 'rgba(232,240,255,0.85)'; x.fillRect(ox(bx + (wf ? -1 : 2)), oy(by - 1), 1, 1);
+      if (b.bug) {                                    // A2 swat 蟲仔 fx：遊美 fx/atlas_fx_live（fx_bug 01→02→03→02，10fps，pivot (4,4)，朝右）；冇就程序化 2×2 點＋1px 翼閃
+        const bx = Math.round(px + b.bug.x), by = Math.round(py + b.bug.y), FX = this.lv && this.lv.fx, an = FX && FX.json.animations && FX.json.animations.fx_bug;
+        const fr = an && FX.json.frames[an.frames[Math.floor((b.bug.t || 0) * (an.fps || 10)) % an.frames.length]];
+        if (fr) {
+          const face = b.bug.st === 'flee' ? (b.bug.vx < 0 ? -1 : 1) : (b.bug.x > 0 ? -1 : 1), pv = fr.pivotPx || { x: 4, y: 4 };   // 飛走跟方向；buzz 時望住團絨
+          x.save(); x.translate(ox(bx), oy(by)); x.scale(face, 1); x.drawImage(FX.img, fr.frame.x, fr.frame.y, fr.frame.w, fr.frame.h, -pv.x, -pv.y, fr.frame.w, fr.frame.h); x.restore();
+          fst.bugArt = true;
+        } else {
+          const wf = Math.floor(t * 18) & 1;
+          x.fillStyle = '#2a2230'; x.fillRect(ox(bx), oy(by), 2, 2);
+          x.fillStyle = 'rgba(232,240,255,0.85)'; x.fillRect(ox(bx + (wf ? -1 : 2)), oy(by - 1), 1, 1);
+          fst.bugArt = false;
+        }
         fst.bug = b.bug.st;
       }
       this.faceStat.last = fst;

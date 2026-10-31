@@ -107,6 +107,9 @@
         swatMiss: 0.8, smugSec: 1.4,         // 拍蟲撲空 → 得意擺 pose（emo_happy 身體＋squint／ω 臉＋頭微轉＋spark）
         sniffSneeze: 0.45, coolSec: 1.2,     // 嗅地嗅到打噴嚏 → 扮冷靜（sway 身體＋squint 望開）
         lookupTip: 0.5, tipSec: 0.55, tipRot: 0.17, getupSec: 0.8,   // 望天望到向後倒少少（lookup 尾幀＋程序化後仰）→ 起返身（wake）→ 扮冷靜
+        // s2 美術到（遊美 10-31 live_s2）：smug_pose／act_cool／lookup_tip／getup／sniff_itch ready 就用真 clip，否則（dust／?live=0）照用上面 fallback
+        // 開發者「即刻觸發」：開心步／拖步即刻行 4–6s；展示模式（Kurt：「唔覺有咩分別」）：小動作＋中途停步頻率 ×5、冷卻（含 10 分鐘不重複）÷5；存 localStorage
+        nowWalkSec: [4, 6], demoMul: 5, demoKey: 'glimmer.liveDemo',
       },
       // ── 團絨生命感 第一段：視線（F2 gaze／A1 邊行邊望／D2 點一下回頭）。用獨立 RNG（lookSalt），唔影響原有行為抽籤 ──
       look: {
@@ -164,7 +167,7 @@
     // 表情 overlay（F1）：mode auto＝有 *_noface 身體就合成真五官；冇就「擦臉＋色塊臉 placeholder」；native＝用返圖集原本張臉；off＝唔畫臉（QA）
     face: {
       mode: 'auto',
-      liveliness: { enabled: true, base: 'art/liveliness/', anchors: 'face_anchors.json', atlases: { sprout: 'atlas_sprout_live', radiant: 'atlas_radiant_live', soft: 'atlas_soft_live' } },   // 遊美生命感 v1（10-31）：<clip>_noface 身體＋kit 五官＋燈泡；缺檔／缺件一律 fallback（色塊臉 placeholder）；?live=0 停用
+      liveliness: { enabled: true, base: 'art/liveliness/', anchors: 'face_anchors.json', atlases: { sprout: ['atlas_sprout_live', 'atlas_sprout_live_s2'], radiant: ['atlas_radiant_live', 'atlas_radiant_live_s2'], soft: ['atlas_soft_live', 'atlas_soft_live_s2'] }, fx: 'fx/atlas_fx_live' },   // 遊美生命感 v1（10-31）：<clip>_noface 身體＋kit 五官＋燈泡；缺檔／缺件一律 fallback（色塊臉 placeholder）；?live=0 停用
       eyes: ['neutral', 'happy', 'surprised', 'sleepy', 'squint', 'wink', 'angry', 'sad'],
       closedEyes: ['happy', 'sleepy', 'wink'],   // 閉眼款只有 C
       gazeBins: ['L', 'CL', 'C', 'CR', 'R', 'U', 'D'],
@@ -184,8 +187,15 @@
         swat: [['surprised', 'U', 'neutral'], ['angry', 'CR', 'angry'], ['squint', 'R', 'angry'], ['happy', 'C', 'happy']],
         scratch: [['squint', 'CL', 'neutral'], ['squint', 'CL', 'squint'], ['happy', 'C', 'squint'], ['squint', 'CL', 'squint'], ['happy', 'C', 'squint'], ['happy', 'C', 'neutral']],
         sneeze: [['squint', 'U', 'surprised'], ['squint', 'U', 'surprised'], ['happy', 'C', 'happy'], ['squint', 'C', 'neutral'], ['neutral', 'CL', 'wink']],
+        // s2（遊美 live_s2 face_anchors；smug_pose 第 3–4 幀＝preset smug）
+        smug_pose: [['neutral', 'D', 'neutral'], ['squint', 'C', 'neutral'], ['sleepy', 'C', 'squint'], ['sleepy', 'C', 'squint']],
+        act_cool: [['squint', 'L', 'neutral'], ['sleepy', 'C', 'surprised'], ['squint', 'L', 'neutral'], ['squint', 'L', 'sleepy']],
+        lookup_tip: [['surprised', 'U', 'surprised'], ['surprised', 'U', 'surprised'], ['surprised', 'CL', 'surprised'], ['squint', 'C', 'surprised']],
+        getup: [['squint', 'C', 'sleepy'], ['angry', 'C', 'angry'], ['neutral', 'CR', 'neutral'], ['neutral', 'C', 'neutral']],
+        sniff_itch: [['squint', 'D', 'sleepy'], ['squint', 'U', 'sleepy']],
       },
-      clipFramesGaze: ['sniff', 'lookup', 'swat', 'scratch', 'sneeze', 'walk_drag'],   // 用 art gaze（其餘跟 look）
+      presets: { smug: ['sleepy', 'C', 'squint'] },   // 遊美 faceKit.presets.smug（eyes sleepy＋mouth squint ω）
+      clipFramesGaze: ['sniff', 'lookup', 'swat', 'scratch', 'sneeze', 'walk_drag', 'smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch'],   // 用 art gaze（其餘跟 look）
       blinkFrames: [1, 2],                   // blink clip 呢幾幀用閉眼
       ink: '#3b2a3e', shine: '#fff8e0', mouthIn: '#c8506a',
       // 光芽燈泡（CLIPS.json bulb）：bulb_base＋bulb_glow（multiply tint × intensity）；sick 唔疊；情緒轉換 0.4s 漸變
@@ -266,12 +276,18 @@
     grumpy: {"name": "grumpy", "frames": 4, "fps": 8, "loop": true, "pivot": "bottom-center", "priority": 5, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "extra": true},
     // 生命感第二段（遊美 liveliness v1：只有 <clip>_noface＋kit 五官；main 載入 live atlas 後先設 ready；冇 → idle＋程序化佔位）
     lookup: {"name": "lookup", "frames": 4, "fps": 5, "loop": false, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 25, "next": "idle", "ready": false, "live": true},   // 舊 extra（2 幀 2fps）→ 生命感 A2 望天 4 幀 5fps；流星事件照用
-    walk_happy: {"name": "walk_happy", "frames": 6, "fps": 10, "loop": true, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "live": true, "variantOf": "walk", "land": [2, 5]},
-    walk_drag: {"name": "walk_drag", "frames": 6, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "live": true, "variantOf": "walk", "land": [1, 4]},
+    walk_happy: {"name": "walk_happy", "frames": 6, "fps": 10, "loop": true, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "live": true, "variantOf": "walk", "land": [0, 3]},   // 遊美 s2 量度：落地＝0、3（2、5 係最高點）
+    walk_drag: {"name": "walk_drag", "frames": 6, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "live": true, "variantOf": "walk", "scuff": [1, 4], "land": [2, 5]},   // 拖地起塵＋拖地聲 1、4；踏地聲 2、5
     sniff: {"name": "sniff", "frames": 4, "fps": 6, "loop": false, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 25, "next": "idle", "ready": false, "live": true},
     swat: {"name": "swat", "frames": 4, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 2, "interruptible": false, "cooldown": 40, "next": "idle", "ready": false, "live": true, "hitFrame": 2},
     scratch: {"name": "scratch", "frames": 6, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 1, "interruptible": true, "cooldown": 600, "next": "idle", "ready": false, "live": true, "replay": [2, 5]},
     sneeze: {"name": "sneeze", "frames": 5, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 1, "interruptible": false, "cooldown": 600, "next": "idle", "ready": false, "live": true, "achooFrame": 2},
+    // 生命感 s2（遊美 10-31 atlas_<form>_live_s2）：個性「蠢蠢地但覺得自己好醒」
+    smug_pose: {"name": "smug_pose", "frames": 4, "fps": 6, "loop": false, "pivot": "bottom-center", "priority": 3, "interruptible": false, "cooldown": 30, "next": "idle", "ready": false, "live": true, "holdLast": 0.8, "facePreset": "smug"},
+    act_cool: {"name": "act_cool", "frames": 4, "fps": 5, "loop": false, "pivot": "bottom-center", "priority": 3, "interruptible": false, "cooldown": 20, "next": "idle", "ready": false, "live": true},
+    lookup_tip: {"name": "lookup_tip", "frames": 4, "fps": 6, "loop": false, "pivot": "bottom-center", "priority": 2, "interruptible": false, "cooldown": 60, "next": "getup", "ready": false, "live": true},
+    getup: {"name": "getup", "frames": 4, "fps": 6, "loop": false, "pivot": "bottom-center", "priority": 2, "interruptible": false, "cooldown": 0, "next": "act_cool", "ready": false, "live": true},
+    sniff_itch: {"name": "sniff_itch", "frames": 2, "fps": 6, "loop": false, "pivot": "bottom-center", "priority": 1, "interruptible": false, "cooldown": 0, "next": "sneeze", "ready": false, "live": true},
     dig: {"name": "dig", "frames": 4, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "extra": true},
   };
   // 表情＝需求狀態綁定；clip＝基礎層 clip（art CLIPS.json 優先序：sick > emo_hungry > emo_sleepy > emo_wantplay > idle）
@@ -367,6 +383,8 @@
       pet_scratch_a: { file: 'sfx_pet_scratch_a', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_scratch', rate: true, noGap: true }, pet_scratch_b: { file: 'sfx_pet_scratch_b', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_scratch', rate: true, noGap: true },
       pet_step_hop_a: { file: 'sfx_pet_step_hop_a', bus: 'pet', gain: 1, cd: 0.1, cdKey: 'pet_step', rate: true, noGap: true, noLast: true }, pet_step_hop_b: { file: 'sfx_pet_step_hop_b', bus: 'pet', gain: 1, cd: 0.1, cdKey: 'pet_step', rate: true, noGap: true, noLast: true },
       pet_step_drag_a: { file: 'sfx_pet_step_drag_a', bus: 'pet', gain: 1, cd: 0.4, cdKey: 'pet_step', rate: true, noGap: true, noLast: true }, pet_step_drag_b: { file: 'sfx_pet_step_drag_b', bus: 'pet', gain: 1, cd: 0.4, cdKey: 'pet_step', rate: true, noGap: true, noLast: true },
+      // 拖步「踏地聲」（walk_drag 2、5）：未有專屬檔 → 借 step_hop a/b 細聲＋低音高（遊音確認前暫用）
+      pet_step_plod_a: { file: 'sfx_pet_step_hop_a', bus: 'pet', gain: 0.5, cd: 0.3, cdKey: 'pet_plod', fixedRate: 0.82, noGap: true, noLast: true }, pet_step_plod_b: { file: 'sfx_pet_step_hop_b', bus: 'pet', gain: 0.5, cd: 0.3, cdKey: 'pet_plod', fixedRate: 0.82, noGap: true, noLast: true },
       pet_nuzzle_purr_a: { file: 'sfx_pet_nuzzle_purr_a', bus: 'pet', gain: 1, reserved: true }, pet_nuzzle_purr_b: { file: 'sfx_pet_nuzzle_purr_b', bus: 'pet', gain: 1, reserved: true },
       pet_reunion_happy_a: { file: 'sfx_pet_reunion_happy_a', bus: 'pet', gain: 1, cdKey: 'pet_reunion', rate: true, reserved: true }, pet_reunion_happy_b: { file: 'sfx_pet_reunion_happy_b', bus: 'pet', gain: 1, cdKey: 'pet_reunion', rate: true, reserved: true },
       pet_bug_pat_a: { file: 'sfx_pet_bug_pat_a', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_bug_pat', noGap: true, rate: true }, pet_bug_pat_b: { file: 'sfx_pet_bug_pat_b', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_bug_pat', noGap: true, rate: true },

@@ -24,7 +24,8 @@
     0
    ],
    "liveAtlas": [
-    "atlas_sprout_live.png"
+    "atlas_sprout_live.png",
+    "atlas_sprout_live_s2.png"
    ]
   },
   "radiant": {
@@ -49,7 +50,8 @@
     0
    ],
    "liveAtlas": [
-    "atlas_radiant_live.png"
+    "atlas_radiant_live.png",
+    "atlas_radiant_live_s2.png"
    ]
   },
   "soft": {
@@ -74,8 +76,117 @@
     0
    ],
    "liveAtlas": [
-    "atlas_soft_live.png"
+    "atlas_soft_live.png",
+    "atlas_soft_live_s2.png"
    ]
+  },
+  "lumi": {
+   "name": "螢絨",
+   "rarity": "rare",
+   "stage": "adult",
+   "skeleton": "round_s（同 radiant）",
+   "frameSize": 64,
+   "pivotPx": [
+    32,
+    61
+   ],
+   "atlas": "../atlas_lumi.png",
+   "json": "../atlas_lumi.json",
+   "emissive": "../atlas_lumi_emissive.png",
+   "atlasSize": [
+    1024,
+    1024
+   ],
+   "atlasPieces": 290,
+   "frames": 102,
+   "headRightAnchor": [
+    16,
+    -28
+   ],
+   "potAnchor": [
+    31,
+    0
+   ],
+   "sunAnchor": [
+    0,
+    0
+   ],
+   "palette": "../lumi/palette_lumi.json",
+   "faceAnchors": "../lumi/face_anchors_lumi.json",
+   "clips": [
+    "idle",
+    "blink",
+    "sway",
+    "yawn",
+    "emo_happy",
+    "emo_hungry",
+    "emo_wantplay",
+    "emo_sleepy",
+    "emo_cuddly",
+    "emo_surprised",
+    "walk",
+    "play",
+    "fall_asleep",
+    "sleep_loop",
+    "wake",
+    "sunbathe",
+    "pot_bump",
+    "catch_reach",
+    "cheer_jump",
+    "droop",
+    "eat",
+    "celebrate",
+    "sick",
+    "picked_up"
+   ],
+   "mvp": [
+    "idle",
+    "blink",
+    "walk",
+    "play",
+    "eat",
+    "sleep_loop",
+    "emo_happy",
+    "emo_hungry",
+    "emo_sleepy",
+    "celebrate",
+    "droop",
+    "sick"
+   ],
+   "extra": [
+    "picked_up",
+    "fall_asleep",
+    "wake"
+   ],
+   "std23": [
+    "idle",
+    "blink",
+    "sway",
+    "yawn",
+    "emo_happy",
+    "emo_hungry",
+    "emo_wantplay",
+    "emo_sleepy",
+    "emo_cuddly",
+    "emo_surprised",
+    "walk",
+    "play",
+    "fall_asleep",
+    "sleep_loop",
+    "wake",
+    "sunbathe",
+    "pot_bump",
+    "catch_reach",
+    "cheer_jump",
+    "droop",
+    "eat",
+    "celebrate",
+    "sick"
+   ],
+   "clipSet": "std23 + picked_up",
+   "std23Remaining": [],
+   "emissiveRule": "白＝發光（palette fly #CFF26A、fly_core #F2FFB8）：尾燈、觸角燈頭、身上光點、眼高光。發光像素唔食場景 petTint×ambientTint；glow = emissive Gaussian σ3 × #cff26a ×1.4 ＋ σ1 × #f2ffb8 ×0.35",
+   "note": "姿勢參數同 radiant 一樣（round_s），只換外觀層；尾燈脈衝（bud＋幀相位）、光點閃爍已烙入幀。"
   }
  },
  "facing": "right (clips drawn facing right; mirror with scaleX=-1)",
@@ -450,6 +561,156 @@
        "src": "open/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       49,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       19
+      ],
+      "tail": [
+       10,
+       50
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "blink/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       45,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       38,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -457,6 +718,16 @@
     "faceov": "liveliness/layers/<form>/idle_NN_faceov.png",
     "nofaceClip": "idle_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/idle_NN.png",
+    "noface": "../lumi/layers/idle_NN_noface.png",
+    "faceov": "../lumi/layers/idle_NN_faceov.png",
+    "emissive": "../lumi/emissive/idle_NN_emissive.png",
+    "atlasClip": "idle",
+    "nofaceClip": "idle_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -827,6 +1098,156 @@
        "src": "half/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       22
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       21
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "half/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       47,
+       22
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       21
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "blink/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "half/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -834,6 +1255,16 @@
     "faceov": "liveliness/layers/<form>/blink_NN_faceov.png",
     "nofaceClip": "blink_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/blink_NN.png",
+    "noface": "../lumi/layers/blink_NN_noface.png",
+    "faceov": "../lumi/layers/blink_NN_faceov.png",
+    "emissive": "../lumi/emissive/blink_NN_emissive.png",
+    "atlasClip": "blink",
+    "nofaceClip": "blink_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -1204,6 +1635,156 @@
        "src": "open/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       49,
+       33
+      ],
+      "bulb": [
+       52,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       45,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       44
+      ],
+      "eyeR": [
+       42,
+       44
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       47,
+       33
+      ],
+      "bulb": [
+       42,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       35,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -1211,6 +1792,16 @@
     "faceov": "liveliness/layers/<form>/sway_NN_faceov.png",
     "nofaceClip": "sway_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/sway_NN.png",
+    "noface": "../lumi/layers/sway_NN_noface.png",
+    "faceov": "../lumi/layers/sway_NN_faceov.png",
+    "emissive": "../lumi/emissive/sway_NN_emissive.png",
+    "atlasClip": "sway",
+    "nofaceClip": "sway_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -1581,6 +2172,156 @@
        "src": "half/o"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       27,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       47,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       19
+      ],
+      "tail": [
+       10,
+       50
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "half/o"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       47,
+       31
+      ],
+      "bulb": [
+       47,
+       19
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       18
+      ],
+      "tail": [
+       11,
+       50
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "sleep/yawn"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       43
+      ],
+      "eyeR": [
+       41,
+       43
+      ],
+      "mouth": [
+       34,
+       49
+      ],
+      "head_r": [
+       47,
+       30
+      ],
+      "bulb": [
+       49,
+       18
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       17
+      ],
+      "tail": [
+       11,
+       50
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "sleep/yawn"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       47,
+       22
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       21
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "half/o"
+      }
+     }
     ]
    },
    "layers": {
@@ -1588,6 +2329,16 @@
     "faceov": "liveliness/layers/<form>/yawn_NN_faceov.png",
     "nofaceClip": "yawn_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/yawn_NN.png",
+    "noface": "../lumi/layers/yawn_NN_noface.png",
+    "faceov": "../lumi/layers/yawn_NN_faceov.png",
+    "emissive": "../lumi/emissive/yawn_NN_emissive.png",
+    "atlasClip": "yawn",
+    "nofaceClip": "yawn_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -1793,7 +2544,93 @@
        "src": "happy/open"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       34
+      ],
+      "bulb": [
+       47,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       42
+      ],
+      "eyeR": [
+       41,
+       42
+      ],
+      "mouth": [
+       34,
+       48
+      ],
+      "head_r": [
+       48,
+       30
+      ],
+      "bulb": [
+       49,
+       18
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       17
+      ],
+      "tail": [
+       11,
+       48
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     }
     ]
+   },
+   "lumi": {
+    "frames": 2,
+    "full": "../lumi/frames/emo_happy_NN.png",
+    "noface": "../lumi/layers/emo_happy_NN_noface.png",
+    "faceov": "../lumi/layers/emo_happy_NN_faceov.png",
+    "emissive": "../lumi/emissive/emo_happy_NN_emissive.png",
+    "atlasClip": "emo_happy",
+    "nofaceClip": "emo_happy_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -2005,7 +2842,93 @@
        "src": "open/o"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       35
+      ],
+      "bulb": [
+       50,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       27
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "sad",
+       "src": "open/frown"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       46
+      ],
+      "eyeR": [
+       43,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       50,
+       36
+      ],
+      "bulb": [
+       51,
+       29
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       28
+      ],
+      "tail": [
+       11,
+       52
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "open/o"
+      }
+     }
     ]
+   },
+   "lumi": {
+    "frames": 2,
+    "full": "../lumi/frames/emo_hungry_NN.png",
+    "noface": "../lumi/layers/emo_hungry_NN_noface.png",
+    "faceov": "../lumi/layers/emo_hungry_NN_faceov.png",
+    "emissive": "../lumi/emissive/emo_hungry_NN_emissive.png",
+    "atlasClip": "emo_hungry",
+    "nofaceClip": "emo_hungry_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -2217,7 +3140,93 @@
        "src": "shine/open"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       35
+      ],
+      "bulb": [
+       47,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "shine/open"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       42
+      ],
+      "eyeR": [
+       41,
+       42
+      ],
+      "mouth": [
+       34,
+       48
+      ],
+      "head_r": [
+       48,
+       30
+      ],
+      "bulb": [
+       49,
+       18
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       17
+      ],
+      "tail": [
+       11,
+       48
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "shine/open"
+      }
+     }
     ]
+   },
+   "lumi": {
+    "frames": 2,
+    "full": "../lumi/frames/emo_wantplay_NN.png",
+    "noface": "../lumi/layers/emo_wantplay_NN_noface.png",
+    "faceov": "../lumi/layers/emo_wantplay_NN_faceov.png",
+    "emissive": "../lumi/emissive/emo_wantplay_NN_emissive.png",
+    "atlasClip": "emo_wantplay",
+    "nofaceClip": "emo_wantplay_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -2429,7 +3438,93 @@
        "src": "sleep/flat"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       35
+      ],
+      "bulb": [
+       50,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       27
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sleepy",
+       "src": "half/flat"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       47
+      ],
+      "eyeR": [
+       42,
+       47
+      ],
+      "mouth": [
+       34,
+       52
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       50,
+       29
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       28
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "sleepy",
+       "src": "sleep/flat"
+      }
+     }
     ]
+   },
+   "lumi": {
+    "frames": 2,
+    "full": "../lumi/frames/emo_sleepy_NN.png",
+    "noface": "../lumi/layers/emo_sleepy_NN_noface.png",
+    "faceov": "../lumi/layers/emo_sleepy_NN_faceov.png",
+    "emissive": "../lumi/emissive/emo_sleepy_NN_emissive.png",
+    "atlasClip": "emo_sleepy",
+    "nofaceClip": "emo_sleepy_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -2641,7 +3736,93 @@
        "src": "happy/cat"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       22,
+       45
+      ],
+      "eyeR": [
+       38,
+       45
+      ],
+      "mouth": [
+       29,
+       51
+      ],
+      "head_r": [
+       45,
+       34
+      ],
+      "bulb": [
+       43,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       36,
+       22
+      ],
+      "tail": [
+       7,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "squint",
+       "src": "happy/cat"
+      }
+     },
+     {
+      "eyeL": [
+       30,
+       45
+      ],
+      "eyeR": [
+       46,
+       45
+      ],
+      "mouth": [
+       37,
+       51
+      ],
+      "head_r": [
+       53,
+       34
+      ],
+      "bulb": [
+       51,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       22
+      ],
+      "tail": [
+       13,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "squint",
+       "src": "happy/cat"
+      }
+     }
     ]
+   },
+   "lumi": {
+    "frames": 2,
+    "full": "../lumi/frames/emo_cuddly_NN.png",
+    "noface": "../lumi/layers/emo_cuddly_NN_noface.png",
+    "faceov": "../lumi/layers/emo_cuddly_NN_faceov.png",
+    "emissive": "../lumi/emissive/emo_cuddly_NN_emissive.png",
+    "atlasClip": "emo_cuddly",
+    "nofaceClip": "emo_cuddly_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -2853,7 +4034,93 @@
        "src": "wide/o"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       27,
+       42
+      ],
+      "eyeR": [
+       41,
+       42
+      ],
+      "mouth": [
+       34,
+       48
+      ],
+      "head_r": [
+       47,
+       29
+      ],
+      "bulb": [
+       47,
+       17
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       16
+      ],
+      "tail": [
+       11,
+       48
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "wide/o"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       43
+      ],
+      "eyeR": [
+       41,
+       43
+      ],
+      "mouth": [
+       34,
+       49
+      ],
+      "head_r": [
+       48,
+       31
+      ],
+      "bulb": [
+       47,
+       19
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       18
+      ],
+      "tail": [
+       10,
+       49
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "wide/o"
+      }
+     }
     ]
+   },
+   "lumi": {
+    "frames": 2,
+    "full": "../lumi/frames/emo_surprised_NN.png",
+    "noface": "../lumi/layers/emo_surprised_NN_noface.png",
+    "faceov": "../lumi/layers/emo_surprised_NN_faceov.png",
+    "emissive": "../lumi/emissive/emo_surprised_NN_emissive.png",
+    "atlasClip": "emo_surprised",
+    "nofaceClip": "emo_surprised_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -3398,6 +4665,230 @@
        "src": "open/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       28,
+       46
+      ],
+      "eyeR": [
+       44,
+       46
+      ],
+      "mouth": [
+       35,
+       51
+      ],
+      "head_r": [
+       50,
+       35
+      ],
+      "bulb": [
+       48,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       41,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       31,
+       43
+      ],
+      "eyeR": [
+       45,
+       43
+      ],
+      "mouth": [
+       37,
+       49
+      ],
+      "head_r": [
+       51,
+       31
+      ],
+      "bulb": [
+       51,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       19
+      ],
+      "tail": [
+       11,
+       50
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       31,
+       42
+      ],
+      "eyeR": [
+       45,
+       42
+      ],
+      "mouth": [
+       37,
+       48
+      ],
+      "head_r": [
+       51,
+       30
+      ],
+      "bulb": [
+       53,
+       18
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       46,
+       17
+      ],
+      "tail": [
+       13,
+       48
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       30,
+       46
+      ],
+      "eyeR": [
+       46,
+       46
+      ],
+      "mouth": [
+       37,
+       51
+      ],
+      "head_r": [
+       52,
+       35
+      ],
+      "bulb": [
+       50,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       22
+      ],
+      "tail": [
+       12,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       31,
+       43
+      ],
+      "eyeR": [
+       45,
+       43
+      ],
+      "mouth": [
+       37,
+       49
+      ],
+      "head_r": [
+       51,
+       31
+      ],
+      "bulb": [
+       51,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       19
+      ],
+      "tail": [
+       11,
+       50
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       29,
+       42
+      ],
+      "eyeR": [
+       43,
+       42
+      ],
+      "mouth": [
+       35,
+       48
+      ],
+      "head_r": [
+       49,
+       30
+      ],
+      "bulb": [
+       51,
+       18
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       17
+      ],
+      "tail": [
+       11,
+       48
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -3405,6 +4896,16 @@
     "faceov": "liveliness/layers/<form>/walk_NN_faceov.png",
     "nofaceClip": "walk_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 6,
+    "full": "../lumi/frames/walk_NN.png",
+    "noface": "../lumi/layers/walk_NN_noface.png",
+    "faceov": "../lumi/layers/walk_NN_faceov.png",
+    "emissive": "../lumi/emissive/walk_NN_emissive.png",
+    "atlasClip": "walk",
+    "nofaceClip": "walk_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -3949,6 +5450,230 @@
        "src": "happy/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       22,
+       47
+      ],
+      "eyeR": [
+       40,
+       47
+      ],
+      "mouth": [
+       31,
+       52
+      ],
+      "head_r": [
+       47,
+       38
+      ],
+      "bulb": [
+       43,
+       27
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       36,
+       26
+      ],
+      "tail": [
+       7,
+       52
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "shine/open"
+      }
+     },
+     {
+      "eyeL": [
+       21,
+       48
+      ],
+      "eyeR": [
+       39,
+       48
+      ],
+      "mouth": [
+       29,
+       52
+      ],
+      "head_r": [
+       48,
+       38
+      ],
+      "bulb": [
+       43,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       36,
+       27
+      ],
+      "tail": [
+       8,
+       53
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "shine/open"
+      }
+     },
+     {
+      "eyeL": [
+       31,
+       41
+      ],
+      "eyeR": [
+       45,
+       41
+      ],
+      "mouth": [
+       38,
+       47
+      ],
+      "head_r": [
+       51,
+       28
+      ],
+      "bulb": [
+       53,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       46,
+       15
+      ],
+      "tail": [
+       14,
+       48
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "wide/open"
+      }
+     },
+     {
+      "eyeL": [
+       35,
+       40
+      ],
+      "eyeR": [
+       49,
+       40
+      ],
+      "mouth": [
+       41,
+       46
+      ],
+      "head_r": [
+       55,
+       28
+      ],
+      "bulb": [
+       55,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       48,
+       15
+      ],
+      "tail": [
+       15,
+       46
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "shine/open"
+      }
+     },
+     {
+      "eyeL": [
+       28,
+       48
+      ],
+      "eyeR": [
+       46,
+       48
+      ],
+      "mouth": [
+       37,
+       52
+      ],
+      "head_r": [
+       54,
+       38
+      ],
+      "bulb": [
+       51,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       27
+      ],
+      "tail": [
+       12,
+       53
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       44
+      ],
+      "eyeR": [
+       42,
+       44
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       47,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       19
+      ],
+      "tail": [
+       10,
+       50
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -3956,6 +5681,16 @@
     "faceov": "liveliness/layers/<form>/play_NN_faceov.png",
     "nofaceClip": "play_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 6,
+    "full": "../lumi/frames/play_NN.png",
+    "noface": "../lumi/layers/play_NN_noface.png",
+    "faceov": "../lumi/layers/play_NN_faceov.png",
+    "emissive": "../lumi/emissive/play_NN_emissive.png",
+    "atlasClip": "play",
+    "nofaceClip": "play_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -4333,6 +6068,156 @@
        "src": "sleep/none"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       47,
+       22
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       21
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sleepy",
+       "src": "half/flat"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       47
+      ],
+      "eyeR": [
+       42,
+       47
+      ],
+      "mouth": [
+       34,
+       52
+      ],
+      "head_r": [
+       48,
+       35
+      ],
+      "bulb": [
+       50,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       27
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "blink/o"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       50,
+       27
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       26
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sleepy",
+       "src": "half/flat"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       47
+      ],
+      "eyeR": [
+       42,
+       47
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       50,
+       30
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       29
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "none",
+       "src": "sleep/none"
+      }
+     }
     ]
    },
    "layers": {
@@ -4340,6 +6225,16 @@
     "faceov": "liveliness/layers/<form>/fall_asleep_NN_faceov.png",
     "nofaceClip": "fall_asleep_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/fall_asleep_NN.png",
+    "noface": "../lumi/layers/fall_asleep_NN_noface.png",
+    "faceov": "../lumi/layers/fall_asleep_NN_faceov.png",
+    "emissive": "../lumi/emissive/fall_asleep_NN_emissive.png",
+    "atlasClip": "fall_asleep",
+    "nofaceClip": "fall_asleep_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -4717,6 +6612,156 @@
        "src": "sleep/none"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       47
+      ],
+      "eyeR": [
+       42,
+       47
+      ],
+      "mouth": [
+       34,
+       52
+      ],
+      "head_r": [
+       49,
+       37
+      ],
+      "bulb": [
+       50,
+       30
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       29
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "none",
+       "src": "sleep/none"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       50,
+       29
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       28
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "none",
+       "src": "sleep/none"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       35
+      ],
+      "bulb": [
+       50,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       27
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "none",
+       "src": "sleep/none"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       50,
+       29
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       28
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "none",
+       "src": "sleep/none"
+      }
+     }
     ]
    },
    "layers": {
@@ -4724,6 +6769,16 @@
     "faceov": "liveliness/layers/<form>/sleep_loop_NN_faceov.png",
     "nofaceClip": "sleep_loop_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/sleep_loop_NN.png",
+    "noface": "../lumi/layers/sleep_loop_NN_noface.png",
+    "faceov": "../lumi/layers/sleep_loop_NN_faceov.png",
+    "emissive": "../lumi/emissive/sleep_loop_NN_emissive.png",
+    "atlasClip": "sleep_loop",
+    "nofaceClip": "sleep_loop_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -5094,6 +7149,156 @@
        "src": "open/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       35
+      ],
+      "bulb": [
+       50,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       27
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "half/o"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       47,
+       31
+      ],
+      "bulb": [
+       47,
+       19
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       18
+      ],
+      "tail": [
+       11,
+       50
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "blink/yawn"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       49,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "half/o"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -5101,6 +7306,16 @@
     "faceov": "liveliness/layers/<form>/wake_NN_faceov.png",
     "nofaceClip": "wake_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/wake_NN.png",
+    "noface": "../lumi/layers/wake_NN_noface.png",
+    "faceov": "../lumi/layers/wake_NN_faceov.png",
+    "emissive": "../lumi/emissive/wake_NN_emissive.png",
+    "atlasClip": "wake",
+    "nofaceClip": "wake_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -5826,6 +8041,304 @@
        "src": "happy/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       47,
+       25
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       24
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       35
+      ],
+      "bulb": [
+       49,
+       24
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       23
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       35
+      ],
+      "bulb": [
+       47,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       45,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       38,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "sleep/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       35
+      ],
+      "bulb": [
+       47,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "sleep/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       35
+      ],
+      "bulb": [
+       49,
+       24
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       23
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       47,
+       25
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       24
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       45,
+       25
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       38,
+       24
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -5833,6 +8346,16 @@
     "faceov": "liveliness/layers/<form>/sunbathe_NN_faceov.png",
     "nofaceClip": "sunbathe_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 8,
+    "full": "../lumi/frames/sunbathe_NN.png",
+    "noface": "../lumi/layers/sunbathe_NN_noface.png",
+    "faceov": "../lumi/layers/sunbathe_NN_faceov.png",
+    "emissive": "../lumi/emissive/sunbathe_NN_emissive.png",
+    "atlasClip": "sunbathe",
+    "nofaceClip": "sunbathe_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -6564,6 +9087,304 @@
        "src": "open/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       29,
+       45
+      ],
+      "eyeR": [
+       45,
+       45
+      ],
+      "mouth": [
+       37,
+       51
+      ],
+      "head_r": [
+       50,
+       34
+      ],
+      "bulb": [
+       49,
+       22
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       21
+      ],
+      "tail": [
+       11,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       47
+      ],
+      "eyeR": [
+       41,
+       47
+      ],
+      "mouth": [
+       33,
+       52
+      ],
+      "head_r": [
+       46,
+       37
+      ],
+      "bulb": [
+       43,
+       26
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       36,
+       25
+      ],
+      "tail": [
+       7,
+       52
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       33,
+       43
+      ],
+      "eyeR": [
+       47,
+       43
+      ],
+      "mouth": [
+       40,
+       49
+      ],
+      "head_r": [
+       53,
+       30
+      ],
+      "bulb": [
+       54,
+       18
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       48,
+       17
+      ],
+      "tail": [
+       15,
+       49
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "wide/open"
+      }
+     },
+     {
+      "eyeL": [
+       36,
+       44
+      ],
+      "eyeR": [
+       48,
+       44
+      ],
+      "mouth": [
+       41,
+       50
+      ],
+      "head_r": [
+       53,
+       32
+      ],
+      "bulb": [
+       56,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       49,
+       19
+      ],
+      "tail": [
+       18,
+       50
+      ],
+      "face": {
+       "eyes": "sick(保留原幀)",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "sick/o"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       46
+      ],
+      "eyeR": [
+       43,
+       46
+      ],
+      "mouth": [
+       35,
+       51
+      ],
+      "head_r": [
+       48,
+       36
+      ],
+      "bulb": [
+       47,
+       25
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       24
+      ],
+      "tail": [
+       11,
+       52
+      ],
+      "face": {
+       "eyes": "sick(保留原幀)",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "sick/o"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       45,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       38,
+       19
+      ],
+      "tail": [
+       10,
+       50
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "wide/o"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       45
+      ],
+      "eyeR": [
+       41,
+       45
+      ],
+      "mouth": [
+       33,
+       51
+      ],
+      "head_r": [
+       50,
+       34
+      ],
+      "bulb": [
+       51,
+       22
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       21
+      ],
+      "tail": [
+       11,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "surprised",
+       "src": "half/o"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -6571,6 +9392,16 @@
     "faceov": "liveliness/layers/<form>/pot_bump_NN_faceov.png",
     "nofaceClip": "pot_bump_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 8,
+    "full": "../lumi/frames/pot_bump_NN.png",
+    "noface": "../lumi/layers/pot_bump_NN_noface.png",
+    "faceov": "../lumi/layers/pot_bump_NN_faceov.png",
+    "emissive": "../lumi/emissive/pot_bump_NN_emissive.png",
+    "atlasClip": "pot_bump",
+    "nofaceClip": "pot_bump_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -7115,6 +9946,230 @@
        "src": "happy/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       44
+      ],
+      "eyeR": [
+       42,
+       44
+      ],
+      "mouth": [
+       34,
+       49
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "shine/open"
+      }
+     },
+     {
+      "eyeL": [
+       28,
+       43
+      ],
+      "eyeR": [
+       42,
+       43
+      ],
+      "mouth": [
+       35,
+       49
+      ],
+      "head_r": [
+       49,
+       31
+      ],
+      "bulb": [
+       50,
+       19
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       18
+      ],
+      "tail": [
+       12,
+       50
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "shine/open"
+      }
+     },
+     {
+      "eyeL": [
+       28,
+       41
+      ],
+      "eyeR": [
+       42,
+       41
+      ],
+      "mouth": [
+       35,
+       47
+      ],
+      "head_r": [
+       49,
+       29
+      ],
+      "bulb": [
+       50,
+       17
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       16
+      ],
+      "tail": [
+       12,
+       48
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "shine/open"
+      }
+     },
+     {
+      "eyeL": [
+       28,
+       39
+      ],
+      "eyeR": [
+       42,
+       39
+      ],
+      "mouth": [
+       35,
+       45
+      ],
+      "head_r": [
+       49,
+       28
+      ],
+      "bulb": [
+       50,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       15
+      ],
+      "tail": [
+       12,
+       46
+      ],
+      "face": {
+       "eyes": "surprised",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "wide/open"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       47
+      ],
+      "eyeR": [
+       42,
+       47
+      ],
+      "mouth": [
+       34,
+       52
+      ],
+      "head_r": [
+       50,
+       37
+      ],
+      "bulb": [
+       47,
+       26
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       25
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       42
+      ],
+      "eyeR": [
+       41,
+       42
+      ],
+      "mouth": [
+       34,
+       48
+      ],
+      "head_r": [
+       48,
+       30
+      ],
+      "bulb": [
+       49,
+       18
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       17
+      ],
+      "tail": [
+       11,
+       48
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -7122,6 +10177,16 @@
     "faceov": "liveliness/layers/<form>/catch_reach_NN_faceov.png",
     "nofaceClip": "catch_reach_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 6,
+    "full": "../lumi/frames/catch_reach_NN.png",
+    "noface": "../lumi/layers/catch_reach_NN_noface.png",
+    "faceov": "../lumi/layers/catch_reach_NN_faceov.png",
+    "emissive": "../lumi/emissive/catch_reach_NN_emissive.png",
+    "atlasClip": "catch_reach",
+    "nofaceClip": "catch_reach_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -7666,6 +10731,230 @@
        "src": "happy/open"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       25,
+       48
+      ],
+      "eyeR": [
+       43,
+       48
+      ],
+      "mouth": [
+       34,
+       52
+      ],
+      "head_r": [
+       50,
+       38
+      ],
+      "bulb": [
+       47,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       27
+      ],
+      "tail": [
+       10,
+       53
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       42
+      ],
+      "eyeR": [
+       41,
+       42
+      ],
+      "mouth": [
+       34,
+       48
+      ],
+      "head_r": [
+       47,
+       29
+      ],
+      "bulb": [
+       47,
+       17
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       16
+      ],
+      "tail": [
+       12,
+       48
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       40
+      ],
+      "eyeR": [
+       41,
+       40
+      ],
+      "mouth": [
+       34,
+       46
+      ],
+      "head_r": [
+       48,
+       28
+      ],
+      "bulb": [
+       49,
+       17
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       16
+      ],
+      "tail": [
+       10,
+       47
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       42
+      ],
+      "eyeR": [
+       41,
+       42
+      ],
+      "mouth": [
+       34,
+       48
+      ],
+      "head_r": [
+       47,
+       30
+      ],
+      "bulb": [
+       45,
+       18
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       38,
+       17
+      ],
+      "tail": [
+       11,
+       48
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       48
+      ],
+      "eyeR": [
+       43,
+       48
+      ],
+      "mouth": [
+       34,
+       52
+      ],
+      "head_r": [
+       50,
+       38
+      ],
+      "bulb": [
+       47,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       27
+      ],
+      "tail": [
+       10,
+       53
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       44
+      ],
+      "eyeR": [
+       42,
+       44
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       47,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       19
+      ],
+      "tail": [
+       10,
+       50
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     }
     ]
    },
    "layers": {
@@ -7673,6 +10962,16 @@
     "faceov": "liveliness/layers/<form>/cheer_jump_NN_faceov.png",
     "nofaceClip": "cheer_jump_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 6,
+    "full": "../lumi/frames/cheer_jump_NN.png",
+    "noface": "../lumi/layers/cheer_jump_NN_noface.png",
+    "faceov": "../lumi/layers/cheer_jump_NN_faceov.png",
+    "emissive": "../lumi/emissive/cheer_jump_NN_emissive.png",
+    "atlasClip": "cheer_jump",
+    "nofaceClip": "cheer_jump_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -8225,6 +11524,230 @@
        "src": "half/frown"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       50,
+       27
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       26
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "sad",
+       "src": "open/frown"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       50,
+       29
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       28
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad",
+       "src": "half/frown"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       48
+      ],
+      "eyeR": [
+       42,
+       48
+      ],
+      "mouth": [
+       34,
+       53
+      ],
+      "head_r": [
+       50,
+       37
+      ],
+      "bulb": [
+       50,
+       31
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       30
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "sleepy",
+       "src": "blink/flat"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       48
+      ],
+      "eyeR": [
+       41,
+       48
+      ],
+      "mouth": [
+       32,
+       53
+      ],
+      "head_r": [
+       48,
+       37
+      ],
+      "bulb": [
+       49,
+       31
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       30
+      ],
+      "tail": [
+       9,
+       52
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad",
+       "src": "half/frown"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       48
+      ],
+      "eyeR": [
+       43,
+       48
+      ],
+      "mouth": [
+       34,
+       53
+      ],
+      "head_r": [
+       50,
+       37
+      ],
+      "bulb": [
+       51,
+       31
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       30
+      ],
+      "tail": [
+       11,
+       52
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad",
+       "src": "half/frown"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       48
+      ],
+      "eyeR": [
+       42,
+       48
+      ],
+      "mouth": [
+       34,
+       53
+      ],
+      "head_r": [
+       50,
+       37
+      ],
+      "bulb": [
+       50,
+       31
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       30
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad",
+       "src": "half/frown"
+      }
+     }
     ]
    },
    "layers": {
@@ -8232,6 +11755,16 @@
     "faceov": "liveliness/layers/<form>/droop_NN_faceov.png",
     "nofaceClip": "droop_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 6,
+    "full": "../lumi/frames/droop_NN.png",
+    "noface": "../lumi/layers/droop_NN_noface.png",
+    "faceov": "../lumi/layers/droop_NN_faceov.png",
+    "emissive": "../lumi/emissive/droop_NN_emissive.png",
+    "atlasClip": "droop",
+    "nofaceClip": "droop_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -8602,6 +12135,156 @@
        "src": "happy/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "open/smile"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       44
+      ],
+      "eyeR": [
+       42,
+       44
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       49,
+       20
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       19
+      ],
+      "tail": [
+       10,
+       50
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "open/open"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       34
+      ],
+      "bulb": [
+       47,
+       22
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       21
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "sleepy",
+       "src": "happy/flat"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       45,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       38,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -8609,6 +12292,16 @@
     "faceov": "liveliness/layers/<form>/eat_NN_faceov.png",
     "nofaceClip": "eat_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/eat_NN.png",
+    "noface": "../lumi/layers/eat_NN_noface.png",
+    "faceov": "../lumi/layers/eat_NN_faceov.png",
+    "emissive": "../lumi/emissive/eat_NN_emissive.png",
+    "atlasClip": "eat",
+    "nofaceClip": "eat_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -8979,6 +12672,156 @@
        "src": "happy/smile"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       47
+      ],
+      "eyeR": [
+       42,
+       47
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       47,
+       25
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       24
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       40
+      ],
+      "eyeR": [
+       41,
+       40
+      ],
+      "mouth": [
+       34,
+       46
+      ],
+      "head_r": [
+       47,
+       27
+      ],
+      "bulb": [
+       49,
+       15
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       14
+      ],
+      "tail": [
+       11,
+       46
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       41
+      ],
+      "eyeR": [
+       41,
+       41
+      ],
+      "mouth": [
+       34,
+       47
+      ],
+      "head_r": [
+       47,
+       29
+      ],
+      "bulb": [
+       45,
+       17
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       38,
+       16
+      ],
+      "tail": [
+       11,
+       47
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy",
+       "src": "happy/open"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       36
+      ],
+      "bulb": [
+       47,
+       25
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       24
+      ],
+      "tail": [
+       10,
+       52
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "neutral",
+       "src": "happy/smile"
+      }
+     }
     ]
    },
    "layers": {
@@ -8986,6 +12829,16 @@
     "faceov": "liveliness/layers/<form>/celebrate_NN_faceov.png",
     "nofaceClip": "celebrate_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/celebrate_NN.png",
+    "noface": "../lumi/layers/celebrate_NN_noface.png",
+    "faceov": "../lumi/layers/celebrate_NN_faceov.png",
+    "emissive": "../lumi/emissive/celebrate_NN_emissive.png",
+    "atlasClip": "celebrate",
+    "nofaceClip": "celebrate_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -9182,6 +13035,82 @@
        "src": "sick/frown"
       }
      }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       46
+      ],
+      "eyeR": [
+       42,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       35
+      ],
+      "bulb": [
+       50,
+       28
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       43,
+       27
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "sick(保留原幀)",
+       "gaze": "C",
+       "mouth": "sad",
+       "src": "sick/frown"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       46
+      ],
+      "eyeR": [
+       43,
+       46
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       34
+      ],
+      "bulb": [
+       51,
+       27
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       26
+      ],
+      "tail": [
+       11,
+       51
+      ],
+      "face": {
+       "eyes": "sick(保留原幀)",
+       "gaze": "C",
+       "mouth": "sad",
+       "src": "sick/frown"
+      }
+     }
     ]
    },
    "layers": {
@@ -9189,6 +13118,16 @@
     "faceov": "liveliness/layers/<form>/sick_NN_faceov.png",
     "nofaceClip": "sick_noface",
     "atlas": "liveliness/atlas_<form>_live.json"
+   },
+   "lumi": {
+    "frames": 2,
+    "full": "../lumi/frames/sick_NN.png",
+    "noface": "../lumi/layers/sick_NN_noface.png",
+    "faceov": "../lumi/layers/sick_NN_faceov.png",
+    "emissive": "../lumi/emissive/sick_NN_emissive.png",
+    "atlasClip": "sick",
+    "nofaceClip": "sick_noface",
+    "atlas": "../atlas_lumi.json"
    }
   },
   {
@@ -13785,6 +17724,2559 @@
      }
     ]
    }
+  },
+  {
+   "name": "picked_up",
+   "status": "已交付（liveliness v1）",
+   "category": "生命感",
+   "item": "D6 被拎起（浮動團絨）",
+   "frames": 6,
+   "fps": 8,
+   "loop": true,
+   "priority": 7,
+   "interruptible": false,
+   "trigger": "Android 浮動寵物：手指按住寵物頭頂拖動／長按拎起（拖曳開始）時播；直至放手",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "pivot＝anchors.grab（頭頂拎點），唔係腳底 pivot：引擎將 grab 對準手指位置。身體吊住微拉長、成個以 grab 為軸左右擺（鐘擺 shear）、兩隻腳交替輕踢。第一個循環建議 surprised（faceOnEnter），之後 happy。放手 → 引擎跌落／彈返地面再接 idle（或 emo_surprised）。可按拖動速度改 fps 6–12。",
+   "attachments": [],
+   "layers": {
+    "noface": "liveliness/layers/<form>/picked_up_NN_noface.png",
+    "faceov": "liveliness/layers/<form>/picked_up_NN_faceov.png",
+    "full": "liveliness/frames/<form>/picked_up_NN.png",
+    "nofaceClip": "picked_up_noface",
+    "atlas": "liveliness/atlas_<form>_live.json",
+    "previewGrab": "liveliness/preview/<form>/picked_up_grab_8x.gif",
+    "previewStrip": "liveliness/preview/<form>/picked_up_strip_8x.png"
+   },
+   "anchors": {
+    "sprout": [
+     {
+      "eyeL": [
+       13,
+       19
+      ],
+      "eyeR": [
+       21,
+       19
+      ],
+      "mouth": [
+       16,
+       22
+      ],
+      "head_r": [
+       25,
+       13
+      ],
+      "bulb": [
+       16,
+       4
+      ],
+      "faceVisible": true,
+      "grab": [
+       16,
+       8
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       18
+      ],
+      "eyeR": [
+       21,
+       18
+      ],
+      "mouth": [
+       16,
+       22
+      ],
+      "head_r": [
+       24,
+       13
+      ],
+      "bulb": [
+       15,
+       4
+      ],
+      "faceVisible": true,
+      "grab": [
+       16,
+       8
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       19
+      ],
+      "eyeR": [
+       21,
+       19
+      ],
+      "mouth": [
+       16,
+       22
+      ],
+      "head_r": [
+       25,
+       13
+      ],
+      "bulb": [
+       16,
+       4
+      ],
+      "faceVisible": true,
+      "grab": [
+       16,
+       8
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       19
+      ],
+      "eyeR": [
+       19,
+       19
+      ],
+      "mouth": [
+       14,
+       22
+      ],
+      "head_r": [
+       25,
+       13
+      ],
+      "bulb": [
+       16,
+       4
+      ],
+      "faceVisible": true,
+      "grab": [
+       16,
+       8
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       18
+      ],
+      "eyeR": [
+       19,
+       18
+      ],
+      "mouth": [
+       14,
+       22
+      ],
+      "head_r": [
+       24,
+       13
+      ],
+      "bulb": [
+       17,
+       4
+      ],
+      "faceVisible": true,
+      "grab": [
+       16,
+       8
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       19
+      ],
+      "eyeR": [
+       19,
+       19
+      ],
+      "mouth": [
+       14,
+       22
+      ],
+      "head_r": [
+       25,
+       13
+      ],
+      "bulb": [
+       16,
+       4
+      ],
+      "faceVisible": true,
+      "grab": [
+       16,
+       8
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "radiant": [
+     {
+      "eyeL": [
+       25,
+       41
+      ],
+      "eyeR": [
+       39,
+       41
+      ],
+      "mouth": [
+       33,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       32,
+       15
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       23
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       41
+      ],
+      "eyeR": [
+       40,
+       41
+      ],
+      "mouth": [
+       34,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       31,
+       14
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       22
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       41
+      ],
+      "eyeR": [
+       39,
+       41
+      ],
+      "mouth": [
+       33,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       32,
+       15
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       23
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       41
+      ],
+      "eyeR": [
+       39,
+       41
+      ],
+      "mouth": [
+       31,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       32,
+       15
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       23
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       41
+      ],
+      "eyeR": [
+       38,
+       41
+      ],
+      "mouth": [
+       30,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       33,
+       14
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       22
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       41
+      ],
+      "eyeR": [
+       39,
+       41
+      ],
+      "mouth": [
+       31,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       32,
+       15
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       23
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "soft": [
+     {
+      "eyeL": [
+       24,
+       39
+      ],
+      "eyeR": [
+       40,
+       39
+      ],
+      "mouth": [
+       33,
+       46
+      ],
+      "head_r": [
+       49,
+       26
+      ],
+      "bulb": [
+       32,
+       12
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       19
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       39
+      ],
+      "eyeR": [
+       41,
+       39
+      ],
+      "mouth": [
+       34,
+       46
+      ],
+      "head_r": [
+       50,
+       26
+      ],
+      "bulb": [
+       31,
+       11
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       18
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       39
+      ],
+      "eyeR": [
+       40,
+       39
+      ],
+      "mouth": [
+       33,
+       46
+      ],
+      "head_r": [
+       49,
+       26
+      ],
+      "bulb": [
+       32,
+       12
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       19
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       39
+      ],
+      "eyeR": [
+       40,
+       39
+      ],
+      "mouth": [
+       31,
+       46
+      ],
+      "head_r": [
+       49,
+       26
+      ],
+      "bulb": [
+       32,
+       12
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       19
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       39
+      ],
+      "eyeR": [
+       39,
+       39
+      ],
+      "mouth": [
+       30,
+       46
+      ],
+      "head_r": [
+       48,
+       26
+      ],
+      "bulb": [
+       33,
+       11
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       18
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       39
+      ],
+      "eyeR": [
+       40,
+       39
+      ],
+      "mouth": [
+       31,
+       46
+      ],
+      "head_r": [
+       49,
+       26
+      ],
+      "bulb": [
+       32,
+       12
+      ],
+      "faceVisible": true,
+      "grab": [
+       32,
+       19
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       27,
+       41
+      ],
+      "eyeR": [
+       41,
+       41
+      ],
+      "mouth": [
+       35,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       47,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       15
+      ],
+      "tail": [
+       12,
+       47
+      ],
+      "grab": [
+       32,
+       23
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       28,
+       41
+      ],
+      "eyeR": [
+       42,
+       41
+      ],
+      "mouth": [
+       36,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       46,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       39,
+       15
+      ],
+      "tail": [
+       13,
+       47
+      ],
+      "grab": [
+       32,
+       22
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       41
+      ],
+      "eyeR": [
+       41,
+       41
+      ],
+      "mouth": [
+       35,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       47,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       15
+      ],
+      "tail": [
+       12,
+       47
+      ],
+      "grab": [
+       32,
+       23
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       41
+      ],
+      "eyeR": [
+       41,
+       41
+      ],
+      "mouth": [
+       33,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       47,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       15
+      ],
+      "tail": [
+       10,
+       47
+      ],
+      "grab": [
+       32,
+       23
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       41
+      ],
+      "eyeR": [
+       40,
+       41
+      ],
+      "mouth": [
+       32,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       48,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       41,
+       15
+      ],
+      "tail": [
+       9,
+       47
+      ],
+      "grab": [
+       32,
+       22
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       41
+      ],
+      "eyeR": [
+       41,
+       41
+      ],
+      "mouth": [
+       33,
+       47
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       47,
+       16
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       15
+      ],
+      "tail": [
+       10,
+       47
+      ],
+      "grab": [
+       32,
+       23
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ]
+   },
+   "pivot": "grab",
+   "pivotNote": "pivot override：呢個 clip 唔用腳底 pivot (w/2,h−3)，改用每幀 anchors[form][k].grab（頭頂拎點，幀左上角 px）；atlas 幀 pivotPx 已＝grab。引擎：sprite 位置 = 手指位置 − grab。scaleX −1：容器以 grab 為原點翻轉（grab.x＝S/2，同腳底 pivot 同一條中線），五官照 FACE_RIG 成組翻。",
+   "faceOnEnter": {
+    "eyes": "surprised",
+    "gaze": "D",
+    "mouth": "surprised",
+    "loops": 1,
+    "note": "第一個循環（≈0.75s）用 surprised（gaze D 望地下），之後轉 happy（預設幀表情）；放低前可換 neutral/sad 自由"
+   },
+   "lumi": {
+    "frames": 6,
+    "full": "../lumi/frames/picked_up_NN.png",
+    "noface": "../lumi/layers/picked_up_NN_noface.png",
+    "faceov": "../lumi/layers/picked_up_NN_faceov.png",
+    "emissive": "../lumi/emissive/picked_up_NN_emissive.png",
+    "atlasClip": "picked_up",
+    "nofaceClip": "picked_up_noface",
+    "atlas": "../atlas_lumi.json"
+   }
+  },
+  {
+   "name": "smug_pose",
+   "status": "已交付（liveliness s2）",
+   "category": "生命感",
+   "item": "S2 撲空扮醒（得意 pose）",
+   "frames": 4,
+   "fps": 6,
+   "loop": false,
+   "priority": 3,
+   "interruptible": false,
+   "trigger": "swat／撲蟲撲空之後（蟲仔 fx 飛走）；或 catch_reach 接唔到時 50% 改播",
+   "cooldown_s": 30,
+   "next": "idle",
+   "notes": "蠢蠢地但覺得自己好醒：第 1 幀撲空落地、第 2 幀企直、第 3–4 幀挺胸仰頭合眼 ω 口（雙手叉腰）；最後一幀 hold 0.8s（holdLast_s），第 4 幀頭頂閃一下（烙入幀）。表情 preset smug。",
+   "attachments": [],
+   "layers": {
+    "noface": "liveliness/layers/<form>/smug_pose_NN_noface.png",
+    "faceov": "liveliness/layers/<form>/smug_pose_NN_faceov.png",
+    "full": "liveliness/frames/<form>/smug_pose_NN.png",
+    "nofaceClip": "smug_pose_noface",
+    "atlas": "liveliness/atlas_<form>_live_s2.json",
+    "kitAtlas": "liveliness/atlas_<form>_live.json（eyes_*/mouth_*/bulb_*）",
+    "previewStrip": "liveliness/preview/<form>/smug_pose_strip_8x.png"
+   },
+   "anchors": {
+    "sprout": [
+     {
+      "eyeL": [
+       13,
+       22
+      ],
+      "eyeR": [
+       23,
+       22
+      ],
+      "mouth": [
+       17,
+       25
+      ],
+      "head_r": [
+       28,
+       17
+      ],
+      "bulb": [
+       20,
+       8
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "D",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       12,
+       20
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       15
+      ],
+      "bulb": [
+       16,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       10,
+       19
+      ],
+      "eyeR": [
+       18,
+       19
+      ],
+      "mouth": [
+       15,
+       22
+      ],
+      "head_r": [
+       24,
+       14
+      ],
+      "bulb": [
+       14,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "squint"
+      }
+     },
+     {
+      "eyeL": [
+       10,
+       18
+      ],
+      "eyeR": [
+       18,
+       18
+      ],
+      "mouth": [
+       15,
+       22
+      ],
+      "head_r": [
+       24,
+       14
+      ],
+      "bulb": [
+       14,
+       4
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "squint"
+      }
+     }
+    ],
+    "radiant": [
+     {
+      "eyeL": [
+       30,
+       48
+      ],
+      "eyeR": [
+       46,
+       48
+      ],
+      "mouth": [
+       37,
+       53
+      ],
+      "head_r": [
+       55,
+       37
+      ],
+      "bulb": [
+       43,
+       24
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "D",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       44
+      ],
+      "eyeR": [
+       39,
+       44
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       32,
+       19
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       43
+      ],
+      "eyeR": [
+       37,
+       43
+      ],
+      "mouth": [
+       29,
+       49
+      ],
+      "head_r": [
+       45,
+       31
+      ],
+      "bulb": [
+       27,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "squint"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       41
+      ],
+      "eyeR": [
+       37,
+       41
+      ],
+      "mouth": [
+       29,
+       48
+      ],
+      "head_r": [
+       45,
+       31
+      ],
+      "bulb": [
+       27,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "squint"
+      }
+     }
+    ],
+    "soft": [
+     {
+      "eyeL": [
+       29,
+       46
+      ],
+      "eyeR": [
+       47,
+       46
+      ],
+      "mouth": [
+       37,
+       52
+      ],
+      "head_r": [
+       57,
+       35
+      ],
+      "bulb": [
+       42,
+       22
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "D",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       43
+      ],
+      "eyeR": [
+       40,
+       43
+      ],
+      "mouth": [
+       32,
+       49
+      ],
+      "head_r": [
+       50,
+       30
+      ],
+      "bulb": [
+       32,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       22,
+       41
+      ],
+      "eyeR": [
+       38,
+       41
+      ],
+      "mouth": [
+       29,
+       48
+      ],
+      "head_r": [
+       47,
+       29
+      ],
+      "bulb": [
+       27,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "squint"
+      }
+     },
+     {
+      "eyeL": [
+       22,
+       39
+      ],
+      "eyeR": [
+       38,
+       39
+      ],
+      "mouth": [
+       29,
+       46
+      ],
+      "head_r": [
+       47,
+       28
+      ],
+      "bulb": [
+       27,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "squint"
+      }
+     }
+    ]
+   },
+   "phase": 2,
+   "holdLast_s": 0.8
+  },
+  {
+   "name": "act_cool",
+   "status": "已交付（liveliness s2）",
+   "category": "生命感",
+   "item": "S2 扮冷靜",
+   "frames": 4,
+   "fps": 5,
+   "loop": false,
+   "priority": 3,
+   "interruptible": false,
+   "trigger": "sneeze 之後 40%／lookup_tip→getup 之後／picked_up 放低後 30%",
+   "cooldown_s": 20,
+   "next": "idle",
+   "notes": "扮冇事：第 1 幀別過頭（面向後偏 ft，眼 squint 望 L）、第 2 幀輕咳（咳氣烙入幀，向左）、第 3–4 幀拍拍身（塵烙入幀），最後仰少少頭側眼。",
+   "attachments": [],
+   "layers": {
+    "noface": "liveliness/layers/<form>/act_cool_NN_noface.png",
+    "faceov": "liveliness/layers/<form>/act_cool_NN_faceov.png",
+    "full": "liveliness/frames/<form>/act_cool_NN.png",
+    "nofaceClip": "act_cool_noface",
+    "atlas": "liveliness/atlas_<form>_live_s2.json",
+    "kitAtlas": "liveliness/atlas_<form>_live.json（eyes_*/mouth_*/bulb_*）",
+    "previewStrip": "liveliness/preview/<form>/act_cool_strip_8x.png"
+   },
+   "anchors": {
+    "sprout": [
+     {
+      "eyeL": [
+       10,
+       20
+      ],
+      "eyeR": [
+       19,
+       20
+      ],
+      "mouth": [
+       14,
+       23
+      ],
+      "head_r": [
+       25,
+       15
+      ],
+      "bulb": [
+       15,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       10,
+       22
+      ],
+      "eyeR": [
+       19,
+       22
+      ],
+      "mouth": [
+       14,
+       24
+      ],
+      "head_r": [
+       25,
+       16
+      ],
+      "bulb": [
+       15,
+       8
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       10,
+       20
+      ],
+      "eyeR": [
+       19,
+       20
+      ],
+      "mouth": [
+       14,
+       23
+      ],
+      "head_r": [
+       25,
+       15
+      ],
+      "bulb": [
+       16,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       10,
+       19
+      ],
+      "eyeR": [
+       19,
+       19
+      ],
+      "mouth": [
+       14,
+       22
+      ],
+      "head_r": [
+       25,
+       14
+      ],
+      "bulb": [
+       15,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "sleepy"
+      }
+     }
+    ],
+    "radiant": [
+     {
+      "eyeL": [
+       21,
+       45
+      ],
+      "eyeR": [
+       37,
+       45
+      ],
+      "mouth": [
+       28,
+       50
+      ],
+      "head_r": [
+       47,
+       33
+      ],
+      "bulb": [
+       29,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       21,
+       47
+      ],
+      "eyeR": [
+       37,
+       47
+      ],
+      "mouth": [
+       28,
+       52
+      ],
+      "head_r": [
+       49,
+       35
+      ],
+      "bulb": [
+       30,
+       22
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       21,
+       45
+      ],
+      "eyeR": [
+       37,
+       45
+      ],
+      "mouth": [
+       28,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       32,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       22,
+       43
+      ],
+      "eyeR": [
+       36,
+       43
+      ],
+      "mouth": [
+       29,
+       49
+      ],
+      "head_r": [
+       48,
+       32
+      ],
+      "bulb": [
+       30,
+       19
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "sleepy"
+      }
+     }
+    ],
+    "soft": [
+     {
+      "eyeL": [
+       20,
+       43
+      ],
+      "eyeR": [
+       37,
+       43
+      ],
+      "mouth": [
+       28,
+       49
+      ],
+      "head_r": [
+       49,
+       31
+      ],
+      "bulb": [
+       29,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       45
+      ],
+      "eyeR": [
+       37,
+       45
+      ],
+      "mouth": [
+       28,
+       51
+      ],
+      "head_r": [
+       51,
+       33
+      ],
+      "bulb": [
+       30,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sleepy",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       43
+      ],
+      "eyeR": [
+       37,
+       43
+      ],
+      "mouth": [
+       28,
+       49
+      ],
+      "head_r": [
+       50,
+       31
+      ],
+      "bulb": [
+       32,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       21,
+       41
+      ],
+      "eyeR": [
+       37,
+       41
+      ],
+      "mouth": [
+       28,
+       48
+      ],
+      "head_r": [
+       49,
+       30
+      ],
+      "bulb": [
+       30,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "L",
+       "mouth": "sleepy"
+      }
+     }
+    ]
+   },
+   "phase": 2
+  },
+  {
+   "name": "lookup_tip",
+   "status": "已交付（liveliness s2）",
+   "category": "生命感",
+   "item": "S2 望天望到跌",
+   "frames": 4,
+   "fps": 6,
+   "loop": false,
+   "priority": 2,
+   "interruptible": false,
+   "trigger": "lookup 播完後 20%（夜晚／流星 ×2）；接住 lookup 第 3 幀姿勢",
+   "cooldown_s": 60,
+   "next": "getup",
+   "notes": "望天望到向後倒：前腳離地、搖兩搖、第 4 幀一屁股坐低（停住，接 getup）。",
+   "attachments": [],
+   "layers": {
+    "noface": "liveliness/layers/<form>/lookup_tip_NN_noface.png",
+    "faceov": "liveliness/layers/<form>/lookup_tip_NN_faceov.png",
+    "full": "liveliness/frames/<form>/lookup_tip_NN.png",
+    "nofaceClip": "lookup_tip_noface",
+    "atlas": "liveliness/atlas_<form>_live_s2.json",
+    "kitAtlas": "liveliness/atlas_<form>_live.json（eyes_*/mouth_*/bulb_*）",
+    "previewStrip": "liveliness/preview/<form>/lookup_tip_strip_8x.png"
+   },
+   "anchors": {
+    "sprout": [
+     {
+      "eyeL": [
+       10,
+       19
+      ],
+      "eyeR": [
+       18,
+       18
+      ],
+      "mouth": [
+       14,
+       22
+      ],
+      "head_r": [
+       23,
+       13
+      ],
+      "bulb": [
+       11,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "U",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       9,
+       19
+      ],
+      "eyeR": [
+       17,
+       18
+      ],
+      "mouth": [
+       14,
+       21
+      ],
+      "head_r": [
+       21,
+       12
+      ],
+      "bulb": [
+       9,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "U",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       8,
+       19
+      ],
+      "eyeR": [
+       16,
+       17
+      ],
+      "mouth": [
+       13,
+       21
+      ],
+      "head_r": [
+       20,
+       12
+      ],
+      "bulb": [
+       7,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "CL",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       8,
+       21
+      ],
+      "eyeR": [
+       18,
+       19
+      ],
+      "mouth": [
+       14,
+       23
+      ],
+      "head_r": [
+       22,
+       14
+      ],
+      "bulb": [
+       15,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "radiant": [
+     {
+      "eyeL": [
+       23,
+       43
+      ],
+      "eyeR": [
+       36,
+       42
+      ],
+      "mouth": [
+       30,
+       48
+      ],
+      "head_r": [
+       42,
+       29
+      ],
+      "bulb": [
+       21,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "U",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       21,
+       43
+      ],
+      "eyeR": [
+       35,
+       41
+      ],
+      "mouth": [
+       29,
+       48
+      ],
+      "head_r": [
+       41,
+       29
+      ],
+      "bulb": [
+       18,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "U",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       44
+      ],
+      "eyeR": [
+       33,
+       40
+      ],
+      "mouth": [
+       28,
+       47
+      ],
+      "head_r": [
+       37,
+       27
+      ],
+      "bulb": [
+       12,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "CL",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       47
+      ],
+      "eyeR": [
+       35,
+       44
+      ],
+      "mouth": [
+       28,
+       49
+      ],
+      "head_r": [
+       41,
+       31
+      ],
+      "bulb": [
+       29,
+       24
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "soft": [
+     {
+      "eyeL": [
+       21,
+       41
+      ],
+      "eyeR": [
+       37,
+       40
+      ],
+      "mouth": [
+       30,
+       47
+      ],
+      "head_r": [
+       44,
+       27
+      ],
+      "bulb": [
+       21,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "U",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       41
+      ],
+      "eyeR": [
+       35,
+       38
+      ],
+      "mouth": [
+       29,
+       47
+      ],
+      "head_r": [
+       41,
+       26
+      ],
+      "bulb": [
+       17,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "U",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       42
+      ],
+      "eyeR": [
+       33,
+       37
+      ],
+      "mouth": [
+       27,
+       46
+      ],
+      "head_r": [
+       39,
+       24
+      ],
+      "bulb": [
+       12,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "surprised",
+       "gaze": "CL",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       45
+      ],
+      "eyeR": [
+       35,
+       41
+      ],
+      "mouth": [
+       28,
+       48
+      ],
+      "head_r": [
+       44,
+       28
+      ],
+      "bulb": [
+       28,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ]
+   },
+   "phase": 2
+  },
+  {
+   "name": "getup",
+   "status": "已交付（liveliness s2）",
+   "category": "生命感",
+   "item": "S2 起返身",
+   "frames": 4,
+   "fps": 6,
+   "loop": false,
+   "priority": 2,
+   "interruptible": false,
+   "trigger": "lookup_tip 播完自動接（或任何跌低／坐低後）",
+   "cooldown_s": 0,
+   "next": "act_cool",
+   "notes": "後手撐地（第 2 幀用力 angry 臉）→ 彈起 → 企定。播完 60% 接 act_cool，否則 idle。",
+   "attachments": [],
+   "layers": {
+    "noface": "liveliness/layers/<form>/getup_NN_noface.png",
+    "faceov": "liveliness/layers/<form>/getup_NN_faceov.png",
+    "full": "liveliness/frames/<form>/getup_NN.png",
+    "nofaceClip": "getup_noface",
+    "atlas": "liveliness/atlas_<form>_live_s2.json",
+    "kitAtlas": "liveliness/atlas_<form>_live.json（eyes_*/mouth_*/bulb_*）",
+    "previewStrip": "liveliness/preview/<form>/getup_strip_8x.png"
+   },
+   "anchors": {
+    "sprout": [
+     {
+      "eyeL": [
+       8,
+       21
+      ],
+      "eyeR": [
+       18,
+       19
+      ],
+      "mouth": [
+       14,
+       23
+      ],
+      "head_r": [
+       22,
+       14
+      ],
+      "bulb": [
+       15,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sleepy"
+      }
+     },
+     {
+      "eyeL": [
+       10,
+       21
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       14,
+       23
+      ],
+      "head_r": [
+       25,
+       14
+      ],
+      "bulb": [
+       14,
+       8
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "angry",
+       "gaze": "C",
+       "mouth": "angry"
+      }
+     },
+     {
+      "eyeL": [
+       12,
+       20
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       26,
+       14
+      ],
+      "bulb": [
+       18,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "CR",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       15
+      ],
+      "bulb": [
+       16,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral"
+      }
+     }
+    ],
+    "radiant": [
+     {
+      "eyeL": [
+       19,
+       47
+      ],
+      "eyeR": [
+       35,
+       44
+      ],
+      "mouth": [
+       28,
+       49
+      ],
+      "head_r": [
+       41,
+       31
+      ],
+      "bulb": [
+       29,
+       24
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sleepy"
+      }
+     },
+     {
+      "eyeL": [
+       22,
+       46
+      ],
+      "eyeR": [
+       37,
+       44
+      ],
+      "mouth": [
+       29,
+       50
+      ],
+      "head_r": [
+       45,
+       32
+      ],
+      "bulb": [
+       27,
+       22
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "angry",
+       "gaze": "C",
+       "mouth": "angry"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       43
+      ],
+      "eyeR": [
+       40,
+       43
+      ],
+      "mouth": [
+       33,
+       49
+      ],
+      "head_r": [
+       49,
+       30
+      ],
+      "bulb": [
+       37,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "CR",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       45
+      ],
+      "eyeR": [
+       40,
+       45
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       32,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral"
+      }
+     }
+    ],
+    "soft": [
+     {
+      "eyeL": [
+       18,
+       45
+      ],
+      "eyeR": [
+       35,
+       41
+      ],
+      "mouth": [
+       28,
+       48
+      ],
+      "head_r": [
+       44,
+       28
+      ],
+      "bulb": [
+       28,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sleepy"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       44
+      ],
+      "eyeR": [
+       38,
+       42
+      ],
+      "mouth": [
+       29,
+       49
+      ],
+      "head_r": [
+       47,
+       30
+      ],
+      "bulb": [
+       27,
+       19
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "angry",
+       "gaze": "C",
+       "mouth": "angry"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       41
+      ],
+      "eyeR": [
+       41,
+       41
+      ],
+      "mouth": [
+       33,
+       48
+      ],
+      "head_r": [
+       51,
+       28
+      ],
+      "bulb": [
+       37,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "CR",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       43
+      ],
+      "eyeR": [
+       41,
+       43
+      ],
+      "mouth": [
+       32,
+       49
+      ],
+      "head_r": [
+       50,
+       32
+      ],
+      "bulb": [
+       32,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "C",
+       "mouth": "neutral"
+      }
+     }
+    ]
+   },
+   "phase": 2
+  },
+  {
+   "name": "sniff_itch",
+   "status": "已交付（liveliness s2）",
+   "category": "生命感",
+   "item": "S2 嗅到鼻癢（過渡）",
+   "frames": 2,
+   "fps": 6,
+   "loop": false,
+   "priority": 1,
+   "interruptible": false,
+   "trigger": "sniff 第 3 幀之後如抽中 sneeze（機率 25%）",
+   "cooldown_s": 0,
+   "next": "sneeze",
+   "notes": "sniff → sniff_itch → sneeze 過渡：第 1 幀鼻貼地抽兩抽（鼻癢線烙入幀）、第 2 幀抬頭瞇眼，下一幀直接接 sneeze_01。",
+   "attachments": [],
+   "layers": {
+    "noface": "liveliness/layers/<form>/sniff_itch_NN_noface.png",
+    "faceov": "liveliness/layers/<form>/sniff_itch_NN_faceov.png",
+    "full": "liveliness/frames/<form>/sniff_itch_NN.png",
+    "nofaceClip": "sniff_itch_noface",
+    "atlas": "liveliness/atlas_<form>_live_s2.json",
+    "kitAtlas": "liveliness/atlas_<form>_live.json（eyes_*/mouth_*/bulb_*）",
+    "previewStrip": "liveliness/preview/<form>/sniff_itch_strip_8x.png"
+   },
+   "anchors": {
+    "sprout": [
+     {
+      "eyeL": [
+       12,
+       22
+      ],
+      "eyeR": [
+       22,
+       22
+      ],
+      "mouth": [
+       17,
+       25
+      ],
+      "head_r": [
+       27,
+       17
+      ],
+      "bulb": [
+       20,
+       10
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "D",
+       "mouth": "sleepy"
+      }
+     },
+     {
+      "eyeL": [
+       12,
+       20
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       15
+      ],
+      "bulb": [
+       16,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "U",
+       "mouth": "sleepy"
+      }
+     }
+    ],
+    "radiant": [
+     {
+      "eyeL": [
+       28,
+       49
+      ],
+      "eyeR": [
+       44,
+       49
+      ],
+      "mouth": [
+       35,
+       53
+      ],
+      "head_r": [
+       52,
+       37
+      ],
+      "bulb": [
+       40,
+       26
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "D",
+       "mouth": "sleepy"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       45
+      ],
+      "eyeR": [
+       40,
+       45
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       32,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "U",
+       "mouth": "sleepy"
+      }
+     }
+    ],
+    "soft": [
+     {
+      "eyeL": [
+       27,
+       47
+      ],
+      "eyeR": [
+       45,
+       47
+      ],
+      "mouth": [
+       35,
+       53
+      ],
+      "head_r": [
+       55,
+       35
+      ],
+      "bulb": [
+       40,
+       24
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "D",
+       "mouth": "sleepy"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       43
+      ],
+      "eyeR": [
+       40,
+       43
+      ],
+      "mouth": [
+       32,
+       49
+      ],
+      "head_r": [
+       50,
+       31
+      ],
+      "bulb": [
+       32,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "U",
+       "mouth": "sleepy"
+      }
+     }
+    ]
+   },
+   "phase": 2
   }
  ],
  "props": {
@@ -13975,6 +20467,7 @@
    "tap": "背向／行緊路被點 → turn_back → 心情≥50 emo_happy，否則 emo_surprised",
    "longPress": "長按 ≥0.4s → nuzzle（循環至鬆手）",
    "returnAfter6h": "rush（loopRange 跑到位）→ cheer_jump",
+   "pickUp": "Android 浮動團絨：手指按住拖曳／拎起 → picked_up（loop，pivot＝grab 對準手指；第一循環 faceOnEnter surprised，之後 happy）→ 放手：引擎跌落／彈返地面 → idle（或 emo_surprised）",
    "gaze": "A1/D1：walk 時眼 gaze 跟行進方向（R），每 1.5–3s 望花盆／鏡頭（C）／手指方向（L…R、U、D）；手指喺頭上方用 U"
   }
  },
@@ -13985,6 +20478,7 @@
   "faceAnchors": "liveliness/face_anchors.json（同下面 clips[].anchors 一樣，鏡像）",
   "anchorCoords": "frame-local px，原點＝幀左上角，y 向下；3 form 各自一套 clips[].anchors[form][frameIndex]",
   "anchorKeys": {
+   "grab": "頭頂拎點（只 picked_up 有；亦係該 clip pivot）",
    "eyeL": "左眼（畫面左）kit piece pivot 對準點",
    "eyeR": "右眼",
    "mouth": "口 pivot 對準點",
@@ -13995,14 +20489,63 @@
   },
   "atlas": {
    "sprout": [
-    "atlas_sprout_live.png"
+    "atlas_sprout_live.png",
+    "atlas_sprout_live_s2.png"
    ],
    "radiant": [
-    "atlas_radiant_live.png"
+    "atlas_radiant_live.png",
+    "atlas_radiant_live_s2.png"
    ],
    "soft": [
-    "atlas_soft_live.png"
+    "atlas_soft_live.png",
+    "atlas_soft_live_s2.png"
    ]
+  },
+  "phase2": {
+   "clips": [
+    "smug_pose",
+    "act_cool",
+    "lookup_tip",
+    "getup",
+    "sniff_itch"
+   ],
+   "atlas": "atlas_<form>_live_s2.png/json（第二段 clip 另出；第一段 atlas_<form>_live 版面不變；五官 kit 仍喺 atlas_<form>_live）",
+   "personality": "蠢蠢地但覺得自己好醒",
+   "holdLast_s": {
+    "smug_pose": 0.8
+   },
+   "smugPreset": {
+    "eyes": "sleepy",
+    "gaze": "C",
+    "mouth": "squint"
+   },
+   "flow": {
+    "swatMiss": "swat（撲空）→ smug_pose（hold 0.8s）→ idle",
+    "lookupFall": "lookup → lookup_tip → getup → act_cool（60%）／idle",
+    "sneeze": "sniff → sniff_itch → sneeze →（40%）act_cool"
+   },
+   "rot": "lookup_tip／getup 用 rot（以後腳為軸向後轉 5–16°，烙入幀；錨點已跟住轉）"
+  },
+  "fx": {
+   "bug": {
+    "atlas": "liveliness/fx/atlas_fx_live.png/json",
+    "frames": [
+     "fx_bug_01",
+     "fx_bug_02",
+     "fx_bug_03"
+    ],
+    "size": [
+     8,
+     8
+    ],
+    "pivotPx": [
+     4,
+     4
+    ],
+    "animation": "fx_bug（01→02→03→02 循環，10fps）",
+    "facing": "right（向左 scaleX −1）",
+    "use": "A2 蟲仔：engine 飛近 anchors.head_r；swat 第 3 幀（索引 2）判定；撲空 → smug_pose"
+   }
   }
  },
  "faceKit": {
@@ -14232,6 +20775,11 @@
     "gaze": "C",
     "eyesR": "wink",
     "mouth": "wink"
+   },
+   "smug": {
+    "eyes": "sleepy",
+    "gaze": "C",
+    "mouth": "squint"
    }
   },
   "drawOrder": "body(<clip>_noface) → eyeL → eyeR → mouth → bulb_base → bulb_glow(tint) → head_r 圖示"

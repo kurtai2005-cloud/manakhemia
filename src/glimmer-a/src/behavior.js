@@ -17,6 +17,10 @@
   // 生命感第二段：小動作（F3 冷卻 ≥10 分鐘）＝ idle 額外變體（B1 scratch／B2 sneeze）＋ A2 中途停低（sniff／lookup／swat）
   const IDLE_EXTRA = ['scratch', 'sneeze'], STOPS = ['sniff', 'lookup', 'swat'], MICRO = IDLE_EXTRA.concat(STOPS);
   const MICRO_FORCE = ['scratch', 'sneeze', 'sniff', 'lookup', 'swat', 'sniff_sneeze', 'lookup_tip', 'swat_miss', 'swat_hit'];
+  // 開發者「即刻觸發」：一撳即做（唔理冷卻／機率）；sniff／lookup／swat 之後個性鏈照抽（撲空→得意等）；happy／drag＝即刻行 4–6s 用嗰種步姿；smug＝淨係得意 pose
+  const NOW = ['sniff', 'lookup', 'swat', 'scratch', 'sneeze', 'happy', 'drag', 'smug'];
+  const REAL = (c) => !!(CL[c] && CL[c].ready);                                            // s2 美術 ready（3 form live_s2 atlas 齊）就用真 clip
+  const DEMO = (b) => (b && b.demo ? (LV.demoMul || 5) : 1);                               // 展示模式：頻率 ×5／冷卻 ÷5
   const NOATT = [];
   const COOL_CLIP = { play: 'play', sunbathe: 'sunbathe', bump: 'pot_bump' };   // 自主狀態 → 冷卻所屬 clip
   const NONINT = { play: 1, wake: 1, startle: 1, bump: 1, grumpy: 1 };           // 不可中斷（忽略觸摸）
@@ -62,7 +66,7 @@
       lrng: SIM.makeRng((((seed >>> 0) ^ LK.lookSalt) >>> 0) || 7), look: { x: 0, y: 0, tx: 0, ty: 0, q: 'C', ql: 'C', src: 'idle', cand: 'C', candT: 0, qT: 9, tapX: 0, tapY: null, tapUntil: -1, dragX: 0, dragY: null, dragUntil: -1, camUntil: -1, nextCam: 0, wanderX: 0, wanderY: 0, nextWander: 0, force: null },
       // 生命感第二段：mrng＝獨立 RNG（唔郁原有抽籤次序）；seq＝小動作序列；faceAct＝行為指定五官；pose＝程序化後仰；bug＝蟲仔 fx
       mrng: SIM.makeRng((((seed >>> 0) ^ (LV.liveSalt || 0x5e2d)) >>> 0) || 11), seq: null, seqI: 0, seqT: 0, resume: null, faceAct: null, pose: null, bug: null, frameOv: null,
-      walkStyle: null, styleT: 0, styleFrame: -1, lastDragStep: -99, happyUntil: -1, sunEndAt: -999, lastIdle: null, microAt: {}, stopAt: null, stopDir: 0, microVar: null,
+      walkStyle: null, styleT: 0, styleFrame: -1, lastDragStep: -99, happyUntil: -1, gaitForce: null, demo: false, sunEndAt: -999, lastIdle: null, microAt: {}, stopAt: null, stopDir: 0, microVar: null,
       turn: null, show: { clip: 'idle', frame: 0 }, face: { eyes: 'neutral', mouth: 'neutral', closed: false, gaze: 'C' }, faceForce: null,    // 行為日誌（給音訊 cue／__qa.pet 用）：{n, t, ev: state|phase|variant|clip|impact|tap, name, ph}
     };
     b.nextVariant = rf(rng, P.variantEvery); b.nextDecide = rf(rng, P.decideEvery);
@@ -77,7 +81,7 @@
   function setClip(b, name) { if (b.clip !== name) { b.clip = name; b.clipT = 0; note(b, 'clip', name); } }
   function setPhase(b, ph) { b.phase = ph; b.stateT = 0; note(b, 'phase', b.state, ph); }
   function loopClip(b, name) { setClip(b, name); const d = clipDur(name); if (b.clipT >= d) b.clipT -= d; }
-  function enter(b, name, phase) { if (b.state === 'micro' && b.seq) endMicro(b); if (name !== 'walk') b.stopAt = null; b.state = name; b.phase = phase || ''; b.stateT = 0; b.log.enters[name] = (b.log.enters[name] || 0) + 1; note(b, 'state', name, b.phase); }
+  function enter(b, name, phase) { if (b.state === 'micro' && b.seq) endMicro(b); if (name !== 'walk') b.stopAt = null; b.gaitForce = null; b.state = name; b.phase = phase || ''; b.stateT = 0; b.log.enters[name] = (b.log.enters[name] || 0) + 1; note(b, 'state', name, b.phase); }
   function fx(b, type, x, y) { b.fx.push({ type, x, y }); if (b.fx.length > P.fxMax) b.fx.shift(); }
   function moveTo(b, tx, speed) {
     tx = clamp(tx, P.rangeX[0], P.rangeX[1]);
@@ -115,7 +119,7 @@
   }
 
   // ── 待機變體（只喺基礎層係 idle 時抽）──
-  function microReady(b, name) { const cd = Math.max(CL[name].cooldown || 0, LV.microCooldown || 0); return b.microAt[name] == null || b.t - b.microAt[name] >= cd - 1e-9; }
+  function microReady(b, name) { const cd = Math.max((CL[name] && CL[name].cooldown) || 0, LV.microCooldown || 0) / DEMO(b); return b.microAt[name] == null || b.t - b.microAt[name] >= cd - 1e-9; }
   // F3 小動作排程：權重（art idle 變體＋B1/B2 額外）× 精力 × 心情驅動 × 環境（B2）；冷卻 ≥10 分鐘；唔連續兩次同一 idle
   function idleWeights(b, ctx) {
     const s = ctx.s, w = {}, e = s.needs.energy, m = P.variantEnergyMul;
@@ -123,7 +127,7 @@
     if (e < 60) { w.sway *= m.swayBelow60; w.yawn *= m.yawnBelow60; }
     if (e < 30) w.yawn *= m.yawnBelow30 / m.yawnBelow60;
     if (LV.enabled) {
-      for (const k of IDLE_EXTRA) w[k] = microReady(b, k) ? LV.idleExtraWeights[k] : 0;
+      for (const k of IDLE_EXTRA) w[k] = microReady(b, k) ? LV.idleExtraWeights[k] * DEMO(b) : 0;
       const md = s.needs.mood, mm = md >= LV.moodHi ? LV.moodMul.hi : md < LV.moodLo ? LV.moodMul.lo : null;
       if (mm) for (const k in mm) if (w[k] != null) w[k] *= mm[k];
       if (Math.abs(b.x - P.potX) <= LV.sneezeNearPotPx || b.t - b.sunEndAt <= LV.sneezeAfterSunSec) w.sneeze *= LV.sneezeMul;   // B2：近花盆／曬太陽後 ×2
@@ -154,7 +158,7 @@
         if (b.x + sign * dist < P.rangeX[0] || b.x + sign * dist > P.rangeX[1]) sign = -sign;
         b.tx = clamp(b.x + sign * dist, P.rangeX[0], P.rangeX[1]); b.speed = P.walkSpeed * (1 - pm.timidSpeed * pe.timid);
         enter(b, 'walk');
-        if (LV.enabled && b.mrng() < LV.midWalkStop) { b.stopDir = Math.sign(b.tx - b.x) || 1; b.stopAt = b.x + (b.tx - b.x) * rf(b.mrng, LV.stopAt); }   // A2：每段 15% 停一次
+        if (LV.enabled && b.mrng() < Math.min(1, LV.midWalkStop * DEMO(b))) { b.stopDir = Math.sign(b.tx - b.x) || 1; b.stopAt = b.x + (b.tx - b.x) * rf(b.mrng, LV.stopAt); }   // A2：每段 15% 停一次
         break;
       }
       case 'jump': b.hopsLeft = ri(r, P.jumpHops); b.hopT = 0; b.hopDx = (r() < 0.5 ? -1 : 1) * P.hopDx; enter(b, 'jump'); break;
@@ -374,6 +378,10 @@
       }
       case 'walk': case 'follow': {
         loopClip(b, 'walk'); b.gaze = b.dir;
+        if (b.gaitForce && b.state === 'walk') {                                              // 即刻觸發步姿：行夠 4–6s 就停；行到盡頭時間未夠就掉頭
+          if (b.t >= b.gaitForce.until - 1e-9) { b.gaitForce = null; backToStay(b); setClip(b, b.base); break; }
+          if (Math.abs(b.tx - b.x) <= P.arriveEps + 0.5) { const rem = (b.gaitForce.until - b.t) * b.speed * gaitMul(b, s) + 2, d = b.tx >= b.x ? -1 : 1; b.tx = clamp(b.x + d * rem, P.rangeX[0], P.rangeX[1]); }
+        }
         if (moveTo(b, b.tx, b.speed * gaitMul(b, s))) { if (b.state === 'follow') goReact(b); else backToStay(b); break; }
         if (b.state === 'walk' && b.stopAt != null && (b.x - b.stopAt) * b.stopDir >= 0) {         // A2 中途停低
           b.stopAt = null; const k = pickStop(b, ctx);
@@ -448,6 +456,7 @@
   // A3：walk 嘅替身（art 次序：心情 ≥70 或 emo_happy 後 10s → walk_happy；精力／飽腹 <40 → walk_drag；其餘 walk）
   function gaitOf(b, s) {
     if (!LV.enabled || !s) return null; const n = s.needs;
+    if (b.gaitForce && b.t < b.gaitForce.until) return b.gaitForce.g;
     if (n.mood >= LV.happyMood || b.t < b.happyUntil) return 'walk_happy';
     if (n.energy < LV.dragBelow || n.hunger < LV.dragBelow) return 'walk_drag';
     return null;
@@ -461,9 +470,10 @@
     const fr = frameOf(g, b.styleT); b.styleT += FIX;
     if (fr !== b.styleFrame) {
       b.styleFrame = fr;
-      if ((CL[g].land || []).indexOf(fr) >= 0) {
-        if (g === 'walk_happy') note(b, 'sfx', 'step_hop');
-        else if (b.t - b.lastDragStep >= LV.stepDragGap - 1e-9) { note(b, 'sfx', 'step_drag'); b.lastDragStep = b.t; }
+      if (g === 'walk_happy') { if ((CL[g].land || []).indexOf(fr) >= 0) note(b, 'sfx', 'step_hop'); }       // 落地 0、3
+      else {
+        if ((CL[g].scuff || []).indexOf(fr) >= 0 && b.t - b.lastDragStep >= LV.stepDragGap - 1e-9) { note(b, 'sfx', 'step_drag'); b.lastDragStep = b.t; }   // 拖地（起塵烙入幀）1、4
+        if ((CL[g].land || []).indexOf(fr) >= 0) note(b, 'sfx', 'step_plod');                                              // 踏地 2、5
       }
     }
     return g;
@@ -480,7 +490,11 @@
   }
   // 序列步：{clip, dur, fmap(u秒)→幀, face, pose(u)→{dx,sy,rot}, nonint, sfx:[[t,name]], at:[[t,fn]], main}
   const F = (c) => (t) => frameOf(c, t);
-  const COOL = () => ({ clip: 'sway', dur: LV.coolSec, tag: 'act_cool', fmap: (t) => frameOf('sway', t % clipDur('sway')), face: { eyes: 'squint', gaze: 'L', mouth: 'neutral' } });   // 扮冷靜（缺 act_cool 美術 → sway 身體＋望開）
+  const HOLD = (c, extra) => { const C = CL[c], n = C.frames; return { clip: c, dur: n / C.fps + (C.holdLast || 0) + (extra || 0), fmap: (t) => Math.min(n - 1, Math.floor(t * C.fps + 1e-9)) }; };   // 播一次＋hold 尾幀
+  const COOL = () => REAL('act_cool') ? Object.assign(HOLD('act_cool', 0.2), { tag: 'act_cool' }) : COOL_FB();
+  const SMUG = (b) => REAL('smug_pose') ? Object.assign(HOLD('smug_pose'), { tag: 'smug', nonint: true })       // 真 smug_pose：尾幀 hold 0.8s（holdLast）＋preset smug 臉；頭頂閃已烙入幀
+    : { clip: 'emo_happy', dur: LV.smugSec, tag: 'smug', face: { eyes: 'squint', gaze: 'C', mouth: 'squint', head: 'CR' }, fn: () => fx(b, 'spark', b.dir * 8, -46) };   // fallback：emo_happy＋ω 臉
+  const COOL_FB = () => ({ clip: 'sway', dur: LV.coolSec, tag: 'act_cool', fmap: (t) => frameOf('sway', t % clipDur('sway')), face: { eyes: 'squint', gaze: 'L', mouth: 'neutral' } });   // 扮冷靜（缺 act_cool 美術 → sway 身體＋望開）
   function sneezeSteps(b) {
     const st = [{ clip: 'sneeze', dur: CL.sneeze.frames / CL.sneeze.fps + 0.15, nonint: true, sfx: [[CL.sneeze.achooFrame / CL.sneeze.fps, 'sneeze']], main: 'sneeze' }];
     if (b.mrng() < LV.sneezeSurprised) st.push({ clip: 'emo_surprised', dur: 0.5, tag: 'surprised' });   // art：30% 接 emo_surprised
@@ -495,16 +509,25 @@
         return [{ clip: 'scratch', dur: fr.length / C.fps, fmap: (t) => fr[Math.min(fr.length - 1, Math.floor(t * C.fps + 1e-9))], sfx: [[0, 'scratch']], main: 'scratch' }];
       }
       case 'sneeze': return sneezeSteps(b);
+      case 'smug': return [SMUG(b)];                                                       // 即刻觸發：淨係得意 pose
       case 'sniff': {     // A2 嗅地 → （個性）嗅到打噴嚏 → 扮冷靜
         const st = [{ clip: 'sniff', dur: C.frames / C.fps + 0.25, main: 'sniff' }];
-        const sn = o.sneeze != null ? o.sneeze : (b.mrng() < LV.sniffSneeze && microReady(b, 'sneeze'));
-        if (sn) { st[0].dur = 3 / C.fps + 0.2; st[0].fmap = (t) => Math.min(2, Math.floor(t * C.fps + 1e-9)); st.push({ fn: () => { b.microAt.sneeze = b.t; } }); for (const x of sneezeSteps(b)) st.push(x); }
+        const sn = o.sneeze != null ? o.sneeze : (b.mrng() < LV.sniffSneeze && (o.force || microReady(b, 'sneeze')));
+        if (sn) {
+          st[0].dur = 3 / C.fps + (REAL('sniff_itch') ? 0.05 : 0.2); st[0].fmap = (t) => Math.min(2, Math.floor(t * C.fps + 1e-9)); st.push({ fn: () => { b.microAt.sneeze = b.t; } });
+          if (REAL('sniff_itch')) st.push(Object.assign(HOLD('sniff_itch'), { tag: 'itch', nonint: true }));   // sniff → sniff_itch（鼻癢）→ sneeze
+          for (const x of sneezeSteps(b)) st.push(x);
+        }
         return st;
       }
       case 'lookup': {    // A2 望天（第 2 幀 hold 0.8s）→ （個性）向後倒少少 → 起返身 → 扮冷靜
         const tip = o.tip != null ? o.tip : b.mrng() < LV.lookupTip, a = 3 / C.fps, hold = LV.lookupHold;
         const st = [{ clip: 'lookup', dur: a + hold + (tip ? 0 : 1 / C.fps + 0.2), fmap: (t) => t < a ? Math.floor(t * C.fps + 1e-9) : t < a + hold ? 2 : 3, main: 'lookup' }];
-        if (tip) {
+        if (tip && REAL('lookup_tip') && REAL('getup')) {                                   // 真 lookup_tip（坐低）→ getup → act_cool
+          st.push(Object.assign(HOLD('lookup_tip', 0.15), { tag: 'tip', nonint: true }));
+          st.push(Object.assign(HOLD('getup', 0.05), { tag: 'getup', nonint: true }));
+          st.push(COOL());
+        } else if (tip) {
           st.push({ clip: 'lookup', dur: LV.tipSec, tag: 'tip', fmap: () => 2, face: { eyes: 'surprised', gaze: 'U', mouth: 'surprised' }, pose: (u) => ({ dx: -2 * u, sy: 1 - 0.1 * u, rot: LV.tipRot * u }) });   // 缺 lookup_tip → 程序化後仰
           st.push({ clip: 'wake', dur: LV.getupSec, tag: 'getup', face: { eyes: 'surprised', gaze: 'C', mouth: 'neutral' }, pose: (u) => { const k = Math.max(0, 1 - u / 0.35); return { dx: -2 * k, sy: 1 - 0.1 * k, rot: LV.tipRot * k }; } });   // 缺 getup → wake 身體
           st.push(COOL());
@@ -519,7 +542,7 @@
             if (miss) { g.st = 'flee'; g.vx = b.dir * 26; g.vy = -34; note(b, 'micro', 'swat', 'miss'); }
             else { g.st = 'hit'; fx(b, 'spark', g.x, g.y); note(b, 'micro', 'swat', 'hit'); }
           }]] }];
-        if (miss) st.push({ clip: 'emo_happy', dur: LV.smugSec, tag: 'smug', face: { eyes: 'squint', gaze: 'C', mouth: 'squint', head: 'CR' }, fn: () => fx(b, 'spark', b.dir * 8, -46) });   // 缺 smug_pose → emo_happy＋ω 臉
+        if (miss) st.push(SMUG(b));
         else st.push({ clip: 'emo_happy', dur: 0.8, tag: 'happy' });
         return st;
       }
@@ -669,7 +692,21 @@
   }
 
   // debug／測試：強制進入狀態或變體
+  // 即刻觸發（開發者面板）：唔理冷卻／機率；鏈照抽
+  function forceNow(b, k, ctx) {
+    ctx = ctx || {}; if (b.variant) endVariant(b);
+    if (k === 'happy' || k === 'drag') {
+      const g = k === 'happy' ? 'walk_happy' : 'walk_drag', dur = rf(b.mrng, LV.nowWalkSec), sp = P.walkSpeed;
+      if (b.state === 'micro' && b.seq) endMicro(b);
+      const room = [b.x - P.rangeX[0], P.rangeX[1] - b.x], d = room[1] >= room[0] ? 1 : -1;
+      b.tx = clamp(b.x + d * sp * LV.speedMul[g] * dur, P.rangeX[0], P.rangeX[1]); b.speed = sp;
+      enter(b, 'walk', 'now'); b.stopAt = null; b.gaitForce = { g, until: b.t + dur, start: b.t };
+      note(b, 'micro', 'now_' + k, g); return;
+    }
+    startMicro(b, k, ctx, { from: 'now', force: true });
+  }
   function force(b, name, ctx) {
+    if (name.slice(0, 4) === 'now_' && NOW.indexOf(name.slice(4)) >= 0) { forceNow(b, name.slice(4), ctx); return; }
     if (MICRO_FORCE.includes(name)) {                                                // 生命感第二段（QA／開發面板）：唔理冷卻
       if (b.variant) endVariant(b);
       const k = name.split('_')[0], o = { from: 'force', force: true };
@@ -688,5 +725,5 @@
     startState(b, name, ctx || {});
   }
 
-  return { create, update, step, tap, drag, dragEnd, note, force, exprFor, frameOf, clipDur, clipLen, formKey, weights, quantGaze, faceFor, MIRROR, FIX, VARIANTS, IDLE_EXTRA, STOPS, MICRO, MICRO_FORCE, idleWeights, gaitOf, microReady };
+  return { create, update, step, tap, drag, dragEnd, note, force, NOW, REAL, exprFor, frameOf, clipDur, clipLen, formKey, weights, quantGaze, faceFor, MIRROR, FIX, VARIANTS, IDLE_EXTRA, STOPS, MICRO, MICRO_FORCE, idleWeights, gaitOf, microReady };
 });

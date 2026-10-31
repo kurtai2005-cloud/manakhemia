@@ -17,17 +17,29 @@
 | walk_drag | 6／6 | A3 攰／肚餓拖步 |
 音效（sfx_pet_scratch／sneeze／step_hop／step_drag／bug_pat a/b）combo 入面嘅檔同 audio/pet-plan-a @ 2bfce1b blob 完全一樣，唔使再抓；冇帶雨聲 v2.1。
 
-## 缺（按現有尺寸；請遊美出 noface＋faceov＋full＋anchors，3 form）
-| # | 建議 clip 名 | 幀／fps | 用途（Kurt：「蠢蠢地但覺得自己好醒」） | 而家 fallback |
+## ✅ 已補（遊美 2026-10-31 live_s2，s2b 已接入引擎；遊美 validator ALL PASS）
+來源：`/workspace/live-s2-art-staging.zip`（222 檔）→ repo `art-pet/`＋引擎 `src/glimmer-a/art/liveliness/`（`atlas_<form>_live_s2.{png,json}`、`fx/atlas_fx_live.{png,json}`、CLIPS.json／face_anchors.json 更新；舊 `atlas_<form>_live` 冇郁）。
+| # | clip | 幀／fps | 狀態 | 引擎接法（s2b） |
+|---|---|---|---|---|
+| 1 | `smug_pose` | 4／6＋holdLast 0.8s | **已補** | 拍蟲撲空 → smug_pose，尾幀 hold 0.8s；face preset `smug`（eyes sleepy／gaze C／mouth squint ω）；頭頂閃已烙入幀（唔再加程序化 spark） |
+| 2 | `act_cool` | 4／5 | **已補** | 噴嚏後／getup 後扮冷靜 |
+| 3 | `lookup_tip` | 4／6 | **已補** | 望天 → lookup_tip（冇程序化後仰） |
+| 4 | `getup` | 4／6 | **已補** | lookup_tip → getup → act_cool |
+| 5 | fx `fx_bug`（8×8，3 幀，pivot (4,4)，01→02→03→02 @10fps） | 3／10 | **已補** | 取代程序化 2×2 點；飛走跟方向 flip |
+| 6 | `sniff_itch` | 2／6 | **已補** | sniff 第 3 幀 → sniff_itch → sneeze_01 |
+未 ready（?live=0／dust）時以上全部自動退返舊 fallback（見下表），行為一樣。
+
+### 舊 fallback（保留作退路）
+| # | 建議 clip 名 | 幀／fps | 用途（Kurt：「蠢蠢地但覺得自己好醒」） | fallback |
 |---|---|---|---|---|
 | 1 | `smug_pose` | 4／6，最後幀 hold 0.8s | 拍蟲撲空之後得意擺 pose（挺胸、合眼仰頭、ω 口） | `emo_happy` 身體 ×2 循環＋強制臉 eyes squint／mouth squint（ω）＋頭微轉＋小星火花 fx |
 | 2 | `act_cool` | 4／5 | 嗅地打完噴嚏／望天跌低之後「扮冷靜」（別過頭、輕咳、拍拍身） | `sway` 身體＋強制臉 eyes squint gaze 望側（L）／mouth neutral |
 | 3 | `lookup_tip` | 4／6 | 望天望到向後小小倒（坐低／後仰） | `lookup` 最後一幀＋程序化後仰（向後移 2px、壓扁 0.9、轉 −10°） |
 | 4 | `getup` | 4／6 | 後仰之後起返身（撐起） | `wake` 身體＋強制臉 eyes surprised→neutral |
-| 5 | fx `bug`（8×8，2–3 幀拍翼） | 2–3／10 | A2 拍走蟲仔嘅蟲仔（engine 飛近 head_r） | 程序化 2×2 黑點＋1px 翼閃（canvas 畫） |
-| 6 | （可選）`sniff_itch` | 2／6 | 嗅到鼻癢嘅過渡幀（sniff→sneeze 之間） | 直接 sniff → sneeze 接駁 |
+| 5 | fx `bug` | 2–3／10 | A2 拍走蟲仔嘅蟲仔（engine 飛近 head_r） | 程序化 2×2 黑點＋1px 翼閃（canvas 畫） |
+| 6 | `sniff_itch` | 2／6 | 嗅到鼻癢嘅過渡幀 | 直接 sniff → sneeze 接駁 |
 
 ## 其他備註
-- 微塵（dust）form 冇 live atlas，第二段全部新 clip 照舊用 idle＋程序化變形 placeholder（同第一段一樣）。螢絨（lumi）借柔光 clip。
-- walk_happy 落地幀／walk_drag 落腳幀未有標註；程式暫定 walk_happy 索引 2、5 落地（每循環 2 跳）、walk_drag 索引 1、4 落腳（第 2／5 幀起塵），請遊美確認。
+- 微塵（dust）form 冇 live atlas，第二段全部新 clip 照舊用 idle＋程序化變形 placeholder（同第一段一樣）。螢絨（lumi）借柔光 clip。dust／lumi／rim_live 仲未有 s2 版本 → 繼續 fallback（rim 退 rimFallback）。
+- **步佐幀（遊美 s2 量度，已改）**：walk_happy 落地＝索引 0、3（2、5 係最高點）→ step_hop；walk_drag 拖地起塵＋拖地聲（step_drag）＝索引 1、4，踏地聲（新 cue step_plod）＝索引 2、5。step_plod 暫時借 sfx_pet_step_hop a/b（gain 0.5、rate 0.82），待遊音出專屬檔。
 - lookup 舊 data.js 定義 2 幀 2fps（extra placeholder）；第二段改跟遊美 CLIPS.json：4 幀 5fps（live）。流星夜事件照用。

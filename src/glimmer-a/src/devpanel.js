@@ -35,6 +35,9 @@
   #devp .db{max-height:196px;overflow-y:auto;padding:4px 8px 8px}
   #devp.fold .db{display:none}
   #devp .dr{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:4px 0}
+  #devp .dr>em.dmst{font-style:normal;font-size:11px;opacity:.75}
+  #devp .dr.dlive button{background:#3a2c66}
+  #devp .dr.dlive button.on{background:#c79a2c;border-color:#ffd86b;color:#1a1530}
   #devp .dr>i{font-style:normal;width:44px;opacity:.7;font-size:11px}
   #devp button{font:12px system-ui,sans-serif;color:#fff;background:#2c3266;border:1px solid #5560b0;border-radius:6px;padding:3px 7px;min-height:24px}
   #devp button.on{background:#ffd86b;color:#222;border-color:#ffd86b}
@@ -121,17 +124,25 @@
         disarm(); G.resetSave(); return 'reset';
       },
       state() { const S = s(); return { open: api.isOpen(), folded: el.classList.contains('fold'), speed: G.timeScale, clockRun: !!G.clockRun, hour: +G.hour().toFixed(2), stage: S.stage, form: S.form, cq: Math.round(S.cq), needs: Object.assign({}, S.needs), pers: G.beh ? Object.assign({}, G.beh.pers) : null, scene: G.hd ? G.hd.current() : null, weather: G.weather || 'clear', resetArmed: !!resetArm }; },
+      // ── 生命感第二段（s2b）：即刻觸發（唔理冷卻／機率，個性鏈照接）＋強制鏈＋展示模式 ──
+      live(k) { note('live', k); const ok = G.liveNow ? G.liveNow(k) : false; sync(); return ok ? (G.beh.gaitForce ? G.beh.gaitForce.g : G.beh.seq && G.beh.seq[G.beh.seqI] ? (G.beh.seq[G.beh.seqI].tag || G.beh.seq[G.beh.seqI].clip) : G.beh.state) : false; },
+      chain(name) { note('chain', name); G.forceBeh(name); sync(); return name; },
+      demo(on) { const v = on == null ? !G.liveDemo : (on === true || on === 'on' || on === '1' || on === 1); note('demo', v); G.setLiveDemo(v); sync(); return G.liveDemo; },
       sync: () => sync(),
     };
     function disarm() { resetArm = 0; clearTimeout(resetTimer); sync(); }
 
     // ── DOM ──
+    const LIVE_NOW = [['sniff', '嗅地'], ['lookup', '望天'], ['swat', '拍蟲'], ['scratch', '抓癢'], ['sneeze', '打噴嚏'], ['happy', '開心步'], ['drag', '拖步'], ['smug', 'smug']];
+    const LIVE_CHAIN = [['sniff_sneeze', '嗅→噴嚏'], ['lookup_tip', '望天→後倒'], ['swat_miss', '撲空→得意'], ['swat_hit', '拍中']];
     const btn = (label, fn, tid, cls) => `<button data-a="${fn}" ${tid ? 'data-testid="' + tid + '"' : ''} class="${cls || ''}">${label}</button>`;
     function render() {
       const S = s(), N = D.NEED_LABEL;
       el.innerHTML = `<div class="dh"><b>DEV</b><span id="devst"></span>${btn('▾', 'fold', 'dev-fold')}${btn('✕', 'close', 'dev-close')}</div>
       <div class="db">
         <div class="dr"><i>時間</i>${[1, 10, 60].map(n => btn('×' + n, 'speed:' + n, 'dev-speed-' + n)).join('')}${btn('跳 1 日', 'skipDay', 'dev-skipday')}</div>
+        <div class="dr dlive" data-testid="dev-live-row"><i>生命感</i>${LIVE_NOW.map(([k, l]) => btn(l, 'live:' + k, 'dev-live-' + k)).join('')}</div>
+        <div class="dr dlive"><i>s2 鏈</i>${LIVE_CHAIN.map(([k, l]) => btn(l, 'chain:' + k, 'dev-chain-' + k)).join('')}${btn('展示模式', 'demo', 'dev-live-demo')}<em class="dmst" data-testid="dev-live-demo-state"></em></div>
         <div class="dr"><i>時段</i>${SCENES.map(m => btn(SCENE_LABEL[m], 'scene:' + m, 'dev-scene-' + m)).join('')}${btn('HD', 'hd2d', 'dev-hd2d')}</div>
         <div class="dr"><i>形態</i>${api.forms().map(f => btn(f === 'egg' ? '光卵' : f === 'sprout' ? '芽崽' : D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'setForm:' + f, 'dev-form-' + f)).join('')}</div>
         <div class="dr"><i>進化</i>${D.EVOLUTION.map(e => btn('▶' + e.name, 'playEvolve:' + e.form, 'dev-evolve-' + e.form)).join('')}</div>
@@ -151,6 +162,8 @@
       el.querySelectorAll('button[data-a^="scene:"]').forEach(b => b.classList.toggle('on', !!sc && b.dataset.a.split(':')[1] === sc.mode));
       el.querySelectorAll('button[data-a^="personality:"]').forEach(b => b.classList.toggle('on', b.dataset.a.split(':')[1] === (G.devPers || 'default')));
       el.querySelectorAll('button[data-a^="setForm:"]').forEach(b => { const f = b.dataset.a.split(':')[1]; b.classList.toggle('on', f === S.stage || (S.stage === 'adult' && f === S.form)); });
+      const dm = q('[data-a="demo"]'); if (dm) { dm.classList.toggle('on', !!G.liveDemo); dm.textContent = '展示模式 ' + (G.liveDemo ? '開' : '關'); }
+      const dst = q('.dmst'); if (dst) dst.textContent = G.liveDemo ? '×' + (P.beh.live.demoMul || 5) + ' 頻率／冷卻 ÷' + (P.beh.live.demoMul || 5) : '正常頻率';
       const hb = q('[data-a="hd2d"]'); if (hb) hb.classList.toggle('on', !!(G.hd && G.hd.enabled));
       const rb = q('[data-a="reset"]'); if (rb) rb.textContent = resetArm ? '再撳一次確認重設' : '重設存檔';
       const fb = q('[data-a="fold"]'); if (fb) fb.textContent = el.classList.contains('fold') ? '▴' : '▾';
@@ -164,6 +177,7 @@
         if (fn === 'hd2d') api.hd2d(!(G.hd && G.hd.enabled));
         else if (fn === 'reset') api.reset(false);
         else if (fn === 'fold') api.fold();
+        else if (fn === 'demo') api.demo();
         else if (arg != null) api[fn](arg); else api[fn]();
       } catch (err) { note('error', String(err.message || err)); }
       sync();

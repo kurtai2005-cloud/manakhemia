@@ -99,8 +99,8 @@ console.log('# 規則');
   const names = []; LIVE.forEach(n => ['a', 'b'].forEach(v => names.push('pet_' + n + '_' + v)));
   const miss = names.filter(n => !AU.cues[n] || !fs.existsSync(path.join(__dirname, '..', 'audio', 'sfx', AU.cues[n].file + '.ogg')));
   ok(miss.length === 0, '16 個生命感音效已註冊＋檔案喺 audio/sfx', miss.join(','));
-  const S2 = ['sneeze', 'scratch', 'step_hop', 'step_drag', 'bug_pat'], S3 = ['nuzzle_purr', 'reunion_happy'];
-  ok(names.filter(n => S2.some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => !AU.cues[n].reserved) && names.filter(n => S3.some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => AU.cues[n].reserved), '第二段：sneeze／scratch／step_hop／step_drag／bug_pat（10 個）已接（唔再 reserved）；nuzzle_purr／reunion_happy（4 個）仍 reserved 等第三段');
+  const S2 = ['sneeze', 'scratch', 'step_hop', 'step_drag', 'step_plod', 'bug_pat'], S3 = ['nuzzle_purr', 'reunion_happy'];
+  ok(names.filter(n => S2.some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => !AU.cues[n].reserved) && names.filter(n => S3.some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => AU.cues[n].reserved), '第二段：sneeze／scratch／step_hop／step_drag／step_plod／bug_pat（12 個）已接（唔再 reserved）；nuzzle_purr／reunion_happy（4 個）仍 reserved 等第三段');
   const s = mkS(), c = { s, pw: LT.compute(14), sun: 1, override: null, event: null };
   let seen = { a: 0, b: 0 }, touchWithTurn = 0, turns = 0, cdOk = true;
   for (let seed = 1; seed <= 40; seed++) {
@@ -136,8 +136,11 @@ console.log('# 生命感第二段音效（journal ev sfx → a/b 交替；遊音
   const hop = walkCues({ mood: 95 }), drag = walkCues({ mood: 50, energy: 20 });
   const alt = (a) => a.every((x, i) => i === 0 || x.name !== a[i - 1].name);
   ok(hop.length >= 10 && hop.every(x => /step_hop/.test(x.name)) && alt(hop), '心情 ≥70：walk_happy 每循環 2 次落地 → step_hop（4s ' + hop.length + ' 下），a/b 交替', hop.map(x => x.name.slice(-1)).join(''));
-  const gaps = drag.slice(1).map((x, i) => x.t - drag[i].t);
-  ok(drag.length >= 5 && drag.every(x => /step_drag/.test(x.name)) && alt(drag) && gaps.every(g => g >= 0.4 - 1e-6), '精力 <40：walk_drag 每步 step_drag（4s ' + drag.length + ' 下，最短間隔 ' + Math.min(...gaps).toFixed(2) + 's ≥0.4），a/b 交替');
+  const scuff = drag.filter(x => /step_drag/.test(x.name)), plod = drag.filter(x => /step_plod/.test(x.name));
+  const gaps = scuff.slice(1).map((x, i) => x.t - scuff[i].t);
+  ok(scuff.length >= 5 && alt(scuff) && gaps.every(g => g >= 0.4 - 1e-6), '精力 <40：walk_drag 拖地聲 step_drag（幀 1、4；4s ' + scuff.length + ' 下，最短間隔 ' + Math.min(...gaps).toFixed(2) + 's ≥0.4），a/b 交替');
+  ok(plod.length >= 5 && alt(plod) && Math.abs(plod.length - scuff.length) <= 1 && drag.every(x => /step_(drag|plod)/.test(x.name)), 's2：walk_drag 踏地聲 step_plod（幀 2、5；' + plod.length + ' 下），a/b 交替，同拖地聲 1:1');
+  ok(AU.cues.pet_step_plod_a.gain < 1 && AU.cues.pet_step_plod_a.noLast && AU.cues.pet_step_plod_a.cdKey !== AU.cues.pet_step_drag_a.cdKey, 'step_plod 細聲（借 step_hop 檔，gain 0.5、低音高）、唔同拖地聲搶冷卻');
   const neu = walkCues({ mood: 55 }); ok(neu.length === 0, '普通 walk（心情 40–70、需求正常）冇腳步聲（維持舊行為）');
   // 腳步唔佔 petMinGap：行路中照可出 yawn／touch
   ok(AU.cues.pet_step_hop_a.noLast && AU.cues.pet_step_drag_a.noLast && !AU.cues.pet_step_hop_a.gap, '腳步聲 noLast：唔阻其他寵物聲（petMinGap）');

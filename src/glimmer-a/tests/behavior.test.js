@@ -317,6 +317,76 @@ console.log('# 生命感第二段（F3／A2／A3／B1／B2＋個性「蠢蠢地�
     ok(r1(7) === r1(7) && r1(7) !== r1(8), '生命感排程：同種子一致、唔同種子唔同（mrng 獨立）'); }
 }
 
+console.log('# 生命感 s2b（遊美 live_s2 真 clip／步佐幀／即刻觸發／展示模式）');
+{
+  const LVP = P.live, S2C = ['smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch'];
+  const mk2 = (needs, hour, seed) => { const b = BEH.create(seed || 13), s = mkS(needs), ctx = ctxAt(s, hour == null ? 14 : hour); run(b, ctx, 0.5); b.state = 'stay'; b.phase = ''; b.variant = null; b.x = 0; b.dir = 1; b.clip = 'idle'; return { b, s, ctx }; };
+  const withReady = (fn) => { const sv = S2C.map(k => D.CLIPS[k].ready); S2C.forEach(k => D.CLIPS[k].ready = true); try { return fn(); } finally { S2C.forEach((k, i) => D.CLIPS[k].ready = sv[i]); } };
+  const play = (name, needs, sec, seed) => { const { b, ctx } = mk2(needs || { mood: 55 }, 14, seed); BEH.force(b, name, ctx); const tl = []; for (let i = 0; i < Math.round((sec || 8) / FIX); i++) { BEH.step(b, ctx); const k = b.show.clip + (b.seq && b.seq[b.seqI] && b.seq[b.seqI].tag ? ':' + b.seq[b.seqI].tag : ''); if (tl[tl.length - 1] !== k) tl.push(k); if (b.state !== 'micro') break; } return { b, ctx, tl }; };
+  // ── 資料：5 個 s2 clip 對齊 art CLIPS.json＋atlas_<form>_live_s2＋face_anchors ──
+  { const LVD = path.join(root0, 'art/liveliness'), fa = JSON.parse(fs.readFileSync(path.join(LVD, 'face_anchors.json'), 'utf8')), cj = JSON.parse(fs.readFileSync(path.join(LVD, 'CLIPS.json'), 'utf8')); const bad = [];
+    for (const k of S2C) { const a = cj.clips.find(c => c.name === k), d = D.CLIPS[k];
+      if (!a || !d || !d.live || a.frames !== d.frames || a.fps !== d.fps || !!a.loop !== !!d.loop || a.interruptible !== d.interruptible || (a.cooldown_s || 0) !== (d.cooldown || 0) || a.next !== d.next || (a.holdLast_s || 0) !== (d.holdLast || 0)) bad.push('spec/' + k);
+      for (const f of ['sprout', 'radiant', 'soft']) { const A = JSON.parse(fs.readFileSync(path.join(LVD, 'atlas_' + f + '_live_s2.json'), 'utf8')); const an = A.animations[k + '_noface'], anc = fa.anchors[f][k];
+        if (!an || an.frames.length !== d.frames || !anc || anc.length !== d.frames) bad.push(f + '/' + k);
+        else anc.forEach((x, i) => { const e = D.PARAMS.face.clipFrames[k][i]; if (!x.face || x.face.eyes !== e[0] || x.face.gaze !== e[1] || x.face.mouth !== e[2]) bad.push(f + '/' + k + '#' + i + ' face'); }); } }
+    const ps = cj.faceKit && cj.faceKit.presets && cj.faceKit.presets.smug, mine = D.PARAMS.face.presets.smug;
+    ok(bad.length === 0 && ps && ps.eyes === mine[0] && ps.mouth === mine[2] && D.PARAMS.face.clipFrames.smug_pose[3].join() === mine.join(), '5 個 s2 clip（smug_pose／act_cool／lookup_tip／getup／sniff_itch）：規格＋holdLast＋next 一致、3 形態 _live_s2 _noface＋錨點齊、逐幀五官＝face_anchors；preset smug＝sleepy＋C＋squint', bad.slice(0, 8).join() + JSON.stringify(ps));
+    const lc = D.PARAMS.face.liveliness; ok(['sprout', 'radiant', 'soft'].every(f => lc.atlases[f].join() === 'atlas_' + f + '_live,atlas_' + f + '_live_s2' && (cj.forms[f].liveAtlas || []).join() === 'atlas_' + f + '_live.png,atlas_' + f + '_live_s2.png') && lc.fx === 'fx/atlas_fx_live', '引擎每 form 載 _live＋_live_s2（同 CLIPS.json forms[f].liveAtlas）；fx atlas＝fx/atlas_fx_live'); }
+  { const fx = JSON.parse(fs.readFileSync(path.join(root0, 'art/liveliness/fx/atlas_fx_live.json'), 'utf8')), an = fx.animations.fx_bug;
+    ok(an && an.frames.join() === 'fx_bug_01,fx_bug_02,fx_bug_03,fx_bug_02' && an.fps === 10 && an.loop && ['fx_bug_01', 'fx_bug_02', 'fx_bug_03'].every(k => fx.frames[k].frame.w === 8 && fx.frames[k].frame.h === 8 && fx.frames[k].pivotPx.x === 4 && fx.frames[k].pivotPx.y === 4), 'fx bug：8×8、3 幀、pivot (4,4)、01→02→03→02 loop 10fps'); }
+  // ── 真 clip 取代 fallback（ready＝3 形態 atlas 齊；node 入面模擬 ready）──
+  withReady(() => {
+    { const r = play('swat_miss'); ok(r.tl.join('>') === 'idle:notice>swat>smug_pose:smug>idle', '真 clip：拍蟲撲空 → smug_pose（' + r.tl.join('>') + '）');
+      const { b, ctx } = mk2(); BEH.force(b, 'swat_miss', ctx); const fr = []; let hold = 0, face = null, spark = false;
+      for (let i = 0; i < 400 && b.state === 'micro'; i++) { BEH.step(b, ctx); if (b.show.clip === 'smug_pose') { if (fr[fr.length - 1] !== b.show.frame) fr.push(b.show.frame); if (b.show.frame === 3) { hold += FIX; face = Object.assign({}, b.face); } } if (b.fx.some(f => f.type === 'spark')) spark = true; }
+      ok(fr.join('') === '0123' && hold >= 0.8 + 1 / 6 - 0.03 && hold < 1.2, 'smug_pose 4 幀 6fps，尾幀 hold（' + hold.toFixed(2) + 's ＝ 1/6＋holdLast 0.8）');
+      ok(face && face.eyes === 'sleepy' && face.mouth === 'squint' && face.gaze === 'C' && !spark, 'smug_pose 尾幀臉＝preset smug（sleepy／C／squint）；唔再加程序化 spark（閃已烙入幀）', JSON.stringify(face)); }
+    { const r = play('sniff_sneeze'); const t = r.tl.join('>');
+      ok(/^sniff>sniff_itch:itch>sneeze>(emo_surprised:surprised>)?act_cool:act_cool>idle$/.test(t), '真 clip：sniff → sniff_itch → sneeze → act_cool（' + t + '）');
+      const { b, ctx } = mk2(); BEH.force(b, 'sniff_sneeze', ctx); const seen = []; for (let i = 0; i < 400 && b.state === 'micro'; i++) { BEH.step(b, ctx); const k = b.show.clip + b.show.frame; if (seen[seen.length - 1] !== k) seen.push(k); }
+      const j = seen.join(' '); ok(/sniff2 sniff_itch0 sniff_itch1 sneeze0/.test(j) && !/sniff3/.test(j), 'sniff 第 3 幀（索引 2）→ sniff_itch 2 幀 → 直接接 sneeze_01', j.slice(0, 120)); }
+    { const r = play('lookup_tip'); const t = r.tl.join('>');
+      ok(t === 'lookup>lookup_tip:tip>getup:getup>act_cool:act_cool>idle', '真 clip：望天 → lookup_tip → getup → act_cool（' + t + '）');
+      const { b, ctx } = mk2(); BEH.force(b, 'lookup_tip', ctx); let pose = 0, gf = []; for (let i = 0; i < 600 && b.state === 'micro'; i++) { BEH.step(b, ctx); if (b.pose) pose++; if (b.show.clip === 'getup' && gf[gf.length - 1] !== b.show.frame) gf.push(b.show.frame); }
+      ok(pose === 0 && gf.join('') === '0123', '真 lookup_tip／getup 唔再用程序化後仰 pose；getup 4 幀播晒'); }
+  });
+  { const r = play('swat_miss'); ok(r.tl.join('>') === 'idle:notice>swat>emo_happy:smug>idle', '未 ready（dust／?live=0）：smug 仍用 emo_happy fallback'); }
+  // ── 步佐幀（0-based）──
+  { const steps = (needs) => { const { b, ctx } = mk2(needs); b.x = -60; BEH.force(b, 'walk', ctx); b.tx = 60; b.stopAt = null; const out = {}; for (let i = 0; i < 60 * 4; i++) { const n0 = b.journal.length; BEH.step(b, ctx); for (const e of b.journal.slice(n0)) if (e.ev === 'sfx') (out[e.name] = out[e.name] || new Set()).add(b.show.frame); } const o = {}; for (const k in out) o[k] = [...out[k]].sort().join(','); return o; };
+    const h = steps({ mood: 95 }), d = steps({ mood: 55, energy: 20 });
+    ok(h.step_hop === '0,3' && !h.step_drag, 'walk_happy 落地聲喺幀 0、3（2、5 係最高點）', JSON.stringify(h));
+    ok(d.step_drag === '1,4' && d.step_plod === '2,5', 'walk_drag：拖地聲 1、4；踏地聲 2、5', JSON.stringify(d)); }
+  // ── 即刻觸發（唔理冷卻／機率）──
+  { const want = { sniff: 'sniff', lookup: 'lookup', swat: 'swat', scratch: 'scratch', sneeze: 'sneeze', smug: 'emo_happy' }, bad = [];
+    for (const k of Object.keys(want)) { const { b, ctx } = mk2(); b.t = 50; for (const m of ['scratch', 'sneeze', 'sniff', 'lookup', 'swat']) b.microAt[m] = 49;   // 全部啱啱做完（冷卻中）
+      BEH.force(b, 'now_' + k, ctx); const seen = new Set(); for (let i = 0; i < 90 && b.state === 'micro'; i++) { BEH.step(b, ctx); seen.add(b.show.clip); } if (!seen.has(want[k])) bad.push(k + ':' + [...seen].join('/')); }
+    ok(bad.length === 0, '即刻觸發 6 個小動作掣：冷卻中照即刻出對應 clip（smug 未 ready → emo_happy fallback）', bad.join());
+    const okR = withReady(() => { const { b, ctx } = mk2(); BEH.force(b, 'now_smug', ctx); BEH.step(b, ctx); return b.show.clip === 'smug_pose' && b.seq[b.seqI].tag === 'smug'; }); ok(okR, 'smug 掣：ready 時出真 smug_pose');
+    let miss = 0, n = 0, sn = 0, tip = 0; for (let sd = 1; sd <= 60; sd++) { const a = play('now_swat', null, 8, sd); n++; if (a.tl.some(x => /:smug$/.test(x))) miss++; const c = play('now_sniff', null, 8, sd); if (c.tl.includes('sneeze')) sn++; const l = play('now_lookup', null, 8, sd); if (l.tl.some(x => /:tip$/.test(x))) tip++; }
+    ok(miss / n > 0.6 && miss / n < 0.95 && sn / n > 0.25 && sn / n < 0.65 && tip / n > 0.3 && tip / n < 0.7, '個性鏈照接：拍蟲撲空→得意 ' + miss + '/60、嗅地→噴嚏 ' + sn + '/60、望天→後倒 ' + tip + '/60（機率照 LV）'); }
+  { const gait = (k, needs) => { const { b, ctx } = mk2(needs || { mood: 55 }); b.x = 0; BEH.force(b, 'now_' + k, ctx); let walkT = 0, sh = new Set(), x0 = b.x, moved = 0, last = b.x; for (let i = 0; i < 60 * 8; i++) { BEH.step(b, ctx); if (b.state === 'walk') { walkT += FIX; sh.add(b.show.clip); moved += Math.abs(b.x - last); } last = b.x; if (b.state !== 'walk' && walkT > 0) break; } return { walkT, sh: [...sh].join(), moved, inRange: b.x >= P.rangeX[0] && b.x <= P.rangeX[1] }; };
+    const h = gait('happy'), d = gait('drag'), h2 = gait('happy', { mood: 20, energy: 20 });
+    ok(h.sh === 'walk_happy' && h.walkT >= 4 - 0.05 && h.walkT <= 6 + 0.05 && h.moved > 60 && h.inRange, '開心步掣：即刻用 walk_happy 行 ' + h.walkT.toFixed(2) + 's（4–6s，行 ' + h.moved.toFixed(0) + 'px，到盡頭掉頭）');
+    ok(d.sh === 'walk_drag' && d.walkT >= 4 - 0.05 && d.walkT <= 6 + 0.05 && d.inRange, '拖步掣：即刻用 walk_drag 行 ' + d.walkT.toFixed(2) + 's');
+    ok(h2.sh === 'walk_happy', '步姿掣蓋過需求（攰都照蓬跳）');
+    const { b, ctx } = mk2(); BEH.force(b, 'now_happy', ctx); run(b, ctx, 1); BEH.tap(b, 'pet', b.x + b.dir * 5, -20); BEH.step(b, ctx); ok(!b.gaitForce, '步姿掣行緊被點 → 交返正常流程（gaitForce 清走）'); }
+  // ── 展示模式（頻率 ×5／冷卻 ÷5）──
+  const hour2 = (demo) => { let micro = 0, stops = 0, walks = 0, worst = 1e9; for (let sd = 1; sd <= 6; sd++) { const b = BEH.create(sd), s = mkS({ mood: 60 }), ctx = ctxAt(s, 14); b.demo = demo; run(b, ctx, 3600);
+    micro += b.log.micro.length; const st = b.log.micro.filter(m => m.from === 'walk').length; stops += st; walks += (b.log.enters.walk || 0) - st;
+    const last = {}; for (const m of b.log.micro) { if (last[m.name] != null) worst = Math.min(worst, m.t - last[m.name]); last[m.name] = m.t; } } return { micro, stops, walks, r: stops / Math.max(1, walks), worst }; };
+  { const off = hour2(false), on = hour2(true);
+    ok(on.micro >= off.micro * 3, '展示模式：小動作頻率大升（6 種子 × 1 小時：' + off.micro + ' → ' + on.micro + '，×' + (on.micro / off.micro).toFixed(1) + '）');
+    ok(on.worst >= 600 / 5 - 1e-6 && on.worst < 600, '展示模式：同一小動作冷卻 ÷5（最短 ' + on.worst.toFixed(0) + 's ≥120）');
+    const b = BEH.create(1), c = ctxAt(mkS({ mood: 55 }), 14); const w0 = BEH.idleWeights(b, c); b.demo = true; const w1 = BEH.idleWeights(b, c); b.t = 130; b.microAt.scratch = 0; const rdy = BEH.idleWeights(b, c).scratch > 0; b.demo = false; const w2 = BEH.idleWeights(b, c);
+    ok(w1.scratch === w0.scratch * 5 && w1.sneeze === w0.sneeze * 5 && w1.blink === w0.blink && rdy && w2.scratch === 0 && BEH.idleWeights(BEH.create(1), c).scratch === w0.scratch, '展示模式：scratch／sneeze 權重 ×5、130s 已過冷卻；關返即刻回 600s 冷卻＋原權重', JSON.stringify({ w0, w1 }));
+    const sv = LVP.microCooldown, cds = {}; LVP.microCooldown = 0; ['sniff', 'lookup', 'swat'].forEach(k => { cds[k] = D.CLIPS[k].cooldown; D.CLIPS[k].cooldown = 0; });
+    const offS = hour2(false), onS = hour2(true); LVP.microCooldown = sv; Object.keys(cds).forEach(k => D.CLIPS[k].cooldown = cds[k]);
+    ok(onS.r > 0.6 && offS.r < 0.22, '展示模式：中途停步 15% → ×5（' + (offS.r * 100).toFixed(0) + '% → ' + (onS.r * 100).toFixed(0) + '%）');
+    const base = (() => { const b = BEH.create(7), s = mkS({ mood: 80 }), ctx = ctxAt(s, 14); run(b, ctx, 1800); return JSON.stringify(b.log.micro.map(m => m.name)); })(), base2 = (() => { const b = BEH.create(7), s = mkS({ mood: 80 }), ctx = ctxAt(s, 14); run(b, ctx, 1800); return JSON.stringify(b.log.micro.map(m => m.name)); })();
+    ok(base === base2 && BEH.create(1).demo === false && off.micro * 3 <= on.micro, '展示模式預設關（create().demo＝false）：正常排程不變＋確定性（6 種子 1 小時 ' + off.micro + ' 個小動作）'); }
+}
+
 console.log('# 遊美 daylight.json 時段 hook（lighting.setDaylight／daylightAt）');
 {
   const L = require('../src/lighting.js');

@@ -1,6 +1,6 @@
 /* 生命感第二段 E2E：node tests/e2e-live2.js   需要 playwright-core＋系統 Chrome，並喺 glimmer-a 開 http server（例：python3 -m http.server 8138）。
    涵蓋：7 個新 live clip ready、真 noface 身體＋逐幀五官（三形態，0 placeholder）、A3 蓬跳／拖步顯示替身、B1 抓癢、B2 打噴嚏、A2 嗅地／望天／拍蟲、
-   個性組合（撲空得意 pose／嗅到打噴嚏扮冷靜／望天後仰起身扮冷靜）、sfx（scratch／sneeze／bug_pat／step_hop／step_drag）、?live=0 fallback、console 無錯誤。
+   個性組合（撲空得意 pose／嗅到打噴嚏扮冷靜／望天後仰起身扮冷靜）、sfx（scratch／sneeze／bug_pat／step_hop／step_drag）；s2b：真 smug_pose／act_cool／lookup_tip／getup／sniff_itch＋fx bug sprite、?live=0 fallback、console 無錯誤。
    截圖 screens/live2-*.png（全屏 390×844）＋ live2-*-zoom.png（寵物特寫）。 */
 const path = require('path');
 let chromium;
@@ -80,20 +80,25 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   console.log('# 個性：蠢蠢地但覺得自己好醒');
   await fresh('debug=1&q=high&hour=13&seed=11&ev=0', 'soft', { mood: 55 });
-  let s = await forceAt('swat_miss', 0.3, { mood: 55 }); await page.waitForTimeout(120);
-  ok(s.micro === 'notice' && s.bug === 'buzz', '拍蟲：蟲仔喺頭邊飛（程序化 bug fx）', JSON.stringify(s)); await shot('swat-bug');
+  const until = (pred, max) => E(([src, max]) => { const p = new Function('r', 'return ' + src); let r = __qa.pet.state(); for (let i = 0; i < (max || 120) && !p(r); i++) r = __qa.pet.step(1 / 30, 1 / 60); return r; }, [pred, max]);
+  ok(await E(() => ['smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch'].every(k => Glimmer.data.CLIPS[k].ready) && ['sprout', 'radiant', 'soft'].every(f => __glimmer.renderer.lv.atlas[f].json.parts.length === 2) && !!__glimmer.renderer.lv.fx), 's2 美術：5 個新 clip ready（3 形態 _live＋_live_s2 合併）＋fx atlas 載入');
+  let s = await forceAt('swat_miss', 0.3, { mood: 55 }); await page.waitForTimeout(120); let f = await F();
+  ok(s.micro === 'notice' && s.bug === 'buzz' && f.bugArt === true, '拍蟲：蟲仔喺頭邊飛（遊美 fx_bug sprite，唔係程序化點）', JSON.stringify([s.micro, s.bug, f.bugArt])); await shot('swat-bug');
   s = await E(() => __qa.pet.step(0.5, 1 / 60)); ok(s.bug === 'flee', '撲空：蟲仔飛走', JSON.stringify(s));
-  s = await E(() => __qa.pet.step(0.4, 1 / 60)); await page.waitForTimeout(140); let f = await F();
-  ok(s.micro === 'smug' && s.show === 'emo_happy' && f.eyes === 'squint' && f.mouth === 'squint' && f.live, '撲空後得意 pose（emo_happy 身體＋瞇眼 ω 嘴）', JSON.stringify([s.micro, s.show, f.eyes, f.mouth])); await shot('swat-smug');
+  s = await until("r.micro === 'smug' && r.showFrame === 3"); await page.waitForTimeout(140); f = await F();
+  ok(s.micro === 'smug' && s.show === 'smug_pose' && f.clip === 'smug_pose' && f.eyes === 'sleepy' && f.mouth === 'squint' && f.live, '撲空後真 smug_pose（尾幀 preset smug：sleepy 眼＋ω 嘴）', JSON.stringify([s.micro, s.show, f.clip, f.eyes, f.mouth])); await shot('swat-smug');
+  { const h = await E(() => { let n = 0; for (let i = 0; i < 90; i++) { const r = __qa.pet.step(1 / 60, 1 / 60); if (r.show === 'smug_pose' && r.showFrame === 3) n++; else break; } return n / 60; }); ok(h >= 0.7, 'smug_pose 尾幀 hold ≈0.8s（量到再 hold ' + h.toFixed(2) + 's）'); }
   s = await forceAt('sniff_sneeze', 0.4, { mood: 55 }); await page.waitForTimeout(120); await shot('sniff-sneeze-1');
-  s = await E(() => __qa.pet.step(0.3, 1 / 60)); await page.waitForTimeout(120); f = await F();
-  ok(s.show === 'sneeze' && f.clip === 'sneeze', '嗅地 → 打噴嚏（sneeze live）', JSON.stringify([s.show, s.showFrame])); await shot('sniff-sneeze-2');
-  s = await E(() => { let r; for (let i = 0; i < 40; i++) { r = __qa.pet.step(0.05, 1 / 60); if (r.micro === 'act_cool') break; } return r; }); await page.waitForTimeout(140); f = await F();
-  ok(s.micro === 'act_cool' && s.show === 'sway' && f.eyes === 'squint' && s.face.gaze === 'L', '打完噴嚏扮冷靜（sway 身體＋瞇眼望開）', JSON.stringify([s.micro, s.show, f.eyes, s.face.gaze])); await shot('sniff-sneeze-cool');
+  s = await until("r.show === 'sniff_itch'"); await page.waitForTimeout(120); f = await F();
+  ok(s.micro === 'itch' && f.clip === 'sniff_itch' && f.live, '嗅地 → sniff_itch（鼻癢過渡，真 clip）', JSON.stringify([s.micro, s.show, f.clip])); await shot('sniff-itch');
+  s = await until("r.show === 'sneeze'"); f = await F(); ok(s.show === 'sneeze' && s.showFrame === 0, 'sniff_itch → 直接接 sneeze_01', JSON.stringify([s.show, s.showFrame]));
+  s = await until("r.micro === 'act_cool'", 200); await page.waitForTimeout(140); f = await F();
+  ok(s.micro === 'act_cool' && s.show === 'act_cool' && f.clip === 'act_cool' && f.live, '打完噴嚏扮冷靜（真 act_cool）', JSON.stringify([s.micro, s.show, f.clip, f.eyes, s.face.gaze])); await shot('sniff-sneeze-cool');
   s = await forceAt('lookup_tip', 1.2, { mood: 55 }); await page.waitForTimeout(120); await shot('lookup-hold');
-  s = await E(() => { let r; for (let i = 0; i < 40; i++) { r = __qa.pet.step(0.05, 1 / 60); if (r.micro === 'tip' && r.pose > 0.12) break; } return r; }); await page.waitForTimeout(140); f = await F();
-  ok(s.micro === 'tip' && s.pose > 0.12 && f.live && f.clip === 'lookup', '望天望到向後倒（lookup 尾幀＋程序化後仰 ' + s.pose + ' rad）', JSON.stringify(s)); await shot('lookup-tip');
-  s = await E(() => __qa.pet.step(0.5, 1 / 60)); ok(s.micro === 'getup' && s.show === 'wake', '起返身（wake 身體）', JSON.stringify([s.micro, s.show])); await page.waitForTimeout(120); await shot('lookup-getup');
+  s = await until("r.micro === 'tip' && r.showFrame === 3", 200); await page.waitForTimeout(140); f = await F();
+  ok(s.micro === 'tip' && s.show === 'lookup_tip' && s.pose === 0 && f.live && f.clip === 'lookup_tip', '望天望到坐低（真 lookup_tip，冇程序化後仰）', JSON.stringify([s.micro, s.show, s.pose, f.clip])); await shot('lookup-tip');
+  s = await until("r.micro === 'getup'", 200); await page.waitForTimeout(120); ok(s.micro === 'getup' && s.show === 'getup', '起返身（真 getup）', JSON.stringify([s.micro, s.show])); await shot('lookup-getup');
+  s = await until("r.micro === 'act_cool'", 200); ok(s.show === 'act_cool', 'getup → act_cool', s.show);
 
   console.log('# 音效：scratch／sneeze／bug_pat');
   await fresh('debug=1&q=high&hour=13&seed=11&ev=0', 'soft', { mood: 55 });
@@ -110,6 +115,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   s = await forceAt('scratch', 0.3); await page.waitForTimeout(140); f = await F();
   ok(s.micro === 'scratch' && !f.live, '?live=0：抓癢照行（行為唔變，渲染退 placeholder）', JSON.stringify([s.micro, f.live])); await shot('fallback-scratch');
   s = await forceAt('lookup_tip', 1.7); await page.waitForTimeout(120); ok(s.micro === 'tip' || s.micro === 'getup', '?live=0：後仰序列照行', s.micro);
+  s = await forceAt('swat_miss', 0.3); await page.waitForTimeout(120); f = await F(); ok(s.bug === 'buzz' && f.bugArt === false, '?live=0：蟲仔退返程序化點', JSON.stringify([s.bug, f.bugArt]));
+  s = await E(() => { let r; for (let i = 0; i < 60; i++) { r = __qa.pet.step(1 / 30, 1 / 60); if (r.micro === 'smug') break; } return r; }); ok(s.micro === 'smug' && s.show === 'emo_happy', '?live=0：smug 退返 emo_happy fallback', JSON.stringify([s.micro, s.show]));
 
   console.log('# 開發面板按鈕');
   await fresh('debug=1&q=high&hour=13&seed=11&ev=0', 'soft', { mood: 55 });

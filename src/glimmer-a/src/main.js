@@ -146,6 +146,7 @@
     const evView = G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur, vis: EV.visual(G.ev.rec.id, G.ev.t, G.ev.dur) } : null;
     const act = rd.pet.act && rd.t < rd.pet.until ? rd.pet.act : null;
     G.behCtx = { s, pw: G.light, sun: G.light.sun, override: act, event: evView };
+    G.beh.demo = G.liveDemo;
     if (!mg) { BEH.update(G.beh, dt, G.behCtx); rd.behFx(G.beh); }
     if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 獨立事件 grumpy_tap（唔共用需求鬧脾氣冷卻）
     if (!mg) G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur } : null, mode: G.mode, rain: !!(G.hd && G.hd.on() && G.hd.st && G.hd.st.cur === 'H3rain') };
@@ -154,6 +155,12 @@
     return G.view;
   };
   G.forceBeh = function (name) { BEH.force(G.beh, name, G.behCtx); };
+  // 生命感 s2b：開發者「即刻觸發」＋「展示模式」（頻率 ×5／冷卻 ÷5；localStorage，預設關）
+  { const LVP = P.beh.live;
+    G.liveDemo = (() => { try { return localStorage.getItem(LVP.demoKey) === '1'; } catch (e) { return false; } })();
+    G.setLiveDemo = function (on) { G.liveDemo = !!on; try { if (G.liveDemo) localStorage.setItem(LVP.demoKey, '1'); else localStorage.removeItem(LVP.demoKey); } catch (e) { } G.beh.demo = G.liveDemo; return G.liveDemo; };
+    G.liveNow = function (k) { if (BEH.NOW.indexOf(k) < 0) return false; G.beh.demo = G.liveDemo; BEH.force(G.beh, 'now_' + k, G.behCtx || {}); return true; };
+    G.beh.demo = G.liveDemo; }
   G.forceEvent = function (id) { return EV.force(G.state, id); };
   G.setPeriod = function (p) { G.hourOverride = p ? LIGHT.representativeHour(p) : null; };
 
@@ -209,12 +216,15 @@
         show: b.show.clip, showFrame: b.show.frame, gait: b.walkStyle, micro: b.state === 'micro' && b.seq && b.seq[b.seqI] ? (b.seq[b.seqI].tag || b.seq[b.seqI].clip) : null, bug: b.bug ? b.bug.st : null, pose: b.pose ? +b.pose.rot.toFixed(3) : 0, face: Object.assign({}, b.face) };
     },
     force(name) { G.forceBeh(name); },
+    now(k) { return G.liveNow(k); },                                              // s2b 即刻觸發：sniff／lookup／swat／scratch／sneeze／happy／drag／smug
+    demo(on) { if (on != null) G.setLiveDemo(on); return G.liveDemo; },
+    gaitForce() { const g = G.beh.gaitForce; return g ? { g: g.g, left: +(g.until - G.beh.t).toFixed(2) } : null; },
     forceEvent(id) { return G.forceEvent(id); },
     tapPet(n) { for (let i = 0; i < (n || 1); i++) { if (G.state.sleeping) G.lightWake(); else BEH.tap(G.beh, 'pet', G.beh.x + G.beh.dir * 5, -20); } },   // 點寵物前面（唔觸發 D2 轉身）
     // ── 生命感第一段（F1／F2／D2）──
     tap(x, y) { BEH.tap(G.beh, 'pet', x, y == null ? -20 : y); },               // 指定觸點（相對地面中心 CX／GROUND_Y，art px）
     gaze() { const L = G.beh.look; return { q: L.q, ql: L.ql, src: L.src, x: +L.x.toFixed(3), y: +L.y.toFixed(3), tx: +L.tx.toFixed(3), ty: +L.ty.toFixed(3), force: L.force, dir: G.beh.dir, turn: G.beh.turn ? Object.assign({}, G.beh.turn) : null }; },
-    face() { const f = G.beh.face, r = G.renderer, l = r.faceStat.last || {}; return { eyes: f.eyes, mouth: f.mouth, gaze: f.gaze, closed: f.closed, clip: f.clip, frame: f.frame, blink: f.blink, mode: P.face.mode, live: !!l.live, liveReady: !!G.liveReady, liveError: r.lvError, drawnClip: l.clip, drawnFrame: l.frame, faceVisible: !!l.faceVisible, pieces: l.eyes ? l.eyes.concat([l.mouth]) : [], placeholder: (l.placeholder || []).slice(), derived: !!l.derived, bulb: l.bulb || null, stat: { draws: r.faceStat.draws, tints: r.faceStat.tints, overlays: r.faceStat.overlays, faceDrawn: r.faceStat.faceDrawn, faceHidden: r.faceStat.faceHidden, placeholder: r.faceStat.placeholder, bulb: r.faceStat.bulb } }; },
+    face() { const f = G.beh.face, r = G.renderer, l = r.faceStat.last || {}; return { eyes: f.eyes, mouth: f.mouth, gaze: f.gaze, closed: f.closed, clip: f.clip, frame: f.frame, blink: f.blink, mode: P.face.mode, live: !!l.live, bugArt: l.bugArt, liveReady: !!G.liveReady, liveError: r.lvError, drawnClip: l.clip, drawnFrame: l.frame, faceVisible: !!l.faceVisible, pieces: l.eyes ? l.eyes.concat([l.mouth]) : [], placeholder: (l.placeholder || []).slice(), derived: !!l.derived, bulb: l.bulb || null, stat: { draws: r.faceStat.draws, tints: r.faceStat.tints, overlays: r.faceStat.overlays, faceDrawn: r.faceStat.faceDrawn, faceHidden: r.faceStat.faceHidden, placeholder: r.faceStat.placeholder, bulb: r.faceStat.bulb } }; },
     setGaze(q) { G.beh.look.force = q || null; return q; },
     hitBox() {                                          // P2：寵物觸控區（art 座標＋CSS px 尺寸）
       const h = NS.ui.petHitBox ? NS.ui.petHitBox() : null; if (!h) return null; const r = canvas.getBoundingClientRect(), k = r.width / R.W;
