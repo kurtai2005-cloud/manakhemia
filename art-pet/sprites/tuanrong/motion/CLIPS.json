@@ -2273,7 +2273,7 @@
    "stage": 6,
    "branch": "radiant",
    "evo6": true,
-   "batch": "D",
+   "batch": "E",
    "frameSize": 48,
    "pivotPx": [
     24,
@@ -2497,6 +2497,7 @@
    ],
    "upgradedIn": "batch D（batch C 係 MVP 7 clip；呢 7 個 clip 幀不變，除咗 fall_asleep／sleep_loop aura 調暗、微塵燈跟手）",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）",
+   "haloSleep": "大 halo 弧跟 aura：fall_asleep 0.8→0.2 漸暗（glow→egg_shade→egg_dark，emissive 點越來越疏）、sleep_loop 0.2、wake 0.2→1 返光；emissive 同步",
    "note": "靜光・燦光：背後日輪光拱（光點流動）、雙金翼（拍）、胸前日徽、金光 aura。"
   },
   "evo_still_soft": {
@@ -87153,6 +87154,23 @@
   "preview": [
    "../preview/evo6/evo6_batchD_contact_4x.png",
    "../preview/evo6/evo6_dust_lamp_before_after_4x.png"
+  ]
+ },
+ "evo6E": {
+  "batch": "E",
+  "forms": [
+   "evo_still_radiant"
+  ],
+  "tool": "tools/build_evo6_animBC.py E",
+  "validator": "tools/validate_evo6_anim.py",
+  "note": "靜光・燦光大 halo 弧瞓覺調暗：fall_asleep 跟 aura 漸暗、sleep_loop 暗、wake 返光；emissive 同步。其餘 clip／形態不變。",
+  "changedClips": [
+   "fall_asleep",
+   "sleep_loop",
+   "wake"
+  ],
+  "preview": [
+   "../preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png"
   ]
  }
 }

@@ -90,3 +90,10 @@
 - 工具 `tools/build_evo6_animBC.py D`（Pillow/numpy 程式繪製，無 AI）；`tools/validate_evo6_anim.py` 加：靜光冇 mvp key 就用全套規則（要 s3）、微塵 bulb 錨點要落喺燈上。CLIPS.json 只新增／更新自己 key（forms.<still/guard_dust>、clips[].<form>、anchors.<form>、evo6D 段、evo6C.supersededBy）；CLIPS.md 加 EVO6D 段；備份 `_backups/pre_evo6_animD_20261031/`。
 <!-- EVO6D-LOG-END -->
 
+<!-- EVO6E-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch E（靜光・燦光 halo 瞓覺調暗）
+- `evo_still_radiant` 大 halo 弧：fall_asleep 跟 aura 0.8→0.2 漸暗（glow→egg_shade→egg_dark；emissive glow_core/glow_mid 點越疏）、sleep_loop 0.2、wake 0.2→1 返光（wake_04 原樣）。改 11 幀（fall_asleep 4、sleep_loop 4、wake 3）＋對應 layers／emissive／atlas；其餘 clip 同形態不變。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png`；工具 `tools/build_evo6_animBC.py E`（Pillow/numpy，無 AI）；CLIPS.json 只更新 forms.evo_still_radiant＋clips[].evo_still_radiant／anchors＋新增 evo6E；CLIPS.md 加 EVO6E 段；備份 `_backups/pre_evo6_animE_20261031/`。
+<!-- EVO6E-LOG-END -->
+
+

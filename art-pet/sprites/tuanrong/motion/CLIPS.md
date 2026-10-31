@@ -219,6 +219,13 @@
 | 靜光・微塵 `evo_still_dust` | 48 | 41 | 180 | `../evo6/atlas_evo_still_dust.png`（1024×1024，444 塊）＋ `_emissive` |
 <!-- EVO6D-END -->
 
+<!-- EVO6E-START -->
+## 進化 6 階 batch E — 靜光・燦光 halo 瞓覺調暗
+- `evo_still_radiant` 大 halo 弧：fall_asleep 跟 aura 0.8→0.2 漸暗（glow→egg_shade→egg_dark，emissive 點越疏）、sleep_loop 0.2、wake 0.2→1 返光；emissive 同步。
+- 只改 fall_asleep／sleep_loop／wake（wake_04＝原樣）；其餘 clip 同形態不變。預覽 `../preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png`。
+<!-- EVO6E-END -->
+
+
 
 
 

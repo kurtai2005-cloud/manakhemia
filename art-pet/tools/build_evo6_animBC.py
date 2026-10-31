@@ -21,7 +21,7 @@ import build_tuanrong_live_s3 as S3
 from build_tuanrong import FORMS, IDX
 
 ROOT, TR, OUT, PRV, MOT = A.ROOT, A.TR, A.OUT, A.PRV, A.MOT
-BACK = os.path.join(ROOT, "_backups", "pre_evo6_animD_20261031" if "D" in "".join(a for a in sys.argv[1:] if not a.startswith("--")) else "pre_evo6_animBC_20261031")
+BACK = os.path.join(ROOT, "_backups", "pre_evo6_animE_20261031" if "E" in "".join(a for a in sys.argv[1:] if not a.startswith("--")) else "pre_evo6_animD_20261031" if "D" in "".join(a for a in sys.argv[1:] if not a.startswith("--")) else "pre_evo6_animBC_20261031")
 BG = A.BG
 BRANCH_NAME = {"lumi": "螢絨", "radiant": "燦光", "soft": "柔光", "dust": "微塵"}
 BRANCHES = ["lumi", "radiant", "soft", "dust"]
@@ -29,6 +29,14 @@ PALKEY = {"lumi": "lumi", "radiant": "base", "soft": "base", "dust": "dust"}
 PALFILE = {"lumi": "palette_lumi.json", "base": "palette_base.json", "dust": "palette_dust.json"}
 EMIS_NAMES = {"lumi": ("egg_shade", "cyan"), "base": ("glow_core", "glow_mid"), "dust": ("glow_core", "glow_mid")}
 EMIS_PALNAMES = {"lumi": ("fly", "fly_core"), "base": ("glow_core", "glow_mid"), "dust": ("glow_core", "glow_mid")}   # 同一色喺各自 palette 檔嘅名
+HALO_WAKE = lambda k, n: round(0.2 + 0.8 * k / max(1, n - 1), 2)   # 靜光・燦光 halo：wake 0.2→1 返光（aura 唔郁）
+def halo_style(lvl):
+    """燦光大 halo 弧：(主色, 點綴色, 點綴間距)；lvl 1＝原樣；越低越暗、emissive 點越疏"""
+    if lvl >= 0.99: return "glow", "glow_core", 4
+    if lvl >= 0.7: return "glow", "glow_core", 8
+    if lvl >= 0.45: return "egg_shade", "glow_mid", 10
+    if lvl >= 0.3: return "egg_shade", "glow_mid", 16
+    return "egg_dark", "glow_mid", 22
 AURA_SLEEP = {"fall_asleep": lambda k, n: round(0.8 - 0.6 * k / max(1, n - 1), 2), "sleep_loop": lambda k, n: 0.2}
 STILL_ORDER = ["idle", "blink", "emo_happy", "fall_asleep", "sleep_loop", "wake", "picked_up"]
 S3_DUST = list(S3.S3_ORDER)
@@ -123,7 +131,8 @@ def render_adult(form, p):
     if el and br == "radiant":
         hx_, hy_ = cx, cy - ry * 0.35
         hm = cv.ell(hx_, hy_, 17.5, 15.5) & ~cv.ell(hx_, hy_, 15.8, 13.9) & (cv.yy < hy_ + 2)
-        cv.paint(hm, gl("glow")); cv.paint(hm & (((cv.xx + cv.yy + tw) % 4) == 0), gl("glow_core")); cv.solid |= hm
+        hc, hd, hp = halo_style(p.get("_halo", p.get("_aura", 1.0)))
+        cv.paint(hm, gl(hc)); cv.paint(hm & (((cv.xx + cv.yy + tw) % hp) == 0), gl(hd)); cv.solid |= hm
         for j, (a, b, ang) in enumerate(((8.0, 2.8, 150), (6.6, 2.3, 172))):
             ang = ang + 6 * flap * (1 if j == 0 else 0.6) - 10 * min(1.0, droop)
             d = (math.cos(math.radians(ang)), -math.sin(math.radians(ang)))
@@ -488,6 +497,8 @@ def build_form(form):
         for kf, p in enumerate(src):
             p = dict(p); p["_k"] = kf
             if form in STILL and clip in AURA_SLEEP: p["_aura"] = AURA_SLEEP[clip](kf, len(src))
+            if form == "evo_still_radiant" and clip == "wake" and HALO_MODE[0] == "sleepdim": p["_halo"] = HALO_WAKE(kf, len(src))
+            if form == "evo_still_radiant" and HALO_MODE[0] == "old" and clip in AURA_SLEEP: p["_halo"] = 1.0
             if clip != "idle": p = M.render_fit(form, p, f"{clip}_{kf + 1:02d}")
             if new:
                 body = L.body_render(form, p)
@@ -666,6 +677,7 @@ def update_docs(res, ainfo, forms, tag):
             "std23": A.ORDER_STD, "liveliness": A.ORDER_NEW, **({"s3": S3_DUST} if has_s3(form) else {}),
             **({"mvpClips": STILL_ORDER, "upgradedIn": "batch D（batch C 係 MVP 7 clip；呢 7 個 clip 幀不變，除咗 fall_asleep／sleep_loop aura 調暗、微塵燈跟手）",
                 "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）"} if form in STILL else {}),
+            **({"haloSleep": "大 halo 弧跟 aura：fall_asleep 0.8→0.2 漸暗（glow→egg_shade→egg_dark，emissive 點越來越疏）、sleep_loop 0.2、wake 0.2→1 返光；emissive 同步"} if form == "evo_still_radiant" else {}),
             **({"lampRule": "手燈跟右手（垂手＝提燈、舉手＝高舉、橫伸＝燈喺手前；冇右手＝放身右下）；bulb 錨點＝燈中心"} if f["branch"] == "dust" else {}),
             "note": BR_NOTE[(f["branch"], f["elder"])]}
     for c in D["clips"]:
@@ -683,14 +695,29 @@ def update_docs(res, ainfo, forms, tag):
                       "note": "靜光 48 ×4 升級全套：std23＋生命感 s1/s2（含 picked_up）＋s3 nuzzle_purr／reunion_happy（4 分支都有）；"
                               "微塵（守夜者＋靜光）手燈跟右手、bulb 錨點同步；靜光 fall_asleep／sleep_loop aura 調暗。",
                       "preview": ["../preview/evo6/evo6_batchD_contact_4x.png", "../preview/evo6/evo6_dust_lamp_before_after_4x.png"]}
+    if tag == "E":
+        D["evo6E"] = {"batch": "E", "forms": forms, "tool": "tools/build_evo6_animBC.py E", "validator": "tools/validate_evo6_anim.py",
+                      "note": "靜光・燦光大 halo 弧瞓覺調暗：fall_asleep 跟 aura 漸暗、sleep_loop 暗、wake 返光；emissive 同步。其餘 clip／形態不變。",
+                      "changedClips": ["fall_asleep", "sleep_loop", "wake"], "preview": ["../preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png"]}
     key = "evo6B" if tag == "B" else "evo6C"
-    if tag != "D": D[key] = {"batch": tag, "forms": forms, "tool": "tools/build_evo6_animBC.py", "validator": "tools/validate_evo6_anim.py",
+    if tag not in ("D", "E"): D[key] = {"batch": tag, "forms": forms, "tool": "tools/build_evo6_animBC.py", "validator": "tools/validate_evo6_anim.py",
               "note": ("守夜者 44 ×4 分支（螢絨／燦光／柔光／微塵）：std23 ＋ 生命感 s1/s2（含 picked_up）；微塵另加 s3 nuzzle_purr／reunion_happy。" if tag == "B" else
                        "靜光 48 ×4 分支 MVP：idle、blink、emo_happy、fall_asleep／sleep_loop／wake、picked_up。"),
               "palettes": {"lumi": "../evo6/palette_lumi.json（emissive fly/fly_core）", "dust": "../evo6/palette_dust.json（lens＝鏡片，唔發光）", "radiant/soft": "../evo6/palette_base.json"},
               "rebuildNote": "build_tuanrong_liveliness_docs.py 重砌 CLIPS.json → 之後要再跑 build_lumi.py、build_tuanrong_live_s3.py、build_evo6_anim.py、build_evo6_animBC.py。"}
     atomic_write(p, json.dumps(D, indent=1, ensure_ascii=False))
     mp = os.path.join(MOT, "CLIPS.md"); backup(mp); md = open(mp, encoding="utf-8").read()
+    if tag == "E":
+        a_, b_ = "<!-- EVO6E-START -->", "<!-- EVO6E-END -->"
+        if a_ in md: md = md[:md.index(a_)].rstrip() + "\n\n" + md[md.index(b_) + len(b_):].lstrip()
+        sec = (f"{a_}\n## 進化 6 階 batch E — 靜光・燦光 halo 瞓覺調暗\n"
+               "- `evo_still_radiant` 大 halo 弧：fall_asleep 跟 aura 0.8→0.2 漸暗（glow→egg_shade→egg_dark，emissive 點越疏）、sleep_loop 0.2、wake 0.2→1 返光；emissive 同步。\n"
+               "- 只改 fall_asleep／sleep_loop／wake（wake_04＝原樣）；其餘 clip 同形態不變。預覽 `../preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png`。\n"
+               f"{b_}\n")
+        anchor = next((m for m in ("<!-- EVO6D-END -->", "<!-- EVO6C-END -->", "<!-- EVO6A-END -->") if m in md), None)
+        if anchor: i = md.index(anchor) + len(anchor); md = md[:i] + "\n\n" + sec + md[i:]
+        else: md = md.rstrip() + "\n\n" + sec
+        atomic_write(mp, md); return
     if tag == "D":   # 只加 EVO6D 段（C 段保留做歷史；D 段 supersede 靜光／微塵）
         a_, b_ = "<!-- EVO6D-START -->", "<!-- EVO6D-END -->"
         if a_ in md: md = md[:md.index(a_)].rstrip() + "\n\n" + md[md.index(b_) + len(b_):].lstrip()
@@ -738,6 +765,32 @@ BR_NOTE = {
 }
 
 # ============================================================ main
+HALO_MODE = ["sleepdim"]
+HALO_PICKS = [("idle", 0), ("fall_asleep", 0), ("fall_asleep", 1), ("fall_asleep", 2), ("fall_asleep", 3), ("sleep_loop", 0), ("sleep_loop", 1),
+              ("wake", 0), ("wake", 1), ("wake", 2), ("wake", 3)]
+def halo_strip(res, Z=4):
+    f = "evo_still_radiant"; HALO_MODE[0] = "old"
+    try: old = build_form(f)[1]
+    finally: HALO_MODE[0] = "sleepdim"
+    CELL = 52; LW = 150; W = LW + len(HALO_PICKS) * (CELL * Z + 4) + 8; H = 34 + 2 * 2 * (CELL * Z + 24) + 8
+    cs = Image.new("RGBA", (W, H), BG); dr = ImageDraw.Draw(cs)
+    dr.text((8, 8), "靜光・燦光 halo 瞓覺調暗 before（batch D）／after（batch E）4x；下排＝emissive", fill=(255, 248, 224, 255), font=A.font(15))
+    piv = fpiv(f); r = 0
+    for lab, clips in (("before", old), ("after", res[f][1])):
+        for em in (False, True):
+            y0 = 34 + r * (CELL * Z + 24)
+            dr.text((8, y0 + 40), lab, fill=(255, 248, 224, 255), font=A.font(17)); dr.text((8, y0 + 66), "emissive" if em else "frame", fill=(200, 196, 230, 255), font=A.font(15))
+            for kf, (clip, i) in enumerate(HALO_PICKS):
+                a = clips[clip]["full"][i]; x0 = LW + kf * (CELL * Z + 4); ox, oy = CELL // 2 - piv[0], CELL - 4 - piv[1]
+                img = to_img(a, f)
+                if em:
+                    ids = emis_ids(f); mk = np.isin(a, ids); arr = np.array(img); arr[~mk] = 0; img = Image.fromarray(arr)
+                m = Image.new("RGBA", (CELL, CELL), (0, 0, 0, 0)); m.alpha_composite(img, (ox, oy))
+                cs.alpha_composite(m.resize((CELL * Z, CELL * Z), Image.NEAREST), (x0, y0))
+                dr.text((x0 + 4, y0 + CELL * Z + 2), f"{clip}_{i + 1:02d}", fill=(200, 196, 230, 255), font=A.font(11))
+            r += 1
+    cs.save(os.path.join(PRV, "evo6_radiant_halo_sleep_before_after_4x.png"))
+
 LAMP_PICKS = [("idle", 0), ("walk", 2), ("eat", 2), ("emo_happy", 1), ("cheer_jump", 2), ("lookup_tip", 2), ("smug_pose", 3), ("swat", 1),
               ("scratch", 1), ("getup", 0), ("picked_up", 1), ("reunion_happy", 3)]
 def lamp_strip(res, Z=4):
@@ -767,7 +820,7 @@ def lamp_strip(res, Z=4):
     cs.save(os.path.join(PRV, "evo6_dust_lamp_before_after_4x.png"))
 
 def run(tag):
-    forms = list(GUARD) if tag == "B" else (list(STILL) if tag == "C" else ["evo_guard_dust"] + list(STILL))
+    forms = list(GUARD) if tag == "B" else (list(STILL) if tag == "C" else ["evo_still_radiant"] if tag == "E" else ["evo_guard_dust"] + list(STILL))
     res = {}; ainfo = {}; stats = {}
     for form in forms:
         res[form] = build_form(form); order, clips, kit = res[form]
@@ -779,8 +832,10 @@ def run(tag):
                        "fit_adjustments": [f"{b}:{'/'.join(c)}" for a, b, c in M.FIT_LOG if a == form]}
         print(form, "clips", len(order), "frames", stats[form]["frames"], "atlas", ainfo[form], "edge", edge, flush=True)
     title = {"B": "團絨 evo6 batch B — 守夜者 44 ×4（螢絨／燦光／柔光／微塵，4x，同一地線）", "C": "團絨 evo6 batch C — 靜光 48 ×4（4x，同一地線）",
+             "E": "團絨 evo6 batch E — 靜光・燦光 halo 瞓覺調暗（4x）",
              "D": "團絨 evo6 batch D — 靜光 48 ×4 全套＋守夜者・微塵燈跟手（4x，同一地線；fall_asleep／sleep_loop aura 調暗）"}[tag]
-    batch_contact(res, forms, tag, title)
+    if tag == "E": halo_strip(res)
+    else: batch_contact(res, forms, tag, title)
     if tag == "D": lamp_strip(res)
     for key in ("lumi", "dust"):
         src = os.path.join(TR, "evo6_concept", f"palette_evo6_{key}.json"); shutil.copy(src, os.path.join(OUT, PALFILE[key]))
