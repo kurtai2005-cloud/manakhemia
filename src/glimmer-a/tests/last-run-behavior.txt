@@ -74,5 +74,22 @@
   ✓ 日誌有 event:firefly_walk
   ✓ 用現有 walk／play clip：walk,play
   ✓ 所有用到嘅 clip 喺 clip 表有定義
+# 遊美 daylight.json 時段 hook（lighting.setDaylight／daylightAt）
+  ✓ 未載入 daylight.json → daylight:null（fallback 舊 grade）
+  ✓ setDaylight 載入 daylight.json
+  ✓ JSON：4 時段、blendSeconds 1800
+  ✓ 遊策時段 → daylight：早→early／午→noon／晚→dusk／夜→night
+  ✓ 各鐘點對應時段（以遊策 07／11／17／23 為界）
+  ✓ 時段穩定後 mix=1
+  ✓ blendSeconds 1800：新時段開始後 30 分鐘 mix 0→1（07:15＝0.5）
+  ✓ ambientMultiply 由夜色線性過渡到早色（mix 0／0.5／1）
+  ✓ bloom／vignette 同步 blend
+  ✓ 穩定時直接採用 JSON 數值（night bloom .65／noon vignette .1／dusk bloom .45）
+  ✓ pet tint（multiply／add／rim）＋ bg／overlay 檔名
+  ✓ art/daylight bg／light_early.png 存在
+  ✓ art/daylight bg／light_noon.png 存在
+  ✓ art/daylight bg／light_dusk.png 存在
+  ✓ art/daylight bg／light_night.png 存在
+  ✓ JSON 缺失 → 退返舊 grade（唔爆）
 
-結果：65 通過，0 失敗
+結果：81 通過，0 失敗

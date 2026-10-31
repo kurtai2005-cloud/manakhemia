@@ -503,7 +503,7 @@ console.log('# QA 修正（PR #17）：P0 回撥日離線補抽／P1 重設日�
   ok(gen.pool >= 2.2 && gen.pool <= 2.4 && gen.tot <= 2.95, '一般作息：池抽取 ' + gen.pool.toFixed(2) + '、總 ' + gen.tot.toFixed(2) + '（≤2.95）');
 
   // P1 彩虹 pity：≥14 日必出（保證 ≤14 日一次），仍守 17–23 時段窗
-  ok(P.rainbowPityDays === 14 && P.rainbowPityLeadH === 26 && P.rainbowCooldownH === 240 && EV.DEF.rainbow.cooldownH === 240 && EV.DEF.rainbow.weight === 1, '彩虹 pity 14 日／提前 26h；冷卻 240h；權重維持 1');
+  ok(P.rainbowPityDays === 14 && P.rainbowPityLeadH === 30 && P.rainbowCooldownH === 240 && EV.DEF.rainbow.cooldownH === 240 && EV.DEF.rainbow.weight === 1, '彩虹 pity 14 日／提前 30h；冷卻 240h；權重維持 1');
   let maxGap = 0, badHour = 0, rbN = 0, pityN = 0, rbDays = 0, cdV = 0;
   for (let sd = 1; sd <= 80; sd++) { const sim = simulate(7000 + sd, 56, [8, 12.5, 18.5, 22]); rbDays += 56;
     const rb = sim.recs.filter(x => x.id === 'rainbow').concat(sim.s.evs.diary.filter(x => x.id === 'rainbow')).sort((x, y) => x.ts - y.ts);

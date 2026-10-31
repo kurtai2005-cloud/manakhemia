@@ -193,9 +193,6 @@ console.log('# 螢火散步（firefly_walk）事件腳本');
   ok([...clips].every(c => !!D.CLIPS[c]), '所有用到嘅 clip 喺 clip 表有定義');
 }
 
-console.log(`\n結果：${pass} 通過，${fail} 失敗`);
-process.exit(fail ? 1 : 0);
-
 console.log('# 遊美 daylight.json 時段 hook（lighting.setDaylight／daylightAt）');
 {
   const L = require('../src/lighting.js');
@@ -218,3 +215,6 @@ console.log('# 遊美 daylight.json 時段 hook（lighting.setDaylight／dayligh
   ok(L.setDaylight(null) === false && L.compute(9).daylight === null, 'JSON 缺失 → 退返舊 grade（唔爆）');
   L.setDaylight(j);
 }
+
+console.log(`\n結果：${pass} 通過，${fail} 失敗`);
+process.exit(fail ? 1 : 0);
