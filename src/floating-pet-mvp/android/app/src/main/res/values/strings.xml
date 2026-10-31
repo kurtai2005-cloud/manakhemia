@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">微光小圃</string>
+    <string name="title_activity_main">微光小圃</string>
+    <string name="package_name">hk.vizard.glimmer.fpet</string>
+    <string name="custom_url_scheme">hk.vizard.glimmer.fpet</string>
+</resources>
