@@ -261,3 +261,32 @@ v3：心情 `happy／ok／sad`、`sleeping`、最急需求 **低過 30** 先 `ur
 `MainActivity`、`SettingsActivity`、`PowerGuideActivity` 都有 `screenOrientation="portrait"`。`PetOverlayService` 對 `6fc62ed` 冇改。簽名、權限、v3、拋出、邊坐、撚、4×6、soft atlas、`fadeReady` 無回歸。bridge 測試 **10／0**。API 30 路徑冇改。
 
 已知 P2 已收。冇新 P0／P1／P2。APK 未測。
+
+## evo6 overlayStatus v4（62d6e49）
+
+`info` 有名、階段名、形態名、`evoForm`、進度、幾日大、`fadeReady`。只讀。光卵 `evo_egg`，守夜者微塵 `evo_guard_dust`，靜光螢絨 `evo_still_lumi`，燦光 `evo_guard_radiant`。
+
+| 套件 | 通過 | 失敗 |
+|---|---|---|
+| overlay-status | 24 | 0 |
+| evo6 | 136 | 0 |
+| behavior | 187 | 0 |
+| events | 161 | 0 |
+| sim | 85 | 0 |
+| audio | 46 | 0 |
+
+冇回歸。
+
+## 浮動層 v4（afa9cae）
+
+12 套 evo atlas 都齊（json＋webp），唔使 fallback 去舊圖：光卵、絨點、絨芽、絨跳、守夜者四支、靜光四支。唯一 clip fallback 係光卵：`walk` 等退回 idle（已知蛋唔行）。唔認得嘅 `evoForm`、v1 冇 `evoForm`、APK 缺檔，先退 `sprout`／`radiant`／`soft`，否則 `soft`。
+
+`needSwap` 先比 form 字串。守夜者柔光同螢絨都係 44px、scale 一樣，字串唔同就即刻換圖。
+
+長按狀態區闊 **248dp**，加選單 padding 12dp ＝ 260dp，細過直向最短約 320dp，位置再夾喺安全區。五個選項同活動模式 radio 都係 48dp。需求名嗰欄 44dp 係字闊，唔係掣。
+
+v4 有階段名同進度。v3 有心情、冇進度。v2 寫「開返遊戲同步狀態」。v1／null 只得「團絨」。parse 失敗返回 null。`fadeReady` 會出「準備化光」。
+
+三個 Activity 仍然鎖直向。簽名、權限、低過 30 先出氣泡、拋出、邊坐、撚、玩圖示 4×6 無回歸。bridge 測試 **14／0**。冇 SDK，JUnit 冇跑。冇燈泡光暈係已知。
+
+冇新 P0／P1／P2。APK 未測。
