@@ -234,6 +234,7 @@
 - F2 菇傘：菇帽搖：菇帽逐幀左右擺＋斜（帽邊一高一低）、細菇燈跟住晃、孢子飄
 - F3 晶角：晶光閃：晶耳／晶燈／身上晶粉閃點逐幀輪住閃（glint）
 - F4 月眠：渴瞓：idle／生命感 clip 間中半瞇眼、睡帽尖跟住點頭；fall_asleep 月牙燈漸暗、sleep_loop 暗、wake 返光
+- F5 火苗：火苗閃：頭頂火苗燈／尾尖火／耳尖逐幀高低擺、火星點閃
 
 | batch | 形態 | px | pivot | clip | 幀 | atlas | 色盤 |
 |---|---|---|---|---|---|---|---|
@@ -245,6 +246,8 @@
 | F3 | 靜光・晶角 `evo_still_crystal` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_crystal.png`（1024×1024，444 塊）＋ `_emissive` | palette_crystal.json |
 | F4 | 守夜者・月眠 `evo_guard_moon` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_moon.png`（1024×1024，444 塊）＋ `_emissive` | palette_moon.json |
 | F4 | 靜光・月眠 `evo_still_moon` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_moon.png`（1024×1024，444 塊）＋ `_emissive` | palette_moon.json |
+| F5 | 守夜者・火苗 `evo_guard_ember` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_ember.png`（1024×1024，444 塊）＋ `_emissive` | palette_ember.json |
+| F5 | 靜光・火苗 `evo_still_ember` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_ember.png`（1024×1024，444 塊）＋ `_emissive` | palette_ember.json |
 <!-- EVO6F-END -->
 
 
