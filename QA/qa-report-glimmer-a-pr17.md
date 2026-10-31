@@ -5,6 +5,94 @@
 > 日期：2026-10-26（第一輪）。第二輪：2026-10-31，head **`6e89d88`**。第三輪：2026-10-31，head **`5497595`**。第四輪：2026-10-31，PR #17 **`021726b`**、生命感 **`2700494`**、音訊 PR #16 **`59ecf7d`**。規模：6 種作息 × **3000 日** × **8 seed**（7／3／5／11／13／17／19／23），時區 `Asia/Hong_Kong`。
 > 工具：沿用 `tests/pet/qa_glimmer_r3.js`、headless Chrome（`window.__qa.pet`）、`tests/liveliness/run.mjs`（呢部機冇 Playwright 自帶 Chromium，版面改用系統 Chrome）。第四輪數字：`tests/pet/out/glimmer_build_r4.json`、`tests/pet/out/glimmer_pw_r4.json`、`tests/pet/out/rain-59ecf7d.json`。
 > 第四輪冇改遊戲碼，冇推 `main` 或開發分支。第三輪段落仍然係 `5497595`。
+> 第五輪：2026-10-31，合併包 PR #22 `code/glimmer-combo` **`6a29a93`**（截稿再 fetch，head 未過呢個 sha，**未包含** `000fc5d`）。R4 覆核：plan-a **`000fc5d`**、生命感 **`497404f`**。
+
+## Round 5 – combo（6a29a93）＋ R4 覆核
+
+被測檔 `src/glimmer-a/dist/glimmer-combo.html`（8.6 MB，自包含）。`tests/liveliness/run.mjs` 要 Playwright 自帶 Chromium，呢部機冇，版面／時段／團絨用系統 Chrome 對住 `window.__qa.pet`。截稿再 `git fetch origin code/glimmer-combo`，head 仍係 **`6a29a93f90e8207d01f8d54676809120a053551b`**，祖先冇 `000fc5d`。
+
+### 1. 直向鋪滿、橫向轉屏
+
+清晰畫面佔 viewport：360×640 **82.1%**（左右各約 32px）、390×844 **100%**、412×915 **97.4%**（上下共 23px）。`#bgfill` 取樣非零 **100%**，當黑邊填滿。dpr 1 同 3 一樣。溢出／裁切 0，掣無重疊。日記／設定：360 **44.7**、390 **45**、412 **46.5**。照顧掣 390 為 86.5×74。Console error **0**。
+
+橫向 844×390、915×412：`#rotate` display **flex**，字「請轉直向」（`pointer: coarse`）。
+
+![360](shots/r5-360x640.png)
+![390](shots/r5-390x844.png)
+![412](shots/r5-412x915.png)
+![橫向 844](shots/r5-844x390.png)
+![橫向 915](shots/r5-915x412.png)
+
+### 2. 時段 H1–H4、雨、2 秒淡入
+
+假時鐘 0–23 點，下一幀嘅 `hd.current().variant`：
+
+| 鐘 | 場景 |
+|---|---|
+| 0–5、19–23 | **H4** 夜 |
+| 6–9 | **H1** 晨 |
+| 10–15 | **H3** 日（`weather=rain` → **H3rain**） |
+| 16–18 | **H2** 黃昏 |
+
+H1→H4 crossfade：mix 0.008→1.000 用 **2000.4 ms**。亮度每幀最大跳 **15.7**（中段 mix 0.508），冇一幀彈完。
+
+雨：variant **H3rain**、`rain` 層 true、天氣 rain。環境色 H3 `#f2fbff`、雨 `#bed5e4`。畫面亮度 H3 **192**、雨 **158**（雨**更深**，唔係更淺）。音訊：`amb:rain:start`，`xfadeSec` **1.5**、`xfadeAt` **1.5**、loop **true**、short **6 s**、loop **24.706 s**，AudioContext running。
+
+![H1](shots/r5-scene-H1.png)
+![H2](shots/r5-scene-H2.png)
+![H3](shots/r5-scene-H3.png)
+![H3 雨](shots/r5-scene-H3rain.png)
+![H4](shots/r5-scene-H4.png)
+
+### 3. 團絨框
+
+成人柔光，實色框（art px）：H1／H2／H4／雨 **48×49 @ (63,245)**，H3 **48×51 @ (63,243)**。闊度相同，高差 2px、y 差 2px（idle 幀），唔係縮放錯位。
+
+### 4. 開發面板
+
+平常 `__qa.dev.isOpen()` **false**。名牌 5 下 → 打開，事件 log **空**（唔係 `grumpy_tap`）。`?dev=1` 一開就開。切 H2 要等繪圖幀：mode／variant 都係 **H2**、mix 1。寵物短點 5 下：`grumpy_tap:tap`、冷卻 48h、`dayCount` 停喺 2、面板仍然關。
+
+![DEV](shots/r5-dev-open.png)
+
+### 5. s1 同 P0（combo `6a29a93`，lead 仍係 26h）
+
+眼神拖動有 tx。背後短點：`clip:turn_back`、`turn:L`、dir −1（`turn_back.ready` true）。長按只得 `tap:hold`，冇 `turn_back`。寵物熱區 CSS ≥44。待機 180 秒：blink 5、sway 2、yawn 6。
+
+3000 日 × 8 seed：池 **2.248–2.389**，總 **2.513–2.826**，彩虹平均 **12.75–12.82**（冇 &lt;11），冷卻／間隔／閃光 72h 違規 **0**。14 日日記平均 **31.02**（連彈窗 33.02）。彩虹最長勤力 **14.052**、隔日 **14.045**（呢個 commit 未收 lead 30h）。
+
+### 6. 低畫質 rim、4× CPU
+
+高畫質 12 幀 `rimMask` **+12**。低畫質再 12 幀 `rimMask` **+0**、`rimFallback` **+0**，tint 仍然 +12。
+
+4× CPU、每景 30 秒（dpr 2，390×844）。幀間隔被 60Hz 封頂，高低畫質都係約 **16.7 ms**（p95 **16.7–16.8**）。long task：高畫質 H1–H4／雨 **3／4／6／7／8** 次；低畫質五景都係 **8** 次。Console error **0**。呢組數字係 headless，唔係手機。
+
+### R4 P2 覆核（唔係 combo）
+
+`rainbowPityLeadH` **30**。plan-a `000fc5d` 同生命感 `497404f` 數字一樣（3000 日 × 8 seed）：
+
+| 作息 | 平均日 | 最長日 | 240h 違規 |
+|---|---|---|---|
+| 勤力 | 12.66–12.77（12.72） | **13.151** | 0 |
+| 一般 | 12.66–12.77（12.74） | 13.211 | 0 |
+| 上班族 | 12.71–12.77（12.74） | 13.168 | 0 |
+| 輕度 | 12.71–12.82（12.75） | 13.152 | 0 |
+| 早鳥 | 12.71–12.77（12.73） | 13.147 | 0 |
+| 隔日 | 12.77–12.88（12.80） | **14.047** | 0 |
+
+平均全部 11–15，240h 違規 0。開發講最長 13.15：對到勤力 **13.151**，但一般 **13.211**，隔日 **14.047** 仍然過 14。14 日日記 **31.04**。池 2.254–2.391，總 ≤2.834。
+
+行為套件（`process.exit` 已搬到 daylight 之後）：plan-a **81 通過、0 失敗、0 skip**。生命感 **96 通過、0 失敗、0 skip**（包含 16 個 daylight）。
+
+### 仍未收
+
+| 級 | 項 | 修法 |
+|---|---|---|
+| **P2** | 雨景實測更暗（192→158），`grade_rain.ambientTint` `#bed5e4` 深過 H3 `#f2fbff`。雨層同 v2 音訊本身有。 | 提高雨景 ambient／pet tint，或 `rainLightAdd` 由 0.3 提高，令雨景亮度高過晴 H3，再量同一塊天空。 |
+| **P2** | lead 30h 之後隔日最長仍 **14.047** 日（其餘 ≤13.211）。combo `6a29a93` 仲未收呢個改動。 | 隔日返嚟若牆鐘距上次彩虹已過 14 日，當次 17–23 窗要強制 pity（唔好再等下一步 10 分鐘）。combo 合併 `000fc5d` 之後再跑 3000 日。 |
+
+冇新 P0／P1。
+
+---
 
 ## Round 4（021726b／2700494／59ecf7d）
 
