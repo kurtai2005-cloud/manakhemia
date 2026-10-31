@@ -1,0 +1,92 @@
+# 新遊戲
+  ✓ ?debug=1 顯示 debug 開關
+  ✓ 開局係光卵
+  📷 01-egg-new
+# 光卵輕點 → 孵化
+  ✓ 輕點增加光卵進度
+  📷 02-egg-glow-cracked
+  ✓ 點 8 下孵化成芽崽
+  ✓ 出現孵化彈窗
+  📷 03-hatch-modal
+  📷 04-sprout-idle
+# 餵食／玩耍／清潔
+  📷 05-feed-menu
+  📷 06-eating
+  ✓ 正餐 +40 → 飽腹
+  📷 07-play-ball
+  ✓ 逗玩 +15 心情
+  📷 08-poops
+  ✓ 輕點便便清走 1 個
+  📷 09-rinse
+  ✓ 沖洗 +50 清潔
+# 不適／飢餓光色
+  📷 10-hungry-dim
+  📷 11-unwell
+  ✓ 需求 <15 顯示「不適」
+  ✓ 不適時成長停止
+# 睡眠／關燈（月光）
+  📷 12-sleep-moon
+  ✓ 關燈入睡
+  ✓ 睡眠精力回升
+  ✓ 精力滿自動醒
+# 迷你遊戲：接星屑
+  📷 13-minigame-start
+  📷 14-minigame-play
+  ✓ 接星屑完結出現結算
+  📷 15-minigame-result
+  ✓ 光粒 = floor(分數/10)（cap 20），首次全額
+  ✓ 光粒已加入
+# 進化分支（燦光 CQ≥70）
+  ✓ CQ 82 → 守夜者「燦光」
+  📷 16-evolve-modal
+  📷 17-adult-bright
+# 後處理畫質（燦光成體）
+  📷 18-fx-high
+  📷 18-fx-mid
+  📷 18-fx-low
+  📷 18-fx-off
+# 日夜燈色
+  📷 19-time-05
+  📷 19-time-09
+  📷 19-time-14
+  📷 19-time-18
+  📷 19-time-22
+  📷 20-night-suggest
+  ✓ 23:00 後出現就寢建議
+# 其他分支（柔光／微塵）
+  ✓ CQ 55 → soft
+  📷 21-adult-soft
+  ✓ CQ 20 → dust
+  📷 22-adult-dust
+# 設定／畫質持久化
+  📷 23-settings
+# 存檔／重載／離線摘要（T=6h, 30h）
+  ✓ T=6h 重載出現回歸摘要
+  ✓ 摘要 ≤3 句（3）
+  ✓ 離線成長 = E(6h)×50%
+  ✓ 離線需求保底 ≥20
+  ✓ 畫質設定經重載保留 (mid)
+  ✓ 回歸禮物光粒 +6
+  📷 24-offline-6h
+  ✓ T=30h 重載出現回歸摘要
+  ✓ 摘要 ≤3 句（3）
+  ✓ 離線成長 = E(12h)×50%
+  ✓ 離線需求保底 ≥20
+  ✓ 畫質設定經重載保留 (mid)
+  ✓ 回歸禮物光粒 +10
+  📷 25-offline-30h
+# 桌面視窗縮放
+  📷 26-desktop-1280x800
+  ✓ 縮放至適合視窗
+  📷 27-small-360x740
+# 後處理幀時間（headless 軟件渲染，非真機；每檔 120 幀 renderer.frame 耗時）
+  {"quality":"off","frames":120,"avgMs":1.33,"maxMs":17.1}
+  {"quality":"low","frames":120,"avgMs":0.97,"maxMs":16.8}
+  {"quality":"mid","frames":120,"avgMs":1,"maxMs":16.9}
+  {"quality":"high","frames":120,"avgMs":0.97,"maxMs":18.4}
+  ✓ 各畫質平均幀時間 < 60ms（headless）
+# 無 debug 時唔顯示面板
+  ✓ 無 ?debug=1 → 冇 debug 控制
+  ✓ console 無 error/warning
+
+結果：37 通過，0 失敗

@@ -1,0 +1,41 @@
+{
+ "baseVariant": "H3",
+ "note": "落雨中最終值（已套 rain 倍數）；sky/far/mid/fore 用 H3/rain/*；lightmap 沿用 H3；light_add 建議 globalAlpha 0.3。",
+ "ambientTint": "#bed5e4",
+ "petTint": "#f0e2d0",
+ "saturation": 0.677,
+ "contrast": 0.972,
+ "bloom": {
+  "threshold": 0.92,
+  "intensity": 0.1
+ },
+ "fog": {
+  "color": "#c8d6e0",
+  "density": 0.12
+ },
+ "dof": {
+  "far": 1.8,
+  "mid": 0.8,
+  "fore": 2.6
+ },
+ "vignette": 0.2,
+ "rim": {
+  "color": "#4a5a7a",
+  "intensity": 0.5,
+  "dir": [
+   0.6,
+   0.8
+  ]
+ },
+ "bulbGlowTint": "#fff2b0",
+ "particles": {
+  "type": "petal",
+  "rate": 0.0,
+  "color": "#ffe0ec"
+ },
+ "rain": {
+  "saturation": 0.72,
+  "contrast": 0.9,
+  "tint": "#c8d8e4"
+ }
+}

@@ -4,7 +4,7 @@
    前置 shim 攔截 fetch()／Image.src 相對路徑 → 內嵌資產（雙擊 file:// 即開，手機可用）。唔改 src。"""
 import base64, json, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, 'dist', 'glimmer-live-s1.html')
+OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'dist', 'glimmer-live-s1.html')   # 合併版：python3 tools/build-single.py dist/glimmer-combo.html
 MIME = {'.png': 'image/png', '.json': 'application/json', '.ogg': 'audio/ogg'}
 assets = {}
 for d in ('art', 'audio'):

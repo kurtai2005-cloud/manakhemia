@@ -102,6 +102,8 @@
         walkCamEvery: [2.2, 4.5], walkCamDur: [0.45, 0.9],   // A1：行路途中偶爾望鏡頭
         camEvery: [4, 9], camDur: [1.0, 2.2], // 待機：間中望鏡頭
         wanderEvery: [1.4, 3.8], wanderGx: 0.55, wanderGy: 0.25,   // 待機：東張西望
+        dragHoldSec: 0.4,                    // P2：拖動手指時眼神跟手指，每次 move 續期
+        shortTapMs: 300,                     // P2：短 tap 先觸發回頭（D2）；長按唔觸發
         tapLookSec: 1.6,                     // D2：被點／點地後望住觸點幾耐
         turnSec: 0.22, turnMinDx: 3,         // D2：觸點喺背後（相對 x 差 > 3px）就轉身；有 turn_back clip 就播 0.22s
       },
@@ -171,7 +173,7 @@
     // ── 音訊（src/audio.js；素材 audio/ 來自遊音，原檔不改）──
     audio: {
       base: 'audio/', enabled: true, master: 0.85, volumeSteps: { low: 0.4, mid: 0.7, high: 1.0 },
-      bus: { bgm: 0.55, ui: 0.8, pet: 1.0, event: 1.0, env: 1.0, mg: 0.9 },   // 各軌音量（再乘 master）
+      bus: { bgm: 0.55, ui: 0.8, pet: 1.0, event: 1.0, env: 1.0, mg: 0.9, amb: 1.0 },   // amb＝H3 雨層細雨環境聲   // 各軌音量（再乘 master）
       xfadeSec: 1.5, firstFadeSec: 1.2, loopFadeSec: 0.7, switchLookahead: 0.12,
       petMinGap: 4,                          // 寵物聲最短間隔（grumpy／touch／curious 例外，見 AUDIO.cues）
       petRate: [0.95, 1.05],                 // 寵物聲／環境聲 playbackRate 隨機（±5%）
@@ -341,6 +343,9 @@
       // 環境互動
       env_pot_bump: { file: 'sfx_env_flowerpot_bump', bus: 'env', gain: 1, cd: 2, rate: true },
     },
+    // H3 雨層細雨環境聲（遊音 7.10，-24 LUFS，原創合成）：雨開始播 short（內建淡入 1.5s／淡出 2s），1.5s 後 crossfade（1.5s 等功率）入 loop；
+    // loop＝AudioBufferSourceNode.loop＝true（sample-accurate，loopStart 0／loopEnd＝buffer 長，唔用 <audio>）；停雨 loop 淡出 1.75s。觸發＝HD-2D 現款係 H3rain（開發模式切雨一樣）
+    amb: { rain: { short: 'amb_rain_light_short', loop: 'amb_rain_light_loop', bus: 'amb', gain: 1.0, xfadeAt: 1.5, xfadeSec: 1.5, fadeOutSec: 1.75, shortSec: 6.0, loopSec: 24.706 } },
     loops: {   // 狀態 loop：進入淡入、離開淡出（loopFadeSec）；sample-accurate（BufferSource.loop）
       sleep_breath: { file: 'sfx_pet_sleep_breath_loop', bus: 'pet', gain: 0.7 },      // README：建議再 ×0.7
       sunbathe: { file: 'sfx_env_sunbathe_loop', bus: 'env', gain: 1 },
@@ -350,7 +355,15 @@
   };
 
   const STAGE_NAME = { egg: '光卵', sprout: '芽崽', adult: '守夜者' };
-  const FORM_NAME = { bright: '燦光', soft: '柔光', dust: '微塵' };
+  const FORM_NAME = { bright: '燦光', soft: '柔光', dust: '微塵', lumi: '螢絨' };
+  /* 進化表（開發模式「進化」用；條件以 sim.decideForm 為準）。螢絨＝隱藏形態（docs-gdd/pet-template-v1.md）：
+     芽崽期見過螢火散步、CQ ≥55、夜晚照顧 ≥40%。自動條件未實裝（只可經開發模式設定）；未有專屬美術 → 借柔光 atlas＋螢綠 tint。 */
+  const EVOLUTION = [
+    { form: 'bright', name: '燦光', from: 'sprout', cond: 'CQ ≥ branchBright', atlas: 'radiant' },
+    { form: 'soft', name: '柔光', from: 'sprout', cond: 'CQ ≥ branchSoft', atlas: 'soft' },
+    { form: 'dust', name: '微塵', from: 'sprout', cond: '其餘', atlas: null },
+    { form: 'lumi', name: '螢絨', from: 'sprout', hidden: true, cond: '芽崽期 firefly_walk、CQ ≥55、夜晚照顧 ≥40%（未自動）', atlas: 'soft', tint: 'lumi' },
+  ];
   const SPROUT_SUB = '絨芽';
   const NEED_KEYS = ['hunger', 'mood', 'clean', 'energy'];
   const NEED_LABEL = { hunger: '飽腹', mood: '心情', clean: '清潔', energy: '精力' };
@@ -370,5 +383,5 @@
     sick: ['#f0f0d0', '#d8e0b0', '#b8c890', '#98a870', '#788850', '#586838'],
   };
 
-  return { PARAMS, STAGE_NAME, FORM_NAME, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
+  return { PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
 });

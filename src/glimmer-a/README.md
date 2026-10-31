@@ -1,3 +1,14 @@
+# 《微光小圃》合併版（glimmer-combo）— 生命感第一段＋HD-2D 場景＋隱藏開發者模式
+
+> 以 `code/glimmer-liveliness` @ 2700494（已 merge plan-a 021726b）為底對齊：彩虹 240h 冷卻、drawChance 0.33、grumpy_tap 獨立事件（自己 48h 冷卻、守全域 20 分鐘間隔、唔改 lastAt）、.ibtn ≥44px（layout() 按縮放寫 inline 尺寸）、日記「2 日後作廢」全部沿用 repo 實作，冇重複一套。
+
+- 單檔：`dist/glimmer-combo.html`（base64 內嵌全部 art／audio，雙擊 file:// 即玩）；重 build：`python3 tools/build-single.py dist/glimmer-combo.html`
+- HD-2D：H1 晨／H2 黃昏／H3 日／H3rain 雨／H4 夜，2 秒 crossfade；`?hd2d=0` 回舊程序化背景；`?scene=H3rain` 指定；`?hdcache=0` 關靜態層 cache（對照用）
+- 開發者模式：`?dev=1`，或 **1.5 秒內連點 5 下左上角**：名牌 chip（「守夜者／柔光形態」嗰格）或者畫面左上 72×72 CSS px 範圍
+- 遊測 s1：⚙️／📖 熱區 ≥44 CSS px（360 闊都得）；觸控橫向顯示「請轉直向」（`?orient=landscape` 桌面強制）；按短邊 fit＋模糊延伸背景（冇黑邊）；HD-2D 靜態層 cache；拖動手指眼神跟；短 tap <300ms 先回頭；寵物熱區貼身但 ≥44px；開心閉眼頭部微轉
+- H3 雨層細雨環境聲 v2（遊音 `audio/amb/`，loop sha256 307d0eb3…、short f5ffc6d5…）：落雨播 short（6s），1.5s 後等功率 crossfade（1.5s）入 loop（AudioBufferSourceNode.loop＝true，loopEnd＝buffer 長）；停雨 loop 淡出 1.75s；開發模式切「H3 雨」同 Auto 天氣都觸發
+- 測試：`node tests/{sim,events,behavior,audio}.test.js`；瀏覽器：`PW=…/playwright-core BASE=http://localhost:PORT/index.html OUT=…/screens/ node tests/{e2e-s1,e2e-a,e2e-hd2d,e2e-playwright,e2e-live}.js`；效能：`node tests/bench-combo.js`
+
 # 微光小圃（Glimmer Garden）— glimmer-live（生命感第一段 S1）
 
 > 呢個資料夾由 PR #17 修好版 glimmer-a 複製（10:57 HKT 版），之後只喺度加「生命感」。第一段改動集中喺 **寵物繪製（render.js `drawPetBeh`＋新 `loadLive`／`liveFrame`／`liveAnchors`／`bulb*`）／behavior／main（`__qa.pet`）／ui（debug 面板）**，背景／場景繪製未郁（方便之後合併 glimmer-hd2d 嘅 HD-2D 場景模組）。

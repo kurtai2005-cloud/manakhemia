@@ -39,7 +39,7 @@
     }
     return 'neutral';
   }
-  function formKey(s) { return s.stage === 'adult' ? (s.form === 'bright' ? 'radiant' : s.form === 'soft' ? 'soft' : 'dust') : 'sprout'; }
+  function formKey(s) { return s.stage === 'adult' ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi') ? 'soft' : 'dust') : 'sprout'; }   // 螢絨借柔光 clip
 
   function create(seed, opts) {
     opts = opts || {};
@@ -55,7 +55,7 @@
       log: { variants: [], enters: {}, time: {}, ticks: 0 },
       journal: [], jn: 0,
       // 視線：x/y＝平滑後視線向量（世界座標，-1..1；y 負＝上），q＝量化格（世界），ql＝相對身體朝向嘅格（畫眼用），src＝目標來源
-      lrng: SIM.makeRng((((seed >>> 0) ^ LK.lookSalt) >>> 0) || 7), look: { x: 0, y: 0, tx: 0, ty: 0, q: 'C', ql: 'C', src: 'idle', cand: 'C', candT: 0, qT: 9, tapX: 0, tapY: null, tapUntil: -1, camUntil: -1, nextCam: 0, wanderX: 0, wanderY: 0, nextWander: 0, force: null },
+      lrng: SIM.makeRng((((seed >>> 0) ^ LK.lookSalt) >>> 0) || 7), look: { x: 0, y: 0, tx: 0, ty: 0, q: 'C', ql: 'C', src: 'idle', cand: 'C', candT: 0, qT: 9, tapX: 0, tapY: null, tapUntil: -1, dragX: 0, dragY: null, dragUntil: -1, camUntil: -1, nextCam: 0, wanderX: 0, wanderY: 0, nextWander: 0, force: null },
       turn: null, show: { clip: 'idle', frame: 0 }, face: { eyes: 'neutral', mouth: 'neutral', closed: false, gaze: 'C' }, faceForce: null,    // 行為日誌（給音訊 cue／__qa.pet 用）：{n, t, ev: state|phase|variant|clip|impact|tap, name, ph}
     };
     b.nextVariant = rf(rng, P.variantEvery); b.nextDecide = rf(rng, P.decideEvery);
@@ -169,7 +169,10 @@
   }
 
   // ── 觸摸 ──
-  function tap(b, kind, x, y) { b.taps.push({ kind, x: x || 0, y: y == null ? null : y }); if (b.taps.length > 12) b.taps.shift(); }
+  function tap(b, kind, x, y, opt) { b.taps.push({ kind, x: x || 0, y: y == null ? null : y, hold: !!(opt && opt.hold) }); if (b.taps.length > 12) b.taps.shift(); }
+  // P2：拖動手指 → 眼神跟手指（每次 move 續期 dragHold 秒；放手後好快回復）
+  function drag(b, x, y) { const L = b.look; L.dragX = x; L.dragY = y; L.dragUntil = b.t + (LK.dragHoldSec || 0.4); L.snap = true; b.log.enters.drag = (b.log.enters.drag || 0) + 1; }
+  function dragEnd(b) { b.look.dragUntil = -1; }
   // D2：望向觸點；turn＝true 時觸點喺背後就轉身（有 turn_back clip 由渲染層播，冇就即刻翻轉）
   function lookAtTap(b, tp, turn) {
     const L = b.look; L.tapX = tp.x; L.tapY = tp.y; L.tapUntil = b.t + LK.tapLookSec; L.snap = true;
@@ -186,6 +189,10 @@
     const T = P.tap;
     while (b.taps.length) {
       const tp = b.taps.shift();
+      if (tp.hold) {                               // P2：長按（≥300ms）唔觸發回頭／反應，只望住（蹭手留第三段）
+        if (!((forced && ctx.s.sleeping) || b.state === 'nap')) lookAtTap(b, tp, false);
+        note(b, 'tap', 'hold'); b.log.enters.hold = (b.log.enters.hold || 0) + 1; continue;
+      }
       if (tp.kind === 'wake') {                    // 睡眠中點寵物＝輕喚醒（sim 已關燈起身）：睏睏表情 sleepyHold 秒，唔鬧脾氣、唔扣需求
         b.petTaps.length = 0; b.holdUntil = b.t + T.sleepyHold; note(b, 'tap', 'lightWake'); b.log.enters.lightWake = (b.log.enters.lightWake || 0) + 1;
         if (b.state !== 'wake' && b.state !== 'simsleep') goWake(b, null);
@@ -423,6 +430,7 @@
     const cam = () => { L.src = 'camera'; return [0, 0]; };
     if (L.force) { L.src = 'force'; return null; }
     if (SLEEPCLIP[b.clip] || b.state === 'simsleep') { L.src = 'closed'; return [0, 0.2]; }
+    if (t < L.dragUntil) return pt(L.dragX, L.dragY == null ? headY : L.dragY, 'finger');
     if (t < L.tapUntil) return pt(L.tapX, L.tapY == null ? headY : L.tapY, 'tap');
     const ev = ctx && ctx.event, v = ev && ev.vis;
     if (b.state === 'event' && ev) {
@@ -471,6 +479,7 @@
     f.eyes = (ff && ff.eyes) || em[0]; f.mouth = (ff && ff.mouth) || em[1] || 'neutral';
     f.closed = FC.closedEyes.includes(f.eyes);
     f.gaze = f.closed ? 'C' : b.look.ql;
+    f.head = (f.eyes === 'happy' && b.look.ql && b.look.ql !== 'C') ? b.look.ql : 'C';   // P2：開心閉眼冇得轉眼珠 → 頭部微轉表達視線
     f.clip = clip; f.frame = frame;
     f.blink = clip === 'blink' && FC.blinkFrames.includes(frame);
     return f;
@@ -496,5 +505,5 @@
     startState(b, name, ctx || {});
   }
 
-  return { create, update, step, tap, note, force, exprFor, frameOf, clipDur, clipLen, formKey, weights, quantGaze, faceFor, MIRROR, FIX, VARIANTS };
+  return { create, update, step, tap, drag, dragEnd, note, force, exprFor, frameOf, clipDur, clipLen, formKey, weights, quantGaze, faceFor, MIRROR, FIX, VARIANTS };
 });

@@ -159,6 +159,20 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     });
     ok(r2 === 0, '冷卻內再連點：唔再觸發 grumpy_tap', r2);
   }
+  // 確定性 reset（CI 修正）：假時鐘定 13:00、需求補滿、evs.low=0、行為連點狀態清零、冷卻／全域間隔清空
+  const resetTap = () => E(() => { __qa.pet.pause(true); __qa.pet.clock.use(new Date(2026, 9, 31, 13, 0, 0).getTime()); __glimmer.ev = null; const s = __glimmer.state; s.evs.pending = []; s.evs.active = null; s.evs.cd = {}; s.evs.lastAt = -1e9; s.sleeping = false;
+    for (const k in s.needs) s.needs[k] = 100; s.evs.low = 0; const b = __glimmer.beh; b.grumpyCool = -1; b.petTaps.length = 0; b.taps.length = 0; b.tantrumReq = 0; });
+  await resetTap();
+  {
+    // 重現 CI 情境：14 日離線後需求鬧脾氣（kind:need，48h）先觸發 → 舊版連點共用 cd.grumpy 被擋（cd:null）。
+    // 依家 grumpy_tap 用自己嘅 cd.grumpy_tap：過咗全域 20 分鐘間隔，連點照觸發，cd.grumpy 仍係 48h。
+    const r = await E(() => { const s = __glimmer.state, E0 = s.evs; s.needs.hunger = 25; E0.low = 7300; __qa.pet.step(1); const a = E0.log[E0.log.length - 1];
+      for (const k in s.needs) s.needs[k] = 100; E0.low = 0; for (let i = 0; i < 40 && (E0.active || __glimmer.ev || E0.pending.length); i++) __qa.pet.step(0.5);   /* 等需求鬧脾氣動畫播完（播放期間 forced，點擊照設計唔計） */
+      E0.lastAt = E0.clock - 21 * 60; /* 模擬已過全域 20 分鐘間隔 */ __glimmer.beh.grumpyCool = -1; __glimmer.beh.petTaps.length = 0; __qa.pet.tapPet(5); __qa.pet.step(0.5); const b = E0.log[E0.log.length - 1];
+      return { first: a && a.id + '/' + a.kind, then: b && b.id + '/' + b.kind, cd: Math.round((E0.cd.grumpy - E0.clock) / 3600), cdTap: Math.round((E0.cd.grumpy_tap - E0.clock) / 3600) }; });
+    ok(r.first === 'grumpy/need' && r.then === 'grumpy_tap/tap' && r.cd === 48 && r.cdTap === 48, 'CI 情境：需求鬧脾氣（48h）之後（過咗全域間隔）連點仍觸發 grumpy_tap（各自 cd）', JSON.stringify(r));
+  }
+  await resetTap(); await E(() => { __glimmer.state.needs.energy = 40; });   // 下面睡眠測試要夠眼瞓先瞓得
   {
     const r = await E(() => { const s = __glimmer.state; Glimmer.sim.toggleSleep(s); __qa.pet.step(3); const n0 = JSON.stringify(s.needs), lw0 = __glimmer.beh.log.enters.lightWake || 0, ev0 = s.evs.stats.events;
       __qa.pet.tapPet(1); __qa.pet.step(1); return { sleeping: s.sleeping, lw: (__glimmer.beh.log.enters.lightWake || 0) - lw0, expr: __glimmer.beh.expr, ev: s.evs.stats.events - ev0 }; });
@@ -257,7 +271,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   ok(dls.night.dl.bloom > dls.dusk.dl.bloom && dls.dusk.dl.bloom > dls.early.dl.bloom && dls.early.dl.bloom > dls.noon.dl.bloom && dls.noon.dl.vignette < dls.night.dl.vignette, 'bloom／vignette 隨時段變化（night>dusk>early>noon）');
   ok(dls.night.dl.petMul[2] !== dls.noon.dl.petMul[2] && dls.noon.dl.petMul.every(v => v === 255), 'pet tint multiply：noon＝白（唔變色）、night 偏藍', JSON.stringify([dls.noon.dl.petMul, dls.night.dl.petMul]));
   // 寵物 tint 實測：同一姿勢，night 頭頂像素較 noon 暗而偏藍
-  const px = async (hr) => { await fresh('debug=1&q=off&hour=' + hr + '&seed=7&ev=0'); await E(() => { __qa.pet.pause(true); __qa.pet.force('idle'); }); await page.waitForTimeout(400); return E(() => { const r = __glimmer.renderer, pd = r.petDraw, k = r.k, cv = document.getElementById('c') || document.querySelector('canvas'); const g = document.createElement('canvas'); g.width = 6; g.height = 6; const gx = g.getContext('2d'); gx.drawImage(r.tintPet, 0, 0); const d = r.tintPet.getContext('2d').getImageData(40, 80, 16, 16).data; let rr = 0, gg = 0, bb = 0, n = 0; for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) { rr += d[i]; gg += d[i + 1]; bb += d[i + 2]; n++; } return { n, r: n ? rr / n : 0, g: n ? gg / n : 0, b: n ? bb / n : 0 }; }); };
+  const px = async (hr) => { await fresh('debug=1&q=off&hour=' + hr + '&seed=7&ev=0&hd2d=0'); /* 測舊 daylight tint 路徑（HD-2D 版 tint 喺 e2e-hd2d） */ await E(() => { __qa.pet.pause(true); __qa.pet.force('idle'); }); await page.waitForTimeout(400); return E(() => { const r = __glimmer.renderer, pd = r.petDraw, k = r.k, cv = document.getElementById('c') || document.querySelector('canvas'); const g = document.createElement('canvas'); g.width = 6; g.height = 6; const gx = g.getContext('2d'); gx.drawImage(r.tintPet, 0, 0); const d = r.tintPet.getContext('2d').getImageData(40, 80, 16, 16).data; let rr = 0, gg = 0, bb = 0, n = 0; for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) { rr += d[i]; gg += d[i + 1]; bb += d[i + 2]; n++; } return { n, r: n ? rr / n : 0, g: n ? gg / n : 0, b: n ? bb / n : 0 }; }); };
   const pn = await px(14), pg = await px(1);
   ok(pn.n > 20 && pg.n > 20 && (pg.r + pg.g + pg.b) < (pn.r + pn.g + pn.b) && (pg.b - pg.r) > (pn.b - pn.r), '寵物 sprite 套咗時段 tint：night 比 noon 暗且偏藍', JSON.stringify([pn, pg]));
   // 30 分鐘 blend：07:15（mix≈0.5）

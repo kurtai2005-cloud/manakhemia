@@ -103,7 +103,8 @@
       d.loops.sunbathe = b.state === 'sunbathe' && b.phase === 'lie';
     } else { d.loops.sleep_breath = false; d.loops.sunbathe = false; if (b) d.jn = b.jn; }
     d.bgm = (s && s.sleeping) ? 'night' : (w.period || 'noon');
-    return { cues: out, loops: d.loops, bgm: d.bgm };
+    d.rain = !!(w.rain && w.mode !== 'minigame');                       // H3 雨層細雨環境聲（rain＝HD-2D 現款 H3rain）
+    return { cues: out, loops: d.loops, bgm: d.bgm, rain: d.rain };
   }
 
   // ═════════ Engine（WebAudio；只喺瀏覽器）═════════
@@ -118,12 +119,13 @@
       ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, unlock, { capture: true, passive: true }));
       document.addEventListener('visibilitychange', () => { if (!this.ctx) return; if (document.hidden) this.ctx.suspend(); else this.ctx.resume(); });
     },
-    url(file) { return this.base + (/^bgm_/.test(file) ? 'bgm/' : 'sfx/') + file + '.ogg'; },
+    url(file) { return this.base + (/^bgm_/.test(file) ? 'bgm/' : /^amb_/.test(file) ? 'amb/' : 'sfx/') + file + '.ogg'; },
     fetchRaw(file) { if (!this.raw[file]) this.raw[file] = fetch(this.url(file)).then(r => { if (!r.ok) throw new Error(r.status + ' ' + file); return r.arrayBuffer(); }).catch(e => { this.err = String(e); return null; }); return this.raw[file]; },
     prefetch() {
       const files = Object.values(CUES).map(c => c.file).concat(Object.values(AU.loops).map(l => l.file));
       new Set(files).forEach(f => this.fetchRaw(f));
       setTimeout(() => Object.values(AU.bgm).forEach(f => this.fetchRaw(f)), 1500);
+      if (AU.amb) setTimeout(() => { const R = AU.amb.rain; this.fetchRaw(R.short); this.fetchRaw(R.loop); }, 2000);
     },
     decode(file) {
       if (this.buf[file]) return Promise.resolve(this.buf[file]);
@@ -204,13 +206,54 @@
       // 解碼緩存：只留目前＋上一條
       setTimeout(() => { const keep = new Set([AU.bgm[key], B.prev && AU.bgm[B.prev.key]]); for (const f of Object.values(AU.bgm)) if (!keep.has(f)) this.buf[f] = null; }, (fade + 1) * 1000 + 800);
     },
+    // ── H3 雨層細雨環境聲：short → 1.5s 後等功率 crossfade 入 loop（BufferSource.loop＝true）；停雨 loop 淡出 ──
+    rain(on) {
+      const R = AU.amb && AU.amb.rain; if (!R || !this.ctx) return;
+      const st = this.amb || (this.amb = { want: false, on: false, short: null, loop: null, g: null, busy: false, hist: [] });
+      st.want = !!on;
+      if (on && !st.on && !st.busy) {
+        if (this.ctx.state !== 'running') return;
+        st.busy = true;
+        Promise.all([this.decode(R.short), this.decode(R.loop)]).then(([bs, bl]) => { st.busy = false; if (st.want && !st.on && bs && bl) this.rainStart(bs, bl); });
+      } else if (!on && st.on) this.rainStop();
+    },
+    rainStart(bs, bl) {
+      const R = AU.amb.rain, ctx = this.ctx, now = ctx.currentTime, st = this.amb, bus = this.buses[R.bus] || this.master;
+      const t0 = now + 0.02, tx = t0 + R.xfadeAt, fx = R.xfadeSec;
+      const gs = ctx.createGain(), ss = ctx.createBufferSource(); ss.buffer = bs; ss.connect(gs); gs.connect(bus);
+      gs.gain.setValueAtTime(R.gain, now); gs.gain.setValueCurveAtTime(this.curve(false, 64).map(v => v * R.gain), tx, fx);   // short 自己有淡入；交叉時等功率淡走
+      ss.start(t0); ss.stop(tx + fx + 0.05);
+      const gl = ctx.createGain(), ls = ctx.createBufferSource(); ls.buffer = bl; ls.loop = true; ls.loopStart = 0; ls.loopEnd = bl.duration;   // sample-accurate 無縫
+      ls.connect(gl); gl.connect(bus);
+      gl.gain.setValueAtTime(0, now); gl.gain.setValueCurveAtTime(this.curve(true, 64).map(v => v * R.gain), tx, fx);
+      ls.start(tx, 0);
+      st.on = true; st.short = { src: ss, g: gs, t0, end: tx + fx }; st.loop = { src: ls, g: gl, t0: tx }; st.startedAt = now;
+      const e = { t: this.dir.t, name: 'amb:rain:start', played: true, xfadeAt: +(tx - t0).toFixed(3), xfadeSec: fx, loop: ls.loop, loopEnd: +ls.loopEnd.toFixed(4), shortDur: +bs.duration.toFixed(3), loopDur: +bl.duration.toFixed(3) };
+      this.log.push(e); st.hist.push(e);
+    },
+    rainStatus() {
+      const st = this.amb; if (!st) return { on: false, want: false, hist: [] };
+      const L = st.loop && st.loop.src, Sh = st.short && st.short.src, now = this.ctx ? this.ctx.currentTime : 0;
+      return { on: st.on, want: st.want, busy: st.busy, now: +now.toFixed(3), startedAt: st.startedAt, stoppedAt: st.stoppedAt, hist: st.hist.slice(),
+        loop: L ? { node: L.constructor.name, loop: L.loop, loopStart: L.loopStart, loopEnd: +L.loopEnd.toFixed(4), bufDur: +L.buffer.duration.toFixed(4), t0: +st.loop.t0.toFixed(3), gain: +st.loop.g.gain.value.toFixed(3) } : null,
+        short: Sh ? { node: Sh.constructor.name, loop: Sh.loop, bufDur: +Sh.buffer.duration.toFixed(3), t0: +st.short.t0.toFixed(3), end: +st.short.end.toFixed(3), gain: +st.short.g.gain.value.toFixed(3) } : null,
+        fading: st.fading ? { loopGain: st.fading.loop ? +st.fading.loop.g.gain.value.toFixed(3) : null } : null, audioEls: document.querySelectorAll('audio').length };
+    },
+    rainStop() {
+      const R = AU.amb.rain, ctx = this.ctx, now = ctx.currentTime, st = this.amb, f = R.fadeOutSec;
+      for (const n of [st.loop, st.short]) { if (!n) continue; const gp = n.g.gain; gp.cancelScheduledValues(now); gp.setValueAtTime(gp.value, now); gp.linearRampToValueAtTime(0, now + f); try { n.src.stop(now + f + 0.05); } catch (e) { } }
+      const e = { t: this.dir.t, name: 'amb:rain:stop', played: true, fadeOutSec: f };
+      this.log.push(e); st.hist.push(e); st.on = false; st.stoppedAt = now;
+      const old = { short: st.short, loop: st.loop }; st.short = null; st.loop = null; st.fading = old;
+      setTimeout(() => { if (st.fading === old) st.fading = null; }, (f + 0.3) * 1000);
+    },
     // ── 對外 ──
     notify(kind, info) { if (this.dir) notify(this.dir, kind, info, this.G.state); },
     update(dt, w) {
       if (!this.dir) return;
       const r = update(this.dir, dt, w);
       for (const c of r.cues) this.play(c);
-      if (this.ctx) { this.loop('sleep_breath', r.loops.sleep_breath); this.loop('sunbathe', r.loops.sunbathe); }
+      if (this.ctx) { this.loop('sleep_breath', r.loops.sleep_breath); this.loop('sunbathe', r.loops.sunbathe); this.rain(r.rain); }
       this.bgmApply(r.bgm);
     },
   };

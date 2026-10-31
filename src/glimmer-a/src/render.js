@@ -327,7 +327,7 @@
 
   // ───────── 寵物 clip 渲染輔助（真 atlas＋placeholder）─────────
   const DUST_HEAD = [13, -26];                    // 微塵形態冇圖集：程序化精靈嘅 head_r 錨點
-  const formKeyOf = (s) => s.stage === 'adult' ? (s.form === 'bright' ? 'radiant' : s.form === 'soft' ? 'soft' : 'dust') : 'sprout';
+  const formKeyOf = (s) => s.stage === 'adult' ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi') ? 'soft' : 'dust') : 'sprout';   // 螢絨（lumi）暫借柔光 atlas＋螢光 tint（未有專屬美術）
   // 待定／額外 clip 嘅程序化佔位：用 idle 幀＋簡單變形（dy＝上下、dx＝前後、sx／sy＝縮放）
   function placeholderXform(clip, b, t) {
     const T = { sx: 1, sy: 1, dx: 0, dy: 0 };
@@ -365,6 +365,7 @@
       this.atlas = {}; this.atlasReady = false; this.atlasError = null; this.petX = 0; this.sunMix = 0; this.tmpPet = mk(96, 112); this.tintPet = mk(96, 112); this.rimPet = mk(96, 112); this.dl = null; this.dlReady = false;
       this.lookKey = ''; this.layers = null; this.bl = {};
       this.lv = null; this.lvError = null; this.bulbCache = {}; this.bulbS = null;   // 生命感：noface 身體＋kit 五官＋燈泡
+      this.ovStat = { moonStars: 0, lanterns: 0 };   // 引擎程序化疊層（月 (150,76)＋星／燈籠串）實際畫咗幾多幀（HD-2D 開時應為 0）
       this.faceStat = { draws: 0, tints: 0, overlays: 0, faceDrawn: 0, faceHidden: 0, placeholder: 0, bulb: 0, last: null };
       this.glowCache = {}; this.fireflies = []; this.stars = [];
       for (let i = 0; i < 9; i++) this.fireflies.push({ x: hash(i) * W, y: 150 + hash(i + 9) * 170, ph: hash(i + 3) * 6.28, sp: 0.2 + hash(i + 5) * 0.4 });
@@ -404,7 +405,7 @@
     liveFrame(fk, name) {               // kit piece／幀：{img,sx,sy,sw,sh,px,py}
       const A = this.lv && this.lv.atlas[fk]; const f = A && A.json.frames[name]; if (!f) return null;
       const pv = f.pivotPx || { x: f.frame.w >> 1, y: f.frame.h >> 1 };
-      return { img: A.img, sx: f.frame.x, sy: f.frame.y, sw: f.frame.w, sh: f.frame.h, px: pv.x, py: pv.y };
+      return { img: A.img, sx: f.frame.x, sy: f.frame.y, sw: f.frame.w, sh: f.frame.h, px: pv.x, py: pv.y, name };
     }
     liveAnchors(fk, clip, frame, src) {  // 錨點：face_anchors；冇就由 FORMS.headR 推算
       const L = this.lv && this.lv.anchors && this.lv.anchors[fk] && this.lv.anchors[fk][clip];
@@ -438,18 +439,32 @@
       }).catch(e => { this.dlError = String(e && e.message || e); });
     }
     // 寵物 tint（daylight.json pet.multiply／add／rim）：sprite → multiply → add → 以 sprite alpha 遮罩 → 窗光側 1px rim
-    tintSprite(src, dl, mir) {
+    tintSprite(src, dl, mir, lumi) {
       this.faceStat.tints++;
       const T = this.tintPet, g = T.getContext('2d'), PX = 48, PY = 100, ox = PX - src.px, oy = PY - src.py, pm = dl.pet, c3 = (a) => 'rgb(' + (a[0] | 0) + ',' + (a[1] | 0) + ',' + (a[2] | 0) + ')';
       const mask = (gg, dx) => gg.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, ox + dx, oy, src.sw, src.sh);
       g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 96, 112); g.imageSmoothingEnabled = false; g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; mask(g, 0);
-      g.globalCompositeOperation = 'multiply'; g.fillStyle = c3(pm.mul); g.fillRect(0, 0, 96, 112);
+      g.globalCompositeOperation = 'multiply'; g.fillStyle = c3(lumi ? [pm.mul[0] * 0.78, pm.mul[1], pm.mul[2] * 0.74] : pm.mul); g.fillRect(0, 0, 96, 112);
       g.globalCompositeOperation = 'lighter'; g.fillStyle = c3(pm.add); g.fillRect(0, 0, 96, 112);
       g.globalCompositeOperation = 'destination-in'; mask(g, 0);
       const R = this.rimPet, r = R.getContext('2d'); r.clearRect(0, 0, 96, 112); r.globalCompositeOperation = 'source-over'; r.fillStyle = c3(pm.rim); r.fillRect(0, 0, 96, 112);
       r.globalCompositeOperation = 'destination-in'; mask(r, 0); r.globalCompositeOperation = 'destination-out'; mask(r, mir > 0 ? 1 : -1); r.globalCompositeOperation = 'source-over';
       g.globalCompositeOperation = 'source-over'; g.globalAlpha = 0.8; g.drawImage(R, 0, 0); g.globalAlpha = 1;
       return { img: T, sx: ox, sy: oy, sw: src.sw, sh: src.sh, px: src.px, py: src.py, bud: src.bud };
+    }
+    // 幀實色框（相對幀左上；按 img+sx+sy cache，只 getImageData 一次）
+    opaqueBox(src) {
+      if (!src || !src.img) return null;
+      const m = this._obox || (this._obox = new WeakMap()); let per = m.get(src.img); if (!per) { per = {}; m.set(src.img, per); }
+      const key = src.sx + ',' + src.sy + ',' + src.sw + ',' + src.sh; if (key in per) return per[key];
+      let r = null;
+      try {
+        const c = this._obC || (this._obC = document.createElement('canvas')); c.width = src.sw; c.height = src.sh; const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, 0, 0, src.sw, src.sh);
+        const d = g.getImageData(0, 0, src.sw, src.sh).data; let l = 1e9, t = 1e9, rr = -1, bb = -1;
+        for (let y = 0; y < src.sh; y++) for (let x = 0; x < src.sw; x++) if (d[(y * src.sw + x) * 4 + 3] > 24) { if (x < l) l = x; if (x > rr) rr = x; if (y < t) t = y; if (y > bb) bb = y; }
+        if (rr >= 0) r = { l, t, r: rr + 1, b: bb + 1 };
+      } catch (e) { r = null; }
+      per[key] = r; return r;
     }
     petBox() { return { x: CX + this.petX - 38 + this.par.x * -1.5, y: GROUND_Y - 78, w: 76, h: 82 }; }
     // behavior 嘅 fx 請求 → 粒子（spark／steam 相對寵物；dust 相對 CX）
@@ -515,6 +530,9 @@
       this.curDL = (lt && lt.daylight && P.art.daylight !== false) ? lt.daylight : null;
       const dlv = this.curDL, room = !!(dlv && P.art.daylightBg && this.dlReady);
       this.sunMix += (((view.beh && view.beh.state === 'sunbathe' && view.beh.phase === 'lie') ? 1 : 0) - this.sunMix) * Math.min(1, dt * 2);
+      const hd = (this.hd && this.hd.on() && !room) ? this.hd : null;   // HD-2D 場景（src/hd2d.js）；off／未載入／?hd2d=0 → 舊程序化背景 fallback
+      this.hdOn = !!hd;
+      if (hd) hd.update(dt, { hour, weather: lt && lt.hd2d ? lt.hd2d.weather : view.weather });
       this.ensureLayers(look, Math.round(hour * 4) + '');
       // 視差
       const pt = this.parT;
@@ -548,7 +566,7 @@
       em.clearRect(0, 0, W, H);
       const lights = []; // {x,y,r,col,a,layer}
       // L0
-      { const x = L[0].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[0], 0, 0);
+      if (!hd) { this.ovStat.moonStars++; const x = L[0].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[0], 0, 0);   // HD-2D：引擎月 (150,76)／星唔畫（H4 場景已畫）
         const sa = clamp(1 - look.day * 1.3, 0, 1);
         if (sa > 0.02) for (const st of this.stars) { const tw = 0.55 + 0.45 * Math.sin(t * (1 + st.b * 2) + st.ph); const a = sa * (0.35 + 0.65 * tw) * (0.5 + st.b * 0.5); x.fillStyle = `rgba(255,248,220,${a.toFixed(2)})`; x.fillRect(st.x + MX, st.y + MY, 1, 1); if (st.b > 0.85 && tw > 0.8) { x.fillRect(st.x + MX - 1, st.y + MY, 3, 1); x.fillRect(st.x + MX, st.y + MY - 1, 1, 3); } if (st.b > 0.6) { em.fillStyle = `rgba(255,240,200,${(a * 0.7).toFixed(2)})`; em.fillRect(Math.round(st.x + offs[0][0]), Math.round(st.y + offs[0][1]), 1, 1); } }
         // 月亮（彎月／滿月兩張預製圖，睡眠時漸變滿月）
@@ -562,7 +580,7 @@
       // L1：燈籠串
       const lanternA = (1 - sm * 0.62) * (1 - hDim * 0.25) * (lt ? lt.lanternMul : 1);
       const lcol = mixc(lt ? mixc(look.lantern, lt.lantern, lt.lanternMix) : look.lantern, [255, 140, 60], sm * 0.5);
-      { const x = L[1].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[1], 0, 0);
+      if (!hd) { this.ovStat.lanterns++; const x = L[1].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[1], 0, 0);   // HD-2D：引擎燈籠串唔畫
         for (let i = 0; i < 6; i++) {
           const u = (i + 0.5) / 6, lx0 = 30 + u * 138, ly0 = 92 + Math.sin(u * Math.PI) * 28;
           const sw = Math.sin(t * 1.3 + i * 1.7) * 1.4, lx = Math.round(lx0 + sw), ly = Math.round(ly0 + 4);
@@ -576,7 +594,14 @@
         }
       }
       // L2：舞台 + 寵物
-      this.drawL2(L[2].getContext('2d'), view, { anim, frame, face, lift, lanternA, lcol, lights, em, offs, look, unwell, wd, hDim, sm, t });
+      this.drawL2(L[2].getContext('2d'), view, { anim, frame, face, lift, lanternA, lcol, lights, em, offs, look, unwell, wd, hDim, sm, t, hd: !!hd, q });
+      if (hd) {                                             // HD-2D 合成（sky→far→mid→寵物→fore→×lightmap→lighter→雨→霧→暈影）
+        hd.draw(this.ctx, k, { pet: L[2], offs, lights, quality: q, dt, t, dim: 0.34 * sm + 0.2 * hDim + (unwell ? 0.08 : 0) });
+        const ctx = this.ctx;
+        if (this.flash > 0) { ctx.globalAlpha = Math.min(1, this.flash); ctx.fillStyle = '#fff6d0'; ctx.fillRect(0, 0, W * k, H * k); ctx.globalAlpha = 1; }
+        const ms = performance.now() - t0; this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
+        return;
+      }
       // L3
       { const x = L[3].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[3], 0, 0); }
 
@@ -635,8 +660,10 @@
 
     drawL2(x, view, c) {
       const s = view.state, t = c.t, offs = c.offs;
-      x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[2], 0, 0);
+      x.clearRect(0, 0, LW, LH);
       const ox = (px) => px + MX, oy = (py) => py + MY;
+      if (!c.hd) {                                          // HD-2D：舞台／燈柱／蘑菇光／螢火已畫喺場景層（透明底 L2）
+      x.drawImage(this.layers[2], 0, 0);
       // 燈柱燈籠
       const lx = 24, ly = 306 - 58;
       const fl = 0.88 + 0.12 * Math.sin(t * 6.3);
@@ -657,6 +684,7 @@
         c.lights.push({ x: fx + offs[2][0], y: fy, r: 9, col: [255, 235, 120], a: 0.55 * a * (1 - c.sm * 0.4) });
         c.em.fillStyle = `rgba(255,240,150,${(a * 0.9).toFixed(2)})`; c.em.fillRect(Math.round(fx + offs[2][0]), Math.round(fy), 2, 2);
       }
+      }
       if (view.mode === 'minigame') return this.drawMinigame(x, view, c);
 
       // ── 寵物 ──
@@ -675,7 +703,8 @@
       else if (s.stage === 'egg' && this.atlasReady && this.atlas.atlas_egg && P.art.useAtlas !== false) {
         // 光卵：遊美 atlas_egg（egg_idle 4 幀／egg_glow 2 幀；進度 ≥50% 或輕點時用 glow）
         const prog = SIM.eggProgress(s), glow = prog >= 0.5 || this.eggPulse > 0.05, clip = glow ? 'egg_glow' : 'egg_idle', an2 = this.atlas.atlas_egg.json.animations[clip];
-        const es = this.atlasSrc('atlas_egg', clip, Math.floor(t * an2.fps));
+        let es = this.atlasSrc('atlas_egg', clip, Math.floor(t * an2.fps));
+        if (c.hd) { es = this.hd.tintPet(es, { mir: 1, form: null, quality: c.q }); this.faceStat.tints++; }
         const ex = Math.round(gx - es.px), ey = Math.round(base - es.py + c.lift + (this.eggPulse > 0.05 ? -Math.round(this.eggPulse * 2) : 0));
         x.imageSmoothingEnabled = false; x.drawImage(es.img, es.sx, es.sy, es.sw, es.sh, ox(ex), oy(ey), es.sw, es.sh);
         this.petDraw = { x: ex, y: ey, w: es.sw, h: es.sh, bud: { x: ex + es.sw / 2, y: ey + es.sh * 0.4 }, footY: base + c.lift };
@@ -688,14 +717,14 @@
       }
       const pd = this.petDraw;
       // 寵物光（絨芽）——狀態光色
-      let gcol = s.form === 'dust' ? [210, 205, 190] : [255, 214, 110];
+      let gcol = s.form === 'dust' ? [210, 205, 190] : s.form === 'lumi' ? [200, 255, 140] : [255, 214, 110];
       let gint = s.stage === 'egg' ? 0.5 + SIM.eggProgress(s) * 0.5 + this.eggPulse * 0.6 : 1;
       gint *= (1 - c.hDim * 0.6);
       if (c.unwell) { gcol = mixc(gcol, [150, 220, 150], 0.65); gint *= 0.6 + 0.2 * Math.sin(t * 3); }
       if (c.sm > 0.01) { gcol = mixc(gcol, [190, 210, 255], c.sm * 0.8); gint *= 1 - c.sm * 0.55; }
       if (c.wd) gint *= 0.6;
-      const gr = s.stage === 'adult' ? (s.form === 'bright' ? 60 : s.form === 'soft' ? 44 : 28) : s.stage === 'sprout' ? 30 : 34 + this.eggPulse * 16;
-      c.lights.push({ x: pd.bud.x + offs[2][0], y: pd.bud.y, r: gr, col: gcol, a: 0.8 * gint });
+      const gr = s.stage === 'adult' ? (s.form === 'bright' ? 60 : (s.form === 'soft' || s.form === 'lumi') ? 44 : 28) : s.stage === 'sprout' ? 30 : 34 + this.eggPulse * 16;
+      c.lights.push({ x: pd.bud.x + offs[2][0], y: pd.bud.y, r: gr, col: gcol, a: 0.8 * gint, bud: 1 });
       c.lights.push({ x: gx + offs[2][0], y: pd.footY - pd.h * 0.33, r: gr * 1.4, col: mixc(gcol, [255, 170, 90], 0.4), a: 0.18 * gint });
       c.em.fillStyle = rgb(gcol, 0.9 * Math.min(1, gint)); const bx = Math.round(pd.bud.x + offs[2][0]), by = Math.round(pd.bud.y);
       c.em.fillRect(bx - 2, by - 2, 5, 5);
@@ -735,7 +764,7 @@
       const an = A.json.animations[clip]; if (!an) return null;
       const f = A.json.frames[an.frames[((idx % an.frames.length) + an.frames.length) % an.frames.length]]; if (!f) return null;
       const pv = f.pivotPx || { x: f.frame.w / 2, y: f.frame.h - 3 };   // atlas_egg 冇 pivot → 用遊美標準：底部置中（w/2, h-3）
-      return { img: A.img, sx: f.frame.x, sy: f.frame.y, sw: f.frame.w, sh: f.frame.h, px: pv.x, py: pv.y };
+      return { img: A.img, sx: f.frame.x, sy: f.frame.y, sw: f.frame.w, sh: f.frame.h, px: pv.x, py: pv.y, name: an.frames[((idx % an.frames.length) + an.frames.length) % an.frames.length] };
     }
     // 事件 icon（遊美 fx/events：32×32、pivot 置中、動畫 animations[icon]）
     eventIconSrc(id, t) {
@@ -782,14 +811,16 @@
       }
       const PX = 48, PY = 100;
       let draw = src, anc = null; const fst = { live: !!live, clip: live ? live.clip : dclip, frame: live ? live.frame : dframe, faceVisible: false, eyes: null, mouth: null, placeholder: [], bulb: null, derived: false };
-      const comp = () => { const T = this.tmpPet, tx = T.getContext('2d'); tx.setTransform(1, 0, 0, 1, 0, 0); tx.globalCompositeOperation = 'source-over'; tx.globalAlpha = 1; tx.clearRect(0, 0, 96, 112); tx.imageSmoothingEnabled = false; tx.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, PX - src.px, PY - src.py, src.sw, src.sh); draw = { img: T, sx: PX - src.px, sy: PY - src.py, sw: src.sw, sh: src.sh, px: src.px, py: src.py, bud: src.bud }; return tx; };
+      const comp = () => { const T = this.tmpPet, tx = T.getContext('2d'); tx.setTransform(1, 0, 0, 1, 0, 0); tx.globalCompositeOperation = 'source-over'; tx.globalAlpha = 1; tx.clearRect(0, 0, 96, 112); tx.imageSmoothingEnabled = false; tx.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, PX - src.px, PY - src.py, src.sw, src.sh); draw = { img: T, sx: PX - src.px, sy: PY - src.py, sw: src.sw, sh: src.sh, px: src.px, py: src.py, bud: src.bud, name: src.name }; return tx; };
       if (live) {
         // 疊五官（喺 tint 之前，同身體一齊做一次 tint；朝左由外層 scaleX −1 成個合成）
         const tx = comp(); this.faceStat.overlays++;
         anc = this.liveAnchors(fk, live.clip, live.frame, src); fst.derived = !!anc.derived;
         const f = b.face || { eyes: 'neutral', mouth: 'neutral', gaze: 'C', closed: false };
         const vis = anc.faceVisible !== false && FCP.mode !== 'off'; fst.faceVisible = vis;
-        const o0x = PX - src.px, o0y = PY - src.py;
+        const HT = { L: [-1, 0], CL: [-1, 0], CR: [1, 0], R: [1, 0], U: [0, -1], D: [0, 1] }[f.head] || null;   // P2：開心閉眼 → 五官整組微移 1px＝頭部微轉
+        const o0x = PX - src.px + (HT ? HT[0] : 0), o0y = PY - src.py + (HT ? HT[1] : 0);
+        if (HT) { this.faceStat.headTurn = (this.faceStat.headTurn || 0) + 1; fst.headTurn = f.head; }
         const put = (name, at, kind) => {
           const pc = this.liveFrame(fk, name);
           if (pc) { tx.drawImage(pc.img, pc.sx, pc.sy, pc.sw, pc.sh, o0x + at[0] - pc.px, o0y + at[1] - pc.py, pc.sw, pc.sh); return true; }
@@ -818,9 +849,12 @@
         tx.globalCompositeOperation = 'source-over';
       }
       const mir = b.dir < 0 ? -1 : 1, prm = art.playRootMotion;
-      if (this.curDL && art.daylight !== false) draw = this.tintSprite(draw, this.curDL, mir);   // 時段 tint（daylight.json）
+      // 時段 tint：五官已喺上面合成入 tmpPet → 呢度成個合成只 tint 一次（HD-2D 取代 daylight tint，唔加多一次）
+      if (c.hd) { this.faceStat.tints++; draw = this.hd.tintPet(draw, { mir, form: fk, rimKey: live ? fk + '_live' : fk, frame: draw.name, quality: c.q, lumi: s.form === 'lumi' }); }   // petTint×ambientTint＋rim（唔過 LUT）
+      else if (this.curDL && art.daylight !== false) draw = this.tintSprite(draw, this.curDL, mir, s.form === 'lumi');
       const rm = (prm && clip === 'play' && real && !ph && prm.frames.indexOf(b.frame) >= 0) ? (fk === 'sprout' ? prm.dx32 : prm.dx64) * mir : 0;   // play 前衝 root-motion（只喺真 clip 幀）
       const px = Math.round(gx + rm), py = Math.round(base + b.lift + (ph ? ph.dy : 0));
+      { const sx = ph ? ph.sx : 1, sy = ph ? ph.sy : 1, w = draw.sw * Math.abs(sx), h = draw.sh * sy, l = px + (ph ? ph.dx * mir : 0) - (mir > 0 ? draw.px : draw.sw - draw.px) * Math.abs(sx); const ob = this.opaqueBox(src); if (ob) { const ax = Math.abs(sx); const l0 = mir > 0 ? ob.l : draw.sw - ob.r; this.petRect = { x: l + l0 * ax, y: py - draw.py * sy + ob.t * sy, w: (ob.r - ob.l) * ax, h: (ob.b - ob.t) * sy, opaque: true }; } else this.petRect = { x: l, y: py - draw.py * sy, w, h, opaque: false }; }   // P2：觸控用真身框（art 座標，未加視差）
       x.save(); x.imageSmoothingEnabled = false;
       x.translate(ox(px + (ph ? ph.dx * mir : 0)), oy(py)); x.scale(mir * (ph ? ph.sx : 1), ph ? ph.sy : 1);
       x.drawImage(draw.img, draw.sx, draw.sy, draw.sw, draw.sh, -draw.px, -draw.py, draw.sw, draw.sh);
@@ -830,7 +864,7 @@
         this.bulbLastT = t; if (!this.bulbS) this.bulbS = { rgb: tgt.slice(), i: m.i };
         const S = this.bulbS; for (let i = 0; i < 3; i++) S.rgb[i] += (tgt[i] - S.rgb[i]) * kf;
         const pu = m.pulse, it = pu ? pu[1] + (pu[2] - pu[1]) * (0.5 + 0.5 * Math.sin(t * 6.283 / pu[0])) : m.i; S.i += (it - S.i) * kf;
-        const gl = this.bulbGlow(fk, S.rgb);
+        const gl = this.bulbGlow(fk, s.form === 'lumi' ? [S.rgb[0] * 0.75, 255, S.rgb[2] * 0.55] : S.rgb);   // 螢絨：燈泡偏螢綠
         if (gl) { x.globalAlpha = Math.max(0, Math.min(1, S.i)); x.drawImage(gl.c, -src.px + anc.bulb[0] - gl.px, -src.py + anc.bulb[1] - gl.py); x.globalAlpha = 1; this.faceStat.bulb++; fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)) }; }
       }
       x.restore();
