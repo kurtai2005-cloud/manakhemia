@@ -19,7 +19,9 @@
   G.lowEnd = function () { const Q = P.quality, n = navigator, hc = n.hardwareConcurrency, dm = n.deviceMemory; return (hc != null && hc <= Q.lowEndCores) || (dm != null && dm <= Q.lowEndMemGB); };
 
   SIM.setHourFn(() => (G.hour ? G.hour() : new Date().getHours()));   // evo6：夜晚照顧（17:00–07:00）用遊戲本地鐘
-  if (SIM.setRainFn) SIM.setRainFn(() => G.weather === 'rain');      // §7 水珠：落雨時照顧（天氣＝G.weather，DEV 時段「H3 雨」／?weather=rain）
+  if (SIM.setWeatherFn) SIM.setWeatherFn(() => G.weather || 'clear');   // v4 天氣狀態 clear／overcast／rain（G.weather；天氣系統未做 → DEV 抽屜／?weather=）；陰天／落雨照顧 → 菇傘
+  { const w = qs.get('weather'); if (w && P.evo6.branch.weather.states.includes(w)) G.weather = w === 'clear' ? null : w; }   // v4：?weather=clear|overcast|rain
+  if (SIM.setNowFn) SIM.setNowFn(() => G.now());                     // v4 照顧日用遊戲時鐘（DEV 快轉一致）
   // ── 存檔 ──
   function load() {
     let s = null, rep = null;

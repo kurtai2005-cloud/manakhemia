@@ -97,8 +97,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   s = await st(); ok(s.grains === grains0 + res.grains, '光粒已加入', s.grains);
   await closeModals();
 
-  console.log('# 進化分支（跳跳期尾：燦光 CQ≥70）');
-  await G(() => { const x = __glimmer.state; x.stage = 'juvenile'; x.form = null; x.cq = 82; x.growthSec = Glimmer.data.PARAMS.stageSec.juvenile - 3;   /* evo6：分支喺跳跳期尾決定 */ });
+  console.log('# 進化分支（跳跳期尾：燦光 CQ≥brightCQ＋照顧日）');
+  await G(() => { const x = __glimmer.state; x.stage = 'juvenile'; x.form = null; x.cq = 82; x.growthSec = Glimmer.data.PARAMS.stageSec.juvenile - 3; const dk = Glimmer.sim.dayKey, now = __glimmer.now(); x.careDays = [0, 1, 2, 3, 4, 5, 6].map(i => dk(now - i * 864e5)).sort(); x.evo = x.evo || { evIn: {}, care: {} }; x.evo.day0 = dk(now - 6 * 864e5);   /* v4：燦光要最近 7 日 ≥5 日照顧 */   /* evo6：分支喺跳跳期尾決定 */ });
   await page.waitForTimeout(5000);
   s = await st(); ok(s.stage === 'adult' && s.form === 'bright', 'CQ 82 → 守夜者「燦光」', s.stage + '/' + s.form);
   await shot('16-evolve-modal'); await closeModals(); await page.waitForTimeout(2500); await shot('17-adult-bright');
@@ -113,8 +113,9 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await G(() => { __glimmer.hourOverride = null; });
 
   console.log('# 其他分支（柔光／微塵）');
-  for (const [cq, f, nm] of [[55, 'soft', '21-adult-soft'], [20, 'dust', '22-adult-dust']]) {
-    await G((cq) => { const x = __glimmer.state; x.stage = 'juvenile'; x.form = null; x.cq = cq; x.growthSec = Glimmer.data.PARAMS.stageSec.juvenile - 3; for (const k of ['hunger', 'mood', 'clean', 'energy']) x.needs[k] = 80; }, cq);
+  const BRc = await G(() => Glimmer.data.PARAMS.evo6.branch);
+  for (const [cq, f, nm] of [[BRc.softCQ + 5, 'soft', '21-adult-soft'], [BRc.softCQ - 1, 'dust', '22-adult-dust']]) {   // v4：讀 config（柔光 CQ ≥ softCQ）；清照顧日 → 唔會去燦光
+    await G((cq) => { const x = __glimmer.state; x.stage = 'juvenile'; x.form = null; x.cq = cq; x.growthSec = Glimmer.data.PARAMS.stageSec.juvenile - 3; x.careDays = []; for (const k of ['hunger', 'mood', 'clean', 'energy']) x.needs[k] = 80; }, cq);
     await page.waitForTimeout(5000); s = await st(); ok(s.form === f, `CQ ${cq} → ${f}`, s.form); await closeModals(); await page.waitForTimeout(1800); await shot(nm);
   }
 
