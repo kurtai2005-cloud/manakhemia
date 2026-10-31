@@ -67,6 +67,20 @@
 - 表情×日光：`shots/montage_expr_daylight.png`（行＝04／09／14／18／23.6 時；列＝auto／neutral／angry／sad／surprised／sleepy／wink）、單張 `shots/expr_h*_*.png`、全畫面 `shots/full_h*.png`
 - 效能完結：`shots/perf_4x_end.png`
 
+## Round 4（2700494，合併 021726b 之後嘅打包頁）
+
+被測 `src/glimmer-a/dist/glimmer-live-s1.html`（`2700494`，6.88 MB）。`tests/liveliness/run.mjs` 要 Playwright 自帶 Chromium，呢部機冇，所以版面同 `grumpy_tap` 用系統 Chrome 對住 `window.__qa.pet` 再量。原報告（`27f5047`）嘅生命感結論唔係呢一節。
+
+- 日記／設定熱區：360×640 **44.7×44.7**（dpr 1 同 dpr 3）、390×844 **45×45**、412×915 **45×45**。重疊 0。
+- 日記警告：「有 1 件小事 **2 日後作廢**」。打包檔「就快過期」**0 次**。
+- `tapPet(5)`：`eventLog`＝`grumpy_tap:tap`，冷卻約 48h，光粒 0，`dayCount` 唔加。同 plan-a 原始碼探針一致（獨立 48h、唔共用 `cd.grumpy`、冇獎勵）。
+
+![360×640](shots/r4-live-s1-360x640.png)
+
+![390×844](shots/r4-live-s1-390x844.png)
+
+![412×915](shots/r4-live-s1-412x915.png)
+
 ## 測唔到／限制
 - 真實手感（眼神順唔順、回頭節奏、咦聲時機）同真觸控延遲：headless 量唔到，要真機。
 - FPS：box 冇 GPU，數字唔等於手機；4x 降速只係模擬低階 CPU，唔模擬 GPU。
