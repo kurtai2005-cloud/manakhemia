@@ -163,5 +163,36 @@ console.log('⑤ 系統 12：懸浮小驚喜（設定、replay 入帳、每日 5
   s = mk(); s.sys12 = { surp: { on: { drop: 'x' }, waterH: 9, drops: { bad: 3, '2026-11-03': -2 } } }; X.st(s); u = s.sys12.surp;
   ok(u.on.drop === true && u.waterH === U.water.def && !('bad' in u.drops) && u.drops['2026-11-03'] === 0, '存檔 sanitize（小驚喜）');
 }
+console.log('⑥ 系統 3：團絨日記（每日 1 篇、範本＋事件、特別頁、離線日一句、30 日、化光入紀念冊）');
+{
+  const DC = C.diary; let T = new Date(2026, 10, 3, 10, 0).getTime(); S.setNowFn(() => T);
+  const mk = () => { const s = S.newState(T - 86400e3 * 3, 9); s.stage = 'sprout'; return s; };
+  let s = mk(); X.diaryStep(s, T); s.needs.hunger = 20; S.feed(s, 'meal'); X.diaryNote(s, 'food', 'meal', T); S.play(s);
+  let d = X.diary(s, T); ok(d.list.length === 0 && d.today && d.today.draft, '當日：未寫（草稿）');
+  ok(d.today.lines.some(l => l.includes('暖菇飯')), '草稿有食咗乜（暖菇飯）', JSON.stringify(d.today.lines));
+  T += 86400e3; X.diaryStep(s, T); d = X.diary(s, T);
+  ok(d.list.length === 1 && d.list[0].d === '2026-11-03' && d.list[0].kind === 'normal', '過咗 00:00 → 寫低尋日一篇');
+  const e = d.list[0], all = [].concat(...Object.values(DC.weather));
+  ok(all.includes(e.lines[1]) && e.lines.length >= 5, '範本：開頭＋天氣＋食＋心情＋照顧＋結尾', JSON.stringify(e.lines));
+  ok(e.stickers.includes('food') && e.stickers.every(k => ['sun', 'rain', 'food', 'heart', 'evolve', 'sleep'].includes(k)), '貼紙（遊美 6 款）', e.stickers.join());
+  // 進化
+  S.enterStage(s, 'juvenile'); X.diaryStep(s, T); T += 86400e3; X.diaryStep(s, T); d = X.diary(s, T);
+  const ev = d.list[d.list.length - 1]; ok(ev.kind === 'evolve' && ev.special && ev.lines.some(l => l.includes('跳跳期')) && ev.stickers.includes('evolve'), '進化嗰日 → 特別頁（跳跳期）', JSON.stringify(ev));
+  // 離線
+  T += 86400e3 * 4; X.diaryStep(s, T); d = X.diary(s, T); const off = d.list.filter(x => x.kind === 'offline');
+  ok(off.length === 3 && off.every(x => x.lines.length === 1 && DC.offline.some(l => x.lines[0].includes(l))), '4 日冇開 → 3 個離線日各一句', off.length);
+  // 30 日
+  for (let i = 0; i < 40; i++) { T += 86400e3; X.diaryNote(s, 'care', 'feed', T); }
+  X.diaryStep(s, T); d = X.diary(s, T); ok(d.list.length === DC.keepDays, '最多留 30 篇', d.list.length);
+  // 光卵期唔寫
+  let s2 = mk(); s2.stage = 'egg'; X.diaryStep(s2, T); T += 86400e3 * 3; X.diaryStep(s2, T); ok(X.diary(s2, T).list.length === 0, '光卵期冇日記（冇離線句）');
+  // 化光
+  s.stage = 'elder'; s.fadeReady = true; X.diaryStep(s, T); const f = S.fade(s, T);
+  ok(f.ok && Array.isArray(f.memorial.diary) && f.memorial.diary.length === DC.keepDays && f.memorial.diary[f.memorial.diary.length - 1].kind === 'fade', '化光 → 特別頁（化光日）＋成本日記入紀念冊', f.memorial.diary && f.memorial.diary.length);
+  d = X.diary(s, T); ok(d.list.length === 0, '新一代日記由空白開始');
+  T += 86400e3; X.diaryStep(s, T); ok(X.diary(s, T).list.length === 0, '化光當日（光卵）唔再寫多篇');
+  s = mk(); s.sys12 = { diary: { list: [5, { d: 1 }, { d: '2026-11-01', lines: ['x'] }], tr: 'bad' } }; X.st(s); ok(s.sys12.diary.list.length === 1 && s.sys12.diary.tr === null, '存檔 sanitize（日記）');
+  S.setNowFn(null);
+}
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);
 process.exit(fail ? 1 : 0);

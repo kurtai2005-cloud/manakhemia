@@ -89,6 +89,10 @@
     u.ts = Math.max(0, num(u.ts, 0)); if (!u.drops || typeof u.drops !== 'object' || Array.isArray(u.drops)) u.drops = {};
     for (const k of Object.keys(u.drops)) if (!/^\d{4}-\d\d-\d\d$/.test(k)) delete u.drops[k]; else u.drops[k] = Math.max(0, num(u.drops[k], 0));
     if (!Array.isArray(u.seen)) u.seen = []; u.seen = u.seen.filter(x => typeof x === 'string').slice(-40);
+    const dy = o.diary && typeof o.diary === 'object' && !Array.isArray(o.diary) ? o.diary : (o.diary = {});
+    if (!Array.isArray(dy.list)) dy.list = []; dy.list = dy.list.filter(e => e && typeof e === 'object' && typeof e.d === 'string' && Array.isArray(e.lines)).slice(-C().diary.keepDays);
+    if (dy.tr && (typeof dy.tr !== 'object' || typeof dy.tr.day !== 'string')) dy.tr = null; if (dy.tr === undefined) dy.tr = null;
+    if (dy.tr) { const r = dy.tr; for (const k of ['foods', 'care', 'wx']) if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; if (!Array.isArray(r.stages)) r.stages = []; if (!Array.isArray(r.mood) || r.mood.length !== 2) r.mood = [0, 0]; r.n = num(r.n, 0); r.mt = num(r.mt, 0); r.wt = num(r.wt, 0); r.gen = Math.max(1, Math.floor(num(r.gen, s.gen || 1))); }
     return o;
   }
   const SYS = () => P.evo6.branch.systems;
@@ -248,11 +252,77 @@
         water: { fromH: U.water.fromH, toH: U.water.toH }, sleepWinMin: U.sleep.winMin, showSec: U.showSec, lines: U.lines }, shards: wl.total };
   }
 
+  // ── 系統 3：團絨日記（每日 1 篇：範本＋當日事件；進化／化光有特別頁；離線日一句；留 30 日；化光入紀念冊）──
+  const DC = () => C().diary;
+  function dy(s) { return st(s).diary; }
+  function keyDate(k) { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); }
+  function newTr(s, key, nowMs, gen) { return { day: key, gen: gen || s.gen || 1, foods: {}, care: {}, n: 0, stages: [], st0: s.stage, stLast: s.stage, mood: [0, 0], mt: 0, wt: 0, wx: {}, fade: false }; }
+  function fill(str, o) { return str.replace(/\{(\w+)\}/g, (m, k) => (o[k] != null ? o[k] : m)); }
+  function dayWeather(s, key, tr) {
+    const ks = Object.keys(tr && tr.wx || {}); if (ks.length) return ks.sort((a, b) => tr.wx[b] - tr.wx[a])[0];
+    const dn = dayNum(keyDate(key).getTime()), seed = s.seed >>> 0; return rainSpells(seed, weekOf(dn)).some(x => x.dn === dn) ? 'rain' : dayBase(seed, dn);
+  }
+  function buildEntry(s, tr) {
+    const Dc = DC(), r = rngFor(s.seed >>> 0, +tr.day.replace(/-/g, ''), 0xd1 + (tr.gen | 0)), pick = (a) => a[Math.floor(r() * a.length)];
+    const dt = keyDate(tr.day), date = (dt.getMonth() + 1) + ' 月 ' + dt.getDate() + ' 日', lines = [], stickers = [];
+    lines.push(fill(pick(Dc.open), { date }));
+    const wx = dayWeather(s, tr.day, tr); lines.push(pick(Dc.weather[wx] || Dc.weather.clear)); stickers.push(wx === 'rain' ? 'rain' : wx === 'clear' ? 'sun' : null);
+    const fk = Object.keys(tr.foods), nf = fk.reduce((a, k) => a + tr.foods[k], 0), fname = fk.map(k => (D.FOODS.find(f => f.id === k) || { name: k }).name).join('、');
+    if (tr.st0 !== 'egg' || tr.stLast !== 'egg') { lines.push(fill(pick(nf ? (nf > 1 ? Dc.food.many : Dc.food.one) : Dc.food.none), { food: fname, n: nf })); if (nf) stickers.push('food'); }
+    const mv = tr.mood[1] ? tr.mood[0] / tr.mood[1] : null, band = mv == null ? 'ok' : mv > 60 ? 'happy' : mv < 30 ? 'sad' : 'ok'; lines.push(pick(Dc.mood[band]));
+    if (tr.n >= 6) lines.push(pick(Dc.care.many)); else if (tr.n >= 1) lines.push(pick(Dc.care.few)); if (band === 'happy' || tr.n >= 6) stickers.push('heart');
+    for (const sg of tr.stages) lines.push(fill(pick(Dc.evolve), { stage: D.STAGE_NAME[sg] || sg })); if (tr.stages.length) stickers.push('evolve');
+    if (tr.fade) lines.push(pick(Dc.fade)); else lines.push(pick(Dc.close));
+    if (tr.care.lull || tr.care.petSleep) stickers.push('sleep');
+    const kind = tr.fade ? 'fade' : tr.stages.length ? 'evolve' : 'normal';
+    return { d: tr.day, gen: tr.gen, kind, special: kind !== 'normal', lines, stickers: stickers.filter(Boolean), stage: tr.stLast, wx, mood: mv == null ? null : Math.round(mv), care: tr.n };
+  }
+  function pushEntry(s, e) { const L = dy(s).list; L.push(e); L.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : a.gen - b.gen)); while (L.length > DC().keepDays) L.shift(); return e; }
+  function worth(tr) { return tr.fade || tr.stages.length || tr.n > 0 || Object.keys(tr.foods).length || tr.st0 !== 'egg' || tr.stLast !== 'egg'; }
+  /* 日界：舊日 tracker → 寫一篇；中間冇開 app 嘅日（離線日）→ 每日一句（光卵期唔寫） */
+  function diaryTrack(s, nowMs, ev) {
+    const o = dy(s), key = SIM.dayKey(nowMs); let tr = o.tr;
+    if (!tr) { o.tr = newTr(s, key, nowMs); return o.tr; }
+    if (tr.day === key) return tr;
+    if (tr.day > key) { o.tr = newTr(s, key, nowMs); return o.tr; }        // 時鐘倒退：重開
+    if (!tr.done && worth(tr)) { const e = pushEntry(s, buildEntry(s, tr)); if (ev) ev.push({ type: 'sys12', sys: 'diary', what: 'write', d: e.d, kind: e.kind }); }
+    if (s.stage !== 'egg') {
+      const Dc = DC(), d = keyDate(tr.day); let n = 0, wrote = 0;
+      for (d.setDate(d.getDate() + 1); n < Dc.offlineMax; d.setDate(d.getDate() + 1), n++) {
+        const k = SIM.dayKey(d.getTime()); if (k >= key) break;
+        const r = rngFor(s.seed >>> 0, +k.replace(/-/g, ''), 0xd0), dt = keyDate(k);
+        pushEntry(s, { d: k, gen: s.gen || 1, kind: 'offline', special: false, lines: [(dt.getMonth() + 1) + ' 月 ' + dt.getDate() + ' 日。' + Dc.offline[Math.floor(r() * Dc.offline.length)]], stickers: [], stage: s.stage, wx: null, mood: null, care: 0 }); wrote++;
+      }
+      if (wrote && ev) ev.push({ type: 'sys12', sys: 'diary', what: 'offline', n: wrote });
+    }
+    o.tr = newTr(s, key, nowMs); return o.tr;
+  }
+  /* 記事：food（id）／care（kind）／wx（天氣）／mood（取樣）；stage 由 step hook 偵測 */
+  function diaryNote(s, what, val, nowMs) {
+    const tr = diaryTrack(s, nowMs, Array.isArray(s.ev) ? s.ev : null);
+    if (what === 'food') tr.foods[val] = (tr.foods[val] || 0) + 1;
+    else if (what === 'care') { tr.care[val] = (tr.care[val] || 0) + 1; tr.n++; }
+    else if (what === 'wx') { if (nowMs - tr.wt >= 60000 || !tr.wt) { tr.wx[val] = (tr.wx[val] || 0) + 1; tr.wt = nowMs; } }
+    else if (what === 'mood') { tr.mood[0] += +val || 0; tr.mood[1]++; tr.mt = nowMs; }
+    return tr;
+  }
+  function diaryStep(s, nowMs) {
+    const tr = diaryTrack(s, nowMs, Array.isArray(s.ev) ? s.ev : null);
+    if (tr.stLast !== s.stage) { if (s.stage !== 'egg' && SIM.STAGES.indexOf(s.stage) > SIM.STAGES.indexOf(tr.stLast)) tr.stages.push(s.stage); tr.stLast = s.stage; }
+    if (s.stage !== 'egg' && s.needs && nowMs - tr.mt >= DC().moodSampleMin * 60000) diaryNote(s, 'mood', s.needs.mood, nowMs);
+  }
+  function diary(s, nowMs) { const tr = diaryTrack(s, nowMs, null), L = dy(s).list.filter(e => e.gen === (s.gen || 1)); return { list: L.slice(), all: dy(s).list.length, today: worth(tr) || s.stage !== 'egg' ? Object.assign(buildEntry(s, tr), { draft: true }) : null, keepDays: DC().keepDays }; }
+
   // sim 照顧 hook：遊戲時鐘（sim.setNowFn）計日
-  SIM.addCareHook((s, kind) => { const now = SIM.nowMs(), ev = Array.isArray(s.ev) ? s.ev : null; onCare(s, kind, now, ev); bondAdd(s, BC().care, now, 'care', ev); });
+  SIM.addCareHook((s, kind) => { const now = SIM.nowMs(), ev = Array.isArray(s.ev) ? s.ev : null; onCare(s, kind, now, ev); bondAdd(s, BC().care, now, 'care', ev); diaryNote(s, 'care', kind, now); });
+  SIM.addStepHook((s) => { if (s && s.stage) diaryStep(s, SIM.nowMs()); });
   // 化光：紀念冊記低親密度（靜光入面嗰陣＋化光嗰陣）
   SIM.addFadeHook((s, m) => { const b = bondOf(s); m.bond = Math.round(b.v); if (b.elder != null) m.bondElder = b.elder; });
+  // 化光：今日寫特別頁（化光）→ 呢代嘅日記入紀念冊；新一代由空白日記開始
+  SIM.addFadeHook((s, m) => { const now = SIM.nowMs(), o = dy(s), tr = diaryTrack(s, now, null), g = s.gen || 1; tr.fade = true; tr.stLast = s.stage; pushEntry(s, buildEntry(s, tr));
+    m.diary = o.list.filter(e => e.gen === g).map(e => ({ d: e.d, kind: e.kind, special: !!e.special, lines: e.lines.slice(), stickers: e.stickers.slice() })); o.list = o.list.filter(e => e.gen !== g);
+    o.tr = newTr(s, tr.day, now, g + 1); o.tr.st0 = o.tr.stLast = 'egg'; });
 
   return { dayNum, dayStart, weekOf, hash, rngFor, rainSpells, dayBase, weatherAt, simulate, seasonOf, shiverMul, SEASON_NAME, WEATHER_NAME,
-    st, grant, wallet, spend, bondOf, tierOf, bondAdd, bondTick, voiceLines, voicePick, voiceTry, bond, onLongPress, surp, surpSet, dropNext, waterDue, sleepDue, applyOverlay, overlaySys12, questRoute, genQuests, questTick, onCare, payQuests, addRoutePts, quests };
+    st, grant, wallet, spend, bondOf, tierOf, bondAdd, bondTick, voiceLines, voicePick, voiceTry, bond, onLongPress, diaryTrack, diaryNote, diaryStep, diary, buildEntry, surp, surpSet, dropNext, waterDue, sleepDue, applyOverlay, overlaySys12, questRoute, genQuests, questTick, onCare, payQuests, addRoutePts, quests };
 });

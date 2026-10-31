@@ -58,6 +58,7 @@
     const s = G.state, ev = s.ev.splice(0, s.ev.length);
     for (const e of ev) {
       const pd = rd.petDraw, hx = pd && pd.bud ? pd.bud.x : R.CX, hy = pd ? pd.y + 20 : R.GROUND_Y - 40;
+      if (e.type === 'fed' && G.sysFed) G.sysFed(e.food);                 // systems12 日記：記低食咗乜
       if (e.type === 'fed') { const fd = D.FOODS.find(x => x.id === e.food); SND('fed', { kind: fd ? fd.kind : 'snack' }); rd.food = { id: e.food, until: rd.t + 1.1, dur: 1.1 }; rd.act('eat', 1.1); setTimeout(() => rd.burst('heart', R.CX, R.GROUND_Y - 50, 2, 30), 700); }
       else if (e.type === 'played') { SND('played'); rd.ball = { until: rd.t + 1.6, dur: 1.6 }; rd.act('happy', 1.6); rd.burst('heart', R.CX, R.GROUND_Y - 55, 3, 40); }
       else if (e.type === 'rinsed') { SND('rinsed'); rd.wash = { until: rd.t + 1.4, dur: 1.4 }; rd.act('happy', 1.4); rd.burst('spark', R.CX, R.GROUND_Y - 40, 4, 50); }

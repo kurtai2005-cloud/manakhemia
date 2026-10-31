@@ -44,8 +44,11 @@
     }
     // ── 系統 1：每日小委託（面板＝遊美 b1 panel_commission／row／checkbox／icon；星星碎 icon 16／32）──
     const ART = 'art/systems12/', AJ = {}; const uiRoot = document.getElementById('ui');
+    const NINE = {};
     function nine(el, name, sl, k) {                     // 9-slice：canvas → dataURL → CSS border-image（單檔 build 都得：Image.src 會被攔截）
-      k = k || 2; const im = new Image(); im.onload = () => { try { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').drawImage(im, 0, 0);
+      k = k || 2; const ap = (u) => { el.style.borderStyle = 'solid'; el.style.borderWidth = `${sl[0] * k}px ${sl[1] * k}px ${sl[2] * k}px ${sl[3] * k}px`; el.style.borderImage = `url(${u}) ${sl[0]} ${sl[1]} ${sl[2]} ${sl[3]} fill / ${sl[0] * k}px ${sl[1] * k}px ${sl[2] * k}px ${sl[3] * k}px round`; };
+      if (NINE[name]) return ap(NINE[name]);
+      const im = new Image(); im.onload = () => { try { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').drawImage(im, 0, 0); NINE[name] = c.toDataURL();
         el.style.borderStyle = 'solid'; el.style.borderWidth = `${sl[0] * k}px ${sl[1] * k}px ${sl[2] * k}px ${sl[3] * k}px`; el.style.borderImage = `url(${c.toDataURL()}) ${sl[0]} ${sl[1]} ${sl[2]} ${sl[3]} fill / ${sl[0] * k}px ${sl[1] * k}px ${sl[2] * k}px ${sl[3] * k}px round`; } catch (e) { } };
       im.src = ART + name + '.png';
     }
@@ -69,6 +72,11 @@
       .s12bar { height:12px; background:#e9d6ae; border:2px solid #c0783f; border-radius:6px; overflow:hidden; margin:2px 0 8px; } .s12bar i { display:block; height:100%; background:linear-gradient(90deg,#ff9fb5,#ffd36a); }
       .s12line { font-size:12px; margin:0 0 3px; } .s12line.lock { opacity:.45; } .s12tier { font-weight:700; margin:8px 0 3px; font-size:12px; color:#8a4f2a; }
       .s12mem { font-size:12px; padding:3px 0; border-top:1px dashed rgba(74,46,26,.3); }
+      .s12dnav { display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:6px; font-size:12px; } .s12dnav b { cursor:pointer; padding:2px 10px; border-radius:6px; background:#e9d6ae; } .s12dnav b.off { opacity:.3; pointer-events:none; }
+      .s12dsrc { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px; } .s12dsrc i { font-style:normal; font-size:11px; padding:2px 8px; border-radius:8px; background:#e9d6ae; cursor:pointer; } .s12dsrc i.on { background:#c0783f; color:#fff; }
+      .s12page { box-sizing:border-box; min-height:250px; color:#4a2e1a; font-size:13px; line-height:1.55; image-rendering:pixelated; position:relative; }
+      .s12page p { margin:0 0 4px; } .s12page .dt { font-weight:700; margin-bottom:6px; color:#8a4f2a; } .s12page[data-kind="offline"] p { font-style:italic; opacity:.8; }
+      .s12page .stk { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; } .s12page .sp { font-weight:700; color:#c0503f; margin-bottom:4px; }
       .s12x { position:absolute; right:22px; top:16px; cursor:pointer; font:700 18px sans-serif; color:#fff6dc; }
     `; document.head.appendChild(css);
     const chip = document.createElement('div'); chip.id = 's12chip'; chip.className = 'panel'; chip.dataset.testid = 's12-chip';
@@ -78,7 +86,7 @@
     pan.innerHTML = `<div id="s12box" style="position:relative"><h3 data-testid="s12-title">每日小委託</h3><div class="s12tabs" data-testid="s12-tabs"></div><div id="s12body"></div></div><i class="s12x" data-testid="s12-close">✕</i>`;
     if (uiRoot) { uiRoot.appendChild(chip); uiRoot.appendChild(gain); uiRoot.appendChild(pan); }
     nine(pan.querySelector('#s12box'), 'panel_commission_9s', [18, 12, 12, 12]);
-    const S12 = G.s12 = { tab: 'quest', tabs: [['quest', '委託'], ['bond', '親密'], ['surp', '小驚喜']], open: false, log: [] };
+    const S12 = G.s12 = { tab: 'quest', tabs: [['quest', '委託'], ['diary', '日記'], ['bond', '親密'], ['surp', '小驚喜']], dsrc: 'cur', dpage: null, open: false, log: [] };
     const now = () => G.now();
     function shardTxt() { const w = X.wallet(G.state, now()); return w; }
     function renderQuest() {
@@ -133,11 +141,33 @@
     function previewRemind(what) {                       // DEV：主程式預覽提醒泡（真提醒喺懸浮）
       const L = UC.lines[what]; showVoice({ line: L[Math.floor(Math.random() * L.length)], tier: 0, src: 'remind', icon: what === 'water' ? 'icon_remind_water' : 'icon_remind_sleep' }); vb.dataset.kind = what; return { ok: true, what, on: X.surp(G.state).on[what] };
     }
-    const RENDER = { quest: renderQuest, bond: renderBond, surp: renderSurp }; G.s12render = RENDER;
+    // ── 系統 3：團絨日記（遊美 diary_page_9s／diary_page_special_9s＋貼紙）──
+    G.sysFed = (id) => X.diaryNote(G.state, 'food', id, now());
+    function diaryPages() {
+      const s = G.state; if (S12.dsrc === 'cur') { const d = X.diary(s, now()); return d.list.concat(d.today ? [d.today] : []); }
+      const m = (s.memorial || [])[+S12.dsrc]; return m && m.diary ? m.diary.map(e => Object.assign({ gen: m.gen }, e)) : [];
+    }
+    function renderDiary() {
+      const s = G.state, pages = diaryPages(), mems = (s.memorial || []).map((m, i) => ({ m, i })).filter(x => x.m.diary && x.m.diary.length);
+      let i = S12.dpage == null || S12.dpage >= pages.length ? pages.length - 1 : S12.dpage; S12.dcur = i;
+      const src = `<div class="s12dsrc" data-testid="s12-dsrc"><i data-dsrc="cur" class="${S12.dsrc === 'cur' ? 'on' : ''}">今代（第 ${s.gen || 1} 代）</i>${mems.map(x => `<i data-dsrc="${x.i}" data-testid="s12-dsrc-mem" class="${String(S12.dsrc) === String(x.i) ? 'on' : ''}">紀念冊・第 ${x.m.gen} 代${D.FORM_NAME[x.m.form] ? '（' + D.FORM_NAME[x.m.form] + '）' : ''}</i>`).join('')}</div>`;
+      if (!pages.length) return src + `<div class="s12row"><span class="t" data-testid="s12-diary-none">光卵孵咗之後，團絨每日會寫一篇日記。</span></div>`;
+      const e = pages[i], dt = e.d.split('-'), SPN = { evolve: '✦ 特別頁：進化日', fade: '✦ 特別頁：化光日' };
+      return src + `<div class="s12dnav"><b data-dnav="-1" class="${i > 0 ? '' : 'off'}" data-testid="s12-diary-prev">◀</b><span data-testid="s12-diary-pos">${+dt[1]} 月 ${+dt[2]} 日${e.draft ? '（今日・寫緊）' : ''}　${i + 1}／${pages.length}</span><b data-dnav="1" class="${i < pages.length - 1 ? '' : 'off'}" data-testid="s12-diary-next">▶</b></div>` +
+        `<div class="s12page" data-testid="s12-diary-page" data-kind="${e.kind}" data-special="${e.special ? 1 : 0}">${e.special ? `<div class="sp">${SPN[e.kind] || ''}</div>` : ''}${e.lines.map(l => `<p>${l}</p>`).join('')}<div class="stk">${(e.stickers || []).map(k => pimg('sticker_' + k, 32)).join('')}</div></div>` +
+        `<div style="font-size:11px;opacity:.7;margin-top:6px">日記留最近 ${C.diary.keepDays} 日；化光之後成本日記入紀念冊。</div>`;
+    }
+    pan.addEventListener('click', (e) => { const n = e.target.closest('[data-dnav]'), sr = e.target.closest('[data-dsrc]'); if (n) { S12.dpage = Math.max(0, (S12.dcur || 0) + +n.dataset.dnav); draw(); } else if (sr) { S12.dsrc = sr.dataset.dsrc; S12.dpage = null; draw(); } });
+    const RENDER = { quest: renderQuest, diary: renderDiary, bond: renderBond, surp: renderSurp }; G.s12render = RENDER;
     G.s12dev = Object.assign(G.s12dev || {}, {   // DEV 抽屜（devpanel s12:<名>）
       bondUp: () => { const b = X.bondOf(G.state); b.v = Math.min(100, b.v + 10); lastChip = ''; return X.bond(G.state, now()); },
       bondDown: () => { const b = X.bondOf(G.state); b.v = Math.max(0, b.v - 10); return X.bond(G.state, now()); },
       voice: () => G.sysVoice({ force: true, src: 'dev' }),
+      diaryOpen: () => { S12.dsrc = 'cur'; S12.dpage = null; return G.s12open('diary'); },
+      diaryWrite: () => { const tr = X.diaryTrack(G.state, now(), G.state.ev); const e = X.buildEntry(G.state, tr); tr.done = true; G.state.sys12.diary.list.push(e); return e; },
+      diaryEvolve: () => { const tr = X.diaryTrack(G.state, now(), G.state.ev); if (G.state.stage !== 'egg') tr.stages.push(G.state.stage); return X.buildEntry(G.state, tr); },
+      diaryOffline: () => { const tr = X.diaryTrack(G.state, now(), G.state.ev), d = new Date(now()); d.setDate(d.getDate() - 4); tr.day = NS.sim.dayKey(d.getTime()); tr.done = false; return X.diaryTrack(G.state, now(), G.state.ev) && X.diary(G.state, now()).list.length; },
+      diaryFill: () => { const o = G.state.sys12.diary, L = o.list; for (let i = 40; i >= 1; i--) { const d = new Date(now()); d.setDate(d.getDate() - i); const tr = { day: NS.sim.dayKey(d.getTime()), gen: G.state.gen || 1, foods: i % 3 ? { meal: 1 } : {}, care: { feed: 1 }, n: 1 + (i % 7), stages: i === 12 ? ['juvenile'] : [], st0: G.state.stage, stLast: G.state.stage, mood: [60 + i % 30, 1], mt: 0, wt: 0, wx: {}, fade: false }; if (!L.some(e => e.d === tr.day && e.gen === tr.gen)) L.push(X.buildEntry(G.state, tr)); } L.sort((a, b) => (a.d < b.d ? -1 : 1)); while (L.length > C.diary.keepDays) L.shift(); return L.length; },
       drop: () => G.evo.sys12Apply([{ k: 'drop', t: now() }]), drop5: () => G.evo.sys12Apply([0, 1, 2, 3, 4, 5].map(i => ({ k: 'drop', t: now() - i }))),
       water: () => previewRemind('water'), sleep: () => previewRemind('sleep'), surpOpen: () => G.s12open('surp'),
       surpDrop: () => setSurp('drop', !X.surp(G.state).on.drop), surpWater: () => setSurp('water', !X.surp(G.state).on.water), surpSleep: () => setSurp('sleep', !X.surp(G.state).on.sleep), ignore: () => window.__qa.sys12.ignoreDay(), bondOpen: () => G.s12open('bond'),
@@ -148,6 +178,7 @@
       pan.querySelector('h3').textContent = { quest: '每日小委託', diary: '團絨日記', bond: '親密度', surp: '懸浮小驚喜' }[S12.tab] || '';
       body.innerHTML = (RENDER[S12.tab] || renderQuest)(); hyd(body);
       body.querySelectorAll('.s12row').forEach(r => { if (!r.dataset.nine) { r.dataset.nine = 1; nine(r, 'panel_commission_row_9s', [6, 6, 6, 6], 1.5); } });
+      body.querySelectorAll('.s12page').forEach(p => nine(p, p.dataset.special === '1' ? 'diary_page_special_9s' : 'diary_page_9s', [12, 10, 12, 18], 2));
     }
     G.s12open = function (tab) { S12.open = true; if (tab) S12.tab = tab; pan.style.display = 'flex'; draw(); return true; };
     G.s12close = function () { S12.open = false; pan.style.display = 'none'; };
@@ -174,7 +205,7 @@
       (G.sysListeners || []).forEach(fn => { try { fn(e); } catch (er) { } });
     };
     function questTick() { const ev = G.state.ev; X.questTick(G.state, now(), ev); X.bondTick(G.state, now(), ev); }
-    G.sysTick = function (dt) { wx.acc += dt; if (wx.acc >= 1) { wx.acc = 0; G.wxTick(); questTick(); chipTick(); } petTick(dt); };
+    G.sysTick = function (dt) { wx.acc += dt; if (wx.acc >= 1) { wx.acc = 0; G.wxTick(); questTick(); chipTick(); if (G.weather && G.state.stage !== 'egg') X.diaryNote(G.state, 'wx', G.weather, now()); } petTick(dt); };
     questTick(); chipTick();
     G.wxTick(true);
     window.__qa = window.__qa || {};
@@ -187,6 +218,7 @@
       questFill: () => { const q = X.st(G.state).quests; q.list.forEach(x => { let g = 9; while (x.n < x.need && g--) X.onCare(G.state, P.systems12.quests.kinds[x.k].counts[0], G.now(), G.state.ev); }); return X.quests(G.state, G.now()); },
       questReset: () => { const q = X.st(G.state).quests; q.day = ''; return X.questTick(G.state, G.now(), G.state.ev); },
       grant: (n, src) => X.grant(G.state, n, src || 'dev', G.now()),
+      diary: () => X.diary(G.state, G.now()), diaryPage: () => { const p = document.querySelector('[data-testid="s12-diary-page"]'); return p ? { kind: p.dataset.kind, special: p.dataset.special, txt: p.textContent, pos: document.querySelector('[data-testid="s12-diary-pos"]').textContent } : null; },
       surp: () => X.surp(G.state), overlay: () => X.overlaySys12(G.state, G.now()), apply: (items) => G.evo.sys12Apply(items),
       bond: () => X.bond(G.state, G.now()), bondSet: (v) => { X.bondOf(G.state).v = Math.max(0, Math.min(100, v)); return X.bond(G.state, G.now()); }, voice: (o) => G.sysVoice(o || { force: true, src: 'dev' }), lastVoice: () => S12.lastVoice || null, lastTry: () => S12.lastTry || null,
       ignoreDay: () => { const b = X.bondOf(G.state), d = new Date(G.now()); d.setDate(d.getDate() - 2); b.chk = NS.sim.dayKey(d.getTime()); G.state.careDays = (G.state.careDays || []).filter(k => k !== NS.sim.dayKey(G.now() - 86400e3)); return X.bondTick(G.state, G.now(), G.state.ev); }, open: (tab) => G.s12open(tab), close: () => G.s12close(), log: () => S12.log.slice(),

@@ -195,6 +195,35 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); u = await E(() => __qa.sys12.surp());
     ok(!u.on.water && u.on.sleep && u.sleepAt === '23:30' && u.waterH === 1, '重開：設定保留', u);
   }
+  if (want('diary')) {
+    console.log('# ⑦ 系統 3：團絨日記（每日 1 篇、特別頁、離線日、翻 30 日、化光入紀念冊）');
+    await go('?q=high&hour=13&seed=21&ev=0&dev=1'); await dev('dev-stage-sprout'); await closeModals(); await juv(); await E(() => { __glimmer.state.stage = 'sprout'; });
+    await E(() => { __glimmer.state.sys12.diary.tr = null; });   // DEV 跳階段唔當今日進化
+    await E(() => { const S = Glimmer.sim, s = __glimmer.state; s.needs.hunger = 20; S.feed(s, 'meal'); }); await page.waitForTimeout(600);
+    let d = await E(() => __qa.sys12.diary()); ok(d.today && d.today.lines.some(l => l.includes('暖菇飯')), '真餵暖菇飯 → 今日草稿記低（ui fed 事件）', d.today);
+    await dev('dev-s12-diary-open'); await page.waitForTimeout(500);
+    let pg = await E(() => __qa.sys12.diaryPage()); const bi = await E(() => getComputedStyle(document.querySelector('[data-testid="s12-diary-page"]')).borderImageSource.slice(0, 26));
+    ok(pg && /今日・寫緊/.test(pg.pos) && pg.special === '0' && /data:image\/png/.test(bi), '日記面板：今日頁（遊美 diary_page_9s）', { pg, bi });
+    await shot('diary-today');
+    await dev('dev-s12-diary-evolve'); await E(() => __glimmer.s12draw()); await page.waitForTimeout(400); pg = await E(() => __qa.sys12.diaryPage());
+    ok(pg.special === '1' && /進化日/.test(pg.txt), '進化 → 特別頁（diary_page_special）', pg); await shot('diary-evolve');
+    await dev('dev-s12-diary-offline'); await E(() => { __glimmer.s12.dpage = null; __glimmer.s12draw(); }); d = await E(() => __qa.sys12.diary());
+    ok(d.list.filter(x => x.kind === 'offline').length === 3 && d.list.some(x => x.kind === 'evolve'), 'DEV 離線 3 日 → 寫低舊日＋3 句離線', d.list.map(x => x.kind));
+    await E(() => { __glimmer.s12.dpage = __qa.sys12.diary().list.findIndex(x => x.kind === 'offline'); __glimmer.s12draw(); }); pg = await E(() => __qa.sys12.diaryPage()); ok(pg.kind === 'offline', '離線日頁（一句）', pg); await shot('diary-offline');
+    await dev('dev-s12-diary-fill'); await E(() => { __glimmer.s12.dpage = 0; __glimmer.s12draw(); }); d = await E(() => __qa.sys12.diary());
+    ok(d.list.length === 30, '填 40 日 → 只留 30 篇', d.list.length);
+    for (let i = 0; i < 3; i++) { await page.click('[data-testid="s12-diary-next"]'); await page.waitForTimeout(80); }
+    pg = await E(() => __qa.sys12.diaryPage()); ok(/4／31/.test(pg.pos), '撳 ▶ 翻頁（30 篇＋今日）', pg.pos);
+    await page.click('[data-testid="s12-diary-prev"]'); pg = await E(() => __qa.sys12.diaryPage()); ok(/3／31/.test(pg.pos), '撳 ◀ 翻返', pg.pos);
+    await shot('diary-browse'); await E(() => __qa.sys12.close());
+    const fm = await E(() => { const s = __glimmer.state; s.stage = 'elder'; s.fadeReady = true; Glimmer.sim.fade(s); const m = s.memorial[s.memorial.length - 1]; return { n: m.diary.length, last: m.diary[m.diary.length - 1].kind, cur: __qa.sys12.diary().list.length }; });
+    ok(fm.n === 30 && fm.last === 'fade' && fm.cur === 0, '化光 → 化光日特別頁＋日記入紀念冊；今代清空', fm);
+    await page.waitForTimeout(1000); await closeModals();
+    await E(() => { __glimmer.s12.dsrc = 'cur'; __qa.sys12.open('diary'); }); await page.waitForTimeout(300);
+    await page.click('[data-testid="s12-dsrc-mem"]'); await page.waitForTimeout(300); pg = await E(() => __qa.sys12.diaryPage());
+    ok(pg && pg.kind === 'fade' && /化光日/.test(pg.txt), '日記面板揀「紀念冊・第 1 代」→ 翻到化光日', pg); await shot('diary-memorial');
+    await E(() => __qa.sys12.close());
+  }
   ok(!errs.length, '冇 console error', errs.slice(0, 5));
   console.log(`\n結果：${pass} 通過，${fail} 失敗`);
   await browser.close(); process.exit(fail ? 1 : 0);
