@@ -193,7 +193,6 @@ console.log('# 螢火散步（firefly_walk）事件腳本');
   ok([...clips].every(c => !!D.CLIPS[c]), '所有用到嘅 clip 喺 clip 表有定義');
 }
 
-
 console.log('# 生命感第一段（F1 表情 overlay／F2 gaze／A1 邊行邊望／D2 點一下回頭）');
 {
   const Q = BEH.quantGaze, LK = P.look;
@@ -236,8 +235,6 @@ console.log('# 生命感第一段（F1 表情 overlay／F2 gaze／A1 邊行邊�
       if (fa.anchors[f].turn_back[0].faceVisible !== false) bad.push(f + '/turn_back0 faceVisible'); }
     ok(bad.length === 0, '生命感 atlas：全部 ready clip＋turn_back 有 _noface（幀數同錨點一致）、kit 眼 8 款×gaze×l/r、口 8、燈泡 2；turn_back frame0 faceVisible=false', bad.slice(0, 8).join()); }
 }
-console.log(`\n結果：${pass} 通過，${fail} 失敗`);
-process.exit(fail ? 1 : 0);
 
 console.log('# 遊美 daylight.json 時段 hook（lighting.setDaylight／daylightAt）');
 {
@@ -261,3 +258,6 @@ console.log('# 遊美 daylight.json 時段 hook（lighting.setDaylight／dayligh
   ok(L.setDaylight(null) === false && L.compute(9).daylight === null, 'JSON 缺失 → 退返舊 grade（唔爆）');
   L.setDaylight(j);
 }
+
+console.log(`\n結果：${pass} 通過，${fail} 失敗`);
+process.exit(fail ? 1 : 0);

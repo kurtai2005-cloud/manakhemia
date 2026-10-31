@@ -35,7 +35,7 @@
   ✓ gaze D（dir 1）→ 幀內 D 件 eyes_neutral_D_l
   ✓ __qa.pet.gaze() 讀數 {q,ql,src,x,y}
 # A1：邊行邊望（walk 時 gaze 跟方向）
-  ✓ walk 期間 gaze 來源＝walk／cam（68/68）
+  ✓ walk 期間 gaze 來源＝walk／cam（67/68）
   ✓ walk gaze（幀內，向前）＝R／CR
   📷 live-a1-walk
 # D2：點一下回頭（turn_back clip＋咦？音效）
