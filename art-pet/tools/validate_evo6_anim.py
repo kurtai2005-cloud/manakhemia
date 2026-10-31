@@ -107,6 +107,17 @@ def run():
                 if form == "evo_guard_dust" and fe.get("s3") != S3: F(f"{tag} 微塵 s3 clips missing {fe.get('s3')}")
                 if fe.get("branch") in NEW5 and (fe.get("s3") != S3 or len(fe["clips"]) != 41): F(f"{tag} 新支線要全套 41 clip（含 s3）{len(fe['clips'])}")
                 if need != set(fe["clips"]): F(f"{tag} clip list != std23+liveliness(+s3)")
+        # batch G（§7 路線清晰化）：路線預告 tell_<id> 只喺 evo_hop，定義喺 CLIPS.json evo6G.tellClips
+        TC = CL.get("evo6G", {}).get("tellClips", {})
+        tells = [] if egg else list(fe.get("tells", []))
+        if tells and form != "evo_hop": F(f"{tag} tells only on evo_hop")
+        if form == "evo_hop" and TC and set(tells) != set(TC): F(f"{tag} tells != evo6G.tellClips")
+        for c in tells:
+            ent = TC.get(c, {}).get(form)
+            if not ent: F(f"{tag} evo6G.tellClips[{c}].{form} missing"); continue
+            want[c] = ent["frames"]
+            if TC[c].get("anchors", {}).get(form) != FA.get(c): F(f"{tag} tell anchors.{form} != face_anchors {c}")
+            if c in fe["clips"]: F(f"{tag} tell {c} 唔應該入 clips[]")
         if set(want) != set(FA): F(f"{tag} clip set CLIPS vs face_anchors {set(want) ^ set(FA)}")
         for c, nf in want.items():
             if len(FA.get(c, [])) != nf: F(f"{tag} frame count {c} {len(FA.get(c, []))} != {nf}")

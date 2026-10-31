@@ -1,0 +1,126 @@
+{
+ "version": 1,
+ "spec": "§7 圖鑑：未解鎖顯示剪影＋一句提示；解鎖後顯示名＋圖",
+ "silhouetteColor": "#3B2A3E（outline 色；實心，alpha 0/255）",
+ "source": "靜光 48（完全體）idle_01，去走 <25px 嘅 aura／閃點碎粒、填實內洞",
+ "size": 48,
+ "paths": {
+  "tide": {
+   "name": "水珠",
+   "hint": "「朝早 6–9 點照顧，或者成日淋水」",
+   "hidden": false,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_tide_48.png",
+   "unlocked": {
+    "form": "evo_still_tide",
+    "atlas": "atlas_evo_still_tide.png",
+    "clip": "idle"
+   },
+   "pixels": 897
+  },
+  "moon": {
+   "name": "月眠",
+   "hint": "「夜晚 9 點至凌晨 3 點陪佢」",
+   "hidden": false,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_moon_48.png",
+   "unlocked": {
+    "form": "evo_still_moon",
+    "atlas": "atlas_evo_still_moon.png",
+    "clip": "idle"
+   },
+   "pixels": 1104
+  },
+  "shroom": {
+   "name": "菇傘",
+   "hint": "「餵得最多」",
+   "hidden": false,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_shroom_48.png",
+   "unlocked": {
+    "form": "evo_still_shroom",
+    "atlas": "atlas_evo_still_shroom.png",
+    "clip": "idle"
+   },
+   "pixels": 802
+  },
+  "crystal": {
+   "name": "晶角",
+   "hint": "「執得最乾淨」",
+   "hidden": false,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_crystal_48.png",
+   "unlocked": {
+    "form": "evo_still_crystal",
+    "atlas": "atlas_evo_still_crystal.png",
+    "clip": "idle"
+   },
+   "pixels": 821
+  },
+  "ember": {
+   "name": "火苗",
+   "hint": "「玩得最多（包括小遊戲）」",
+   "hidden": false,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_ember_48.png",
+   "unlocked": {
+    "form": "evo_still_ember",
+    "atlas": "atlas_evo_still_ember.png",
+    "clip": "idle"
+   },
+   "pixels": 850
+  },
+  "radiant": {
+   "name": "燦光",
+   "hint": "「樣樣都照顧好」",
+   "hidden": false,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_radiant_48.png",
+   "unlocked": {
+    "form": "evo_still_radiant",
+    "atlas": "atlas_evo_still_radiant.png",
+    "clip": "idle"
+   },
+   "pixels": 1068
+  },
+  "soft": {
+   "name": "柔光",
+   "hint": "「普通照顧」",
+   "hidden": false,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_soft_48.png",
+   "unlocked": {
+    "form": "evo_still_soft",
+    "atlas": "atlas_evo_still_soft.png",
+    "clip": "idle"
+   },
+   "pixels": 880
+  },
+  "dust": {
+   "name": "微塵",
+   "hint": "「好少理佢」",
+   "hidden": false,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_dust_48.png",
+   "unlocked": {
+    "form": "evo_still_dust",
+    "atlas": "atlas_evo_still_dust.png",
+    "clip": "idle"
+   },
+   "pixels": 846
+  },
+  "lumi": {
+   "name": "螢絨",
+   "hint": "隱藏：「？？？」",
+   "hidden": true,
+   "lockedName": "？？？",
+   "silhouette": "route_clarity/silhouette/sil_lumi_48.png",
+   "unlocked": {
+    "form": "evo_still_lumi",
+    "atlas": "atlas_evo_still_lumi.png",
+    "clip": "idle"
+   },
+   "pixels": 914
+  }
+ }
+}

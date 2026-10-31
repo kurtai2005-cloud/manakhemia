@@ -130,3 +130,11 @@
 - 分支動態：火苗閃：頭頂火苗燈／尾尖火／耳尖逐幀高低擺、火星點閃。靜光瞓覺 aura 漸暗同靜光 ×4。
 - 預覽 `sprites/tuanrong/preview/evo6/evo6_batchF5_contact_4x.png`；工具 `tools/build_evo6_animF.py F5`（Pillow/numpy 程式繪製，無 AI）；CLIPS.json 只新增自己 key（forms.<form>、clips[].<form>、anchors.<form>、evo6F.batches.F5）；CLIPS.md EVO6F 段；備份 `_backups/pre_evo6_branches5_anim_20261031/`。
 <!-- EVO6F5-LOG-END -->
+
+<!-- EVO6G-LOG-START -->
+## 2026-11-01 — 團絨 evo6 batch G（§7 路線清晰化）
+- 絨跳燈色 8 路（螢絨唔顯示）：`sprites/tuanrong/evo6/route_clarity/palette_route_bulbs.json`＋`palette_evo_hop_<id>.json` ×8＋`atlas_evo_hop_bulbmask.png`＋`atlas_evo_hop_bulb_<id>.png` ×8；現有 evo_hop 散檔像素冇改。
+- 預告 tell_<id> ×9（絨跳）：56 幀；atlas_evo_hop 重排（1024×1024，540 塊）。
+- 圖鑑剪影 ×9：`route_clarity/silhouette/sil_<id>_48.png`＋`collection_route.json`。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchG_route_clarity_4x.png`；工具 `tools/build_evo6_routeG.py`；驗證 `tools/validate_route_clarity.py`；備份 `_backups/pre_evo6_route_clarity_20261101/`。Pillow/numpy 程式繪製，無 AI。
+{b_}

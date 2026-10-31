@@ -980,7 +980,7 @@
     1024,
     1024
    ],
-   "atlasPieces": 428,
+   "atlasPieces": 540,
    "frames": 171,
    "palette": "../evo6/palette_base.json",
    "faceAnchors": "../evo6/evo_hop/face_anchors_evo_hop.json",
@@ -1172,7 +1172,32 @@
     "getup",
     "sniff_itch"
    ],
-   "note": "絨跳：第一粒著燈（柔光款 bud r2.0，bulb 錨點＝燈芽中心）、尖耳（droop 時垂）、捲尾橙尖（fluff 相位擺）、白肚。"
+   "note": "絨跳：第一粒著燈（柔光款 bud r2.0，bulb 錨點＝燈芽中心）、尖耳（droop 時垂）、捲尾橙尖（fluff 相位擺）、白肚。",
+   "tells": [
+    "tell_tide",
+    "tell_moon",
+    "tell_shroom",
+    "tell_crystal",
+    "tell_ember",
+    "tell_radiant",
+    "tell_soft",
+    "tell_dust",
+    "tell_lumi"
+   ],
+   "routeBulb": {
+    "spec": "route_clarity/palette_route_bulbs.json",
+    "mask": "route_clarity/atlas_evo_hop_bulbmask.png",
+    "atlases": {
+     "tide": "../evo6/route_clarity/atlas_evo_hop_bulb_tide.png",
+     "moon": "../evo6/route_clarity/atlas_evo_hop_bulb_moon.png",
+     "shroom": "../evo6/route_clarity/atlas_evo_hop_bulb_shroom.png",
+     "crystal": "../evo6/route_clarity/atlas_evo_hop_bulb_crystal.png",
+     "ember": "../evo6/route_clarity/atlas_evo_hop_bulb_ember.png",
+     "radiant": "../evo6/route_clarity/atlas_evo_hop_bulb_radiant.png",
+     "soft": "../evo6/route_clarity/atlas_evo_hop_bulb_soft.png",
+     "dust": "../evo6/route_clarity/atlas_evo_hop_bulb_dust.png"
+    }
+   }
   },
   "evo_guard_lumi": {
    "name": "守夜者・螢絨",
@@ -146047,5 +146072,2026 @@
    "evo_still_shroom",
    "evo_still_tide"
   ]
+ },
+ "evo6G": {
+  "tool": "tools/build_evo6_routeG.py",
+  "validator": "tools/validate_route_clarity.py ＋ tools/validate_evo6_anim.py",
+  "spec": "docs-gdd/pet-template-v1.md §7 路線清晰化（Kurt 2026-11-01 01:03）",
+  "note": "tell clip 放喺 evo6G.tellClips（唔入頂層 clips[]，因為只得絨跳一個形態有）；forms.evo_hop.tells 列出；atlas_evo_hop 已包埋",
+  "tellClips": {
+   "tell_tide": {
+    "name": "tell_tide",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "tide",
+    "routeName": "水珠",
+    "frames": 6,
+    "fps": 8,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "甩水：左右擰身甩走頭頂水點（朝早露水／淋水），甩完笑。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "neutral",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "open/smile"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        24
+       ],
+       "eyeR": [
+        26,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        32,
+        16
+       ],
+       "bulb": [
+        22,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "blink/flat"
+       }
+      },
+      {
+       "eyeL": [
+        14,
+        24
+       ],
+       "eyeR": [
+        24,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        30,
+        16
+       ],
+       "bulb": [
+        18,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "blink/flat"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        24
+       ],
+       "eyeR": [
+        26,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        32,
+        16
+       ],
+       "bulb": [
+        22,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "blink/flat"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        23
+       ],
+       "eyeR": [
+        25,
+        23
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        31,
+        15
+       ],
+       "bulb": [
+        20,
+        7
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "happy/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 6,
+     "full": "../evo6/evo_hop/frames/tell_tide_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_tide_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_tide_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_tide_NN_emissive.png",
+     "atlasClip": "tell_tide",
+     "nofaceClip": "tell_tide_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   },
+   "tell_moon": {
+    "name": "tell_moon",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "moon",
+    "routeName": "月眠",
+    "frames": 6,
+    "fps": 6,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "打喊路：伸手打大喊路，頭頂飄 z，點一點頭似瞓唔瞓（月眠）。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "squint",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "half/o"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        24
+       ],
+       "eyeR": [
+        24,
+        24
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        30,
+        15
+       ],
+       "bulb": [
+        20,
+        7
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "sleep/yawn"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        24
+       ],
+       "eyeR": [
+        24,
+        24
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        30,
+        15
+       ],
+       "bulb": [
+        21,
+        6
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "sleep/yawn"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        20,
+        9
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "squint",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "half/o"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        26
+       ],
+       "eyeR": [
+        25,
+        26
+       ],
+       "mouth": [
+        20,
+        30
+       ],
+       "head_r": [
+        31,
+        18
+       ],
+       "bulb": [
+        22,
+        12
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "blink/flat"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        20,
+        9
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "squint",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "half/flat"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 6,
+     "full": "../evo6/evo_hop/frames/tell_moon_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_moon_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_moon_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_moon_NN_emissive.png",
+     "atlasClip": "tell_moon",
+     "nofaceClip": "tell_moon_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   },
+   "tell_shroom": {
+    "name": "tell_shroom",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "shroom",
+    "routeName": "菇傘",
+    "frames": 6,
+    "fps": 8,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "見嘢就話食得：望地下一嘢、撲埋去扮咬落口、咀嚼完滿足 ω。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        29
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "wide/o"
+       }
+      },
+      {
+       "eyeL": [
+        18,
+        25
+       ],
+       "eyeR": [
+        28,
+        25
+       ],
+       "mouth": [
+        22,
+        29
+       ],
+       "head_r": [
+        33,
+        16
+       ],
+       "bulb": [
+        22,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "shine/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        21,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "neutral",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "open/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        20,
+        9
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "happy/flat"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        19,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "happy/flat"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        20,
+        9
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "squint",
+        "src": "happy/cat"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 6,
+     "full": "../evo6/evo_hop/frames/tell_shroom_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_shroom_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_shroom_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_shroom_NN_emissive.png",
+     "atlasClip": "tell_shroom",
+     "nofaceClip": "tell_shroom_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   },
+   "tell_crystal": {
+    "name": "tell_crystal",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "crystal",
+    "routeName": "晶角",
+    "frames": 6,
+    "fps": 8,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "執乾淨：雙手掃身，身上逐粒閃光點，執完挺胸（晶角）。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "neutral",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "open/flat"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        24
+       ],
+       "eyeR": [
+        26,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        32,
+        16
+       ],
+       "bulb": [
+        21,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "blink/flat"
+       }
+      },
+      {
+       "eyeL": [
+        14,
+        24
+       ],
+       "eyeR": [
+        24,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        30,
+        16
+       ],
+       "bulb": [
+        19,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "blink/flat"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        24
+       ],
+       "eyeR": [
+        26,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        32,
+        16
+       ],
+       "bulb": [
+        21,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "neutral",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "open/smile"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "shine/smile"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 6,
+     "full": "../evo6/evo_hop/frames/tell_crystal_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_crystal_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_crystal_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_crystal_NN_emissive.png",
+     "atlasClip": "tell_crystal",
+     "nofaceClip": "tell_crystal_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   },
+   "tell_ember": {
+    "name": "tell_ember",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "ember",
+    "routeName": "火苗",
+    "frames": 8,
+    "fps": 10,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "原地跳：連跳兩下（壓扁→彈起），好興奮（火苗）。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        26
+       ],
+       "eyeR": [
+        25,
+        26
+       ],
+       "mouth": [
+        20,
+        29
+       ],
+       "head_r": [
+        32,
+        19
+       ],
+       "bulb": [
+        20,
+        12
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "shine/open"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        22
+       ],
+       "eyeR": [
+        24,
+        22
+       ],
+       "mouth": [
+        20,
+        25
+       ],
+       "head_r": [
+        30,
+        13
+       ],
+       "bulb": [
+        20,
+        5
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "shine/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        21
+       ],
+       "eyeR": [
+        25,
+        21
+       ],
+       "mouth": [
+        20,
+        25
+       ],
+       "head_r": [
+        31,
+        13
+       ],
+       "bulb": [
+        21,
+        5
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "happy/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        26
+       ],
+       "eyeR": [
+        25,
+        26
+       ],
+       "mouth": [
+        20,
+        30
+       ],
+       "head_r": [
+        32,
+        20
+       ],
+       "bulb": [
+        20,
+        12
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        22
+       ],
+       "eyeR": [
+        24,
+        22
+       ],
+       "mouth": [
+        20,
+        25
+       ],
+       "head_r": [
+        30,
+        13
+       ],
+       "bulb": [
+        20,
+        5
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "shine/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        21
+       ],
+       "eyeR": [
+        25,
+        21
+       ],
+       "mouth": [
+        20,
+        25
+       ],
+       "head_r": [
+        31,
+        13
+       ],
+       "bulb": [
+        19,
+        5
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "happy/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        26
+       ],
+       "eyeR": [
+        25,
+        26
+       ],
+       "mouth": [
+        20,
+        30
+       ],
+       "head_r": [
+        32,
+        20
+       ],
+       "bulb": [
+        20,
+        12
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 8,
+     "full": "../evo6/evo_hop/frames/tell_ember_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_ember_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_ember_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_ember_NN_emissive.png",
+     "atlasClip": "tell_ember",
+     "nofaceClip": "tell_ember_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   },
+   "tell_radiant": {
+    "name": "tell_radiant",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "radiant",
+    "routeName": "燦光",
+    "frames": 6,
+    "fps": 6,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "曬太陽伸懶腰：雙手舉高，四圍閃太陽光點（燦光：樣樣都好）。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "neutral",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "open/smile"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        30,
+        15
+       ],
+       "bulb": [
+        20,
+        7
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "shine/open"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        23
+       ],
+       "eyeR": [
+        24,
+        23
+       ],
+       "mouth": [
+        20,
+        26
+       ],
+       "head_r": [
+        30,
+        14
+       ],
+       "bulb": [
+        20,
+        6
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "shine/open"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        23
+       ],
+       "eyeR": [
+        24,
+        23
+       ],
+       "mouth": [
+        20,
+        26
+       ],
+       "head_r": [
+        30,
+        14
+       ],
+       "bulb": [
+        20,
+        6
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "happy/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 6,
+     "full": "../evo6/evo_hop/frames/tell_radiant_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_radiant_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_radiant_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_radiant_NN_emissive.png",
+     "atlasClip": "tell_radiant",
+     "nofaceClip": "tell_radiant_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   },
+   "tell_soft": {
+    "name": "tell_soft",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "soft",
+    "routeName": "柔光",
+    "frames": 6,
+    "fps": 6,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "軟綿綿：左右挨身、合眼笑 ω、飄細心心（柔光）。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "neutral",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "open/smile"
+       }
+      },
+      {
+       "eyeL": [
+        14,
+        25
+       ],
+       "eyeR": [
+        24,
+        25
+       ],
+       "mouth": [
+        18,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        20,
+        9
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "squint",
+        "src": "happy/cat"
+       }
+      },
+      {
+       "eyeL": [
+        18,
+        25
+       ],
+       "eyeR": [
+        28,
+        25
+       ],
+       "mouth": [
+        22,
+        28
+       ],
+       "head_r": [
+        33,
+        17
+       ],
+       "bulb": [
+        22,
+        9
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "squint",
+        "src": "happy/cat"
+       }
+      },
+      {
+       "eyeL": [
+        14,
+        25
+       ],
+       "eyeR": [
+        24,
+        25
+       ],
+       "mouth": [
+        18,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        20,
+        9
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "squint",
+        "src": "happy/cat"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        20,
+        9
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "blink/smile"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 6,
+     "full": "../evo6/evo_hop/frames/tell_soft_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_soft_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_soft_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_soft_NN_emissive.png",
+     "atlasClip": "tell_soft",
+     "nofaceClip": "tell_soft_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   },
+   "tell_dust": {
+    "name": "tell_dust",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "dust",
+    "routeName": "微塵",
+    "frames": 6,
+    "fps": 6,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "冇人理：嘆氣垂耳、打乞嗤噴啲塵（微塵）。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        22,
+        11
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "squint",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "half/flat"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        23
+       ],
+       "eyeR": [
+        25,
+        23
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "squint",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "half/o"
+       }
+      },
+      {
+       "eyeL": [
+        16,
+        23
+       ],
+       "eyeR": [
+        24,
+        23
+       ],
+       "mouth": [
+        20,
+        26
+       ],
+       "head_r": [
+        30,
+        15
+       ],
+       "bulb": [
+        20,
+        7
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "blink/o"
+       }
+      },
+      {
+       "eyeL": [
+        17,
+        26
+       ],
+       "eyeR": [
+        27,
+        26
+       ],
+       "mouth": [
+        22,
+        29
+       ],
+       "head_r": [
+        34,
+        18
+       ],
+       "bulb": [
+        22,
+        11
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "sleepy",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "blink/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        22,
+        11
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "squint",
+        "gaze": "C",
+        "mouth": "sleepy",
+        "src": "half/flat"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        25
+       ],
+       "eyeR": [
+        25,
+        25
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        17
+       ],
+       "bulb": [
+        22,
+        11
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "squint",
+        "gaze": "C",
+        "mouth": "sad",
+        "src": "half/frown"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 6,
+     "full": "../evo6/evo_hop/frames/tell_dust_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_dust_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_dust_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_dust_NN_emissive.png",
+     "atlasClip": "tell_dust",
+     "nofaceClip": "tell_dust_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   },
+   "tell_lumi": {
+    "name": "tell_lumi",
+    "status": "已交付（evo6 batch G 路線清晰化）",
+    "category": "路線預告",
+    "route": "lumi",
+    "routeName": "螢絨",
+    "frames": 6,
+    "fps": 6,
+    "loop": false,
+    "priority": 3,
+    "interruptible": true,
+    "trigger": "跳跳期：判定前 12h 內播一次「而家領先路線」嘅預告（§7）；螢絨（隱藏）領先時都照播 tell_lumi，但 UI 唔講路線",
+    "cooldown_s": 0,
+    "next": "idle",
+    "notes": "（隱藏）燈泡一閃一閃、望上面，有粒細螢火飛過（螢絨；UI 唔顯示路線）。",
+    "forms": [
+     "evo_hop"
+    ],
+    "anchors": {
+     "evo_hop": [
+      {
+       "eyeL": [
+        15,
+        23
+       ],
+       "eyeR": [
+        25,
+        23
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "neutral",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "open/smile"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        23
+       ],
+       "eyeR": [
+        25,
+        23
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "shine/o"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        23
+       ],
+       "eyeR": [
+        25,
+        23
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "neutral",
+        "gaze": "C",
+        "mouth": "surprised",
+        "src": "open/o"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        23
+       ],
+       "eyeR": [
+        25,
+        23
+       ],
+       "mouth": [
+        20,
+        27
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "surprised",
+        "gaze": "C",
+        "mouth": "happy",
+        "src": "shine/open"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      },
+      {
+       "eyeL": [
+        15,
+        24
+       ],
+       "eyeR": [
+        25,
+        24
+       ],
+       "mouth": [
+        20,
+        28
+       ],
+       "head_r": [
+        31,
+        16
+       ],
+       "bulb": [
+        20,
+        8
+       ],
+       "faceVisible": true,
+       "face": {
+        "eyes": "happy",
+        "gaze": "C",
+        "mouth": "neutral",
+        "src": "happy/smile"
+       }
+      }
+     ]
+    },
+    "evo_hop": {
+     "frames": 6,
+     "full": "../evo6/evo_hop/frames/tell_lumi_NN.png",
+     "noface": "../evo6/evo_hop/layers/tell_lumi_NN_noface.png",
+     "faceov": "../evo6/evo_hop/layers/tell_lumi_NN_faceov.png",
+     "emissive": "../evo6/evo_hop/emissive/tell_lumi_NN_emissive.png",
+     "atlasClip": "tell_lumi",
+     "nofaceClip": "tell_lumi_noface",
+     "atlas": "../evo6/atlas_evo_hop.json"
+    }
+   }
+  },
+  "routeBulb": "../evo6/route_clarity/palette_route_bulbs.json",
+  "collection": "../evo6/route_clarity/collection_route.json",
+  "bulbFramesWithLamp": "450/454",
+  "paths": {
+   "tide": {
+    "name": "水珠",
+    "hint": "「朝早 6–9 點照顧，或者成日淋水」",
+    "colorName": "水藍",
+    "ramp": {
+     "glow": "#2FA0DC",
+     "glow_mid": "#6CD8F4",
+     "glow_core": "#D8F8FF"
+    }
+   },
+   "moon": {
+    "name": "月眠",
+    "hint": "「夜晚 9 點至凌晨 3 點陪佢」",
+    "colorName": "夜藍紫",
+    "ramp": {
+     "glow": "#5562E0",
+     "glow_mid": "#8D98FF",
+     "glow_core": "#DDE1FF"
+    }
+   },
+   "shroom": {
+    "name": "菇傘",
+    "hint": "「餵得最多」",
+    "colorName": "草綠",
+    "ramp": {
+     "glow": "#46B536",
+     "glow_mid": "#8AE466",
+     "glow_core": "#DDFBC8"
+    }
+   },
+   "crystal": {
+    "name": "晶角",
+    "hint": "「執得最乾淨」",
+    "colorName": "晶紫",
+    "ramp": {
+     "glow": "#A24CDC",
+     "glow_mid": "#CD88FF",
+     "glow_core": "#F2DEFF"
+    }
+   },
+   "ember": {
+    "name": "火苗",
+    "hint": "「玩得最多（包括小遊戲）」",
+    "colorName": "火紅",
+    "ramp": {
+     "glow": "#E2402C",
+     "glow_mid": "#FF7A4A",
+     "glow_core": "#FFD2BC"
+    }
+   },
+   "radiant": {
+    "name": "燦光",
+    "hint": "「樣樣都照顧好」",
+    "colorName": "金橙",
+    "ramp": {
+     "glow": "#EE8A14",
+     "glow_mid": "#FFB443",
+     "glow_core": "#FFE6B4"
+    }
+   },
+   "soft": {
+    "name": "柔光",
+    "hint": "「普通照顧」",
+    "colorName": "粉紅",
+    "ramp": {
+     "glow": "#EC5A9A",
+     "glow_mid": "#FF9AC4",
+     "glow_core": "#FFE2EF"
+    }
+   },
+   "dust": {
+    "name": "微塵",
+    "hint": "「好少理佢」",
+    "colorName": "塵灰",
+    "ramp": {
+     "glow": "#8C8682",
+     "glow_mid": "#BAB4AD",
+     "glow_core": "#ECE8E2"
+    }
+   },
+   "lumi": {
+    "name": "螢絨",
+    "hint": "隱藏：「？？？」",
+    "colorName": "唔顯示（保持原燈黃）",
+    "ramp": null
+   }
+  },
+  "preview": "../preview/evo6/evo6_batchG_route_clarity_4x.png"
  }
 }

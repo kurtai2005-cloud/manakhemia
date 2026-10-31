@@ -1,0 +1,134 @@
+{
+ "version": 1,
+ "form": "evo_hop",
+ "spec": "docs-gdd/pet-template-v1.md §7 路線清晰化（跳跳期頭頂燈泡慢慢轉做而家領先路線嘅顏色；螢絨唔顯示）",
+ "slots": [
+  "glow",
+  "glow_mid",
+  "glow_core"
+ ],
+ "base": {
+  "glow": "#FFD45E",
+  "glow_mid": "#FFE98A",
+  "glow_core": "#FFFBD0"
+ },
+ "baseNote": "原燈黃＝未有領先路線／螢絨（隱藏）",
+ "mask": "route_clarity/atlas_evo_hop_bulbmask.png（同 atlas_evo_hop.png layout；R＝glow、G＝glow_mid、B＝glow_core；alpha 255＝燈像素；連 extrude）",
+ "tint": "每個燈像素：color = lerp(base[slot], path[slot], t)；t＝領先程度 0→1（遊戲決定，建議跳跳期期內按領先分數慢慢升，判定時＝1）；唔改 alpha；emissive 遮罩照用 atlas_evo_hop_emissive.png（燈 glow_mid/glow_core 位置唔變）",
+ "noShader": "冇 shader：t≥0.5 時直接換 route_clarity/atlas_evo_hop_bulb_<id>.png（同 layout，只燈像素唔同）",
+ "paths": {
+  "tide": {
+   "name": "水珠",
+   "hint": "「朝早 6–9 點照顧，或者成日淋水」",
+   "colorName": "水藍",
+   "hidden": false,
+   "ramp": {
+    "glow": "#2FA0DC",
+    "glow_mid": "#6CD8F4",
+    "glow_core": "#D8F8FF"
+   },
+   "atlas": "route_clarity/atlas_evo_hop_bulb_tide.png",
+   "palette": "route_clarity/palette_evo_hop_tide.json"
+  },
+  "moon": {
+   "name": "月眠",
+   "hint": "「夜晚 9 點至凌晨 3 點陪佢」",
+   "colorName": "夜藍紫",
+   "hidden": false,
+   "ramp": {
+    "glow": "#5562E0",
+    "glow_mid": "#8D98FF",
+    "glow_core": "#DDE1FF"
+   },
+   "atlas": "route_clarity/atlas_evo_hop_bulb_moon.png",
+   "palette": "route_clarity/palette_evo_hop_moon.json"
+  },
+  "shroom": {
+   "name": "菇傘",
+   "hint": "「餵得最多」",
+   "colorName": "草綠",
+   "hidden": false,
+   "ramp": {
+    "glow": "#46B536",
+    "glow_mid": "#8AE466",
+    "glow_core": "#DDFBC8"
+   },
+   "atlas": "route_clarity/atlas_evo_hop_bulb_shroom.png",
+   "palette": "route_clarity/palette_evo_hop_shroom.json"
+  },
+  "crystal": {
+   "name": "晶角",
+   "hint": "「執得最乾淨」",
+   "colorName": "晶紫",
+   "hidden": false,
+   "ramp": {
+    "glow": "#A24CDC",
+    "glow_mid": "#CD88FF",
+    "glow_core": "#F2DEFF"
+   },
+   "atlas": "route_clarity/atlas_evo_hop_bulb_crystal.png",
+   "palette": "route_clarity/palette_evo_hop_crystal.json"
+  },
+  "ember": {
+   "name": "火苗",
+   "hint": "「玩得最多（包括小遊戲）」",
+   "colorName": "火紅",
+   "hidden": false,
+   "ramp": {
+    "glow": "#E2402C",
+    "glow_mid": "#FF7A4A",
+    "glow_core": "#FFD2BC"
+   },
+   "atlas": "route_clarity/atlas_evo_hop_bulb_ember.png",
+   "palette": "route_clarity/palette_evo_hop_ember.json"
+  },
+  "radiant": {
+   "name": "燦光",
+   "hint": "「樣樣都照顧好」",
+   "colorName": "金橙",
+   "hidden": false,
+   "ramp": {
+    "glow": "#EE8A14",
+    "glow_mid": "#FFB443",
+    "glow_core": "#FFE6B4"
+   },
+   "atlas": "route_clarity/atlas_evo_hop_bulb_radiant.png",
+   "palette": "route_clarity/palette_evo_hop_radiant.json"
+  },
+  "soft": {
+   "name": "柔光",
+   "hint": "「普通照顧」",
+   "colorName": "粉紅",
+   "hidden": false,
+   "ramp": {
+    "glow": "#EC5A9A",
+    "glow_mid": "#FF9AC4",
+    "glow_core": "#FFE2EF"
+   },
+   "atlas": "route_clarity/atlas_evo_hop_bulb_soft.png",
+   "palette": "route_clarity/palette_evo_hop_soft.json"
+  },
+  "dust": {
+   "name": "微塵",
+   "hint": "「好少理佢」",
+   "colorName": "塵灰",
+   "hidden": false,
+   "ramp": {
+    "glow": "#8C8682",
+    "glow_mid": "#BAB4AD",
+    "glow_core": "#ECE8E2"
+   },
+   "atlas": "route_clarity/atlas_evo_hop_bulb_dust.png",
+   "palette": "route_clarity/palette_evo_hop_dust.json"
+  },
+  "lumi": {
+   "name": "螢絨",
+   "hint": "隱藏：「？？？」",
+   "colorName": "唔顯示（保持原燈黃）",
+   "hidden": true,
+   "ramp": null,
+   "atlas": null,
+   "palette": null
+  }
+ }
+}
