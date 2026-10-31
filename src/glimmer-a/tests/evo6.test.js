@@ -124,7 +124,7 @@ console.log('# DEV 跳階段（資料層：evo 形態對應＋美術檔）');
   for (const k of D.EVO_FORMS) {
     const j = JSON.parse(fs.readFileSync(path.join(dir, 'atlas_' + k + '.json'), 'utf8')), fa = JSON.parse(fs.readFileSync(path.join(dir, 'face_anchors_' + k + '.json'), 'utf8'));
     const an = j.animations, n = Object.keys(an).filter(c => !c.endsWith('_noface')).length;
-    const want = k === 'evo_egg' ? 5 : (k === 'evo_guard_dust' || k.startsWith('evo_still_')) ? 41 : 39;
+    const want = k === 'evo_egg' ? 5 : (k === 'evo_guard_dust' || k.startsWith('evo_still_') || D.BRANCH5.some(b => k === 'evo_guard_' + b)) ? 41 : 39;
     ok(fs.existsSync(path.join(dir, 'atlas_' + k + '.png')) && j.meta.frameSize === D.FORMS[k].frameSize && n === want && fa.anchors, `${k}：atlas＋anchors，${n} clip（要 ${want}）`, n);
     if (k !== 'evo_egg') ok(Object.keys(an).filter(c => !c.endsWith('_noface')).every(c => an[c + '_noface']) && D.CLIPS.idle && an.idle_noface, `${k}：每 clip 有 noface（kit 五官）`);
   }

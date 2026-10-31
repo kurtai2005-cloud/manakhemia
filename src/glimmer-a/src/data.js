@@ -38,7 +38,9 @@
     // evo6：螢絨（隱藏）＝芽崽或跳跳期見過 firefly_walk、分支判定時 CQ ≥55、夜晚照顧 ≥40%（晚 17:00–07:00 本機時間＝lighting 嘅「晚＋夜」）
     evo6: { lumiCQ: 55, lumiNightShare: 0.4, lumiEvent: 'firefly_walk', lumiEvStages: ['sprout', 'juvenile'], careStages: ['sprout', 'juvenile'], nightFrom: 17, nightTo: 7,
       kitOnLiveClips: true,   // 遊美：evo 形態 std23 clip 用原幀（臉已畫好）；五官 kit 只用喺生命感 clip（s1/s2）
-      migrateAdultKeepSec: 24 * 3600 },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
+      migrateAdultKeepSec: 24 * 3600,
+      // §7 新支線 ×5（pet-template-v1 §7）：統計範圍＝careStages；分數＝佔總照顧次數 %
+      b5CQ: 55, b5TopShare: 0.35, b5Gap: 0.05, b5CrystalCleanAvg: 70, b5MoonFrom: 21, b5MoonTo: 3 },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
     overlayDpPerPx: 1.625,          // evo6 浮動 overlay：sizeDp＝frameSize×1.625（芽崽 32px＝舊 52dp）
     eggTapBoostSec: 75,           // 光卵每點一下 +75s（8 下 = 10 分鐘）
     startNeedsSprout: { hunger: 70, mood: 70, clean: 90, energy: 100 },
@@ -355,9 +357,22 @@
     evo_still_radiant: { atlas: 'atlas_evo_still_radiant', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
     evo_still_soft: { atlas: 'atlas_evo_still_soft', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -24], pot: [29, 0], sun: [0, 0], bulb: true },
     evo_still_dust: { atlas: 'atlas_evo_still_dust', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
+    // §7 新支線 ×5（遊美 art/glimmer-evo6-anim @ 36637b5，batch F1–F5，evo6F）：守夜者 44／靜光 48；數值抄自 motion/CLIPS.json forms
+    evo_guard_tide: { atlas: 'atlas_evo_guard_tide', evo: true, frameSize: 44, pivot: [22, 41], headR: [13, -21], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_still_tide: { atlas: 'atlas_evo_still_tide', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
+    evo_guard_shroom: { atlas: 'atlas_evo_guard_shroom', evo: true, frameSize: 44, pivot: [22, 41], headR: [13, -21], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_still_shroom: { atlas: 'atlas_evo_still_shroom', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
+    evo_guard_crystal: { atlas: 'atlas_evo_guard_crystal', evo: true, frameSize: 44, pivot: [22, 41], headR: [13, -21], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_still_crystal: { atlas: 'atlas_evo_still_crystal', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
+    evo_guard_moon: { atlas: 'atlas_evo_guard_moon', evo: true, frameSize: 44, pivot: [22, 41], headR: [13, -21], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_still_moon: { atlas: 'atlas_evo_still_moon', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
+    evo_guard_ember: { atlas: 'atlas_evo_guard_ember', evo: true, frameSize: 44, pivot: [22, 41], headR: [13, -21], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_still_ember: { atlas: 'atlas_evo_still_ember', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
   };
   // evo6：(stage, form) → evo 形態 key；分支 id：bright＝燦光（atlas 叫 radiant）
-  const EVO_BRANCH = { bright: 'radiant', soft: 'soft', dust: 'dust', lumi: 'lumi' };
+  const EVO_BRANCH = { bright: 'radiant', soft: 'soft', dust: 'dust', lumi: 'lumi', tide: 'tide', shroom: 'shroom', crystal: 'crystal', moon: 'moon', ember: 'ember' };
+  const BRANCH5 = ['tide', 'shroom', 'crystal', 'moon', 'ember'];   // §7 新支線（判定次序：螢絨 → 呢 5 條 → 燦光／柔光／微塵）
+  const BRANCHES = ['lumi'].concat(BRANCH5, ['bright', 'soft', 'dust']);   // 全部 9 條（DEV 強制支線用，次序＝判定次序）
   const EVO_STAGE_FORM = { egg: 'evo_egg', newborn: 'evo_dot', sprout: 'evo_sprout', juvenile: 'evo_hop' };
   function evoForm(stage, form) {
     if (EVO_STAGE_FORM[stage]) return EVO_STAGE_FORM[stage];
@@ -464,14 +479,19 @@
   };
 
   const STAGE_NAME = { egg: '光卵', newborn: '絨點', sprout: '芽崽', juvenile: '跳跳期', adult: '守夜者', elder: '靜光' };   // evo6 六階段（pet-template-v1 §6）
-  const FORM_NAME = { bright: '燦光', soft: '柔光', dust: '微塵', lumi: '螢絨' };
+  const FORM_NAME = { bright: '燦光', soft: '柔光', dust: '微塵', lumi: '螢絨', tide: '水珠', shroom: '菇傘', crystal: '晶角', moon: '月眠', ember: '火苗' };
   /* 進化表（開發模式「進化」用；條件以 sim.decideForm 為準）。螢絨＝隱藏形態（docs-gdd/pet-template-v1.md）：
      芽崽期見過螢火散步、CQ ≥55、夜晚照顧 ≥40%。自動條件未實裝（只可經開發模式設定）；未有專屬美術 → 借柔光 atlas＋螢綠 tint。 */
   const EVOLUTION = [
     { form: 'bright', name: '燦光', from: 'sprout', cond: 'CQ ≥ branchBright', atlas: 'radiant' },
     { form: 'soft', name: '柔光', from: 'sprout', cond: 'CQ ≥ branchSoft', atlas: 'soft' },
     { form: 'dust', name: '微塵', from: 'sprout', cond: '其餘', atlas: null },
-    { form: 'lumi', name: '螢絨', from: 'sprout', hidden: true, cond: '芽崽期 firefly_walk、CQ ≥55、夜晚照顧 ≥40%（未自動）', atlas: 'soft', tint: 'lumi' },
+    { form: 'lumi', name: '螢絨', from: 'sprout', hidden: true, cond: '芽崽期 firefly_walk、CQ ≥55、夜晚照顧 ≥40%（未自動）', atlas: 'soft', tint: 'lumi' },    // §7 新支線 ×5：CQ ≥55、最高分 ≥35%、同第二名差 ≥5 個百分點（sim.branch5Check）
+    { form: 'tide', name: '水珠', from: 'juvenile', b5: true, cond: 'rinse＋落雨時嘅照顧（落雨 rinse 只計一次）' },
+    { form: 'shroom', name: '菇傘', from: 'juvenile', b5: true, cond: 'feed' },
+    { form: 'crystal', name: '晶角', from: 'juvenile', b5: true, cond: 'clearPoop（清潔度平均 ≥70 先計）' },
+    { form: 'moon', name: '月眠', from: 'juvenile', b5: true, cond: '21:00–03:00 照顧＋瞓覺時撫摸' },
+    { form: 'ember', name: '火苗', from: 'juvenile', b5: true, cond: 'play＋mg' },
   ];
   const SPROUT_SUB = '絨芽';
   const NEED_KEYS = ['hunger', 'mood', 'clean', 'energy'];
@@ -492,5 +512,5 @@
     sick: ['#f0f0d0', '#d8e0b0', '#b8c890', '#98a870', '#788850', '#586838'],
   };
 
-  return { EVO_BRANCH, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
+  return { EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
 });
