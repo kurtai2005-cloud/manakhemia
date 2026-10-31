@@ -1,0 +1,177 @@
+{
+ "palette": "crystal",
+ "count": 31,
+ "swapped": {
+  "egg_dark": "quartz0",
+  "peach0": "quartz1",
+  "peach1": "quartz2",
+  "peach2": "quartz3",
+  "egg_shade": "shard",
+  "cyan": "prism",
+  "glow": "prism_g",
+  "glow_mid": "prism_gm",
+  "glow_core": "prism_gc"
+ },
+ "emissive": [
+  "cyan",
+  "glow_core",
+  "glow_mid"
+ ],
+ "colors": [
+  {
+   "index": 1,
+   "name": "outline",
+   "hex": "#3B2A3E"
+  },
+  {
+   "index": 2,
+   "name": "cream0",
+   "hex": "#D69A66"
+  },
+  {
+   "index": 3,
+   "name": "cream1",
+   "hex": "#E9BE84"
+  },
+  {
+   "index": 4,
+   "name": "cream2",
+   "hex": "#F6DDB0"
+  },
+  {
+   "index": 5,
+   "name": "cream3",
+   "hex": "#FFEFC4"
+  },
+  {
+   "index": 6,
+   "name": "cream4",
+   "hex": "#FFF8E0"
+  },
+  {
+   "index": 7,
+   "name": "quartz1",
+   "hex": "#CF9BB8"
+  },
+  {
+   "index": 8,
+   "name": "quartz2",
+   "hex": "#EABFD2"
+  },
+  {
+   "index": 9,
+   "name": "quartz3",
+   "hex": "#FAE2EC"
+  },
+  {
+   "index": 10,
+   "name": "orange",
+   "hex": "#F2A65A"
+  },
+  {
+   "index": 11,
+   "name": "orange_d",
+   "hex": "#E07F45"
+  },
+  {
+   "index": 12,
+   "name": "orange_dd",
+   "hex": "#B8643F"
+  },
+  {
+   "index": 13,
+   "name": "prism_gc",
+   "hex": "#FFF6FF"
+  },
+  {
+   "index": 14,
+   "name": "prism_gm",
+   "hex": "#F0D4FF"
+  },
+  {
+   "index": 15,
+   "name": "prism_g",
+   "hex": "#D8A8FF"
+  },
+  {
+   "index": 16,
+   "name": "glow_warm",
+   "hex": "#FF8A3D"
+  },
+  {
+   "index": 17,
+   "name": "shard",
+   "hex": "#9688DE"
+  },
+  {
+   "index": 18,
+   "name": "quartz0",
+   "hex": "#B07A9C"
+  },
+  {
+   "index": 19,
+   "name": "blush",
+   "hex": "#F28B9B"
+  },
+  {
+   "index": 20,
+   "name": "blush_d",
+   "hex": "#D9667A"
+  },
+  {
+   "index": 21,
+   "name": "berry",
+   "hex": "#E5584D"
+  },
+  {
+   "index": 22,
+   "name": "berry_d",
+   "hex": "#A33F4A"
+  },
+  {
+   "index": 23,
+   "name": "leaf",
+   "hex": "#6BBF6A"
+  },
+  {
+   "index": 24,
+   "name": "leaf_d",
+   "hex": "#3A7D4E"
+  },
+  {
+   "index": 25,
+   "name": "zzz",
+   "hex": "#8F85C2"
+  },
+  {
+   "index": 26,
+   "name": "white",
+   "hex": "#F3EEFA"
+  },
+  {
+   "index": 27,
+   "name": "prism",
+   "hex": "#C6F2FF"
+  },
+  {
+   "index": 28,
+   "name": "drop",
+   "hex": "#7FC4E8"
+  },
+  {
+   "index": 29,
+   "name": "drop_d",
+   "hex": "#4FA3D9"
+  },
+  {
+   "index": 30,
+   "name": "sick0",
+   "hex": "#A3B08C"
+  },
+  {
+   "index": 31,
+   "name": "sick1",
+   "hex": "#C9D6B0"
+  }
+ ]
+}

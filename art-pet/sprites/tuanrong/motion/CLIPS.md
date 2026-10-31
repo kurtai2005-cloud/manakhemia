@@ -225,6 +225,20 @@
 - 只改 fall_asleep／sleep_loop／wake（wake_04＝原樣）；其餘 clip 同形態不變。預覽 `../preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png`。
 <!-- EVO6E-END -->
 
+<!-- EVO6F-START -->
+## 進化 6 階 batch F — 新支線 ×5（水珠／菇傘／晶角／月眠／火苗）
+- 外觀＝`../evo6_concept/branches5/`（v3 lumi feel，逐幀 pose-aware 重畫）；姿勢＝現有同名 clip；4×5 L 級 kit；picked_up pivot＝grab；bulb＝燈中心。
+- 每形態全套 41 clip／180 幀：std23＋生命感 s1/s2（含 picked_up）＋s3 nuzzle_purr／reunion_happy；frames／layers（_noface／_faceov）／emissive／atlas。
+- 靜光 fall_asleep aura 0.8→0.2、sleep_loop 0.2（同靜光 ×4）；大件發光飾物跟住暗。
+- F1 水珠：浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺
+
+| batch | 形態 | px | pivot | clip | 幀 | atlas | 色盤 |
+|---|---|---|---|---|---|---|---|
+| F1 | 守夜者・水珠 `evo_guard_tide` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_tide.png`（1024×1024，444 塊）＋ `_emissive` | palette_tide.json |
+| F1 | 靜光・水珠 `evo_still_tide` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_tide.png`（1024×1024，444 塊）＋ `_emissive` | palette_tide.json |
+<!-- EVO6F-END -->
+
+
 
 
 

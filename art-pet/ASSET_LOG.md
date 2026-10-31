@@ -96,4 +96,9 @@
 - 預覽 `sprites/tuanrong/preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png`；工具 `tools/build_evo6_animBC.py E`（Pillow/numpy，無 AI）；CLIPS.json 只更新 forms.evo_still_radiant＋clips[].evo_still_radiant／anchors＋新增 evo6E；CLIPS.md 加 EVO6E 段；備份 `_backups/pre_evo6_animE_20261031/`。
 <!-- EVO6E-LOG-END -->
 
-
+<!-- EVO6F1-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch F1（新支線・水珠 tide）
+- 守夜者 44＋靜光 48 全套 41 clip：`evo_guard_tide` 180 幀、`evo_still_tide` 180 幀；frames／layers／emissive／kit／face_anchors（bulb＝燈中心）／atlas＋emissive。色盤 `sprites/tuanrong/evo6/palette_tide.json`。
+- 分支動態：浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺。靜光瞓覺 aura 漸暗同靜光 ×4。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchF1_contact_4x.png`；工具 `tools/build_evo6_animF.py F1`（Pillow/numpy 程式繪製，無 AI）；CLIPS.json 只新增自己 key（forms.<form>、clips[].<form>、anchors.<form>、evo6F.batches.F1）；CLIPS.md EVO6F 段；備份 `_backups/pre_evo6_branches5_anim_20261031/`。
+<!-- EVO6F1-LOG-END -->

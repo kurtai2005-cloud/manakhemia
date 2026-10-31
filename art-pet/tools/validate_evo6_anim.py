@@ -13,6 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TR = os.path.normpath(os.path.join(HERE, "..", "sprites", "tuanrong")); MOT = os.path.join(TR, "motion"); EV = os.path.join(TR, "evo6")
 SIZES = {"evo_egg": 24, "evo_dot": 28, "evo_sprout": 32, "evo_hop": 38}
 BRANCHES = ("lumi", "radiant", "soft", "dust")
+NEW5 = ("tide", "shroom", "crystal", "moon", "ember")   # batch F 新支線（CLIPS.json 有 evo6F 先驗）
 GUARD = {f"evo_guard_{b}": 44 for b in BRANCHES}; STILL = {f"evo_still_{b}": 48 for b in BRANCHES}
 STILL_MVP = ["idle", "blink", "emo_happy", "fall_asleep", "sleep_loop", "wake", "picked_up"]
 S3 = ["nuzzle_purr", "reunion_happy"]
@@ -37,6 +38,10 @@ def run():
         if k not in CL: F("CLIPS.json evo6 section missing")
     if "evo6B" in CL: SIZES.update(GUARD)
     if "evo6C" in CL: SIZES.update(STILL)
+    if "evo6F" in CL:   # batch F：新支線 ×5（有幾多批就驗幾多條）
+        for b in NEW5:
+            for fm, S_, dd in ((f"evo_guard_{b}", 44, GUARD), (f"evo_still_{b}", 48, STILL)):
+                if fm in CL.get("forms", {}): dd[fm] = S_; SIZES[fm] = S_
     BASE_PAL, BASE_EM = PAL, EM
     def load_pal(fn, emn):
         """分支色盤（evo6/<palette>）＋emissive 色名 → (PAL, EM)"""
@@ -100,6 +105,7 @@ def run():
                 if len(fe.get("std23", [])) != 23: F(f"{tag} std23 count {len(fe.get('std23', []))}")
                 if "picked_up" not in need or not set(LIVE_S2) <= need: F(f"{tag} liveliness s1/s2 incomplete")
                 if form == "evo_guard_dust" and fe.get("s3") != S3: F(f"{tag} 微塵 s3 clips missing {fe.get('s3')}")
+                if fe.get("branch") in NEW5 and (fe.get("s3") != S3 or len(fe["clips"]) != 41): F(f"{tag} 新支線要全套 41 clip（含 s3）{len(fe['clips'])}")
                 if need != set(fe["clips"]): F(f"{tag} clip list != std23+liveliness(+s3)")
         if set(want) != set(FA): F(f"{tag} clip set CLIPS vs face_anchors {set(want) ^ set(FA)}")
         for c, nf in want.items():
@@ -124,6 +130,11 @@ def run():
                 if 0 <= y0 + yy < S and 0 <= x0 + xx < S: img[y0 + yy, x0 + xx] = a[yy, xx]
             return True
         recon = kit_ok = kit_n = em_ok = edge = lamp_ok = 0; std_kit = [0, 0]
+        LAMP = None
+        if fe.get("branch") in NEW5:   # 新支線：bulb 錨點要落喺燈（lampColors＋病色 sick1）上
+            cl_ = json.load(open(os.path.join(EV, aj["meta"]["palette"])))["colors"]
+            LAMP = np.array([hx(c["hex"]) for c in cl_ if c["name"] in set(fe.get("lampColors", [])) | {"sick1"}])
+            if len(LAMP) != 4: F(f"{tag} lampColors {fe.get('lampColors')}")
         for cn, A in FA.items():
             for k, an in enumerate(A, 1):
                 req = ("head_r", "faceVisible", "face") + (() if egg else ("eyeL", "eyeR", "mouth"))
@@ -149,6 +160,11 @@ def run():
                     if cn == "sick": em = full[max(0, by - 1):by + 2, max(0, bx - 1):bx + 2, 3]   # 病：燈熄（唔發光）但仍要喺燈上
                     if (em > 0).any(): lamp_ok += 1
                     else: F(f"{tag} 微塵 bulb 錨點唔喺燈上 {cn} {k} {an['bulb']}")
+                if LAMP is not None:
+                    bx, by = an["bulb"]; win = full[max(0, by - 1):by + 2, max(0, bx - 1):bx + 2]
+                    hit = (win[..., 3] == 255)[..., None] & (win[..., None, :3] == LAMP[None, None]).all(-1)
+                    if hit.any(): lamp_ok += 1
+                    else: F(f"{tag} bulb 錨點唔喺燈上 {cn} {k} {an['bulb']}")
                 if al[0].any() or al[-1].any() or al[:, 0].any() or al[:, -1].any(): F(f"{tag} frame touches edge {cn} {k}"); edge += 1
                 comp = body.copy(); m = o[..., 3] == 255; comp[m] = o[m]
                 if np.array_equal(comp, full): recon += 1
@@ -186,7 +202,7 @@ def run():
             if len(set(em_glow)) < 2: F(f"{tag} glow clip emissive static")
         tot = sum(len(v) for v in FA.values())
         info.append(f"{tag} {S}px pivot {PIV}：PNG {n}；clip {len(FA)}／幀 {tot}；noface+faceov＝完整 {recon}；emissive 吻合 {em_ok}；"
-                    + ("光卵冇 face rig" if egg else f"生命感 kit 合成＝完整 {kit_ok}/{kit_n}；std23 face≈kit {std_kit[0]}/{std_kit[1]}（info）") + f"；掂邊 {edge}" + (f"；微塵 bulb 喺燈上 {lamp_ok}" if lamp_ok else ""))
+                    + ("光卵冇 face rig" if egg else f"生命感 kit 合成＝完整 {kit_ok}/{kit_n}；std23 face≈kit {std_kit[0]}/{std_kit[1]}（info）") + f"；掂邊 {edge}" + (f"；bulb 喺燈上 {lamp_ok}" if lamp_ok else ""))
         # atlases
         for png, em in ((f"atlas_{form}.png", False), (f"atlas_{form}_emissive.png", True)):
             pth = os.path.join(EV, png); chk(pth, emissive=em, PAL=PAL); im = load(pth); H, W = im.shape[:2]
