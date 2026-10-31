@@ -16,9 +16,10 @@
     return {
       rng: SIM.makeRng(((seed >>> 0) ^ 0xa0d10) || 1), t: 0, jn: 0, queue: [], lastPet: -99, cdUntil: {}, touchAlt: 0,
       warnAt: { hungry: -999, sleepy: -999, unc: -999 }, evId: null, evBlockUntil: -1, combo: 0,
-      loops: { sleep_breath: false, sunbathe: false }, bgm: null, stats: { cues: 0, skipped: 0 },
+      loops: { sleep_breath: false, sunbathe: false }, bgm: null, stats: { cues: 0, skipped: 0 }, alt: {}, lastAB: {},
     };
   }
+  const SFX_AB = { sneeze: 1, scratch: 1, step_hop: 1, step_drag: 1, bug_pat: 1 };
   function rateFor(d, c) { if (c.fixedRate) return c.fixedRate; return c.rate ? A.petRate[0] + (A.petRate[1] - A.petRate[0]) * d.rng() : 1; }
   // 嘗試出一個 cue（遵守冷卻／間隔／事件優先）；after＝延遲秒
   function emit(d, out, name, after, opts) {
@@ -32,7 +33,7 @@
     if (c.cd && d.t < (d.cdUntil[ck] || -1)) { d.stats.skipped++; return false; }
     if (c.gap && d.t - d.lastPet < A.petMinGap && !opts.force) { d.stats.skipped++; return false; }     // 寵物聲最短間隔
     if (c.cd) d.cdUntil[ck] = d.t + c.cd;
-    if (pet && !/touch|turn/.test(name)) d.lastPet = d.t;
+    if (pet && !c.noLast && !/touch|turn/.test(name)) d.lastPet = d.t;   // 腳步聲（noLast）唔佔寵物聲間隔
     let rate = opts.rate != null ? opts.rate : rateFor(d, c);
     out.push({ name, rate, gain: opts.gain != null ? opts.gain : 1, t: +d.t.toFixed(3) });
     d.stats.cues++; return true;
@@ -86,6 +87,10 @@
           else if (e.name === 'nap') emit(d, out, 'pet_sleepy');
           else if (e.name === 'unwell' && d.t - d.warnAt.unc >= A.needWarnEvery) { if (emit(d, out, 'pet_uncomfortable')) d.warnAt.unc = d.t; }
         } else if (e.ev === 'impact') emit(d, out, 'env_pot_bump');
+        else if (e.ev === 'sfx' && SFX_AB[e.name]) {        // 生命感第二段：sneeze／scratch／step_hop／step_drag／bug_pat → a/b 交替（唔連續同一個）
+          const k = e.name, nm = 'pet_' + k + '_' + (d.lastAB[k] === 'a' ? 'b' : 'a');
+          if (emit(d, out, nm)) d.lastAB[k] = nm.slice(-1);
+        }
       }
       // 事件
       if (w.ev && w.ev.id !== d.evId) {

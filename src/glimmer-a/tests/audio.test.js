@@ -99,7 +99,8 @@ console.log('# 規則');
   const names = []; LIVE.forEach(n => ['a', 'b'].forEach(v => names.push('pet_' + n + '_' + v)));
   const miss = names.filter(n => !AU.cues[n] || !fs.existsSync(path.join(__dirname, '..', 'audio', 'sfx', AU.cues[n].file + '.ogg')));
   ok(miss.length === 0, '16 個生命感音效已註冊＋檔案喺 audio/sfx', miss.join(','));
-  ok(names.filter(n => !/turn_huh/.test(n)).every(n => AU.cues[n].reserved), '第一段只觸發 turn_huh：其餘 14 個標 reserved');
+  const S2 = ['sneeze', 'scratch', 'step_hop', 'step_drag', 'bug_pat'], S3 = ['nuzzle_purr', 'reunion_happy'];
+  ok(names.filter(n => S2.some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => !AU.cues[n].reserved) && names.filter(n => S3.some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => AU.cues[n].reserved), '第二段：sneeze／scratch／step_hop／step_drag／bug_pat（10 個）已接（唔再 reserved）；nuzzle_purr／reunion_happy（4 個）仍 reserved 等第三段');
   const s = mkS(), c = { s, pw: LT.compute(14), sun: 1, override: null, event: null };
   let seen = { a: 0, b: 0 }, touchWithTurn = 0, turns = 0, cdOk = true;
   for (let seed = 1; seed <= 40; seed++) {
@@ -120,6 +121,26 @@ console.log('# 規則');
   ok(seen.a > 0 && seen.b > 0 && seen.a + seen.b === 40, 'turn_huh a/b 隨機（a ' + seen.a + '／b ' + seen.b + '）');
   ok(touchWithTurn === 0, '回頭嗰下唔疊 touch 聲', touchWithTurn);
   ok(cdOk && AU.cues.pet_turn_huh_a.cd >= 1.5 && AU.cues.pet_turn_huh_a.cdKey === AU.cues.pet_turn_huh_b.cdKey, 'turn_huh 共用冷卻 ≥1.5s');
+}
+
+console.log('# 生命感第二段音效（journal ev sfx → a/b 交替；遊音 README 7.9）');
+{
+  const c = (needs, hour) => { const s = mkS(needs); return { s, c: { s, pw: LT.compute(hour || 14), sun: 1, override: null, event: null } }; };
+  const runF = (name, needs, sec) => { const { s, c: cx } = c(needs); const b = BEH.create(5), d = AUD.createDirector(5); for (let i = 0; i < 30; i++) BEH.step(b, cx); drive(d, 0.1, world(s, b, 14)); b.journal.length = 0; const t0 = d.t;
+    BEH.force(b, name, cx); const out = []; const n = Math.round(sec * 60); for (let i = 0; i < n; i++) { BEH.step(b, cx); if (i % 2 === 1) out.push(...AUD.update(d, 1 / 30, world(s, b, 14)).cues.map(x => Object.assign(x, { t: +(x.t - t0).toFixed(3) }))); } return { out, b }; };
+  let r = runF('scratch', {}, 1.6); ok(r.out.filter(x => /pet_scratch_/.test(x.name)).length === 1 && r.out.find(x => /pet_scratch_/.test(x.name)).t < 0.1, 'B1 抓癢：動畫開始出 1 下 sfx_pet_scratch', JSON.stringify(r.out));
+  r = runF('sneeze', {}, 2.6); const sn = r.out.filter(x => /pet_sneeze_/.test(x.name)); ok(sn.length === 1 && Math.abs(sn[0].t - (2 / 8 + 1 / 30)) < 0.08, 'B2 打噴嚏：第 3 幀（索引 2）出 1 下 sfx_pet_sneeze', JSON.stringify(sn));
+  r = runF('swat_miss', {}, 3); const bp = r.out.filter(x => /pet_bug_pat_/.test(x.name)); ok(bp.length === 1, 'A2 拍蟲：出手幀出 1 下 sfx_pet_bug_pat', JSON.stringify(r.out));
+  // 腳步：開心蓬跳每次落地 1 下 step_hop；拖步每步 1 下 step_drag（間隔 ≥0.4s）；a/b 唔連續同一個
+  const walkCues = (needs) => { const { s, c: cx } = c(needs); const b = BEH.create(8), d = AUD.createDirector(8); for (let i = 0; i < 30; i++) BEH.step(b, cx); b.x = -60; BEH.force(b, 'walk', cx); b.tx = 60; b.stopAt = null; const out = []; for (let i = 0; i < 60 * 4; i++) { BEH.step(b, cx); if (i % 2) out.push(...AUD.update(d, 1 / 30, world(s, b, 14)).cues); } return out.filter(x => /step/.test(x.name)); };
+  const hop = walkCues({ mood: 95 }), drag = walkCues({ mood: 50, energy: 20 });
+  const alt = (a) => a.every((x, i) => i === 0 || x.name !== a[i - 1].name);
+  ok(hop.length >= 10 && hop.every(x => /step_hop/.test(x.name)) && alt(hop), '心情 ≥70：walk_happy 每循環 2 次落地 → step_hop（4s ' + hop.length + ' 下），a/b 交替', hop.map(x => x.name.slice(-1)).join(''));
+  const gaps = drag.slice(1).map((x, i) => x.t - drag[i].t);
+  ok(drag.length >= 5 && drag.every(x => /step_drag/.test(x.name)) && alt(drag) && gaps.every(g => g >= 0.4 - 1e-6), '精力 <40：walk_drag 每步 step_drag（4s ' + drag.length + ' 下，最短間隔 ' + Math.min(...gaps).toFixed(2) + 's ≥0.4），a/b 交替');
+  const neu = walkCues({ mood: 55 }); ok(neu.length === 0, '普通 walk（心情 40–70、需求正常）冇腳步聲（維持舊行為）');
+  // 腳步唔佔 petMinGap：行路中照可出 yawn／touch
+  ok(AU.cues.pet_step_hop_a.noLast && AU.cues.pet_step_drag_a.noLast && !AU.cues.pet_step_hop_a.gap, '腳步聲 noLast：唔阻其他寵物聲（petMinGap）');
 }
 
 console.log('# H3 雨層細雨環境聲（遊音 7.10）');

@@ -340,6 +340,11 @@
       case 'grumpy': T.dx = Math.round(Math.sin(t * 55)); T.sy = 0.95; break;
       case 'dig': T.dy = Math.sin(t * 10) > 0 ? 1 : 0; T.sy = 0.94; break;
       case 'lookup': T.sy = 1.04; break;
+      // 生命感第二段：冇 live atlas（?live=0／微塵）時嘅程序化佔位
+      case 'sniff': T.sy = 0.9; T.dx = 1; T.dy = 1; break;
+      case 'swat': T.dx = b.frame >= 2 ? 2 : 0; T.sy = b.frame >= 2 ? 1.05 : 0.96; break;
+      case 'scratch': T.dx = Math.round(Math.sin(t * 40)); T.sy = 0.96; break;
+      case 'sneeze': if (b.frame === 2) { T.sx = 1.1; T.sy = 0.88; } else T.sy = 1.03; break;
       case 'cheer_jump': case 'catch_reach': T.sy = b.lift === 0 ? 0.92 : 1.05; break;
       case 'droop': T.sy = 0.9; break;
     }
@@ -809,6 +814,7 @@
         src = { img: sp, sx: 0, sy: 0, sw: sp.width, sh: sp.height, px: sp.anchor.x, py: sp.anchor.y, bud: sp.anchor.bud };
         if (!cdef.ready) ph = placeholderXform(clip, b, t);
       }
+      if (b.pose) { ph = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0 }, ph || {}); ph.dx += b.pose.dx; ph.sy *= b.pose.sy; ph.rot = b.pose.rot; }   // 生命感第二段：望天後仰（缺 lookup_tip 美術 → 程序化）
       const PX = 48, PY = 100;
       let draw = src, anc = null; const fst = { live: !!live, clip: live ? live.clip : dclip, frame: live ? live.frame : dframe, faceVisible: false, eyes: null, mouth: null, placeholder: [], bulb: null, derived: false };
       const comp = () => { const T = this.tmpPet, tx = T.getContext('2d'); tx.setTransform(1, 0, 0, 1, 0, 0); tx.globalCompositeOperation = 'source-over'; tx.globalAlpha = 1; tx.clearRect(0, 0, 96, 112); tx.imageSmoothingEnabled = false; tx.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, PX - src.px, PY - src.py, src.sw, src.sh); draw = { img: T, sx: PX - src.px, sy: PY - src.py, sw: src.sw, sh: src.sh, px: src.px, py: src.py, bud: src.bud, name: src.name }; return tx; };
@@ -856,7 +862,7 @@
       const px = Math.round(gx + rm), py = Math.round(base + b.lift + (ph ? ph.dy : 0));
       { const sx = ph ? ph.sx : 1, sy = ph ? ph.sy : 1, w = draw.sw * Math.abs(sx), h = draw.sh * sy, l = px + (ph ? ph.dx * mir : 0) - (mir > 0 ? draw.px : draw.sw - draw.px) * Math.abs(sx); const ob = this.opaqueBox(src); if (ob) { const ax = Math.abs(sx); const l0 = mir > 0 ? ob.l : draw.sw - ob.r; this.petRect = { x: l + l0 * ax, y: py - draw.py * sy + ob.t * sy, w: (ob.r - ob.l) * ax, h: (ob.b - ob.t) * sy, opaque: true }; } else this.petRect = { x: l, y: py - draw.py * sy, w, h, opaque: false }; }   // P2：觸控用真身框（art 座標，未加視差）
       x.save(); x.imageSmoothingEnabled = false;
-      x.translate(ox(px + (ph ? ph.dx * mir : 0)), oy(py)); x.scale(mir * (ph ? ph.sx : 1), ph ? ph.sy : 1);
+      x.translate(ox(px + (ph ? ph.dx * mir : 0)), oy(py)); x.scale(mir * (ph ? ph.sx : 1), ph ? ph.sy : 1); if (ph && ph.rot) x.rotate(-ph.rot);   // 以腳底 pivot 向後仰
       x.drawImage(draw.img, draw.sx, draw.sy, draw.sw, draw.sh, -draw.px, -draw.py, draw.sw, draw.sh);
       if (live && anc && anc.bulb && FCP.bulb && FCP.bulb.enabled && live.clip !== 'sick') {     // 燈泡 glow：情緒 tint（0.4s 漸變）× intensity（呼吸／閃）
         const BM = FCP.bulb.moods, mood = this.bulbMood(b), m = BM[mood] || BM.neutral, hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -868,6 +874,12 @@
         if (gl) { x.globalAlpha = Math.max(0, Math.min(1, S.i)); x.drawImage(gl.c, -src.px + anc.bulb[0] - gl.px, -src.py + anc.bulb[1] - gl.py); x.globalAlpha = 1; this.faceStat.bulb++; fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)) }; }
       }
       x.restore();
+      if (b.bug) {                                    // A2 swat 蟲仔 fx（缺 bug 美術 → 程序化 2×2 點＋1px 翼閃）
+        const bx = Math.round(px + b.bug.x), by = Math.round(py + b.bug.y), wf = Math.floor(t * 18) & 1;
+        x.fillStyle = '#2a2230'; x.fillRect(ox(bx), oy(by), 2, 2);
+        x.fillStyle = 'rgba(232,240,255,0.85)'; x.fillRect(ox(bx + (wf ? -1 : 2)), oy(by - 1), 1, 1);
+        fst.bug = b.bug.st;
+      }
       this.faceStat.last = fst;
       const top = py - Math.round(src.py * (ph ? ph.sy : 1));
       const bud = (live && anc && anc.bulb) ? { x: px + (anc.bulb[0] - src.px) * mir, y: py - src.py + anc.bulb[1] } : src.bud ? { x: px + (src.bud.x - src.px) * mir, y: py - src.py + src.bud.y } : { x: px, y: top + Math.round(src.sw * 0.17) };

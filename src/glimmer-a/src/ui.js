@@ -207,6 +207,7 @@
     const needSet = (o) => () => { Object.assign(s().needs, { hunger: 80, mood: 80, clean: 80, energy: 80 }, o); s().poops = 0; };
     grp('表情（設需求）', [['開心', needSet({ hunger: 100, mood: 100, clean: 100, energy: 100 }), 'dbg-ex-happy'], ['平靜', needSet({ hunger: 60, mood: 60, clean: 60, energy: 60 }), 'dbg-ex-neutral'], ['肚餓', needSet({ hunger: 20 }), 'dbg-ex-hungry'], ['疲倦', needSet({ energy: 20 }), 'dbg-ex-tired'], ['想玩', needSet({ mood: 20 }), 'dbg-ex-bored'], ['污糟', needSet({ clean: 20 }), 'dbg-ex-dirty'], ['不適', needSet({ hunger: 3 }), 'dbg-ex-unwell']]);
     grp('行為', ['blink', 'sway', 'yawn', 'walk', 'jump', 'play', 'nap', 'sunbathe', 'bump', 'grumpy', 'startle', 'cuddly', 'react'].map(n => [n, () => G.forceBeh(n), 'dbg-beh-' + n]));
+    grp('生命感第二段', ['scratch', 'sneeze', 'sniff', 'sniff_sneeze', 'lookup', 'lookup_tip', 'swat_miss', 'swat_hit'].map(n => [n, () => G.forceBeh(n), 'dbg-beh-' + n]));
     grp('事件（強制）', D.EVENTS.filter(e => !e.special).map(e => [e.name, () => G.forceEvent(e.id), 'dbg-ev-' + e.id]).concat([['閃光日', () => { EVN().setFlashDay(s(), true); EVN().force(s(), 'flash'); }, 'dbg-ev-flash']]));
     grp('時段（早午晚深夜）', LT().ORDER.map(p => [D.PARAMS.light.periods[p].name, () => G.setPeriod(p), 'dbg-per-' + p]).concat([['實時', () => G.setPeriod(null), 'dbg-per-real']]));
     // 生命感第一段：表情／gaze／臉模式／點一下回頭（QA）

@@ -73,7 +73,7 @@
   if (qs.get('bulb') === '0') P.face.bulb.enabled = false;
   G.liveReady = false;
   G.liveLoad = (P.face.liveliness.enabled && qs.get('live') !== '0') ? G.renderer.loadLive(P.face.liveliness).then((lv) => {
-    D.CLIPS.turn_back.ready = !!(lv && ['sprout', 'radiant', 'soft'].every(f => lv.atlas[f] && lv.atlas[f].json.animations.turn_back_noface));
+    Object.keys(D.CLIPS).filter(k => D.CLIPS[k].live).forEach(k => { D.CLIPS[k].ready = !!(lv && ['sprout', 'radiant', 'soft'].every(f => lv.atlas[f] && lv.atlas[f].json.animations[k + '_noface'])); });   // turn_back＋第二段 7 clip（live atlas 有先 ready）
     G.liveReady = !!lv; return lv;
   }) : Promise.resolve(null);
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
@@ -205,7 +205,8 @@
     state() {
       const b = G.beh, E = G.state.evs;
       return { state: b.state, phase: b.phase, clip: b.clip, frame: b.frame, expr: b.expr, x: +b.x.toFixed(2), dir: b.dir, variant: b.variant, period: G.light.period, hour: +G.hour().toFixed(2),
-        ev: G.ev ? G.ev.rec.id : null, pending: E ? E.pending.length : 0, diary: E ? E.diary.length : 0, needs: Object.assign({}, G.state.needs), t: +b.t.toFixed(2) };
+        ev: G.ev ? G.ev.rec.id : null, pending: E ? E.pending.length : 0, diary: E ? E.diary.length : 0, needs: Object.assign({}, G.state.needs), t: +b.t.toFixed(2),
+        show: b.show.clip, showFrame: b.show.frame, gait: b.walkStyle, micro: b.state === 'micro' && b.seq && b.seq[b.seqI] ? (b.seq[b.seqI].tag || b.seq[b.seqI].clip) : null, bug: b.bug ? b.bug.st : null, pose: b.pose ? +b.pose.rot.toFixed(3) : 0, face: Object.assign({}, b.face) };
     },
     force(name) { G.forceBeh(name); },
     forceEvent(id) { return G.forceEvent(id); },

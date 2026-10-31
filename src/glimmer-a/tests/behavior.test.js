@@ -236,6 +236,87 @@ console.log('# 生命感第一段（F1 表情 overlay／F2 gaze／A1 邊行邊�
     ok(bad.length === 0, '生命感 atlas：全部 ready clip＋turn_back 有 _noface（幀數同錨點一致）、kit 眼 8 款×gaze×l/r、口 8、燈泡 2；turn_back frame0 faceVisible=false', bad.slice(0, 8).join()); }
 }
 
+
+console.log('# 生命感第二段（F3／A2／A3／B1／B2＋個性「蠢蠢地但覺得自己好醒」）');
+{
+  const LVP = P.live, mk2 = (needs, hour, seed) => { const b = BEH.create(seed || 13), s = mkS(needs), ctx = ctxAt(s, hour == null ? 14 : hour); run(b, ctx, 0.5); b.state = 'stay'; b.phase = ''; b.variant = null; b.x = 0; b.dir = 1; b.clip = 'idle'; return { b, s, ctx }; };
+  // ── 資料：clip 對齊 art liveliness（幀數／fps／interruptible／冷卻），逐幀五官＝face_anchors ──
+  { const LVD = path.join(root0, 'art/liveliness'), fa = JSON.parse(fs.readFileSync(path.join(LVD, 'face_anchors.json'), 'utf8')), cj = JSON.parse(fs.readFileSync(path.join(LVD, 'CLIPS.json'), 'utf8')); const bad = [];
+    const NEW = ['walk_happy', 'walk_drag', 'sniff', 'lookup', 'swat', 'scratch', 'sneeze'];
+    for (const k of NEW) { const a = cj.clips.find(c => c.name === k), d = D.CLIPS[k];
+      if (!a || !d || !d.live || a.frames !== d.frames || a.fps !== d.fps || !!a.loop !== !!d.loop || a.interruptible !== d.interruptible || (a.cooldown_s || 0) !== (d.cooldown || 0)) bad.push('spec/' + k);
+      for (const f of ['sprout', 'radiant', 'soft']) { const A = JSON.parse(fs.readFileSync(path.join(LVD, 'atlas_' + f + '_live.json'), 'utf8')); const an = A.animations[k + '_noface'], anc = fa.anchors[f][k];
+        if (!an || an.frames.length !== d.frames || !anc || anc.length !== d.frames) bad.push(f + '/' + k);
+        else anc.forEach((x, i) => { const e = D.PARAMS.face.clipFrames[k][i]; if (!x.face || x.face.eyes !== e[0] || x.face.gaze !== e[1] || x.face.mouth !== e[2]) bad.push(f + '/' + k + '#' + i + ' face'); }); } }
+    ok(bad.length === 0, '7 個生命感第二段 clip：art 規格（幀／fps／loop／可中斷／冷卻）一致、3 形態 _noface＋錨點齊、逐幀五官＝face_anchors', bad.slice(0, 8).join()); }
+  // ── A3 心情步姿 ──
+  { const g = (n) => BEH.gaitOf(BEH.create(1), mkS(n));
+    ok(g({ mood: 90 }) === 'walk_happy' && g({ mood: 50, energy: 30 }) === 'walk_drag' && g({ mood: 50, hunger: 30 }) === 'walk_drag' && g({ mood: 50 }) === null && g({ mood: 70 }) === 'walk_happy' && g({ mood: 69 }) === null, 'A3 映射：心情 ≥70 → walk_happy；精力／飽腹 <40 → walk_drag；其餘 walk（art 次序）');
+    const { b, ctx } = mk2({ mood: 50 }); BEH.force(b, 'react', ctx); run(b, ctx, 2.5); ok(BEH.gaitOf(b, ctx.s) === 'walk_happy', 'A3：emo_happy 後 10s 內 → walk_happy');
+    run(b, ctx, 10); ok(BEH.gaitOf(b, ctx.s) === null, 'A3：emo_happy 10s 後回 walk');
+    const sp = (n) => { const { b, ctx } = mk2(n); b.x = -60; BEH.force(b, 'walk', ctx); b.tx = 60; b.stopAt = null; const x0 = b.x, sh = new Set(); for (let i = 0; i < 60; i++) { BEH.step(b, ctx); sh.add(b.show.clip + '/' + b.clip); } return { v: (b.x - x0), sh: [...sh] }; };
+    const n0 = sp({ mood: 55 }), nh = sp({ mood: 95 }), nd = sp({ mood: 55, energy: 20 });
+    ok(Math.abs(nh.v / n0.v - 1.15) < 0.02 && Math.abs(nd.v / n0.v - 0.6) < 0.02, 'A3 位移：蓬跳 ×1.15、拖步 ×0.6（' + (nh.v / n0.v).toFixed(2) + '／' + (nd.v / n0.v).toFixed(2) + '）');
+    ok(nh.sh.join() === 'walk_happy/walk' && nd.sh.join() === 'walk_drag/walk' && n0.sh.join() === 'walk/walk', 'A3 顯示層替身：狀態機 clip 仍係 walk（舊 gaze／A1 邏輯照用），show.clip＝walk_happy／walk_drag', JSON.stringify([nh.sh, nd.sh, n0.sh]));
+    { const { b, ctx } = mk2({ mood: 95 }); BEH.force(b, 'walk', ctx); b.tx = b.x + 40; b.stopAt = null; BEH.step(b, ctx); BEH.step(b, ctx); ok(b.face.eyes === 'happy' && b.show.clip === 'walk_happy', 'A3 walk_happy 逐幀五官（happy 眼）'); }
+  }
+  // ── F3 小動作排程（2 小時 × 6 種子）──
+  { let ok10 = true, okRep = true, kinds = {}, worst = 1e9, nv = 0;
+    for (let sd = 1; sd <= 6; sd++) { const b = BEH.create(sd), s = mkS({ mood: 80 }), ctx = ctxAt(s, 14); run(b, ctx, 7200);
+      const last = {}; for (const m of b.log.micro) { kinds[m.name] = (kinds[m.name] || 0) + 1; if (last[m.name] != null) { worst = Math.min(worst, m.t - last[m.name]); if (m.t - last[m.name] < 600 - 1e-6) ok10 = false; } last[m.name] = m.t; }
+      // 抽籤出嚟嘅 idle 變體（唔計強制）唔連續兩次同一個
+      const v = b.log.variants; nv += v.length; for (let i = 1; i < v.length; i++) if (v[i].name === v[i - 1].name) okRep = false; }
+    ok(ok10, 'F3：同一小動作（scratch／sneeze／sniff／lookup／swat）≥10 分鐘唔重複（最短 ' + worst.toFixed(0) + 's）', JSON.stringify(kinds));
+    ok(okRep && nv > 300, 'F3：唔連續兩次同一 idle 變體（' + nv + ' 次變體）');
+    ok(kinds.scratch > 0 && kinds.sneeze > 0 && kinds.sniff > 0 && kinds.lookup > 0 && kinds.swat > 0, 'F3：5 款小動作都有出：' + JSON.stringify(kinds)); }
+  { const b = BEH.create(1), hi = BEH.idleWeights(b, ctxAt(mkS({ mood: 90 }), 14)), lo = BEH.idleWeights(b, ctxAt(mkS({ mood: 30 }), 14)), mid = BEH.idleWeights(b, ctxAt(mkS({ mood: 55 }), 14));
+    ok(hi.sway > mid.sway && lo.sway < mid.sway && hi.scratch > mid.scratch && lo.yawn > mid.yawn && mid.scratch === 12 && mid.sneeze === 8 && mid.blink === 50, 'F3 心情驅動變體：心情高 sway／scratch ↑，低 sway ↓ yawn ↑（基礎 50/30/20＋12/8）', JSON.stringify({ hi, mid, lo }));
+    const pot = BEH.create(1); pot.x = P.potX + 5; const wp = BEH.idleWeights(pot, ctxAt(mkS({ mood: 55 }), 14)); const sun = BEH.create(1); sun.t = 100; sun.sunEndAt = 80; const wsun = BEH.idleWeights(sun, ctxAt(mkS({ mood: 55 }), 14));
+    const nt = BEH.idleWeights(BEH.create(1), ctxAt(mkS({ mood: 55 }), 1));
+    ok(wp.sneeze === 16 && wsun.sneeze === 16 && Math.abs(nt.sneeze - 12) < 1e-9, 'B2：近花盆／曬太陽後噴嚏 ×2、深夜（冷）×1.5');
+    const cd = BEH.create(1); cd.t = 100; cd.microAt.scratch = 0; const wc = BEH.idleWeights(cd, ctxAt(mkS({ mood: 55 }), 14)); cd.t = 600.01; const wc2 = BEH.idleWeights(cd, ctxAt(mkS({ mood: 55 }), 14));
+    ok(wc.scratch === 0 && wc2.scratch > 0, 'F3 冷卻：scratch 600s 內權重 0，過咗先返嚟');
+    const rp = BEH.create(1); rp.lastIdle = 'sway'; ok(BEH.idleWeights(rp, ctxAt(mkS({ mood: 55 }), 14)).sway === 0, 'F3：上一個 idle 係 sway → 今次 sway 權重 0'); }
+  // ── A2 中途停低：每段 walk 15%；夜晚 lookup ×3 ──
+  { const save = LVP.microCooldown, cds = {}; LVP.microCooldown = 0; ['sniff', 'lookup', 'swat'].forEach(k => { cds[k] = D.CLIPS[k].cooldown; D.CLIPS[k].cooldown = 0; });
+    const rate = (hr) => { let walks = 0, stops = 0, lk = 0; for (let sd = 1; sd <= 12; sd++) { const b = BEH.create(sd), s = mkS({ mood: 60 }), ctx = ctxAt(s, hr); run(b, ctx, 1800); walks += b.journal.length ? 0 : 0;
+      walks += (b.log.enters.walk || 0) - b.log.micro.filter(m => m.from === 'walk').length; const st = b.log.micro.filter(m => m.from === 'walk'); stops += st.length; lk += st.filter(m => m.name === 'lookup').length; } return { r: stops / walks, lk: lk / Math.max(1, stops), stops, walks }; };
+    const day = rate(14), night = rate(1);
+    LVP.microCooldown = save; Object.keys(cds).forEach(k => D.CLIPS[k].cooldown = cds[k]);
+    ok(day.r > 0.09 && day.r < 0.22, 'A2：每段 walk 約 15% 中途停低（日 ' + (day.r * 100).toFixed(1) + '%，' + day.stops + '/' + day.walks + '）');
+    ok(day.lk > 0.2 && day.lk < 0.48 && night.lk > 0.5, 'A2：3 款平均抽（日 lookup ' + (day.lk * 100).toFixed(0) + '%）；深夜 lookup ×3（' + (night.lk * 100).toFixed(0) + '%）'); }
+  { const { b, ctx } = mk2({ mood: 55 }); b.x = -50; BEH.force(b, 'walk', ctx); b.tx = 50; b.stopDir = 1; b.stopAt = -10; const seen = [];
+    for (let i = 0; i < 60 * 12 && !(b.state === 'stay' && seen.includes('micro')); i++) { BEH.step(b, ctx); if (seen[seen.length - 1] !== b.state) seen.push(b.state); }
+    ok(seen.join('>').indexOf('walk>micro>walk') === 0 && Math.abs(b.x - 50) < 1, 'A2：停低完繼續行去原目的地（' + seen.join('>') + '，x ' + b.x.toFixed(1) + '）'); }
+  // ── 個性組合 ──
+  const play = (name, needs, sec) => { const { b, ctx } = mk2(needs || { mood: 55 }); BEH.force(b, name, ctx); const tl = []; for (let i = 0; i < Math.round((sec || 6) / FIX); i++) { BEH.step(b, ctx); const k = b.show.clip + (b.seq && b.seq[b.seqI] && b.seq[b.seqI].tag ? ':' + b.seq[b.seqI].tag : ''); if (tl[tl.length - 1] !== k) tl.push(k); if (b.state !== 'micro') break; } return { b, ctx, tl }; };
+  { const r = play('swat_miss'); const j = r.b.journal.filter(x => x.ev === 'micro').map(x => x.name + ':' + x.ph);
+    ok(r.tl.join('>') === 'idle:notice>swat>emo_happy:smug>idle' && j.some(x => x === 'swat:miss'), '拍蟲撲空 → 得意擺 pose（' + r.tl.join('>') + '）');
+    const { b, ctx } = mk2({ mood: 55 }); BEH.force(b, 'swat_miss', ctx); let smug = null, bugFlee = false, bugSeen = false;
+    for (let i = 0; i < 240; i++) { BEH.step(b, ctx); if (b.bug) { bugSeen = true; if (b.bug.st === 'flee') bugFlee = true; } if (b.seq && b.seq[b.seqI].tag === 'smug' && !smug) smug = Object.assign({}, b.face); }
+    ok(bugSeen && bugFlee && smug && smug.eyes === 'squint' && smug.mouth === 'squint' && smug.head === 'CR', '得意 pose：ω 嘴＋瞇眼＋頭微轉（缺 smug_pose 美術 → emo_happy 身體＋臉）；蟲仔飛走', JSON.stringify(smug));
+    const h = play('swat_hit'); ok(h.tl.join('>') === 'idle:notice>swat>emo_happy:happy>idle', '拍中 → 開心（' + h.tl.join('>') + '）'); }
+  { const r = play('sniff_sneeze'); const t = r.tl.join('>');
+    ok(/^sniff>sneeze>(emo_surprised:surprised>)?sway:act_cool>idle$/.test(t), '嗅地 → 打噴嚏 → 扮冷靜（' + t + '）');
+    const { b, ctx } = mk2(); BEH.force(b, 'sniff_sneeze', ctx); let cool = null; for (let i = 0; i < 400 && b.state === 'micro'; i++) { BEH.step(b, ctx); if (b.seq && b.seq[b.seqI].tag === 'act_cool') cool = Object.assign({}, b.face); }
+    ok(cool && cool.eyes === 'squint' && cool.gaze === 'L' && cool.mouth === 'neutral', '扮冷靜：瞇眼望開（gaze L）（缺 act_cool 美術 → sway 身體）'); }
+  { const r = play('lookup_tip'); const t = r.tl.join('>');
+    ok(t === 'lookup>lookup:tip>wake:getup>sway:act_cool>idle', '望天 → 向後倒少少 → 起返身 → 扮冷靜（' + t + '）');
+    const { b, ctx } = mk2(); BEH.force(b, 'lookup_tip', ctx); let maxRot = 0, held = 0; for (let i = 0; i < 300 && b.state === 'micro'; i++) { BEH.step(b, ctx); if (b.pose) maxRot = Math.max(maxRot, b.pose.rot); if (b.show.clip === 'lookup' && b.show.frame === 2 && !b.pose) held += FIX; }
+    ok(maxRot > 0.15 && held >= 0.8, 'lookup 第 2 幀 hold ' + held.toFixed(2) + 's（≥0.8）；後仰程序化 pose（rot ' + maxRot.toFixed(2) + ' rad）'); }
+  { const r = play('scratch'); const { b, ctx } = mk2(); BEH.force(b, 'scratch', ctx); const fr = []; for (let i = 0; i < 90 && b.state === 'micro'; i++) { BEH.step(b, ctx); if (b.state === 'micro' && fr[fr.length - 1] !== b.show.frame) fr.push(b.show.frame); }
+    ok(fr.join('') === '0123452345', 'B1 抓癢：6 幀＋第 2–5 幀重播 1 次（' + fr.join('') + '）'); }
+  { const n = { a: 0, s: 0 }; for (let sd = 1; sd <= 200; sd++) { const b = BEH.create(sd), s = mkS(), ctx = ctxAt(s, 14); run(b, ctx, 0.1); BEH.force(b, 'sneeze', ctx); n.a++; if (b.seq.some(x => x.clip === 'emo_surprised')) n.s++; }
+    ok(n.s / n.a > 0.2 && n.s / n.a < 0.4, 'B2：噴嚏後 ~30% 接 emo_surprised（' + (n.s / n.a * 100).toFixed(0) + '%）'); }
+  // ── 中斷規則 ──
+  { const { b, ctx } = mk2(); b.lastTouch = b.t; BEH.force(b, 'scratch', ctx); run(b, ctx, 0.3); BEH.tap(b, 'pet', b.x + 5, -20); BEH.step(b, ctx); ok(b.state === 'react' && !b.seq && !b.faceAct, '抓癢可中斷：點寵物 → react（序列清走）');
+    const B = mk2(); BEH.force(B.b, 'swat_miss', B.ctx); run(B.b, B.ctx, 0.55); BEH.tap(B.b, 'pet', B.b.x + 5, -20); BEH.step(B.b, B.ctx); ok(B.b.state === 'micro' && B.b.clip === 'swat', 'swat／sneeze 段不可中斷（忽略觸摸）');
+    const C = mk2(); BEH.force(C.b, 'lookup', C.ctx); run(C.b, C.ctx, 0.3); C.s.sleeping = true; BEH.step(C.b, C.ctx); C.s.sleeping = false; ok(C.b.state === 'simsleep' && !C.b.seq, '事件／睡覺優先：小動作即刻讓路（F4 優先序）'); }
+  // ── 確定性 ──
+  { const r1 = (seed) => { const b = BEH.create(seed), s = mkS({ mood: 80 }), ctx = ctxAt(s, 14); run(b, ctx, 1800); return JSON.stringify(b.log.micro); };
+    ok(r1(7) === r1(7) && r1(7) !== r1(8), '生命感排程：同種子一致、唔同種子唔同（mrng 獨立）'); }
+}
+
 console.log('# 遊美 daylight.json 時段 hook（lighting.setDaylight／daylightAt）');
 {
   const L = require('../src/lighting.js');
