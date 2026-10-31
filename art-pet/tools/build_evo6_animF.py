@@ -207,13 +207,13 @@ def render_F(form, p):
             cv.paint(w & ~EC.rot_ell(cv, bx0 + d[0] * a * 0.7 + .6, by0 + d[1] * a * 0.7 + .8, a - 1.2, b - 1.0, ang), _col(sick, "peach2", "sick1")); cv.solid |= w
     if el and br == "crystal":  # 背後晶冠（5 支），逐幀一支閃
         hx_, hy_ = cx, cy - ry * 0.25
-        for i, ang in enumerate((155, 128, 102, 76, 50)):
-            Lc = (17.5 if ang == 102 else 15.5) - dr * 1.5; ar = math.radians(ang)
+        for i, ang in enumerate((158, 128, 52, 22)):   # 中間留空俾菱形晶燈
+            Lc = (16.0 if ang in (128, 52) else 14.0) - dr * 1.5; ar = math.radians(ang)
             bx, by = hx_ + math.cos(ar) * (Lc - 5.0), hy_ - math.sin(ar) * (Lc - 5.0)
             m = EC.rot_ell(cv, bx, by, 5.0, 2.1, ang); cv.paint(m, _col(sick, "egg_shade"))
             inner = m & EC.rot_ell(cv, bx - .6, by - .6, 3.4, 1.0, ang)
             if not sick: cv.paint(inner, "glow_mid" if big_lvl >= 0.45 else "peach2")
-            if not sick and big_lvl >= 0.99 and i == q % 5: cv.put(bx + math.cos(ar) * 3.0, by - math.sin(ar) * 3.0, "glow_core")
+            if not sick and big_lvl >= 0.99 and i == q % 4: cv.put(bx + math.cos(ar) * 3.0, by - math.sin(ar) * 3.0, "glow_core")
             cv.solid |= m
     if el and br == "moon":     # 背後大月牙＋雲枕
         mx, my, Rm = cx - 2, cy - ry * 0.55, 15.8
@@ -265,7 +265,7 @@ def render_F(form, p):
             m = EC.ear(cv, cx + s * rx * 0.56, cy - ry * 0.62 + dr * 0.8, (8.6 if el else 7.8) - dr * 2.0 + (0.6 if bud > 1.1 else 0), 6.0, s * (1.6 + dr * 1.6) + sway * 0.25, (_col(sick, "egg_shade"),) * 2)
             bx_ = cx + s * rx * 0.56; by_ = cy - ry * 0.62 + dr * 0.8; hh = (8.6 if el else 7.8)
             half = m & (cv.xx + .5 < bx_ + s * 1.6 * (by_ - cv.yy - .5) / hh)
-            if not sick: cv.paint(half, "cyan")
+            if not sick: cv.paint(half, "cyan" if lvl >= 0.45 else "peach2")   # 靜光瞓覺晶耳光跟 aura 暗
     if br == "moon": tpuff(cv, cx - rx - 1.0, cy + 1.8 - wag, 3.0, ramp, tip=None if sick else "cyan")
     if br == "ember":
         tpuff(cv, cx - rx - 1.0, cy + 1.6 - wag, 3.0, ramp)
@@ -460,7 +460,7 @@ BC.BR_NOTE.update({
  ("shroom", False): "守夜者・菇傘：紅白點菇帽（逐幀搖＋斜）、帽頂發光細菇燈（跟住晃）、背苔、孢子飄；emissive＝myco_gc/myco_gm/spore。",
  ("shroom", True): "靜光・菇傘：大垂邊菇帽、菇褶發光點、腳邊兩粒發光細菇（輕搖）、孢子 aura；瞓覺 aura＋菇光漸暗。",
  ("crystal", False): "守夜者・晶角：晶角耳（半邊晶光）、背脊細晶、菱形晶燈（旁邊十字閃逐幀換位）、身上晶粉閃點輪住閃；emissive＝prism_gc/prism_gm/prism。",
- ("crystal", True): "靜光・晶角：後腦 5 尖晶冠（逐幀一支閃）、兩粒浮晶（上下）、晶光 aura；瞓覺 aura＋晶冠光漸暗。",
+ ("crystal", True): "靜光・晶角：後腦 4 尖晶冠（中間留空俾晶燈；逐幀一支閃）、兩粒浮晶（上下）、晶光 aura；瞓覺 aura＋晶冠光漸暗。",
  ("moon", False): "守夜者・月眠：尖睡帽（帽尖跟住點頭）吊住月牙燈、星點雀斑（閃）、渴瞓半瞇眼（idle_02／walk／生命感間中）；fall_asleep 月牙燈漸暗、sleep_loop 暗、wake 返光；emissive＝moon_gc/moon_gm/star。",
  ("moon", True): "靜光・月眠：背後大月牙＋雲枕、星 aura；瞓覺 aura＋大月牙＋燈一齊漸暗、wake 返光。",
  ("ember", False): "守夜者・火苗：頭頂火苗燈（逐幀高低／左右搖）、火尖耳（閃）、尾尖火（閃）、煤灰＋火星雀斑（閃）；emissive＝flame_gc/flame_gm/hot。",

@@ -232,6 +232,7 @@
 - 靜光 fall_asleep aura 0.8→0.2、sleep_loop 0.2（同靜光 ×4）；大件發光飾物跟住暗。
 - F1 水珠：浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺
 - F2 菇傘：菇帽搖：菇帽逐幀左右擺＋斜（帽邊一高一低）、細菇燈跟住晃、孢子飄
+- F3 晶角：晶光閃：晶耳／晶燈／身上晶粉閃點逐幀輪住閃（glint）
 
 | batch | 形態 | px | pivot | clip | 幀 | atlas | 色盤 |
 |---|---|---|---|---|---|---|---|
@@ -239,6 +240,8 @@
 | F1 | 靜光・水珠 `evo_still_tide` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_tide.png`（1024×1024，444 塊）＋ `_emissive` | palette_tide.json |
 | F2 | 守夜者・菇傘 `evo_guard_shroom` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_shroom.png`（1024×1024，444 塊）＋ `_emissive` | palette_shroom.json |
 | F2 | 靜光・菇傘 `evo_still_shroom` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_shroom.png`（1024×1024，444 塊）＋ `_emissive` | palette_shroom.json |
+| F3 | 守夜者・晶角 `evo_guard_crystal` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_crystal.png`（1024×1024，444 塊）＋ `_emissive` | palette_crystal.json |
+| F3 | 靜光・晶角 `evo_still_crystal` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_crystal.png`（1024×1024，444 塊）＋ `_emissive` | palette_crystal.json |
 <!-- EVO6F-END -->
 
 
