@@ -24,6 +24,8 @@ console.log('① 系統 7 天氣：v10.2 一日一抽（晴60／陰20／雨15／
   const t = mon + 5 * 3600e3 + 123456; ok(X.weatherAt(t, 99) === X.weatherAt(t, 99) && X.weatherAt(t, 99) === S.dayWeather(99, mon + 23.9 * 3600e3), '同 seed 同日 → 同天氣（決定性；00:00–23:59 同一個）');
   ok(X.weatherAt(t, 99) === X.dayWeatherN(99, X.dayNum(t)) && S.dayWeatherN === S.dayWeatherN && typeof S.dayWeather === 'function', '遊戲／日記／sweep 共用 sim.dayWeatherN');
   { let diff = 0; for (let d = 0; d < 200; d++) if (S.dayWeatherN(1, 20000 + d) !== S.dayWeatherN(2, 20000 + d)) diff++; ok(diff > 40, `唔同 seed → 唔同日程（200 日 ${diff} 日唔同）`); }
+  { const sv = S.newState(mon, 4242); sv.stage = 'sprout'; const o = X.overlaySys12(sv, mon + 15 * 3600e3), ks = Object.keys(o.wx.days);
+    ok(ks.length === 7 && ks[0] === S.dayKey(mon) && ks.every((k, i) => o.wx.days[k] === S.dayWeather(4242, mon + i * 864e5 + 3600e3)) && o.wx.manual === null && o.wx.shiver.fogMul === W.shiverFogMul, '懸浮 snapshot.sys12.wx：今日起 7 日天氣（同遊戲一日一抽）＋打冷震參數', JSON.stringify(o.wx)); }
   { // 舊存檔：v10.1 前 rain 窗只係 seed＋時間計（冇入存檔）；diary 今日 tr.wx 記住雨 → 讀入唔殘留、唔 crash
     const s0 = S.newState(mon, 4242), k0 = S.dayKey(mon + 13 * 3600e3); s0.sys12 = { diary: { list: [], tr: { day: k0, gen: 1, foods: {}, care: {}, n: 0, stages: [], st0: 'sprout', stLast: 'sprout', mood: [0, 0], mt: 0, wt: 0, wx: { rain: 4, overcast: 2 } } }, wx: { rainUntil: mon + 14 * 3600e3 } };
     const s1 = S.deserialize(S.serialize(s0)); X.st(s1);

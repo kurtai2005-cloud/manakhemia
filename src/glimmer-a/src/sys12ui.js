@@ -120,7 +120,7 @@
     }
     // ── 系統 12：懸浮小驚喜（設定＋懸浮 replay 入帳；主程式淨係 DEV 預覽）──
     const UC = C.surprise;
-    G.evo.sys12Overlay = () => X.overlaySys12(G.state, now());                       // fpet-bridge → snapshot.sys12（只讀）
+    G.evo.sys12Overlay = () => { const o = X.overlaySys12(G.state, now()); if (o.wx) { if (wx.manual) o.wx.manual = G.weather || 'clear'; else if (!wx.auto) o.wx.manual = 'clear'; if (wx.seasonMode !== 'auto') o.wx.season = wx.season || null; } return o; };   // v10.2：DEV／?weather= 覆蓋 → manual；自動閂 → 晴                       // fpet-bridge → snapshot.sys12（只讀）
     G.evo.sys12Apply = (items) => { const r = X.applyOverlay(G.state, items, now(), G.state.ev); if (r.drop || r.voice || r.set) G.save && G.save(); return r; };
     const SURP_ROWS = [['drop', '懸浮掉星星碎（每 2–4 粒鐘一粒，每日最多 5）'], ['water', '飲水提醒'], ['sleep', '早瞓提醒']];
     function setSurp(k, v) { X.surpSet(G.state, k, v, now()); G.save && G.save(); G.state.ev.push({ type: 'sys12', sys: 'surp', what: 'set', key: k, val: v }); if (window.__fpetBridge && __fpetBridge.writeSnapshot) __fpetBridge.writeSnapshot(); }

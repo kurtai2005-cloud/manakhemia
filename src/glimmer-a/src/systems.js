@@ -233,12 +233,17 @@
     return out;
   }
   /* 俾懸浮嘅 snapshot（fpet-bridge 寫入 snapshot.sys12）：親密／心聲（已解鎖句）＋小驚喜設定＋今日剩幾多粒 */
+  /* v10.2：懸浮天氣（一日一抽 → 今日起 7 日預先計好，app 閂咗都知；manual 由 sys12ui 補）＋打冷震參數 */
+  function overlayWx(s, nowMs) {
+    const W = C().weather, days = {}, seed = s.seed >>> 0; for (let d = 0; d < 7; d++) { const t = dayStart(nowMs) + d * DAY + 12 * 3600e3; days[SIM.dayKey(t)] = weatherAt(t, seed); }
+    return { days, manual: null, season: seasonOf(nowMs), shiver: { everySec: W.shiverEverySec.slice(), base: W.shiverBaseChance, fogMul: W.shiverFogMul, winterMul: W.shiverWinterMul } };
+  }
   function overlaySys12(s, nowMs) {
     const U = UC(), u = surp(s), b = bondOf(s), B = BC(), tier = tierOf(b.v), key = SIM.dayKey(nowMs), wl = wallet(s, nowMs), egg = s.stage === 'egg';
     const room = Math.max(0, Math.min(U.drop.perDay - (u.drops[key] || 0), wl.otherCap - wl.o, wl.cap - wl.today));
     return { v: 1, egg, bond: { v: Math.round(b.v), tier }, voice: { chance: B.voice.chance, cooldownSec: B.voice.cooldownSec, showSec: B.voice.showSec, newestTierPct: B.voice.newestTierPct, lastAt: b.lastVoice, lines: egg ? [] : B.lines.slice(0, tier) },
       surp: { on: Object.assign({}, u.on), waterH: u.waterH, sleepAt: u.sleepAt, ts: u.ts, drop: { minH: U.drop.minH, maxH: U.drop.maxH, perDay: U.drop.perDay, showSec: U.drop.showSec, day: key, room },
-        water: { fromH: U.water.fromH, toH: U.water.toH }, sleepWinMin: U.sleep.winMin, showSec: U.showSec, lines: U.lines }, shards: wl.total };
+        water: { fromH: U.water.fromH, toH: U.water.toH }, sleepWinMin: U.sleep.winMin, showSec: U.showSec, lines: U.lines }, shards: wl.total, wx: overlayWx(s, nowMs) };
   }
 
   // ── 系統 3：團絨日記（每日 1 篇：範本＋當日事件；進化／化光有特別頁；離線日一句；留 30 日；化光入紀念冊）──
