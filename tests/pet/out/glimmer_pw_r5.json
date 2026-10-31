@@ -1,0 +1,1769 @@
+{
+ "errors": [],
+ "layout": [
+  {
+   "id": "360x640",
+   "vw": 360,
+   "vh": 640,
+   "stage": {
+    "x": 32.1,
+    "y": 0,
+    "w": 295.7,
+    "h": 640,
+    "r": 327.9,
+    "b": 640
+   },
+   "coverPct": 82.1,
+   "scroll": false,
+   "layout": {
+    "vw": 360,
+    "vh": 640,
+    "dpr": 1,
+    "kdev": 0,
+    "kb": 2,
+    "cssW": 295.7345971563981,
+    "cssH": 640,
+    "hit": 59,
+    "fit": "height",
+    "barsX": 64.26540284360192,
+    "barsY": 0
+   },
+   "nodes": {
+    "#diary": {
+     "x": 226.2,
+     "y": 7.6,
+     "w": 44.7,
+     "h": 44.7,
+     "r": 271,
+     "b": 52.3
+    },
+    "#gear": {
+     "x": 275.5,
+     "y": 7.6,
+     "w": 44.7,
+     "h": 44.7,
+     "r": 320.3,
+     "b": 52.3
+    },
+    "#btn-feed": {
+     "x": 39.7,
+     "y": 573.3,
+     "w": 65.6,
+     "h": 56.1,
+     "r": 105.3,
+     "b": 629.4
+    },
+    "#btn-play": {
+     "x": 111.4,
+     "y": 573.3,
+     "w": 65.6,
+     "h": 56.1,
+     "r": 177,
+     "b": 629.4
+    },
+    "#btn-clean": {
+     "x": 183,
+     "y": 573.3,
+     "w": 65.6,
+     "h": 56.1,
+     "r": 248.6,
+     "b": 629.4
+    },
+    "#btn-sleep": {
+     "x": 254.7,
+     "y": 573.3,
+     "w": 65.6,
+     "h": 56.1,
+     "r": 320.3,
+     "b": 629.4
+    },
+    "#chip": {
+     "x": 39.7,
+     "y": 7.6,
+     "w": 113.7,
+     "h": 35.6,
+     "r": 153.5,
+     "b": 43.2
+    }
+   },
+   "pairs": [],
+   "fill": {
+    "w": 29,
+    "h": 52,
+    "nzPct": 100,
+    "n": 102
+   },
+   "mq": false,
+   "rotateDisplay": "none",
+   "rotateText": "請轉直向《微光小圃》只支援直向畫面",
+   "devOpen": false,
+   "taps": [
+    {
+     "s": "#diary",
+     "w": 44.7,
+     "h": 44.7,
+     "ok": true
+    },
+    {
+     "s": "#gear",
+     "w": 44.7,
+     "h": 44.7,
+     "ok": true
+    },
+    {
+     "s": "#btn-feed",
+     "w": 65.6,
+     "h": 56.1,
+     "ok": true
+    },
+    {
+     "s": "#btn-play",
+     "w": 65.6,
+     "h": 56.1,
+     "ok": true
+    },
+    {
+     "s": "#btn-clean",
+     "w": 65.6,
+     "h": 56.1,
+     "ok": true
+    },
+    {
+     "s": "#btn-sleep",
+     "w": 65.6,
+     "h": 56.1,
+     "ok": true
+    }
+   ],
+   "clipped": [],
+   "errors": []
+  },
+  {
+   "id": "360x640-dpr3",
+   "vw": 360,
+   "vh": 640,
+   "stage": {
+    "x": 32.1,
+    "y": 0,
+    "w": 295.7,
+    "h": 640,
+    "r": 327.9,
+    "b": 640
+   },
+   "coverPct": 82.1,
+   "scroll": false,
+   "layout": {
+    "vw": 360,
+    "vh": 640,
+    "dpr": 3,
+    "kdev": 0,
+    "kb": 4,
+    "cssW": 295.7345971563981,
+    "cssH": 640,
+    "hit": 59,
+    "fit": "height",
+    "barsX": 64.26540284360192,
+    "barsY": 0
+   },
+   "nodes": {
+    "#diary": {
+     "x": 226.2,
+     "y": 7.6,
+     "w": 44.7,
+     "h": 44.7,
+     "r": 271,
+     "b": 52.3
+    },
+    "#gear": {
+     "x": 275.5,
+     "y": 7.6,
+     "w": 44.7,
+     "h": 44.7,
+     "r": 320.3,
+     "b": 52.3
+    },
+    "#btn-feed": {
+     "x": 39.7,
+     "y": 573.3,
+     "w": 65.6,
+     "h": 56.1,
+     "r": 105.3,
+     "b": 629.4
+    },
+    "#btn-play": {
+     "x": 111.4,
+     "y": 573.3,
+     "w": 65.6,
+     "h": 56.1,
+     "r": 177,
+     "b": 629.4
+    },
+    "#btn-clean": {
+     "x": 183,
+     "y": 573.3,
+     "w": 65.6,
+     "h": 56.1,
+     "r": 248.6,
+     "b": 629.4
+    },
+    "#btn-sleep": {
+     "x": 254.7,
+     "y": 573.3,
+     "w": 65.6,
+     "h": 56.1,
+     "r": 320.3,
+     "b": 629.4
+    },
+    "#chip": {
+     "x": 39.7,
+     "y": 7.6,
+     "w": 113.7,
+     "h": 35.6,
+     "r": 153.5,
+     "b": 43.2
+    }
+   },
+   "pairs": [],
+   "fill": {
+    "w": 29,
+    "h": 52,
+    "nzPct": 100,
+    "n": 102
+   },
+   "mq": false,
+   "rotateDisplay": "none",
+   "rotateText": "請轉直向《微光小圃》只支援直向畫面",
+   "devOpen": false,
+   "taps": [
+    {
+     "s": "#diary",
+     "w": 44.7,
+     "h": 44.7,
+     "ok": true
+    },
+    {
+     "s": "#gear",
+     "w": 44.7,
+     "h": 44.7,
+     "ok": true
+    },
+    {
+     "s": "#btn-feed",
+     "w": 65.6,
+     "h": 56.1,
+     "ok": true
+    },
+    {
+     "s": "#btn-play",
+     "w": 65.6,
+     "h": 56.1,
+     "ok": true
+    },
+    {
+     "s": "#btn-clean",
+     "w": 65.6,
+     "h": 56.1,
+     "ok": true
+    },
+    {
+     "s": "#btn-sleep",
+     "w": 65.6,
+     "h": 56.1,
+     "ok": true
+    }
+   ],
+   "clipped": [],
+   "errors": []
+  },
+  {
+   "id": "390x844",
+   "vw": 390,
+   "vh": 844,
+   "stage": {
+    "x": 0,
+    "y": 0,
+    "w": 390,
+    "h": 844,
+    "r": 390,
+    "b": 844
+   },
+   "coverPct": 100,
+   "scroll": false,
+   "layout": {
+    "vw": 390,
+    "vh": 844,
+    "dpr": 1,
+    "kdev": 2,
+    "kb": 2,
+    "cssW": 390,
+    "cssH": 844,
+    "hit": 45,
+    "fit": "width",
+    "barsX": 0,
+    "barsY": 0
+   },
+   "nodes": {
+    "#diary": {
+     "x": 284,
+     "y": 10,
+     "w": 45,
+     "h": 45,
+     "r": 329,
+     "b": 55
+    },
+    "#gear": {
+     "x": 335,
+     "y": 10,
+     "w": 45,
+     "h": 45,
+     "r": 380,
+     "b": 55
+    },
+    "#btn-feed": {
+     "x": 10,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "r": 96.5,
+     "b": 830
+    },
+    "#btn-play": {
+     "x": 104.5,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "r": 191,
+     "b": 830
+    },
+    "#btn-clean": {
+     "x": 199,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "r": 285.5,
+     "b": 830
+    },
+    "#btn-sleep": {
+     "x": 293.5,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "r": 380,
+     "b": 830
+    },
+    "#chip": {
+     "x": 10,
+     "y": 10,
+     "w": 150,
+     "h": 47,
+     "r": 160,
+     "b": 57
+    }
+   },
+   "pairs": [],
+   "fill": {
+    "w": 24,
+    "h": 52,
+    "nzPct": 100,
+    "n": 96
+   },
+   "mq": false,
+   "rotateDisplay": "none",
+   "rotateText": "請轉直向《微光小圃》只支援直向畫面",
+   "devOpen": false,
+   "taps": [
+    {
+     "s": "#diary",
+     "w": 45,
+     "h": 45,
+     "ok": true
+    },
+    {
+     "s": "#gear",
+     "w": 45,
+     "h": 45,
+     "ok": true
+    },
+    {
+     "s": "#btn-feed",
+     "w": 86.5,
+     "h": 74,
+     "ok": true
+    },
+    {
+     "s": "#btn-play",
+     "w": 86.5,
+     "h": 74,
+     "ok": true
+    },
+    {
+     "s": "#btn-clean",
+     "w": 86.5,
+     "h": 74,
+     "ok": true
+    },
+    {
+     "s": "#btn-sleep",
+     "w": 86.5,
+     "h": 74,
+     "ok": true
+    }
+   ],
+   "clipped": [],
+   "errors": []
+  },
+  {
+   "id": "390x844-dpr3",
+   "vw": 390,
+   "vh": 844,
+   "stage": {
+    "x": 0,
+    "y": 0,
+    "w": 390,
+    "h": 844,
+    "r": 390,
+    "b": 844
+   },
+   "coverPct": 100,
+   "scroll": false,
+   "layout": {
+    "vw": 390,
+    "vh": 844,
+    "dpr": 3,
+    "kdev": 6,
+    "kb": 4,
+    "cssW": 390,
+    "cssH": 844,
+    "hit": 45,
+    "fit": "width",
+    "barsX": 0,
+    "barsY": 0
+   },
+   "nodes": {
+    "#diary": {
+     "x": 284,
+     "y": 10,
+     "w": 45,
+     "h": 45,
+     "r": 329,
+     "b": 55
+    },
+    "#gear": {
+     "x": 335,
+     "y": 10,
+     "w": 45,
+     "h": 45,
+     "r": 380,
+     "b": 55
+    },
+    "#btn-feed": {
+     "x": 10,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "r": 96.5,
+     "b": 830
+    },
+    "#btn-play": {
+     "x": 104.5,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "r": 191,
+     "b": 830
+    },
+    "#btn-clean": {
+     "x": 199,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "r": 285.5,
+     "b": 830
+    },
+    "#btn-sleep": {
+     "x": 293.5,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "r": 380,
+     "b": 830
+    },
+    "#chip": {
+     "x": 10,
+     "y": 10,
+     "w": 150,
+     "h": 47,
+     "r": 160,
+     "b": 57
+    }
+   },
+   "pairs": [],
+   "fill": {
+    "w": 24,
+    "h": 52,
+    "nzPct": 100,
+    "n": 102
+   },
+   "mq": false,
+   "rotateDisplay": "none",
+   "rotateText": "請轉直向《微光小圃》只支援直向畫面",
+   "devOpen": false,
+   "taps": [
+    {
+     "s": "#diary",
+     "w": 45,
+     "h": 45,
+     "ok": true
+    },
+    {
+     "s": "#gear",
+     "w": 45,
+     "h": 45,
+     "ok": true
+    },
+    {
+     "s": "#btn-feed",
+     "w": 86.5,
+     "h": 74,
+     "ok": true
+    },
+    {
+     "s": "#btn-play",
+     "w": 86.5,
+     "h": 74,
+     "ok": true
+    },
+    {
+     "s": "#btn-clean",
+     "w": 86.5,
+     "h": 74,
+     "ok": true
+    },
+    {
+     "s": "#btn-sleep",
+     "w": 86.5,
+     "h": 74,
+     "ok": true
+    }
+   ],
+   "clipped": [],
+   "errors": []
+  },
+  {
+   "id": "412x915",
+   "vw": 412,
+   "vh": 915,
+   "stage": {
+    "x": 0,
+    "y": 11.7,
+    "w": 412,
+    "h": 891.6,
+    "r": 412,
+    "b": 903.3
+   },
+   "coverPct": 97.4,
+   "scroll": false,
+   "layout": {
+    "vw": 412,
+    "vh": 915,
+    "dpr": 1,
+    "kdev": 0,
+    "kb": 3,
+    "cssW": 412,
+    "cssH": 891.6102564102564,
+    "hit": 43,
+    "fit": "width",
+    "barsX": 0,
+    "barsY": 23.389743589743603
+   },
+   "nodes": {
+    "#diary": {
+     "x": 302.1,
+     "y": 22.3,
+     "w": 46.5,
+     "h": 46.5,
+     "r": 348.6,
+     "b": 68.7
+    },
+    "#gear": {
+     "x": 355,
+     "y": 22.3,
+     "w": 46.5,
+     "h": 46.5,
+     "r": 401.4,
+     "b": 68.7
+    },
+    "#btn-feed": {
+     "x": 10.6,
+     "y": 810.3,
+     "w": 91.4,
+     "h": 78.2,
+     "r": 101.9,
+     "b": 888.5
+    },
+    "#btn-play": {
+     "x": 110.4,
+     "y": 810.3,
+     "w": 91.4,
+     "h": 78.2,
+     "r": 201.8,
+     "b": 888.5
+    },
+    "#btn-clean": {
+     "x": 210.2,
+     "y": 810.3,
+     "w": 91.4,
+     "h": 78.2,
+     "r": 301.6,
+     "b": 888.5
+    },
+    "#btn-sleep": {
+     "x": 310.1,
+     "y": 810.3,
+     "w": 91.4,
+     "h": 78.2,
+     "r": 401.4,
+     "b": 888.5
+    },
+    "#chip": {
+     "x": 10.6,
+     "y": 22.3,
+     "w": 158.5,
+     "h": 49.7,
+     "r": 169,
+     "b": 71.9
+    }
+   },
+   "pairs": [],
+   "fill": {
+    "w": 23,
+    "h": 52,
+    "nzPct": 100,
+    "n": 96
+   },
+   "mq": false,
+   "rotateDisplay": "none",
+   "rotateText": "請轉直向《微光小圃》只支援直向畫面",
+   "devOpen": false,
+   "taps": [
+    {
+     "s": "#diary",
+     "w": 46.5,
+     "h": 46.5,
+     "ok": true
+    },
+    {
+     "s": "#gear",
+     "w": 46.5,
+     "h": 46.5,
+     "ok": true
+    },
+    {
+     "s": "#btn-feed",
+     "w": 91.4,
+     "h": 78.2,
+     "ok": true
+    },
+    {
+     "s": "#btn-play",
+     "w": 91.4,
+     "h": 78.2,
+     "ok": true
+    },
+    {
+     "s": "#btn-clean",
+     "w": 91.4,
+     "h": 78.2,
+     "ok": true
+    },
+    {
+     "s": "#btn-sleep",
+     "w": 91.4,
+     "h": 78.2,
+     "ok": true
+    }
+   ],
+   "clipped": [],
+   "errors": []
+  },
+  {
+   "id": "412x915-dpr3",
+   "vw": 412,
+   "vh": 915,
+   "stage": {
+    "x": 0,
+    "y": 11.7,
+    "w": 412,
+    "h": 891.6,
+    "r": 412,
+    "b": 903.3
+   },
+   "coverPct": 97.4,
+   "scroll": false,
+   "layout": {
+    "vw": 412,
+    "vh": 915,
+    "dpr": 3,
+    "kdev": 0,
+    "kb": 4,
+    "cssW": 412,
+    "cssH": 891.6102564102564,
+    "hit": 43,
+    "fit": "width",
+    "barsX": 0,
+    "barsY": 23.389743589743603
+   },
+   "nodes": {
+    "#diary": {
+     "x": 302.1,
+     "y": 22.3,
+     "w": 46.5,
+     "h": 46.5,
+     "r": 348.6,
+     "b": 68.7
+    },
+    "#gear": {
+     "x": 355,
+     "y": 22.3,
+     "w": 46.5,
+     "h": 46.5,
+     "r": 401.4,
+     "b": 68.7
+    },
+    "#btn-feed": {
+     "x": 10.6,
+     "y": 810.3,
+     "w": 91.4,
+     "h": 78.2,
+     "r": 101.9,
+     "b": 888.5
+    },
+    "#btn-play": {
+     "x": 110.4,
+     "y": 810.3,
+     "w": 91.4,
+     "h": 78.2,
+     "r": 201.8,
+     "b": 888.5
+    },
+    "#btn-clean": {
+     "x": 210.2,
+     "y": 810.3,
+     "w": 91.4,
+     "h": 78.2,
+     "r": 301.6,
+     "b": 888.5
+    },
+    "#btn-sleep": {
+     "x": 310.1,
+     "y": 810.3,
+     "w": 91.4,
+     "h": 78.2,
+     "r": 401.4,
+     "b": 888.5
+    },
+    "#chip": {
+     "x": 10.6,
+     "y": 22.3,
+     "w": 158.5,
+     "h": 49.7,
+     "r": 169,
+     "b": 71.9
+    }
+   },
+   "pairs": [],
+   "fill": {
+    "w": 23,
+    "h": 52,
+    "nzPct": 100,
+    "n": 102
+   },
+   "mq": false,
+   "rotateDisplay": "none",
+   "rotateText": "請轉直向《微光小圃》只支援直向畫面",
+   "devOpen": false,
+   "taps": [
+    {
+     "s": "#diary",
+     "w": 46.5,
+     "h": 46.5,
+     "ok": true
+    },
+    {
+     "s": "#gear",
+     "w": 46.5,
+     "h": 46.5,
+     "ok": true
+    },
+    {
+     "s": "#btn-feed",
+     "w": 91.4,
+     "h": 78.2,
+     "ok": true
+    },
+    {
+     "s": "#btn-play",
+     "w": 91.4,
+     "h": 78.2,
+     "ok": true
+    },
+    {
+     "s": "#btn-clean",
+     "w": 91.4,
+     "h": 78.2,
+     "ok": true
+    },
+    {
+     "s": "#btn-sleep",
+     "w": 91.4,
+     "h": 78.2,
+     "ok": true
+    }
+   ],
+   "clipped": [],
+   "errors": []
+  },
+  {
+   "id": "844x390",
+   "vw": 844,
+   "vh": 390,
+   "stage": {
+    "x": 331.9,
+    "y": 0,
+    "w": 180.2,
+    "h": 390,
+    "r": 512.1,
+    "b": 390
+   },
+   "coverPct": 21.4,
+   "scroll": false,
+   "layout": {
+    "vw": 844,
+    "vh": 390,
+    "dpr": 1,
+    "kdev": 0,
+    "kb": 2,
+    "cssW": 180.2132701421801,
+    "cssH": 390,
+    "hit": 97,
+    "fit": "height",
+    "barsX": 663.7867298578199,
+    "barsY": 0
+   },
+   "nodes": {
+    "#diary": {
+     "x": 415.1,
+     "y": 4.6,
+     "w": 44.8,
+     "h": 44.8,
+     "r": 459.9,
+     "b": 49.4
+    },
+    "#gear": {
+     "x": 462.7,
+     "y": 4.6,
+     "w": 44.8,
+     "h": 44.8,
+     "r": 507.5,
+     "b": 49.4
+    },
+    "#btn-feed": {
+     "x": 336.5,
+     "y": 349.3,
+     "w": 40,
+     "h": 34.2,
+     "r": 376.5,
+     "b": 383.5
+    },
+    "#btn-play": {
+     "x": 380.2,
+     "y": 349.3,
+     "w": 40,
+     "h": 34.2,
+     "r": 420.1,
+     "b": 383.5
+    },
+    "#btn-clean": {
+     "x": 423.8,
+     "y": 349.3,
+     "w": 40,
+     "h": 34.2,
+     "r": 463.8,
+     "b": 383.5
+    },
+    "#btn-sleep": {
+     "x": 467.5,
+     "y": 349.3,
+     "w": 40,
+     "h": 34.2,
+     "r": 507.5,
+     "b": 383.5
+    },
+    "#chip": {
+     "x": 336.5,
+     "y": 4.6,
+     "w": 69.3,
+     "h": 25.9,
+     "r": 405.8,
+     "b": 30.5
+    }
+   },
+   "pairs": [],
+   "fill": {
+    "w": 113,
+    "h": 52,
+    "nzPct": 100,
+    "n": 96
+   },
+   "mq": true,
+   "rotateDisplay": "flex",
+   "rotateText": "請轉直向《微光小圃》只支援直向畫面",
+   "devOpen": false,
+   "taps": [
+    {
+     "s": "#diary",
+     "w": 44.8,
+     "h": 44.8,
+     "ok": true
+    },
+    {
+     "s": "#gear",
+     "w": 44.8,
+     "h": 44.8,
+     "ok": true
+    },
+    {
+     "s": "#btn-feed",
+     "w": 40,
+     "h": 34.2,
+     "ok": false
+    },
+    {
+     "s": "#btn-play",
+     "w": 40,
+     "h": 34.2,
+     "ok": false
+    },
+    {
+     "s": "#btn-clean",
+     "w": 40,
+     "h": 34.2,
+     "ok": false
+    },
+    {
+     "s": "#btn-sleep",
+     "w": 40,
+     "h": 34.2,
+     "ok": false
+    }
+   ],
+   "clipped": [],
+   "errors": []
+  },
+  {
+   "id": "915x412",
+   "vw": 915,
+   "vh": 412,
+   "stage": {
+    "x": 362.3,
+    "y": 0,
+    "w": 190.4,
+    "h": 412,
+    "r": 552.7,
+    "b": 412
+   },
+   "coverPct": 20.8,
+   "scroll": false,
+   "layout": {
+    "vw": 915,
+    "vh": 412,
+    "dpr": 1,
+    "kdev": 0,
+    "kb": 2,
+    "cssW": 190.37914691943126,
+    "cssH": 412,
+    "hit": 92,
+    "fit": "height",
+    "barsX": 724.6208530805687,
+    "barsY": 0
+   },
+   "nodes": {
+    "#diary": {
+     "x": 455.1,
+     "y": 4.9,
+     "w": 44.9,
+     "h": 44.9,
+     "r": 500,
+     "b": 49.8
+    },
+    "#gear": {
+     "x": 502.9,
+     "y": 4.9,
+     "w": 44.9,
+     "h": 44.9,
+     "r": 547.8,
+     "b": 49.8
+    },
+    "#btn-feed": {
+     "x": 367.2,
+     "y": 369,
+     "w": 42.2,
+     "h": 36.1,
+     "r": 409.4,
+     "b": 405.2
+    },
+    "#btn-play": {
+     "x": 413.3,
+     "y": 369,
+     "w": 42.2,
+     "h": 36.1,
+     "r": 455.5,
+     "b": 405.2
+    },
+    "#btn-clean": {
+     "x": 459.5,
+     "y": 369,
+     "w": 42.2,
+     "h": 36.1,
+     "r": 501.7,
+     "b": 405.2
+    },
+    "#btn-sleep": {
+     "x": 505.6,
+     "y": 369,
+     "w": 42.2,
+     "h": 36.1,
+     "r": 547.8,
+     "b": 405.2
+    },
+    "#chip": {
+     "x": 367.2,
+     "y": 4.9,
+     "w": 73.2,
+     "h": 27.3,
+     "r": 440.4,
+     "b": 32.2
+    }
+   },
+   "pairs": [],
+   "fill": {
+    "w": 115,
+    "h": 52,
+    "nzPct": 100,
+    "n": 102
+   },
+   "mq": true,
+   "rotateDisplay": "flex",
+   "rotateText": "請轉直向《微光小圃》只支援直向畫面",
+   "devOpen": false,
+   "taps": [
+    {
+     "s": "#diary",
+     "w": 44.9,
+     "h": 44.9,
+     "ok": true
+    },
+    {
+     "s": "#gear",
+     "w": 44.9,
+     "h": 44.9,
+     "ok": true
+    },
+    {
+     "s": "#btn-feed",
+     "w": 42.2,
+     "h": 36.1,
+     "ok": false
+    },
+    {
+     "s": "#btn-play",
+     "w": 42.2,
+     "h": 36.1,
+     "ok": false
+    },
+    {
+     "s": "#btn-clean",
+     "w": 42.2,
+     "h": 36.1,
+     "ok": false
+    },
+    {
+     "s": "#btn-sleep",
+     "w": 42.2,
+     "h": 36.1,
+     "ok": false
+    }
+   ],
+   "clipped": [],
+   "errors": []
+  }
+ ],
+ "直向 360x640": {
+  "pass": true,
+  "cover": 82.1,
+  "fill": {
+   "w": 29,
+   "h": 52,
+   "nzPct": 100,
+   "n": 102
+  },
+  "bars": {
+   "x": 64.26540284360192,
+   "y": 0
+  },
+  "taps": [
+   "#diary 44.7x44.7",
+   "#gear 44.7x44.7",
+   "#btn-feed 65.6x56.1",
+   "#btn-play 65.6x56.1",
+   "#btn-clean 65.6x56.1",
+   "#btn-sleep 65.6x56.1"
+  ],
+  "pairs": [],
+  "clip": []
+ },
+ "直向 360x640-dpr3": {
+  "pass": true,
+  "cover": 82.1,
+  "fill": {
+   "w": 29,
+   "h": 52,
+   "nzPct": 100,
+   "n": 102
+  },
+  "bars": {
+   "x": 64.26540284360192,
+   "y": 0
+  },
+  "taps": [
+   "#diary 44.7x44.7",
+   "#gear 44.7x44.7",
+   "#btn-feed 65.6x56.1",
+   "#btn-play 65.6x56.1",
+   "#btn-clean 65.6x56.1",
+   "#btn-sleep 65.6x56.1"
+  ],
+  "pairs": [],
+  "clip": []
+ },
+ "直向 390x844": {
+  "pass": true,
+  "cover": 100,
+  "fill": {
+   "w": 24,
+   "h": 52,
+   "nzPct": 100,
+   "n": 96
+  },
+  "bars": {
+   "x": 0,
+   "y": 0
+  },
+  "taps": [
+   "#diary 45x45",
+   "#gear 45x45",
+   "#btn-feed 86.5x74",
+   "#btn-play 86.5x74",
+   "#btn-clean 86.5x74",
+   "#btn-sleep 86.5x74"
+  ],
+  "pairs": [],
+  "clip": []
+ },
+ "直向 390x844-dpr3": {
+  "pass": true,
+  "cover": 100,
+  "fill": {
+   "w": 24,
+   "h": 52,
+   "nzPct": 100,
+   "n": 102
+  },
+  "bars": {
+   "x": 0,
+   "y": 0
+  },
+  "taps": [
+   "#diary 45x45",
+   "#gear 45x45",
+   "#btn-feed 86.5x74",
+   "#btn-play 86.5x74",
+   "#btn-clean 86.5x74",
+   "#btn-sleep 86.5x74"
+  ],
+  "pairs": [],
+  "clip": []
+ },
+ "直向 412x915": {
+  "pass": true,
+  "cover": 97.4,
+  "fill": {
+   "w": 23,
+   "h": 52,
+   "nzPct": 100,
+   "n": 96
+  },
+  "bars": {
+   "x": 0,
+   "y": 23.389743589743603
+  },
+  "taps": [
+   "#diary 46.5x46.5",
+   "#gear 46.5x46.5",
+   "#btn-feed 91.4x78.2",
+   "#btn-play 91.4x78.2",
+   "#btn-clean 91.4x78.2",
+   "#btn-sleep 91.4x78.2"
+  ],
+  "pairs": [],
+  "clip": []
+ },
+ "直向 412x915-dpr3": {
+  "pass": true,
+  "cover": 97.4,
+  "fill": {
+   "w": 23,
+   "h": 52,
+   "nzPct": 100,
+   "n": 102
+  },
+  "bars": {
+   "x": 0,
+   "y": 23.389743589743603
+  },
+  "taps": [
+   "#diary 46.5x46.5",
+   "#gear 46.5x46.5",
+   "#btn-feed 91.4x78.2",
+   "#btn-play 91.4x78.2",
+   "#btn-clean 91.4x78.2",
+   "#btn-sleep 91.4x78.2"
+  ],
+  "pairs": [],
+  "clip": []
+ },
+ "橫向 844x390 請轉直向": {
+  "pass": true,
+  "display": "flex",
+  "text": "請轉直向《微光小圃》只支援直向畫面",
+  "mq": true
+ },
+ "橫向 915x412 請轉直向": {
+  "pass": true,
+  "display": "flex",
+  "text": "請轉直向《微光小圃》只支援直向畫面",
+  "mq": true
+ },
+ "HD-2D 載入": {
+  "pass": true,
+  "hd": {
+   "mode": "auto",
+   "variant": "H4",
+   "prev": null,
+   "mix": 1,
+   "fading": false,
+   "ready": true,
+   "enabled": true,
+   "error": null,
+   "label": "Auto（H4）",
+   "overlays": {
+    "moon": false,
+    "lantern": false,
+    "lampPost": false,
+    "stars": false,
+    "fireflies": false,
+    "mushroom": false
+   },
+   "switches": 0
+  },
+  "err": null,
+  "dev": false
+ },
+ "24 小時對 H1–H4": {
+  "pass": false,
+  "map": [
+   {
+    "h": 0,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 1,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 2,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 3,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 4,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 5,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 6,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 7,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 8,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 9,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 10,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 11,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 12,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 13,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 14,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 15,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 16,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 17,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 18,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 19,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 20,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 21,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 22,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 23,
+    "variant": "H4",
+    "mode": "auto"
+   }
+  ],
+  "bad": [
+   {
+    "h": 6,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 7,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 8,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 9,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 10,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 11,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 12,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 13,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 14,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 15,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 16,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 17,
+    "variant": "H4",
+    "mode": "auto"
+   },
+   {
+    "h": 18,
+    "variant": "H4",
+    "mode": "auto"
+   }
+  ]
+ },
+ "crossfade ≈2s 無閃": {
+  "pass": true,
+  "tEnd": 2000.4,
+  "maxJump": 15.7,
+  "n": 120,
+  "first": {
+   "t": 22.5,
+   "mix": 0.008,
+   "v": "H4",
+   "prev": "H1",
+   "lum": 658.6875
+  },
+  "mid": {
+   "t": 1017.2,
+   "mix": 0.508,
+   "v": "H4",
+   "prev": "H1",
+   "lum": 409.09375
+  },
+  "last": {
+   "t": 2000.4,
+   "mix": 1,
+   "v": "H4",
+   "prev": "H1",
+   "lum": 168.3125
+  }
+ },
+ "scenes": [
+  {
+   "mode": "H1",
+   "variant": "H4",
+   "mix": 1,
+   "weather": null,
+   "pet": {
+    "x": 81,
+    "y": 242,
+    "w": 47,
+    "h": 50
+   },
+   "tint": "#fff2e4",
+   "ambient": "#c8ccf0",
+   "rainFlag": false,
+   "lum": 42.73
+  },
+  {
+   "mode": "H2",
+   "variant": "H4",
+   "mix": 1,
+   "weather": null,
+   "pet": {
+    "x": 81,
+    "y": 242,
+    "w": 47,
+    "h": 50
+   },
+   "tint": "#fff2e4",
+   "ambient": "#c8ccf0",
+   "rainFlag": false,
+   "lum": 42.73
+  },
+  {
+   "mode": "H3",
+   "variant": "H4",
+   "mix": 1,
+   "weather": null,
+   "pet": {
+    "x": 81,
+    "y": 242,
+    "w": 47,
+    "h": 50
+   },
+   "tint": "#fff2e4",
+   "ambient": "#c8ccf0",
+   "rainFlag": false,
+   "lum": 42.73
+  },
+  {
+   "mode": "H3rain",
+   "variant": "H4",
+   "mix": 1,
+   "weather": "rain",
+   "pet": {
+    "x": 81,
+    "y": 242,
+    "w": 47,
+    "h": 50
+   },
+   "tint": "#fff2e4",
+   "ambient": "#c8ccf0",
+   "rainFlag": false,
+   "lum": 42.73
+  },
+  {
+   "mode": "H4",
+   "variant": "H4",
+   "mix": 1,
+   "weather": null,
+   "pet": {
+    "x": 81,
+    "y": 242,
+    "w": 47,
+    "h": 50
+   },
+   "tint": "#fff2e4",
+   "ambient": "#c8ccf0",
+   "rainFlag": false,
+   "lum": 42.73
+  }
+ ],
+ "團絨四景＋雨尺寸一致": {
+  "pass": true,
+  "scenes": [
+   {
+    "m": "H1",
+    "v": "H4",
+    "pet": {
+     "x": 81,
+     "y": 242,
+     "w": 47,
+     "h": 50
+    },
+    "lum": 42.73,
+    "amb": "#c8ccf0"
+   },
+   {
+    "m": "H2",
+    "v": "H4",
+    "pet": {
+     "x": 81,
+     "y": 242,
+     "w": 47,
+     "h": 50
+    },
+    "lum": 42.73,
+    "amb": "#c8ccf0"
+   },
+   {
+    "m": "H3",
+    "v": "H4",
+    "pet": {
+     "x": 81,
+     "y": 242,
+     "w": 47,
+     "h": 50
+    },
+    "lum": 42.73,
+    "amb": "#c8ccf0"
+   },
+   {
+    "m": "H3rain",
+    "v": "H4",
+    "pet": {
+     "x": 81,
+     "y": 242,
+     "w": 47,
+     "h": 50
+    },
+    "lum": 42.73,
+    "amb": "#c8ccf0"
+   },
+   {
+    "m": "H4",
+    "v": "H4",
+    "pet": {
+     "x": 81,
+     "y": 242,
+     "w": 47,
+     "h": 50
+    },
+    "lum": 42.73,
+    "amb": "#c8ccf0"
+   }
+  ],
+  "mismatch": []
+ },
+ "H3 雨較淺＋雨層": {
+  "pass": false,
+  "h3lum": 42.73,
+  "rainLum": 42.73,
+  "lighter": false,
+  "ambH3": "#c8ccf0",
+  "ambRain": "#c8ccf0"
+ },
+ "細雨 v2 音訊": {
+  "pass": true,
+  "on": true,
+  "want": true,
+  "ctx": "running",
+  "xfade": 1.5,
+  "xfadeAt": 1.5,
+  "loop": true,
+  "shortDur": 6,
+  "loopDur": 24.706
+ },
+ "名牌連點 5 下開 DEV、唔觸發 grumpy_tap": {
+  "pass": true,
+  "open": true,
+  "ev": []
+ },
+ "DEV 切時段 H2": {
+  "pass": false,
+  "mode": "H2",
+  "variant": "H3rain",
+  "prev": null,
+  "mix": 1,
+  "fading": false,
+  "ready": true,
+  "enabled": true,
+  "error": null,
+  "label": "H2 黃昏",
+  "overlays": {
+   "moon": false,
+   "lantern": false,
+   "lampPost": false,
+   "stars": false,
+   "fireflies": false,
+   "mushroom": false
+  },
+  "switches": 8
+ },
+ "寵物連點 5 下＝grumpy_tap、唔開 DEV": {
+  "pass": true,
+  "dev": false,
+  "log": [
+   "grumpy_tap:tap"
+  ],
+  "cd": 47.99993055555556,
+  "grains": 1,
+  "day": 2,
+  "turns": 0
+ },
+ "眼神拖動有跟": {
+  "pass": true,
+  "gaze": {
+   "q": "C",
+   "ql": "C",
+   "src": "finger",
+   "x": -0.112,
+   "y": -0.31,
+   "tx": -0.094,
+   "ty": -0.333,
+   "force": null,
+   "dir": 1,
+   "turn": null
+  }
+ },
+ "點背後轉身": {
+  "pass": false,
+  "liveReady": true,
+  "turn": false
+ },
+ "長按唔轉身": {
+  "pass": true,
+  "hold": true,
+  "turnOnHold": false
+ },
+ "寵物熱區 ≥44": {
+  "pass": true,
+  "css": {
+   "x": 207.18795673551836,
+   "y": 484,
+   "w": 108,
+   "h": 110
+  },
+  "body": {
+   "x": 106.59397836775918,
+   "y": 245,
+   "w": 48,
+   "h": 49
+  }
+ },
+ "待機小動作多過一種": {
+  "pass": true,
+  "yawn": 6,
+  "blink": 5,
+  "sway": 2
+ },
+ "低畫質 rim 關掉": {
+  "pass": false,
+  "high": {
+   "dMask": 0,
+   "dFb": 0,
+   "dTint": 0
+  },
+  "low": {
+   "dMask": 0,
+   "dFb": 0,
+   "dTint": 0,
+   "q": "low"
+  }
+ },
+ "?dev=1 預設打開": {
+  "pass": true,
+  "openDev": true
+ }
+}

@@ -1,0 +1,524 @@
+{
+  "doc": "附件 §7 平衡修訂 v7。真 sim a7f0d878 route-sweep。",
+  "sim": "a7f0d87878db15e09da426bed04d60f668bcbcac",
+  "N": 1000,
+  "quick": {
+    "勤力": {
+      "withPoopPerRun": 6.46,
+      "quickPct": 81.8
+    },
+    "普通": {
+      "withPoopPerRun": 4.28,
+      "quickPct": 81.4
+    },
+    "疏玩": {
+      "withPoopPerRun": 0.85,
+      "quickPct": 7.4
+    },
+    "夜貓": {
+      "withPoopPerRun": 6.45,
+      "quickPct": 7.9
+    },
+    "早起": {
+      "withPoopPerRun": 4.86,
+      "quickPct": 8.3
+    },
+    "餵食狂": {
+      "withPoopPerRun": 5.77,
+      "quickPct": 7.4
+    }
+  },
+  "simDist": {
+    "勤力": {
+      "moon": 43,
+      "bright": 174,
+      "tide": 344,
+      "shroom": 231,
+      "soft": 145,
+      "lumi": 61,
+      "ember": 2
+    },
+    "普通": {
+      "soft": 661,
+      "moon": 37,
+      "shroom": 144,
+      "lumi": 69,
+      "tide": 66,
+      "bright": 17,
+      "ember": 4,
+      "dust": 2
+    },
+    "疏玩": {
+      "dust": 1000
+    },
+    "夜貓": {
+      "bright": 2,
+      "soft": 664,
+      "lumi": 214,
+      "moon": 120
+    },
+    "早起": {
+      "soft": 864,
+      "bright": 65,
+      "lumi": 63,
+      "dust": 4,
+      "tide": 3,
+      "shroom": 1
+    },
+    "餵食狂": {
+      "soft": 460,
+      "shroom": 527,
+      "lumi": 9,
+      "tide": 2,
+      "bright": 2
+    }
+  },
+  "legacyDist": {
+    "勤力": {
+      "soft": 767,
+      "tide": 76,
+      "shroom": 95,
+      "lumi": 61,
+      "moon": 1
+    },
+    "普通": {
+      "tide": 53,
+      "moon": 15,
+      "soft": 697,
+      "lumi": 69,
+      "shroom": 145,
+      "dust": 20,
+      "ember": 1
+    },
+    "疏玩": {
+      "dust": 236,
+      "moon": 431,
+      "shroom": 232,
+      "ember": 95,
+      "tide": 6
+    },
+    "夜貓": {
+      "soft": 2,
+      "moon": 784,
+      "lumi": 214
+    },
+    "早起": {
+      "tide": 764,
+      "soft": 109,
+      "dust": 26,
+      "lumi": 63,
+      "shroom": 38
+    },
+    "餵食狂": {
+      "shroom": 960,
+      "soft": 29,
+      "lumi": 9,
+      "tide": 2
+    }
+  },
+  "diffs": [
+    {
+      "name": "勤力",
+      "id": "tide",
+      "real": 34.4,
+      "qaV5rules": 7.6,
+      "d": 26.8
+    },
+    {
+      "name": "勤力",
+      "id": "shroom",
+      "real": 23.1,
+      "qaV5rules": 9.5,
+      "d": 13.6
+    },
+    {
+      "name": "勤力",
+      "id": "moon",
+      "real": 4.3,
+      "qaV5rules": 0.1,
+      "d": 4.2
+    },
+    {
+      "name": "勤力",
+      "id": "bright",
+      "real": 17.4,
+      "qaV5rules": 0,
+      "d": 17.4
+    },
+    {
+      "name": "勤力",
+      "id": "soft",
+      "real": 14.5,
+      "qaV5rules": 76.7,
+      "d": -62.2
+    },
+    {
+      "name": "普通",
+      "id": "soft",
+      "real": 66.1,
+      "qaV5rules": 69.7,
+      "d": -3.6
+    },
+    {
+      "name": "疏玩",
+      "id": "shroom",
+      "real": 0,
+      "qaV5rules": 23.2,
+      "d": -23.2
+    },
+    {
+      "name": "疏玩",
+      "id": "moon",
+      "real": 0,
+      "qaV5rules": 43.1,
+      "d": -43.1
+    },
+    {
+      "name": "疏玩",
+      "id": "ember",
+      "real": 0,
+      "qaV5rules": 9.5,
+      "d": -9.5
+    },
+    {
+      "name": "疏玩",
+      "id": "dust",
+      "real": 100,
+      "qaV5rules": 23.6,
+      "d": 76.4
+    },
+    {
+      "name": "夜貓",
+      "id": "moon",
+      "real": 12,
+      "qaV5rules": 78.4,
+      "d": -66.4
+    },
+    {
+      "name": "夜貓",
+      "id": "soft",
+      "real": 66.4,
+      "qaV5rules": 0.2,
+      "d": 66.2
+    },
+    {
+      "name": "早起",
+      "id": "tide",
+      "real": 0.3,
+      "qaV5rules": 76.4,
+      "d": -76.1
+    },
+    {
+      "name": "早起",
+      "id": "shroom",
+      "real": 0.1,
+      "qaV5rules": 3.8,
+      "d": -3.7
+    },
+    {
+      "name": "早起",
+      "id": "bright",
+      "real": 6.5,
+      "qaV5rules": 0,
+      "d": 6.5
+    },
+    {
+      "name": "早起",
+      "id": "soft",
+      "real": 86.4,
+      "qaV5rules": 10.9,
+      "d": 75.5
+    },
+    {
+      "name": "餵食狂",
+      "id": "shroom",
+      "real": 52.7,
+      "qaV5rules": 96,
+      "d": -43.3
+    },
+    {
+      "name": "餵食狂",
+      "id": "soft",
+      "real": 46,
+      "qaV5rules": 2.9,
+      "d": 43.1
+    }
+  ],
+  "codeParams": {
+    "brightCQ": 30,
+    "softCQ": 20,
+    "b5CQ": 40,
+    "b5TopPct": 30,
+    "drawGapPt": 5,
+    "lumiMax": 25,
+    "lumiCQ": 25,
+    "scaleToAge": true
+  },
+  "sweep": [
+    {
+      "k": 0.3,
+      "crystal": 1.33,
+      "brightMax": 17.6,
+      "passN": 3,
+      "nChecks": 11,
+      "fail": [
+        "晶角全體≥5%",
+        "月眠全體≥5%",
+        "每表菇傘≤30%",
+        "9 條路出齊",
+        "每表≥2 結局",
+        "單一≤85%",
+        "疏玩柔光＋微塵",
+        "隔日微塵＋火苗"
+      ]
+    },
+    {
+      "k": 0.35,
+      "crystal": 3.08,
+      "brightMax": 17.6,
+      "passN": 3,
+      "nChecks": 11,
+      "fail": [
+        "晶角全體≥5%",
+        "月眠全體≥5%",
+        "每表菇傘≤30%",
+        "9 條路出齊",
+        "每表≥2 結局",
+        "單一≤85%",
+        "疏玩柔光＋微塵",
+        "隔日微塵＋火苗"
+      ]
+    },
+    {
+      "k": 0.4,
+      "crystal": 6.5,
+      "brightMax": 17.6,
+      "passN": 4,
+      "nChecks": 11,
+      "fail": [
+        "月眠全體≥5%",
+        "每表菇傘≤30%",
+        "9 條路出齊",
+        "每表≥2 結局",
+        "單一≤85%",
+        "疏玩柔光＋微塵",
+        "隔日微塵＋火苗"
+      ]
+    },
+    {
+      "k": 0.45,
+      "crystal": 9.45,
+      "brightMax": 13.6,
+      "passN": 4,
+      "nChecks": 11,
+      "fail": [
+        "月眠全體≥5%",
+        "每表菇傘≤30%",
+        "9 條路出齊",
+        "每表≥2 結局",
+        "單一≤85%",
+        "疏玩柔光＋微塵",
+        "隔日微塵＋火苗"
+      ]
+    },
+    {
+      "k": 0.5,
+      "crystal": 12.2,
+      "brightMax": 13,
+      "passN": 4,
+      "nChecks": 11,
+      "fail": [
+        "月眠全體≥5%",
+        "每表菇傘≤30%",
+        "9 條路出齊",
+        "每表≥2 結局",
+        "單一≤85%",
+        "疏玩柔光＋微塵",
+        "隔日微塵＋火苗"
+      ]
+    },
+    {
+      "k": 0.55,
+      "crystal": 14.93,
+      "brightMax": 7.2,
+      "passN": 4,
+      "nChecks": 11,
+      "fail": [
+        "月眠全體≥5%",
+        "每表菇傘≤30%",
+        "9 條路出齊",
+        "每表≥2 結局",
+        "單一≤85%",
+        "疏玩柔光＋微塵",
+        "隔日微塵＋火苗"
+      ]
+    },
+    {
+      "k": 0.6,
+      "crystal": 16.62,
+      "brightMax": 6.6,
+      "passN": 4,
+      "nChecks": 11,
+      "fail": [
+        "月眠全體≥5%",
+        "每表菇傘≤30%",
+        "9 條路出齊",
+        "每表≥2 結局",
+        "單一≤85%",
+        "疏玩柔光＋微塵",
+        "隔日微塵＋火苗"
+      ]
+    }
+  ],
+  "solved": false,
+  "start": {
+    "k": 0.45,
+    "checks": [
+      [
+        "晶角全體≥5%",
+        "✅",
+        9.45
+      ],
+      [
+        "燦光任何一表≤50%",
+        "✅",
+        13.6
+      ],
+      [
+        "月眠全體≥5%",
+        "❌",
+        2.7
+      ],
+      [
+        "螢絨 3–10%",
+        "✅",
+        5.75
+      ],
+      [
+        "每表菇傘≤30%",
+        "❌",
+        52.7
+      ],
+      [
+        "9 條路出齊",
+        "❌",
+        null
+      ],
+      [
+        "每表≥2 結局",
+        "❌",
+        null
+      ],
+      [
+        "單一≤85%",
+        "❌",
+        null
+      ],
+      [
+        "疏玩柔光＋微塵",
+        "❌",
+        "0/100"
+      ],
+      [
+        "隔日微塵＋火苗",
+        "❌",
+        "100/0"
+      ],
+      [
+        "疏玩 CQ 15–35",
+        "✅",
+        17.5
+      ]
+    ],
+    "totalPct": {
+      "lumi": 5.75,
+      "tide": 3.8,
+      "shroom": 13.03,
+      "crystal": 9.45,
+      "moon": 2.7,
+      "ember": 0.07,
+      "bright": 3.65,
+      "soft": 40.83,
+      "dust": 20.72
+    },
+    "tables": {
+      "勤力": {
+        "lumi": 5,
+        "tide": 18.4,
+        "shroom": 17.5,
+        "crystal": 37.4,
+        "moon": 1.4,
+        "ember": 0.1,
+        "bright": 13.6,
+        "soft": 6.6,
+        "dust": 0
+      },
+      "普通": {
+        "lumi": 5.6,
+        "tide": 3.8,
+        "shroom": 7.9,
+        "crystal": 19.3,
+        "moon": 1.8,
+        "ember": 0.3,
+        "bright": 1.3,
+        "soft": 56,
+        "dust": 4
+      },
+      "疏玩": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 100
+      },
+      "夜貓": {
+        "lumi": 17.7,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 13,
+        "ember": 0,
+        "bright": 0.2,
+        "soft": 67.7,
+        "dust": 1.4
+      },
+      "早起": {
+        "lumi": 5.5,
+        "tide": 0.4,
+        "shroom": 0.1,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 6.6,
+        "soft": 69.1,
+        "dust": 18.3
+      },
+      "餵食狂": {
+        "lumi": 0.7,
+        "tide": 0.2,
+        "shroom": 52.7,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0.2,
+        "soft": 45.6,
+        "dust": 0.6
+      }
+    },
+    "cqMed": {
+      "勤力": 48,
+      "普通": 38,
+      "疏玩": 17.5,
+      "夜貓": 36.64,
+      "早起": 31.74,
+      "餵食狂": 40.26
+    },
+    "brightMax": 13.6
+  },
+  "recommended": null,
+  "ms": 6763
+}

@@ -1,0 +1,153 @@
+[
+ {
+  "file": "amb_rain_light_loop.ogg",
+  "codec": "vorbis",
+  "sr": 44100,
+  "ch": 2,
+  "samples": 1089529,
+  "duration_s": 24.706,
+  "lufs_i": -24.0,
+  "true_peak_dbtp": -6.5,
+  "sample_peak_dbfs": -6.5,
+  "centroid_hz": 1760.6,
+  "band_pct": {
+   "0-200": 12.51,
+   "200-1000": 48.25,
+   "1000-8000": 39.08,
+   "8000-20000": 0.16,
+   "1000-4000": 20.54,
+   "4000-8000": 18.54
+  },
+  "tonal_peaks_1_8k_ge_8db": [
+   {
+    "hz": 7874.5,
+    "db_above_local": 11.09
+   },
+   {
+    "hz": 2971.8,
+    "db_above_local": 10.74
+   },
+   {
+    "hz": 5681.0,
+    "db_above_local": 10.62
+   },
+   {
+    "hz": 1515.8,
+    "db_above_local": 10.36
+   },
+   {
+    "hz": 3178.5,
+    "db_above_local": 9.99
+   },
+   {
+    "hz": 2235.3,
+    "db_above_local": 9.88
+   },
+   {
+    "hz": 6090.7,
+    "db_above_local": 9.82
+   },
+   {
+    "hz": 6716.3,
+    "db_above_local": 9.73
+   }
+  ],
+  "repetition": {
+   "best_lag_s": 1.32,
+   "best_lag_corr": 0.148,
+   "corr_at_1s": 0.082,
+   "corr_at_2s": 0.01,
+   "half_loop_corr": -0.006
+  },
+  "seam": {
+   "seam_abs": [
+    0.001894,
+    0.014401
+   ],
+   "p99_9_sample_diff": [
+    0.093084,
+    0.089675
+   ],
+   "seam_over_p999": [
+    0.02,
+    0.161
+   ],
+   "join_window_max_diff": [
+    0.085497,
+    0.112433
+   ]
+  }
+ },
+ {
+  "file": "amb_rain_light_short.ogg",
+  "codec": "vorbis",
+  "sr": 44100,
+  "ch": 2,
+  "samples": 264600,
+  "duration_s": 6.0,
+  "lufs_i": -24.0,
+  "true_peak_dbtp": -8.3,
+  "sample_peak_dbfs": -8.67,
+  "centroid_hz": 1915.8,
+  "band_pct": {
+   "0-200": 12.0,
+   "200-1000": 45.09,
+   "1000-8000": 42.75,
+   "8000-20000": 0.16,
+   "1000-4000": 21.22,
+   "4000-8000": 21.53
+  },
+  "tonal_peaks_1_8k_ge_8db": [
+   {
+    "hz": 2772.7,
+    "db_above_local": 11.88
+   },
+   {
+    "hz": 3821.3,
+    "db_above_local": 11.02
+   },
+   {
+    "hz": 4546.7,
+    "db_above_local": 10.98
+   },
+   {
+    "hz": 3261.0,
+    "db_above_local": 10.49
+   },
+   {
+    "hz": 7306.7,
+    "db_above_local": 10.37
+   },
+   {
+    "hz": 5790.8,
+    "db_above_local": 10.23
+   },
+   {
+    "hz": 5145.5,
+    "db_above_local": 9.73
+   },
+   {
+    "hz": 6282.5,
+    "db_above_local": 9.68
+   }
+  ],
+  "repetition": {
+   "best_lag_s": 0.4,
+   "best_lag_corr": 0.519,
+   "corr_at_1s": 0.01,
+   "corr_at_2s": -0.142,
+   "half_loop_corr": 0.001
+  },
+  "fade_rms_dbfs": {
+   "0-0.1": -75.02,
+   "0.7-0.8": -34.48,
+   "1.5-4.0": -27.42,
+   "5.0-5.5": -36.19,
+   "5.9-6.0": -79.47
+  },
+  "edge_abs": [
+   0.0,
+   2e-06
+  ]
+ }
+]

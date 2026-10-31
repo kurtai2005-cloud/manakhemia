@@ -1,0 +1,2948 @@
+{
+ "sizeMB": 6.56,
+ "errors": [],
+ "layout": [
+  {
+   "w": 360,
+   "h": 640,
+   "dpr": 3,
+   "load": 425,
+   "ready": 566,
+   "errs": [],
+   "shot": "shots/layout_360x640.png",
+   "vw": 360,
+   "vh": 640,
+   "scrollW": 360,
+   "scrollH": 640,
+   "canvas": {
+    "x": 50,
+    "y": 38.7,
+    "w": 260,
+    "h": 562.7
+   },
+   "fillPct": 63.5,
+   "uiScale": 0.667,
+   "els": [
+    {
+     "sel": "#gear",
+     "x": 279.3,
+     "y": 45.3,
+     "w": 24,
+     "h": 24,
+     "tappable": true
+    },
+    {
+     "sel": "#diary",
+     "x": 251.3,
+     "y": 45.3,
+     "w": 24,
+     "h": 24,
+     "tappable": true
+    },
+    {
+     "sel": "#grains",
+     "x": 215.7,
+     "y": 45.3,
+     "w": 31.6,
+     "h": 24,
+     "tappable": true
+    },
+    {
+     "sel": "#chip",
+     "x": 56.7,
+     "y": 45.3,
+     "w": 100,
+     "h": 43.3,
+     "tappable": false
+    },
+    {
+     "sel": "#btn-feed",
+     "x": 56.7,
+     "y": 542.7,
+     "w": 57.7,
+     "h": 49.3,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-play",
+     "x": 119.7,
+     "y": 542.7,
+     "w": 57.7,
+     "h": 49.3,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-clean",
+     "x": 182.7,
+     "y": 542.7,
+     "w": 57.7,
+     "h": 49.3,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-sleep",
+     "x": 245.7,
+     "y": 542.7,
+     "w": 57.7,
+     "h": 49.3,
+     "tappable": true
+    },
+    {
+     "sel": ".need[hunger]",
+     "x": 56.7,
+     "y": 93.3,
+     "w": 58.7,
+     "h": 28,
+     "tappable": false
+    },
+    {
+     "sel": ".need[mood]",
+     "x": 119.3,
+     "y": 93.3,
+     "w": 58.7,
+     "h": 28,
+     "tappable": false
+    },
+    {
+     "sel": ".need[clean]",
+     "x": 182,
+     "y": 93.3,
+     "w": 58.7,
+     "h": 28,
+     "tappable": false
+    },
+    {
+     "sel": ".need[energy]",
+     "x": 244.7,
+     "y": 93.3,
+     "w": 58.7,
+     "h": 28,
+     "tappable": false
+    }
+   ],
+   "small": [
+    "#gear 24x24",
+    "#diary 24x24",
+    "#grains 31.6x24"
+   ],
+   "off": [],
+   "ov": [],
+   "rotatePrompt": false,
+   "orientationLockCSS": false
+  },
+  {
+   "w": 360,
+   "h": 640,
+   "dpr": 2,
+   "load": 254,
+   "ready": 349,
+   "errs": [],
+   "shot": "shots/layout_360x640_dpr2.png",
+   "vw": 360,
+   "vh": 640,
+   "scrollW": 360,
+   "scrollH": 640,
+   "canvas": {
+    "x": 33.8,
+    "y": 3.5,
+    "w": 292.5,
+    "h": 633
+   },
+   "fillPct": 80.4,
+   "uiScale": 0.75,
+   "els": [
+    {
+     "sel": "#gear",
+     "x": 291.8,
+     "y": 11,
+     "w": 27,
+     "h": 27,
+     "tappable": true
+    },
+    {
+     "sel": "#diary",
+     "x": 260.3,
+     "y": 11,
+     "w": 27,
+     "h": 27,
+     "tappable": true
+    },
+    {
+     "sel": "#grains",
+     "x": 220.2,
+     "y": 11,
+     "w": 35.6,
+     "h": 27,
+     "tappable": true
+    },
+    {
+     "sel": "#chip",
+     "x": 41.3,
+     "y": 11,
+     "w": 112.5,
+     "h": 48.8,
+     "tappable": false
+    },
+    {
+     "sel": "#btn-feed",
+     "x": 41.3,
+     "y": 570.5,
+     "w": 64.9,
+     "h": 55.5,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-play",
+     "x": 112.1,
+     "y": 570.5,
+     "w": 64.9,
+     "h": 55.5,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-clean",
+     "x": 183,
+     "y": 570.5,
+     "w": 64.9,
+     "h": 55.5,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-sleep",
+     "x": 253.9,
+     "y": 570.5,
+     "w": 64.9,
+     "h": 55.5,
+     "tappable": true
+    },
+    {
+     "sel": ".need[hunger]",
+     "x": 41.3,
+     "y": 65,
+     "w": 66,
+     "h": 31.5,
+     "tappable": false
+    },
+    {
+     "sel": ".need[mood]",
+     "x": 111.8,
+     "y": 65,
+     "w": 66,
+     "h": 31.5,
+     "tappable": false
+    },
+    {
+     "sel": ".need[clean]",
+     "x": 182.3,
+     "y": 65,
+     "w": 66,
+     "h": 31.5,
+     "tappable": false
+    },
+    {
+     "sel": ".need[energy]",
+     "x": 252.8,
+     "y": 65,
+     "w": 66,
+     "h": 31.5,
+     "tappable": false
+    }
+   ],
+   "small": [
+    "#gear 27x27",
+    "#diary 27x27",
+    "#grains 35.6x27"
+   ],
+   "off": [],
+   "ov": [],
+   "rotatePrompt": false,
+   "orientationLockCSS": false
+  },
+  {
+   "w": 390,
+   "h": 844,
+   "dpr": 3,
+   "load": 255,
+   "ready": 385,
+   "errs": [],
+   "shot": "shots/layout_390x844.png",
+   "vw": 390,
+   "vh": 844,
+   "scrollW": 390,
+   "scrollH": 844,
+   "canvas": {
+    "x": 0,
+    "y": 0,
+    "w": 390,
+    "h": 844
+   },
+   "fillPct": 100,
+   "uiScale": 1,
+   "els": [
+    {
+     "sel": "#gear",
+     "x": 344,
+     "y": 10,
+     "w": 36,
+     "h": 36,
+     "tappable": true
+    },
+    {
+     "sel": "#diary",
+     "x": 302,
+     "y": 10,
+     "w": 36,
+     "h": 36,
+     "tappable": true
+    },
+    {
+     "sel": "#grains",
+     "x": 248.5,
+     "y": 10,
+     "w": 47.5,
+     "h": 36,
+     "tappable": true
+    },
+    {
+     "sel": "#chip",
+     "x": 10,
+     "y": 10,
+     "w": 150,
+     "h": 65,
+     "tappable": false
+    },
+    {
+     "sel": "#btn-feed",
+     "x": 10,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-play",
+     "x": 104.5,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-clean",
+     "x": 199,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-sleep",
+     "x": 293.5,
+     "y": 756,
+     "w": 86.5,
+     "h": 74,
+     "tappable": true
+    },
+    {
+     "sel": ".need[hunger]",
+     "x": 10,
+     "y": 82,
+     "w": 88,
+     "h": 42,
+     "tappable": false
+    },
+    {
+     "sel": ".need[mood]",
+     "x": 104,
+     "y": 82,
+     "w": 88,
+     "h": 42,
+     "tappable": false
+    },
+    {
+     "sel": ".need[clean]",
+     "x": 198,
+     "y": 82,
+     "w": 88,
+     "h": 42,
+     "tappable": false
+    },
+    {
+     "sel": ".need[energy]",
+     "x": 292,
+     "y": 82,
+     "w": 88,
+     "h": 42,
+     "tappable": false
+    }
+   ],
+   "small": [
+    "#gear 36x36",
+    "#diary 36x36",
+    "#grains 47.5x36"
+   ],
+   "off": [],
+   "ov": [],
+   "rotatePrompt": false,
+   "orientationLockCSS": false
+  },
+  {
+   "w": 412,
+   "h": 915,
+   "dpr": 2.625,
+   "load": 267,
+   "ready": 399,
+   "errs": [],
+   "shot": "shots/layout_412x915.png",
+   "vw": 412,
+   "vh": 915,
+   "scrollW": 412,
+   "scrollH": 915,
+   "canvas": {
+    "x": 20.3,
+    "y": 55.6,
+    "w": 371.4,
+    "h": 803.8
+   },
+   "fillPct": 79.2,
+   "uiScale": 0.952,
+   "els": [
+    {
+     "sel": "#gear",
+     "x": 347.9,
+     "y": 65.1,
+     "w": 34.3,
+     "h": 34.3,
+     "tappable": true
+    },
+    {
+     "sel": "#diary",
+     "x": 307.9,
+     "y": 65.1,
+     "w": 34.3,
+     "h": 34.3,
+     "tappable": true
+    },
+    {
+     "sel": "#grains",
+     "x": 257,
+     "y": 65.1,
+     "w": 45.2,
+     "h": 34.3,
+     "tappable": true
+    },
+    {
+     "sel": "#chip",
+     "x": 29.8,
+     "y": 65.1,
+     "w": 142.9,
+     "h": 61.9,
+     "tappable": false
+    },
+    {
+     "sel": "#btn-feed",
+     "x": 29.8,
+     "y": 775.6,
+     "w": 82.4,
+     "h": 70.5,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-play",
+     "x": 119.8,
+     "y": 775.6,
+     "w": 82.4,
+     "h": 70.5,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-clean",
+     "x": 209.8,
+     "y": 775.6,
+     "w": 82.4,
+     "h": 70.5,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-sleep",
+     "x": 299.8,
+     "y": 775.6,
+     "w": 82.4,
+     "h": 70.5,
+     "tappable": true
+    },
+    {
+     "sel": ".need[hunger]",
+     "x": 29.8,
+     "y": 133.7,
+     "w": 83.8,
+     "h": 40,
+     "tappable": false
+    },
+    {
+     "sel": ".need[mood]",
+     "x": 119.3,
+     "y": 133.7,
+     "w": 83.8,
+     "h": 40,
+     "tappable": false
+    },
+    {
+     "sel": ".need[clean]",
+     "x": 208.9,
+     "y": 133.7,
+     "w": 83.8,
+     "h": 40,
+     "tappable": false
+    },
+    {
+     "sel": ".need[energy]",
+     "x": 298.4,
+     "y": 133.7,
+     "w": 83.8,
+     "h": 40,
+     "tappable": false
+    }
+   ],
+   "small": [
+    "#gear 34.3x34.3",
+    "#diary 34.3x34.3",
+    "#grains 45.2x34.3"
+   ],
+   "off": [],
+   "ov": [],
+   "rotatePrompt": false,
+   "orientationLockCSS": false
+  },
+  {
+   "w": 844,
+   "h": 390,
+   "dpr": 3,
+   "load": 222,
+   "ready": 276,
+   "errs": [],
+   "shot": "shots/layout_844x390_landscape.png",
+   "vw": 844,
+   "vh": 390,
+   "scrollW": 844,
+   "scrollH": 390,
+   "canvas": {
+    "x": 357,
+    "y": 54.3,
+    "w": 130,
+    "h": 281.3
+   },
+   "fillPct": 11.1,
+   "uiScale": 0.333,
+   "els": [
+    {
+     "sel": "#gear",
+     "x": 471.7,
+     "y": 57.7,
+     "w": 12,
+     "h": 12,
+     "tappable": true
+    },
+    {
+     "sel": "#diary",
+     "x": 457.7,
+     "y": 57.7,
+     "w": 12,
+     "h": 12,
+     "tappable": true
+    },
+    {
+     "sel": "#grains",
+     "x": 439.8,
+     "y": 57.7,
+     "w": 15.8,
+     "h": 12,
+     "tappable": true
+    },
+    {
+     "sel": "#chip",
+     "x": 360.3,
+     "y": 57.7,
+     "w": 50,
+     "h": 21.7,
+     "tappable": false
+    },
+    {
+     "sel": "#btn-feed",
+     "x": 360.3,
+     "y": 306.3,
+     "w": 28.8,
+     "h": 24.7,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-play",
+     "x": 391.8,
+     "y": 306.3,
+     "w": 28.8,
+     "h": 24.7,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-clean",
+     "x": 423.3,
+     "y": 306.3,
+     "w": 28.8,
+     "h": 24.7,
+     "tappable": true
+    },
+    {
+     "sel": "#btn-sleep",
+     "x": 454.8,
+     "y": 306.3,
+     "w": 28.8,
+     "h": 24.7,
+     "tappable": true
+    },
+    {
+     "sel": ".need[hunger]",
+     "x": 360.3,
+     "y": 81.7,
+     "w": 29.3,
+     "h": 14,
+     "tappable": false
+    },
+    {
+     "sel": ".need[mood]",
+     "x": 391.7,
+     "y": 81.7,
+     "w": 29.3,
+     "h": 14,
+     "tappable": false
+    },
+    {
+     "sel": ".need[clean]",
+     "x": 423,
+     "y": 81.7,
+     "w": 29.3,
+     "h": 14,
+     "tappable": false
+    },
+    {
+     "sel": ".need[energy]",
+     "x": 454.3,
+     "y": 81.7,
+     "w": 29.3,
+     "h": 14,
+     "tappable": false
+    }
+   ],
+   "small": [
+    "#gear 12x12",
+    "#diary 12x12",
+    "#grains 15.8x12",
+    "#btn-feed 28.8x24.7",
+    "#btn-play 28.8x24.7",
+    "#btn-clean 28.8x24.7",
+    "#btn-sleep 28.8x24.7"
+   ],
+   "off": [],
+   "ov": [],
+   "rotatePrompt": false,
+   "orientationLockCSS": false
+  }
+ ],
+ "loadMs": 238,
+ "readyMs": 365,
+ "initFace": {
+  "eyes": "neutral",
+  "mouth": "neutral",
+  "gaze": "CL",
+  "closed": false,
+  "clip": "idle",
+  "frame": 0,
+  "blink": false,
+  "mode": "auto",
+  "live": true,
+  "liveReady": true,
+  "liveError": null,
+  "drawnClip": "idle",
+  "drawnFrame": 0,
+  "faceVisible": true,
+  "pieces": [
+   "eyes_neutral_CL_l",
+   "eyes_neutral_CL_r",
+   "mouth_neutral"
+  ],
+  "placeholder": [],
+  "derived": false,
+  "bulb": {
+   "mood": "neutral",
+   "i": 0.8,
+   "rgb": [
+    255,
+    239,
+    196
+   ]
+  },
+  "stat": {
+   "draws": 1,
+   "tints": 1,
+   "overlays": 1,
+   "faceDrawn": 1,
+   "faceHidden": 0,
+   "placeholder": 0,
+   "bulb": 1
+  }
+ },
+ "daylight0": {
+  "ready": true,
+  "json": true,
+  "room": false,
+  "blendSeconds": 1800,
+  "dl": {
+   "id": "noon",
+   "prev": "early",
+   "mix": 1,
+   "ambient": [
+    255,
+    255,
+    255
+   ],
+   "bloom": 0.25,
+   "vignette": 0.1,
+   "petMul": [
+    255,
+    255,
+    255
+   ]
+  },
+  "error": null
+ },
+ "tapPet5": {
+  "needs0": {
+   "hunger": 69.95800019999875,
+   "mood": 69.97200013333251,
+   "clean": 89.97270012999896,
+   "energy": 99.96500016666563
+  },
+  "beh": "grumpy",
+  "journal": [
+   {
+    "n": 7,
+    "t": 621.1,
+    "ev": "tap",
+    "name": "pet",
+    "ph": "1"
+   },
+   {
+    "n": 9,
+    "t": 621.1,
+    "ev": "tap",
+    "name": "pet",
+    "ph": "2"
+   },
+   {
+    "n": 10,
+    "t": 621.1,
+    "ev": "tap",
+    "name": "pet",
+    "ph": "3"
+   },
+   {
+    "n": 12,
+    "t": 621.1,
+    "ev": "tap",
+    "name": "pet",
+    "ph": "4"
+   },
+   {
+    "n": 13,
+    "t": 621.1,
+    "ev": "tap",
+    "name": "pet",
+    "ph": "5"
+   },
+   {
+    "n": 15,
+    "t": 621.1,
+    "ev": "tap",
+    "name": "tantrum",
+    "ph": ""
+   }
+  ],
+  "newEvents": [
+   {
+    "id": "grumpy",
+    "kind": "tap",
+    "day": 0,
+    "date": "2026-10-31",
+    "hour": 11.55,
+    "at": 21,
+    "offline": false,
+    "diary": false
+   }
+  ],
+  "stats": {
+   "tantrumTap": 1
+  },
+  "low": 0,
+  "pending": 1,
+  "active": null
+ },
+ "tapPet5real": {
+  "n0": 1,
+  "after": {
+   "journal": [],
+   "newEvents": [],
+   "state": "override"
+  }
+ },
+ "gazeDet": [
+  {
+   "dx": -40,
+   "dy": -30,
+   "from": "C",
+   "firstQChangeSec": 0.13333333333333333,
+   "settleSec": 0.15,
+   "qFlipsIn2_5s": 3,
+   "finalQ": "C",
+   "srcAfter": "camera",
+   "backToNonTapSec": 2.5166666666666666,
+   "beh": "override",
+   "trace": [
+    [
+     0.017,
+     "C",
+     -0.292,
+     "tap"
+    ],
+    [
+     0.117,
+     "C",
+     -0.877,
+     "tap"
+    ],
+    [
+     0.217,
+     "L",
+     -0.931,
+     "tap"
+    ],
+    [
+     0.317,
+     "L",
+     -0.942,
+     "tap"
+    ],
+    [
+     0.417,
+     "L",
+     -0.947,
+     "tap"
+    ],
+    [
+     0.517,
+     "L",
+     -0.949,
+     "tap"
+    ],
+    [
+     0.617,
+     "L",
+     -0.949,
+     "tap"
+    ],
+    [
+     0.717,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     0.817,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     0.917,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     1.017,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     1.117,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     1.217,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     1.317,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     1.417,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     1.517,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     1.617,
+     "L",
+     -0.95,
+     "tap"
+    ],
+    [
+     1.717,
+     "L",
+     -0.386,
+     "camera"
+    ],
+    [
+     1.817,
+     "CL",
+     -0.157,
+     "camera"
+    ],
+    [
+     1.917,
+     "CL",
+     -0.064,
+     "camera"
+    ],
+    [
+     2.017,
+     "C",
+     -0.026,
+     "camera"
+    ],
+    [
+     2.117,
+     "C",
+     -0.011,
+     "camera"
+    ],
+    [
+     2.217,
+     "C",
+     -0.004,
+     "camera"
+    ],
+    [
+     2.317,
+     "C",
+     -0.002,
+     "camera"
+    ],
+    [
+     2.417,
+     "C",
+     -0.001,
+     "camera"
+    ]
+   ]
+  },
+  {
+   "dx": 40,
+   "dy": -30,
+   "from": "C",
+   "firstQChangeSec": 0.13333333333333333,
+   "settleSec": 0.15,
+   "qFlipsIn2_5s": 3,
+   "finalQ": "C",
+   "srcAfter": "camera",
+   "backToNonTapSec": 2.5166666666666666,
+   "beh": "override",
+   "trace": [
+    [
+     0.017,
+     "C",
+     0.307,
+     "tap"
+    ],
+    [
+     0.117,
+     "C",
+     0.923,
+     "tap"
+    ],
+    [
+     0.217,
+     "R",
+     0.98,
+     "tap"
+    ],
+    [
+     0.317,
+     "R",
+     0.992,
+     "tap"
+    ],
+    [
+     0.417,
+     "R",
+     0.997,
+     "tap"
+    ],
+    [
+     0.517,
+     "R",
+     0.999,
+     "tap"
+    ],
+    [
+     0.617,
+     "R",
+     0.999,
+     "tap"
+    ],
+    [
+     0.717,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     0.817,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     0.917,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     1.017,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     1.117,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     1.217,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     1.317,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     1.417,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     1.517,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     1.617,
+     "R",
+     1,
+     "tap"
+    ],
+    [
+     1.717,
+     "R",
+     0.407,
+     "camera"
+    ],
+    [
+     1.817,
+     "CR",
+     0.165,
+     "camera"
+    ],
+    [
+     1.917,
+     "CR",
+     0.067,
+     "camera"
+    ],
+    [
+     2.017,
+     "C",
+     0.027,
+     "camera"
+    ],
+    [
+     2.117,
+     "C",
+     0.011,
+     "camera"
+    ],
+    [
+     2.217,
+     "C",
+     0.005,
+     "camera"
+    ],
+    [
+     2.317,
+     "C",
+     0.002,
+     "camera"
+    ],
+    [
+     2.417,
+     "C",
+     0.001,
+     "camera"
+    ]
+   ]
+  },
+  {
+   "dx": 0,
+   "dy": -80,
+   "from": "C",
+   "firstQChangeSec": 0.13333333333333333,
+   "settleSec": 0.15,
+   "qFlipsIn2_5s": 2,
+   "finalQ": "C",
+   "srcAfter": "camera",
+   "backToNonTapSec": 2.5166666666666666,
+   "beh": "override",
+   "trace": [
+    [
+     0.017,
+     "C",
+     0.015,
+     "tap"
+    ],
+    [
+     0.117,
+     "C",
+     0.046,
+     "tap"
+    ],
+    [
+     0.217,
+     "U",
+     0.049,
+     "tap"
+    ],
+    [
+     0.317,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     0.417,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     0.517,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     0.617,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     0.717,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     0.817,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     0.917,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     1.017,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     1.117,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     1.217,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     1.317,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     1.417,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     1.517,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     1.617,
+     "U",
+     0.05,
+     "tap"
+    ],
+    [
+     1.717,
+     "U",
+     0.02,
+     "camera"
+    ],
+    [
+     1.817,
+     "C",
+     0.008,
+     "camera"
+    ],
+    [
+     1.917,
+     "C",
+     0.003,
+     "camera"
+    ],
+    [
+     2.017,
+     "C",
+     0.001,
+     "camera"
+    ],
+    [
+     2.117,
+     "C",
+     0.001,
+     "camera"
+    ],
+    [
+     2.217,
+     "C",
+     0,
+     "camera"
+    ],
+    [
+     2.317,
+     "C",
+     0,
+     "camera"
+    ],
+    [
+     2.417,
+     "C",
+     0,
+     "camera"
+    ]
+   ]
+  },
+  {
+   "dx": 0,
+   "dy": 20,
+   "from": "C",
+   "firstQChangeSec": 0.13333333333333333,
+   "settleSec": 0.15,
+   "qFlipsIn2_5s": 2,
+   "finalQ": "C",
+   "srcAfter": "camera",
+   "backToNonTapSec": 2.5166666666666666,
+   "beh": "override",
+   "trace": [
+    [
+     0.017,
+     "C",
+     0.015,
+     "tap"
+    ],
+    [
+     0.117,
+     "C",
+     0.046,
+     "tap"
+    ],
+    [
+     0.217,
+     "D",
+     0.049,
+     "tap"
+    ],
+    [
+     0.317,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     0.417,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     0.517,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     0.617,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     0.717,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     0.817,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     0.917,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     1.017,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     1.117,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     1.217,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     1.317,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     1.417,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     1.517,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     1.617,
+     "D",
+     0.05,
+     "tap"
+    ],
+    [
+     1.717,
+     "D",
+     0.02,
+     "camera"
+    ],
+    [
+     1.817,
+     "C",
+     0.008,
+     "camera"
+    ],
+    [
+     1.917,
+     "C",
+     0.003,
+     "camera"
+    ],
+    [
+     2.017,
+     "C",
+     0.001,
+     "camera"
+    ],
+    [
+     2.117,
+     "C",
+     0.001,
+     "camera"
+    ],
+    [
+     2.217,
+     "C",
+     0,
+     "camera"
+    ],
+    [
+     2.317,
+     "C",
+     0,
+     "camera"
+    ],
+    [
+     2.417,
+     "C",
+     0,
+     "camera"
+    ]
+   ]
+  },
+  {
+   "dx": -15,
+   "dy": -30,
+   "from": "C",
+   "firstQChangeSec": 0.15,
+   "settleSec": 0.1,
+   "qFlipsIn2_5s": 2,
+   "finalQ": "C",
+   "srcAfter": "camera",
+   "backToNonTapSec": 2.5166666666666666,
+   "beh": "override",
+   "trace": [
+    [
+     0.017,
+     "C",
+     -0.1,
+     "tap"
+    ],
+    [
+     0.117,
+     "C",
+     -0.294,
+     "tap"
+    ],
+    [
+     0.217,
+     "CL",
+     -0.312,
+     "tap"
+    ],
+    [
+     0.317,
+     "CL",
+     -0.32,
+     "tap"
+    ],
+    [
+     0.417,
+     "CL",
+     -0.323,
+     "tap"
+    ],
+    [
+     0.517,
+     "CL",
+     -0.324,
+     "tap"
+    ],
+    [
+     0.617,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     0.717,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     0.817,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     0.917,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     1.017,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     1.117,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     1.217,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     1.317,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     1.417,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     1.517,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     1.617,
+     "CL",
+     -0.325,
+     "tap"
+    ],
+    [
+     1.717,
+     "CL",
+     -0.132,
+     "camera"
+    ],
+    [
+     1.817,
+     "C",
+     -0.054,
+     "camera"
+    ],
+    [
+     1.917,
+     "C",
+     -0.022,
+     "camera"
+    ],
+    [
+     2.017,
+     "C",
+     -0.009,
+     "camera"
+    ],
+    [
+     2.117,
+     "C",
+     -0.004,
+     "camera"
+    ],
+    [
+     2.217,
+     "C",
+     -0.001,
+     "camera"
+    ],
+    [
+     2.317,
+     "C",
+     -0.001,
+     "camera"
+    ],
+    [
+     2.417,
+     "C",
+     0,
+     "camera"
+    ]
+   ]
+  },
+  {
+   "dx": 15,
+   "dy": -30,
+   "from": "C",
+   "firstQChangeSec": 0.11666666666666667,
+   "settleSec": 0.1,
+   "qFlipsIn2_5s": 2,
+   "finalQ": "C",
+   "srcAfter": "camera",
+   "backToNonTapSec": 2.5166666666666666,
+   "beh": "override",
+   "trace": [
+    [
+     0.017,
+     "C",
+     0.13,
+     "tap"
+    ],
+    [
+     0.117,
+     "CR",
+     0.384,
+     "tap"
+    ],
+    [
+     0.217,
+     "CR",
+     0.409,
+     "tap"
+    ],
+    [
+     0.317,
+     "CR",
+     0.418,
+     "tap"
+    ],
+    [
+     0.417,
+     "CR",
+     0.422,
+     "tap"
+    ],
+    [
+     0.517,
+     "CR",
+     0.424,
+     "tap"
+    ],
+    [
+     0.617,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     0.717,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     0.817,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     0.917,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     1.017,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     1.117,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     1.217,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     1.317,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     1.417,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     1.517,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     1.617,
+     "CR",
+     0.425,
+     "tap"
+    ],
+    [
+     1.717,
+     "CR",
+     0.173,
+     "camera"
+    ],
+    [
+     1.817,
+     "C",
+     0.07,
+     "camera"
+    ],
+    [
+     1.917,
+     "C",
+     0.029,
+     "camera"
+    ],
+    [
+     2.017,
+     "C",
+     0.012,
+     "camera"
+    ],
+    [
+     2.117,
+     "C",
+     0.005,
+     "camera"
+    ],
+    [
+     2.217,
+     "C",
+     0.002,
+     "camera"
+    ],
+    [
+     2.317,
+     "C",
+     0.001,
+     "camera"
+    ],
+    [
+     2.417,
+     "C",
+     0,
+     "camera"
+    ]
+   ]
+  }
+ ],
+ "gazeJitter": [
+  {
+   "offArtPx": 0,
+   "flips": 0,
+   "seq": []
+  },
+  {
+   "offArtPx": 1,
+   "flips": 0,
+   "seq": []
+  },
+  {
+   "offArtPx": 8,
+   "flips": 0,
+   "seq": []
+  },
+  {
+   "offArtPx": 8.8,
+   "flips": 0,
+   "seq": []
+  },
+  {
+   "offArtPx": 9,
+   "flips": 1,
+   "seq": [
+    "CR"
+   ]
+  },
+  {
+   "offArtPx": 9.5,
+   "flips": 1,
+   "seq": [
+    "CR"
+   ]
+  },
+  {
+   "offArtPx": 24.8,
+   "flips": 1,
+   "seq": [
+    "CR"
+   ]
+  },
+  {
+   "offArtPx": 25,
+   "flips": 2,
+   "seq": [
+    "CR",
+    "R"
+   ]
+  }
+ ],
+ "gazeHover": {
+  "before": {
+   "q": "C",
+   "ql": "C",
+   "src": "camera",
+   "x": 0,
+   "y": 0,
+   "tx": 0,
+   "ty": 0,
+   "force": null,
+   "dir": 1,
+   "turn": null
+  },
+  "after": {
+   "q": "C",
+   "ql": "C",
+   "src": "camera",
+   "x": 0,
+   "y": 0,
+   "tx": 0,
+   "ty": 0,
+   "force": null,
+   "dir": 1,
+   "turn": null
+  }
+ },
+ "gazeRealtime": [
+  [
+   0,
+   "C",
+   "camera",
+   0
+  ],
+  [
+   94,
+   "C",
+   "tap",
+   0.667
+  ],
+  [
+   211,
+   "R",
+   "tap",
+   0.968
+  ],
+  [
+   327,
+   "R",
+   "tap",
+   0.987
+  ],
+  [
+   447,
+   "R",
+   "tap",
+   0.996
+  ],
+  [
+   640,
+   "R",
+   "tap",
+   0.999
+  ],
+  [
+   773,
+   "R",
+   "tap",
+   1
+  ],
+  [
+   901,
+   "R",
+   "tap",
+   0.956
+  ],
+  [
+   1015,
+   "R",
+   "tap",
+   0.888
+  ],
+  [
+   1131,
+   "R",
+   "tap",
+   0.811
+  ],
+  [
+   1244,
+   "R",
+   "tap",
+   0.731
+  ],
+  [
+   1357,
+   "R",
+   "tap",
+   0.662
+  ],
+  [
+   1471,
+   "R",
+   "tap",
+   0.58
+  ],
+  [
+   1586,
+   "CR",
+   "tap",
+   0.499
+  ],
+  [
+   1700,
+   "CR",
+   "walk",
+   0.547
+  ],
+  [
+   1813,
+   "R",
+   "walk",
+   0.744
+  ],
+  [
+   1927,
+   "R",
+   "walk",
+   0.813
+  ],
+  [
+   2038,
+   "R",
+   "walk",
+   0.835
+  ],
+  [
+   2153,
+   "R",
+   "walk",
+   0.845
+  ],
+  [
+   2274,
+   "R",
+   "camera",
+   0.344
+  ],
+  [
+   2392,
+   "CR",
+   "camera",
+   0.12
+  ],
+  [
+   2510,
+   "CR",
+   "camera",
+   0.042
+  ]
+ ],
+ "turn": [
+  {
+   "i": 0,
+   "backArt": 4,
+   "upArt": 15,
+   "css": [
+    286,
+    554
+   ],
+   "stBefore": "sunbathe",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet1"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_b",
+    "loop:sunbathe:off"
+   ]
+  },
+  {
+   "i": 1,
+   "backArt": 12,
+   "upArt": 15,
+   "css": [
+    263,
+    554
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 2,
+   "backArt": 20,
+   "upArt": 15,
+   "css": [
+    203,
+    554
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_b"
+   ]
+  },
+  {
+   "i": 3,
+   "backArt": 28,
+   "upArt": 15,
+   "css": [
+    151,
+    554
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_b"
+   ]
+  },
+  {
+   "i": 4,
+   "backArt": 36,
+   "upArt": 15,
+   "css": [
+    142,
+    554
+   ],
+   "stBefore": "nap",
+   "dirBefore": -1,
+   "turned": false,
+   "clipTB": false,
+   "tapNote": [
+    "sleepWake"
+   ],
+   "dirAfter": -1,
+   "aud": [
+    "pet_curious",
+    "loop:sleep_breath:off"
+   ]
+  },
+  {
+   "i": 5,
+   "backArt": 4,
+   "upArt": 35,
+   "css": [
+    78,
+    514
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet1"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 6,
+   "backArt": 12,
+   "upArt": 35,
+   "css": [
+    46,
+    514
+   ],
+   "stBefore": "play",
+   "dirBefore": 1,
+   "turned": false,
+   "clipTB": false,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_touch_a"
+   ]
+  },
+  {
+   "i": 7,
+   "backArt": 20,
+   "upArt": 35,
+   "css": [
+    30,
+    514
+   ],
+   "stBefore": "stay",
+   "dirBefore": 1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": -1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 8,
+   "backArt": 28,
+   "upArt": 35,
+   "css": [
+    102,
+    514
+   ],
+   "stBefore": "stay",
+   "dirBefore": 1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": -1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 9,
+   "backArt": 36,
+   "upArt": 35,
+   "css": [
+    230,
+    514
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 10,
+   "backArt": 4,
+   "upArt": 55,
+   "css": [
+    150,
+    474
+   ],
+   "stBefore": "stay",
+   "dirBefore": 1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": -1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 11,
+   "backArt": 12,
+   "upArt": 55,
+   "css": [
+    183,
+    474
+   ],
+   "stBefore": "stay",
+   "dirBefore": 1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": -1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 12,
+   "backArt": 20,
+   "upArt": 55,
+   "css": [
+    233,
+    474
+   ],
+   "stBefore": "stay",
+   "dirBefore": 1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": -1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 13,
+   "backArt": 28,
+   "upArt": 55,
+   "css": [
+    262,
+    474
+   ],
+   "stBefore": "stay",
+   "dirBefore": 1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": -1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 14,
+   "backArt": 36,
+   "upArt": 55,
+   "css": [
+    390,
+    474
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": false,
+   "clipTB": false,
+   "tapNote": [],
+   "dirAfter": -1,
+   "aud": []
+  },
+  {
+   "i": 15,
+   "backArt": 4,
+   "upArt": 75,
+   "css": [
+    326,
+    434
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet1"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 16,
+   "backArt": 12,
+   "upArt": 75,
+   "css": [
+    294,
+    434
+   ],
+   "stBefore": "stay",
+   "dirBefore": 1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": -1,
+   "aud": [
+    "pet_turn_huh_b"
+   ]
+  },
+  {
+   "i": 17,
+   "backArt": 20,
+   "upArt": 75,
+   "css": [
+    358,
+    434
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_a"
+   ]
+  },
+  {
+   "i": 18,
+   "backArt": 28,
+   "upArt": 75,
+   "css": [
+    284,
+    434
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_b"
+   ]
+  },
+  {
+   "i": 19,
+   "backArt": 36,
+   "upArt": 75,
+   "css": [
+    258,
+    434
+   ],
+   "stBefore": "stay",
+   "dirBefore": -1,
+   "turned": true,
+   "clipTB": true,
+   "tapNote": [
+    "pet2"
+   ],
+   "dirAfter": 1,
+   "aud": [
+    "pet_turn_huh_b"
+   ]
+  }
+ ],
+ "audioLogSample": [
+  {
+   "t": 868.217,
+   "name": "pet_turn_huh_b",
+   "rate": 0.988,
+   "played": true
+  },
+  {
+   "t": 875.617,
+   "name": "pet_turn_huh_a",
+   "rate": 0.967,
+   "played": true
+  },
+  {
+   "t": 882.217,
+   "name": "pet_yawn",
+   "rate": 0.953,
+   "played": true
+  },
+  {
+   "t": 883.017,
+   "name": "pet_turn_huh_b",
+   "rate": 1.023,
+   "played": true
+  },
+  {
+   "t": 890.417,
+   "name": "pet_turn_huh_b",
+   "rate": 1.035,
+   "played": true
+  }
+ ],
+ "spam": {
+  "turns": 1,
+  "taps": [
+   "pet1",
+   "pet2",
+   "pet3",
+   "pet4",
+   "pet5",
+   "tantrum"
+  ],
+  "states": [
+   "startle",
+   "cuddly",
+   "grumpy"
+  ],
+  "aud": [
+   "pet_turn_huh_a",
+   "pet_touch_b",
+   "pet_touch_a",
+   "pet_grumpy",
+   "pet_curious"
+  ],
+  "newEvents": [],
+  "stateNow": "grumpy"
+ },
+ "spamRecover": {
+  "seq": [
+   "grumpy/grumpy",
+   "grumpy/grumpy",
+   "stay/idle",
+   "stay/sway",
+   "stay/sway",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "stay/idle",
+   "walk/walk",
+   "walk/walk",
+   "walk/walk",
+   "walk/walk",
+   "stay/idle"
+  ],
+  "turnNull": true,
+  "gaze": {
+   "q": "CL",
+   "ql": "CL",
+   "src": "idle",
+   "x": -0.37,
+   "y": -0.145,
+   "tx": -0.386,
+   "ty": -0.147,
+   "force": null,
+   "dir": 1,
+   "turn": null
+  }
+ },
+ "front": {
+  "frontN": 12,
+  "frontTurns": 0,
+  "centerN": 6,
+  "centerTurns": 0
+ },
+ "outsideBox": {
+  "n": 6,
+  "turns": 0
+ },
+ "longpress": [
+  {
+   "label": "背後長按 800ms",
+   "turned": true,
+   "taps": [
+    "pet1"
+   ],
+   "state": "startle",
+   "contextmenu": 0
+  },
+  {
+   "label": "前面長按 800ms",
+   "turned": false,
+   "taps": [
+    "pet2"
+   ],
+   "state": "startle",
+   "contextmenu": 0
+  },
+  {
+   "label": "背後長按 1500ms",
+   "turned": true,
+   "taps": [
+    "pet2"
+   ],
+   "state": "startle",
+   "contextmenu": 0
+  }
+ ],
+ "drag": {
+  "turned": true,
+  "taps": [
+   "pet2"
+  ]
+ },
+ "idle": [
+  {
+   "seed": 1,
+   "variants": 15,
+   "perMin": 5,
+   "byVariant": {
+    "sway": 9,
+    "blink": 3,
+    "yawn": 3
+   },
+   "maxSameInRow": 4,
+   "minGap": 6.85,
+   "medianGap": 10.85,
+   "states": {
+    "walk": 4,
+    "stay": 5,
+    "sunbathe": 1
+   },
+   "journalLen": 52,
+   "firstTs": 13.4
+  },
+  {
+   "seed": 7,
+   "variants": 12,
+   "perMin": 4,
+   "byVariant": {
+    "sway": 6,
+    "blink": 3,
+    "yawn": 3
+   },
+   "maxSameInRow": 2,
+   "minGap": 6.9,
+   "medianGap": 14.03,
+   "states": {
+    "play": 1,
+    "stay": 4,
+    "sunbathe": 1,
+    "nap": 1,
+    "wake": 1,
+    "walk": 1
+   },
+   "journalLen": 46,
+   "firstTs": 7.517
+  },
+  {
+   "seed": 42,
+   "variants": 16,
+   "perMin": 5.3,
+   "byVariant": {
+    "blink": 9,
+    "yawn": 1,
+    "sway": 6
+   },
+   "maxSameInRow": 3,
+   "minGap": 6.53,
+   "medianGap": 10.28,
+   "states": {
+    "walk": 4,
+    "stay": 5,
+    "sunbathe": 1
+   },
+   "journalLen": 54,
+   "firstTs": 4.45
+  },
+  {
+   "seed": 99,
+   "variants": 10,
+   "perMin": 3.3,
+   "byVariant": {
+    "yawn": 2,
+    "blink": 5,
+    "sway": 3
+   },
+   "maxSameInRow": 2,
+   "minGap": 7.22,
+   "medianGap": 14.78,
+   "states": {
+    "sunbathe": 1,
+    "stay": 7,
+    "bump": 1,
+    "play": 1,
+    "walk": 2,
+    "jump": 1,
+    "nap": 1,
+    "wake": 1
+   },
+   "journalLen": 57,
+   "firstTs": 9.35
+  },
+  {
+   "seed": 2026,
+   "variants": 10,
+   "perMin": 3.3,
+   "byVariant": {
+    "blink": 3,
+    "sway": 3,
+    "yawn": 4
+   },
+   "maxSameInRow": 2,
+   "minGap": 7.2,
+   "medianGap": 11.7,
+   "states": {
+    "play": 1,
+    "stay": 8,
+    "sunbathe": 1,
+    "walk": 3,
+    "jump": 1,
+    "nap": 2,
+    "wake": 2
+   },
+   "journalLen": 62,
+   "firstTs": 13
+  }
+ ],
+ "idleGaze": {
+  "qChangesPerMin": 22.7,
+  "srcShare": {
+   "idle": 988,
+   "camera": 268,
+   "item": 65,
+   "walk": 50,
+   "sky": 193,
+   "closed": 236
+  }
+ },
+ "daylight": [
+  {
+   "h": 4,
+   "dl": {
+    "ready": true,
+    "json": true,
+    "room": false,
+    "blendSeconds": 1800,
+    "dl": {
+     "id": "night",
+     "prev": "dusk",
+     "mix": 1,
+     "ambient": [
+      92,
+      104,
+      176
+     ],
+     "bloom": 0.65,
+     "vignette": 0.5,
+     "petMul": [
+      154,
+      166,
+      224
+     ]
+    },
+    "error": null
+   },
+   "face": {
+    "eyes": "happy",
+    "mouth": "happy",
+    "live": true,
+    "faceVisible": true,
+    "placeholder": [],
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ],
+    "bulb": {
+     "mood": "happy",
+     "i": 0.87,
+     "rgb": [
+      255,
+      212,
+      94
+     ]
+    }
+   }
+  },
+  {
+   "h": 9,
+   "dl": {
+    "ready": true,
+    "json": true,
+    "room": false,
+    "blendSeconds": 1800,
+    "dl": {
+     "id": "early",
+     "prev": "night",
+     "mix": 1,
+     "ambient": [
+      230,
+      228,
+      244
+     ],
+     "bloom": 0.3,
+     "vignette": 0.22,
+     "petMul": [
+      255,
+      242,
+      240
+     ]
+    },
+    "error": null
+   },
+   "face": {
+    "eyes": "happy",
+    "mouth": "happy",
+    "live": true,
+    "faceVisible": true,
+    "placeholder": [],
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ],
+    "bulb": {
+     "mood": "happy",
+     "i": 0.98,
+     "rgb": [
+      255,
+      212,
+      94
+     ]
+    }
+   }
+  },
+  {
+   "h": 14,
+   "dl": {
+    "ready": true,
+    "json": true,
+    "room": false,
+    "blendSeconds": 1800,
+    "dl": {
+     "id": "noon",
+     "prev": "early",
+     "mix": 1,
+     "ambient": [
+      255,
+      255,
+      255
+     ],
+     "bloom": 0.25,
+     "vignette": 0.1,
+     "petMul": [
+      255,
+      255,
+      255
+     ]
+    },
+    "error": null
+   },
+   "face": {
+    "eyes": "happy",
+    "mouth": "happy",
+    "live": true,
+    "faceVisible": true,
+    "placeholder": [],
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ],
+    "bulb": {
+     "mood": "happy",
+     "i": 0.92,
+     "rgb": [
+      255,
+      212,
+      94
+     ]
+    }
+   }
+  },
+  {
+   "h": 18,
+   "dl": {
+    "ready": true,
+    "json": true,
+    "room": false,
+    "blendSeconds": 1800,
+    "dl": {
+     "id": "dusk",
+     "prev": "noon",
+     "mix": 1,
+     "ambient": [
+      196,
+      140,
+      184
+     ],
+     "bloom": 0.45,
+     "vignette": 0.34,
+     "petMul": [
+      242,
+      200,
+      196
+     ]
+    },
+    "error": null
+   },
+   "face": {
+    "eyes": "happy",
+    "mouth": "happy",
+    "live": true,
+    "faceVisible": true,
+    "placeholder": [],
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ],
+    "bulb": {
+     "mood": "happy",
+     "i": 0.9,
+     "rgb": [
+      255,
+      212,
+      94
+     ]
+    }
+   }
+  },
+  {
+   "h": 23,
+   "dl": {
+    "ready": true,
+    "json": true,
+    "room": false,
+    "blendSeconds": 1800,
+    "dl": {
+     "id": "night",
+     "prev": "dusk",
+     "mix": 0,
+     "ambient": [
+      196,
+      140,
+      184
+     ],
+     "bloom": 0.45,
+     "vignette": 0.34,
+     "petMul": [
+      242,
+      200,
+      196
+     ]
+    },
+    "error": null
+   },
+   "face": {
+    "eyes": "happy",
+    "mouth": "happy",
+    "live": true,
+    "faceVisible": true,
+    "placeholder": [],
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ],
+    "bulb": {
+     "mood": "happy",
+     "i": 0.98,
+     "rgb": [
+      255,
+      212,
+      94
+     ]
+    }
+   }
+  }
+ ],
+ "mainErrs": [],
+ "perf4x": {
+  "load4x": 1196,
+  "ready4x": 1721,
+  "frames": 309,
+  "fps": 10.3,
+  "p50": 100,
+  "p95": 116.7,
+  "p99": 133.4,
+  "max": 216.7,
+  "over33": 308,
+  "heapMB": 20.7,
+  "longTasksDuring": 324,
+  "longTaskMax": 148,
+  "longTaskSum": 30804,
+  "jsHeapUsedMB": 4.7,
+  "jsHeapTotalMB": 7.7,
+  "nodes": 304,
+  "after": {
+   "toast": "效能較低，已自動降低畫質",
+   "faceStat": {
+    "draws": 326,
+    "tints": 326,
+    "overlays": 326,
+    "faceDrawn": 326,
+    "faceHidden": 0,
+    "placeholder": 0,
+    "bulb": 326
+   }
+  },
+  "errs": []
+ },
+ "perf1x": {
+  "load": 237,
+  "ready": 363,
+  "fps": 46.7,
+  "p95": 33.4,
+  "heapMB": 20.7
+ }
+}

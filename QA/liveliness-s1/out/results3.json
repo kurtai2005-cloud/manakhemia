@@ -1,0 +1,1350 @@
+{
+ "faces": [
+  {
+   "h": 4,
+   "lab": "auto",
+   "f": {
+    "eyes": "neutral",
+    "mouth": "neutral",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_neutral_C_r",
+     "mouth_neutral"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 4,
+   "lab": "neutral",
+   "f": {
+    "eyes": "neutral",
+    "mouth": "neutral",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_neutral_C_r",
+     "mouth_neutral"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 4,
+   "lab": "angry",
+   "f": {
+    "eyes": "angry",
+    "mouth": "angry",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_angry_C_l",
+     "eyes_angry_C_r",
+     "mouth_angry"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 4,
+   "lab": "sad",
+   "f": {
+    "eyes": "sad",
+    "mouth": "sad",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sad_C_l",
+     "eyes_sad_C_r",
+     "mouth_sad"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 4,
+   "lab": "surprised",
+   "f": {
+    "eyes": "surprised",
+    "mouth": "surprised",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_surprised_C_l",
+     "eyes_surprised_C_r",
+     "mouth_surprised"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 4,
+   "lab": "sleepy",
+   "f": {
+    "eyes": "sleepy",
+    "mouth": "sleepy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sleepy_C_l",
+     "eyes_sleepy_C_r",
+     "mouth_sleepy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 4,
+   "lab": "wink",
+   "f": {
+    "eyes": "wink",
+    "mouth": "happy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_wink_C_r",
+     "mouth_happy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 9,
+   "lab": "auto",
+   "f": {
+    "eyes": "neutral",
+    "mouth": "neutral",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_neutral_C_r",
+     "mouth_neutral"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "early",
+    "prev": "night",
+    "mix": 1,
+    "ambient": [
+     230,
+     228,
+     244
+    ],
+    "bloom": 0.3,
+    "vignette": 0.22,
+    "petMul": [
+     255,
+     242,
+     240
+    ]
+   }
+  },
+  {
+   "h": 9,
+   "lab": "neutral",
+   "f": {
+    "eyes": "neutral",
+    "mouth": "neutral",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_neutral_C_r",
+     "mouth_neutral"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "early",
+    "prev": "night",
+    "mix": 1,
+    "ambient": [
+     230,
+     228,
+     244
+    ],
+    "bloom": 0.3,
+    "vignette": 0.22,
+    "petMul": [
+     255,
+     242,
+     240
+    ]
+   }
+  },
+  {
+   "h": 9,
+   "lab": "angry",
+   "f": {
+    "eyes": "angry",
+    "mouth": "angry",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_angry_C_l",
+     "eyes_angry_C_r",
+     "mouth_angry"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "early",
+    "prev": "night",
+    "mix": 1,
+    "ambient": [
+     230,
+     228,
+     244
+    ],
+    "bloom": 0.3,
+    "vignette": 0.22,
+    "petMul": [
+     255,
+     242,
+     240
+    ]
+   }
+  },
+  {
+   "h": 9,
+   "lab": "sad",
+   "f": {
+    "eyes": "sad",
+    "mouth": "sad",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sad_C_l",
+     "eyes_sad_C_r",
+     "mouth_sad"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "early",
+    "prev": "night",
+    "mix": 1,
+    "ambient": [
+     230,
+     228,
+     244
+    ],
+    "bloom": 0.3,
+    "vignette": 0.22,
+    "petMul": [
+     255,
+     242,
+     240
+    ]
+   }
+  },
+  {
+   "h": 9,
+   "lab": "surprised",
+   "f": {
+    "eyes": "surprised",
+    "mouth": "surprised",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_surprised_C_l",
+     "eyes_surprised_C_r",
+     "mouth_surprised"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "early",
+    "prev": "night",
+    "mix": 1,
+    "ambient": [
+     230,
+     228,
+     244
+    ],
+    "bloom": 0.3,
+    "vignette": 0.22,
+    "petMul": [
+     255,
+     242,
+     240
+    ]
+   }
+  },
+  {
+   "h": 9,
+   "lab": "sleepy",
+   "f": {
+    "eyes": "sleepy",
+    "mouth": "sleepy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sleepy_C_l",
+     "eyes_sleepy_C_r",
+     "mouth_sleepy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "early",
+    "prev": "night",
+    "mix": 1,
+    "ambient": [
+     230,
+     228,
+     244
+    ],
+    "bloom": 0.3,
+    "vignette": 0.22,
+    "petMul": [
+     255,
+     242,
+     240
+    ]
+   }
+  },
+  {
+   "h": 9,
+   "lab": "wink",
+   "f": {
+    "eyes": "wink",
+    "mouth": "happy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_wink_C_r",
+     "mouth_happy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "early",
+    "prev": "night",
+    "mix": 1,
+    "ambient": [
+     230,
+     228,
+     244
+    ],
+    "bloom": 0.3,
+    "vignette": 0.22,
+    "petMul": [
+     255,
+     242,
+     240
+    ]
+   }
+  },
+  {
+   "h": 14,
+   "lab": "auto",
+   "f": {
+    "eyes": "neutral",
+    "mouth": "neutral",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_neutral_C_r",
+     "mouth_neutral"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "noon",
+    "prev": "early",
+    "mix": 1,
+    "ambient": [
+     255,
+     255,
+     255
+    ],
+    "bloom": 0.25,
+    "vignette": 0.1,
+    "petMul": [
+     255,
+     255,
+     255
+    ]
+   }
+  },
+  {
+   "h": 14,
+   "lab": "neutral",
+   "f": {
+    "eyes": "neutral",
+    "mouth": "neutral",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_neutral_C_r",
+     "mouth_neutral"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "noon",
+    "prev": "early",
+    "mix": 1,
+    "ambient": [
+     255,
+     255,
+     255
+    ],
+    "bloom": 0.25,
+    "vignette": 0.1,
+    "petMul": [
+     255,
+     255,
+     255
+    ]
+   }
+  },
+  {
+   "h": 14,
+   "lab": "angry",
+   "f": {
+    "eyes": "angry",
+    "mouth": "angry",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_angry_C_l",
+     "eyes_angry_C_r",
+     "mouth_angry"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "noon",
+    "prev": "early",
+    "mix": 1,
+    "ambient": [
+     255,
+     255,
+     255
+    ],
+    "bloom": 0.25,
+    "vignette": 0.1,
+    "petMul": [
+     255,
+     255,
+     255
+    ]
+   }
+  },
+  {
+   "h": 14,
+   "lab": "sad",
+   "f": {
+    "eyes": "sad",
+    "mouth": "sad",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sad_C_l",
+     "eyes_sad_C_r",
+     "mouth_sad"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "noon",
+    "prev": "early",
+    "mix": 1,
+    "ambient": [
+     255,
+     255,
+     255
+    ],
+    "bloom": 0.25,
+    "vignette": 0.1,
+    "petMul": [
+     255,
+     255,
+     255
+    ]
+   }
+  },
+  {
+   "h": 14,
+   "lab": "surprised",
+   "f": {
+    "eyes": "surprised",
+    "mouth": "surprised",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_surprised_C_l",
+     "eyes_surprised_C_r",
+     "mouth_surprised"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "noon",
+    "prev": "early",
+    "mix": 1,
+    "ambient": [
+     255,
+     255,
+     255
+    ],
+    "bloom": 0.25,
+    "vignette": 0.1,
+    "petMul": [
+     255,
+     255,
+     255
+    ]
+   }
+  },
+  {
+   "h": 14,
+   "lab": "sleepy",
+   "f": {
+    "eyes": "sleepy",
+    "mouth": "sleepy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sleepy_C_l",
+     "eyes_sleepy_C_r",
+     "mouth_sleepy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "noon",
+    "prev": "early",
+    "mix": 1,
+    "ambient": [
+     255,
+     255,
+     255
+    ],
+    "bloom": 0.25,
+    "vignette": 0.1,
+    "petMul": [
+     255,
+     255,
+     255
+    ]
+   }
+  },
+  {
+   "h": 14,
+   "lab": "wink",
+   "f": {
+    "eyes": "wink",
+    "mouth": "happy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_wink_C_r",
+     "mouth_happy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "noon",
+    "prev": "early",
+    "mix": 1,
+    "ambient": [
+     255,
+     255,
+     255
+    ],
+    "bloom": 0.25,
+    "vignette": 0.1,
+    "petMul": [
+     255,
+     255,
+     255
+    ]
+   }
+  },
+  {
+   "h": 18,
+   "lab": "auto",
+   "f": {
+    "eyes": "happy",
+    "mouth": "happy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "dusk",
+    "prev": "noon",
+    "mix": 1,
+    "ambient": [
+     196,
+     140,
+     184
+    ],
+    "bloom": 0.45,
+    "vignette": 0.34,
+    "petMul": [
+     242,
+     200,
+     196
+    ]
+   }
+  },
+  {
+   "h": 18,
+   "lab": "neutral",
+   "f": {
+    "eyes": "neutral",
+    "mouth": "neutral",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_neutral_C_r",
+     "mouth_neutral"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "dusk",
+    "prev": "noon",
+    "mix": 1,
+    "ambient": [
+     196,
+     140,
+     184
+    ],
+    "bloom": 0.45,
+    "vignette": 0.34,
+    "petMul": [
+     242,
+     200,
+     196
+    ]
+   }
+  },
+  {
+   "h": 18,
+   "lab": "angry",
+   "f": {
+    "eyes": "angry",
+    "mouth": "angry",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_angry_C_l",
+     "eyes_angry_C_r",
+     "mouth_angry"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "dusk",
+    "prev": "noon",
+    "mix": 1,
+    "ambient": [
+     196,
+     140,
+     184
+    ],
+    "bloom": 0.45,
+    "vignette": 0.34,
+    "petMul": [
+     242,
+     200,
+     196
+    ]
+   }
+  },
+  {
+   "h": 18,
+   "lab": "sad",
+   "f": {
+    "eyes": "sad",
+    "mouth": "sad",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sad_C_l",
+     "eyes_sad_C_r",
+     "mouth_sad"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "dusk",
+    "prev": "noon",
+    "mix": 1,
+    "ambient": [
+     196,
+     140,
+     184
+    ],
+    "bloom": 0.45,
+    "vignette": 0.34,
+    "petMul": [
+     242,
+     200,
+     196
+    ]
+   }
+  },
+  {
+   "h": 18,
+   "lab": "surprised",
+   "f": {
+    "eyes": "surprised",
+    "mouth": "surprised",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_surprised_C_l",
+     "eyes_surprised_C_r",
+     "mouth_surprised"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "dusk",
+    "prev": "noon",
+    "mix": 1,
+    "ambient": [
+     196,
+     140,
+     184
+    ],
+    "bloom": 0.45,
+    "vignette": 0.34,
+    "petMul": [
+     242,
+     200,
+     196
+    ]
+   }
+  },
+  {
+   "h": 18,
+   "lab": "sleepy",
+   "f": {
+    "eyes": "sleepy",
+    "mouth": "sleepy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sleepy_C_l",
+     "eyes_sleepy_C_r",
+     "mouth_sleepy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "dusk",
+    "prev": "noon",
+    "mix": 1,
+    "ambient": [
+     196,
+     140,
+     184
+    ],
+    "bloom": 0.45,
+    "vignette": 0.34,
+    "petMul": [
+     242,
+     200,
+     196
+    ]
+   }
+  },
+  {
+   "h": 18,
+   "lab": "wink",
+   "f": {
+    "eyes": "wink",
+    "mouth": "happy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_wink_C_r",
+     "mouth_happy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "dusk",
+    "prev": "noon",
+    "mix": 1,
+    "ambient": [
+     196,
+     140,
+     184
+    ],
+    "bloom": 0.45,
+    "vignette": 0.34,
+    "petMul": [
+     242,
+     200,
+     196
+    ]
+   }
+  },
+  {
+   "h": 23.6,
+   "lab": "auto",
+   "f": {
+    "eyes": "happy",
+    "mouth": "happy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 23.6,
+   "lab": "neutral",
+   "f": {
+    "eyes": "neutral",
+    "mouth": "neutral",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_neutral_C_r",
+     "mouth_neutral"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 23.6,
+   "lab": "angry",
+   "f": {
+    "eyes": "angry",
+    "mouth": "angry",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_angry_C_l",
+     "eyes_angry_C_r",
+     "mouth_angry"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 23.6,
+   "lab": "sad",
+   "f": {
+    "eyes": "sad",
+    "mouth": "sad",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sad_C_l",
+     "eyes_sad_C_r",
+     "mouth_sad"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 23.6,
+   "lab": "surprised",
+   "f": {
+    "eyes": "surprised",
+    "mouth": "surprised",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_surprised_C_l",
+     "eyes_surprised_C_r",
+     "mouth_surprised"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 23.6,
+   "lab": "sleepy",
+   "f": {
+    "eyes": "sleepy",
+    "mouth": "sleepy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_sleepy_C_l",
+     "eyes_sleepy_C_r",
+     "mouth_sleepy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  },
+  {
+   "h": 23.6,
+   "lab": "wink",
+   "f": {
+    "eyes": "wink",
+    "mouth": "happy",
+    "faceVisible": true,
+    "pieces": [
+     "eyes_neutral_C_l",
+     "eyes_wink_C_r",
+     "mouth_happy"
+    ],
+    "placeholder": [],
+    "derived": false,
+    "drawnClip": "idle"
+   },
+   "dl": {
+    "id": "night",
+    "prev": "dusk",
+    "mix": 1,
+    "ambient": [
+     92,
+     104,
+     176
+    ],
+    "bloom": 0.65,
+    "vignette": 0.5,
+    "petMul": [
+     154,
+     166,
+     224
+    ]
+   }
+  }
+ ],
+ "gaze": [
+  {
+   "g": "L",
+   "f": {
+    "gaze": "C",
+    "eyes": "happy",
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ]
+   }
+  },
+  {
+   "g": "CL",
+   "f": {
+    "gaze": "C",
+    "eyes": "happy",
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ]
+   }
+  },
+  {
+   "g": "C",
+   "f": {
+    "gaze": "C",
+    "eyes": "happy",
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ]
+   }
+  },
+  {
+   "g": "CR",
+   "f": {
+    "gaze": "C",
+    "eyes": "happy",
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ]
+   }
+  },
+  {
+   "g": "R",
+   "f": {
+    "gaze": "C",
+    "eyes": "happy",
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ]
+   }
+  },
+  {
+   "g": "U",
+   "f": {
+    "gaze": "C",
+    "eyes": "happy",
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ]
+   }
+  },
+  {
+   "g": "D",
+   "f": {
+    "gaze": "C",
+    "eyes": "happy",
+    "pieces": [
+     "eyes_happy_C_l",
+     "eyes_happy_C_r",
+     "mouth_happy"
+    ]
+   }
+  }
+ ],
+ "turnLog": [
+  {
+   "n": 42,
+   "t": 5,
+   "ev": "state",
+   "name": "stay",
+   "ph": ""
+  },
+  {
+   "n": 43,
+   "t": 5.1,
+   "ev": "state",
+   "name": "stay",
+   "ph": ""
+  },
+  {
+   "n": 44,
+   "t": 5.2,
+   "ev": "state",
+   "name": "stay",
+   "ph": ""
+  },
+  {
+   "n": 45,
+   "t": 7.217,
+   "ev": "state",
+   "name": "override",
+   "ph": "go"
+  },
+  {
+   "n": 46,
+   "t": 7.217,
+   "ev": "clip",
+   "name": "celebrate",
+   "ph": ""
+  },
+  {
+   "n": 47,
+   "t": 7.517,
+   "ev": "state",
+   "name": "event",
+   "ph": ""
+  },
+  {
+   "n": 48,
+   "t": 7.517,
+   "ev": "event",
+   "name": "treasure",
+   "ph": ""
+  },
+  {
+   "n": 49,
+   "t": 7.517,
+   "ev": "clip",
+   "name": "walk",
+   "ph": ""
+  }
+ ],
+ "errs": [],
+ "perf4x_q_low": {
+  "fps": 24.6,
+  "p50": 33.4,
+  "p95": 50.1
+ },
+ "perf4x_q_off": {
+  "fps": 30.7,
+  "p50": 33.3,
+  "p95": 33.4
+ },
+ "stepCost": 0.042
+}
