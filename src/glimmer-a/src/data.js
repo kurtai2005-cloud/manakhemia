@@ -55,6 +55,20 @@
           { id: 'moon', from: 21, to: 3, only: 'moon' },   // 21:00–03:00 → 只計月眠（§7 修訂）
           { id: 'dew', from: 6, to: 9, only: 'tide' },     // 06:00–09:00 晨露 → 只計水珠（v2）
         ],
+      },
+      // §7 路線清晰化（pet-template-v1「§7 路線清晰化」）：顏色／時間全部喺度；螢絨隱藏（燈泡唔顯示、預告唔洩露）
+      route: {
+        colors: { tide: '#6CC8FF', shroom: '#E8925A', crystal: '#BFF3FF', moon: '#9C8CFF', ember: '#FF6A3A', bright: '#FFE066', soft: '#FFC4D6', dust: '#B5ABA2' },   // 每條路一個色（燈泡 tint）
+        bulbStage: 'juvenile',        // 跳跳期先轉色
+        bulbMaxMix: 0.85,             // 最多 85% 路線色（留少少心情色）
+        bulbRampProgress: 0.5,        // 跳跳期進度 0 → 50% 期間由 0 慢慢升到 bulbMaxMix
+        bulbFadeSec: 4,               // 領先路線轉咗 → 4 秒慢慢過色（心情色仍用 face.bulb.fadeSec）
+        leadRecalcSec: 1,             // 領先路線每 1 秒重算一次
+        foreshadowLeadSec: 12 * 3600, // 判定前 12h 做一次預告小動作
+        // 預告小動作（只用現有 clip）：beh＝behavior.force 名；act＝renderer.act（秒）
+        foreshadow: { moon: { beh: 'yawn' }, ember: { act: 'celebrate', dur: 1.6 }, tide: { beh: 'now_lookup' }, shroom: { beh: 'now_sniff' },
+          crystal: { beh: 'now_smug' }, bright: { beh: 'now_happy' }, soft: { beh: 'sway' }, dust: { beh: 'now_drag' } },
+        silhouette: '#2a2440',        // 圖鑑未解鎖剪影色（用現有守夜者圖 alpha 生）
       } },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
     overlayDpPerPx: 1.625,          // evo6 浮動 overlay：sizeDp＝frameSize×1.625（芽崽 32px＝舊 52dp）
     eggTapBoostSec: 75,           // 光卵每點一下 +75s（8 下 = 10 分鐘）
@@ -495,6 +509,9 @@
 
   const STAGE_NAME = { egg: '光卵', newborn: '絨點', sprout: '芽崽', juvenile: '跳跳期', adult: '守夜者', elder: '靜光' };   // evo6 六階段（pet-template-v1 §6）
   const FORM_NAME = { bright: '燦光', soft: '柔光', dust: '微塵', lumi: '螢絨', tide: '水珠', shroom: '菇傘', crystal: '晶角', moon: '月眠', ember: '火苗' };
+  // §7 路線清晰化：圖鑑一句提示（文件原文）
+  const ROUTE_HINT = { tide: '朝早 6–9 點照顧，或者成日淋水', moon: '夜晚 9 點至凌晨 3 點陪佢', shroom: '餵得最多', crystal: '執得最乾淨', ember: '玩得最多（包括小遊戲）',
+    bright: '樣樣都照顧好', soft: '普通照顧', dust: '好少理佢', lumi: '？？？' };
   /* 進化表（開發模式「進化」用；條件以 sim.decideForm 為準）。螢絨＝隱藏形態（docs-gdd/pet-template-v1.md）：
      芽崽期見過螢火散步、CQ ≥55、夜晚照顧 ≥40%。自動條件未實裝（只可經開發模式設定）；未有專屬美術 → 借柔光 atlas＋螢綠 tint。 */
   const EVOLUTION = [
@@ -527,5 +544,5 @@
     sick: ['#f0f0d0', '#d8e0b0', '#b8c890', '#98a870', '#788850', '#586838'],
   };
 
-  return { EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
+  return { ROUTE_HINT, EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
 });

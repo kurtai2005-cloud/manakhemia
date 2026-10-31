@@ -40,7 +40,7 @@ ok(['brightCQ', 'brightMaxTopPct', 'b5CQ', 'b5TopPct', 'b5GapPt', 'softCQ', 'cry
 ok(!('b5CQ' in EV6) && !('branchBright' in P) && !('branchSoft' in P), '舊散落門檻（evo6.b5*、branchBright／Soft）已收入 config');
 { const src = fs.readFileSync(path.join(__dirname, '../src/sim.js'), 'utf8').replace(/\/\/.*$/gm, '');
   const fn = (n) => (src.match(new RegExp('function ' + n + '\\([^]*?\\n  }')) || [''])[0];
-  ok(['decideBranch', 'branch5Check', 'noteB5', 'decideForm'].every(n => fn(n) && !/[^\w.](?:[2-9]\d|1\d\d)\b/.test(fn(n).replace(/\* 100/g, ''))), 'sim 判定函數冇寫死門檻數字（全部讀 config）'); }
+  ok(['decideBranch', 'openBranch', 'branch5Check', 'noteB5', 'decideForm'].every(n => fn(n) && !/[^\w.](?:[2-9]\d|1\d\d)\b/.test(fn(n).replace(/\* 100/g, ''))), 'sim 判定函數冇寫死門檻數字（全部讀 config）'); }
 ok(['水珠', '菇傘', '晶角', '月眠', '火苗'].every((n, i) => D.FORM_NAME[D.BRANCH5[i]] === n), 'FORM_NAME 水珠／菇傘／晶角／月眠／火苗');
 console.log(`  · config：燦光 CQ ≥${C.brightCQ} 且最高 <${C.brightMaxTopPct}%；新 5 條 CQ ≥${C.b5CQ}／≥${C.b5TopPct}%／差 ≥${C.b5GapPt}pt；柔光 CQ ≥${C.softCQ}；晶角清潔 ≥${C.crystalCleanAvg}；時段 ${C.windows.map(w => w.id + ' ' + w.from + '–' + w.to + '→' + w.only).join('、')}`);
 

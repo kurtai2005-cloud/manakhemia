@@ -67,6 +67,8 @@
       else if (e.type === 'hatch') {
         SND('hatch'); rd.flash = 1.2; rd.burst('spark', R.CX, R.GROUND_Y - 24, 14, 90);
         modal({ title: '孵化咗！', kind: 'hatch', lines: ['光卵裂開，一粒細細嘅絨點碌咗出嚟，望住你一面「我好醒㗎」。', '佢係「團絨」，而家仲係絨點仔——蠢蠢地，但自己覺得好叻。', '餵食、玩耍、清潔、關燈瞓覺——慢慢陪佢長大。'], onClose: () => { rd.act('celebrate', 1.0); } });
+      } else if (e.type === 'foreshadow') {
+        UI.pendingFore = e;                         // §7 路線清晰化：判定前 12h 預告（醒咗／冇彈窗先做）
       } else if (e.type === 'evolve') {
         SND('evolve'); rd.flash = 1.4; rd.burst('spark', R.CX, R.GROUND_Y - 40, 18, 110);
         const t = { bright: ['燦光形態！', '絨芽放射出光芒，你照顧得好好，佢成為最亮嘅守夜者。'], soft: ['柔光形態', '圓潤又溫柔，伴你度過每個夜晚。'], dust: ['微塵形態', '素素地都好靚。呢個唔係失敗結局，日後可以再重養。'], lumi: ['螢絨形態（隱藏）', '你陪佢喺夜晚追過螢火，佢身上嘅絨毛開始發出淡淡螢光。'],
@@ -171,6 +173,34 @@
     modal({ title: '設定', node, kind: 'settings', buttons: [{ text: '關閉', primary: true, onClick: () => G.save() }] });
   }
 
+  // ── §7 路線清晰化：預告小動作＋圖鑑 ──
+  function doForeshadow(e) {
+    const a = e.act || {}, BEH = window.Glimmer.behavior;
+    if (a.beh && G.beh && BEH) BEH.force(G.beh, a.beh, G.behCtx || {}); else if (a.act) rd.act(a.act, a.dur || 1.2);
+    G.foreLog = (G.foreLog || []).concat([{ form: e.form, act: a.beh || a.act || null, t: rd.t }]);
+  }
+  function dexThumb(id, unlocked) {               // 守夜者 idle 第 1 幀；未解鎖＝同一幅圖嘅剪影（唔新畫美術）
+    const fk = D.evoForm('adult', id), A = D.FORMS[fk], src = A && rd.atlasSrc(A.atlas, 'idle', 0), c = document.createElement('canvas');
+    c.width = 48; c.height = 48; c.className = 'dexImg'; c.dataset.testid = 'dex-img-' + id; c.dataset.sil = unlocked ? '0' : '1';
+    if (!src) { c.dataset.missing = '1'; return c; }
+    const x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, Math.round((48 - src.sw) / 2), 48 - src.sh, src.sw, src.sh);
+    if (!unlocked) { x.globalCompositeOperation = 'source-in'; x.fillStyle = P.evo6.route.silhouette; x.fillRect(0, 0, 48, 48); x.globalCompositeOperation = 'source-over'; }
+    return c;
+  }
+  function openDex() {
+    const s = G.state, list = SIM.dexList(s), node = document.createElement('div'); node.className = 'dexGrid'; node.dataset.testid = 'dex-grid';
+    list.forEach(d => {
+      const cell = document.createElement('div'); cell.className = 'dexCell' + (d.unlocked ? ' on' : ''); cell.dataset.testid = 'dex-' + d.id; cell.dataset.unlocked = d.unlocked ? '1' : '0';
+      cell.appendChild(dexThumb(d.id, d.unlocked));
+      const n = document.createElement('b'); n.textContent = d.name; cell.appendChild(n);
+      const h = document.createElement('small'); h.textContent = d.hint; h.dataset.testid = 'dex-hint-' + d.id; cell.appendChild(h);
+      node.appendChild(cell);
+    });
+    const p = document.createElement('p'); p.style.cssText = 'font-size:11px;opacity:.75;margin:6px 0 0'; p.textContent = '已解鎖 ' + list.filter(d => d.unlocked).length + '／' + list.length; node.appendChild(p);
+    modal({ title: '圖鑑', kind: 'dex', node, buttons: [{ text: '關閉', primary: true }] });
+  }
+  UI.openDex = openDex;
+
   // ── 日記（離線溢出事件；可領獎，留 14 日）──
   function openDiary() {
     const s = G.state, EV = EVN(); EV.pruneDiary(s, G.now());
@@ -251,6 +281,7 @@
     $('#btn-sleep').addEventListener('click', () => act.sleep());
     $('#gear').addEventListener('click', () => { SND('tap'); openSettings(); });
     $('#diary').addEventListener('click', () => { SND('tap'); openDiary(); });
+    { const dx = $('#dex'); if (dx) dx.addEventListener('click', () => { SND('tap'); openDex(); }); }
     $('#mgQuit').addEventListener('click', () => { SND('cancel'); endMG(true); });
     // 指標：視差、拖動籃子、輕點
     const hit = $('#hit');
@@ -319,6 +350,7 @@
     if (G.mode === 'minigame') return;
     // 事件（可能由 fastForward 產生）
     if (s.ev.length) processEvents();
+    if (UI.pendingFore && !s.sleeping && !modalOpen && G.beh && s.stage !== 'egg') { const e = UI.pendingFore; UI.pendingFore = null; doForeshadow(e); }
     // 需求條
     for (const k of D.NEED_KEYS) {
       const el = $('[data-need="' + k + '"] .fill'); const v = Math.round(s.needs[k]); const key = k + v;

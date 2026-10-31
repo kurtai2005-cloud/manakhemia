@@ -89,7 +89,7 @@
       playEvolve(f) {   // 播進化場面：同 sim.checkStage 一樣推 evolve 事件（UI 閃光＋彈窗＋慶祝）
         note('playEvolve', f); const S = s(); f = f || SIM.decideForm && SIM.decideForm(S.cq) || 'soft';
         if (!D.EVOLUTION.some(e => e.form === f)) throw new Error('dev.playEvolve: ' + f);
-        S.stage = 'adult'; S.form = f; S.sleeping = false; S.ev.push({ type: 'evolve', form: f, cq: S.cq }); G.save(); sync(); return f;
+        S.stage = 'adult'; S.form = f; S.sleeping = false; if (SIM.unlockDex) SIM.unlockDex(S, f); S.ev.push({ type: 'evolve', form: f, cq: S.cq }); G.save(); sync(); return f;
       },
       // ── evo6：跳階段／分支（舊「形態」「進化」行保留）──
       stages() { return D.STAGES.slice(); },
@@ -104,6 +104,12 @@
         if (D.isBig(S.stage)) { delete E.force; G.evo.setStage(S.stage, f); } else { E.force = f; G.save(); }
         sync(); return { force: E.force || null, stage: S.stage, form: S.form };
       },
+      // §7 路線清晰化：領先路線／預告／圖鑑
+      routeLead() { const S = s(); return { lead: SIM.routeLead(S).form, bulb: SIM.routeBulb(S), fore: (S.evo && S.evo.fore) || null }; },
+      foreshadow(f) { note('foreshadow', f); const S = s(); f = f || SIM.routeLead(S).form; if (!D.BRANCHES.includes(f) || f === 'lumi') throw new Error('dev.foreshadow: ' + f);
+        S.ev.push({ type: 'foreshadow', form: f, act: P.evo6.route.foreshadow[f] || null, dev: true }); sync(); return f; },
+      dexUnlock(f) { note('dexUnlock', f); const S = s(); if (f === 'none') S.dex = []; else (f === 'all' ? D.BRANCHES : [f]).forEach(x => SIM.unlockDex(S, x)); G.save(); sync(); return (S.dex || []).slice(); },
+      openDex() { note('openDex'); window.Glimmer.ui.openDex(); return SIM.dexList(s()); },
       evoNext() { note('evoNext'); const r = G.evo.next(); sync(); return r; },
       evoFade() { note('evoFade'); const S = s(); if (S.stage !== 'elder') G.evo.setStage('elder', S.form || 'soft'); if (!S.fadeReady) G.evo.next(); const r = G.fade(); sync(); return r; },
       evoInfo() { return G.evo.info(); },
@@ -165,6 +171,7 @@
         <div class="dr" data-testid="dev-stage-row"><i>階段</i>${D.STAGES.map(st => btn(D.STAGE_NAME[st], 'evoStage:' + st, 'dev-stage-' + st)).join('')}${btn('▶下一階段', 'evoNext', 'dev-stage-next')}${btn('化光', 'evoFade', 'dev-fade')}</div>
         <div class="dr" data-testid="dev-branch-row"><i>分支</i>${['lumi', 'bright', 'soft', 'dust'].map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'evoBranch:' + f, 'dev-branch-' + f)).join('')}<em class="dmst" data-testid="dev-lumi-state"></em></div>
         <div class="dr" data-testid="dev-force-row"><i>強制支線</i>${D.BRANCHES.map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'forceBranch:' + f, 'dev-force-' + f)).join('')}${btn('清除', 'forceBranch:off', 'dev-force-off')}<em class="dmst" data-testid="dev-b5-state"></em></div>
+        <div class="dr" data-testid="dev-route-row"><i>路線</i>${btn('預告', 'foreshadow', 'dev-foreshadow')}${btn('圖鑑', 'openDex', 'dev-dex')}${btn('解鎖全部', 'dexUnlock:all', 'dev-dex-all')}${btn('清圖鑑', 'dexUnlock:none', 'dev-dex-none')}</div>
         <div class="dr"><i>進化</i>${D.EVOLUTION.map(e => btn('▶' + e.name, 'playEvolve:' + e.form, 'dev-evolve-' + e.form)).join('')}</div>
         ${D.NEED_KEYS.map(k => `<label><i>${N[k]}</i><input type="range" min="0" max="100" step="1" data-need="${k}" data-testid="dev-need-${k}" value="${Math.round(S.needs[k])}"><em>${Math.round(S.needs[k])}</em></label>`).join('')}
         <label><i>CQ</i><input type="range" min="${P.cqMin}" max="${P.cqMax}" step="1" data-cq="1" data-testid="dev-cq" value="${Math.round(S.cq)}"><em>${Math.round(S.cq)}</em></label>

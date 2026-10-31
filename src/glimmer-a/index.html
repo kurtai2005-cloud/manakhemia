@@ -66,6 +66,7 @@
   #mbox { width:322px; padding:18px 18px 14px; text-align:center; }
   #mbox h2 { margin:0 0 10px; font-size:19px; color:var(--warm); letter-spacing:2px; }
   #mbox p { margin:6px 0; font-size:14px; line-height:1.55; }
+  .dexGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:4px 0; } .dexCell { background:rgba(255,255,255,.06); border-radius:8px; padding:4px 2px 5px; display:flex; flex-direction:column; align-items:center; } .dexCell b { font-size:12px; margin-top:2px; } .dexCell small { font-size:10px; line-height:1.3; opacity:.8; min-height:26px; } .dexImg { width:72px; height:72px; image-rendering:pixelated; }
   .btn { display:inline-block; margin:12px 4px 0; padding:9px 22px; background:linear-gradient(#ffd36a,#f59a4a); color:#4a2410; font-weight:700; border-radius:9px; cursor:pointer; border:2px solid #fff0c0; font-size:15px; }
   .btn.sec { background:#2a3066; color:#ffe9b8; border-color:#6a5a8a; }
   .seg { display:flex; gap:4px; margin:6px 0; } .seg .btn { flex:1; margin:0; padding:7px 0; font-size:13px; }
@@ -93,7 +94,7 @@
       <div id="hit"></div>
       <div id="hud">
         <div id="chip" class="panel"><b id="stagename">光卵</b><small id="substage"></small><div id="prog"><div id="progf"></div></div></div>
-        <div id="top-r"><div id="grains" class="panel">✦ 0</div><div id="diary" class="ibtn panel" data-testid="diary" style="position:relative">📖<i id="diaryN" style="display:none;position:absolute;right:-4px;top:-5px;min-width:15px;height:15px;border-radius:8px;background:#ff6a6a;color:#fff;font:700 10px/15px sans-serif;text-align:center;font-style:normal"></i></div><div id="gear" class="ibtn panel" data-testid="gear">⚙</div></div>
+        <div id="top-r"><div id="grains" class="panel">✦ 0</div><div id="dex" class="ibtn panel" data-testid="dex" title="圖鑑">🔍</div><div id="diary" class="ibtn panel" data-testid="diary" style="position:relative">📖<i id="diaryN" style="display:none;position:absolute;right:-4px;top:-5px;min-width:15px;height:15px;border-radius:8px;background:#ff6a6a;color:#fff;font:700 10px/15px sans-serif;text-align:center;font-style:normal"></i></div><div id="gear" class="ibtn panel" data-testid="gear">⚙</div></div>
         <div id="needs">
           <div class="need panel" data-need="hunger"><span>飽腹</span><div class="track"><div class="fill"></div></div></div>
           <div class="need panel" data-need="mood"><span>心情</span><div class="track"><div class="fill"></div></div></div>

@@ -32,7 +32,7 @@
     return {
       v: 2, createdAt: nowMs, lastSeen: nowMs, seed: seed || (nowMs % 1e9),
       stage: 'egg', form: null,
-      gen: 1, memorial: [], fadeReady: false,   // evo6：第幾代；化光紀念；靜光完咗等玩家確認化光
+      gen: 1, memorial: [], dex: [], fadeReady: false,   // evo6：第幾代；化光紀念；靜光完咗等玩家確認化光
       evo: { evIn: {}, care: {} },                // evo6：各階段事件次數（evIn[stage][id]）＋照顧次數（care[stage]={all,night}）
       needs: { hunger: 100, mood: 100, clean: 100, energy: 100 },
       sleeping: false, poops: 0, poopTimer: 0,
@@ -172,17 +172,38 @@
     const E = evoOf(s), L = lumiCheck(s), B = branch5Check(s);
     if (E.force && D.BRANCHES.includes(E.force)) return { form: E.force, why: 'dev', lumi: L, b5: B };
     if (L.ok) return { form: 'lumi', why: 'lumi', lumi: L, b5: B };
-    const C = BR();                                      // §7 修訂：燦光（全面照顧＝最高分 < 上限）先過新 5 條；專注某類就去新支線
-    if (s.cq >= C.brightCQ && B.brightTopOk) return { form: 'bright', why: 'cq', lumi: L, b5: B };
-    if (B.ok) return { form: B.form, why: 'b5', lumi: L, b5: B };
-    const f = s.cq >= C.softCQ ? 'soft' : 'dust';        // 照次序：燦光／新 5 條都唔成立 → 柔光（CQ ≥ softCQ）→ 微塵
-    return { form: f, why: 'cq', lumi: L, b5: B };
+    return Object.assign(openBranch(s, B), { lumi: L });
   }
+  function openBranch(s, B) {                            // 螢絨以外嘅判定（燦光 → 新 5 條 → 柔光 → 微塵）
+    const C = BR();                                      // §7 修訂：燦光（全面照顧＝最高分 < 上限）先過新 5 條；專注某類就去新支線
+    if (s.cq >= C.brightCQ && B.brightTopOk) return { form: 'bright', why: 'cq', b5: B };
+    if (B.ok) return { form: B.form, why: 'b5', b5: B };
+    return { form: s.cq >= C.softCQ ? 'soft' : 'dust', why: 'cq', b5: B };   // 照次序：燦光／新 5 條都唔成立 → 柔光（CQ ≥ softCQ）→ 微塵
+  }
+  // §7 路線清晰化：而家「領先」嘅路線（用而家嘅 CQ＋分數試判；螢絨隱藏 → 永遠唔返 lumi；DEV 強制都唔洩露）
+  function routeLead(s) { const r = openBranch(s, branch5Check(s)); return { form: r.form, why: r.why, b5: r.b5 }; }
+  function routeBulb(s) {                                // 燈泡路線色：{ form, color, mix }（唔係跳跳期／config 冇 → null）
+    const R = EV6.route; if (!R || s.stage !== R.bulbStage) return null;
+    const L = routeLead(s), col = R.colors[L.form]; if (!col) return null;
+    const ramp = R.bulbRampProgress > 0 ? clamp(stageProgress(s) / R.bulbRampProgress, 0, 1) : 1;
+    return { form: L.form, color: col, mix: +(R.bulbMaxMix * ramp).toFixed(4) };
+  }
+  function checkForeshadow(s) {                          // 判定前 foreshadowLeadSec 做一次預告（每隻跳跳期一次）
+    const R = EV6.route, sec = P.stageSec.juvenile; if (!R || s.stage !== 'juvenile' || !sec) return;
+    const E = evoOf(s); if (E.fore) return;
+    if (s.growthSec >= sec - R.foreshadowLeadSec && s.growthSec < sec) {
+      const L = routeLead(s); E.fore = { form: L.form, at: Math.round(s.growthSec) }; s.ev.push({ type: 'foreshadow', form: L.form, act: R.foreshadow[L.form] || null });
+    }
+  }
+  function dexList(s) {                                  // 圖鑑：9 條支線，解鎖＝曾經成為守夜者（s.dex）
+    const got = new Set(s.dex || []); return D.BRANCHES.map(id => ({ id, unlocked: got.has(id), name: got.has(id) ? D.FORM_NAME[id] : '？？？', hint: D.ROUTE_HINT[id] || '' }));
+  }
+  function unlockDex(s, f) { if (!D.BRANCHES.includes(f)) return false; s.dex = Array.isArray(s.dex) ? s.dex : []; if (s.dex.includes(f)) return false; s.dex.push(f); return true; }
   function enterStage(s, st) {
     s.stage = st;
     if (st === 'newborn') { s.form = null; s.needs = Object.assign({}, P.startNeedsSprout); s.cq = P.cqStart; s.cqTimer = 0; s.stats.hatches++; s.ev.push({ type: 'hatch' }); return; }
     if (st === 'sprout' || st === 'juvenile') { s.ev.push({ type: 'grow', stage: st, cq: s.cq }); return; }
-    if (st === 'adult') { const d = decideBranch(s); s.form = d.form; delete evoOf(s).force; s.ev.push({ type: 'evolve', form: s.form, cq: s.cq, why: d.why, lumi: d.lumi, b5: d.b5 }); s.cq = P.cqStart; s.cqTimer = 0; return; }
+    if (st === 'adult') { const d = decideBranch(s); s.form = d.form; delete evoOf(s).force; unlockDex(s, s.form); s.ev.push({ type: 'evolve', form: s.form, cq: s.cq, why: d.why, lumi: d.lumi, b5: d.b5 }); s.cq = P.cqStart; s.cqTimer = 0; return; }
     if (st === 'elder') { s.ev.push({ type: 'elder', form: s.form }); }
   }
   function checkStage(s) {
@@ -261,6 +282,7 @@
     }
 
     if (!isUnwell(s) || opts.offline) s.growthSec += dt * gm;
+    checkForeshadow(s);
 
     if (!opts.offline) {
       s.cqTimer += dt;
@@ -508,6 +530,7 @@
       if (!STAGES.includes(s.stage)) return null;
       if ((s.stage === 'adult' || s.stage === 'elder') && !D.BRANCHES.includes(s.form)) s.form = s.form === 'radiant' ? 'bright' : 'dust';
       evoOf(s); s.memorial = Array.isArray(s.memorial) ? s.memorial : []; s.gen = +s.gen || 1;
+      s.dex = Array.isArray(s.dex) ? s.dex.filter(f => D.BRANCHES.includes(f)) : []; s.memorial.forEach(m => unlockDex(s, m.form)); if (s.stage === 'adult' || s.stage === 'elder') unlockDex(s, s.form);   // 圖鑑：舊存檔由紀念＋而家形態補返
       return s;
     } catch (e) { return null; }
   }
@@ -515,6 +538,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });
