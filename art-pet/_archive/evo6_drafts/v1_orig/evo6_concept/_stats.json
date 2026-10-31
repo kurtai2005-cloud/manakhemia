@@ -1,0 +1,158 @@
+{
+ "1_egg": {
+  "name": "光卵",
+  "canvas": 24,
+  "pivot": [
+   12,
+   21
+  ],
+  "bbox_w": 21,
+  "bbox_h": 19,
+  "colours": 9,
+  "palette": "base",
+  "touches_edge": false
+ },
+ "2_dot": {
+  "name": "絨點",
+  "canvas": 28,
+  "pivot": [
+   14,
+   25
+  ],
+  "bbox_w": 23,
+  "bbox_h": 26,
+  "colours": 12,
+  "palette": "base",
+  "touches_edge": false
+ },
+ "3_sprout": {
+  "name": "絨芽",
+  "canvas": 32,
+  "pivot": [
+   16,
+   29
+  ],
+  "bbox_w": 26,
+  "bbox_h": 27,
+  "colours": 11,
+  "palette": "base",
+  "touches_edge": false
+ },
+ "4_hop": {
+  "name": "絨跳",
+  "canvas": 38,
+  "pivot": [
+   19,
+   35
+  ],
+  "bbox_w": 31,
+  "bbox_h": 33,
+  "colours": 14,
+  "palette": "base",
+  "touches_edge": false
+ },
+ "5_adult_lumi": {
+  "name": "守夜者・螢絨",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox_w": 35,
+  "bbox_h": 35,
+  "colours": 13,
+  "palette": "lumi",
+  "touches_edge": false
+ },
+ "5_adult_radiant": {
+  "name": "守夜者・燦光",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox_w": 35,
+  "bbox_h": 36,
+  "colours": 11,
+  "palette": "base",
+  "touches_edge": false
+ },
+ "5_adult_soft": {
+  "name": "守夜者・柔光",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox_w": 36,
+  "bbox_h": 35,
+  "colours": 14,
+  "palette": "base",
+  "touches_edge": false
+ },
+ "5_adult_dust": {
+  "name": "守夜者・微塵",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox_w": 35,
+  "bbox_h": 30,
+  "colours": 12,
+  "palette": "dust",
+  "touches_edge": false
+ },
+ "6_elder_lumi": {
+  "name": "靜光・螢絨",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox_w": 45,
+  "bbox_h": 43,
+  "colours": 13,
+  "palette": "lumi",
+  "touches_edge": false
+ },
+ "6_elder_radiant": {
+  "name": "靜光・燦光",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox_w": 45,
+  "bbox_h": 42,
+  "colours": 12,
+  "palette": "base",
+  "touches_edge": false
+ },
+ "6_elder_soft": {
+  "name": "靜光・柔光",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox_w": 44,
+  "bbox_h": 44,
+  "colours": 15,
+  "palette": "base",
+  "touches_edge": false
+ },
+ "6_elder_dust": {
+  "name": "靜光・微塵",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox_w": 39,
+  "bbox_h": 39,
+  "colours": 14,
+  "palette": "dust",
+  "touches_edge": false
+ }
+}
