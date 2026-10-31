@@ -104,4 +104,26 @@ class PetSys12Test {
             assertTrue(f.name, !c.getJSONObject("shiver").getBoolean("loop") && c.getJSONObject("shiver").getJSONArray("frames").length() == 12)
         }
     }
+
+    // v10.3：懸浮摸頭 → 摸頭委託（snapshot.sys12.pat）
+    @Test fun patSnapshotAndGate() {
+        assertNull("舊 www 冇 pat", snap().pat)
+        assertFalse("舊 www → 唔 queue pat（避免舊 bridge 當互動重複加 mood）", PetSys12.patOk(snap(), 0))
+        val o = JSONObject(json); o.put("pat", JSONObject().put("day", "2026-11-01").put("left", 2).put("cap", 12))
+        val sn = PetSys12.parse(o)!!
+        assertEquals(PetSys12.Pat("2026-11-01", 2, 12), sn.pat)
+        assertTrue(PetSys12.patOk(sn, 0)); assertTrue(PetSys12.patOk(sn, 11))
+        assertFalse("每日 cap（config overlayPatPerDay）", PetSys12.patOk(sn, 12))
+        assertTrue("left 0 照 queue（snapshot 可能舊；JS skip 多出嘅）", PetSys12.patOk(sn.copy(pat = sn.pat!!.copy(left = 0)), 3))
+        o.put("egg", true); assertFalse("蛋唔計", PetSys12.patOk(PetSys12.parse(o), 0))
+        assertFalse(PetSys12.patOk(null, 0))
+    }
+
+    @Test fun overlayTapStillQueuesTapAndPat() {
+        val src = listOf(File("src/main/java/hk/vizard/glimmer/fpet/PetOverlayService.kt"), File("app/src/main/java/hk/vizard/glimmer/fpet/PetOverlayService.kt")).first { it.isFile }.readText()
+        val tap = src.lines().first { it.contains("\"tap → turn_back\"") }
+        assertTrue("舊 tap（mood）保留", tap.contains("appendQueue(this, \"tap\")"))
+        assertTrue("v10.3 加 queuePat()", tap.contains("queuePat()"))
+        assertTrue(src.contains(".put(\"k\", \"pat\")"))
+    }
 }

@@ -7,7 +7,7 @@
  *   （overlayStatus().info；冇就保持 v3）。evoForm／階段／日數一變都即寫（懸浮即刻換同遊戲一樣嘅形態）。
  *   v5（systems12 第 1 批）：加 sys12（__glimmer.evo.sys12Overlay()：親密度／心聲已解鎖句＋冷卻、小驚喜設定＋今日星星碎餘額）；簽名包 bond tier／設定 ts／room。
  * - 返 app 時 replay overlay queue：每次互動 mood +1，每日最多 +5（按互動發生嗰日，本地時間），冇獎勵、冇事件。
- *   systems12 item（k＝drop／voice／set／remind）唔計 mood，交俾 __glimmer.evo.sys12Apply（星星碎每日 5 粒＋上限、心聲冷卻、設定後改贏）。
+ *   systems12 item（k＝drop／voice／set／remind／pat）唔計 mood，交俾 __glimmer.evo.sys12Apply（星星碎每日 5 粒＋上限、心聲冷卻、設定後改贏）。
  * - evo6 v8：queue k==='open_game'（浮動團絨撳兩下開 game）→ __glimmer.evo.overlayOpenGame(t) ＝ 一局小遊戲（火苗 +2；冷卻／獎勵由遊戲 config 管），唔佔 mood 上限。 */
 (function () {
   var C = window.Capacitor;
@@ -46,14 +46,14 @@
     } catch (e) { return null; }
   }
   function sys12Of(g) { try { return g.evo && g.evo.sys12Overlay ? g.evo.sys12Overlay() : null; } catch (e) { return null; } }
-  var S12K = { drop: 1, voice: 1, set: 1, remind: 1 };
+  var S12K = { drop: 1, voice: 1, set: 1, remind: 1, pat: 1 };   // v10.3：pat＝懸浮摸頭 → 摸頭委託（唔計 mood；舊 tap 照計 mood）
   /* queue 分兩份：舊互動（mood +1）同 systems12 item（交俾 sys12Apply） */
   function splitItems(items) { var a = [], b = []; (items || []).forEach(function (it) { (it && S12K[it.k] ? b : a).push(it); }); return { mood: a, sys12: b }; }
   var lastSig = '';
   function sigOf(g) {
     var st = statusOf(g) || {}, ov = g.evo && g.evo.overlayInfo ? g.evo.overlayInfo() : {}, s = g.state || {};
     var inf = st.info || {}, x = sys12Of(g) || {}, xs = x.surp || {}, xb = x.bond || {};
-    return [formOf(s), ov.sizeDp, ov.evoForm || '-', st.moodBand, !!st.sleeping, st.urgent || '-', !!st.egg, inf.stage || '-', inf.days == null ? '-' : inf.days, !!inf.unwell, !!inf.fadeReady, xb.tier == null ? '-' : xb.tier, xs.ts || 0, xs.drop ? xs.drop.room : '-', xs.drop ? xs.drop.day : '-', x.egg ? 1 : 0, x.wx ? (x.wx.manual || '') + JSON.stringify(x.wx.days || {}) + (x.wx.season || '') : '-'].join('|');   // v10.2：天氣／DEV 覆蓋一變即寫
+    return [formOf(s), ov.sizeDp, ov.evoForm || '-', st.moodBand, !!st.sleeping, st.urgent || '-', !!st.egg, inf.stage || '-', inf.days == null ? '-' : inf.days, !!inf.unwell, !!inf.fadeReady, xb.tier == null ? '-' : xb.tier, xs.ts || 0, xs.drop ? xs.drop.room : '-', xs.drop ? xs.drop.day : '-', x.egg ? 1 : 0, x.wx ? (x.wx.manual || '') + JSON.stringify(x.wx.days || {}) + (x.wx.season || '') : '-', x.pat ? x.pat.day + ':' + x.pat.left + '/' + x.pat.cap : '-'].join('|');   // v10.2：天氣／DEV 覆蓋一變即寫
   }
   function maybeWrite() { var g = G(); if (!g || !g.state) return; if (sigOf(g) !== lastSig) writeSnapshot(); }
   var busy = false;

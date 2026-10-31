@@ -75,6 +75,10 @@ const needs = (o) => Object.assign({ hunger: 80, mood: 80, clean: 80, energy: 80
   x12.wx = { days: { '2026-11-01': 'clear' }, manual: null, season: 'autumn' }; r.tick(2000); ok(r.writes.length === m0 + 4 && r.writes[m0 + 3].sys12.wx.days['2026-11-01'] === 'clear', 'v10.2：snap.sys12.wx 天氣出現 → 即寫');
   x12.wx.manual = 'rain'; r.tick(2000); ok(r.writes.length === m0 + 5 && r.writes[m0 + 4].sys12.wx.manual === 'rain', 'v10.2：DEV 轉落雨（manual）→ 即寫（懸浮撐葉）');
   r.tick(2000); ok(r.writes.length === m0 + 5, 'v10.2：天氣冇變 → 唔寫');
+  x12.pat = { day: '2026-11-01', left: 2, cap: 12 }; r.tick(2000); ok(r.writes.length === m0 + 6 && r.writes[m0 + 5].sys12.pat.left === 2 && r.writes[m0 + 5].sys12.pat.cap === 12, 'v10.3：snap.sys12.pat（摸頭委託仲差幾下＋每日 cap）→ 即寫');
+  x12.pat.left = 1; r.tick(2000); ok(r.writes.length === m0 + 7, 'v10.3：摸頭委託進度變 → 即寫（懸浮知幾時夠）');
+  { const n0 = applied.length, md0 = g.state.needs.mood; run(g, [{ t: Date.now(), k: 'tap' }, { t: Date.now(), k: 'pat' }, { t: Date.now(), k: 'pat' }]); await new Promise(s => setImmediate(s)); await new Promise(s => setImmediate(s));
+    ok(applied.length === n0 + 1 && applied[n0].map(i => i.k).join() === 'pat,pat' && g.state.needs.mood === md0 + 1, 'v10.3：懸浮摸頭 {k:pat} → sys12Apply（摸頭委託）；舊 tap 照 mood +1、pat 唔重複加 mood', { a: applied[n0], mood: g.state.needs.mood }); }
   // 舊 www 冇 sys12Apply：systems12 item 照丟（唔當互動加 mood）
   g = { state: { stage: 'adult', form: 'soft', needs: needs({ mood: 50 }), sleeping: false }, save() {} };
   r = run(g, [{ t: Date.now(), k: 'drop' }, { t: Date.now(), k: 'tap' }]); await new Promise(s => setImmediate(s)); await new Promise(s => setImmediate(s));

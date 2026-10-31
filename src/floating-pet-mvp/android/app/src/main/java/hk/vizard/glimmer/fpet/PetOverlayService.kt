@@ -618,7 +618,7 @@ class PetOverlayService : Service() {
         when (st) {
             St.ASLEEP, St.DOZE_IN -> { st = St.WAKE; play("wake"); emoteNext = null; PetPrefs.appendQueue(this, "wake"); Log.i(TAG, "wake") }
             St.DRAG, St.FALL, St.FLING -> {}
-            else -> { st = St.TURN; play("turn_back"); PetPrefs.appendQueue(this, "tap"); Log.i(TAG, "tap → turn_back"); tryVoice(false) }
+            else -> { st = St.TURN; play("turn_back"); PetPrefs.appendQueue(this, "tap"); queuePat(); Log.i(TAG, "tap → turn_back"); tryVoice(false) }
         }
         place()
     }
@@ -836,6 +836,16 @@ class PetOverlayService : Service() {
         PetPrefs.setS12Long(this, "voiceAt", now)
         PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", now).put("k", "voice").put("line", line))
         showSay(line, null, sn.voice.showSec)
+    }
+
+    /** v10.3：懸浮摸頭計入摸頭委託（queue {k:'pat'}；每日上限讀 snapshot.sys12.pat.cap）。 */
+    private fun queuePat() {
+        val sn = s12 ?: PetPrefs.snapshotSys12(this); val now = System.currentTimeMillis(); val day = PetSys12.dayKey(now)
+        val sent = if (PetPrefs.s12Str(this, "patDay") == day) PetPrefs.s12Long(this, "patN").toInt() else 0
+        if (!PetSys12.patOk(sn, sent)) return
+        PetPrefs.setS12Str(this, "patDay", day); PetPrefs.setS12Long(this, "patN", (sent + 1).toLong())
+        PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", now).put("k", "pat"))
+        Log.i(TAG, "s12 pat queued ${sent + 1}/${sn?.pat?.cap} (left ${sn?.pat?.left})")
     }
 
     private fun tickSys12(dt: Float) {

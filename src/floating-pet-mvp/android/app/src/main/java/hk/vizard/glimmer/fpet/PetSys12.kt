@@ -19,7 +19,9 @@ object PetSys12 {
     /** v10.2 天氣（snapshot.sys12.wx）：days = 今日起 7 日一日一抽（dayKey→clear/overcast/rain/fog）；manual = DEV／?weather= 覆蓋。 */
     data class Wx(val days: Map<String, String>, val manual: String?, val season: String?, val shiverMinSec: Double, val shiverMaxSec: Double,
                   val shiverBase: Double, val fogMul: Double, val winterMul: Double)
-    data class Snap(val egg: Boolean, val bond: Int, val tier: Int, val voice: Voice, val surp: Surp, val shards: Int, val wx: Wx? = null)
+    /** v10.3（snapshot.sys12.pat）：left＝摸頭委託仲差幾下；cap＝懸浮每日最多 queue 幾下 pat（config quests.overlayPatPerDay）。舊 www 冇 → null → 唔 queue pat。 */
+    data class Pat(val day: String, val left: Int, val cap: Int)
+    data class Snap(val egg: Boolean, val bond: Int, val tier: Int, val voice: Voice, val surp: Surp, val shards: Int, val wx: Wx? = null, val pat: Pat? = null)
 
     /** 有效設定（snapshot vs 懸浮本地改動：後改贏）。 */
     data class Settings(val on: Map<String, Boolean>, val waterH: Int, val sleepAt: String, val ts: Long)
@@ -37,9 +39,18 @@ object PetSys12 {
                     d.optDouble("minH", 2.0), d.optDouble("maxH", 4.0), d.optInt("perDay", 0), d.optInt("showSec", 30), d.optString("day", ""), d.optInt("room", 0),
                     w?.optInt("fromH", 9) ?: 9, w?.optInt("toH", 22) ?: 22, s.optInt("sleepWinMin", 60), s.optInt("showSec", 6),
                     SURP_KEYS.associateWith { strs(ln?.optJSONArray(it)) }),
-                o.optInt("shards", 0), parseWx(o.optJSONObject("wx")))
+                o.optInt("shards", 0), parseWx(o.optJSONObject("wx")), parsePat(o.optJSONObject("pat")))
         }
     } catch (e: Exception) { null }
+
+    fun parsePat(o: JSONObject?): Pat? = if (o == null) null else Pat(o.optString("day", ""), o.optInt("left", 0), o.optInt("cap", 0))
+
+    /**
+     * v10.3 懸浮摸頭 → 摸頭委託：撳一下（唔係叫醒）除咗舊 "tap"（mood +1）仲 queue 一個 {k:'pat'}，返 app 由 sys12Apply → 摸頭委託入帳。
+     * 條件：新 www（snapshot 有 pat）、唔係蛋、今日懸浮已 queue 嘅 pat < cap（防 queue 洗走星星碎／心聲）。
+     * 唔睇 left：snapshot 可能係尋日／舊嘅（新一日委託要返 app 先抽），JS 會 skip 多出嘅。
+     */
+    fun patOk(sn: Snap?, sentToday: Int): Boolean { val p = sn?.pat ?: return false; return !sn.egg && p.cap > 0 && sentToday < p.cap }
 
     fun parseWx(o: JSONObject?): Wx? = try {
         if (o == null) null else {
