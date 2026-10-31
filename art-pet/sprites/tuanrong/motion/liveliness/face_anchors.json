@@ -225,7 +225,19 @@
     {"eyeL":[11,22],"eyeR":[21,22],"mouth":[15,25],"head_r":[26,17],"bulb":[17,8],"faceVisible":true,"face":{"eyes":"surprised","gaze":"C","mouth":"surprised"}},
     {"eyeL":[12,18],"eyeR":[20,18],"mouth":[15,22],"head_r":[25,13],"bulb":[15,4],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
     {"eyeL":[12,18],"eyeR":[20,18],"mouth":[15,21],"head_r":[25,12],"bulb":[17,4],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
-    {"eyeL":[11,20],"eyeR":[21,20],"mouth":[15,22],"head_r":[25,16],"bulb":[16,8],"faceVisible":true,"face":{"eyes":"sleepy","gaze":"C","mouth":"squint"}}]},
+    {"eyeL":[11,20],"eyeR":[21,20],"mouth":[15,22],"head_r":[25,16],"bulb":[16,8],"faceVisible":true,"face":{"eyes":"sleepy","gaze":"C","mouth":"squint"}}],
+   "leaf_umbrella":[
+    {"eyeL":[11,20],"eyeR":[21,20],"mouth":[15,23],"head_r":[25,15],"bulb":[16,6],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[12,20],"eyeR":[20,20],"mouth":[15,23],"head_r":[25,15],"bulb":[16,6],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
+    {"eyeL":[11,20],"eyeR":[21,20],"mouth":[15,23],"head_r":[25,16],"bulb":[17,6],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[11,20],"eyeR":[21,20],"mouth":[15,23],"head_r":[25,16],"bulb":[16,6],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
+    {"eyeL":[11,20],"eyeR":[21,20],"mouth":[15,23],"head_r":[25,16],"bulb":[15,6],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[11,20],"eyeR":[21,20],"mouth":[15,23],"head_r":[25,16],"bulb":[16,6],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"happy"}}],
+   "shiver":[
+    {"eyeL":[10,20],"eyeR":[20,20],"mouth":[15,23],"head_r":[24,16],"bulb":[17,9],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"sad"}},
+    {"eyeL":[13,20],"eyeR":[21,20],"mouth":[17,23],"head_r":[26,16],"bulb":[19,8],"faceVisible":true,"face":{"eyes":"sad","gaze":"C","mouth":"surprised"}},
+    {"eyeL":[10,20],"eyeR":[20,20],"mouth":[15,23],"head_r":[24,16],"bulb":[17,9],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"sad"}},
+    {"eyeL":[13,20],"eyeR":[21,20],"mouth":[17,23],"head_r":[26,16],"bulb":[19,8],"faceVisible":true,"face":{"eyes":"sad","gaze":"C","mouth":"surprised"}}]},
   "radiant":{
    "idle":[
     {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,50],"head_r":[48,33],"bulb":[32,20],"faceVisible":true,"face":{"eyes":"neutral","gaze":"C","mouth":"neutral","src":"open/smile"}},
@@ -447,7 +459,19 @@
     {"eyeL":[24,48],"eyeR":[40,48],"mouth":[32,53],"head_r":[50,37],"bulb":[34,24],"faceVisible":true,"face":{"eyes":"surprised","gaze":"C","mouth":"surprised"}},
     {"eyeL":[25,42],"eyeR":[39,42],"mouth":[32,48],"head_r":[47,29],"bulb":[30,15],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
     {"eyeL":[25,40],"eyeR":[39,40],"mouth":[32,46],"head_r":[48,28],"bulb":[34,14],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
-    {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,50],"head_r":[49,35],"bulb":[32,22],"faceVisible":true,"face":{"eyes":"sleepy","gaze":"C","mouth":"squint"}}]},
+    {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,50],"head_r":[49,35],"bulb":[32,22],"faceVisible":true,"face":{"eyes":"sleepy","gaze":"C","mouth":"squint"}}],
+   "leaf_umbrella":[
+    {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,51],"head_r":[48,34],"bulb":[32,21],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,50],"head_r":[48,33],"bulb":[32,20],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
+    {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,51],"head_r":[48,34],"bulb":[34,21],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,51],"head_r":[48,34],"bulb":[32,21],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
+    {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,51],"head_r":[48,34],"bulb":[30,21],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[24,45],"eyeR":[40,45],"mouth":[32,51],"head_r":[48,34],"bulb":[32,21],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"happy"}}],
+   "shiver":[
+    {"eyeL":[23,46],"eyeR":[39,46],"mouth":[30,51],"head_r":[47,34],"bulb":[33,24],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"sad"}},
+    {"eyeL":[25,45],"eyeR":[41,45],"mouth":[32,51],"head_r":[49,34],"bulb":[35,22],"faceVisible":true,"face":{"eyes":"sad","gaze":"C","mouth":"surprised"}},
+    {"eyeL":[23,46],"eyeR":[39,46],"mouth":[30,51],"head_r":[47,34],"bulb":[33,24],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"sad"}},
+    {"eyeL":[25,45],"eyeR":[41,45],"mouth":[32,51],"head_r":[49,34],"bulb":[35,22],"faceVisible":true,"face":{"eyes":"sad","gaze":"C","mouth":"surprised"}}]},
   "soft":{
    "idle":[
     {"eyeL":[24,43],"eyeR":[40,43],"mouth":[32,49],"head_r":[50,31],"bulb":[32,17],"faceVisible":true,"face":{"eyes":"neutral","gaze":"C","mouth":"neutral","src":"open/smile"}},
@@ -669,4 +693,16 @@
     {"eyeL":[23,46],"eyeR":[41,46],"mouth":[32,52],"head_r":[52,35],"bulb":[34,22],"faceVisible":true,"face":{"eyes":"surprised","gaze":"C","mouth":"surprised"}},
     {"eyeL":[24,40],"eyeR":[40,40],"mouth":[32,47],"head_r":[49,27],"bulb":[30,12],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
     {"eyeL":[24,38],"eyeR":[40,38],"mouth":[32,45],"head_r":[49,26],"bulb":[34,11],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
-    {"eyeL":[23,43],"eyeR":[41,43],"mouth":[32,49],"head_r":[51,33],"bulb":[32,19],"faceVisible":true,"face":{"eyes":"sleepy","gaze":"C","mouth":"squint"}}]}}}
+    {"eyeL":[23,43],"eyeR":[41,43],"mouth":[32,49],"head_r":[51,33],"bulb":[32,19],"faceVisible":true,"face":{"eyes":"sleepy","gaze":"C","mouth":"squint"}}],
+   "leaf_umbrella":[
+    {"eyeL":[23,43],"eyeR":[41,43],"mouth":[32,50],"head_r":[50,32],"bulb":[32,18],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[24,43],"eyeR":[40,43],"mouth":[32,49],"head_r":[50,31],"bulb":[32,17],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
+    {"eyeL":[23,44],"eyeR":[41,44],"mouth":[32,50],"head_r":[50,32],"bulb":[34,18],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[23,44],"eyeR":[41,44],"mouth":[32,50],"head_r":[50,32],"bulb":[32,18],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
+    {"eyeL":[23,44],"eyeR":[41,44],"mouth":[32,50],"head_r":[50,32],"bulb":[30,18],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+    {"eyeL":[23,44],"eyeR":[41,44],"mouth":[32,50],"head_r":[50,32],"bulb":[32,18],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"happy"}}],
+   "shiver":[
+    {"eyeL":[22,44],"eyeR":[40,44],"mouth":[30,50],"head_r":[50,32],"bulb":[33,21],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"sad"}},
+    {"eyeL":[25,44],"eyeR":[41,44],"mouth":[32,50],"head_r":[51,32],"bulb":[35,20],"faceVisible":true,"face":{"eyes":"sad","gaze":"C","mouth":"surprised"}},
+    {"eyeL":[22,44],"eyeR":[40,44],"mouth":[30,50],"head_r":[50,32],"bulb":[33,21],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"sad"}},
+    {"eyeL":[25,44],"eyeR":[41,44],"mouth":[32,50],"head_r":[51,32],"bulb":[35,20],"faceVisible":true,"face":{"eyes":"sad","gaze":"C","mouth":"surprised"}}]}}}

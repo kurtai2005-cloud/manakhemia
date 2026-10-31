@@ -269,6 +269,18 @@
 | 螢絨 `lumi` | 隱藏：「？？？」 | 唔顯示（保持原燈黃） | — | `tell_lumi` 6 幀 6fps：（隱藏）燈泡一閃一閃、望上面，有粒細螢火飛過（螢絨；UI 唔顯示路線）。 |
 <!-- EVO6G-END -->
 
+<!-- SYS12B1-START -->
+## systems12 第 1 批 — 天氣 clip＋UI
+| clip | 幀 | fps | loop | 用途 |
+|---|---|---|---|---|
+| `leaf_umbrella` | 6 | 6 | [2, 5] | 天氣＝雨（15%）＋團絨喺 H3 戶外：idle 抽中 → 播 1 次第 1–2 幀（拎葉出嚟→舉過頭），之後第 3–6 幀循環到雨停／被打斷；雨停 → 收葉 → idle |
+| `shiver` | 4 | 10 | [0, 3] | 季節＝冬（12–2 月）或天氣＝霧：idle 抽中機率加大；連播 2–3 個循環（約 1–1.2s）→ idle |
+
+- 形態：sprout／radiant／soft（`liveliness/atlas_<form>_live_wx`）、lumi（`../atlas_lumi`）、evo6 全部 21 個（`../evo6/atlas_<form>`）；光卵唔做。
+- std：noface＋faceov＝完整、kit 合成＝完整、emissive、anchors（bulb＝燈中心）、atlas。葉／雨點／震線／白氣烙入身體層，只畫落空白位。
+- 月眠兩款頂帽佔滿上方 → 片葉撐喺膊頭（刻意）。
+- UI 21 件：`../../ui/systems12/`；天氣 陰／霧：`../../scenes/hd2d/weather/`＋`H3/{overcast,fog}/`；季節 4 套：`../../scenes/hd2d/seasons/`。
+<!-- SYS12B1-END -->
 
 
 <!-- LUMI-START -->

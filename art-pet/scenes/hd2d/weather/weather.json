@@ -1,0 +1,52 @@
+{
+ "overcast_clouds": {
+  "image": "overcast_clouds.png",
+  "size": [
+   223,
+   96
+  ],
+  "wrapX": true,
+  "colors": {
+   "lit": "#e6ebf0",
+   "mid": "#c4ccd6",
+   "shade": "#a3adba"
+  },
+  "draw": "陰天：疊喺 sky 之上、far 之下（parallax 同 sky 0.15）；art y −6 起（層座標 y 6）；橫向慢飄 2 px/s 循環；globalAlpha 0.85；唔食 lightmap",
+  "anyVariant": "H1–H4 都可以疊（H4 夜晚 globalAlpha 0.35＋multiply #6a70a0）"
+ },
+ "fog_bank": {
+  "image": "fog_bank.png",
+  "size": [
+   223,
+   144
+  ],
+  "frames": {
+   "far": [
+    0,
+    0,
+    223,
+    72
+   ],
+   "near": [
+    0,
+    72,
+    223,
+    72
+   ]
+  },
+  "wrapX": true,
+  "colors": {
+   "thin": "#eef2f4",
+   "thick": "#dfe6ea"
+  },
+  "draw": "霧天：far 帶畫喺 far 之後（art y 200–272，0.35 parallax，飄 3 px/s，globalAlpha 0.7）；near 帶畫喺 fore 之前（art y 300–372，飄 6 px/s 反方向，globalAlpha 0.45）；Bayer 抖色 alpha 0/255",
+  "anyVariant": "H1 晨霧最啱；H4 夜霧 multiply #8088b0"
+ },
+ "spec": "docs-gdd/systems12-v1.md 系統 7 天氣：晴60／陰20／雨15／霧5%（雨已有：rain/）",
+ "weights": {
+  "clear": 60,
+  "overcast": 20,
+  "rain": 15,
+  "fog": 5
+ }
+}

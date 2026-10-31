@@ -13,7 +13,8 @@ TR = os.path.normpath(os.path.join(HERE, "..", "sprites", "tuanrong")); MOT = os
 MVP = {"idle": 4, "blink": 4, "walk": 6, "play": 6, "eat": 4, "sleep_loop": 4, "emo_happy": 2, "emo_hungry": 2, "emo_sleepy": 2, "celebrate": 4, "droop": 6, "sick": 2}
 EXTRA = {"picked_up": 6, "fall_asleep": 4, "wake": 4}
 STD23_ADD = {"sway": 4, "yawn": 4, "emo_wantplay": 2, "emo_cuddly": 2, "emo_surprised": 2, "cheer_jump": 6, "catch_reach": 6, "sunbathe": 8, "pot_bump": 8}
-WANT = {**MVP, **EXTRA, **STD23_ADD}   # std23 全套 23 clip ＋ picked_up ＝ 24 clip／102 幀
+WEATHER = {"leaf_umbrella": 6, "shiver": 4}   # systems12 b1 天氣 clip（kit 合成＝完整）
+WANT = {**MVP, **EXTRA, **STD23_ADD, **WEATHER}   # std23 全套 23 clip ＋ picked_up ＝ 24 clip／102 幀
 KEYS = ("eyeL", "eyeR", "mouth", "head_r", "bulb", "faceVisible", "face")
 MOVING = ("neutral", "surprised", "squint", "angry", "sad")
 S = 64; PIV = (32, 61)
@@ -97,7 +98,7 @@ def run():
             if np.array_equal(e[..., 3] == 255, want) and (e[e[..., 3] == 255][:, :3] == 255).all(): em_ok += 1
             else: F(f"emissive mismatch {cn} {k}")
             if not want.any() and cn != "sick": F(f"no glow {cn} {k}")
-            if cn == "picked_up":
+            if cn == "picked_up" or cn in WEATHER:
                 fa = an["face"]; img = body.copy()
                 if fa and an["faceVisible"]:
                     g = fa.get("gaze", "C"); eL = fa["eyes"]; eR = fa.get("eyesR", eL)
@@ -105,7 +106,7 @@ def run():
                     place(img, nm(eL, "l"), an["eyeL"]); place(img, nm(eR, "r"), an["eyeR"]); place(img, "mouth_" + fa["mouth"], an["mouth"])
                 if np.array_equal(img, full): recon_new += 1
                 else: F(f"kit compose != full {cn} {k}")
-    info.append(f"[lumi] noface+faceov＝完整幀 {recon}；picked_up kit 合成＝完整幀 {recon_new}；emissive 遮罩吻合 {em_ok}")
+    info.append(f"[lumi] noface+faceov＝完整幀 {recon}；picked_up＋天氣 clip kit 合成＝完整幀 {recon_new}；emissive 遮罩吻合 {em_ok}")
     # glow animates: tail/dots differ across idle frames
     em_idle = [load(os.path.join(LU, "emissive", f"idle_{k:02d}_emissive.png"))[..., 3].sum() for k in range(1, 5)]
     if len(set(em_idle)) < 2: F("idle emissive static (no pulse/twinkle)")

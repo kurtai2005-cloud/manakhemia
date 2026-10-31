@@ -36,5 +36,9 @@
   "lumi:play_04:shear"
  ],
  "edgeTouch": [],
- "std23Remaining": []
+ "std23Remaining": [],
+ "systems12_b1": {
+  "leaf_umbrella": 6,
+  "shiver": 4
+ }
 }

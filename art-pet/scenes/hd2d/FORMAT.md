@@ -97,3 +97,12 @@ draw fore  @ offs.fore
 - `rain_tile.png`：64×64 可平鋪雨絲 × 4 幀（橫排，json 有 rect）；每幀向下移 16px 循環＝無縫；建議 fps 12，globalAlpha 0.5–0.7，畫喺 emissive_blur 之後、fog 之前（唔食 lightmap，雨絲喺陰影位都睇得見）。
 - `ripple.png`：16×8 水氹漣漪 × 4 幀；隨機落喺 `layout.json → ground.walkable` 範圍。
 - `H3/grade_rain.json`＋`H3/rain/*.png`：預烘落雨版場景層。
+
+<!-- SYS12-START -->
+## SYS12. 天氣（陰／霧）＋季節（systems12 第 1 批）
+- 天氣權重：晴 60／陰 20／雨 15／霧 5（雨＝§7 `rain/`，唔變）。只 H3 戶外有天氣層。
+- 陰：`H3/grade_overcast.json`＋`H3/overcast/{sky,far,mid,fore}.png`（已預烘 `lut_overcast.png`）＋ `weather/overcast_clouds.png`：陰天：疊喺 sky 之上、far 之下（parallax 同 sky 0.15）；art y −6 起（層座標 y 6）；橫向慢飄 2 px/s 循環；globalAlpha 0.85；唔食 lightmap
+- 霧：`H3/grade_fog.json`＋`H3/fog/{sky,far,mid,fore}.png`（遠景預烘淡出）＋ `weather/fog_bank.png`（far／near 兩帶）：霧天：far 帶畫喺 far 之後（art y 200–272，0.35 parallax，飄 3 px/s，globalAlpha 0.7）；near 帶畫喺 fore 之前（art y 300–372，飄 6 px/s 反方向，globalAlpha 0.45）；Bayer 抖色 alpha 0/255
+- 季節（香港月份：春 3–5／夏 6–8／秋 9–11／冬 12–2）：`seasons/<season>/<H#>/{sky,far,mid,fore,lightmap}.png`＋`lut.png`（256×16）＋`grade.json`（同 §5 schema）。晴天先用季節層；雨／陰／霧時用 H3/<weather>/*。換季 3s crossfade。
+- 團絨：落雨 → `leaf_umbrella`；霧／冬 → `shiver` 抽中率加大（CLIPS.json `systems12B1`）。
+<!-- SYS12-END -->

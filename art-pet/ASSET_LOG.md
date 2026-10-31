@@ -137,4 +137,13 @@
 - 預告 tell_<id> ×9（絨跳）：56 幀；atlas_evo_hop 重排（1024×1024，540 塊）。
 - 圖鑑剪影 ×9：`route_clarity/silhouette/sil_<id>_48.png`＋`collection_route.json`。
 - 預覽 `sprites/tuanrong/preview/evo6/evo6_batchG_route_clarity_4x.png`；工具 `tools/build_evo6_routeG.py`；驗證 `tools/validate_route_clarity.py`；備份 `_backups/pre_evo6_route_clarity_20261101/`。Pillow/numpy 程式繪製，無 AI。
-{b_}
+<!-- EVO6G-LOG-END -->
+
+<!-- SYS12B1-LOG-START -->
+## 2026-11-01 — systems12 第 1 批素材
+- 團絨天氣 clip：leaf_umbrella（撐葉 6 幀）＋ shiver（打冷震 4 幀）× 25 形態（sprout／radiant／soft／lumi＋evo6 21）＝ 250 幀；新 atlas `atlas_<form>_live_wx` ×3，atlas_lumi＋evo6 atlas 重排（evo_hop 連 route_clarity 重出）；舊幀像素冇改（載入對拍）。
+- UI（`ui/systems12/`）：委託面板 9-slice＋行底＋checkbox ×2、委託 icon ×3（餵／淋水／陪玩）、星星碎 16／32、心聲泡框＋尾、日記頁框（普通／特別）、日記貼紙 ×6、提醒 icon ×2；`atlas_systems12_ui`。
+- 天氣：`scenes/hd2d/H3/{overcast,fog}/`＋`grade_{overcast,fog}.json`＋`weather/{overcast_clouds,fog_bank}.png`＋`weather.json`（雨沿用 rain/）。
+- 季節：`scenes/hd2d/seasons/<spring|summer|autumn|winter>/H1–H4/`（LUT＋預烘層＋lightmap＋grade）＋`seasons.json`（香港月份）。
+- 預覽 `sprites/tuanrong/preview/systems12/`；工具 `tools/build_systems12_b1.py`＋`tools/build_systems12_b1_ui.py`；驗證 `tools/validate_systems12_b1.py`；備份 `_backups/pre_systems12_b1_20261101/`。Pillow/numpy 程式繪製，無 AI。
+<!-- SYS12B1-LOG-END -->

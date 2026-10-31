@@ -391,7 +391,7 @@ def update_docs(T, ainfo, spec, col, nfr, tot):
            f"- 絨跳燈色 8 路（螢絨唔顯示）：`sprites/tuanrong/evo6/route_clarity/palette_route_bulbs.json`＋`palette_evo_hop_<id>.json` ×8＋`atlas_evo_hop_bulbmask.png`＋`atlas_evo_hop_bulb_<id>.png` ×8；現有 evo_hop 散檔像素冇改。\n"
            f"- 預告 tell_<id> ×9（絨跳）：{sum(len(c['full']) for c in T.values())} 幀；atlas_evo_hop 重排（{W}×{H}，{n} 塊）。\n"
            "- 圖鑑剪影 ×9：`route_clarity/silhouette/sil_<id>_48.png`＋`collection_route.json`。\n"
-           "- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchG_route_clarity_4x.png`；工具 `tools/build_evo6_routeG.py`；驗證 `tools/validate_route_clarity.py`；備份 `_backups/pre_evo6_route_clarity_20261101/`。Pillow/numpy 程式繪製，無 AI。\n{b_}\n")
+           f"- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchG_route_clarity_4x.png`；工具 `tools/build_evo6_routeG.py`；驗證 `tools/validate_route_clarity.py`；備份 `_backups/pre_evo6_route_clarity_20261101/`。Pillow/numpy 程式繪製，無 AI。\n{b_}\n")
     BC.atomic_write(lp, lg.rstrip() + "\n\n" + ent)
 
 def main():

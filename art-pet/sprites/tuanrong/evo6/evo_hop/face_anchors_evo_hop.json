@@ -1,4 +1,4 @@
-{"version": 1, "form": "evo_hop", "frameSize": 38, "coords": "frame-local px, origin = frame top-left, y down", "pivotPx": [19, 35], "pivotOverride": {"picked_up": "grab"}, "keys": "eyeL/eyeR/mouth = 五官錨點（kit piece pivot；已含面右移 1px）; head_r = 頭右上圖示; bulb = 第一粒燈芽中心（bulb_base/bulb_glow pivot）; faceVisible; face = 預設表情; grab = 頭頂拎點（picked_up，亦係 pivot）", "tellClips": ["tell_tide", "tell_moon", "tell_shroom", "tell_crystal", "tell_ember", "tell_radiant", "tell_soft", "tell_dust", "tell_lumi"], "tellNote": "tell_<路線>＝判定前 12h 預告小動作（§7 路線清晰化），由絨跳播；錨點同 std clip（bulb＝燈芽中心）",
+{"version": 1, "form": "evo_hop", "frameSize": 38, "coords": "frame-local px, origin = frame top-left, y down", "pivotPx": [19, 35], "pivotOverride": {"picked_up": "grab"}, "keys": "eyeL/eyeR/mouth = 五官錨點（kit piece pivot；已含面右移 1px）; head_r = 頭右上圖示; bulb = 第一粒燈芽中心（bulb_base/bulb_glow pivot）; faceVisible; face = 預設表情; grab = 頭頂拎點（picked_up，亦係 pivot）", "tellClips": ["tell_tide", "tell_moon", "tell_shroom", "tell_crystal", "tell_ember", "tell_radiant", "tell_soft", "tell_dust", "tell_lumi"], "tellNote": "tell_<路線>＝判定前 12h 預告小動作（§7 路線清晰化），由絨跳播；錨點同 std clip（bulb＝燈芽中心）", "weatherClips": ["leaf_umbrella", "shiver"], "weatherNote": "systems12 第 1 批天氣 clip（leaf_umbrella 撐葉／shiver 打冷震）；錨點同 std clip（bulb＝燈中心；葉只喺身後空白位，唔遮燈）",
  "anchors":{
   "idle":[
    {"eyeL":[15,24],"eyeR":[25,24],"mouth":[20,28],"head_r":[31,16],"bulb":[20,8],"faceVisible":true,"face":{"eyes":"neutral","gaze":"C","mouth":"neutral","src":"open/smile"}},
@@ -274,4 +274,16 @@
    {"eyeL":[15,23],"eyeR":[25,23],"mouth":[20,27],"head_r":[31,16],"bulb":[20,8],"faceVisible":true,"face":{"eyes":"neutral","gaze":"C","mouth":"surprised","src":"open/o"}},
    {"eyeL":[15,23],"eyeR":[25,23],"mouth":[20,27],"head_r":[31,16],"bulb":[20,8],"faceVisible":true,"face":{"eyes":"surprised","gaze":"C","mouth":"happy","src":"shine/open"}},
    {"eyeL":[15,24],"eyeR":[25,24],"mouth":[20,28],"head_r":[31,16],"bulb":[20,8],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"neutral","src":"happy/smile"}},
-   {"eyeL":[15,24],"eyeR":[25,24],"mouth":[20,28],"head_r":[31,16],"bulb":[20,8],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"neutral","src":"happy/smile"}}]}}
+   {"eyeL":[15,24],"eyeR":[25,24],"mouth":[20,28],"head_r":[31,16],"bulb":[20,8],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"neutral","src":"happy/smile"}}],
+  "leaf_umbrella":[
+   {"eyeL":[15,25],"eyeR":[25,25],"mouth":[20,28],"head_r":[31,17],"bulb":[20,9],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+   {"eyeL":[15,24],"eyeR":[25,24],"mouth":[20,28],"head_r":[31,16],"bulb":[20,8],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
+   {"eyeL":[15,25],"eyeR":[25,25],"mouth":[20,28],"head_r":[31,17],"bulb":[21,9],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+   {"eyeL":[15,25],"eyeR":[25,25],"mouth":[20,28],"head_r":[31,17],"bulb":[20,9],"faceVisible":true,"face":{"eyes":"happy","gaze":"C","mouth":"happy"}},
+   {"eyeL":[15,25],"eyeR":[25,25],"mouth":[20,28],"head_r":[31,17],"bulb":[19,9],"faceVisible":true,"face":{"eyes":"neutral","gaze":"U","mouth":"neutral"}},
+   {"eyeL":[15,25],"eyeR":[25,25],"mouth":[20,28],"head_r":[31,17],"bulb":[20,9],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"happy"}}],
+  "shiver":[
+   {"eyeL":[14,25],"eyeR":[24,25],"mouth":[18,28],"head_r":[30,17],"bulb":[21,11],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"sad"}},
+   {"eyeL":[16,25],"eyeR":[26,25],"mouth":[20,28],"head_r":[32,17],"bulb":[23,11],"faceVisible":true,"face":{"eyes":"sad","gaze":"C","mouth":"surprised"}},
+   {"eyeL":[14,25],"eyeR":[24,25],"mouth":[18,28],"head_r":[30,17],"bulb":[21,11],"faceVisible":true,"face":{"eyes":"squint","gaze":"C","mouth":"sad"}},
+   {"eyeL":[16,25],"eyeR":[26,25],"mouth":[20,28],"head_r":[32,17],"bulb":[23,11],"faceVisible":true,"face":{"eyes":"sad","gaze":"C","mouth":"surprised"}}]}}

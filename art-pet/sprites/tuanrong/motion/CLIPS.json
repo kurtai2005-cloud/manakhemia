@@ -26,7 +26,8 @@
    "liveAtlas": [
     "atlas_sprout_live.png",
     "atlas_sprout_live_s2.png",
-    "atlas_sprout_live_s3.png"
+    "atlas_sprout_live_s3.png",
+    "atlas_sprout_live_wx.png"
    ]
   },
   "radiant": {
@@ -53,7 +54,8 @@
    "liveAtlas": [
     "atlas_radiant_live.png",
     "atlas_radiant_live_s2.png",
-    "atlas_radiant_live_s3.png"
+    "atlas_radiant_live_s3.png",
+    "atlas_radiant_live_wx.png"
    ]
   },
   "soft": {
@@ -80,7 +82,8 @@
    "liveAtlas": [
     "atlas_soft_live.png",
     "atlas_soft_live_s2.png",
-    "atlas_soft_live_s3.png"
+    "atlas_soft_live_s3.png",
+    "atlas_soft_live_wx.png"
    ]
   },
   "lumi": {
@@ -100,8 +103,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 290,
-   "frames": 102,
+   "atlasPieces": 310,
+   "frames": 112,
    "headRightAnchor": [
     16,
     -28
@@ -140,7 +143,9 @@
     "eat",
     "celebrate",
     "sick",
-    "picked_up"
+    "picked_up",
+    "leaf_umbrella",
+    "shiver"
    ],
    "mvp": [
     "idle",
@@ -189,7 +194,11 @@
    "clipSet": "std23 + picked_up",
    "std23Remaining": [],
    "emissiveRule": "白＝發光（palette fly #CFF26A、fly_core #F2FFB8）：尾燈、觸角燈頭、身上光點、眼高光。發光像素唔食場景 petTint×ambientTint；glow = emissive Gaussian σ3 × #cff26a ×1.4 ＋ σ1 × #f2ffb8 ×0.35",
-   "note": "姿勢參數同 radiant 一樣（round_s），只換外觀層；尾燈脈衝（bud＋幀相位）、光點閃爍已烙入幀。"
+   "note": "姿勢參數同 radiant 一樣（round_s），只換外觀層；尾燈脈衝（bud＋幀相位）、光點閃爍已烙入幀。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_egg": {
    "name": "光卵",
@@ -562,8 +571,8 @@
     1024,
     512
    ],
-   "atlasPieces": 426,
-   "frames": 171,
+   "atlasPieces": 446,
+   "frames": 181,
    "palette": "../evo6/palette_base.json",
    "faceAnchors": "../evo6/evo_dot/face_anchors_evo_dot.json",
    "clips": [
@@ -605,7 +614,9 @@
     "act_cool",
     "lookup_tip",
     "getup",
-    "sniff_itch"
+    "sniff_itch",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -752,7 +763,11 @@
     "getup",
     "sniff_itch"
    ],
-   "note": "絨點：未有腳，坐喺半個蛋殼（殼＝光卵同款 egg ramp）；walk/rush 等係成個殼一齊彈；picked_up 冇吊腳（殼跟住）；arms 只喺 up/eat/upx 時出細肉手；冇 bulb。"
+   "note": "絨點：未有腳，坐喺半個蛋殼（殼＝光卵同款 egg ramp）；walk/rush 等係成個殼一齊彈；picked_up 冇吊腳（殼跟住）；arms 只喺 up/eat/upx 時出細肉手；冇 bulb。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_sprout": {
    "name": "絨芽",
@@ -771,8 +786,8 @@
     1024,
     512
    ],
-   "atlasPieces": 426,
-   "frames": 171,
+   "atlasPieces": 446,
+   "frames": 181,
    "palette": "../evo6/palette_base.json",
    "faceAnchors": "../evo6/evo_sprout/face_anchors_evo_sprout.json",
    "clips": [
@@ -814,7 +829,9 @@
     "act_cool",
     "lookup_tip",
     "getup",
-    "sniff_itch"
+    "sniff_itch",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -961,7 +978,11 @@
     "getup",
     "sniff_itch"
    ],
-   "note": "絨芽：有腳有手、頭頂未著燈雙葉芽（leaf/leaf_d，droop 時垂低、bud>1 時企起）；冇 bulb 錨點、冇身體 emissive。"
+   "note": "絨芽：有腳有手、頭頂未著燈雙葉芽（leaf/leaf_d，droop 時垂低、bud>1 時企起）；冇 bulb 錨點、冇身體 emissive。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_hop": {
    "name": "絨跳",
@@ -980,8 +1001,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 540,
-   "frames": 171,
+   "atlasPieces": 560,
+   "frames": 237,
    "palette": "../evo6/palette_base.json",
    "faceAnchors": "../evo6/evo_hop/face_anchors_evo_hop.json",
    "clips": [
@@ -1023,7 +1044,9 @@
     "act_cool",
     "lookup_tip",
     "getup",
-    "sniff_itch"
+    "sniff_itch",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -1197,7 +1220,11 @@
      "soft": "../evo6/route_clarity/atlas_evo_hop_bulb_soft.png",
      "dust": "../evo6/route_clarity/atlas_evo_hop_bulb_dust.png"
     }
-   }
+   },
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_lumi": {
    "name": "守夜者・螢絨",
@@ -1217,8 +1244,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 426,
-   "frames": 171,
+   "atlasPieces": 446,
+   "frames": 181,
    "palette": "../evo6/palette_lumi.json",
    "emissiveColors": [
     "fly",
@@ -1264,7 +1291,9 @@
     "act_cool",
     "lookup_tip",
     "getup",
-    "sniff_itch"
+    "sniff_itch",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -1411,7 +1440,11 @@
     "getup",
     "sniff_itch"
    ],
-   "note": "守夜者・螢絨：背後雙翼（拍翼跟 fluff／twinkle 相位）、分節尾燈（脈衝）、雙觸角燈頭、身上光點逐幀閃、面右移、眼高光 fly_core；emissive＝fly/fly_core。"
+   "note": "守夜者・螢絨：背後雙翼（拍翼跟 fluff／twinkle 相位）、分節尾燈（脈衝）、雙觸角燈頭、身上光點逐幀閃、面右移、眼高光 fly_core；emissive＝fly/fly_core。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_radiant": {
    "name": "守夜者・燦光",
@@ -1431,8 +1464,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 426,
-   "frames": 171,
+   "atlasPieces": 446,
+   "frames": 181,
    "palette": "../evo6/palette_base.json",
    "emissiveColors": [
     "glow_core",
@@ -1478,7 +1511,9 @@
     "act_cool",
     "lookup_tip",
     "getup",
-    "sniff_itch"
+    "sniff_itch",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -1625,7 +1660,11 @@
     "getup",
     "sniff_itch"
    ],
-   "note": "守夜者・燦光：額日紋、金尖耳（droop 垂／bud 企）、光尾（擺）、頭頂太陽放射燈（輻條長短交替閃）；emissive＝glow_core/glow_mid。"
+   "note": "守夜者・燦光：額日紋、金尖耳（droop 垂／bud 企）、光尾（擺）、頭頂太陽放射燈（輻條長短交替閃）；emissive＝glow_core/glow_mid。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_soft": {
    "name": "守夜者・柔光",
@@ -1645,8 +1684,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 426,
-   "frames": 171,
+   "atlasPieces": 446,
+   "frames": 181,
    "palette": "../evo6/palette_base.json",
    "emissiveColors": [
     "glow_core",
@@ -1692,7 +1731,9 @@
     "act_cool",
     "lookup_tip",
     "getup",
-    "sniff_itch"
+    "sniff_itch",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -1839,7 +1880,11 @@
     "getup",
     "sniff_itch"
    ],
-   "note": "守夜者・柔光：垂葉耳（身前，droop 垂低）、奶油圓斑、葉尾（擺）、頭頂柔光燈芽＋橙葉。"
+   "note": "守夜者・柔光：垂葉耳（身前，droop 垂低）、奶油圓斑、葉尾（擺）、頭頂柔光燈芽＋橙葉。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_dust": {
    "name": "守夜者・微塵",
@@ -1859,8 +1904,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_dust.json",
    "emissiveColors": [
     "glow_core",
@@ -1908,7 +1953,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -2060,7 +2107,11 @@
     "reunion_happy"
    ],
    "lampRule": "手燈跟右手（垂手＝提燈、舉手＝高舉、橫伸＝燈喺手前；冇右手＝放身右下）；bulb 錨點＝燈中心",
-   "note": "守夜者・微塵：灰米 dust 色盤、亂翹呆毛、圓眼鏡推咗上額頭（自以為好醒）、手揸小燈（輕擺）、塵雲尾；鏡片 lens 唔發光；另加 s3 nuzzle_purr／reunion_happy。"
+   "note": "守夜者・微塵：灰米 dust 色盤、亂翹呆毛、圓眼鏡推咗上額頭（自以為好醒）、手揸小燈（輕擺）、塵雲尾；鏡片 lens 唔發光；另加 s3 nuzzle_purr／reunion_happy。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_lumi": {
    "name": "靜光・螢絨",
@@ -2080,8 +2131,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_lumi.json",
    "emissiveColors": [
     "fly",
@@ -2129,7 +2180,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -2291,7 +2344,11 @@
    ],
    "upgradedIn": "batch D（batch C 係 MVP 7 clip；呢 7 個 clip 幀不變，除咗 fall_asleep／sleep_loop aura 調暗、微塵燈跟手）",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）",
-   "note": "靜光・螢絨：第三對翼、第三支觸角、星座連線、大尾燈、螢光 aura（逐幀流動）。"
+   "note": "靜光・螢絨：第三對翼、第三支觸角、星座連線、大尾燈、螢光 aura（逐幀流動）。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_radiant": {
    "name": "靜光・燦光",
@@ -2311,8 +2368,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_base.json",
    "emissiveColors": [
     "glow_core",
@@ -2360,7 +2417,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -2523,7 +2582,11 @@
    "upgradedIn": "batch D（batch C 係 MVP 7 clip；呢 7 個 clip 幀不變，除咗 fall_asleep／sleep_loop aura 調暗、微塵燈跟手）",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）",
    "haloSleep": "大 halo 弧跟 aura：fall_asleep 0.8→0.2 漸暗（glow→egg_shade→egg_dark，emissive 點越來越疏）、sleep_loop 0.2、wake 0.2→1 返光；emissive 同步",
-   "note": "靜光・燦光：背後日輪光拱（光點流動）、雙金翼（拍）、胸前日徽、金光 aura。"
+   "note": "靜光・燦光：背後日輪光拱（光點流動）、雙金翼（拍）、胸前日徽、金光 aura。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_soft": {
    "name": "靜光・柔光",
@@ -2543,8 +2606,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_base.json",
    "emissiveColors": [
     "glow_core",
@@ -2592,7 +2655,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -2754,7 +2819,11 @@
    ],
    "upgradedIn": "batch D（batch C 係 MVP 7 clip；呢 7 個 clip 幀不變，除咗 fall_asleep／sleep_loop aura 調暗、微塵燈跟手）",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）",
-   "note": "靜光・柔光：背後葉翼（拍）、花冠、飄花瓣 aura（逐幀落）。"
+   "note": "靜光・柔光：背後葉翼（拍）、花冠、飄花瓣 aura（逐幀落）。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_dust": {
    "name": "靜光・微塵",
@@ -2774,8 +2843,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_dust.json",
    "emissiveColors": [
     "glow_core",
@@ -2823,7 +2892,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/（v3 lumi feel）",
    "faceRig": true,
@@ -2986,7 +3057,11 @@
    "upgradedIn": "batch D（batch C 係 MVP 7 clip；呢 7 個 clip 幀不變，除咗 fall_asleep／sleep_loop aura 調暗、微塵燈跟手）",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）",
    "lampRule": "手燈跟右手（垂手＝提燈、舉手＝高舉、橫伸＝燈喺手前；冇右手＝放身右下）；bulb 錨點＝燈中心",
-   "note": "靜光・微塵（塵賢者）：紙頁翼（拍）、塵粒軌道環（轉）＋頭頂吊燈、aura。"
+   "note": "靜光・微塵（塵賢者）：紙頁翼（拍）、塵粒軌道環（轉）＋頭頂吊燈、aura。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_tide": {
    "name": "守夜者・水珠",
@@ -3006,8 +3081,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_tide.json",
    "emissiveColors": [
     "drop_gc",
@@ -3060,7 +3135,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -3214,7 +3291,11 @@
    "trait": "自稱游水冠軍，其實靠頭頂水珠燈浮住",
    "branchMotion": "浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺",
    "lampRule": "bulb 錨點＝燈中心（頭頂水珠燈）",
-   "note": "守夜者・水珠：鰭耳（擺）、分叉魚尾（擺）、頭頂水珠燈（逐幀浮上浮落）、肚皮泡沫波紋（流）、身邊泡泡上升；idle 身浮 1px；emissive＝drop_gc/drop_gm。"
+   "note": "守夜者・水珠：鰭耳（擺）、分叉魚尾（擺）、頭頂水珠燈（逐幀浮上浮落）、肚皮泡沫波紋（流）、身邊泡泡上升；idle 身浮 1px；emissive＝drop_gc/drop_gm。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_tide": {
    "name": "靜光・水珠",
@@ -3234,8 +3315,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_tide.json",
    "emissiveColors": [
     "drop_gc",
@@ -3288,7 +3369,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -3443,7 +3526,11 @@
    "branchMotion": "浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）；大件發光飾物跟 aura 一齊暗",
    "lampRule": "bulb 錨點＝燈中心（頭頂水珠燈）",
-   "note": "靜光・水珠：背鰭翼（拍）、三粒細水珠繞燈轉、泡泡 aura；瞓覺 aura 漸暗。"
+   "note": "靜光・水珠：背鰭翼（拍）、三粒細水珠繞燈轉、泡泡 aura；瞓覺 aura 漸暗。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_shroom": {
    "name": "守夜者・菇傘",
@@ -3463,8 +3550,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_shroom.json",
    "emissiveColors": [
     "myco_gc",
@@ -3518,7 +3605,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -3672,7 +3761,11 @@
    "trait": "戴住菇帽自稱森林博士，見菇就話食得",
    "branchMotion": "菇帽搖：菇帽逐幀左右擺＋斜（帽邊一高一低）、細菇燈跟住晃、孢子飄",
    "lampRule": "bulb 錨點＝燈中心（菇帽頂細菇燈）",
-   "note": "守夜者・菇傘：紅白點菇帽（逐幀搖＋斜）、帽頂發光細菇燈（跟住晃）、背苔、孢子飄；emissive＝myco_gc/myco_gm/spore。"
+   "note": "守夜者・菇傘：紅白點菇帽（逐幀搖＋斜）、帽頂發光細菇燈（跟住晃）、背苔、孢子飄；emissive＝myco_gc/myco_gm/spore。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_shroom": {
    "name": "靜光・菇傘",
@@ -3692,8 +3785,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_shroom.json",
    "emissiveColors": [
     "myco_gc",
@@ -3747,7 +3840,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -3902,7 +3997,11 @@
    "branchMotion": "菇帽搖：菇帽逐幀左右擺＋斜（帽邊一高一低）、細菇燈跟住晃、孢子飄",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）；大件發光飾物跟 aura 一齊暗",
    "lampRule": "bulb 錨點＝燈中心（菇帽頂細菇燈）",
-   "note": "靜光・菇傘：大垂邊菇帽、菇褶發光點、腳邊兩粒發光細菇（輕搖）、孢子 aura；瞓覺 aura＋菇光漸暗。"
+   "note": "靜光・菇傘：大垂邊菇帽、菇褶發光點、腳邊兩粒發光細菇（輕搖）、孢子 aura；瞓覺 aura＋菇光漸暗。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_crystal": {
    "name": "守夜者・晶角",
@@ -3922,8 +4021,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_crystal.json",
    "emissiveColors": [
     "prism_gc",
@@ -3977,7 +4076,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -4131,7 +4232,11 @@
    "trait": "覺得自己閃到冇朋友，成日照鏡（其實係晶粉）",
    "branchMotion": "晶光閃：晶耳／晶燈／身上晶粉閃點逐幀輪住閃（glint）",
    "lampRule": "bulb 錨點＝燈中心（頭頂菱形晶燈）",
-   "note": "守夜者・晶角：晶角耳（半邊晶光）、背脊細晶、菱形晶燈（旁邊十字閃逐幀換位）、身上晶粉閃點輪住閃；emissive＝prism_gc/prism_gm/prism。"
+   "note": "守夜者・晶角：晶角耳（半邊晶光）、背脊細晶、菱形晶燈（旁邊十字閃逐幀換位）、身上晶粉閃點輪住閃；emissive＝prism_gc/prism_gm/prism。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_crystal": {
    "name": "靜光・晶角",
@@ -4151,8 +4256,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_crystal.json",
    "emissiveColors": [
     "prism_gc",
@@ -4206,7 +4311,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -4361,7 +4468,11 @@
    "branchMotion": "晶光閃：晶耳／晶燈／身上晶粉閃點逐幀輪住閃（glint）",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）；大件發光飾物跟 aura 一齊暗",
    "lampRule": "bulb 錨點＝燈中心（頭頂菱形晶燈）",
-   "note": "靜光・晶角：後腦 4 尖晶冠（中間留空俾晶燈；逐幀一支閃）、兩粒浮晶（上下）、晶光 aura；瞓覺 aura＋晶冠光漸暗。"
+   "note": "靜光・晶角：後腦 4 尖晶冠（中間留空俾晶燈；逐幀一支閃）、兩粒浮晶（上下）、晶光 aura；瞓覺 aura＋晶冠光漸暗。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_moon": {
    "name": "守夜者・月眠",
@@ -4381,8 +4492,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_moon.json",
    "emissiveColors": [
     "moon_gc",
@@ -4436,7 +4547,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -4591,7 +4704,11 @@
    "branchMotion": "渴瞓：idle／生命感 clip 間中半瞇眼、睡帽尖跟住點頭；fall_asleep 月牙燈漸暗、sleep_loop 暗、wake 返光",
    "lampSleep": "月牙燈：fall_asleep 1→0.25 漸暗（core→mid→淨 glow，唔發光）、sleep_loop 0.25、wake 0.25→1 返光",
    "lampRule": "bulb 錨點＝燈中心（睡帽尖吊住嘅月牙燈）",
-   "note": "守夜者・月眠：尖睡帽（帽尖跟住點頭）吊住月牙燈、星點雀斑（閃）、渴瞓半瞇眼（idle_02／walk／生命感間中）；fall_asleep 月牙燈漸暗、sleep_loop 暗、wake 返光；emissive＝moon_gc/moon_gm/star。"
+   "note": "守夜者・月眠：尖睡帽（帽尖跟住點頭）吊住月牙燈、星點雀斑（閃）、渴瞓半瞇眼（idle_02／walk／生命感間中）；fall_asleep 月牙燈漸暗、sleep_loop 暗、wake 返光；emissive＝moon_gc/moon_gm/star。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_moon": {
    "name": "靜光・月眠",
@@ -4611,8 +4728,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_moon.json",
    "emissiveColors": [
     "moon_gc",
@@ -4666,7 +4783,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -4822,7 +4941,11 @@
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）；大件發光飾物跟 aura 一齊暗",
    "lampSleep": "月牙燈：fall_asleep 1→0.25 漸暗（core→mid→淨 glow，唔發光）、sleep_loop 0.25、wake 0.25→1 返光",
    "lampRule": "bulb 錨點＝燈中心（睡帽尖吊住嘅月牙燈）",
-   "note": "靜光・月眠：背後大月牙＋雲枕、星 aura；瞓覺 aura＋大月牙＋燈一齊漸暗、wake 返光。"
+   "note": "靜光・月眠：背後大月牙＋雲枕、星 aura；瞓覺 aura＋大月牙＋燈一齊漸暗、wake 返光。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_guard_ember": {
    "name": "守夜者・火苗",
@@ -4842,8 +4965,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_ember.json",
    "emissiveColors": [
     "flame_gc",
@@ -4897,7 +5020,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -5051,7 +5176,11 @@
    "trait": "以為自己好熱血好勁，一熱就喊熱",
    "branchMotion": "火苗閃：頭頂火苗燈／尾尖火／耳尖逐幀高低擺、火星點閃",
    "lampRule": "bulb 錨點＝燈中心（頭頂火苗燈）",
-   "note": "守夜者・火苗：頭頂火苗燈（逐幀高低／左右搖）、火尖耳（閃）、尾尖火（閃）、煤灰＋火星雀斑（閃）；emissive＝flame_gc/flame_gm/hot。"
+   "note": "守夜者・火苗：頭頂火苗燈（逐幀高低／左右搖）、火尖耳（閃）、尾尖火（閃）、煤灰＋火星雀斑（閃）；emissive＝flame_gc/flame_gm/hot。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   },
   "evo_still_ember": {
    "name": "靜光・火苗",
@@ -5071,8 +5200,8 @@
     1024,
     1024
    ],
-   "atlasPieces": 444,
-   "frames": 180,
+   "atlasPieces": 464,
+   "frames": 190,
    "palette": "../evo6/palette_ember.json",
    "emissiveColors": [
     "flame_gc",
@@ -5126,7 +5255,9 @@
     "getup",
     "sniff_itch",
     "nuzzle_purr",
-    "reunion_happy"
+    "reunion_happy",
+    "leaf_umbrella",
+    "shiver"
    ],
    "concept": "../evo6_concept/branches5/（v3 lumi feel 新支線）",
    "faceRig": true,
@@ -5281,7 +5412,11 @@
    "branchMotion": "火苗閃：頭頂火苗燈／尾尖火／耳尖逐幀高低擺、火星點閃",
    "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）；大件發光飾物跟 aura 一齊暗",
    "lampRule": "bulb 錨點＝燈中心（頭頂火苗燈）",
-   "note": "靜光・火苗：背後火翼（閃）、頭頂兩旁火冠、火星 aura；瞓覺 aura＋火翼漸暗。"
+   "note": "靜光・火苗：背後火翼（閃）、頭頂兩旁火冠、火星 aura；瞓覺 aura＋火翼漸暗。",
+   "weather": [
+    "leaf_umbrella",
+    "shiver"
+   ]
   }
  },
  "facing": "right (clips drawn facing right; mirror with scaleX=-1)",
@@ -145312,6 +145447,7811 @@
     "nofaceClip": "reunion_happy_noface",
     "atlas": "../evo6/atlas_evo_still_ember.json"
    }
+  },
+  {
+   "name": "leaf_umbrella",
+   "status": "已交付（systems12 第 1 批）",
+   "category": "天氣",
+   "item": "systems12 天氣：落雨撐葉（H3 雨天）",
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "priority": 3,
+   "interruptible": true,
+   "trigger": "天氣＝雨（15%）＋團絨喺 H3 戶外：idle 抽中 → 播 1 次第 1–2 幀（拎葉出嚟→舉過頭），之後第 3–6 幀循環到雨停／被打斷；雨停 → 收葉 → idle",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "蠢蠢地但覺得自己好醒：第 1 幀喺身側拎出一塊大葉（望天），第 2 幀舉過頭開心，第 3–6 幀撐住葉左右擺、雨點滴落葉面濺白水花，第 6 幀得意瞇眼（覺得自己好醒，其實尾巴仲淋緊）。片葉只畫落身後空白位，唔遮面／燈；燈 emissive 照舊。",
+   "attachments": [],
+   "layers": {
+    "noface": "liveliness/layers/<form>/leaf_umbrella_NN_noface.png",
+    "faceov": "liveliness/layers/<form>/leaf_umbrella_NN_faceov.png",
+    "full": "liveliness/frames/<form>/leaf_umbrella_NN.png",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "liveliness/atlas_<form>_live_wx.json",
+    "kitAtlas": "liveliness/atlas_<form>_live.json（eyes_*/mouth_*/bulb_*）",
+    "previewStrip": "../preview/systems12/"
+   },
+   "anchors": {
+    "sprout": [
+     {
+      "eyeL": [
+       11,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       15
+      ],
+      "bulb": [
+       16,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       12,
+       20
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       15
+      ],
+      "bulb": [
+       16,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       16
+      ],
+      "bulb": [
+       17,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       16
+      ],
+      "bulb": [
+       16,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       16
+      ],
+      "bulb": [
+       15,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       25,
+       16
+      ],
+      "bulb": [
+       16,
+       6
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "radiant": [
+     {
+      "eyeL": [
+       24,
+       45
+      ],
+      "eyeR": [
+       40,
+       45
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       32,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       45
+      ],
+      "eyeR": [
+       40,
+       45
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       32,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       45
+      ],
+      "eyeR": [
+       40,
+       45
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       34,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       45
+      ],
+      "eyeR": [
+       40,
+       45
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       32,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       45
+      ],
+      "eyeR": [
+       40,
+       45
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       30,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       45
+      ],
+      "eyeR": [
+       40,
+       45
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       32,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "soft": [
+     {
+      "eyeL": [
+       23,
+       43
+      ],
+      "eyeR": [
+       41,
+       43
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       50,
+       32
+      ],
+      "bulb": [
+       32,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       24,
+       43
+      ],
+      "eyeR": [
+       40,
+       43
+      ],
+      "mouth": [
+       32,
+       49
+      ],
+      "head_r": [
+       50,
+       31
+      ],
+      "bulb": [
+       32,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       50,
+       32
+      ],
+      "bulb": [
+       34,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       50,
+       32
+      ],
+      "bulb": [
+       32,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       50,
+       32
+      ],
+      "bulb": [
+       30,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       50,
+       32
+      ],
+      "bulb": [
+       32,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       47,
+       22
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       21
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       50
+      ],
+      "head_r": [
+       48,
+       33
+      ],
+      "bulb": [
+       47,
+       21
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       20
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       49,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       47,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       45,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       38,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       26,
+       45
+      ],
+      "eyeR": [
+       42,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       48,
+       34
+      ],
+      "bulb": [
+       47,
+       23
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       40,
+       22
+      ],
+      "tail": [
+       10,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_dot": [
+     {
+      "eyeL": [
+       11,
+       15
+      ],
+      "eyeR": [
+       19,
+       15
+      ],
+      "mouth": [
+       15,
+       16
+      ],
+      "head_r": [
+       22,
+       8
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       14
+      ],
+      "eyeR": [
+       19,
+       14
+      ],
+      "mouth": [
+       15,
+       16
+      ],
+      "head_r": [
+       22,
+       8
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       15
+      ],
+      "eyeR": [
+       19,
+       15
+      ],
+      "mouth": [
+       15,
+       16
+      ],
+      "head_r": [
+       22,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       15
+      ],
+      "eyeR": [
+       19,
+       15
+      ],
+      "mouth": [
+       15,
+       16
+      ],
+      "head_r": [
+       22,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       15
+      ],
+      "eyeR": [
+       19,
+       15
+      ],
+      "mouth": [
+       15,
+       16
+      ],
+      "head_r": [
+       22,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       11,
+       15
+      ],
+      "eyeR": [
+       19,
+       15
+      ],
+      "mouth": [
+       15,
+       16
+      ],
+      "head_r": [
+       22,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_sprout": [
+     {
+      "eyeL": [
+       13,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       17,
+       23
+      ],
+      "head_r": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       17,
+       22
+      ],
+      "head_r": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       17,
+       23
+      ],
+      "head_r": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       17,
+       23
+      ],
+      "head_r": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       17,
+       23
+      ],
+      "head_r": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       17,
+       23
+      ],
+      "head_r": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_hop": [
+     {
+      "eyeL": [
+       15,
+       25
+      ],
+      "eyeR": [
+       25,
+       25
+      ],
+      "mouth": [
+       20,
+       28
+      ],
+      "head_r": [
+       31,
+       17
+      ],
+      "bulb": [
+       20,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       15,
+       24
+      ],
+      "eyeR": [
+       25,
+       24
+      ],
+      "mouth": [
+       20,
+       28
+      ],
+      "head_r": [
+       31,
+       16
+      ],
+      "bulb": [
+       20,
+       8
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       15,
+       25
+      ],
+      "eyeR": [
+       25,
+       25
+      ],
+      "mouth": [
+       20,
+       28
+      ],
+      "head_r": [
+       31,
+       17
+      ],
+      "bulb": [
+       21,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       15,
+       25
+      ],
+      "eyeR": [
+       25,
+       25
+      ],
+      "mouth": [
+       20,
+       28
+      ],
+      "head_r": [
+       31,
+       17
+      ],
+      "bulb": [
+       20,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       15,
+       25
+      ],
+      "eyeR": [
+       25,
+       25
+      ],
+      "mouth": [
+       20,
+       28
+      ],
+      "head_r": [
+       31,
+       17
+      ],
+      "bulb": [
+       19,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       15,
+       25
+      ],
+      "eyeR": [
+       25,
+       25
+      ],
+      "mouth": [
+       20,
+       28
+      ],
+      "head_r": [
+       31,
+       17
+      ],
+      "bulb": [
+       20,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_lumi": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       28,
+       13
+      ],
+      "bulb2": [
+       32,
+       14
+      ],
+      "tail": [
+       7,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       28,
+       13
+      ],
+      "bulb2": [
+       32,
+       14
+      ],
+      "tail": [
+       7,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       28,
+       14
+      ],
+      "bulb2": [
+       33,
+       15
+      ],
+      "tail": [
+       7,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       28,
+       14
+      ],
+      "bulb2": [
+       32,
+       15
+      ],
+      "tail": [
+       7,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       27,
+       14
+      ],
+      "bulb2": [
+       32,
+       15
+      ],
+      "tail": [
+       7,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       28,
+       14
+      ],
+      "bulb2": [
+       32,
+       15
+      ],
+      "tail": [
+       7,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_radiant": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       22,
+       12
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       23,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_soft": [
+     {
+      "eyeL": [
+       17,
+       29
+      ],
+      "eyeR": [
+       29,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       36,
+       19
+      ],
+      "bulb": [
+       22,
+       12
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       19
+      ],
+      "bulb": [
+       22,
+       12
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       29
+      ],
+      "eyeR": [
+       29,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       36,
+       19
+      ],
+      "bulb": [
+       23,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       29
+      ],
+      "eyeR": [
+       29,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       36,
+       19
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       29
+      ],
+      "eyeR": [
+       29,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       36,
+       19
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       29
+      ],
+      "eyeR": [
+       29,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       36,
+       19
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_dust": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       35,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       35,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       35,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       35,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       35,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       35,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_lumi": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       30,
+       15
+      ],
+      "bulb2": [
+       35,
+       16
+      ],
+      "tail": [
+       8,
+       37
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       23
+      ],
+      "bulb": [
+       30,
+       15
+      ],
+      "bulb2": [
+       35,
+       16
+      ],
+      "tail": [
+       8,
+       37
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       24
+      ],
+      "bulb": [
+       31,
+       16
+      ],
+      "bulb2": [
+       36,
+       17
+      ],
+      "tail": [
+       8,
+       37
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       24
+      ],
+      "bulb": [
+       30,
+       16
+      ],
+      "bulb2": [
+       35,
+       17
+      ],
+      "tail": [
+       8,
+       37
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       24
+      ],
+      "bulb": [
+       30,
+       16
+      ],
+      "bulb2": [
+       35,
+       17
+      ],
+      "tail": [
+       8,
+       37
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       24
+      ],
+      "bulb": [
+       30,
+       16
+      ],
+      "bulb2": [
+       35,
+       17
+      ],
+      "tail": [
+       8,
+       37
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_radiant": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_soft": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       39,
+       22
+      ],
+      "bulb": [
+       24,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       32
+      ],
+      "eyeR": [
+       31,
+       32
+      ],
+      "mouth": [
+       24,
+       36
+      ],
+      "head_r": [
+       38,
+       21
+      ],
+      "bulb": [
+       24,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       39,
+       22
+      ],
+      "bulb": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       39,
+       22
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       39,
+       22
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       39,
+       22
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_dust": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       38,
+       39
+      ],
+      "bulb2": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       38,
+       39
+      ],
+      "bulb2": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       38,
+       39
+      ],
+      "bulb2": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       38,
+       39
+      ],
+      "bulb2": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       38,
+       39
+      ],
+      "bulb2": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       38,
+       39
+      ],
+      "bulb2": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_tide": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       23,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       23,
+       12
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       23,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       23,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       23,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_tide": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_shroom": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       23,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       23,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_shroom": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       26,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       27,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       26,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_crystal": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       22,
+       12
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       23,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_crystal": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_moon": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       9,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       10,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       9,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       9,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       9,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       9,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_moon": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       10,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       10,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       10,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       9,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       10,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       10,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_guard_ember": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       22,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       22,
+       13
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       23,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       22,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ],
+    "evo_still_ember": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "happy",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "neutral",
+       "gaze": "U",
+       "mouth": "neutral"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       24,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "happy"
+      }
+     }
+    ]
+   },
+   "batch": "systems12-b1",
+   "loopRange": [
+    2,
+    5
+   ],
+   "loopFrom": 2,
+   "lumi": {
+    "frames": 6,
+    "full": "../lumi/frames/leaf_umbrella_NN.png",
+    "noface": "../lumi/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../lumi/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../lumi/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../atlas_lumi.json"
+   },
+   "evo_dot": {
+    "frames": 6,
+    "full": "../evo6/evo_dot/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_dot/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_dot/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_dot/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_dot.json"
+   },
+   "evo_sprout": {
+    "frames": 6,
+    "full": "../evo6/evo_sprout/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_sprout/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_sprout/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_sprout/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_sprout.json"
+   },
+   "evo_hop": {
+    "frames": 6,
+    "full": "../evo6/evo_hop/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_hop/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_hop/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_hop/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_hop.json"
+   },
+   "evo_guard_lumi": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_lumi/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_lumi/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_lumi/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_lumi/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_lumi.json"
+   },
+   "evo_guard_radiant": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_radiant/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_radiant/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_radiant/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_radiant/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_radiant.json"
+   },
+   "evo_guard_soft": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_soft/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_soft/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_soft/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_soft/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_soft.json"
+   },
+   "evo_guard_dust": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_dust/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_dust/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_dust/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_dust/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_dust.json"
+   },
+   "evo_still_lumi": {
+    "frames": 6,
+    "full": "../evo6/evo_still_lumi/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_lumi/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_lumi/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_lumi/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_lumi.json"
+   },
+   "evo_still_radiant": {
+    "frames": 6,
+    "full": "../evo6/evo_still_radiant/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_radiant/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_radiant/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_radiant/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_radiant.json"
+   },
+   "evo_still_soft": {
+    "frames": 6,
+    "full": "../evo6/evo_still_soft/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_soft/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_soft/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_soft/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_soft.json"
+   },
+   "evo_still_dust": {
+    "frames": 6,
+    "full": "../evo6/evo_still_dust/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_dust/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_dust/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_dust/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_dust.json"
+   },
+   "evo_guard_tide": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_tide/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_tide/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_tide/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_tide/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_tide.json"
+   },
+   "evo_still_tide": {
+    "frames": 6,
+    "full": "../evo6/evo_still_tide/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_tide/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_tide/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_tide/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_tide.json"
+   },
+   "evo_guard_shroom": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_shroom/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_shroom/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_shroom/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_shroom/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_shroom.json"
+   },
+   "evo_still_shroom": {
+    "frames": 6,
+    "full": "../evo6/evo_still_shroom/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_shroom/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_shroom/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_shroom/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_shroom.json"
+   },
+   "evo_guard_crystal": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_crystal/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_crystal/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_crystal/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_crystal/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_crystal.json"
+   },
+   "evo_still_crystal": {
+    "frames": 6,
+    "full": "../evo6/evo_still_crystal/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_crystal/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_crystal/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_crystal/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_crystal.json"
+   },
+   "evo_guard_moon": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_moon/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_moon/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_moon/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_moon/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_moon.json"
+   },
+   "evo_still_moon": {
+    "frames": 6,
+    "full": "../evo6/evo_still_moon/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_moon/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_moon/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_moon/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_moon.json"
+   },
+   "evo_guard_ember": {
+    "frames": 6,
+    "full": "../evo6/evo_guard_ember/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_guard_ember/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_guard_ember/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_ember/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_guard_ember.json"
+   },
+   "evo_still_ember": {
+    "frames": 6,
+    "full": "../evo6/evo_still_ember/frames/leaf_umbrella_NN.png",
+    "noface": "../evo6/evo_still_ember/layers/leaf_umbrella_NN_noface.png",
+    "faceov": "../evo6/evo_still_ember/layers/leaf_umbrella_NN_faceov.png",
+    "emissive": "../evo6/evo_still_ember/emissive/leaf_umbrella_NN_emissive.png",
+    "atlasClip": "leaf_umbrella",
+    "nofaceClip": "leaf_umbrella_noface",
+    "atlas": "../evo6/atlas_evo_still_ember.json"
+   }
+  },
+  {
+   "name": "shiver",
+   "status": "已交付（systems12 第 1 批）",
+   "category": "天氣",
+   "item": "systems12 天氣／季節：打冷震（冬天 12–2 月、霧天）",
+   "frames": 4,
+   "fps": 10,
+   "loop": true,
+   "priority": 3,
+   "interruptible": true,
+   "trigger": "季節＝冬（12–2 月）或天氣＝霧：idle 抽中機率加大；連播 2–3 個循環（約 1–1.2s）→ idle",
+   "cooldown_s": 0,
+   "next": "idle",
+   "notes": "縮埋一嚿（sy 0.95、毛脹起 fluff）、身體左右 1px 震、兩邊藍色震線交替、第 2／4 幀呼白氣；表情瞇眼＋扁嘴 → 驚驚口。",
+   "attachments": [],
+   "layers": {
+    "noface": "liveliness/layers/<form>/shiver_NN_noface.png",
+    "faceov": "liveliness/layers/<form>/shiver_NN_faceov.png",
+    "full": "liveliness/frames/<form>/shiver_NN.png",
+    "nofaceClip": "shiver_noface",
+    "atlas": "liveliness/atlas_<form>_live_wx.json",
+    "kitAtlas": "liveliness/atlas_<form>_live.json（eyes_*/mouth_*/bulb_*）",
+    "previewStrip": "../preview/systems12/"
+   },
+   "anchors": {
+    "sprout": [
+     {
+      "eyeL": [
+       10,
+       20
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       24,
+       16
+      ],
+      "bulb": [
+       17,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       17,
+       23
+      ],
+      "head_r": [
+       26,
+       16
+      ],
+      "bulb": [
+       19,
+       8
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       10,
+       20
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       15,
+       23
+      ],
+      "head_r": [
+       24,
+       16
+      ],
+      "bulb": [
+       17,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       13,
+       20
+      ],
+      "eyeR": [
+       21,
+       20
+      ],
+      "mouth": [
+       17,
+       23
+      ],
+      "head_r": [
+       26,
+       16
+      ],
+      "bulb": [
+       19,
+       8
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "radiant": [
+     {
+      "eyeL": [
+       23,
+       46
+      ],
+      "eyeR": [
+       39,
+       46
+      ],
+      "mouth": [
+       30,
+       51
+      ],
+      "head_r": [
+       47,
+       34
+      ],
+      "bulb": [
+       33,
+       24
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       45
+      ],
+      "eyeR": [
+       41,
+       45
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       49,
+       34
+      ],
+      "bulb": [
+       35,
+       22
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       23,
+       46
+      ],
+      "eyeR": [
+       39,
+       46
+      ],
+      "mouth": [
+       30,
+       51
+      ],
+      "head_r": [
+       47,
+       34
+      ],
+      "bulb": [
+       33,
+       24
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       45
+      ],
+      "eyeR": [
+       41,
+       45
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       49,
+       34
+      ],
+      "bulb": [
+       35,
+       22
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "soft": [
+     {
+      "eyeL": [
+       22,
+       44
+      ],
+      "eyeR": [
+       40,
+       44
+      ],
+      "mouth": [
+       30,
+       50
+      ],
+      "head_r": [
+       50,
+       32
+      ],
+      "bulb": [
+       33,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       51,
+       32
+      ],
+      "bulb": [
+       35,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       22,
+       44
+      ],
+      "eyeR": [
+       40,
+       44
+      ],
+      "mouth": [
+       30,
+       50
+      ],
+      "head_r": [
+       50,
+       32
+      ],
+      "bulb": [
+       33,
+       21
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       44
+      ],
+      "eyeR": [
+       41,
+       44
+      ],
+      "mouth": [
+       32,
+       50
+      ],
+      "head_r": [
+       51,
+       32
+      ],
+      "bulb": [
+       35,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "lumi": [
+     {
+      "eyeL": [
+       25,
+       46
+      ],
+      "eyeR": [
+       41,
+       46
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       47,
+       34
+      ],
+      "bulb": [
+       49,
+       27
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       26
+      ],
+      "tail": [
+       9,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       45
+      ],
+      "eyeR": [
+       43,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       34
+      ],
+      "bulb": [
+       51,
+       27
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       26
+      ],
+      "tail": [
+       11,
+       51
+      ],
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       25,
+       46
+      ],
+      "eyeR": [
+       41,
+       46
+      ],
+      "mouth": [
+       32,
+       51
+      ],
+      "head_r": [
+       47,
+       34
+      ],
+      "bulb": [
+       49,
+       27
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       42,
+       26
+      ],
+      "tail": [
+       9,
+       51
+      ],
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       27,
+       45
+      ],
+      "eyeR": [
+       43,
+       45
+      ],
+      "mouth": [
+       34,
+       51
+      ],
+      "head_r": [
+       49,
+       34
+      ],
+      "bulb": [
+       51,
+       27
+      ],
+      "faceVisible": true,
+      "bulb2": [
+       44,
+       26
+      ],
+      "tail": [
+       11,
+       51
+      ],
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_dot": [
+     {
+      "eyeL": [
+       10,
+       15
+      ],
+      "eyeR": [
+       18,
+       15
+      ],
+      "mouth": [
+       14,
+       16
+      ],
+      "head_r": [
+       21,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       12,
+       15
+      ],
+      "eyeR": [
+       20,
+       15
+      ],
+      "mouth": [
+       16,
+       16
+      ],
+      "head_r": [
+       23,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       10,
+       15
+      ],
+      "eyeR": [
+       18,
+       15
+      ],
+      "mouth": [
+       14,
+       16
+      ],
+      "head_r": [
+       21,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       12,
+       15
+      ],
+      "eyeR": [
+       20,
+       15
+      ],
+      "mouth": [
+       16,
+       16
+      ],
+      "head_r": [
+       23,
+       9
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_sprout": [
+     {
+      "eyeL": [
+       12,
+       20
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       16,
+       23
+      ],
+      "head_r": [
+       24,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       14,
+       20
+      ],
+      "eyeR": [
+       22,
+       20
+      ],
+      "mouth": [
+       18,
+       23
+      ],
+      "head_r": [
+       26,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       12,
+       20
+      ],
+      "eyeR": [
+       20,
+       20
+      ],
+      "mouth": [
+       16,
+       23
+      ],
+      "head_r": [
+       24,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       14,
+       20
+      ],
+      "eyeR": [
+       22,
+       20
+      ],
+      "mouth": [
+       18,
+       23
+      ],
+      "head_r": [
+       26,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_hop": [
+     {
+      "eyeL": [
+       14,
+       25
+      ],
+      "eyeR": [
+       24,
+       25
+      ],
+      "mouth": [
+       18,
+       28
+      ],
+      "head_r": [
+       30,
+       17
+      ],
+      "bulb": [
+       21,
+       11
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       16,
+       25
+      ],
+      "eyeR": [
+       26,
+       25
+      ],
+      "mouth": [
+       20,
+       28
+      ],
+      "head_r": [
+       32,
+       17
+      ],
+      "bulb": [
+       23,
+       11
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       14,
+       25
+      ],
+      "eyeR": [
+       24,
+       25
+      ],
+      "mouth": [
+       18,
+       28
+      ],
+      "head_r": [
+       30,
+       17
+      ],
+      "bulb": [
+       21,
+       11
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       16,
+       25
+      ],
+      "eyeR": [
+       26,
+       25
+      ],
+      "mouth": [
+       20,
+       28
+      ],
+      "head_r": [
+       32,
+       17
+      ],
+      "bulb": [
+       23,
+       11
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_lumi": [
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       29,
+       16
+      ],
+      "bulb2": [
+       33,
+       17
+      ],
+      "tail": [
+       5,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       31,
+       16
+      ],
+      "bulb2": [
+       35,
+       17
+      ],
+      "tail": [
+       8,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       29,
+       16
+      ],
+      "bulb2": [
+       33,
+       17
+      ],
+      "tail": [
+       5,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       31,
+       16
+      ],
+      "bulb2": [
+       35,
+       17
+      ],
+      "tail": [
+       8,
+       34
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_radiant": [
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       23,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       23,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_soft": [
+     {
+      "eyeL": [
+       16,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       23,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       29
+      ],
+      "eyeR": [
+       29,
+       29
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       37,
+       19
+      ],
+      "bulb": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       16,
+       29
+      ],
+      "eyeR": [
+       28,
+       29
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       20
+      ],
+      "bulb": [
+       23,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       29
+      ],
+      "eyeR": [
+       29,
+       29
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       37,
+       19
+      ],
+      "bulb": [
+       25,
+       14
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_dust": [
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       34,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       20
+      ],
+      "bulb": [
+       36,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       34,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       20
+      ],
+      "bulb": [
+       36,
+       35
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_lumi": [
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       31,
+       18
+      ],
+      "bulb2": [
+       36,
+       19
+      ],
+      "tail": [
+       7,
+       38
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       21,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       24
+      ],
+      "bulb": [
+       33,
+       18
+      ],
+      "bulb2": [
+       38,
+       19
+      ],
+      "tail": [
+       9,
+       38
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       31,
+       18
+      ],
+      "bulb2": [
+       36,
+       19
+      ],
+      "tail": [
+       7,
+       38
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       21,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       24
+      ],
+      "bulb": [
+       33,
+       18
+      ],
+      "bulb2": [
+       38,
+       19
+      ],
+      "tail": [
+       9,
+       38
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_radiant": [
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_soft": [
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       40,
+       22
+      ],
+      "bulb": [
+       27,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       23
+      ],
+      "bulb": [
+       25,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       40,
+       22
+      ],
+      "bulb": [
+       27,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_dust": [
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       37,
+       39
+      ],
+      "bulb2": [
+       24,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       39,
+       39
+      ],
+      "bulb2": [
+       26,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       37,
+       39
+      ],
+      "bulb2": [
+       24,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       39,
+       39
+      ],
+      "bulb2": [
+       26,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_tide": [
+     {
+      "eyeL": [
+       18,
+       30
+      ],
+      "eyeR": [
+       28,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       35,
+       21
+      ],
+      "bulb": [
+       24,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       23,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       16
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_tide": [
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_shroom": [
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_shroom": [
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       27,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       27,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_crystal": [
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       23,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       23,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_crystal": [
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_moon": [
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       9,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       9,
+       17
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       8,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       11,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_moon": [
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       24
+      ],
+      "bulb": [
+       10,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       10,
+       19
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       33
+      ],
+      "eyeR": [
+       31,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       38,
+       24
+      ],
+      "bulb": [
+       9,
+       19
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       11,
+       20
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_guard_ember": [
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       23,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       17,
+       30
+      ],
+      "eyeR": [
+       27,
+       30
+      ],
+      "mouth": [
+       22,
+       33
+      ],
+      "head_r": [
+       34,
+       21
+      ],
+      "bulb": [
+       23,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       19,
+       30
+      ],
+      "eyeR": [
+       29,
+       30
+      ],
+      "mouth": [
+       24,
+       33
+      ],
+      "head_r": [
+       36,
+       21
+      ],
+      "bulb": [
+       25,
+       15
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ],
+    "evo_still_ember": [
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     },
+     {
+      "eyeL": [
+       18,
+       33
+      ],
+      "eyeR": [
+       30,
+       33
+      ],
+      "mouth": [
+       24,
+       37
+      ],
+      "head_r": [
+       37,
+       24
+      ],
+      "bulb": [
+       25,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "squint",
+       "gaze": "C",
+       "mouth": "sad"
+      }
+     },
+     {
+      "eyeL": [
+       20,
+       33
+      ],
+      "eyeR": [
+       32,
+       33
+      ],
+      "mouth": [
+       26,
+       37
+      ],
+      "head_r": [
+       39,
+       23
+      ],
+      "bulb": [
+       27,
+       18
+      ],
+      "faceVisible": true,
+      "face": {
+       "eyes": "sad",
+       "gaze": "C",
+       "mouth": "surprised"
+      }
+     }
+    ]
+   },
+   "batch": "systems12-b1",
+   "loopRange": [
+    0,
+    3
+   ],
+   "lumi": {
+    "frames": 4,
+    "full": "../lumi/frames/shiver_NN.png",
+    "noface": "../lumi/layers/shiver_NN_noface.png",
+    "faceov": "../lumi/layers/shiver_NN_faceov.png",
+    "emissive": "../lumi/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../atlas_lumi.json"
+   },
+   "evo_dot": {
+    "frames": 4,
+    "full": "../evo6/evo_dot/frames/shiver_NN.png",
+    "noface": "../evo6/evo_dot/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_dot/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_dot/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_dot.json"
+   },
+   "evo_sprout": {
+    "frames": 4,
+    "full": "../evo6/evo_sprout/frames/shiver_NN.png",
+    "noface": "../evo6/evo_sprout/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_sprout/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_sprout/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_sprout.json"
+   },
+   "evo_hop": {
+    "frames": 4,
+    "full": "../evo6/evo_hop/frames/shiver_NN.png",
+    "noface": "../evo6/evo_hop/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_hop/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_hop/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_hop.json"
+   },
+   "evo_guard_lumi": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_lumi/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_lumi/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_lumi/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_lumi/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_lumi.json"
+   },
+   "evo_guard_radiant": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_radiant/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_radiant/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_radiant/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_radiant/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_radiant.json"
+   },
+   "evo_guard_soft": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_soft/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_soft/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_soft/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_soft/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_soft.json"
+   },
+   "evo_guard_dust": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_dust/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_dust/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_dust/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_dust/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_dust.json"
+   },
+   "evo_still_lumi": {
+    "frames": 4,
+    "full": "../evo6/evo_still_lumi/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_lumi/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_lumi/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_lumi/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_lumi.json"
+   },
+   "evo_still_radiant": {
+    "frames": 4,
+    "full": "../evo6/evo_still_radiant/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_radiant/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_radiant/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_radiant/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_radiant.json"
+   },
+   "evo_still_soft": {
+    "frames": 4,
+    "full": "../evo6/evo_still_soft/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_soft/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_soft/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_soft/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_soft.json"
+   },
+   "evo_still_dust": {
+    "frames": 4,
+    "full": "../evo6/evo_still_dust/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_dust/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_dust/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_dust/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_dust.json"
+   },
+   "evo_guard_tide": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_tide/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_tide/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_tide/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_tide/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_tide.json"
+   },
+   "evo_still_tide": {
+    "frames": 4,
+    "full": "../evo6/evo_still_tide/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_tide/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_tide/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_tide/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_tide.json"
+   },
+   "evo_guard_shroom": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_shroom/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_shroom/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_shroom/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_shroom/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_shroom.json"
+   },
+   "evo_still_shroom": {
+    "frames": 4,
+    "full": "../evo6/evo_still_shroom/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_shroom/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_shroom/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_shroom/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_shroom.json"
+   },
+   "evo_guard_crystal": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_crystal/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_crystal/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_crystal/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_crystal/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_crystal.json"
+   },
+   "evo_still_crystal": {
+    "frames": 4,
+    "full": "../evo6/evo_still_crystal/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_crystal/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_crystal/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_crystal/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_crystal.json"
+   },
+   "evo_guard_moon": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_moon/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_moon/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_moon/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_moon/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_moon.json"
+   },
+   "evo_still_moon": {
+    "frames": 4,
+    "full": "../evo6/evo_still_moon/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_moon/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_moon/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_moon/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_moon.json"
+   },
+   "evo_guard_ember": {
+    "frames": 4,
+    "full": "../evo6/evo_guard_ember/frames/shiver_NN.png",
+    "noface": "../evo6/evo_guard_ember/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_guard_ember/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_guard_ember/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_guard_ember.json"
+   },
+   "evo_still_ember": {
+    "frames": 4,
+    "full": "../evo6/evo_still_ember/frames/shiver_NN.png",
+    "noface": "../evo6/evo_still_ember/layers/shiver_NN_noface.png",
+    "faceov": "../evo6/evo_still_ember/layers/shiver_NN_faceov.png",
+    "emissive": "../evo6/evo_still_ember/emissive/shiver_NN_emissive.png",
+    "atlasClip": "shiver",
+    "nofaceClip": "shiver_noface",
+    "atlas": "../evo6/atlas_evo_still_ember.json"
+   }
   }
  ],
  "props": {
@@ -148093,5 +156033,97 @@
    }
   },
   "preview": "../preview/evo6/evo6_batchG_route_clarity_4x.png"
+ },
+ "systems12B1": {
+  "tool": "tools/build_systems12_b1.py（clip：base｜lumi｜evo）＋ tools/build_systems12_b1_ui.py（UI／天氣／季節／docs／preview）",
+  "validator": "tools/validate_systems12_b1.py ＋ validate_liveliness／validate_lumi／validate_evo6_anim／validate_hd2d_scenes",
+  "spec": "docs-gdd/systems12-v1.md 遊美素材清單 第 1 批（Kurt 2026-11-01 01:15 批：「兩個動作全部體型都做」）",
+  "clips": {
+   "leaf_umbrella": {
+    "frames": 6,
+    "fps": 6,
+    "loopRange": [
+     2,
+     5
+    ]
+   },
+   "shiver": {
+    "frames": 4,
+    "fps": 10,
+    "loopRange": [
+     0,
+     3
+    ]
+   }
+  },
+  "forms": [
+   "sprout",
+   "radiant",
+   "soft",
+   "lumi",
+   "evo_dot",
+   "evo_sprout",
+   "evo_hop",
+   "evo_guard_lumi",
+   "evo_guard_radiant",
+   "evo_guard_soft",
+   "evo_guard_dust",
+   "evo_still_lumi",
+   "evo_still_radiant",
+   "evo_still_soft",
+   "evo_still_dust",
+   "evo_guard_tide",
+   "evo_still_tide",
+   "evo_guard_shroom",
+   "evo_still_shroom",
+   "evo_guard_crystal",
+   "evo_still_crystal",
+   "evo_guard_moon",
+   "evo_still_moon",
+   "evo_guard_ember",
+   "evo_still_ember"
+  ],
+  "eggExcluded": true,
+  "atlases": {
+   "sprout/radiant/soft": "liveliness/atlas_<form>_live_wx.png/json（新開；舊 live/live_s2/live_s3 版面不變）",
+   "lumi": "../atlas_lumi.png（重排，加 2 clip）",
+   "evo6": "../evo6/atlas_<form>.png（重排，加 2 clip；evo_hop 連 route_clarity bulbmask／bulb_<id> ×8 重出）"
+  },
+  "leafChoice": {
+   "sprout": 0,
+   "radiant": 0,
+   "soft": 0,
+   "evo_dot": 0,
+   "evo_sprout": 0,
+   "evo_hop": 0,
+   "evo_guard_lumi": 0,
+   "evo_guard_radiant": 0,
+   "evo_guard_soft": 0,
+   "evo_guard_dust": 0,
+   "evo_still_lumi": 0,
+   "evo_still_radiant": 0,
+   "evo_still_soft": 0,
+   "evo_still_dust": 0,
+   "evo_guard_tide": 0,
+   "evo_still_tide": 0,
+   "evo_guard_shroom": 0,
+   "evo_still_shroom": 0,
+   "evo_guard_crystal": 0,
+   "evo_still_crystal": 0,
+   "evo_guard_moon": 5,
+   "evo_still_moon": 5,
+   "evo_guard_ember": 0,
+   "evo_still_ember": 0
+  },
+  "leafNote": "片葉只畫落身後空白位（唔遮面／燈）；月眠（evo_guard_moon／evo_still_moon）頂帽佔滿上方，所以片葉撐喺膊頭側（leafChoice 5）＝刻意",
+  "ui": "../../ui/systems12/（atlas_systems12_ui.png/json；9-slice 用 tile）",
+  "weather": "../../scenes/hd2d/weather/weather.json ＋ H3/grade_{overcast,fog}.json ＋ H3/{overcast,fog}/*",
+  "seasons": "../../scenes/hd2d/seasons/seasons.json（4 季 × H1–H4）",
+  "preview": "../preview/systems12/",
+  "runtime": {
+   "rain": "H3 落雨 → leaf_umbrella（懸浮團絨都用）",
+   "fog_or_winter": "霧天／冬（12–2 月）→ shiver 抽中率加大",
+   "rule": "天氣優先於季節：雨／陰／霧用 H3/<weather>/*；晴天用 seasons/<season>/<H#>/*"
+  }
  }
 }

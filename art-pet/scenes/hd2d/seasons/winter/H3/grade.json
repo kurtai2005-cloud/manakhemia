@@ -1,0 +1,41 @@
+{
+ "baseVariant": "H3",
+ "note": "冬（12／1／2 月）× H3：sky/far/mid/fore/lightmap 用 seasons/winter/H3/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；light_add／emissive／vignette 沿用 variant",
+ "ambientTint": "#e2eeff",
+ "petTint": "#e4d6c8",
+ "saturation": 0.94,
+ "contrast": 1.08,
+ "bloom": {
+  "threshold": 0.9,
+  "intensity": 0.2
+ },
+ "fog": {
+  "color": "#e4f6f8",
+  "density": 0.04
+ },
+ "dof": {
+  "far": 1.2,
+  "mid": 0.6,
+  "fore": 2.2
+ },
+ "vignette": 0.1,
+ "rim": {
+  "color": "#5a6a8a",
+  "intensity": 0.6,
+  "dir": [
+   0.6,
+   0.8
+  ]
+ },
+ "bulbGlowTint": "#fff2b0",
+ "particles": {
+  "type": "mote",
+  "rate": 0.5,
+  "color": "#f4f8ff"
+ },
+ "rain": {
+  "saturation": 0.72,
+  "contrast": 0.9,
+  "tint": "#c8d8e4"
+ }
+}

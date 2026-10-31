@@ -1,0 +1,628 @@
+{
+ "frames": {
+  "leaf_umbrella_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_02": {
+   "frame": {
+    "x": 68,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_03": {
+   "frame": {
+    "x": 134,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_04": {
+   "frame": {
+    "x": 200,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_05": {
+   "frame": {
+    "x": 266,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_06": {
+   "frame": {
+    "x": 332,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_noface_01": {
+   "frame": {
+    "x": 398,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_noface_02": {
+   "frame": {
+    "x": 464,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_noface_03": {
+   "frame": {
+    "x": 530,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_noface_04": {
+   "frame": {
+    "x": 596,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_noface_05": {
+   "frame": {
+    "x": 662,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "leaf_umbrella_noface_06": {
+   "frame": {
+    "x": 728,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "shiver_01": {
+   "frame": {
+    "x": 794,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "shiver_02": {
+   "frame": {
+    "x": 860,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "shiver_03": {
+   "frame": {
+    "x": 926,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "shiver_04": {
+   "frame": {
+    "x": 2,
+    "y": 68,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "shiver_noface_01": {
+   "frame": {
+    "x": 68,
+    "y": 68,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "shiver_noface_02": {
+   "frame": {
+    "x": 134,
+    "y": 68,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "shiver_noface_03": {
+   "frame": {
+    "x": 200,
+    "y": 68,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "shiver_noface_04": {
+   "frame": {
+    "x": 266,
+    "y": 68,
+    "w": 64,
+    "h": 64
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 64
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.9531
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  }
+ },
+ "animations": {
+  "leaf_umbrella_noface": {
+   "frames": [
+    "leaf_umbrella_noface_01",
+    "leaf_umbrella_noface_02",
+    "leaf_umbrella_noface_03",
+    "leaf_umbrella_noface_04",
+    "leaf_umbrella_noface_05",
+    "leaf_umbrella_noface_06"
+   ],
+   "fps": 6,
+   "loop": true,
+   "loopFrom": 2
+  },
+  "leaf_umbrella": {
+   "frames": [
+    "leaf_umbrella_01",
+    "leaf_umbrella_02",
+    "leaf_umbrella_03",
+    "leaf_umbrella_04",
+    "leaf_umbrella_05",
+    "leaf_umbrella_06"
+   ],
+   "fps": 6,
+   "loop": true,
+   "loopFrom": 2
+  },
+  "shiver_noface": {
+   "frames": [
+    "shiver_noface_01",
+    "shiver_noface_02",
+    "shiver_noface_03",
+    "shiver_noface_04"
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "shiver": {
+   "frames": [
+    "shiver_01",
+    "shiver_02",
+    "shiver_03",
+    "shiver_04"
+   ],
+   "fps": 10,
+   "loop": true
+  }
+ },
+ "meta": {
+  "image": "atlas_soft_live_wx.png",
+  "size": {
+   "w": 1024,
+   "h": 256
+  },
+  "scale": 1,
+  "format": "RGBA8888",
+  "padding": 2,
+  "extrude": 1,
+  "form": "soft",
+  "frameSize": 64,
+  "phase": "systems12-b1",
+  "pivotRule": "body frames bottom-center (w/2, h-3)",
+  "note": "systems12 第 1 批天氣 clip：leaf_umbrella（撐葉）／shiver（打冷震）；<clip>_noface 無臉身體＋完整幀；五官 kit 用 atlas_<form>_live.json 嘅 eyes_*/mouth_*/bulb_*；葉／雨點／震線／白氣烙入身體層（葉只喺身後空白位）"
+ }
+}

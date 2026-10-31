@@ -1,0 +1,41 @@
+{
+ "baseVariant": "H4",
+ "note": "冬（12／1／2 月）× H4：sky/far/mid/fore/lightmap 用 seasons/winter/H4/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；light_add／emissive／vignette 沿用 variant",
+ "ambientTint": "#bbc2f0",
+ "petTint": "#f6ece4",
+ "saturation": 1.05,
+ "contrast": 1.06,
+ "bloom": {
+  "threshold": 0.6,
+  "intensity": 1.0
+ },
+ "fog": {
+  "color": "#1a2050",
+  "density": 0.06
+ },
+ "dof": {
+  "far": 2.0,
+  "mid": 1.2,
+  "fore": 3.5
+ },
+ "vignette": 0.4,
+ "rim": {
+  "color": "#ffd890",
+  "intensity": 0.8,
+  "dir": [
+   -0.85,
+   -0.5
+  ]
+ },
+ "bulbGlowTint": "#ffd070",
+ "particles": {
+  "type": "firefly",
+  "rate": 0.7,
+  "color": "#e4ff8c"
+ },
+ "rain": {
+  "saturation": 0.75,
+  "contrast": 0.95,
+  "tint": "#8890c0"
+ }
+}

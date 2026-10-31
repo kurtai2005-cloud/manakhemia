@@ -1,0 +1,41 @@
+{
+ "baseVariant": "H3",
+ "note": "陰天（20%）最終值；sky/far/mid/fore 用 H3/overcast/*；lightmap 沿用 H3（引擎可 globalAlpha 0.7 收淡陰影＝散射光）；light_add globalAlpha 0.4；雲帶 weather/overcast_clouds.png 疊喺 sky 之上、far 之下",
+ "ambientTint": "#cddbe6",
+ "petTint": "#eee2d4",
+ "saturation": 0.752,
+ "contrast": 1.004,
+ "bloom": {
+  "threshold": 0.92,
+  "intensity": 0.08
+ },
+ "fog": {
+  "color": "#d0d8e0",
+  "density": 0.08
+ },
+ "dof": {
+  "far": 1.4,
+  "mid": 0.6,
+  "fore": 2.2
+ },
+ "vignette": 0.16,
+ "rim": {
+  "color": "#4e5c78",
+  "intensity": 0.5,
+  "dir": [
+   0.6,
+   0.8
+  ]
+ },
+ "bulbGlowTint": "#fff2b0",
+ "particles": {
+  "type": "petal",
+  "rate": 0.15,
+  "color": "#ffe0ec"
+ },
+ "rain": {
+  "saturation": 0.72,
+  "contrast": 0.9,
+  "tint": "#c8d8e4"
+ }
+}

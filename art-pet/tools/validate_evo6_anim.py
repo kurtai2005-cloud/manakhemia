@@ -101,12 +101,12 @@ def run():
                 if fe.get("mvp") != STILL_MVP or set(fe["clips"]) != set(STILL_MVP): F(f"{tag} 靜光 MVP clip set {fe.get('clips')}")
             else:
                 if still and fe.get("s3") != S3: F(f"{tag} 靜光全套要有 s3 {fe.get('s3')}")
-                need = set(fe.get("std23", [])) | set(fe.get("liveliness", [])) | set(fe.get("s3", []))
+                need = set(fe.get("std23", [])) | set(fe.get("liveliness", [])) | set(fe.get("s3", [])) | set(fe.get("weather", []))   # systems12 b1 天氣 clip
                 if len(fe.get("std23", [])) != 23: F(f"{tag} std23 count {len(fe.get('std23', []))}")
                 if "picked_up" not in need or not set(LIVE_S2) <= need: F(f"{tag} liveliness s1/s2 incomplete")
                 if form == "evo_guard_dust" and fe.get("s3") != S3: F(f"{tag} 微塵 s3 clips missing {fe.get('s3')}")
-                if fe.get("branch") in NEW5 and (fe.get("s3") != S3 or len(fe["clips"]) != 41): F(f"{tag} 新支線要全套 41 clip（含 s3）{len(fe['clips'])}")
-                if need != set(fe["clips"]): F(f"{tag} clip list != std23+liveliness(+s3)")
+                if fe.get("branch") in NEW5 and (fe.get("s3") != S3 or len(fe["clips"]) != 41 + len(fe.get("weather", []))): F(f"{tag} 新支線要全套 41 clip（含 s3）{len(fe['clips'])}")
+                if need != set(fe["clips"]): F(f"{tag} clip list != std23+liveliness(+s3)(+weather)")
         # batch G（§7 路線清晰化）：路線預告 tell_<id> 只喺 evo_hop，定義喺 CLIPS.json evo6G.tellClips
         TC = CL.get("evo6G", {}).get("tellClips", {})
         tells = [] if egg else list(fe.get("tells", []))
@@ -121,7 +121,7 @@ def run():
         if set(want) != set(FA): F(f"{tag} clip set CLIPS vs face_anchors {set(want) ^ set(FA)}")
         for c, nf in want.items():
             if len(FA.get(c, [])) != nf: F(f"{tag} frame count {c} {len(FA.get(c, []))} != {nf}")
-        live = set() if egg else set(fe.get("liveliness", [])) | set(fe.get("s3", []))
+        live = set() if egg else set(fe.get("liveliness", [])) | set(fe.get("s3", [])) | set(fe.get("weather", []))
         # kit
         kit = {os.path.basename(p)[:-4]: load(p) for p in glob.glob(D + "/kit/*.png")}
         if egg and kit: F(f"{tag} egg should have no kit")
