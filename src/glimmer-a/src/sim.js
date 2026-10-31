@@ -70,6 +70,25 @@
   }
   function needBand(v) { return v > 60 ? 'good' : v >= 30 ? 'ok' : 'warn'; }
 
+  // 浮動 overlay snapshot v3（Kurt 10-31 批：懸浮窗同步心情／瞌覺／需求）。純資料：
+  //  moodBand：happy（心情 >60）／ok／sad（<30，同 needBand 一致）；sleeping＝遊戲入面瞓緊（關燈）；
+  //  urgent＝最低嗰項需求（低過 warnAt=30 先提，同 HUD 泡泡「好肚餓…」一樣）；rate／rateAwake＝每小時變化（Kotlin 喺 app 背景時推算，
+  //  同 step() 一樣：階段倍率、瞓覺 ×0.3、便便扣清潔；精力瞓覺回升）；floor＝離線保底 20（只喺原本高過先保）。
+  function overlayStatus(s) {
+    const warnAt = 30;
+    if (!s || s.stage === 'egg') return { egg: true, moodBand: 'ok', sleeping: false, urgent: null, level: null, warnAt, vals: null, rate: null, rateAwake: null, floor: P.offlineNeedFloor, wakeAt: P.sleepWakeAt };
+    const n = s.needs, dm = P.stageDecayMul[s.stage] == null ? 1 : P.stageDecayMul[s.stage];
+    const r1 = (v) => Math.round(v * 1000) / 1000;
+    const rates = (slp) => { const mul = slp ? P.sleepDecayMul : 1; return {
+      hunger: r1(-P.decayPerHour.hunger * dm * mul), mood: r1(-P.decayPerHour.mood * dm * mul),
+      clean: r1(-(P.decayPerHour.clean * P.traitCleanDecayMul + (s.poops || 0) * P.poopCleanPenaltyPerH) * dm * mul),
+      energy: r1(slp ? P.sleepRegenPerHour * P.traitSleepRegenMul : -P.decayPerHour.energy * dm) }; };
+    const vals = {}; for (const k of KEYS) vals[k] = Math.round(clamp(+n[k] || 0, 0, 100) * 10) / 10;
+    const lk = lowestNeed(s), mv = vals.mood;
+    return { egg: false, moodBand: mv > 60 ? 'happy' : mv < 30 ? 'sad' : 'ok', sleeping: !!s.sleeping,
+      urgent: vals[lk] < warnAt ? lk : null, level: vals[lk], warnAt, vals, rate: rates(!!s.sleeping), rateAwake: rates(false), floor: P.offlineNeedFloor, wakeAt: P.sleepWakeAt };
+  }
+
   function decideForm(cq) {
     return cq >= P.branchBright ? 'bright' : cq >= P.branchSoft ? 'soft' : 'dust';
   }
@@ -436,7 +455,7 @@
   }
 
   return {
-    makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm,
+    makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
     eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };

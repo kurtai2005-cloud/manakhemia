@@ -40,6 +40,7 @@
     // 浮動 overlay：只傳大細（Kotlin 照讀 form；sizeDp／size／pivot 係新欄）
     overlayInfo() { const s = G.state, ek = D.evoForm(s.stage, s.form), F = D.FORMS[ek], fs = F ? F.frameSize : 32;
       return { stage: s.stage, form: s.stage === 'egg' ? 'egg' : D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : 'soft') : 'sprout', evoForm: ek, size: fs, pivot: [fs / 2, fs - 3], sizeDp: Math.round(fs * P.overlayDpPerPx) }; },
+    overlayStatus() { return SIM.overlayStatus(G.state); },   // snapshot v3：心情／瞌覺／需求（fpet-bridge 讀）
     setStage(st, branch) {          // DEV：跳去某階段（成年／靜光可指定分支）；保留需求，成長歸零
       const s = G.state; if (!D.STAGES.includes(st)) throw new Error('evo.setStage: ' + st);
       if (branch && !['bright', 'soft', 'dust', 'lumi'].includes(branch)) throw new Error('evo.setStage branch: ' + branch);
