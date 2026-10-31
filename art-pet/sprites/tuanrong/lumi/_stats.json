@@ -1,0 +1,41 @@
+{
+ "clips": {
+  "idle": 4,
+  "blink": 4,
+  "walk": 6,
+  "play": 6,
+  "eat": 4,
+  "fall_asleep": 4,
+  "sleep_loop": 4,
+  "wake": 4,
+  "emo_happy": 2,
+  "emo_hungry": 2,
+  "emo_sleepy": 2,
+  "celebrate": 4,
+  "droop": 6,
+  "sick": 2,
+  "picked_up": 6
+ },
+ "frames": 60,
+ "mvpFrames": 46,
+ "atlas": [
+  1024,
+  1024
+ ],
+ "pieces": 206,
+ "fit_adjustments": [
+  "lumi:play_04:shear"
+ ],
+ "edgeTouch": [],
+ "std23Remaining": [
+  "sway",
+  "yawn",
+  "emo_wantplay",
+  "emo_cuddly",
+  "emo_surprised",
+  "sunbathe",
+  "pot_bump",
+  "catch_reach",
+  "cheer_jump"
+ ]
+}

@@ -22,3 +22,16 @@
 - 備份：/workspace/game-design/_backups/pre_pickup_20261031/
 - 驗證：validate_liveliness.py → ALL PASS（FAIL 0；錨點 459 幀、pivot override 36 塊）
 - Pillow／numpy 程式繪製、31 色盤、alpha 0/255、無 AA，無 AI
+
+## 2026-10-31 13:10 — 螢絨 lumi 動畫（隱藏稀有成年形態，round_s）
+- 概念改：翼由頭頂移去背後（中／下背，身後；左邊露出輪廓外一截）→ 重出 lumi_concept/lumi_idle_64.png、lumi_idle_emissive_64.png、lumi_concept_8x.png；tools/build_lumi_concept.py 改成 parametric `render_lumi(p)`（同 render_pet 參數語義）
+- 新腳本：tools/build_lumi.py（import motion／liveliness 做 module，唔跑佢哋 main；pose 參數＝radiant 同名 clip，只換外觀層）、tools/validate_lumi.py
+- 15 clip／60 幀（MVP 12／46：idle 4、blink 4、walk 6、play 6、eat 4、sleep_loop 4、emo_happy 2、emo_hungry 2、emo_sleepy 2、celebrate 4、droop 6、sick 2；加 picked_up 6（pivot＝grab）、fall_asleep 4、wake 4）
+- 發光：尾燈脈衝（bud 基準＋幀相位 0/1/2 級）、8 粒身上光點逐幀閃、觸角燈頭隨 sway/droop；每幀 emissive 遮罩（白＝fly／fly_core）
+- 新檔：sprites/tuanrong/atlas_lumi.png/.json（1024×1024，206 塊，padding 2、extrude 1，pivotPx 逐塊）、atlas_lumi_emissive.png（同 layout）；sprites/tuanrong/lumi/{frames,layers(_noface/_faceov),emissive,kit,preview}/、face_anchors_lumi.json（eyeL/eyeR/mouth/head_r/bulb/bulb2/tail/faceVisible/face/grab）、palette_lumi.json、contact_lumi_4x.png、compare_radiant_vs_lumi_4x.png、_stats.json
+- 改檔：motion/CLIPS.json（forms.lumi、clips[].anchors.lumi、clips[].lumi）、motion/CLIPS.md（lumi 段）、tools/validate_liveliness.py（結尾調用 validate_lumi）、lumi_concept/NOTES.md
+- 冇改：radiant／soft／sprout 任何幀、atlas、liveliness 檔；31 色共用色盤
+- 備份：/workspace/game-design/_backups/pre_lumi_anim_20261031/
+- 驗證：validate_lumi.py → ALL PASS；validate_liveliness.py（含 lumi）→ ALL PASS（FAIL 0）
+- 注意：build_tuanrong_liveliness_docs.py 會由 _backup_v1 重砌 CLIPS.json → 重跑後要再跑 build_lumi.py 補返 lumi 段
+- Pillow／numpy 程式繪製、alpha 0/255、無 AA、無 AI

@@ -2,7 +2,7 @@
 """validate_liveliness.py — 團絨生命感交付驗證。
 檢查：色盤（31 色）、alpha 0/255、尺寸、pivot、錨點齊全、noface+faceov == 原幀（逐像素）、
 新 clip 完整幀 == noface + kit（按錨點）、atlas ≤1024／無重疊／padding 2／extrude 1／像素同散檔一致、
-舊 open/smile 幀用 kit neutral 重疊嘅吻合度。"""
+舊 open/smile 幀用 kit neutral 重疊嘅吻合度；另調用 validate_lumi.py（螢絨）。"""
 import json, os, sys, glob
 import numpy as np
 from PIL import Image
@@ -139,6 +139,11 @@ info.append(f"錨點 {anc_n} 幀；noface+faceov＝原幀 {recon}；新 clip kit
 if kitfit:
     v = [x[3] for x in kitfit]
     info.append(f"舊 open/smile 幀用 kit neutral 重疊吻合度：{len(v)} 幀，100% {sum(1 for t in v if t == 1.0)}，最低 {min(v)}（shear 幀預期 <1）")
+# 螢絨 lumi（隱藏稀有成年形態）覆蓋：見 validate_lumi.py
+if os.path.exists(os.path.join(MOT, "..", "atlas_lumi.json")):
+    sys.path.insert(0, HERE); import validate_lumi
+    lf, li = validate_lumi.run(); fails += lf; info += li
+else: F("atlas_lumi.json missing (run build_lumi.py)")
 print("\n".join(info))
 print("FAIL", len(fails)); [print(" -", f) for f in fails[:40]]
 print("ALL PASS" if not fails else "FAILED")

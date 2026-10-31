@@ -1,6 +1,6 @@
-# 螢絨 (lumi) — idle 概念草圖（待 Kurt／遊策批）
+# 螢絨 (lumi) — idle 概念草圖（Kurt 已批：「翼移去背後先開動畫」）
 
-> 只係 1 張 idle 草圖，未出 clip／atlas。Python Pillow／numpy 程式逐像素繪製，**無 AI**，原創設計。
+> 2026-10-31 13:00 HKT：翼已由頭頂移去背後；動畫已出（見 `../lumi/`、`../atlas_lumi.*`）。Python Pillow／numpy 程式逐像素繪製，**無 AI**，原創設計。
 > 腳本：`art-pet/tools/build_lumi_concept.py`（可重跑；import `build_tuanrong.py` 嘅 Cv／眼口模板）。
 
 ## 檔案
@@ -20,7 +20,7 @@
 |---|---|---|---|
 | 毛色 | 奶油黃 | 蜜桃橘 | **夜藍紫**（冷色，唯一冷色成年形態） |
 | 頭頂 | 蒲公英光芒燈泡 | 葉芽小燈 | **兩條觸角＋螢光綠燈頭**（冇芽莖） |
-| 輪廓 | 圓團 | 大圓團 | 圓團＋**左後下突出嘅螢火尾燈**＋背上一對淺藍小翼 |
+| 輪廓 | 圓團 | 大圓團 | 圓團＋**左後下突出嘅螢火尾燈**＋**背後（中／下背）一對淺藍小翼，喺身體後面、左邊露出輪廓外一截**（唔再似帽） |
 | 光色 | 暖黃 | 暖黃 | **螢光黃綠**（呼應 H4 firefly 粒子 #e4ff8c） |
 - 身上 8 粒小光點（plus 形／單點），集中背同後半，越近尾越密。
 - 眼睛高光用 fly_core（淡螢光），夜晚會帶少少綠閃。
@@ -43,6 +43,10 @@
 - 只標 fly、fly_core（亮兩級）；fly_d（尾燈外圈）唔發光，保留形狀。
 - H4 預覽：發光像素唔食 petTint×ambientTint；glow＝emissive Gaussian σ3 × #cff26a ×1.4 ＋ σ1 × #f2ffb8 ×0.35（lighter）。遊程可用同一遮罩做呼吸閃爍。
 
-## 待批／下一步
-1. Kurt／遊策批外觀（毛色、觸角、尾燈、翼）。
-2. 批咗先出 MVP 12 clip／46 幀＋picked_up＋fall_asleep／wake → `pets/tuanrong/atlas_lumi`（1024 闊、≤1024²、padding 2、extrude 1），之後補 std23。
+## 翼（v2，13:00）
+- 兩塊旋轉橢圓（drop＋white 內光＋drop_d 翼脈），畫喺身體之前（＝身後），錨喺靜止身寬 rx 19：下翼 (cx−0.78rx, cy−0.10ry) 166°、上翼 (cx−0.58rx, cy−0.36ry) 142°；fluff 參數帶 ±7° 輕拍。
+- renderer 已改成 parametric `render_lumi(p)`（同 render_pet 參數），概念圖＝`render_lumi({})`。
+
+## 狀態
+- ✅ MVP 12 clip／46 幀＋picked_up、fall_asleep、wake（共 15 clip／60 幀）→ `../atlas_lumi.png/.json`＋`../atlas_lumi_emissive.png`；散檔 `../lumi/`；build `tools/build_lumi.py`、驗證 `tools/validate_lumi.py`。
+- ⏳ std23 餘下：sway、yawn、emo_wantplay、emo_cuddly、emo_surprised、cheer_jump、catch_reach、sunbathe、pot_bump。

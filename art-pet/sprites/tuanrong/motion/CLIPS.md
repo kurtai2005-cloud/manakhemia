@@ -151,3 +151,31 @@
 | grumpy | angry | C | angry | — |
 | curious | neutral | U | sleepy | question |
 | wink | neutral（右眼 wink） | C | wink | — |
+
+<!-- LUMI-START -->
+## 螢絨 lumi（隱藏稀有成年形態，round_s）
+- atlas：`../atlas_lumi.png/.json`（1024×1024，206 塊，padding 2、extrude 1）＋ `../atlas_lumi_emissive.png`（同 layout，白＝發光）
+- 64×64、pivot (32,61)、lumi 31 色（`../lumi/palette_lumi.json`）、alpha 0/255、向右。姿勢＝radiant 同名 clip（只換外觀層）。
+- 五官：`<clip>_noface` ＋ kit（eyes_*/mouth_*，64px，眼高光 fly_core），錨點 `../lumi/face_anchors_lumi.json`（＝本檔 clips[].anchors.lumi）；bulb＝前觸角燈頭、另有 bulb2／tail。
+- picked_up：pivot＝anchors.grab（同 radiant）。
+- 共 15 clip／60 幀（MVP 12 clip／46 幀＋picked_up、fall_asleep、wake）。
+
+| clip | 幀 | fps | | 類 |
+|---|---|---|---|---|
+| idle | 4 | 6 | loop | MVP |
+| blink | 4 | 10 | once | MVP |
+| walk | 6 | 10 | loop | MVP |
+| play | 6 | 8 | once | MVP |
+| eat | 4 | 8 | once | MVP |
+| fall_asleep | 4 | 3 | once | 加（浮動／睡眠） |
+| sleep_loop | 4 | 2 | loop | MVP |
+| wake | 4 | 5 | once | 加（浮動／睡眠） |
+| emo_happy | 2 | 4 | once | MVP |
+| emo_hungry | 2 | 3 | loop | MVP |
+| emo_sleepy | 2 | 2 | loop | MVP |
+| celebrate | 4 | 8 | once | MVP |
+| droop | 6 | 4 | loop | MVP |
+| sick | 2 | 3 | loop | MVP |
+| picked_up | 6 | 8 | loop | 加（浮動／睡眠） |
+
+未做（std23 餘下）：sway、yawn、emo_wantplay、emo_cuddly、emo_surprised、sunbathe、pot_bump、catch_reach、cheer_jump
