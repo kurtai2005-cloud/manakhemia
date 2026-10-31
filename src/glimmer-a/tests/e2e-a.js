@@ -20,7 +20,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const E = (fn, arg) => page.evaluate(fn, arg);
   const shot = async (n) => { await page.waitForTimeout(200); await page.screenshot({ path: OUT + 'a-' + n + '.png' }); console.log('  📷 a-' + n); };
   const fresh = async (qs, init) => {           // 清存檔 → 載入 → 設成「柔光成體、需求全滿」
-    await page.goto(BASE + '?' + qs); await page.evaluate(() => localStorage.clear()); await page.goto(BASE + '?' + qs); await page.waitForTimeout(700);
+    await page.goto(BASE + '?' + qs); await page.evaluate(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + qs); await page.waitForTimeout(700);
     await E(() => { const s = __glimmer.state; s.stage = 'adult'; s.form = 'soft'; s.growthSec = 1e6; Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; s.settings.sound = true; });
     if (init) await E(init);
   };
@@ -105,7 +105,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     if (id === 'firefly_walk') {
       const q = await E(() => ({ log: __qa.pet.eventLog().map(x => x.id), pool: __qa.pet.pool(), claimed: __qa.pet.claimedFlashDates(), blog: __qa.pet.log.filter(j => j.ev === 'event').map(j => j.name), card: document.getElementById('evcard').textContent }));
       ok(q.log.includes('firefly_walk') && q.blog.includes('firefly_walk'), '__qa.pet：eventLog／行為日誌見到 firefly_walk', JSON.stringify(q.log) + JSON.stringify(q.blog));
-      ok(q.pool.length === 9 && q.pool.find(e => e.id === 'firefly_walk').weight === 20 && q.pool.find(e => e.id === 'rainbow').weight === 4, '__qa.pet.pool()：9 個、firefly 20、rainbow 4');
+      ok(q.pool.length === 9 && q.pool.find(e => e.id === 'firefly_walk').weight === 14 && q.pool.find(e => e.id === 'rainbow').weight === 4 && q.pool.find(e => e.id === 'gift').weight === 22, '__qa.pet.pool()：9 個、firefly 14、rainbow 4、gift 22');
       ok(Array.isArray(q.claimed), '__qa.pet.claimedFlashDates() 可讀', JSON.stringify(q.claimed));
       ok(await E(() => { __glimmer.save(); return typeof __qa.pet.lastSaveTime() === 'number' && __qa.pet.suppressed() === false; }), '__qa.pet.lastSaveTime()／suppressed() 可讀；正常時間唔 suppress');
       ok(!/◌/.test(q.card), '提示卡冇 placeholder 前綴', q.card);
@@ -122,6 +122,34 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const g0 = await E(() => __glimmer.state.grains); await page.click('[data-testid=modal-btn-0]'); await page.waitForTimeout(300);
   ok(await E((g) => __glimmer.state.grains === g + 12 && __glimmer.state.evs.diary.length === 0, g0), '一鍵領取：4 條 × ✦3 = +12');
   await shot('diary-claimed');
+  console.log('# PR #19：14 日離線補抽／連點鬧脾氣 48h／睡眠點擊輕喚醒／壞存檔回退');
+  await fresh('debug=1&q=high&hour=13&seed=7', () => { __glimmer.setPeriod(null); });
+  await page.click('[data-testid=modal-btn-0]').catch(() => { });
+  {
+    const r = await E(() => { const s = __glimmer.state, now = Date.now(); s.evs.diary = []; s.evs.pending = []; s.lastSeen = now - 14 * 86400e3; s.lastSaveTime = s.lastSeen;
+      const rep = Glimmer.sim.applyOffline(s, now); return { diary: s.evs.diary.length, pend: s.evs.pending.length, pop: rep && rep.popups, warn: Glimmer.events.diaryWarn ? !!Glimmer.events.diaryWarn(s, now) : null, rare: s.evs.pending.map(x => x.id) }; });
+    ok(r.diary >= 18 && r.diary <= 50 && r.pend === 2, '14 日離線：彈窗 2、入日記 ' + r.diary + ' 條（≤50）', JSON.stringify(r));
+    await page.waitForTimeout(300); await shot('offline-14d');
+  }
+  await E(() => { __qa.pet.pause(true); __glimmer.ev = null; const s = __glimmer.state; s.evs.pending = []; s.evs.cd = {}; s.evs.lastAt = -1e9; s.sleeping = false; });
+  {
+    const r = await E(() => { const E0 = __glimmer.state.evs; __qa.pet.step(5); __qa.pet.tapPet(5); __qa.pet.step(0.5); const l = E0.log[E0.log.length - 1]; return { id: l && l.id, kind: l && l.kind, cd: Math.round((E0.cd.grumpy - E0.clock) / 3600) }; });
+    ok(r.id === 'grumpy' && r.kind === 'tap' && r.cd === 48, '__qa.pet.tapPet(5)：觸發鬧脾氣事件，冷卻 48h', JSON.stringify(r));
+    const r2 = await E(() => { const E0 = __glimmer.state.evs; E0.lastAt = -1e9; const n = E0.stats.events; __qa.pet.step(10); __qa.pet.tapPet(5); __qa.pet.step(0.5); return E0.stats.events - n; });
+    ok(r2 === 0, '冷卻內再連點：唔再觸發事件', r2);
+  }
+  {
+    const r = await E(() => { const s = __glimmer.state; Glimmer.sim.toggleSleep(s); __qa.pet.step(3); const n0 = JSON.stringify(s.needs), lw0 = __glimmer.beh.log.enters.lightWake || 0, ev0 = s.evs.stats.events;
+      __qa.pet.tapPet(1); __qa.pet.step(1); return { sleeping: s.sleeping, lw: (__glimmer.beh.log.enters.lightWake || 0) - lw0, expr: __glimmer.beh.expr, ev: s.evs.stats.events - ev0 }; });
+    ok(!r.sleeping && r.lw === 1 && r.expr === 'tired' && r.ev === 0, '瞓緊點寵物：輕喚醒＋睏睏（tired），冇鬧脾氣', JSON.stringify(r));
+    await shot('light-wake');
+  }
+  {
+    const r = await E(() => { const raw = JSON.parse(localStorage.getItem(Object.keys(localStorage).find(k => /glimmer/i.test(k)) || '') || 'null'); return !!raw; });
+    const r2 = await E(() => { const s = __glimmer.state; s.evs.diary = [null, { id: 'zzz' }, { id: 'gift', ts: 'bad' }]; delete s.evs.stats.byId; s.evs.pending = 7; let err = null; try { Glimmer.events.ensure(s); __qa.pet.step(1); } catch (e) { err = e.message; } return { err, d: s.evs.diary.length, byId: !!s.evs.stats.byId, p: Array.isArray(s.evs.pending) }; });
+    ok(!r2.err && r2.d === 1 && r2.byId && r2.p, '壞日記／缺 stats.byId 回退唔爆', JSON.stringify(r2));
+  }
+  await E(() => __qa.pet.pause(false));
   console.log('# 設定：聲音開關／音量');
   await page.click('[data-testid=modal-btn-0]').catch(() => { });
   await page.waitForTimeout(200);

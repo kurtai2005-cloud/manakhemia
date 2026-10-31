@@ -65,7 +65,7 @@
   📷 a-event-firefly_walk
   ✓ 提示卡顯示遊美動畫 icon（firefly_walk，非透明像素 464）
   ✓ __qa.pet：eventLog／行為日誌見到 firefly_walk
-  ✓ __qa.pet.pool()：9 個、firefly 20、rainbow 4
+  ✓ __qa.pet.pool()：9 個、firefly 14、rainbow 4、gift 22
   ✓ __qa.pet.claimedFlashDates() 可讀
   ✓ __qa.pet.lastSaveTime()／suppressed() 可讀；正常時間唔 suppress
   ✓ 提示卡冇 placeholder 前綴
@@ -94,6 +94,14 @@
   ✓ 同類事件合併（禮物 ×2）
   ✓ 一鍵領取：4 條 × ✦3 = +12
   📷 a-diary-claimed
+# PR #19：14 日離線補抽／連點鬧脾氣 48h／睡眠點擊輕喚醒／壞存檔回退
+  ✓ 14 日離線：彈窗 2、入日記 34 條（≤50）
+  📷 a-offline-14d
+  ✓ __qa.pet.tapPet(5)：觸發鬧脾氣事件，冷卻 48h
+  ✓ 冷卻內再連點：唔再觸發事件
+  ✓ 瞓緊點寵物：輕喚醒＋睏睏（tired），冇鬧脾氣
+  📷 a-light-wake
+  ✓ 壞日記／缺 stats.byId 回退唔爆
 # 設定：聲音開關／音量
   📷 a-settings-sound
   ✓ 關聲音 → 引擎靜音
@@ -142,4 +150,4 @@
 # console 錯誤／警告
   ✓ console 無 error／warning
 
-結果：84 通過，0 失敗
+結果：89 通過，0 失敗

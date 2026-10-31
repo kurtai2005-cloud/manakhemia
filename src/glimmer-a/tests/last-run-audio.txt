@@ -16,7 +16,7 @@
   ✓ 勝出→mg_win
   ✓ 呵欠 → pet_yawn
   ✓ 摸 → pet_touch_a／b
-  ✓ 連點 → pet_grumpy；第 4 下起唔再播 touch（pet_content,pet_grumpy）
+  ✓ 連點 → pet_grumpy；第 4 下起唔再播 touch（pet_content,pet_grumpy,pet_curious）
   ✓ 撞花盆 → env_pot_bump
   ✓ 曬太陽躺低 → sunbathe loop 開
   ✓ 瞓覺 → sleep_breath loop＋night BGM

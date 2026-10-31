@@ -134,6 +134,18 @@ console.log('# 觸摸：摸、連點、睡眠中連點');
   const ss = mkS({ energy: 40 }, { sleeping: true }), cs = ctxAt(ss, 23); b = BEH.create(6); run(b, cs, 20);
   for (let i = 0; i < 7; i++) { BEH.tap(b, 'pet', 0); run(b, cs, 0.4); }
   ok(!b.journal.some(j => j.ev === 'state' && j.name === 'grumpy') && b.state === 'simsleep', '關燈瞓覺中連點 7 下：維持睡眠、唔鬧脾氣（翻身 ' + (b.log.enters.sleepStir || 0) + ' 次）');
+  // PR #19 P1：連點 5 下 → tantrumReq（main 交俾 events.tapTantrum，48h 冷卻）
+  b = fresh(); run(b, ctx, 10); for (let i = 0; i < 5; i++) { BEH.tap(b, 'pet', 0); run(b, ctx, 1.0); }
+  ok(b.tantrumReq === 1 && b.journal.some(j => j.name === 'tantrum'), '連點 5 下：發出 1 次鬧脾氣事件請求（tantrumReq）');
+  b = fresh(); run(b, ctx, 10); for (let i = 0; i < 4; i++) { BEH.tap(b, 'pet', 0); run(b, ctx, 1.0); } ok(!b.tantrumReq, '4 下：冇事件請求');
+  // PR #19 P1：關燈瞓覺中點寵物 → UI 輕喚醒（sim 起身）＋ 'wake' tap → 睏睏 sleepyHold 秒、唔鬧脾氣
+  const sw = mkS({ energy: 40 }, { sleeping: true }), cw = ctxAt(sw, 23); b = BEH.create(7); run(b, cw, 20);
+  const n0 = Object.assign({}, sw.needs); sw.sleeping = false; BEH.tap(b, 'wake', 0); run(b, cw, 0.5);
+  ok(b.log.enters.lightWake === 1 && b.journal.some(j => j.name === 'lightWake') && !b.tantrumReq, '睡眠點擊＝輕喚醒（lightWake），冇鬧脾氣請求');
+  run(b, cw, 1.0); ok(b.expr === 'tired' && b.state !== 'simsleep', '輕喚醒後起身＋睏睏表情（' + b.state + '／' + b.expr + '）');
+  ok(JSON.stringify(sw.needs) === JSON.stringify(n0), '輕喚醒唔扣需求');
+  run(b, cw, P.tap.sleepyHold + 1); ok(b.expr !== 'tired' || sw.needs.energy < 30, sleepyHoldMsg());
+  function sleepyHoldMsg() { return P.tap.sleepyHold + 's 後睏睏表情完結（' + b.expr + '）'; }
 }
 
 console.log('# clip 表同 遊美 art/CLIPS.json 對齊');

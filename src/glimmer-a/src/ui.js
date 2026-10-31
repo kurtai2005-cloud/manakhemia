@@ -246,7 +246,7 @@
       if (a.x > b.x - 6 && a.x < b.x + b.w + 6 && a.y > b.y - 6 && a.y < b.y + b.h + 6) {
         if (s.stage === 'egg') { SIM.tapEgg(s); processEvents(); G.save(); }
         else if (!s.sleeping) {  if (G.beh) NS_BEH.tap(G.beh, 'pet', a.x - R.CX); else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }
-        else toast('噓…團絨瞓緊');
+        else if (G.lightWake && G.lightWake()) { toast('團絨揉揉眼醒咗…仲有啲睏睏'); SND('sleep', { on: false }); }
       } else if (s.stage !== 'egg' && !s.sleeping && G.beh && a.y > R.GROUND_Y - 50 && a.y < R.GROUND_Y + 40) {
         NS_BEH.tap(G.beh, 'ground', clamp(a.x - R.CX, -70, 70));
       }

@@ -50,6 +50,12 @@
   ✓ 醒後睏睏表情（emo_sleepy）仍喺 4s 內
   ✓ 之後回復正常表情（happy）
   ✓ 關燈瞓覺中連點 7 下：維持睡眠、唔鬧脾氣（翻身 7 次）
+  ✓ 連點 5 下：發出 1 次鬧脾氣事件請求（tantrumReq）
+  ✓ 4 下：冇事件請求
+  ✓ 睡眠點擊＝輕喚醒（lightWake），冇鬧脾氣請求
+  ✓ 輕喚醒後起身＋睏睏表情（stay／tired）
+  ✓ 輕喚醒唔扣需求
+  ✓ 4s 後睏睏表情完結（neutral）
 # clip 表同 遊美 art/CLIPS.json 對齊
   ✓ art CLIPS.json 有 23 個 clip
   ✓ data.js CLIPS 同 art 一致（frames／fps／loop／priority／cooldown／ready）
@@ -67,4 +73,4 @@
   ✓ 用現有 walk／play clip：walk,play
   ✓ 所有用到嘅 clip 喺 clip 表有定義
 
-結果：57 通過，0 失敗
+結果：63 通過，0 失敗

@@ -107,8 +107,11 @@
       grumpyLowNeed: 30, grumpyLowSec: 7200, // 鬧脾氣事件：任一需求 <30 持續 ≥2 小時（有效時間）；事件冷卻 48h（EVENTS.grumpy.cooldownH）
       pendingMax: 2, historyLen: 12,
       offlinePopupMax: 2,                    // 離線返嚟最多彈 2 個事件卡，其餘入日記
-      offlineMaxEvents: 12,                  // 單次離線結算事件總上限（彈出＋日記）
-      diaryKeepDays: 14, diaryWarnDays: 12, diaryMax: 30,   // 日記保留 14 日（實時鐘），第 12 日起提示
+      offlineMaxEvents: 120,                 // 單次離線結算事件總上限（彈出＋日記；14 日約 35 條，留作安全網）
+      offlineMaxDays: 14,                    // 離線事件按「日」模擬，最多補 14 日（實時鐘）；需求衰減／離線禮物仍用有效時間 E
+      offlineStepSec: 600,                   // 離線補抽嘅時間步長（10 分鐘，鐘點／日界／保底按本機時間）
+      offlineNeedAssume: 50,                 // 離線補抽時，條件判斷用「離開前需求」但每項至少 50（唔因為離線衰減而擋事件）
+      diaryKeepDays: 14, diaryWarnDays: 12, diaryMax: 50,   // 日記保留 14 日（實時鐘，戳記＝事件發生時間），第 12 日起提示；最多留最近 50 條
       diaryGrains: 3, diaryClaimMax: 60,     // 日記每條 +3 光粒（唔再有心情），單次領取上限 60；同類事件合併成一行
       offlineSummaryNames: 2,                // 摘要最多提及幾個
       cardSec: 5,                            // 事件卡顯示秒數（最少）
@@ -217,31 +220,32 @@
     soft:    { atlas: 'atlas_soft',    frameSize: 64, pivot: [32, 61], headR: [18, -30], pot: [34, 0], sun: [0, 0] },
   };
   const PROP_KINDS = ['petal', 'flower', 'pebble'];
-  // 事件池（8 個）。cond：hours=[由,至)（可跨午夜）、sleeping、moodAtLeast、energyAtLeast、lowNeed（任一需求<30 持續≥2h，冷卻 48h）；
+  // 事件池 9 個＝7 個池抽取（權重對齊遊測 v5.1：禮物 22／蝴蝶 20／流星 10／夢話 11／尋寶 18／彩虹 4／螢火 14）＋鬧脾氣（cond：唔入池，需求 <30 持續 ≥2h 或 10 秒連點 5 下，冷卻 48h）＋閃光日。
+  // 條件：hours=[由,至)（可跨午夜）、sleeping、moodAtLeast、energyAtLeast；
   // rare＝冷卻 72h（其餘 24h）；雨後彩虹＝傍晚 17–23 入普通池（方案 A 無天氣）；special＝閃光日（hash(存檔種子,日期) 3%）
   const EVENTS = [
-    { id: 'gift', icon: 'gift_return', name: '帶禮物回來', weight: 3, hours: [6, 24], sleeping: false, moodAtLeast: 35, fallback: true,
+    { id: 'gift', icon: 'gift_return', name: '帶禮物回來', weight: 22, hours: [7, 23], sleeping: false, moodAtLeast: 35, fallback: true,
       grains: [2, 4], mood: [2, 4], dur: 4.5, visual: true, off: '帶咗份細禮物返嚟',
       flavor: ['團絨叼住一粒閃閃嘅小石仔，放低喺你面前。', '佢喺草叢入面搵到一片靚葉，驕傲咁獻俾你。'] },
-    { id: 'butterfly', icon: 'butterfly', name: '蝴蝶訪客', weight: 2.5, hours: [7, 18], sleeping: false, energyAtLeast: 30,
+    { id: 'butterfly', icon: 'butterfly', name: '蝴蝶訪客', weight: 20, hours: [7, 17], sleeping: false, energyAtLeast: 30,
       grains: [1, 2], mood: [4, 6], dur: 7, visual: true, off: '同一隻蝴蝶玩咗一陣',
       flavor: ['一隻發光小蝴蝶飛入園圃，團絨追住佢跳跳吓。', '蝴蝶停喺絨芽上面，團絨屏住氣唔敢郁。'] },
-    { id: 'meteor', icon: 'meteor_night', name: '流星夜', weight: 2, rare: true, hours: [19, 5], sleeping: false,
+    { id: 'meteor', icon: 'meteor_night', name: '流星夜', weight: 10, rare: true, hours: [19, 5], sleeping: false,
       grains: [3, 4], mood: [3, 5], dur: 6, visual: true, off: '睇到流星劃過夜空',
       flavor: ['幾顆流星劃過夜空，團絨仰高頭睇到入神。'] },
     { id: 'rainbow', icon: 'rainbow', name: '雨後彩虹', weight: 4, rare: true, hours: [17, 23], sleeping: false,
       grains: [3, 4], mood: [4, 6], dur: 7, visual: true, off: '見到雨後出咗條彩虹',
       flavor: ['陣雨過後，園圃上空掛住一條淡淡嘅彩虹。'] },
-    { id: 'firefly_walk', icon: 'firefly_walk', name: '螢火散步', weight: 20, hours: [17, 23], sleeping: false, clipHint: 'play',
+    { id: 'firefly_walk', icon: 'firefly_walk', name: '螢火散步', weight: 14, hours: [17, 23], sleeping: false, clipHint: 'play',
       grains: [5, 5], mood: [10, 10], dur: 7, visual: true, off: '喺傍晚同螢火蟲散咗個步',
       flavor: ['傍晚嘅園圃亮起幾點螢火，團絨跟住佢哋一步一步咁散步。', '幾隻螢火蟲繞住團絨打轉，佢開心到蹦蹦跳。'] },
-    { id: 'sleeptalk', icon: 'sleep_talk', name: '夢話', weight: 2, hours: [23, 7],
+    { id: 'sleeptalk', icon: 'sleep_talk', name: '夢話', weight: 11, hours: [23, 7],
       grains: [1, 1], mood: [1, 2], dur: 0, visual: false, off: '瞓夢中講咗句夢話',
       flavor: ['團絨喺夢入面咕噥：「…星屑餅…再嚟一塊…」', '團絨翻咗個身，細細聲講：「…唔好走…」'] },
-    { id: 'grumpy', icon: 'tantrum', name: '鬧脾氣', weight: 3, lowNeed: true, cooldownH: 48, sleeping: false,
+    { id: 'grumpy', icon: 'tantrum', name: '鬧脾氣', weight: 0, cond: true, lowNeed: true, cooldownH: 48, sleeping: false,
       grains: [1, 1], mood: [3, 4], dur: 4.5, visual: true, off: '鬧咗一陣小脾氣，之後自己氣消',
       flavor: ['團絨鼓起腮幫生悶氣，過一陣就自己氣消，仲偷偷望住你。'] },
-    { id: 'treasure', icon: 'treasure', name: '尋寶', weight: 2.2, hours: [8, 22], sleeping: false, energyAtLeast: 25, fallback: true,
+    { id: 'treasure', icon: 'treasure', name: '尋寶', weight: 18, hours: [8, 22], sleeping: false, energyAtLeast: 25, fallback: true,
       grains: [3, 6], mood: [2, 3], dur: 7, visual: true, off: '喺泥土度掘到啲閃閃嘢',
       flavor: ['團絨喺泥土度掘呀掘，搵到一堆閃閃發光嘅光粒！'] },
     { id: 'flash', icon: 'shiny_day', name: '閃光日', special: true, rare: true, weight: 0,

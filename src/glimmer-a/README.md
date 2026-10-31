@@ -10,7 +10,8 @@
 - **餵食**（星屑餅／暖菇飯／暖湯）、**玩耍**（逗玩／接星屑）、**清潔**（沖洗；輕點便便清走）、**關燈**（睡眠，精力每小時 +12，衰減 ×0.3；精力滿自動醒）。
 - **接星屑**：45 秒，拖動籃子接星屑，避開暗石。光粒 = floor(分數/10)，上限 20；心情 +8／+20；每日首 5 次全額，之後減半。
 - 芽崽成長滿 24 小時（可調）後按照顧品質 CQ 分支：燦光（≥70）／柔光（40–69）／微塵（<40）。
-- 離線：離開 ≥5 分鐘再返嚟會按第 7 節公式推算（有效離線 E、需求保底 20、成長 ×50%、不會死亡），顯示 3 句回歸摘要＋光粒禮物。
+- 離線：離開 ≥5 分鐘再返嚟會按第 7 節公式推算（有效離線 E、需求保底 20、成長 ×50%、不會死亡），顯示 3 句回歸摘要＋光粒禮物；日常事件按實時日補抽最多 14 日（2 個彈窗，其餘入日記）。
+- 睡眠中點寵物：輕喚醒（開燈起身＋睏睏表情 4 秒），唔鬧脾氣、唔扣需求。
 - 設定（⚙）：畫質 高／中／低／關（存檔）、就寢建議提示、重設存檔（兩步確認）。
 
 ## 畫面與後處理
@@ -57,9 +58,10 @@ docs/engine-eval.md        引擎評估（Godot／Unity／Web）
 ## 測試
 ```
 node tests/sim.test.js                                   # 82 項
-node tests/events.test.js                                # 事件／保底／閃光日已領／lastSaveTime 回撥（106 項）
-node tests/behavior.test.js                              # 行為（含 atlas／無舊 2048 圖檢查、23 clip 全交付、daylight 時段 hook，57 項）
+node tests/events.test.js                                # 事件／保底／閃光日已領／lastSaveTime 回撥／PR #19 P0–P1（126 項）
+node tests/behavior.test.js                              # 行為（含 atlas／無舊 2048 圖檢查、23 clip 全交付、daylight 時段 hook、連點請求／輕喚醒，63 項）
 node tests/audio.test.js                                 # 音訊 Director＋檔案 sha256 對照 staging（22 項）
+node tests/sim-report.js                                 # PR #19 自跑模擬（14 日離線條數／彩虹日數／螢火傍晚佔比）
 node tests/e2e-a.js                                      # 方案 A 端到端（~90 秒，截圖 screens/a-*.png）
 python3 -m http.server 8137 &                            # 於本資料夾（方案 A 用 8137；8125 係別個 agent 用）
 node tests/e2e-playwright.js                             # 需 playwright-core 與 /usr/bin/google-chrome（可用 PW／CHROME／BASE 覆寫）
@@ -80,42 +82,46 @@ e2e 流程：新遊戲 → 光卵輕點孵化 → 餵食／玩耍／清潔／睡
 
 ## 可調參數（給遊測；全部喺 `src/data.js` 的 `PARAMS`，改完即生效，唔使動邏輯）
 
-### events（遊策 v4 定案）
+### events（遊策 v4 定案＋PR #19 P0／P1 對齊 QA v5.1）
 | 參數 | 值 | 說明 |
 |---|---|---|
-| drawEveryH | [2,4] | 有效時間每 2–4 小時抽一次 |
+| drawEveryH | [2,4] | 每 2–4 小時抽一次（上線＝實時；離線＝按實時日補抽） |
 | **drawChance** | **0.34** | 每次抽取命中率 p_hit |
-| minGapSec | 1200 | 全域事件間隔 ≥20 分鐘 |
-| cooldownH／cooldownRareH | 24／72 | 單事件冷卻；稀有（流星夜、彩虹）72h；鬧脾氣 `cooldownH:48` |
+| minGapSec | 1200 | 全域事件間隔 ≥20 分鐘（鬧脾氣亦受限） |
+| cooldownH／cooldownRareH | 24／72 | 單事件冷卻；稀有（流星夜、彩虹）72h；鬧脾氣 `cooldownH:48`；**保底都唔打穿冷卻** |
 | repeatWeightMul | 0.25 | 防重複（上一個事件權重 ×0.25，軟性） |
 | dailyMax | 4 | 抽選每日上限（保底／閃光額外） |
-| guaranteeHour／**guaranteeOpens** | 16／**1** | 16:00 後仍冇事件，或**當日第 1 次開 app 即觸發**（當日已有事件則唔觸發）；只從 fallback 事件（禮物／寶藏）揀，優先冷卻已過者 |
-| flashDayRate | 0.03 | 閃光日＝`hash(存檔種子, 本機日期) < 3%`，日初判定一次存檔；**claimedFlashDates** 按日期記「已領」，同日唔重領 |
-| grumpyLowNeed／grumpyLowSec | 30／7200 | 任一需求 <30 持續 ≥2h（有效時間）→ 鬧脾氣事件（冷卻 48h）；另有 10 秒連點 5 次（beh.tap） |
-| offlinePopupMax／offlineMaxEvents | 2／12 | 離線返嚟最多彈 2 個，餘下入日記 |
-| diaryKeepDays／diaryWarnDays／diaryMax | 14／12／30 | 日記留 14 日，第 12 日起提示 |
-| diaryGrains／diaryClaimMax | 3／60 | 日記每條 +3 光粒（**包括螢火散步，唔係 +5**）、同類合併、一鍵領取單次上限 60（餘下留低） |
+| guaranteeHour／**guaranteeOpens** | 16／**1** | 當日第 1 次開 app（或 16:00 後）仍冇事件 → 保底：只揀「條件＋時段＋冷卻已過」嘅池事件，條件唔合就退一步只睇時段＋冷卻；**全部冷卻中 → 今次落空，下次開 app 再試**（`stats.guaranteeFail`）；離線唔觸發 |
+| flashDayRate | 0.03 | 閃光日＝`hash(存檔種子, 本機日期) < 3%`；**claimedFlashDates** 按日期記「已領」；離線日唔判閃光 |
+| grumpyLowNeed／grumpyLowSec | 30／7200 | 鬧脾氣**唔入池**（`cond`）：任一需求 <30 持續 ≥2h（離線期間按需求曲線估算時數）或 **10 秒連點 5 下**（`events.tapTantrum`）→ 鬧脾氣事件，冷卻 48h；瞓緊點＝輕喚醒，唔鬧 |
+| offlinePopupMax | 2 | 離線返嚟彈窗＝**稀有度最高 2 個，同級取最新**；其餘入日記 |
+| **offlineMaxDays／offlineStepSec** | **14／600** | 離線按實時日逐 10 分鐘補抽，最多補最近 14 日（鐘點／日界用本機時間；條件用離開前需求、每項至少 `offlineNeedAssume 50`） |
+| offlineMaxEvents | 120 | 單次離線補抽硬上限（保險） |
+| diaryKeepDays／diaryWarnDays／**diaryMax** | 14／12／**50** | 日記留 14 日，第 12 日起提示；最多保存 50 條（14 日離線實測 p95 37、最多 41） |
+| diaryGrains／diaryClaimMax | 3／60 | 日記每條 +3 光粒（**包括螢火散步，唔係 +5**）、同類合併、一鍵領取單次上限 60 |
 | pendingMax／historyLen／cardSec | 2／12／5 | 排隊上限／近期歷史／提示卡秒數 |
+
+**壞存檔回退（events.repair）**：`evs` 唔係 object → 重建；`diary／pending／hist／log／claimedFlashDates` 唔係 array → 清空；日記條目非 object／未知 id → 剔走，`ts` 壞 → 0，grains／mood 統一 3／0；缺 `stats`／`stats.byId`／`cd` → 重建；修補數記 `stats.repaired`。
 
 **lastSaveTime（防改系統時間；全部以 UTC ms 比較）**：每次存檔記低 `lastSaveTime`（只增唔減）。
 1. 系統時間比 lastSaveTime 早 **≤120 秒** 唔判篡改（網絡校時；`lastSaveTolSec`）；早逾 120 秒 → 標記 `evs.noDrawDay`＝回撥嗰日（UTC 日序號），**當日唔判閃光日、唔抽事件、唔保底**（有效時間照走），即使時間之後追過 lastSaveTime 都仍當日有效；翌 UTC 日恢復。
 2. `lastSaveTime > now + 24h`（`lastSaveMaxAheadH`）視為無效：重設為 now，`lastSeen` 同步設為 now → **該段唔派離線獎**（`rep.tampered=true`、`state.saveTimeResets++`）。
 3. 前撥（≤24h）／改時區：**M1 唔處理**（UTC ms 比較，時區改變唔影響；前撥只係令之後正常時間顯得「回撥」，由 ①②兜底）。
 
-### 事件池（9 個＝7 個一般＋鬧脾氣＋閃光日）
+### 事件池（9 個＝7 個入池＋鬧脾氣（條件）＋閃光日；權重對齊 QA v5.1）
 | id | 權重 | 時段 | 稀有 | 獎勵（光粒／心情） | 備註 |
 |---|---|---|---|---|---|
-| gift 禮物 | 3 | 06–24 | — | 2–4／2–4 | fallback |
-| butterfly 蝴蝶 | 2.5 | 07–18 | — | 1–2／4–6 | |
-| meteor 流星夜 | 2 | 19–05 | 是（72h） | 3–4／3–5 | |
-| rainbow 彩虹 | **4** | 17–23 | 是（72h） | 3–4／4–6 | 方案 A 無天氣，直接入池 |
-| firefly_walk 螢火散步 | **20** | 17–23（唔喺睡眠時） | — | **5／10** | 用 play clip；icon＝遊美 firefly_walk 動畫；音效暫借蝴蝶提示音降 3 半音（rate 2^(-3/12)≈0.841，`temp:true`） |
-| sleeptalk 夢話 | 2 | 23–07 | — | 1／1–2 | |
-| treasure 寶藏 | 2.2 | 08–22 | — | 3–6／2–3 | fallback |
-| grumpy 鬧脾氣 | 3（lowNeed 條件） | — | — | 1／3–4 | 冷卻 48h |
+| gift 禮物 | **22** | 07–23 | — | 2–4／2–4 | fallback；心情 ≥35 |
+| butterfly 蝴蝶 | **20** | 07–17 | — | 1–2／4–6 | 精力 ≥30 |
+| meteor 流星夜 | **10** | 19–05 | 是（72h） | 3–4／3–5 | |
+| rainbow 彩虹 | 4 | 17–23 | 是（72h） | 3–4／4–6 | 實測每 ≈13 日一次（v5 目標 11–15） |
+| firefly_walk 螢火散步 | **14** | 17–23（唔喺睡眠時） | — | 5／10 | PR #19 由 20 降到 14；用 play clip；音效暫借蝴蝶提示音降 3 半音 |
+| sleeptalk 夢話 | **11** | 23–07 | — | 1／1–2 | |
+| treasure 寶藏 | **18** | 08–22 | — | 3–6／2–3 | fallback；精力 ≥25 |
+| grumpy 鬧脾氣 | 0（cond，唔入池） | — | — | 1／3–4 | 需求 <30 ≥2h／連點 5 下；冷卻 48h |
 | flash 閃光日 | 特殊 | — | 是 | 8／8–10 | 3%/日，已領旗標 |
 
-⚠ 風險：傍晚（19–22 時）可抽池總權重 ≈31.2，其中螢火 20 ≈ 64%（模擬實測傍晚命中事件佔 56%）——傍晚幾乎得螢火散步；彩虹／流星／禮物／寶藏傍晚機會被擠壓。
+自跑模擬（`node tests/sim-report.js`，結果存 `tests/last-run-sim-report.txt`）：14 日離線入日記平均 30.6（中位 31、p95 37、最多 41；連彈窗共 32.6）；每日 4／5 次開 app：事件 2.64／2.65 個/日、彩虹每 13.0／12.9 日一次、傍晚 17–23 事件中螢火散步 37.3／37.5%（全部事件 8.7／8.9%）、冷卻違反 0。
 
 ### beh（行為）／light／quality／audio
 見 `PARAMS.beh`、`PARAMS.light`、`PARAMS.quality`、`PARAMS.audio`。重點：
@@ -125,7 +131,7 @@ e2e 流程：新遊戲 → 光卵輕點孵化 → 餵食／玩耍／清潔／睡
 - audio：`bus`、`xfadeSec 1.5`、`petMinGap 4`、`petRate [0.95,1.05]`、`needWarnEvery 90`、`eventBlockPet 0.5`；小節長 `barSec = 240/68 = 3.5294s`。
 
 ### window.__qa.pet（遊測）
-`seed`／`log`（行為日誌）／`clearLog()`／`reseed(n)`／`clock.{use,set,advance,real,now,setHour}`（假時鐘）／`pause(b)`／`step(sec)`／`state()`／`force(state)`／`forceEvent(id)`／`events()`／`eventLog()`（事件觸發紀錄，含 firefly_walk）／`claimedFlashDates()`／`flashToday()`／`pool()`（事件池權重表）／`lastSaveTime()`／`suppressed()`（時間回撥保護狀態）／`audio()`／`audioLog()`。
+`seed`／`log`（行為日誌）／`clearLog()`／`reseed(n)`／`clock.{use,set,advance,real,now,setHour}`（假時鐘）／`pause(b)`／`step(sec)`／`state()`／`force(state)`／`forceEvent(id)`／`tapPet(n)`（模擬點寵物；瞓緊＝輕喚醒）／`lightWake()`／`events()`／`eventLog()`（事件觸發紀錄，含 firefly_walk）／`claimedFlashDates()`／`flashToday()`／`pool()`（事件池權重表）／`lastSaveTime()`／`suppressed()`（時間回撥保護狀態）／`audio()`／`audioLog()`。
 URL：`?debug=1&seed=7&hour=19&q=high&ev=0`（`ev=0` 關閉自然事件，方便測試）。
 
 ## 光卵（egg）圖集

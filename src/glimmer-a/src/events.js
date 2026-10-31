@@ -1,6 +1,9 @@
 /* 《微光小圃》 events.js — 日常事件系統（DOM-free）。
    - 事件池 9 個（data.js EVENTS：7 個一般＋鬧脾氣＋閃光日）；每 2–4 小時「有效時間」抽一次；每個事件有冷卻；每日保底 ≥1（16:00 後或當日首次開 app）；閃光日 3%；系統時間早於 lastSaveTime → 當日唔抽。
-   - 有效時間：上線 = 100%；離線 = GDD 第 7 節 E（由 sim.applyOffline 經 step hook 傳入，事件喺離線期間即時結算，只會加光粒／心情，唔會扣）。
+   - 上線：事件時鐘＝實時（sim step hook）。離線：唔再用有效時間 E 抽事件，改由 sim.addOfflineHook 按「實時日」補抽（offlineReplay）：
+     最多補 offlineMaxDays（14）日、步長 offlineStepSec，鐘點／日界按本機時間；離線日唔觸發保底／閃光日。補抽結果取「稀有度最高 2 個（同級取最新）」做彈窗（即時領獎），其餘入日記（每條 +3）。
+   - 保底只揀冷卻已過（24h／稀有 72h）嘅事件，唔打穿冷卻；揀唔到就當日保底落空。
+   - 鬧脾氣唔入池（cond）：需求 <30 持續 ≥2h，或 10 秒內連點 5 下（tapTantrum）；冷卻 48h、受全域 20 分鐘間隔限制。
    - 全部隨機只用存檔內可還原嘅種子 RNG（state.evs.rs）；不用 Date／Math.random。
    - 掛喺 sim.step（addStepHook），亦可直接 EV.advance(s, dt, ctx) 單獨測試。原創代碼。 */
 (function (root, factory) {
@@ -28,12 +31,29 @@
       stats: { draws: 0, events: 0, flashDays: 0, days: 1, guarantee: 0, guaranteeOpen: 0, byId: {}, popups: 0, diaryAdded: 0, diaryClaimed: 0, diaryExpired: 0, gapBlocked: 0 },
     };
   }
+  const isObj = (o) => !!o && typeof o === 'object' && !Array.isArray(o);
+  const finite = (v) => typeof v === 'number' && isFinite(v);
+  // 壞存檔回退：日記／pending 唔係 array、條目損毀、stats／stats.byId 缺失 → 修補（唔爆、唔清走有效資料）
+  function repair(E) {
+    const F = fresh(1); let fixed = 0;
+    for (const k in F) if (E[k] === undefined || E[k] === null && F[k] !== null) { E[k] = F[k]; fixed++; }
+    if (!isObj(E.stats)) { E.stats = F.stats; fixed++; }
+    for (const k in F.stats) if (k !== 'byId' && !finite(E.stats[k])) { E.stats[k] = F.stats[k]; fixed++; }
+    if (!isObj(E.stats.byId)) { E.stats.byId = {}; fixed++; }
+    for (const k of ['diary', 'pending', 'hist', 'log', 'claimedFlashDates', 'offLog']) if (!Array.isArray(E[k])) { E[k] = []; fixed++; }
+    if (!isObj(E.cd)) { E.cd = {}; fixed++; }
+    const okRec = (d) => isObj(d) && typeof d.id === 'string' && !!DEF[d.id];
+    const n0 = E.diary.length;
+    E.diary = E.diary.filter(okRec).map(d => { if (!finite(d.ts)) d.ts = 0; d.grains = P.diaryGrains; d.mood = 0; d.diary = true; if (typeof d.flavor !== 'string') d.flavor = DEF[d.id].flavor[0]; return d; });
+    fixed += n0 - E.diary.length;
+    const p0 = E.pending.length; E.pending = E.pending.filter(okRec); fixed += p0 - E.pending.length;
+    if (E.active && !(isObj(E.active) && okRec(E.active.rec))) { E.active = null; fixed++; }
+    for (const k of ['clock', 'dayClock', 'next', 'lastAt', 'low', 'dayCount', 'day', 'opens']) if (!finite(E[k])) { E[k] = F[k]; fixed++; }
+    if (fixed) E.stats.repaired = (E.stats.repaired || 0) + fixed;
+    return fixed;
+  }
   function ensure(s) {
-    if (s.evs && s.evs.v === 1) {
-      const E = s.evs, F = fresh(1);
-      for (const k in F) if (E[k] === undefined) E[k] = F[k];      // 舊存檔補欄位
-      return E;
-    }
+    if (isObj(s.evs) && s.evs.v === 1) { repair(s.evs); return s.evs; }      // 舊存檔補欄位＋壞資料回退
     const E = s.evs = fresh(s.seed);
     const r = SIM.makeRng(E.rs);
     E.next = rf(r, P.drawEveryH) * 3600;        // 閃光日喺第一次 advance／noteOpen 知道日期後先判定（hash(seed, 日期)）
@@ -82,14 +102,13 @@
   function pick(s, E, r, hour, relaxed) {
     let c = [];
     for (const def of D.EVENTS) {
-      if (def.special) continue;
-      if (relaxed) { if (!def.fallback || !condOk(def, s, hour, E)) continue; }
-      else if (!condOk(def, s, hour, E) || cdLeft(E, def.id) > 0) continue;
+      if (def.special || def.cond) continue;          // 閃光日／鬧脾氣唔入池
+      if (cdLeft(E, def.id) > 0) continue;            // 冷卻（24h／稀有 72h）——保底亦唔打穿
+      if (!condOk(def, s, hour, E)) continue;
       c.push(def);
     }
-    if (relaxed) {   // 保底：優先「條件符合＋冷卻已過」，其次只忽略冷卻，最後忽略條件
-      const cool = c.filter(d => cdLeft(E, d.id) <= 0); if (cool.length) c = cool;
-      else if (!c.length) c = D.EVENTS.filter(d => d.fallback);
+    if (relaxed && !c.length) {   // 保底：條件全唔符合時，退一步只要求時段＋冷卻（仍唔打穿冷卻）
+      c = D.EVENTS.filter(d => !d.special && !d.cond && cdLeft(E, d.id) <= 0 && (!d.hours || inHours(hour, d.hours[0], d.hours[1])));
     }
     if (relaxed && c.length > 1) { const k = c.findIndex(d => d.id === E.last); if (k >= 0) c.splice(k, 1); }
     if (!c.length) return null;
@@ -104,16 +123,18 @@
   function trigger(s, E, def, r, offline, kind) {
     let grains = ri(r, def.grains), mood = ri(r, def.mood);
     const flavor = def.flavor[Math.floor(r() * def.flavor.length)];
-    const toDiary = !!offline && E.offPop >= P.offlinePopupMax;
+    const collect = offline === 'collect';                      // 離線補抽：先收集，最後先揀彈窗／日記（finishOffline）
+    const toDiary = !collect && !!offline && E.offPop >= P.offlinePopupMax;
     if (toDiary) { grains = P.diaryGrains; mood = 0; }        // 日記：每條固定 +diaryGrains 光粒
     const rec = { id: def.id, grains, mood, flavor, off: def.off, day: E.day, at: E.clock, hour: E.lastHour == null ? null : +E.lastHour.toFixed(2), kind: kind || 'draw', ts: E.nowMs || 0, offline: !!offline, diary: toDiary };
-    if (!toDiary) { s.grains += grains; s.needs.mood = clamp(s.needs.mood + mood, 0, 100); }   // 只加唔減
+    if (!toDiary && !collect) { s.grains += grains; s.needs.mood = clamp(s.needs.mood + mood, 0, 100); }   // 只加唔減
     if (def.id === 'flash') { const k = dateKey(E); if (E.claimedFlashDates.indexOf(k) < 0) E.claimedFlashDates.push(k); while (E.claimedFlashDates.length > 60) E.claimedFlashDates.shift(); }   // 已領旗標：同一日唔可重領
-    E.log.push({ id: def.id, kind: kind || 'draw', day: E.day, date: dateKey(E), hour: rec.hour, at: Math.round(E.clock), offline: !!offline, diary: toDiary }); if (E.log.length > 80) E.log.shift();
+    E.log.push({ id: def.id, kind: kind || 'draw', day: E.day, date: dateKey(E), hour: rec.hour, at: Math.round(E.clock), offline: !!offline, diary: collect ? null : toDiary }); if (E.log.length > 80) E.log.shift();
     E.last = def.id; E.lastAt = E.clock; E.hist.push(def.id); if (E.hist.length > P.historyLen) E.hist.shift();
     E.cd[def.id] = E.clock + (def.cooldownH || (def.rare ? P.cooldownRareH : P.cooldownH)) * 3600;
     E.dayCount++; E.stats.events++; E.stats.byId[def.id] = (E.stats.byId[def.id] || 0) + 1;
     if (s.stats) s.stats.events = (s.stats.events || 0) + 1;
+    if (collect) { rec.rare = !!def.rare; E.offLog.push(rec); return rec; }
     if (offline) {
       E.offLog.push(rec);
       if (toDiary) { E.diary.push(rec); E.stats.diaryAdded++; while (E.diary.length > P.diaryMax) E.diary.shift(); }
@@ -131,11 +152,11 @@
     if (E.gDone) return false;
     if (E.dayCount > 0) { E.gDone = true; return false; }
     if (!gapOk(E)) { E.stats.gapBlocked++; return false; }     // 間隔未夠，下一步再試
-    E.gDone = true;
-    if (off && E.offLog.length >= P.offlineMaxEvents) return false;
-    E.stats[why === 'open' ? 'guaranteeOpen' : 'guarantee']++;
+    if (off && E.offLog.length >= P.offlineMaxEvents) { E.gDone = true; return false; }
     const def = (E.flashToday && !E.flashDone && !flashClaimed(E)) ? DEF.flash : pick(s, E, r, hour, true);
-    if (!def) return false;
+    if (!def) { E.stats.guaranteeFail = (E.stats.guaranteeFail || 0) + 1; return false; }   // 全部冷卻中：今次落空，下次開 app／之後再試（唔打穿冷卻）
+    E.gDone = true;
+    E.stats[why === 'open' ? 'guaranteeOpen' : 'guarantee']++;
     if (def.id === 'flash') E.flashDone = true;
     trigger(s, E, def, r, off, 'guarantee'); return true;
   }
@@ -156,6 +177,10 @@
     E.low = minNeed(s) < P.grumpyLowNeed ? E.low + dt : 0;
     const off = !!ctx.offline;
     const cap = () => off && E.offLog.length >= P.offlineMaxEvents;
+    // 鬧脾氣（cond）：任一需求 <30 持續 ≥grumpyLowSec → 觸發（冷卻 48h、全域間隔）
+    if (!sup && !off && E.low >= P.grumpyLowSec) {
+      if (cdLeft(E, 'grumpy') <= 0 && gapOk(E) && condOk(DEF.grumpy, s, hour, E)) { trigger(s, E, DEF.grumpy, r, false, 'need'); E.low = 0; E.stats.tantrumNeed = (E.stats.tantrumNeed || 0) + 1; }
+    }
     // 每日保底：16:00 後仍未有事件
     if (!sup && !E.gDone && hour >= P.guaranteeHour) guarantee(s, E, r, hour, off, 'hour');
     // 抽選
@@ -226,10 +251,98 @@
   }
   function stepHook(s, dt, opts) {
     if (!api.enabled || s.stage === 'egg') return;
+    if (opts.offline && P.offlineMaxDays > 0) return;            // 離線事件改由 offlineReplay（按實時日）處理
     const E = ensure(s);
     advance(s, dt, { offline: !!opts.offline, hour: hourFromOpts(E, opts), now: nowFromOpts(opts) });
   }
   SIM.addStepHook(stepHook);
+
+  // ── 離線：按「實時日」補抽（最多 offlineMaxDays 日）──
+  const localHour = (ms) => { const d = new Date(ms); return d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600; };
+  function realOf(eff) { const F = D.PARAMS.offlineFullH, R = D.PARAMS.offlineDiscountRate; return eff <= F * 3600 ? eff : F * 3600 + (eff - F * 3600) / R; }
+  function offlineReplay(s, info) {
+    if (!api.enabled || !P.enabled || s.stage === 'egg' || !(P.offlineMaxDays > 0)) return null;
+    const E = ensure(s);
+    if (info.tampered || !(info.now > info.from)) return null;                // lastSaveTime 無效／重設：該段唔派
+    const r = SIM.makeRng(E.rs), now = info.now;
+    const start = Math.max(info.from, now - P.offlineMaxDays * 86400e3);
+    E.clock += (start - info.from) / 1000;                                    // 超過 14 日嘅部分：唔補抽（日記亦只留 14 日）
+    while (E.next <= E.clock) E.next += rf(r, P.drawEveryH) * 3600;
+    const keep = { needs: s.needs, sleeping: s.sleeping, low: E.low };
+    const bn = (info.before && info.before.needs) || s.needs, nd = {};
+    for (const k in bn) nd[k] = Math.max(bn[k], P.offlineNeedAssume);      // 條件判斷：離開前需求，每項至少 offlineNeedAssume
+    s.needs = nd;
+    const step = P.offlineStepSec * 1000, today = localDay(now);
+    if (E.dayIdx != null && localDay(start) < E.dayIdx) { E.dayIdx = localDay(start); E.dayCount = 0; E.gDone = false; }   // 存檔日序號比離開時間仲新（改過 lastSeen／時區）：以離開日為準
+    let t = start, drawn = 0;
+    while (t < now) {
+      const dt = Math.min(step, now - t); t += dt; E.clock += dt / 1000; E.dayClock += dt / 1000; E.nowMs = t;
+      const d = localDay(t), hour = localHour(t);
+      if (E.dayIdx == null) { E.dayIdx = d; if (d === today) rollFlash(s, E); }
+      else if (d > E.dayIdx) {                                                // 跨日：重設每日計數（離線日唔抽閃光日；到「今日」先判定）
+        const dd = d - E.dayIdx;
+        E.day += dd; E.stats.days += dd; E.dayIdx = d; E.dayCount = 0; E.gDone = false; E.flashDone = false; E.dayClock = 0; E.opens = 0; E.flashToday = false;
+        if (d === today) rollFlash(s, E);
+      }
+      E.lastHour = hour; s.sleeping = false;          // 離線補抽對齊 QA v5.1：只睇時段／冷卻／需求門檻（流星夜 19–05 全段可出）
+      while (E.clock >= E.next) {
+        E.next += rf(r, P.drawEveryH) * 3600; E.stats.draws++;
+        if (E.offLog.length >= P.offlineMaxEvents) continue;
+        if (!gapOk(E)) { E.stats.gapBlocked++; continue; }
+        if (E.dayCount >= P.dailyMax) continue;
+        if (r() >= P.drawChance) continue;
+        const def = pick(s, E, r, hour, false);
+        if (def) { trigger(s, E, def, r, 'collect', 'draw'); drawn++; }
+      }
+    }
+    s.needs = keep.needs; s.sleeping = keep.sleeping; E.low = keep.low;
+    // 鬧脾氣（需求）：離線期間任一需求跌穿 30 嘅真實時數 → 累積入 E.low（返嚟後 advance 判定）
+    const after = s.needs, effS = info.E || 0, Tsec = info.T || 0;
+    let below = 0;
+    for (const k in bn) {
+      if (after[k] >= P.grumpyLowNeed) continue;
+      if (bn[k] < P.grumpyLowNeed) { below = Math.max(below, Tsec); continue; }
+      const frac = (bn[k] - P.grumpyLowNeed) / Math.max(1e-9, bn[k] - after[k]);
+      below = Math.max(below, Tsec - realOf(frac * effS));
+    }
+    if (below > 0) E.low = Math.max(E.low, below);
+    E.rs = r.getSeed();
+    finishOffline(s, E);
+    return drawn;
+  }
+  /* 補抽完：稀有度最高 2 個（同級取最新）→ 彈窗（即時領獎）；其餘 → 日記（每條 +diaryGrains、冇心情，戳記＝事件時間） */
+  function finishOffline(s, E) {
+    const all = E.offLog.filter(x => x.offline && !x.settled);
+    const rank = (x) => x.id === 'flash' ? 2 : x.rare ? 1 : 0;
+    const order = all.slice().sort((a, b) => (rank(b) - rank(a)) || (b.ts - a.ts) || (b.at - a.at));
+    const pop = order.slice(0, P.offlinePopupMax), rest = order.slice(P.offlinePopupMax);
+    pop.slice().sort((a, b) => a.ts - b.ts).forEach(rec => {
+      rec.settled = true; rec.diary = false; s.grains += rec.grains; s.needs.mood = clamp(s.needs.mood + rec.mood, 0, 100);
+      E.offPop++; E.stats.popups++; E.pending.push(rec); while (E.pending.length > P.pendingMax) E.pending.shift();
+      for (let i = 0; i < listeners.length; i++) listeners[i](s, rec, { offline: true });
+    });
+    rest.slice().sort((a, b) => a.ts - b.ts).forEach(rec => {
+      rec.settled = true; rec.diary = true; rec.grains = P.diaryGrains; rec.mood = 0;
+      E.diary.push(rec); E.stats.diaryAdded++;
+    });
+    E.diary.sort((a, b) => (a.ts || 0) - (b.ts || 0)); while (E.diary.length > P.diaryMax) E.diary.shift();
+    for (const l of E.log) if (l.offline && l.diary == null) l.diary = rest.some(x => Math.round(x.at) === l.at && x.id === l.id);
+    return { pop, rest };
+  }
+  SIM.addOfflineHook(offlineReplay);
+
+  /* 連點：10 秒內 5 下（behavior 判定）→ 鬧脾氣事件（冷卻 48h、全域間隔 20 分鐘；回撥 suppress 時唔觸發）。睡眠中連點唔會嚟到呢度（輕喚醒）。 */
+  function tapTantrum(s, ctx) {
+    if (!api.enabled || !P.enabled || s.stage === 'egg') return null;
+    ctx = ctx || {};
+    const E = ensure(s);
+    if (ctx.now != null) E.nowMs = ctx.now;
+    if (s.sleeping) { E.stats.tapSleepWake = (E.stats.tapSleepWake || 0) + 1; return null; }
+    if (suppressed(s, E) || cdLeft(E, 'grumpy') > 0 || !gapOk(E)) { E.stats.tantrumBlocked = (E.stats.tantrumBlocked || 0) + 1; return null; }
+    const r = SIM.makeRng(E.rs);
+    const rec = trigger(s, E, DEF.grumpy, r, false, 'tap'); E.stats.tantrumTap = (E.stats.tantrumTap || 0) + 1;
+    E.rs = r.getSeed(); return rec;
+  }
 
   // ── 即時事件流程（UI 用）──
   function takePending(s) {
@@ -286,7 +399,7 @@
   }
 
   const api = {
-    enabled: true, DEF, ensure, advance, stepHook, takePending, tickActive, force, setFlashDay, flashActive, visual, condOk, listeners, dateKey, flashClaimed, markSave, suppressed, inHours, noteOpen, diary, diaryGroups, diaryWarn, claim, pruneDiary,
+    enabled: true, DEF, ensure, repair, offlineReplay, finishOffline, tapTantrum, advance, stepHook, takePending, tickActive, force, setFlashDay, flashActive, visual, condOk, listeners, dateKey, flashClaimed, markSave, suppressed, inHours, noteOpen, diary, diaryGroups, diaryWarn, claim, pruneDiary,
   };
   return api;
 });

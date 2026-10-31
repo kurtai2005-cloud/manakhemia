@@ -170,11 +170,16 @@
     const T = P.tap;
     while (b.taps.length) {
       const tp = b.taps.shift();
+      if (tp.kind === 'wake') {                    // 睡眠中點寵物＝輕喚醒（sim 已關燈起身）：睏睏表情 sleepyHold 秒，唔鬧脾氣、唔扣需求
+        b.petTaps.length = 0; b.holdUntil = b.t + T.sleepyHold; note(b, 'tap', 'lightWake'); b.log.enters.lightWake = (b.log.enters.lightWake || 0) + 1;
+        if (b.state !== 'wake' && b.state !== 'simsleep') goWake(b, null);
+        continue;
+      }
       if (forced && ctx.s.sleeping && tp.kind === 'pet') { b.petTaps.length = 0; b.stir = b.t + 1.2; note(b, 'tap', 'sleepStir'); b.log.enters.sleepStir = (b.log.enters.sleepStir || 0) + 1; continue; }   // 睡眠中連點：唔鬧脾氣，只係翻身（zzz 加快）
       if (!forced && tp.kind === 'pet' && (b.state === 'startle' || b.state === 'play')) {      // 不可中斷動作期間嘅連點：照計，夠數就升級（撒嬌／鬧脾氣）
         b.lastTouch = b.t; b.petTaps.push(b.t); b.petTaps = b.petTaps.filter(t => b.t - t <= Math.max(T.cuddlyWindow, T.rapidWindow));
         const rapid = b.petTaps.length, quick = b.petTaps.filter(t => b.t - t <= T.cuddlyWindow).length; note(b, 'tap', 'pet', String(rapid));
-        if (rapid >= T.rapidCount && b.t >= b.grumpyCool) { b.petTaps.length = 0; b.dur = T.grumpyDur; b.steamT = 0; b.item = null; enter(b, 'grumpy'); b.grumpyCool = b.t + T.grumpyDur + T.grumpyCooldown; continue; }
+        if (rapid >= T.rapidCount && b.t >= b.grumpyCool) { b.petTaps.length = 0; b.dur = T.grumpyDur; b.steamT = 0; b.item = null; enter(b, 'grumpy'); b.grumpyCool = b.t + T.grumpyDur + T.grumpyCooldown; b.tantrumReq = (b.tantrumReq || 0) + 1; note(b, 'tap', 'tantrum'); continue; }
         if (quick >= T.cuddlyCount && b.state === 'startle') { b.cuddlyUntil = b.t + 0.8; enter(b, 'cuddly'); b.clipT = 0; continue; }
       }
       if (forced || NONINT[b.state] || (b.state === 'nap' && b.phase === 'fall')) { b.log.enters.tapIgnored = (b.log.enters.tapIgnored || 0) + 1; continue; }
@@ -186,7 +191,7 @@
         note(b, 'tap', 'pet', String(rapid));
         if (b.state === 'nap') { goWake(b, 'startle'); continue; }           // 睡中被點：wake → emo_surprised
         if (rapid >= T.rapidCount && b.t >= b.grumpyCool) {
-          b.petTaps.length = 0; b.dur = T.grumpyDur; b.steamT = 0; enter(b, 'grumpy'); b.grumpyCool = b.t + T.grumpyDur + T.grumpyCooldown; if (b.variant) endVariant(b);
+          b.petTaps.length = 0; b.dur = T.grumpyDur; b.steamT = 0; enter(b, 'grumpy'); b.grumpyCool = b.t + T.grumpyDur + T.grumpyCooldown; b.tantrumReq = (b.tantrumReq || 0) + 1; note(b, 'tap', 'tantrum'); if (b.variant) endVariant(b);
         } else if (quick >= T.cuddlyCount) {
           b.cuddlyUntil = b.t + 0.8;
           if (b.state !== 'cuddly') { enter(b, 'cuddly'); b.clipT = 0; if (b.variant) endVariant(b); }

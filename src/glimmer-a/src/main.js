@@ -106,6 +106,12 @@
   requestAnimationFrame(loop);
 
   // ── 世界狀態：時段光、事件、寵物行為 ──
+  G.lightWake = function () {                       // 睡眠中點寵物：輕喚醒（開燈起身＋睏睏表情），唔鬧脾氣、唔扣需求
+    const s = G.state; if (!s.sleeping) return false;
+    SIM.toggleSleep(s); if (G.beh) BEH.tap(G.beh, 'wake', 0);
+    if (s.evs) s.evs.stats.tapSleepWake = (s.evs.stats.tapSleepWake || 0) + 1;
+    G.save(); return true;
+  };
   G.tickWorld = function (dt) {
     const s = G.state, hr = G.hour();
     G.light = LIGHT.compute(hr, G.weather ? { weather: G.weather } : null);
@@ -117,6 +123,7 @@
     const act = rd.pet.act && rd.t < rd.pet.until ? rd.pet.act : null;
     G.behCtx = { s, pw: G.light, sun: G.light.sun, override: act, event: evView };
     if (!mg) { BEH.update(G.beh, dt, G.behCtx); rd.behFx(G.beh); }
+    if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 鬧脾氣事件（48h 冷卻）
     if (!mg) G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur } : null, mode: G.mode };
     else G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: null, mode: G.mode };
     G.view = { state: s, quality: s.settings.quality, hour: hr, mode: G.mode, mg: UI.mgState() && UI.mgState().mg, light: G.light, beh: mg ? null : G.beh, event: evView };
@@ -178,6 +185,8 @@
     },
     force(name) { G.forceBeh(name); },
     forceEvent(id) { return G.forceEvent(id); },
+    tapPet(n) { for (let i = 0; i < (n || 1); i++) { if (G.state.sleeping) G.lightWake(); else BEH.tap(G.beh, 'pet', 0); } },   // 模擬點寵物（睡眠中＝輕喚醒）
+    lightWake() { return G.lightWake(); },
     events() { return G.state.evs; },
     eventLog() { return G.state.evs ? G.state.evs.log : []; },                    // 事件觸發紀錄 [{id,kind,day,date,hour,at,offline,diary}]
     claimedFlashDates() { return G.state.evs ? G.state.evs.claimedFlashDates.slice() : []; },   // 閃光日「已領」旗標（存檔內）

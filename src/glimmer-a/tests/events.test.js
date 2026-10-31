@@ -122,7 +122,7 @@ console.log('# 事件池權重表（遊策 v3）＋螢火散步');
 {
   const W = {}; D.EVENTS.forEach(e => W[e.id] = e);
   console.log('    池：' + D.EVENTS.map(e => e.id + '(w' + e.weight + (e.hours ? ' ' + e.hours.join('-') : '') + (e.rare ? ' rare' : '') + (e.lowNeed ? ' lowNeed' : '') + ')').join(' '));
-  ok(W.firefly_walk.weight === 20 && W.firefly_walk.hours.join() === '17,23' && W.firefly_walk.grains[0] === 5 && W.firefly_walk.grains[1] === 5 && W.firefly_walk.mood[0] === 10 && W.firefly_walk.mood[1] === 10, '螢火散步：傍晚 17–23、權重 20、✦+5、心情 +10');
+  ok(W.firefly_walk.weight === 14 && W.firefly_walk.hours.join() === '17,23' && W.firefly_walk.grains[0] === 5 && W.firefly_walk.grains[1] === 5 && W.firefly_walk.mood[0] === 10 && W.firefly_walk.mood[1] === 10, '螢火散步：傍晚 17–23、權重 14（PR #19 P1）、✦+5、心情 +10');
   ok(W.firefly_walk.iconPlaceholder === undefined && W.firefly_walk.icon === 'firefly_walk' && W.firefly_walk.clipHint === 'play', '已用遊美真 icon（冇 placeholder）＋用現有 play clip');
   ok(W.rainbow.weight === 4 && W.rainbow.rare && W.meteor.rare && D.EVENTS.filter(e => e.rare && !e.special).length === 2, '彩虹權重 4；稀有＝流星夜＋彩虹');
   const cue = D.AUDIO.cues[D.AUDIO.eventCue.firefly_walk];
@@ -135,7 +135,7 @@ console.log('# 事件池權重表（遊策 v3）＋螢火散步');
   for (let seed = 1; seed <= 300; seed++) { const s = adult(seed); SIM.advance(s, 60, { hour: 17, now: BASE }, 30); s.evs.flashToday = false; s.evs.next = 0; s.evs.cd = {}; s.evs.lastAt = -1e9;
     for (let i = 0; i < 6; i++) { s.evs.cd = {}; s.evs.lastAt = -1e9; s.evs.next = s.evs.clock; s.evs.dayCount = 0; const n = s.evs.hist.length; const before = s.evs.stats.events; EV.advance(s, 1, { hour: 17 + i, now: BASE }); if (s.evs.stats.events > before) { const id = s.evs.hist[s.evs.hist.length - 1]; all++; if (id === 'firefly_walk') ff++; } } }
   console.log('    傍晚命中事件中 firefly_walk 佔 ' + (ff / all * 100).toFixed(1) + '%（' + ff + '/' + all + '）');
-  ok(ff / all > 0.45 && ff / all < 0.8, '傍晚命中事件中螢火散步佔多數（權重 20／池總權重）');
+  ok(ff / all > 0.15 && ff / all < 0.3, '傍晚（冷卻清空）命中事件中螢火散步約 14／傍晚池總權重（15–30%）');
   let outside = 0, ffTot = 0;
   for (let seed = 1; seed <= 100; seed++) { const r = simulate(seed, 7, SESS); r.recs.forEach(x => { if (x.id === 'firefly_walk') { ffTot++; if (!(x.hour >= 17 && x.hour < 23)) outside++; } }); }
   ok(ffTot > 50 && outside === 0, '700 日內螢火散步只喺 17–23 出現（' + ffTot + ' 次）', outside);
@@ -352,6 +352,72 @@ console.log('# 遊美事件 icon（atlas_events）');
   ok(bad.length === 0, 'icon 每幀 32×32', bad.join());
   ok(defs.every(e => A.animations[e.icon].fps > 0 && A.animations[e.icon].frames.length >= 2), '每個 icon 動畫 ≥2 幀、fps>0');
   ok(!defs.some(e => e.iconPlaceholder) && !/iconPlaceholder|◌/.test(fsx.readFileSync(pth.join(__dirname, '../src/ui.js'), 'utf8')), '已冇 icon placeholder／◌ 前綴');
+}
+
+
+console.log('# PR #19 P0／P1');
+{
+  // 權重對齊 QA v5.1
+  const W = {}; D.EVENTS.forEach(e => W[e.id] = e);
+  ok(W.gift.weight === 22 && W.butterfly.weight === 20 && W.meteor.weight === 10 && W.sleeptalk.weight === 11 && W.treasure.weight === 18 && W.rainbow.weight === 4 && W.firefly_walk.weight === 14, '池權重：禮物 22／蝴蝶 20／流星 10／夢話 11／寶物 18／彩虹 4／螢火 14');
+  ok(W.grumpy.cond === true && W.grumpy.weight === 0 && P.offlineMaxDays === 14 && P.diaryMax === 50 && P.offlineStepSec === 600, '鬧脾氣唔入池（cond）；離線補抽最多 14 日、步長 600s；日記保存上限 50');
+  // P0-1 按日離線 14 日 ≈33 條
+  const cnt = [];
+  for (let sd = 1; sd <= 300; sd++) {
+    const t = adult(sd), T1 = new Date(2026, 5, 1, 21, 0, 0).getTime(); t.createdAt = T1 - 9e9;
+    SIM.advance(t, 30, { hour: 21, now: T1 }, 30); t.lastSeen = T1; t.lastSaveTime = T1;
+    const rep = SIM.applyOffline(t, T1 + 14 * DAY);
+    cnt.push(t.evs.diary.length);
+    if (sd === 1) ok(rep && rep.popups === 2 && t.evs.pending.length === 2, '14 日離線：彈窗剛好 2 個', JSON.stringify(rep && rep.popups));
+  }
+  cnt.sort((a, b) => a - b); const mean = cnt.reduce((a, b) => a + b, 0) / cnt.length, p95 = cnt[Math.floor(cnt.length * 0.95)];
+  console.log('    14 日離線入日記：平均 ' + mean.toFixed(1) + '、p95 ' + p95 + '、最多 ' + cnt[cnt.length - 1]);
+  ok(mean >= 29 && mean <= 37 && cnt[cnt.length - 1] <= P.diaryMax, '14 日離線 ≈33 條入日記（29–37；最多 ≤ ' + P.diaryMax + '）', mean.toFixed(1));
+  // 超過 14 日：只補 14 日
+  { const t = adult(4), T1 = new Date(2026, 5, 1, 21, 0, 0).getTime(); SIM.advance(t, 30, { hour: 21, now: T1 }, 30); t.lastSeen = T1; t.lastSaveTime = T1;
+    SIM.applyOffline(t, T1 + 40 * DAY); const old = t.evs.offLog.filter(x => x.ts < T1 + 26 * DAY - 60e3).length;
+    ok(old === 0 && t.evs.diary.length <= P.diaryMax && t.evs.diary.length > 15, '離線 40 日：只補最後 14 日（' + t.evs.diary.length + ' 條）', old); }
+  // P0-2 彈窗：稀有度最高 2 個，同級取最新
+  { const s = adult(2); SIM.advance(s, 30, { hour: 12, now: BASE }, 30); const E = s.evs; E.offLog = []; E.pending = []; E.diary = [];
+    const mk = (id, ts) => ({ id, ts, at: ts / 1000, grains: 5, mood: 2, offline: true, rare: !!DEF(id).rare, flavor: 'x' });
+    function DEF(id) { return EV.DEF[id]; }
+    E.offLog.push(mk('gift', 1000), mk('meteor', 2000), mk('treasure', 9000), mk('rainbow', 3000), mk('meteor', 4000), mk('gift', 8000));
+    const res = EV.finishOffline(s, E);
+    ok(res.pop.map(x => x.id + x.ts).join() === 'meteor4000,rainbow3000' && E.diary.length === 4 && E.diary.every(d => d.grains === 3 && d.mood === 0), '彈窗＝稀有度最高 2 個（同級取最新）：' + res.pop.map(x => x.id + '@' + x.ts).join(','));
+    const s2 = adult(3); SIM.advance(s2, 30, { hour: 12, now: BASE }, 30); s2.evs.offLog = [mk('gift', 1000), mk('treasure', 5000), mk('butterfly', 3000)];
+    const r2 = EV.finishOffline(s2, s2.evs); ok(r2.pop.map(x => x.id).join() === 'treasure,butterfly', '冇稀有：取最新 2 個', r2.pop.map(x => x.id).join()); }
+  // P0-3 保底唔打穿冷卻
+  { const s = adult(6), T = new Date(2026, 5, 3, 9, 0, 0).getTime(); SIM.advance(s, 30, { hour: 9, now: T }, 30); const E = s.evs;
+    E.dayCount = 0; E.gDone = false; E.opens = 0; E.lastAt = -1e9; E.flashToday = false;
+    D.EVENTS.forEach(d => { E.cd[d.id] = E.clock + 10 * H; });
+    const r = EV.noteOpen(s, { hour: 9, now: T + 1000 });
+    ok(r === null && E.dayCount === 0 && !E.gDone && E.stats.guaranteeFail >= 1, '全部冷卻中：保底落空（唔打穿 24h 冷卻），之後再試');
+    E.cd.gift = E.clock - 1; const r2 = EV.noteOpen(s, { hour: 9.1, now: T + 2000 });
+    ok(r2 && r2.id === 'gift' && E.gDone, '有事件冷卻完：下次開 app 保底即揀佢', r2 && r2.id);
+    let viol = 0; for (let sd = 1; sd <= 150; sd++) { const sim = simulate(sd, 7, [9, 20]); const last = {}; sim.recs.forEach(x => { if (x.kind === 'guarantee' && last[x.id] != null) { const d = EV.DEF[x.id]; const need = (d.cooldownH || (d.rare ? 72 : 24)) * H; if (x.at - last[x.id] < need - 1) viol++; } last[x.id] = x.at; }); }
+    ok(viol === 0, '150×7 日：保底零次打穿冷卻', viol); }
+  // P0-4 彩虹 11–15 日一次（5 次開 app／日）
+  { let rb = 0, days = 0; for (let sd = 1; sd <= 300; sd++) { const sim = simulate(1000 + sd, 14, SESS); days += 14; sim.recs.forEach(x => { if (x.id === 'rainbow') rb++; }); sim.s.evs.diary.forEach(x => { if (x.id === 'rainbow') rb++; }); }
+    console.log('    彩虹：' + rb + ' 次／' + days + ' 日 → 每 ' + (days / rb).toFixed(1) + ' 日一次');
+    ok(days / rb >= 11 && days / rb <= 15, '彩虹 11–15 日一次（v5）', (days / rb).toFixed(1)); }
+  // P1-1 壞日記／缺 stats.byId 回退
+  { const s = adult(8); SIM.advance(s, 30, { hour: 12, now: BASE }, 30);
+    const raw = JSON.parse(SIM.serialize(s)); raw.evs.diary = [null, 5, { id: 'nope', ts: 1 }, { id: 'gift', ts: 'x' }, { id: 'meteor', ts: BASE }]; delete raw.evs.stats.byId; raw.evs.pending = 'bad'; raw.evs.cd = null;
+    let r, err = null; try { r = SIM.deserialize(JSON.stringify(raw), BASE + 1000); EV.ensure(r); } catch (e) { err = e.message; }
+    ok(!err && r.evs.diary.length === 2 && r.evs.diary.every(d => typeof d.ts === 'number' && d.grains === 3) && Array.isArray(r.evs.pending) && r.evs.stats.byId && typeof r.evs.cd === 'object', '壞日記條目剔走／缺 stats.byId、壞 pending／cd 回退（唔爆）', err || (r && r.evs.diary.length));
+    let err2 = null; try { SIM.advance(r, 60, { hour: 13, now: BASE + 2000 }, 30); EV.force(r, 'gift'); EV.diaryGroups(r); EV.claim(r, 'meteor'); } catch (e) { err2 = e.message; }
+    ok(!err2 && r.evs.stats.byId.gift >= 1, '回退後可正常觸發／領取', err2);
+    const s3 = adult(9); s3.evs = 'garbage'; let e3 = null; try { EV.ensure(s3); SIM.advance(s3, 30, { hour: 12, now: BASE }, 30); } catch (e) { e3 = e.message; } ok(!e3 && s3.evs.v === 1, 'evs 唔係 object → 重建', e3); }
+  // P1-2 連點 5 下 → 鬧脾氣 48h
+  { const s = adult(10), T = new Date(2026, 5, 3, 14, 0, 0).getTime(); SIM.advance(s, 30, { hour: 14, now: T }, 30); s.evs.lastAt = -1e9; s.evs.cd = {};
+    const r1 = EV.tapTantrum(s, { now: T }); ok(r1 && r1.id === 'grumpy' && r1.kind === 'tap' && Math.abs(s.evs.cd.grumpy - s.evs.clock - 48 * H) < 1, '連點觸發鬧脾氣事件，冷卻 48h');
+    s.evs.lastAt = -1e9; SIM.advance(s, 47 * H, { hour: 14, now: T + 47 * H * 1000 }, 600); s.evs.lastAt = -1e9;
+    ok(EV.tapTantrum(s, {}) === null && s.evs.stats.tantrumBlocked >= 1, '47h 內再連點：冷卻中唔觸發');
+    SIM.advance(s, 1.1 * H, {}, 600); s.evs.lastAt = -1e9; Object.assign(s.needs, { hunger: 90, mood: 90, clean: 90, energy: 90 });
+    ok(!!EV.tapTantrum(s, {}), '48h 後可再觸發');
+    s.evs.cd = {}; s.evs.lastAt = s.evs.clock - 600; ok(EV.tapTantrum(s, {}) === null, '全域 20 分鐘間隔內唔觸發');
+    s.evs.lastAt = -1e9; s.sleeping = true; ok(EV.tapTantrum(s, {}) === null && s.evs.stats.tapSleepWake >= 1, '瞓緊連點唔會鬧脾氣');
+    let inPool = 0; for (let sd = 1; sd <= 40; sd++) simulate(sd, 7, SESS).recs.forEach(x => { if (x.id === 'grumpy' && x.kind === 'draw') inPool++; }); ok(inPool === 0, '鬧脾氣唔會由抽選觸發', inPool); }
 }
 
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);

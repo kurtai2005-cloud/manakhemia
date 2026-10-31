@@ -163,6 +163,8 @@
     if (s.lastSaveTime && nowMs != null && s.lastSaveTime > nowMs + A) { s.lastSaveTime = nowMs; s.lastSeen = nowMs; s.saveTimeResets = (s.saveTimeResets || 0) + 1; return true; }
     return false;
   }
+  const offlineHooks = [];
+  function addOfflineHook(fn) { offlineHooks.push(fn); }       // events.js 掛：離線事件按「日」補抽（info: {from, now, T, tampered}）
   function applyOffline(s, nowMs) {
     const reset = sanitizeSaveTime(s, nowMs);
     const T = Math.max(0, (nowMs - s.lastSeen) / 1000);
@@ -173,6 +175,7 @@
       const off = { now: nowMs, hour0: hourOf(s.lastSeen), T: Math.min(T, P.offlineCapH * 3600), E, done: 0 };
       advance(s, E, { offline: true, growthMul: P.offlineGrowthRatio, off }, 60);
     }
+    for (let i = 0; i < offlineHooks.length; i++) offlineHooks[i](s, { from: s.lastSeen, now: nowMs, T, E, tampered: reset, before });
     s.lastSeen = nowMs;
     const rep = { T, E, tampered: reset, show: T >= P.offlineMinAwaySec, summary: [], gift: 0, giftTotal: 0, eventGrains: 0, events: [], stageChanged: s.stage !== before.stage, withdrawn: false };
     if (s.stage !== 'egg' && E > 0) {
@@ -365,7 +368,7 @@
 
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm,
-    step, advance, applyOffline, addStepHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
+    step, advance, applyOffline, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
     eggProgress, stageProgress, dayKey, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });
