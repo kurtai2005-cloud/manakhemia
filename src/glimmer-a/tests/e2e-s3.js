@@ -45,19 +45,35 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     const early = await E(() => __glimmer.beh.state);
     await page.waitForTimeout(500); const mid = await E(() => ({ s: __glimmer.beh.state, ph: __glimmer.beh.phase, dir: __glimmer.beh.dir, f: __qa.pet.face(), att: __glimmer.beh.attach.map(a => a.prop) }));
     await shot('nuzzle', await petClip());
-    await page.waitForTimeout(900); const late = await E(() => ({ s: __glimmer.beh.state, ph: __glimmer.beh.phase, f: __qa.pet.face(), purr: __glimmer.beh.journal.filter(j => j.ev === 'sfx' && j.name === 'nuzzle_purr').length }));
+    await page.waitForTimeout(500); const at13 = await E(() => ({ ph: __glimmer.beh.phase, held: +(__glimmer.beh.t - __glimmer.beh.nuzzleSince).toFixed(2) }));   // 落手後 ~1.3s
+    ok(at13.ph === 'purr' && at13.held >= 1.2, 'QA P1①：由落手計 1.2s 就呼嚕（~1.3s 已 purr；唔再要 1.7s）', at13);
+    await page.waitForTimeout(400); const late = await E(() => ({ s: __glimmer.beh.state, ph: __glimmer.beh.phase, f: __qa.pet.face(), purr: __glimmer.beh.journal.filter(j => j.ev === 'sfx' && j.name === 'nuzzle_purr').length }));
     await shot('nuzzle-purr', await petClip());
     ok(early !== 'nuzzle' && mid.s === 'nuzzle' && mid.dir === 1, '撳住 <0.4s 未蹭；≥0.4s → nuzzle（手指喺右 → 面向右）', [early, mid.s, mid.dir]);
     ok(mid.f.live && mid.f.drawnClip === 'nuzzle', '畫真 nuzzle_noface＋疊五官', mid.f);
-    ok(late.s === 'nuzzle' && late.ph === 'purr' && late.purr >= 1 && late.f.eyes === 'happy' && late.f.mouth === 'happy', '撳 ≥1.2s → 呼嚕（purr 聲＋閉眼開心臉）', late);
+    ok(late.s === 'nuzzle' && late.ph === 'purr' && late.purr >= 1 && late.f.live && late.f.drawnClip === 'nuzzle_purr' && late.f.eyes === 'happy' && late.f.mouth === 'squint', '撳 ≥1.2s → 呼嚕：purr 聲＋真 nuzzle_purr_noface（s3 美術）＋合眼笑 ω', late);
     await page.mouse.up(); await page.waitForTimeout(450);
     const after = await E(() => ({ s: __glimmer.beh.state, m: __qa.pet.state().micro, press: __glimmer.lastPetPress, end: __glimmer.beh.journal.filter(j => j.name === 'nuzzle_end').map(j => j.ph) }));
-    ok(after.s !== 'nuzzle' && after.press.nuzzle && after.end.length === 1, '鬆手 → 播完當前幀停磨蹭（' + after.end[0] + (after.m ? '：' + after.m : '') + '）', after); }
+    ok(after.s !== 'nuzzle' && after.press.nuzzle && after.end.length === 1, '鬆手 → 播完當前幀停磨蹭（' + after.end[0] + (after.m ? '：' + after.m : '') + '）', after);
+    ok(after.end[0] === 'cool', '遊策 P2：有呼嚕先鬆手 → 必扮冇事（act_cool）', after.end); }
+
+  console.log('# QA P1③ 多指：全部 pointer 抬起（含 pointercancel）先當鬆手');
+  for (const [order, label] of [[['up2', 'up1'], '先放第 2 隻'], [['up1', 'up2'], '先放第 1 隻'], [['cancel1', 'up2'], '第 1 隻 pointercancel']]) {
+    await E(() => { __qa.pet.pause(false); __qa.pet.force('stay'); const b = __glimmer.beh; b.x = 0; b.dir = 1; }); await page.waitForTimeout(250);
+    const pe = (type, id, prim) => E(([type, id, prim]) => { const h = __qa.pet.hitBox(), r = document.getElementById('hit').getBoundingClientRect(), sc = r.width / 320;
+      document.getElementById('hit').dispatchEvent(new PointerEvent(type, { pointerId: id, isPrimary: prim, pointerType: 'touch', bubbles: true, clientX: h.css.x + h.css.w * (0.6 + id * 0.1), clientY: h.css.y + h.css.h * 0.45 })); }, [type, id, prim]);
+    await pe('pointerdown', 1, true); await page.waitForTimeout(650); await pe('pointerdown', 2, false); await page.waitForTimeout(150);
+    const st1 = await E(() => __glimmer.beh.state);
+    const [a1, a2] = order; await pe(a1.startsWith('cancel') ? 'pointercancel' : 'pointerup', +a1.slice(-1), a1.endsWith('1')); await page.waitForTimeout(300);
+    const mid2 = await E(() => ({ s: __glimmer.beh.state, held: __glimmer.beh.nuzzleHeld, ptr: window.Glimmer.ui.activePointers ? window.Glimmer.ui.activePointers() : null }));
+    await pe(a2.startsWith('cancel') ? 'pointercancel' : 'pointerup', +a2.slice(-1), a2.endsWith('1')); await page.waitForTimeout(450);
+    const end2 = await E(() => ({ s: __glimmer.beh.state, held: __glimmer.beh.nuzzleHeld, ptr: window.Glimmer.ui.activePointers ? window.Glimmer.ui.activePointers().length : -1 }));
+    ok(st1 === 'nuzzle' && mid2.s === 'nuzzle' && mid2.held === true && end2.s !== 'nuzzle' && end2.held === false && end2.ptr === 0, '多指（' + label + '）：仲有手指 → 繼續磨蹭；全部抬起 → 停（nuzzleHeld=false）', [st1, mid2, end2]); }
 
   console.log('# 磨蹭掣（自動撳住 2.6s）→ 扮冇事');
   await prep(); await page.click('[data-testid=dev-live-nuzzle]');
   { const t = await tl(4.2); const s = t.join('>');
-    ok(/^nuzzle:rub>nuzzle:purr>nuzzle:end>idle:blank>act_cool:act_cool>/.test(s), '磨蹭掣：rub → purr → 鬆手 → 呆一呆 → act_cool（' + s + '）'); }
+    ok(/^nuzzle:rub>nuzzle_purr:purr>nuzzle_purr:end>idle:blank>act_cool:act_cool>/.test(s), '磨蹭掣：rub → purr（真 nuzzle_purr） → 鬆手 → 呆一呆 → act_cool（' + s + '）'); }
 
   console.log('# D5 久未見掣：衝埋嚟 → 衝過頭 → 煞停 → act_cool → 行返 → 重逢');
   await prep(); await E(() => { __glimmer.beh.x = 10; }); await page.click('[data-testid=dev-live-reunion]');
@@ -67,20 +83,21 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     ok(r1.micro === 'rush' && f1.live && f1.drawnClip === 'rush' && r1.showFrame >= 1 && r1.showFrame <= 4, '跑緊：真 rush 2–5 幀循環', [r1.micro, r1.showFrame, f1.drawnClip]);
     const r2 = await grab('brake', 'rush-brake'); ok(r2.micro === 'brake' && r2.showFrame === 5 && r2.x < -10, '衝過頭（x=' + r2.x + '）→ 第 6 幀煞停', r2);
     const r3 = await grab('act_cool', 'rush-cool'); ok(r3.micro === 'act_cool', '煞停後扮冷靜 act_cool');
-    const r4 = await grab('reunion_happy', 'reunion-happy'); const f4 = await E(() => __qa.pet.face());
-    ok(r4.micro === 'reunion_happy' && Math.abs(r4.x) < 1.5 && f4.eyes === 'happy', '行返中間 → 開心重逢（cheer_jump 跳＋心心；缺 reunion_happy 美術）', [r4, f4.eyes]);
+    const r4 = await grab('reunion_happy', 'reunion-happy'); const f40 = await E(() => __qa.pet.face());
+    const r4b = await E(() => __qa.pet.step(0.3, 1 / 60)); await shot('reunion-happy-2'); const f4 = await E(() => __qa.pet.face());
+    ok(r4.micro === 'reunion_happy' && Math.abs(r4.x) < 1.5 && r4.dir === 1 && f40.drawnClip === 'reunion_happy' && f40.eyes === 'squint' && r4b.showFrame === 2 && f4.eyes === 'happy', '行返中間 → 真 reunion_happy（播前轉身面向玩家：由右衝入衝過頭 → scaleX 轉返向右；扮冷靜回望 → 開心）', [r4.dir, f40.drawnClip, f40.eyes, r4b.showFrame, f4.eyes]);
     const end = await E(() => { for (let i = 0; i < 300; i++) { const s = __qa.pet.step(1 / 60, 1 / 60); if (s.state !== 'micro') return s; } return __qa.pet.state(); });
     ok(end.state === 'stay' && await E(() => __qa.pet.reunion().day === null), '完返 stay；開發掣唔佔每日 1 次', end.state); }
 
-  console.log('# D5 真流程：存檔 lastSeen 離線 8h → 開 app → 摘要 → 關咗即衝埋嚟；同日唔再；<6h 唔衝');
+  console.log('# D5 真流程：存檔 lastSeen 離線 8h → 開 app → 摘要 → 關咗即衝埋嚟；同日唔再；<8h 唔衝');
   const reopen = async (h) => {
     await E((h) => { window.__noSaveOnHide = true; const k = 'glimmer_save_v1', o = JSON.parse(localStorage.getItem(k)); o.lastSeen = Date.now() - h * 3600e3; o.sleeping = false; localStorage.setItem(k, JSON.stringify(o)); }, h);
     await page.goto(BASE + '?q=high&hour=13&seed=11&ev=0&dev=1'); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad); await E(() => __glimmer.liveLoad); await page.waitForTimeout(250);
     return E(() => ({ r: __qa.pet.reunion(), modal: getComputedStyle(document.getElementById('modal')).display !== 'none', st: __qa.pet.state() }));
   };
   await E(() => { __glimmer.save(); }); await E(() => { const s = __glimmer.state; s.sleeping = false; __glimmer.save(); });
-  { let o = await reopen(8);
-    ok(o.r.pending && o.r.pending.T >= 8 * 3600 - 60 && o.modal && o.st.micro !== 'rush_start', '離線 8h：有回歸摘要，重逢排隊（摘要開住時唔衝）', o);
+  { let o = await reopen(8.2);
+    ok(o.r.pending && o.r.pending.T >= 8 * 3600 && o.modal && o.st.micro !== 'rush_start', '離線 8h：有回歸摘要，重逢排隊（摘要開住時唔衝）', o);
     await page.click('[data-testid=modal-btn-0]').catch(() => { }); for (let i = 0; i < 4; i++) { if (await E(() => getComputedStyle(document.getElementById('modal')).display === 'none')) break; await page.click('[data-testid=modal-btn-0]').catch(() => { }); await page.waitForTimeout(120); }
     await page.waitForTimeout(300); const mid = await E(() => ({ p: !!__qa.pet.reunion().pending, s: __glimmer.beh.state }));
     ok(mid.p && mid.s === 'override', '關摘要：先做「收下光粒」開心反應（現有功能保留），重逢仲排緊', mid);
@@ -89,9 +106,9 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     ok(!r.r.pending && r.r.last && r.r.last.src === 'offline' && /rush|brake|act_cool|back|reunion/.test(r.st.micro || ''), '關摘要 → 衝埋嚟（' + r.st.micro + '）；今日已記（' + r.r.day + '）', r);
     await shot('reunion-open');
     await page.waitForTimeout(5000);
-    o = await reopen(8); ok(!o.r.pending && o.r.skip === 'today', '同日再離線 8h：唔再衝（每日最多 1 次）', o.r);
+    o = await reopen(8.2); ok(!o.r.pending && o.r.skip === 'today', '同日再離線 8h：唔再衝（每日最多 1 次）', o.r);
     await E(() => localStorage.removeItem('glimmer.reunionDay'));
-    o = await reopen(3); ok(!o.r.pending && o.r.skip === 'short', '離線 3h（<6h）：唔衝', o.r);
+    o = await reopen(7.9); ok(!o.r.pending && o.r.skip === 'short', 'QA P1②：離線 7.9h（<8h）：唔衝', o.r);
   }
 
   console.log('# G1 燈泡：掣循環 5 心情 tint → 自動');

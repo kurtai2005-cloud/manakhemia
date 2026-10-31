@@ -81,7 +81,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   console.log('# 個性：蠢蠢地但覺得自己好醒');
   await fresh('debug=1&q=high&hour=13&seed=11&ev=0', 'soft', { mood: 55 });
   const until = (pred, max) => E(([src, max]) => { const p = new Function('r', 'return ' + src); let r = __qa.pet.state(); for (let i = 0; i < (max || 120) && !p(r); i++) r = __qa.pet.step(1 / 30, 1 / 60); return r; }, [pred, max]);
-  ok(await E(() => ['smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch'].every(k => Glimmer.data.CLIPS[k].ready) && ['sprout', 'radiant', 'soft'].every(f => __glimmer.renderer.lv.atlas[f].json.parts.length === 2) && !!__glimmer.renderer.lv.fx), 's2 美術：5 個新 clip ready（3 形態 _live＋_live_s2 合併）＋fx atlas 載入');
+  ok(await E(() => ['smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch'].every(k => Glimmer.data.CLIPS[k].ready) && ['sprout', 'radiant', 'soft'].every(f => __glimmer.renderer.lv.atlas[f].json.parts.length === 3) && !!__glimmer.renderer.lv.fx), 's2 美術：5 個新 clip ready（3 形態 _live＋_live_s2＋_live_s3 合併）＋fx atlas 載入');
   let s = await forceAt('swat_miss', 0.3, { mood: 55 }); await page.waitForTimeout(120); let f = await F();
   ok(s.micro === 'notice' && s.bug === 'buzz' && f.bugArt === true, '拍蟲：蟲仔喺頭邊飛（遊美 fx_bug sprite，唔係程序化點）', JSON.stringify([s.micro, s.bug, f.bugArt])); await shot('swat-bug');
   s = await E(() => __qa.pet.step(0.5, 1 / 60)); ok(s.bug === 'flee', '撲空：蟲仔飛走', JSON.stringify(s));

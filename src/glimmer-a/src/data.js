@@ -111,11 +111,11 @@
         // 開發者「即刻觸發」：開心步／拖步即刻行 4–6s；展示模式（Kurt：「唔覺有咩分別」）：小動作＋中途停步頻率 ×5、冷卻（含 10 分鐘不重複）÷5；存 localStorage
         nowWalkSec: [4, 6], demoMul: 5, demoKey: 'glimmer.liveDemo',
         // ── 第三段（遊策 brief 10-31）──
-        // D3 長按磨蹭：撳住寵物 ≥0.4s（art trigger）→ 轉向手指、挨埋（最多行 10px）、nuzzle 循環＋heart；撳 ≥1.2s → 呼嚕（purr 聲每個循環一次＋閉眼開心臉；缺 nuzzle_purr 美術）
-        //   鬆手 → 播完當前幀；磨蹭 ≥0.8s 有 75% 「扮冇事」（呆一呆 → act_cool）。nowNuzzleSec＝開發者掣自動撳住幾耐
-        nuzzleHoldMs: 400, nuzzleGap: 10, nuzzleStep: 10, purrAfterSec: 1.2, nuzzleMaxSec: 12, nuzzleCool: 0.75, nuzzleCoolMin: 0.8, nowNuzzleSec: 2.6,
+        // D3 長按磨蹭：撳住寵物 ≥0.4s（art trigger）→ 轉向手指、挨埋（最多行 10px）、nuzzle 循環＋heart；撳 ≥1.2s → 呼嚕（purr 聲每個循環一次；s3 真 nuzzle_purr 4 幀 loop，dust／?live=0 → nuzzle 身體＋閉眼開心臉）
+        //   鬆手 → 播完當前幀；有呼嚕（撳 ≥1.2s）→ 一定「扮冇事」（呆一呆 → act_cool）；未呼嚕 → 直接 idle。多指：全部手指抬起先算鬆手。nowNuzzleSec＝開發者掣自動撳住幾耐
+        nuzzleHoldMs: 400, nuzzleGap: 10, nuzzleStep: 10, purrAfterSec: 1.2, nuzzleMaxSec: 12, nowNuzzleSec: 2.6,   // QA s3 P1①：purrAfterSec 由手指落下計（UI 傳入已撳時間；即開始蹭後 0.8s）；P2（遊策 16:05）：有呼嚕先鬆手 → 必出 act_cool（唔計 F3 冷卻），未呼嚕 → 唔出
         // D5 久別重逢：離線 ≥6h（sim lastSeen；每日最多 1 次，日子存 localStorage）→ 由場邊衝埋嚟（rush 1→2–5 循環）→ 衝過頭 14px → 煞停（第 6 幀）→ act_cool → 行返中間 → 開心重逢（缺 reunion_happy → cheer_jump 跳 2 下＋心心）
-        reunionAwayH: 6, reunionDayKey: 'glimmer.reunionDay', rushSpeed: 75, rushStartSec: 0.25, rushOvershoot: 14, skidPx: 5, skidSpeed: 26, brakeSec: 0.45, reunionHops: 2, reunionHopH: 0.6, nowAwayH: 8,
+        reunionAwayH: 8, reunionDayKey: 'glimmer.reunionDay', rushSpeed: 75, rushStartSec: 0.25, rushOvershoot: 14, skidPx: 5, skidSpeed: 26, brakeSec: 0.45, reunionHops: 2, reunionHopH: 0.6, nowAwayH: 9,   // QA s3 P1②：門檻 8h（7.9h 唔衝）；開發掣模擬 9h
         // G1 燈泡：5 心情 tint（face.bulb.moods）；開發者掣循環 happy→neutral→sleepy→hungry→grumpy→自動
         bulbCycle: ['happy', 'neutral', 'sleepy', 'hungry', 'grumpy'],
       },
@@ -175,7 +175,7 @@
     // 表情 overlay（F1）：mode auto＝有 *_noface 身體就合成真五官；冇就「擦臉＋色塊臉 placeholder」；native＝用返圖集原本張臉；off＝唔畫臉（QA）
     face: {
       mode: 'auto',
-      liveliness: { enabled: true, base: 'art/liveliness/', anchors: 'face_anchors.json', atlases: { sprout: ['atlas_sprout_live', 'atlas_sprout_live_s2'], radiant: ['atlas_radiant_live', 'atlas_radiant_live_s2'], soft: ['atlas_soft_live', 'atlas_soft_live_s2'] }, fx: 'fx/atlas_fx_live' },   // 遊美生命感 v1（10-31）：<clip>_noface 身體＋kit 五官＋燈泡；缺檔／缺件一律 fallback（色塊臉 placeholder）；?live=0 停用
+      liveliness: { enabled: true, base: 'art/liveliness/', anchors: 'face_anchors.json', atlases: { sprout: ['atlas_sprout_live', 'atlas_sprout_live_s2', 'atlas_sprout_live_s3'], radiant: ['atlas_radiant_live', 'atlas_radiant_live_s2', 'atlas_radiant_live_s3'], soft: ['atlas_soft_live', 'atlas_soft_live_s2', 'atlas_soft_live_s3'] }, fx: 'fx/atlas_fx_live' },   // 遊美生命感 v1（10-31）：<clip>_noface 身體＋kit 五官＋燈泡；缺檔／缺件一律 fallback（色塊臉 placeholder）；?live=0 停用
       eyes: ['neutral', 'happy', 'surprised', 'sleepy', 'squint', 'wink', 'angry', 'sad'],
       closedEyes: ['happy', 'sleepy', 'wink'],   // 閉眼款只有 C
       gazeBins: ['L', 'CL', 'C', 'CR', 'R', 'U', 'D'],
@@ -188,6 +188,9 @@
       },
       // 生命感第二段：逐幀五官（抄 art/liveliness/face_anchors.json anchors.*.face；[eyes, gaze, mouth]，gaze 係身體相對格；walk_* 用 look 系統 gaze）
       clipFrames: {
+        // s3（遊美 live_s3 face_anchors）：呼嚕＝合眼笑 ω；重逢＝扮冷靜側眼回望 → 破功驚喜 → 開心 ×2 → 得意 ω
+        nuzzle_purr: [['happy', 'C', 'squint'], ['happy', 'C', 'squint'], ['happy', 'C', 'squint'], ['happy', 'C', 'squint']],
+        reunion_happy: [['squint', 'L', 'neutral'], ['surprised', 'C', 'surprised'], ['happy', 'C', 'happy'], ['happy', 'C', 'happy'], ['sleepy', 'C', 'squint']],
         walk_happy: [['happy', 'C', 'neutral'], ['happy', 'C', 'happy'], ['happy', 'C', 'happy'], ['happy', 'C', 'neutral'], ['happy', 'C', 'happy'], ['happy', 'C', 'happy']],
         walk_drag: [['sad', 'D', 'sleepy'], ['sad', 'D', 'sleepy'], ['squint', 'D', 'sleepy'], ['sad', 'D', 'sleepy'], ['sad', 'D', 'sleepy'], ['squint', 'D', 'sleepy']],
         sniff: [['squint', 'D', 'neutral'], ['squint', 'D', 'sleepy'], ['happy', 'C', 'sleepy'], ['neutral', 'CR', 'neutral']],
@@ -205,9 +208,9 @@
         nuzzle: [['squint', 'CR', 'squint'], ['happy', 'C', 'squint'], ['happy', 'C', 'squint'], ['squint', 'CR', 'squint'], ['happy', 'C', 'squint'], ['happy', 'C', 'happy']],
         rush: [['surprised', 'R', 'surprised'], ['happy', 'C', 'happy'], ['neutral', 'R', 'happy'], ['happy', 'C', 'happy'], ['neutral', 'R', 'happy'], ['surprised', 'CR', 'happy']],
       },
-      purrFace: ['happy', 'C', 'happy'],     // D3 呼嚕：缺 nuzzle_purr 美術 → nuzzle 身體＋閉眼開心臉
+      purrFace: ['happy', 'C', 'happy'],     // D3 呼嚕 fallback（dust／?live=0 冇 nuzzle_purr）→ nuzzle 身體＋閉眼開心臉
       presets: { smug: ['sleepy', 'C', 'squint'] },   // 遊美 faceKit.presets.smug（eyes sleepy＋mouth squint ω）
-      clipFramesGaze: ['sniff', 'lookup', 'swat', 'scratch', 'sneeze', 'walk_drag', 'smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch', 'nuzzle', 'rush'],   // 用 art gaze（其餘跟 look）
+      clipFramesGaze: ['sniff', 'lookup', 'swat', 'scratch', 'sneeze', 'walk_drag', 'smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch', 'nuzzle', 'rush', 'nuzzle_purr', 'reunion_happy'],   // 用 art gaze（其餘跟 look）
       blinkFrames: [1, 2],                   // blink clip 呢幾幀用閉眼
       ink: '#3b2a3e', shine: '#fff8e0', mouthIn: '#c8506a',
       // 光芽燈泡（CLIPS.json bulb）：bulb_base＋bulb_glow（multiply tint × intensity）；sick 唔疊；情緒轉換 0.4s 漸變
@@ -303,6 +306,9 @@
     // 生命感 s3（遊美 liveliness v1 atlas_<form>_live 已有 nuzzle／rush _noface；main 載入後 ready）
     nuzzle: {"name": "nuzzle", "frames": 6, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 4, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "live": true, "attach": [{"prop": "heart", "anchor": "head_r", "from": 1, "under": false}]},
     rush: {"name": "rush", "frames": 6, "fps": 12, "loop": false, "pivot": "bottom-center", "priority": 6, "interruptible": false, "cooldown": 0, "next": "cheer_jump", "ready": false, "live": true, "loopRange": [1, 4]},
+    // 生命感 s3 美術（遊美 10-31 atlas_<form>_live_s3；心心／呼嚕線烙入幀 → 冇 attach）：3 form live atlas 有先 ready；微塵（dust）冇 live → 照用 fallback
+    nuzzle_purr: {"name": "nuzzle_purr", "frames": 4, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 4, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "live": true, "loopRange": [0, 3]},
+    reunion_happy: {"name": "reunion_happy", "frames": 5, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 6, "interruptible": false, "cooldown": 0, "next": "idle", "ready": false, "live": true, "faceBack": true},
     dig: {"name": "dig", "frames": 4, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "extra": true},
   };
   // 表情＝需求狀態綁定；clip＝基礎層 clip（art CLIPS.json 優先序：sick > emo_hungry > emo_sleepy > emo_wantplay > idle）

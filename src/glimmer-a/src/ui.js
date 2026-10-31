@@ -8,7 +8,7 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   let G, rd;
-  const NS_BEH = { tap: (b, k, x, y, o) => window.Glimmer.behavior.tap(b, k, x, o && o.hold ? y : undefined, o), drag: (b, x, y) => window.Glimmer.behavior.drag(b, x, y), dragEnd: (b) => window.Glimmer.behavior.dragEnd(b), nuzzle: (b, x, y) => window.Glimmer.behavior.nuzzle(b, x, y), nuzzleEnd: (b) => window.Glimmer.behavior.nuzzleEnd(b) };
+  const NS_BEH = { tap: (b, k, x, y, o) => window.Glimmer.behavior.tap(b, k, x, o && o.hold ? y : undefined, o), drag: (b, x, y) => window.Glimmer.behavior.drag(b, x, y), dragEnd: (b) => window.Glimmer.behavior.dragEnd(b), nuzzle: (b, x, y, pre) => window.Glimmer.behavior.nuzzle(b, x, y, pre), nuzzleEnd: (b) => window.Glimmer.behavior.nuzzleEnd(b) };
   const EVN = () => window.Glimmer.events, LT = () => window.Glimmer.light;
   const SND = (k, i) => { const a = window.Glimmer.audio; if (a && a.Engine) a.Engine.notify(k, i); };   // 音訊 cue 通知（audio.js Director 決定播咩）
   const UI = {};
@@ -248,7 +248,7 @@
       return { x: r.x + pv + r.w / 2 - w / 2, y: r.y + r.h / 2 - h / 2, w, h, body: { x: r.x + pv, y: r.y, w: r.w, h: r.h }, minArt: minA, cssPerArt };
     }
     const inBox = (a, b) => a.x >= b.x && a.x <= b.x + b.w && a.y >= b.y && a.y <= b.y + b.h;
-    let press = null, down = false;
+    let press = null, down = false; const ptrs = new Set();   // QA s3 P1③：追蹤撳住嘅 pointerId（含 pointercancel）；全部抬起先當鬆手
     const SHORT_MS = (P.beh.look && P.beh.look.shortTapMs) || 300;
     const NUZZLE_MS = (P.beh.live && P.beh.live.nuzzleHoldMs) || 400;   // D3：撳住寵物 ≥0.4s → 挨埋嚟磨蹭（鬆手即停）
     const endNuzzle = (p) => { if (!p) return; clearTimeout(p.timer); if (p.nuzzle && G.beh) NS_BEH.nuzzleEnd(G.beh); };
@@ -262,20 +262,24 @@
     hit.addEventListener('pointerdown', (e) => {
       const a = toArt(e);
       if (G.mode === 'minigame') { if (mgs) mgs.target = a.x; return; }
-      closePop(); down = true; press = null; try { hit.setPointerCapture(e.pointerId); } catch (er) { }   // 拖出 #hit（例：經過 HUD）都繼續收 move／up
+      if (e.isPrimary !== false && ptrs.size) { ptrs.clear(); endNuzzle(press); press = null; }   // 新手勢嘅第一隻手指／滑鼠：清走漏咗 up 嘅舊 pointer（保險）
+      if (ptrs.size) { ptrs.add(e.pointerId); return; }   // 第 2 隻手指：唔當新一下撳（唔洗走第 1 隻嘅 press／磨蹭）
+      ptrs.add(e.pointerId); closePop(); down = true; press = null; try { hit.setPointerCapture(e.pointerId); } catch (er) { }   // 拖出 #hit（例：經過 HUD）都繼續收 move／up
       const s = G.state;
       // 便便
       for (let i = s.poops - 1; i >= 0; i--) { const p = rd.poopPos(i); if (Math.abs(a.x - (p.x + rd.par.x * -1.5)) < 11 && a.y > p.y - 18 && a.y < p.y + 8) { SIM.clearPoop(s); processEvents(); G.save(); return; } }
       const b = petHitBox();
       if (inBox(a, b)) {
         if (s.stage === 'egg') { SIM.tapEgg(s); processEvents(); G.save(); }
-        else if (!s.sleeping) { if (G.beh) { const p = press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y, mx: a.x - R.CX, my: a.y - R.GROUND_Y, nuzzle: false }; p.timer = setTimeout(() => { if (press === p && down && G.beh && !G.state.sleeping && G.mode !== 'minigame') { p.nuzzle = true; NS_BEH.nuzzle(G.beh, p.mx, p.my); } }, NUZZLE_MS); } else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
+        else if (!s.sleeping) { if (G.beh) { const p = press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y, mx: a.x - R.CX, my: a.y - R.GROUND_Y, nuzzle: false }; p.timer = setTimeout(() => { if (press === p && down && G.beh && !G.state.sleeping && G.mode !== 'minigame') { p.nuzzle = true; NS_BEH.nuzzle(G.beh, p.mx, p.my, (performance.now() - p.t0) / 1000); } }, NUZZLE_MS); } else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
         else if (G.lightWake && G.lightWake()) { toast('團絨揉揉眼醒咗…仲有啲睏睏'); SND('sleep', { on: false }); }
       } else if (s.stage !== 'egg' && !s.sleeping && G.beh && a.y > R.GROUND_Y - 50 && a.y < R.GROUND_Y + 40) {
         NS_BEH.tap(G.beh, 'ground', clamp(a.x - R.CX, -70, 70), a.y - R.GROUND_Y);
       }
     });
     const release = (e, cancel) => {
+      if (e) { ptrs.delete(e.pointerId); if (cancel && press && press.id === e.pointerId) press.cancel = true; if (ptrs.size) return; }   // 仲有手指撳住 → 未算鬆手
+      if (!down) return; cancel = cancel || !!(press && press.cancel);
       down = false; if (G.beh) NS_BEH.dragEnd(G.beh);
       const p = press; press = null; endNuzzle(p); if (!p || cancel || G.mode === 'minigame' || !G.beh || G.state.sleeping) return;
       const ms = performance.now() - p.t0; G.lastPetPress = { ms: Math.round(ms), short: ms < SHORT_MS, nuzzle: !!p.nuzzle };
@@ -284,8 +288,8 @@
     };
     hit.addEventListener('pointerup', (e) => release(e, false));
     hit.addEventListener('pointercancel', (e) => release(e, true));
-    hit.addEventListener('pointerleave', () => { rd.parT.active = false; if (down) { down = false; endNuzzle(press); press = null; if (G.beh) NS_BEH.dragEnd(G.beh); } });
-    UI.petHitBox = petHitBox;
+    hit.addEventListener('pointerleave', (e) => { rd.parT.active = false; if (e && e.pointerId != null) ptrs.delete(e.pointerId); if (down && !ptrs.size) { down = false; endNuzzle(press); press = null; if (G.beh) NS_BEH.dragEnd(G.beh); } });
+    UI.petHitBox = petHitBox; UI.activePointers = () => [...ptrs];
     window.addEventListener('deviceorientation', (e) => { if (e.gamma == null || G.mode === 'minigame') return; rd.parT.x = clamp(e.gamma / 22, -1, 1); rd.parT.y = clamp(((e.beta || 45) - 45) / 25, -1, 1); rd.parT.active = true; rd.parT.last = rd.t; });
     if (G.debug) buildDebug();
   };

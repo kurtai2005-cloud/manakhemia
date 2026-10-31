@@ -68,7 +68,7 @@
       // 生命感第二段：mrng＝獨立 RNG（唔郁原有抽籤次序）；seq＝小動作序列；faceAct＝行為指定五官；pose＝程序化後仰；bug＝蟲仔 fx
       mrng: SIM.makeRng((((seed >>> 0) ^ (LV.liveSalt || 0x5e2d)) >>> 0) || 11), seq: null, seqI: 0, seqT: 0, resume: null, faceAct: null, pose: null, bug: null, frameOv: null,
       walkStyle: null, styleT: 0, styleFrame: -1, lastDragStep: -99, happyUntil: -1, gaitForce: null, demo: false, sunEndAt: -999, lastIdle: null, microAt: {}, stopAt: null, stopDir: 0, microVar: null,
-      nuzzleReq: null, nuzzleHeld: false, nuzzleAuto: null, nuzzleSince: 0, nuzzleX: 0, nuzzleY: null, nuzzleDir: 1, nuzzleTx: 0, nuzzleFr: -1, nuzzleEndFr: -1, nuzzleRub: 0, nuzzleCoolForce: false, bulbForce: null,   // 第三段：D3 磨蹭／G1 燈泡強制
+      nuzzleReq: null, nuzzleHeld: false, nuzzleAuto: null, nuzzleSince: 0, nuzzleX: 0, nuzzleY: null, nuzzleDir: 1, nuzzleTx: 0, nuzzleFr: -1, nuzzleEndFr: -1, nuzzleRub: 0, nuzzlePurred: false, bulbForce: null,   // 第三段：D3 磨蹭／G1 燈泡強制
       turn: null, show: { clip: 'idle', frame: 0 }, face: { eyes: 'neutral', mouth: 'neutral', closed: false, gaze: 'C' }, faceForce: null,    // 行為日誌（給音訊 cue／__qa.pet 用）：{n, t, ev: state|phase|variant|clip|impact|tap, name, ph}
     };
     b.nextVariant = rf(rng, P.variantEvery); b.nextDecide = rf(rng, P.decideEvery);
@@ -557,7 +557,8 @@
   }
   // ═════════ 生命感第三段：D3 長按磨蹭／D5 久別重逢／G1 燈泡 ═════════
   // D3：UI 撳住 ≥nuzzleHoldMs → nuzzle(b, x, y)；鬆手 → nuzzleEnd(b)。x／y＝手指（相對 CX／地面，art px）
-  function nuzzle(b, x, y) { b.nuzzleReq = { x: x || 0, y: y == null ? null : y }; }
+  // pre＝手指已撳咗幾多秒（UI 撳住 nuzzleHoldMs 先叫 → 0.4）；purrAfterSec 由手指落下計（QA s3 P1①）
+  function nuzzle(b, x, y, pre) { b.nuzzleReq = { x: x || 0, y: y == null ? null : y, pre: Math.max(0, +pre || 0), at: b.t }; }
   function nuzzleEnd(b) { b.nuzzleReq = null; b.nuzzleHeld = false; }
   function canNuzzle(b, ctx, forcedKind) {
     if (forcedKind || (ctx.s && ctx.s.stage === 'egg')) return false;
@@ -568,29 +569,33 @@
     const dx = q.x - b.x; if (Math.abs(dx) > 1) b.dir = Math.sign(dx);                 // 轉向手指（art：手指喺右；左邊 scaleX −1）
     b.nuzzleDir = b.dir; b.nuzzleX = q.x; b.nuzzleY = q.y;
     b.nuzzleTx = clamp(q.x - b.dir * LV.nuzzleGap, b.x - LV.nuzzleStep, b.x + LV.nuzzleStep);   // 挨埋（最多 10px）
-    enter(b, 'nuzzle', 'rub'); b.clipT = 0; b.nuzzleHeld = true; b.nuzzleAuto = auto ? b.t + auto : null; b.nuzzleSince = b.t; b.nuzzleFr = -1;
-    b.nuzzleCoolForce = !!auto; b.lastTouch = b.t; b.petTaps.length = 0; b.faceAct = null;
+    enter(b, 'nuzzle', 'rub'); b.clipT = 0; b.nuzzlePurr = false; b.nuzzleHeld = true; b.nuzzleAuto = auto ? b.t + auto : null; b.nuzzleSince = b.t - (q.pre || 0) - (q.at != null ? Math.max(0, b.t - q.at) : 0); b.nuzzleFr = -1; b.nuzzlePurred = false;
+    b.lastTouch = b.t; b.petTaps.length = 0; b.faceAct = null;
     b.log.enters.nuzzleStart = (b.log.enters.nuzzleStart || 0) + 1; note(b, 'micro', 'nuzzle', auto ? 'now' : 'hold');
   }
   function stepNuzzle(b, ctx) {
-    const nz = REAL('nuzzle') ? 'nuzzle' : 'emo_cuddly', held = b.t - b.nuzzleSince;  // 缺 nuzzle → emo_cuddly 身體
+    const held = b.t - b.nuzzleSince;
+    const nz = b.nuzzlePurr ? 'nuzzle_purr' : REAL('nuzzle') ? 'nuzzle' : 'emo_cuddly';   // 缺 nuzzle → emo_cuddly 身體；s3：呼嚕有真 nuzzle_purr 就切去佢
     if (b.nuzzleAuto != null && b.t >= b.nuzzleAuto - 1e-9) b.nuzzleHeld = false;
     if (held >= LV.nuzzleMaxSec && b.phase !== 'end') b.nuzzleHeld = false;              // 保險：撳太耐自己停
     loopClip(b, nz); const fr = frameOf(nz, b.clipT);
     if (b.phase !== 'end') {
       moveTo(b, b.nuzzleTx, P.followSpeed * 0.6); b.dir = b.nuzzleDir;
+      if (!b.nuzzleHeld) { b.nuzzleRub = held; b.nuzzleEndFr = fr; b.nuzzleFr = fr; setPhase(b, 'end'); return; }   // 鬆手（先判）：播完當前幀；鬆手嗰刻未夠 1.2s 唔會再補呼嚕
       if (b.phase === 'rub' && held >= LV.purrAfterSec - 1e-9) {                           // 呼嚕：閉眼開心臉（缺 nuzzle_purr 美術）＋purr 聲
-        setPhase(b, 'purr'); const pf = FC.purrFace || ['happy', 'C', 'happy']; b.faceAct = { eyes: pf[0], gaze: pf[1], mouth: pf[2] };
-        note(b, 'sfx', 'nuzzle_purr'); b.log.enters.purr = (b.log.enters.purr || 0) + 1;
+        setPhase(b, 'purr');
+        if (REAL('nuzzle_purr')) { b.nuzzlePurr = true; setClip(b, 'nuzzle_purr'); b.clipT = 0; b.nuzzleFr = 0; b.faceAct = null; }   // s3 真 clip：由 nuzzle 當前幀切入，逐幀五官跟 face_anchors（合眼笑 ω）
+        else { const pf = FC.purrFace || ['happy', 'C', 'happy']; b.faceAct = { eyes: pf[0], gaze: pf[1], mouth: pf[2] }; }   // 缺美術（微塵／live=0）：nuzzle 身體＋閉眼開心臉
+        b.nuzzlePurred = true; note(b, 'sfx', 'nuzzle_purr'); b.log.enters.purr = (b.log.enters.purr || 0) + 1;
       } else if (b.phase === 'purr' && fr === 0 && b.nuzzleFr !== 0 && b.nuzzleFr !== -1) note(b, 'sfx', 'nuzzle_purr');   // 每個循環一次
       b.nuzzleFr = fr;
-      if (!b.nuzzleHeld) { b.nuzzleRub = held; b.nuzzleEndFr = fr; setPhase(b, 'end'); }   // 鬆手：播完當前幀
       return;
     }
     if (fr !== b.nuzzleEndFr) {
       b.faceAct = null; b.clipT = Math.max(0, b.clipT - FIX);
-      const cool = b.nuzzleRub >= LV.nuzzleCoolMin && (b.nuzzleCoolForce || b.mrng() < LV.nuzzleCool);
+      const cool = !!b.nuzzlePurred;                                                    // 遊策 P2：有呼嚕 → 必扮冇事（startMicro 唔睇 F3 冷卻）；未呼嚕 → idle
       note(b, 'micro', 'nuzzle_end', cool ? 'cool' : 'idle');
+      b.nuzzlePurr = false;
       if (cool) startMicro(b, 'nuzzle_cool', ctx, { from: 'nuzzle' });                  // 個性：磨蹭完扮冇事
       else { backToStay(b); setClip(b, b.base); }
     }
@@ -610,7 +615,10 @@
       COOL(),                                                                                                                         // 個性：急停後扮冷靜
       { clip: 'walk', to: 0, sp: P.walkSpeed * 1.4, max: 3, tag: 'back', fmap: F('walk') },                                         // 若無其事行返去
     ];
-    if (REAL('reunion_happy')) st.push(Object.assign(HOLD('reunion_happy'), { tag: 'reunion_happy', sfx: [[0, 'reunion_happy']] }));
+    if (REAL('reunion_happy')) {                                                                                                     // s3 真 clip：播之前按玩家位置設 scaleX——衝過頭＝玩家喺後面 → 轉身（鏡像）面向玩家
+      st.push({ fn: () => { b.dir = side; note(b, 'micro', 'reunion_face', side > 0 ? 'R' : 'L'); } });
+      st.push(Object.assign(HOLD('reunion_happy'), { tag: 'reunion_happy', keepDir: true, sfx: [[0, 'reunion_happy']] }));
+    }
     else {                                                                                                                            // 缺 reunion_happy → cheer_jump（rush.next）跳 2 下＋心心
       const hd = P.hopDur, H = H_OF(b) * LV.reunionHopH, cj = clipDur('cheer_jump');
       st.push({ clip: 'cheer_jump', dur: hd * LV.reunionHops, tag: 'reunion_happy', fmap: (t) => frameOf('cheer_jump', t % cj), face: { eyes: 'happy', gaze: 'C', mouth: 'happy' },
