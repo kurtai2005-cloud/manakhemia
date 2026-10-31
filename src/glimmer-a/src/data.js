@@ -47,24 +47,34 @@
         // v4 燦光：連續照顧（最近 window 日有 ≥ min 日有照顧；照顧日跨世代記錄）。scaleToAge：寵物出世未夠 window 日 → 按已過日數比例（ceil(min×日數/window)），否則第一代永遠唔夠 5 日
         brightDays: { window: 7, min: 5, scaleToAge: true },
         brightMaxTopPct: 45,    // 燦光：新 5 條最高分要 < 呢個 %（全面照顧）；≥ 就交新 5 條
-        b5CQ: 40,               // 新 5 條 CQ（v2；舊 55）
+        // v8／v10 新 5 專線資格：CQ ≥ max(scaleToAge(b5CQ), b5CQFloor)。scaleToAge＝ceil(b5CQ×span／brightDays.window)，span＝careDaysCheck（由出世日計，最多 window 日）；
+        // b5CQScaleToAge false → 固定 b5CQ。原 code 40 作廢（v8）
+        b5CQ: 25,               // 新 5 條 CQ（v8；v2 40、舊 55）＝足 7 日嘅門檻
+        b5CQFloor: 18.5,        // v10：縮短後都唔可以低過呢個
+        b5CQScaleToAge: true,   // v8：跟 scaleToAge 按年齡縮短
         b5TopPct: 30,           // 新 5 條最高分 ≥ %（v2；舊 35）
         drawGapPt: 5,           // v3：第一同第二名差 < 呢個 pt → 按兩者分數比例抽（seed 決定）；否則最高分贏（取代 v2 b5GapPt）
-        softCQ: 20,             // 柔光 CQ（v4；v2 30、舊 40）；以下＝微塵
-        crystalCleanAvg: 60,    // 晶角：清潔度時間加權平均 ≥（v2；舊 70）
-        crystalQuickSec: 600,   // v5 晶角「即清」：便便出現後 ≤ 呢個秒數內清走先計晶角分（普通清便便唔再計晶角）
-        // v4 天氣：clear／overcast／rain（天氣系統未做 → DEV 抽屜／?weather= 設定）；route＝呢種天氣下任何照顧再計嗰條（v4：陰天／落雨 → 菇傘；落雨唔再計水珠）
-        // v5：權重（陰天 0.5、落雨 1.0）
-        weather: { states: ['clear', 'overcast', 'rain'], route: { overcast: { to: 'shroom', w: 0.5 }, rain: { to: 'shroom', w: 1 } } },
-        // v5 月眠「哄瞓」：團絨眼瞓（醒住、精力 < drowsyEnergy）時長撳／撫摸 → 瞓著，每次計月眠 1，每晚（nightCutH 前算前一晚）最多 perNight 次
-        lull: { drowsyEnergy: 30, perNight: 3, nightCutH: 12 },
+        softCQ: 18,             // 柔光 CQ（v9／v10；v6 28、v4 20、v2 30、舊 40）；以下＝微塵
+        // v7／v8 晶角（取代 v5 即清 10 分鐘、取消清潔 ≥60 門檻）：每次上線開一個 windowSec 窗口；上線嗰陣有便便、窗口內清到 0 粒 → 呢次上線「即清」（每次上線最多 1）。
+        // 晶角分＝（即清上線 ÷ 有便便上線）×k × 總照顧次數（即佔比＝比率×k×100%，同其他路線同一尺度）。上線＝開 app，或者離開 ≥ loginGapSec 再返嚟
+        crystal: { windowSec: 120, k: 0.45, loginGapSec: 300 },
+        // v4 天氣：clear／overcast／fog／rain（天氣系統未做 → DEV 抽屜／?weather= 設定）；route＝呢種天氣下任何照顧（包括餵食）再計嗰條（v4：陰天／落雨 → 菇傘；落雨唔再計水珠）
+        // v5／v8：權重陰 0.5、霧（當陰）0.5、雨 1.0；晴天 0。probs＝systems12 系統 7 自動天氣機率（%，晴60／陰20／霧5／雨15；次序＝抽籤次序，霧排喺陰之後＝同遊測 sim 陰 25% 等價）
+        weather: { states: ['clear', 'overcast', 'fog', 'rain'], probs: [['clear', 60], ['overcast', 20], ['fog', 5], ['rain', 15]],
+          route: { overcast: { to: 'shroom', w: 0.5 }, fog: { to: 'shroom', w: 0.5 }, rain: { to: 'shroom', w: 1 } } },
+        // §7 每種照顧本身計嘅路線分（時段窗口外先計）。v8：菇傘一定要有陰／雨照顧分 → 餵食本身 0（淨係多餵唔會入菇傘）；火苗：玩耍 +1、小遊戲每局 +2
+        kinds: { feed: { to: 'shroom', w: 0 }, play: { to: 'ember', w: 1 }, mg: { to: 'ember', w: 2 }, rinse: { to: 'tide', w: 1 }, poop: null },
+        // v5 月眠「哄瞓」：團絨眼瞓（醒住、精力 < drowsyEnergy）時長撳／撫摸 → 瞓著，每次計月眠 pts（v8：2），每晚（nightCutH 前算前一晚）最多 perNight 次
+        lull: { drowsyEnergy: 30, perNight: 3, nightCutH: 12, pts: 2 },
+        // v8 火苗：第 2 批小遊戲未出之前，浮動團絨撳兩下開 game ＝ 一局小遊戲（score＝mg.passScore 及格分；cooldownSec 內重複開唔再計，防連撳）
+        overlayMg: { enabled: true, score: null, cooldownSec: 600 },
         // 時段規則：喺時段內嘅照顧只計 only 嗰條（唔計本身類型、唔計天氣）；瞓覺撫摸永遠計月眠
         windows: [
           { id: 'moon', from: 20, to: 3, only: 'moon' },   // 20:00–03:00 → 只計月眠（v5；§7 修訂 21）
           { id: 'dew', from: 6, to: 9, only: 'tide' },     // 06:00–09:00 晨露 → 只計水珠（v2）
         ],
         // v3 螢絨（機率）：芽崽＋跳跳期見過 firefly_walk 先有資格；夜晚照顧佔比 fromPct→toPct 線性對應 0→maxChancePct% 機會；CQ < minCQ 冇機會
-        lumi: { fromPct: 30, toPct: 50, maxChancePct: 25, minCQ: 25 },   // v5：minCQ 40→25
+        lumi: { fromPct: 30, toPct: 50, maxChancePct: 20, minCQ: 25 },   // v5：minCQ 40→25；v6／v8：上限 25→20%
         // v3 CQ：部分照顧＋衰減（疏玩唔會直接 0）。每次照顧 +careGain（每個鐘最多 careGainPerHourMax）；每個鐘結算：需求平均 ≥ goodAt +1、
         // badBelow–goodAt 之間按比例 +0–partialMax、< badBelow −1；連續 decayAfterH 個鐘冇照顧 → 每個鐘 −decayPerH（線上＋離線都計）；結算／衰減唔會跌穿 floor
         cq: { careGain: 0.5, careGainPerHourMax: 2, partialMax: 0.5, decayAfterH: 6, decayPerH: 1, floor: 15 },
@@ -531,7 +541,7 @@
   const STAGE_NAME = { egg: '光卵', newborn: '絨點', sprout: '芽崽', juvenile: '跳跳期', adult: '守夜者', elder: '靜光' };   // evo6 六階段（pet-template-v1 §6）
   const FORM_NAME = { bright: '燦光', soft: '柔光', dust: '微塵', lumi: '螢絨', tide: '水珠', shroom: '菇傘', crystal: '晶角', moon: '月眠', ember: '火苗' };
   // §7 路線清晰化：圖鑑一句提示（文件原文）
-  const ROUTE_HINT = { tide: '朝早 6–9 點照顧，或者成日淋水', moon: '夜晚 9 點至凌晨 3 點陪佢', shroom: '餵得最多', crystal: '執得最乾淨', ember: '玩得最多（包括小遊戲）',
+  const ROUTE_HINT = { tide: '朝早 6–9 點照顧，或者成日淋水', moon: '夜晚 9 點至凌晨 3 點陪佢', shroom: '餵得最多', crystal: '一返嚟就執乾淨',   /* v6 圖鑑提示 */ ember: '玩得最多（包括小遊戲）',
     bright: '樣樣都照顧好', soft: '普通照顧', dust: '好少理佢', lumi: '？？？' };
   /* 進化表（開發模式「進化」用；條件以 sim.decideForm 為準）。螢絨＝隱藏形態（docs-gdd/pet-template-v1.md）：
      芽崽／跳跳期見過螢火散步先有資格，v3 改機率（evo6.branch.lumi）。自動條件未實裝（只可經開發模式設定）；未有專屬美術 → 借柔光 atlas＋螢綠 tint。 */
@@ -539,7 +549,7 @@
     { form: 'bright', name: '燦光', from: 'sprout', cond: 'CQ ≥ evo6.branch.brightCQ 且最高分 < brightMaxTopPct%', atlas: 'radiant' },
     { form: 'soft', name: '柔光', from: 'sprout', cond: 'CQ ≥ evo6.branch.softCQ', atlas: 'soft' },
     { form: 'dust', name: '微塵', from: 'sprout', cond: '其餘', atlas: null },
-    { form: 'lumi', name: '螢絨', from: 'sprout', hidden: true, cond: '芽崽／跳跳期 firefly_walk 先有資格；夜晚照顧 30→50% ＝ 0→25% 機會；CQ <40 冇（v3，數值見 evo6.branch.lumi）', atlas: 'soft', tint: 'lumi' },    // §7 新支線 ×5：CQ ≥55、最高分 ≥35%、同第二名差 ≥5 個百分點（sim.branch5Check）
+    { form: 'lumi', name: '螢絨', from: 'sprout', hidden: true, cond: '芽崽／跳跳期 firefly_walk 先有資格；夜晚照顧 30→50% ＝ 0→20% 機會；CQ <25 冇（v3／v5／v8，數值見 evo6.branch.lumi）', atlas: 'soft', tint: 'lumi' },    // §7 新支線 ×5：CQ ≥ max(scaleToAge(b5CQ), b5CQFloor)、最高分 ≥ b5TopPct%、同第二名差 < drawGapPt → 比例抽（sim.branch5Check；v10）
     { form: 'tide', name: '水珠', from: 'juvenile', b5: true, cond: 'rinse＋落雨時嘅照顧（落雨 rinse 只計一次）' },
     { form: 'shroom', name: '菇傘', from: 'juvenile', b5: true, cond: 'feed' },
     { form: 'crystal', name: '晶角', from: 'juvenile', b5: true, cond: 'clearPoop（清潔度平均 ≥70 先計）' },

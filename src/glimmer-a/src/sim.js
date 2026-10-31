@@ -137,16 +137,32 @@
   function inWindow(w, h) { return w.from <= w.to ? h >= w.from && h < w.to : h >= w.from || h < w.to; }
   function careWindow(h) { return BR().windows.find(w => inWindow(w, h)) || null; }   // 時段規則（21–03 月眠、06–09 水珠…）
   function isMoonHour(h) { const w = BR().windows.find(x => x.id === 'moon'); return !!w && inWindow(w, h); }
-  // §7 新支線分數：每次照顧 all +1；本身類型照計；v4：陰天／落雨時任何照顧再計菇傘（config weather.route；feed 本身已歸菇傘 → 只計一次）；時段規則（config windows）：21–03 只計月眠、06–09 只計水珠；瞓覺撫摸只計月眠
-  const B5_KIND = { feed: 'shroom', play: 'ember', mg: 'ember', rinse: 'tide', poopQuick: 'crystal' };   // v5：只有「即清」便便（poopQuick）計晶角；普通 poop 只計總數
+  // §7 新支線分數：每次照顧 all +1；時段規則（config windows）：20–03 只計月眠、06–09 只計水珠（+1，唔計本身類型／天氣）；
+  // 時段外：本身類型（config kinds：v8 餵食 0、玩耍 +1、小遊戲 +2、沖洗 +1；清便便只計總數）＋天氣（config weather.route：陰／霧 0.5、雨 1.0 → 菇傘，包括餵食）；
+  // 瞓覺撫摸 → 月眠 +1；v8 哄瞓 → 月眠 +lull.pts（唔受時段影響）
+  function addPts(b, k, w) { if (k && w) b[k] = +((+b[k] || 0) + w).toFixed(4); }
+  function b5Bucket(s, st) { const E = evoOf(s); st = st || s.stage; return E.b5[st] || (E.b5[st] = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, loginPoop: 0, quickLogin: 0 }); }
   function noteB5(s, kind, h, wx) {
-    if (s.stage === 'egg') return; const E = evoOf(s), b = E.b5[s.stage] || (E.b5[s.stage] = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0 });
+    if (s.stage === 'egg') return; const b = b5Bucket(s), C = BR();
     h = h == null ? nowHour() : h; wx = wx == null ? weatherNow() : normWeather(wx === false ? 'clear' : wx);
     b.all++;
-    if (kind === 'petSleep' || kind === 'lull') { b.moon++; return; }   // 瞓覺撫摸／v5 哄瞓 → 月眠
-    const w = careWindow(h); if (w) { b[w.only]++; return; }   // §7 修訂／v2：時段內只計嗰條（21–03 月眠、06–09 水珠），唔計本身類型／落雨
-    const own = B5_KIND[kind]; if (own) b[own]++;
-    const wr = BR().weather.route[wx]; if (wr && wr.to && wr.to !== own) b[wr.to] = +((b[wr.to] || 0) + (wr.w == null ? 1 : wr.w)).toFixed(4);   // v4／v5：陰天 0.5／落雨 1 → 菇傘（唔再計水珠）
+    if (kind === 'petSleep') { b.moon++; return; }
+    if (kind === 'lull') { addPts(b, 'moon', C.lull.pts == null ? 1 : C.lull.pts); return; }
+    const w = careWindow(h); if (w) { b[w.only]++; return; }
+    const own = C.kinds[kind]; if (own) addPts(b, own.to, own.w == null ? 1 : own.w);
+    const wr = C.weather.route[wx]; if (wr && wr.to) addPts(b, wr.to, wr.w == null ? 1 : wr.w);
+  }
+  // v7／v8 晶角：上線（開 app／離開 ≥ crystal.loginGapSec 再返嚟）→ 開 windowSec 窗口；上線嗰陣有便便 → 有便便上線 +1；窗口內便便清到 0 → 即清上線 +1（每次上線最多 1）
+  function noteLogin(s, t) {
+    if (!s || s.stage === 'egg') return null; t = t == null ? nowMs() : t; const E = evoOf(s), had = (s.poops | 0) > 0;
+    E.login = { at: t, had, done: false, stage: s.stage };
+    if (had) b5Bucket(s).loginPoop++;
+    return E.login;
+  }
+  function checkQuickClean(s) {
+    const E = evoOf(s), L = E.login; if (!L || !L.had || L.done || (s.poops | 0) > 0 || L.stage === 'egg') return false;
+    if (nowMs() - L.at > BR().crystal.windowSec * 1000) return false;
+    L.done = true; b5Bucket(s, L.stage).quickLogin++; return true;
   }
   // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night；kind＝feed／play／rinse／poop／mg（§7 分數）
   function noteCare(s, h, kind, rain) {
@@ -162,7 +178,7 @@
   function lullSleep(s, h) {
     if (!isDrowsy(s)) return { ok: false, reason: s && s.sleeping ? 'asleep' : 'notDrowsy' };
     const L = BR().lull, E = evoOf(s), k = lullNight(); if (!E.lull || E.lull.night !== k) E.lull = { night: k, n: 0 };
-    s.sleeping = true; const counted = E.lull.n < L.perNight;
+    s.sleeping = true; const counted = E.lull.n < L.perNight;   // v8：每次 +lull.pts（noteB5 'lull'）
     if (counted) { E.lull.n++; noteB5(s, 'lull', h); noteDay(s); }
     s.ev.push({ type: 'lull', counted, n: E.lull.n }); return { ok: true, counted, n: E.lull.n };
   }
@@ -171,15 +187,22 @@
     if (s.stage === 'egg' || !(dt > 0)) return; const E = evoOf(s), c = E.cl[s.stage] || (E.cl[s.stage] = { sum: 0, sec: 0 });
     c.sum += s.needs.clean * dt; c.sec += dt;
   }
-  function branch5Check(s) {                             // §7：CQ ≥ b5CQ、最高分 ≥ b5TopPct%；v3：同第二名差 < drawGapPt → 兩者比例抽；唔夠 → null（config）
+  function b5Need(s, days) {                             // v8／v10：新 5 專線 CQ 門檻＝max(scaleToAge(b5CQ), b5CQFloor)；span＝careDaysCheck（出世日起，最多 window 日）
+    const C = BR(), d = days || careDaysCheck(s), full = C.b5CQ;
+    const scaled = C.b5CQScaleToAge ? Math.ceil(full * d.span / C.brightDays.window) : full;
+    return Math.max(scaled, C.b5CQFloor == null ? 0 : C.b5CQFloor);
+  }
+  function branch5Check(s) {                             // §7：CQ ≥ b5Need、最高分 ≥ b5TopPct%；v3：同第二名差 < drawGapPt → 兩者比例抽；唔夠 → null（config）
     const C = BR();
-    const E = evoOf(s), T = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0 }; let cs = 0, cn = 0;
+    const E = evoOf(s), T = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, loginPoop: 0, quickLogin: 0 }; let cs = 0, cn = 0;
     EV6.careStages.forEach(st => { const b = E.b5[st]; if (b) for (const k in T) T[k] += +b[k] || 0; const c = E.cl[st]; if (c) { cs += c.sum; cn += c.sec; } });
-    const cleanAvg = cn > 0 ? cs / cn : null, crystalOk = cleanAvg != null && cleanAvg >= C.crystalCleanAvg;
-    const score = { tide: T.tide, shroom: T.shroom, crystal: crystalOk ? T.crystal : 0, moon: T.moon, ember: T.ember };
+    const cleanAvg = cn > 0 ? cs / cn : null;
+    const quickRate = T.loginPoop > 0 ? T.quickLogin / T.loginPoop : 0;   // v7：即清上線 ÷ 有便便上線（取消清潔 ≥60）
+    const score = { tide: T.tide, shroom: Math.max(0, T.shroom), crystal: +(quickRate * C.crystal.k * T.all).toFixed(4), moon: T.moon, ember: T.ember };
     const rank = D.BRANCH5.map(id => ({ id, n: score[id], share: T.all ? score[id] / T.all : 0 })).sort((a, b) => b.n - a.n || D.BRANCH5.indexOf(a.id) - D.BRANCH5.indexOf(b.id));
     const top = rank[0], second = rank[1], N = T.all;
-    const r = { all: N, score, raw: { crystal: T.crystal }, cleanAvg: cleanAvg == null ? null : +cleanAvg.toFixed(1), crystalOk, cq: s.cq, cqOk: s.cq >= C.b5CQ,
+    const days = careDaysCheck(s), need = b5Need(s, days);
+    const r = { all: N, score, raw: { loginPoop: T.loginPoop, quickLogin: T.quickLogin, quickRate: +quickRate.toFixed(4) }, cleanAvg: cleanAvg == null ? null : +cleanAvg.toFixed(1), cq: s.cq, cqNeed: need, span: days.span, cqOk: s.cq >= need,
       top: top.id, topN: top.n, topShare: +top.share.toFixed(4), second: second.id, secondShare: +second.share.toFixed(4),
       topOk: N > 0 && top.n * 100 >= C.b5TopPct * N, gapOk: N > 0 && (top.n - second.n) * 100 >= C.drawGapPt * N, tie: top.n === second.n,
       brightTopOk: !(N > 0 && top.n * 100 >= C.brightMaxTopPct * N) };
@@ -476,8 +499,8 @@
   function poopAges(s) { let a = Array.isArray(s.poopAge) ? s.poopAge : (s.poopAge = []); const n = Math.max(0, s.poops | 0); if (a.length > n) a.splice(0, a.length - n); while (a.length < n) a.unshift(1e9); return a; }
   function clearPoop(s) {
     if (s.poops <= 0) return { ok: false };
-    const a = poopAges(s), young = a.length ? a.pop() : 1e9, quick = young <= BR().crystalQuickSec;   // 清最新嗰粒
-    s.poops--; s.stats.poopsCleared++; noteCare(s, null, quick ? 'poopQuick' : 'poop');
+    const a = poopAges(s); if (a.length) a.pop();         // 清最新嗰粒（poopAge 保持同 poops 對齊）
+    s.poops--; s.stats.poopsCleared++; noteCare(s, null, 'poop'); checkQuickClean(s);   // v7：上線窗口內清到 0 → 即清上線
     s.ev.push({ type: 'poopCleared' });
     return { ok: true };
   }
@@ -567,6 +590,16 @@
     return r;
   }
 
+  // v8 火苗：第 2 批小遊戲未出之前，浮動團絨撳兩下開 game ＝ 一局（mgApply 及格分 → 火苗 +kinds.mg.w；獎勵同普通一局）。cooldownSec 內重複唔計
+  function overlayOpenGame(s, t) {
+    const O = BR().overlayMg; t = t == null ? nowMs() : +t;
+    if (!O || !O.enabled) return { ok: false, reason: 'off' };
+    if (!s || s.stage === 'egg') return { ok: false, reason: 'egg' };
+    const last = s.mg && +s.mg.overlayAt || 0; if (last && t - last < O.cooldownSec * 1000 && t >= last) return { ok: false, reason: 'cooldown' };
+    const r = mgApply(s, O.score == null ? P.mg.passScore : O.score, t); s.mg.overlayAt = t; s.ev.push({ type: 'overlayMg', grains: r.grains });
+    return { ok: true, reward: r };
+  }
+
   // ── 存檔 ──
   function serialize(s) { const c = Object.assign({}, s); delete c.ev; return JSON.stringify(c); }
   function deserialize(str, nowMs) {
@@ -597,6 +630,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, setWeatherFn, weatherNow, setNowFn, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

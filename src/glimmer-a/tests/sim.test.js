@@ -161,8 +161,8 @@ console.log('# 好／差照顧（芽崽 18h＋跳跳期 3 日）→ 分支');
   if (S.setHourFn) S.setHourFn(null);
   if (a.ev) { const ev = a.ev.find(e => e.type === 'evolve'); if (ev && ev.b5) console.log('  · 勤力照顧 §7 分數', JSON.stringify(ev.b5.score), 'all', ev.b5.all, 'top', ev.b5.top, ev.b5.topShare, ev.b5.secondShare, 'clean', ev.b5.cleanAvg); }
   ok(a.stage === 'adult' && a.form === 'bright', '勤力照顧 → 燦光', a.form + ' cq=' + a.cq);
-  { const ev = a.ev.find(e => e.type === 'evolve') || {};   // §7 修訂：清便便 39%＋清潔 85 → 全面照顧（最高 <45%）→ 燦光先過新 5 條
-    ok(ev.cq >= P.evo6.branch.brightCQ && ev.b5 && ev.b5.top === 'crystal' && ev.b5.topShare * 100 < P.evo6.branch.brightMaxTopPct && ev.b5.ok, '勤力照顧：晶角 39%（新 5 條本身成立）但 < 燦光上限 → 燦光優先', ev.b5 && ev.b5.topShare); }
+  { const ev = a.ev.find(e => e.type === 'evolve') || {};   // v7／v8：careBot 冇「上線」→ 晶角 0；晴天餵唔入菇傘 → 全面照顧（最高 <45%）→ 燦光
+    ok(ev.cq >= P.evo6.branch.brightCQ && ev.b5 && ev.b5.score.crystal === 0 && ev.b5.score.shroom === 0 && ev.b5.topShare * 100 < P.evo6.branch.brightMaxTopPct, '勤力照顧（晴天、冇上線紀錄）：晶角 0、菇傘 0、最高 < 燦光上限 → 燦光', ev.b5 && JSON.stringify(ev.b5.score)); }
   ok(b.stage === 'adult' && b.form === 'dust', '極少照顧（<20 先補到 30）→ 微塵（可重養，非失敗）', b.form);
 }
 console.log('# 迷你遊戲');

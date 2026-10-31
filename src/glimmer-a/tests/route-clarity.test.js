@@ -14,7 +14,8 @@ let HOUR = DAY; S.setHourFn(() => HOUR); S.setRainFn(() => false);
 const JUV = P.stageSec.juvenile, OPEN = ['tide', 'shroom', 'crystal', 'moon', 'ember', 'bright', 'soft', 'dust'];
 function juv(counts, cq, prog) {
   const s = S.newState(1e12, 7); s.stage = 'sprout'; Object.assign(s.needs, { hunger: 90, mood: 90, clean: 100, energy: 90 });
-  for (const k in counts) for (let i = 0; i < counts[k]; i++) S.noteCare(s, null, k === 'poop' ? 'poopQuick' : k);   // v5：晶角只計即清
+  for (const k in counts) for (let i = 0; i < counts[k]; i++) S.noteCare(s, null, k, k === 'feed' ? true : undefined);   // v8：feed＝落雨餵（菇傘 +1；晴天餵本身 0）
+  if (counts.poop) Object.assign(s.evo.b5.sprout, { loginPoop: counts.poop, quickLogin: counts.poop });   // v7：poop＝每次上線即清（晶角＝比率×k×總數）
   s.evo.cl = { sprout: { sum: 100 * 1e6, sec: 1e6 } }; s.stage = 'juvenile'; s.cq = cq; s.growthSec = JUV * (prog == null ? 0.5 : prog); return s;
 }
 const hiCQ = Math.max(C.brightCQ, C.b5CQ) + 10;
