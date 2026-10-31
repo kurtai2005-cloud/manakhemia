@@ -93,8 +93,8 @@
     function renderQuest() {
       const q = X.quests(G.state, now()), w = shardTxt(), RC = P.evo6.route.colors;
       if (!q.list.length) return `<div class="s12row" data-testid="s12-q-none"><span class="t">光卵孵咗先有委託㗎。</span></div>`;
-      return q.list.map((x, i) => `<div class="s12row s12q" data-testid="s12-q-${i}" data-k="${x.k}" data-done="${x.n >= x.need ? 1 : 0}">${pimg(x.icon, 24)}<span class="t">${x.label}<small> ${Math.min(x.n, x.need)}/${x.need}</small>${x.route ? `<span class="rt" style="background:${RC[x.route] || '#888'}" data-testid="s12-q-route">${D.FORM_NAME[x.route] || x.route}</span>` : ''}</span>${pimg(x.n >= x.need ? 'checkbox_done' : 'checkbox_empty', 20)}</div>`).join('') +
-        `<div class="s12foot"><span>3 個齊即刻 ${pimg('icon_star_shard_16', 16)} +${q.reward * q.list.length}${q.paid ? '（已領）' : ''}${q.route ? `<span class="rt" style="background:${RC[q.route] || '#888'}" data-testid="s12-q-route">${D.FORM_NAME[q.route] || q.route}+1</span>` : ''}</span><span data-testid="s12-wallet">${pimg('icon_star_shard_16', 16)} ${w.total}｜今日 ${w.today}/${w.cap}</span></div>`;
+      return q.list.map((x, i) => `<div class="s12row s12q" data-testid="s12-q-${i}" data-k="${x.k}" data-done="${x.n >= x.need ? 1 : 0}">${pimg(x.icon, 24)}<span class="t">${x.label}<small> ${Math.min(x.n, x.need)}/${x.need}</small>${x.old ? `<span class="rt" style="background:#8a7f9e" data-testid="s12-q-old">昨日</span>` : ''}${x.route ? `<span class="rt" style="background:${RC[x.route] || '#888'}" data-testid="s12-q-rt">${D.FORM_NAME[x.route] || x.route}</span>` : ''}</span>${pimg(x.n >= x.need ? 'checkbox_done' : 'checkbox_empty', 20)}</div>`).join('') +
+        `<div class="s12foot"><span data-testid="s12-q-rule">每張 ${pimg('icon_star_shard_16', 16)} +${q.reward}・今日 3 張齊再 +${q.bonus}${q.paid ? '（已領）' : ''}${q.route ? `<span class="rt" style="background:${RC[q.route] || '#888'}" data-testid="s12-q-route">${D.FORM_NAME[q.route] || q.route}+1</span>` : ''}</span><span data-testid="s12-wallet">${pimg('icon_star_shard_16', 16)} ${w.total}｜今日 ${w.today}/${w.cap}</span></div>`;
     }
     // ── 系統 6：親密度＋心聲（心聲泡＝遊美 bubble_thought_9s＋tail）──
     const vb = document.createElement('div'); vb.id = 's12voice'; vb.dataset.testid = 's12-voice';
@@ -121,7 +121,7 @@
     // ── 系統 12：懸浮小驚喜（設定＋懸浮 replay 入帳；主程式淨係 DEV 預覽）──
     const UC = C.surprise;
     G.evo.sys12Overlay = () => { const o = X.overlaySys12(G.state, now()); if (o.wx) { if (wx.manual) o.wx.manual = G.weather || 'clear'; else if (!wx.auto) o.wx.manual = 'clear'; if (wx.seasonMode !== 'auto') o.wx.season = wx.season || null; } return o; };   // v10.2：DEV／?weather= 覆蓋 → manual；自動閂 → 晴                       // fpet-bridge → snapshot.sys12（只讀）
-    G.evo.sys12Apply = (items) => { const r = X.applyOverlay(G.state, items, now(), G.state.ev); if (r.drop || r.voice || r.set) G.save && G.save(); return r; };
+    G.evo.sys12Apply = (items) => { const r = X.applyOverlay(G.state, items, now(), G.state.ev); if (r.drop || r.voice || r.set || r.pat) G.save && G.save(); return r; };
     const SURP_ROWS = [['drop', '懸浮掉星星碎（每 2–4 粒鐘一粒，每日最多 5）'], ['water', '飲水提醒'], ['sleep', '早瞓提醒']];
     function setSurp(k, v) { X.surpSet(G.state, k, v, now()); G.save && G.save(); G.state.ev.push({ type: 'sys12', sys: 'surp', what: 'set', key: k, val: v }); if (window.__fpetBridge && __fpetBridge.writeSnapshot) __fpetBridge.writeSnapshot(); }
     G.sysSettings = function (node) {                    // ui.js 設定彈窗：逐項開／閂（同懸浮設定同步）
@@ -199,6 +199,7 @@
     G.sysEvent = function (e) {
       S12.log.push(Object.assign({ t: now() }, e)); if (S12.log.length > 60) S12.log.shift();
       if (e.sys === 'quest' && e.what === 'paid' && e.n > 0) showGain(e.n, e.late ? '（委託補發）' : '（委託完成）');
+      if (e.sys === 'quest' && e.what === 'bonus' && e.n > 0) showGain(e.n, '（3 張齊小獎勵）');
       if (e.sys === 'surp' && e.what === 'replay' && e.drop) showGain(e.drop, '（懸浮團絨送嘅）');
       if (e.sys === 'bond' && e.what === 'tier') showGain(0, '親密度 ' + Math.round(e.v) + '：解鎖第 ' + e.tier + ' 段心聲');
       if (e.sys === 'quest' && e.what === 'step') { chip.classList.remove('pulse'); void chip.offsetWidth; chip.classList.add('pulse'); }
@@ -217,7 +218,7 @@
       quests: () => X.quests(G.state, G.now()), wallet: () => X.wallet(G.state, G.now()), questTick: () => X.questTick(G.state, G.now(), G.state.ev),
       questDo: (i) => { const x = X.st(G.state).quests.list[i]; if (!x) return null; X.onCare(G.state, P.systems12.quests.kinds[x.k].counts[0], G.now(), G.state.ev); return X.quests(G.state, G.now()); },   // DEV：當做咗 1 次（走真 hook 路徑）
       questFill: () => { const q = X.st(G.state).quests; q.list.forEach(x => { let g = 9; while (x.n < x.need && g--) X.onCare(G.state, P.systems12.quests.kinds[x.k].counts[0], G.now(), G.state.ev); }); return X.quests(G.state, G.now()); },
-      questReset: () => { const q = X.st(G.state).quests; q.day = ''; return X.questTick(G.state, G.now(), G.state.ev); },
+      questReset: () => { const q = X.st(G.state).quests; q.day = ''; q.list = []; q.bonus = {};   /* DEV：清晒重抽今日 */ return X.questTick(G.state, G.now(), G.state.ev); },
       grant: (n, src) => X.grant(G.state, n, src || 'dev', G.now()),
       diary: () => X.diary(G.state, G.now()), diaryPage: () => { const p = document.querySelector('[data-testid="s12-diary-page"]'); return p ? { kind: p.dataset.kind, special: p.dataset.special, txt: p.textContent, pos: document.querySelector('[data-testid="s12-diary-pos"]').textContent } : null; },
       surp: () => X.surp(G.state), overlay: () => X.overlaySys12(G.state, G.now()), apply: (items) => G.evo.sys12Apply(items),

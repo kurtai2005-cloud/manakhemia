@@ -114,7 +114,10 @@
       // 系統 1 每日小委託：每日 3 個、每個 5 星星碎、3 個齊即刻發獎（15）；00:00 重置；唔做唔罰；斷線／閂咗 app 未發 → 下次開補發
       // v10.2（遊策 A）：每日 3 個由 pool（餵／玩／摸頭）抽，唔再硬性包淋水；淋水委託只係水珠領先（rinseIfLead）先出，取代池入面一個。
       // 路線分：3 個齊 → 今日輪值路線（5 條逐日平均輪）+evo6.branch.systems.sources.questRoute.pts（同分；受 25% cap）
-      quests: { perDay: 3, reward: 5, pool: ['feed', 'play', 'pat'], rinseIfLead: 'tide', routeBonus: 'all',
+      // v10.3（遊策）：每張分開發 perItem；嗰日 3 張齊再發 allBonus（小獎勵）；未完成留多 keepDays 日（冇開 app 嗰日都補出），最多積 maxHeld 張；
+      //   委託分照入 wallet.questCap（15）＋每日上限 30 唔郁。路線分：每張＝嗰日輪值路線 +pts/perDay（3 張齊＝+pts，5 條平均輪 → 火苗平均唔變）。
+      //   摸頭：遊戲撳團絨＋懸浮撳團絨（fpet queue {k:'pat'} → applyOverlay）都計。
+      quests: { perDay: 3, perItem: 4, allBonus: 3, keepDays: 1, maxHeld: 6, pool: ['feed', 'play', 'pat'], rinseIfLead: 'tide', routeBonus: 'perItem',
         kinds: {
           feed: { n: 2, counts: ['feed'], icon: 'icon_commission_feed', label: '餵佢食嘢' },
           rinse: { n: 1, counts: ['rinse'], icon: 'icon_commission_water', label: '幫佢淋水沖身' },

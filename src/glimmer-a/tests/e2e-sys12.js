@@ -90,7 +90,7 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     w = await E(() => ({ log: __glimmer.foreLog, wx: __qa.sys12.wx() })); ok(w.log.length === 1 && w.log[0].tell === 'tell_tide' && w.wx.shown === 'tell_tide', '預告 tide → 播 tell_tide（行為照舊）', w); await shot('tell-tide', true);
   }
   if (want('quest')) {
-    console.log('# ④ 系統 1：每日小委託（3 個、每個 5、齊即發；00:00 重置；補發；DEV）');
+    console.log('# ④ 系統 1：每日小委託（v10.3：每張分開發、3 張齊小獎勵、未完成留多 1 日；00:00 重置；補發；懸浮摸頭；DEV）');
     await go('?q=high&hour=13&seed=21&ev=0&dev=1'); await dev('dev-stage-sprout'); await closeModals(); await juv(); await E(() => { __glimmer.state.stage = 'sprout'; });
     await dev('dev-s12-qreset'); await page.waitForTimeout(1200);
     let q = await E(() => __qa.sys12.quests()); const Q = await E(() => Glimmer.data.PARAMS.systems12.quests);
@@ -104,35 +104,40 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     const w0 = await E(() => __qa.sys12.wallet().total);
     for (const x of q.list.slice(0, 2)) for (let i = 0; i < x.need; i++) await doK(x.k);
     await page.waitForTimeout(1300); q = await E(() => __qa.sys12.quests());
-    ok(q.list.slice(0, 2).every(x => x.n >= x.need) && !q.paid && (await E(() => __qa.sys12.wallet().total)) === w0, '做咗 2 個 → 未發獎', q);
+    ok(q.list.slice(0, 2).every(x => x.n >= x.need && x.paid) && !q.paid && (await E(() => __qa.sys12.wallet().total)) === w0 + 2 * Q.perItem, `v10.3：做咗 2 張 → 逐張發 +${2 * Q.perItem}（未有小獎勵）`, q);
     await page.click('[data-testid="s12-chip"]'); await page.waitForTimeout(400);
     const pv = await E(() => ({ open: getComputedStyle(document.querySelector('[data-testid="s12-panel"]')).display, rows: document.querySelectorAll('.s12q').length, done: [...document.querySelectorAll('.s12q')].map(r => r.dataset.done).join(''), bi: getComputedStyle(document.getElementById('s12box')).borderImageSource }));
     ok(pv.open === 'flex' && pv.rows === 3 && pv.done === '110' && /^url\("data:image\/png/.test(pv.bi), '撳 chip → 委託面板（遊美 9-slice、勾選 2/3）', pv);
     await shot('quest-panel');
     for (let i = 0; i < q.list[2].need; i++) await doK(q.list[2].k);
     await page.waitForTimeout(1300); q = await E(() => __qa.sys12.quests()); let w = await E(() => __qa.sys12.wallet());
-    ok(q.done && q.paid && w.total === w0 + Q.reward * 3 && w.q === 15, `3 個齊 → 即刻 +${Q.reward * 3} 星星碎`, w);
-    const gain = await E(() => document.querySelector('[data-testid="s12-gain"]').textContent); ok(/\+15 星星碎/.test(gain), '浮字「+15 星星碎（委託完成）」', gain);
+    ok(q.done && q.paid && w.total === w0 + Q.perItem * 3 + Q.allBonus && w.q === 15, `3 張齊 → 第 3 張 +${Q.perItem}＋小獎勵 +${Q.allBonus}（全日 ${Q.perItem * 3 + Q.allBonus}）`, w);
+    const gain = await E(() => document.querySelector('[data-testid="s12-gain"]').textContent); ok(new RegExp('\\+' + Q.allBonus + ' 星星碎.*小獎勵').test(gain), '浮字「+3 星星碎（3 張齊小獎勵）」', gain);
+    const rule = await E(() => { __qa.sys12.open && __qa.sys12.open('quest'); const e = document.querySelector('[data-testid="s12-q-rule"]'); return e ? e.textContent : ''; }); ok(/每張.*\+4.*3 張齊再 \+3/.test(rule), '面板寫明：每張 +4・3 張齊再 +3', rule);
     await shot('quest-done');
     await E(() => __qa.sys12.close());
     // 路線委託（v10.2：唔跟領先；今日輪到邊條就邊條，平均分 5 條）
     await E(() => { const s = __glimmer.state; s.evo.b5 = { sprout: { all: 10, tide: 8, shroom: 1, crystal: 0, moon: 1, ember: 0 } }; s.evo.b5sys = {}; s.cq = 60; });
-    await dev('dev-s12-qreset'); q = await E(() => __qa.sys12.quests()); const rq = q.list.find(x => x.route);
+    await dev('dev-s12-qreset'); q = await E(() => __qa.sys12.quests()); const rq = q.list.find(x => x.route !== q.route);
     const rot = await E(() => { const X = Glimmer.sys12, s = __glimmer.state, t = __glimmer.now(), out = []; for (let d = 0; d < 5; d++) out.push(X.questRoute(s, Glimmer.sim.dayKey(t + d * 864e5))); return { today: out[0], five: out, lead: X.leadRoute(s) }; });
-    ok(!rq && q.route === rot.today && new Set(rot.five).size === 5, 'v10.2：今日輪值路線（唔跟領先；5 日輪晒 5 條），委託本身唔帶路線', { list: q.list, route: q.route, rot });
+    ok(!rq && q.route === rot.today && new Set(rot.five).size === 5, 'v10.2／v10.3：今日輪值路線（唔跟領先；5 日輪晒 5 條），今日每張都係嗰條', { list: q.list, route: q.route, rot });
     ok(rot.lead === 'tide' && q.list.some(x => x.k === 'rinse') && q.list.filter(x => Q.pool.includes(x.k)).length === 2, '水珠領先 → 淋水委託＋池 2 個', q.list.map(x => x.k));
     await dev('dev-s12-qall'); const b = await E(() => ({ sys: __glimmer.state.evo.b5sys, B: Glimmer.sim.branch5Check(__glimmer.state).sys }));
-    ok(b.sys.sprout && b.sys.sprout[q.route] === 1 && b.B.capped[q.route] <= 8 / 3 + 1e-6, '3 個齊 → 輪值路線新系統分 +1（≤25% cap）', b);
+    ok(b.sys.sprout && b.sys.sprout[q.route] === 1 && b.B.capped[q.route] <= 8 / 3 + 1e-6, 'v10.3：3 張逐張 +⅓ → 輪值路線合共 +1（≤25% cap）', b);
     w = await E(() => __qa.sys12.wallet()); ok(w.q === 15, '同日第二輪（DEV 重抽）唔會超過委託每日 15', w);
     // 存檔＋斷線補發
-    await E(() => { const x = Glimmer.sys12.st(__glimmer.state).quests; x.list.forEach(y => { y.n = y.need; }); x.paid = false; const d = new Date(__glimmer.now() - 86400e3); x.day = Glimmer.sim.dayKey(d.getTime()); __glimmer.save && __glimmer.save(); });
+    await E(() => { const x = Glimmer.sys12.st(__glimmer.state).quests, yk = Glimmer.sim.dayKey(__glimmer.now() - 86400e3); x.list = x.list.filter(y => !y.old).slice(0, 3); x.list.forEach((y, i) => { y.d = yk; y.paid = false; y.rp = true; y.n = i < 2 ? y.need : 0; }); x.day = yk; x.bonus = { [yk]: { n: 3, done: 0, rd: 3, paid: false } }; __glimmer.save && __glimmer.save(); });   // 昨日：2 張做齊未發（斷線）、1 張未做
     const tot1 = await E(() => __qa.sys12.wallet().total);
     await E(() => { localStorage.setItem(Glimmer.data.PARAMS.saveKey, Glimmer.sim.serialize(__glimmer.state)); window.__noSaveOnHide = true; });
     await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); await page.waitForTimeout(1500);
     w = await E(() => __qa.sys12.wallet()); q = await E(() => __qa.sys12.quests());
-    ok(w.total === tot1 + 15 && q.day === (await E(() => Glimmer.sim.dayKey(__glimmer.now()))) && !q.done, '重開：舊日 3 個齊未發 → 補發 15＋今日新委託', { w, q });
+    ok(w.total === tot1 + 2 * Q.perItem && q.day === (await E(() => Glimmer.sim.dayKey(__glimmer.now()))) && !q.done, `重開：昨日 2 張做齊未發 → 補發 ${2 * Q.perItem}（計返昨日）＋今日新委託`, { w, q });
+    ok(q.list.filter(x => x.old).length === 1 && q.list.filter(x => !x.old).length === 3 && q.list.length <= Q.maxHeld, 'v10.3：昨日未完成嗰張留多 1 日（＋今日 3 張）', q.list.map(x => x.k + (x.old ? '·昨' : '')));
+    await page.click('[data-testid="s12-chip"]'); await page.waitForTimeout(400); ok((await E(() => document.querySelectorAll('[data-testid="s12-q-old"]').length)) === 1, '面板：舊張標「昨日」'); await shot('quest-carry-v103'); await E(() => __qa.sys12.close());
+    { const pr = await E(() => { const X = Glimmer.sys12, s = __glimmer.state, L = () => X.st(s).quests.list.filter(x => x.k === 'pat' && x.n < x.need), b = L().length, n0 = L().reduce((t, x) => t + x.n, 0); const r = __glimmer.evo.sys12Apply([{ t: __glimmer.now() - 5000, k: 'pat' }]); /* fpet-bridge 真路徑 */ return { b, r, n1: X.st(s).quests.list.filter(x => x.k === 'pat').reduce((t, x) => t + x.n, 0), n0 }; });
+      ok(pr.b === 0 ? pr.r.skip === 1 : (pr.r.pat === 1 && pr.n1 >= pr.n0 + 1), 'v10.3：懸浮摸頭（queue {k:pat} → evo.sys12Apply）計入摸頭委託', pr); }
     const lg = await E(() => __qa.sys12.log().filter(e => e.what === 'paid')); ok(lg.some(e => e.late), '補發有記錄（late）', lg);
-    await dev('dev-s12-shard5'); ok((await E(() => __qa.sys12.wallet().total)) === tot1 + 20, 'DEV +5 星星碎');
+    { const t5 = await E(() => __qa.sys12.wallet().total); await dev('dev-s12-shard5'); ok((await E(() => __qa.sys12.wallet().total)) === t5 + 5, 'DEV +5 星星碎'); }
   }
   if (want('bond')) {
     console.log('# ⑤ 系統 6：親密度＋心聲（照顧 +1、長撳 +2、每日上限、唔理 −2、心聲 30%／冷卻、面板、化光紀念）');

@@ -54,8 +54,19 @@
     if (!Array.isArray(w.log)) w.log = []; if (w.log.length > 40) w.log = w.log.slice(-40);
     const q = o.quests && typeof o.quests === 'object' ? o.quests : (o.quests = {});
     if (typeof q.day !== 'string') q.day = ''; if (!Array.isArray(q.list)) q.list = [];
-    q.list = q.list.filter(x => x && typeof x === 'object' && C().quests.kinds[x.k]).map(x => ({ k: x.k, need: Math.max(1, num(x.need, 1)), n: Math.max(0, num(x.n, 0)), route: D.BRANCH5.includes(x.route) ? x.route : null }));
-    q.paid = !!q.paid; q.routePaid = !!q.routePaid; q.route = D.BRANCH5.includes(q.route) ? q.route : null;
+    const isKey = (k) => typeof k === 'string' && /^\d{4}-\d\d-\d\d$/.test(k);
+    if (q.v !== 3) {   // v10.3 遷移：舊（v10.2 前）一日一套、3 個齊先發 15 → 逐張記帳；舊 paid → 全部已發＋當日小獎勵已發；舊 routePaid → 路線分已加
+      const od = isKey(q.day) ? q.day : '', K = C().quests.kinds, L = q.list.filter(x => x && typeof x === 'object' && K[x.k]);
+      const dn = (x) => Math.max(0, num(x.n, 0)) >= Math.max(1, num(x.need, 1)), all = L.length > 0 && L.every(dn);
+      q.list = L.map(x => ({ k: x.k, need: Math.max(1, num(x.need, 1)), n: Math.max(0, num(x.n, 0)), d: od, r: D.BRANCH5.includes(x.route) ? x.route : (D.BRANCH5.includes(q.route) ? q.route : null),
+        full: D.BRANCH5.includes(x.route), paid: !!q.paid && dn(x), rp: dn(x) && (D.BRANCH5.includes(x.route) || (!!q.routePaid && all)) }));
+      q.bonus = {}; if (od && L.length) q.bonus[od] = { n: L.length, done: q.list.filter(x => x.paid).length, rd: q.list.filter(x => x.rp && !x.full).length, paid: !!q.paid };
+      delete q.paid; delete q.routePaid; delete q.route; q.v = 3;
+    }
+    q.list = q.list.filter(x => x && typeof x === 'object' && C().quests.kinds[x.k] && isKey(x.d));   // 原地整理（唔換 object：payItem 手上嗰張要同 list 係同一張）
+    for (const x of q.list) { x.need = Math.max(1, num(x.need, 1)); x.n = Math.max(0, num(x.n, 0)); x.r = D.BRANCH5.includes(x.r) ? x.r : null; x.full = !!x.full; x.paid = !!x.paid; x.rp = !!x.rp; delete x.route; }
+    if (!q.bonus || typeof q.bonus !== 'object' || Array.isArray(q.bonus)) q.bonus = {};
+    for (const k of Object.keys(q.bonus)) { const e = q.bonus[k]; if (!isKey(k) || !e || typeof e !== 'object') { delete q.bonus[k]; continue; } e.n = Math.max(0, num(e.n, 0)); e.done = Math.max(0, num(e.done, 0)); e.rd = Math.max(0, num(e.rd, 0)); e.paid = !!e.paid; }
     const B = C().bond, b = o.bond && typeof o.bond === 'object' ? o.bond : (o.bond = {});
     b.v = Math.max(0, Math.min(B.max, num(b.v, B.start))); b.gain = Math.max(0, num(b.gain, 0)); if (typeof b.day !== 'string') b.day = ''; if (typeof b.chk !== 'string') b.chk = '';
     b.gen = Math.max(1, Math.floor(num(b.gen, s.gen || 1))); b.lastVoice = Math.max(0, num(b.lastVoice, 0)); b.elder = b.elder == null ? null : num(b.elder, null);
@@ -94,7 +105,7 @@
   /* v10.2：路線委託平均分晒 5 條（唔再跟領先路線 → 火苗唔會因為領先而日日攞分）。
      每隻團絨（seed）有個起點，之後逐日輪：tide→shroom→crystal→moon→ember→…；任何連續 5 日每條路線剛好 1 次。 */
   function questRoute(s, key) {
-    if (s.stage === 'egg') return null;
+    if (!s || s.stage === 'egg') return null;
     const R = D.BRANCH5, dn = key ? dayNum(keyDate(key).getTime()) : dayNum(SIM.nowMs ? SIM.nowMs() : Date.now());
     return R[(((dn + hash(s.seed >>> 0, 0x51, 5) % R.length) % R.length) + R.length) % R.length];
   }
@@ -103,38 +114,56 @@
     if (s.stage === 'egg') return null;
     try { const L = SIM.routeLead(s); if (D.BRANCH5.includes(L.form)) return L.form; return L.b5 && L.b5.topN > 0 ? L.b5.top : null; } catch (e) { return null; }
   }
-  /* v10.2（遊策 A）：3 個由 pool（餵／玩／摸頭）洗牌抽；水珠領先 → 淋水取代其中一個。路線標記＝今日輪值路線（q.route），3 個齊先加分 */
+  /* v10.2（遊策 A）：3 個由 pool（餵／玩／摸頭）洗牌抽；水珠領先 → 淋水取代其中一個 */
   function genQuests(s, key) {
     const Q = C().quests, r = rngFor(s.seed >>> 0, +key.replace(/-/g, ''), 0x51), p = Q.pool.slice();
     for (let i = p.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; }
     const ks = p.slice(0, Q.perDay);
     if (Q.rinseIfLead && leadRoute(s) === Q.rinseIfLead && Q.kinds.rinse && !ks.includes('rinse')) ks[Math.floor(r() * ks.length)] = 'rinse';
-    return ks.map(k => ({ k, need: Q.kinds[k].n, n: 0, route: null }));
+    const rt = questRoute(s, key);
+    return ks.map(k => ({ k, need: Q.kinds[k].n, n: 0, d: key, r: rt, full: false, paid: false, rp: false }));
   }
-  function questsDone(q) { return q.list.length > 0 && q.list.every(x => x.n >= x.need); }
-  /* 每日檢查：補發舊日（3 個齊但未發）→ 00:00 換新委託；冇得出（光卵）→ 空 */
-  function questTick(s, nowMs, ev) {
-    const o = st(s), q = o.quests, key = SIM.dayKey(nowMs), out = { paid: 0, late: false, reset: false };
-    if (q.day && questsDone(q) && !q.paid) { out.paid = payQuests(s, nowMs, q.day !== key ? q.day : null, ev); out.late = true; }
-    if (q.day !== key && s.stage !== 'egg') { q.day = key; q.list = genQuests(s, key); q.route = questRoute(s, key); q.paid = false; q.routePaid = false; out.reset = true; if (ev) ev.push({ type: 'sys12', sys: 'quest', what: 'new', list: q.list.map(x => x.k) }); }
-    return out;
-  }
-  function payQuests(s, nowMs, oldKey, ev) {
-    const Q = C().quests, q = st(s).quests; if (q.paid) return 0; q.paid = true;
-    const g = grant(s, Q.reward * q.list.length, 'quest', nowMs, oldKey || null);
-    if (ev) ev.push({ type: 'sys12', sys: 'quest', what: 'paid', n: g, late: !!oldKey });
+  const qDone = (x) => x.n >= x.need;
+  const kDn = (k) => dayNum(keyDate(k).getTime());
+  function questsDone(q, key) { const L = q.list.filter(x => x.d === key), b = q.bonus[key]; return !!(b && b.n > 0 && b.done >= b.n) || (L.length > 0 && L.every(qDone)); }
+  /* v10.3：逐張發（perItem）→ 嗰日嘅 3 張齊再發小獎勵（allBonus）；路線分：每張 = 嗰日輪值路線 +pts/perDay（3 張齊＝+pts，同 v10.2 一樣平均輪） */
+  function payItem(s, x, nowMs, ev, oldKey) {   // oldKey：斷線補發 → 計返嗰日上限（唔食今日）
+    const Q = C().quests, q = st(s).quests; if (x.paid) return 0; x.paid = true;
+    const today = SIM.dayKey(nowMs), late = x.d !== today && kDn(x.d) < kDn(today);
+    let g = grant(s, Q.perItem, 'quest', nowMs, oldKey || null);
+    if (x.r && !x.rp) {   // 分母＝嗰日張數；用累計差計（0.3333＋0.3334＋0.3333＝1，唔會變 0.9999）
+      x.rp = true; const P0 = SYS().sources.questRoute.pts, e = q.bonus[x.d], n = e && e.n ? e.n : Q.perDay, c = e ? (e.rd = (e.rd || 0) + 1) : 1;
+      addRoutePts(s, x.r, x.full ? P0 : +(P0 * Math.min(c, n) / n).toFixed(4) - +(P0 * Math.min(c - 1, n) / n).toFixed(4));
+    }
+    if (ev) ev.push({ type: 'sys12', sys: 'quest', what: 'paid', n: g, k: x.k, d: x.d, late });
+    const b = q.bonus[x.d];
+    if (b && !b.paid) { b.done++; if (b.done >= b.n) { b.paid = true; const gb = grant(s, Q.allBonus, 'quest', nowMs, oldKey || null); g += gb; if (ev) ev.push({ type: 'sys12', sys: 'quest', what: 'bonus', n: gb, d: x.d }); } }
     return g;
   }
-  /* 照顧 hook（sim.addCareHook）：數委託進度；路線委託完成 → E.b5sys 加分（受 branch5Check 25% cap）；3 個齊 → 即刻發獎 */
+  /* 每日：補發（遷移／斷線：做齊未發）→ 換日：丟已做／過期（> keepDays 日）→ 補出今日（同埋 keepDays 內冇開 app 嗰幾日）嘅委託，最多 maxHeld 張。
+     時間唔會倒退：懸浮 replay 舊時間 → 唔重置。 */
+  function questTick(s, nowMs, ev) {
+    const Q = C().quests, o = st(s), q = o.quests, key = SIM.dayKey(nowMs), out = { paid: 0, late: false, reset: false };
+    for (const x of q.list) if (qDone(x) && !x.paid) { out.paid += payItem(s, x, nowMs, ev, x.d !== key && kDn(x.d) < kDn(key) ? x.d : null); out.late = true; }
+    if (q.day === key || s.stage === 'egg' || (q.day && kDn(key) < kDn(q.day))) return out;
+    const dn = kDn(key), from = q.day ? Math.max(kDn(q.day) + 1, dn - Q.keepDays) : dn;
+    q.list = q.list.filter(x => !qDone(x) && kDn(x.d) >= dn - Q.keepDays);
+    const fresh = [];
+    for (let d = from; d <= dn; d++) { const k = SIM.dayKey(keyDate(key).getTime() + (d - dn) * DAY + 12 * 3600e3), L = genQuests(s, k); fresh.push(...L); q.bonus[k] = { n: L.length, done: 0, paid: false }; }
+    q.list = q.list.concat(fresh); while (q.list.length > Q.maxHeld) q.list.shift();
+    for (const k of Object.keys(q.bonus)) if (kDn(k) < dn - Q.keepDays) delete q.bonus[k];
+    q.day = key; out.reset = true;
+    if (ev) ev.push({ type: 'sys12', sys: 'quest', what: 'new', list: q.list.filter(x => x.d === key).map(x => x.k), held: q.list.length });
+    return out;
+  }
+  /* 照顧 hook（sim.addCareHook）：數委託進度（舊張先；只計 d ≤ 嗰刻日子嘅張）；做齊 1 張 → 即發 */
   function onCare(s, kind, nowMs, ev) {
     if (s.stage === 'egg') return null; const o = st(s), q = o.quests; questTick(s, nowMs, ev);
-    let hit = null; const K = C().quests.kinds;
-    for (const x of q.list) if (x.n < x.need && K[x.k].counts.includes(kind)) { x.n++; hit = x; break; }
+    let hit = null; const K = C().quests.kinds, dn = kDn(SIM.dayKey(nowMs));
+    for (const x of q.list) if (!qDone(x) && kDn(x.d) <= dn && K[x.k].counts.includes(kind)) { x.n++; hit = x; break; }
     if (!hit) return null;
-    if (hit.n >= hit.need && hit.route && !q.routePaid) { q.routePaid = true; addRoutePts(s, hit.route, SYS().sources.questRoute.pts); }   // 舊存檔：委託本身帶路線
-    if (questsDone(q) && q.route && !q.routePaid) { q.routePaid = true; addRoutePts(s, q.route, SYS().sources.questRoute.pts); }   // v10.2：3 個齊 → 今日輪值路線 +pts
-    if (ev) ev.push({ type: 'sys12', sys: 'quest', what: 'step', k: hit.k, n: hit.n, need: hit.need });
-    if (questsDone(q)) payQuests(s, nowMs, null, ev);
+    if (ev) ev.push({ type: 'sys12', sys: 'quest', what: 'step', k: hit.k, n: hit.n, need: hit.need, d: hit.d });
+    if (qDone(hit)) payItem(s, hit, nowMs, ev);
     return hit;
   }
   /* v10.2：摸頭（撳／長撳團絨）→ 只推委託「摸摸佢個頭」；唔經 sim.noteCare（唔計 CQ／路線照顧分／親密照顧分） */
@@ -144,7 +173,11 @@
     const E = s.evo && typeof s.evo === 'object' ? s.evo : (s.evo = { evIn: {}, care: {} });
     const m = E.b5sys || (E.b5sys = {}), b = m[s.stage] || (m[s.stage] = {}); b[route] = +((b[route] || 0) + pts).toFixed(4); return true;
   }
-  function quests(s, nowMs) { const q = st(s).quests; return { day: q.day, paid: q.paid, done: questsDone(q), route: q.route || null, routePaid: q.routePaid, list: q.list.map(x => Object.assign({ label: C().quests.kinds[x.k].label, icon: C().quests.kinds[x.k].icon }, x)), reward: C().quests.reward }; }
+  function quests(s, nowMs) {
+    const Q = C().quests, q = st(s).quests, key = SIM.dayKey(nowMs == null ? SIM.nowMs() : nowMs), b = q.bonus[key] || null;
+    return { day: q.day, paid: !!(b && b.paid), done: questsDone(q, key), route: questRoute(s, key), held: q.list.length, maxHeld: Q.maxHeld, reward: Q.perItem, bonus: Q.allBonus,
+      list: q.list.map(x => Object.assign({ label: Q.kinds[x.k].label, icon: Q.kinds[x.k].icon, route: x.r, old: x.d !== key }, x)) };
+  }
 
   // ── 系統 6：親密度＋心聲 ──
   const BC = () => C().bond;
@@ -215,7 +248,7 @@
   }
   /* 懸浮 queue replay：drop → 星星碎（每日 5 粒＋otherCap；閂咗唔入）；voice → 同步冷卻／記低；set → 設定（後改贏） */
   function applyOverlay(s, items, nowMs, ev) {
-    const U = UC(), u = surp(s), out = { drop: 0, dropped: 0, voice: 0, set: 0, skip: 0 };
+    const U = UC(), u = surp(s), out = { drop: 0, dropped: 0, voice: 0, set: 0, pat: 0, skip: 0 };
     for (const it of Array.isArray(items) ? items : []) {
       if (!it || typeof it !== 'object') { out.skip++; continue; } const t = Math.min(nowMs, num(+it.t, nowMs));
       if (it.k === 'drop') {
@@ -226,10 +259,12 @@
         const b = bondOf(s); if (t > b.lastVoice) b.lastVoice = t; if (typeof it.line === 'string') { b.heard.push(it.line); if (b.heard.length > 60) b.heard.shift(); } out.voice++;
       } else if (it.k === 'set') {
         if (t >= u.ts && surpSet(s, it.key, it.val, t)) out.set++; else out.skip++;
+      } else if (it.k === 'pat') {   // v10.3：懸浮撳團絨＝摸頭 → 摸頭委託（按撳嗰刻計；光卵唔計）
+        if (s.stage !== 'egg' && onCare(s, 'pat', t, ev)) out.pat++; else out.skip++;
       } else if (it.k === 'remind') { u.seen.push(it.what + '@' + SIM.dayKey(t)); if (u.seen.length > 40) u.seen.shift(); }
       else out.skip++;
     }
-    if (ev && (out.drop || out.voice || out.set)) ev.push({ type: 'sys12', sys: 'surp', what: 'replay', drop: out.drop, voice: out.voice, set: out.set });
+    if (ev && (out.drop || out.voice || out.set || out.pat)) ev.push({ type: 'sys12', sys: 'surp', what: 'replay', drop: out.drop, voice: out.voice, set: out.set, pat: out.pat });
     return out;
   }
   /* 俾懸浮嘅 snapshot（fpet-bridge 寫入 snapshot.sys12）：親密／心聲（已解鎖句）＋小驚喜設定＋今日剩幾多粒 */
@@ -318,5 +353,5 @@
     o.tr = newTr(s, tr.day, now, g + 1); o.tr.st0 = o.tr.stLast = 'egg'; });
 
   return { dayNum, dayStart, weekOf, hash, rngFor, dayWeatherN, weatherAt, simulate, questRoute, leadRoute, notePat, seasonOf, shiverMul, SEASON_NAME, WEATHER_NAME,
-    st, grant, wallet, spend, bondOf, tierOf, bondAdd, bondTick, voiceLines, voicePick, voiceTry, bond, onLongPress, diaryTrack, diaryNote, diaryStep, diary, buildEntry, surp, surpSet, dropNext, waterDue, sleepDue, applyOverlay, overlaySys12, questRoute, genQuests, questTick, onCare, payQuests, addRoutePts, quests };
+    st, grant, wallet, spend, bondOf, tierOf, bondAdd, bondTick, voiceLines, voicePick, voiceTry, bond, onLongPress, diaryTrack, diaryNote, diaryStep, diary, buildEntry, surp, surpSet, dropNext, waterDue, sleepDue, applyOverlay, overlaySys12, questRoute, genQuests, questTick, onCare, payItem, addRoutePts, quests };
 });

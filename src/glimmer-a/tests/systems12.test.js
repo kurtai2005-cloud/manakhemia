@@ -49,7 +49,7 @@ console.log('③ 系統 1 每日小委託＋星星碎錢包（每日 30＝委託
   const mk = (stage) => { const s = S.newState(day0, 4242); s.stage = stage || 'sprout'; s.cq = 60; s.ev = []; return s; };
   let s = mk(); X.questTick(s, now, s.ev); let q = X.quests(s, now);
   ok(q.list.length === Q.perDay && q.list.every(x => Q.kinds[x.k]) && new Set(q.list.map(x => x.k)).size === Q.perDay, `每日 ${Q.perDay} 個委託（唔重覆）`, JSON.stringify(q.list));
-  ok(q.list.every(x => Q.pool.includes(x.k) && !x.route) && Q.pool.slice().sort().join() === 'feed,pat,play', 'v10.2 A：3 個由 餵／玩／摸頭 池抽（冇硬包淋水）', JSON.stringify(q.list.map(x => x.k)));
+  ok(q.list.every(x => Q.pool.includes(x.k) && x.route === X.questRoute(s, S.dayKey(now)) && !x.old) && Q.pool.slice().sort().join() === 'feed,pat,play', 'v10.2 A：3 個由 餵／玩／摸頭 池抽（冇硬包淋水）', JSON.stringify(q.list.map(x => x.k)));
   ok(!q.list.some(x => x.k === 'rinse') && Q.rinseIfLead === 'tide', '水珠冇領先 → 冇淋水委託');
   { const sT = mk(); sT.evo = { evIn: {}, care: {}, b5: { sprout: { all: 10, tide: 8, shroom: 1, crystal: 0, moon: 1, ember: 0 } }, cl: { sprout: { sum: 95 * 100, sec: 100 } } };
     let tideOk = 0, otherRinse = 0; for (let d = 0; d < 30; d++) { const k = S.dayKey(day0 + d * 864e5); if (X.genQuests(sT, k).some(x => x.k === 'rinse')) tideOk++; }
@@ -76,45 +76,64 @@ console.log('③ 系統 1 每日小委託＋星星碎錢包（每日 30＝委託
     ok(got.join() === 'poop,poopQuick', 'v10 即清上線 → hook 收 poop 再收 poopQuick（推委託）', got.join());
     ok(b1 - b0 === P.systems12.bond.care, '即清只當 1 次照顧計親密度（poopQuick 唔重覆加）', b0 + '→' + b1); }
   ok(JSON.stringify(X.genQuests(s, '2026-11-09')) === JSON.stringify(X.genQuests(s, '2026-11-09')), '同 seed 同日 → 委託一樣');
-  // 做齊 → 即刻發 15（部份完成唔發）
+  // v10.3：每張分開發 perItem；3 張齊再 allBonus（config）
   s = mk(); now = day0; X.questTick(s, now, s.ev); const before = X.wallet(s, now).total;
   const kindsOf = (x) => Q.kinds[x.k].counts[0];
-  const L0 = X.quests(s, now).list; S.noteCare(s, 12, kindsOf(L0[0])); if (L0[0].need > 1) S.noteCare(s, 12, kindsOf(L0[0]));
-  ok(X.wallet(s, now).total === before && !X.quests(s, now).paid, '未做齊 → 唔發獎（唔罰）');
-  for (const x of L0.slice(1)) for (let i = 0; i < x.need; i++) S.noteCare(s, 12, kindsOf(x));
-  let w = X.wallet(s, now); ok(X.quests(s, now).done && X.quests(s, now).paid && w.total === Q.reward * Q.perDay && w.q === 15, `3 個齊 → 即刻 +${Q.reward * Q.perDay} 星星碎`, JSON.stringify(w));
-  ok(s.ev.some(e => e.type === 'sys12' && e.what === 'paid' && e.n === 15), 'ev：sys12 quest paid');
-  for (const x of L0) S.noteCare(s, 12, kindsOf(x)); ok(X.wallet(s, now).total === 15, '同日再做 → 唔重覆發');
+  const doQ = (sx, x) => { for (let i = 0; i < x.need; i++) { if (x.k === 'pat') X.notePat(sx, now, sx.ev); else S.noteCare(sx, 12, kindsOf(x)); } };
+  ok(Q.perItem === 4 && Q.allBonus === 3 && Q.keepDays === 1 && Q.maxHeld === 6 && Q.perItem * Q.perDay + Q.allBonus <= C.wallet.questCap, `config：每張 ${Q.perItem}、3 張齊 +${Q.allBonus}、留 ${Q.keepDays} 日、最多 ${Q.maxHeld} 張（全做 ${Q.perItem * Q.perDay + Q.allBonus} ≤ 委託分帳 ${C.wallet.questCap}）`);
+  const L0 = X.quests(s, now).list; if (L0[0].need > 1) { X.onCare(s, kindsOf(L0[0]), now, s.ev); ok(X.wallet(s, now).total === before, '一張未做齊 → 唔發（唔罰）'); }
+  doQ(s, X.quests(s, now).list[0]);
+  ok(X.wallet(s, now).total === before + Q.perItem && X.quests(s, now).list[0].paid && !X.quests(s, now).paid, `做齊 1 張 → 即刻 +${Q.perItem}（未有小獎勵）`, JSON.stringify(X.wallet(s, now)));
+  ok(s.ev.some(e => e.type === 'sys12' && e.what === 'paid' && e.n === Q.perItem), 'ev：sys12 quest paid（逐張）');
+  for (const x of X.quests(s, now).list.slice(1)) doQ(s, x);
+  let w = X.wallet(s, now); const full = Q.perItem * Q.perDay + Q.allBonus;
+  ok(X.quests(s, now).done && X.quests(s, now).paid && w.total === full && w.q === full && s.ev.some(e => e.what === 'bonus' && e.n === Q.allBonus), `3 張齊 → 再 +${Q.allBonus} 小獎勵（全日 ${full}）`, JSON.stringify(w));
+  for (const x of L0) doQ(s, x); ok(X.wallet(s, now).total === full, '同日再做 → 唔重覆發');
   // 錢包上限
   let g = 0; for (let i = 0; i < 10; i++) g += X.grant(s, 4, 'drop', now); w = X.wallet(s, now);
   ok(g === C.wallet.otherCap && w.today === SY.stardustDailyCap && w.today === 30, `其他來源每日 ≤ ${C.wallet.otherCap}；總 ≤ ${SY.stardustDailyCap}`, JSON.stringify(w));
-  ok(X.grant(s, 5, 'quest', now) === 0, '委託分帳滿 → 0');
-  now = day0 + 86400e3; ok(X.grant(s, 3, 'drop', now) === 3 && X.wallet(s, now).today === 3 && X.wallet(s, now).total === 33, '00:00 後重置每日上限（總數保留）');
-  // 00:00 重置：新委託；斷線補發（3 個齊但未發）
-  s = mk(); now = day0; X.questTick(s, now, s.ev); const q1 = X.st(s).quests; q1.list.forEach(x => { x.n = x.need; }); q1.paid = false;
+  ok(X.grant(s, 5, 'quest', now) === 0, '總上限 30 滿 → 0');
+  now = day0 + 86400e3; ok(X.grant(s, 3, 'drop', now) === 3 && X.wallet(s, now).today === 3 && X.wallet(s, now).total === full + 15 + 3, '00:00 後重置每日上限（總數保留）');
+  // 斷線補發（做齊未發）＋未完成留多 1 日、最多 6 張
+  s = mk(); now = day0; X.questTick(s, now, s.ev); const q1 = X.st(s).quests; q1.list[0].n = q1.list[0].need;
   now = day0 + 86400e3 + 3600e3; const r1 = X.questTick(s, now, s.ev);
-  ok(r1.late && r1.paid === 15 && r1.reset && X.quests(s, now).day === S.dayKey(now) && !X.quests(s, now).done, '斷線補發：舊日 3 個齊未發 → 下次開補 15、再換新委託', JSON.stringify(r1));
-  ok(X.st(s).wallet.log.some(l => l.d === S.dayKey(day0) && l.n === 15), '補發計返嗰日（唔食今日上限）');
+  ok(r1.late && r1.paid === Q.perItem && r1.reset && X.quests(s, now).day === S.dayKey(now), `斷線補發：做齊未發 → 下次開補 ${Q.perItem}`, JSON.stringify(r1));
   ok(X.questTick(s, now + 1000, s.ev).paid === 0, '補發唔會重覆');
+  { const ql = X.quests(s, now).list, old = ql.filter(x => x.old), nw = ql.filter(x => !x.old);
+    ok(old.length === Q.perDay - 1 && nw.length === Q.perDay && old.every(x => x.d === S.dayKey(day0) && x.route === X.questRoute(s, S.dayKey(day0))), `未完成留多 1 日：昨日剩 ${old.length} 張＋今日 ${nw.length} 張（昨日張保留嗰日輪值路線）`, JSON.stringify(ql.map(x => x.d + x.k)));
+    const k0 = old[0]; X.onCare(s, kindsOf(k0), now, s.ev); ok(X.st(s).quests.list.find(x => x.d === k0.d && x.k === k0.k).n === k0.n + 1, '做嘢先推舊張（快過期嗰張）'); }
+  now = day0 + 2 * 86400e3 + 3600e3; X.questTick(s, now, s.ev);
+  ok(X.quests(s, now).list.every(x => x.d !== S.dayKey(day0)) && X.quests(s, now).list.length <= Q.maxHeld, '過咗 1 日 → 前日張過期', JSON.stringify(X.quests(s, now).list.map(x => x.d)));
+  { const sG = mk(); let t = day0; X.questTick(sG, t, sG.ev); t = day0 + 3 * 86400e3; X.questTick(sG, t, sG.ev); const L = X.quests(sG, t).list;
+    ok(L.length === Q.maxHeld && L.filter(x => x.d === S.dayKey(t - 86400e3)).length === Q.perDay && L.filter(x => x.d === S.dayKey(t)).length === Q.perDay, `隔幾日先開：補出昨日（冇開 app）＋今日 → 最多 ${Q.maxHeld} 張`, JSON.stringify(L.map(x => x.d)));
+    X.questTick(sG, day0 + 2 * 86400e3, sG.ev); ok(X.quests(sG, t).list.length === Q.maxHeld && X.st(sG).quests.day === S.dayKey(t), '時間倒退（懸浮 replay 舊時間）→ 唔重置');
+    const cap0 = X.st(sG).quests.list.length; sG.sys12.quests.list.push(...X.genQuests(sG, S.dayKey(t))); X.st(sG); X.questTick(sG, t + 864e5, sG.ev); ok(X.st(sG).quests.list.length <= Q.maxHeld && cap0 === Q.maxHeld, '最多積 6 張'); }
   { const s6 = mk(); const t1 = day0 + 86400e3; X.grant(s6, 15, 'quest', t1); X.grant(s6, 15, 'quest', t1, S.dayKey(day0)); const w6 = X.wallet(s6, t1);
     ok(w6.q === 15 && w6.total === 30 && X.grant(s6, 1, 'quest', t1) === 0, '補發舊日唔影響今日分帳（每日各自計）', JSON.stringify(w6)); }
   // 光卵冇委託
   s = mk('egg'); X.questTick(s, now, s.ev); ok(X.quests(s, now).list.length === 0, '光卵：未有委託');
-  // 路線分：完成路線委託 → E.b5sys +1；branch5Check 每條 ≤ 25%
+  // 路線分：每張 = 嗰日輪值路線 +pts/3（3 張齊 = +pts，累計差計 → 啱啱好 1）；受 25% cap
   s = mk(); for (let i = 0; i < 9; i++) S.noteCare(s, 12, 'rinse'); s.sys12 = null; now = day0 + 2 * 86400e3; X.questTick(s, now, s.ev);
-  { const q2 = X.quests(s, now), rt = q2.route, L2 = q2.list; let mid = null;
-    L2.forEach((x, j) => { for (let i = 0; i < x.need; i++) { if (x.k === 'pat') X.notePat(s, now, s.ev); else S.noteCare(s, 12, Q.kinds[x.k].counts[0]); } if (j === 1) mid = JSON.stringify(s.evo.b5sys || {}); });
-    ok(D.BRANCH5.includes(rt) && mid === '{}' || (mid && !(JSON.parse(mid).sprout || {})[rt]), '未齊 3 個 → 輪值路線未加分', mid);
-    ok(s.evo.b5sys && s.evo.b5sys.sprout && s.evo.b5sys.sprout[rt] === SY.sources.questRoute.pts && X.quests(s, now).paid, `3 個齊 → 今日輪值路線 ${rt} 新系統分 +${SY.sources.questRoute.pts}（＋15 星星碎）`, JSON.stringify(s.evo.b5sys));
+  { const q2 = X.quests(s, now), rt = q2.route, L2 = q2.list; const pts = [];
+    L2.forEach((x) => { doQ(s, x); pts.push(((s.evo.b5sys || {}).sprout || {})[rt] || 0); });
+    ok(pts[0] > 0 && pts[0] < pts[1] && pts[1] < pts[2], `逐張加輪值路線 ${rt} 分：${pts.join(' → ')}`, JSON.stringify(pts));
+    ok(s.evo.b5sys.sprout[rt] === SY.sources.questRoute.pts && X.quests(s, now).paid, `3 張齊 → 今日輪值路線 ${rt} 合共 +${SY.sources.questRoute.pts}（同 v10.2 一樣平均輪 → 火苗平均唔變）`, JSON.stringify(s.evo.b5sys));
     X.notePat(s, now, s.ev); ok(s.evo.b5sys.sprout[rt] === SY.sources.questRoute.pts, '同日唔會重覆加路線分'); }
   { const sP = mk(); X.questTick(sP, now, sP.ev); const c0 = JSON.stringify(sP.evo.care), b0 = X.bond(sP, now).v; X.notePat(sP, now, sP.ev);
     const pq = X.quests(sP, now).list.find(x => x.k === 'pat');
     ok(pq && pq.n === 1 && JSON.stringify(sP.evo.care) === c0 && X.bond(sP, now).v === b0, '摸頭 → 推「摸摸佢個頭」委託；唔計照顧／CQ／親密照顧分', JSON.stringify(pq));
     sP.sleeping = true; X.notePat(sP, now, sP.ev); ok(X.quests(sP, now).list.find(x => x.k === 'pat').n === 1, '瞓緊覺撳唔計摸頭'); }
-  { // 舊存檔：今日委託仲係舊式（淋水／路線委託帶 route）→ 照做照計；聽日換新式
+  { // 舊存檔遷移（v10.2 前／v10.2：一日一套，3 個齊先發）→ v10.3 逐張
     const sO = mk(); sO.sys12 = { quests: { day: S.dayKey(now), list: [{ k: 'poopQuick', need: 1, n: 0, route: 'crystal' }, { k: 'rinse', need: 1, n: 0, route: null }, { k: 'feed', need: 2, n: 0, route: null }], paid: false, routePaid: false } }; X.st(sO);
-    S.noteCare(sO, 12, 'poopQuick'); ok(sO.evo.b5sys && sO.evo.b5sys.sprout && sO.evo.b5sys.sprout.crystal === SY.sources.questRoute.pts, '舊存檔路線委託（晶角）照加分', JSON.stringify(sO.evo.b5sys));
-    X.questTick(sO, now + 864e5, sO.ev); const nq = X.quests(sO, now + 864e5); ok(nq.list.every(x => Q.pool.includes(x.k) || x.k === 'rinse') && D.BRANCH5.includes(nq.route), '舊存檔聽日 → 新式（池＋輪值路線）', JSON.stringify(nq)); }
+    const qo = sO.sys12.quests; ok(qo.v === 3 && qo.paid === undefined && qo.list.length === 3 && qo.list.every(x => x.d === S.dayKey(now) && !x.paid) && qo.bonus[S.dayKey(now)].n === 3, '舊存檔 → v10.3 格式（逐張記帳、嗰日小獎勵）', JSON.stringify(qo));
+    const w0 = X.wallet(sO, now).total; S.noteCare(sO, 12, 'poopQuick');
+    ok(sO.evo.b5sys && sO.evo.b5sys.sprout && sO.evo.b5sys.sprout.crystal === SY.sources.questRoute.pts && X.wallet(sO, now).total === w0 + Q.perItem, '舊存檔路線委託（晶角）照加 1 分＋逐張發', JSON.stringify(sO.evo.b5sys));
+    X.questTick(sO, now + 864e5, sO.ev); const nq = X.quests(sO, now + 864e5); ok(nq.list.filter(x => !x.old).every(x => Q.pool.includes(x.k) || x.k === 'rinse') && nq.list.filter(x => x.old).length === 2 && D.BRANCH5.includes(nq.route), '舊存檔聽日 → 新式（池＋輪值路線）、舊未完成留多 1 日', JSON.stringify(nq.list.map(x => x.k)));
+    const sD = mk(); sD.sys12 = { quests: { day: S.dayKey(now), route: 'moon', list: [{ k: 'feed', need: 2, n: 2 }, { k: 'play', need: 1, n: 1 }, { k: 'pat', need: 2, n: 2 }], paid: true, routePaid: true } }; X.st(sD);
+    const w1 = X.wallet(sD, now).total; X.questTick(sD, now, sD.ev); X.notePat(sD, now, sD.ev);
+    ok(X.wallet(sD, now).total === w1 && X.quests(sD, now).paid && !(sD.evo.b5sys && sD.evo.b5sys.sprout && sD.evo.b5sys.sprout.moon), '舊存檔今日已領 → 唔會再發／再加路線分', JSON.stringify(sD.sys12.quests));
+    const sU = mk(); sU.sys12 = { quests: { day: S.dayKey(now), route: 'ember', list: [{ k: 'feed', need: 2, n: 2 }, { k: 'play', need: 1, n: 1 }, { k: 'pat', need: 2, n: 2 }], paid: false, routePaid: false } }; X.st(sU);
+    const r9 = X.questTick(sU, now, sU.ev); ok(r9.paid === Q.perItem * 3 + Q.allBonus && sU.evo.b5sys.sprout.ember === SY.sources.questRoute.pts, `舊存檔做齊未發 → 補 ${Q.perItem * 3 + Q.allBonus}＋輪值路線 +1`, JSON.stringify(r9)); }
   { const s3 = mk(); s3.evo = { evIn: {}, care: {}, b5: { sprout: { all: 12, tide: 3, shroom: 6, crystal: 0, moon: 3, ember: 0 } }, cl: {}, b5sys: { sprout: { tide: 50, moon: 0.5 } } };
     const B = S.branch5Check(s3), capT = 3 * SY.maxRouteSharePct / (100 - SY.maxRouteSharePct);
     ok(Math.abs(B.sys.capped.tide - capT) < 1e-3 && B.sys.capped.moon === 0.5 && Math.abs(B.score.tide - 4) < 1e-3, `新系統分每條 ≤ 25%（照顧 3 → 新系統最多 ${capT}；佔 ${(capT / (3 + capT) * 100).toFixed(0)}%）`, JSON.stringify(B.sys));
@@ -122,8 +141,8 @@ console.log('③ 系統 1 每日小委託＋星星碎錢包（每日 30＝委託
     const keep = SY.enabled; SY.enabled = false; const B2 = S.branch5Check(s3); SY.enabled = keep; ok(B2.score.tide === 3 && B2.all === 12, 'systems.enabled=false → 唔計新系統分'); }
   { const s4 = mk(); s4.evo = { evIn: {}, care: {}, b5: { sprout: { all: 5, tide: 0, shroom: 5, crystal: 0, moon: 0, ember: 0 } }, cl: {}, b5sys: { sprout: { tide: 9 } } }; ok(S.branch5Check(s4).score.tide === 0, '冇照顧分嘅路線 → 新系統分＝0（唔可以淨靠委託開路線）'); }
   // sanitize
-  s = mk(); s.sys12 = { wallet: { total: 'x', q: -5, log: 'bad', days: { 'bad': 1, '2026-11-02': { q: -3, o: 'x' } } }, quests: { list: [{ k: 'zzz' }, { k: 'feed', need: 2, n: 1, route: 'evil' }] } }; X.st(s);
-  ok(s.sys12.wallet.total === 0 && s.sys12.wallet.q === undefined && Object.keys(s.sys12.wallet.days).join() === '2026-11-02' && s.sys12.wallet.days['2026-11-02'].q === 0 && s.sys12.wallet.days['2026-11-02'].o === 0 && Array.isArray(s.sys12.wallet.log) && s.sys12.quests.list.length === 1 && s.sys12.quests.list[0].route === null, '存檔 sanitize（錢包／委託）');
+  s = mk(); s.sys12 = { wallet: { total: 'x', q: -5, log: 'bad', days: { 'bad': 1, '2026-11-02': { q: -3, o: 'x' } } }, quests: { v: 3, list: [{ k: 'zzz', d: '2026-11-02' }, { k: 'feed', need: 2, n: 1, d: '2026-11-02', r: 'evil' }, { k: 'feed', d: 'bad' }], bonus: { bad: 1, '2026-11-02': { n: 'x' } } } }; X.st(s);
+  ok(s.sys12.wallet.total === 0 && s.sys12.wallet.q === undefined && Object.keys(s.sys12.wallet.days).join() === '2026-11-02' && s.sys12.wallet.days['2026-11-02'].q === 0 && s.sys12.wallet.days['2026-11-02'].o === 0 && Array.isArray(s.sys12.wallet.log) && s.sys12.quests.list.length === 1 && s.sys12.quests.list[0].r === null && Object.keys(s.sys12.quests.bonus).join() === '2026-11-02' && s.sys12.quests.bonus['2026-11-02'].n === 0, '存檔 sanitize（錢包／委託）');
   const s5 = S.deserialize(S.serialize(Object.assign(mk(), { sys12: { wallet: { total: 7 } } })), now); ok(X.wallet(s5, now).total === 7, '存檔來回保留星星碎');
   S.setNowFn(null); S.setHourFn(null); S.setWeatherFn(null);
 }
@@ -170,6 +189,16 @@ console.log('⑤ 系統 12：懸浮小驚喜（設定、replay 入帳、每日 5
   let s = mk(); let u = X.surp(s);
   ok(u.on.drop === true && u.on.water === false && u.on.sleep === false, '預設：星星碎開、提醒閂');
   ok(u.waterH === U.water.def && u.sleepAt === U.sleep.def, '預設間隔／時間讀 config');
+  { // v10.3：懸浮撳團絨＝摸頭（queue {k:'pat'} → applyOverlay → 摸頭委託）
+    const sp = mk(); S.setNowFn(() => now); X.questTick(sp, now, sp.ev); const pq = () => X.st(sp).quests.list.filter(x => x.k === 'pat');
+    if (!pq().length) sp.sys12.quests.list.push({ k: 'pat', need: 2, n: 0, d: S.dayKey(now), r: null, full: false, paid: false, rp: false });
+    const n0 = pq()[0].n, r = X.applyOverlay(sp, [{ t: now - 60e3, k: 'pat' }, { t: now - 30e3, k: 'pat' }, { t: now - 10e3, k: 'pat' }], now, sp.ev);
+    ok(r.pat === 2 && r.skip === 1 && pq()[0].n === n0 + 2 && pq()[0].paid && X.wallet(sp, now).q >= C.quests.perItem, '懸浮摸頭 ×3 → 摸頭委託 +2（做齊即發；多出嗰下唔計）', JSON.stringify(r));
+    ok(sp.ev.some(e => e.sys === 'surp' && e.what === 'replay' && e.pat === 2), 'ev：replay pat');
+    const sY = mk(); X.questTick(sY, now, sY.ev); const yk = S.dayKey(now - 86400e3), w0 = X.st(sY).quests.list.length;
+    const r2 = X.applyOverlay(sY, [{ t: now - 86400e3, k: 'pat' }], now, sY.ev);
+    ok(X.st(sY).quests.day === S.dayKey(now) && X.st(sY).quests.list.length === w0 && X.st(sY).quests.list.every(x => x.n === 0) && r2.skip === 1, '舊時間 replay（今日張出咗之後）→ 唔重置、唔推今日張', JSON.stringify(r2));
+    const sE = mk(); sE.stage = 'egg'; ok(X.applyOverlay(sE, [{ t: now, k: 'pat' }], now).skip === 1, '光卵：懸浮摸頭唔計'); S.setNowFn(null); }
   ok(X.surpSet(s, 'water', true, now) && u.on.water && u.ts === now, '開飲水提醒（記 ts）');
   ok(!X.surpSet(s, 'waterH', 5, now) && X.surpSet(s, 'waterH', 3, now) && u.waterH === 3, '飲水間隔只限 1–3h');
   ok(!X.surpSet(s, 'sleepAt', '21:00', now) && X.surpSet(s, 'sleepAt', '00:00', now), '早瞓時間只限 config 選項');
