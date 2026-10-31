@@ -126,5 +126,42 @@ console.log('④ 系統 6 親密度＋心聲');
   s = mk(); s.sys12 = { bond: { v: 'x', heard: 5, lastVoice: -1 } }; X.st(s); ok(s.sys12.bond.v === B.start && Array.isArray(s.sys12.bond.heard) && s.sys12.bond.lastVoice === 0, '存檔 sanitize（親密）');
   S.setNowFn(null); S.setHourFn(null); S.setWeatherFn(null);
 }
+console.log('⑤ 系統 12：懸浮小驚喜（設定、replay 入帳、每日 5 粒、提醒時間）');
+{
+  const U = C.surprise, base = new Date(2026, 10, 3, 14, 0, 0).getTime(), now = base;
+  const mk = () => { const s = S.newState(base - 86400e3 * 3, 5); s.stage = 'sprout'; return s; };
+  let s = mk(); let u = X.surp(s);
+  ok(u.on.drop === true && u.on.water === false && u.on.sleep === false, '預設：星星碎開、提醒閂');
+  ok(u.waterH === U.water.def && u.sleepAt === U.sleep.def, '預設間隔／時間讀 config');
+  ok(X.surpSet(s, 'water', true, now) && u.on.water && u.ts === now, '開飲水提醒（記 ts）');
+  ok(!X.surpSet(s, 'waterH', 5, now) && X.surpSet(s, 'waterH', 3, now) && u.waterH === 3, '飲水間隔只限 1–3h');
+  ok(!X.surpSet(s, 'sleepAt', '21:00', now) && X.surpSet(s, 'sleepAt', '00:00', now), '早瞓時間只限 config 選項');
+  // replay drop
+  s = mk(); let r = X.applyOverlay(s, [0, 1, 2, 3, 4, 5, 6].map(i => ({ k: 'drop', t: now - i * 1000 })), now);
+  ok(r.drop === 5 && X.wallet(s, now).total === 5 && X.wallet(s, now).o === 5, '懸浮 7 粒 → 今日最多入 5 粒（計 otherCap）', JSON.stringify(r));
+  ok(X.overlaySys12(s, now).surp.drop.room === 0, 'snapshot：今日尚餘 0');
+  r = X.applyOverlay(s, [{ k: 'drop', t: now - 86400e3 }], now); ok(r.drop === 1, '尋日嘅（遲咗 drain）計返尋日上限');
+  s = mk(); X.grant(s, 13, 'mg', now); r = X.applyOverlay(s, [1, 2, 3].map(i => ({ k: 'drop', t: now - i })), now); ok(r.drop === 2 && X.wallet(s, now).o === 15, 'otherCap 15 同小遊戲共用');
+  s = mk(); X.surpSet(s, 'drop', false, now); r = X.applyOverlay(s, [{ k: 'drop', t: now }], now); ok(r.drop === 0 && X.wallet(s, now).total === 0, '閂咗星星碎 → 唔入帳');
+  ok(X.overlaySys12(s, now).surp.on.drop === false, 'snapshot 帶埋開關（懸浮閂咗就完全唔掉）');
+  s = mk(); s.stage = 'egg'; r = X.applyOverlay(s, [{ k: 'drop', t: now }], now); ok(r.drop === 0, '光卵唔掉');
+  // voice sync
+  s = mk(); r = X.applyOverlay(s, [{ k: 'voice', t: now - 5000, line: C.bond.lines[0][0] }], now);
+  ok(r.voice === 1 && X.bondOf(s).lastVoice === now - 5000 && X.voiceTry(s, now, { rng: () => 0 }).why === 'cooldown', '懸浮心聲 → 主程式共用冷卻');
+  const ov = X.overlaySys12(s, now); ok(ov.voice.lines.length === 1 && ov.voice.chance === C.bond.voice.chance && ov.voice.cooldownSec === C.bond.voice.cooldownSec, 'snapshot 心聲：已解鎖段＋30%／10 分鐘');
+  // set sync（後改贏）
+  s = mk(); X.surpSet(s, 'water', true, now); r = X.applyOverlay(s, [{ k: 'set', key: 'water', val: false, t: now - 1000 }], now); ok(r.set === 0 && X.surp(s).on.water, '懸浮舊設定（早過主程式改）唔覆蓋');
+  r = X.applyOverlay(s, [{ k: 'set', key: 'water', val: false, t: now + 1 }], now + 10); ok(r.set === 1 && !X.surp(s).on.water, '懸浮新設定 → 同步落主程式');
+  // timers
+  ok(X.dropNext(0, 0) === U.drop.minH * 3600e3 && X.dropNext(0, 0.999999) < U.drop.maxH * 3600e3, '掉落間隔 2–4h');
+  const at = (h, m) => new Date(2026, 10, 3, h, m).getTime();
+  ok(X.waterDue(at(10, 0) - 2 * 3600e3, 2, at(10, 0)) && !X.waterDue(at(10, 0) - 3600e3, 2, at(10, 0)), '飲水：夠鐘先出');
+  ok(!X.waterDue(0, 1, at(23, 0)) && !X.waterDue(0, 1, at(7, 0)), '飲水：夜晚／清早唔出');
+  let d = X.sleepDue('23:00', '', at(23, 20)); ok(d.due && d.night === '2026-11-03', '早瞓 23:00 → 23:20 出');
+  ok(!X.sleepDue('23:00', d.night, at(23, 40)).due && !X.sleepDue('23:00', '', at(22, 40)).due && !X.sleepDue('23:00', '', at(0, 10)).due, '一晚一次；未到／過咗 60 分鐘唔出');
+  d = X.sleepDue('00:00', '', at(0, 30)); ok(d.due && d.night === '2026-11-02', '00:00 提醒當前一晚');
+  s = mk(); s.sys12 = { surp: { on: { drop: 'x' }, waterH: 9, drops: { bad: 3, '2026-11-03': -2 } } }; X.st(s); u = s.sys12.surp;
+  ok(u.on.drop === true && u.waterH === U.water.def && !('bad' in u.drops) && u.drops['2026-11-03'] === 0, '存檔 sanitize（小驚喜）');
+}
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);
 process.exit(fail ? 1 : 0);

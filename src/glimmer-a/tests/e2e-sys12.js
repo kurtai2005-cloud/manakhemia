@@ -11,6 +11,7 @@ const ONLY = (process.env.ONLY || '').split(',').filter(Boolean), want = (k) => 
 let pass = 0, fail = 0;
 const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else { fail++; console.log('  ✗ ' + n + (info !== undefined ? ' → ' + JSON.stringify(info).slice(0, 600) : '')); } };
 
+const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
@@ -27,6 +28,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await page.screenshot({ path: SHOTS + 'sys12-' + n + '.png', clip }); console.log('  📷 sys12-' + n);
   };
   const closeModals = async () => { for (let i = 0; i < 6; i++) { const v = await E(() => getComputedStyle(document.getElementById('modal')).display !== 'none'); if (!v) break; await E(() => { const b = document.querySelectorAll('#mbox .btn'); (b[b.length > 1 ? 1 : 0] || b[0]).click(); }); await page.waitForTimeout(150); } };
+  const jc = (tid) => E((tid) => document.querySelector('[data-testid="' + tid + '"]').click(), tid);
   const dev = async (tid) => { await E(() => { const p = document.getElementById('devp'); if (p && p.classList.contains('fold')) p.classList.remove('fold'); }); await page.click('[data-testid="' + tid + '"]'); };
   const go = async (q) => { await page.goto(BASE + q); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + q); await ready(); await E(() => { window.__noSaveOnHide = true; }); };
   const juv = () => E(() => { const s = __glimmer.state; s.stage = 'juvenile'; s.form = null; s.sleeping = false; s.growthSec = 10; Object.assign(s.needs, { hunger: 100, mood: 80, clean: 100, energy: 100 }); s.poops = 0; __qa.pet.force('stay'); __glimmer.beh.x = 0; });
@@ -156,6 +158,42 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await page.waitForTimeout(1200); const md = await E(() => document.getElementById('mbox') && document.getElementById('mbox').textContent); ok(/親密度 81/.test(md || ''), '化光彈窗多一句「紀念冊記低：親密度 81」', md && md.slice(0, 200));
     await shot('bond-fade'); await closeModals();
     await E(() => __qa.sys12.open('bond')); await page.waitForTimeout(300); ok(await E(() => document.querySelectorAll('[data-testid="s12-mem"]').length >= 1), '親密面板紀念冊列出上一代');
+  }
+  if (want('surp')) {
+    console.log('# ⑥ 系統 12：懸浮小驚喜（設定逐項開閂、預設碎開提醒閂、懸浮 replay 入帳每日 5、提醒泡預覽、snapshot）');
+    await go('?q=high&hour=13&seed=21&ev=0&dev=1'); await dev('dev-stage-sprout'); await closeModals(); await juv(); await E(() => { __glimmer.state.stage = 'sprout'; });
+    let u = await E(() => __qa.sys12.surp()); ok(u.on.drop && !u.on.water && !u.on.sleep, '預設：星星碎開、飲水／早瞓閂', u.on);
+    await E(() => { const p = document.getElementById('devp'); if (p) p.classList.add('fold'); }); await page.click('#gear'); await page.waitForTimeout(400);
+    const tg = await E(() => ['drop', 'water', 'sleep'].map(k => { const b = document.querySelector('[data-testid="toggle-surp-' + k + '"]'); return b ? b.textContent : null; }));
+    ok(tg.join() === '開,關,關', '設定彈窗有 3 個開關（碎開、水關、瞓關）', tg);
+    await jc('toggle-surp-water'); await jc('surp-waterH-1'); await jc('toggle-surp-sleep'); await jc('surp-sleepAt-2330');
+    u = await E(() => __qa.sys12.surp()); ok(u.on.water && u.waterH === 1 && u.on.sleep && u.sleepAt === '23:30' && u.ts > 0, '撳開飲水（1h）＋早瞓（23:30）→ 存入 s.sys12.surp', u);
+    await shot('surp-settings');
+    await E(() => [...document.querySelectorAll('#mbox .btn')].find(b => b.textContent === '關閉').click()); await page.waitForTimeout(300);
+    let ov = await E(() => __glimmer.evo.sys12Overlay()); ok(ov.surp.on.water && ov.surp.waterH === 1 && ov.surp.sleepAt === '23:30' && ov.surp.drop.perDay === 5 && ov.surp.lines.water.length >= 3, 'overlay snapshot（sys12Overlay）帶設定／config', ov.surp);
+    const w0 = await E(() => __qa.sys12.wallet().total);
+    await dev('dev-s12-drop'); await page.waitForTimeout(1300);
+    let w = await E(() => __qa.sys12.wallet()); const g = await E(() => document.querySelector('[data-testid="s12-gain"]').textContent);
+    ok(w.total === w0 + 1 && /\+1 星星碎/.test(g), '懸浮送 1 粒（DEV 模擬 replay）→ +1、浮字', { w, g });
+    await dev('dev-s12-drop6'); w = await E(() => __qa.sys12.wallet()); ov = await E(() => __glimmer.evo.sys12Overlay());
+    ok(w.total === w0 + 5 && ov.surp.drop.room === 0, '同日再送 6 粒 → 每日最多 5（尚餘 0）', { w, room: ov.surp.drop.room });
+    await dev('dev-s12-tg-drop'); await E(() => { const d = __glimmer.state.sys12.surp.drops; for (const k in d) d[k] = 0; });
+    const r = await E(() => __glimmer.evo.sys12Apply([{ k: 'drop', t: __glimmer.now() }])); ok(r.drop === 0 && !(await E(() => __qa.sys12.surp().on.drop)), '閂咗星星碎 → 懸浮送嚟都唔入帳', r);
+    await dev('dev-s12-tg-drop');
+    await dev('dev-s12-water'); await page.waitForTimeout(500);
+    const vb = await E(() => { const v = document.querySelector('[data-testid="s12-voice"]'); return { op: getComputedStyle(v).opacity, txt: v.textContent, img: !!v.querySelector('span img[src^="art/"], span img[src^="data:"], span img[src^="blob:"]') }; });
+    ok(vb.op === '1' && vb.img && Glimmer_lines_ok(vb.txt, await E(() => Glimmer.data.PARAMS.systems12.surprise.lines.water)), '飲水提醒泡（遊美 icon_remind_water）', vb);
+    await shot('surp-water'); await page.waitForTimeout(6500);
+    await dev('dev-s12-sleep'); await page.waitForTimeout(500); await shot('surp-sleep');
+    await dev('dev-s12-surp-open'); await page.waitForTimeout(400);
+    const pv = await E(() => ({ tab: __glimmer.s12.tab, rows: [...document.querySelectorAll('[data-testid^="s12-surp-"]')].map(r => r.dataset.done).join('') }));
+    ok(pv.tab === 'surp' && pv.rows === '111', '小驚喜面板（3 行，勾選）', pv);
+    await jc('s12-surp-water'); await page.waitForTimeout(200); u = await E(() => __qa.sys12.surp()); ok(!u.on.water, '面板撳一行 → 閂飲水', u.on);
+    await shot('surp-panel'); await E(() => __qa.sys12.close());
+    // 存檔
+    await E(() => { localStorage.setItem(Glimmer.data.PARAMS.saveKey, Glimmer.sim.serialize(__glimmer.state)); window.__noSaveOnHide = true; });
+    await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); u = await E(() => __qa.sys12.surp());
+    ok(!u.on.water && u.on.sleep && u.sleepAt === '23:30' && u.waterH === 1, '重開：設定保留', u);
   }
   ok(!errs.length, '冇 console error', errs.slice(0, 5));
   console.log(`\n結果：${pass} 通過，${fail} 失敗`);

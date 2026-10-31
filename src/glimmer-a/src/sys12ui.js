@@ -49,7 +49,9 @@
         el.style.borderStyle = 'solid'; el.style.borderWidth = `${sl[0] * k}px ${sl[1] * k}px ${sl[2] * k}px ${sl[3] * k}px`; el.style.borderImage = `url(${c.toDataURL()}) ${sl[0]} ${sl[1]} ${sl[2]} ${sl[3]} fill / ${sl[0] * k}px ${sl[1] * k}px ${sl[2] * k}px ${sl[3] * k}px round`; } catch (e) { } };
       im.src = ART + name + '.png';
     }
-    const pimg = (name, px, cls) => `<img src="${ART}${name}.png" width="${px}" height="${px}" class="${cls || ''}" style="image-rendering:pixelated;width:${px}px;height:${px}px" alt="">`;
+    /* innerHTML 嘅 <img src> 唔經 HTMLImageElement.src setter（單檔 build 攔截唔到）→ 先寫 data-s12，之後 hyd() 用 .src 設 */
+    const hyd = (root) => { if (root) root.querySelectorAll('img[data-s12]').forEach(i => { i.src = ART + i.dataset.s12 + '.png'; i.removeAttribute('data-s12'); }); return root; };
+    const pimg = (name, px, cls) => `<img data-s12="${name}" width="${px}" height="${px}" class="${cls || ''}" style="image-rendering:pixelated;width:${px}px;height:${px}px" alt="">`;
     const css = document.createElement('style'); css.textContent = `
       #s12chip { position:absolute; right:10px; top:122px; padding:3px 8px 3px 5px; display:flex; align-items:center; gap:4px; font:700 12px/1 sans-serif; color:var(--warm); cursor:pointer; pointer-events:auto; z-index:6; }
       #s12chip img { display:block; } #s12chip.pulse { animation:s12p .5s 2; } @keyframes s12p { 50% { transform:scale(1.12); } }
@@ -70,13 +72,13 @@
       .s12x { position:absolute; right:22px; top:16px; cursor:pointer; font:700 18px sans-serif; color:#fff6dc; }
     `; document.head.appendChild(css);
     const chip = document.createElement('div'); chip.id = 's12chip'; chip.className = 'panel'; chip.dataset.testid = 's12-chip';
-    chip.innerHTML = `${pimg('icon_star_shard_16', 16)}<span data-testid="s12-shards">0</span><span class="q" data-testid="s12-qprog"></span>`;
+    chip.innerHTML = `${pimg('icon_star_shard_16', 16)}<span data-testid="s12-shards">0</span><span class="q" data-testid="s12-qprog"></span>`; hyd(chip);
     const gain = document.createElement('div'); gain.id = 's12gain'; gain.dataset.testid = 's12-gain';
     const pan = document.createElement('div'); pan.id = 's12p'; pan.dataset.testid = 's12-panel';
     pan.innerHTML = `<div id="s12box" style="position:relative"><h3 data-testid="s12-title">每日小委託</h3><div class="s12tabs" data-testid="s12-tabs"></div><div id="s12body"></div></div><i class="s12x" data-testid="s12-close">✕</i>`;
     if (uiRoot) { uiRoot.appendChild(chip); uiRoot.appendChild(gain); uiRoot.appendChild(pan); }
     nine(pan.querySelector('#s12box'), 'panel_commission_9s', [18, 12, 12, 12]);
-    const S12 = G.s12 = { tab: 'quest', tabs: [['quest', '委託'], ['bond', '親密']], open: false, log: [] };
+    const S12 = G.s12 = { tab: 'quest', tabs: [['quest', '委託'], ['bond', '親密'], ['surp', '小驚喜']], open: false, log: [] };
     const now = () => G.now();
     function shardTxt() { const w = X.wallet(G.state, now()); return w; }
     function renderQuest() {
@@ -87,11 +89,11 @@
     }
     // ── 系統 6：親密度＋心聲（心聲泡＝遊美 bubble_thought_9s＋tail）──
     const vb = document.createElement('div'); vb.id = 's12voice'; vb.dataset.testid = 's12-voice';
-    vb.innerHTML = `<span data-testid="s12-voice-text"></span><img class="tail" src="${ART}bubble_thought_tail.png" alt="">`;
+    vb.innerHTML = `<span data-testid="s12-voice-text"></span><img class="tail" data-s12="bubble_thought_tail" alt="">`; hyd(vb);
     if (uiRoot) uiRoot.appendChild(vb); nine(vb, 'bubble_thought_9s', [11, 11, 11, 11], 2);
     let vbHide = 0;
     function showVoice(r) {
-      const b = NS.ui.petHitBox ? NS.ui.petHitBox() : { x: 80, y: 120, w: 36, h: 40 }; vb.querySelector('span').textContent = r.line;
+      const b = NS.ui.petHitBox ? NS.ui.petHitBox() : { x: 80, y: 120, w: 36, h: 40 }; const sp = vb.querySelector('span'); sp.textContent = r.line; if (r.icon) { sp.insertAdjacentHTML('afterbegin', pimg(r.icon, 16) + ' '); hyd(sp); }
       vb.style.opacity = 0; vb.style.left = '0px'; vb.style.top = '0px'; vb.style.display = 'block';
       const w = vb.offsetWidth, h = vb.offsetHeight, cx = (b.x + b.w / 2) * 2, x = Math.max(8, Math.min(390 - 8 - w, cx - w / 2)), y = Math.max(130, b.y * 2 - h - 26);
       vb.style.left = x + 'px'; vb.style.top = y + 'px'; vb.querySelector('.tail').style.left = Math.max(8, Math.min(w - 40, cx - x - 16)) + 'px'; vb.style.opacity = 1;
@@ -107,17 +109,44 @@
         L.map((arr, i) => `<div class="s12tier">第 ${i + 1} 段（${(i + 1) * C.bond.tierEvery}）${i < b.tier ? '' : '🔒'}</div>` + arr.map(l => `<div class="s12line${i < b.tier ? '' : ' lock'}">${i < b.tier ? l : '？？？'}</div>`).join('')).join('') +
         `<div class="s12tier">紀念冊</div>` + (mem.length ? mem.map(m => `<div class="s12mem" data-testid="s12-mem">第 ${m.gen} 代・${D.FORM_NAME[m.form] || m.form || ''}　親密度 ${m.bond != null ? m.bond : '—'}${m.bondElder != null ? '（靜光 ' + m.bondElder + '）' : ''}${m.diary ? '　日記 ' + m.diary.length + ' 篇' : ''}</div>`).join('') : `<div class="s12mem">未有紀念</div>`);
     }
-    const RENDER = { quest: renderQuest, bond: renderBond }; G.s12render = RENDER;
+    // ── 系統 12：懸浮小驚喜（設定＋懸浮 replay 入帳；主程式淨係 DEV 預覽）──
+    const UC = C.surprise;
+    G.evo.sys12Overlay = () => X.overlaySys12(G.state, now());                       // fpet-bridge → snapshot.sys12（只讀）
+    G.evo.sys12Apply = (items) => { const r = X.applyOverlay(G.state, items, now(), G.state.ev); if (r.drop || r.voice || r.set) G.save && G.save(); return r; };
+    const SURP_ROWS = [['drop', '懸浮掉星星碎（每 2–4 粒鐘一粒，每日最多 5）'], ['water', '飲水提醒'], ['sleep', '早瞓提醒']];
+    function setSurp(k, v) { X.surpSet(G.state, k, v, now()); G.save && G.save(); G.state.ev.push({ type: 'sys12', sys: 'surp', what: 'set', key: k, val: v }); if (window.__fpetBridge && __fpetBridge.writeSnapshot) __fpetBridge.writeSnapshot(); }
+    G.sysSettings = function (node) {                    // ui.js 設定彈窗：逐項開／閂（同懸浮設定同步）
+      const u = X.surp(G.state), mk = (txt, on, tid, fn) => { const b = document.createElement('div'); b.className = 'btn' + (on ? '' : ' sec'); b.style.cssText = 'margin:0;padding:6px 16px'; b.dataset.testid = tid; b.textContent = on ? '開' : '關'; b.addEventListener('click', () => { const v = b.classList.contains('sec'); fn(v); b.textContent = v ? '開' : '關'; b.classList.toggle('sec', !v); }); return b; };
+      const h = document.createElement('div'); h.className = 'row'; h.style.cssText = 'font-weight:700;margin-top:6px'; h.textContent = '懸浮小驚喜'; node.appendChild(h);
+      for (const [k, n] of SURP_ROWS) { const r = document.createElement('div'); r.className = 'row'; r.innerHTML = `<span>${n}</span>`; r.appendChild(mk(n, u.on[k], 'toggle-surp-' + k, (v) => setSurp(k, v))); node.appendChild(r); }
+      const seg = (opts, cur, tid, fn, lab) => { const s0 = document.createElement('div'); s0.className = 'seg'; s0.dataset.testid = tid; opts.forEach(o => { const b = document.createElement('div'); b.className = 'btn' + (o.v === cur ? ' on' : ''); b.textContent = o.n; b.dataset.testid = tid + '-' + String(o.v).replace(':', ''); b.addEventListener('click', () => { fn(o.v); s0.querySelectorAll('.btn').forEach(x => x.classList.remove('on')); b.classList.add('on'); }); s0.appendChild(b); }); const l = document.createElement('div'); l.className = 'row'; l.style.fontSize = '12px'; l.textContent = lab; node.appendChild(l); node.appendChild(s0); };
+      seg(UC.water.hours.map(v => ({ v, n: v + ' 粒鐘' })), u.waterH, 'surp-waterH', (v) => setSurp('waterH', v), `飲水提醒間隔（${UC.water.fromH}:00–${UC.water.toH}:00）`);
+      seg(UC.sleep.times.map(v => ({ v, n: v })), u.sleepAt, 'surp-sleepAt', (v) => setSurp('sleepAt', v), '早瞓提醒時間');
+    };
+    function renderSurp() {
+      const u = X.surp(G.state), k = NS.sim.dayKey(now()), o = X.overlaySys12(G.state, now()).surp;
+      const ic = { drop: 'icon_star_shard_16', water: 'icon_remind_water', sleep: 'icon_remind_sleep' };
+      return `<div style="font-size:12px;margin-bottom:6px">懸浮團絨會偶然送你小驚喜；閂咗就完全唔會出。</div>` + SURP_ROWS.map(([key, n]) => `<div class="s12row s12q" data-done="${u.on[key] ? 1 : 0}" data-testid="s12-surp-${key}">${pimg(ic[key], 24)}<span class="t">${n}<small>${key === 'water' ? `（${u.waterH} 粒鐘）` : key === 'sleep' ? `（${u.sleepAt}）` : ''}</small></span><b style="margin:0 6px">${u.on[key] ? '開' : '關'}</b>${pimg(u.on[key] ? 'checkbox_done' : 'checkbox_empty', 20)}</div>`).join('') +
+        `<div style="font-size:12px;margin-top:8px">${pimg('icon_star_shard_16', 16)} 今日懸浮已送 ${u.drops[k] || 0}／${UC.drop.perDay} 粒（尚餘 ${o.drop.room}）</div><div style="font-size:11px;opacity:.7;margin-top:4px">開關喺「設定」或者撳上面一行。</div>`;
+    }
+    pan.addEventListener('click', (e) => { const r = e.target.closest('[data-testid^="s12-surp-"]'); if (!r) return; const k = r.dataset.testid.slice(9); setSurp(k, !X.surp(G.state).on[k]); draw(); });
+    function previewRemind(what) {                       // DEV：主程式預覽提醒泡（真提醒喺懸浮）
+      const L = UC.lines[what]; showVoice({ line: L[Math.floor(Math.random() * L.length)], tier: 0, src: 'remind', icon: what === 'water' ? 'icon_remind_water' : 'icon_remind_sleep' }); vb.dataset.kind = what; return { ok: true, what, on: X.surp(G.state).on[what] };
+    }
+    const RENDER = { quest: renderQuest, bond: renderBond, surp: renderSurp }; G.s12render = RENDER;
     G.s12dev = Object.assign(G.s12dev || {}, {   // DEV 抽屜（devpanel s12:<名>）
       bondUp: () => { const b = X.bondOf(G.state); b.v = Math.min(100, b.v + 10); lastChip = ''; return X.bond(G.state, now()); },
       bondDown: () => { const b = X.bondOf(G.state); b.v = Math.max(0, b.v - 10); return X.bond(G.state, now()); },
-      voice: () => G.sysVoice({ force: true, src: 'dev' }), ignore: () => window.__qa.sys12.ignoreDay(), bondOpen: () => G.s12open('bond'),
+      voice: () => G.sysVoice({ force: true, src: 'dev' }),
+      drop: () => G.evo.sys12Apply([{ k: 'drop', t: now() }]), drop5: () => G.evo.sys12Apply([0, 1, 2, 3, 4, 5].map(i => ({ k: 'drop', t: now() - i }))),
+      water: () => previewRemind('water'), sleep: () => previewRemind('sleep'), surpOpen: () => G.s12open('surp'),
+      surpDrop: () => setSurp('drop', !X.surp(G.state).on.drop), surpWater: () => setSurp('water', !X.surp(G.state).on.water), surpSleep: () => setSurp('sleep', !X.surp(G.state).on.sleep), ignore: () => window.__qa.sys12.ignoreDay(), bondOpen: () => G.s12open('bond'),
     });
     function draw() {
       if (!S12.open) return; const body = pan.querySelector('#s12body'), tabs = pan.querySelector('.s12tabs');
       tabs.innerHTML = S12.tabs.length > 1 ? S12.tabs.map(([k, l]) => `<b data-tab="${k}" data-testid="s12-tab-${k}" class="${k === S12.tab ? 'on' : ''}">${l}</b>`).join('') : '';
-      pan.querySelector('h3').textContent = { quest: '每日小委託', diary: '團絨日記', bond: '親密度', set: '小驚喜設定' }[S12.tab] || '';
-      body.innerHTML = (RENDER[S12.tab] || renderQuest)();
+      pan.querySelector('h3').textContent = { quest: '每日小委託', diary: '團絨日記', bond: '親密度', surp: '懸浮小驚喜' }[S12.tab] || '';
+      body.innerHTML = (RENDER[S12.tab] || renderQuest)(); hyd(body);
       body.querySelectorAll('.s12row').forEach(r => { if (!r.dataset.nine) { r.dataset.nine = 1; nine(r, 'panel_commission_row_9s', [6, 6, 6, 6], 1.5); } });
     }
     G.s12open = function (tab) { S12.open = true; if (tab) S12.tab = tab; pan.style.display = 'flex'; draw(); return true; };
@@ -138,6 +167,7 @@
     G.sysEvent = function (e) {
       S12.log.push(Object.assign({ t: now() }, e)); if (S12.log.length > 60) S12.log.shift();
       if (e.sys === 'quest' && e.what === 'paid' && e.n > 0) showGain(e.n, e.late ? '（委託補發）' : '（委託完成）');
+      if (e.sys === 'surp' && e.what === 'replay' && e.drop) showGain(e.drop, '（懸浮團絨送嘅）');
       if (e.sys === 'bond' && e.what === 'tier') showGain(0, '親密度 ' + Math.round(e.v) + '：解鎖第 ' + e.tier + ' 段心聲');
       if (e.sys === 'quest' && e.what === 'step') { chip.classList.remove('pulse'); void chip.offsetWidth; chip.classList.add('pulse'); }
       lastChip = ''; chipTick();
@@ -157,6 +187,7 @@
       questFill: () => { const q = X.st(G.state).quests; q.list.forEach(x => { let g = 9; while (x.n < x.need && g--) X.onCare(G.state, P.systems12.quests.kinds[x.k].counts[0], G.now(), G.state.ev); }); return X.quests(G.state, G.now()); },
       questReset: () => { const q = X.st(G.state).quests; q.day = ''; return X.questTick(G.state, G.now(), G.state.ev); },
       grant: (n, src) => X.grant(G.state, n, src || 'dev', G.now()),
+      surp: () => X.surp(G.state), overlay: () => X.overlaySys12(G.state, G.now()), apply: (items) => G.evo.sys12Apply(items),
       bond: () => X.bond(G.state, G.now()), bondSet: (v) => { X.bondOf(G.state).v = Math.max(0, Math.min(100, v)); return X.bond(G.state, G.now()); }, voice: (o) => G.sysVoice(o || { force: true, src: 'dev' }), lastVoice: () => S12.lastVoice || null, lastTry: () => S12.lastTry || null,
       ignoreDay: () => { const b = X.bondOf(G.state), d = new Date(G.now()); d.setDate(d.getDate() - 2); b.chk = NS.sim.dayKey(d.getTime()); G.state.careDays = (G.state.careDays || []).filter(k => k !== NS.sim.dayKey(G.now() - 86400e3)); return X.bondTick(G.state, G.now(), G.state.ev); }, open: (tab) => G.s12open(tab), close: () => G.s12close(), log: () => S12.log.slice(),
     });

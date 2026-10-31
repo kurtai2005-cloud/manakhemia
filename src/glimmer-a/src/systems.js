@@ -83,6 +83,12 @@
     b.v = Math.max(0, Math.min(B.max, num(b.v, B.start))); b.gain = Math.max(0, num(b.gain, 0)); if (typeof b.day !== 'string') b.day = ''; if (typeof b.chk !== 'string') b.chk = '';
     b.gen = Math.max(1, Math.floor(num(b.gen, s.gen || 1))); b.lastVoice = Math.max(0, num(b.lastVoice, 0)); b.elder = b.elder == null ? null : num(b.elder, null);
     if (!Array.isArray(b.heard)) b.heard = []; b.heard = b.heard.filter(x => typeof x === 'string').slice(-60);
+    const U = C().surprise, u = o.surp && typeof o.surp === 'object' ? o.surp : (o.surp = {});
+    if (!u.on || typeof u.on !== 'object') u.on = {}; for (const k in U.defaults) u.on[k] = typeof u.on[k] === 'boolean' ? u.on[k] : U.defaults[k];
+    if (!U.water.hours.includes(u.waterH)) u.waterH = U.water.def; if (!U.sleep.times.includes(u.sleepAt)) u.sleepAt = U.sleep.def;
+    u.ts = Math.max(0, num(u.ts, 0)); if (!u.drops || typeof u.drops !== 'object' || Array.isArray(u.drops)) u.drops = {};
+    for (const k of Object.keys(u.drops)) if (!/^\d{4}-\d\d-\d\d$/.test(k)) delete u.drops[k]; else u.drops[k] = Math.max(0, num(u.drops[k], 0));
+    if (!Array.isArray(u.seen)) u.seen = []; u.seen = u.seen.filter(x => typeof x === 'string').slice(-40);
     return o;
   }
   const SYS = () => P.evo6.branch.systems;
@@ -194,11 +200,59 @@
   function bond(s, nowMs) { const B = BC(), b = bondOf(s); return { v: b.v, tier: tierOf(b.v), tiers: B.lines.length, todayGain: b.day === SIM.dayKey(nowMs) ? b.gain : 0, cap: B.dailyGainCap, floor: B.floor, lastVoice: b.lastVoice, cooldownSec: B.voice.cooldownSec, chance: B.voice.chance, elder: b.elder, heard: b.heard.length }; }
   function onLongPress(s, nowMs, ev) { return bondAdd(s, BC().longPress, nowMs, 'press', ev); }
 
+  // ── 系統 12：懸浮小驚喜（懸浮 native 自己計時；JS：設定＋入帳＋俾懸浮嘅 snapshot）──
+  const UC = () => C().surprise;
+  function surp(s) { return st(s).surp; }
+  /* 改設定（主程式設定／懸浮設定同步，後改贏：ts） */
+  function surpSet(s, key, val, nowMs) {
+    const U = UC(), u = surp(s);
+    if (key in U.defaults) u.on[key] = !!val; else if (key === 'waterH' && U.water.hours.includes(+val)) u.waterH = +val; else if (key === 'sleepAt' && U.sleep.times.includes(val)) u.sleepAt = val; else return false;
+    u.ts = nowMs; return true;
+  }
+  function parseHM(t) { const m = /^(\d\d):(\d\d)$/.exec(t); return m ? +m[1] * 60 + +m[2] : 0; }
+  /* 純函數（Kotlin PetSurprise 照抄＋單元測試）：下一粒星星碎時間（last 起計 minH–maxH；r∈[0,1)） */
+  function dropNext(lastMs, r) { const D2 = UC().drop; return lastMs + (D2.minH + r * (D2.maxH - D2.minH)) * 3600e3; }
+  /* 飲水提醒：而家應唔應該出（距上次 ≥ waterH、喺 fromH–toH 之間） */
+  function waterDue(lastMs, waterH, nowMs) { const W = UC().water, h = new Date(nowMs).getHours(); return h >= W.fromH && h < W.toH && nowMs - lastMs >= waterH * 3600e3; }
+  /* 早瞓提醒：今晚（sleepAt 起 winMin 分鐘內）未出過 → 出；00:00 當翌日凌晨（屬前一晚） */
+  function sleepDue(sleepAt, lastNightKey, nowMs) {
+    const W = UC().sleep, d = new Date(nowMs), m = d.getHours() * 60 + d.getMinutes(), at = parseHM(sleepAt), t = (m - at + 1440) % 1440;
+    if (t >= W.winMin) return { due: false };
+    const night = SIM.dayKey(nowMs - (at < 720 && m < 720 ? DAY : 0)); return { due: night !== lastNightKey, night };
+  }
+  /* 懸浮 queue replay：drop → 星星碎（每日 5 粒＋otherCap；閂咗唔入）；voice → 同步冷卻／記低；set → 設定（後改贏） */
+  function applyOverlay(s, items, nowMs, ev) {
+    const U = UC(), u = surp(s), out = { drop: 0, dropped: 0, voice: 0, set: 0, skip: 0 };
+    for (const it of Array.isArray(items) ? items : []) {
+      if (!it || typeof it !== 'object') { out.skip++; continue; } const t = Math.min(nowMs, num(+it.t, nowMs));
+      if (it.k === 'drop') {
+        const key = SIM.dayKey(t); out.dropped++;
+        if (!u.on.drop || s.stage === 'egg' || (u.drops[key] || 0) >= U.drop.perDay) { out.skip++; continue; }
+        const g = grant(s, U.drop.amt, 'drop', t, key); if (g) { u.drops[key] = (u.drops[key] || 0) + 1; out.drop += g; const ks = Object.keys(u.drops).sort(); while (ks.length > 4) delete u.drops[ks.shift()]; } else out.skip++;
+      } else if (it.k === 'voice') {
+        const b = bondOf(s); if (t > b.lastVoice) b.lastVoice = t; if (typeof it.line === 'string') { b.heard.push(it.line); if (b.heard.length > 60) b.heard.shift(); } out.voice++;
+      } else if (it.k === 'set') {
+        if (t >= u.ts && surpSet(s, it.key, it.val, t)) out.set++; else out.skip++;
+      } else if (it.k === 'remind') { u.seen.push(it.what + '@' + SIM.dayKey(t)); if (u.seen.length > 40) u.seen.shift(); }
+      else out.skip++;
+    }
+    if (ev && (out.drop || out.voice || out.set)) ev.push({ type: 'sys12', sys: 'surp', what: 'replay', drop: out.drop, voice: out.voice, set: out.set });
+    return out;
+  }
+  /* 俾懸浮嘅 snapshot（fpet-bridge 寫入 snapshot.sys12）：親密／心聲（已解鎖句）＋小驚喜設定＋今日剩幾多粒 */
+  function overlaySys12(s, nowMs) {
+    const U = UC(), u = surp(s), b = bondOf(s), B = BC(), tier = tierOf(b.v), key = SIM.dayKey(nowMs), wl = wallet(s, nowMs), egg = s.stage === 'egg';
+    const room = Math.max(0, Math.min(U.drop.perDay - (u.drops[key] || 0), wl.otherCap - wl.o, wl.cap - wl.today));
+    return { v: 1, egg, bond: { v: Math.round(b.v), tier }, voice: { chance: B.voice.chance, cooldownSec: B.voice.cooldownSec, showSec: B.voice.showSec, newestTierPct: B.voice.newestTierPct, lastAt: b.lastVoice, lines: egg ? [] : B.lines.slice(0, tier) },
+      surp: { on: Object.assign({}, u.on), waterH: u.waterH, sleepAt: u.sleepAt, ts: u.ts, drop: { minH: U.drop.minH, maxH: U.drop.maxH, perDay: U.drop.perDay, showSec: U.drop.showSec, day: key, room },
+        water: { fromH: U.water.fromH, toH: U.water.toH }, sleepWinMin: U.sleep.winMin, showSec: U.showSec, lines: U.lines }, shards: wl.total };
+  }
+
   // sim 照顧 hook：遊戲時鐘（sim.setNowFn）計日
   SIM.addCareHook((s, kind) => { const now = SIM.nowMs(), ev = Array.isArray(s.ev) ? s.ev : null; onCare(s, kind, now, ev); bondAdd(s, BC().care, now, 'care', ev); });
   // 化光：紀念冊記低親密度（靜光入面嗰陣＋化光嗰陣）
   SIM.addFadeHook((s, m) => { const b = bondOf(s); m.bond = Math.round(b.v); if (b.elder != null) m.bondElder = b.elder; });
 
   return { dayNum, dayStart, weekOf, hash, rngFor, rainSpells, dayBase, weatherAt, simulate, seasonOf, shiverMul, SEASON_NAME, WEATHER_NAME,
-    st, grant, wallet, spend, bondOf, tierOf, bondAdd, bondTick, voiceLines, voicePick, voiceTry, bond, onLongPress, questRoute, genQuests, questTick, onCare, payQuests, addRoutePts, quests };
+    st, grant, wallet, spend, bondOf, tierOf, bondAdd, bondTick, voiceLines, voicePick, voiceTry, bond, onLongPress, surp, surpSet, dropNext, waterDue, sleepDue, applyOverlay, overlaySys12, questRoute, genQuests, questTick, onCare, payQuests, addRoutePts, quests };
 });
