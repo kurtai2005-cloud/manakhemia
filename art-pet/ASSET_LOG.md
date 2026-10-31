@@ -155,3 +155,13 @@
 - 色彩：季節色喺 H1 日光空間定，經 H1→H# 仿射（最小二乘）帶入時段光；H4 夜晚同保色相縮暗各半，免淺色變飽和藍。
 - 預覽：`sprites/tuanrong/preview/systems12/seasons_v1_vs_v2_compare.png`、`seasons_4x4_1x.png`、`seasons_particles_6x.png`。工具 `tools/build_seasons_v2.py`（`build_systems12_b1.py seasons`）；驗證 `tools/validate_systems12_b1.py`；備份 `_backups/pre_seasons2_20261101/`。Pillow/numpy 程式繪製，無 AI。
 <!-- SYS12S2-LOG-END -->
+
+<!-- ACC1-LOG-START -->
+## 2026-11-01 — 飾品完整版 ACC1（框架＋收藏品 12＋草帽／蝴蝶結／頸巾）
+- Kurt 03:14 揀咗「做完整版」，分 5 批做（`sprites/tuanrong/accessories/ACC_PLAN.md`）。今批交框架、收藏品同頭 3 件飾品。
+- 框架：`tools/build_accessories.py` 逐幀由 face anchors＋剪影推導 fit（axis／top／hw／ang／hs），飾品每幀用參數重新畫，所以會跟傾側、壓扁同拉長。燈泡同莖穿過帽，洞口補描邊；bulb／bulb2 一律挖空。頸巾順住剪影畫，尾巴有慣性。月眠同菇傘用帽針版。逐形態手調集中喺 `FIT`／`HIDE`／`NECK_LIM` 表。
+- 輸出：`accessories/ACCESSORIES.json`（slots／drawOrder／sizeClasses S·M·L／13 件總表／每形態 atlas＋hiddenClips）、`items/<item>/atlas_<item>_<form>.png/json` 共 75 套、`fit_<item>.json`、`ref/acc_<item>_{S,M,L}.png`。
+- 數量：草帽 4524 幀（1030/1055 clip）、蝴蝶結 4674 幀（1055/1055）、頸巾 4674 幀（1055/1055）。
+- 收藏品：`ui/collectibles/col_<key>_{16,32}.png`＋`_sil` 剪影、`atlas_collectibles.png/json`、`collectibles.json`（名、季節、稀有度、攞法建議）。
+- 預覽：`sprites/tuanrong/preview/accessories/acc1_*.png`。驗證：`tools/validate_accessories.py`。備份：`_backups/pre_acc1_20261101/`。全部 Pillow／numpy，冇 AI，v3 色盤，alpha 0/255。
+<!-- ACC1-LOG-END -->

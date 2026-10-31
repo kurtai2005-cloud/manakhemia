@@ -330,3 +330,11 @@ std23 餘下：冇（已齊）
 | nuzzle_purr | 4／6fps | 循環 | 4 | nuzzle 連續 ≥1.2s（長按未放）→ 由 nuzzle 當前幀切去 nuzzle_purr 循環，直至放手 | 挨住右邊手指、合眼笑（eyes happy＋ω 口），身體細細震（sx/sy 交替＋shear 1px），背後呼嚕震線 ( ( 烙入幀（第 1/3 幀近、第 2/4 幀遠），第 2–4 幀頭頂右邊細心心升起（烙入幀）；放手播完當前幀 → idle（或 act_cool 30%：扮冇事）。可配 6fps 呼嚕 loop 音效。 |
 | reunion_happy | 5／8fps | 單次 | 6 | rush（煞停）→ 衝過頭 → act_cool → reunion_happy（D5 久別重逢鏈最後一步） | 蠢蠢地但覺得自己好醒：第 1 幀扮冷靜側眼回望（ft 向後、gaze L）、第 2 幀破功（壓扁、驚喜眼）、第 3 幀彈起舉手（細心心）、第 4 幀最高點大心心 pop＋閃光、第 5 幀落地得意 ω 臉（細心心飄高）。引擎：播之前按玩家位置設 scaleX（衝過頭即係玩家喺後面 → 鏡像），第 1 幀先『望返轉頭』。心心烙入幀。 |
 <!-- LIVE-S3-END -->
+
+<!-- ACC1-START -->
+## 飾品 overlay（ACC1，2026-11-01）
+飾品唔改身體 clip。每件飾品 × 每個形態有一個 overlay atlas，幀名同身體一樣（`<clip>_NN`），fps／loop 抄身體：`sprites/tuanrong/accessories/items/<item>/atlas_<item>_<form>.json`。
+- 畫嘅次序：身體 → 臉 → 飾品（neck → head → side → face → bulb）→ emissive；scaleX 鏡像同身體一齊做。
+- `hiddenClips`：成個 clip 唔畫飾品，原因寫埋入去。ACC1 只有草帽喺 `leaf_umbrella` 收起（撐葉時葉蓋住頭，25 個形態都係咁）。
+- ACC1 完成：草帽、蝴蝶結、頸巾 × 25 形態，合共 13,872 幀 overlay；收藏品 12 件放 `ui/collectibles/`。計劃見 `accessories/ACC_PLAN.md`。
+<!-- ACC1-END -->

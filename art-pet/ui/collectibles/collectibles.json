@@ -1,0 +1,152 @@
+{
+ "version": 1,
+ "batch": "ACC1",
+ "page": "收藏櫃第 2 頁（季節／稀有）",
+ "items": [
+  {
+   "key": "petal",
+   "name": "櫻花瓣",
+   "category": "春",
+   "rarity": "common",
+   "obtain": "3–5 月晴天 H1／H3（湊 5 片 → 櫻花髮飾）",
+   "icon16": "col_petal_16.png",
+   "icon32": "col_petal_32.png",
+   "silhouette16": "col_petal_16_sil.png",
+   "silhouette32": "col_petal_32_sil.png",
+   "unlocks": "sakura"
+  },
+  {
+   "key": "snail",
+   "name": "蝸牛殼",
+   "category": "雨",
+   "rarity": "common",
+   "obtain": "落雨或雨停後 2h",
+   "icon16": "col_snail_16.png",
+   "icon32": "col_snail_32.png",
+   "silhouette16": "col_snail_16_sil.png",
+   "silhouette32": "col_snail_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "cicada",
+   "name": "蟬殼",
+   "category": "夏",
+   "rarity": "common",
+   "obtain": "6–8 月 H1–H3",
+   "icon16": "col_cicada_16.png",
+   "icon32": "col_cicada_32.png",
+   "silhouette16": "col_cicada_16_sil.png",
+   "silhouette32": "col_cicada_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "sunflower",
+   "name": "迷你向日葵",
+   "category": "夏",
+   "rarity": "common",
+   "obtain": "6–8 月晴天",
+   "icon16": "col_sunflower_16.png",
+   "icon32": "col_sunflower_32.png",
+   "silhouette16": "col_sunflower_16_sil.png",
+   "silhouette32": "col_sunflower_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "maple",
+   "name": "紅楓葉",
+   "category": "秋",
+   "rarity": "common",
+   "obtain": "9–11 月",
+   "icon16": "col_maple_16.png",
+   "icon32": "col_maple_32.png",
+   "silhouette16": "col_maple_16_sil.png",
+   "silhouette32": "col_maple_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "acorn",
+   "name": "橡果",
+   "category": "秋",
+   "rarity": "common",
+   "obtain": "9–11 月（湊 5 粒 → 橡果帽）",
+   "icon16": "col_acorn_16.png",
+   "icon32": "col_acorn_32.png",
+   "silhouette16": "col_acorn_16_sil.png",
+   "silhouette32": "col_acorn_32_sil.png",
+   "unlocks": "acorn"
+  },
+  {
+   "key": "snowflake",
+   "name": "雪花結晶",
+   "category": "冬",
+   "rarity": "common",
+   "obtain": "12–2 月陰／霧",
+   "icon16": "col_snowflake_16.png",
+   "icon32": "col_snowflake_32.png",
+   "silhouette16": "col_snowflake_16_sil.png",
+   "silhouette32": "col_snowflake_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "snowman",
+   "name": "迷你雪人",
+   "category": "冬",
+   "rarity": "common",
+   "obtain": "12–2 月連續 3 日有上線",
+   "icon16": "col_snowman_16.png",
+   "icon32": "col_snowman_32.png",
+   "silhouette16": "col_snowman_16_sil.png",
+   "silhouette32": "col_snowman_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "meteor",
+   "name": "流星碎",
+   "category": "稀有",
+   "rarity": "rare",
+   "obtain": "H4 夜晚 1%（月眠領先 ×2）",
+   "icon16": "col_meteor_16.png",
+   "icon32": "col_meteor_32.png",
+   "silhouette16": "col_meteor_16_sil.png",
+   "silhouette32": "col_meteor_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "marble",
+   "name": "彩虹玻璃珠",
+   "category": "稀有",
+   "rarity": "rare",
+   "obtain": "雨停後第 1 個鐘 2%",
+   "icon16": "col_marble_16.png",
+   "icon32": "col_marble_32.png",
+   "silhouette16": "col_marble_16_sil.png",
+   "silhouette32": "col_marble_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "clover",
+   "name": "四葉草",
+   "category": "稀有",
+   "rarity": "rare",
+   "obtain": "任何晴天 1%",
+   "icon16": "col_clover_16.png",
+   "icon32": "col_clover_32.png",
+   "silhouette16": "col_clover_16_sil.png",
+   "silhouette32": "col_clover_32_sil.png",
+   "unlocks": null
+  },
+  {
+   "key": "goldbulb",
+   "name": "金燈泡",
+   "category": "極稀有",
+   "rarity": "legendary",
+   "obtain": "0.2%；保底：累計執 50 件必出（唔係抽卡，冇得買）",
+   "icon16": "col_goldbulb_16.png",
+   "icon32": "col_goldbulb_32.png",
+   "silhouette16": "col_goldbulb_16_sil.png",
+   "silhouette32": "col_goldbulb_32_sil.png",
+   "unlocks": null
+  }
+ ],
+ "note": "攞法係建議值，等遊策落 config；全部唔使真錢、冇 gacha。"
+}

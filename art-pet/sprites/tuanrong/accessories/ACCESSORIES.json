@@ -1,0 +1,933 @@
+{
+ "version": 1,
+ "note": "團絨飾品 overlay（完整版）。每個 item × form 一個 atlas；幀名同身體幀一樣（<clip>_NN）。引擎：身體 → 臉 → 飾品（按 drawOrder）→ emissive；scaleX 鏡像同身體一齊。hiddenClips 入面嘅 clip 成段唔畫（唔會逐幀閃）。",
+ "slots": {
+  "head": {
+   "max": 1,
+   "anchor": "top"
+  },
+  "side_r": {
+   "max": 1,
+   "anchor": "head_r"
+  },
+  "side_l": {
+   "max": 1,
+   "anchor": "head_l"
+  },
+  "face": {
+   "max": 1,
+   "anchor": "eyeL/eyeR",
+   "rule": "faceVisible=false 收起"
+  },
+  "neck": {
+   "max": 1,
+   "anchor": "neck"
+  },
+  "bulb": {
+   "max": 1,
+   "anchor": "bulb"
+  }
+ },
+ "drawOrder": [
+  "body",
+  "face",
+  "neck",
+  "head",
+  "side_r",
+  "side_l",
+  "face_acc",
+  "bulb",
+  "emissive"
+ ],
+ "sizeClasses": {
+  "S": {
+   "maxFrame": 32,
+   "forms": [
+    "sprout",
+    "evo_dot",
+    "evo_sprout"
+   ]
+  },
+  "M": {
+   "maxFrame": 48,
+   "forms": [
+    "evo_hop",
+    "evo_guard_lumi",
+    "evo_guard_radiant",
+    "evo_guard_soft",
+    "evo_guard_dust",
+    "evo_still_lumi",
+    "evo_still_radiant",
+    "evo_still_soft",
+    "evo_still_dust",
+    "evo_guard_tide",
+    "evo_still_tide",
+    "evo_guard_shroom",
+    "evo_still_shroom",
+    "evo_guard_crystal",
+    "evo_still_crystal",
+    "evo_guard_moon",
+    "evo_still_moon",
+    "evo_guard_ember",
+    "evo_still_ember"
+   ]
+  },
+  "L": {
+   "maxFrame": 64,
+   "forms": [
+    "radiant",
+    "soft",
+    "lumi"
+   ]
+  }
+ },
+ "forms": [
+  "sprout",
+  "radiant",
+  "soft",
+  "lumi",
+  "evo_dot",
+  "evo_sprout",
+  "evo_hop",
+  "evo_guard_lumi",
+  "evo_guard_radiant",
+  "evo_guard_soft",
+  "evo_guard_dust",
+  "evo_still_lumi",
+  "evo_still_radiant",
+  "evo_still_soft",
+  "evo_still_dust",
+  "evo_guard_tide",
+  "evo_still_tide",
+  "evo_guard_shroom",
+  "evo_still_shroom",
+  "evo_guard_crystal",
+  "evo_still_crystal",
+  "evo_guard_moon",
+  "evo_still_moon",
+  "evo_guard_ember",
+  "evo_still_ember"
+ ],
+ "overlayPad": 8,
+ "fitRules": {
+  "axis": "眼中點→燈泡（燈泡同眼線垂直方向差 ≤40° 先用；lumi 系用眼線）",
+  "top": "沿 axis 向上，最後一個 ±0.11S 全實嘅點",
+  "hw": "頭頂下 2px 頭闊",
+  "ang": "axis 相對 idle_01，3-tap 平滑，夾 ±28°，<4° 當 0",
+  "hs": "頭高／idle 頭高",
+  "glowCut": "bulb／bulb2 ±1 飾品層一律挖空",
+  "headCut": "head slot：頭頂以上、axis ±0.45hw 嘅身體像素（莖／燈／光芒）挖空",
+  "visibility": "一個 clip 任何一幀 fit 唔成立／遮五官／挖空後剩 <65% → 成段收起"
+ },
+ "items": {
+  "straw": {
+   "key": "straw",
+   "name": "草帽",
+   "slot": "head",
+   "anchor": "top",
+   "obtain": "夏（6–8 月）收藏櫃集齊夏季小物 3 件（蟬殼／迷你向日葵＋1）",
+   "batch": "ACC1",
+   "status": "done",
+   "fit": "items/straw/fit_straw.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/straw/atlas_straw_sprout.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/straw/atlas_straw_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/straw/atlas_straw_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/straw/atlas_straw_lumi.json",
+     "clips": 26,
+     "visibleClips": 25,
+     "frames": 106,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/straw/atlas_straw_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/straw/atlas_straw_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/straw/atlas_straw_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 49,
+     "frames": 231,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/straw/atlas_straw_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/straw/atlas_straw_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/straw/atlas_straw_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/straw/atlas_straw_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/straw/atlas_straw_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/straw/atlas_straw_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/straw/atlas_straw_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/straw/atlas_straw_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/straw/atlas_straw_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/straw/atlas_straw_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/straw/atlas_straw_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/straw/atlas_straw_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/straw/atlas_straw_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/straw/atlas_straw_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/straw/atlas_straw_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_moon": {
+     "atlas": "items/straw/atlas_straw_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/straw/atlas_straw_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/straw/atlas_straw_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_straw_S.png",
+    "M": "ref/acc_straw_M.png",
+    "L": "ref/acc_straw_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1030,
+    "clips": 1055,
+    "frames": 4524
+   }
+  },
+  "beanie": {
+   "key": "beanie",
+   "name": "毛冷帽",
+   "slot": "head",
+   "anchor": "top",
+   "obtain": "冬（12–2 月）第一次觸發 shiver 嗰日送（「凍親呀？」）",
+   "batch": "ACC2",
+   "status": "planned"
+  },
+  "nightcap": {
+   "key": "nightcap",
+   "name": "睡帽",
+   "slot": "head",
+   "anchor": "top",
+   "obtain": "日記連續寫滿 7 日；月眠路線領先時機會加倍",
+   "batch": "ACC4",
+   "status": "planned"
+  },
+  "crown": {
+   "key": "crown",
+   "name": "小皇冠",
+   "slot": "head",
+   "anchor": "top",
+   "obtain": "成就徽章 20 個（終局獎勵之一）",
+   "batch": "ACC2",
+   "status": "planned"
+  },
+  "acorn": {
+   "key": "acorn",
+   "name": "橡果帽",
+   "slot": "head",
+   "anchor": "top",
+   "obtain": "秋（9–11 月）散步執夠橡果 ×5 自動合成",
+   "batch": "ACC2",
+   "status": "planned"
+  },
+  "bow": {
+   "key": "bow",
+   "name": "蝴蝶結",
+   "slot": "side_r",
+   "anchor": "head_r",
+   "obtain": "親密度到 40",
+   "batch": "ACC1",
+   "status": "done",
+   "fit": "items/bow/fit_bow.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/bow/atlas_bow_sprout.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/bow/atlas_bow_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/bow/atlas_bow_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/bow/atlas_bow_lumi.json",
+     "clips": 26,
+     "visibleClips": 26,
+     "frames": 112,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/bow/atlas_bow_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/bow/atlas_bow_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/bow/atlas_bow_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 50,
+     "frames": 237,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/bow/atlas_bow_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/bow/atlas_bow_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/bow/atlas_bow_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/bow/atlas_bow_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/bow/atlas_bow_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/bow/atlas_bow_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/bow/atlas_bow_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/bow/atlas_bow_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/bow/atlas_bow_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/bow/atlas_bow_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/bow/atlas_bow_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/bow/atlas_bow_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/bow/atlas_bow_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/bow/atlas_bow_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/bow/atlas_bow_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_moon": {
+     "atlas": "items/bow/atlas_bow_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/bow/atlas_bow_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/bow/atlas_bow_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_bow_S.png",
+    "M": "ref/acc_bow_M.png",
+    "L": "ref/acc_bow_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1055,
+    "clips": 1055,
+    "frames": 4674
+   }
+  },
+  "starclip": {
+   "key": "starclip",
+   "name": "星星髮夾",
+   "slot": "side_l",
+   "anchor": "head_l",
+   "obtain": "星星碎商店 60",
+   "batch": "ACC3",
+   "status": "planned"
+  },
+  "sakura": {
+   "key": "sakura",
+   "name": "櫻花髮飾",
+   "slot": "side_l",
+   "anchor": "head_l",
+   "obtain": "春（3–5 月）執夠櫻花瓣 ×5",
+   "batch": "ACC3",
+   "status": "planned"
+  },
+  "glasses": {
+   "key": "glasses",
+   "name": "圓框眼鏡",
+   "slot": "face",
+   "anchor": "eyeL/eyeR",
+   "obtain": "日記翻舊頁 30 日／捉迷藏累計 10 局",
+   "batch": "ACC3",
+   "status": "planned"
+  },
+  "scarf": {
+   "key": "scarf",
+   "name": "頸巾",
+   "slot": "neck",
+   "anchor": "neck",
+   "obtain": "霧天／冬陪佢玩 3 次",
+   "batch": "ACC1",
+   "status": "done",
+   "fit": "items/scarf/fit_scarf.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/scarf/atlas_scarf_sprout.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/scarf/atlas_scarf_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/scarf/atlas_scarf_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/scarf/atlas_scarf_lumi.json",
+     "clips": 26,
+     "visibleClips": 26,
+     "frames": 112,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/scarf/atlas_scarf_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/scarf/atlas_scarf_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/scarf/atlas_scarf_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 50,
+     "frames": 237,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_moon": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/scarf/atlas_scarf_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/scarf/atlas_scarf_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_scarf_S.png",
+    "M": "ref/acc_scarf_M.png",
+    "L": "ref/acc_scarf_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1055,
+    "clips": 1055,
+    "frames": 4674
+   }
+  },
+  "leafcollar": {
+   "key": "leafcollar",
+   "name": "葉仔領",
+   "slot": "neck",
+   "anchor": "neck",
+   "obtain": "小圃 6 種花各開過一次",
+   "batch": "ACC4",
+   "status": "planned"
+  },
+  "bell": {
+   "key": "bell",
+   "name": "燈泡小鈴",
+   "slot": "bulb",
+   "anchor": "bulb",
+   "obtain": "每日委託連續 14 日",
+   "batch": "ACC4",
+   "status": "planned"
+  },
+  "halo": {
+   "key": "halo",
+   "name": "燈泡光環",
+   "slot": "bulb",
+   "anchor": "bulb",
+   "obtain": "第一次進化成守護型／化光紀念",
+   "batch": "ACC4",
+   "status": "planned"
+  }
+ }
+}

@@ -156125,5 +156125,30 @@
    "fog_or_winter": "霧天／冬（12–2 月）→ shiver 抽中率加大",
    "rule": "天氣優先於季節：雨／陰／霧用 H3/<weather>/*；晴天用 seasons/<season>/<H#>/*"
   }
+ },
+ "accessories": {
+  "spec": "sprites/tuanrong/accessories/ACCESSORIES.json",
+  "doc": "sprites/tuanrong/accessories/ACCESSORIES.md",
+  "plan": "sprites/tuanrong/accessories/ACC_PLAN.md",
+  "batch": "ACC1",
+  "done": [
+   "straw",
+   "bow",
+   "scarf"
+  ],
+  "planned": [
+   "beanie",
+   "nightcap",
+   "crown",
+   "acorn",
+   "starclip",
+   "sakura",
+   "glasses",
+   "leafcollar",
+   "bell",
+   "halo"
+  ],
+  "collectibles": "ui/collectibles/collectibles.json",
+  "note": "飾品 overlay 幀名同身體 clip 幀一樣；hiddenClips 成段唔畫。身體 clip 定義唔改。"
  }
 }
