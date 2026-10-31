@@ -11,37 +11,43 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   const W = 195, H = 422, MX = 14, MY = 12, LW = W + MX * 2, LH = H + MY * 2;
-  const VARIANTS = ['H1', 'H2', 'H3', 'H3rain', 'H4'];
+  const VARIANTS = ['H1', 'H2', 'H3', 'H3rain', 'H4', 'H3overcast', 'H3fog'];   // systems12 系統 7：H3 陰／霧（遊美 b1 H3/overcast、H3/fog）
+  const SEASONS = ['spring', 'summer', 'autumn', 'winter'];   // 季節層：<H>@<season>（seasons/<season>/<H>/；只喺晴天用）
   const CYCLE = ['auto', 'H1', 'H2', 'H3', 'H3rain', 'H4'];
-  const LABEL = { auto: 'Auto', H1: 'H1 晨', H2: 'H2 黃昏', H3: 'H3 日', H3rain: 'H3 雨', H4: 'H4 夜' };
-  const CFG = { fadeSec: 2, rainLightAdd: 0.3, rainAlpha: 0.55, particleMax: 24, rimLowOff: true };
+  const LABEL = { auto: 'Auto', H1: 'H1 晨', H2: 'H2 黃昏', H3: 'H3 日', H3rain: 'H3 雨', H4: 'H4 夜', H3overcast: 'H3 陰', H3fog: 'H3 霧' };
+  const CFG = { fadeSec: 2, rainLightAdd: 0.3, rainAlpha: 0.55, particleMax: 24, rimLowOff: true, rainDim: 0, seasonFadeSec: 3,
+    overcast: { parallax: 0.15, y: -6, drift: 2, alpha: 0.85, lightmapA: 0.7, addA: 0.4 }, fog: { far: { y: 200, parallax: 0.35, drift: 3, alpha: 0.7 }, near: { y: 300, drift: -6, alpha: 0.45 } } };   // 遊美 weather.json／FORMAT §SYS12
 
   // ── 純邏輯 ──
   /* 時段：06–10 H1｜10–16 H3（落雨 → H3rain）｜16–19 H2｜19–06 H4 */
   function variantFor(hour, weather) {
     const h = ((hour % 24) + 24) % 24;
     if (h >= 6 && h < 10) return 'H1';
-    if (h >= 10 && h < 16) return weather === 'rain' ? 'H3rain' : 'H3';
+    if (h >= 10 && h < 16) return weather === 'rain' ? 'H3rain' : weather === 'overcast' ? 'H3overcast' : weather === 'fog' ? 'H3fog' : 'H3';
     if (h >= 16 && h < 19) return 'H2';
     return 'H4';
   }
-  function baseOf(v) { return v === 'H3rain' ? 'H3' : v; }
+  function baseOf(v) { v = String(v).split('@')[0]; return /^H3(rain|overcast|fog)$/.test(v) ? 'H3' : v; }
+  function wxOf(v) { const m = /^H3(rain|overcast|fog)$/.exec(String(v)); return m ? m[1] : null; }
+  /* 季節：晴天款（H1–H4）→ <H>@<season>（季節層 load 好先用）；天氣款（H3rain／陰／霧）唔變 */
+  function withSeason(v, season, ready) { return season && SEASONS.includes(season) && VARIANTS.slice(0, 5).includes(v) && v !== 'H3rain' && (!ready || ready(v + '@' + season)) ? v + '@' + season : v; }
   /* 引擎自己嘅程序化疊層（月 (150,76)、燈籠串、燈柱、星、螢火、蘑菇光）：HD-2D 場景已畫，全部關，避免疊兩次（H4 尤其：月＋燈串已喺 sky/mid） */
   function engineOverlays(v) {
     if (!v) return { moon: true, lantern: true, lampPost: true, stars: true, fireflies: true, mushroom: true };
     return { moon: false, lantern: false, lampPost: false, stars: false, fireflies: false, mushroom: false };
   }
-  function createState(o) { o = o || {}; return { mode: 'auto', cur: null, prev: null, mix: 1, fadeSec: o.fadeSec || CFG.fadeSec, switches: 0 }; }
-  function target(st, ctx) { return st.mode !== 'auto' ? st.mode : variantFor(ctx.hour, ctx.weather); }
+  function createState(o) { o = o || {}; return { mode: 'auto', cur: null, prev: null, mix: 1, fadeSec: o.fadeSec || CFG.fadeSec, fadeBase: o.fadeSec || CFG.fadeSec, switches: 0 }; }
+  function target(st, ctx) { const v = st.mode !== 'auto' ? st.mode : variantFor(ctx.hour, ctx.weather); return withSeason(v, ctx.season, ctx.ready); }
   /* 每幀：target 變 → 由 cur crossfade 去新款（fadeSec 秒）；淡緊途中再變 → 由當前畫面主體（cur）重新淡 */
   function update(st, dt, ctx) {
     const tg = target(st, ctx || {});
     if (st.cur == null) { st.cur = tg; st.prev = null; st.mix = 1; }
-    else if (tg !== st.cur) { st.prev = st.mix < 0.5 && st.prev ? st.prev : st.cur; st.cur = tg; st.mix = 0; st.switches++; }
+    else if (tg !== st.cur) { const seasonOnly = baseOf(tg) === baseOf(st.cur) && String(tg).split('@')[0] === String(st.cur).split('@')[0]; st.fadeSec = seasonOnly ? CFG.seasonFadeSec : (st.fadeBase || CFG.fadeSec);   // 換季 3s crossfade
+      st.prev = st.mix < 0.5 && st.prev ? st.prev : st.cur; st.cur = tg; st.mix = 0; st.switches++; }
     if (st.mix < 1) { st.mix = Math.min(1, st.mix + (dt || 0) / st.fadeSec); if (st.mix >= 1) st.prev = null; }
     return st;
   }
-  function set(st, mode) { if (CYCLE.indexOf(mode) < 0) throw new Error('hd2d.set: ' + mode); st.mode = mode; return st; }
+  function set(st, mode) { if (CYCLE.indexOf(mode) < 0 && VARIANTS.indexOf(mode) < 0) throw new Error('hd2d.set: ' + mode); st.mode = mode; return st; }
   function next(st) { return set(st, CYCLE[(CYCLE.indexOf(st.mode) + 1) % CYCLE.length]); }
   function hex(c) { const n = parseInt(String(c || '#ffffff').replace('#', ''), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
   function mulc(a, b) { return [a[0] * b[0] / 255, a[1] * b[1] / 255, a[2] * b[2] / 255]; }
@@ -89,6 +95,12 @@
       const r = this.v.H3rain = { id: 'H3rain', img: {}, rain: true };
       ['sky', 'far', 'mid', 'fore'].forEach(n => jobs.push(img(B + 'H3/rain/' + n + '.png').then(im => { r.img[n] = im; })));
       jobs.push(js(B + 'H3/grade_rain.json').then(j => { r.g = j; }));
+      ['overcast', 'fog'].forEach(w => {                                  // systems12：H3 陰／霧（sky/far/mid/fore；lightmap 等沿用 H3）
+        const o = this.v['H3' + w] = { id: 'H3' + w, img: {}, wx: w };
+        ['sky', 'far', 'mid', 'fore'].forEach(n => jobs.push(img(B + 'H3/' + w + '/' + n + '.png').then(im => { o.img[n] = im; }).catch(() => { o.missing = true; })));
+        jobs.push(js(B + 'H3/grade_' + w + '.json').then(j => { o.g = j; }).catch(() => { o.missing = true; }));
+      });
+      jobs.push(Promise.all([js(B + 'weather/weather.json'), img(B + 'weather/overcast_clouds.png'), img(B + 'weather/fog_bank.png')]).then(([j, oc, fb]) => { this.wxArt = { j, oc, fb }; }).catch(() => { this.wxArt = null; }));
       jobs.push(js(B + 'layout.json').then(j => { this.layout = j; }));
       jobs.push(Promise.all([js(B + 'particles/particles.json'), img(B + 'particles/particles.png')]).then(([j, im]) => { this.part = { j, im }; }));
       jobs.push(Promise.all([js(B + 'rain/rain_tile.json'), img(B + 'rain/rain_tile.png')]).then(([j, im]) => { this.rain = { j, im }; }));
@@ -96,15 +108,30 @@
       ['sprout', 'radiant', 'soft', 'sprout_live', 'radiant_live', 'soft_live'].concat(this.rimExtra).forEach(f => jobs.push(Promise.all([js(this.rimBase + 'rim_' + f + '.json'), img(this.rimBase + 'rim_' + f + '.png')]).then(([j, im]) => { this.rim[f] = { j, im }; }).catch(() => { /* rim mask 可選：冇就用 alpha 位移 fallback */ })));
       return Promise.all(jobs).then(() => {
         ['lightmap', 'light_add', 'emissive_blur', 'vignette'].forEach(n => { r.img[n] = this.v.H3.img[n]; });   // 雨：lightmap 等沿用 H3
+        ['H3overcast', 'H3fog'].forEach(k => { const o = this.v[k]; if (o.missing || !o.g) { delete this.v[k]; return; } ['lightmap', 'light_add', 'emissive_blur', 'vignette'].forEach(n => { o.img[n] = this.v.H3.img[n]; }); });
         this.buf = mk(W, H); this.bufB = mk(W, H); this.tint = mk(96, 112); this.rimC = mk(96, 112);
         this.rainPat = this.rain ? Object.keys(this.rain.j.frames).sort().map(k => { const f = this.rain.j.frames[k].frame, c = mk(f.w, f.h); c.getContext('2d').drawImage(this.rain.im, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h); return c; }) : null;
         this.ready = true;
       }).catch(e => { this.error = String(e && e.message || e); this.ready = false; });
     }
+    /* 季節層（lazy：要用先 load 嗰季 4 款）；load 好之前照用基本款 */
+    loadSeason(season) {
+      if (!SEASONS.includes(season)) return Promise.resolve(false);
+      this.seasonJobs = this.seasonJobs || {}; if (this.seasonJobs[season]) return this.seasonJobs[season];
+      const img = (u) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error(u)); im.src = u; });
+      const js = (u) => fetch(u).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); });
+      const B = this.base + 'seasons/' + season + '/';
+      return (this.seasonJobs[season] = (this.ready ? Promise.resolve() : new Promise(r => { const w = () => this.ready || this.error ? r() : setTimeout(w, 50); w(); })).then(() => Promise.all(['H1', 'H2', 'H3', 'H4'].map(h => {
+        const o = { id: h + '@' + season, img: {}, season };
+        return Promise.all(['sky', 'far', 'mid', 'fore', 'lightmap'].map(n => img(B + h + '/' + n + '.png').then(im => { o.img[n] = im; })).concat([js(B + h + '/grade.json').then(j => { o.g = Object.assign({}, this.v[h].g, j); })])).then(() => {
+          ['light_add', 'emissive_blur', 'vignette'].forEach(n => { o.img[n] = this.v[h].img[n]; }); this.v[o.id] = o; });
+      }))).then(() => true).catch(e => { this.seasonError = String(e && e.message || e); return false; }));
+    }
+    hasVariant(v) { return !!this.v[v]; }
     set(mode) { set(this.st, mode); return this.current(); }
     next() { next(this.st); return this.current(); }
     current() { const s = this.st; return { mode: s.mode, variant: s.cur, prev: s.prev, mix: +s.mix.toFixed(3), fading: s.mix < 1, ready: this.ready, enabled: this.enabled, error: this.error, label: LABEL[s.mode] + (s.mode === 'auto' && s.cur ? '（' + s.cur + '）' : ''), overlays: engineOverlays(this.on() ? s.cur : null), switches: s.switches }; }
-    update(dt, ctx) { this.t += dt; update(this.st, dt, ctx); }
+    update(dt, ctx) { this.t += dt; ctx = Object.assign({}, ctx || {}, { season: this.season || null, ready: (v) => !!this.v[v] }); if (this.season) this.loadSeason(this.season); update(this.st, dt, ctx); }
     grade(v) { return (this.v[v || this.st.cur] || this.v.H3).g; }
 
     /* 寵物 tint＋rim（每次畫寵物只叫一次；生命感五官已喺之前合成入 src）。rimKey：'soft'（motion atlas）／'soft_live'（生命感 noface atlas）。
@@ -182,8 +209,19 @@
       const P = (oi) => [Math.round(-MX + offs[oi][0]), Math.round(-MY + offs[oi][1])];
       const put = (im, oi, a) => { if (a != null) x.globalAlpha = a; const p = P(oi); x.drawImage(im, p[0], p[1]); x.globalAlpha = 1; this.stat.composites++; };
       x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.imageSmoothingEnabled = false;
-      const bloomA = Math.min(1, g.bloom ? g.bloom.intensity : 0.5), addA = o.rain ? CFG.rainLightAdd : 1;
-      if (this.cacheOn !== false) {
+      const bloomA = Math.min(1, g.bloom ? g.bloom.intensity : 0.5), addA = o.rain ? CFG.rainLightAdd : o.wx === 'overcast' ? CFG.overcast.addA : 1;
+      if (o.wx && this.wxArt) {                                       // systems12 陰／霧：雲帶／霧帶喺層與層之間（FORMAT §SYS12）→ 逐層畫
+        put(I.sky, 0);
+        if (o.wx === 'overcast') this.drawBand(x, this.wxArt.oc, null, CFG.overcast, offs);
+        if (o.wx === 'fog') this.drawBand(x, this.wxArt.fb, this.wxArt.j.fog_bank.frames.far, CFG.fog.far, offs);
+        put(I.far, 1); put(I.mid, 2);
+        put(c.pet, 2);
+        put(I.fore, 3);
+        if (o.wx === 'fog') this.drawBand(x, this.wxArt.fb, this.wxArt.j.fog_bank.frames.near, CFG.fog.near, offs);
+        x.globalCompositeOperation = 'multiply'; put(I.lightmap, 2, o.wx === 'overcast' ? CFG.overcast.lightmapA : null);
+        x.globalCompositeOperation = 'lighter'; put(I.light_add, 2, addA);
+        if (q !== 'off') put(I.emissive_blur, 2, bloomA);
+      } else if (this.cacheOn !== false) {
         const p0 = P(0), p1 = P(1), p2 = P(2);
         const back = this.layer(v, 'back', p0 + '|' + p1 + '|' + p2, (b) => { b.drawImage(I.sky, p0[0], p0[1]); b.drawImage(I.far, p1[0], p1[1]); b.drawImage(I.mid, p2[0], p2[1]); });
         x.drawImage(back, 0, 0); this.stat.composites++;
@@ -213,9 +251,18 @@
       x.imageSmoothingEnabled = false;
       x.globalCompositeOperation = 'source-over';
       if (o.rain) this.drawRain(x, offs, q);                           // 雨（FORMAT §7）：emissive_blur 之後、fog 之前，唔食 lightmap
+      if (o.rain && CFG.rainDim > 0) { x.globalCompositeOperation = 'multiply'; const k = Math.round(255 * (1 - CFG.rainDim)); x.fillStyle = 'rgb(' + k + ',' + k + ',' + k + ')'; x.fillRect(0, 0, W, H); x.globalCompositeOperation = 'source-over'; }   // systems12：雨再暗 18%
       if (g.fog && g.fog.density > 0) { x.globalAlpha = g.fog.density; x.fillStyle = g.fog.color; x.fillRect(0, 0, W, H); x.globalAlpha = 1; }
       if (c.dim > 0.005) { x.fillStyle = 'rgba(8,12,44,' + Math.min(0.6, c.dim).toFixed(3) + ')'; x.fillRect(0, 0, W, H); }   // 睡眠／飢餓／不適暗角
       x.drawImage(I.vignette, 0, 0);
+    }
+    /* 雲帶／霧帶：橫向 wrap、慢飄（px/s；負數＝反方向）、parallax 跟相機位移 */
+    drawBand(x, im, fr, b, offs) {
+      const sx = fr ? fr[0] : 0, sy = fr ? fr[1] : 0, sw = fr ? fr[2] : im.width, sh = fr ? fr[3] : im.height;
+      const par = b.parallax == null ? 1 : b.parallax, dx = ((this.t * (b.drift || 0) + offs[1][0] * par) % sw + sw) % sw, y = (b.y || 0) + Math.round(offs[1][1] * par);   // art 座標＝畫面座標
+      x.globalAlpha = b.alpha == null ? 1 : b.alpha; x.imageSmoothingEnabled = false;
+      for (let px = Math.round(dx) - sw; px < W; px += sw) x.drawImage(im, sx, sy, sw, sh, px, y, sw, sh);
+      x.globalAlpha = 1; this.stat.composites++;
     }
     stepParticles(dt, g, q) {
       const P = g.particles; if (!P || !this.part) { this.ps.length = 0; return; }
@@ -300,18 +347,20 @@
     G.hd = sc; G.renderer.hd = sc;
     sc.cacheOn = qs.get('hdcache') !== '0';                              // P1-4：?hdcache=0 停用靜態層 cache（對照用）
     NS.light.addModifier('hd2d', lightModifier());
-    if (qs.get('weather')) G.weather = qs.get('weather');
+    const S12 = P.systems12; if (S12) { CFG.rainDim = S12.weather.rainDim || 0; CFG.seasonFadeSec = S12.seasonFadeSec || CFG.seasonFadeSec; }
+    if (qs.get('weather')) { G.weather = qs.get('weather') === 'clear' ? null : qs.get('weather'); if (G.wx) G.wx.manual = true; }   // ?weather= 覆蓋自動天氣
     if (qs.get('scene') && CYCLE.indexOf(qs.get('scene')) >= 0) sc.set(qs.get('scene'));   // ?scene=H1|H2|H3|H3rain|H4
     G.hdReady = sc.load();
     window.__qa = window.__qa || {};
     window.__qa.hd2d = {
       set(m) { const r = sc.set(m); if (G.dev) G.dev.sync && G.dev.sync(); return r; }, next() { return sc.next(); }, current() { return sc.current(); },
-      weather(w) { if (w !== undefined) G.weather = w || null; return G.weather || 'clear'; },
+      weather(w) { if (w !== undefined) { if (w === 'auto' && G.wx) { G.wx.manual = false; G.wxTick && G.wxTick(true); } else { G.weather = w && w !== 'clear' ? w : null; if (G.wx) G.wx.manual = true; } } return G.weather || 'clear'; },
+      season(v) { if (v !== undefined && G.seasonSet) G.seasonSet(v); return sc.season || null; },
       enable(on) { sc.enabled = on !== false; return sc.enabled; },
       skipFade() { sc.st.mix = 1; sc.st.prev = null; }, stat() { return Object.assign({}, sc.stat); }, cache(on) { if (on !== undefined) { sc.cacheOn = on !== false; sc.lc = {}; } return { on: sc.cacheOn !== false, variants: Object.keys(sc.lc || {}), builds: sc.stat.cacheBuilds || 0, hits: sc.stat.cacheHits || 0 }; }, CYCLE: CYCLE.slice(), LABEL,
     };
     return sc;
   }
 
-  return { W, H, MX, MY, LW, LH, VARIANTS, CYCLE, LABEL, CFG, variantFor, baseOf, engineOverlays, createState, update, set, next, target, petColor, rimW, hex, lightModifier, Scene, install };
+  return { W, H, MX, MY, LW, LH, VARIANTS, SEASONS, CYCLE, LABEL, CFG, variantFor, baseOf, wxOf, withSeason, engineOverlays, createState, update, set, next, target, petColor, rimW, hex, lightModifier, Scene, install };
 });

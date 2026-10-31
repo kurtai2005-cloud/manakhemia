@@ -50,11 +50,11 @@ ok(['brightCQ', 'brightMaxTopPct', 'b5CQ', 'b5TopPct', 'drawGapPt', 'softCQ'].ev
 ok(C.lumi && ['fromPct', 'toPct', 'maxChancePct', 'minCQ'].every(k => Number.isFinite(C.lumi[k])) && C.lumi.toPct > C.lumi.fromPct && C.cq && ['careGain', 'careGainPerHourMax', 'partialMax', 'decayAfterH', 'decayPerH', 'floor'].every(k => Number.isFinite(C.cq[k])),
   'config v3：drawGapPt、lumi（機率）、cq（部分照顧＋衰減）', JSON.stringify({ d: C.drawGapPt, l: C.lumi, q: C.cq }));
 ok(!('lumiCQ' in EV6) && !('lumiNightShare' in EV6) && !('b5GapPt' in C), '舊螢絨門檻（lumiCQ／lumiNightShare）同 b5GapPt 已移除');
-ok(C.systems && C.systems.enabled === false && C.systems.maxRouteSharePct === 25 && C.systems.stardustDailyCap === 30 && Object.keys(C.systems.sources).length === 0, 'config 預留 systems（systems12-v1：每路線新系統分 ≤25%、星星碎每日 30；未用）', JSON.stringify(C.systems));
+ok(C.systems && C.systems.enabled === true && C.systems.maxRouteSharePct === 25 && C.systems.stardustDailyCap === 30 && C.systems.sources.questRoute && C.systems.sources.questRoute.pts === 1, 'config systems（systems12-v1 第 1 批：每路線新系統分 ≤25%、星星碎每日 30；委託路線分 1）', JSON.stringify(C.systems));
 { const a = (() => { const s = S.newState(1e12, 1); s.stage = 'sprout'; S.noteCare(s, null, 'feed'); s.cq = 80; return JSON.stringify(S.branch5Check(s)); })();
-  const keep = C.systems.enabled; C.systems.enabled = true; C.systems.sources = { x: { route: 'moon', pts: 99 } };
+  const keep = C.systems.enabled, keepS = C.systems.sources; C.systems.enabled = true; C.systems.sources = { x: { route: 'moon', pts: 99 } };
   const b = (() => { const s = S.newState(1e12, 1); s.stage = 'sprout'; S.noteCare(s, null, 'feed'); s.cq = 80; return JSON.stringify(S.branch5Check(s)); })();
-  C.systems.enabled = keep; C.systems.sources = {}; ok(a === b, 'systems 預留未接入判定（開咗都唔影響分數）'); }
+  C.systems.enabled = keep; C.systems.sources = keepS; ok(a === b, '冇新系統分（E.b5sys）→ 判定同舊版一樣（config sources 本身唔加分）'); }
 ok(!('b5CQ' in EV6) && !('branchBright' in P) && !('branchSoft' in P), '舊散落門檻（evo6.b5*、branchBright／Soft）已收入 config');
 { const src = fs.readFileSync(path.join(__dirname, '../src/sim.js'), 'utf8').replace(/\/\/.*$/gm, '');
   const fn = (n) => (src.match(new RegExp('function ' + n + '\\([^]*?\\n  }')) || [''])[0];

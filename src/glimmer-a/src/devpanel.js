@@ -9,9 +9,9 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   const TAPS = 5, WINDOW_MS = 1500, CORNER = 72;               // 左上角熱區（#ui 390×844 座標）
-  const SCENES = ['auto', 'H1', 'H2', 'H3', 'H3rain', 'H4'];
-  const SCENE_LABEL = { auto: 'Auto', H1: 'H1 晨', H2: 'H2 黃昏', H3: 'H3 日', H3rain: 'H3 雨', H4: 'H4 夜' };
-  const SCENE_HOUR = { H1: 8, H2: 17.5, H3: 13, H3rain: 13, H4: 22 };   // 舊背景（?hd2d=0）時用代表鐘點
+  const SCENES = ['auto', 'H1', 'H2', 'H3', 'H3rain', 'H4', 'H3overcast', 'H3fog'];   // systems12：H3 陰／霧
+  const SCENE_LABEL = { auto: 'Auto', H1: 'H1 晨', H2: 'H2 黃昏', H3: 'H3 日', H3rain: 'H3 雨', H4: 'H4 夜', H3overcast: 'H3 陰', H3fog: 'H3 霧' };
+  const SCENE_HOUR = { H1: 8, H2: 17.5, H3: 13, H3rain: 13, H4: 22, H3overcast: 13, H3fog: 13 };   // 舊背景（?hd2d=0）時用代表鐘點
   const PERS = {
     default: { label: '團絨（預設）', v: null },
     sticky: { label: '黏人', v: { sticky: 1, sleepy: 0.4, timid: 0.2 } },
@@ -114,7 +114,8 @@
       login() { note('login'); const L = G.login(); sync(); return L; },
       addPoop() { note('addPoop'); const S = s(); if (S.stage === 'egg') throw new Error('dev.addPoop: egg'); if (S.poops < P.poopMax) { S.poops++; SIM.poopAges(S).push(0); } G.save(); sync(); return S.poops; },
       overlayGame() { note('overlayGame'); const r = G.evo.overlayOpenGame(); sync(); return r; },
-      weather(w) { note('weather', w); const W = D.PARAMS.evo6.branch.weather.states; G.weather = W.includes(w) && w !== 'clear' ? w : null; sync(); return SIM.weatherNow(); },   // v4：天氣系統未做 → DEV 設定（之後由天氣系統驅動）
+      weather(w) { note('weather', w); const W = D.PARAMS.evo6.branch.weather.states; if (G.weatherSet) G.weatherSet(w === 'auto' || W.includes(w) ? w : 'clear'); else G.weather = W.includes(w) && w !== 'clear' ? w : null; sync(); return SIM.weatherNow(); },   // systems12：自動天氣；DEV 揀 → 覆蓋（「自動」還原）
+      season(m) { note('season', m); const r = G.seasonSet ? G.seasonSet(m) : null; sync(); return r; },   // systems12 季節：auto／spring／summer／autumn／winter／none（基本款）   // v4：天氣系統未做 → DEV 設定（之後由天氣系統驅動）
       careDays(n) { note('careDays', n); const S = s(); n = Math.max(0, n | 0); const now = G.now ? G.now() : Date.now(), have = new Set(S.careDays || []); for (let i = 0; i < n; i++) have.add(SIM.dayKey(now - i * 86400000)); if (n === 0) have.clear(); S.careDays = [...have].sort(); if (n && S.evo) S.evo.day0 = SIM.dayKey(now - (n - 1) * 86400000); G.save(); sync(); return SIM.careDaysCheck(S); },   // v4 燦光：補最近 n 日照顧日（0＝清）
       dexUnlock(f) { note('dexUnlock', f); const S = s(); if (f === 'none') S.dex = []; else (f === 'all' ? D.BRANCHES : [f]).forEach(x => SIM.unlockDex(S, x)); G.save(); sync(); return (S.dex || []).slice(); },
       openDex() { note('openDex'); window.Glimmer.ui.openDex(); return SIM.dexList(s()); },
@@ -141,7 +142,7 @@
       // ── 時段／天氣 ──
       scene(m) {
         note('scene', m); if (SCENES.indexOf(m) < 0) throw new Error('dev.scene: ' + m);
-        G.weather = m === 'H3rain' ? 'rain' : null;
+        G.weather = m === 'H3rain' ? 'rain' : m === 'H3overcast' ? 'overcast' : m === 'H3fog' ? 'fog' : null; if (G.wx) G.wx.manual = m !== 'auto';   // systems12：揀款＝覆蓋自動天氣
         if (m === 'auto') G.hourOverride = hour0; else { G.hourOverride = SCENE_HOUR[m]; G.clockRun = false; G.timeScale = 1; G.clock.fake = false; }
         if (G.hd) G.hd.set(m);
         sync(); return G.hd ? G.hd.current() : { mode: m };
@@ -179,7 +180,8 @@
         <div class="dr" data-testid="dev-stage-row"><i>階段</i>${D.STAGES.map(st => btn(D.STAGE_NAME[st], 'evoStage:' + st, 'dev-stage-' + st)).join('')}${btn('▶下一階段', 'evoNext', 'dev-stage-next')}${btn('化光', 'evoFade', 'dev-fade')}</div>
         <div class="dr" data-testid="dev-branch-row"><i>分支</i>${['lumi', 'bright', 'soft', 'dust'].map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'evoBranch:' + f, 'dev-branch-' + f)).join('')}<em class="dmst" data-testid="dev-lumi-state"></em></div>
         <div class="dr" data-testid="dev-force-row"><i>強制支線</i>${D.BRANCHES.map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'forceBranch:' + f, 'dev-force-' + f)).join('')}${btn('清除', 'forceBranch:off', 'dev-force-off')}<em class="dmst" data-testid="dev-b5-state"></em></div>
-        <div class="dr" data-testid="dev-weather-row"><i>天氣</i>${D.PARAMS.evo6.branch.weather.states.map(w => btn({ clear: '晴', overcast: '陰', fog: '霧', rain: '雨' }[w] || w, 'weather:' + w, 'dev-weather-' + w)).join('')}${btn('照顧日 7', 'careDays:7', 'dev-care-days-7')}${btn('清照顧日', 'careDays:0', 'dev-care-days-0')}<span data-testid="dev-weather-state"></span></div>
+        <div class="dr" data-testid="dev-weather-row"><i>天氣</i>${D.PARAMS.evo6.branch.weather.states.map(w => btn({ clear: '晴', overcast: '陰', fog: '霧', rain: '雨' }[w] || w, 'weather:' + w, 'dev-weather-' + w)).join('')}${btn('自動', 'weather:auto', 'dev-weather-auto')}${btn('照顧日 7', 'careDays:7', 'dev-care-days-7')}${btn('清照顧日', 'careDays:0', 'dev-care-days-0')}<span data-testid="dev-weather-state"></span></div>
+        <div class="dr" data-testid="dev-season-row"><i>季節</i>${['auto', 'spring', 'summer', 'autumn', 'winter', 'none'].map(m => btn({ auto: '自動', spring: '春', summer: '夏', autumn: '秋', winter: '冬', none: '基本' }[m], 'season:' + m, 'dev-season-' + m)).join('')}<span data-testid="dev-season-state"></span></div>
         <div class="dr" data-testid="dev-crystal-row"><i>晶角</i>${btn('上線', 'login', 'dev-login')}${btn('出便便', 'addPoop', 'dev-add-poop')}<span data-testid="dev-crystal-state"></span></div>
         <div class="dr" data-testid="dev-ember-row"><i>火苗</i>${btn('浮動開 game', 'overlayGame', 'dev-overlay-game')}<span data-testid="dev-ember-state"></span></div>
         <div class="dr" data-testid="dev-lull-row"><i>月眠</i>${btn('眼瞓', 'drowsy', 'dev-drowsy')}${btn('哄瞓', 'lull', 'dev-lull')}<span data-testid="dev-lull-state"></span></div>
@@ -209,7 +211,10 @@
         cs.textContent = `便便${S.poops}｜窗口${Lg ? (Lg.done ? '已即清' : !Lg.had ? '（上線冇便便）' : left ? '剩' + left + 's' : '過咗') : '-'}｜即清 ${B.raw.quickLogin}/${B.raw.loginPoop} → ${B.score.crystal}分`; }
       const es = q('[data-testid="dev-ember-state"]'); if (es && SIM.branch5Check) { const B = SIM.branch5Check(S), O = D.PARAMS.evo6.branch.overlayMg, at = S.mg && S.mg.overlayAt, cd = at ? Math.max(0, Math.ceil(O.cooldownSec - (G.now() - at) / 1000)) : 0;
         es.textContent = `火苗${B.score.ember}分｜今日小遊戲 ${S.mg ? S.mg.plays : 0}｜冷卻${cd ? cd + 's' : '無'}`; }
-      const ws = q('[data-testid="dev-weather-state"]'); if (ws && SIM.weatherNow) { const C = SIM.careDaysCheck(S); ws.textContent = `${SIM.weatherNow()}｜照顧日 ${C.days}/${C.need}（${C.span} 日）${C.ok ? '✓' : '✗'}`; }
+      const ss = q('[data-testid="dev-season-state"]'); if (ss && G.wx) ss.textContent = `${G.wx.season || '基本'}（${G.wx.seasonMode}）`;
+      el.querySelectorAll('button[data-a^="season:"]').forEach(b => b.classList.toggle('on', !!G.wx && b.dataset.a.split(':')[1] === G.wx.seasonMode));
+      const wa = q('[data-a="weather:auto"]'); if (wa && G.wx) wa.classList.toggle('on', G.wx.auto && !G.wx.manual);
+      const ws = q('[data-testid="dev-weather-state"]'); if (ws && SIM.weatherNow) { const C = SIM.careDaysCheck(S); ws.textContent = `${SIM.weatherNow()}${G.wx ? (G.wx.manual ? '（DEV）' : G.wx.auto ? '（自動 ' + G.wx.autoWeather + '）' : '') : ''}｜照顧日 ${C.days}/${C.need}（${C.span} 日）${C.ok ? '✓' : '✗'}`; }
       const ls = q('[data-testid="dev-lumi-state"]'); if (ls && SIM.lumiCheck) { const L = SIM.lumiCheck(S); ls.textContent = `螢絨：螢火${L.firefly}${L.fireflyOk ? '✓' : '✗'} CQ${Math.round(L.cq)}${L.cqOk ? '✓' : '✗'} 夜${Math.round(L.night * 100)}%/${L.nightAll} 機會${Math.round(L.chance * 100)}% roll${L.roll}${L.ok ? '✓' : '✗'}`; }
       el.querySelectorAll('button[data-a^="forceBranch:"]').forEach(b => { const f = b.dataset.a.split(':')[1], fo = S.evo && S.evo.force; b.classList.toggle('on', fo ? f === fo : D.isBig(S.stage) && f === S.form); });
       const b5 = q('[data-testid="dev-b5-state"]'); if (b5 && SIM.branch5Check) { const B = SIM.branch5Check(S), fo = S.evo && S.evo.force; b5.textContent = (fo ? '強制→' + D.FORM_NAME[fo] + '　' : '') + `新5：${D.FORM_NAME[B.top]}${Math.round(B.topShare * 100)}% 次${D.FORM_NAME[B.second]}${Math.round(B.secondShare * 100)}% /${B.all} CQ${Math.round(B.cq)}/${B.cqNeed}${B.cqOk ? '✓' : '✗'} ${B.ok ? '✓' : '✗'}`; }

@@ -79,11 +79,12 @@
         // badBelow–goodAt 之間按比例 +0–partialMax、< badBelow −1；連續 decayAfterH 個鐘冇照顧 → 每個鐘 −decayPerH（線上＋離線都計）；結算／衰減唔會跌穿 floor
         cq: { careGain: 0.5, careGainPerHourMax: 2, partialMax: 0.5, decayAfterH: 6, decayPerH: 1, floor: 15 },
         // 預留（systems12-v1.md，未用）：新系統（委託／種花／小遊戲／收集…）加嘅路線分；判定暫時唔讀
+        // systems12 第 1 批（systems12-v1.md）：新系統加嘅路線分全部喺度；每條路線新系統分 ≤ maxRouteSharePct%（cap 喺 branch5Check 計）
         systems: {
-          enabled: false,          // 未接入
-          maxRouteSharePct: 25,    // 新系統分最多佔該路線分 25%（唔好蓋過照顧本身）
+          enabled: true,
+          maxRouteSharePct: 25,    // 新系統分最多佔該路線分 25%（唔好蓋過照顧本身）：sys ≤ care × 25/75
           stardustDailyCap: 30,    // 星星碎每日入帳上限（委託 15＋其他 15）
-          sources: {},             // 之後：{ flower_bluebell: { route: 'moon', pts: n }, … }
+          sources: { questRoute: { pts: 1 } },   // 系統 1：「領先路線」嗰個委託完成 → 該路線 +1（受 25% cap）
         },
       },
       // §7 路線清晰化（pet-template-v1「§7 路線清晰化」）：顏色／時間全部喺度；螢絨隱藏（燈泡唔顯示、預告唔洩露）
@@ -101,6 +102,15 @@
         silhouette: '#3B2A3E',        // 圖鑑未解鎖剪影色（遊美 batch G collection_route.json；冇剪影圖時用守夜者圖 alpha 生）
         silArt: 'evo6/route/sil_',    // 遊美 batch G 圖鑑剪影 art/evo6/route/sil_<atlas id>_48.png（bright→radiant）；載唔到 → fallback 程式剪影
       } },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
+    // ── systems12 第 1 批（docs-gdd/systems12-v1.md；遊美 b1 美術 12b13ec）。數值全部喺度 ──
+    systems12: {
+      // 系統 7 天氣／季節：每日天氣＝真實日期＋seed；晴60／陰20／霧5（雨另外按週排 1–3 場，每場 1–3h，平均≈15% 日數）
+      weather: { auto: true, weights: { clear: 60, overcast: 20, rain: 15, fog: 5 }, rainPerWeek: [1, 3], rainHours: [1, 3], rainFromH: 6, rainToH: 22,
+        rainDayBase: 'overcast',   // 落雨嗰日其餘時間＝陰
+        rainDim: 0.18,             // H3 雨畫面再暗 18%（雨聲不變）
+        shiverEverySec: [25, 50], shiverFogMul: 2, shiverWinterMul: 2, shiverBaseChance: 0.25 },   // 打冷震：idle 時每 25–50s 擲一次；霧／冬機率 ×2
+      seasons: { spring: [3, 4, 5], summer: [6, 7, 8], autumn: [9, 10, 11], winter: [12, 1, 2] }, seasonFadeSec: 3,
+    },
     overlayDpPerPx: 1.625,          // evo6 浮動 overlay：sizeDp＝frameSize×1.625（芽崽 32px＝舊 52dp）
     eggTapBoostSec: 75,           // 光卵每點一下 +75s（8 下 = 10 分鐘）
     startNeedsSprout: { hunger: 70, mood: 70, clean: 90, energy: 100 },
@@ -243,7 +253,7 @@
     // 表情 overlay（F1）：mode auto＝有 *_noface 身體就合成真五官；冇就「擦臉＋色塊臉 placeholder」；native＝用返圖集原本張臉；off＝唔畫臉（QA）
     face: {
       mode: 'auto',
-      liveliness: { enabled: true, base: 'art/liveliness/', anchors: 'face_anchors.json', atlases: { sprout: ['atlas_sprout_live', 'atlas_sprout_live_s2', 'atlas_sprout_live_s3'], radiant: ['atlas_radiant_live', 'atlas_radiant_live_s2', 'atlas_radiant_live_s3'], soft: ['atlas_soft_live', 'atlas_soft_live_s2', 'atlas_soft_live_s3'] }, fx: 'fx/atlas_fx_live' },   // 遊美生命感 v1（10-31）：<clip>_noface 身體＋kit 五官＋燈泡；缺檔／缺件一律 fallback（色塊臉 placeholder）；?live=0 停用
+      liveliness: { enabled: true, base: 'art/liveliness/', anchors: 'face_anchors.json', atlases: { sprout: ['atlas_sprout_live', 'atlas_sprout_live_s2', 'atlas_sprout_live_s3', 'atlas_sprout_live_wx'], radiant: ['atlas_radiant_live', 'atlas_radiant_live_s2', 'atlas_radiant_live_s3', 'atlas_radiant_live_wx'], soft: ['atlas_soft_live', 'atlas_soft_live_s2', 'atlas_soft_live_s3', 'atlas_soft_live_wx'] }, fx: 'fx/atlas_fx_live' },   // 遊美生命感 v1（10-31）：<clip>_noface 身體＋kit 五官＋燈泡；缺檔／缺件一律 fallback（色塊臉 placeholder）；?live=0 停用
       eyes: ['neutral', 'happy', 'surprised', 'sleepy', 'squint', 'wink', 'angry', 'sad'],
       closedEyes: ['happy', 'sleepy', 'wink'],   // 閉眼款只有 C
       gazeBins: ['L', 'CL', 'C', 'CR', 'R', 'U', 'D'],
@@ -379,6 +389,13 @@
     reunion_happy: {"name": "reunion_happy", "frames": 5, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 6, "interruptible": false, "cooldown": 0, "next": "idle", "ready": false, "live": true, "faceBack": true},
     dig: {"name": "dig", "frames": 4, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "extra": true},
   };
+  // systems12 b1（遊美 CLIPS.json systems12B1）：撐葉（落雨 idle 循環 2–5）／打冷震（霧／冬）；§7 G tell_<路線>（只絨跳有）。
+  // 唔入 CLIPS（行為狀態機唔抽）；renderer 用 overlay clip（sysClip）喺 idle 時蓋過顯示 clip。
+  const SYS_CLIPS = {
+    leaf_umbrella: { name: 'leaf_umbrella', frames: 6, fps: 6, loop: true, loopRange: [2, 5], ready: true, sys12: true },
+    shiver: { name: 'shiver', frames: 4, fps: 10, loop: false, repeat: 3, ready: true, sys12: true },
+  };
+  ['tide', 'moon', 'shroom', 'crystal', 'ember', 'radiant', 'soft', 'dust', 'lumi'].forEach(r => { SYS_CLIPS['tell_' + r] = { name: 'tell_' + r, frames: 6, fps: 8, loop: false, ready: true, tell: r }; });
   // 表情＝需求狀態綁定；clip＝基礎層 clip（art CLIPS.json 優先序：sick > emo_hungry > emo_sleepy > emo_wantplay > idle）
   // happy／neutral／dirty 用 idle 為基礎（可抽待機變化）；dirty 暫無美術 → idle ＋ 程序化污漬 overlay（placeholder）
   const EXPRESSIONS = {
@@ -575,5 +592,5 @@
     sick: ['#f0f0d0', '#d8e0b0', '#b8c890', '#98a870', '#788850', '#586838'],
   };
 
-  return { ROUTE_HINT, EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
+  return { SYS_CLIPS, ROUTE_HINT, EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
 });

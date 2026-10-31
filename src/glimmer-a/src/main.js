@@ -109,6 +109,7 @@
   G.liveSettled = false; G.liveLoad.then(() => { G.liveSettled = true; }, () => { G.liveSettled = true; });   // s3：重逢等 live atlas 載完先衝（rush 用真 clip）
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
   if (NS.hd2d) NS.hd2d.install(G, NS);
+  if (NS.sys12ui && NS.sys12) NS.sys12ui.install(G, NS);   // systems12 第 1 批（天氣／季節、委託、親密度、小驚喜、日記）
   UI.init(G);
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
@@ -132,6 +133,7 @@
       const dtW = G.paused ? 0 : dtReal;
       if (G.clockRun && G.clock.fake) G.clock.t += dtW * G.timeScale * 1000;   // 開發模式快進：假時鐘跟 ×N 行 → 時段／HD-2D 場景跟住變
       SIM.advance(s, dtW * G.timeScale, { hour: (G.hourOverride != null || G.timeScale === 1 || G.clockRun) ? G.hour() : null, now: G.now() }, 30);
+      if (G.sysTick) G.sysTick(dtW);
       saveT += dtReal; if (saveT >= P.autosaveSec) { saveT = 0; G.save(); }
       UI.update(dtW);
       const view = G.tickWorld(dtW);

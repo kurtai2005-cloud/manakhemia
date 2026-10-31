@@ -831,11 +831,25 @@
       return this.atlasSrc('atlas_props', name, Math.floor(t * an.fps));
     }
     // 畫寵物（atlas clip＋placeholder＋anchor 疊層）。返回 petDraw。
+    /* systems12 overlay clip：sysPet＝{ umbrella:bool, one:{clip,start,dur} }（sys12ui 寫）。只喺 idle（stay、冇變體／micro）蓋；tell 一次性任何狀態都播 */
+    sysClipOf(fk, clip) { const F = D.FORMS[fk]; if (!F) return false; const lv = this.lv && this.lv.atlas[fk], A = this.atlas && this.atlas[F.atlas];
+      return !!((lv && lv.json.animations[clip + '_noface']) || (A && A.json.animations[clip])); }
+    sysClipFor(b, t, fk) {
+      const SP = this.sysPet; if (!SP || !D.SYS_CLIPS) return null; const idle = b.state === 'stay' && !b.variant && !b.seq;
+      if (SP.one && t >= SP.one.start + SP.one.dur) { this.sysLog = (this.sysLog || []).concat([{ clip: SP.one.clip, end: t }]).slice(-20); SP.one = null; }
+      if (SP.one && (SP.one.tell || idle) && this.sysClipOf(fk, SP.one.clip)) { const C = D.SYS_CLIPS[SP.one.clip]; this.sysShown = SP.one.clip; return { clip: SP.one.clip, frame: Math.floor((t - SP.one.start) * C.fps) % C.frames }; }
+      if (SP.umbrella && idle && this.sysClipOf(fk, 'leaf_umbrella')) {
+        const C = D.SYS_CLIPS.leaf_umbrella, lr = C.loopRange; if (SP.uStart == null || t < SP.uStart) SP.uStart = t; const f = Math.floor((t - SP.uStart) * C.fps);
+        this.sysShown = 'leaf_umbrella'; return { clip: 'leaf_umbrella', frame: f < lr[0] ? f : lr[0] + (f - lr[0]) % (lr[1] - lr[0] + 1) };
+      }
+      if (!SP.umbrella) SP.uStart = null; this.sysShown = null; return null;
+    }
     drawPetBeh(x, s, view, c, gx, base) {
       const b = view.beh, t = c.t, clip = b.clip, cdef = D.CLIPS[clip], fk = this.fkOf(s), art = P.art, FCP = P.face, EVO = !!(D.FORMS[fk] && D.FORMS[fk].evo);
       const ox = (px) => px + MX, oy = (py) => py + MY;
       const real = cdef.ready || art.usePending;
       const sc = b.show || { clip, frame: b.frame }; let dclip = sc.clip, dframe = sc.frame;
+      const so = this.sysClipFor(b, t, fk); if (so) { dclip = so.clip; dframe = so.frame; }   // systems12：撐葉／打冷震／tell overlay clip
       if (EVO) { const A0 = this.atlas[D.FORMS[fk].atlas], an0 = A0 && A0.json.animations, fb = D.EVO_CLIP_FALLBACK[dclip];
         if (an0 && !an0[dclip + '_noface'] && fb && an0[fb + '_noface']) { this.evoFallback = this.evoFallback || {}; this.evoFallback[fk + ':' + dclip] = fb; dclip = fb; } }   // evo6：形態冇呢個 clip → 最近 clip
       let src = null, ph = null, live = null;
@@ -843,7 +857,7 @@
       // F1：生命感 noface 身體（有就用；顯示 clip 可以係 turn_back）
       const lvA = this.lv && FCP.mode !== 'native' && fk !== 'dust' && art.useAtlas !== false ? this.lv.atlas[fk] : null;
       if (lvA) {
-        const an = lvA.json.animations, dd = D.CLIPS[dclip];
+        const an = lvA.json.animations, dd = D.CLIPS[dclip] || (D.SYS_CLIPS && D.SYS_CLIPS[dclip]);
         if (dd && (dd.ready || dd.live || art.usePending || EVO) && an[dclip + '_noface']) live = { clip: dclip, frame: dframe };
         else if (an.idle_noface) { live = { clip: 'idle', frame: Math.floor(t * 6) }; ph = placeholderXform(clip, b, t); }
         if (live) { const nm = an[live.clip + '_noface'].frames; src = this.liveFrame(fk, nm[((live.frame % nm.length) + nm.length) % nm.length]); if (!src) { live = null; ph = null; } }

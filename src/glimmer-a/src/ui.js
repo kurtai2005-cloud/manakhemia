@@ -177,7 +177,9 @@
   function doForeshadow(e) {
     const a = e.act || {}, BEH = window.Glimmer.behavior;
     if (a.beh && G.beh && BEH) BEH.force(G.beh, a.beh, G.behCtx || {}); else if (a.act) rd.act(a.act, a.dur || 1.2);
-    G.foreLog = (G.foreLog || []).concat([{ form: e.form, act: a.beh || a.act || null, t: rd.t }]);
+    let tell = null; const tk = 'tell_' + (e.form === 'bright' ? 'radiant' : e.form), fk = rd.fkOf ? rd.fkOf(G.state) : null;   // 遊美 G：絨跳 tell_<路線>（有 clip 先播；行為照舊）
+    if (P.evo6.route.tellClips !== false && G.sysPlay && fk && rd.sysClipOf && rd.sysClipOf(fk, tk)) { G.sysPlay(tk); tell = tk; }
+    G.foreLog = (G.foreLog || []).concat([{ form: e.form, act: a.beh || a.act || null, tell, t: rd.t }]);
   }
   const SIL = {};                                 // 遊美 batch G 剪影圖（預載；冇就用程式剪影）
   function loadSil() { const R = P.evo6.route; if (!R.silArt) return; D.BRANCHES.forEach(id => { const k = id === 'bright' ? 'radiant' : id, im = new Image(); im.onload = () => { SIL[id] = im; }; im.src = P.art.base + R.silArt + k + '_48.png'; }); }
