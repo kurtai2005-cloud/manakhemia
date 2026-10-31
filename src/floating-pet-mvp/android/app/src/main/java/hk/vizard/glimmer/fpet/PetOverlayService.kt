@@ -742,7 +742,7 @@ class PetOverlayService : Service() {
             box.addView(TextView(this).apply {
                 text = label; textSize = 15f; setTextColor(Color.rgb(90, 60, 40))
                 val pv = dp(9f).toInt(); val ph = dp(14f).toInt(); setPadding(ph, pv, ph, pv)
-                minHeight = dp(44f).toInt(); gravity = Gravity.CENTER_VERTICAL
+                minHeight = dp(48f).toInt(); gravity = Gravity.CENTER_VERTICAL
                 setOnClickListener { hideMenu(); on() }
             })
         }

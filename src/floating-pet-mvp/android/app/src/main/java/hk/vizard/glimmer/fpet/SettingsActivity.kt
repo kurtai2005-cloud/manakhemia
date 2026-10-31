@@ -56,7 +56,7 @@ class SettingsActivity : Activity() {
         val gr = RadioGroup(this)
         val grids = listOf("4x6" to "4×6（預設）", "4x5" to "4×5", "5x5" to "5×5", "5x6" to "5×6", "off" to "唔玩")
         val curG = PetPrefs.grid(this)
-        grids.forEachIndexed { i, (g, l) -> gr.addView(RadioButton(this).apply { id = 200 + i; text = l; textSize = 15f; minHeight = dp(44f); isChecked = g == curG }) }
+        grids.forEachIndexed { i, (g, l) -> gr.addView(RadioButton(this).apply { id = 200 + i; text = l; textSize = 15f; minHeight = dp(48f); isChecked = g == curG }) }
         gr.setOnCheckedChangeListener { _, id -> PetPrefs.setGrid(this, grids[id - 200].first) }
         col.addView(gr)
         col.addView(btn("關閉浮動團絨") { PetPrefs.setEnabled(this, false); PetOverlayService.send(this, PetOverlayService.ACTION_STOP); refresh() })
