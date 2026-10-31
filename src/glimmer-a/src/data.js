@@ -80,7 +80,8 @@
         // 預告小動作（只用現有 clip）：beh＝behavior.force 名；act＝renderer.act（秒）
         foreshadow: { moon: { beh: 'yawn' }, ember: { act: 'celebrate', dur: 1.6 }, tide: { beh: 'now_lookup' }, shroom: { beh: 'now_sniff' },
           crystal: { beh: 'now_smug' }, bright: { beh: 'now_happy' }, soft: { beh: 'sway' }, dust: { beh: 'now_drag' } },
-        silhouette: '#2a2440',        // 圖鑑未解鎖剪影色（用現有守夜者圖 alpha 生）
+        silhouette: '#3B2A3E',        // 圖鑑未解鎖剪影色（遊美 batch G collection_route.json；冇剪影圖時用守夜者圖 alpha 生）
+        silArt: 'evo6/route/sil_',    // 遊美 batch G 圖鑑剪影 art/evo6/route/sil_<atlas id>_48.png（bright→radiant）；載唔到 → fallback 程式剪影
       } },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
     overlayDpPerPx: 1.625,          // evo6 浮動 overlay：sizeDp＝frameSize×1.625（芽崽 32px＝舊 52dp）
     eggTapBoostSec: 75,           // 光卵每點一下 +75s（8 下 = 10 分鐘）

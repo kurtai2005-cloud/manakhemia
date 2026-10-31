@@ -179,9 +179,12 @@
     if (a.beh && G.beh && BEH) BEH.force(G.beh, a.beh, G.behCtx || {}); else if (a.act) rd.act(a.act, a.dur || 1.2);
     G.foreLog = (G.foreLog || []).concat([{ form: e.form, act: a.beh || a.act || null, t: rd.t }]);
   }
+  const SIL = {};                                 // 遊美 batch G 剪影圖（預載；冇就用程式剪影）
+  function loadSil() { const R = P.evo6.route; if (!R.silArt) return; D.BRANCHES.forEach(id => { const k = id === 'bright' ? 'radiant' : id, im = new Image(); im.onload = () => { SIL[id] = im; }; im.src = P.art.base + R.silArt + k + '_48.png'; }); }
   function dexThumb(id, unlocked) {               // 守夜者 idle 第 1 幀；未解鎖＝同一幅圖嘅剪影（唔新畫美術）
     const fk = D.evoForm('adult', id), A = D.FORMS[fk], src = A && rd.atlasSrc(A.atlas, 'idle', 0), c = document.createElement('canvas');
     c.width = 48; c.height = 48; c.className = 'dexImg'; c.dataset.testid = 'dex-img-' + id; c.dataset.sil = unlocked ? '0' : '1';
+    if (!unlocked && SIL[id]) { const x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(SIL[id], 0, 0, 48, 48); c.dataset.art = '1'; return c; }
     if (!src) { c.dataset.missing = '1'; return c; }
     const x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, Math.round((48 - src.sw) / 2), 48 - src.sh, src.sw, src.sh);
     if (!unlocked) { x.globalCompositeOperation = 'source-in'; x.fillStyle = P.evo6.route.silhouette; x.fillRect(0, 0, 48, 48); x.globalCompositeOperation = 'source-over'; }
@@ -272,7 +275,7 @@
   }
 
   // ── 初始化 ──
-  UI.init = function (g) {
+  UI.init = function (g) { loadSil();
     G = g; rd = G.renderer;
     fillIcon($('#btn-feed canvas'), 'feed'); fillIcon($('#btn-play canvas'), 'play'); fillIcon($('#btn-clean canvas'), 'clean'); fillIcon($('#btn-sleep canvas'), 'sleep');
     $('#btn-feed').addEventListener('click', () => showPop('feed'));

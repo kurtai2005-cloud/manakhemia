@@ -84,13 +84,13 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   console.log('# DEV 下一階段（正常規則判分支）＋螢絨條件顯示');
   await dev('dev-stage-juvenile'); await closeModals();
-  await E(() => { const s = __glimmer.state; s.cq = 60; s.evo.evIn.sprout = { firefly_walk: 1 }; s.evo.care.sprout = { all: 5, night: 2 }; __qa.dev.sync(); });
+  await E(() => { const s = __glimmer.state; s.cq = 60; s.evo.evIn.sprout = { firefly_walk: 1 }; s.evo.care.sprout = { all: 5, night: 5 }; Glimmer.sim.setBranchRoll((t) => (t === 'lumi' ? 0 : null)); __qa.dev.sync(); });   // v3 螢絨機率：注入 roll 0（必中）
   const lumiTxt = await E(() => document.querySelector('[data-testid=dev-lumi-state]').textContent);
-  ok(/螢火1✓/.test(lumiTxt) && /CQ60✓/.test(lumiTxt) && /夜40%\/5✓/.test(lumiTxt), '螢絨條件讀數（螢火／CQ／夜晚 %）', lumiTxt);
+  ok(/螢火1✓/.test(lumiTxt) && /CQ60✓/.test(lumiTxt) && /夜100%\/5/.test(lumiTxt) && new RegExp('機會' + await E(() => Glimmer.data.PARAMS.evo6.branch.lumi.maxChancePct) + '%').test(lumiTxt) && /roll0✓/.test(lumiTxt), '螢絨條件讀數（螢火／CQ／夜晚 %／v3 機會＋roll）', lumiTxt);
   await dev('dev-stage-next'); await page.waitForTimeout(300);
   r = await E(() => ({ i: __glimmer.evo.info(), kind: document.getElementById('mbox').dataset.kind, title: document.querySelector('#mbox h2').textContent }));
   ok(r.i.stage === 'adult' && r.i.form === 'lumi' && r.kind === 'evolve' && /螢絨/.test(r.title), '跳跳期 ▶下一階段 → 守夜者・螢絨（隱藏分支）＋進化彈窗', r);
-  await shot('evolve-lumi'); await closeModals();
+  await shot('evolve-lumi'); await closeModals(); await E(() => Glimmer.sim.setBranchRoll(null));
   await dev('dev-stage-next'); await page.waitForTimeout(300);
   r = await E(() => ({ i: __glimmer.evo.info(), kind: document.getElementById('mbox').dataset.kind }));
   ok(r.i.stage === 'elder' && r.i.form === 'lumi' && r.kind === 'elder', '守夜者 ▶ → 靜光（分支保留）＋靜光彈窗', r); await closeModals();
