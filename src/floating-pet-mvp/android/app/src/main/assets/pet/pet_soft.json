@@ -345,7 +345,202 @@
      "y": 256
     }
    ]
+  },
+  "sniff": {
+   "fps": 6,
+   "loop": false,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 40,
+     "px": 32,
+     "py": 61,
+     "x": 0,
+     "y": 320
+    },
+    {
+     "i": 41,
+     "px": 32,
+     "py": 61,
+     "x": 64,
+     "y": 320
+    },
+    {
+     "i": 42,
+     "px": 32,
+     "py": 61,
+     "x": 128,
+     "y": 320
+    },
+    {
+     "i": 43,
+     "px": 32,
+     "py": 61,
+     "x": 192,
+     "y": 320
+    }
+   ],
+   "extra": true
+  },
+  "swat": {
+   "fps": 8,
+   "loop": false,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 44,
+     "px": 32,
+     "py": 61,
+     "x": 256,
+     "y": 320
+    },
+    {
+     "i": 45,
+     "px": 32,
+     "py": 61,
+     "x": 320,
+     "y": 320
+    },
+    {
+     "i": 46,
+     "px": 32,
+     "py": 61,
+     "x": 384,
+     "y": 320
+    },
+    {
+     "i": 47,
+     "px": 32,
+     "py": 61,
+     "x": 448,
+     "y": 320
+    }
+   ],
+   "extra": true
+  },
+  "cheer_jump": {
+   "fps": 10,
+   "loop": false,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 48,
+     "px": 32,
+     "py": 61,
+     "x": 0,
+     "y": 384
+    },
+    {
+     "i": 49,
+     "px": 32,
+     "py": 61,
+     "x": 64,
+     "y": 384
+    },
+    {
+     "i": 50,
+     "px": 32,
+     "py": 61,
+     "x": 128,
+     "y": 384
+    },
+    {
+     "i": 51,
+     "px": 32,
+     "py": 61,
+     "x": 192,
+     "y": 384
+    },
+    {
+     "i": 52,
+     "px": 32,
+     "py": 61,
+     "x": 256,
+     "y": 384
+    },
+    {
+     "i": 53,
+     "px": 32,
+     "py": 61,
+     "x": 320,
+     "y": 384
+    }
+   ],
+   "extra": true
+  },
+  "droop": {
+   "fps": 4,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 54,
+     "px": 32,
+     "py": 61,
+     "x": 384,
+     "y": 384
+    },
+    {
+     "i": 55,
+     "px": 32,
+     "py": 61,
+     "x": 448,
+     "y": 384
+    },
+    {
+     "i": 56,
+     "px": 32,
+     "py": 61,
+     "x": 0,
+     "y": 448
+    },
+    {
+     "i": 57,
+     "px": 32,
+     "py": 61,
+     "x": 64,
+     "y": 448
+    },
+    {
+     "i": 58,
+     "px": 32,
+     "py": 61,
+     "x": 128,
+     "y": 448
+    },
+    {
+     "i": 59,
+     "px": 32,
+     "py": 61,
+     "x": 192,
+     "y": 448
+    }
+   ],
+   "extra": true
+  },
+  "emo_hungry": {
+   "fps": 3,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 60,
+     "px": 32,
+     "py": 61,
+     "x": 256,
+     "y": 448
+    },
+    {
+     "i": 61,
+     "px": 32,
+     "py": 61,
+     "x": 320,
+     "y": 448
+    }
+   ],
+   "extra": true
   }
  },
- "source": "art-pet liveliness (遊美) noface+faceov+bulb_base"
+ "source": "art-pet liveliness (遊美) noface+faceov+bulb_base",
+ "extraSource": "bake_extra_clips.py：sniff／swat／cheer_jump／droop／emo_hungry（遊美 liveliness noface＋kit 五官＋bulb_base）"
 }

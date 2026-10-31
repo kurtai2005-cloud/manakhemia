@@ -9,7 +9,7 @@ import org.json.JSONObject
 object PetPrefs {
     const val FILE = "fpet"
     const val CAP = "CapacitorStorage"          // @capacitor/preferences 預設 group
-    const val KEY_SNAPSHOT = "glimmer.snapshot" // {v,form,mood,ts}（JS 寫）
+    const val KEY_SNAPSHOT = "glimmer.snapshot" // {v,form,mood,ts}＋v2 sizeDp…＋v3 moodBand／sleeping／needs（JS 寫）
     const val KEY_QUEUE = "fpet.queue"          // [{t,k}]（overlay 寫，JS 經 FloatingPet.drainQueue 取走）
     const val MODE_EDGE = "edge"
     const val MODE_FREE = "free"
@@ -37,6 +37,24 @@ object PetPrefs {
         val f = if (s == null) "soft" else JSONObject(s).optString("form", "soft")
         if (f in FORMS) f else "soft"
     } catch (e: Exception) { "soft" }
+
+    // 玩圖示（Kurt 10-31 批）：主畫面 icon 格「行×列」（col×row，預設 4×6）；"off"＝唔玩。只係估格位中心，唔讀其他 app（冇敏感權限）。
+    val GRIDS = listOf("4x6", "4x5", "5x5", "5x6", "off")
+    fun grid(c: Context): String = prefs(c).getString("grid", "4x6").let { if (it in GRIDS) it!! else "4x6" }
+    fun setGrid(c: Context, g: String) = prefs(c).edit().putString("grid", g).apply()
+
+    /** snapshot v3（心情／瞌覺／需求）；v1／v2 → Snap(v<3) → PetStatus.project 會當 neutral。 */
+    fun snapshotStatus(c: Context): PetStatus.Snap? = try {
+        val s = cap(c).getString(KEY_SNAPSHOT, null)
+        if (s == null) null else {
+            val o = JSONObject(s); val n = o.optJSONObject("needs")
+            fun mp(k: String): Map<String, Double>? = n?.optJSONObject(k)?.let { j -> PetStatus.KEYS.associateWith { j.optDouble(it, Double.NaN) }.takeIf { m -> m.values.all { it.isFinite() } } }
+            PetStatus.Snap(o.optInt("v", 1), o.optLong("ts", System.currentTimeMillis()), o.optBoolean("egg", false),
+                if (o.has("moodBand")) o.optString("moodBand") else null, o.optBoolean("sleeping", false),
+                n?.optString("urgent")?.takeIf { it in PetStatus.KEYS }, n?.optDouble("warnAt", 30.0) ?: 30.0,
+                mp("vals"), mp("rate"), mp("rateAwake"), n?.optDouble("floor", 20.0) ?: 20.0, n?.optDouble("wakeAt", 100.0) ?: 100.0)
+        }
+    } catch (e: Exception) { null }
 
     fun appendQueue(c: Context, kind: String) = synchronized(lock) {
         val p = cap(c)

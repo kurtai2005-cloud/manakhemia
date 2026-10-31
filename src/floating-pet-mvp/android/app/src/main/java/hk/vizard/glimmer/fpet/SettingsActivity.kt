@@ -35,7 +35,7 @@ class SettingsActivity : Activity() {
             setPadding(0, dp(6f), 0, dp(6f)) }
         fun btn(s: String, on: () -> Unit) = Button(this).apply { text = s; isAllCaps = false; minHeight = dp(48f); setOnClickListener { on() } }
         col.addView(text("浮動團絨（測試版）", 22f, true))
-        col.addView(text("團絨會喺其他 app／桌面上面行。撚一下回頭，撚兩下開返遊戲，拖動可以拎起，長按出選單。返入遊戲時會自動收埋。", 14f))
+        col.addView(text("團絨會喺其他 app／桌面上面行。撚一下回頭，撚兩下開返遊戲，拖動可以拎起（快快拋出有慣性），長按出選單。頭頂會顯示遊戲入面嘅心情、瞓覺同需求。返入遊戲時會自動收埋。", 14f))
         status = text("", 14f); col.addView(status)
         col.addView(btn("開浮動團絨") { requestStart() })
         col.addView(text("活動模式", 17f, true))
@@ -51,10 +51,19 @@ class SettingsActivity : Activity() {
             PetOverlayService.send(this, PetOverlayService.ACTION_SET_MODE, m)
         }
         col.addView(rg)
+        // 玩圖示（Kurt 10-31 批）：團絨偶爾走去主畫面 icon 格坐／聞／撥／彈。只估格位，唔讀其他 app。
+        col.addView(text("玩圖示（主畫面 icon 格：行×列）", 17f, true))
+        val gr = RadioGroup(this)
+        val grids = listOf("4x6" to "4×6（預設）", "4x5" to "4×5", "5x5" to "5×5", "5x6" to "5×6", "off" to "唔玩")
+        val curG = PetPrefs.grid(this)
+        grids.forEachIndexed { i, (g, l) -> gr.addView(RadioButton(this).apply { id = 200 + i; text = l; textSize = 15f; minHeight = dp(44f); isChecked = g == curG }) }
+        gr.setOnCheckedChangeListener { _, id -> PetPrefs.setGrid(this, grids[id - 200].first) }
+        col.addView(gr)
         col.addView(btn("關閉浮動團絨") { PetPrefs.setEnabled(this, false); PetOverlayService.send(this, PetOverlayService.ACTION_STOP); refresh() })
         col.addView(btn("自啟動／省電白名單設定") { startActivity(Intent(this, PowerGuideActivity::class.java)) })
         col.addView(text("測試", 17f, true))
         col.addView(btn("即刻瞌（模擬 60 分鐘冇互動）") { PetOverlayService.send(this, PetOverlayService.ACTION_DEBUG_DOZE) })
+        col.addView(btn("即刻去玩圖示") { PetOverlayService.send(this, PetOverlayService.ACTION_DEBUG_PLAY) })
         col.addView(btn("返遊戲") { finish() })
         setContentView(ScrollView(this).apply { addView(col, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)) })
     }
