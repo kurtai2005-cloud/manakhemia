@@ -1,0 +1,27 @@
+{"version": 1, "form": "evo_egg", "frameSize": 24, "coords": "frame-local px, origin = frame top-left, y down", "pivotPx": [12, 21], "pivotOverride": {"picked_up": "grab"}, "keys": "head_r = 右上圖示; crack = 裂紋頂點; faceVisible=false（光卵冇 face rig）; grab = 拎點（picked_up pivot）",
+ "anchors":{
+  "idle":[
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6]},
+   {"head_r":[18,6],"faceVisible":false,"face":null,"crack":[13,6]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6]},
+   {"head_r":[18,6],"faceVisible":false,"face":null,"crack":[13,6]}],
+  "glow":[
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6]},
+   {"head_r":[19,5],"faceVisible":false,"face":null,"crack":[13,5]}],
+  "tap":[
+   {"head_r":[19,7],"faceVisible":false,"face":null,"crack":[13,8]},
+   {"head_r":[18,4],"faceVisible":false,"face":null,"crack":[13,4]},
+   {"head_r":[19,7],"faceVisible":false,"face":null,"crack":[13,7]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6]}],
+  "hatch":[
+   {"head_r":[18,6],"faceVisible":false,"face":null,"crack":[12,6]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[14,6]},
+   {"head_r":[19,7],"faceVisible":false,"face":null,"crack":[13,7]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6]}],
+  "picked_up":[
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6],"grab":[12,4]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6],"grab":[12,4]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6],"grab":[12,4]},
+   {"head_r":[19,6],"faceVisible":false,"face":null,"crack":[13,6],"grab":[12,4]}]}}
