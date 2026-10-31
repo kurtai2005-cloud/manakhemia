@@ -25,7 +25,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + qs);
     await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { });
     await E(() => __glimmer.liveLoad); await page.waitForTimeout(400);
-    await E((form) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 1e6; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; s.settings.sound = true; }, form || 'soft');
+    await E((form) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 3600; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; s.settings.sound = true; }, form || 'soft');
     await page.waitForTimeout(300);
   };
   const F = () => E(() => __qa.pet.face());
@@ -46,7 +46,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     f = await F();
     ok(f.live && f.faceVisible && f.pieces.length === 3 && f.placeholder.length === 0 && !f.derived, form + '：真 noface 身體＋eyeL/eyeR/mouth（0 placeholder、用 anchors）', JSON.stringify(f));
     ok(f.stat.draws > 5 && f.stat.tints === f.stat.draws && f.stat.overlays === f.stat.draws, form + '：每次畫寵物 tint 剛好 1 次（overlay 唔加多一次）draws ' + f.stat.draws + ' tints ' + f.stat.tints, JSON.stringify(f.stat));
-    ok(f.bulb && f.bulb.mood === 'happy', form + '：燈泡情緒 happy（需求全滿）', JSON.stringify(f.bulb));
+    if (form === 'sprout') ok(!f.bulb && f.form === 'evo_sprout', 'sprout：evo6 芽崽（evo_sprout）美術冇燈泡 anchor → 唔畫燈泡（跳跳期起先有）', JSON.stringify([f.form, f.bulb]));
+    else ok(f.bulb && f.bulb.mood === 'happy', form + '：燈泡情緒 happy（需求全滿）', JSON.stringify(f.bulb));
     await shot('f1-' + form);
   }
 

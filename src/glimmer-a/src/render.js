@@ -231,6 +231,7 @@
     return c;
   }
   function petSprite(o) {
+    if (o.stage !== 'egg') o = Object.assign({}, o, { stage: D.legacyStage(o.stage) });   // evo6：程序化精靈只分芽崽／成年兩級
     if (o.stage === 'egg') { const p = Math.round(o.prog * 10) / 10; const key = 'egg' + (o.frame % 4) + '_' + p; return petCache[key] || (petCache[key] = genEgg(o.frame % 4, p)); }
     const key = [o.stage, o.form, o.anim, o.frame, o.face].join('|');
     return petCache[key] || (petCache[key] = genPet(o));
@@ -327,7 +328,7 @@
 
   // ───────── 寵物 clip 渲染輔助（真 atlas＋placeholder）─────────
   const DUST_HEAD = [13, -26];                    // 微塵形態冇圖集：程序化精靈嘅 head_r 錨點
-  const formKeyOf = (s) => s.stage === 'adult' ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi') ? 'soft' : 'dust') : 'sprout';   // 螢絨（lumi）暫借柔光 atlas＋螢光 tint（未有專屬美術）
+  const legacyFormKeyOf = (s) => D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi') ? 'soft' : 'dust') : 'sprout';   // 螢絨（lumi）暫借柔光 atlas＋螢光 tint（未有專屬美術）
   // 待定／額外 clip 嘅程序化佔位：用 idle 幀＋簡單變形（dy＝上下、dx＝前後、sx／sy＝縮放）
   function placeholderXform(clip, b, t) {
     const T = { sx: 1, sy: 1, dx: 0, dy: 0 };
@@ -414,13 +415,31 @@
       if (cfg.fx) jobs.push(Promise.all([jget(base + cfg.fx + '.json'), img(base + cfg.fx + '.png')]).then(([json, im]) => { lv.fx = { json, img: im }; }).catch(e => lv.errors.push(String(e.message || e))));   // fx bug（8×8，3 幀，pivot (4,4)）
       return Promise.all(jobs).then(() => { this.lv = Object.keys(lv.atlas).length ? lv : null; this.lvError = lv.errors.length ? lv.errors.join('; ') : null; return this.lv; });
     }
+    // evo6：遊美 art/evo6（atlas_evo_<form>＋face_anchors_evo_<form>）→ 同時做 baked atlas（this.atlas）同生命感 atlas（lv.atlas／lv.anchors）。逐 form 容錯：缺就用舊 form。
+    loadEvo(cfg) {
+      cfg = cfg || P.art.evo; const base = cfg.base; this.evoOK = {}; this.evoAnchors = {}; const errs = [];
+      const img = (src) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error(src)); im.src = src; });
+      const jget = (u) => fetch(u).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); });
+      return Promise.all(D.EVO_FORMS.map(k => Promise.all([jget(base + 'atlas_' + k + '.json'), img(base + 'atlas_' + k + '.png'), jget(base + 'face_anchors_' + k + '.json').catch(() => null)]).then(([json, im, fa]) => {
+        for (const n in json.frames) json.frames[n]._img = im;
+        this.atlas['atlas_' + k] = { json, img: im }; this.evoAnchors[k] = fa ? fa.anchors : null; this.evoOK[k] = true;
+      }).catch(e => errs.push(String(e && e.message || e))))).then(() => { this.evoError = errs.length ? errs.join('; ') : null; this.attachEvoLive(); return this.evoOK; });
+    }
+    attachEvoLive() {                    // live atlas 載完（或冇）都叫：evo form 掛入 lv
+      if (!this.evoOK) return; if (!this.lv) return;
+      for (const k in this.evoOK) { const A = this.atlas['atlas_' + k]; this.lv.atlas[k] = { json: A.json, img: A.img }; if (this.lv.anchors && this.evoAnchors[k]) this.lv.anchors[k] = this.evoAnchors[k]; }
+    }
+    fkOf(s) {                            // 畫用 form key：evo 圖載咗就用 evo form，否則舊 sprout／radiant／soft／dust
+      const ek = D.evoForm(s.stage, s.form);
+      return (P.art.evo && P.art.evo.enabled !== false && this.evoOK && this.evoOK[ek]) ? ek : legacyFormKeyOf(s);
+    }
     liveFrame(fk, name) {               // kit piece／幀：{img,sx,sy,sw,sh,px,py}
       const A = this.lv && this.lv.atlas[fk]; const f = A && A.json.frames[name]; if (!f) return null;
       const pv = f.pivotPx || { x: f.frame.w >> 1, y: f.frame.h >> 1 };
       return { img: f._img || A.img, sx: f.frame.x, sy: f.frame.y, sw: f.frame.w, sh: f.frame.h, px: pv.x, py: pv.y, name };
     }
     liveAnchors(fk, clip, frame, src) {  // 錨點：face_anchors；冇就由 FORMS.headR 推算
-      const L = this.lv && this.lv.anchors && this.lv.anchors[fk] && this.lv.anchors[fk][clip];
+      const AA = (this.lv && this.lv.anchors && this.lv.anchors[fk]) || (this.evoAnchors && this.evoAnchors[fk]), L = AA && AA[clip];
       if (L && L.length) return L[((frame % L.length) + L.length) % L.length];
       const hr = (D.FORMS[fk] || D.FORMS.soft).headR, cx = src.px, cy = src.py;
       return { eyeL: [cx - Math.round(hr[0] * 0.44), cy + Math.round(hr[1] * 0.6)], eyeR: [cx + Math.round(hr[0] * 0.44), cy + Math.round(hr[1] * 0.6)], mouth: [cx, cy + Math.round(hr[1] * 0.4)], head_r: [cx + hr[0], cy + hr[1]], bulb: [cx, cy + Math.round(hr[1] * 1.45)], faceVisible: true, derived: true };
@@ -434,7 +453,7 @@
       return 'neutral';
     }
     bulbGlow(fk, rgb) {                 // bulb_glow × tint（multiply，保留 alpha）；按色快取（量化 8 級）
-      const g = this.liveFrame(fk, 'bulb_glow'); if (!g) return null;
+      const g = this.liveFrame(fk, 'bulb_glow') || this.liveFrame('sprout', 'bulb_glow'); if (!g) return null;   // evo atlas 冇 bulb_glow 件 → 借芽崽 kit
       const q = rgb.map(v => Math.round(v / 8) * 8), key = fk + q.join(','); let c = this.bulbCache[key];
       if (!c) { c = mk(g.sw, g.sh); const x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(g.img, g.sx, g.sy, g.sw, g.sh, 0, 0, g.sw, g.sh);
         x.globalCompositeOperation = 'multiply'; x.fillStyle = 'rgb(' + q.join(',') + ')'; x.fillRect(0, 0, g.sw, g.sh); x.globalCompositeOperation = 'destination-in'; x.drawImage(g.img, g.sx, g.sy, g.sw, g.sh, 0, 0, g.sw, g.sh);
@@ -568,7 +587,7 @@
       let lift = 0;
       if (this.pet.act && t < this.pet.until) {
         anim = this.pet.act; const ph = (this.pet.until - t);
-        if (anim === 'happy') lift = -Math.abs(Math.sin(t * 9)) * (s.stage === 'adult' ? 9 : 5);
+        if (anim === 'happy') lift = -Math.abs(Math.sin(t * 9)) * (D.isBig(s.stage) ? 9 : 5);
       } else this.pet.act = null;
       const fps = anim === 'idle' ? 3.2 : anim === 'sleep' ? 1 : anim === 'unwell' ? 2 : 7;
       let frame;
@@ -710,10 +729,20 @@
       const lift = useBeh ? beh.lift : c.lift;
       // 影子
       x.fillStyle = 'rgba(10,20,20,0.35)';
-      const shw = s.stage === 'adult' ? 24 : s.stage === 'sprout' ? 13 : 12, shl = 1 - Math.min(1, Math.abs(lift) / 18) * 0.35;
+      const efk = this.fkOf(s), efs = D.FORMS[efk] && D.FORMS[efk].evo ? D.FORMS[efk].frameSize : 0;
+      const shw = efs ? Math.round(efs * 0.36) : D.isBig(s.stage) ? 24 : s.stage === 'sprout' ? 13 : 12, shl = 1 - Math.min(1, Math.abs(lift) / 18) * 0.35;
       for (let dy = -3; dy <= 3; dy++) { const w = Math.round(shw * shl * Math.sqrt(1 - dy * dy / 16)); x.fillRect(ox(gx - w), oy(base - 1 + dy), w * 2, 1); }
       let an, sx, sy;
       if (useBeh) this.petDraw = this.drawPetBeh(x, s, view, c, gx, base);
+      else if (s.stage === 'egg' && efs && P.art.useAtlas !== false) {
+        // evo6 光卵：evo_egg（idle／glow／tap；進度 ≥50% 或輕點時 glow；輕點脈衝 tap）
+        const prog = SIM.eggProgress(s), clip = this.eggPulse > 0.3 ? 'tap' : (prog >= 0.5 || this.eggPulse > 0.05) ? 'glow' : 'idle', an2 = this.atlas.atlas_evo_egg.json.animations[clip];
+        let es = this.atlasSrc('atlas_evo_egg', clip, Math.floor(t * (an2.fps || 6)));
+        if (c.hd) { es = this.hd.tintPet(es, { mir: 1, form: null, quality: c.q }); this.faceStat.tints++; }
+        const ex = Math.round(gx - es.px), ey = Math.round(base - es.py + c.lift);
+        x.imageSmoothingEnabled = false; x.drawImage(es.img, es.sx, es.sy, es.sw, es.sh, ox(ex), oy(ey), es.sw, es.sh);
+        this.petDraw = { x: ex, y: ey, w: es.sw, h: es.sh, bud: { x: ex + es.sw / 2, y: ey + es.sh * 0.4 }, footY: base + c.lift, evo: 'evo_egg', clip };
+      }
       else if (s.stage === 'egg' && this.atlasReady && this.atlas.atlas_egg && P.art.useAtlas !== false) {
         // 光卵：遊美 atlas_egg（egg_idle 4 幀／egg_glow 2 幀；進度 ≥50% 或輕點時用 glow）
         const prog = SIM.eggProgress(s), glow = prog >= 0.5 || this.eggPulse > 0.05, clip = glow ? 'egg_glow' : 'egg_idle', an2 = this.atlas.atlas_egg.json.animations[clip];
@@ -737,18 +766,18 @@
       if (c.unwell) { gcol = mixc(gcol, [150, 220, 150], 0.65); gint *= 0.6 + 0.2 * Math.sin(t * 3); }
       if (c.sm > 0.01) { gcol = mixc(gcol, [190, 210, 255], c.sm * 0.8); gint *= 1 - c.sm * 0.55; }
       if (c.wd) gint *= 0.6;
-      const gr = s.stage === 'adult' ? (s.form === 'bright' ? 60 : (s.form === 'soft' || s.form === 'lumi') ? 44 : 28) : s.stage === 'sprout' ? 30 : 34 + this.eggPulse * 16;
+      const gr = (efs && s.stage !== 'egg') ? Math.round(efs * (s.form === 'bright' ? 1.2 : s.form === 'dust' ? 0.62 : 0.95)) + (s.stage === 'elder' ? 4 : 0) : D.isBig(s.stage) ? (s.form === 'bright' ? 60 : (s.form === 'soft' || s.form === 'lumi') ? 44 : 28) : s.stage === 'sprout' ? 30 : 34 + this.eggPulse * 16;
       c.lights.push({ x: pd.bud.x + offs[2][0], y: pd.bud.y, r: gr, col: gcol, a: 0.8 * gint, bud: 1 });
       c.lights.push({ x: gx + offs[2][0], y: pd.footY - pd.h * 0.33, r: gr * 1.4, col: mixc(gcol, [255, 170, 90], 0.4), a: 0.18 * gint });
       c.em.fillStyle = rgb(gcol, 0.9 * Math.min(1, gint)); const bx = Math.round(pd.bud.x + offs[2][0]), by = Math.round(pd.bud.y);
       c.em.fillRect(bx - 2, by - 2, 5, 5);
-      if (s.form === 'bright' && s.stage === 'adult') { c.em.fillRect(bx - 5, by, 11, 1); c.em.fillRect(bx, by - 5, 1, 11); }
+      if (s.form === 'bright' && D.isBig(s.stage)) { c.em.fillRect(bx - 5, by, 11, 1); c.em.fillRect(bx, by - 5, 1, 11); }
       // 便便
       for (let i = 0; i < s.poops; i++) { const p = POOP_SLOTS[i]; x.drawImage(SPR.poop, ox(p[0] - 5), oy(p[1] - 8)); const w = Math.floor(t * 6 + i) % 3; x.fillStyle = '#a8d890'; x.fillRect(ox(p[0] - 3 + w), oy(p[1] - 12 - (w & 1)), 1, 3); x.fillRect(ox(p[0] + 3 - w), oy(p[1] - 11), 1, 3); }
       // 圖集未載入時退回舊 zZz／汗滴
       if (!this.atlasReady) {
-        if (c.anim === 'sleep') { for (let i = 0; i < 3; i++) { const u = ((t * 0.5 + i / 3) % 1); const zx = gx + 14 + u * 16, zy = base - (s.stage === 'adult' ? 52 : 34) - u * 24; x.globalAlpha = Math.sin(u * Math.PI); x.drawImage(SPR.zz, ox(Math.round(zx)), oy(Math.round(zy)), 4 + i, 4 + i); } x.globalAlpha = 1; }
-        if (c.unwell) { const u = (t * 1.2) % 1; x.drawImage(SPR.sweat, ox(gx + (s.stage === 'adult' ? 18 : 10)), oy(Math.round(base - pd.h * 0.55 + u * 8))); }
+        if (c.anim === 'sleep') { for (let i = 0; i < 3; i++) { const u = ((t * 0.5 + i / 3) % 1); const zx = gx + 14 + u * 16, zy = base - (D.isBig(s.stage) ? 52 : 34) - u * 24; x.globalAlpha = Math.sin(u * Math.PI); x.drawImage(SPR.zz, ox(Math.round(zx)), oy(Math.round(zy)), 4 + i, 4 + i); } x.globalAlpha = 1; }
+        if (c.unwell) { const u = (t * 1.2) % 1; x.drawImage(SPR.sweat, ox(gx + (D.isBig(s.stage) ? 18 : 10)), oy(Math.round(base - pd.h * 0.55 + u * 8))); }
       }
       if (view.event) this.drawEventFx(x, view, c, gx);
       // 食物
@@ -797,24 +826,26 @@
     }
     // 畫寵物（atlas clip＋placeholder＋anchor 疊層）。返回 petDraw。
     drawPetBeh(x, s, view, c, gx, base) {
-      const b = view.beh, t = c.t, clip = b.clip, cdef = D.CLIPS[clip], fk = formKeyOf(s), art = P.art, FCP = P.face;
+      const b = view.beh, t = c.t, clip = b.clip, cdef = D.CLIPS[clip], fk = this.fkOf(s), art = P.art, FCP = P.face, EVO = !!(D.FORMS[fk] && D.FORMS[fk].evo);
       const ox = (px) => px + MX, oy = (py) => py + MY;
       const real = cdef.ready || art.usePending;
-      const sc = b.show || { clip, frame: b.frame }, dclip = sc.clip, dframe = sc.frame;
+      const sc = b.show || { clip, frame: b.frame }; let dclip = sc.clip, dframe = sc.frame;
+      if (EVO) { const A0 = this.atlas[D.FORMS[fk].atlas], an0 = A0 && A0.json.animations, fb = D.EVO_CLIP_FALLBACK[dclip];
+        if (an0 && !an0[dclip + '_noface'] && fb && an0[fb + '_noface']) { this.evoFallback = this.evoFallback || {}; this.evoFallback[fk + ':' + dclip] = fb; dclip = fb; } }   // evo6：形態冇呢個 clip → 最近 clip
       let src = null, ph = null, live = null;
       this.faceStat.draws++;
       // F1：生命感 noface 身體（有就用；顯示 clip 可以係 turn_back）
       const lvA = this.lv && FCP.mode !== 'native' && fk !== 'dust' && art.useAtlas !== false ? this.lv.atlas[fk] : null;
       if (lvA) {
         const an = lvA.json.animations, dd = D.CLIPS[dclip];
-        if (dd && (dd.ready || dd.live || art.usePending) && an[dclip + '_noface']) live = { clip: dclip, frame: dframe };
+        if (dd && (dd.ready || dd.live || art.usePending || EVO) && an[dclip + '_noface']) live = { clip: dclip, frame: dframe };
         else if (an.idle_noface) { live = { clip: 'idle', frame: Math.floor(t * 6) }; ph = placeholderXform(clip, b, t); }
         if (live) { const nm = an[live.clip + '_noface'].frames; src = this.liveFrame(fk, nm[((live.frame % nm.length) + nm.length) % nm.length]); if (!src) { live = null; ph = null; } }
       }
       if (src) { /* live */ }
       else if (this.atlasReady && art.useAtlas !== false && fk !== 'dust') {
         const A = this.atlas[D.FORMS[fk].atlas];
-        if (real && A.json.animations[clip]) src = this.atlasSrc(D.FORMS[fk].atlas, clip, b.frame);
+        if ((real || EVO) && A.json.animations[dclip]) src = this.atlasSrc(D.FORMS[fk].atlas, dclip, EVO ? dframe : b.frame);
         if (!src) { src = this.atlasSrc(D.FORMS[fk].atlas, 'idle', Math.floor(t * 6)); ph = placeholderXform(clip, b, t); }
       } else {
         const pa = procAnim(clip), ex = b.expr;
@@ -840,7 +871,7 @@
           const pc = this.liveFrame(fk, name);
           if (pc) { tx.drawImage(pc.img, pc.sx, pc.sy, pc.sw, pc.sh, o0x + at[0] - pc.px, o0y + at[1] - pc.py, pc.sw, pc.sh); return true; }
           fst.placeholder.push(name); tx.fillStyle = FCP.ink;               // 缺件：色塊 placeholder
-          const sm = fk === 'sprout' ? 1 : 2;
+          const sm = (D.FORMS[fk] ? D.FORMS[fk].frameSize : 64) <= 32 ? 1 : 2;
           if (kind === 'eye') tx.fillRect(o0x + at[0] - (sm >> 1), o0y + at[1] - sm, sm, sm + 1); else { tx.fillRect(o0x + at[0] - sm, o0y + at[1], sm * 2, 1); }
           return false;
         };
@@ -853,7 +884,7 @@
         } else this.faceStat.faceHidden++;
         if (fst.placeholder.length) this.faceStat.placeholder++;
         // 燈泡底（喺 tint 之前：跟時段光）；glow 喺 tint 之後（自發光）
-        if (FCP.bulb && FCP.bulb.enabled && anc.bulb && live.clip !== 'sick') { const bb = this.liveFrame(fk, 'bulb_base'); if (bb) tx.drawImage(bb.img, bb.sx, bb.sy, bb.sw, bb.sh, o0x + anc.bulb[0] - bb.px, o0y + anc.bulb[1] - bb.py, bb.sw, bb.sh); }
+        if (FCP.bulb && FCP.bulb.enabled && anc.bulb && live.clip !== 'sick' && !EVO) { const bb = this.liveFrame(fk, 'bulb_base'); if (bb) tx.drawImage(bb.img, bb.sx, bb.sy, bb.sw, bb.sh, o0x + anc.bulb[0] - bb.px, o0y + anc.bulb[1] - bb.py, bb.sw, bb.sh); }
       }
       // 污漬 overlay（dirty 表情：暫無美術，程序化佔位）
       if (D.EXPRESSIONS[b.expr].dirt) {
@@ -865,9 +896,9 @@
       }
       const mir = b.dir < 0 ? -1 : 1, prm = art.playRootMotion;
       // 時段 tint：五官已喺上面合成入 tmpPet → 呢度成個合成只 tint 一次（HD-2D 取代 daylight tint，唔加多一次）
-      if (c.hd) { this.faceStat.tints++; draw = this.hd.tintPet(draw, { mir, form: fk, rimKey: live ? fk + '_live' : fk, frame: draw.name, quality: c.q, lumi: s.form === 'lumi' }); }   // petTint×ambientTint＋rim（唔過 LUT）
-      else if (this.curDL && art.daylight !== false) draw = this.tintSprite(draw, this.curDL, mir, s.form === 'lumi');
-      const rm = (prm && clip === 'play' && real && !ph && prm.frames.indexOf(b.frame) >= 0) ? (fk === 'sprout' ? prm.dx32 : prm.dx64) * mir : 0;   // play 前衝 root-motion（只喺真 clip 幀）
+      if (c.hd) { this.faceStat.tints++; draw = this.hd.tintPet(draw, { mir, form: fk, rimKey: live ? fk + '_live' : fk, frame: draw.name, quality: c.q, lumi: s.form === 'lumi' && !EVO }); }   // evo 螢絨有自己色 → 唔再螢綠 tint   // petTint×ambientTint＋rim（唔過 LUT）
+      else if (this.curDL && art.daylight !== false) draw = this.tintSprite(draw, this.curDL, mir, s.form === 'lumi' && !EVO);
+      const rm = (prm && clip === 'play' && real && !ph && prm.frames.indexOf(b.frame) >= 0) ? ((D.FORMS[fk] ? D.FORMS[fk].frameSize : 64) <= 40 ? prm.dx32 : prm.dx64) * mir : 0;   // play 前衝 root-motion（只喺真 clip 幀）
       const px = Math.round(gx + rm), py = Math.round(base + b.lift + (ph ? ph.dy : 0));
       { const sx = ph ? ph.sx : 1, sy = ph ? ph.sy : 1, w = draw.sw * Math.abs(sx), h = draw.sh * sy, l = px + (ph ? ph.dx * mir : 0) - (mir > 0 ? draw.px : draw.sw - draw.px) * Math.abs(sx); const ob = this.opaqueBox(src); if (ob) { const ax = Math.abs(sx); const l0 = mir > 0 ? ob.l : draw.sw - ob.r; this.petRect = { x: l + l0 * ax, y: py - draw.py * sy + ob.t * sy, w: (ob.r - ob.l) * ax, h: (ob.b - ob.t) * sy, opaque: true }; } else this.petRect = { x: l, y: py - draw.py * sy, w, h, opaque: false }; }   // P2：觸控用真身框（art 座標，未加視差）
       x.save(); x.imageSmoothingEnabled = false;
@@ -880,7 +911,7 @@
         const S = this.bulbS; for (let i = 0; i < 3; i++) S.rgb[i] += (tgt[i] - S.rgb[i]) * kf;
         const pu = m.pulse, it = pu ? pu[1] + (pu[2] - pu[1]) * (0.5 + 0.5 * Math.sin(t * 6.283 / pu[0])) : m.i; S.i += (it - S.i) * kf;
         const gl = this.bulbGlow(fk, s.form === 'lumi' ? [S.rgb[0] * 0.75, 255, S.rgb[2] * 0.55] : S.rgb);   // 螢絨：燈泡偏螢綠
-        if (gl) { x.globalAlpha = Math.max(0, Math.min(1, S.i)); x.drawImage(gl.c, -src.px + anc.bulb[0] - gl.px, -src.py + anc.bulb[1] - gl.py); x.globalAlpha = 1; this.faceStat.bulb++; fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)) }; }
+        if (gl) { x.globalAlpha = Math.max(0, Math.min(1, S.i)); x.drawImage(gl.c, -src.px + anc.bulb[0] - gl.px, -src.py + anc.bulb[1] - gl.py); if (anc.bulb2) x.drawImage(gl.c, -src.px + anc.bulb2[0] - gl.px, -src.py + anc.bulb2[1] - gl.py); x.globalAlpha = 1; this.faceStat.bulb++; fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)) }; }
       }
       x.restore();
       if (b.bug) {                                    // A2 swat 蟲仔 fx：遊美 fx/atlas_fx_live（fx_bug 01→02→03→02，10fps，pivot (4,4)，朝右）；冇就程序化 2×2 點＋1px 翼閃
@@ -898,7 +929,7 @@
         }
         fst.bug = b.bug.st;
       }
-      this.faceStat.last = fst;
+      fst.form = fk; fst.evo = EVO; if (EVO && dclip !== sc.clip) fst.fallbackFrom = sc.clip; this.faceStat.last = fst;
       const top = py - Math.round(src.py * (ph ? ph.sy : 1));
       const bud = (live && anc && anc.bulb) ? { x: px + (anc.bulb[0] - src.px) * mir, y: py - src.py + anc.bulb[1] } : src.bud ? { x: px + (src.bud.x - src.px) * mir, y: py - src.py + src.bud.y } : { x: px, y: top + Math.round(src.sw * 0.17) };
       // anchor 疊層（zzz／heart／sweat／exclaim／question：獨立圖層，按 head_r 錨點，mirror 錨點 x 唔 mirror 圖示）
@@ -1024,7 +1055,7 @@
       const ox = (px) => px + MX, oy = (py) => py + MY;
       const bw = P.mg.basketW, by = P.mg.basketY;
       // 籃子 + 寵物探頭
-      const form = s.form, stage = s.stage === 'egg' ? 'sprout' : s.stage;
+      const form = s.form, stage = s.stage === 'egg' ? 'sprout' : D.legacyStage(s.stage);
       const anim = mg.stun > 0 ? 'unwell' : 'happy';
       const sprite = petSprite({ stage, form, anim: mg.stun > 0 ? 'idle' : 'idle', frame: Math.floor(t * 3) % 3, face: mg.stun > 0 ? 'sad' : 'normal' });
       const an = sprite.anchor, bx = Math.round(mg.basketX);

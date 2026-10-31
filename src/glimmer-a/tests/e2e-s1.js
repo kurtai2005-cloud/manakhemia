@@ -25,7 +25,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await page.evaluate(() => Promise.all([__glimmer.liveLoad, __glimmer.hdReady])); await page.waitForTimeout(300);
     return { ctx, page, E: (fn, a) => page.evaluate(fn, a), shot: async (n) => { await page.waitForTimeout(150); await page.screenshot({ path: OUT + n + '.png' }); console.log('  📷 ' + n); } };
   };
-  const adult = (E, form) => E((form) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 1e6; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; }, form || 'soft');
+  const adult = (E, form) => E((form) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 3600; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; }, form || 'soft');
   const closeModals = (E) => E(() => { for (let i = 0; i < 8; i++) { const m = document.getElementById('modal'); if (!m || m.style.display !== 'flex') break; const b = document.querySelector('#mbox [data-testid=modal-btn-0]'); if (!b) break; b.click(); } });
 
   console.log('# P1-1 ⚙️／📖 熱區 ≥44 CSS px');

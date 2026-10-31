@@ -66,11 +66,24 @@
       else if (e.type === 'wake') { toast('團絨瞓醒咗，精神晒！'); SND('sleep', { on: false }); }
       else if (e.type === 'hatch') {
         SND('hatch'); rd.flash = 1.2; rd.burst('spark', R.CX, R.GROUND_Y - 24, 14, 90);
-        modal({ title: '孵化咗！', kind: 'hatch', lines: ['光卵裂開，一團暖暖嘅絨球探出頭嚟。', '佢係「團絨」，頭頂有撮會發光嘅小絨芽。', '餵食、玩耍、清潔、關燈瞓覺——慢慢陪佢長大。'], onClose: () => { rd.act('celebrate', 1.0); } });
+        modal({ title: '孵化咗！', kind: 'hatch', lines: ['光卵裂開，一粒細細嘅絨點碌咗出嚟，望住你一面「我好醒㗎」。', '佢係「團絨」，而家仲係絨點仔——蠢蠢地，但自己覺得好叻。', '餵食、玩耍、清潔、關燈瞓覺——慢慢陪佢長大。'], onClose: () => { rd.act('celebrate', 1.0); } });
       } else if (e.type === 'evolve') {
         SND('evolve'); rd.flash = 1.4; rd.burst('spark', R.CX, R.GROUND_Y - 40, 18, 110);
         const t = { bright: ['燦光形態！', '絨芽放射出光芒，你照顧得好好，佢成為最亮嘅守夜者。'], soft: ['柔光形態', '圓潤又溫柔，伴你度過每個夜晚。'], dust: ['微塵形態', '素素地都好靚。呢個唔係失敗結局，日後可以再重養。'], lumi: ['螢絨形態（隱藏）', '你陪佢喺夜晚追過螢火，佢身上嘅絨毛開始發出淡淡螢光。'] }[e.form] || [D.FORM_NAME[e.form] || e.form, ''];
         modal({ title: '成長為守夜者：' + t[0], kind: 'evolve', lines: [t[1], '（照顧品質 CQ ＝ ' + Math.round(e.cq) + '）'], onClose: () => rd.act('celebrate', 1.0) });
+      } else if (e.type === 'grow') {               // evo6：絨點 → 芽崽 → 跳跳期
+        SND('evolve'); rd.flash = 1.0; rd.burst('spark', R.CX, R.GROUND_Y - 30, 12, 90);
+        const t = { sprout: ['長成芽崽！', '頭頂撮絨芽企咗起身。佢自己覺得：「我已經大個仔，乜都識。」（其實未識）'], juvenile: ['跳跳期！', '成日跳嚟跳去，跳完又扮冇事。佢深信自己係全花園最醒嗰隻。'] }[e.stage] || [D.STAGE_NAME[e.stage], ''];
+        modal({ title: t[0], kind: 'grow', lines: [t[1]], onClose: () => rd.act('celebrate', 1.0) });
+      } else if (e.type === 'elder') {
+        SND('evolve'); rd.flash = 1.0;
+        modal({ title: '成為靜光：' + (D.FORM_NAME[e.form] || ''), kind: 'elder', lines: ['佢慢落嚟，成日坐喺度發住柔光，好似諗緊好深奧嘅嘢（其實諗緊食乜）。', '靜光期會陪你多幾日，之後會化光，留低一份紀念。'], onClose: () => rd.act('celebrate', 1.0) });
+      } else if (e.type === 'fadeReady') {
+        modal({ title: '佢準備好化光', kind: 'fade', lines: ['佢已經陪你行完成段路，身上嘅光愈來愈輕。', '化光唔係告別：佢會留低一份紀念，然後花圃會出現一粒新嘅光卵。'],
+          buttons: [{ text: '陪佢化光', primary: true, onClick: () => { setTimeout(() => { if (G.fade) G.fade(); }, 0); } }, { text: '再陪多陣' }] });
+      } else if (e.type === 'fade') {
+        SND('hatch'); rd.flash = 1.6; rd.burst('spark', R.CX, R.GROUND_Y - 40, 22, 120);
+        modal({ title: '化光', kind: 'fadeDone', lines: ['佢化成好多細細粒光點，飄上天之前仲回頭扮咗個好醒嘅樣。', '紀念：第 ' + e.memorial.gen + ' 代・' + (D.FORM_NAME[e.memorial.form] || '') + '。新嘅光卵已經喺花圃度。'] });
       }
     }
   }
@@ -202,7 +215,7 @@
     grp('快進（線上）', [['+1h', () => G.fastForward(3600), 'ff-1'], ['+6h', () => G.fastForward(6 * 3600), 'ff-6'], ['+24h', () => G.fastForward(24 * 3600), 'ff-24']]);
     grp('模擬離線', [['6h', () => G.simOffline(6), 'off-6'], ['12h', () => G.simOffline(12), 'off-12'], ['30h', () => G.simOffline(30), 'off-30']]);
     grp('需求', [['全滿', () => { for (const k of D.NEED_KEYS) s().needs[k] = 100; }, 'n-100'], ['全 50', () => { for (const k of D.NEED_KEYS) s().needs[k] = 50; }, 'n-50'], ['飽腹 10', () => { s().needs.hunger = 10; }, 'n-h10'], ['全 25', () => { for (const k of D.NEED_KEYS) s().needs[k] = 25; }, 'n-25'], ['精力 30', () => { s().needs.energy = 30; }, 'n-e30']]);
-    grp('CQ / 階段', [['CQ 80', () => { s().cq = 80; }, 'cq-80'], ['CQ 55', () => { s().cq = 55; }, 'cq-55'], ['CQ 20', () => { s().cq = 20; }, 'cq-20'], ['芽崽將完成', () => { if (s().stage === 'sprout') s().growthSec = P.stageSec.sprout - 5; }, 'near-adult'], ['孵化', () => { if (s().stage === 'egg') s().growthSec = P.stageSec.egg - 1; }, 'hatch']]);
+    grp('CQ / 階段', [['CQ 80', () => { s().cq = 80; }, 'cq-80'], ['CQ 55', () => { s().cq = 55; }, 'cq-55'], ['CQ 20', () => { s().cq = 20; }, 'cq-20'], ['芽崽將完成', () => { if (P.stageSec[s().stage] && s().stage !== 'egg') s().growthSec = P.stageSec[s().stage] - 5; }, 'near-adult'], ['孵化', () => { if (s().stage === 'egg') s().growthSec = P.stageSec.egg - 1; }, 'hatch']]);
     grp('本地時刻', [['04', () => G.hourOverride = 4, 'h-4'], ['09', () => G.hourOverride = 9, 'h-9'], ['14', () => G.hourOverride = 14, 'h-14'], ['18', () => G.hourOverride = 18, 'h-18'], ['23', () => G.hourOverride = 23, 'h-23'], ['實時', () => G.hourOverride = null, 'h-real']]);
     const needSet = (o) => () => { Object.assign(s().needs, { hunger: 80, mood: 80, clean: 80, energy: 80 }, o); s().poops = 0; };
     grp('表情（設需求）', [['開心', needSet({ hunger: 100, mood: 100, clean: 100, energy: 100 }), 'dbg-ex-happy'], ['平靜', needSet({ hunger: 60, mood: 60, clean: 60, energy: 60 }), 'dbg-ex-neutral'], ['肚餓', needSet({ hunger: 20 }), 'dbg-ex-hungry'], ['疲倦', needSet({ energy: 20 }), 'dbg-ex-tired'], ['想玩', needSet({ mood: 20 }), 'dbg-ex-bored'], ['污糟', needSet({ clean: 20 }), 'dbg-ex-dirty'], ['不適', needSet({ hunger: 3 }), 'dbg-ex-unwell']]);
@@ -310,12 +323,12 @@
     }
     // 階段標籤
     const unwell = SIM.isUnwell(s);
-    const sn = D.STAGE_NAME[s.stage]; const sub = s.stage === 'egg' ? '輕點光卵，叫佢發亮' : s.stage === 'sprout' ? D.SPROUT_SUB : D.FORM_NAME[s.form] + '形態';
+    const sn = D.STAGE_NAME[s.stage]; const sub = s.stage === 'egg' ? '輕點光卵，叫佢發亮' : D.STAGE_SUB[s.stage] ? D.STAGE_SUB[s.stage] : (D.FORM_NAME[s.form] + '形態' + (s.fadeReady ? ' · 準備化光' : ''));
     const chip = sn + '|' + sub + '|' + unwell + '|' + Math.round(SIM.stageProgress(s) * 100) + '|' + s.withdrawn.on;
     if (lastVals.chip !== chip) {
       lastVals.chip = chip; $('#stagename').textContent = sn;
       $('#substage').textContent = sub + (unwell ? ' · 不適' : s.withdrawn.on ? ' · 睏倦退縮' : '');
-      $('#progf').style.width = Math.round(SIM.stageProgress(s) * 100) + '%'; $('#prog').style.display = s.stage === 'adult' ? 'none' : 'block';
+      $('#progf').style.width = Math.round(SIM.stageProgress(s) * 100) + '%'; $('#prog').style.display = s.fadeReady ? 'none' : 'block';
     }
     const dn = s.evs && s.evs.diary ? s.evs.diary.length : 0; if (lastVals.dn !== dn) { lastVals.dn = dn; const bd = $('#diaryN'); bd.textContent = dn; bd.style.display = dn ? 'block' : 'none'; }
     const gr = '✦ ' + s.grains; if (lastVals.gr !== gr) { lastVals.gr = gr; $('#grains').textContent = gr; }
@@ -337,7 +350,7 @@
     else { const lk = SIM.lowestNeed(s); if (s.needs[lk] < 30) msg = { hunger: '好肚餓…', mood: '悶悶地…', clean: '污糟糟…', energy: '好眼瞓…' }[lk]; else if (s.poops >= 2) msg = '有便便呀…'; }
     const b = $('#bubble');
     if (msg !== lastBubble) { lastBubble = msg; b.textContent = msg; b.style.display = msg ? 'block' : 'none'; }
-    if (msg && rd.petDraw) { const top = (rd.petDraw.y + (s.stage === 'adult' ? 6 : 14)) * 2; b.style.top = Math.max(150, top - 40) + 'px'; }
+    if (msg && rd.petDraw) { const top = (rd.petDraw.y + (D.isBig(s.stage) ? 6 : 14)) * 2; b.style.top = Math.max(150, top - 40) + 'px'; }
     if (G.debug) refreshDbg();
   };
 

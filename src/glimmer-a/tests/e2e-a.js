@@ -21,7 +21,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const shot = async (n) => { await page.waitForTimeout(200); await page.screenshot({ path: OUT + 'a-' + n + '.png' }); console.log('  📷 a-' + n); };
   const fresh = async (qs, init) => {           // 清存檔 → 載入 → 設成「柔光成體、需求全滿」
     await page.goto(BASE + '?' + qs); await page.evaluate(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + qs); await page.waitForTimeout(700);
-    await E(() => { const s = __glimmer.state; s.stage = 'adult'; s.form = 'soft'; s.growthSec = 1e6; Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; s.settings.sound = true; });
+    await E(() => { const s = __glimmer.state; s.stage = 'adult'; s.form = 'soft'; s.growthSec = 3600; Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; s.settings.sound = true; });
     if (init) await E(init);
   };
   const Q = (f, a) => E(f, a);
@@ -31,7 +31,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await fresh('debug=1&q=high&hour=13&seed=7&ev=0');
   ok(await E(() => __glimmer.renderer.atlasReady === true), '遊美真 atlas 載入（atlasReady）');
   const at = await E(() => Object.fromEntries(Object.entries(__glimmer.renderer.atlas).map(([k, v]) => [k, [v.img.naturalWidth, v.img.naturalHeight]])));
-  ok(Object.keys(at).sort().join() === 'atlas_egg,atlas_events,atlas_props,atlas_radiant,atlas_soft,atlas_sprout' && Object.values(at).every(([w, h]) => w <= 1024 && h <= 1024), 'atlas 全部 ≤1024×1024（含 atlas_egg）', JSON.stringify(at));
+  ok(Object.keys(at).filter(k => !/^atlas_evo_/.test(k)).sort().join() === 'atlas_egg,atlas_events,atlas_props,atlas_radiant,atlas_soft,atlas_sprout' && Object.keys(at).filter(k => /^atlas_evo_/.test(k)).length === 12 && Object.values(at).every(([w, h]) => w <= 1024 && h <= 1024), 'atlas 全部 ≤1024×1024（含 atlas_egg）', JSON.stringify(at));
   const urls = await page.evaluate(() => performance.getEntriesByType('resource').map(r => r.name));
   ok(!urls.some(u => /pet_tuanrong_atlas/.test(u)), '網絡請求冇舊 2048 pet_tuanrong_atlas');
   ok(await E(() => typeof __qa.pet.step === 'function' && __qa.pet.seed === 7 && Array.isArray(__qa.pet.log)), '__qa.pet 暴露：seed／log／step／clock');
@@ -232,9 +232,9 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await fresh('debug=1&q=high&hour=13&seed=7&ev=0');
   await E(() => { const s = __glimmer.state; s.stage = 'egg'; s.form = null; s.growthSec = 10; });
   await page.waitForTimeout(600);
-  const eg = await E(() => ({ w: __glimmer.renderer.petDraw.w, h: __glimmer.renderer.petDraw.h, atlas: !!__glimmer.renderer.atlas.atlas_egg }));
-  ok(eg.atlas && eg.w === 32 && eg.h === 32, '光卵用 atlas_egg 幀（32×32）繪畫', JSON.stringify(eg)); await shot('egg');
-  await E(() => { const s = __glimmer.state; s.growthSec = 1e6; s.stage = 'adult'; s.form = 'soft'; });
+  const eg = await E(() => ({ w: __glimmer.renderer.petDraw.w, h: __glimmer.renderer.petDraw.h, atlas: !!__glimmer.renderer.atlas.atlas_egg, evo: __glimmer.renderer.petDraw.evo }));
+  ok(eg.atlas && eg.evo === 'evo_egg' && eg.w === 24 && eg.h === 24, '光卵用 evo6 atlas_evo_egg 幀（24×24）繪畫（evo6 取代舊 atlas_egg 32px；?evo=0 先用返舊）', JSON.stringify(eg)); await shot('egg');
+  await E(() => { const s = __glimmer.state; s.growthSec = 3600; s.stage = 'adult'; s.form = 'soft'; });
   await fresh('debug=1&q=high&hour=10&seed=7&ev=0');
   const fl = await E(() => { const E = __glimmer.state.evs; Glimmer.events.setFlashDay(__glimmer.state, true); __glimmer.state.evs.lastAt = -1e9; __glimmer.forceEvent('flash'); return { c: __qa.pet.claimedFlashDates(), t: __qa.pet.flashToday(), l: __qa.pet.eventLog().map(x => x.id) }; });
   ok(fl.c.length === 1 && fl.t.claimed && fl.l.includes('flash'), '閃光日觸發 → claimedFlashDates 記日期、claimed=true', JSON.stringify(fl));

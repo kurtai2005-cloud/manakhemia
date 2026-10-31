@@ -19,7 +19,7 @@ const BEFORE = process.env.BEFORE || 'http://localhost:8139/index.html', AFTER =
       const page = await ctx.newPage(); const cdp = await ctx.newCDPSession(page);
       await page.goto(base + '?debug=1&hour=13&seed=11&ev=0&q=' + q + (extra.includes('scene') ? extra : '&scene=H2' + extra));
       await page.waitForFunction(() => window.__glimmer && __glimmer.renderer && __glimmer.state, null, { timeout: 20000 });
-      await page.evaluate(() => { const s = __glimmer.state; s.stage = 'adult'; s.form = 'soft'; s.growthSec = 1e6; Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; });
+      await page.evaluate(() => { const s = __glimmer.state; s.stage = 'adult'; s.form = 'soft'; s.growthSec = 3600; Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; });
       await page.waitForTimeout(1500);
       await cdp.send('Emulation.setCPUThrottlingRate', { rate });
       const runs = []; for (let i = 0; i < 3; i++) runs.push(await page.evaluate((q) => __glimmer.bench(q, 120), q));

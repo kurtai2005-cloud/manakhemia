@@ -41,7 +41,7 @@ console.log('# 純邏輯（Node）');
     await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + qs);
     await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad && __glimmer.hdReady).catch(() => { });
     await E(() => Promise.all([__glimmer.liveLoad, __glimmer.hdReady])); await page.waitForTimeout(300);
-    await E((form) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 1e6; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; }, form || 'soft');
+    await E((form) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 3600; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; }, form || 'soft');
     await page.waitForTimeout(300);
   };
   const closeModals = () => E(() => { for (let i = 0; i < 8; i++) { const m = document.getElementById('modal'); if (m.style.display !== 'flex') break; const b = document.querySelector('#mbox [data-testid=modal-btn-0]'); if (!b) break; b.click(); } });

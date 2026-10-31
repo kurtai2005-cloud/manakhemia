@@ -36,3 +36,19 @@ for form in ('sprout', 'radiant', 'soft'):
     json.dump({'frames': fr, 'meta': {'image': f'rim_{form}_live.png', 'size': J['meta']['size'], 'sourceAtlas': f'liveliness/atlas_{form}_live.json',
                'encoding': 'edge 1px inner; R=nx*0.5+0.5, G=ny*0.5+0.5, B=255; scaleX -1 → flip nx'}}, open(os.path.join(RIM, f'rim_{form}_live.json'), 'w'), separators=(',', ':'))
     print(form, len(fr), 'frames')
+# evo6：art/evo6/atlas_evo_<x>.json（遊美 batch A–E）→ art/rim/rim_evo_<x>_live.png/json（同算法；evo_egg 冇 noface 幀，唔做）
+EVO = os.path.join(ROOT, 'art', 'evo6')
+for fn in sorted(os.listdir(EVO)) if os.path.isdir(EVO) else []:
+    if not (fn.startswith('atlas_evo_') and fn.endswith('.json')): continue
+    form = fn[len('atlas_'):-len('.json')]; J = json.load(open(os.path.join(EVO, fn)))
+    if not any('_noface' in k for k in J['frames']): continue
+    img = np.asarray(Image.open(os.path.join(EVO, J['meta']['image'])).convert('RGBA'))
+    out = np.zeros_like(img); fr = {}
+    for k, f in J['frames'].items():
+        if '_noface' not in k: continue
+        r = f['frame']; x, y, w, h = r['x'], r['y'], r['w'], r['h']
+        out[y:y+h, x:x+w] = encode(*rim_frame(img[y:y+h, x:x+w, 3])); fr[k] = {'frame': r}
+    Image.fromarray(out, 'RGBA').save(os.path.join(RIM, f'rim_{form}_live.png'), optimize=True)
+    json.dump({'frames': fr, 'meta': {'image': f'rim_{form}_live.png', 'size': J['meta']['size'], 'sourceAtlas': f'evo6/{fn}',
+               'encoding': 'edge 1px inner; R=nx*0.5+0.5, G=ny*0.5+0.5, B=255; scaleX -1 → flip nx'}}, open(os.path.join(RIM, f'rim_{form}_live.json'), 'w'), separators=(',', ':'))
+    print(form, len(fr), 'frames')

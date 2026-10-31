@@ -18,6 +18,7 @@
   // 低端機判定（預設畫質 low）：核心數或記憶體偏低
   G.lowEnd = function () { const Q = P.quality, n = navigator, hc = n.hardwareConcurrency, dm = n.deviceMemory; return (hc != null && hc <= Q.lowEndCores) || (dm != null && dm <= Q.lowEndMemGB); };
 
+  SIM.setHourFn(() => (G.hour ? G.hour() : new Date().getHours()));   // evo6：夜晚照顧（17:00–07:00）用遊戲本地鐘
   // ── 存檔 ──
   function load() {
     let s = null, rep = null;
@@ -32,6 +33,22 @@
   G.resetSave = function () { try { localStorage.removeItem(P.saveKey); } catch (e) { } window.__noSaveOnHide = true; location.reload(); };
   G.setQuality = function (q) { G.state.settings.quality = q; G.renderer.blurEvery = 1; G.save(); };
   G.fastForward = function (sec) { SIM.advance(G.state, sec, {}, 30); };
+  // ── evo6 ──
+  G.fade = function () { const r = SIM.fade(G.state, G.now()); G.save(); return r; };
+  G.evo = {
+    info() { const s = G.state, fk = G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; return { stage: s.stage, form: s.form, evoForm: D.evoForm(s.stage, s.form), drawForm: fk, gen: s.gen, fadeReady: !!s.fadeReady, growthH: +(s.growthSec / 3600).toFixed(3), stageH: P.stageSec[s.stage] / 3600, progress: +SIM.stageProgress(s).toFixed(4), lumi: SIM.lumiCheck(s), care: SIM.careShare(s), migrated: s.migrated || null, memorial: s.memorial }; },
+    // 浮動 overlay：只傳大細（Kotlin 照讀 form；sizeDp／size／pivot 係新欄）
+    overlayInfo() { const s = G.state, ek = D.evoForm(s.stage, s.form), F = D.FORMS[ek], fs = F ? F.frameSize : 32;
+      return { stage: s.stage, form: s.stage === 'egg' ? 'egg' : D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : 'soft') : 'sprout', evoForm: ek, size: fs, pivot: [fs / 2, fs - 3], sizeDp: Math.round(fs * P.overlayDpPerPx) }; },
+    setStage(st, branch) {          // DEV：跳去某階段（成年／靜光可指定分支）；保留需求，成長歸零
+      const s = G.state; if (!D.STAGES.includes(st)) throw new Error('evo.setStage: ' + st);
+      if (branch && !['bright', 'soft', 'dust', 'lumi'].includes(branch)) throw new Error('evo.setStage branch: ' + branch);
+      s.stage = st; s.growthSec = 0; s.fadeReady = false; s.sleeping = false;
+      s.form = D.isBig(st) ? (branch || s.form || 'soft') : null;
+      if (st !== 'egg' && s.needs.hunger <= 0) s.needs = Object.assign({}, P.startNeedsSprout);
+      G.save(); return this.info(); },
+    next() { const s = G.state; if (s.stage === 'elder') { s.growthSec = P.stageSec.elder; SIM.checkStage(s); return this.info(); } s.growthSec = P.stageSec[s.stage]; SIM.checkStage(s); G.save(); return this.info(); },   // DEV：下一階段（照正常規則判分支）
+  };
   G.simOffline = function (h) { G.state.lastSeen = G.now() - h * 3600e3; const rep = SIM.applyOffline(G.state, G.now()); G.save(); UI.showSummary(rep); return rep; };
 
   // ── 縮放（整數倍像素）──
@@ -76,6 +93,10 @@
     Object.keys(D.CLIPS).filter(k => D.CLIPS[k].live).forEach(k => { D.CLIPS[k].ready = !!(lv && ['sprout', 'radiant', 'soft'].every(f => lv.atlas[f] && lv.atlas[f].json.animations[k + '_noface'])); });   // turn_back＋第二段 7 clip（live atlas 有先 ready）
     G.liveReady = !!lv; return lv;
   }) : Promise.resolve(null);
+  // evo6：遊美 evo 形態 atlas（?evo=0 停用）；live atlas 載完先掛入 lv（evo form 有齊 std23＋生命感 clip）
+  if (qs.get('evo') === '0') P.art.evo.enabled = false;
+  G.evoReady = false;
+  G.evoLoad = P.art.evo.enabled ? Promise.all([G.renderer.loadEvo(P.art.evo), G.liveLoad.catch(() => null)]).then(() => { G.renderer.attachEvoLive(); G.evoReady = Object.keys(G.renderer.evoOK || {}).length > 0; }) : Promise.resolve();
   G.liveSettled = false; G.liveLoad.then(() => { G.liveSettled = true; }, () => { G.liveSettled = true; });   // s3：重逢等 live atlas 載完先衝（rush 用真 clip）
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
   if (NS.hd2d) NS.hd2d.install(G, NS);
@@ -86,6 +107,8 @@
   if (boot.rep && boot.rep.show) UI.showSummary(boot.rep);
   G.save();
   G.bootReport = boot.rep;
+  if (G.state.fadeReady && G.state.stage === 'elder') G.state.ev.push({ type: 'fadeReady', form: G.state.form });   // evo6：上次揀「再陪多陣」→ 下次開 app 再問
+  if (G.state.migrated && !G.state.migrated.told) { G.state.migrated.told = true; setTimeout(() => UI.toast('團絨而家係「' + D.STAGE_NAME[G.state.stage] + '」階段（成長表更新咗）'), 1200); }
 
   // ── 主迴圈 ──
   let last = performance.now(), saveT = 0;
@@ -256,7 +279,7 @@
     // ── 生命感第一段（F1／F2／D2）──
     tap(x, y) { BEH.tap(G.beh, 'pet', x, y == null ? -20 : y); },               // 指定觸點（相對地面中心 CX／GROUND_Y，art px）
     gaze() { const L = G.beh.look; return { q: L.q, ql: L.ql, src: L.src, x: +L.x.toFixed(3), y: +L.y.toFixed(3), tx: +L.tx.toFixed(3), ty: +L.ty.toFixed(3), force: L.force, dir: G.beh.dir, turn: G.beh.turn ? Object.assign({}, G.beh.turn) : null }; },
-    face() { const f = G.beh.face, r = G.renderer, l = r.faceStat.last || {}; return { eyes: f.eyes, mouth: f.mouth, gaze: f.gaze, closed: f.closed, clip: f.clip, frame: f.frame, blink: f.blink, mode: P.face.mode, live: !!l.live, bugArt: l.bugArt, liveReady: !!G.liveReady, liveError: r.lvError, drawnClip: l.clip, drawnFrame: l.frame, faceVisible: !!l.faceVisible, pieces: l.eyes ? l.eyes.concat([l.mouth]) : [], placeholder: (l.placeholder || []).slice(), derived: !!l.derived, bulb: l.bulb || null, stat: { draws: r.faceStat.draws, tints: r.faceStat.tints, overlays: r.faceStat.overlays, faceDrawn: r.faceStat.faceDrawn, faceHidden: r.faceStat.faceHidden, placeholder: r.faceStat.placeholder, bulb: r.faceStat.bulb } }; },
+    face() { const f = G.beh.face, r = G.renderer, l = r.faceStat.last || {}; return { eyes: f.eyes, mouth: f.mouth, gaze: f.gaze, closed: f.closed, clip: f.clip, frame: f.frame, blink: f.blink, mode: P.face.mode, live: !!l.live, bugArt: l.bugArt, liveReady: !!G.liveReady, liveError: r.lvError, drawnClip: l.clip, drawnFrame: l.frame, faceVisible: !!l.faceVisible, pieces: l.eyes ? l.eyes.concat([l.mouth]) : [], placeholder: (l.placeholder || []).slice(), derived: !!l.derived, bulb: l.bulb || null, form: l.form || null, evo: !!l.evo, fallbackFrom: l.fallbackFrom || null, stat: { draws: r.faceStat.draws, tints: r.faceStat.tints, overlays: r.faceStat.overlays, faceDrawn: r.faceStat.faceDrawn, faceHidden: r.faceStat.faceHidden, placeholder: r.faceStat.placeholder, bulb: r.faceStat.bulb } }; },
     setGaze(q) { G.beh.look.force = q || null; return q; },
     hitBox() {                                          // P2：寵物觸控區（art 座標＋CSS px 尺寸）
       const h = NS.ui.petHitBox ? NS.ui.petHitBox() : null; if (!h) return null; const r = canvas.getBoundingClientRect(), k = r.width / R.W;

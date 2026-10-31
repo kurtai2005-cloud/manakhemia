@@ -30,8 +30,10 @@
   // ── 新存檔 ──
   function newState(nowMs, seed) {
     return {
-      v: 1, createdAt: nowMs, lastSeen: nowMs, seed: seed || (nowMs % 1e9),
+      v: 2, createdAt: nowMs, lastSeen: nowMs, seed: seed || (nowMs % 1e9),
       stage: 'egg', form: null,
+      gen: 1, memorial: [], fadeReady: false,   // evo6：第幾代；化光紀念；靜光完咗等玩家確認化光
+      evo: { evIn: {}, care: {} },                // evo6：各階段事件次數（evIn[stage][id]）＋照顧次數（care[stage]={all,night}）
       needs: { hunger: 100, mood: 100, clean: 100, energy: 100 },
       sleeping: false, poops: 0, poopTimer: 0,
       growthSec: 0, ageSec: 0,
@@ -72,21 +74,69 @@
     return cq >= P.branchBright ? 'bright' : cq >= P.branchSoft ? 'soft' : 'dust';
   }
 
+  // ── evo6 六階段（pet-template-v1 §6）：egg 光卵 → newborn 絨點 → sprout 芽崽 → juvenile 跳跳期 →（分支）adult 守夜者 → elder 靜光 →（玩家確認）化光 ──
+  const STAGES = ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'];
+  const EV6 = P.evo6;
+  const nextStage = (st) => STAGES[STAGES.indexOf(st) + 1] || null;
+  function evoOf(s) { if (!s.evo || typeof s.evo !== 'object') s.evo = { evIn: {}, care: {} }; s.evo.evIn = s.evo.evIn || {}; s.evo.care = s.evo.care || {}; return s.evo; }
+  let hourFn = null;                                     // 本機鐘點（main 設做遊戲時鐘 G.hour；Node 測試可注入）
+  function setHourFn(fn) { hourFn = typeof fn === 'function' ? fn : null; }
+  function nowHour() { return hourFn ? hourFn() : new Date().getHours() + new Date().getMinutes() / 60; }
+  function isNightHour(h) { return h >= EV6.nightFrom || h < EV6.nightTo; }
+  // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night
+  function noteCare(s, h) {
+    if (s.stage === 'egg') return; const E = evoOf(s), c = E.care[s.stage] || (E.care[s.stage] = { all: 0, night: 0 });
+    c.all++; if (isNightHour(h == null ? nowHour() : h)) c.night++;
+  }
+  function noteEvent(s, id) { if (!s || s.stage === 'egg') return; const E = evoOf(s), m = E.evIn[s.stage] || (E.evIn[s.stage] = {}); m[id] = (m[id] || 0) + 1; }   // events.js trigger 掛
+  function careShare(s) {                                // 夜晚照顧佔比（careStages＝芽崽＋跳跳期）
+    const E = evoOf(s); let all = 0, night = 0; EV6.careStages.forEach(st => { const c = E.care[st]; if (c) { all += c.all; night += c.night; } });
+    return { all, night, share: all ? night / all : 0 };
+  }
+  function lumiCheck(s) {                                // 螢絨三條件
+    const E = evoOf(s), ev = EV6.lumiEvStages.reduce((a, st) => a + ((E.evIn[st] && E.evIn[st][EV6.lumiEvent]) || 0), 0), cs = careShare(s);
+    const r = { firefly: ev, fireflyOk: ev > 0, cq: s.cq, cqOk: s.cq >= EV6.lumiCQ, night: +cs.share.toFixed(3), nightAll: cs.all, nightOk: cs.all > 0 && cs.share >= EV6.lumiNightShare };
+    r.ok = r.fireflyOk && r.cqOk && r.nightOk; return r;
+  }
+  function decideBranch(s) {                             // 次序：螢絨 → 燦光（CQ≥70）→ 柔光（CQ≥40）→ 微塵
+    const L = lumiCheck(s); if (L.ok) return { form: 'lumi', why: 'lumi', lumi: L };
+    const f = decideForm(s.cq); return { form: f, why: 'cq', lumi: L };
+  }
+  function enterStage(s, st) {
+    s.stage = st;
+    if (st === 'newborn') { s.form = null; s.needs = Object.assign({}, P.startNeedsSprout); s.cq = P.cqStart; s.cqTimer = 0; s.stats.hatches++; s.ev.push({ type: 'hatch' }); return; }
+    if (st === 'sprout' || st === 'juvenile') { s.ev.push({ type: 'grow', stage: st, cq: s.cq }); return; }
+    if (st === 'adult') { const d = decideBranch(s); s.form = d.form; s.ev.push({ type: 'evolve', form: s.form, cq: s.cq, why: d.why, lumi: d.lumi }); s.cq = P.cqStart; s.cqTimer = 0; return; }
+    if (st === 'elder') { s.ev.push({ type: 'elder', form: s.form }); }
+  }
   function checkStage(s) {
-    if (s.stage === 'egg' && s.growthSec >= P.stageSec.egg) {
-      s.growthSec -= P.stageSec.egg;
-      s.stage = 'sprout'; s.form = null;
-      s.needs = Object.assign({}, P.startNeedsSprout);
-      s.cq = P.cqStart; s.cqTimer = 0; s.stats.hatches++;
-      s.ev.push({ type: 'hatch' });
+    for (let g = 0; g < 8; g++) {
+      const sec = P.stageSec[s.stage]; if (sec == null || s.growthSec < sec) return;
+      if (s.stage === 'elder') {                         // 靜光完：唔自動消失，等玩家確認化光（無壞結局）
+        s.growthSec = sec; if (!s.fadeReady) { s.fadeReady = true; s.ev.push({ type: 'fadeReady', form: s.form }); } return;
+      }
+      s.growthSec -= sec; enterStage(s, nextStage(s.stage));
     }
-    if (s.stage === 'sprout' && s.growthSec >= P.stageSec.sprout) {
-      s.growthSec -= P.stageSec.sprout;
-      s.stage = 'adult';
-      s.form = decideForm(s.cq);
-      s.ev.push({ type: 'evolve', form: s.form, cq: s.cq });
-      s.cq = P.cqStart; s.cqTimer = 0;
-    }
+  }
+  // 化光：留低紀念（形態／代數／照顧數），生一粒新光卵（gen+1）；需求／CQ 重設，光粒／設定／統計保留
+  function fade(s, nowMs) {
+    if (s.stage !== 'elder' || !s.fadeReady) return { ok: false, reason: 'notReady' };
+    const m = { gen: s.gen || 1, form: s.form, at: nowMs || Date.now(), ageSec: Math.round(s.ageSec) };
+    s.memorial = (s.memorial || []).concat([m]); s.gen = (s.gen || 1) + 1;
+    s.stage = 'egg'; s.form = null; s.growthSec = 0; s.fadeReady = false; s.sleeping = false; s.poops = 0; s.poopTimer = 0;
+    s.needs = { hunger: 100, mood: 100, clean: 100, energy: 100 }; s.cq = P.cqStart; s.cqTimer = 0; s.withdrawn = { on: false, fed: false, played: false };
+    s.evo = { evIn: {}, care: {} };
+    s.ev.push({ type: 'fade', memorial: m });
+    return { ok: true, memorial: m };
+  }
+  // 舊存檔（v1：egg／sprout 24h／adult）→ evo6 最近階段
+  function migrate(o) {
+    if (!o || o.v !== 1) return o;
+    const H = 3600, from = o.stage, g = Math.max(0, +o.growthSec || 0);
+    if (o.stage === 'sprout') { if (g < P.stageSec.newborn) { o.stage = 'newborn'; } else { o.stage = 'sprout'; o.growthSec = Math.min(g - P.stageSec.newborn, P.stageSec.sprout - 60); } }
+    else if (o.stage === 'adult') { o.form = o.form === 'radiant' ? 'bright' : (o.form || 'dust'); o.growthSec = Math.min(g, P.stageSec.adult - EV6.migrateAdultKeepSec); }
+    o.v = 2; o.migrated = { from: 1, stage: from, to: o.stage, growthH: +(g / H).toFixed(2) };
+    return o;
   }
 
   function settleCQ(s) {
@@ -231,7 +281,7 @@
     let hunger = f.kind === 'snack' ? P.feedSnack : f.kind === 'meal' ? P.feedMeal : P.feedSoup;
     s.needs.hunger = clamp(s.needs.hunger + hunger, 0, 100);
     if (f.kind !== 'snack') s.needs.mood = clamp(s.needs.mood + P.foodMoodBonusWarm, 0, 100);
-    s.stats.feeds++; noteFed(s);
+    s.stats.feeds++; noteFed(s); noteCare(s);
     s.ev.push({ type: 'fed', food: f.id });
     return { ok: true, food: f };
   }
@@ -240,7 +290,7 @@
     if (s.sleeping) return { ok: false, reason: 'sleeping' };
     s.needs.mood = clamp(s.needs.mood + P.playTease, 0, 100);
     s.needs.energy = clamp(s.needs.energy - P.playEnergyCost, 0, 100);
-    s.stats.plays++; notePlayed(s);
+    s.stats.plays++; notePlayed(s); noteCare(s);
     s.ev.push({ type: 'played' });
     return { ok: true };
   }
@@ -248,13 +298,13 @@
     if (s.stage === 'egg') return { ok: false, reason: 'egg' };
     if (s.sleeping) return { ok: false, reason: 'sleeping' };
     s.needs.clean = clamp(s.needs.clean + P.rinse, 0, 100);
-    s.stats.rinses++;
+    s.stats.rinses++; noteCare(s);
     s.ev.push({ type: 'rinsed' });
     return { ok: true };
   }
   function clearPoop(s) {
     if (s.poops <= 0) return { ok: false };
-    s.poops--; s.stats.poopsCleared++;
+    s.poops--; s.stats.poopsCleared++; noteCare(s);
     s.ev.push({ type: 'poopCleared' });
     return { ok: true };
   }
@@ -273,8 +323,7 @@
   function eggProgress(s) { return s.stage === 'egg' ? clamp(s.growthSec / P.stageSec.egg, 0, 1) : 1; }
   function stageProgress(s) {
     if (s.stage === 'egg') return eggProgress(s);
-    if (s.stage === 'sprout') return clamp(s.growthSec / P.stageSec.sprout, 0, 1);
-    return 1;
+    const sec = P.stageSec[s.stage]; return sec ? clamp(s.growthSec / sec, 0, 1) : 1;
   }
 
   // ── 本機日期 key ──
@@ -341,7 +390,7 @@
     s.mg.plays++; s.mg.best = Math.max(s.mg.best || 0, score);
     s.grains += r.grains;
     s.needs.mood = clamp(s.needs.mood + r.mood, 0, 100);
-    s.stats.mgPlays++; notePlayed(s);
+    s.stats.mgPlays++; notePlayed(s); noteCare(s);
     return r;
   }
 
@@ -350,7 +399,8 @@
   function deserialize(str, nowMs) {
     try {
       const o = JSON.parse(str);
-      if (!o || o.v !== 1 || !o.needs) return null;
+      if (!o || (o.v !== 1 && o.v !== 2) || !o.needs) return null;
+      migrate(o);
       const base = newState(nowMs, o.seed);
       const s = Object.assign(base, o);
       s.needs = Object.assign(base.needs, o.needs);
@@ -361,7 +411,9 @@
       s.withdrawn = Object.assign(base.withdrawn, o.withdrawn || {});
       s.evs = o.evs && typeof o.evs === 'object' ? o.evs : null;
       s.ev = [];
-      if (!['egg', 'sprout', 'adult'].includes(s.stage)) return null;
+      if (!STAGES.includes(s.stage)) return null;
+      if ((s.stage === 'adult' || s.stage === 'elder') && !['bright', 'soft', 'dust', 'lumi'].includes(s.form)) s.form = s.form === 'radiant' ? 'bright' : 'dust';
+      evoOf(s); s.memorial = Array.isArray(s.memorial) ? s.memorial : []; s.gen = +s.gen || 1;
       return s;
     } catch (e) { return null; }
   }
@@ -369,6 +421,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm,
     step, advance, applyOffline, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

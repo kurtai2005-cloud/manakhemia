@@ -32,7 +32,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + qs);
     await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { });
     await E(() => __glimmer.liveLoad); await page.waitForTimeout(300);
-    await E(([form, needs]) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 1e6; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }, needs || {}); s.poops = 0; s.settings.sound = true; }, [form || 'soft', needs]);
+    await E(([form, needs]) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 3600; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }, needs || {}); s.poops = 0; s.settings.sound = true; }, [form || 'soft', needs]);
     await page.waitForTimeout(200);
   };
   const st = () => E(() => __qa.pet.state());

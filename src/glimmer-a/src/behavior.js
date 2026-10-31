@@ -20,6 +20,7 @@
   // 開發者「即刻觸發」：一撳即做（唔理冷卻／機率）；sniff／lookup／swat 之後個性鏈照抽（撲空→得意等）；happy／drag＝即刻行 4–6s 用嗰種步姿；smug＝淨係得意 pose
   // 第三段：nuzzle＝自動撳住 nowNuzzleSec 秒再鬆手；reunion＝即刻衝埋嚟重逢（唔理每日一次）
   const NOW = ['sniff', 'lookup', 'swat', 'scratch', 'sneeze', 'happy', 'drag', 'smug', 'nuzzle', 'reunion'];
+  const HEADY = (b) => LK.headY[b.stage] != null ? LK.headY[b.stage] : LK.headY[D.isBig(b.stage) ? 'adult' : 'sprout'];   // evo6：視線／蟲仔用頭高（每階段）
   const REAL = (c) => !!(CL[c] && CL[c].ready);                                            // s2 美術 ready（3 form live_s2 atlas 齊）就用真 clip
   const DEMO = (b) => (b && b.demo ? (LV.demoMul || 5) : 1);                               // 展示模式：頻率 ×5／冷卻 ÷5
   const NOATT = [];
@@ -48,7 +49,7 @@
     }
     return 'neutral';
   }
-  function formKey(s) { return s.stage === 'adult' ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi') ? 'soft' : 'dust') : 'sprout'; }   // 螢絨借柔光 clip
+  function formKey(s) { return D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi') ? 'soft' : 'dust') : 'sprout'; }   // 螢絨借柔光 clip
 
   function create(seed, opts) {
     opts = opts || {};
@@ -92,7 +93,7 @@
     b.x += Math.sign(dx) * st; b.dir = Math.sign(dx); return false;
   }
   function hopLift(b, H, dur) { const u = clamp(b.hopT / dur, 0, 1); b.lift = -H * 4 * u * (1 - u); return u; }
-  const H_OF = (b) => P.jumpHeight[b.stage === 'adult' ? 'adult' : 'sprout'];
+  const H_OF = (b) => P.jumpHeight[b.stage] != null ? P.jumpHeight[b.stage] : P.jumpHeight[D.isBig(b.stage) ? 'adult' : 'sprout'];   // evo6：每階段跳高
 
   // ── 自主狀態權重（個性＋時段＋需求＋clip 冷卻）──
   function weights(b, ctx) {
@@ -280,7 +281,7 @@
   function step(b, ctx) {
     b.t += FIX; b.stateT += FIX; b.clipT += FIX; b.log.ticks++;
     const s = ctx.s;
-    b.stage = s.stage === 'adult' ? 'adult' : 'sprout'; b.fkey = formKey(s);
+    b.stage = s.stage === 'egg' ? 'sprout' : s.stage; b.fkey = formKey(s);
     b.expr = exprFor(s); if (b.t < b.holdUntil && b.expr !== 'sick') b.expr = 'tired'; b.base = D.EXPRESSIONS[b.expr].clip;
     b.lift = 0; b.gaze = 0;
     b.potWobble = Math.max(0, b.potWobble - P.potWobbleDecay * FIX);
@@ -542,7 +543,7 @@
       }
       case 'swat': {      // A2 拍走蟲仔（索引 2 出手判定）→ （個性）撲空 → 得意擺 pose
         const miss = o.miss != null ? o.miss : b.mrng() < LV.swatMiss, hit = C.hitFrame / C.fps;
-        const st = [{ clip: 'idle', dur: 0.45, tag: 'notice', face: { eyes: 'surprised', mouth: 'neutral' }, fn: () => { const hy = LK.headY[b.stage === 'adult' ? 'adult' : 'sprout']; b.bug = { st: 'buzz', x: b.dir * 12, y: hy - 6, x0: b.dir * 12, y0: hy - 6, t: 0, vx: 0, vy: 0 }; } },
+        const st = [{ clip: 'idle', dur: 0.45, tag: 'notice', face: { eyes: 'surprised', mouth: 'neutral' }, fn: () => { const hy = HEADY(b); b.bug = { st: 'buzz', x: b.dir * 12, y: hy - 6, x0: b.dir * 12, y0: hy - 6, t: 0, vx: 0, vy: 0 }; } },
           { clip: 'swat', dur: C.frames / C.fps + 0.1, nonint: true, main: 'swat', sfx: [[hit, 'bug_pat']], at: [[hit, () => {
             const g = b.bug; if (!g) return;
             if (miss) { g.st = 'flee'; g.vx = b.dir * 26; g.vy = -34; note(b, 'micro', 'swat', 'miss'); }
@@ -699,7 +700,7 @@
   }
   const SLEEPCLIP = { sleep_loop: 1, fall_asleep: 1 };
   function lookTarget(b, ctx) {
-    const L = b.look, r = b.lrng, t = b.t, headY = LK.headY[b.stage === 'adult' ? 'adult' : 'sprout'] + b.lift;
+    const L = b.look, r = b.lrng, t = b.t, headY = HEADY(b) + b.lift;
     const pt = (x, y, src) => { L.src = src; return [clamp((x - b.x) / LK.rangeX, -1, 1), clamp((y - headY) / LK.rangeY, -1, 1)]; };
     const cam = () => { L.src = 'camera'; return [0, 0]; };
     if (L.force) { L.src = 'force'; return null; }
@@ -787,7 +788,7 @@
       enter(b, 'walk', 'now'); b.stopAt = null; b.gaitForce = { g, until: b.t + dur, start: b.t };
       note(b, 'micro', 'now_' + k, g); return;
     }
-    if (k === 'nuzzle') { if (b.state === 'micro' && b.seq) endMicro(b); const hy = LK.headY[b.stage === 'adult' ? 'adult' : 'sprout']; startNuzzle(b, { x: b.x + b.dir * 16, y: hy + 4 }, LV.nowNuzzleSec); return; }
+    if (k === 'nuzzle') { if (b.state === 'micro' && b.seq) endMicro(b); const hy = HEADY(b); startNuzzle(b, { x: b.x + b.dir * 16, y: hy + 4 }, LV.nowNuzzleSec); return; }
     if (k === 'reunion') { startMicro(b, 'reunion', ctx, { from: 'now', force: true }); return; }
     startMicro(b, k, ctx, { from: 'now', force: true });
   }

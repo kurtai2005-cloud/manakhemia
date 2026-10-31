@@ -68,7 +68,7 @@
   class Scene {
     constructor(o) {
       o = o || {};
-      this.base = o.base || 'art/hd2d/'; this.rimBase = o.rimBase || 'art/rim/';
+      this.base = o.base || 'art/hd2d/'; this.rimBase = o.rimBase || 'art/rim/'; this.rimExtra = o.rimExtra || [];   // evo6：evo_* 形態 rim（rim_evo_<x>_live）
       this.st = createState(o); this.enabled = o.enabled !== false; this.ready = false; this.error = null;
       this.v = {}; this.rim = {}; this.rimCache = {}; this.layout = null; this.part = null; this.rain = null; this.ripple = null;
       this.ps = []; this.rips = []; this.ripT = 0; this.spawnAcc = 0; this.lastPV = null; this.t = 0;
@@ -93,7 +93,7 @@
       jobs.push(Promise.all([js(B + 'particles/particles.json'), img(B + 'particles/particles.png')]).then(([j, im]) => { this.part = { j, im }; }));
       jobs.push(Promise.all([js(B + 'rain/rain_tile.json'), img(B + 'rain/rain_tile.png')]).then(([j, im]) => { this.rain = { j, im }; }));
       jobs.push(Promise.all([js(B + 'rain/ripple.json'), img(B + 'rain/ripple.png')]).then(([j, im]) => { this.ripple = { j, im }; }));
-      ['sprout', 'radiant', 'soft', 'sprout_live', 'radiant_live', 'soft_live'].forEach(f => jobs.push(Promise.all([js(this.rimBase + 'rim_' + f + '.json'), img(this.rimBase + 'rim_' + f + '.png')]).then(([j, im]) => { this.rim[f] = { j, im }; }).catch(() => { /* rim mask 可選：冇就用 alpha 位移 fallback */ })));
+      ['sprout', 'radiant', 'soft', 'sprout_live', 'radiant_live', 'soft_live'].concat(this.rimExtra).forEach(f => jobs.push(Promise.all([js(this.rimBase + 'rim_' + f + '.json'), img(this.rimBase + 'rim_' + f + '.png')]).then(([j, im]) => { this.rim[f] = { j, im }; }).catch(() => { /* rim mask 可選：冇就用 alpha 位移 fallback */ })));
       return Promise.all(jobs).then(() => {
         ['lightmap', 'light_add', 'emissive_blur', 'vignette'].forEach(n => { r.img[n] = this.v.H3.img[n]; });   // 雨：lightmap 等沿用 H3
         this.buf = mk(W, H); this.bufB = mk(W, H); this.tint = mk(96, 112); this.rimC = mk(96, 112);
@@ -296,7 +296,7 @@
   /* 開發用切換：window.__qa.hd2d（set／current／next／weather／enable） */
   function install(G, NS) {
     const P = NS.data.PARAMS, qs = new URLSearchParams(location.search);
-    const sc = new Scene({ base: P.art.base + 'hd2d/', rimBase: P.art.base + 'rim/', enabled: qs.get('hd2d') !== '0' && qs.get('hd') !== '0' && P.art.hd2d !== false });
+    const sc = new Scene({ base: P.art.base + 'hd2d/', rimBase: P.art.base + 'rim/', rimExtra: (NS.data.EVO_FORMS || []).filter(k => k !== 'evo_egg').map(k => k + '_live'), enabled: qs.get('hd2d') !== '0' && qs.get('hd') !== '0' && P.art.hd2d !== false });
     G.hd = sc; G.renderer.hd = sc;
     sc.cacheOn = qs.get('hdcache') !== '0';                              // P1-4：?hdcache=0 停用靜態層 cache（對照用）
     NS.light.addModifier('hd2d', lightModifier());

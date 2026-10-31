@@ -20,7 +20,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const E = (fn, arg) => page.evaluate(fn, arg);
   const shot = async (n, clip) => { await page.waitForTimeout(180); await page.screenshot({ path: SHOTS + 's3-' + n + '.png', clip }); console.log('  📷 s3-' + n); };
   const petClip = async () => { const h = await E(() => __qa.pet.hitBox()); return { x: Math.max(0, h.css.x - 60), y: Math.max(0, h.css.y - 70), width: h.css.w + 120, height: h.css.h + 110 }; };
-  const adult = () => E(() => { window.__noSaveOnHide = true; const s = __glimmer.state; s.stage = 'adult'; s.form = 'soft'; s.growthSec = 1e6; Object.assign(s.needs, { hunger: 100, mood: 55, clean: 100, energy: 100 }); s.poops = 0; s.sleeping = false; });
+  const adult = () => E(() => { window.__noSaveOnHide = true; const s = __glimmer.state; s.stage = 'adult'; s.form = 'dust';   /* evo6：守夜者・微塵（evo_guard_dust）有自己 s3 nuzzle_purr／reunion_happy；柔光 39 clip 冇 → fallback 喺 e2e-evo6 測 */  s.growthSec = 3600; Object.assign(s.needs, { hunger: 100, mood: 55, clean: 100, energy: 100 }); s.poops = 0; s.sleeping = false; });
   const load = async (qs, clear) => {
     if (clear) { await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); }
     await page.goto(BASE + '?' + qs); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { }); await E(() => __glimmer.liveLoad); await page.waitForTimeout(300);

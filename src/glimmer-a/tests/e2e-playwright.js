@@ -39,7 +39,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await shot('02-egg-glow-cracked');
   for (let i = 0; i < 4; i++) { await page.mouse.click(eggPos.x, eggPos.y); await page.waitForTimeout(120); }
   await page.waitForTimeout(300);
-  s = await st(); ok(s.stage === 'sprout', '點 8 下孵化成芽崽');
+  s = await st(); ok(s.stage === 'newborn', '點 8 下孵化成絨點（evo6：光卵 → 絨點）', s.stage);
   ok(await page.isVisible('#modal'), '出現孵化彈窗'); await shot('03-hatch-modal');
   await closeModals(); await page.waitForTimeout(800); await shot('04-sprout-idle');
 
@@ -97,8 +97,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   s = await st(); ok(s.grains === grains0 + res.grains, '光粒已加入', s.grains);
   await closeModals();
 
-  console.log('# 進化分支（燦光 CQ≥70）');
-  await G(() => { const x = __glimmer.state; x.cq = 82; x.growthSec = Glimmer.data.PARAMS.stageSec.sprout - 3; });
+  console.log('# 進化分支（跳跳期尾：燦光 CQ≥70）');
+  await G(() => { const x = __glimmer.state; x.stage = 'juvenile'; x.form = null; x.cq = 82; x.growthSec = Glimmer.data.PARAMS.stageSec.juvenile - 3;   /* evo6：分支喺跳跳期尾決定 */ });
   await page.waitForTimeout(5000);
   s = await st(); ok(s.stage === 'adult' && s.form === 'bright', 'CQ 82 → 守夜者「燦光」', s.stage + '/' + s.form);
   await shot('16-evolve-modal'); await closeModals(); await page.waitForTimeout(2500); await shot('17-adult-bright');
@@ -114,7 +114,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   console.log('# 其他分支（柔光／微塵）');
   for (const [cq, f, nm] of [[55, 'soft', '21-adult-soft'], [20, 'dust', '22-adult-dust']]) {
-    await G((cq) => { const x = __glimmer.state; x.stage = 'sprout'; x.form = null; x.cq = cq; x.growthSec = Glimmer.data.PARAMS.stageSec.sprout - 3; for (const k of ['hunger', 'mood', 'clean', 'energy']) x.needs[k] = 80; }, cq);
+    await G((cq) => { const x = __glimmer.state; x.stage = 'juvenile'; x.form = null; x.cq = cq; x.growthSec = Glimmer.data.PARAMS.stageSec.juvenile - 3; for (const k of ['hunger', 'mood', 'clean', 'energy']) x.needs[k] = 80; }, cq);
     await page.waitForTimeout(5000); s = await st(); ok(s.form === f, `CQ ${cq} → ${f}`, s.form); await closeModals(); await page.waitForTimeout(1800); await shot(nm);
   }
 

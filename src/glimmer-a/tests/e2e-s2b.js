@@ -23,7 +23,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const load = async (qs, clear) => {
     if (clear) { await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); }
     await page.goto(BASE + '?' + qs); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { }); await E(() => __glimmer.liveLoad); await page.waitForTimeout(300);
-    await E(() => { window.__noSaveOnHide = true; const s = __glimmer.state; s.stage = 'adult'; s.form = 'soft'; s.growthSec = 1e6; Object.assign(s.needs, { hunger: 100, mood: 55, clean: 100, energy: 100 }); s.poops = 0; s.sleeping = false; });
+    await E(() => { window.__noSaveOnHide = true; const s = __glimmer.state; s.stage = 'adult'; s.form = 'soft'; s.growthSec = 3600; Object.assign(s.needs, { hunger: 100, mood: 55, clean: 100, energy: 100 }); s.poops = 0; s.sleeping = false; });
     await page.waitForTimeout(200);
   };
   const st = () => E(() => __qa.pet.state());

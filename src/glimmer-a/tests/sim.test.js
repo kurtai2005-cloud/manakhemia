@@ -106,9 +106,9 @@ console.log('# CQ 規則');
   s = sprout({ hunger: 100, mood: 100, clean: 100, energy: 100 }); S.advance(s, H, {}, 30); ok(s.cq === 51, '每小時結算一次（線上）');
   s = sprout(); s.lastSeen = 1e12 - 8 * H * 1000; S.applyOffline(s, 1e12); ok(s.cq === 50, '離線唔改 CQ（假設）');
 }
-console.log('# 分支門檻 70 / 40');
+console.log('# 分支門檻 70 / 40（evo6：跳跳期完先分支）');
 {
-  const evo = (cq) => { const s = sprout(); s.cq = cq; s.growthSec = P.stageSec.sprout - 1; S.step(s, 5, {}); return s; };
+  const evo = (cq) => { const s = sprout(); s.stage = 'juvenile'; s.cq = cq; s.growthSec = P.stageSec.juvenile - 1; S.step(s, 5, {}); return s; };
   for (const [cq, f] of [[100, 'bright'], [70, 'bright'], [69, 'soft'], [40, 'soft'], [39, 'dust'], [0, 'dust']]) {
     const s = evo(cq); ok(s.stage === 'adult' && s.form === f, `CQ=${cq} → ${f}`, s.form);
   }
@@ -117,16 +117,16 @@ console.log('# 分支門檻 70 / 40');
 console.log('# 光卵孵化');
 {
   const s = S.newState(1e12, 3); let n = 0; while (s.stage === 'egg' && n < 20) { S.tapEgg(s); n++; }
-  ok(s.stage === 'sprout' && n === Math.ceil(P.stageSec.egg / P.eggTapBoostSec), '點 ' + n + ' 下孵化');
+  ok(s.stage === 'newborn' && n === Math.ceil(P.stageSec.egg / P.eggTapBoostSec), '點 ' + n + ' 下孵化（evo6 → 絨點 newborn）');
   ok(s.needs.hunger === P.startNeedsSprout.hunger, '孵化後需求初始化');
-  const t = S.newState(1e12, 3); S.advance(t, 600, {}, 30); ok(t.stage === 'sprout', '10 分鐘自然孵化');
+  const t = S.newState(1e12, 3); S.advance(t, 600, {}, 30); ok(t.stage === 'newborn', '10 分鐘自然孵化（→ 絨點）');
 }
-console.log('# 好／差照顧 24h → 分支');
+console.log('# 好／差照顧（芽崽 18h＋跳跳期 3 日）→ 分支');
 {
   const careBot = (care) => {
     // care=true 勤力；care=false 只喺需求 <20 先勉強補到 30（否則唔會成長）
     const s = sprout({ hunger: 80, mood: 80, clean: 80, energy: 100 }); s.cq = P.cqStart;
-    for (let h = 0; h < 80 && s.stage === 'sprout'; h++) {
+    for (let h = 0; h < 140 && (s.stage === 'sprout' || s.stage === 'juvenile'); h++) {
       for (let q = 0; q < 4; q++) {
         if (care) { if (s.needs.hunger < 70) S.feed(s, 'meal'); if (s.needs.mood < 70) S.play(s); if (s.needs.clean < 70) S.rinse(s); S.clearPoop(s); if (s.needs.energy < 30 && !s.sleeping) S.toggleSleep(s); }
         if (!care) for (const k of ['hunger', 'mood', 'clean', 'energy']) if (s.needs[k] < 20) s.needs[k] = 30;

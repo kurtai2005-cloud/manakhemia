@@ -15,7 +15,7 @@
     // ── 團絨性格偏好 ──
     traitSleepRegenMul: 1.2,      // 睡眠回復 +20%
     traitCleanDecayMul: 1.3,      // 清潔衰減較快（估計值，可調）
-    stageDecayMul: { egg: 0, sprout: 1.2, adult: 1.0 }, // 芽崽衰減較快（估計值）
+    stageDecayMul: { egg: 0, newborn: 1.2, sprout: 1.2, juvenile: 1.1, adult: 1.0, elder: 1.0 }, // 芽崽衰減較快（估計值）；evo6：絨點同芽崽、跳跳期 1.1、靜光同守夜者（估計值）
     // ── 行動回升 ──
     feedSnack: 20, feedMeal: 40, feedSoup: 20,
     foodMoodBonusWarm: 3,         // 愛暖食：暖菇飯／暖湯額外心情
@@ -34,7 +34,12 @@
     cqStart: 50, cqGoodAt: 60, cqBadBelow: 30, cqSickPenalty: 1, cqMin: 0, cqMax: 100,
     branchBright: 70, branchSoft: 40,   // >=70 燦光；40–69 柔光；<40 微塵
     // ── 階段時長（成長秒數；需成長，離線只計 50%）──
-    stageSec: { egg: 10 * 60, sprout: 24 * 3600 },
+    stageSec: { egg: 10 * 60, newborn: 6 * 3600, sprout: 18 * 3600, juvenile: 3 * 86400, adult: 7 * 86400, elder: 4 * 86400 },   // evo6（pet-template-v1 §6）：光卵 10 分／絨點 6h／芽崽 18h／跳跳期 3 日／守夜者 7 日／靜光 4 日 → 化光
+    // evo6：螢絨（隱藏）＝芽崽或跳跳期見過 firefly_walk、分支判定時 CQ ≥55、夜晚照顧 ≥40%（晚 17:00–07:00 本機時間＝lighting 嘅「晚＋夜」）
+    evo6: { lumiCQ: 55, lumiNightShare: 0.4, lumiEvent: 'firefly_walk', lumiEvStages: ['sprout', 'juvenile'], careStages: ['sprout', 'juvenile'], nightFrom: 17, nightTo: 7,
+      kitOnLiveClips: true,   // 遊美：evo 形態 std23 clip 用原幀（臉已畫好）；五官 kit 只用喺生命感 clip（s1/s2）
+      migrateAdultKeepSec: 24 * 3600 },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
+    overlayDpPerPx: 1.625,          // evo6 浮動 overlay：sizeDp＝frameSize×1.625（芽崽 32px＝舊 52dp）
     eggTapBoostSec: 75,           // 光卵每點一下 +75s（8 下 = 10 分鐘）
     startNeedsSprout: { hunger: 70, mood: 70, clean: 90, energy: 100 },
     // ── 離線（GDD 第 7 節）──
@@ -73,7 +78,7 @@
       decideEvery: [4, 10],                  // 自主狀態抽選間隔
       stateWeights: { stay: 40, walk: 15, jump: 4, play: 8, nap: 12, sunbathe: 10, bump: 6 },   // 抄 art tuanrongWeights（walk_to_touch 25 由 tap 觸發；jump 為額外）
       walkDist: [16, 48],
-      jumpHops: [2, 3], hopDur: 0.52, jumpHeight: { sprout: 7, adult: 11 }, hopDx: 5,
+      jumpHops: [2, 3], hopDur: 0.52, jumpHeight: { sprout: 7, adult: 11, newborn: 5, juvenile: 9, elder: 9 }, hopDx: 5,
       playDur: [4, 7], ballRadius: 24,
       napDur: [12, 24], napEnergyRef: 60,    // 精力低過此值，小睡權重上升
       sunSpotX: 42, sunMinLight: 0.3, sunDur: [8, 20], // 曬太陽位置（相對 CX）、日照下限
@@ -127,7 +132,7 @@
         holdSec: 0.08,                       // 量化結果要穩定 0.08s 先換格（防閃）
         dwellSec: 0.25,                      // FACE_RIG：每次 gaze 轉格後最少停 0.25s（避免抖）；QA 強制格唔受限
         quant: { center: 0.22, side: 0.62, v: 0.55 },   // |gx|≤0.22 → C；≥0.62 → L/R；中間 CL/CR；|gy|≥0.55 且大過 |gx| → U/D
-        rangeX: 40, rangeY: 30, headY: { sprout: -16, adult: -30 },   // 目標點 → 視線向量嘅歸一化距離（art px）
+        rangeX: 40, rangeY: 30, headY: { sprout: -16, adult: -30, newborn: -14, juvenile: -20, elder: -28 },   // 目標點 → 視線向量嘅歸一化距離（art px）
         walkGx: 0.85, walkGy: 0.05,          // A1：行路時望前面
         walkCamEvery: [2.2, 4.5], walkCamDur: [0.45, 0.9],   // A1：行路途中偶爾望鏡頭
         camEvery: [4, 9], camDur: [1.0, 2.2], // 待機：間中望鏡頭
@@ -216,7 +221,7 @@
       // 光芽燈泡（CLIPS.json bulb）：bulb_base＋bulb_glow（multiply tint × intensity）；sick 唔疊；情緒轉換 0.4s 漸變
       bulb: { enabled: true, fadeSec: 0.4, moods: { happy: { tint: '#FFD45E', i: 1.0, pulse: [1.2, 0.85, 1.0] }, neutral: { tint: '#FFEFC4', i: 0.8 }, sleepy: { tint: '#8F85C2', i: 0.55, pulse: [3, 0.4, 0.6] }, hungry: { tint: '#F2A65A', i: 0.75, pulse: [0.8, 0.6, 0.8] }, grumpy: { tint: '#E5584D', i: 0.85, pulse: [0.4, 0.7, 0.85] } } },
     },
-    art: { base: 'art/', usePending: false, useAtlas: true, playRootMotion: { frames: [3, 4], dx64: 4, dx32: 2 }, daylight: true, daylightBg: false },   // play 位移為 0（遊美）→ 引擎於 frame4–5（idx 3,4）加前衝 root-motion：64px +4／32px +2；daylight＝用 art/daylight/daylight.json
+    art: { base: 'art/', usePending: false, useAtlas: true, playRootMotion: { frames: [3, 4], dx64: 4, dx32: 2 }, daylight: true, daylightBg: false, evo: { enabled: true, base: 'art/evo6/' } },   // evo6：?evo=0 停用 → 舊 form   // play 位移為 0（遊美）→ 引擎於 frame4–5（idx 3,4）加前衝 root-motion：64px +4／32px +2；daylight＝用 art/daylight/daylight.json
     // ── 畫質自動降級：用 rAF 幀間隔（唔再用連續掉幀計）──
     quality: {
       windowFrames: 120,                     // 每 120 個 rAF 幀為一個量度窗口
@@ -336,7 +341,34 @@
     sprout:  { atlas: 'atlas_sprout',  frameSize: 32, pivot: [16, 29], headR: [9, -14],  pot: [22, 0], sun: [0, 0] },
     radiant: { atlas: 'atlas_radiant', frameSize: 64, pivot: [32, 61], headR: [16, -28], pot: [31, 0], sun: [0, 0] },
     soft:    { atlas: 'atlas_soft',    frameSize: 64, pivot: [32, 61], headR: [18, -30], pot: [34, 0], sun: [0, 0] },
+    // evo6（遊美 art/glimmer-evo6-anim @ d267b4e，A+B+C+D 最終版）：art/evo6/atlas_<form>.json＋face_anchors_<form>.json；數值抄自 motion/CLIPS.json forms
+    evo_egg: { atlas: 'atlas_evo_egg', evo: true, frameSize: 24, pivot: [12, 21], headR: [6, -10], pot: [18, 0], sun: [0, 0], bulb: false },
+    evo_dot: { atlas: 'atlas_evo_dot', evo: true, frameSize: 28, pivot: [14, 25], headR: [8, -17], pot: [20, 0], sun: [0, 0], bulb: false },
+    evo_sprout: { atlas: 'atlas_evo_sprout', evo: true, frameSize: 32, pivot: [16, 29], headR: [9, -15], pot: [21, 0], sun: [0, 0], bulb: false },
+    evo_hop: { atlas: 'atlas_evo_hop', evo: true, frameSize: 38, pivot: [19, 35], headR: [12, -19], pot: [23, 0], sun: [0, 0], bulb: true },
+    evo_guard_lumi: { atlas: 'atlas_evo_guard_lumi', evo: true, frameSize: 44, pivot: [22, 41], headR: [13, -21], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_guard_radiant: { atlas: 'atlas_evo_guard_radiant', evo: true, frameSize: 44, pivot: [22, 41], headR: [13, -21], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_guard_soft: { atlas: 'atlas_evo_guard_soft', evo: true, frameSize: 44, pivot: [22, 41], headR: [14, -22], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_guard_dust: { atlas: 'atlas_evo_guard_dust', evo: true, frameSize: 44, pivot: [22, 41], headR: [13, -21], pot: [27, 0], sun: [0, 0], bulb: true },
+    evo_still_lumi: { atlas: 'atlas_evo_still_lumi', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
+    evo_still_radiant: { atlas: 'atlas_evo_still_radiant', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
+    evo_still_soft: { atlas: 'atlas_evo_still_soft', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -24], pot: [29, 0], sun: [0, 0], bulb: true },
+    evo_still_dust: { atlas: 'atlas_evo_still_dust', evo: true, frameSize: 48, pivot: [24, 45], headR: [14, -22], pot: [29, 0], sun: [0, 0], bulb: true },
   };
+  // evo6：(stage, form) → evo 形態 key；分支 id：bright＝燦光（atlas 叫 radiant）
+  const EVO_BRANCH = { bright: 'radiant', soft: 'soft', dust: 'dust', lumi: 'lumi' };
+  const EVO_STAGE_FORM = { egg: 'evo_egg', newborn: 'evo_dot', sprout: 'evo_sprout', juvenile: 'evo_hop' };
+  function evoForm(stage, form) {
+    if (EVO_STAGE_FORM[stage]) return EVO_STAGE_FORM[stage];
+    const br = EVO_BRANCH[form] || 'dust';
+    return stage === 'elder' ? 'evo_still_' + br : 'evo_guard_' + br;
+  }
+  const EVO_FORMS = Object.keys(FORMS).filter(k => FORMS[k].evo);
+  const isBig = (stage) => stage === 'adult' || stage === 'elder';           // 舊碼「adult」尺寸／高度分支：靜光當成年
+  const legacyStage = (stage) => stage === 'egg' ? 'egg' : isBig(stage) ? 'adult' : 'sprout';
+  // evo 形態缺 clip（39 clip 嘅 dot／sprout／hop／guard_lumi／radiant／soft 冇 s3 nuzzle_purr／reunion_happy）→ 最近 clip fallback
+  const EVO_CLIP_FALLBACK = { nuzzle_purr: 'nuzzle', reunion_happy: 'emo_happy', grumpy: 'emo_surprised' };
+
   const PROP_KINDS = ['petal', 'flower', 'pebble'];
   // 事件池 9 個＝7 個池抽取（權重對齊遊測 v5.1：禮物 22／蝴蝶 20／流星 10／夢話 11／尋寶 18／彩虹 1／螢火 14）＋鬧脾氣（cond：唔入池，需求 <30 持續 ≥2h，冷卻 48h）＋閃光日。連點 5 下係獨立事件 grumpy_tap（events.js，唔入呢個表）。
   // 條件：hours=[由,至)（可跨午夜）、sleeping、moodAtLeast、energyAtLeast；
@@ -430,7 +462,7 @@
     // 未用（舊通用／無對應功能）：sfx_coin／hit／win／lose（風野競走遺留）、（fade_light：MVP 無「化光」階段，cue 已備）
   };
 
-  const STAGE_NAME = { egg: '光卵', sprout: '芽崽', adult: '守夜者' };
+  const STAGE_NAME = { egg: '光卵', newborn: '絨點', sprout: '芽崽', juvenile: '跳跳期', adult: '守夜者', elder: '靜光' };   // evo6 六階段（pet-template-v1 §6）
   const FORM_NAME = { bright: '燦光', soft: '柔光', dust: '微塵', lumi: '螢絨' };
   /* 進化表（開發模式「進化」用；條件以 sim.decideForm 為準）。螢絨＝隱藏形態（docs-gdd/pet-template-v1.md）：
      芽崽期見過螢火散步、CQ ≥55、夜晚照顧 ≥40%。自動條件未實裝（只可經開發模式設定）；未有專屬美術 → 借柔光 atlas＋螢綠 tint。 */
@@ -459,5 +491,5 @@
     sick: ['#f0f0d0', '#d8e0b0', '#b8c890', '#98a870', '#788850', '#586838'],
   };
 
-  return { PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
+  return { EVO_BRANCH, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
 });

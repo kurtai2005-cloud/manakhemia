@@ -167,6 +167,7 @@
     E.cd[def.id] = E.clock + (def.cooldownH || (def.rare ? P.cooldownRareH : P.cooldownH)) * 3600;
     if (!def.outsideCap) { E.dayCount++; E.stats.events++; if (s.stats) s.stats.events = (s.stats.events || 0) + 1; }
     E.stats.byId[def.id] = (E.stats.byId[def.id] || 0) + 1;
+    if (SIM.noteEvent) SIM.noteEvent(s, def.id);                                   // evo6：記入當前階段（螢絨條件：芽崽／跳跳期見過 firefly_walk）
     if (collect) { rec.rare = !!def.rare; E.offLog.push(rec); return rec; }
     if (offline) {
       E.offLog.push(rec);

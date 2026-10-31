@@ -91,6 +91,13 @@
         if (!D.EVOLUTION.some(e => e.form === f)) throw new Error('dev.playEvolve: ' + f);
         S.stage = 'adult'; S.form = f; S.sleeping = false; S.ev.push({ type: 'evolve', form: f, cq: S.cq }); G.save(); sync(); return f;
       },
+      // ── evo6：跳階段／分支（舊「形態」「進化」行保留）──
+      stages() { return D.STAGES.slice(); },
+      evoStage(st) { note('evoStage', st); const S = s(); const r = G.evo.setStage(st, D.isBig(st) ? (S.form || 'soft') : null); sync(); return r; },
+      evoBranch(f) { note('evoBranch', f); const S = s(); const r = G.evo.setStage(D.isBig(S.stage) ? S.stage : 'adult', f); sync(); return r; },
+      evoNext() { note('evoNext'); const r = G.evo.next(); sync(); return r; },
+      evoFade() { note('evoFade'); const S = s(); if (S.stage !== 'elder') G.evo.setStage('elder', S.form || 'soft'); if (!S.fadeReady) G.evo.next(); const r = G.fade(); sync(); return r; },
+      evoInfo() { return G.evo.info(); },
       // ── 需求／CQ／性格 ──
       setNeed(k, v) { note('setNeed', [k, v]); if (D.NEED_KEYS.indexOf(k) < 0) throw new Error('dev.setNeed: ' + k); s().needs[k] = Math.max(0, Math.min(100, +v)); if (s().evs && +v >= P.events.grumpyLowNeed) s().evs.low = 0; return s().needs[k]; },
       setCQ(v) { note('setCQ', v); s().cq = Math.max(P.cqMin, Math.min(P.cqMax, +v)); return s().cq; },
@@ -146,6 +153,8 @@
         <div class="dr dlive"><i>s2 鏈</i>${LIVE_CHAIN.map(([k, l]) => btn(l, 'chain:' + k, 'dev-chain-' + k)).join('')}${btn('展示模式', 'demo', 'dev-live-demo')}<em class="dmst" data-testid="dev-live-demo-state"></em></div>
         <div class="dr"><i>時段</i>${SCENES.map(m => btn(SCENE_LABEL[m], 'scene:' + m, 'dev-scene-' + m)).join('')}${btn('HD', 'hd2d', 'dev-hd2d')}</div>
         <div class="dr"><i>形態</i>${api.forms().map(f => btn(f === 'egg' ? '光卵' : f === 'sprout' ? '芽崽' : D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'setForm:' + f, 'dev-form-' + f)).join('')}</div>
+        <div class="dr" data-testid="dev-stage-row"><i>階段</i>${D.STAGES.map(st => btn(D.STAGE_NAME[st], 'evoStage:' + st, 'dev-stage-' + st)).join('')}${btn('▶下一階段', 'evoNext', 'dev-stage-next')}${btn('化光', 'evoFade', 'dev-fade')}</div>
+        <div class="dr" data-testid="dev-branch-row"><i>分支</i>${['lumi', 'bright', 'soft', 'dust'].map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'evoBranch:' + f, 'dev-branch-' + f)).join('')}<em class="dmst" data-testid="dev-lumi-state"></em></div>
         <div class="dr"><i>進化</i>${D.EVOLUTION.map(e => btn('▶' + e.name, 'playEvolve:' + e.form, 'dev-evolve-' + e.form)).join('')}</div>
         ${D.NEED_KEYS.map(k => `<label><i>${N[k]}</i><input type="range" min="0" max="100" step="1" data-need="${k}" data-testid="dev-need-${k}" value="${Math.round(S.needs[k])}"><em>${Math.round(S.needs[k])}</em></label>`).join('')}
         <label><i>CQ</i><input type="range" min="${P.cqMin}" max="${P.cqMax}" step="1" data-cq="1" data-testid="dev-cq" value="${Math.round(S.cq)}"><em>${Math.round(S.cq)}</em></label>
@@ -163,6 +172,9 @@
       el.querySelectorAll('button[data-a^="scene:"]').forEach(b => b.classList.toggle('on', !!sc && b.dataset.a.split(':')[1] === sc.mode));
       el.querySelectorAll('button[data-a^="personality:"]').forEach(b => b.classList.toggle('on', b.dataset.a.split(':')[1] === (G.devPers || 'default')));
       el.querySelectorAll('button[data-a^="setForm:"]').forEach(b => { const f = b.dataset.a.split(':')[1]; b.classList.toggle('on', f === S.stage || (S.stage === 'adult' && f === S.form)); });
+      el.querySelectorAll('button[data-a^="evoStage:"]').forEach(b => b.classList.toggle('on', b.dataset.a.split(':')[1] === S.stage));
+      el.querySelectorAll('button[data-a^="evoBranch:"]').forEach(b => b.classList.toggle('on', D.isBig(S.stage) && b.dataset.a.split(':')[1] === S.form));
+      const ls = q('[data-testid="dev-lumi-state"]'); if (ls && SIM.lumiCheck) { const L = SIM.lumiCheck(S); ls.textContent = `螢絨：螢火${L.firefly}${L.fireflyOk ? '✓' : '✗'} CQ${Math.round(L.cq)}${L.cqOk ? '✓' : '✗'} 夜${Math.round(L.night * 100)}%/${L.nightAll}${L.nightOk ? '✓' : '✗'}`; }
       const bb = q('[data-a="live:bulb"]'); if (bb) { const m = G.beh && G.beh.bulbForce; bb.classList.toggle('on', !!m); bb.textContent = '燈泡 ' + (m ? BULB_ZH[m] || m : '自動'); }
       const dm = q('[data-a="demo"]'); if (dm) { dm.classList.toggle('on', !!G.liveDemo); dm.textContent = '展示模式 ' + (G.liveDemo ? '開' : '關'); }
       const dst = q('.dmst'); if (dst) dst.textContent = G.liveDemo ? '×' + (P.beh.live.demoMul || 5) + ' 頻率／冷卻 ÷' + (P.beh.live.demoMul || 5) : '正常頻率';
