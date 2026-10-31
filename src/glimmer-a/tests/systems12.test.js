@@ -47,21 +47,27 @@ console.log('③ 系統 1 每日小委託＋星星碎錢包（每日 30＝委託
   const mk = (stage) => { const s = S.newState(day0, 4242); s.stage = stage || 'sprout'; s.cq = 60; s.ev = []; return s; };
   let s = mk(); X.questTick(s, now, s.ev); let q = X.quests(s, now);
   ok(q.list.length === Q.perDay && q.list.every(x => Q.kinds[x.k]) && new Set(q.list.map(x => x.k)).size === Q.perDay, `每日 ${Q.perDay} 個委託（唔重覆）`, JSON.stringify(q.list));
-  ok(q.list.filter(x => x.route).length === 1 && q.list[0].route && q.list[0].k === Q.routeKind[q.list[0].route], 'v10.2：每日 1 個路線委託（冇照顧分都有；平均輪）', JSON.stringify(q.list.map(x => x.k + ':' + x.route)));
-  ok(q.list.slice(1).every(x => Q.base.includes(x.k) && !x.route), '其餘 2 個＝基本委託（餵／淋水／陪玩，唔重覆路線嗰個）', JSON.stringify(q.list.map(x => x.k)));
-  { // 平均分晒：任何連續 5 日每條路線剛好 1 次；200 seed × 100 日每條 20%；唔理領先路線
+  ok(q.list.every(x => Q.pool.includes(x.k) && !x.route) && Q.pool.slice().sort().join() === 'feed,pat,play', 'v10.2 A：3 個由 餵／玩／摸頭 池抽（冇硬包淋水）', JSON.stringify(q.list.map(x => x.k)));
+  ok(!q.list.some(x => x.k === 'rinse') && Q.rinseIfLead === 'tide', '水珠冇領先 → 冇淋水委託');
+  { const sT = mk(); sT.evo = { evIn: {}, care: {}, b5: { sprout: { all: 10, tide: 8, shroom: 1, crystal: 0, moon: 1, ember: 0 } }, cl: { sprout: { sum: 95 * 100, sec: 100 } } };
+    let tideOk = 0, otherRinse = 0; for (let d = 0; d < 30; d++) { const k = S.dayKey(day0 + d * 864e5); if (X.genQuests(sT, k).some(x => x.k === 'rinse')) tideOk++; }
+    for (const r of ['shroom', 'crystal', 'moon', 'ember']) { const s2 = mk(); s2.evo = { evIn: {}, care: {}, b5: { sprout: Object.assign({ all: 10, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, [r]: 8 }, r === 'crystal' ? { crystal: 0, loginPoop: 5, quickLogin: 5 } : {}) }, cl: { sprout: { sum: 95 * 100, sec: 100 } } };
+      for (let d = 0; d < 30; d++) if (X.genQuests(s2, S.dayKey(day0 + d * 864e5)).some(x => x.k === 'rinse')) otherRinse++; }
+    ok(X.leadRoute(sT) === 'tide' && tideOk === 30, `水珠領先 → 每日都有淋水委託（30/30＝${tideOk}），取代池中一個`, X.leadRoute(sT));
+    ok(otherRinse === 0, '其他路線領先 → 0 個淋水委託', otherRinse);
+    const L = X.genQuests(sT, '2026-11-05'); ok(L.length === 3 && new Set(L.map(x => x.k)).size === 3 && L.filter(x => Q.pool.includes(x.k)).length === 2, '水珠領先：淋水＋池入面 2 個（唔重覆）', JSON.stringify(L.map(x => x.k))); }
+  { // 路線分：今日輪值路線（逐日平均輪 5 條），3 個齊先 +pts；任何連續 5 日每條各 1 次
     let rot = true, cnt = {}, n = 0; const R = D.BRANCH5;
     for (let sd = 1; sd <= 200; sd++) { const s2 = S.newState(day0, sd * 31); s2.stage = 'sprout'; const seq = [];
       for (let d = 0; d < 100; d++) { const k = S.dayKey(day0 + d * 86400e3), r = X.questRoute(s2, k); seq.push(r); cnt[r] = (cnt[r] || 0) + 1; n++; }
       for (let i = 0; i + 5 <= seq.length; i++) if (new Set(seq.slice(i, i + 5)).size !== 5) rot = false; }
-    ok(rot, '任何連續 5 日：5 條路線各 1 次（平均輪）');
+    ok(rot, '任何連續 5 日：5 條路線各輪值 1 次');
     ok(R.every(r => cnt[r] === n / 5), '200 seed × 100 日：每條路線 20%', JSON.stringify(cnt));
     const sA = mk(); for (let i = 0; i < 9; i++) S.noteCare(sA, 12, 'play'); const sB = mk();
-    ok(X.questRoute(sA, '2026-11-05') === X.questRoute(sB, '2026-11-05'), '領先火苗都唔會改路線委託（唔跟領先）');
+    ok(X.questRoute(sA, '2026-11-05') === X.questRoute(sB, '2026-11-05'), '領先火苗都唔會改輪值路線（唔跟領先）');
     ok(typeof SY.sources.questRoute.pts === 'number' && SY.sources.questRoute.pts === 1 && !SY.sources.questRoute.perRoute, '路線委託分：5 條路線同一個 pts（1），火苗唔多攞', JSON.stringify(SY.sources.questRoute));
     ok(SY.maxRouteSharePct === 25, '25% 單路線 cap 保留');
-    for (const r of R) { const kd = Q.routeKind[r]; ok(Q.kinds[kd] && Q.kinds[kd].n >= 1, `路線 ${r} → 委託 ${kd}（${Q.kinds[kd].label}）`); }
-    ok(Q.kinds.poopQuick.label === '返嚟 2 分鐘內執晒便便', '晶角委託文案確認不變');
+    ok(Q.kinds.pat && Q.kinds.pat.counts.includes('pat') && Q.kinds.poopQuick.label === '返嚟 2 分鐘內執晒便便', '摸頭委託 kind（pat）；晶角舊文案保留俾舊存檔');
   }
   { const s3 = mk(); s3.poops = 1; S.poopAges(s3).push(0); const got = []; S.addCareHook((x, k) => { if (x === s3) got.push(k); }); const b0 = X.bond(s3, now).v;
     S.noteLogin(s3, now); S.clearPoop(s3); const b1 = X.bond(s3, now).v;
@@ -94,8 +100,19 @@ console.log('③ 系統 1 每日小委託＋星星碎錢包（每日 30＝委託
   s = mk('egg'); X.questTick(s, now, s.ev); ok(X.quests(s, now).list.length === 0, '光卵：未有委託');
   // 路線分：完成路線委託 → E.b5sys +1；branch5Check 每條 ≤ 25%
   s = mk(); for (let i = 0; i < 9; i++) S.noteCare(s, 12, 'rinse'); s.sys12 = null; now = day0 + 2 * 86400e3; X.questTick(s, now, s.ev);
-  const rq2 = X.quests(s, now).list.find(x => x.route); for (let i = 0; i < rq2.need; i++) S.noteCare(s, 12, Q.kinds[rq2.k].counts[0]);
-  ok(s.evo.b5sys && s.evo.b5sys.sprout && s.evo.b5sys.sprout[rq2.route] === SY.sources.questRoute.pts, `路線委託完成 → ${rq2.route} 新系統分 +${SY.sources.questRoute.pts}`, JSON.stringify(s.evo.b5sys));
+  { const q2 = X.quests(s, now), rt = q2.route, L2 = q2.list; let mid = null;
+    L2.forEach((x, j) => { for (let i = 0; i < x.need; i++) { if (x.k === 'pat') X.notePat(s, now, s.ev); else S.noteCare(s, 12, Q.kinds[x.k].counts[0]); } if (j === 1) mid = JSON.stringify(s.evo.b5sys || {}); });
+    ok(D.BRANCH5.includes(rt) && mid === '{}' || (mid && !(JSON.parse(mid).sprout || {})[rt]), '未齊 3 個 → 輪值路線未加分', mid);
+    ok(s.evo.b5sys && s.evo.b5sys.sprout && s.evo.b5sys.sprout[rt] === SY.sources.questRoute.pts && X.quests(s, now).paid, `3 個齊 → 今日輪值路線 ${rt} 新系統分 +${SY.sources.questRoute.pts}（＋15 星星碎）`, JSON.stringify(s.evo.b5sys));
+    X.notePat(s, now, s.ev); ok(s.evo.b5sys.sprout[rt] === SY.sources.questRoute.pts, '同日唔會重覆加路線分'); }
+  { const sP = mk(); X.questTick(sP, now, sP.ev); const c0 = JSON.stringify(sP.evo.care), b0 = X.bond(sP, now).v; X.notePat(sP, now, sP.ev);
+    const pq = X.quests(sP, now).list.find(x => x.k === 'pat');
+    ok(pq && pq.n === 1 && JSON.stringify(sP.evo.care) === c0 && X.bond(sP, now).v === b0, '摸頭 → 推「摸摸佢個頭」委託；唔計照顧／CQ／親密照顧分', JSON.stringify(pq));
+    sP.sleeping = true; X.notePat(sP, now, sP.ev); ok(X.quests(sP, now).list.find(x => x.k === 'pat').n === 1, '瞓緊覺撳唔計摸頭'); }
+  { // 舊存檔：今日委託仲係舊式（淋水／路線委託帶 route）→ 照做照計；聽日換新式
+    const sO = mk(); sO.sys12 = { quests: { day: S.dayKey(now), list: [{ k: 'poopQuick', need: 1, n: 0, route: 'crystal' }, { k: 'rinse', need: 1, n: 0, route: null }, { k: 'feed', need: 2, n: 0, route: null }], paid: false, routePaid: false } }; X.st(sO);
+    S.noteCare(sO, 12, 'poopQuick'); ok(sO.evo.b5sys && sO.evo.b5sys.sprout && sO.evo.b5sys.sprout.crystal === SY.sources.questRoute.pts, '舊存檔路線委託（晶角）照加分', JSON.stringify(sO.evo.b5sys));
+    X.questTick(sO, now + 864e5, sO.ev); const nq = X.quests(sO, now + 864e5); ok(nq.list.every(x => Q.pool.includes(x.k) || x.k === 'rinse') && D.BRANCH5.includes(nq.route), '舊存檔聽日 → 新式（池＋輪值路線）', JSON.stringify(nq)); }
   { const s3 = mk(); s3.evo = { evIn: {}, care: {}, b5: { sprout: { all: 12, tide: 3, shroom: 6, crystal: 0, moon: 3, ember: 0 } }, cl: {}, b5sys: { sprout: { tide: 50, moon: 0.5 } } };
     const B = S.branch5Check(s3), capT = 3 * SY.maxRouteSharePct / (100 - SY.maxRouteSharePct);
     ok(Math.abs(B.sys.capped.tide - capT) < 1e-3 && B.sys.capped.moon === 0.5 && Math.abs(B.score.tide - 4) < 1e-3, `新系統分每條 ≤ 25%（照顧 3 → 新系統最多 ${capT}；佔 ${(capT / (3 + capT) * 100).toFixed(0)}%）`, JSON.stringify(B.sys));

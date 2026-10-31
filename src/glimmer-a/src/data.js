@@ -112,16 +112,17 @@
       // 星星碎錢包：每日入帳上限＝evo6.branch.systems.stardustDailyCap（30）；分帳：委託 15＋其他 15（日界 00:00 本機）
       wallet: { questCap: 15, otherCap: 15 },
       // 系統 1 每日小委託：每日 3 個、每個 5 星星碎、3 個齊即刻發獎（15）；00:00 重置；唔做唔罰；斷線／閂咗 app 未發 → 下次開補發
-      // 其中 1 個係路線委託（routeKind）：v10.2 逐日平均輪晒 5 條路線（唔再跟領先路線）；完成嗰個 → 該路線 +evo6.branch.systems.sources.questRoute.pts（受 25% cap）
-      quests: { perDay: 3, reward: 5, base: ['feed', 'rinse', 'play'],
+      // v10.2（遊策 A）：每日 3 個由 pool（餵／玩／摸頭）抽，唔再硬性包淋水；淋水委託只係水珠領先（rinseIfLead）先出，取代池入面一個。
+      // 路線分：3 個齊 → 今日輪值路線（5 條逐日平均輪）+evo6.branch.systems.sources.questRoute.pts（同分；受 25% cap）
+      quests: { perDay: 3, reward: 5, pool: ['feed', 'play', 'pat'], rinseIfLead: 'tide', routeBonus: 'all',
         kinds: {
           feed: { n: 2, counts: ['feed'], icon: 'icon_commission_feed', label: '餵佢食嘢' },
           rinse: { n: 1, counts: ['rinse'], icon: 'icon_commission_water', label: '幫佢淋水沖身' },
           play: { n: 1, counts: ['play', 'mg'], icon: 'icon_commission_play', label: '陪佢玩一陣' },
-          poopQuick: { n: 1, counts: ['poopQuick'], icon: 'sticker_heart', label: '返嚟 2 分鐘內執晒便便' },   // v10 晶角＝上線即清（sim.checkQuickClean 通知 'poopQuick'）
+          pat: { n: 2, counts: ['pat'], icon: 'sticker_heart', label: '摸摸佢個頭' },   // v10.2：撳／長撳團絨（sys12ui sysPress → systems.notePat）；唔計 CQ／路線照顧分
+          poopQuick: { n: 1, counts: ['poopQuick'], icon: 'sticker_heart', label: '返嚟 2 分鐘內執晒便便' },   // （v10.2 起唔再出；留低俾舊存檔）v10 晶角＝上線即清（sim.checkQuickClean 通知 'poopQuick'）
           lull: { n: 1, counts: ['lull', 'petSleep'], icon: 'sticker_sleep', label: '夜晚哄佢瞓／陪瞓' },
-        },
-        routeKind: { tide: 'rinse', shroom: 'feed', crystal: 'poopQuick', moon: 'lull', ember: 'play' } },
+        } },
       // 系統 6 親密度＋心聲：0–100；照顧 +1、長撳 +2（每日加最多 +10）；完全冇照顧嘅一日 −2（最低 20；光卵唔計）；新一代由 start 開始
       // 每 tierEvery（20）解鎖一段心聲（5 段 × 6 句，性格「蠢蠢地但覺得自己好醒」）；撳一下 chance 30% 出心聲泡、冷卻 10 分鐘（懸浮＋主程式共用）
       bond: { start: 20, max: 100, floor: 20, care: 1, longPress: 2, dailyGainCap: 10, ignoreDecay: 2, tierEvery: 20,

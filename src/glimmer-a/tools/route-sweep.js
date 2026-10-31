@@ -7,7 +7,7 @@
    數值全部讀 PARAMS.evo6.branch；唔改 config。 */
 const S = require('../src/sim.js'), D = require('../src/data.js'), P = D.PARAMS, C = P.evo6.branch;
 const args = process.argv.slice(2); if (args.includes('--quests')) require('../src/systems.js');
-const N = +(args.find(a => /^\d+$/.test(a))) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
+const NARG = +(args.find(a => /^\d+$/.test(a))) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
 const JIT = 90, MISS = 0.15, LULL = 0.5, SKIP_ACT = 0.2, EXTRA_ACT = 0.3;
 const ACTS = ['feed', 'play', 'rinse', 'poop'];
 // 每個時間表：上線鐘點、每次做咩（feed／play／rinse／poop）；everyOtherDay＝隔日先上
@@ -23,22 +23,29 @@ const MG_AT = { 勤力: [11, 17], 普通: [13], 疏玩: [20], 夜貓: [18], 早�
 // 遊測 v10 鎖定（QA 767229a，k＝0.45，N＝1000）全體 %
 const TARGET = { lumi: 5.47, tide: 16.17, shroom: 6.4, crystal: 15.25, moon: 16.5, ember: 14.9, bright: 5.12, soft: 12.43, dust: 7.77 };
 const FLAG_PT = 3;
-function run(name, seed) {
-  const sc = SCHED[name], rng = S.makeRng(seed * 7919 + 13), rngMg = S.makeRng(seed * 7919 + 97), T0 = new Date(2026, 10, 2, 0, 0, 0).getTime();
+/* o.days → 固定行 N 日（經濟 sim 用，唔理進化）；o.drops → 懸浮每日執幾粒星星碎（遊測假設 5）；X＝systems.js（有載先有委託／摸頭） */
+function run(name, seed, o) {
+  o = o || {}; const X = SYS12();
+  const sc = SCHED[name], rng = S.makeRng(seed * 7919 + 13), rngMg = S.makeRng(seed * 7919 + 97), rngPat = S.makeRng(seed * 7919 + 211), T0 = new Date(2026, 10, 2, 0, 0, 0).getTime();
   let now = T0 + 8 * 3600e3, wx = 'clear';
   S.setHourFn(() => new Date(now).getHours() + new Date(now).getMinutes() / 60); S.setNowFn(() => now); S.setWeatherFn(() => wx);
   const s = S.newState(now, seed); s.stage = 'sprout'; s.growthSec = 0; s.cq = P.cqStart; s.needs = Object.assign({}, P.startNeedsSprout || s.needs); s.evo.day0 = S.dayKey(now);
   const sess = [];
   for (let d = 0; d < 9; d++) { if (sc.everyOtherDay && (d + (seed & 1)) % 2) continue; for (const h of sc.hours) { if (rng() < MISS) continue; sess.push({ t: T0 + d * 864e5 + (h * 60 + Math.round((rng() * 2 - 1) * JIT)) * 60e3, h }); } }
   sess.sort((a, b) => a.t - b.t); let k = 0, mgs = 0, lulls = 0;
-  while (s.stage === 'sprout' || s.stage === 'juvenile') {
-    if (now - T0 > 10 * 864e5) break;
+  const played = {}, dropped = {}, shards = {};
+  while (o.days ? now - T0 < o.days * 864e5 : (s.stage === 'sprout' || s.stage === 'juvenile')) {
+    if (!o.days && now - T0 > 10 * 864e5) break;
+    if (X && o.days) { const wl = X.wallet(s, now); shards[S.dayKey(now - 1)] = Math.max(shards[S.dayKey(now - 1)] || 0, X.wallet(s, now - 1).today); shards[S.dayKey(now)] = wl.today; }
+    if (X && o.drops) { const dk = S.dayKey(now); if (!dropped[dk] && new Date(now).getHours() >= 12) { dropped[dk] = 1; for (let i = 0; i < o.drops; i++) X.grant(s, P.systems12.surprise.drop.amt, 'drop', now); } }
     wx = S.dayWeather(s.seed >>> 0, now);                 // v10.2：同遊戲一樣一日一抽（sim.dayWeatherN；seed＝隻團絨 seed）
     while (k < sess.length && sess[k].t < now) k++;
     if (k < sess.length && sess[k].t < now + 1800e3) {
       const slot = sess[k++]; s.lastSeen = now; if (s.sleeping) S.toggleSleep(s);
       S.noteLogin(s, now);                                   // v7：上線 → 晶角即清窗口
       const acts = sc.acts.filter(() => rng() >= SKIP_ACT); if (rng() < EXTRA_ACT) acts.push(ACTS[Math.floor(rng() * ACTS.length)]);
+      played[S.dayKey(now)] = 1;
+      if (X) for (let i = 0; i < 2; i++) if (rngPat() >= SKIP_ACT) X.notePat(s, now);   // v10.2 摸頭：每次上線撳 2 下（獨立 rng，唔影響其他抽籤）
       for (const a of acts) { if (a === 'feed') { s.needs.hunger = Math.min(s.needs.hunger, 60); S.feed(s, 'meal'); } else if (a === 'play') S.play(s); else if (a === 'rinse') S.rinse(s); else { while (s.poops > 0) S.clearPoop(s); } }
       if (MG_AT[name].includes(slot.h) && rngMg() >= SKIP_ACT) { const r = S.overlayOpenGame(s, now); if (r.ok) mgs++; }   // v8：浮動團絨撳兩下＝一局
       if (S.isDrowsy(s) && rng() < LULL) { const r = S.lullSleep(s); if (r.counted) lulls++; }
@@ -49,8 +56,14 @@ function run(name, seed) {
   }
   S.setHourFn(null); S.setNowFn(null); S.setWeatherFn(null);
   const ev = (s.ev || []).find(e => e.type === 'evolve');
-  return { form: s.form, cq: ev ? ev.cq : s.cq, mgs, lulls, need: ev && ev.b5 ? ev.b5.cqNeed : null, quick: ev && ev.b5 ? ev.b5.raw : null };
+  if (X && o.days) shards[S.dayKey(now)] = X.wallet(s, now).today;
+  return { shards, played, form: s.form, cq: ev ? ev.cq : s.cq, mgs, lulls, need: ev && ev.b5 ? ev.b5.cqNeed : null, quick: ev && ev.b5 ? ev.b5.raw : null };
 }
+function SYS12() { try { return require.cache[require.resolve('../src/systems.js')] ? require('../src/systems.js') : null; } catch (e) { return null; } }
+module.exports = { SCHED, MG_AT, TARGET, FLAG_PT, run, main };
+if (require.main === module) main();
+function main(n, quiet) {
+  const N = n || NARG, log = quiet ? () => {} : console.log;
 const all = {}, out = {}, NAMES = Object.keys(SCHED);
 for (const name of NAMES) {
   const c = {}, cqs = []; let mg = 0, lu = 0;
@@ -58,13 +71,13 @@ for (const name of NAMES) {
   cqs.sort((a, b) => a - b);
   const pct = {}; for (const f of D.BRANCHES) pct[f] = +(100 * (c[f] || 0) / N).toFixed(2);
   out[name] = { dist: c, pct, cqMed: +cqs[N >> 1].toFixed(2), cqP10: +cqs[Math.floor(N * 0.1)].toFixed(2), cqP90: +cqs[Math.floor(N * 0.9)].toFixed(2), mgs: +(mg / N).toFixed(2), lulls: +(lu / N).toFixed(2) };
-  console.log(name.padEnd(4, '　'), D.BRANCHES.map(f => D.FORM_NAME[f] + ' ' + pct[f]).join('  '), '｜CQ p10/中/p90', out[name].cqP10, out[name].cqMed, out[name].cqP90, '｜小遊戲', out[name].mgs, '哄瞓', out[name].lulls);
+  log(name.padEnd(4, '　'), D.BRANCHES.map(f => D.FORM_NAME[f] + ' ' + pct[f]).join('  '), '｜CQ p10/中/p90', out[name].cqP10, out[name].cqMed, out[name].cqP90, '｜小遊戲', out[name].mgs, '哄瞓', out[name].lulls);
 }
 const tot = N * NAMES.length, total = {};
 for (const f of D.BRANCHES) total[f] = +(100 * (all[f] || 0) / tot).toFixed(2);
-console.log('\n全體 vs 遊測 v10 目標（差 >' + FLAG_PT + 'pt 標 ⚠）');
+log('\n全體 vs 遊測 v10 目標（差 >' + FLAG_PT + 'pt 標 ⚠）');
 const flags = [];
-for (const f of D.BRANCHES) { const d = +(total[f] - TARGET[f]).toFixed(2), bad = Math.abs(d) > FLAG_PT; if (bad) flags.push(f); console.log(`  ${(D.FORM_NAME[f] + '　').slice(0, 2)} ${String(total[f]).padStart(6)}%  目標 ${String(TARGET[f]).padStart(6)}%  差 ${(d >= 0 ? '+' : '') + d}${bad ? '  ⚠' : ''}`); }
+for (const f of D.BRANCHES) { const d = +(total[f] - TARGET[f]).toFixed(2), bad = Math.abs(d) > FLAG_PT; if (bad) flags.push(f); log(`  ${(D.FORM_NAME[f] + '　').slice(0, 2)} ${String(total[f]).padStart(6)}%  目標 ${String(TARGET[f]).padStart(6)}%  差 ${(d >= 0 ? '+' : '') + d}${bad ? '  ⚠' : ''}`); }
 const max = (f) => Math.max(...NAMES.map(n => out[n].pct[f]));
 const chk = [
   ['9 條路出齊（每條 ≥2%）', D.BRANCHES.every(f => total[f] >= 2)],
@@ -78,6 +91,8 @@ const chk = [
   [`疏玩柔光＋微塵（${out['疏玩'].pct.soft}/${out['疏玩'].pct.dust}）`, out['疏玩'].pct.soft >= 2 && out['疏玩'].pct.dust >= 2],
   [`疏玩 CQ 15–35（中位 ${out['疏玩'].cqMed}）`, out['疏玩'].cqMed >= 15 && out['疏玩'].cqMed <= 35],
 ];
-for (const [n, v] of chk) console.log((v ? '  ✓ ' : '  ✗ ') + n);
-console.log(`  ${chk.filter(c => c[1]).length}/${chk.length} 達標；差 >${FLAG_PT}pt：${flags.length ? flags.map(f => D.FORM_NAME[f]).join('、') : '冇'}`);
-if (jsonOut) require('fs').writeFileSync(jsonOut, JSON.stringify({ N, total, target: TARGET, flags, tables: out, checks: chk }, null, 2));
+for (const [n, v] of chk) log((v ? '  ✓ ' : '  ✗ ') + n);
+log(`  ${chk.filter(c => c[1]).length}/${chk.length} 達標；差 >${FLAG_PT}pt：${flags.length ? flags.map(f => D.FORM_NAME[f]).join('、') : '冇'}`);
+if (jsonOut && !quiet) require('fs').writeFileSync(jsonOut, JSON.stringify({ N, total, target: TARGET, flags, tables: out, checks: chk }, null, 2));
+return { total, flags, tables: out };
+}

@@ -94,7 +94,7 @@
       const q = X.quests(G.state, now()), w = shardTxt(), RC = P.evo6.route.colors;
       if (!q.list.length) return `<div class="s12row" data-testid="s12-q-none"><span class="t">光卵孵咗先有委託㗎。</span></div>`;
       return q.list.map((x, i) => `<div class="s12row s12q" data-testid="s12-q-${i}" data-k="${x.k}" data-done="${x.n >= x.need ? 1 : 0}">${pimg(x.icon, 24)}<span class="t">${x.label}<small> ${Math.min(x.n, x.need)}/${x.need}</small>${x.route ? `<span class="rt" style="background:${RC[x.route] || '#888'}" data-testid="s12-q-route">${D.FORM_NAME[x.route] || x.route}</span>` : ''}</span>${pimg(x.n >= x.need ? 'checkbox_done' : 'checkbox_empty', 20)}</div>`).join('') +
-        `<div class="s12foot"><span>3 個齊即刻 ${pimg('icon_star_shard_16', 16)} +${q.reward * q.list.length}${q.paid ? '（已領）' : ''}</span><span data-testid="s12-wallet">${pimg('icon_star_shard_16', 16)} ${w.total}｜今日 ${w.today}/${w.cap}</span></div>`;
+        `<div class="s12foot"><span>3 個齊即刻 ${pimg('icon_star_shard_16', 16)} +${q.reward * q.list.length}${q.paid ? '（已領）' : ''}${q.route ? `<span class="rt" style="background:${RC[q.route] || '#888'}" data-testid="s12-q-route">${D.FORM_NAME[q.route] || q.route}+1</span>` : ''}</span><span data-testid="s12-wallet">${pimg('icon_star_shard_16', 16)} ${w.total}｜今日 ${w.today}/${w.cap}</span></div>`;
     }
     // ── 系統 6：親密度＋心聲（心聲泡＝遊美 bubble_thought_9s＋tail）──
     const vb = document.createElement('div'); vb.id = 's12voice'; vb.dataset.testid = 's12-voice';
@@ -111,7 +111,7 @@
     }
     G.sysVoice = function (o) { const r = X.voiceTry(G.state, now(), o); if (r.ok) showVoice(r); S12.lastTry = r; return r; };
     /* ui.js 撳寵物鬆手：長撳（≥ SHORT_MS）→ 親密 +2；短撳 → 心聲（30%、冷卻 10 分鐘、同懸浮共用） */
-    G.sysPress = function (p) { if (!p || G.state.stage === 'egg') return null; if (!p.short) return { bond: X.onLongPress(G.state, now(), G.state.ev) }; return { voice: G.sysVoice({ src: 'app' }) }; };
+    G.sysPress = function (p) { if (!p || G.state.stage === 'egg') return null; X.notePat(G.state, now(), G.state.ev);   /* v10.2 委託「摸摸佢個頭」：短撳／長撳都計 */ if (!p.short) return { bond: X.onLongPress(G.state, now(), G.state.ev) }; return { voice: G.sysVoice({ src: 'app' }) }; };
     function renderBond() {
       const s = G.state, b = X.bond(s, now()), L = C.bond.lines, mem = (s.memorial || []).slice(-6).reverse();
       return `<div data-testid="s12-bond-v">親密度 <b>${Math.round(b.v)}</b> / 100　第 ${b.tier} 段心聲<small>（今日 +${b.todayGain}/${b.cap}）</small></div><div class="s12bar"><i style="width:${b.v}%"></i></div>` +

@@ -95,11 +95,12 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     await dev('dev-s12-qreset'); await page.waitForTimeout(1200);
     let q = await E(() => __qa.sys12.quests()); const Q = await E(() => Glimmer.data.PARAMS.systems12.quests);
     ok(q.list.length === 3 && q.list.every(x => Q.kinds[x.k]), '芽崽 → 3 個委託', q.list);
+    ok(q.list.every(x => Q.pool.includes(x.k)) && !q.list.some(x => x.k === 'rinse'), 'v10.2 A：餵／玩／摸頭池（冇領先水珠 → 冇淋水）', q.list.map(x => x.k));
     const chip = await E(() => { const c = document.querySelector('[data-testid="s12-chip"]'), r = c.getBoundingClientRect(); return { vis: r.width > 0 && getComputedStyle(c).display !== 'none', txt: c.textContent, r: [r.x, r.y, r.width, r.height] }; });
     ok(chip.vis && /委託 0\/3/.test(chip.txt), 'HUD 星星碎＋委託進度 chip', chip);
     // 真照顧（sim.feed／play／rinse）
     const doK = (k) => E((k) => { const S = Glimmer.sim, s = __glimmer.state; s.sleeping = false; s.needs.hunger = 20; s.needs.clean = 30; s.needs.energy = 100;
-      if (k === 'feed') return S.feed(s, Glimmer.data.FOODS[0].id).ok; if (k === 'play') return S.play(s).ok; if (k === 'rinse') return S.rinse(s).ok; S.noteCare(s, new Date(__glimmer.now()).getHours(), k); return true; }, k);   // v10.2：路線委託可能係 poopQuick／lull → 直接報照顧 hook
+      if (k === 'feed') return S.feed(s, Glimmer.data.FOODS[0].id).ok; if (k === 'play') return S.play(s).ok; if (k === 'rinse') return S.rinse(s).ok; if (k === 'pat') { __glimmer.sysPress({ ms: 120, short: true }); return true; } return false; }, k);   // v10.2 A：摸頭＝撳團絨（真 sysPress 路徑）
     const w0 = await E(() => __qa.sys12.wallet().total);
     for (const x of q.list.slice(0, 2)) for (let i = 0; i < x.need; i++) await doK(x.k);
     await page.waitForTimeout(1300); q = await E(() => __qa.sys12.quests());
@@ -117,10 +118,11 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     // 路線委託（v10.2：唔跟領先；今日輪到邊條就邊條，平均分 5 條）
     await E(() => { const s = __glimmer.state; s.evo.b5 = { sprout: { all: 10, tide: 8, shroom: 1, crystal: 0, moon: 1, ember: 0 } }; s.evo.b5sys = {}; s.cq = 60; });
     await dev('dev-s12-qreset'); q = await E(() => __qa.sys12.quests()); const rq = q.list.find(x => x.route);
-    const rot = await E(() => { const X = Glimmer.sys12, s = __glimmer.state, t = __glimmer.now(), out = []; for (let d = 0; d < 5; d++) out.push(X.questRoute(s, Glimmer.sim.dayKey(t + d * 864e5))); return { today: out[0], five: out }; });
-    ok(rq && rq.k === Q.routeKind[rq.route] && rq.route === rot.today && new Set(rot.five).size === 5, '路線委託＝今日輪值路線（水珠領先都唔影響；5 日輪晒 5 條）', { list: q.list, rot });
+    const rot = await E(() => { const X = Glimmer.sys12, s = __glimmer.state, t = __glimmer.now(), out = []; for (let d = 0; d < 5; d++) out.push(X.questRoute(s, Glimmer.sim.dayKey(t + d * 864e5))); return { today: out[0], five: out, lead: X.leadRoute(s) }; });
+    ok(!rq && q.route === rot.today && new Set(rot.five).size === 5, 'v10.2：今日輪值路線（唔跟領先；5 日輪晒 5 條），委託本身唔帶路線', { list: q.list, route: q.route, rot });
+    ok(rot.lead === 'tide' && q.list.some(x => x.k === 'rinse') && q.list.filter(x => Q.pool.includes(x.k)).length === 2, '水珠領先 → 淋水委託＋池 2 個', q.list.map(x => x.k));
     await dev('dev-s12-qall'); const b = await E(() => ({ sys: __glimmer.state.evo.b5sys, B: Glimmer.sim.branch5Check(__glimmer.state).sys }));
-    ok(rq && b.sys.sprout && b.sys.sprout[rq.route] === 1 && b.B.capped[rq.route] <= 8 / 3 + 1e-6, '路線委託完成 → 路線新系統分 +1（≤25% cap）', b);
+    ok(b.sys.sprout && b.sys.sprout[q.route] === 1 && b.B.capped[q.route] <= 8 / 3 + 1e-6, '3 個齊 → 輪值路線新系統分 +1（≤25% cap）', b);
     w = await E(() => __qa.sys12.wallet()); ok(w.q === 15, '同日第二輪（DEV 重抽）唔會超過委託每日 15', w);
     // 存檔＋斷線補發
     await E(() => { const x = Glimmer.sys12.st(__glimmer.state).quests; x.list.forEach(y => { y.n = y.need; }); x.paid = false; const d = new Date(__glimmer.now() - 86400e3); x.day = Glimmer.sim.dayKey(d.getTime()); __glimmer.save && __glimmer.save(); });
