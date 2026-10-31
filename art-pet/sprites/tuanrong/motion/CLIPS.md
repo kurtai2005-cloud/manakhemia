@@ -250,6 +250,26 @@
 | F5 | 靜光・火苗 `evo_still_ember` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_ember.png`（1024×1024，444 塊）＋ `_emissive` | palette_ember.json |
 <!-- EVO6F-END -->
 
+<!-- EVO6G-START -->
+## 進化 6 階 batch G — §7 路線清晰化
+- 燈色：絨跳燈泡跟領先路線慢慢轉色（`../evo6/route_clarity/palette_route_bulbs.json`：lerp(base, path, t)；遮罩 `atlas_evo_hop_bulbmask.png`；冇 shader 版 `atlas_evo_hop_bulb_<id>.png`）。螢絨唔顯示。
+- 預告：`tell_<id>` 由絨跳播（判定前 12h 一次），std 標準：frames／layers／emissive／anchors（bulb）＋ atlas_evo_hop。定義喺 CLIPS.json `evo6G.tellClips`（唔入頂層 clips[]）。
+- 圖鑑：`../evo6/route_clarity/silhouette/sil_<id>_48.png`（靜光 48 實心剪影 #3B2A3E）＋ `collection_route.json` 一句提示。
+
+| 路線 | 提示 | 燈色 | glow / mid / core | 預告 |
+|---|---|---|---|---|
+| 水珠 `tide` | 「朝早 6–9 點照顧，或者成日淋水」 | 水藍 | #2FA0DC / #6CD8F4 / #D8F8FF | `tell_tide` 6 幀 8fps：甩水：左右擰身甩走頭頂水點（朝早露水／淋水），甩完笑。 |
+| 月眠 `moon` | 「夜晚 9 點至凌晨 3 點陪佢」 | 夜藍紫 | #5562E0 / #8D98FF / #DDE1FF | `tell_moon` 6 幀 6fps：打喊路：伸手打大喊路，頭頂飄 z，點一點頭似瞓唔瞓（月眠）。 |
+| 菇傘 `shroom` | 「餵得最多」 | 草綠 | #46B536 / #8AE466 / #DDFBC8 | `tell_shroom` 6 幀 8fps：見嘢就話食得：望地下一嘢、撲埋去扮咬落口、咀嚼完滿足 ω。 |
+| 晶角 `crystal` | 「執得最乾淨」 | 晶紫 | #A24CDC / #CD88FF / #F2DEFF | `tell_crystal` 6 幀 8fps：執乾淨：雙手掃身，身上逐粒閃光點，執完挺胸（晶角）。 |
+| 火苗 `ember` | 「玩得最多（包括小遊戲）」 | 火紅 | #E2402C / #FF7A4A / #FFD2BC | `tell_ember` 8 幀 10fps：原地跳：連跳兩下（壓扁→彈起），好興奮（火苗）。 |
+| 燦光 `radiant` | 「樣樣都照顧好」 | 金橙 | #EE8A14 / #FFB443 / #FFE6B4 | `tell_radiant` 6 幀 6fps：曬太陽伸懶腰：雙手舉高，四圍閃太陽光點（燦光：樣樣都好）。 |
+| 柔光 `soft` | 「普通照顧」 | 粉紅 | #EC5A9A / #FF9AC4 / #FFE2EF | `tell_soft` 6 幀 6fps：軟綿綿：左右挨身、合眼笑 ω、飄細心心（柔光）。 |
+| 微塵 `dust` | 「好少理佢」 | 塵灰 | #8C8682 / #BAB4AD / #ECE8E2 | `tell_dust` 6 幀 6fps：冇人理：嘆氣垂耳、打乞嗤噴啲塵（微塵）。 |
+| 螢絨 `lumi` | 隱藏：「？？？」 | 唔顯示（保持原燈黃） | — | `tell_lumi` 6 幀 6fps：（隱藏）燈泡一閃一閃、望上面，有粒細螢火飛過（螢絨；UI 唔顯示路線）。 |
+<!-- EVO6G-END -->
+
+
 
 <!-- LUMI-START -->
 ## 螢絨 lumi（隱藏稀有成年形態，round_s）

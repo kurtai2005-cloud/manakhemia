@@ -1,0 +1,165 @@
+{
+ "transparent": true,
+ "count": 31,
+ "used_count": 28,
+ "colors": [
+  {
+   "index": 1,
+   "name": "outline",
+   "hex": "#3B2A3E"
+  },
+  {
+   "index": 2,
+   "name": "cream0",
+   "hex": "#D69A66"
+  },
+  {
+   "index": 3,
+   "name": "cream1",
+   "hex": "#E9BE84"
+  },
+  {
+   "index": 4,
+   "name": "cream2",
+   "hex": "#F6DDB0"
+  },
+  {
+   "index": 5,
+   "name": "cream3",
+   "hex": "#FFEFC4"
+  },
+  {
+   "index": 6,
+   "name": "cream4",
+   "hex": "#FFF8E0"
+  },
+  {
+   "index": 7,
+   "name": "peach0",
+   "hex": "#E8A074"
+  },
+  {
+   "index": 8,
+   "name": "peach1",
+   "hex": "#F5BF93"
+  },
+  {
+   "index": 9,
+   "name": "peach2",
+   "hex": "#FBD8B4"
+  },
+  {
+   "index": 10,
+   "name": "orange",
+   "hex": "#F2A65A"
+  },
+  {
+   "index": 11,
+   "name": "orange_d",
+   "hex": "#E07F45"
+  },
+  {
+   "index": 12,
+   "name": "orange_dd",
+   "hex": "#B8643F"
+  },
+  {
+   "index": 13,
+   "name": "glow_core",
+   "hex": "#ECE8E2"
+  },
+  {
+   "index": 14,
+   "name": "glow_mid",
+   "hex": "#BAB4AD"
+  },
+  {
+   "index": 15,
+   "name": "glow",
+   "hex": "#8C8682"
+  },
+  {
+   "index": 16,
+   "name": "glow_warm",
+   "hex": "#FF8A3D"
+  },
+  {
+   "index": 17,
+   "name": "egg_shade",
+   "hex": "#F2B93C"
+  },
+  {
+   "index": 18,
+   "name": "egg_dark",
+   "hex": "#D98F2E"
+  },
+  {
+   "index": 19,
+   "name": "blush",
+   "hex": "#F28B9B"
+  },
+  {
+   "index": 20,
+   "name": "blush_d",
+   "hex": "#D9667A"
+  },
+  {
+   "index": 21,
+   "name": "berry",
+   "hex": "#E5584D"
+  },
+  {
+   "index": 22,
+   "name": "berry_d",
+   "hex": "#A33F4A"
+  },
+  {
+   "index": 23,
+   "name": "leaf",
+   "hex": "#6BBF6A"
+  },
+  {
+   "index": 24,
+   "name": "leaf_d",
+   "hex": "#3A7D4E"
+  },
+  {
+   "index": 25,
+   "name": "zzz",
+   "hex": "#8F85C2"
+  },
+  {
+   "index": 26,
+   "name": "white",
+   "hex": "#F3EEFA"
+  },
+  {
+   "index": 27,
+   "name": "cyan",
+   "hex": "#7FF0E0"
+  },
+  {
+   "index": 28,
+   "name": "drop",
+   "hex": "#7FC4E8"
+  },
+  {
+   "index": 29,
+   "name": "drop_d",
+   "hex": "#4FA3D9"
+  },
+  {
+   "index": 30,
+   "name": "sick0",
+   "hex": "#A3B08C"
+  },
+  {
+   "index": 31,
+   "name": "sick1",
+   "hex": "#C9D6B0"
+  }
+ ],
+ "route": "dust",
+ "routeName": "微塵",
+ "note": "絨跳燈色換做「微塵」(塵灰)：只換 glow/glow_mid/glow_core 3 色，只用喺燈泡像素（atlas_evo_hop_bulbmask.png），其他 28 色同 palette_base.json 一樣"
+}
