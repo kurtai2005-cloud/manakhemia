@@ -14,6 +14,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -59,13 +60,43 @@ class SettingsActivity : Activity() {
         grids.forEachIndexed { i, (g, l) -> gr.addView(RadioButton(this).apply { id = 200 + i; text = l; textSize = 15f; minHeight = dp(48f); isChecked = g == curG }) }
         gr.setOnCheckedChangeListener { _, id -> PetPrefs.setGrid(this, grids[id - 200].first) }
         col.addView(gr)
+        addSurprise(col, ::text)
         col.addView(btn("關閉浮動團絨") { PetPrefs.setEnabled(this, false); PetOverlayService.send(this, PetOverlayService.ACTION_STOP); refresh() })
         col.addView(btn("自啟動／省電白名單設定") { startActivity(Intent(this, PowerGuideActivity::class.java)) })
         col.addView(text("測試", 17f, true))
         col.addView(btn("即刻瞌（模擬 60 分鐘冇互動）") { PetOverlayService.send(this, PetOverlayService.ACTION_DEBUG_DOZE) })
         col.addView(btn("即刻去玩圖示") { PetOverlayService.send(this, PetOverlayService.ACTION_DEBUG_PLAY) })
+        // systems12 測試：即刻出（唔理計時／冷卻；入帳照跟遊戲上限）
+        col.addView(btn("即刻掉星星碎") { PetOverlayService.send(this, PetOverlayService.ACTION_DEBUG_S12, "drop") })
+        col.addView(btn("即刻飲水提醒") { PetOverlayService.send(this, PetOverlayService.ACTION_DEBUG_S12, "water") })
+        col.addView(btn("即刻早瞓提醒") { PetOverlayService.send(this, PetOverlayService.ACTION_DEBUG_S12, "sleep") })
+        col.addView(btn("即刻講心聲") { PetOverlayService.send(this, PetOverlayService.ACTION_DEBUG_S12, "voice") })
         col.addView(btn("返遊戲") { finish() })
         setContentView(ScrollView(this).apply { addView(col, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)) })
+    }
+
+    /** systems12 小驚喜（同遊戲設定同步：後改贏）：星星碎（預設開）、飲水提醒、早瞓提醒（預設閂）＋間隔／時間。 */
+    private fun addSurprise(col: LinearLayout, tx: (String, Float, Boolean) -> TextView) {
+        val sn = PetPrefs.snapshotSys12(this)
+        val cur = PetSys12.settings(sn?.surp, PetPrefs.surpLocal(this)) ?: PetSys12.Settings(mapOf("drop" to true, "water" to false, "sleep" to false), 2, "23:00", 0L)
+        col.addView(tx("小驚喜", 17f, true))
+        if (sn == null) col.addView(tx("（開一次遊戲之後先會同步親密度同設定）", 13f, false))
+        val labels = listOf("drop" to "星星碎（每 2–4 個鐘掉一粒，撳執起）", "water" to "飲水提醒", "sleep" to "早瞓提醒")
+        labels.forEachIndexed { i, (k, l) ->
+            col.addView(CheckBox(this).apply { id = 300 + i; text = l; textSize = 15f; minHeight = dp(48f); isChecked = cur.on[k] == true; tag = "surp-$k"
+                setOnCheckedChangeListener { _, on -> PetPrefs.setSurp(this@SettingsActivity, k, on) } })
+        }
+        col.addView(tx("飲水提醒間隔", 15f, false))
+        val wg = RadioGroup(this).apply { orientation = RadioGroup.HORIZONTAL }
+        listOf(1, 2, 3).forEachIndexed { i, hh -> wg.addView(RadioButton(this).apply { id = 400 + i; text = "${hh} 個鐘"; textSize = 15f; minHeight = dp(48f); isChecked = cur.waterH == hh }) }
+        wg.setOnCheckedChangeListener { _, id -> PetPrefs.setSurp(this, "waterH", listOf(1, 2, 3)[id - 400]) }
+        col.addView(wg)
+        col.addView(tx("早瞓提醒時間", 15f, false))
+        val times = listOf("22:00", "22:30", "23:00", "23:30", "00:00")
+        val sg = RadioGroup(this)
+        times.forEachIndexed { i, tm -> sg.addView(RadioButton(this).apply { id = 500 + i; text = tm; textSize = 15f; minHeight = dp(48f); isChecked = cur.sleepAt == tm }) }
+        sg.setOnCheckedChangeListener { _, id -> PetPrefs.setSurp(this, "sleepAt", times[id - 500]) }
+        col.addView(sg)
     }
 
     override fun onResume() {

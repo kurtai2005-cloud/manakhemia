@@ -80,10 +80,38 @@ object PetPrefs {
     /** snapshot stage（v2+）；v1 → null。 */
     fun snapshotStage(c: Context): String? = try { cap(c).getString(KEY_SNAPSHOT, null)?.let { JSONObject(it).optString("stage", "").ifEmpty { null } } } catch (e: Exception) { null }
 
-    fun appendQueue(c: Context, kind: String) = synchronized(lock) {
+    /** snapshot v5 sys12（親密／心聲／小驚喜）；v1–v4 → null（舊 www：懸浮唔出 systems12 嘢）。 */
+    fun snapshotSys12(c: Context): PetSys12.Snap? = try {
+        val s = cap(c).getString(KEY_SNAPSHOT, null)
+        val o = s?.let { JSONObject(it) }
+        if (o == null || o.optInt("v", 1) < 5) null else PetSys12.parse(o.optJSONObject("sys12"))
+    } catch (e: Exception) { null }
+
+    // 小驚喜：懸浮設定頁改嘅（本地，ts 後改贏；同時 queue {k:'set'} 俾 JS）
+    fun surpLocal(c: Context): PetSys12.Settings? {
+        val p = prefs(c); val ts = p.getLong("s12.ts", 0L); if (ts <= 0L) return null
+        return PetSys12.Settings(PetSys12.SURP_KEYS.associateWith { p.getBoolean("s12.on.$it", it == "drop") }, p.getInt("s12.waterH", 2), p.getString("s12.sleepAt", "23:00") ?: "23:00", ts)
+    }
+    /** 改一項設定：先由有效設定起底（保留其他項），寫本地＋queue set。 */
+    fun setSurp(c: Context, key: String, value: Any, now: Long = System.currentTimeMillis()) {
+        val cur = PetSys12.settings(snapshotSys12(c)?.surp, surpLocal(c))
+        val e = prefs(c).edit()
+        cur?.let { s -> s.on.forEach { (k, v) -> e.putBoolean("s12.on.$k", v) }; e.putInt("s12.waterH", s.waterH); e.putString("s12.sleepAt", s.sleepAt) }
+        when (key) { in PetSys12.SURP_KEYS -> e.putBoolean("s12.on.$key", value as Boolean); "waterH" -> e.putInt("s12.waterH", value as Int); "sleepAt" -> e.putString("s12.sleepAt", value as String) }
+        e.putLong("s12.ts", now).apply()
+        appendQueueObj(c, JSONObject().put("t", now).put("k", "set").put("key", key).put("val", value))
+    }
+    fun s12Long(c: Context, k: String) = prefs(c).getLong("s12.$k", 0L)
+    fun setS12Long(c: Context, k: String, v: Long) = prefs(c).edit().putLong("s12.$k", v).apply()
+    fun s12Str(c: Context, k: String): String? = prefs(c).getString("s12.$k", null)
+    fun setS12Str(c: Context, k: String, v: String?) = prefs(c).edit().putString("s12.$k", v).apply()
+
+    fun appendQueue(c: Context, kind: String) = appendQueueObj(c, JSONObject().put("t", System.currentTimeMillis()).put("k", kind))
+
+    fun appendQueueObj(c: Context, item: JSONObject) = synchronized(lock) {
         val p = cap(c)
         val arr = try { JSONArray(p.getString(KEY_QUEUE, "[]")) } catch (e: Exception) { JSONArray() }
-        arr.put(JSONObject().put("t", System.currentTimeMillis()).put("k", kind))
+        arr.put(item)
         val out = JSONArray()
         val from = maxOf(0, arr.length() - QUEUE_CAP)
         for (i in from until arr.length()) out.put(arr.get(i))

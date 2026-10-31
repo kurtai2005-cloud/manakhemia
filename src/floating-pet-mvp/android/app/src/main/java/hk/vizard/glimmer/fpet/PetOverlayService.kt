@@ -13,6 +13,7 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.ServiceInfo
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
@@ -55,6 +56,7 @@ class PetOverlayService : Service() {
         const val ACTION_DEBUG_DOZE = "hk.vizard.glimmer.fpet.DEBUG_DOZE"
         const val ACTION_DEBUG_PLAY = "hk.vizard.glimmer.fpet.DEBUG_PLAY"   // 測試：即刻去玩圖示
         const val ACTION_SET_GRID = "hk.vizard.glimmer.fpet.SET_GRID"
+        const val ACTION_DEBUG_S12 = "hk.vizard.glimmer.fpet.DEBUG_S12"     // 測試（systems12）：EXTRA_MODE＝drop／water／sleep／voice 即刻出
         const val EXTRA_MODE = "mode"
         const val CHANNEL = "fpet"
         const val NOTIF_ID = 4201
@@ -151,6 +153,7 @@ class PetOverlayService : Service() {
             ACTION_DEBUG_DOZE -> if (view != null) { lastInteract = 0; if (st != St.DRAG) doze() }
             ACTION_DEBUG_PLAY -> if (view != null && st != St.DRAG) { nextPlayAt = 0; startIconPlay() }
             ACTION_SET_GRID -> intent.getStringExtra(EXTRA_MODE)?.let { PetPrefs.setGrid(this, it) }
+            ACTION_DEBUG_S12 -> if (view != null) h.postDelayed({ debugS12(intent.getStringExtra(EXTRA_MODE) ?: "") }, 300)
         }
         PetPrefs.setEnabled(this, true)
         running = true
@@ -169,6 +172,7 @@ class PetOverlayService : Service() {
         view = null
         fx?.let { try { wm.removeView(it) } catch (_: Exception) {} }
         fx = null
+        hideSay(); hideShard()
         super.onDestroy()
     }
 
@@ -342,7 +346,7 @@ class PetOverlayService : Service() {
     private fun setAppVisible(vis: Boolean) {
         appVisible = vis
         val v = view ?: return
-        if (vis) { hideMenu(); v.visibility = View.GONE; fx?.visibility = View.GONE; stopTicking() }
+        if (vis) { hideMenu(); v.visibility = View.GONE; fx?.visibility = View.GONE; hideSay(); hideShard(); stopTicking() }
         else {
             // 返嚟可能已轉形態／改模式
             val f = PetPrefs.snapshotForm(this)
@@ -440,6 +444,7 @@ class PetOverlayService : Service() {
         }
         place()
         tickFx(dt)
+        tickSys12(dt)
     }
 
     private fun toIdle(t: Float) { st = St.IDLE; play("idle"); stTimer = t }
@@ -586,7 +591,7 @@ class PetOverlayService : Service() {
         when (st) {
             St.ASLEEP, St.DOZE_IN -> { st = St.WAKE; play("wake"); emoteNext = null; PetPrefs.appendQueue(this, "wake"); Log.i(TAG, "wake") }
             St.DRAG, St.FALL, St.FLING -> {}
-            else -> { st = St.TURN; play("turn_back"); PetPrefs.appendQueue(this, "tap"); Log.i(TAG, "tap → turn_back") }
+            else -> { st = St.TURN; play("turn_back"); PetPrefs.appendQueue(this, "tap"); Log.i(TAG, "tap → turn_back"); tryVoice(false) }
         }
         place()
     }
@@ -730,6 +735,113 @@ class PetOverlayService : Service() {
         }
         val cx = nx.coerceIn(screen.left, max(screen.left, screen.right - cell)); val cy = ny.coerceIn(screen.top, max(screen.top, screen.bottom - cell))
         if (cx != p.x || cy != p.y) { p.x = cx; p.y = cy; try { wm.updateViewLayout(v, p) } catch (_: Exception) {} }
+    }
+
+    // ── systems12（第 1 批）：心聲（系統 6）＋小驚喜（系統 12：星星碎／飲水／早瞓）。數值全部嚟自 snapshot v5 sys12；
+    //    懸浮自己計時，結果 queue 俾 JS（sys12Apply 入帳）。設定閂咗 → 乜都唔出。舊 www（v<5）→ 完全唔出。
+    private var s12: PetSys12.Snap? = null
+    private var s12At = 0L
+    private val s12Art by lazy { Sys12Art(this) }
+    private var say: SayView? = null; private var sayLp: WindowManager.LayoutParams? = null; private var sayT = 0f
+    private var shard: ShardView? = null; private var shardLp: WindowManager.LayoutParams? = null; private var shardT = 0f; private var shardAge = 0f
+    private fun s12K() = max(1, dp(1f).roundToInt())
+    private fun ovLp(w: Int, h: Int, touch: Boolean, title: String) = WindowManager.LayoutParams(w, h, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or (if (touch) 0 else WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE),
+        PixelFormat.TRANSLUCENT).apply {
+        gravity = Gravity.TOP or Gravity.START; this.title = title
+        if (Build.VERSION.SDK_INT >= 28) layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        if (Build.VERSION.SDK_INT >= 30) setFitInsetsTypes(0)
+    }
+
+    private fun showSay(text: String, icon: Bitmap?, sec: Int) {
+        hideSay()
+        val v = SayView(this, s12Art, s12K(), dp(220f).toInt()); v.set(text, icon)
+        val (w, hh) = v.want(); val p = ovLp(w, hh, false, "FloatingPetSay")
+        try { wm.addView(v, p); say = v; sayLp = p; sayT = sec.toFloat(); placeSay() } catch (e: Exception) { Log.w(TAG, "say window: $e") }
+        Log.i(TAG, "s12 say: $text")
+    }
+    private fun hideSay() { say?.let { try { wm.removeView(it) } catch (_: Exception) {} }; say = null; sayT = 0f }
+    private fun placeSay() {
+        val v = say ?: return; val p = sayLp ?: return; val l = lp ?: return
+        val above = (fxAtlas?.size ?: 24) * fxScale() / 2
+        val nx = (l.x + atlas.size * scale / 2 - p.width / 2).coerceIn(screen.left, max(screen.left, screen.right - p.width))
+        val ny0 = l.y + headTop * scale - p.height - above
+        val ny = (if (ny0 < safe.top) l.y + atlas.size * scale else ny0).coerceIn(screen.top, max(screen.top, screen.bottom - p.height))
+        if (nx != p.x || ny != p.y) { p.x = nx; p.y = ny; try { wm.updateViewLayout(v, p) } catch (_: Exception) {} }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun showShard(sec: Int) {
+        hideShard()
+        val px = dp(30f).toInt(); val v = ShardView(this, s12Art.shard32, px); val p = ovLp(px, px, true, "FloatingPetShard")
+        val l = lp ?: return; val cell = atlas.size * scale
+        val right = feetX < (safe.left + safe.right) / 2f
+        p.x = (if (right) l.x + cell * 3 / 4 else l.x + cell / 4 - px).coerceIn(safe.left, max(safe.left, safe.right - px))
+        p.y = (feetY - px).toInt().coerceIn(safe.top, max(safe.top, safe.bottom - px))
+        v.setOnTouchListener { _, e -> if (e.actionMasked == MotionEvent.ACTION_UP) collectShard(); true }
+        try { wm.addView(v, p); shard = v; shardLp = p; shardT = sec.toFloat(); shardAge = 0f; Log.i(TAG, "s12 shard drop (${sec}s)") } catch (e: Exception) { Log.w(TAG, "shard window: $e") }
+    }
+    private fun hideShard() { shard?.let { try { wm.removeView(it) } catch (_: Exception) {} }; shard = null; shardT = 0f }
+    private fun collectShard() {
+        if (shard == null) return
+        interact(); hideShard()
+        val now = System.currentTimeMillis()
+        val got = (PetPrefs.s12Str(this, "got") ?: "").split(',').mapNotNull { it.toLongOrNull() }.filter { PetSys12.dayKey(it) == PetSys12.dayKey(now) } + now
+        PetPrefs.setS12Str(this, "got", got.joinToString(","))
+        PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", now).put("k", "drop"))
+        showTapFx("heart")
+        val sn = s12; showSay(PetSys12.line(sn?.surp, "drop", Random.nextDouble()) ?: "★", s12Art.shard16, sn?.surp?.showSec ?: 6)
+        Log.i(TAG, "s12 shard collected (${got.size} today)")
+    }
+    private fun collected(): List<Long> = (PetPrefs.s12Str(this, "got") ?: "").split(',').mapNotNull { it.toLongOrNull() }
+
+    private fun remind(what: String) {
+        val sn = s12; val line = PetSys12.line(sn?.surp, what, Random.nextDouble()) ?: return
+        showSay(line, s12Art.icon(what), sn?.surp?.showSec ?: 6)
+        PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", System.currentTimeMillis()).put("k", "remind").put("what", what))
+    }
+    private fun tryVoice(force: Boolean) {
+        val sn = s12 ?: PetPrefs.snapshotSys12(this) ?: return
+        val now = System.currentTimeMillis()
+        val line = if (force) PetSys12.voiceTry(sn.copy(voice = sn.voice.copy(chance = 1.0, lastAt = 0L)), now, 0L, 0.0, Random.nextDouble(), Random.nextDouble(), Random.nextDouble())
+                   else PetSys12.voiceTry(sn, now, PetPrefs.s12Long(this, "voiceAt"), Random.nextDouble(), Random.nextDouble(), Random.nextDouble(), Random.nextDouble())
+        if (line == null) return
+        PetPrefs.setS12Long(this, "voiceAt", now)
+        PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", now).put("k", "voice").put("line", line))
+        showSay(line, null, sn.voice.showSec)
+    }
+
+    private fun tickSys12(dt: Float) {
+        if (sayT > 0f) { sayT -= dt; if (sayT <= 0f) hideSay() else placeSay() }
+        shard?.let { v -> shardT -= dt; shardAge += dt; if (shardT <= 0f) { hideShard(); Log.i(TAG, "s12 shard expired") } else v.bob = kotlin.math.sin(shardAge * 2.4f) }
+        val nowE = SystemClock.elapsedRealtime(); if (nowE - s12At < 1000) return; s12At = nowE
+        val sn = PetPrefs.snapshotSys12(this); s12 = sn
+        if (sn == null) { hideShard(); return }
+        val set = PetSys12.settings(sn.surp, PetPrefs.surpLocal(this)) ?: return
+        val now = System.currentTimeMillis(); val busy = st == St.DRAG || st == St.FALL || st == St.FLING
+        // 星星碎：每 minH–maxH 小時一粒（今日仲有位先掉）；閂咗／蛋 → 收埋
+        if (set.on["drop"] != true || sn.egg) { hideShard(); if (PetPrefs.s12Long(this, "dropAt") != 0L) PetPrefs.setS12Long(this, "dropAt", 0L) }
+        else if (shard == null && !busy) {
+            val at = PetPrefs.s12Long(this, "dropAt")
+            if (at == 0L) PetPrefs.setS12Long(this, "dropAt", PetSys12.dropNext(now, Random.nextDouble(), sn.surp.dropMinH, sn.surp.dropMaxH))
+            else if (now >= at) {
+                if (PetSys12.dropRoom(sn.surp, now, collected()) > 0) showShard(sn.surp.dropShowSec)
+                PetPrefs.setS12Long(this, "dropAt", PetSys12.dropNext(now, Random.nextDouble(), sn.surp.dropMinH, sn.surp.dropMaxH))
+            }
+        }
+        // 飲水：距上次（或開咗嗰刻）≥ waterH 小時、fromH–toH 之間
+        if (set.on["water"] != true) { if (PetPrefs.s12Long(this, "waterAt") != 0L) PetPrefs.setS12Long(this, "waterAt", 0L) }
+        else { val last = PetPrefs.s12Long(this, "waterAt")
+            if (last == 0L) PetPrefs.setS12Long(this, "waterAt", now)
+            else if (sayT <= 0f && PetSys12.waterDue(last, set.waterH, now, sn.surp.waterFromH, sn.surp.waterToH)) { PetPrefs.setS12Long(this, "waterAt", now); remind("water") } }
+        // 早瞓：每晚一次（sleepAt 起 sleepWinMin 分鐘內）
+        if (set.on["sleep"] == true && sayT <= 0f) { val (due, night) = PetSys12.sleepDue(set.sleepAt, PetPrefs.s12Str(this, "sleepNight"), now, sn.surp.sleepWinMin)
+            if (due) { PetPrefs.setS12Str(this, "sleepNight", night); remind("sleep") } }
+    }
+    private fun debugS12(what: String) {
+        s12 = PetPrefs.snapshotSys12(this); val sn = s12
+        Log.i(TAG, "s12 debug $what snap=${sn != null}")
+        when (what) { "drop" -> showShard(sn?.surp?.dropShowSec ?: 30); "water", "sleep" -> remind(what); "voice" -> tryVoice(true) }
     }
 
     // ── 長按小選單（獨立 overlay 視窗，撳外面收） ──
