@@ -139,10 +139,9 @@ console.log('# 好／差照顧（芽崽 18h＋跳跳期 3 日）→ 分支');
   const a = careBot(true), b = careBot(false);
   if (S.setHourFn) S.setHourFn(null);
   if (a.ev) { const ev = a.ev.find(e => e.type === 'evolve'); if (ev && ev.b5) console.log('  · 勤力照顧 §7 分數', JSON.stringify(ev.b5.score), 'all', ev.b5.all, 'top', ev.b5.top, ev.b5.topShare, ev.b5.secondShare, 'clean', ev.b5.cleanAvg); }
-  // §7 矛盾（已報）：呢個 bot 每 15 分鐘都清便便 → clearPoop 佔 39%、清潔平均 85 → 依 §7 次序先去晶角；CQ 本身仍夠燦光
-  { const ev = a.ev.find(e => e.type === 'evolve') || {};
-    ok(a.stage === 'adult' && ev.cq >= 70 && S.decideForm(ev.cq) === 'bright', '勤力照顧 → CQ ≥70（冇 §7 就係燦光）', 'cq=' + ev.cq);
-    ok(a.form === (ev.b5 && ev.b5.ok ? ev.b5.form : 'bright') && a.form === 'crystal', '勤力照顧（成日清便便）→ §7 晶角優先過燦光', a.form); }
+  ok(a.stage === 'adult' && a.form === 'bright', '勤力照顧 → 燦光', a.form + ' cq=' + a.cq);
+  { const ev = a.ev.find(e => e.type === 'evolve') || {};   // §7 修訂：清便便 39%＋清潔 85 → 全面照顧（最高 <45%）→ 燦光先過新 5 條
+    ok(ev.cq >= 70 && ev.b5 && ev.b5.top === 'crystal' && ev.b5.topShare < 0.45 && ev.b5.ok, '勤力照顧：晶角 39%（新 5 條本身成立）但 <45% → 燦光優先', ev.b5 && ev.b5.topShare); }
   ok(b.stage === 'adult' && b.form === 'dust', '極少照顧（<20 先補到 30）→ 微塵（可重養，非失敗）', b.form);
 }
 console.log('# 迷你遊戲');

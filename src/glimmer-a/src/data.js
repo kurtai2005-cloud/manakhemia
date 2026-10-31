@@ -40,7 +40,7 @@
       kitOnLiveClips: true,   // 遊美：evo 形態 std23 clip 用原幀（臉已畫好）；五官 kit 只用喺生命感 clip（s1/s2）
       migrateAdultKeepSec: 24 * 3600,
       // §7 新支線 ×5（pet-template-v1 §7）：統計範圍＝careStages；分數＝佔總照顧次數 %
-      b5CQ: 55, b5TopShare: 0.35, b5Gap: 0.05, b5CrystalCleanAvg: 70, b5MoonFrom: 21, b5MoonTo: 3 },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
+      b5CQ: 55, b5TopShare: 0.35, b5Gap: 0.05, b5CrystalCleanAvg: 70, b5MoonFrom: 21, b5MoonTo: 3, b5BrightMaxShare: 0.45 },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
     overlayDpPerPx: 1.625,          // evo6 浮動 overlay：sizeDp＝frameSize×1.625（芽崽 32px＝舊 52dp）
     eggTapBoostSec: 75,           // 光卵每點一下 +75s（8 下 = 10 分鐘）
     startNeedsSprout: { hunger: 70, mood: 70, clean: 90, energy: 100 },

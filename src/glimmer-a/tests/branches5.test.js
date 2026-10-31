@@ -1,5 +1,5 @@
 /* §7 新支線 ×5（tide／shroom／crystal／moon／ember）Node 無依賴測試：node tests/branches5.test.js
-   覆蓋：① 判定次序 ② 門檻（CQ／35%／5pp／平手）③ 分數來源（芽崽＋跳跳期）④ 落雨 rinse／21–03 雙計規則 ⑤ 靜光對應 ⑥ DEV 強制支線 */
+   覆蓋：① 判定次序 ② 門檻（CQ／35%／5pp／平手）③ 分數來源（芽崽＋跳跳期）④ 落雨 rinse 只計一次／21–03 只計月眠（§7 修訂）⑦ 燦光 45% 邊界 ⑤ 靜光對應 ⑥ DEV 強制支線 */
 const fs = require('fs'), path = require('path');
 const S = require('../src/sim.js');
 const D = require('../src/data.js');
@@ -26,7 +26,7 @@ ok(D.BRANCHES.length === 9 && D.BRANCHES[0] === 'lumi' && D.BRANCHES.slice(-3).j
 ok(EV6.b5CQ === 55 && EV6.b5TopShare === 0.35 && EV6.b5Gap === 0.05 && EV6.b5CrystalCleanAvg === 70 && EV6.b5MoonFrom === 21 && EV6.b5MoonTo === 3, 'PARAMS.evo6 b5* = 55／35%／5pp／清潔 70／21–03');
 ok(['水珠', '菇傘', '晶角', '月眠', '火苗'].every((n, i) => D.FORM_NAME[D.BRANCH5[i]] === n), 'FORM_NAME 水珠／菇傘／晶角／月眠／火苗');
 
-console.log('# ① 判定次序：螢絨 → 新 5 條 → 燦光／柔光／微塵');
+console.log('# ① 判定次序（§7 修訂）：螢絨 → 燦光（最高 <45%）→ 新 5 條 → 柔光／微塵');
 {
   // 符合螢絨（夜晚照顧 ≥40%＋螢火散步＋CQ≥55）同時又符合新 5 條（菇傘）→ 螢絨
   const s = build({ feed: 10, play: 2 }, { h: 22 });   // 22:00 → 夜晚照顧 100%；月眠亦計 → 月眠 12/12
@@ -79,8 +79,10 @@ console.log('# ③ 分數來源（只計芽崽＋跳跳期）');
   { const s = build({}); HOUR = 12; s.sleeping = true; ok(S.notePetSleep(s) === true && S.branch5Check(s).score.moon === 1 && S.branch5Check(s).all === 1, '瞓覺時撫摸 → 月眠（白天都計）');
     s.sleeping = false; ok(S.notePetSleep(s) === false && S.branch5Check(s).score.moon === 1, '醒緊撫摸唔計');
     ok(S.careShare(s).all === 0, '瞓覺撫摸唔郁螢絨嘅夜晚照顧比例'); }
-  { const s = build({ feed: 10 }, { h: 22 }); s.cq = 60; const r = S.branch5Check(s); ok(r.tie && !r.ok, '21–03 淨係餵 → 月眠＝菇傘平手 → 唔成立（§7 雙計嘅後果，已報）'); }
-  { const s = build({ feed: 2, play: 8 }, { h: 23 }); s.cq = 60; ok(S.branch5Check(s).form === 'moon', '夜深陪玩（23:00 玩 8 餵 2）→ 月眠 100% 勝火苗 80%'); }
+  { const s = build({ feed: 10 }, { h: 22 }); s.cq = 60; const r = S.branch5Check(s); ok(r.ok && r.form === 'moon' && r.score.shroom === 0 && r.score.moon === 10, '§7 修訂：21–03 淨係餵 → 月眠 100%（菇傘唔計）', JSON.stringify(r.score)); }
+  { const s = toAdult(build({ feed: 12, play: 2 }, { h: 23 }), 80); ok(s.form === 'moon' && evOf(s).why === 'b5', '夜晚淫餵（23:00 餵 12 玩 2，CQ 80）→ 月眠（≥45% 唔去燦光）', s.form); }
+  { const s = build({ feed: 6 }, { h: 22 }); HOUR = 12; for (let i = 0; i < 4; i++) S.noteCare(s, null, 'feed'); HOUR = 12; s.cq = 60; const r = S.branch5Check(s); ok(r.score.moon === 6 && r.score.shroom === 4 && r.form === 'moon', '夜晚 6 次＋白天 4 次餵 → 月眠 60%、菇傘 40%'); }
+  { const s = build({ feed: 2, play: 8 }, { h: 23 }); s.cq = 60; ok(S.branch5Check(s).form === 'moon', '夜深陪玩（23:00 玩 8 餵 2）→ 月眠 100%（§7 修訂：火苗唔計）'); }
   // 範圍：只計芽崽＋跳跳期
   { const s = build({ feed: 10 }, { stage: 'newborn' }); ok(S.branch5Check(s).all === 0, '絨點（newborn）照顧唔計'); }
   { const s = build({ feed: 5 }, { stage: 'juvenile' }); S.noteCare(Object.assign(s, { stage: 'sprout' }), null, 'feed'); ok(S.branch5Check(s).all === 6, '芽崽＋跳跳期加埋計'); }
@@ -91,14 +93,28 @@ console.log('# ③ 分數來源（只計芽崽＋跳跳期）');
   }
 }
 
-console.log('# ④ 落雨 rinse 只計一次；21–03 雙計');
+console.log('# ④ 落雨 rinse 只計一次；21–03 只計月眠（§7 修訂）');
 {
   { const s = build({ rinse: 1 }, { rain: true }); const b = s.evo.b5.sprout; ok(b.tide === 1 && b.all === 1, '落雨 rinse → 水珠 +1（唔係 +2）', JSON.stringify(b)); }
   { const s = build({ play: 1 }, { rain: true }); const b = s.evo.b5.sprout; ok(b.tide === 1 && b.ember === 1 && b.all === 1, '落雨玩 → 水珠 +1、火苗 +1、總數 +1'); }
-  { const s = build({ feed: 1 }, { h: 22 }); const b = s.evo.b5.sprout; ok(b.moon === 1 && b.shroom === 1 && b.all === 1, '22:00 餵 → 月眠 +1、菇傘 +1（兩邊都計）'); }
-  { const s = build({ rinse: 1 }, { h: 1, rain: true }); const b = s.evo.b5.sprout; ok(b.tide === 1 && b.moon === 1 && b.all === 1, '01:00 落雨 rinse → 水珠 1、月眠 1'); }
+  { const s = build({ feed: 1 }, { h: 22 }); const b = s.evo.b5.sprout; ok(b.moon === 1 && b.shroom === 0 && b.all === 1, '§7 修訂：22:00 餵 → 只計月眠 +1（菇傘唔計）'); }
+  { const s = build({ rinse: 1 }, { h: 1, rain: true }); const b = s.evo.b5.sprout; ok(b.tide === 0 && b.moon === 1 && b.all === 1, '§7 修訂：01:00 落雨 rinse → 只計月眠 1（夜晚唔計本身類型／落雨）'); }
   { const s = build({}); HOUR = 22; s.sleeping = true; S.notePetSleep(s); HOUR = 12; ok(s.evo.b5.sprout.moon === 1, '22:00 瞓覺撫摸 → 月眠只 +1'); }
-  { const s = build({ poop: 2 }, { h: 2, clean: 90 }); const r = S.branch5Check(s); ok(r.score.crystal === 2 && r.score.moon === 2, '02:00 清便便 → 晶角＋月眠'); }
+  { const s = build({ poop: 2 }, { h: 2, clean: 90 }); const r = S.branch5Check(s); ok(r.score.crystal === 0 && r.score.moon === 2, '§7 修訂：02:00 清便便 → 只計月眠'); }
+}
+
+console.log('# §7 修訂：燦光（CQ ≥70 且最高分 <45%）先過新 5 條');
+{
+  const go = (counts, cq, o) => toAdult(build(counts, o), cq);
+  let s = go({ feed: 44, play: 20, rinse: 18, poop: 18 }, 80); ok(s.form === 'bright' && evOf(s).b5.ok && evOf(s).b5.topShare === 0.44, '最高 44%（新 5 條本身成立）＋CQ 80 → 燦光', s.form);
+  s = go({ feed: 45, play: 20, rinse: 18, poop: 17 }, 80); ok(s.form === 'shroom' && evOf(s).why === 'b5', '最高 45%（啱啱好）＋CQ 80 → 菇傘', s.form);
+  s = go({ feed: 9, play: 4, rinse: 4, poop: 3 }, 70); ok(s.form === 'shroom', '最高 45%（9/20）＋CQ 70 → 菇傘', s.form);
+  s = go({ feed: 44, play: 20, rinse: 18, poop: 18 }, 69); ok(s.form === 'shroom', 'CQ 69（唔夠燦光）＋最高 44% → 菇傘', s.form);
+  s = go({ feed: 44, play: 20, rinse: 18, poop: 18 }, 70); ok(s.form === 'bright', 'CQ 70（啱啱好）＋最高 44% → 燦光', s.form);
+  s = go({ feed: 8, poop: 2 }, 80, { clean: 85 }); ok(s.form === 'shroom', '清便便都計晶角，但最高係菇傘 80% → 菇傘', s.form);
+  s = go({ feed: 46, play: 42, rinse: 12 }, 90); ok(s.form === 'soft' && !evOf(s).b5.ok, '最高 46%（燦光唔合）＋差 4pt（新 5 條唔成立）→ 照次序落柔光（CQ 90）', s.form);
+  s = go({ feed: 50, play: 50 }, 90); ok(s.form === 'soft' && evOf(s).b5.tie, '50／50 平手＋CQ 90 → 柔光（照次序）', s.form);
+  s = go({}, 90); ok(s.form === 'bright', '冇照顧紀錄＋CQ 90 → 燦光', s.form);
 }
 
 console.log('# ⑤ 靜光：每條支線一個樣');
