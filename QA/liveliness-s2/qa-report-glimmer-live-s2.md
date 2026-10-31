@@ -243,3 +243,13 @@ v3：心情 `happy／ok／sad`、`sleeping`、最急需求 **低過 30** 先 `ur
 | **P2** | 長按選單列同玩圖示 radio 係 **44dp**，低過 48dp。設定主掣係 48dp。 | `minHeight` 改 `48dp`。 |
 
 冇 P0／P1。APK 未測。
+
+## 浮動層再測（6fc62ed）
+
+長按選單列同玩圖示 radio 而家係 **48dp**。仲低過 48dp 嘅得「活動模式」三粒 radio（沿底邊行／自由行／定點）**44dp**。呢個係已知 P2，遊程另改。設定主掣同省電頁掣仍然 48dp。
+
+`MainActivity` 加咗 `android:screenOrientation="portrait"`。`PetOverlayService` 對 `fecb0ea` 只改選單高度，拋出、撞邊、邊坐、撚、`needSwap`、整數 scale 冇郁。
+
+簽名仍然 v1＋v2＋v3，release 預設非 debuggable。權限冇加，DUMP 仍然刪。v3 低過 30 先出需求。玩圖示預設 4×6，可揀唔玩。螢絨／微塵仍然 soft atlas。`fadeReady` 仍然喺遊戲側，浮動 snapshot 冇呢欄。bridge 測試 **10／0**。API 30 路徑冇改。
+
+冇新 P0／P1。已知 P2 未收。APK 未測。
