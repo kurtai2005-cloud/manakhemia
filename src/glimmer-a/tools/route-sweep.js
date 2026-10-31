@@ -1,10 +1,11 @@
 /* §7 平衡修訂 v4 掃描（俾遊測調 config 用，唔係 gating test）：node tools/route-sweep.js [每表隻數=200]
    6 個代表時間表 × N 個 seed，由芽崽行到守夜者，統計 9 條路分佈同目標。
+   v5：清便便只清真實便便（即清 ≤crystalQuickSec 先計晶角）、眼瞓時 LULL 機會哄瞓；目標每表菇傘 ≤30%。
    v4 玩家隨機性：每次上線 ±90 分鐘、漏上線（MISS）、每個動作有機會唔做＋隨機加一個動作；天氣每 6 個鐘隨機（晴／陰／雨）；照顧日用模擬時鐘。
    數值全部讀 PARAMS.evo6.branch；時間表係呢度自訂嘅近似（遊測正式表可替換 SCHED）。 */
 const S = require('../src/sim.js'), D = require('../src/data.js'), P = D.PARAMS;
 const N = +process.argv[2] || 200;
-const JIT = 90, MISS = 0.15, SKIP_ACT = 0.2, EXTRA_ACT = 0.3, WX = [['clear', 0.6], ['overcast', 0.25], ['rain', 0.15]];
+const JIT = 90, MISS = 0.15, LULL = 0.5, SKIP_ACT = 0.2, EXTRA_ACT = 0.3, WX = [['clear', 0.6], ['overcast', 0.25], ['rain', 0.15]];
 const ACTS = ['feed', 'play', 'rinse', 'poop'];
 // 每個時間表：上線鐘點、每次做咩（feed／play／rinse／poop）；everyOtherDay＝隔日先上
 const SCHED = {
@@ -31,7 +32,8 @@ function run(name, seed) {
     if (k < sess.length && sess[k] < now + 1800e3) {
       k++; s.lastSeen = now; if (s.sleeping) S.toggleSleep(s);
       const acts = sc.acts.filter(() => rng() >= SKIP_ACT); if (rng() < EXTRA_ACT) acts.push(ACTS[Math.floor(rng() * ACTS.length)]);
-      for (const a of acts) { if (a === 'feed') { s.needs.hunger = Math.min(s.needs.hunger, 60); S.feed(s, 'meal'); } else if (a === 'play') S.play(s); else if (a === 'rinse') S.rinse(s); else { s.poops = Math.max(1, s.poops); S.clearPoop(s); } }
+      for (const a of acts) { if (a === 'feed') { s.needs.hunger = Math.min(s.needs.hunger, 60); S.feed(s, 'meal'); } else if (a === 'play') S.play(s); else if (a === 'rinse') S.rinse(s); else { while (s.poops > 0) S.clearPoop(s); } }   // v5：只清真實便便（出咗幾耐決定係咪即清）
+      if (S.isDrowsy(s) && rng() < LULL) S.lullSleep(s);   // v5 哄瞓：眼瞓時有機會哄佢瞓
       const hr = new Date(now).getHours();
       if ((hr >= 17 || hr < 7) && rng() < 0.25) { const E = s.evo || (s.evo = {}); E.evIn = E.evIn || {}; const b = E.evIn[s.stage] || (E.evIn[s.stage] = {}); b[P.evo6.lumiEvent] = (b[P.evo6.lumiEvent] || 0) + 1; }
       S.advance(s, 1800, {}, 60); now += 1800e3; s.lastSeen = now;
@@ -49,6 +51,7 @@ const tot = N * Object.keys(SCHED).length, lumiPct = 100 * (all.lumi || 0) / tot
 console.log('全體', JSON.stringify(all));
 const chk = [
   ['6 個時間表合共出齊 9 條路', D.BRANCHES.every(f => all[f])],
+  ['每表菇傘 ≤30%（v5）', Object.values(out).every(o => (o.dist.shroom || 0) <= 0.3 * N)],
   ['每個時間表最少 2 種結局', Object.values(out).every(o => Object.keys(o.dist).length >= 2)],
   ['單一結局 ≤85%', Object.values(out).every(o => Math.max(...Object.values(o.dist)) <= 0.85 * N)],
   [`螢絨全體 3–10%（實際 ${lumiPct.toFixed(1)}%）`, lumiPct >= 3 && lumiPct <= 10],
