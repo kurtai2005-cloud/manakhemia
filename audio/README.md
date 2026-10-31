@@ -92,13 +92,14 @@ PY=python3 bash tools/build_all.sh      # 需要 numpy、scipy、soundfile、ffm
 | `gen_bgm_tod.py` | 方案 A ③：`bgm_care_{morning,evening,night}_loop.ogg`（派生自照顧版和弦／旋律；疊尾無縫；迭代增益至目標 LUFS；ogg 編碼）。`build_all.sh` 已包含 |
 | `gen_sfx_env.py` / `build_env.sh` | 方案 A ④：`sfx_env_flowerpot_bump`、`sfx_env_sunbathe_loop`（用 `norm_pet2.py` 純增益歸一＋ ogg 編碼）。`build_all.sh` 已包含 |
 | `gen_sfx_life.py` / `build_life.sh` / `measure_life.py` | 團絨生命感（精簡）16 檔（第 7.9 節）：同 `gen_sfx_pet2.py` 同一套共振峰聲線；4.2 kHz 低通、10 ms 淡入／40 ms 淡出＋10 ms 靜音；純增益迭代至 LUFS20 目標（峰值上限 -6 dBFS）；`-fflags +bitexact` 令重跑結果 byte 一致；`measure_life.py` 報 LUFS4s／LUFS20／TP／peak／>4 kHz 比／首尾電平。`build_all.sh` 已包含 |
+| `gen_amb_rain.py` / `build_rain.sh` / `measure_amb.py` | H3 雨層細雨環境聲 2 檔（`amb/`，第 7.10 節）：圓周（FFT）合成無縫 loop＋6 s 淡入淡出短版；純增益迭代至 -24 LUFS；`-q:a 4` 立體聲 `-fflags +bitexact`；`measure_amb.py` 報樣本數／LUFS／TP／頻帶比／重心／接縫／淡入淡出。`build_all.sh` 已包含 |
 | `measure_tod.py` | 時段 BGM（立體聲）驗證：樣本數／小節數／LUFS／TP／循環接縫 |
 | `norm.py` | SFX 響度：`--linear name:目標LUFS`（純增益，峰值上限 -2 dBFS）；舊模式為 tanh 軟飽和 |
 | `build_sfx.sh` / `build_all.sh` | 一鍵生成＋編碼＋量度 |
 | `measure.py` | ffprobe／ebur128 驗證：格式、長度、LUFS、true peak |
 | `gen_sfx.py` | 舊通用 UI SFX（預設唔重生，`GENERIC=1` 先重生） |
 
-SFX 編碼：`ffmpeg -ac 1 -ar 44100 -c:a libvorbis -q:a 3`；BGM：`-ac 2 -c:a libvorbis -q:a 5`。
+SFX 編碼：`ffmpeg -ac 1 -ar 44100 -c:a libvorbis -q:a 3`；BGM：`-ac 2 -c:a libvorbis -q:a 5`；環境聲（`amb/`）：`-ac 2 -c:a libvorbis -q:a 4 -fflags +bitexact`。
 
 ## 6. 版權與私隱
 
@@ -249,6 +250,39 @@ Kurt 揀「精簡」級（經遊策轉達）。8 款 × 2 個變化（`_a`／`_b
 6. 峰值上限 -6 dBFS 係編碼前；ogg 解碼後 `sfx_pet_bug_pat_a`／`sfx_pet_sneeze_b` 為 -5.90／-5.92 dBFS（過 0.1 dB，編碼過衝），遠低於 -1 dBFS 硬上限。
 
 **未有人聽過**——尤其：`sfx_pet_nuzzle_purr_a/b` 連播似唔似持續呼嚕（有冇 0.6 s 脈動感）、`sfx_pet_sneeze_a/b` 似唔似噴嚏（定似咳）、`sfx_pet_step_hop/drag` 喺手機喇叭 -22 LUFS 低頻軟身聲聽唔聽到。
+
+### 7.10 H3 細雨環境聲（已做，2026-10-31）
+
+經遊策轉達：配 H3 天氣場景（雨層）。新資料夾 `amb/`，`tools/gen_amb_rain.py`（`build_rain.sh`，量度 `measure_amb.py`）生成。全部原創程式合成（濾波噪音＋微脈衝紋理＋合成雨滴＋圓周殘響），無取樣；冇雷。
+
+規格：ogg Vorbis 44.1 kHz **立體聲**（`-q:a 4`，`-fflags +bitexact`，重跑 byte 一致）；純增益迭代至 -24 LUFS（冇 limiter／壓縮）。
+
+| 檔名 | 用途 | 長度 | 樣本數 | I (LUFS) | TP (dBTP) | 頻譜重心 | 150–400 / 400–1500 / 1.5–3k / 3–6k / >6k Hz 能量 % | sha256 |
+|---|---|---|---|---|---|---|---|---|
+| `amb/amb_rain_light_loop.ogg` | 細雨持續 loop（雨層全程） | 24.706 s（7 小節 @68 BPM） | **1,089,529** | **-24.0** | -6.5 | 1728 Hz | 49.0 / 8.6 / 6.0 / 30.1 / 2.0 | `992bfa73…96f7b003` |
+| `amb/amb_rain_light_short.ogg` | 落雨開始／停雨過渡、短陣雨（淡入 1.5 s、淡出 2.0 s 內建） | 6.000 s | 264,600 | **-24.0**（integrated；全音量段 1.5–4.0 s 為 -23.1） | -8.3 | 1852 Hz | 46.1 / 8.6 / 6.2 / 32.8 / 2.0 | `240f64e1…04754ab21` |
+
+完整 sha256：loop `992bfa73f6e278c8db74e3d719a2be4204f3f57c7887ae3e98c011ed96f7b003`；short `240f64e10eba89a8cd0dccf93ddcee50b28c7a8e8466f10212e5bd804754ab21`。
+
+**聲音內容**：暗啲嘅寬頻雨底（150–400 Hz 為主）＋ 3–6 kHz 柔和雨粒「沙沙」（約 450 粒微脈衝/秒），>6.5 kHz 陡降唔刺耳；疏落雨滴平均約 2.6 粒/秒（Poisson 隨機：葉面「滴」55 %、瓦面「答」30 %、較大粒「卜」15 %，隨機左右定位），loop 內冇固定節奏；慢速強弱起伏約 ±1.5 dB。L/R 相關 0.17（闊）。**頻譜避開寵物聲**：400–1500 Hz 只佔 8.6 %、1.5–3 kHz 6 %（中頻凹低約 20 dB）。
+
+**觸發建議**：
+- 雨層開始：播 `short`（淡入部分），約 1.5 s 後喺 `short` 仲響緊時 crossfade（約 1–2 s）入 `loop`；或者直接由 0 淡入 `loop`（1.5–2 s）。
+- 雨層期間：`loop` 必須 **sample-accurate 無縫循環**（Web Audio `AudioBufferSourceNode.loop=true`／Godot `AudioStreamOggVorbis.loop=true`，loop_offset 0；唔好用 `<audio>` 元素 loop，會有空隙）。
+- 停雨：`loop` 淡出 1.5–2 s；或者淡出 `loop` 同時播 `short` 嘅後半段（由 4.0 s 開始）。
+- 短陣雨：淨係播 `short` 一次。
+- 同時段 BGM 一齊播（BGM -16、夜 -22 LUFS）；雨唔使 duck 寵物聲。如夜間（-22 LUFS BGM）覺雨太突出，程式降 3–4 dB 即可。
+
+**循環驗證（`measure_amb.py`，解碼後）**：樣本數 1,089,529（＝ 7.000 小節）；接縫樣本差 L/R＝0.0019／0.0144，細過全檔相鄰樣本差 99.9 百分位 0.0931／0.0897（最大 0.199）；接縫前後 50 ms RMS 0.0364／0.0361，連續。全部成分喺 FFT 圓周域合成（雨滴尾巴同殘響繞返開頭），所以冇 crossfade 痕。
+
+**short 淡入淡出**：首 0.1 s RMS -75 dBFS → 1.5–4.0 s -27.4 dBFS → 5.0–5.5 s -36.2 → 最後 0.1 s -79.5；首／尾樣本 0。
+
+**偏差（如實）**：
+1. 頻譜重心 1.7–1.9 kHz 係因為能量分兩堆（低 150–400＋高 3–6 kHz），重心數值落喺中間，但中頻實際能量好少（見上表）。
+2. short 嘅 -24.0 係整檔 integrated（ebur128 門限已去掉靜音）；全音量段實測 -23.1，比 loop 大約 0.9 LU，crossfade 入 loop 時差異細。
+3. TP -6.5／-8.3 dBTP，遠低於 -1 上限，因為雨聲冇大峰值，唔係壓縮結果。
+
+**未有人聽過**——尤其：雨似唔似細雨（定似「沙沙」電台底噪／煎嘢聲）、雨滴「滴答」會唔會太突出或者喺 loop 入面聽得出重複。
 
 ### 7.7 如實聲明
 

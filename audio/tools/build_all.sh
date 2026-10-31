@@ -10,6 +10,7 @@ $PY tools/gen_bgm_tod.py                     # 方案 A ③：bgm_care_{morning,
 bash tools/build_env.sh                      # 方案 A ④：sfx_env_flowerpot_bump／sfx_env_sunbathe_loop
 $PY tools/fix_qa_pet.py                      # 依遊測審查 2026-10-26：dream_talk -7 dB、grumpy 起音淡入 -1.5 dB、UI 5 音降到 ≤ -13.3 LUFS20（需先有 _prev/ 備份；首次執行自動由現有 sfx/ 備份；重生全部時先 rm -rf _prev）
 bash tools/build_life.sh                     # 團絨生命感（精簡）：16 個 sfx_pet_*_{a,b}（噴嚏／抓癢／腳步×2／回頭／呼嚕／重逢／拍蟲）
+bash tools/build_rain.sh                     # H3 雨層：amb/amb_rain_light_{loop,short}.ogg（-24 LUFS，立體聲）
 rm -rf tmp
 $PY tools/measure.py bgm/*.ogg sfx/*.ogg     # 驗證格式／長度／響度／峰值
 $PY tools/measure_pet2.py sfx/sfx_pet_*.ogg sfx/sfx_event_*.ogg sfx/sfx_env_*.ogg   # 方案 A 新檔（含循環接縫檢查）
