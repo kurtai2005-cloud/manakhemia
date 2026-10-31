@@ -1,0 +1,301 @@
+{
+ "note": "index 0＝透明；每個 material 佔連續 index（level 0 暗 → 高 亮）。每款色盤 = H#/palette.json（index→hex）。",
+ "count": 64,
+ "materials": [
+  {
+   "name": "SKY",
+   "levels": 7,
+   "index": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "CLOUD",
+   "levels": 2,
+   "index": [
+    8,
+    9
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "SUN",
+   "levels": 1,
+   "index": [
+    10
+   ],
+   "emissiveCandidate": true
+  },
+  {
+   "name": "MOON",
+   "levels": 1,
+   "index": [
+    11
+   ],
+   "emissiveCandidate": true
+  },
+  {
+   "name": "STAR",
+   "levels": 1,
+   "index": [
+    12
+   ],
+   "emissiveCandidate": true
+  },
+  {
+   "name": "HILL_FAR",
+   "levels": 2,
+   "index": [
+    13,
+    14
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "HILL_NEAR",
+   "levels": 2,
+   "index": [
+    15,
+    16
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "TREE_FAR",
+   "levels": 2,
+   "index": [
+    17,
+    18
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "FAR_HOUSE",
+   "levels": 1,
+   "index": [
+    19
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "FAR_WIN",
+   "levels": 1,
+   "index": [
+    20
+   ],
+   "emissiveCandidate": true
+  },
+  {
+   "name": "TRUNK",
+   "levels": 2,
+   "index": [
+    21,
+    22
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "LEAF",
+   "levels": 3,
+   "index": [
+    23,
+    24,
+    25
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "WOOD",
+   "levels": 3,
+   "index": [
+    26,
+    27,
+    28
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "WALL",
+   "levels": 2,
+   "index": [
+    29,
+    30
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "ROOF",
+   "levels": 2,
+   "index": [
+    31,
+    32
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "WIN",
+   "levels": 2,
+   "index": [
+    33,
+    34
+   ],
+   "emissiveCandidate": true
+  },
+  {
+   "name": "METAL",
+   "levels": 2,
+   "index": [
+    35,
+    36
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "LAMP",
+   "levels": 1,
+   "index": [
+    37
+   ],
+   "emissiveCandidate": true
+  },
+  {
+   "name": "LANTERN",
+   "levels": 2,
+   "index": [
+    38,
+    39
+   ],
+   "emissiveCandidate": true
+  },
+  {
+   "name": "GRASS",
+   "levels": 3,
+   "index": [
+    40,
+    41,
+    42
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "MOSS",
+   "levels": 2,
+   "index": [
+    43,
+    44
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "SOIL",
+   "levels": 2,
+   "index": [
+    45,
+    46
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "SPROUT",
+   "levels": 2,
+   "index": [
+    47,
+    48
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "POT",
+   "levels": 2,
+   "index": [
+    49,
+    50
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "FLOWER_P",
+   "levels": 1,
+   "index": [
+    51
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "FLOWER_Y",
+   "levels": 1,
+   "index": [
+    52
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "STONE",
+   "levels": 2,
+   "index": [
+    53,
+    54
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "CAN",
+   "levels": 2,
+   "index": [
+    55,
+    56
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "MUSH",
+   "levels": 2,
+   "index": [
+    57,
+    58
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "MUSH_ST",
+   "levels": 1,
+   "index": [
+    59
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "FLEAF",
+   "levels": 2,
+   "index": [
+    60,
+    61
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "FFLOWER",
+   "levels": 1,
+   "index": [
+    62
+   ],
+   "emissiveCandidate": false
+  },
+  {
+   "name": "FGRASS",
+   "levels": 2,
+   "index": [
+    63,
+    64
+   ],
+   "emissiveCandidate": false
+  }
+ ]
+}

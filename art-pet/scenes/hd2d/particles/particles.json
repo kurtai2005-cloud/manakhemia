@@ -1,0 +1,363 @@
+{
+ "frames": {
+  "mote_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "mote_02": {
+   "frame": {
+    "x": 12,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "mote_03": {
+   "frame": {
+    "x": 22,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "mote_04": {
+   "frame": {
+    "x": 32,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "mote_05": {
+   "frame": {
+    "x": 42,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "mote_06": {
+   "frame": {
+    "x": 52,
+    "y": 2,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "gold_01": {
+   "frame": {
+    "x": 2,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "gold_02": {
+   "frame": {
+    "x": 12,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "gold_03": {
+   "frame": {
+    "x": 22,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "gold_04": {
+   "frame": {
+    "x": 32,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "gold_05": {
+   "frame": {
+    "x": 42,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "gold_06": {
+   "frame": {
+    "x": 52,
+    "y": 12,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "petal_01": {
+   "frame": {
+    "x": 2,
+    "y": 22,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "petal_02": {
+   "frame": {
+    "x": 12,
+    "y": 22,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "petal_03": {
+   "frame": {
+    "x": 22,
+    "y": 22,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "petal_04": {
+   "frame": {
+    "x": 32,
+    "y": 22,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "petal_05": {
+   "frame": {
+    "x": 42,
+    "y": 22,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "petal_06": {
+   "frame": {
+    "x": 52,
+    "y": 22,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "firefly_01": {
+   "frame": {
+    "x": 2,
+    "y": 32,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "firefly_02": {
+   "frame": {
+    "x": 12,
+    "y": 32,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "firefly_03": {
+   "frame": {
+    "x": 22,
+    "y": 32,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "firefly_04": {
+   "frame": {
+    "x": 32,
+    "y": 32,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "firefly_05": {
+   "frame": {
+    "x": 42,
+    "y": 32,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  },
+  "firefly_06": {
+   "frame": {
+    "x": 52,
+    "y": 32,
+    "w": 8,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 8
+   }
+  }
+ },
+ "types": {
+  "mote": {
+   "frames": [
+    "mote_01",
+    "mote_02",
+    "mote_03",
+    "mote_04",
+    "mote_05",
+    "mote_06"
+   ],
+   "variant": "H1",
+   "name": "光塵",
+   "fps": 6,
+   "loop": true,
+   "motion": "上升 2–4 px/s＋左右輕擺，壽命 6s，淡入淡出"
+  },
+  "gold": {
+   "frames": [
+    "gold_01",
+    "gold_02",
+    "gold_03",
+    "gold_04",
+    "gold_05",
+    "gold_06"
+   ],
+   "variant": "H2",
+   "name": "金塵",
+   "fps": 8,
+   "loop": true,
+   "motion": "斜向右上 3–5 px/s，閃爍，壽命 5s"
+  },
+  "petal": {
+   "frames": [
+    "petal_01",
+    "petal_02",
+    "petal_03",
+    "petal_04",
+    "petal_05",
+    "petal_06"
+   ],
+   "variant": "H3",
+   "name": "花瓣",
+   "fps": 6,
+   "loop": true,
+   "motion": "斜落 8–12 px/s＋左右擺 ±6px，壽命 8s"
+  },
+  "firefly": {
+   "frames": [
+    "firefly_01",
+    "firefly_02",
+    "firefly_03",
+    "firefly_04",
+    "firefly_05",
+    "firefly_06"
+   ],
+   "variant": "H4",
+   "name": "螢火",
+   "fps": 6,
+   "loop": true,
+   "motion": "隨機漂 2–6 px/s，明暗呼吸，lighter 疊加"
+  }
+ },
+ "meta": {
+  "image": "particles.png",
+  "size": {
+   "w": 62,
+   "h": 42
+  },
+  "format": "RGBA8888",
+  "padding": 2
+ }
+}

@@ -1,0 +1,278 @@
+{
+ "version": 1,
+ "layerSize": [
+  223,
+  446
+ ],
+ "artSize": [
+  195,
+  422
+ ],
+ "layerOffset": [
+  14,
+  12
+ ],
+ "coords": "art 座標（層座標＝art＋layerOffset）；所有層同 lightmap／light_add／emissive／emissive_blur 都係 223×446，對齊 mid；vignette.png 係 195×422 螢幕座標。",
+ "layers": [
+  "sky",
+  "far",
+  "mid",
+  "fore"
+ ],
+ "parallaxSuggest": {
+  "sky": 0.15,
+  "far": 0.35,
+  "mid": 1.0,
+  "fore": 1.6
+ },
+ "pet": {
+  "foot": [
+   97,
+   292
+  ],
+  "groundY": 292,
+  "rangeX": [
+   35,
+   159
+  ],
+  "rangeXRel": [
+   -62,
+   62
+  ],
+  "sizes": {
+   "sprout": 32,
+   "radiant": 64,
+   "soft": 64
+  },
+  "pivotRule": "(w/2, h-3)",
+  "clearBox": [
+   30,
+   210,
+   165,
+   300
+  ]
+ },
+ "ground": {
+  "lineY": 292,
+  "stageEllipse": {
+   "c": [
+    97,
+    296
+   ],
+   "r": [
+    80,
+    21
+   ]
+  },
+  "walkable": [
+   [
+    17,
+    278
+   ],
+   [
+    178,
+    278
+   ],
+   [
+    178,
+    318
+   ],
+   [
+    17,
+    318
+   ]
+  ],
+  "horizonY": 250
+ },
+ "pots": {
+  "pot_L": {
+   "base": [
+    16,
+    336
+   ]
+  },
+  "pot_R": {
+   "base": [
+    178,
+    326
+   ]
+  },
+  "pot_S": {
+   "base": [
+    146,
+    306
+   ]
+  }
+ },
+ "props": {
+  "bed": [
+   18,
+   262,
+   82,
+   278
+  ],
+  "mushrooms": [
+   168,
+   304
+  ],
+  "wateringCan": [
+   58,
+   318
+  ],
+  "stones": [
+   [
+    97,
+    326
+   ],
+   [
+    82,
+    344
+   ],
+   [
+    106,
+    361
+   ]
+  ],
+  "poopSlotsEngine": [
+   [
+    50,
+    304
+   ],
+   [
+    146,
+    302
+   ],
+   [
+    118,
+    318
+   ]
+  ]
+ },
+ "lights": {
+  "lampPost": {
+   "pos": [
+    24,
+    246
+   ],
+   "radius": 46,
+   "color": "#ffd890"
+  },
+  "lanterns": [
+   {
+    "pos": [
+     48,
+     119
+    ],
+    "radius": 18,
+    "color": "#ff9a50"
+   },
+   {
+    "pos": [
+     72,
+     140
+    ],
+    "radius": 18,
+    "color": "#ff9a50"
+   },
+   {
+    "pos": [
+     96,
+     153
+    ],
+    "radius": 18,
+    "color": "#ff9a50"
+   },
+   {
+    "pos": [
+     120,
+     158
+    ],
+    "radius": 18,
+    "color": "#ff9a50"
+   },
+   {
+    "pos": [
+     144,
+     156
+    ],
+    "radius": 18,
+    "color": "#ff9a50"
+   }
+  ],
+  "window": {
+   "rect": [
+    157,
+    190,
+    175,
+    210
+   ],
+   "color": "#ffc870"
+  },
+  "farWindows": [
+   [
+    135,
+    227
+   ],
+   [
+    141,
+    227
+   ]
+  ],
+  "sun": {
+   "H1": [
+    38,
+    112
+   ],
+   "H2": [
+    112,
+    226
+   ]
+  },
+  "moon": [
+   150,
+   76
+  ],
+  "perVariantOn": {
+   "H1": [
+    "SUN"
+   ],
+   "H2": [
+    "FAR_WIN",
+    "LAMP",
+    "LANTERN",
+    "SUN",
+    "WIN"
+   ],
+   "H3": [],
+   "H4": [
+    "FAR_WIN",
+    "LAMP",
+    "LANTERN",
+    "MOON",
+    "STAR",
+    "WIN"
+   ]
+  }
+ },
+ "uiSafe": {
+  "hudTop": [
+   0,
+   0,
+   195,
+   62
+  ],
+  "actionBar": [
+   0,
+   378,
+   195,
+   422
+  ],
+  "popPanel": [
+   0,
+   330,
+   195,
+   378
+  ],
+  "note": "頂 HUD／底按鈕位只放天空、樹葉、草，唔放互動物件。"
+ }
+}
