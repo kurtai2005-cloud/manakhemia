@@ -231,16 +231,15 @@
 - 每形態全套 41 clip／180 幀：std23＋生命感 s1/s2（含 picked_up）＋s3 nuzzle_purr／reunion_happy；frames／layers（_noface／_faceov）／emissive／atlas。
 - 靜光 fall_asleep aura 0.8→0.2、sleep_loop 0.2（同靜光 ×4）；大件發光飾物跟住暗。
 - F1 水珠：浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺
+- F2 菇傘：菇帽搖：菇帽逐幀左右擺＋斜（帽邊一高一低）、細菇燈跟住晃、孢子飄
 
 | batch | 形態 | px | pivot | clip | 幀 | atlas | 色盤 |
 |---|---|---|---|---|---|---|---|
 | F1 | 守夜者・水珠 `evo_guard_tide` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_tide.png`（1024×1024，444 塊）＋ `_emissive` | palette_tide.json |
 | F1 | 靜光・水珠 `evo_still_tide` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_tide.png`（1024×1024，444 塊）＋ `_emissive` | palette_tide.json |
+| F2 | 守夜者・菇傘 `evo_guard_shroom` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_shroom.png`（1024×1024，444 塊）＋ `_emissive` | palette_shroom.json |
+| F2 | 靜光・菇傘 `evo_still_shroom` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_shroom.png`（1024×1024，444 塊）＋ `_emissive` | palette_shroom.json |
 <!-- EVO6F-END -->
-
-
-
-
 
 
 <!-- LUMI-START -->
