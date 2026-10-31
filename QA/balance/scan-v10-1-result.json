@@ -1,0 +1,305 @@
+{
+  "doc": "§7 v10.1 天氣。同 scan-v10，晴60／陰20／雨15／霧5，霧唔計菇傘。",
+  "sim": "a7f0d87878db15e09da426bed04d60f668bcbcac",
+  "N": 1000,
+  "assumptions": {
+    "lumiMax": 20,
+    "softCQ": 18,
+    "b5CQ": "max(ceil(25*span/7), 18.5)",
+    "b5Floor": 18.5,
+    "lullMoon": 2,
+    "lullPerNight": 3,
+    "crystal": "(nQuick/nWith)*k*all",
+    "cleanGate": false,
+    "k": 0.45,
+    "gapPt": 5,
+    "weatherV10": {
+      "clear": 0.6,
+      "overcast": 0.25,
+      "rain": 0.15,
+      "fog": 0,
+      "note": "冇霧狀態。陰 25%＝陰20＋霧5 併入，計菇傘 0.5。雨 15% 冇同霧對調。"
+    },
+    "weather": {
+      "clear": 0.6,
+      "overcast": 0.2,
+      "rain": 0.15,
+      "fog": 0.05,
+      "fogShroom": 0
+    },
+    "shroom": "晴天餵食 0；陰天餵食同其他照顧 0.5；雨 1.0；霧 0",
+    "mg": {
+      "勤力": [
+        11,
+        17
+      ],
+      "普通": [
+        13
+      ],
+      "疏玩": [
+        20
+      ],
+      "夜貓": [
+        18
+      ],
+      "早起": [
+        12
+      ],
+      "餵食狂": [
+        15
+      ]
+    },
+    "mgRule": "表定鐘點到場後，獨立 rng 20% 唔開。一局及格 40 分。時段外火苗 +2（all 只 +1），時段內跟真 code 只計水珠或月眠。",
+    "rng": "主 seed*7919+13 同 route-sweep；小遊戲 seed*7919+97"
+  },
+  "quick": {
+    "勤力": {
+      "withPoopPerRun": 6.46,
+      "quickPct": 81.8
+    },
+    "普通": {
+      "withPoopPerRun": 4.28,
+      "quickPct": 81.4
+    },
+    "疏玩": {
+      "withPoopPerRun": 0.85,
+      "quickPct": 7.4
+    },
+    "夜貓": {
+      "withPoopPerRun": 6.45,
+      "quickPct": 7.9
+    },
+    "早起": {
+      "withPoopPerRun": 4.86,
+      "quickPct": 8.3
+    },
+    "餵食狂": {
+      "withPoopPerRun": 5.77,
+      "quickPct": 7.4
+    }
+  },
+  "shroomNeg": 0,
+  "sweep": [
+    {
+      "k": 0.45,
+      "crystal": 15.58,
+      "moon": 16.5,
+      "lumi": 5.47,
+      "brightMax": 15,
+      "passN": 10,
+      "nChecks": 10,
+      "fail": []
+    }
+  ],
+  "start": {
+    "k": 0.45,
+    "checks": [
+      [
+        "9 條路出齊（每條≥2%）",
+        "✅",
+        "齊"
+      ],
+      [
+        "每表≥2 結局（每個≥2%）",
+        "✅",
+        null
+      ],
+      [
+        "單一≤85%",
+        "✅",
+        null
+      ],
+      [
+        "螢絨 3–10%",
+        "✅",
+        5.47
+      ],
+      [
+        "每表菇傘≤30%",
+        "✅",
+        20.1
+      ],
+      [
+        "晶角全體≥5%",
+        "✅",
+        15.58
+      ],
+      [
+        "月眠全體≥5%",
+        "✅",
+        16.5
+      ],
+      [
+        "每表燦光≤50%",
+        "✅",
+        15
+      ],
+      [
+        "疏玩柔光＋微塵",
+        "✅",
+        "37.6/46.5"
+      ],
+      [
+        "疏玩 CQ 15–35",
+        "✅",
+        18
+      ]
+    ],
+    "totalPct": {
+      "lumi": 5.47,
+      "tide": 16.25,
+      "shroom": 5.82,
+      "crystal": 15.58,
+      "moon": 16.5,
+      "ember": 15.08,
+      "bright": 5.05,
+      "soft": 12.48,
+      "dust": 7.77
+    },
+    "tables": {
+      "勤力": {
+        "lumi": 4.7,
+        "tide": 12.8,
+        "shroom": 4.9,
+        "crystal": 44,
+        "moon": 2.6,
+        "ember": 14.9,
+        "bright": 15,
+        "soft": 1.1,
+        "dust": 0
+      },
+      "普通": {
+        "lumi": 5,
+        "tide": 9,
+        "shroom": 7.2,
+        "crystal": 48,
+        "moon": 6.8,
+        "ember": 20.4,
+        "bright": 1.5,
+        "soft": 2,
+        "dust": 0.1
+      },
+      "疏玩": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 1,
+        "crystal": 1.3,
+        "moon": 7.4,
+        "ember": 6.2,
+        "bright": 0,
+        "soft": 37.6,
+        "dust": 46.5
+      },
+      "夜貓": {
+        "lumi": 17.7,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 82.1,
+        "ember": 0.1,
+        "bright": 0.1,
+        "soft": 0,
+        "dust": 0
+      },
+      "早起": {
+        "lumi": 4.7,
+        "tide": 72.4,
+        "shroom": 1.7,
+        "crystal": 0,
+        "moon": 0.1,
+        "ember": 8.8,
+        "bright": 12,
+        "soft": 0.3,
+        "dust": 0
+      },
+      "餵食狂": {
+        "lumi": 0.7,
+        "tide": 3.3,
+        "shroom": 20.1,
+        "crystal": 0.2,
+        "moon": 0,
+        "ember": 40.1,
+        "bright": 1.7,
+        "soft": 33.9,
+        "dust": 0
+      }
+    },
+    "cqMed": {
+      "勤力": 48.21,
+      "普通": 38.12,
+      "疏玩": 18,
+      "夜貓": 37.19,
+      "早起": 31.88,
+      "餵食狂": 40.37
+    },
+    "extra": {
+      "勤力": {
+        "cqP10": 42,
+        "cqP90": 52.91,
+        "cqMin": 31.42,
+        "spanMed": 3,
+        "needMed": 18.5,
+        "plays": 7.34,
+        "mgs": 2.7,
+        "lulls": 1.6
+      },
+      "普通": {
+        "cqP10": 30.29,
+        "cqP90": 43.52,
+        "cqMin": 17.52,
+        "spanMed": 3,
+        "needMed": 18.5,
+        "plays": 4.12,
+        "mgs": 1.35,
+        "lulls": 0.99
+      },
+      "疏玩": {
+        "cqP10": 15,
+        "cqP90": 18.5,
+        "cqMin": 15,
+        "spanMed": 3,
+        "needMed": 18.5,
+        "plays": 0.75,
+        "mgs": 0.66,
+        "lulls": 0.35
+      },
+      "夜貓": {
+        "cqP10": 32.02,
+        "cqP90": 41.43,
+        "cqMin": 22.6,
+        "spanMed": 3,
+        "needMed": 18.5,
+        "plays": 5.75,
+        "mgs": 1.36,
+        "lulls": 1.94
+      },
+      "早起": {
+        "cqP10": 26.22,
+        "cqP90": 36.5,
+        "cqMin": 18,
+        "spanMed": 3,
+        "needMed": 18.5,
+        "plays": 4.98,
+        "mgs": 1.37,
+        "lulls": 1.67
+      },
+      "餵食狂": {
+        "cqP10": 34.76,
+        "cqP90": 44.33,
+        "cqMin": 24.08,
+        "spanMed": 3,
+        "needMed": 18.5,
+        "plays": 5.86,
+        "mgs": 1.34,
+        "lulls": 1.13
+      }
+    },
+    "brightMax": 15
+  },
+  "ref": [],
+  "ms": 6225,
+  "vsV10": {
+    "commit": "767229a",
+    "diffs": []
+  }
+}
