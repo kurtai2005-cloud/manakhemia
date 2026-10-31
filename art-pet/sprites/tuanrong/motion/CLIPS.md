@@ -158,6 +158,24 @@
 | wink | neutral（右眼 wink） | C | wink | — |
 | smug | sleepy | C | squint | — |
 
+<!-- EVO6A-START -->
+## 進化 6 階 batch A（光卵／絨點／絨芽／絨跳，evo6 v3 lumi feel）
+- 外觀＝`../evo6_concept/`（v3 lumi feel）；姿勢＝現有同名 clip（std23 ＋ 生命感 s1/s2，同 sprout/radiant/soft 一樣 fps／priority／anchors 結構），只換外觀層。
+- 基本 31 色（`../palette.json`）、alpha 0/255、無 AA、向右；每形態一張 atlas（1024 闊、padding 2、extrude 1、每幀 pivotPx）＋ 同 layout emissive（白＝glow_core/glow_mid）。
+- 每幀：`frames/<clip>_NN.png`、`layers/<clip>_NN_noface.png`／`_faceov.png`、`emissive/…`；錨點 `../evo6/<form>/face_anchors_<form>.json`（＝本檔 clips[].anchors.<form>）。
+- face kit 按新尺寸重出：絨點／絨芽 4×4 豆眼（S 級）、絨跳 4×5（L 級＝燦光原裝）；bulb 只限絨跳（第一粒著燈）；picked_up pivot＝grab。
+- 光卵冇 face rig（同舊蛋）：idle 4、glow 2、tap 4、hatch 6、picked_up 4（定義喺 `forms.evo_egg.clipDefs`）。
+
+| 階 | 形態 | px | pivot | clip | 幀 | atlas |
+|---|---|---|---|---|---|---|
+| 1 | 光卵 `evo_egg` | 24 | (12, 21) | 5 | 20 | `../evo6/atlas_evo_egg.png`（1024×32，20 塊）＋ `_emissive` |
+| 2 | 絨點 `evo_dot` | 28 | (14, 25) | 39 | 171 | `../evo6/atlas_evo_dot.png`（1024×512，426 塊）＋ `_emissive` |
+| 3 | 絨芽 `evo_sprout` | 32 | (16, 29) | 39 | 171 | `../evo6/atlas_evo_sprout.png`（1024×512，426 塊）＋ `_emissive` |
+| 4 | 絨跳 `evo_hop` | 38 | (19, 35) | 39 | 171 | `../evo6/atlas_evo_hop.png`（1024×1024，428 塊）＋ `_emissive` |
+
+5 守夜者 44、6 靜光 48 ＝ batch B／C（未出）。
+<!-- EVO6A-END -->
+
 <!-- LUMI-START -->
 ## 螢絨 lumi（隱藏稀有成年形態，round_s）
 - atlas：`../atlas_lumi.png/.json`（1024×1024，290 塊，padding 2、extrude 1）＋ `../atlas_lumi_emissive.png`（同 layout，白＝發光）
@@ -194,3 +212,14 @@
 | picked_up | 6 | 8 | loop | 生命感（浮動） |
 
 std23 餘下：冇（已齊）
+
+<!-- LIVE-S3-START -->
+## 生命感第三段（s3）— 遊美 2026-10-31
+
+3 form（sprout 32×32 pivot (16,29)／radiant、soft 64×64 pivot (32,61)）；atlas `liveliness/atlas_<form>_live_s3.png/json`（1024 寬、pad 2、extrude 1、pivotPx）；五官 kit 仍喺 `atlas_<form>_live`；錨點 `clips[].anchors[form]`＝`liveliness/face_anchors.json`。詳見 `liveliness/LIVE_S3_NOTES.md`。
+
+| clip | 幀／fps | loop | 優先 | 觸發 | 備註 |
+|---|---|---|---|---|---|
+| nuzzle_purr | 4／6fps | 循環 | 4 | nuzzle 連續 ≥1.2s（長按未放）→ 由 nuzzle 當前幀切去 nuzzle_purr 循環，直至放手 | 挨住右邊手指、合眼笑（eyes happy＋ω 口），身體細細震（sx/sy 交替＋shear 1px），背後呼嚕震線 ( ( 烙入幀（第 1/3 幀近、第 2/4 幀遠），第 2–4 幀頭頂右邊細心心升起（烙入幀）；放手播完當前幀 → idle（或 act_cool 30%：扮冇事）。可配 6fps 呼嚕 loop 音效。 |
+| reunion_happy | 5／8fps | 單次 | 6 | rush（煞停）→ 衝過頭 → act_cool → reunion_happy（D5 久別重逢鏈最後一步） | 蠢蠢地但覺得自己好醒：第 1 幀扮冷靜側眼回望（ft 向後、gaze L）、第 2 幀破功（壓扁、驚喜眼）、第 3 幀彈起舉手（細心心）、第 4 幀最高點大心心 pop＋閃光、第 5 幀落地得意 ω 臉（細心心飄高）。引擎：播之前按玩家位置設 scaleX（衝過頭即係玩家喺後面 → 鏡像），第 1 幀先『望返轉頭』。心心烙入幀。 |
+<!-- LIVE-S3-END -->

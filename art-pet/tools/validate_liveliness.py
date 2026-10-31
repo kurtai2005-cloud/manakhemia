@@ -40,7 +40,7 @@ pov_n = [0]
 pngs = 0
 for p in glob.glob(LV + "/**/*.png", recursive=True):
     rel = os.path.relpath(p, LV)
-    if rel.startswith(("preview", "contact", "kit_", "live_s2_contact")) or "_backup" in rel: continue
+    if rel.startswith(("preview", "contact", "kit_", "live_s2_contact", "live_s3_contact")) or "_backup" in rel: continue
     form = next((f for f in FORMS if f"/{f}/" in "/" + rel), None)
     sz = (FORMS[form],) * 2 if form and rel.split("/")[0] in ("layers", "frames") else None
     chk_png(p, sz); pngs += 1
@@ -152,6 +152,26 @@ for form, S in FORMS.items():
         for k in range(1, nf + 1):
             if not os.path.exists(os.path.join(LV, "frames", form, f"{n}_{k:02d}.png")): F(f"s2 full missing {form} {n} {k}")
 if byname.get("smug_pose", {}).get("holdLast_s") != 0.8: F("smug_pose holdLast_s != 0.8")
+# 生命感第三段 (s3)：nuzzle_purr／reunion_happy，獨立 atlas_<form>_live_s3（build_tuanrong_live_s3.py）
+S3_SPEC = {"nuzzle_purr": (4, 6, True), "reunion_happy": (5, 8, False)}
+for form, S in FORMS.items():
+    s3 = {}
+    for js in glob.glob(f"{LV}/atlas_{form}_live_s3*.json"): s3.update(json.load(open(js))["animations"])
+    if not s3: F(f"s3 atlas missing {form}"); continue
+    other = dict(json.load(open(f"{LV}/atlas_{form}_live.json"))["animations"])
+    for js in glob.glob(f"{LV}/atlas_{form}_live_s2*.json"): other.update(json.load(open(js))["animations"])
+    for n, (nf, fps, loop) in S3_SPEC.items():
+        c = byname.get(n)
+        if not c: F(f"s3 clip missing in CLIPS {n}"); continue
+        if c["frames"] != nf or c["fps"] != fps or c["loop"] != loop: F(f"s3 spec {n} {c['frames']}/{c['fps']}/{c['loop']} want {nf}/{fps}/{loop}")
+        if c.get("category") != "生命感" or c.get("phase") != 3: F(f"s3 meta {n}")
+        if len(c["anchors"][form]) != nf: F(f"s3 anchors {form} {n}")
+        for an_ in (n, n + "_noface"):
+            if an_ not in s3 or len(s3[an_]["frames"]) != nf or s3[an_].get("fps") != fps: F(f"s3 atlas anim {form} {an_}")
+            if an_ in other: F(f"s3 clip leaked into s1/s2 atlas {form} {an_}")
+        for k in range(1, nf + 1):
+            if not os.path.exists(os.path.join(LV, "frames", form, f"{n}_{k:02d}.png")): F(f"s3 full missing {form} {n} {k}")
+info.append(f"第三段 clip：{', '.join(f'{n} {v[0]}幀/{v[1]}fps' for n, v in S3_SPEC.items())}（3 form，atlas_<form>_live_s3）")
 fxj = os.path.join(LV, "fx", "atlas_fx_live.json")
 if not os.path.exists(fxj): F("fx bug atlas missing")
 else:
