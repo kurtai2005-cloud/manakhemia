@@ -110,7 +110,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await dclick('dev-weather-overcast'); await page.waitForTimeout(150);
     let r = await E(() => ({ w: Glimmer.sim.weatherNow(), g: __glimmer.weather, txt: (document.querySelector('[data-testid="dev-weather-state"]') || {}).textContent || '', on: document.querySelector('[data-testid="dev-weather-overcast"]').classList.contains('on') }));
     ok(r.w === 'overcast' && r.g === 'overcast' && /overcast/.test(r.txt) && r.on, 'DEV「陰」→ overcast', r);
-    let b = await care('play'); ok(b.shroom === 1 && b.ember === 1 && !b.tide, '陰天玩 → 菇傘＋火苗', b);
+    let b = await care('play'); ok(b.shroom === 0.5 && b.ember === 1 && !b.tide, '陰天玩 → 菇傘 +0.5（v5 權重）＋火苗', b);
     await dclick('dev-weather-rain'); b = await care('rinse'); ok(b.tide === 1 && b.shroom === 1, '落雨沖洗 → 水珠＋菇傘', b);
     b = await care('play'); ok(!b.tide && b.shroom === 1, '落雨玩 → 唔計水珠（v4）', b);
     await dclick('dev-weather-clear'); b = await care('play'); r = await E(() => Glimmer.sim.weatherNow()); ok(r === 'clear' && !b.shroom, 'DEV「晴」→ clear、玩唔計菇傘', [r, b]);
@@ -120,6 +120,28 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     r = await E(() => ({ w: Glimmer.sim.weatherNow(), g: __glimmer.weather })); ok(r.w === 'overcast', '?weather=overcast → overcast', r);
     await page.goto(BASE + (BASE.includes('?') ? '&' : '?') + 'weather=bogus'); await ready();
     r = await E(() => Glimmer.sim.weatherNow()); ok(r === 'clear', '?weather=bogus → clear', r);
+  }
+
+  console.log('# ⑤ v5 哄瞓（DEV 眼瞓 → 長撳團絨 → 瞓著、月眠 +1）');
+  { await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); await E(() => { window.__noSaveOnHide = true; });
+    await juv({ cq: 40, prog: 0.3, b5: {} }); await closeModals();
+    const dclick = (tid) => E((t) => document.querySelector('[data-testid="' + t + '"]').click(), tid);
+    ok(await E(() => !!document.querySelector('[data-testid="dev-lull-row"]')), 'DEV 抽屜有月眠列（眼瞓／哄瞓）');
+    await dclick('dev-drowsy'); await page.waitForTimeout(200);
+    let r = await E(() => ({ d: Glimmer.sim.isDrowsy(__glimmer.state), e: __glimmer.state.needs.energy, txt: document.querySelector('[data-testid="dev-lull-state"]').textContent }));
+    ok(r.d && /眼瞓/.test(r.txt), 'DEV「眼瞓」→ 團絨眼瞓', r);
+    await shot('drowsy', true);
+    const c = await E(() => { const r = document.getElementById('gl').getBoundingClientRect(), k = r.width / 195, b = window.Glimmer.ui.petHitBox(); return { x: r.left + (b.x + b.w / 2) * k, y: r.top + (b.y + b.h / 2) * k }; });
+    await E(() => { const dp = document.getElementById('devp'); if (dp) dp.style.pointerEvents = 'none'; });
+    const m0 = await E(() => ((__glimmer.state.evo.b5 || {}).juvenile || {}).moon || 0);
+    await page.mouse.move(c.x, c.y); await page.mouse.down(); await page.waitForTimeout(900); await page.mouse.move(c.x + 6, c.y + 2); await page.waitForTimeout(150); await page.mouse.up(); await page.waitForTimeout(400);
+    r = await E(() => ({ slp: __glimmer.state.sleeping, moon: ((__glimmer.state.evo.b5 || {}).juvenile || {}).moon || 0, lull: __glimmer.state.evo.lull, press: __glimmer.lastPetPress }));
+    ok(r.slp && r.moon === m0 + 1 && r.lull && r.lull.n === 1, '長撳眼瞓團絨 → 瞓著＋月眠 +1', r);
+    await page.waitForTimeout(800); await shot('lull-asleep', true);
+    const per = await E(() => Glimmer.data.PARAMS.evo6.branch.lull.perNight);
+    for (let i = 0; i < per + 1; i++) { await dclick('dev-drowsy'); await dclick('dev-lull'); }
+    r = await E(() => ({ moon: __glimmer.state.evo.b5.juvenile.moon, n: __glimmer.state.evo.lull.n })); ok(r.n === per && r.moon === m0 + per, `每晚最多 ${per} 次計月眠`, r);
+    await E(() => { const dp = document.getElementById('devp'); if (dp) dp.style.pointerEvents = ''; });
   }
 
   ok(!errs.length, '冇 console error', errs.slice(0, 5));

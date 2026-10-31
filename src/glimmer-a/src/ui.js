@@ -333,6 +333,7 @@
       down = false; if (G.beh) NS_BEH.dragEnd(G.beh);
       const p = press; press = null; endNuzzle(p); if (!p || cancel || G.mode === 'minigame' || !G.beh || G.state.sleeping) return;
       const ms = performance.now() - p.t0; G.lastPetPress = { ms: Math.round(ms), short: ms < SHORT_MS, nuzzle: !!p.nuzzle };
+      if (ms >= SHORT_MS && G.lull && G.lull()) return;                  // v5 哄瞓：眼瞓時長撳／撫摸（磨蹭）→ 哄佢瞓著
       if (ms < SHORT_MS) NS_BEH.tap(G.beh, 'pet', p.x, p.y);             // 短 tap：照舊（望向＋回頭 D2＋反應／連點）
       else NS_BEH.tap(G.beh, 'pet', p.x, p.y, { hold: true });           // 長按：唔回頭唔反應（≥0.4s 已經由 timer 開始磨蹭 D3）
     };

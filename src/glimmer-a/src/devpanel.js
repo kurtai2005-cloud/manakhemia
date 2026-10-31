@@ -108,6 +108,8 @@
       routeLead() { const S = s(); return { lead: SIM.routeLead(S).form, bulb: SIM.routeBulb(S), fore: (S.evo && S.evo.fore) || null }; },
       foreshadow(f) { note('foreshadow', f); const S = s(); f = f || SIM.routeLead(S).form; if (!D.BRANCHES.includes(f) || f === 'lumi') throw new Error('dev.foreshadow: ' + f);
         S.ev.push({ type: 'foreshadow', form: f, act: P.evo6.route.foreshadow[f] || null, dev: true }); sync(); return f; },
+      drowsy() { note('drowsy'); const S = s(); if (S.stage === 'egg') throw new Error('dev.drowsy: egg'); S.sleeping = false; S.needs.energy = Math.max(0, D.PARAMS.evo6.branch.lull.drowsyEnergy - 5); G.save(); sync(); return SIM.isDrowsy(S); },   // v5：令團絨眼瞓（測哄瞓）
+      lull() { note('lull'); const ok = G.lull ? G.lull() : false; sync(); return ok; },
       weather(w) { note('weather', w); const W = D.PARAMS.evo6.branch.weather.states; G.weather = W.includes(w) && w !== 'clear' ? w : null; sync(); return SIM.weatherNow(); },   // v4：天氣系統未做 → DEV 設定（之後由天氣系統驅動）
       careDays(n) { note('careDays', n); const S = s(); n = Math.max(0, n | 0); const now = G.now ? G.now() : Date.now(), have = new Set(S.careDays || []); for (let i = 0; i < n; i++) have.add(SIM.dayKey(now - i * 86400000)); if (n === 0) have.clear(); S.careDays = [...have].sort(); if (n && S.evo) S.evo.day0 = SIM.dayKey(now - (n - 1) * 86400000); G.save(); sync(); return SIM.careDaysCheck(S); },   // v4 燦光：補最近 n 日照顧日（0＝清）
       dexUnlock(f) { note('dexUnlock', f); const S = s(); if (f === 'none') S.dex = []; else (f === 'all' ? D.BRANCHES : [f]).forEach(x => SIM.unlockDex(S, x)); G.save(); sync(); return (S.dex || []).slice(); },
@@ -174,6 +176,7 @@
         <div class="dr" data-testid="dev-branch-row"><i>分支</i>${['lumi', 'bright', 'soft', 'dust'].map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'evoBranch:' + f, 'dev-branch-' + f)).join('')}<em class="dmst" data-testid="dev-lumi-state"></em></div>
         <div class="dr" data-testid="dev-force-row"><i>強制支線</i>${D.BRANCHES.map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'forceBranch:' + f, 'dev-force-' + f)).join('')}${btn('清除', 'forceBranch:off', 'dev-force-off')}<em class="dmst" data-testid="dev-b5-state"></em></div>
         <div class="dr" data-testid="dev-weather-row"><i>天氣</i>${D.PARAMS.evo6.branch.weather.states.map(w => btn({ clear: '晴', overcast: '陰', rain: '雨' }[w] || w, 'weather:' + w, 'dev-weather-' + w)).join('')}${btn('照顧日 7', 'careDays:7', 'dev-care-days-7')}${btn('清照顧日', 'careDays:0', 'dev-care-days-0')}<span data-testid="dev-weather-state"></span></div>
+        <div class="dr" data-testid="dev-lull-row"><i>月眠</i>${btn('眼瞓', 'drowsy', 'dev-drowsy')}${btn('哄瞓', 'lull', 'dev-lull')}<span data-testid="dev-lull-state"></span></div>
         <div class="dr" data-testid="dev-route-row"><i>路線</i>${btn('預告', 'foreshadow', 'dev-foreshadow')}${btn('圖鑑', 'openDex', 'dev-dex')}${btn('解鎖全部', 'dexUnlock:all', 'dev-dex-all')}${btn('清圖鑑', 'dexUnlock:none', 'dev-dex-none')}</div>
         <div class="dr"><i>進化</i>${D.EVOLUTION.map(e => btn('▶' + e.name, 'playEvolve:' + e.form, 'dev-evolve-' + e.form)).join('')}</div>
         ${D.NEED_KEYS.map(k => `<label><i>${N[k]}</i><input type="range" min="0" max="100" step="1" data-need="${k}" data-testid="dev-need-${k}" value="${Math.round(S.needs[k])}"><em>${Math.round(S.needs[k])}</em></label>`).join('')}
@@ -195,6 +198,7 @@
       el.querySelectorAll('button[data-a^="setForm:"]').forEach(b => { const f = b.dataset.a.split(':')[1]; b.classList.toggle('on', f === S.stage || (S.stage === 'adult' && f === S.form)); });
       el.querySelectorAll('button[data-a^="evoStage:"]').forEach(b => b.classList.toggle('on', b.dataset.a.split(':')[1] === S.stage));
       el.querySelectorAll('button[data-a^="evoBranch:"]').forEach(b => b.classList.toggle('on', D.isBig(S.stage) && b.dataset.a.split(':')[1] === S.form));
+      const lsx = q('[data-testid="dev-lull-state"]'); if (lsx && SIM.isDrowsy) { const L = S.evo && S.evo.lull; lsx.textContent = `${SIM.isDrowsy(S) ? '眼瞓' : S.sleeping ? '瞓緊' : '醒'}｜今晚哄瞓 ${L ? L.n : 0}/${D.PARAMS.evo6.branch.lull.perNight}`; }
       const ws = q('[data-testid="dev-weather-state"]'); if (ws && SIM.weatherNow) { const C = SIM.careDaysCheck(S); ws.textContent = `${SIM.weatherNow()}｜照顧日 ${C.days}/${C.need}（${C.span} 日）${C.ok ? '✓' : '✗'}`; }
       const ls = q('[data-testid="dev-lumi-state"]'); if (ls && SIM.lumiCheck) { const L = SIM.lumiCheck(S); ls.textContent = `螢絨：螢火${L.firefly}${L.fireflyOk ? '✓' : '✗'} CQ${Math.round(L.cq)}${L.cqOk ? '✓' : '✗'} 夜${Math.round(L.night * 100)}%/${L.nightAll} 機會${Math.round(L.chance * 100)}% roll${L.roll}${L.ok ? '✓' : '✗'}`; }
       el.querySelectorAll('button[data-a^="forceBranch:"]').forEach(b => { const f = b.dataset.a.split(':')[1], fo = S.evo && S.evo.force; b.classList.toggle('on', fo ? f === fo : D.isBig(S.stage) && f === S.form); });

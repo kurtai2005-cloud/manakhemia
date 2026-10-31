@@ -165,6 +165,13 @@
     if (s.evs) s.evs.stats.tapSleepWake = (s.evs.stats.tapSleepWake || 0) + 1;
     G.save(); return true;
   };
+  G.lull = function () {                            // v5 月眠「哄瞓」：眼瞓（精力 < lull.drowsyEnergy）時長撳／撫摸 → 瞓著（暫用現有瞓覺動畫，待美術）
+    const s = G.state; if (!SIM.lullSleep || !SIM.isDrowsy(s)) return false;
+    const r = SIM.lullSleep(s); if (!r.ok) return false;
+    if (G.beh && BEH.dragEnd) BEH.dragEnd(G.beh);
+    UI.toast(r.counted ? '團絨眼瞓瞓，俾你哄咗瞓著…' : '團絨瞓著咗（今晚已經哄過好多次）'); if (AUD && AUD.notify) AUD.notify('sleep', { on: true });
+    G.save(); return true;
+  };
   G.tickWorld = function (dt) {
     const s = G.state, hr = G.hour();
     G.light = LIGHT.compute(hr, G.weather ? { weather: G.weather } : null);
