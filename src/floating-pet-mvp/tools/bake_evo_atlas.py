@@ -86,7 +86,7 @@ def bake(form, F, glow):
 def main():
     os.makedirs(OUT, exist_ok=True)
     forms = forms_from_data(); glow = glow_piece()
-    assert len(forms) == 12, forms.keys()
+    assert len(forms) == 22, forms.keys()   # 12 ＋ §7 新支線 10（evo_guard_／evo_still_ × tide／shroom／crystal／moon／ember）
     for form, F in sorted(forms.items()):
         n, sz, fb = bake(form, F, glow)
         print('%-18s cells=%3d atlas=%dx%d webp=%5dB fallbackIdle=%s' % (form, n, sz[0], sz[1], os.path.getsize(os.path.join(OUT, 'pet_%s.webp' % form)), fb))

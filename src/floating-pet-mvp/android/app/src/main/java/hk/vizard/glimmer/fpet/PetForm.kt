@@ -13,6 +13,9 @@ object PetForm {
         "evo_egg", "evo_dot", "evo_sprout", "evo_hop",
         "evo_guard_lumi", "evo_guard_radiant", "evo_guard_soft", "evo_guard_dust",
         "evo_still_lumi", "evo_still_radiant", "evo_still_soft", "evo_still_dust",
+        // §7 新支線 ×5（水珠／菇傘／晶角／月眠／火苗）：守夜者＋靜光
+        "evo_guard_tide", "evo_guard_shroom", "evo_guard_crystal", "evo_guard_moon", "evo_guard_ember",
+        "evo_still_tide", "evo_still_shroom", "evo_still_crystal", "evo_still_moon", "evo_still_ember",
     )
     /** data.js FORMS frameSize（snapshot 冇 sizeDp 時用 frameSize × overlayDpPerPx 1.625）。 */
     const val DP_PER_PX = 1.625f

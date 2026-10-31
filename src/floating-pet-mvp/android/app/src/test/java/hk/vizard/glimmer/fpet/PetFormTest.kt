@@ -14,6 +14,19 @@ class PetFormTest {
         assertEquals("evo_still_lumi", PetForm.pick("evo_still_lumi", "soft"))   // 靜光・螢絨
     }
 
+    /** §7 新支線 ×5：每條守夜者／靜光都有自己 atlas；冇 atlas 時退返 soft（同遊戲 legacy fallback 一樣）。 */
+    @Test fun branches5PickOwnAtlas() {
+        val b5 = listOf("tide", "shroom", "crystal", "moon", "ember")
+        assertEquals(22, PetForm.EVO.size)
+        for (b in b5) for (st in listOf("guard", "still")) {
+            val f = "evo_${st}_$b"
+            assertTrue(f, PetForm.isEvo(f))
+            assertEquals(f, PetForm.pick(f, "soft"))
+            assertEquals("soft", PetForm.pick(f, "soft", PetForm.EVO - f))   // APK 冇呢套 → fallback
+        }
+        assertEquals(10, b5.flatMap { b -> listOf("evo_guard_$b", "evo_still_$b") }.toSet().size)
+    }
+
     @Test fun legacyFallback() {
         assertEquals("sprout", PetForm.pick(null, "sprout"))            // v1 snapshot：冇 evoForm
         assertEquals("radiant", PetForm.pick(null, "radiant"))
