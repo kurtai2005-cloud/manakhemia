@@ -47,7 +47,11 @@
     canvas.style.width = cssW + 'px'; canvas.style.height = cssH + 'px';
     canvas.style.imageRendering = (kdev && kb === kdev) ? 'pixelated' : 'auto';
     const wrap = document.getElementById('stagewrap'); wrap.style.width = cssW + 'px'; wrap.style.height = cssH + 'px';
-    document.getElementById('ui').style.transform = 'scale(' + (cssW / 390) + ')';
+    const uiScale = cssW / 390;
+    document.getElementById('ui').style.transform = 'scale(' + uiScale + ')';
+    // 熱區以縮放後嘅 CSS px 計。390 版面再乘 uiScale；360 闊直向（含整數倍像素縮放）都要 ≥44。
+    const hit = Math.ceil((44 + 0.5) / uiScale);
+    document.querySelectorAll('.ibtn').forEach((el) => { el.style.width = hit + 'px'; el.style.height = hit + 'px'; });
     G.layoutInfo = { vw, vh, dpr, kdev, kb, cssW, cssH };
   }
   window.addEventListener('resize', layout); layout();
@@ -65,7 +69,7 @@
   UI.init(G);
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
-  { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事就快過期，記得領'), 1500); }
+  { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事 2 日後作廢，記得領'), 1500); }
   if (boot.rep && boot.rep.show) UI.showSummary(boot.rep);
   G.save();
   G.bootReport = boot.rep;
@@ -124,7 +128,7 @@
     const act = rd.pet.act && rd.t < rd.pet.until ? rd.pet.act : null;
     G.behCtx = { s, pw: G.light, sun: G.light.sun, override: act, event: evView };
     if (!mg) { BEH.update(G.beh, dt, G.behCtx); rd.behFx(G.beh); }
-    if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 鬧脾氣事件（48h 冷卻）
+    if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 獨立事件 grumpy_tap（唔共用需求鬧脾氣冷卻）
     if (!mg) G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur } : null, mode: G.mode };
     else G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: null, mode: G.mode };
     G.view = { state: s, quality: s.settings.quality, hour: hr, mode: G.mode, mg: UI.mgState() && UI.mgState().mg, light: G.light, beh: mg ? null : G.beh, event: evView };

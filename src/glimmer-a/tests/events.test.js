@@ -36,7 +36,7 @@ function simulate(seed, days, sessions, o) {
 const SESS = [8, 12.5, 18, 21, 23.5];
 
 console.log('# 參數（遊策定案 v2）');
-ok(P.drawChance === 0.34 && P.minGapSec === 1200 && P.cooldownH === 24 && P.cooldownRareH === 72 && P.repeatWeightMul === 0.25, 'p_hit 0.34／全域間隔 20 分鐘／冷卻 24h／稀有 72h／防重複 ×0.25');
+ok(P.drawChance === 0.33 && P.minGapSec === 1200 && P.cooldownH === 24 && P.cooldownRareH === 72 && P.repeatWeightMul === 0.25, 'p_hit 0.33／全域間隔 20 分鐘／冷卻 24h／稀有 72h／防重複 ×0.25');
 ok(P.guaranteeHour === 16 && P.guaranteeOpens === 1 && P.flashDayRate === 0.03 && P.offlinePopupMax === 2, '保底 16:00／首次開 app／閃光日 3%／離線最多彈 2');
 ok(P.grumpyLowNeed === 30 && P.grumpyLowSec === 7200 && D.EVENTS.find(e => e.id === 'grumpy').cooldownH === 48, '鬧脾氣：需求<30 持續 2h，冷卻 48h');
 ok(P.diaryKeepDays === 14 && P.diaryWarnDays === 12 && P.diaryGrains === 3 && P.diaryClaimMax === 60, '日記：14 日／12 日提示／每條 +3／上限 60');
@@ -75,7 +75,7 @@ console.log('# 200 × 7 日（每日 5 次開 app）分佈／間隔／冷卻／�
   console.log('    事件／日 分佈：' + Object.keys(hist).sort().map(k => k + '個:' + (hist[k] / daysTot * 100).toFixed(1) + '%').join('  ') + '  平均 ' + mean.toFixed(2));
   console.log('    事件總數 ' + evTot + '，各類：' + JSON.stringify(byId) + '；保底破冷卻 ' + cooldownBreakGuar.length);
   ok(Math.min(...gaps) >= P.minGapSec - 1, '任何兩個事件間隔 ≥ ' + P.minGapSec / 60 + ' 分鐘（最小 ' + Math.round(Math.min(...gaps)) + ' s）');
-  ok(cdViol === 0, '單事件冷卻 24h／稀有 72h／鬧脾氣 48h（抽選路徑零違反；' + cdPairs + ' 對重複）', cdViol);
+  ok(cdViol === 0, '單事件冷卻 24h／稀有 72h／彩虹 240h／鬧脾氣 48h（抽選路徑零違反；' + cdPairs + ' 對重複）', cdViol);
   ok(zeroDays === 0, '每日保底：1400 日冇一日零事件', zeroDays);
   ok(mean >= 1 && mean <= 3, '平均每日事件數 1–3（' + mean.toFixed(2) + '）');
   { let mx = 0; for (let seed = 1; seed <= 60; seed++) { const r = simulate(seed, 7, SESS); const dd = {}; r.recs.forEach(x => { if (x.kind === 'draw' && !x.offline) dd[x.day] = (dd[x.day] || 0) + 1; }); mx = Math.max(mx, ...Object.values(dd)); }
@@ -423,15 +423,21 @@ console.log('# PR #19 P0／P1');
     let err2 = null; try { SIM.advance(r, 60, { hour: 13, now: BASE + 2000 }, 30); EV.force(r, 'gift'); EV.diaryGroups(r); EV.claim(r, 'meteor'); } catch (e) { err2 = e.message; }
     ok(!err2 && r.evs.stats.byId.gift >= 1, '回退後可正常觸發／領取', err2);
     const s3 = adult(9); s3.evs = 'garbage'; let e3 = null; try { EV.ensure(s3); SIM.advance(s3, 30, { hour: 12, now: BASE }, 30); } catch (e) { e3 = e.message; } ok(!e3 && s3.evs.v === 1, 'evs 唔係 object → 重建', e3); }
-  // P1-2 連點 5 下 → 鬧脾氣 48h
+  // P1-2 連點 5 下 → 獨立事件 grumpy_tap（48h 自己嘅冷卻；唔計每日上限、冇獎勵、唔共用需求鬧脾氣）
   { const s = adult(10), T = new Date(2026, 5, 3, 14, 0, 0).getTime(); SIM.advance(s, 30, { hour: 14, now: T }, 30); s.evs.lastAt = -1e9; s.evs.cd = {};
-    const r1 = EV.tapTantrum(s, { now: T }); ok(r1 && r1.id === 'grumpy' && r1.kind === 'tap' && Math.abs(s.evs.cd.grumpy - s.evs.clock - 48 * H) < 1, '連點觸發鬧脾氣事件，冷卻 48h');
+    const g0 = s.grains, d0 = s.evs.dayCount, ev0 = s.evs.stats.events, mood0 = s.needs.mood;
+    const r1 = EV.tapTantrum(s, { now: T });
+    ok(r1 && r1.id === 'grumpy_tap' && r1.kind === 'tap' && r1.grains === 0 && r1.mood === 0 && r1.flavor !== EV.DEF.grumpy.flavor[0] && Math.abs(s.evs.cd.grumpy_tap - s.evs.clock - 48 * H) < 1 && s.evs.cd.grumpy == null, '連點觸發 grumpy_tap，自己冷卻 48h、文案唔同鬧脾氣', JSON.stringify(r1 && { id: r1.id, kind: r1.kind, flavor: r1.flavor }));
+    ok(s.grains === g0 && s.needs.mood === mood0 && s.evs.dayCount === d0 && s.evs.stats.events === ev0 && s.evs.stats.byId.grumpy_tap === 1, 'grumpy_tap 唔計每日上限、唔加光粒／心情、唔加 stats.events');
+    s.evs.cd.grumpy = s.evs.clock + 48 * H; s.evs.lastAt = -1e9; s.evs.cd.grumpy_tap = 0;
+    ok(!!EV.tapTantrum(s, { now: T }) && s.evs.cd.grumpy > s.evs.clock, '需求鬧脾氣冷卻中，連點仍然可以（唔共用 cd）');
     s.evs.lastAt = -1e9; SIM.advance(s, 47 * H, { hour: 14, now: T + 47 * H * 1000 }, 600); s.evs.lastAt = -1e9;
     ok(EV.tapTantrum(s, {}) === null && s.evs.stats.tantrumBlocked >= 1, '47h 內再連點：冷卻中唔觸發');
     SIM.advance(s, 1.1 * H, {}, 600); s.evs.lastAt = -1e9; Object.assign(s.needs, { hunger: 90, mood: 90, clean: 90, energy: 90 });
     ok(!!EV.tapTantrum(s, {}), '48h 後可再觸發');
     s.evs.cd = {}; s.evs.lastAt = s.evs.clock - 600; ok(EV.tapTantrum(s, {}) === null, '全域 20 分鐘間隔內唔觸發');
-    s.evs.lastAt = -1e9; s.sleeping = true; ok(EV.tapTantrum(s, {}) === null && s.evs.stats.tapSleepWake >= 1, '瞓緊連點唔會鬧脾氣');
+    const lastAt = s.evs.lastAt; s.evs.cd = {}; s.evs.lastAt = -1e9; EV.tapTantrum(s, {}); ok(s.evs.lastAt === -1e9, 'grumpy_tap 唔改 lastAt（唔推後其他事件）', s.evs.lastAt);
+    s.evs.lastAt = lastAt; s.sleeping = true; ok(EV.tapTantrum(s, {}) === null && s.evs.stats.tapSleepWake >= 1, '瞓緊連點唔會鬧脾氣');
     let inPool = 0; for (let sd = 1; sd <= 40; sd++) simulate(sd, 7, SESS).recs.forEach(x => { if (x.id === 'grumpy' && x.kind === 'draw') inPool++; }); ok(inPool === 0, '鬧脾氣唔會由抽選觸發', inPool); }
 }
 
@@ -497,16 +503,16 @@ console.log('# QA 修正（PR #17）：P0 回撥日離線補抽／P1 重設日�
   ok(gen.pool >= 2.2 && gen.pool <= 2.4 && gen.tot <= 2.95, '一般作息：池抽取 ' + gen.pool.toFixed(2) + '、總 ' + gen.tot.toFixed(2) + '（≤2.95）');
 
   // P1 彩虹 pity：≥14 日必出（保證 ≤14 日一次），仍守 17–23 時段窗
-  ok(P.rainbowPityDays === 14 && P.rainbowPityLeadH === 26, '彩虹 pity 參數：14 日／提前 26h 起（窗內）');
+  ok(P.rainbowPityDays === 14 && P.rainbowPityLeadH === 26 && P.rainbowCooldownH === 240 && EV.DEF.rainbow.cooldownH === 240 && EV.DEF.rainbow.weight === 1, '彩虹 pity 14 日／提前 26h；冷卻 240h；權重維持 1');
   let maxGap = 0, badHour = 0, rbN = 0, pityN = 0, rbDays = 0, cdV = 0;
   for (let sd = 1; sd <= 80; sd++) { const sim = simulate(7000 + sd, 56, [8, 12.5, 18.5, 22]); rbDays += 56;
     const rb = sim.recs.filter(x => x.id === 'rainbow').concat(sim.s.evs.diary.filter(x => x.id === 'rainbow')).sort((x, y) => x.ts - y.ts);
     let prev = BASE + 8 * H * 1000; rb.forEach(x => { maxGap = Math.max(maxGap, (x.ts - prev) / DAY); prev = x.ts; const hr = new Date(x.ts).getHours(); if (hr < 17 || hr >= 23) badHour++; if (x.kind === 'pity') pityN++; });
-    for (let i = 1; i < rb.length; i++) if (rb[i].at - rb[i - 1].at < 72 * H - 1) cdV++;
+    for (let i = 1; i < rb.length; i++) if (rb[i].at - rb[i - 1].at < 240 * H - 1) cdV++;
     rbN += rb.length; }
   console.log('    彩虹（一般作息 80×56 日）：每 ' + (rbDays / rbN).toFixed(1) + ' 日一次、最長間隔 ' + maxGap.toFixed(2) + ' 日、pity 佔 ' + (100 * pityN / rbN).toFixed(0) + '%');
   ok(maxGap <= 14, '彩虹最長間隔 ≤14 日（由第一次開 app 計）', maxGap.toFixed(2));
-  ok(badHour === 0 && cdV === 0, 'pity 彩虹仍守 17–23 窗、72h 冷卻零違規', JSON.stringify([badHour, cdV]));
+  ok(badHour === 0 && cdV === 0, 'pity 彩虹仍守 17–23 窗、240h 冷卻零違規', JSON.stringify([badHour, cdV]));
   ok(rbDays / rbN >= 11 && rbDays / rbN <= 15, '彩虹平均 11–15 日一次（加 pity 後）', (rbDays / rbN).toFixed(1));
   { const s = adult(34); SIM.advance(s, 60, { hour: 12, now: T0 }, 30); const E = s.evs; E.rbAt = E.clock - 13.5 * 86400; E.cd = {};
     ok(EV.rainbowPity(s, E, 18) === EV.DEF.rainbow && EV.rainbowPity(s, E, 12) === null && EV.rainbowPity(s, E, 23.5) === null, 'rainbowPity：到期時窗內回傳彩虹、窗外 null');

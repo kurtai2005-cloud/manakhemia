@@ -64,5 +64,28 @@ for (const sess of [[8, 12.5, 18, 21.5], [8, 12.5, 18, 21, 23.5]]) {
     allCd += cdv; allGap += gapv; allFlash += flv; worstGap = Math.max(worstGap, maxGap); worstTot = Math.max(worstTot, tot / days);
     console.log(`④ ${nm.padEnd(3, '　')}：池抽取 ${(pool / days).toFixed(2)}／日、總 ${(tot / days).toFixed(2)}／日；彩虹每 ${(days / rb).toFixed(1)} 日（最長間隔 ${maxGap.toFixed(2)} 日，pity ${(100 * pity / rb).toFixed(0)}%）；冷卻違反 ${cdv}、間隔違反 ${gapv}、閃光 72h 違反 ${flv}`);
   }
-  console.log(`④ 合計：彩虹最長間隔 ${worstGap.toFixed(2)} 日（≤14 ${worstGap <= 14 ? '✓' : '✗'}）；最高總數 ${worstTot.toFixed(2)}／日（≤2.95 ${worstTot <= 2.95 ? '✓' : '✗'}）；冷卻違反 ${allCd}、間隔違反 ${allGap}、閃光 72h 違反 ${allFlash}（earlyBird.hitMul=${P.earlyBird.hitMul}、rainbow weight=${EV.DEF.rainbow.weight}、pity ${P.rainbowPityDays}d−${P.rainbowPityLeadH}h）`);
+  console.log(`④ 合計：彩虹最長間隔 ${worstGap.toFixed(2)} 日（≤14 ${worstGap <= 14 ? '✓' : '✗'}）；最高總數 ${worstTot.toFixed(2)}／日（≤2.95 ${worstTot <= 2.95 ? '✓' : '✗'}）；冷卻違反 ${allCd}、間隔違反 ${allGap}、閃光 72h 違反 ${allFlash}（earlyBird.hitMul=${P.earlyBird.hitMul}、rainbow weight=${EV.DEF.rainbow.weight}、pity ${P.rainbowPityDays}d−${P.rainbowPityLeadH}h、rainbow cd ${P.rainbowCooldownH}h、p_hit ${P.drawChance}）`);
+}
+// ⑤ 彩虹 240h 冷卻：每種作息 4 種子 × 750 日＝3000 日。平均間隔目標 11–15 日；最長仍 ≤14（pity）
+{
+  const PROF = [['勤力', [8, 10.5, 13, 16.5, 19.5, 22.5], .05], ['一般', [8, 12.5, 18.5, 22], .1], ['上班族', [7.5, 19, 22.5], .1], ['輕度', [8.5, 21.5], .15], ['早鳥', [7.5, 12.5], .1], ['隔日', [20], 0, 2]];
+  const P = D.PARAMS.events; const DAYS = 750, SEEDS = 4;
+  for (const [nm, times, miss, every] of PROF) {
+    let pool = 0, tot = 0, rb = 0, days = 0, maxGap = 0, pity = 0, cdv = 0, gaps = 0;
+    for (let sd = 1; sd <= SEEDS; sd++) {
+      let rs = sd * 99991; const rnd = () => ((rs = (rs * 16807) % 2147483647) / 2147483647);
+      const s = adult(sd * 7919 + 501), recs = []; const L = (st, r) => { if (st === s) recs.push(r); }; EV.listeners.push(L); s.lastSeen = BASE; let first = null;
+      for (let d = 0; d < DAYS; d++) { if (every && d % every) continue; for (const h of times) { if (rnd() < miss) continue;
+        const now = BASE + d * DAY + (h + (rnd() - .5) * .8) * H * 1000; if (first == null) first = now; SIM.applyOffline(s, now); care(s); EV.noteOpen(s, { hour: SIM.hourOf(now), now });
+        for (let k = 0; k < 180; k += 30) { SIM.advance(s, 30, { hour: SIM.hourOf(now + k * 1000), now: now + k * 1000 }, 30); while (EV.takePending(s)) { } } s.lastSeen = now + 180e3; } }
+      EV.listeners.splice(EV.listeners.indexOf(L), 1);
+      const st = s.evs.stats; days += DAYS; tot += st.events; pool += st.events - st.guarantee - st.guaranteeOpen - (st.byId.flash || 0) - (st.byId.grumpy || 0); pity += st.rainbowPity || 0;
+      const all = recs.concat(s.evs.diary.filter(x => !recs.includes(x))).sort((a, b) => (a.ts - b.ts) || (a.at - b.at));
+      let prev = first; const lastRb = { at: null };
+      all.forEach(x => { if (x.id !== 'rainbow') return; rb++; const g = (x.ts - prev) / DAY; gaps += g; maxGap = Math.max(maxGap, g); prev = x.ts;
+        if (lastRb.at != null && x.at - lastRb.at < (P.rainbowCooldownH || 240) * H - 1) cdv++; lastRb.at = x.at; });
+    }
+    const mean = days / rb;
+    console.log(`⑤ ${nm.padEnd(3, '　')}：${SEEDS}×${DAYS}=${days} 日；池抽取 ${(pool / days).toFixed(3)}／日（2.2–2.4 ${pool / days >= 2.2 && pool / days <= 2.4 ? '✓' : '✗'}）、總 ${(tot / days).toFixed(3)}／日；彩虹每 ${mean.toFixed(2)} 日（11–15 ${mean >= 11 && mean <= 15 ? '✓' : '✗'}），最長 ${maxGap.toFixed(2)} 日（≤14 ${maxGap <= 14.001 ? '✓' : '✗'}），pity ${(100 * pity / rb).toFixed(0)}%，240h 違反 ${cdv}`);
+  }
 }

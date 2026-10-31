@@ -138,6 +138,11 @@ console.log('# 觸摸：摸、連點、睡眠中連點');
   b = fresh(); run(b, ctx, 10); for (let i = 0; i < 5; i++) { BEH.tap(b, 'pet', 0); run(b, ctx, 1.0); }
   ok(b.tantrumReq === 1 && b.journal.some(j => j.name === 'tantrum'), '連點 5 下：發出 1 次鬧脾氣事件請求（tantrumReq）');
   b = fresh(); run(b, ctx, 10); for (let i = 0; i < 4; i++) { BEH.tap(b, 'pet', 0); run(b, ctx, 1.0); } ok(!b.tantrumReq, '4 下：冇事件請求');
+  // 不適（強制狀態）都會吞普通觸摸，但 5 下連點仍然要出請求（e2e 唔好睇當下狀態）
+  const su = mkS({ hunger: 5, mood: 5, clean: 5, energy: 5 }), cu = ctxAt(su, 14);
+  b = BEH.create(8); run(b, cu, 2); ok(b.state === 'unwell', '需求 <15 → 不適');
+  for (let i = 0; i < 5; i++) { BEH.tap(b, 'pet', 0); run(b, cu, 0.2); }
+  ok(b.tantrumReq === 1, '不適中連點 5 下仍然發出 tantrumReq');
   // PR #19 P1：關燈瞓覺中點寵物 → UI 輕喚醒（sim 起身）＋ 'wake' tap → 睏睏 sleepyHold 秒、唔鬧脾氣
   const sw = mkS({ energy: 40 }, { sleeping: true }), cw = ctxAt(sw, 23); b = BEH.create(7); run(b, cw, 20);
   const n0 = Object.assign({}, sw.needs); sw.sleeping = false; BEH.tap(b, 'wake', 0); run(b, cw, 0.5);

@@ -118,7 +118,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await page.waitForTimeout(400);
   ok(await E(() => document.getElementById('diaryN').textContent === '4'), '日記角標顯示 4');
   await page.click('[data-testid=diary]'); await page.waitForTimeout(300); await shot('diary');
-  ok(await page.isVisible('[data-testid=diary-warn]'), '第 12 日起有快過期提示');
+  const warnTxt = await page.textContent('[data-testid=diary-warn]');
+  ok(await page.isVisible('[data-testid=diary-warn]') && /2 日後作廢/.test(warnTxt) && !/就快過期/.test(warnTxt), '第 12 日起提示「2 日後作廢」', warnTxt);
   ok(await page.isVisible('[data-testid=diary-row-gift]') && /×2/.test(await page.textContent('[data-testid=diary-row-gift]')), '同類事件合併（禮物 ×2）');
   const g0 = await E(() => __glimmer.state.grains); await page.click('[data-testid=modal-btn-0]'); await page.waitForTimeout(300);
   ok(await E((g) => __glimmer.state.grains === g + 12 && __glimmer.state.evs.diary.length === 0, g0), '一鍵領取：4 條 × ✦3 = +12');
@@ -132,12 +133,31 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     ok(r.diary >= 18 && r.diary <= 50 && r.pend === 2, '14 日離線：彈窗 2、入日記 ' + r.diary + ' 條（≤50）', JSON.stringify(r));
     await page.waitForTimeout(300); await shot('offline-14d');
   }
-  await E(() => { __qa.pet.pause(true); __glimmer.ev = null; const s = __glimmer.state; s.evs.pending = []; s.evs.cd = {}; s.evs.lastAt = -1e9; s.sleeping = false; });
+  await E(() => { __qa.pet.pause(true); __glimmer.ev = null; const s = __glimmer.state; s.evs.pending = []; s.evs.cd = {}; s.evs.lastAt = -1e9; s.evs.low = 0; s.sleeping = false; });
   {
-    const r = await E(() => { const E0 = __glimmer.state.evs; __qa.pet.step(5); __qa.pet.tapPet(5); __qa.pet.step(0.5); const l = E0.log[E0.log.length - 1]; return { id: l && l.id, kind: l && l.kind, cd: Math.round((E0.cd.grumpy - E0.clock) / 3600) }; });
-    ok(r.id === 'grumpy' && r.kind === 'tap' && r.cd === 48, '__qa.pet.tapPet(5)：觸發鬧脾氣事件，冷卻 48h', JSON.stringify(r));
-    const r2 = await E(() => { const E0 = __glimmer.state.evs; E0.lastAt = -1e9; const n = E0.stats.events; __qa.pet.step(10); __qa.pet.tapPet(5); __qa.pet.step(0.5); return E0.stats.events - n; });
-    ok(r2 === 0, '冷卻內再連點：唔再觸發事件', r2);
+    const r = await E(() => {
+      const s = __glimmer.state, E0 = s.evs, b = __glimmer.beh;
+      E0.low = 0; E0.log.length = 0; E0.pending.length = 0; E0.cd = {}; E0.lastAt = -1e9;
+      Object.assign(s.needs, { hunger: 90, mood: 90, clean: 90, energy: 90 }); s.sleeping = false; s.poops = 0;
+      b.state = 'stay'; b.phase = ''; b.taps.length = 0; b.petTaps.length = 0; b.grumpyCool = -1; b.tantrumReq = 0; b.holdUntil = 0;
+      const g0 = s.grains, d0 = E0.dayCount, ev0 = E0.stats.events;
+      __qa.pet.tapPet(5); __qa.pet.step(0.4);
+      const taps = E0.log.filter(x => x.id === 'grumpy_tap'), l = taps[taps.length - 1], pend = E0.pending.filter(x => x.id === 'grumpy_tap');
+      return { id: l && l.id, kind: l && l.kind, n: taps.length,
+        cd: E0.cd.grumpy_tap != null ? Math.round((E0.cd.grumpy_tap - E0.clock) / 3600) : null,
+        need: E0.cd.grumpy != null ? Math.round((E0.cd.grumpy - E0.clock) / 3600) : null,
+        grains: s.grains - g0, day: E0.dayCount - d0, ev: E0.stats.events - ev0,
+        flavor: pend[0] && pend[0].flavor, needFlavor: Glimmer.events.DEF.grumpy.flavor[0] };
+    });
+    ok(r.id === 'grumpy_tap' && r.kind === 'tap' && r.n === 1 && r.cd === 48 && r.need == null && r.grains === 0 && r.day === 0 && r.ev === 0 && r.flavor && r.flavor !== r.needFlavor, '__qa.pet.tapPet(5)：獨立 grumpy_tap（48h、冇獎勵、唔計上限、唔共用鬧脾氣）', JSON.stringify(r));
+    const r2 = await E(() => {
+      const E0 = __glimmer.state.evs, b = __glimmer.beh;
+      E0.lastAt = -1e9; E0.low = 0; b.state = 'stay'; b.phase = ''; b.grumpyCool = -1; b.petTaps.length = 0; b.taps.length = 0; b.tantrumReq = 0;
+      const n = E0.log.filter(x => x.id === 'grumpy_tap').length;
+      __qa.pet.tapPet(5); __qa.pet.step(0.4);
+      return E0.log.filter(x => x.id === 'grumpy_tap').length - n;
+    });
+    ok(r2 === 0, '冷卻內再連點：唔再觸發 grumpy_tap', r2);
   }
   {
     const r = await E(() => { const s = __glimmer.state; Glimmer.sim.toggleSleep(s); __qa.pet.step(3); const n0 = JSON.stringify(s.needs), lw0 = __glimmer.beh.log.enters.lightWake || 0, ev0 = s.evs.stats.events;
@@ -248,6 +268,16 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   for (const [id, hr] of [['early', 9], ['noon', 14], ['dusk', 20], ['night', 1]]) {
     await fresh('debug=1&q=high&room=1&hour=' + hr + '&seed=7&ev=0'); await page.waitForTimeout(600);
     const d = await E(() => __qa.pet.daylight()); ok(d.room && d.ready && d.dl.id === id, 'room 皮膚 ' + id + ' 啟用', JSON.stringify(d)); await shot('room-' + id);
+  }
+
+  console.log('# P2 .ibtn 熱區（縮放後 ≥44 CSS px，含 360 闊直向）');
+  for (const vp of [{ width: 360, height: 780, dpr: 1 }, { width: 360, height: 800, dpr: 2 }, { width: 360, height: 640, dpr: 1 }]) {
+    const c = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.dpr });
+    const p = await c.newPage();
+    await p.goto(BASE + '?debug=1&q=off&hour=13&ev=0'); await p.waitForTimeout(500);
+    const box = await p.evaluate(() => [...document.querySelectorAll('.ibtn')].map(el => { const r = el.getBoundingClientRect(); return { id: el.id, w: r.width, h: r.height }; }));
+    ok(box.length >= 2 && box.every(b => b.w >= 44 && b.h >= 44), '360×' + vp.height + ' dpr' + vp.dpr + ' .ibtn ≥44 CSS px', JSON.stringify(box));
+    await c.close();
   }
 
   console.log('\n# console 錯誤／警告');

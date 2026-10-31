@@ -176,6 +176,16 @@
         continue;
       }
       if (forced && ctx.s.sleeping && tp.kind === 'pet') { b.petTaps.length = 0; b.stir = b.t + 1.2; note(b, 'tap', 'sleepStir'); b.log.enters.sleepStir = (b.log.enters.sleepStir || 0) + 1; continue; }   // 睡眠中連點：唔鬧脾氣，只係翻身（zzz 加快）
+      // 不適／事件／撞花盆／已經鬧緊都會吞普通觸摸。連點 5 下仍然要出獨立事件請求。
+      // wake 唔計：小睡輕喚醒嗰陣嘅連點要保持「唔鬧脾氣」（wake 動畫期間原本就忽略觸摸）。
+      if (tp.kind === 'pet' && !ctx.s.sleeping && b.state !== 'nap' && b.state !== 'wake' && (forced || b.state === 'bump' || b.state === 'grumpy')) {
+        b.petTaps.push(b.t); b.petTaps = b.petTaps.filter(t => b.t - t <= T.rapidWindow);
+        const rapid = b.petTaps.length; note(b, 'tap', 'pet', String(rapid));
+        if (rapid >= T.rapidCount && b.t >= b.grumpyCool) {
+          b.petTaps.length = 0; b.grumpyCool = b.t + T.grumpyDur + T.grumpyCooldown; b.tantrumReq = (b.tantrumReq || 0) + 1; note(b, 'tap', 'tantrum');
+        }
+        b.log.enters.tapIgnored = (b.log.enters.tapIgnored || 0) + 1; continue;
+      }
       if (!forced && tp.kind === 'pet' && (b.state === 'startle' || b.state === 'play')) {      // 不可中斷動作期間嘅連點：照計，夠數就升級（撒嬌／鬧脾氣）
         b.lastTouch = b.t; b.petTaps.push(b.t); b.petTaps = b.petTaps.filter(t => b.t - t <= Math.max(T.cuddlyWindow, T.rapidWindow));
         const rapid = b.petTaps.length, quick = b.petTaps.filter(t => b.t - t <= T.cuddlyWindow).length; note(b, 'tap', 'pet', String(rapid));
@@ -278,7 +288,7 @@
     } else if (id === 'treasure') {
       if (!v.found) { const a = moveTo(b, v.digX, P.walkSpeed * 1.6); setClip(b, a ? 'dig' : 'walk'); if (a) loopClip(b, 'dig'); }
       else { b.hopT += FIX; if (b.hopT >= P.hopDur) b.hopT = 0; hopLift(b, H_OF(b) * 0.6, P.hopDur); loopClip(b, 'cheer_jump'); }
-    } else if (id === 'grumpy') {
+    } else if (id === 'grumpy' || id === 'grumpy_tap') {
       b.steamT += FIX; if (b.steamT >= 0.45) { b.steamT = 0; fx(b, 'steam', (b.rng() - 0.5) * 18, -40); } loopClip(b, 'grumpy'); b.x += Math.sin(b.t * 50) * 0.15;
     } else if (id === 'sleeptalk') {
       if (b.phase === 'go' || b.phase === '') { const a = moveTo(b, 0, P.walkSpeed * 1.3); setClip(b, 'walk'); if (a) { setPhase(b, 'fall'); b.clipT = 0; } }
