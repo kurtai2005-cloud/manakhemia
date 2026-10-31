@@ -327,8 +327,9 @@
   }
 
   // ───────── 寵物 clip 渲染輔助（真 atlas＋placeholder）─────────
+  const BR5_GLOW = { tide: [150, 225, 255], shroom: [255, 214, 150], crystal: [255, 190, 225], moon: [190, 190, 255], ember: [255, 170, 100] };   // §7 新支線燈色（跟遊美 palette 燈色調）
   const DUST_HEAD = [13, -26];                    // 微塵形態冇圖集：程序化精靈嘅 head_r 錨點
-  const legacyFormKeyOf = (s) => D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi') ? 'soft' : 'dust') : 'sprout';   // 螢絨（lumi）暫借柔光 atlas＋螢光 tint（未有專屬美術）
+  const legacyFormKeyOf = (s) => D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi' || D.BRANCH5.includes(s.form)) ? 'soft' : 'dust') : 'sprout';   // §7 新支線同螢絨一樣（冇 evo 圖先用）；螢絨（lumi）暫借柔光 atlas＋螢光 tint（未有專屬美術）
   // 待定／額外 clip 嘅程序化佔位：用 idle 幀＋簡單變形（dy＝上下、dx＝前後、sx／sy＝縮放）
   function placeholderXform(clip, b, t) {
     const T = { sx: 1, sy: 1, dx: 0, dy: 0 };
@@ -760,7 +761,7 @@
       }
       const pd = this.petDraw;
       // 寵物光（絨芽）——狀態光色
-      let gcol = s.form === 'dust' ? [210, 205, 190] : s.form === 'lumi' ? [200, 255, 140] : [255, 214, 110];
+      let gcol = s.form === 'dust' ? [210, 205, 190] : s.form === 'lumi' ? [200, 255, 140] : (D.isBig(s.stage) && BR5_GLOW[s.form]) || [255, 214, 110];
       let gint = s.stage === 'egg' ? 0.5 + SIM.eggProgress(s) * 0.5 + this.eggPulse * 0.6 : 1;
       gint *= (1 - c.hDim * 0.6);
       if (c.unwell) { gcol = mixc(gcol, [150, 220, 150], 0.65); gint *= 0.6 + 0.2 * Math.sin(t * 3); }

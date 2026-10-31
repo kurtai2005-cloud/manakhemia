@@ -95,6 +95,15 @@
       stages() { return D.STAGES.slice(); },
       evoStage(st) { note('evoStage', st); const S = s(); const r = G.evo.setStage(st, D.isBig(st) ? (S.form || 'soft') : null); sync(); return r; },
       evoBranch(f) { note('evoBranch', f); const S = s(); const r = G.evo.setStage(D.isBig(S.stage) ? S.stage : 'adult', f); sync(); return r; },
+      // §7：強制去某支線（9 條）。成年／靜光 → 即刻換；未到成年 → 記低，跳跳期完（enterStage adult）用，用完清走
+      branches() { return D.BRANCHES.slice(); },
+      forceBranch(f) {
+        note('forceBranch', f); const S = s(), E = S.evo || (S.evo = { evIn: {}, care: {} });
+        if (f == null || f === '' || f === 'off') { delete E.force; G.save(); sync(); return { force: null, stage: S.stage, form: S.form }; }
+        if (!D.BRANCHES.includes(f)) throw new Error('dev.forceBranch: ' + f);
+        if (D.isBig(S.stage)) { delete E.force; G.evo.setStage(S.stage, f); } else { E.force = f; G.save(); }
+        sync(); return { force: E.force || null, stage: S.stage, form: S.form };
+      },
       evoNext() { note('evoNext'); const r = G.evo.next(); sync(); return r; },
       evoFade() { note('evoFade'); const S = s(); if (S.stage !== 'elder') G.evo.setStage('elder', S.form || 'soft'); if (!S.fadeReady) G.evo.next(); const r = G.fade(); sync(); return r; },
       evoInfo() { return G.evo.info(); },
@@ -155,6 +164,7 @@
         <div class="dr"><i>形態</i>${api.forms().map(f => btn(f === 'egg' ? '光卵' : f === 'sprout' ? '芽崽' : D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'setForm:' + f, 'dev-form-' + f)).join('')}</div>
         <div class="dr" data-testid="dev-stage-row"><i>階段</i>${D.STAGES.map(st => btn(D.STAGE_NAME[st], 'evoStage:' + st, 'dev-stage-' + st)).join('')}${btn('▶下一階段', 'evoNext', 'dev-stage-next')}${btn('化光', 'evoFade', 'dev-fade')}</div>
         <div class="dr" data-testid="dev-branch-row"><i>分支</i>${['lumi', 'bright', 'soft', 'dust'].map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'evoBranch:' + f, 'dev-branch-' + f)).join('')}<em class="dmst" data-testid="dev-lumi-state"></em></div>
+        <div class="dr" data-testid="dev-force-row"><i>強制支線</i>${D.BRANCHES.map(f => btn(D.FORM_NAME[f] + (f === 'lumi' ? '★' : ''), 'forceBranch:' + f, 'dev-force-' + f)).join('')}${btn('清除', 'forceBranch:off', 'dev-force-off')}<em class="dmst" data-testid="dev-b5-state"></em></div>
         <div class="dr"><i>進化</i>${D.EVOLUTION.map(e => btn('▶' + e.name, 'playEvolve:' + e.form, 'dev-evolve-' + e.form)).join('')}</div>
         ${D.NEED_KEYS.map(k => `<label><i>${N[k]}</i><input type="range" min="0" max="100" step="1" data-need="${k}" data-testid="dev-need-${k}" value="${Math.round(S.needs[k])}"><em>${Math.round(S.needs[k])}</em></label>`).join('')}
         <label><i>CQ</i><input type="range" min="${P.cqMin}" max="${P.cqMax}" step="1" data-cq="1" data-testid="dev-cq" value="${Math.round(S.cq)}"><em>${Math.round(S.cq)}</em></label>
@@ -175,6 +185,8 @@
       el.querySelectorAll('button[data-a^="evoStage:"]').forEach(b => b.classList.toggle('on', b.dataset.a.split(':')[1] === S.stage));
       el.querySelectorAll('button[data-a^="evoBranch:"]').forEach(b => b.classList.toggle('on', D.isBig(S.stage) && b.dataset.a.split(':')[1] === S.form));
       const ls = q('[data-testid="dev-lumi-state"]'); if (ls && SIM.lumiCheck) { const L = SIM.lumiCheck(S); ls.textContent = `螢絨：螢火${L.firefly}${L.fireflyOk ? '✓' : '✗'} CQ${Math.round(L.cq)}${L.cqOk ? '✓' : '✗'} 夜${Math.round(L.night * 100)}%/${L.nightAll}${L.nightOk ? '✓' : '✗'}`; }
+      el.querySelectorAll('button[data-a^="forceBranch:"]').forEach(b => { const f = b.dataset.a.split(':')[1], fo = S.evo && S.evo.force; b.classList.toggle('on', fo ? f === fo : D.isBig(S.stage) && f === S.form); });
+      const b5 = q('[data-testid="dev-b5-state"]'); if (b5 && SIM.branch5Check) { const B = SIM.branch5Check(S), fo = S.evo && S.evo.force; b5.textContent = (fo ? '強制→' + D.FORM_NAME[fo] + '　' : '') + `新5：${D.FORM_NAME[B.top]}${Math.round(B.topShare * 100)}% 次${D.FORM_NAME[B.second]}${Math.round(B.secondShare * 100)}% /${B.all} 淨${B.cleanAvg == null ? '-' : Math.round(B.cleanAvg)} ${B.ok ? '✓' : '✗'}`; }
       const bb = q('[data-a="live:bulb"]'); if (bb) { const m = G.beh && G.beh.bulbForce; bb.classList.toggle('on', !!m); bb.textContent = '燈泡 ' + (m ? BULB_ZH[m] || m : '自動'); }
       const dm = q('[data-a="demo"]'); if (dm) { dm.classList.toggle('on', !!G.liveDemo); dm.textContent = '展示模式 ' + (G.liveDemo ? '開' : '關'); }
       const dst = q('.dmst'); if (dst) dst.textContent = G.liveDemo ? '×' + (P.beh.live.demoMul || 5) + ' 頻率／冷卻 ÷' + (P.beh.live.demoMul || 5) : '正常頻率';

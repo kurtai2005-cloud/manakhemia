@@ -109,15 +109,48 @@
   const STAGES = ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'];
   const EV6 = P.evo6;
   const nextStage = (st) => STAGES[STAGES.indexOf(st) + 1] || null;
-  function evoOf(s) { if (!s.evo || typeof s.evo !== 'object') s.evo = { evIn: {}, care: {} }; s.evo.evIn = s.evo.evIn || {}; s.evo.care = s.evo.care || {}; return s.evo; }
+  function evoOf(s) { if (!s.evo || typeof s.evo !== 'object') s.evo = { evIn: {}, care: {} }; s.evo.evIn = s.evo.evIn || {}; s.evo.care = s.evo.care || {}; s.evo.b5 = s.evo.b5 || {}; s.evo.cl = s.evo.cl || {}; return s.evo; }
   let hourFn = null;                                     // 本機鐘點（main 設做遊戲時鐘 G.hour；Node 測試可注入）
   function setHourFn(fn) { hourFn = typeof fn === 'function' ? fn : null; }
   function nowHour() { return hourFn ? hourFn() : new Date().getHours() + new Date().getMinutes() / 60; }
   function isNightHour(h) { return h >= EV6.nightFrom || h < EV6.nightTo; }
-  // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night
-  function noteCare(s, h) {
+  let rainFn = null;                                     // §7：落雨（main 設做 G.weather === 'rain'；Node 測試可注入）
+  function setRainFn(fn) { rainFn = typeof fn === 'function' ? fn : null; }
+  function isRaining() { return !!(rainFn && rainFn()); }
+  function isMoonHour(h) { return h >= EV6.b5MoonFrom || h < EV6.b5MoonTo; }   // 月眠：21:00–03:00（遊戲鐘）
+  // §7 新支線分數：每次照顧 all +1；本身類型照計；落雨時任何照顧再計水珠（rinse 本身已歸水珠 → 只計一次）；21–03 或瞓覺時撫摸再計月眠（一次）
+  const B5_KIND = { feed: 'shroom', play: 'ember', mg: 'ember', rinse: 'tide', poop: 'crystal' };
+  function noteB5(s, kind, h, rain) {
+    if (s.stage === 'egg') return; const E = evoOf(s), b = E.b5[s.stage] || (E.b5[s.stage] = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0 });
+    h = h == null ? nowHour() : h; rain = rain == null ? isRaining() : !!rain;
+    b.all++;
+    const own = B5_KIND[kind]; if (own) b[own]++;
+    if (rain && kind !== 'rinse') b.tide++;
+    if (kind === 'petSleep' || isMoonHour(h)) b.moon++;
+  }
+  // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night；kind＝feed／play／rinse／poop／mg（§7 分數）
+  function noteCare(s, h, kind, rain) {
     if (s.stage === 'egg') return; const E = evoOf(s), c = E.care[s.stage] || (E.care[s.stage] = { all: 0, night: 0 });
     c.all++; if (isNightHour(h == null ? nowHour() : h)) c.night++;
+    noteB5(s, kind, h, rain);
+  }
+  // §7 月眠：瞓緊覺時撫摸（點寵物＝輕喚醒，所以每次瞓覺最多一次）；只入 §7 分數，唔改螢絨嘅夜晚照顧比例
+  function notePetSleep(s, h, rain) { if (!s || s.stage === 'egg' || !s.sleeping) return false; noteB5(s, 'petSleep', h, rain); return true; }
+  function noteClean(s, dt) {                            // 晶角：清潔度時間加權平均（每階段）
+    if (s.stage === 'egg' || !(dt > 0)) return; const E = evoOf(s), c = E.cl[s.stage] || (E.cl[s.stage] = { sum: 0, sec: 0 });
+    c.sum += s.needs.clean * dt; c.sec += dt;
+  }
+  function branch5Check(s) {                             // §7：CQ ≥55、最高分 ≥35%、同第二名差 ≥5 個百分點；平手／唔夠 → null
+    const E = evoOf(s), T = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0 }; let cs = 0, cn = 0;
+    EV6.careStages.forEach(st => { const b = E.b5[st]; if (b) for (const k in T) T[k] += +b[k] || 0; const c = E.cl[st]; if (c) { cs += c.sum; cn += c.sec; } });
+    const cleanAvg = cn > 0 ? cs / cn : null, crystalOk = cleanAvg != null && cleanAvg >= EV6.b5CrystalCleanAvg;
+    const score = { tide: T.tide, shroom: T.shroom, crystal: crystalOk ? T.crystal : 0, moon: T.moon, ember: T.ember };
+    const rank = D.BRANCH5.map(id => ({ id, n: score[id], share: T.all ? score[id] / T.all : 0 })).sort((a, b) => b.n - a.n || D.BRANCH5.indexOf(a.id) - D.BRANCH5.indexOf(b.id));
+    const top = rank[0], second = rank[1], N = T.all;
+    const r = { all: N, score, raw: { crystal: T.crystal }, cleanAvg: cleanAvg == null ? null : +cleanAvg.toFixed(1), crystalOk, cq: s.cq, cqOk: s.cq >= EV6.b5CQ,
+      top: top.id, topShare: +top.share.toFixed(4), second: second.id, secondShare: +second.share.toFixed(4),
+      topOk: N > 0 && top.n * 100 >= EV6.b5TopShare * 100 * N, gapOk: N > 0 && (top.n - second.n) * 100 >= EV6.b5Gap * 100 * N, tie: top.n === second.n };
+    r.ok = r.cqOk && r.topOk && r.gapOk && !r.tie; r.form = r.ok ? top.id : null; return r;
   }
   function noteEvent(s, id) { if (!s || s.stage === 'egg') return; const E = evoOf(s), m = E.evIn[s.stage] || (E.evIn[s.stage] = {}); m[id] = (m[id] || 0) + 1; }   // events.js trigger 掛
   function careShare(s) {                                // 夜晚照顧佔比（careStages＝芽崽＋跳跳期）
@@ -129,15 +162,18 @@
     const r = { firefly: ev, fireflyOk: ev > 0, cq: s.cq, cqOk: s.cq >= EV6.lumiCQ, night: +cs.share.toFixed(3), nightAll: cs.all, nightOk: cs.all > 0 && cs.share >= EV6.lumiNightShare };
     r.ok = r.fireflyOk && r.cqOk && r.nightOk; return r;
   }
-  function decideBranch(s) {                             // 次序：螢絨 → 燦光（CQ≥70）→ 柔光（CQ≥40）→ 微塵
-    const L = lumiCheck(s); if (L.ok) return { form: 'lumi', why: 'lumi', lumi: L };
-    const f = decideForm(s.cq); return { form: f, why: 'cq', lumi: L };
+  function decideBranch(s) {                             // 次序（§7）：DEV 強制 → 螢絨 → 新 5 條 → 燦光（CQ≥70）→ 柔光（CQ≥40）→ 微塵
+    const E = evoOf(s), L = lumiCheck(s), B = branch5Check(s);
+    if (E.force && D.BRANCHES.includes(E.force)) return { form: E.force, why: 'dev', lumi: L, b5: B };
+    if (L.ok) return { form: 'lumi', why: 'lumi', lumi: L, b5: B };
+    if (B.ok) return { form: B.form, why: 'b5', lumi: L, b5: B };
+    const f = decideForm(s.cq); return { form: f, why: 'cq', lumi: L, b5: B };
   }
   function enterStage(s, st) {
     s.stage = st;
     if (st === 'newborn') { s.form = null; s.needs = Object.assign({}, P.startNeedsSprout); s.cq = P.cqStart; s.cqTimer = 0; s.stats.hatches++; s.ev.push({ type: 'hatch' }); return; }
     if (st === 'sprout' || st === 'juvenile') { s.ev.push({ type: 'grow', stage: st, cq: s.cq }); return; }
-    if (st === 'adult') { const d = decideBranch(s); s.form = d.form; s.ev.push({ type: 'evolve', form: s.form, cq: s.cq, why: d.why, lumi: d.lumi }); s.cq = P.cqStart; s.cqTimer = 0; return; }
+    if (st === 'adult') { const d = decideBranch(s); s.form = d.form; delete evoOf(s).force; s.ev.push({ type: 'evolve', form: s.form, cq: s.cq, why: d.why, lumi: d.lumi, b5: d.b5 }); s.cq = P.cqStart; s.cqTimer = 0; return; }
     if (st === 'elder') { s.ev.push({ type: 'elder', form: s.form }); }
   }
   function checkStage(s) {
@@ -199,6 +235,7 @@
     if (slp) n.energy += P.sleepRegenPerHour * P.traitSleepRegenMul * hr;
     else n.energy -= P.decayPerHour.energy * dm * hr;
     for (const k of KEYS) n[k] = clamp(n[k], 0, 100);
+    noteClean(s, dt);
     if (slp && n.energy >= P.sleepWakeAt) { s.sleeping = false; n.energy = 100; s.ev.push({ type: 'wake' }); }
 
     s.poopTimer += dt;
@@ -329,7 +366,7 @@
     let hunger = f.kind === 'snack' ? P.feedSnack : f.kind === 'meal' ? P.feedMeal : P.feedSoup;
     s.needs.hunger = clamp(s.needs.hunger + hunger, 0, 100);
     if (f.kind !== 'snack') s.needs.mood = clamp(s.needs.mood + P.foodMoodBonusWarm, 0, 100);
-    s.stats.feeds++; noteFed(s); noteCare(s);
+    s.stats.feeds++; noteFed(s); noteCare(s, null, 'feed');
     s.ev.push({ type: 'fed', food: f.id });
     return { ok: true, food: f };
   }
@@ -338,7 +375,7 @@
     if (s.sleeping) return { ok: false, reason: 'sleeping' };
     s.needs.mood = clamp(s.needs.mood + P.playTease, 0, 100);
     s.needs.energy = clamp(s.needs.energy - P.playEnergyCost, 0, 100);
-    s.stats.plays++; notePlayed(s); noteCare(s);
+    s.stats.plays++; notePlayed(s); noteCare(s, null, 'play');
     s.ev.push({ type: 'played' });
     return { ok: true };
   }
@@ -346,13 +383,13 @@
     if (s.stage === 'egg') return { ok: false, reason: 'egg' };
     if (s.sleeping) return { ok: false, reason: 'sleeping' };
     s.needs.clean = clamp(s.needs.clean + P.rinse, 0, 100);
-    s.stats.rinses++; noteCare(s);
+    s.stats.rinses++; noteCare(s, null, 'rinse');
     s.ev.push({ type: 'rinsed' });
     return { ok: true };
   }
   function clearPoop(s) {
     if (s.poops <= 0) return { ok: false };
-    s.poops--; s.stats.poopsCleared++; noteCare(s);
+    s.poops--; s.stats.poopsCleared++; noteCare(s, null, 'poop');
     s.ev.push({ type: 'poopCleared' });
     return { ok: true };
   }
@@ -438,7 +475,7 @@
     s.mg.plays++; s.mg.best = Math.max(s.mg.best || 0, score);
     s.grains += r.grains;
     s.needs.mood = clamp(s.needs.mood + r.mood, 0, 100);
-    s.stats.mgPlays++; notePlayed(s); noteCare(s);
+    s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg');
     return r;
   }
 
@@ -460,7 +497,7 @@
       s.evs = o.evs && typeof o.evs === 'object' ? o.evs : null;
       s.ev = [];
       if (!STAGES.includes(s.stage)) return null;
-      if ((s.stage === 'adult' || s.stage === 'elder') && !['bright', 'soft', 'dust', 'lumi'].includes(s.form)) s.form = s.form === 'radiant' ? 'bright' : 'dust';
+      if ((s.stage === 'adult' || s.stage === 'elder') && !D.BRANCHES.includes(s.form)) s.form = s.form === 'radiant' ? 'bright' : 'dust';
       evoOf(s); s.memorial = Array.isArray(s.memorial) ? s.memorial : []; s.gen = +s.gen || 1;
       return s;
     } catch (e) { return null; }
@@ -469,6 +506,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

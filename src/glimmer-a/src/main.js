@@ -19,6 +19,7 @@
   G.lowEnd = function () { const Q = P.quality, n = navigator, hc = n.hardwareConcurrency, dm = n.deviceMemory; return (hc != null && hc <= Q.lowEndCores) || (dm != null && dm <= Q.lowEndMemGB); };
 
   SIM.setHourFn(() => (G.hour ? G.hour() : new Date().getHours()));   // evo6：夜晚照顧（17:00–07:00）用遊戲本地鐘
+  if (SIM.setRainFn) SIM.setRainFn(() => G.weather === 'rain');      // §7 水珠：落雨時照顧（天氣＝G.weather，DEV 時段「H3 雨」／?weather=rain）
   // ── 存檔 ──
   function load() {
     let s = null, rep = null;
@@ -36,14 +37,14 @@
   // ── evo6 ──
   G.fade = function () { const r = SIM.fade(G.state, G.now()); G.save(); return r; };
   G.evo = {
-    info() { const s = G.state, fk = G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; return { stage: s.stage, form: s.form, evoForm: D.evoForm(s.stage, s.form), drawForm: fk, gen: s.gen, fadeReady: !!s.fadeReady, growthH: +(s.growthSec / 3600).toFixed(3), stageH: P.stageSec[s.stage] / 3600, progress: +SIM.stageProgress(s).toFixed(4), lumi: SIM.lumiCheck(s), care: SIM.careShare(s), migrated: s.migrated || null, memorial: s.memorial }; },
+    info() { const s = G.state, fk = G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; return { stage: s.stage, form: s.form, evoForm: D.evoForm(s.stage, s.form), drawForm: fk, gen: s.gen, fadeReady: !!s.fadeReady, growthH: +(s.growthSec / 3600).toFixed(3), stageH: P.stageSec[s.stage] / 3600, progress: +SIM.stageProgress(s).toFixed(4), lumi: SIM.lumiCheck(s), b5: SIM.branch5Check(s), force: (s.evo && s.evo.force) || null, care: SIM.careShare(s), migrated: s.migrated || null, memorial: s.memorial }; },
     // 浮動 overlay：只傳大細（Kotlin 照讀 form；sizeDp／size／pivot 係新欄）
     overlayInfo() { const s = G.state, ek = D.evoForm(s.stage, s.form), F = D.FORMS[ek], fs = F ? F.frameSize : 32;
       return { stage: s.stage, form: s.stage === 'egg' ? 'egg' : D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : 'soft') : 'sprout', evoForm: ek, size: fs, pivot: [fs / 2, fs - 3], sizeDp: Math.round(fs * P.overlayDpPerPx) }; },
     overlayStatus() { return SIM.overlayStatus(G.state); },   // snapshot v3：心情／瞌覺／需求；v4：info（名／階段名／形態名／進度／幾日大）（fpet-bridge 讀，只讀）
     setStage(st, branch) {          // DEV：跳去某階段（成年／靜光可指定分支）；保留需求，成長歸零
       const s = G.state; if (!D.STAGES.includes(st)) throw new Error('evo.setStage: ' + st);
-      if (branch && !['bright', 'soft', 'dust', 'lumi'].includes(branch)) throw new Error('evo.setStage branch: ' + branch);
+      if (branch && !D.BRANCHES.includes(branch)) throw new Error('evo.setStage branch: ' + branch);
       s.stage = st; s.growthSec = 0; s.fadeReady = false; s.sleeping = false;
       s.form = D.isBig(st) ? (branch || s.form || 'soft') : null;
       if (st !== 'egg' && s.needs.hunger <= 0) s.needs = Object.assign({}, P.startNeedsSprout);
@@ -157,6 +158,7 @@
   // ── 世界狀態：時段光、事件、寵物行為 ──
   G.lightWake = function () {                       // 睡眠中點寵物：輕喚醒（開燈起身＋睏睏表情），唔鬧脾氣、唔扣需求
     const s = G.state; if (!s.sleeping) return false;
+    if (SIM.notePetSleep) SIM.notePetSleep(s);       // §7 月眠：瞓覺時撫摸
     SIM.toggleSleep(s); if (G.beh) BEH.tap(G.beh, 'wake', 0);
     if (s.evs) s.evs.stats.tapSleepWake = (s.evs.stats.tapSleepWake || 0) + 1;
     G.save(); return true;

@@ -135,8 +135,14 @@ console.log('# 好／差照顧（芽崽 18h＋跳跳期 3 日）→ 分支');
     }
     return s;
   };
+  if (S.setHourFn) S.setHourFn(() => 12);   // §7 月眠計 21–03 照顧：鎖定遊戲鐘中午，唔再受跑測試嘅真實時間影響
   const a = careBot(true), b = careBot(false);
-  ok(a.stage === 'adult' && a.form === 'bright', '勤力照顧 → 燦光', a.form + ' cq=' + a.cq);
+  if (S.setHourFn) S.setHourFn(null);
+  if (a.ev) { const ev = a.ev.find(e => e.type === 'evolve'); if (ev && ev.b5) console.log('  · 勤力照顧 §7 分數', JSON.stringify(ev.b5.score), 'all', ev.b5.all, 'top', ev.b5.top, ev.b5.topShare, ev.b5.secondShare, 'clean', ev.b5.cleanAvg); }
+  // §7 矛盾（已報）：呢個 bot 每 15 分鐘都清便便 → clearPoop 佔 39%、清潔平均 85 → 依 §7 次序先去晶角；CQ 本身仍夠燦光
+  { const ev = a.ev.find(e => e.type === 'evolve') || {};
+    ok(a.stage === 'adult' && ev.cq >= 70 && S.decideForm(ev.cq) === 'bright', '勤力照顧 → CQ ≥70（冇 §7 就係燦光）', 'cq=' + ev.cq);
+    ok(a.form === (ev.b5 && ev.b5.ok ? ev.b5.form : 'bright') && a.form === 'crystal', '勤力照顧（成日清便便）→ §7 晶角優先過燦光', a.form); }
   ok(b.stage === 'adult' && b.form === 'dust', '極少照顧（<20 先補到 30）→ 微塵（可重養，非失敗）', b.form);
 }
 console.log('# 迷你遊戲');

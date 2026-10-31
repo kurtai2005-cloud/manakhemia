@@ -49,7 +49,7 @@
     }
     return 'neutral';
   }
-  function formKey(s) { return D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi') ? 'soft' : 'dust') : 'sprout'; }   // 螢絨借柔光 clip
+  function formKey(s) { return D.isBig(s.stage) ? (s.form === 'bright' ? 'radiant' : (s.form === 'soft' || s.form === 'lumi' || D.BRANCH5.includes(s.form)) ? 'soft' : 'dust') : 'sprout'; }   // 螢絨／§7 新支線借柔光 clip（只係冇 evo 圖時嘅 fallback）
 
   function create(seed, opts) {
     opts = opts || {};
