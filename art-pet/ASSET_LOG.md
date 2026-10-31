@@ -80,3 +80,13 @@
 - `sprites/tuanrong/evo6/atlas_<form>(.png/_emissive.png/.json)`、`evo6/<form>/`；色盤 `evo6/palette_{base,lumi,dust}.json`；預覽 `preview/evo6/<form>_contact_4x.png`、`gif/`、`evo6_batchB_contact_4x.png`、`evo6_batchC_contact_4x.png`。
 - 工具 `tools/build_evo6_animBC.py`（Pillow/numpy 程式繪製，無 AI）；驗證 `tools/validate_evo6_anim.py`（擴展到 B/C：分支色盤、emissive、bulb/bulb2/tail、MVP、s3）。CLIPS.json 只新增（forms＋clips[].<form>＋anchors.<form>＋evo6B／evo6C 段）；備份 `_backups/pre_evo6_animBC_20261031/`。
 <!-- EVO6BC-LOG-END -->
+
+<!-- EVO6D-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch D（靜光 48 ×4 升級全套＋微塵燈跟手＋靜光瞓覺 aura 調暗）
+- 靜光・螢絨／燦光／柔光／微塵 `evo_still_<branch>`：各 41 clip／180 幀（std23＋生命感 s1/s2 含 picked_up＋s3 nuzzle_purr／reunion_happy），atlas 1024×1024／444 塊；batch C 嗰 7 個 MVP clip 幀不變，只係 fall_asleep／sleep_loop（aura 調暗）同靜光・微塵（燈跟手）有改。
+- 守夜者・微塵 `evo_guard_dust`：41 clip／180 幀重出——手燈跟右手（垂手提燈短柄、舉手高舉、橫伸喺手前、冇右手放身右下），`bulb` 錨點＝燈中心同步；其餘守夜者 3 形態冇郁。
+- 靜光 aura：fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（暗色、只內圈疏點、冇閃星／飄花）。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchD_contact_4x.png`、`evo6_dust_lamp_before_after_4x.png`；統計 `evo6/_stats_batchD.json`。
+- 工具 `tools/build_evo6_animBC.py D`（Pillow/numpy 程式繪製，無 AI）；`tools/validate_evo6_anim.py` 加：靜光冇 mvp key 就用全套規則（要 s3）、微塵 bulb 錨點要落喺燈上。CLIPS.json 只新增／更新自己 key（forms.<still/guard_dust>、clips[].<form>、anchors.<form>、evo6D 段、evo6C.supersededBy）；CLIPS.md 加 EVO6D 段；備份 `_backups/pre_evo6_animD_20261031/`。
+<!-- EVO6D-LOG-END -->
+

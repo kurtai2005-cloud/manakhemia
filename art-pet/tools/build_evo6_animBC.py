@@ -21,7 +21,7 @@ import build_tuanrong_live_s3 as S3
 from build_tuanrong import FORMS, IDX
 
 ROOT, TR, OUT, PRV, MOT = A.ROOT, A.TR, A.OUT, A.PRV, A.MOT
-BACK = os.path.join(ROOT, "_backups", "pre_evo6_animBC_20261031")
+BACK = os.path.join(ROOT, "_backups", "pre_evo6_animD_20261031" if "D" in "".join(a for a in sys.argv[1:] if not a.startswith("--")) else "pre_evo6_animBC_20261031")
 BG = A.BG
 BRANCH_NAME = {"lumi": "螢絨", "radiant": "燦光", "soft": "柔光", "dust": "微塵"}
 BRANCHES = ["lumi", "radiant", "soft", "dust"]
@@ -29,6 +29,7 @@ PALKEY = {"lumi": "lumi", "radiant": "base", "soft": "base", "dust": "dust"}
 PALFILE = {"lumi": "palette_lumi.json", "base": "palette_base.json", "dust": "palette_dust.json"}
 EMIS_NAMES = {"lumi": ("egg_shade", "cyan"), "base": ("glow_core", "glow_mid"), "dust": ("glow_core", "glow_mid")}
 EMIS_PALNAMES = {"lumi": ("fly", "fly_core"), "base": ("glow_core", "glow_mid"), "dust": ("glow_core", "glow_mid")}   # 同一色喺各自 palette 檔嘅名
+AURA_SLEEP = {"fall_asleep": lambda k, n: round(0.8 - 0.6 * k / max(1, n - 1), 2), "sleep_loop": lambda k, n: 0.2}
 STILL_ORDER = ["idle", "blink", "emo_happy", "fall_asleep", "sleep_loop", "wake", "picked_up"]
 S3_DUST = list(S3.S3_ORDER)
 
@@ -103,8 +104,7 @@ def geo(form, p):
         tx, ty = cx - rx - 1.0 * k, cy + ry * 0.42 + 0.4 * math.sin(p.get("fluff", 0.0) * 2.0)
         g["tailc"] = (tx, ty); g["tail"] = (tx - 1.6 * k, ty + 0.4 * k)
     elif br == "dust":
-        sw = (0, 1, 0, -1)[tw % 4] * 0.5
-        g["bulb"] = (cx + rx * 0.88 + 1 + sw * 0.6, cy + ry * 0.55 + abs(sw))
+        g["bulb"] = dust_lamp_pos(form, p, cx, cy, rx, ry)
         if el: g["bulb2"] = (cx + 1, cy - ry - 4.5 + (0.5 if tw % 4 in (1, 2) else 0.0))
     return g
 
@@ -320,11 +320,6 @@ def render_adult(form, p):
             cv.a[m & bm & (cv.a != IDX["outline"])] = IDX["sick0" if sick else "blush"]
     # ---------------- lamps in front (dust hand lamp + elder orbit)
     if br == "dust":
-        lx, ly = G["bulb"]
-        if sick: m = cv.ell(lx, ly, 1.8, 1.8); cv.paint(m, "sick1"); EC.outl(cv, m)
-        else:
-            r = (1.9 if el else 1.6) * (0.9 + 0.1 * min(bud, 1.3))
-            EC.glow_bulb(cv, lx, ly, r, core=bud >= 0.8)
         if el:
             hx_, hy_ = G["bulb2"]; hy0 = cy - ry - 3.5
             for i, t in enumerate(np.linspace(0, 2 * math.pi, 22, endpoint=False)):
@@ -336,20 +331,35 @@ def render_adult(form, p):
         elif not sick:   # 守夜者微塵：身邊兩粒飄塵（逐幀上下飄）
             cv.put(cx - rx - 5, cy - ry * 0.6 + (tw % 2), "peach1"); cv.put(cx - rx - 4, cy - ry * 0.8 - (tw % 2), "peach2")
     # ---------------- elder aura (animated dotted)
-    if el and not sick:
+    lvl = p.get("_aura", 1.0)     # 靜光 aura 強度：1 全開；fall_asleep 漸暗；sleep_loop 0.2（暗）
+    if el and not sick and lvl > 0:
         col, col2 = {"radiant": ("glow", "glow_core"), "soft": ("blush", "cream4"), "lumi": ("egg_shade", "cyan"), "dust": ("peach2", "glow_mid")}[br]
-        aura(cv, col, col2, tw)
-        if br == "lumi" and droop < 0.8:
+        aura(cv, col, col2, tw, lvl)
+        if lvl < 0.99: pass
+        elif br == "lumi" and droop < 0.8:
             for (x, y) in ((S - 5, 6), (S - 4, 26)):
                 if (tw % 2 == 0 and y == 6) or (tw % 2 == 1 and y == 26): EC.sparkle(cv, x, y, "cyan", "egg_shade")
                 else: cv.put(x, y, "egg_shade")
-        if br == "soft":
+        if br == "soft" and lvl >= 0.99:
             for i, (x, y) in enumerate(((4, 10), (S - 5, 15), (S - 7, 4))):
                 yy = y + (tw + i) % 3
                 cv.put(x, yy, "blush"); cv.put(x + 1, yy, "blush"); cv.put(x, yy + 1, "blush_d")
         clean_edge(cv)
     a0 = cv.a.copy()
     for fx_ in p.get("extras", []): fx_(cv, cx, cy, rx, ry)
+    if br == "dust":   # 手燈：喺手臂 extras 之後先畫，所以永遠喺手前
+        lx, ly = G["bulb"]
+        if LAMP_MODE[0] != "old":
+            h = dust_hand(form, p, cx, cy, rx, ry)
+            if h is not None and h[2] == "down" and not sick:   # 提燈短柄（outline 1px，只畫喺空位）
+                for t in np.linspace(0, 1, 4):
+                    x, y = h[0] + 0.6 + (lx - h[0] - 0.6) * t, h[1] + 1.6 + (ly - h[1] - 1.6 - 1.4) * t
+                    xi, yi = int(round(x)), int(round(y))
+                    if 0 <= xi < S and 0 <= yi < S and cv.a[yi, xi] == 0: cv.a[yi, xi] = IDX["outline"]
+        if sick: m = cv.ell(lx, ly, 1.8, 1.8); cv.paint(m, "sick1"); EC.outl(cv, m)
+        else:
+            r = (1.9 if el else 1.6) * (0.9 + 0.1 * min(bud, 1.3))
+            EC.glow_bulb(cv, lx, ly, r, core=bud >= 0.8)
     return A.keep_fx_inside(a0, cv.a)
 
 def draw_sun(cv, tx, by, kk, bud, el, tw, droop, sunk=1.0):
@@ -373,17 +383,64 @@ def draw_sun(cv, tx, by, kk, bud, el, tw, droop, sunk=1.0):
             if (tw + j) % 2 == 0:
                 for ox, oy in ((1, 0), (-1, 0), (0, 1), (0, -1)): cv.put(x + ox, y + oy, "glow_mid")
 
-def aura(cv, col, col2, tw):
+def aura(cv, col, col2, tw, lvl=1.0):
+    """lvl 1＝全 aura；0.4–0.99＝只內圈、疏啲；<0.4＝暗：內圈好疏、用暗色（唔用 core 色）"""
     s = cv.a > 0; d1 = EC.dil(s); r = EC.dil(d1) & ~d1
-    pat = ((cv.xx * 2 + cv.yy + tw) % 5 == 0) & (cv.yy < cv.n - 9)
-    cv.a[r & pat & (cv.a == 0)] = IDX[col]
-    r2 = EC.dil(EC.dil(d1)) & ~EC.dil(d1); cv.a[r2 & ((cv.xx * 3 + cv.yy + 2 * tw) % 7 == 0) & (cv.yy < cv.n - 9) & (cv.a == 0)] = IDX[col2]
+    if lvl >= 0.99:
+        pat = ((cv.xx * 2 + cv.yy + tw) % 5 == 0) & (cv.yy < cv.n - 9)
+        cv.a[r & pat & (cv.a == 0)] = IDX[col]
+        r2 = EC.dil(EC.dil(d1)) & ~EC.dil(d1); cv.a[r2 & ((cv.xx * 3 + cv.yy + 2 * tw) % 7 == 0) & (cv.yy < cv.n - 9) & (cv.a == 0)] = IDX[col2]
+    else:
+        per = 8 if lvl >= 0.4 else 13
+        dim = col if lvl >= 0.4 else AURA_DIM.get(col, col)
+        pat = ((cv.xx * 2 + cv.yy + tw) % per == 0) & (cv.yy < cv.n - 9)
+        cv.a[r & pat & (cv.a == 0)] = IDX[dim]
+AURA_DIM = {"glow": "glow_warm", "egg_shade": "egg_dark", "blush": "blush_d", "peach2": "peach1"}
 
 def clean_edge(cv, m=2):
     """aura／星點唔准近邊 m px（之後仲有 shear／pend）"""
     S = cv.n; e = np.zeros((S, S), bool); e[:m] = e[-m:] = True; e[:, :m] = e[:, -m:] = True
     lab = cv.a.copy(); iso = (cv.a > 0) & ~EC.dil(cv.solid)
     cv.a[e & iso] = 0
+
+# ============================================================ 微塵手燈跟右手（batch D）
+LAMP_MODE = ["hand"]     # "old" = batch B/C 位置（身右下，只作 before/after 對比）
+def _tag(f, kind, *args): f._hand = (kind,) + args; return f
+_ex_arm0, _ex_dab0, _ex_up0 = L.ex_arm, L.ex_down_arm_behind, M.ex_arms_up
+def _ex_arm(form, side, ang, behind=False, reach=1.0): return _tag(_ex_arm0(form, side, ang, behind, reach), "arm", side, ang, reach, behind)
+def _ex_dab(form, side): return _tag(_ex_dab0(form, side), "down_behind", side)
+def _ex_up(form): return _tag(_ex_up0(form), "up")
+L.ex_arm, L.ex_down_arm_behind, M.ex_arms_up = _ex_arm, _ex_dab, _ex_up
+
+def dust_hand(form, p, cx, cy, rx, ry):
+    """右手（燈手）位置＋方向：'down' 垂手／'up' 舉高／'side' 橫伸；None＝冇右手（燈放身邊）"""
+    big = FORMS[form]["big"]; hand = None
+    arms = p.get("arms", "down")
+    if arms == "down": hand = (cx + rx - 0.2, cy + ry * 0.2, "down")
+    elif arms == "up": hand = (cx + rx - 0.4, cy - ry * 0.35 - 1, "up")
+    elif arms == "upx": hand = (cx + rx + 1.8, cy - ry * .25 - 4.2, "up")
+    elif arms == "eat": hand = (cx + rx - 0.6, cy, "down")
+    for e in p.get("extras", []):
+        h = getattr(e, "_hand", None)
+        if not h: continue
+        if h[0] == "up": hand = (cx + rx + 1.8, cy - ry * .25 - 4.2, "up")
+        elif h[0] == "down_behind" and h[1] > 0: hand = (cx + rx - 0.2, cy + ry * 0.2, "down")
+        elif h[0] == "arm" and h[1] > 0:
+            _, side, ang, reach, behind = h; a = math.radians(ang); Ln = (5.0 if big else 2.8) * reach
+            sx0, sy0 = cx + rx * 0.80, cy - ry * 0.02; px, py = sx0 + math.cos(a) * Ln, sy0 + math.sin(a) * Ln
+            hand = (px, py, "up" if py < cy - ry * 0.3 else "side", math.cos(a), math.sin(a))
+    return hand
+
+def dust_lamp_pos(form, p, cx, cy, rx, ry):
+    f = FORMS[form]; tw = p.get("twinkle", 0); sw = (0, 1, 0, -1)[tw % 4] * 0.5
+    if LAMP_MODE[0] == "old": return (cx + rx * 0.88 + 1 + sw * 0.6, cy + ry * 0.55 + abs(sw))
+    h = dust_hand(form, p, cx, cy, rx, ry)
+    if h is None:   # 冇右手：燈放喺身右下（地上／攬住）
+        return (cx + rx * 0.88 + 1, cy + ry * 0.62)
+    hx, hy, kind = h[:3]; r = 1.9 if f["elder"] else 1.6
+    if kind == "down": return (hx + 0.6 + sw * 0.5, hy + 2.3 + r + abs(sw) * 0.5)          # 垂手提住，燈吊喺手下
+    if kind == "up": return (hx + 0.4, hy - 2.0 - r)                                     # 舉高燈
+    dx, dy = h[3], h[4]; return (hx + dx * (1.6 + r), hy + dy * (1.6 + r) + 0.6)          # 橫伸：燈喺手前
 
 _prev_render = A.render_evo
 def render_evo2(form, p):
@@ -409,10 +466,10 @@ def build_kit(form):
             if n.startswith("eyes_"): b = a.copy(); b[a == IDX["cream4"]] = IDX["cyan"]; kit[n] = (b, pv)
     return kit
 
+def has_s3(form): return form in STILL or FORMS[form]["branch"] == "dust"
 def form_order(form):
-    if form in STILL: return list(STILL_ORDER)
     o = A.ORDER_STD + A.ORDER_NEW
-    if FORMS[form]["branch"] == "dust": o += S3_DUST
+    if has_s3(form): o += S3_DUST
     return o
 
 def meta(form, clip):
@@ -422,7 +479,7 @@ def meta(form, clip):
 def build_form(form):
     A.CUR[0] = form
     C = M.clips(form); NC, NFACE, NVIS = L.new_clips(form)
-    if FORMS[form]["branch"] == "dust" and form in GUARD:
+    if has_s3(form):
         C3, F3 = S3.s3_clips(form); NC = dict(NC); NFACE = dict(NFACE); NC.update(C3); NFACE.update(F3)
     kit = build_kit(form); order = form_order(form); clips = {}
     for clip in order:
@@ -430,6 +487,7 @@ def build_form(form):
         c = dict(noface=[], full=[], overlay=[], anchors=[], new=new)
         for kf, p in enumerate(src):
             p = dict(p); p["_k"] = kf
+            if form in STILL and clip in AURA_SLEEP: p["_aura"] = AURA_SLEEP[clip](kf, len(src))
             if clip != "idle": p = M.render_fit(form, p, f"{clip}_{kf + 1:02d}")
             if new:
                 body = L.body_render(form, p)
@@ -563,6 +621,8 @@ def gifs(form, order, clips):
 def batch_contact(res, forms, tag, title, Z=4):
     picks = ([("idle", 0), ("idle", 2), ("blink", 2), ("walk", 2), ("emo_happy", 1), ("sleep_loop", 0), ("eat", 2), ("droop", 3), ("sick", 0),
               ("picked_up", 1), ("smug_pose", 3), ("act_cool", 2), ("lookup_tip", 2), ("cheer_jump", 2), ("celebrate", 2)] if tag == "B" else
+             [("idle", 0), ("walk", 2), ("emo_happy", 1), ("fall_asleep", 0), ("fall_asleep", 3), ("sleep_loop", 0), ("eat", 2), ("sick", 0), ("picked_up", 1),
+              ("smug_pose", 3), ("lookup_tip", 2), ("cheer_jump", 2), ("getup", 0), ("nuzzle_purr", 3), ("reunion_happy", 3)] if tag == "D" else
              [("idle", 0), ("idle", 1), ("idle", 2), ("idle", 3), ("blink", 2), ("emo_happy", 0), ("emo_happy", 1), ("fall_asleep", 2), ("sleep_loop", 0),
               ("sleep_loop", 2), ("wake", 1), ("wake", 3), ("picked_up", 1), ("picked_up", 4)])
     CELL = 52; LW = 150; W = LW + len(picks) * (CELL * Z + 4) + 8; H = 34 + len(forms) * (CELL * Z + 24) + 8
@@ -603,8 +663,10 @@ def update_docs(res, ainfo, forms, tag):
             "faceAnchors": f"../evo6/{form}/face_anchors_{form}.json", "clips": order, "concept": "../evo6_concept/（v3 lumi feel）",
             "faceRig": True, "faceTier": "L 4×5", "hasBulb": True, "headRightAnchor": list(M.ANCH[form]["head_r"]), "potAnchor": list(M.ANCH[form]["pot"]),
             "sunAnchor": [0, 0], "kitPieces": sorted(kit),
-            **({"std23": A.ORDER_STD, "liveliness": A.ORDER_NEW} if form in GUARD else {"mvp": STILL_ORDER, "std": [c for c in STILL_ORDER if c != "picked_up"], "liveliness": ["picked_up"]}),
-            **({"s3": S3_DUST} if form in GUARD and f["branch"] == "dust" else {}),
+            "std23": A.ORDER_STD, "liveliness": A.ORDER_NEW, **({"s3": S3_DUST} if has_s3(form) else {}),
+            **({"mvpClips": STILL_ORDER, "upgradedIn": "batch D（batch C 係 MVP 7 clip；呢 7 個 clip 幀不變，除咗 fall_asleep／sleep_loop aura 調暗、微塵燈跟手）",
+                "auraSleep": "fall_asleep 0.8→0.2 漸暗、sleep_loop 0.2（只內圈疏點、暗色）"} if form in STILL else {}),
+            **({"lampRule": "手燈跟右手（垂手＝提燈、舉手＝高舉、橫伸＝燈喺手前；冇右手＝放身右下）；bulb 錨點＝燈中心"} if f["branch"] == "dust" else {}),
             "note": BR_NOTE[(f["branch"], f["elder"])]}
     for c in D["clips"]:
         nme = c["name"]
@@ -615,14 +677,36 @@ def update_docs(res, ainfo, forms, tag):
                 c[form] = {"frames": len(clips[nme]["full"]), "full": f"../evo6/{form}/frames/{nme}_NN.png", "noface": f"../evo6/{form}/layers/{nme}_NN_noface.png",
                            "faceov": f"../evo6/{form}/layers/{nme}_NN_faceov.png", "emissive": f"../evo6/{form}/emissive/{nme}_NN_emissive.png",
                            "atlasClip": nme, "nofaceClip": f"{nme}_noface", "atlas": f"../evo6/atlas_{form}.json"}
+    if tag == "D":
+        if "evo6C" in D: D["evo6C"]["supersededBy"] = "evo6D（靜光升級全套 clip）"
+        D["evo6D"] = {"batch": "D", "forms": forms, "tool": "tools/build_evo6_animBC.py D", "validator": "tools/validate_evo6_anim.py",
+                      "note": "靜光 48 ×4 升級全套：std23＋生命感 s1/s2（含 picked_up）＋s3 nuzzle_purr／reunion_happy（4 分支都有）；"
+                              "微塵（守夜者＋靜光）手燈跟右手、bulb 錨點同步；靜光 fall_asleep／sleep_loop aura 調暗。",
+                      "preview": ["../preview/evo6/evo6_batchD_contact_4x.png", "../preview/evo6/evo6_dust_lamp_before_after_4x.png"]}
     key = "evo6B" if tag == "B" else "evo6C"
-    D[key] = {"batch": tag, "forms": forms, "tool": "tools/build_evo6_animBC.py", "validator": "tools/validate_evo6_anim.py",
+    if tag != "D": D[key] = {"batch": tag, "forms": forms, "tool": "tools/build_evo6_animBC.py", "validator": "tools/validate_evo6_anim.py",
               "note": ("守夜者 44 ×4 分支（螢絨／燦光／柔光／微塵）：std23 ＋ 生命感 s1/s2（含 picked_up）；微塵另加 s3 nuzzle_purr／reunion_happy。" if tag == "B" else
                        "靜光 48 ×4 分支 MVP：idle、blink、emo_happy、fall_asleep／sleep_loop／wake、picked_up。"),
               "palettes": {"lumi": "../evo6/palette_lumi.json（emissive fly/fly_core）", "dust": "../evo6/palette_dust.json（lens＝鏡片，唔發光）", "radiant/soft": "../evo6/palette_base.json"},
               "rebuildNote": "build_tuanrong_liveliness_docs.py 重砌 CLIPS.json → 之後要再跑 build_lumi.py、build_tuanrong_live_s3.py、build_evo6_anim.py、build_evo6_animBC.py。"}
     atomic_write(p, json.dumps(D, indent=1, ensure_ascii=False))
     mp = os.path.join(MOT, "CLIPS.md"); backup(mp); md = open(mp, encoding="utf-8").read()
+    if tag == "D":   # 只加 EVO6D 段（C 段保留做歷史；D 段 supersede 靜光／微塵）
+        a_, b_ = "<!-- EVO6D-START -->", "<!-- EVO6D-END -->"
+        if a_ in md: md = md[:md.index(a_)].rstrip() + "\n\n" + md[md.index(b_) + len(b_):].lstrip()
+        rows = []
+        for form in forms:
+            order, clips, kit = res[form]; W, H, n = ainfo[form]; tot = sum(len(clips[c]["full"]) for c in order)
+            rows.append(f"| {FORMS[form]['name']} `{form}` | {fsize(form)} | {len(order)} | {tot} | `../evo6/atlas_{form}.png`（{W}×{H}，{n} 塊）＋ `_emissive` |")
+        sec = (f"{a_}\n## 進化 6 階 batch D — 靜光 48 ×4 升級全套＋微塵燈跟手（取代上面 batch C 表同守夜者・微塵行）\n"
+               "- 靜光 ×4：std23＋生命感 s1/s2（含 picked_up）＋s3 nuzzle_purr／reunion_happy；MVP 7 clip 幀不變（除下面兩項）。\n"
+               "- 靜光 fall_asleep aura 0.8→0.2 漸暗、sleep_loop 0.2（暗、只內圈疏點，冇閃星／飄花）。\n"
+               "- 微塵（守夜者＋靜光）：手燈跟右手——垂手提燈（短柄）、舉手高舉、橫伸喺手前、冇右手放身右下；`bulb` 錨點＝燈中心，同步。\n"
+               "\n| 形態 | px | clip | 幀 | atlas |\n|---|---|---|---|---|\n" + "\n".join(rows) + f"\n{b_}\n")
+        anchor = next((m for m in ("<!-- EVO6C-END -->", "<!-- EVO6B-END -->", "<!-- EVO6A-END -->") if m in md), None)
+        if anchor: i = md.index(anchor) + len(anchor); md = md[:i] + "\n\n" + sec + md[i:]
+        else: md = md.rstrip() + "\n\n" + sec
+        atomic_write(mp, md); return
     a_, b_ = f"<!-- EVO6{tag}-START -->", f"<!-- EVO6{tag}-END -->"
     if a_ in md: md = md[:md.index(a_)].rstrip() + "\n\n" + md[md.index(b_) + len(b_):].lstrip()
     rows = []
@@ -654,8 +738,36 @@ BR_NOTE = {
 }
 
 # ============================================================ main
+LAMP_PICKS = [("idle", 0), ("walk", 2), ("eat", 2), ("emo_happy", 1), ("cheer_jump", 2), ("lookup_tip", 2), ("smug_pose", 3), ("swat", 1),
+              ("scratch", 1), ("getup", 0), ("picked_up", 1), ("reunion_happy", 3)]
+def lamp_strip(res, Z=4):
+    forms = [f for f in res if FORMS[f]["branch"] == "dust"]
+    old = {}
+    LAMP_MODE[0] = "old"
+    try:
+        for f in forms: old[f] = build_form(f)[1]
+    finally: LAMP_MODE[0] = "hand"
+    CELL = 52; LW = 190; W = LW + len(LAMP_PICKS) * (CELL * Z + 4) + 8; H = 34 + 2 * len(forms) * (CELL * Z + 24) + 8
+    cs = Image.new("RGBA", (W, H), BG); dr = ImageDraw.Draw(cs)
+    dr.text((8, 8), "微塵手燈 before（batch B/C：身右下固定）／after（batch D：跟右手）4x；黃十字＝bulb 錨點", fill=(255, 248, 224, 255), font=A.font(15))
+    r = 0
+    for f in forms:
+        for lab, clips in (("before", old[f]), ("after", res[f][1])):
+            y0 = 34 + r * (CELL * Z + 24); piv = fpiv(f)
+            dr.text((8, y0 + 40), FORMS[f]["name"], fill=(255, 248, 224, 255), font=A.font(17)); dr.text((8, y0 + 66), lab, fill=(200, 196, 230, 255), font=A.font(15))
+            for kf, (clip, i) in enumerate(LAMP_PICKS):
+                c = clips[clip]; i = min(i, len(c["full"]) - 1); x0 = LW + kf * (CELL * Z + 4)
+                ox, oy = CELL // 2 - piv[0], CELL - 4 - piv[1]
+                m = Image.new("RGBA", (CELL, CELL), (0, 0, 0, 0)); m.alpha_composite(to_img(c["full"][i], f), (ox, oy))
+                cs.alpha_composite(m.resize((CELL * Z, CELL * Z), Image.NEAREST), (x0, y0))
+                bx, by = c["anchors"][i]["bulb"]; X, Y = x0 + (bx + ox) * Z + Z // 2, y0 + (by + oy) * Z + Z // 2
+                dr.line((X - 5, Y, X + 5, Y), fill=(255, 230, 0, 255)); dr.line((X, Y - 5, X, Y + 5), fill=(255, 230, 0, 255))
+                dr.text((x0 + 4, y0 + CELL * Z + 2), f"{clip}_{i + 1:02d}", fill=(200, 196, 230, 255), font=A.font(11))
+            r += 1
+    cs.save(os.path.join(PRV, "evo6_dust_lamp_before_after_4x.png"))
+
 def run(tag):
-    forms = list(GUARD) if tag == "B" else list(STILL)
+    forms = list(GUARD) if tag == "B" else (list(STILL) if tag == "C" else ["evo_guard_dust"] + list(STILL))
     res = {}; ainfo = {}; stats = {}
     for form in forms:
         res[form] = build_form(form); order, clips, kit = res[form]
@@ -666,8 +778,10 @@ def run(tag):
                        "atlas": ainfo[form][:2], "pieces": ainfo[form][2], "edgeTouch": edge,
                        "fit_adjustments": [f"{b}:{'/'.join(c)}" for a, b, c in M.FIT_LOG if a == form]}
         print(form, "clips", len(order), "frames", stats[form]["frames"], "atlas", ainfo[form], "edge", edge, flush=True)
-    title = ("團絨 evo6 batch B — 守夜者 44 ×4（螢絨／燦光／柔光／微塵，4x，同一地線）" if tag == "B" else "團絨 evo6 batch C — 靜光 48 ×4 MVP（4x，同一地線）")
+    title = {"B": "團絨 evo6 batch B — 守夜者 44 ×4（螢絨／燦光／柔光／微塵，4x，同一地線）", "C": "團絨 evo6 batch C — 靜光 48 ×4（4x，同一地線）",
+             "D": "團絨 evo6 batch D — 靜光 48 ×4 全套＋守夜者・微塵燈跟手（4x，同一地線；fall_asleep／sleep_loop aura 調暗）"}[tag]
     batch_contact(res, forms, tag, title)
+    if tag == "D": lamp_strip(res)
     for key in ("lumi", "dust"):
         src = os.path.join(TR, "evo6_concept", f"palette_evo6_{key}.json"); shutil.copy(src, os.path.join(OUT, PALFILE[key]))
     pb = next(p for p in (os.path.join(MOT, "palette.json"), os.path.join(TR, "palette.json")) if os.path.exists(p))

@@ -204,6 +204,22 @@
 | 靜光・微塵 `evo_still_dust` | 48 | (24, 45) | 7 | 28 | `../evo6/atlas_evo_still_dust.png`（1024×256，140 塊）＋ `_emissive` | palette_dust.json |
 <!-- EVO6C-END -->
 
+<!-- EVO6D-START -->
+## 進化 6 階 batch D — 靜光 48 ×4 升級全套＋微塵燈跟手（取代上面 batch C 表同守夜者・微塵行）
+- 靜光 ×4：std23＋生命感 s1/s2（含 picked_up）＋s3 nuzzle_purr／reunion_happy；MVP 7 clip 幀不變（除下面兩項）。
+- 靜光 fall_asleep aura 0.8→0.2 漸暗、sleep_loop 0.2（暗、只內圈疏點，冇閃星／飄花）。
+- 微塵（守夜者＋靜光）：手燈跟右手——垂手提燈（短柄）、舉手高舉、橫伸喺手前、冇右手放身右下；`bulb` 錨點＝燈中心，同步。
+
+| 形態 | px | clip | 幀 | atlas |
+|---|---|---|---|---|
+| 守夜者・微塵 `evo_guard_dust` | 44 | 41 | 180 | `../evo6/atlas_evo_guard_dust.png`（1024×1024，444 塊）＋ `_emissive` |
+| 靜光・螢絨 `evo_still_lumi` | 48 | 41 | 180 | `../evo6/atlas_evo_still_lumi.png`（1024×1024，444 塊）＋ `_emissive` |
+| 靜光・燦光 `evo_still_radiant` | 48 | 41 | 180 | `../evo6/atlas_evo_still_radiant.png`（1024×1024，444 塊）＋ `_emissive` |
+| 靜光・柔光 `evo_still_soft` | 48 | 41 | 180 | `../evo6/atlas_evo_still_soft.png`（1024×1024，444 塊）＋ `_emissive` |
+| 靜光・微塵 `evo_still_dust` | 48 | 41 | 180 | `../evo6/atlas_evo_still_dust.png`（1024×1024，444 塊）＋ `_emissive` |
+<!-- EVO6D-END -->
+
+
 
 
 <!-- LUMI-START -->

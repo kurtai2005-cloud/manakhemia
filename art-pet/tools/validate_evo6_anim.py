@@ -92,9 +92,10 @@ def run():
                 want[c] = ent["frames"]
                 if byname[c].get("anchors", {}).get(form) != FA.get(c): F(f"{tag} CLIPS anchors.{form} != face_anchors {c}")
                 if byname[c]["frames"] != ent["frames"] and not byname[c].get("perForm"): pass
-            if still:
+            if still and "mvp" in fe:   # batch C（MVP）；batch D 起靜光＝全套
                 if fe.get("mvp") != STILL_MVP or set(fe["clips"]) != set(STILL_MVP): F(f"{tag} 靜光 MVP clip set {fe.get('clips')}")
             else:
+                if still and fe.get("s3") != S3: F(f"{tag} 靜光全套要有 s3 {fe.get('s3')}")
                 need = set(fe.get("std23", [])) | set(fe.get("liveliness", [])) | set(fe.get("s3", []))
                 if len(fe.get("std23", [])) != 23: F(f"{tag} std23 count {len(fe.get('std23', []))}")
                 if "picked_up" not in need or not set(LIVE_S2) <= need: F(f"{tag} liveliness s1/s2 incomplete")
@@ -122,7 +123,7 @@ def run():
             for yy, xx in zip(*np.nonzero(a[..., 3])):
                 if 0 <= y0 + yy < S and 0 <= x0 + xx < S: img[y0 + yy, x0 + xx] = a[yy, xx]
             return True
-        recon = kit_ok = kit_n = em_ok = edge = 0; std_kit = [0, 0]
+        recon = kit_ok = kit_n = em_ok = edge = lamp_ok = 0; std_kit = [0, 0]
         for cn, A in FA.items():
             for k, an in enumerate(A, 1):
                 req = ("head_r", "faceVisible", "face") + (() if egg else ("eyeL", "eyeR", "mouth"))
@@ -143,6 +144,11 @@ def run():
                 if not all(os.path.exists(x) for x in (fr, nf, ov, ef, nef)): F(f"{tag} missing file {cn} {k}"); continue
                 full = load(fr); body = load(nf); o = load(ov); al = full[..., 3] > 0
                 if not al.any(): F(f"{tag} empty frame {cn} {k}")
+                if form.endswith("_dust") and adult and "bulb" in an:   # 微塵手燈：bulb 錨點要落喺燈（emissive）上
+                    bx, by = an["bulb"]; em = load(ef)[max(0, by - 1):by + 2, max(0, bx - 1):bx + 2, 3]
+                    if cn == "sick": em = full[max(0, by - 1):by + 2, max(0, bx - 1):bx + 2, 3]   # 病：燈熄（唔發光）但仍要喺燈上
+                    if (em > 0).any(): lamp_ok += 1
+                    else: F(f"{tag} 微塵 bulb 錨點唔喺燈上 {cn} {k} {an['bulb']}")
                 if al[0].any() or al[-1].any() or al[:, 0].any() or al[:, -1].any(): F(f"{tag} frame touches edge {cn} {k}"); edge += 1
                 comp = body.copy(); m = o[..., 3] == 255; comp[m] = o[m]
                 if np.array_equal(comp, full): recon += 1
@@ -180,7 +186,7 @@ def run():
             if len(set(em_glow)) < 2: F(f"{tag} glow clip emissive static")
         tot = sum(len(v) for v in FA.values())
         info.append(f"{tag} {S}px pivot {PIV}：PNG {n}；clip {len(FA)}／幀 {tot}；noface+faceov＝完整 {recon}；emissive 吻合 {em_ok}；"
-                    + ("光卵冇 face rig" if egg else f"生命感 kit 合成＝完整 {kit_ok}/{kit_n}；std23 face≈kit {std_kit[0]}/{std_kit[1]}（info）") + f"；掂邊 {edge}")
+                    + ("光卵冇 face rig" if egg else f"生命感 kit 合成＝完整 {kit_ok}/{kit_n}；std23 face≈kit {std_kit[0]}/{std_kit[1]}（info）") + f"；掂邊 {edge}" + (f"；微塵 bulb 喺燈上 {lamp_ok}" if lamp_ok else ""))
         # atlases
         for png, em in ((f"atlas_{form}.png", False), (f"atlas_{form}_emissive.png", True)):
             pth = os.path.join(EV, png); chk(pth, emissive=em, PAL=PAL); im = load(pth); H, W = im.shape[:2]
