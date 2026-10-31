@@ -125,7 +125,7 @@
         const o = { id: h + '@' + season, img: {}, season };
         return Promise.all(['sky', 'far', 'mid', 'fore', 'lightmap'].map(n => img(B + h + '/' + n + '.png').then(im => { o.img[n] = im; })).concat([js(B + h + '/grade.json').then(j => { o.g = Object.assign({}, this.v[h].g, j); })])).then(() => {
           ['light_add', 'emissive_blur', 'vignette'].forEach(n => { o.img[n] = this.v[h].img[n]; }); this.v[o.id] = o; });
-      }))).then(() => true).catch(e => { this.seasonError = String(e && e.message || e); return false; }));
+      }).concat([Promise.all([js(B + 'particles/particles.json'), img(B + 'particles/sheet.png')]).then(([j, im]) => { (this.spart = this.spart || {})[season] = { j, im }; }).catch(() => { })]))).then(() => true).catch(e => { this.seasonError = String(e && e.message || e); return false; }));
     }
     hasVariant(v) { return !!this.v[v]; }
     set(mode) { set(this.st, mode); return this.current(); }
@@ -248,6 +248,7 @@
       x.globalAlpha = 1;
       // 粒子（lighter：螢火／光塵／金塵；花瓣 source-over）
       if (q !== 'off') this.drawParticles(x, g, offs);
+      if (q !== 'off') this.drawSeasonParts(x, v, offs);               // systems12 seasons v2 particleOverlay：fore 之上、UI 之下，唔乘 lightmap（H4 ×0.75）
       x.imageSmoothingEnabled = false;
       x.globalCompositeOperation = 'source-over';
       if (o.rain) this.drawRain(x, offs, q);                           // 雨（FORMAT §7）：emissive_blur 之後、fog 之前，唔食 lightmap
@@ -303,6 +304,44 @@
       }
       x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
     }
+    /* seasons v2 particleOverlay（seasons/<季>/particles：emitter spawn／ratePerSec／max／vx／vy／sway／lifeSec／perVariant）；落雨唔出 */
+    seasonPartsOn(v) { const se = this.season, sp = se && this.spart && this.spart[se]; return sp && CFG.seasonParticles !== false && !String(v || '').startsWith('H3rain') ? sp : null; }
+    stepSeasonParts(dt, v, q) {
+      const sp = this.seasonPartsOn(v); this.sps = this.sps || [];
+      if (!sp || q === 'off') { this.sps.length = 0; return; }
+      const base = String(v).split('@')[0].replace(/(rain|overcast|fog)$/, ''), lowK = q === 'low' ? 0.5 : 1;
+      if (this.spSeason !== this.season) { this.spSeason = this.season; this.sps.length = 0; this.spAcc = {}; }
+      for (const T of sp.j.types || []) {
+        const E = T.emitter, k = (E.perVariant && E.perVariant[base] != null ? E.perVariant[base] : 1) * lowK; if (!(k > 0)) continue;
+        const n = this.sps.filter(p => p.T === T).length, max = Math.round(E.max * k);
+        this.spAcc[T.name] = (this.spAcc[T.name] || 0) + dt * E.ratePerSec * k;
+        while (this.spAcc[T.name] >= 1) { this.spAcc[T.name] -= 1; if (n < max) this.sps.push(this.spawnSP(T, E)); }
+      }
+      for (const p of this.sps) { p.age += dt; const sw = p.E.sway ? Math.sin(p.age * 6.283 / p.E.sway.periodSec + p.ph) * p.E.sway.amp : 0; p.x += p.vx * dt; p.y += p.vy * dt; p.sx = p.x + sw; }
+      this.sps = this.sps.filter(p => p.age < p.E.lifeSec && p.y < H + 12 && p.y > -16 && p.x > -24 && p.x < W + 24);
+    }
+    spawnSP(T, E) {
+      const R = Math.random, rg = (a) => a[0] + R() * (a[1] - a[0]), sp = E.spawn || 'top';
+      let vi = Math.floor(R() * T.variants.length); if (E.weights) { let u = R(); for (vi = 0; vi < E.weights.length - 1 && (u -= E.weights[vi]) > 0; vi++); }
+      const p = { T, E, age: 0, ph: R() * 6.283, vx: rg(E.vx), vy: rg(E.vy), an: T.variants[Math.min(vi, T.variants.length - 1)], fr: Math.floor(R() * T.frames), x: R() * W, y: -8 };
+      if (sp === 'top+right') { if (R() < 0.35) { p.x = W + 6; p.y = R() * H * 0.6; } else p.x = R() * W * 1.2; }
+      else if (sp === 'top:tree') { p.x = R() * W * 0.45; p.y = 40 + R() * 90; }
+      else if (sp === 'area:ground') { p.y = 250 + R() * 80; }
+      else if (sp === 'area:sky+light') { p.y = 40 + R() * 200; }
+      p.sx = p.x; return p;
+    }
+    drawSeasonParts(x, v, offs) {
+      const sp = this.seasonPartsOn(v); if (!sp || !this.sps || !this.sps.length) return;
+      const F = sp.j.frames, A = sp.j.anims, piv = sp.j.pivot || [3.5, 3.5], h4 = String(v).startsWith('H4') ? 0.75 : 1; x.imageSmoothingEnabled = false;
+      for (const p of this.sps) {
+        const names = A[p.an] || [], f = F[names[(p.fr + Math.floor(p.age * p.T.fps)) % (names.length || 1)]]; if (!f) continue;
+        const u = p.age / p.E.lifeSec, fade = Math.max(0, Math.min(1, u / 0.1, (1 - u) / 0.15)), glow = p.T.name === 'firefly' || p.T.name === 'sunmote';
+        const br = glow ? 0.4 + 0.6 * Math.max(0, Math.sin(p.age * 2.4 + p.ph * 3)) : 1;
+        x.globalCompositeOperation = glow ? 'lighter' : 'source-over'; x.globalAlpha = fade * br * h4;
+        x.drawImage(sp.im, f.x, f.y, f.w, f.h, Math.round(p.sx + offs[3][0] * 0.5 - piv[0]), Math.round(p.y + offs[3][1] * 0.5 - piv[1]), f.w, f.h);
+      }
+      x.globalAlpha = 1; x.globalCompositeOperation = 'source-over'; this.stat.seasonParts = this.sps.length;
+    }
     stepRain(dt, on) {
       if (!on || !this.ripple) { this.rips.length = 0; return; }
       const wk = this.layout && this.layout.ground && this.layout.ground.walkable || [[17, 278], [178, 278], [178, 318], [17, 318]];
@@ -328,7 +367,7 @@
     draw(ctx, k, c) {
       this.stat.draws++;
       const s = this.st, dt = c.dt || 0;
-      this.stepParticles(dt, this.grade(s.cur), c.quality); this.stepRain(dt, s.cur === 'H3rain' || s.prev === 'H3rain');
+      this.stepParticles(dt, this.grade(s.cur), c.quality); this.stepSeasonParts(dt, s.cur, c.quality); this.stepRain(dt, s.cur === 'H3rain' || s.prev === 'H3rain');
       const A = this.buf.getContext('2d');
       this.compose(A, s.cur, c);
       if (s.prev && s.mix < 1 && this.v[s.prev]) {
@@ -356,6 +395,7 @@
       set(m) { const r = sc.set(m); if (G.dev) G.dev.sync && G.dev.sync(); return r; }, next() { return sc.next(); }, current() { return sc.current(); },
       weather(w) { if (w !== undefined) { if (w === 'auto' && G.wx) { G.wx.manual = false; G.wxTick && G.wxTick(true); } else { G.weather = w && w !== 'clear' ? w : null; if (G.wx) G.wx.manual = true; } } return G.weather || 'clear'; },
       season(v) { if (v !== undefined && G.seasonSet) G.seasonSet(v); return sc.season || null; },
+      seasonParts() { const sp = sc.seasonPartsOn(sc.st.cur); return { loaded: Object.keys(sc.spart || {}), on: !!sp, n: (sc.sps || []).length, types: [...new Set((sc.sps || []).map(p => p.T.name))] }; },
       enable(on) { sc.enabled = on !== false; return sc.enabled; },
       skipFade() { sc.st.mix = 1; sc.st.prev = null; }, stat() { return Object.assign({}, sc.stat); }, cache(on) { if (on !== undefined) { sc.cacheOn = on !== false; sc.lc = {}; } return { on: sc.cacheOn !== false, variants: Object.keys(sc.lc || {}), builds: sc.stat.cacheBuilds || 0, hits: sc.stat.cacheHits || 0 }; }, CYCLE: CYCLE.slice(), LABEL,
     };

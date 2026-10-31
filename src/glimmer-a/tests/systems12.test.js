@@ -194,5 +194,18 @@ console.log('⑥ 系統 3：團絨日記（每日 1 篇、範本＋事件、特�
   s = mk(); s.sys12 = { diary: { list: [5, { d: 1 }, { d: '2026-11-01', lines: ['x'] }], tr: 'bad' } }; X.st(s); ok(s.sys12.diary.list.length === 1 && s.sys12.diary.tr === null, '存檔 sanitize（日記）');
   S.setNowFn(null);
 }
+console.log('⑧ seasons v2 素材：particleOverlay（sheet＋particles.json）');
+{
+  const fs = require('fs'), path = require('path'), B = path.join(__dirname, '../art/hd2d/seasons/'), SJ = JSON.parse(fs.readFileSync(B + 'seasons.json', 'utf8'));
+  for (const se of ['spring', 'summer', 'autumn', 'winter']) {
+    const po = (SJ.seasons[se] || {}).particleOverlay, d = B + se + '/particles/';
+    const j = JSON.parse(fs.readFileSync(d + 'particles.json', 'utf8')), png = fs.readFileSync(d + 'sheet.png');
+    const sw = png.readUInt32BE(16), sh = png.readUInt32BE(20);
+    const frOk = Object.values(j.frames).every(f => f.x + f.w <= sw && f.y + f.h <= sh), anOk = Object.values(j.anims).every(a => a.every(n => j.frames[n]));
+    const tyOk = j.types.every(T => T.variants.every(v => j.anims[v] && j.anims[v].length === T.frames) && T.emitter.max > 0 && T.emitter.lifeSec > 0 && ['H1', 'H2', 'H3', 'H4'].every(h => T.emitter.perVariant[h] != null));
+    ok(po && po.dir === 'seasons/' + se + '/particles/' && frOk && anOk && tyOk && j.types.map(T => T.name).join() === (po.types || []).join(), `seasons v2 ${se}：粒子 ${j.types.map(T => T.name).join('+')}（frames 喺 sheet 內、anims／emitter 齊）`);
+    ok(['H1', 'H2', 'H3', 'H4'].every(h => ['sky', 'far', 'mid', 'fore', 'lightmap'].every(n => fs.existsSync(B + se + '/' + h + '/' + n + '.png')) && fs.existsSync(B + se + '/' + h + '/grade.json')), `seasons v2 ${se}：H1–H4 層＋grade 齊`);
+  }
+}
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);
 process.exit(fail ? 1 : 0);

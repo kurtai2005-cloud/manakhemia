@@ -70,6 +70,7 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     for (const m of ['spring', 'summer', 'autumn', 'winter']) {
       await dev('dev-season-' + m); await page.waitForTimeout(400); await E(() => __glimmer.hd.loadSeason(__glimmer.wx.season)); await page.waitForTimeout(3600);
       w = await E(() => __qa.sys12.wx()); ok(w.season === m && w.scene === 'H1@' + m, `DEV 季節 ${m} → H1@${m}`, w); await shot('season-' + m);
+      { const sp = await E(() => __qa.hd2d.seasonParts()); const want = { spring: 'petal', summer: 'sunmote', autumn: 'leaf', winter: 'snow' }[m]; ok(sp.on && sp.n > 0 && sp.types.includes(want), `seasons v2 粒子疊層 ${m}（${want}）`, sp); }
     }
     await dev('dev-season-none'); await page.waitForTimeout(3500); w = await E(() => __qa.sys12.wx()); ok(!w.season && w.scene === 'H1', '季節 none → 基本款', w);
     await dev('dev-season-auto'); await E((t) => { __glimmer.clock.fake = true; __glimmer.clock.t = t; }, new Date(2026, 0, 10, 9).getTime()); await page.waitForTimeout(1300);

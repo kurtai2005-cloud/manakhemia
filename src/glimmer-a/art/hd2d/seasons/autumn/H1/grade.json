@@ -1,8 +1,8 @@
 {
  "baseVariant": "H1",
- "note": "秋（9／10／11 月）× H1：sky/far/mid/fore/lightmap 用 seasons/autumn/H1/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；light_add／emissive／vignette 沿用 variant",
- "ambientTint": "#ffe6c6",
- "petTint": "#fff1e0",
+ "note": "秋（9／10／11 月）× H1：sky/far/mid/fore/lightmap 用 seasons/autumn/H1/*；lut.png ＝ season_fn(variant grade)（見 FORMAT §SYS12）；raw/ ＝ 季節版未烘層（v2 場景內容）；light_add／emissive／vignette 沿用 variant；粒子疊層見 ../particles/",
+ "ambientTint": "#ffe2b8",
+ "petTint": "#ffefd8",
  "saturation": 1.06,
  "contrast": 1.04,
  "bloom": {
@@ -29,9 +29,9 @@
  },
  "bulbGlowTint": "#ffe9a0",
  "particles": {
-  "type": "gold",
+  "type": "petal",
   "rate": 0.8,
-  "color": "#ffc878"
+  "color": "#f2a65a"
  },
  "rain": {
   "saturation": 0.85,

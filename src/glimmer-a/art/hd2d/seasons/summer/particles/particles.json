@@ -1,0 +1,157 @@
+{
+ "season": "summer",
+ "image": "sheet.png",
+ "cell": 8,
+ "pivot": [
+  3.5,
+  3.5
+ ],
+ "palette": "v3（motion/palette.json），alpha 0/255",
+ "frames": {
+  "firefly_0_00": {
+   "x": 0,
+   "y": 0,
+   "w": 8,
+   "h": 8
+  },
+  "firefly_0_01": {
+   "x": 8,
+   "y": 0,
+   "w": 8,
+   "h": 8
+  },
+  "firefly_0_02": {
+   "x": 16,
+   "y": 0,
+   "w": 8,
+   "h": 8
+  },
+  "firefly_0_03": {
+   "x": 24,
+   "y": 0,
+   "w": 8,
+   "h": 8
+  },
+  "firefly_0_04": {
+   "x": 32,
+   "y": 0,
+   "w": 8,
+   "h": 8
+  },
+  "firefly_0_05": {
+   "x": 40,
+   "y": 0,
+   "w": 8,
+   "h": 8
+  },
+  "sunmote_0_00": {
+   "x": 0,
+   "y": 8,
+   "w": 8,
+   "h": 8
+  },
+  "sunmote_0_01": {
+   "x": 8,
+   "y": 8,
+   "w": 8,
+   "h": 8
+  },
+  "sunmote_0_02": {
+   "x": 16,
+   "y": 8,
+   "w": 8,
+   "h": 8
+  },
+  "sunmote_0_03": {
+   "x": 24,
+   "y": 8,
+   "w": 8,
+   "h": 8
+  }
+ },
+ "anims": {
+  "firefly_0": [
+   "firefly_0_00",
+   "firefly_0_01",
+   "firefly_0_02",
+   "firefly_0_03",
+   "firefly_0_04",
+   "firefly_0_05"
+  ],
+  "sunmote_0": [
+   "sunmote_0_00",
+   "sunmote_0_01",
+   "sunmote_0_02",
+   "sunmote_0_03"
+  ]
+ },
+ "types": [
+  {
+   "name": "firefly",
+   "fps": 6,
+   "frames": 6,
+   "variants": [
+    "firefly_0"
+   ],
+   "emitter": {
+    "spawn": "area:ground",
+    "ratePerSec": 0.8,
+    "max": 8,
+    "vx": [
+     -4,
+     4
+    ],
+    "vy": [
+     -3,
+     2
+    ],
+    "sway": {
+     "amp": 5,
+     "periodSec": 3.0
+    },
+    "lifeSec": 6,
+    "perVariant": {
+     "H1": 0.0,
+     "H2": 0.6,
+     "H3": 0.0,
+     "H4": 1.0
+    }
+   }
+  },
+  {
+   "name": "sunmote",
+   "fps": 6,
+   "frames": 4,
+   "variants": [
+    "sunmote_0"
+   ],
+   "emitter": {
+    "spawn": "area:sky+light",
+    "ratePerSec": 1.2,
+    "max": 8,
+    "vx": [
+     -2,
+     2
+    ],
+    "vy": [
+     -3,
+     -1
+    ],
+    "sway": {
+     "amp": 2,
+     "periodSec": 4.0
+    },
+    "lifeSec": 4,
+    "note": "熱浪光點（日光下閃）",
+    "perVariant": {
+     "H1": 1.0,
+     "H2": 0.4,
+     "H3": 1.0,
+     "H4": 0.0
+    }
+   }
+  }
+ ],
+ "layer": "畫喺 fore 之上、UI 之下；唔受 lightmap（H4 夜晚引擎乘 0.75 亮度）；位置用整數像素",
+ "note": "emitter 數值係建議（px/s，畫面座標 195×422）；perVariant ＝ 該時段 rate 倍數（0＝唔出）"
+}
