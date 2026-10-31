@@ -1131,4 +1131,54 @@ v10.1 改做晴 60／陰 20／雨 15／霧 5。霧唔計菇傘。其餘照 scan-
 | 疏玩柔光＋微塵 | ✅ 37.6／46.5 |
 | 疏玩 CQ 15–35 | ✅ 18 |
 
+## systems12 第 1 批（b7278cf）＋兩項加測
+
+`code/glimmer-evo6` @ `b7278cf4`（v10.1 `00c0dc8` 之後 10 個 sys12 commit）。`code/floating-pet-mvp` @ `6762ccd8`。兩個 code branch 都冇改。路線分佈未掃（等 v10.2）。
+
+### ① 霧天菇傘 +0.5
+
+`grep fog: 0.5` 搵唔到，因為寫法係 `weather.route.fog = { to: 'shroom', w: 0.5 }`（`data.js`）。註解「霧排喺陰之後」係抽籤次序，唔係話霧冇自己嘅權重。`noteB5` 喺時段窗外加 `route[wx].w`。
+
+QA unit `QA/sys12/fog-shroom.test.js` 11／0：13:00 霧天玩同餵都係菇傘 +0.5，玩同時火苗 +1；兩次 +1.0；晴天餵 0；陰天玩 +0.5；雨天玩 +1。08:00 晨露窗霧天玩只計水珠，菇傘 0。
+
+QA e2e `QA/sys12/fog-shroom-e2e.js` 5／0：頁面 `?weather=fog` 之後 `weatherNow` 係 fog，玩同餵都係 +0.5。
+
+### ② 第 1 批美術 vs 懸浮 APK
+
+懸浮 APK `assets/pet/sys12/` 只有 6 張：星星碎 16／32、心聲泡、心聲尾、飲水提醒、早瞓提醒。其餘唔係 code 畫，亦唔係 inline（9-slice 係執行時先把 png 轉 dataURL）。檔案喺遊戲樹：
+
+| 清單 | 遊戲樹 | 懸浮 APK |
+|---|---|---|
+| 陰／霧疊層 | `art/hd2d/H3/overcast`、`H3/fog`、`weather/overcast_clouds.png`、`fog_bank.png` | 冇（遊戲畫面先用） |
+| 季節色調 | `art/hd2d/seasons/<季>/H1–H4/grade.json`（JSON 調色，唔係 LUT 圖）＋場景 png、粒子 sheet | 冇 |
+| 撐葉／打冷震 | 遊戲 `atlas_evo_*.json` 有 `leaf_umbrella`、`shiver` | 懸浮 `pet/evo/*.json` 冇呢兩個 clip |
+| 委託面板＋3 icon | `panel_commission_9s.png`、feed／play／water icon | 冇 |
+| 日記框 | `diary_page_9s.png`、`diary_page_special_9s.png` | 冇 |
+| 貼紙 6 | sun／rain／food／heart／evolve／sleep | 冇 |
+| 星星碎、心聲泡、提醒 2 | 有 | 有 |
+
+### 功能同經濟（systems12.test.js 106／0）
+
+| 做到咗先算 | |
+|---|---|
+| 7 天氣：14 日每週 1–3 場雨、DEV／?weather= | ✅ 測試 200 seed |
+| 1 委託：3 個齊即刻獎、唔做唔罰、斷線補發 | ✅ 晶角字係「返嚟 2 分鐘內執晒便便」 |
+| 6 心聲：5 段 × 6 句、懸浮同主程式共用冷卻 | ✅ |
+| 12 小驚喜：閂咗唔出；每日最多 5 粒 | ✅ 耗電未能量（冇真機） |
+| 3 日記：翻 30 日、化光入紀念冊、離線一句 | ✅ |
+| 新系統路線分 ≤25% | ✅ cap＝照顧分 × 25/75 |
+| v10.1 晴 60／陰 20／雨 15／霧 5，霧菇傘 0.5 | ✅ 權重表；雨係每週 1–3 場各 1–3 小時，唔係全日 15% |
+| DEV 135 粒 ≥48 | ✅ e2e-route：390 闊 49.0px、360 闊 48.9px（55／0） |
+
+星星碎（動作每次都做，懸浮每日 5 粒）：勤力、早起中位 **20**。普通、疏玩、夜貓、餵食狂中位 **5**（預設三個委託有淋水，呢四表冇沖涼，做唔齊，只得懸浮 5 粒）。上限 30 冇穿。舊心情池今次冇重跑 sim-report。
+
+### 問題
+
+| 級 | 問題 | 修法 |
+|---|---|---|
+| P0 | 無 | |
+| P1 | 無 | |
+| **P2** | 懸浮烤圖冇 `leaf_umbrella`／`shiver`，落雨懸浮唔會撐葉。 | `bake_evo_atlas.py` 加入呢兩個 clip 再烤。 |
+| **P2** | 冇沖涼嘅時間表做唔齊預設委託，每日中位 5，低過 15–30。 | 遊策定：預設三個唔好硬性包含淋水，或者「其他」來源補到 15。 |
+
 
