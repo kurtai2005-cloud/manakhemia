@@ -52,15 +52,19 @@
         drawGapPt: 5,           // v3：第一同第二名差 < 呢個 pt → 按兩者分數比例抽（seed 決定）；否則最高分贏（取代 v2 b5GapPt）
         softCQ: 20,             // 柔光 CQ（v4；v2 30、舊 40）；以下＝微塵
         crystalCleanAvg: 60,    // 晶角：清潔度時間加權平均 ≥（v2；舊 70）
+        crystalQuickSec: 600,   // v5 晶角「即清」：便便出現後 ≤ 呢個秒數內清走先計晶角分（普通清便便唔再計晶角）
         // v4 天氣：clear／overcast／rain（天氣系統未做 → DEV 抽屜／?weather= 設定）；route＝呢種天氣下任何照顧再計嗰條（v4：陰天／落雨 → 菇傘；落雨唔再計水珠）
-        weather: { states: ['clear', 'overcast', 'rain'], route: { overcast: 'shroom', rain: 'shroom' } },
+        // v5：權重（陰天 0.5、落雨 1.0）
+        weather: { states: ['clear', 'overcast', 'rain'], route: { overcast: { to: 'shroom', w: 0.5 }, rain: { to: 'shroom', w: 1 } } },
+        // v5 月眠「哄瞓」：團絨眼瞓（醒住、精力 < drowsyEnergy）時長撳／撫摸 → 瞓著，每次計月眠 1，每晚（nightCutH 前算前一晚）最多 perNight 次
+        lull: { drowsyEnergy: 30, perNight: 3, nightCutH: 12 },
         // 時段規則：喺時段內嘅照顧只計 only 嗰條（唔計本身類型、唔計天氣）；瞓覺撫摸永遠計月眠
         windows: [
-          { id: 'moon', from: 21, to: 3, only: 'moon' },   // 21:00–03:00 → 只計月眠（§7 修訂）
+          { id: 'moon', from: 20, to: 3, only: 'moon' },   // 20:00–03:00 → 只計月眠（v5；§7 修訂 21）
           { id: 'dew', from: 6, to: 9, only: 'tide' },     // 06:00–09:00 晨露 → 只計水珠（v2）
         ],
         // v3 螢絨（機率）：芽崽＋跳跳期見過 firefly_walk 先有資格；夜晚照顧佔比 fromPct→toPct 線性對應 0→maxChancePct% 機會；CQ < minCQ 冇機會
-        lumi: { fromPct: 30, toPct: 50, maxChancePct: 25, minCQ: 40 },
+        lumi: { fromPct: 30, toPct: 50, maxChancePct: 25, minCQ: 25 },   // v5：minCQ 40→25
         // v3 CQ：部分照顧＋衰減（疏玩唔會直接 0）。每次照顧 +careGain（每個鐘最多 careGainPerHourMax）；每個鐘結算：需求平均 ≥ goodAt +1、
         // badBelow–goodAt 之間按比例 +0–partialMax、< badBelow −1；連續 decayAfterH 個鐘冇照顧 → 每個鐘 −decayPerH（線上＋離線都計）；結算／衰減唔會跌穿 floor
         cq: { careGain: 0.5, careGainPerHourMax: 2, partialMax: 0.5, decayAfterH: 6, decayPerH: 1, floor: 15 },

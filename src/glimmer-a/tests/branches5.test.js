@@ -18,13 +18,13 @@ let HOUR = DAY, WX = 'clear';
 S.setHourFn(() => HOUR); S.setWeatherFn(() => WX);   // v4 天氣：clear／overcast／rain
 let ROLL = {};                                                                        // v3：注入判定隨機數（tag → 0–1）；冇 → 用 seed
 S.setBranchRoll((tag) => (tag in ROLL ? ROLL[tag] : null));
-const KIND = { shroom: 'feed', ember: 'play', tide: 'rinse', crystal: 'poop' };
+const KIND = { shroom: 'feed', ember: 'play', tide: 'rinse', crystal: 'poopQuick' };   // v5：晶角只計即清便便
 function pet(stage) { const s = S.newState(1e12, 7); s.stage = stage || 'sprout'; Object.assign(s.needs, { hunger: 60, mood: 60, clean: 90, energy: 80 }); return s; }
 function setClean(s, avg, st) { const E = s.evo || (s.evo = { evIn: {}, care: {} }); E.cl = E.cl || {}; E.cl[st || 'sprout'] = { sum: avg * 1e6, sec: 1e6 }; }
 // counts：{ feed:n, play:n, rinse:n, poop:n, mg:n }（中午、冇雨，用 noteCare）
 function build(counts, o) {
   o = o || {}; const s = pet(o.stage || 'sprout'); HOUR = o.h == null ? DAY : o.h; WX = o.wx || (o.rain ? 'rain' : 'clear');
-  for (const k in counts) for (let i = 0; i < counts[k]; i++) S.noteCare(s, null, k);
+  for (const k in counts) for (let i = 0; i < counts[k]; i++) S.noteCare(s, null, k === 'poop' ? 'poopQuick' : k);   // v5：counts.poop＝即清便便
   setClean(s, o.clean == null ? LOWCLEAN : o.clean); HOUR = DAY; WX = 'clear'; return s;
 }
 function toAdult(s, cq) { s.stage = 'juvenile'; s.cq = cq; s.growthSec = P.stageSec.juvenile - 1; HOUR = DAY; WX = 'clear'; S.step(s, 5, {}); return s; }
@@ -121,7 +121,7 @@ console.log('# ③ 分數來源（只計芽崽＋跳跳期）');
   { const s = build({ feed: 5 }, { stage: 'juvenile' }); S.noteCare(Object.assign(s, { stage: 'sprout' }), null, 'feed'); ok(S.branch5Check(s).all === 6, '芽崽＋跳跳期加埋計'); }
   { const s = pet('adult'); s.form = 'soft'; S.noteCare(s, null, 'feed'); ok(S.branch5Check(s).all === 0, '成年後照顧唔計'); }
   { // 用真實動作（feed／play／rinse／clearPoop／mgApply）
-    const s = pet('sprout'); s.needs.hunger = 10; S.feed(s, 'meal'); S.play(s); S.rinse(s); s.poops = 1; S.clearPoop(s); S.mgApply(s, 10, 1e12);
+    const s = pet('sprout'); s.needs.hunger = 10; S.feed(s, 'meal'); S.play(s); S.rinse(s); s.poops = 1; s.poopAge = [0]; S.clearPoop(s); S.mgApply(s, 10, 1e12);   // v5：啱啱出嘅便便＝即清
     const b = s.evo.b5.sprout; ok(b.all === 5 && b.shroom === 1 && b.ember === 2 && b.tide === 1 && b.crystal === 1 && b.moon === 0, '真實動作入分（feed／play＋mg／rinse／clearPoop）', JSON.stringify(b));
   }
 }
@@ -194,10 +194,11 @@ console.log('⑧ v4：天氣（陰天／落雨 → 菇傘、落雨唔計水珠�
 {
   const W = C.weather, ST = W.states;
   ok(ST.includes('clear') && ST.includes('overcast') && ST.includes('rain'), '天氣狀態：clear／overcast／rain');
-  ok(W.route.overcast === 'shroom' && W.route.rain === 'shroom', 'config：陰天／落雨 → 菇傘');
+  ok(W.route.overcast.to === 'shroom' && W.route.rain.to === 'shroom' && W.route.overcast.w === 0.5 && W.route.rain.w === 1, 'config：陰天 0.5／落雨 1.0 → 菇傘（v5）');
   WX = 'bogus'; ok(S.weatherNow() === 'clear', '唔識嘅天氣 → clear'); WX = 'overcast'; ok(S.weatherNow() === 'overcast' && !S.isRaining(), 'overcast：weatherNow／isRaining'); WX = 'clear';
   let b = build({ feed: 2 }, { wx: 'overcast' }).evo.b5.sprout; ok(b.shroom === 2 && b.tide === 0, '陰天餵食 → 菇傘只計一次', JSON.stringify(b));
-  b = build({ play: 1 }, { wx: 'overcast' }).evo.b5.sprout; ok(b.shroom === 1 && b.ember === 1 && b.all === 1, '陰天玩 → 菇傘 +1、火苗 +1', JSON.stringify(b));
+  b = build({ play: 1 }, { wx: 'overcast' }).evo.b5.sprout; ok(b.shroom === W.route.overcast.w && b.ember === 1 && b.all === 1, `陰天玩 → 菇傘 +${W.route.overcast.w}、火苗 +1`, JSON.stringify(b));
+  b = build({ play: 2 }, { wx: 'rain' }).evo.b5.sprout; ok(b.shroom === 2 * W.route.rain.w && b.ember === 2, `落雨玩 ×2 → 菇傘 +${2 * W.route.rain.w}`, JSON.stringify(b));
   b = build({ rinse: 1 }, { wx: 'rain' }).evo.b5.sprout; ok(b.tide === 1 && b.shroom === 1, '落雨沖洗 → 水珠（本身）＋菇傘', JSON.stringify(b));
   b = build({ play: 1 }).evo.b5.sprout; ok(!b.shroom && !b.tide, '晴天玩 → 冇菇傘／水珠', JSON.stringify(b));
   b = build({ play: 1, feed: 1 }, { wx: 'rain', h: DH }).evo.b5.sprout; ok(b.tide === 2 && !b.shroom && !b.ember, `${DEW.from}–${DEW.to} 落雨 → 時段規則優先：只計水珠`, JSON.stringify(b));
@@ -222,6 +223,32 @@ console.log('⑧ v4：天氣（陰天／落雨 → 菇傘、落雨唔計水珠�
   ok(toAdult(withDays(build(bal), BD.window), C.brightCQ - 1).form === 'soft', `CQ ${C.brightCQ - 1} → 柔光`);
   ok(toAdult(withDays(build(bal), BD.window), C.softCQ).form === 'soft' && toAdult(withDays(build(bal), BD.window), C.softCQ - 1).form === 'dust', `柔光 CQ ≥ ${C.softCQ}；以下微塵`);
   q = withDays(build(bal), BD.window); ok(S.branch5Check(q).ok === false && toAdult(q, C.brightCQ).ev.some(e => e.type === 'evolve' && e.form === 'bright'), '新 5 條唔成立（最高分 25%）→ evolve 燦光');
+  S.setNowFn(null);
+}
+console.log('⑨ v5：晶角即清、月眠 20–03＋哄瞓（每晚 ≤3）、螢絨 CQ 25');
+{
+  const Q = C.crystalQuickSec, L = C.lull;
+  ok(MOON.from === 20 && MOON.to === 3, `月眠時段 ${MOON.from}:00–0${MOON.to}:00`);
+  { const b = build({ feed: 1, play: 1 }, { h: 20 }).evo.b5.sprout; ok(b.moon === 2 && !b.shroom && !b.ember, '20:00 照顧 → 只計月眠'); }
+  ok(C.lumi.minCQ === 25, '螢絨 minCQ 25');
+  // 即清：用 step 令便便老化
+  const poopIn = (age) => { const s = pet('sprout'); s.poops = 1; s.poopAge = [0]; HOUR = DAY; if (age) S.step(s, age, {}); s.poops = Math.max(1, s.poops); const a = S.poopAges(s); a[a.length - 1] = Math.min(a[a.length - 1], age); S.clearPoop(s); return s.evo.b5.sprout; };
+  let b = poopIn(Q - 1); ok(b.crystal === 1 && b.all === 1, `便便出咗 ${Q - 1}s 清 → 晶角 +1`, JSON.stringify(b));
+  b = poopIn(Q); ok(b.crystal === 1, `${Q}s（啱啱好）→ 晶角 +1`, JSON.stringify(b));
+  b = poopIn(Q + 1); ok(!b.crystal && b.all === 1, `${Q + 1}s 先清 → 唔計晶角（只計總數）`, JSON.stringify(b));
+  { const s = pet('sprout'); s.poops = 2; ok(S.poopAges(s).every(x => x >= 1e9), '舊存檔便便（冇時間）→ 當舊便便'); S.clearPoop(s); ok(!s.evo.b5.sprout.crystal, '舊便便清 → 唔計晶角'); }
+  { const s = pet('sprout'); s.poops = 0; s.poopAge = []; s.poopTimer = 1e9; S.step(s, 1, {}); const n = s.poops; ok(n >= 1 && S.poopAges(s).length === n && S.poopAges(s)[n - 1] <= 1, 'step 出便便 → 記低 age 0', JSON.stringify([n, s.poopAge])); S.clearPoop(s); ok(s.evo.b5.sprout.crystal === 1, '啱啱出嘅便便即清 → 晶角'); }
+  // 哄瞓
+  const T0 = new Date(2026, 9, 20, 22).getTime(); let T = T0; S.setNowFn(() => T);
+  const drowsy = (s) => { s.sleeping = false; s.needs.energy = L.drowsyEnergy - 5; return s; };
+  let s = pet('sprout'); s.needs.energy = L.drowsyEnergy; ok(!S.isDrowsy(s) && !S.lullSleep(s).ok, `精力 ${L.drowsyEnergy} → 唔眼瞓、哄唔到`);
+  drowsy(s); ok(S.isDrowsy(s), `精力 ${L.drowsyEnergy - 5} → 眼瞓`);
+  let r = S.lullSleep(s, DAY); ok(r.ok && r.counted && s.sleeping && s.evo.b5.sprout.moon === 1 && s.ev.some(e => e.type === 'lull'), '哄瞓 → 瞓著＋月眠 +1（任何鐘點）', JSON.stringify(r));
+  ok(!S.lullSleep(s).ok, '瞓緊 → 唔使再哄');
+  for (let i = 1; i < L.perNight + 2; i++) { T = T0 + i * 3600e3; drowsy(s); r = S.lullSleep(s, DAY); }
+  ok(s.evo.b5.sprout.moon === L.perNight && r.ok && !r.counted && s.sleeping, `同一晚哄 ${L.perNight + 2} 次 → 月眠只計 ${L.perNight}（照瞓）`, JSON.stringify([s.evo.b5.sprout, r]));
+  T = T0 + 24 * 3600e3; drowsy(s); r = S.lullSleep(s, DAY); ok(r.counted && s.evo.b5.sprout.moon === L.perNight + 1, '第二晚 → 重新計', JSON.stringify(r));
+  { const e = pet('egg'); e.needs.energy = 1; ok(!S.isDrowsy(e) && !S.lullSleep(e).ok, '光卵 → 唔得'); }
   S.setNowFn(null);
 }
 console.log(`結果：${pass} 通過，${fail} 失敗`);

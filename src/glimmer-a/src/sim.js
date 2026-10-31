@@ -32,7 +32,7 @@
     return {
       v: 2, createdAt: nowMs, lastSeen: nowMs, seed: seed || (nowMs % 1e9),
       stage: 'egg', form: null,
-      gen: 1, memorial: [], dex: [], careDays: [], fadeReady: false,   // evo6：第幾代；化光紀念；靜光完咗等玩家確認化光
+      gen: 1, memorial: [], dex: [], careDays: [], poopAge: [], fadeReady: false,   // evo6：第幾代；化光紀念；靜光完咗等玩家確認化光
       evo: { evIn: {}, care: {} },                // evo6：各階段事件次數（evIn[stage][id]）＋照顧次數（care[stage]={all,night}）
       needs: { hunger: 100, mood: 100, clean: 100, energy: 100 },
       sleeping: false, poops: 0, poopTimer: 0,
@@ -138,15 +138,15 @@
   function careWindow(h) { return BR().windows.find(w => inWindow(w, h)) || null; }   // 時段規則（21–03 月眠、06–09 水珠…）
   function isMoonHour(h) { const w = BR().windows.find(x => x.id === 'moon'); return !!w && inWindow(w, h); }
   // §7 新支線分數：每次照顧 all +1；本身類型照計；v4：陰天／落雨時任何照顧再計菇傘（config weather.route；feed 本身已歸菇傘 → 只計一次）；時段規則（config windows）：21–03 只計月眠、06–09 只計水珠；瞓覺撫摸只計月眠
-  const B5_KIND = { feed: 'shroom', play: 'ember', mg: 'ember', rinse: 'tide', poop: 'crystal' };
+  const B5_KIND = { feed: 'shroom', play: 'ember', mg: 'ember', rinse: 'tide', poopQuick: 'crystal' };   // v5：只有「即清」便便（poopQuick）計晶角；普通 poop 只計總數
   function noteB5(s, kind, h, wx) {
     if (s.stage === 'egg') return; const E = evoOf(s), b = E.b5[s.stage] || (E.b5[s.stage] = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0 });
     h = h == null ? nowHour() : h; wx = wx == null ? weatherNow() : normWeather(wx === false ? 'clear' : wx);
     b.all++;
-    if (kind === 'petSleep') { b.moon++; return; }          // 瞓覺撫摸 → 月眠
+    if (kind === 'petSleep' || kind === 'lull') { b.moon++; return; }   // 瞓覺撫摸／v5 哄瞓 → 月眠
     const w = careWindow(h); if (w) { b[w.only]++; return; }   // §7 修訂／v2：時段內只計嗰條（21–03 月眠、06–09 水珠），唔計本身類型／落雨
     const own = B5_KIND[kind]; if (own) b[own]++;
-    const wr = BR().weather.route[wx]; if (wr && wr !== own) b[wr]++;   // v4：陰天／落雨 → 菇傘（唔再計水珠）
+    const wr = BR().weather.route[wx]; if (wr && wr.to && wr.to !== own) b[wr.to] = +((b[wr.to] || 0) + (wr.w == null ? 1 : wr.w)).toFixed(4);   // v4／v5：陰天 0.5／落雨 1 → 菇傘（唔再計水珠）
   }
   // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night；kind＝feed／play／rinse／poop／mg（§7 分數）
   function noteCare(s, h, kind, rain) {
@@ -156,6 +156,16 @@
     cqCare(s);
   }
   // §7 月眠：瞓緊覺時撫摸（點寵物＝輕喚醒，所以每次瞓覺最多一次）；只入 §7 分數，唔改螢絨嘅夜晚照顧比例
+  // v5 哄瞓：眼瞓（醒住、精力 < lull.drowsyEnergy）→ 哄佢瞓著；每晚最多 perNight 次計月眠（之後照瞓但唔計分）
+  function isDrowsy(s) { return !!s && s.stage !== 'egg' && !s.sleeping && s.needs.energy < BR().lull.drowsyEnergy; }
+  function lullNight() { const L = BR().lull; return dayKey(nowMs() - L.nightCutH * 3600e3); }
+  function lullSleep(s, h) {
+    if (!isDrowsy(s)) return { ok: false, reason: s && s.sleeping ? 'asleep' : 'notDrowsy' };
+    const L = BR().lull, E = evoOf(s), k = lullNight(); if (!E.lull || E.lull.night !== k) E.lull = { night: k, n: 0 };
+    s.sleeping = true; const counted = E.lull.n < L.perNight;
+    if (counted) { E.lull.n++; noteB5(s, 'lull', h); noteDay(s); }
+    s.ev.push({ type: 'lull', counted, n: E.lull.n }); return { ok: true, counted, n: E.lull.n };
+  }
   function notePetSleep(s, h, rain) { if (!s || s.stage === 'egg' || !s.sleeping) return false; noteB5(s, 'petSleep', h, rain); noteDay(s); return true; }
   function noteClean(s, dt) {                            // 晶角：清潔度時間加權平均（每階段）
     if (s.stage === 'egg' || !(dt > 0)) return; const E = evoOf(s), c = E.cl[s.stage] || (E.cl[s.stage] = { sum: 0, sec: 0 });
@@ -314,7 +324,7 @@
     const pi = P.poopIntervalH * 3600;
     while (s.poopTimer >= pi) {
       s.poopTimer -= pi;
-      if (s.poops < P.poopMax) s.poops++;
+      if (s.poops < P.poopMax) { s.poops++; poopAges(s).push(0); }
       if (s.poops >= P.poopMax) s.poopTimer = 0;
     }
 
@@ -323,6 +333,7 @@
       for (const k of KEYS) n[k] = Math.max(n[k], Math.min(prev[k], P.offlineNeedFloor));
     }
 
+    if (s.poops > 0) { const a = poopAges(s); for (let i = 0; i < a.length; i++) a[i] = Math.min(1e9, a[i] + dt); } else if (s.poopAge && s.poopAge.length) s.poopAge = [];
     if (!isUnwell(s) || opts.offline) s.growthSec += dt * gm;
     if (s.stage !== 'egg') cqDecay(s, dt);
     checkForeshadow(s);
@@ -461,9 +472,12 @@
     s.ev.push({ type: 'rinsed' });
     return { ok: true };
   }
+  // v5 晶角即清：s.poopAge＝每粒便便出咗幾多秒（同 s.poops 對齊；舊存檔／外部改 poops → 補當舊便便）
+  function poopAges(s) { let a = Array.isArray(s.poopAge) ? s.poopAge : (s.poopAge = []); const n = Math.max(0, s.poops | 0); if (a.length > n) a.splice(0, a.length - n); while (a.length < n) a.unshift(1e9); return a; }
   function clearPoop(s) {
     if (s.poops <= 0) return { ok: false };
-    s.poops--; s.stats.poopsCleared++; noteCare(s, null, 'poop');
+    const a = poopAges(s), young = a.length ? a.pop() : 1e9, quick = young <= BR().crystalQuickSec;   // 清最新嗰粒
+    s.poops--; s.stats.poopsCleared++; noteCare(s, null, quick ? 'poopQuick' : 'poop');
     s.ev.push({ type: 'poopCleared' });
     return { ok: true };
   }
@@ -573,6 +587,7 @@
       if (!STAGES.includes(s.stage)) return null;
       if ((s.stage === 'adult' || s.stage === 'elder') && !D.BRANCHES.includes(s.form)) s.form = s.form === 'radiant' ? 'bright' : 'dust';
       evoOf(s); s.memorial = Array.isArray(s.memorial) ? s.memorial : []; s.gen = +s.gen || 1;
+      s.poopAge = Array.isArray(s.poopAge) ? s.poopAge.filter(x => typeof x === 'number' && isFinite(x) && x >= 0) : []; poopAges(s);
       s.careDays = Array.isArray(s.careDays) ? s.careDays.filter(k => typeof k === 'string' && /^\d{4}-\d\d-\d\d$/.test(k)).sort().slice(-60) : [];   // v4 照顧日
       s.dex = Array.isArray(s.dex) ? s.dex.filter(f => D.BRANCHES.includes(f)) : []; s.memorial.forEach(m => unlockDex(s, m.form)); if (s.stage === 'adult' || s.stage === 'elder') unlockDex(s, s.form);   // 圖鑑：舊存檔由紀念＋而家形態補返
       return s;
@@ -582,6 +597,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, setWeatherFn, weatherNow, setNowFn, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, setWeatherFn, weatherNow, setNowFn, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });
