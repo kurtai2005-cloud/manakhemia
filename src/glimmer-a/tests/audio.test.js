@@ -100,7 +100,8 @@ console.log('# 規則');
   const miss = names.filter(n => !AU.cues[n] || !fs.existsSync(path.join(__dirname, '..', 'audio', 'sfx', AU.cues[n].file + '.ogg')));
   ok(miss.length === 0, '16 個生命感音效已註冊＋檔案喺 audio/sfx', miss.join(','));
   const S2 = ['sneeze', 'scratch', 'step_hop', 'step_drag', 'step_plod', 'bug_pat'], S3 = ['nuzzle_purr', 'reunion_happy'];
-  ok(names.filter(n => S2.some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => !AU.cues[n].reserved) && names.filter(n => S3.some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => AU.cues[n].reserved), '第二段：sneeze／scratch／step_hop／step_drag／step_plod／bug_pat（12 個）已接（唔再 reserved）；nuzzle_purr／reunion_happy（4 個）仍 reserved 等第三段');
+  // s3（10-31）：nuzzle_purr／reunion_happy 第三段已接 → 原本「仍 reserved」嘅檢查刻意改為「全部已接」
+  ok(names.filter(n => S2.concat(S3).some(k => n.indexOf('pet_' + k + '_') === 0)).every(n => !AU.cues[n].reserved), '第二段 sneeze／scratch／step_hop／step_drag／step_plod／bug_pat（12 個）＋第三段 nuzzle_purr／reunion_happy（4 個）全部已接（唔再 reserved）');
   const s = mkS(), c = { s, pw: LT.compute(14), sun: 1, override: null, event: null };
   let seen = { a: 0, b: 0 }, touchWithTurn = 0, turns = 0, cdOk = true;
   for (let seed = 1; seed <= 40; seed++) {
@@ -161,6 +162,27 @@ console.log('# H3 雨層細雨環境聲（遊音 7.10）');
   ok(AUD.Engine.url.call({ base: 'audio/' }, R.loop) === 'audio/amb/amb_rain_light_loop.ogg' && AUD.Engine.url.call({ base: 'audio/' }, 'bgm_noon') === 'audio/bgm/bgm_noon.ogg', 'amb_ 檔由 audio/amb/ 載入');
   const src = fs.readFileSync(__dirname + '/../src/audio.js', 'utf8');
   ok(/ls\.loop = true; ls\.loopStart = 0; ls\.loopEnd = bl\.duration/.test(src) && !/new Audio\(|createElement\('audio'\)/.test(src), 'loop 用 AudioBufferSourceNode.loop＝true（loopStart 0／loopEnd＝buffer 長），冇 <audio> 元素');
+}
+
+console.log('# 生命感第三段：D3 磨蹭呼嚕 purr a/b 交替／D5 重逢 reunion_happy');
+{
+  const s = mkS(), c = { s, pw: LT.compute(14), sun: 1, override: null, event: null };
+  let purrA = 0, purrB = 0, rep = 0, alt = true, reun = 0, reunOnce = true;
+  for (let seed = 1; seed <= 12; seed++) {
+    const b = BEH.create(seed), d = AUD.createDirector(seed);
+    for (let i = 0; i < 30; i++) BEH.step(b, c);
+    BEH.force(b, 'now_nuzzle', c); const names = [];
+    for (let t = 0; t < 3.2; t += 1 / 30) { for (let k = 0; k < 2; k++) BEH.step(b, c); names.push(...AUD.update(d, 1 / 30, world(s, b, 14)).cues.map(x => x.name)); }
+    const pu = names.filter(n => /nuzzle_purr/.test(n)); purrA += pu.filter(n => /_a$/.test(n)).length; purrB += pu.filter(n => /_b$/.test(n)).length;
+    for (let i = 1; i < pu.length; i++) if (pu[i] === pu[i - 1]) alt = false;
+    BEH.force(b, 'stay', c); for (let i = 0; i < 30; i++) BEH.step(b, c);
+    BEH.force(b, 'now_reunion', c); const n2 = [];
+    for (let t = 0; t < 7; t += 1 / 30) { for (let k = 0; k < 2; k++) BEH.step(b, c); n2.push(...AUD.update(d, 1 / 30, world(s, b, 14)).cues.map(x => x.name)); }
+    const ru = n2.filter(n => /reunion_happy/.test(n)); reun += ru.length; if (ru.length !== 1) reunOnce = false;
+  }
+  ok(purrA > 0 && purrB > 0 && alt, '撳住磨蹭 ≥1.2s → 呼嚕 purr（a ' + purrA + '／b ' + purrB + '，a/b 交替唔連續同一個）');
+  ok(reunOnce && reun === 12, '久別重逢 → reunion_happy 每次 1 下（12/12）', reun);
+  ok(AU.cues.pet_nuzzle_purr_a.cdKey === AU.cues.pet_nuzzle_purr_b.cdKey && AU.cues.pet_reunion_happy_a.cdKey === AU.cues.pet_reunion_happy_b.cdKey, 'purr／reunion a/b 各自共用冷卻');
 }
 
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);

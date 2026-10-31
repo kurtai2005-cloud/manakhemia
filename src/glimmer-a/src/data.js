@@ -110,6 +110,14 @@
         // s2 美術到（遊美 10-31 live_s2）：smug_pose／act_cool／lookup_tip／getup／sniff_itch ready 就用真 clip，否則（dust／?live=0）照用上面 fallback
         // 開發者「即刻觸發」：開心步／拖步即刻行 4–6s；展示模式（Kurt：「唔覺有咩分別」）：小動作＋中途停步頻率 ×5、冷卻（含 10 分鐘不重複）÷5；存 localStorage
         nowWalkSec: [4, 6], demoMul: 5, demoKey: 'glimmer.liveDemo',
+        // ── 第三段（遊策 brief 10-31）──
+        // D3 長按磨蹭：撳住寵物 ≥0.4s（art trigger）→ 轉向手指、挨埋（最多行 10px）、nuzzle 循環＋heart；撳 ≥1.2s → 呼嚕（purr 聲每個循環一次＋閉眼開心臉；缺 nuzzle_purr 美術）
+        //   鬆手 → 播完當前幀；磨蹭 ≥0.8s 有 75% 「扮冇事」（呆一呆 → act_cool）。nowNuzzleSec＝開發者掣自動撳住幾耐
+        nuzzleHoldMs: 400, nuzzleGap: 10, nuzzleStep: 10, purrAfterSec: 1.2, nuzzleMaxSec: 12, nuzzleCool: 0.75, nuzzleCoolMin: 0.8, nowNuzzleSec: 2.6,
+        // D5 久別重逢：離線 ≥6h（sim lastSeen；每日最多 1 次，日子存 localStorage）→ 由場邊衝埋嚟（rush 1→2–5 循環）→ 衝過頭 14px → 煞停（第 6 幀）→ act_cool → 行返中間 → 開心重逢（缺 reunion_happy → cheer_jump 跳 2 下＋心心）
+        reunionAwayH: 6, reunionDayKey: 'glimmer.reunionDay', rushSpeed: 75, rushStartSec: 0.25, rushOvershoot: 14, skidPx: 5, skidSpeed: 26, brakeSec: 0.45, reunionHops: 2, reunionHopH: 0.6, nowAwayH: 8,
+        // G1 燈泡：5 心情 tint（face.bulb.moods）；開發者掣循環 happy→neutral→sleepy→hungry→grumpy→自動
+        bulbCycle: ['happy', 'neutral', 'sleepy', 'hungry', 'grumpy'],
       },
       // ── 團絨生命感 第一段：視線（F2 gaze／A1 邊行邊望／D2 點一下回頭）。用獨立 RNG（lookSalt），唔影響原有行為抽籤 ──
       look: {
@@ -193,9 +201,13 @@
         lookup_tip: [['surprised', 'U', 'surprised'], ['surprised', 'U', 'surprised'], ['surprised', 'CL', 'surprised'], ['squint', 'C', 'surprised']],
         getup: [['squint', 'C', 'sleepy'], ['angry', 'C', 'angry'], ['neutral', 'CR', 'neutral'], ['neutral', 'C', 'neutral']],
         sniff_itch: [['squint', 'D', 'sleepy'], ['squint', 'U', 'sleepy']],
+        // s3（遊美 liveliness v1 face_anchors；nuzzle／rush 3 form 一致）
+        nuzzle: [['squint', 'CR', 'squint'], ['happy', 'C', 'squint'], ['happy', 'C', 'squint'], ['squint', 'CR', 'squint'], ['happy', 'C', 'squint'], ['happy', 'C', 'happy']],
+        rush: [['surprised', 'R', 'surprised'], ['happy', 'C', 'happy'], ['neutral', 'R', 'happy'], ['happy', 'C', 'happy'], ['neutral', 'R', 'happy'], ['surprised', 'CR', 'happy']],
       },
+      purrFace: ['happy', 'C', 'happy'],     // D3 呼嚕：缺 nuzzle_purr 美術 → nuzzle 身體＋閉眼開心臉
       presets: { smug: ['sleepy', 'C', 'squint'] },   // 遊美 faceKit.presets.smug（eyes sleepy＋mouth squint ω）
-      clipFramesGaze: ['sniff', 'lookup', 'swat', 'scratch', 'sneeze', 'walk_drag', 'smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch'],   // 用 art gaze（其餘跟 look）
+      clipFramesGaze: ['sniff', 'lookup', 'swat', 'scratch', 'sneeze', 'walk_drag', 'smug_pose', 'act_cool', 'lookup_tip', 'getup', 'sniff_itch', 'nuzzle', 'rush'],   // 用 art gaze（其餘跟 look）
       blinkFrames: [1, 2],                   // blink clip 呢幾幀用閉眼
       ink: '#3b2a3e', shine: '#fff8e0', mouthIn: '#c8506a',
       // 光芽燈泡（CLIPS.json bulb）：bulb_base＋bulb_glow（multiply tint × intensity）；sick 唔疊；情緒轉換 0.4s 漸變
@@ -288,6 +300,9 @@
     lookup_tip: {"name": "lookup_tip", "frames": 4, "fps": 6, "loop": false, "pivot": "bottom-center", "priority": 2, "interruptible": false, "cooldown": 60, "next": "getup", "ready": false, "live": true},
     getup: {"name": "getup", "frames": 4, "fps": 6, "loop": false, "pivot": "bottom-center", "priority": 2, "interruptible": false, "cooldown": 0, "next": "act_cool", "ready": false, "live": true},
     sniff_itch: {"name": "sniff_itch", "frames": 2, "fps": 6, "loop": false, "pivot": "bottom-center", "priority": 1, "interruptible": false, "cooldown": 0, "next": "sneeze", "ready": false, "live": true},
+    // 生命感 s3（遊美 liveliness v1 atlas_<form>_live 已有 nuzzle／rush _noface；main 載入後 ready）
+    nuzzle: {"name": "nuzzle", "frames": 6, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 4, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "live": true, "attach": [{"prop": "heart", "anchor": "head_r", "from": 1, "under": false}]},
+    rush: {"name": "rush", "frames": 6, "fps": 12, "loop": false, "pivot": "bottom-center", "priority": 6, "interruptible": false, "cooldown": 0, "next": "cheer_jump", "ready": false, "live": true, "loopRange": [1, 4]},
     dig: {"name": "dig", "frames": 4, "fps": 6, "loop": true, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "extra": true},
   };
   // 表情＝需求狀態綁定；clip＝基礎層 clip（art CLIPS.json 優先序：sick > emo_hungry > emo_sleepy > emo_wantplay > idle）
@@ -378,15 +393,15 @@
       pet_grumpy: { file: 'sfx_pet_grumpy', bus: 'pet', gain: 1, cd: 3, rate: true },
       // D2 點一下回頭「咦？」（遊音 10-31；a/b 隨機，共用冷卻 1.5s；回頭嗰下代替 touch 聲；連點交畀 grumpy）
       pet_turn_huh_a: { file: 'sfx_pet_turn_huh_a', bus: 'pet', gain: 1, cd: 1.5, cdKey: 'pet_turn', rate: true }, pet_turn_huh_b: { file: 'sfx_pet_turn_huh_b', bus: 'pet', gain: 1, cd: 1.5, cdKey: 'pet_turn', rate: true },
-      // 生命感音效（遊音 10-31；PR #16 audio/pet-plan-a @2bfce1b 同檔）：第二段接 sneeze／scratch／step_hop／step_drag／bug_pat（journal ev 'sfx'，a/b 交替唔連續同一個）；nuzzle_purr／reunion_happy 仍 reserved（第三段）。noGap＝唔受 petMinGap、唔佔 lastPet
+      // 生命感音效（遊音 10-31；PR #16 audio/pet-plan-a @2bfce1b 同檔）：第二段接 sneeze／scratch／step_hop／step_drag／bug_pat（journal ev 'sfx'，a/b 交替唔連續同一個）；第三段接 nuzzle_purr（磨蹭呼嚕，每個 nuzzle 循環一次）／reunion_happy（重逢）。noGap＝唔受 petMinGap、唔佔 lastPet
       pet_sneeze_a: { file: 'sfx_pet_sneeze_a', bus: 'pet', gain: 1, cd: 20, cdKey: 'pet_sneeze', rate: true }, pet_sneeze_b: { file: 'sfx_pet_sneeze_b', bus: 'pet', gain: 1, cd: 20, cdKey: 'pet_sneeze', rate: true },
       pet_scratch_a: { file: 'sfx_pet_scratch_a', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_scratch', rate: true, noGap: true }, pet_scratch_b: { file: 'sfx_pet_scratch_b', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_scratch', rate: true, noGap: true },
       pet_step_hop_a: { file: 'sfx_pet_step_hop_a', bus: 'pet', gain: 1, cd: 0.1, cdKey: 'pet_step', rate: true, noGap: true, noLast: true }, pet_step_hop_b: { file: 'sfx_pet_step_hop_b', bus: 'pet', gain: 1, cd: 0.1, cdKey: 'pet_step', rate: true, noGap: true, noLast: true },
       pet_step_drag_a: { file: 'sfx_pet_step_drag_a', bus: 'pet', gain: 1, cd: 0.4, cdKey: 'pet_step', rate: true, noGap: true, noLast: true }, pet_step_drag_b: { file: 'sfx_pet_step_drag_b', bus: 'pet', gain: 1, cd: 0.4, cdKey: 'pet_step', rate: true, noGap: true, noLast: true },
       // 拖步「踏地聲」（walk_drag 2、5）：未有專屬檔 → 借 step_hop a/b 細聲＋低音高（遊音確認前暫用）
       pet_step_plod_a: { file: 'sfx_pet_step_hop_a', bus: 'pet', gain: 0.5, cd: 0.3, cdKey: 'pet_plod', fixedRate: 0.82, noGap: true, noLast: true }, pet_step_plod_b: { file: 'sfx_pet_step_hop_b', bus: 'pet', gain: 0.5, cd: 0.3, cdKey: 'pet_plod', fixedRate: 0.82, noGap: true, noLast: true },
-      pet_nuzzle_purr_a: { file: 'sfx_pet_nuzzle_purr_a', bus: 'pet', gain: 1, reserved: true }, pet_nuzzle_purr_b: { file: 'sfx_pet_nuzzle_purr_b', bus: 'pet', gain: 1, reserved: true },
-      pet_reunion_happy_a: { file: 'sfx_pet_reunion_happy_a', bus: 'pet', gain: 1, cdKey: 'pet_reunion', rate: true, reserved: true }, pet_reunion_happy_b: { file: 'sfx_pet_reunion_happy_b', bus: 'pet', gain: 1, cdKey: 'pet_reunion', rate: true, reserved: true },
+      pet_nuzzle_purr_a: { file: 'sfx_pet_nuzzle_purr_a', bus: 'pet', gain: 1, cd: 0.8, cdKey: 'pet_purr', noGap: true }, pet_nuzzle_purr_b: { file: 'sfx_pet_nuzzle_purr_b', bus: 'pet', gain: 1, cd: 0.8, cdKey: 'pet_purr', noGap: true },
+      pet_reunion_happy_a: { file: 'sfx_pet_reunion_happy_a', bus: 'pet', gain: 1, cd: 2, cdKey: 'pet_reunion', rate: true, noGap: true }, pet_reunion_happy_b: { file: 'sfx_pet_reunion_happy_b', bus: 'pet', gain: 1, cd: 2, cdKey: 'pet_reunion', rate: true, noGap: true },
       pet_bug_pat_a: { file: 'sfx_pet_bug_pat_a', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_bug_pat', noGap: true, rate: true }, pet_bug_pat_b: { file: 'sfx_pet_bug_pat_b', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_bug_pat', noGap: true, rate: true },
       // 事件音（事件優先；閃光日只喺閃光日用）
       event_gift: { file: 'sfx_event_gift_return', bus: 'event', gain: 1 }, event_butterfly: { file: 'sfx_event_butterfly_visit', bus: 'event', gain: 1 },

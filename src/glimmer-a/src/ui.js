@@ -8,7 +8,7 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   let G, rd;
-  const NS_BEH = { tap: (b, k, x, y, o) => window.Glimmer.behavior.tap(b, k, x, o && o.hold ? y : undefined, o), drag: (b, x, y) => window.Glimmer.behavior.drag(b, x, y), dragEnd: (b) => window.Glimmer.behavior.dragEnd(b) };
+  const NS_BEH = { tap: (b, k, x, y, o) => window.Glimmer.behavior.tap(b, k, x, o && o.hold ? y : undefined, o), drag: (b, x, y) => window.Glimmer.behavior.drag(b, x, y), dragEnd: (b) => window.Glimmer.behavior.dragEnd(b), nuzzle: (b, x, y) => window.Glimmer.behavior.nuzzle(b, x, y), nuzzleEnd: (b) => window.Glimmer.behavior.nuzzleEnd(b) };
   const EVN = () => window.Glimmer.events, LT = () => window.Glimmer.light;
   const SND = (k, i) => { const a = window.Glimmer.audio; if (a && a.Engine) a.Engine.notify(k, i); };   // 音訊 cue 通知（audio.js Director 決定播咩）
   const UI = {};
@@ -208,7 +208,7 @@
     grp('表情（設需求）', [['開心', needSet({ hunger: 100, mood: 100, clean: 100, energy: 100 }), 'dbg-ex-happy'], ['平靜', needSet({ hunger: 60, mood: 60, clean: 60, energy: 60 }), 'dbg-ex-neutral'], ['肚餓', needSet({ hunger: 20 }), 'dbg-ex-hungry'], ['疲倦', needSet({ energy: 20 }), 'dbg-ex-tired'], ['想玩', needSet({ mood: 20 }), 'dbg-ex-bored'], ['污糟', needSet({ clean: 20 }), 'dbg-ex-dirty'], ['不適', needSet({ hunger: 3 }), 'dbg-ex-unwell']]);
     grp('行為', ['blink', 'sway', 'yawn', 'walk', 'jump', 'play', 'nap', 'sunbathe', 'bump', 'grumpy', 'startle', 'cuddly', 'react'].map(n => [n, () => G.forceBeh(n), 'dbg-beh-' + n]));
     grp('生命感第二段', ['scratch', 'sneeze', 'sniff', 'sniff_sneeze', 'lookup', 'lookup_tip', 'swat_miss', 'swat_hit'].map(n => [n, () => G.forceBeh(n), 'dbg-beh-' + n]));
-    grp('即刻觸發', [['嗅地', 'sniff'], ['望天', 'lookup'], ['拍蟲', 'swat'], ['抓癢', 'scratch'], ['打噴嚏', 'sneeze'], ['開心步', 'happy'], ['拖步', 'drag'], ['smug', 'smug']].map(([l, k]) => [l, () => G.liveNow(k), 'dbg-now-' + k]).concat([['展示模式', () => G.setLiveDemo(!G.liveDemo), 'dbg-live-demo']]));
+    grp('即刻觸發', [['嗅地', 'sniff'], ['望天', 'lookup'], ['拍蟲', 'swat'], ['抓癢', 'scratch'], ['打噴嚏', 'sneeze'], ['開心步', 'happy'], ['拖步', 'drag'], ['smug', 'smug'], ['磨蹭', 'nuzzle'], ['久未見', 'reunion']].map(([l, k]) => [l, () => G.liveNow(k), 'dbg-now-' + k]).concat([['燈泡心情', () => G.liveNow('bulb'), 'dbg-now-bulb'], ['展示模式', () => G.setLiveDemo(!G.liveDemo), 'dbg-live-demo']]));
     grp('事件（強制）', D.EVENTS.filter(e => !e.special).map(e => [e.name, () => G.forceEvent(e.id), 'dbg-ev-' + e.id]).concat([['閃光日', () => { EVN().setFlashDay(s(), true); EVN().force(s(), 'flash'); }, 'dbg-ev-flash']]));
     grp('時段（早午晚深夜）', LT().ORDER.map(p => [D.PARAMS.light.periods[p].name, () => G.setPeriod(p), 'dbg-per-' + p]).concat([['實時', () => G.setPeriod(null), 'dbg-per-real']]));
     // 生命感第一段：表情／gaze／臉模式／點一下回頭（QA）
@@ -250,10 +250,13 @@
     const inBox = (a, b) => a.x >= b.x && a.x <= b.x + b.w && a.y >= b.y && a.y <= b.y + b.h;
     let press = null, down = false;
     const SHORT_MS = (P.beh.look && P.beh.look.shortTapMs) || 300;
+    const NUZZLE_MS = (P.beh.live && P.beh.live.nuzzleHoldMs) || 400;   // D3：撳住寵物 ≥0.4s → 挨埋嚟磨蹭（鬆手即停）
+    const endNuzzle = (p) => { if (!p) return; clearTimeout(p.timer); if (p.nuzzle && G.beh) NS_BEH.nuzzleEnd(G.beh); };
     hit.addEventListener('pointermove', (e) => {
       const a = toArt(e);
       if (G.mode === 'minigame' && mgs) { if (e.buttons || e.pointerType === 'touch' || true) mgs.target = a.x; return; }
       if (down && G.beh && !G.state.sleeping && G.state.stage !== 'egg') NS_BEH.drag(G.beh, a.x - R.CX, a.y - R.GROUND_Y);   // P2：拖動手指 → 眼神跟手指
+      if (down && press) { press.mx = a.x - R.CX; press.my = a.y - R.GROUND_Y; }
       rd.parT.x = clamp((a.x / R.W - 0.5) * 2, -1, 1); rd.parT.y = clamp((a.y / R.H - 0.5) * 2, -1, 1); rd.parT.active = true; rd.parT.last = rd.t;
     });
     hit.addEventListener('pointerdown', (e) => {
@@ -266,7 +269,7 @@
       const b = petHitBox();
       if (inBox(a, b)) {
         if (s.stage === 'egg') { SIM.tapEgg(s); processEvents(); G.save(); }
-        else if (!s.sleeping) { if (G.beh) press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y }; else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
+        else if (!s.sleeping) { if (G.beh) { const p = press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y, mx: a.x - R.CX, my: a.y - R.GROUND_Y, nuzzle: false }; p.timer = setTimeout(() => { if (press === p && down && G.beh && !G.state.sleeping && G.mode !== 'minigame') { p.nuzzle = true; NS_BEH.nuzzle(G.beh, p.mx, p.my); } }, NUZZLE_MS); } else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
         else if (G.lightWake && G.lightWake()) { toast('團絨揉揉眼醒咗…仲有啲睏睏'); SND('sleep', { on: false }); }
       } else if (s.stage !== 'egg' && !s.sleeping && G.beh && a.y > R.GROUND_Y - 50 && a.y < R.GROUND_Y + 40) {
         NS_BEH.tap(G.beh, 'ground', clamp(a.x - R.CX, -70, 70), a.y - R.GROUND_Y);
@@ -274,14 +277,14 @@
     });
     const release = (e, cancel) => {
       down = false; if (G.beh) NS_BEH.dragEnd(G.beh);
-      const p = press; press = null; if (!p || cancel || G.mode === 'minigame' || !G.beh || G.state.sleeping) return;
-      const ms = performance.now() - p.t0; G.lastPetPress = { ms: Math.round(ms), short: ms < SHORT_MS };
+      const p = press; press = null; endNuzzle(p); if (!p || cancel || G.mode === 'minigame' || !G.beh || G.state.sleeping) return;
+      const ms = performance.now() - p.t0; G.lastPetPress = { ms: Math.round(ms), short: ms < SHORT_MS, nuzzle: !!p.nuzzle };
       if (ms < SHORT_MS) NS_BEH.tap(G.beh, 'pet', p.x, p.y);             // 短 tap：照舊（望向＋回頭 D2＋反應／連點）
-      else NS_BEH.tap(G.beh, 'pet', p.x, p.y, { hold: true });           // 長按：只望住，唔回頭唔反應（蹭手留第三段）
+      else NS_BEH.tap(G.beh, 'pet', p.x, p.y, { hold: true });           // 長按：唔回頭唔反應（≥0.4s 已經由 timer 開始磨蹭 D3）
     };
     hit.addEventListener('pointerup', (e) => release(e, false));
     hit.addEventListener('pointercancel', (e) => release(e, true));
-    hit.addEventListener('pointerleave', () => { rd.parT.active = false; if (down) { down = false; press = null; if (G.beh) NS_BEH.dragEnd(G.beh); } });
+    hit.addEventListener('pointerleave', () => { rd.parT.active = false; if (down) { down = false; endNuzzle(press); press = null; if (G.beh) NS_BEH.dragEnd(G.beh); } });
     UI.petHitBox = petHitBox;
     window.addEventListener('deviceorientation', (e) => { if (e.gamma == null || G.mode === 'minigame') return; rd.parT.x = clamp(e.gamma / 22, -1, 1); rd.parT.y = clamp(((e.beta || 45) - 45) / 25, -1, 1); rd.parT.active = true; rd.parT.last = rd.t; });
     if (G.debug) buildDebug();

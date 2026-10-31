@@ -124,13 +124,14 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const behind = async (holdMs) => {
     await E(() => { const b = __glimmer.beh; __qa.pet.force('idle'); __qa.pet.step(2); b.dir = 1; b.turn = null; b.lastTouch = b.t; b.petTaps.length = 0; }); await page.waitForTimeout(150);
     const h = await E(() => __qa.pet.hitBox()); const x = h.css.x + 4, y = h.css.y + h.css.h / 2;   // 寵物向右，點佢左邊（背後）
-    const t0 = await E(() => ({ turn: __glimmer.beh.log.enters.turn || 0, hold: __glimmer.beh.log.enters.hold || 0 }));
+    const t0 = await E(() => ({ turn: __glimmer.beh.log.enters.turn || 0, hold: __glimmer.beh.log.enters.hold || 0, nz: __glimmer.beh.log.enters.nuzzleStart || 0 }));
     await page.mouse.move(x, y); await page.mouse.down(); await page.waitForTimeout(holdMs); await page.mouse.up(); await E(() => __qa.pet.step(0.3));
-    const t1 = await E(() => ({ turn: __glimmer.beh.log.enters.turn || 0, hold: __glimmer.beh.log.enters.hold || 0, dir: __glimmer.beh.dir, press: __glimmer.lastPetPress }));
-    return { turn: t1.turn - t0.turn, hold: t1.hold - t0.hold, dir: t1.dir, press: t1.press };
+    const t1 = await E(() => ({ turn: __glimmer.beh.log.enters.turn || 0, hold: __glimmer.beh.log.enters.hold || 0, nz: __glimmer.beh.log.enters.nuzzleStart || 0, dir: __glimmer.beh.dir, press: __glimmer.lastPetPress }));
+    return { turn: t1.turn - t0.turn, hold: t1.hold - t0.hold, nz: t1.nz - t0.nz, dir: t1.dir, press: t1.press };
   };
   let r = await behind(60); ok(r.turn === 1 && r.dir === -1 && r.press.short, `短 tap（${r.press.ms}ms）背後：回頭 1 次`, JSON.stringify(r));
-  r = await behind(650); ok(r.turn === 0 && r.hold === 1 && r.dir === 1 && !r.press.short, `長按（${r.press.ms}ms）背後：唔回頭（記 hold，留第三段蹭手）`, JSON.stringify(r));
+  // s3（10-31）刻意改：長按 ≥0.4s 而家會開始 D3 磨蹭（nuzzle 轉向手指）→ 背後長按會面向手指；但仍然唔算 D2 回頭（turn 0）
+  r = await behind(650); ok(r.turn === 0 && r.hold === 1 && !r.press.short && r.press.nuzzle && (r.nz === 1 ? r.dir === -1 : r.dir === 1), `長按（${r.press.ms}ms）背後：唔 D2 回頭（記 hold）；s3 磨蹭轉向手指（nuzzle ${r.nz}）`, JSON.stringify(r));
   r = await behind(250); ok(r.turn === 1 && r.press.ms < 300, `250ms 仍算短 tap：回頭`, JSON.stringify(r));
 
   console.log('# P2 拖動手指 → 眼神跟手指');

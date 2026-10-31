@@ -19,7 +19,7 @@
       loops: { sleep_breath: false, sunbathe: false }, bgm: null, stats: { cues: 0, skipped: 0 }, alt: {}, lastAB: {},
     };
   }
-  const SFX_AB = { sneeze: 1, scratch: 1, step_hop: 1, step_drag: 1, step_plod: 1, bug_pat: 1 };
+  const SFX_AB = { sneeze: 1, scratch: 1, step_hop: 1, step_drag: 1, step_plod: 1, bug_pat: 1, nuzzle_purr: 1, reunion_happy: 1 };   // 第三段加 nuzzle_purr／reunion_happy
   function rateFor(d, c) { if (c.fixedRate) return c.fixedRate; return c.rate ? A.petRate[0] + (A.petRate[1] - A.petRate[0]) * d.rng() : 1; }
   // 嘗試出一個 cue（遵守冷卻／間隔／事件優先）；after＝延遲秒
   function emit(d, out, name, after, opts) {

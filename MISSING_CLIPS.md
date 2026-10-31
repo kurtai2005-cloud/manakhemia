@@ -39,6 +39,15 @@
 | 5 | fx `bug` | 2–3／10 | A2 拍走蟲仔嘅蟲仔（engine 飛近 head_r） | 程序化 2×2 黑點＋1px 翼閃（canvas 畫） |
 | 6 | `sniff_itch` | 2／6 | 嗅到鼻癢嘅過渡幀 | 直接 sniff → sneeze 接駁 |
 
+## 生命感第三段（s3：D3 磨蹭／D5 久別重逢／G1 燈泡）— 轉遊美
+已有（直接用）：`nuzzle`（6／6fps loop，frame 1 起 head_r 心心）、`rush`（6／12fps，loopRange [1,4]，速度線＋塵已畫入幀，next cheer_jump）—— sprout／radiant／soft 三個 live atlas＋face_anchors 齊；`bulb_base`＋灰階 `bulb_glow` 三 form 齊（5 心情 tint 用 face.bulb.moods）。音效 sfx_pet_nuzzle_purr_a/b、sfx_pet_reunion_happy_a/b 齊。
+
+| # | 缺 clip | 用途 | 而家 fallback |
+|---|---|---|---|
+| 1 | `nuzzle_purr` | 磨蹭 ≥1.2s 後嘅呼嚕（合眼、輕震） | `nuzzle` 身體繼續 loop＋強制臉 ['happy','C','happy']（合眼笑）＋purr 聲（每圈一次 a/b 交替） |
+| 2 | `reunion_happy` | 衝埋嚟煞停扮冷靜之後嘅開心重逢 | `cheer_jump` ×2 跳（hopH 0.6）＋心心 burst＋reunion_happy 聲 |
+| 3 | dust form live atlas（舊限制） | 微塵 form 嘅 nuzzle／rush | idle＋程序化變形；螢絨（lumi）借柔光 |
+
 ## 其他備註
 - 微塵（dust）form 冇 live atlas，第二段全部新 clip 照舊用 idle＋程序化變形 placeholder（同第一段一樣）。螢絨（lumi）借柔光 clip。dust／lumi／rim_live 仲未有 s2 版本 → 繼續 fallback（rim 退 rimFallback）。
 - **步佐幀（遊美 s2 量度，已改）**：walk_happy 落地＝索引 0、3（2、5 係最高點）→ step_hop；walk_drag 拖地起塵＋拖地聲（step_drag）＝索引 1、4，踏地聲（新 cue step_plod）＝索引 2、5。step_plod 暫時借 sfx_pet_step_hop a/b（gain 0.5、rate 0.82），待遊音出專屬檔。

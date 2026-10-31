@@ -125,7 +125,7 @@
       },
       state() { const S = s(); return { open: api.isOpen(), folded: el.classList.contains('fold'), speed: G.timeScale, clockRun: !!G.clockRun, hour: +G.hour().toFixed(2), stage: S.stage, form: S.form, cq: Math.round(S.cq), needs: Object.assign({}, S.needs), pers: G.beh ? Object.assign({}, G.beh.pers) : null, scene: G.hd ? G.hd.current() : null, weather: G.weather || 'clear', resetArmed: !!resetArm }; },
       // ── 生命感第二段（s2b）：即刻觸發（唔理冷卻／機率，個性鏈照接）＋強制鏈＋展示模式 ──
-      live(k) { note('live', k); const ok = G.liveNow ? G.liveNow(k) : false; sync(); return ok ? (G.beh.gaitForce ? G.beh.gaitForce.g : G.beh.seq && G.beh.seq[G.beh.seqI] ? (G.beh.seq[G.beh.seqI].tag || G.beh.seq[G.beh.seqI].clip) : G.beh.state) : false; },
+      live(k) { note('live', k); const ok = G.liveNow ? G.liveNow(k) : false; sync(); if (k === 'bulb') return ok; if (k === 'nuzzle' && ok) return G.beh.state; if (k === 'reunion' && ok) return G.reunionPending ? 'pending' : 'reunion'; return ok ? (G.beh.gaitForce ? G.beh.gaitForce.g : G.beh.seq && G.beh.seq[G.beh.seqI] ? (G.beh.seq[G.beh.seqI].tag || G.beh.seq[G.beh.seqI].clip) : G.beh.state) : false; },
       chain(name) { note('chain', name); G.forceBeh(name); sync(); return name; },
       demo(on) { const v = on == null ? !G.liveDemo : (on === true || on === 'on' || on === '1' || on === 1); note('demo', v); G.setLiveDemo(v); sync(); return G.liveDemo; },
       sync: () => sync(),
@@ -133,8 +133,9 @@
     function disarm() { resetArm = 0; clearTimeout(resetTimer); sync(); }
 
     // ── DOM ──
-    const LIVE_NOW = [['sniff', '嗅地'], ['lookup', '望天'], ['swat', '拍蟲'], ['scratch', '抓癢'], ['sneeze', '打噴嚏'], ['happy', '開心步'], ['drag', '拖步'], ['smug', 'smug']];
+    const LIVE_NOW = [['sniff', '嗅地'], ['lookup', '望天'], ['swat', '拍蟲'], ['scratch', '抓癢'], ['sneeze', '打噴嚏'], ['happy', '開心步'], ['drag', '拖步'], ['smug', 'smug'], ['nuzzle', '磨蹭'], ['reunion', '久未見'], ['bulb', '燈泡']];   // s3：磨蹭（自動撳住 2.6s）／久未見（模擬離線 8h → 衝埋嚟）／燈泡（循環 5 心情）
     const LIVE_CHAIN = [['sniff_sneeze', '嗅→噴嚏'], ['lookup_tip', '望天→後倒'], ['swat_miss', '撲空→得意'], ['swat_hit', '拍中']];
+    const BULB_ZH = { happy: '開心', neutral: '平常', sleepy: '睏', hungry: '肚餓', grumpy: '嬲' };
     const btn = (label, fn, tid, cls) => `<button data-a="${fn}" ${tid ? 'data-testid="' + tid + '"' : ''} class="${cls || ''}">${label}</button>`;
     function render() {
       const S = s(), N = D.NEED_LABEL;
@@ -162,6 +163,7 @@
       el.querySelectorAll('button[data-a^="scene:"]').forEach(b => b.classList.toggle('on', !!sc && b.dataset.a.split(':')[1] === sc.mode));
       el.querySelectorAll('button[data-a^="personality:"]').forEach(b => b.classList.toggle('on', b.dataset.a.split(':')[1] === (G.devPers || 'default')));
       el.querySelectorAll('button[data-a^="setForm:"]').forEach(b => { const f = b.dataset.a.split(':')[1]; b.classList.toggle('on', f === S.stage || (S.stage === 'adult' && f === S.form)); });
+      const bb = q('[data-a="live:bulb"]'); if (bb) { const m = G.beh && G.beh.bulbForce; bb.classList.toggle('on', !!m); bb.textContent = '燈泡 ' + (m ? BULB_ZH[m] || m : '自動'); }
       const dm = q('[data-a="demo"]'); if (dm) { dm.classList.toggle('on', !!G.liveDemo); dm.textContent = '展示模式 ' + (G.liveDemo ? '開' : '關'); }
       const dst = q('.dmst'); if (dst) dst.textContent = G.liveDemo ? '×' + (P.beh.live.demoMul || 5) + ' 頻率／冷卻 ÷' + (P.beh.live.demoMul || 5) : '正常頻率';
       const hb = q('[data-a="hd2d"]'); if (hb) hb.classList.toggle('on', !!(G.hd && G.hd.enabled));

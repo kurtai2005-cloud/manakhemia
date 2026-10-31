@@ -410,5 +410,78 @@ console.log('# 遊美 daylight.json 時段 hook（lighting.setDaylight／dayligh
   L.setDaylight(j);
 }
 
+console.log('# 生命感第三段（D3 長按磨蹭／D5 久別重逢衝埋嚟／G1 燈泡）');
+{
+  const LVP = P.live, S3C = ['nuzzle', 'rush', 'act_cool'];
+  const mk3 = (needs, seed) => { const b = BEH.create(seed || 21), s = mkS(needs || { mood: 55 }), ctx = ctxAt(s, 14); run(b, ctx, 0.5); b.state = 'stay'; b.phase = ''; b.variant = null; b.x = 0; b.dir = 1; b.clip = 'idle'; return { b, s, ctx }; };
+  const withReady = (fn, on) => { const sv = S3C.map(k => D.CLIPS[k].ready); S3C.forEach(k => D.CLIPS[k].ready = on !== false); try { return fn(); } finally { S3C.forEach((k, i) => D.CLIPS[k].ready = sv[i]); } };
+  const tagOf = (b) => b.show.clip + (b.state === 'micro' && b.seq && b.seq[b.seqI] && b.seq[b.seqI].tag ? ':' + b.seq[b.seqI].tag : b.state === 'nuzzle' ? ':' + b.phase : '');
+  // ── 資料：nuzzle／rush 對齊 art CLIPS.json＋atlas_<form>_live＋face_anchors；缺 nuzzle_purr／reunion_happy ──
+  { const LVD = path.join(root0, 'art/liveliness'), fa = JSON.parse(fs.readFileSync(path.join(LVD, 'face_anchors.json'), 'utf8')), cj = JSON.parse(fs.readFileSync(path.join(LVD, 'CLIPS.json'), 'utf8')); const bad = [];
+    for (const k of ['nuzzle', 'rush']) { const a = cj.clips.find(c => c.name === k), d = D.CLIPS[k];
+      if (!a || !d || !d.live || a.frames !== d.frames || a.fps !== d.fps || !!a.loop !== !!d.loop || a.priority !== d.priority || a.interruptible !== d.interruptible || (a.cooldown_s || 0) !== (d.cooldown || 0) || a.next !== d.next) bad.push('spec/' + k);
+      if (k === 'rush' && (d.loopRange || []).join() !== (a.loopRange || []).join()) bad.push('loopRange');
+      if (k === 'nuzzle') { const at = a.attachments[0], m = d.attach[0]; if (!at || !m || at.prop !== m.prop || at.anchor !== m.anchor || at.startFrame !== m.from) bad.push('attach'); }
+      for (const f of ['sprout', 'radiant', 'soft']) { const A = JSON.parse(fs.readFileSync(path.join(LVD, 'atlas_' + f + '_live.json'), 'utf8')); const an = A.animations[k + '_noface'], anc = fa.anchors[f][k];
+        if (!an || an.frames.length !== d.frames || !anc || anc.length !== d.frames) bad.push(f + '/' + k);
+        else anc.forEach((x, i) => { const e = D.PARAMS.face.clipFrames[k][i]; if (!x.face || x.face.eyes !== e[0] || x.face.gaze !== e[1] || x.face.mouth !== e[2] || !x.bulb) bad.push(f + '/' + k + '#' + i); }); } }
+    ok(bad.length === 0, 'nuzzle／rush：規格（幀／fps／loop／priority／next／loopRange／heart attach）＝art CLIPS.json；3 形態 _live atlas _noface 6 幀＋逐幀五官＝face_anchors＋燈泡錨點', bad.slice(0, 8).join());
+    ok(!cj.clips.find(c => c.name === 'nuzzle_purr') && !cj.clips.find(c => c.name === 'reunion_happy') && !D.CLIPS.nuzzle_purr && !D.CLIPS.reunion_happy, '缺美術（轉遊美）：nuzzle_purr／reunion_happy 冇 clip → 用 fallback'); 
+    ok(BEH.NOW.includes('nuzzle') && BEH.NOW.includes('reunion') && LVP.reunionAwayH === 6 && LVP.nuzzleHoldMs === 400, 'NOW 加 nuzzle／reunion；離線門檻 6h（art trigger）；長按 0.4s'); }
+  withReady(() => {
+    // ── D3：撳住 → 轉向手指、挨埋、nuzzle 循環＋heart（第 1 幀起）→ 1.2s 呼嚕 → 鬆手播完當前幀 → 扮冇事 ──
+    { const { b, ctx } = mk3(); run(b, ctx, 0.1);
+      const x0 = b.x; BEH.nuzzle(b, -14, -20); BEH.step(b, ctx);
+      ok(b.state === 'nuzzle' && b.dir === -1 && b.clip === 'nuzzle' && !b.turn, '撳住 0.4s（手指喺左）→ nuzzle，轉向手指（scaleX −1；唔計 D2 回頭）', JSON.stringify({ s: b.state, d: b.dir, c: b.clip }));
+      let heart0 = null, heart1 = false, purrT = null, moved = 0, face = null; const fr = [];
+      for (let i = 0; i < Math.round(2 / FIX); i++) { BEH.step(b, ctx); if (fr[fr.length - 1] !== b.frame) fr.push(b.frame); if (b.frame === 0 && heart0 == null) heart0 = b.attach.some(a => a.prop === 'heart'); if (b.frame >= 1 && b.attach.some(a => a.prop === 'heart')) heart1 = true; if (purrT == null && b.phase === 'purr') { purrT = b.t; } if (b.phase === 'purr') face = Object.assign({}, b.face); moved = Math.max(moved, Math.abs(b.x - x0)); }
+      const purrSfx = b.journal.filter(j => j.ev === 'sfx' && j.name === 'nuzzle_purr').length;
+      ok(fr.slice(0, 7).join('') === '0123450' && heart0 === false && heart1, 'nuzzle 6 幀 6fps 循環；heart 由第 1 幀起（head_r）', fr.join(''));
+      ok(moved > 2 && moved <= LVP.nuzzleStep + 0.01 && b.dir === -1, '挨埋手指（行 ' + moved.toFixed(1) + 'px ≤ 10，保持望住手指）');
+      ok(purrT != null && purrSfx >= 1 && face && face.eyes === 'happy' && face.mouth === 'happy', '撳 ≥1.2s → 呼嚕：purr 聲＋閉眼開心臉（缺 nuzzle_purr 美術 → nuzzle 身體＋臉）', JSON.stringify(face));
+      ok(BEH.weights && b.state === 'nuzzle', '撳住期間持續磨蹭（2s 後仍然 nuzzle）');
+      const relFr = b.frame; BEH.nuzzleEnd(b); BEH.step(b, ctx); const endT = b.t; let left = null;
+      for (let i = 0; i < 60 && left == null; i++) { BEH.step(b, ctx); if (b.state !== 'nuzzle') left = b.t; }
+      ok(left != null && left - endT <= 1 / 6 + 0.02, '鬆手 → 播完當前幀（第 ' + relFr + ' 幀）先離開（' + ((left - endT) * 1000).toFixed(0) + 'ms ≤ 1 幀）'); }
+    { let cool = 0, idle = 0, chains = new Set();
+      for (let seed = 1; seed <= 40; seed++) { const { b, ctx } = mk3(null, seed); BEH.nuzzle(b, b.x + 14, -20); run(b, ctx, 1.4); BEH.nuzzleEnd(b); const tl = [];
+        for (let i = 0; i < 400; i++) { BEH.step(b, ctx); const k = tagOf(b); if (tl[tl.length - 1] !== k) tl.push(k); if (b.state === 'stay') break; }
+        if (tl.join('>').includes('act_cool')) { cool++; chains.add(tl.join('>')); } else idle++; }
+      ok(cool >= 22 && cool <= 38 && idle >= 2, '個性：磨蹭完 ~75% 扮冇事（呆一呆 → act_cool）（' + cool + '/40；' + [...chains][0] + '）');
+      ok([...chains].every(c => /idle:blank>act_cool:act_cool/.test(c)), '扮冇事鏈＝blank（望鏡頭冇表情）→ 真 act_cool', [...chains].join(' | ')); }
+    { const { b, ctx } = mk3(); BEH.nuzzle(b, 14, -20); run(b, ctx, 0.3); BEH.nuzzleEnd(b); run(b, ctx, 2);
+      ok(b.journal.filter(j => j.ev === 'micro' && j.name === 'nuzzle_end' && j.ph === 'idle').length === 1, '磨蹭 <0.8s 就鬆手 → 唔扮冇事，直接回 idle'); }
+    { const { b, ctx } = mk3(); BEH.force(b, 'now_nuzzle', ctx); const st0 = b.state; run(b, ctx, LVP.nowNuzzleSec + 0.3); const tl = b.log.micro.map(m => m.name);
+      ok(st0 === 'nuzzle' && tl.includes('nuzzle_cool'), '即刻觸發 nuzzle：自動撳住 ' + LVP.nowNuzzleSec + 's 再鬆手 → 一定扮冇事', tl.join()); }
+    // 唔得磨蹭：瞓覺（sim）／鬧脾氣／蛋 → 撳住等；鬆手取消
+    { const { b, ctx } = mk3(); BEH.force(b, 'grumpy', ctx); BEH.nuzzle(b, 14, -20); run(b, ctx, 0.3); const g = b.state; BEH.nuzzleEnd(b); run(b, ctx, 5);
+      ok(g === 'grumpy' && b.state !== 'nuzzle' && !b.nuzzleReq, '鬧脾氣中撳住唔會磨蹭；鬆手就取消（唔會遲咗先蹭）');
+      const m = mk3(); m.s.sleeping = true; BEH.nuzzle(m.b, 14, -20); run(m.b, m.ctx, 0.5); ok(m.b.state !== 'nuzzle', '瞓覺（sim）唔磨蹭'); BEH.nuzzleEnd(m.b); }
+    // ── D5：rush 第 1 幀起步 → 2–5 循環跑 → 衝過頭 → 第 6 幀煞停 → act_cool → 行返中間 → 重逢（cheer_jump 跳 2 下＋心心＋reunion 聲）──
+    { const { b, ctx } = mk3(); b.x = 20; BEH.force(b, 'now_reunion', ctx); const x0 = b.x, d0 = b.dir; const tl = [], runFr = new Set(); let minX = 99, maxLift = 0, brakeFr = null, hearts = 0, T = 0, startFr = null;
+      for (let i = 0; i < Math.round(8 / FIX) && b.state === 'micro'; i++) { BEH.step(b, ctx); T += FIX; const k = tagOf(b); if (tl[tl.length - 1] !== k) tl.push(k);
+        const tg = b.seq && b.seq[b.seqI] && b.seq[b.seqI].tag; if (tg === 'rush_start' && startFr == null) startFr = b.frame; if (tg === 'rush') runFr.add(b.frame); if (tg === 'brake') brakeFr = b.frame;
+        minX = Math.min(minX, b.x); maxLift = Math.min(maxLift, b.lift); hearts += b.fx.filter(f => f.type === 'heart').length; b.fx.length = 0; }
+      ok(x0 === P.rangeX[1] && d0 === -1, '由場邊（遠嗰邊 x=' + x0 + '）向中間衝');
+      ok(tl.join('>') === 'rush:rush_start>rush:rush>rush:brake>act_cool:act_cool>walk:back>cheer_jump:reunion_happy>idle', '重逢鏈：' + tl.join('>'));
+      ok(startFr === 0 && [...runFr].sort().join('') === '1234' && brakeFr === 5, 'rush：第 1 幀起步、2–5 幀循環（loopRange [1,4]）、第 6 幀煞停', startFr + '/' + [...runFr].join('') + '/' + brakeFr);
+      ok(minX <= -LVP.rushOvershoot + 0.1 && Math.abs(b.x) <= P.arriveEps + 0.01, '衝過頭（去到 x=' + minX.toFixed(1) + '）→ 煞停 → 行返中間（x=' + b.x.toFixed(1) + '）');
+      ok(maxLift < -3 && hearts >= 2, '開心重逢（缺 reunion_happy → cheer_jump 跳 ' + LVP.reunionHops + ' 下＋心心 ' + hearts + '）');
+      const sf = b.journal.filter(j => j.ev === 'sfx').map(j => j.name);
+      ok(sf.filter(n => n === 'reunion_happy').length === 1 && sf.includes('step_drag') && sf.filter(n => n === 'step_hop').length >= 3, 'sfx：跑步 step_hop、煞停 step_drag、重逢 reunion_happy ×1');
+      ok(T < 7 && b.state === 'stay', '全程 ' + T.toFixed(1) + 's 完返 stay'); }
+    { const { b, ctx } = mk3(); b.x = -30; BEH.force(b, 'now_reunion', ctx); BEH.step(b, ctx); ok(b.x === P.rangeX[0] && b.dir === 1, '喺左邊 → 由左邊場邊衝入（向右）'); }
+    { const { b, ctx } = mk3(); BEH.force(b, 'now_reunion', ctx); run(b, ctx, 1); const n0 = b.log.enters.tapIgnored || 0; BEH.tap(b, 'pet', b.x, -20); run(b, ctx, 0.1);
+      ok((b.log.enters.tapIgnored || 0) === n0 + 1 && b.state === 'micro', '衝緊／煞停中唔可中斷（點佢只會望）'); }
+  });
+  // fallback（?live=0／dust）：冇 nuzzle／rush 美術
+  withReady(() => {
+    const { b, ctx } = mk3(); BEH.nuzzle(b, 14, -20); BEH.step(b, ctx); ok(b.state === 'nuzzle' && b.clip === 'emo_cuddly', 'fallback：缺 nuzzle → emo_cuddly 身體');
+    BEH.nuzzleEnd(b); run(b, ctx, 3);
+    const m = mk3(); BEH.force(m.b, 'now_reunion', m.ctx); const tl = []; for (let i = 0; i < 600 && m.b.state === 'micro'; i++) { BEH.step(m.b, m.ctx); const k = tagOf(m.b); if (tl[tl.length - 1] !== k) tl.push(k); }
+    ok(tl.join('>') === 'walk:rush_start>walk:rush>walk:brake>sway:act_cool>walk:back>cheer_jump:reunion_happy>idle', 'fallback：缺 rush → 快行（walk）＋煞停 squash＋扮冷靜（sway）', tl.join('>'));
+  }, false);
+}
+
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);
 process.exit(fail ? 1 : 0);

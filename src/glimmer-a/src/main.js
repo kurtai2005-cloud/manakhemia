@@ -76,6 +76,7 @@
     Object.keys(D.CLIPS).filter(k => D.CLIPS[k].live).forEach(k => { D.CLIPS[k].ready = !!(lv && ['sprout', 'radiant', 'soft'].every(f => lv.atlas[f] && lv.atlas[f].json.animations[k + '_noface'])); });   // turn_back＋第二段 7 clip（live atlas 有先 ready）
     G.liveReady = !!lv; return lv;
   }) : Promise.resolve(null);
+  G.liveSettled = false; G.liveLoad.then(() => { G.liveSettled = true; }, () => { G.liveSettled = true; });   // s3：重逢等 live atlas 載完先衝（rush 用真 clip）
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
   if (NS.hd2d) NS.hd2d.install(G, NS);
   UI.init(G);
@@ -147,6 +148,7 @@
     const act = rd.pet.act && rd.t < rd.pet.until ? rd.pet.act : null;
     G.behCtx = { s, pw: G.light, sun: G.light.sun, override: act, event: evView };
     G.beh.demo = G.liveDemo;
+    if (!mg && G.reunionPending) G.reunionTick();                                  // s3 D5：離線 ≥6h 返嚟 → 衝埋嚟重逢
     if (!mg) { BEH.update(G.beh, dt, G.behCtx); rd.behFx(G.beh); }
     if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 獨立事件 grumpy_tap（唔共用需求鬧脾氣冷卻）
     if (!mg) G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur } : null, mode: G.mode, rain: !!(G.hd && G.hd.on() && G.hd.st && G.hd.st.cur === 'H3rain') };
@@ -159,8 +161,34 @@
   { const LVP = P.beh.live;
     G.liveDemo = (() => { try { return localStorage.getItem(LVP.demoKey) === '1'; } catch (e) { return false; } })();
     G.setLiveDemo = function (on) { G.liveDemo = !!on; try { if (G.liveDemo) localStorage.setItem(LVP.demoKey, '1'); else localStorage.removeItem(LVP.demoKey); } catch (e) { } G.beh.demo = G.liveDemo; return G.liveDemo; };
-    G.liveNow = function (k) { if (BEH.NOW.indexOf(k) < 0) return false; G.beh.demo = G.liveDemo; BEH.force(G.beh, 'now_' + k, G.behCtx || {}); return true; };
-    G.beh.demo = G.liveDemo; }
+    G.liveNow = function (k) {
+      if (k === 'bulb') return G.bulbCycle();                                                       // s3 G1：循環 5 心情
+      if (k === 'reunion') { G.reunionCheck({ T: LVP.nowAwayH * 3600, tampered: false }, { force: true, src: 'dev' }); G.reunionTick(); return true; }   // s3 D5：模擬久未開（唔郁需求／存檔）
+      if (BEH.NOW.indexOf(k) < 0) return false; G.beh.demo = G.liveDemo; BEH.force(G.beh, 'now_' + k, G.behCtx || {}); return true; };
+    G.beh.demo = G.liveDemo;
+    // ── 生命感第三段 ──
+    // G1：燈泡心情強制（null＝跟心情自動）；循環 happy→neutral→sleepy→hungry→grumpy→自動
+    G.bulbCycle = function () { const C = LVP.bulbCycle, i = C.indexOf(G.beh.bulbForce); G.beh.bulbForce = i < 0 ? C[0] : i + 1 < C.length ? C[i + 1] : null; return G.beh.bulbForce || 'auto'; };
+    // D5：sim applyOffline 報告（lastSeen 存喺 localStorage 存檔；P1 只向前）離線 ≥reunionAwayH 小時、冇改時鐘、唔係蛋 → 等冇彈窗／事件／瞓覺先衝埋嚟；每日最多 1 次（日子存 localStorage）
+    const dayOf = (ms) => { const d = new Date(ms); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+    G.reunionPending = null; G.reunionLast = null; G.reunionSkip = null;
+    G.reunionCheck = function (rep, o) {
+      o = o || {}; G.reunionSkip = null;
+      if (!rep || rep.tampered || !(rep.T >= LVP.reunionAwayH * 3600)) { G.reunionSkip = rep ? (rep.tampered ? 'tampered' : 'short') : 'none'; return false; }
+      if (G.state.stage === 'egg') { G.reunionSkip = 'egg'; return false; }
+      let day = null; try { day = localStorage.getItem(LVP.reunionDayKey); } catch (e) { }
+      if (!o.force && day === dayOf(G.now())) { G.reunionSkip = 'today'; return false; }
+      G.reunionPending = { T: Math.round(rep.T), at: performance.now(), src: o.src || 'offline' }; return true;
+    };
+    G.reunionTick = function () {
+      const q = G.reunionPending; if (!q) return false;
+      if (performance.now() - q.at > 120000) { G.reunionPending = null; G.reunionSkip = 'expired'; return false; }   // 2 分鐘內做唔到就算
+      if (G.mode === 'minigame' || UI.isModalOpen() || G.ev || G.state.sleeping || G.state.stage === 'egg' || (G.beh && G.beh.expr === 'unwell') || !G.liveSettled || (G.renderer.pet.act && G.renderer.t < G.renderer.pet.until)) return false;   // 等摘要「收下光粒」嘅開心反應做完先衝
+      G.reunionPending = null; if (q.src !== 'dev') try { localStorage.setItem(LVP.reunionDayKey, dayOf(G.now())); } catch (e) { }
+      G.reunionLast = { T: q.T, src: q.src, at: G.now() }; G.beh.demo = G.liveDemo; BEH.force(G.beh, 'now_reunion', G.behCtx || {}); return true;
+    };
+  }
+  G.reunionCheck(boot.rep);                                          // s3 D5：開 app 時離線 ≥6h → 摘要關咗之後衝埋嚟
   G.forceEvent = function (id) { return EV.force(G.state, id); };
   G.setPeriod = function (p) { G.hourOverride = p ? LIGHT.representativeHour(p) : null; };
 
@@ -168,7 +196,7 @@
   function onHide() { if (!window.__noSaveOnHide) G.save(); }
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) onHide();
-    else { const rep = SIM.applyOffline(G.state, G.now()); if (rep.show) EV.noteOpen(G.state, { hour: G.hour(), now: G.now() }); G.save(); last = performance.now(); if (rep.show) UI.showSummary(rep); }
+    else { const rep = SIM.applyOffline(G.state, G.now()); if (rep.show) EV.noteOpen(G.state, { hour: G.hour(), now: G.now() }); G.save(); last = performance.now(); if (rep.show) UI.showSummary(rep); G.reunionCheck(rep); }
   });
   window.addEventListener('pagehide', onHide);
   window.addEventListener('beforeunload', onHide);
@@ -218,6 +246,10 @@
     force(name) { G.forceBeh(name); },
     now(k) { return G.liveNow(k); },                                              // s2b 即刻觸發：sniff／lookup／swat／scratch／sneeze／happy／drag／smug
     demo(on) { if (on != null) G.setLiveDemo(on); return G.liveDemo; },
+    // ── 生命感第三段（D3／D5／G1）──
+    nuzzle(x, y) { BEH.nuzzle(G.beh, x == null ? G.beh.x + G.beh.dir * 16 : x, y == null ? -24 : y); }, nuzzleEnd() { BEH.nuzzleEnd(G.beh); },
+    reunion() { return { pending: G.reunionPending ? Object.assign({}, G.reunionPending) : null, last: G.reunionLast, skip: G.reunionSkip, day: (() => { try { return localStorage.getItem(P.beh.live.reunionDayKey); } catch (e) { return null; } })() }; },
+    bulb(m) { if (m !== undefined) G.beh.bulbForce = m || null; const l = G.renderer.faceStat.last || {}; return { force: G.beh.bulbForce, drawn: l.bulb ? Object.assign({}, l.bulb) : null, auto: G.renderer.bulbMood(Object.assign({}, G.beh, { bulbForce: null })) }; },
     gaitForce() { const g = G.beh.gaitForce; return g ? { g: g.g, left: +(g.until - G.beh.t).toFixed(2) } : null; },
     forceEvent(id) { return G.forceEvent(id); },
     tapPet(n) { for (let i = 0; i < (n || 1); i++) { if (G.state.sleeping) G.lightWake(); else BEH.tap(G.beh, 'pet', G.beh.x + G.beh.dir * 5, -20); } },   // 點寵物前面（唔觸發 D2 轉身）

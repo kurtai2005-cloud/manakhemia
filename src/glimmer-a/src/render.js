@@ -426,10 +426,11 @@
       return { eyeL: [cx - Math.round(hr[0] * 0.44), cy + Math.round(hr[1] * 0.6)], eyeR: [cx + Math.round(hr[0] * 0.44), cy + Math.round(hr[1] * 0.6)], mouth: [cx, cy + Math.round(hr[1] * 0.4)], head_r: [cx + hr[0], cy + hr[1]], bulb: [cx, cy + Math.round(hr[1] * 1.45)], faceVisible: true, derived: true };
     }
     bulbMood(b) {
+      if (b.bulbForce && P.face.bulb.moods[b.bulbForce]) return b.bulbForce;          // G1：開發者掣強制心情（循環 5 款）
       if (b.state === 'grumpy') return 'grumpy';
       if (b.clip === 'sleep_loop' || b.clip === 'fall_asleep' || b.expr === 'tired') return 'sleepy';
       if (b.expr === 'hungry') return 'hungry';
-      if (b.expr === 'happy' || /^(emo_happy|celebrate|cheer_jump|emo_cuddly)$/.test(b.clip)) return 'happy';
+      if (b.expr === 'happy' || b.state === 'nuzzle' || /^(emo_happy|celebrate|cheer_jump|emo_cuddly|nuzzle|rush|reunion_happy)$/.test(b.clip)) return 'happy';   // s3：磨蹭／衝埋嚟／重逢都開心
       return 'neutral';
     }
     bulbGlow(fk, rgb) {                 // bulb_glow × tint（multiply，保留 alpha）；按色快取（量化 8 級）
@@ -484,6 +485,7 @@
       if (!b || !b.fx.length) return;
       for (const f of b.fx.splice(0)) {
         if (f.type === 'dust') for (let i = 0; i < 4; i++) this.spawn('dust', CX + f.x + (i - 1.5) * 3, GROUND_Y + f.y, { vx: (i - 1.5) * 9, vy: -8 - i * 2, max: 0.6 });
+        else if (f.type === 'heart') this.burst('heart', CX + b.x + f.x, GROUND_Y + f.y, 2, 30);   // s3 重逢心心
         else if (f.type === 'steam') this.spawn('steam', CX + b.x + f.x, GROUND_Y + f.y, { vx: f.x * 0.5, vy: -16, max: 0.9 });
         else this.burst('spark', CX + b.x + f.x, GROUND_Y + f.y, 3, 40);
       }
