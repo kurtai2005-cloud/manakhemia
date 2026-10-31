@@ -1,6 +1,6 @@
 # 《微光小圃》合併版（glimmer-combo）— 生命感第一段＋HD-2D 場景＋隱藏開發者模式
 
-> 以 `code/glimmer-liveliness` @ 2700494（已 merge plan-a 021726b）為底對齊：彩虹 240h 冷卻、drawChance 0.33、grumpy_tap 獨立事件（自己 48h 冷卻、守全域 20 分鐘間隔、唔改 lastAt）、.ibtn ≥44px（layout() 按縮放寫 inline 尺寸）、日記「2 日後作廢」全部沿用 repo 實作，冇重複一套。
+> 以 `code/glimmer-liveliness` @ 497404f（2700494 之上再加 R4：`rainbowPityLeadH` 30、行為測試唔再中途 `process.exit`）為底對齊：彩虹 240h 冷卻、drawChance 0.33、grumpy_tap 獨立事件（自己 48h 冷卻、守全域 20 分鐘間隔、唔改 lastAt）、.ibtn ≥44px（layout() 按縮放寫 inline 尺寸）、日記「2 日後作廢」全部沿用 repo 實作，冇重複一套。
 
 - 單檔：`dist/glimmer-combo.html`（base64 內嵌全部 art／audio，雙擊 file:// 即玩）；重 build：`python3 tools/build-single.py dist/glimmer-combo.html`
 - HD-2D：H1 晨／H2 黃昏／H3 日／H3rain 雨／H4 夜，2 秒 crossfade；`?hd2d=0` 回舊程序化背景；`?scene=H3rain` 指定；`?hdcache=0` 關靜態層 cache（對照用）
