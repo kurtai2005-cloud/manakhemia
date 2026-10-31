@@ -776,8 +776,8 @@ class PetOverlayService : Service() {
         refreshStatus(true)
         val snap = PetPrefs.snapshotStatus(this)
         val m = PetStatus.menu(PetPrefs.snapshotInfo(this), PetPrefs.snapshotStage(this), snap, status)
-        val ink = Color.rgb(90, 60, 40); val w = dp(232f).toInt(); val ph = dp(14f).toInt()
-        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(ph, dp(8f).toInt(), ph, dp(6f).toInt()); minimumWidth = w; contentDescription = "status"; importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES }
+        val ink = Color.rgb(90, 60, 40); val w = dp(248f).toInt(); val ph = dp(14f).toInt()
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(ph, dp(8f).toInt(), ph, dp(6f).toInt()); contentDescription = "status"; importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES }
         col.addView(TextView(this).apply { text = m.title; textSize = 16f; setTextColor(ink); setTypeface(typeface, android.graphics.Typeface.BOLD) })
         m.sub?.let { t -> col.addView(TextView(this).apply { text = t; textSize = 12.5f; setTextColor(Color.rgb(140, 105, 70)) }) }
         col.addView(TextView(this).apply { text = m.moodLine; textSize = 13f; setTextColor(ink); setPadding(0, dp(3f).toInt(), 0, dp(2f).toInt()) })
@@ -785,9 +785,11 @@ class PetOverlayService : Service() {
         for (n in m.needs) {
             val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(0, dp(2f).toInt(), 0, dp(2f).toInt()) }
             menuIcons?.clips?.get("need_${n.key}")?.frames?.firstOrNull()?.let { f ->
-                val bm = android.graphics.Bitmap.createBitmap(menuIcons!!.bitmap, f.src.left, f.src.top, f.src.width(), f.src.height())
+                val src = menuIcons!!.bitmap; var x0 = f.src.right; var y0 = f.src.bottom; var x1 = f.src.left - 1; var y1 = f.src.top - 1   // 裁到 icon 實際像素（HUD icon 10×10）
+                for (yy in f.src.top until f.src.bottom) for (xx in f.src.left until f.src.right) if ((src.getPixel(xx, yy) ushr 24) > 20) { x0 = min(x0, xx); y0 = min(y0, yy); x1 = max(x1, xx); y1 = max(y1, yy) }
+                val bm = if (x1 >= x0) android.graphics.Bitmap.createBitmap(src, x0, y0, x1 - x0 + 1, y1 - y0 + 1) else android.graphics.Bitmap.createBitmap(src, f.src.left, f.src.top, f.src.width(), f.src.height())
                 row.addView(android.widget.ImageView(this).apply { setImageDrawable(android.graphics.drawable.BitmapDrawable(resources, bm).apply { isFilterBitmap = false }); scaleType = android.widget.ImageView.ScaleType.FIT_CENTER },
-                    LinearLayout.LayoutParams(dp(20f).toInt(), dp(20f).toInt()))
+                    LinearLayout.LayoutParams(dp(18f).toInt(), dp(18f).toInt()))
             }
             row.addView(TextView(this).apply { text = n.label; textSize = 12.5f; setTextColor(ink); setPadding(dp(4f).toInt(), 0, dp(6f).toInt(), 0) }, LinearLayout.LayoutParams(dp(44f).toInt(), LinearLayout.LayoutParams.WRAP_CONTENT))
             row.addView(BarView(this, n.value / 100f, n.color), LinearLayout.LayoutParams(0, dp(9f).toInt(), 1f))
@@ -798,7 +800,7 @@ class PetOverlayService : Service() {
             col.addView(TextView(this).apply { text = m.progressText; textSize = 12.5f; setTextColor(ink); setPadding(0, dp(4f).toInt(), 0, dp(2f).toInt()) })
             col.addView(BarView(this, m.progress.toFloat(), 0xFFFFD36A.toInt()), LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(7f).toInt()))
         }
-        box.addView(col)
+        box.addView(col, LinearLayout.LayoutParams(w, LinearLayout.LayoutParams.WRAP_CONTENT))   // 固定闊度（唔好撐到成個畫面）
         box.addView(View(this).apply { setBackgroundColor(Color.rgb(230, 200, 160)) }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(1f).toInt()).apply { topMargin = dp(4f).toInt() })
         Log.i(TAG, "menu status: ${m.title} | ${m.sub} | ${m.moodLine} | ${m.needs.joinToString { it.key + "=" + it.value }} | ${m.progressText}")
     }
