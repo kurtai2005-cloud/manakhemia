@@ -233,6 +233,7 @@
 - F1 水珠：浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺
 - F2 菇傘：菇帽搖：菇帽逐幀左右擺＋斜（帽邊一高一低）、細菇燈跟住晃、孢子飄
 - F3 晶角：晶光閃：晶耳／晶燈／身上晶粉閃點逐幀輪住閃（glint）
+- F4 月眠：渴瞓：idle／生命感 clip 間中半瞇眼、睡帽尖跟住點頭；fall_asleep 月牙燈漸暗、sleep_loop 暗、wake 返光
 
 | batch | 形態 | px | pivot | clip | 幀 | atlas | 色盤 |
 |---|---|---|---|---|---|---|---|
@@ -242,6 +243,8 @@
 | F2 | 靜光・菇傘 `evo_still_shroom` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_shroom.png`（1024×1024，444 塊）＋ `_emissive` | palette_shroom.json |
 | F3 | 守夜者・晶角 `evo_guard_crystal` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_crystal.png`（1024×1024，444 塊）＋ `_emissive` | palette_crystal.json |
 | F3 | 靜光・晶角 `evo_still_crystal` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_crystal.png`（1024×1024，444 塊）＋ `_emissive` | palette_crystal.json |
+| F4 | 守夜者・月眠 `evo_guard_moon` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_moon.png`（1024×1024，444 塊）＋ `_emissive` | palette_moon.json |
+| F4 | 靜光・月眠 `evo_still_moon` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_moon.png`（1024×1024，444 塊）＋ `_emissive` | palette_moon.json |
 <!-- EVO6F-END -->
 
 

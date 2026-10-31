@@ -100,6 +100,9 @@ def moon_hat(cx, cy, rx, ry, el, sway, droop, ph, q):
         x = cx + 2.5 - (11.5 * Lh) * t ** 1.3 + (sway * 0.8 + nod) * t * t
         y = cy - ry + 1.2 - (12.0 * Lh) * math.sin(t * 2.1) + min(droop, 1.5) * t * t * 3.0 + max(0.0, nod) * t * t
         P.append((x, y, 5.6 * (1 - t) ** 1.2 + 0.8))
+    top = min(y - r for (x, y, r) in P); base = P[0][1]
+    if top < 3.0:   # 拎起／跳高時帽尖唔好掂頂邊：垂直壓扁（帽變矮少少）
+        s = (base - 3.0) / max(0.1, base - top); P = [(x, base + (y - base) * s, r) for (x, y, r) in P]
     return P
 def geo_F(form, p):
     f = FORMS[form]; _, S, _, rx, ry, cx, cy = L._geo(form, p); k = f["k"]; el = f["elder"]; br = f["branch"]
@@ -118,7 +121,7 @@ def geo_F(form, p):
         pts = A.stem_pts(cx, cy - ry, int(round(4 * k)), 0.0, sway, droop * 0.8); tx, ty = pts[-1]
         g.update(stem=pts, bulb=(tx + 0.5, ty - 3.2))
     elif br == "moon":
-        P = moon_hat(cx, cy, rx, ry, el, sway, droop, ph, q); ex, ey = P[-1]
+        P = moon_hat(cx, cy, rx, ry, el, sway, droop, ph, q); ex, ey, _r = P[-1]
         g.update(hat=P, bulb=(ex - 3.4, ey + 5.0))
     elif br == "ember":
         pts = A.stem_pts(cx, cy - ry, int(round(4 * k)), 0.0, sway, droop * 0.8); tx, ty = pts[-1]
@@ -220,7 +223,7 @@ def render_F(form, p):
         mm = cv.ell(mx, my, Rm, Rm) & ~cv.ell(mx + 4.2, my - 3.0, Rm * 0.9, Rm * 0.9) & (cv.yy < cy + 2)
         if sick: cv.paint(mm, "sick1")
         else:
-            cv.paint(mm, "glow" if big_lvl >= 0.3 else "peach2")
+            cv.paint(mm, "glow" if big_lvl >= 0.3 else "egg_shade")   # 瞓覺：大月牙轉暗紫（唔發光）
             inner = mm & cv.ell(mx - 1, my, Rm - 1.6, Rm - 1.6)
             if big_lvl >= 0.99: cv.paint(inner, "glow_mid")
             elif big_lvl >= 0.45: cv.paint(inner & ((cv.xx + cv.yy) % 3 == 0), "glow_mid")
