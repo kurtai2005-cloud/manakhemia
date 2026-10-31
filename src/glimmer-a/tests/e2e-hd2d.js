@@ -122,8 +122,9 @@ console.log('# 純邏輯（Node）');
   ok(geo.top >= geo.petBottom - 8 && geo.h < 300, '抽屜喺底、唔遮團絨（頂 ≥ 寵物腳底）', JSON.stringify(geo));
   await shot('devpanel-open');
   await page.click('[data-testid=dev-fold]');
-  const fh = await E(() => document.querySelector('#devp').getBoundingClientRect().height);
-  ok(fh < 40, '可摺：摺起後只剩標題列', fh); await shot('devpanel-folded');
+  // P2 DEV 掣 ≥48dp 之後標題列本身高咗（≈掣高＋padding），所以對標題列高度而唔係定死 40px
+  const fd = await E(() => ({ h: document.querySelector('#devp').getBoundingClientRect().height, dh: document.querySelector('#devp .dh').getBoundingClientRect().height }));
+  ok(fd.h <= fd.dh + 4 && fd.h < geo.h * 0.6, '可摺：摺起後只剩標題列', JSON.stringify(fd)); await shot('devpanel-folded');
   await page.click('[data-testid=dev-fold]');
 
   console.log('# 開發模式：每個掣都叫 API');
