@@ -156,13 +156,13 @@
   function noteLogin(s, t) {
     if (!s || s.stage === 'egg') return null; t = t == null ? nowMs() : t; const E = evoOf(s), had = (s.poops | 0) > 0;
     E.login = { at: t, had, done: false, stage: s.stage };
-    if (had) b5Bucket(s).loginPoop++;
+    if (had) { const b = b5Bucket(s); b.loginPoop = (b.loginPoop | 0) + 1; }   // 舊存檔 bucket 冇呢欄
     return E.login;
   }
   function checkQuickClean(s) {
     const E = evoOf(s), L = E.login; if (!L || !L.had || L.done || (s.poops | 0) > 0 || L.stage === 'egg') return false;
     if (nowMs() - L.at > BR().crystal.windowSec * 1000) return false;
-    L.done = true; b5Bucket(s, L.stage).quickLogin++; return true;
+    L.done = true; const b = b5Bucket(s, L.stage); b.quickLogin = (b.quickLogin | 0) + 1; return true;
   }
   // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night；kind＝feed／play／rinse／poop／mg（§7 分數）
   function noteCare(s, h, kind, rain) {

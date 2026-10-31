@@ -278,6 +278,8 @@ console.log('⑩ v7／v8：晶角上線即清（窗口 crystal.windowSec、每�
   { const e = pet('egg'); e.poops = 1; ok(S.noteLogin(e, T) === null, '光卵 → 唔記上線'); }
   { const t = pet('sprout'); t.poops = 1; t.poopAge = [0]; S.noteLogin(t, T); t.stage = 'juvenile'; S.clearPoop(t); ok(t.evo.b5.sprout.quickLogin === 1 && t.evo.b5.sprout.loginPoop === 1, '窗口內轉階段 → 記返上線嗰階段'); }
   { const t = S.deserialize(S.serialize(login(1)), T); S.clearPoop(t); ok(t.evo.b5.sprout.quickLogin === 1, '上線窗口跟存檔'); }
+  { const t = pet('sprout'); t.evo.b5 = { sprout: { all: 3, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 3 } }; t.poops = 1; t.poopAge = [0]; S.noteLogin(t, T); S.clearPoop(t); const c = t.evo.b5.sprout;
+    ok(c.loginPoop === 1 && c.quickLogin === 1 && Number.isFinite(S.branch5Check(t).score.crystal), '舊存檔 bucket（冇 loginPoop／quickLogin 欄）→ 由 0 計', JSON.stringify(c)); }
   S.setNowFn(null);
 }
 console.log('⑪ v8／v10：新 5 條 CQ ＝ max(scaleToAge(b5CQ), b5CQFloor)');
