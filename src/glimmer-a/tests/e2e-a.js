@@ -105,9 +105,10 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     if (id === 'firefly_walk') {
       const q = await E(() => ({ log: __qa.pet.eventLog().map(x => x.id), pool: __qa.pet.pool(), claimed: __qa.pet.claimedFlashDates(), blog: __qa.pet.log.filter(j => j.ev === 'event').map(j => j.name), card: document.getElementById('evcard').textContent }));
       ok(q.log.includes('firefly_walk') && q.blog.includes('firefly_walk'), '__qa.pet：eventLog／行為日誌見到 firefly_walk', JSON.stringify(q.log) + JSON.stringify(q.blog));
-      ok(q.pool.length === 9 && q.pool.find(e => e.id === 'firefly_walk').weight === 14 && q.pool.find(e => e.id === 'rainbow').weight === 4 && q.pool.find(e => e.id === 'gift').weight === 22, '__qa.pet.pool()：9 個、firefly 14、rainbow 4、gift 22');
+      ok(q.pool.length === 9 && q.pool.find(e => e.id === 'firefly_walk').weight === 14 && q.pool.find(e => e.id === 'rainbow').weight === 1 && q.pool.find(e => e.id === 'gift').weight === 22, '__qa.pet.pool()：9 個、firefly 14、rainbow 1（QA pity）、gift 22');
       ok(Array.isArray(q.claimed), '__qa.pet.claimedFlashDates() 可讀', JSON.stringify(q.claimed));
       ok(await E(() => { __glimmer.save(); return typeof __qa.pet.lastSaveTime() === 'number' && __qa.pet.suppressed() === false; }), '__qa.pet.lastSaveTime()／suppressed() 可讀；正常時間唔 suppress');
+      ok(await E(() => { const s = __glimmer.state, n = __glimmer.now(), ls = s.lastSeen, fut = n + 3600e3; s.lastSeen = fut; __glimmer.save(); const keep = s.lastSeen === fut; s.lastSeen = ls; __glimmer.save(); return keep && s.lastSeen >= n; }), 'P1：G.save 唔會將 lastSeen 向後拉（只取 max）');
       ok(!/◌/.test(q.card), '提示卡冇 placeholder 前綴', q.card);
     }
   }

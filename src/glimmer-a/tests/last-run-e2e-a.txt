@@ -65,9 +65,10 @@
   📷 a-event-firefly_walk
   ✓ 提示卡顯示遊美動畫 icon（firefly_walk，非透明像素 464）
   ✓ __qa.pet：eventLog／行為日誌見到 firefly_walk
-  ✓ __qa.pet.pool()：9 個、firefly 14、rainbow 4、gift 22
+  ✓ __qa.pet.pool()：9 個、firefly 14、rainbow 1（QA pity）、gift 22
   ✓ __qa.pet.claimedFlashDates() 可讀
   ✓ __qa.pet.lastSaveTime()／suppressed() 可讀；正常時間唔 suppress
+  ✓ P1：G.save 唔會將 lastSeen 向後拉（只取 max）
   ✓ 提示卡冇 placeholder 前綴
   ✓ 事件 meteor 出現（提示卡＋畫面特效）
   📷 a-event-meteor
@@ -95,7 +96,7 @@
   ✓ 一鍵領取：4 條 × ✦3 = +12
   📷 a-diary-claimed
 # PR #19：14 日離線補抽／連點鬧脾氣 48h／睡眠點擊輕喚醒／壞存檔回退
-  ✓ 14 日離線：彈窗 2、入日記 34 條（≤50）
+  ✓ 14 日離線：彈窗 2、入日記 30 條（≤50）
   📷 a-offline-14d
   ✓ __qa.pet.tapPet(5)：觸發鬧脾氣事件，冷卻 48h
   ✓ 冷卻內再連點：唔再觸發事件
@@ -150,4 +151,4 @@
 # console 錯誤／警告
   ✓ console 無 error／warning
 
-結果：89 通過，0 失敗
+結果：90 通過，0 失敗

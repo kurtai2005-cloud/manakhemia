@@ -58,7 +58,7 @@ docs/engine-eval.md        引擎評估（Godot／Unity／Web）
 ## 測試
 ```
 node tests/sim.test.js                                   # 82 項
-node tests/events.test.js                                # 事件／保底／閃光日已領／lastSaveTime 回撥／PR #19 P0–P1（126 項）
+node tests/events.test.js                                # 事件／保底／閃光日已領／lastSaveTime 回撥／PR #19 P0–P1＋離線唔計上限＋PR #17 QA 修正（154 項）
 node tests/behavior.test.js                              # 行為（含 atlas／無舊 2048 圖檢查、23 clip 全交付、daylight 時段 hook、連點請求／輕喚醒，63 項）
 node tests/audio.test.js                                 # 音訊 Director＋檔案 sha256 對照 staging（22 項）
 node tests/sim-report.js                                 # PR #19 自跑模擬（14 日離線條數／彩虹日數／螢火傍晚佔比）
@@ -90,7 +90,8 @@ e2e 流程：新遊戲 → 光卵輕點孵化 → 餵食／玩耍／清潔／睡
 | minGapSec | 1200 | 全域事件間隔 ≥20 分鐘（鬧脾氣亦受限） |
 | cooldownH／cooldownRareH | 24／72 | 單事件冷卻；稀有（流星夜、彩虹）72h；鬧脾氣 `cooldownH:48`；**保底都唔打穿冷卻** |
 | repeatWeightMul | 0.25 | 防重複（上一個事件權重 ×0.25，軟性） |
-| dailyMax | 4 | 抽選每日上限（保底／閃光額外） |
+| dailyMax | 4 | 線上抽選每日上限（保底／閃光額外） |
+| **offlineIgnoreDailyMax** | **true** | 遊策 10-31：離線補抽**唔計** dailyMax（對齊 QA v5.1）；冷卻／全域間隔照計；返嚟彈窗仍最多 2，其餘只入日記；線上＋離線日均實測 2.70 ≤ 2.95 |
 | guaranteeHour／**guaranteeOpens** | 16／**1** | 當日第 1 次開 app（或 16:00 後）仍冇事件 → 保底：只揀「條件＋時段＋冷卻已過」嘅池事件，條件唔合就退一步只睇時段＋冷卻；**全部冷卻中 → 今次落空，下次開 app 再試**（`stats.guaranteeFail`）；離線唔觸發 |
 | flashDayRate | 0.03 | 閃光日＝`hash(存檔種子, 本機日期) < 3%`；**claimedFlashDates** 按日期記「已領」；離線日唔判閃光 |
 | grumpyLowNeed／grumpyLowSec | 30／7200 | 鬧脾氣**唔入池**（`cond`）：任一需求 <30 持續 ≥2h（離線期間按需求曲線估算時數）或 **10 秒連點 5 下**（`events.tapTantrum`）→ 鬧脾氣事件，冷卻 48h；瞓緊點＝輕喚醒，唔鬧 |
@@ -114,14 +115,21 @@ e2e 流程：新遊戲 → 光卵輕點孵化 → 餵食／玩耍／清潔／睡
 | gift 禮物 | **22** | 07–23 | — | 2–4／2–4 | fallback；心情 ≥35 |
 | butterfly 蝴蝶 | **20** | 07–17 | — | 1–2／4–6 | 精力 ≥30 |
 | meteor 流星夜 | **10** | 19–05 | 是（72h） | 3–4／3–5 | |
-| rainbow 彩虹 | 4 | 17–23 | 是（72h） | 3–4／4–6 | 實測每 ≈13 日一次（v5 目標 11–15） |
+| rainbow 彩虹 | **1**（QA：4→1） | 17–23 | 是（72h） | 3–4／4–6 | 加 pity：距上次 ≥14 日−26h 起，窗內抽選必出 → 保證 ≤14 日一次；實測每 11.3–12.0 日、最長 13.93 日 |
 | firefly_walk 螢火散步 | **14** | 17–23（唔喺睡眠時） | — | 5／10 | PR #19 由 20 降到 14；用 play clip；音效暫借蝴蝶提示音降 3 半音 |
 | sleeptalk 夢話 | **11** | 23–07 | — | 1／1–2 | |
 | treasure 寶藏 | **18** | 08–22 | — | 3–6／2–3 | fallback；精力 ≥25 |
 | grumpy 鬧脾氣 | 0（cond，唔入池） | — | — | 1／3–4 | 需求 <30 ≥2h／連點 5 下；冷卻 48h |
 | flash 閃光日 | 特殊 | — | 是 | 8／8–10 | 3%/日，已領旗標 |
 
-自跑模擬（`node tests/sim-report.js`，結果存 `tests/last-run-sim-report.txt`）：14 日離線入日記平均 30.6（中位 31、p95 37、最多 41；連彈窗共 32.6）；每日 4／5 次開 app：事件 2.64／2.65 個/日、彩虹每 13.0／12.9 日一次、傍晚 17–23 事件中螢火散步 37.3／37.5%（全部事件 8.7／8.9%）、冷卻違反 0。
+自跑模擬（`node tests/sim-report.js`，結果存 `tests/last-run-sim-report.txt`；offlineIgnoreDailyMax=true）：14 日離線入日記平均 31.8（中位 32、p95 38、最多 45；連彈窗共 33.8，2.41 個/日；彈窗最多 2；冷卻違反 0）；每日 4／5 次開 app：事件 2.72／2.74 個/日（≤2.95）、彩虹每 11.9 日一次、傍晚螢火 38.2／38.6%；④ QA 六種作息 × 300 種子 × 56 日：池抽取 2.32–2.36／日（早鳥 2.32）、總 ≤2.74／日、彩虹最長間隔 13.93 日、冷卻／間隔／閃光 72h 違反全部 0。
+
+### QA 修正（PR #17）
+- **P0 回撥當日（noDrawDay）**：`offlineReplay` 開頭先 `checkRollback`；每次補抽前 `noDrawAt(t)`（UTC 回撥日或早過 lastSaveTime−120s）→ 唔出。121 秒個 case：同一 UTC 日稍後再開，補抽＋保底都係 0。
+- **P1 時鐘超前重設**：`sanitizeSaveTime` 記 `saveResetAt`；`resetToday` 當日跳過保底（stats.resetSkipGuarantee）。`G.save` 同 `SIM.applyOffline` 都只將 `lastSeen` 向前（max），重設係唯一例外。
+- **P1 早鳥**：`events.earlyBird {hours [5,9], hitMul 1.1}`（本機 05–09 p_hit×1.1）→ 早鳥作息池抽取 2.32／日（目標 2.2–2.4）。
+- **P1 彩虹 pity**：`rainbowPityDays 14`、`rainbowPityLeadH 26`、彩虹權重 4→1；pity 只喺 17–23 窗、唔打穿冷卻／間隔／每日上限／回撥日。
+- **P2 閃光日 72h**：`flashCooldownH 72`（flash `cooldownH: 72`）；`rollFlash` 用實時 ms 判 72h，未夠就當日唔開（stats.flashCdSkip）。
 
 ### beh（行為）／light／quality／audio
 見 `PARAMS.beh`、`PARAMS.light`、`PARAMS.quality`、`PARAMS.audio`。重點：

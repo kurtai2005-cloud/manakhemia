@@ -171,5 +171,10 @@ console.log('# 存檔');
   ok(S.deserialize('{oops', 1) === null && S.deserialize('{"v":2}', 1) === null, '壞檔返回 null');
   const a = S.makeRng(42), b = S.makeRng(42); ok(a() === b() && a() === b(), 'RNG 可設種子');
 }
+console.log('# QA P1：lastSeen 只可向前');
+{ const T = Date.UTC(2026, 5, 10, 4, 0, 0); const s = S.newState(T, 3); s.lastSeen = T; s.lastSaveTime = T;
+  S.applyOffline(s, T - 121e3); ok(s.lastSeen === T, '回撥 121 秒開 app：applyOffline 唔將 lastSeen 拉後');
+  S.applyOffline(s, T + 3600e3); ok(s.lastSeen === T + 3600e3, '正常前進：lastSeen 跟住 now');
+  s.lastSaveTime = T + 40 * 3600e3; s.lastSeen = T + 40 * 3600e3; S.applyOffline(s, T + 7200e3); ok(s.lastSeen === T + 7200e3 && s.saveResetAt === T + 7200e3, '超前 >24h 重設：lastSeen／saveResetAt＝now（唯一例外）'); }
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);
 process.exit(fail ? 1 : 0);

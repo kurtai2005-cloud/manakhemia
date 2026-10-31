@@ -78,7 +78,8 @@ console.log('# 200 × 7 日（每日 5 次開 app）分佈／間隔／冷卻／�
   ok(cdViol === 0, '單事件冷卻 24h／稀有 72h／鬧脾氣 48h（抽選路徑零違反；' + cdPairs + ' 對重複）', cdViol);
   ok(zeroDays === 0, '每日保底：1400 日冇一日零事件', zeroDays);
   ok(mean >= 1 && mean <= 3, '平均每日事件數 1–3（' + mean.toFixed(2) + '）');
-  ok(Math.max(...perDay) <= P.dailyMax + 2, '單日上限（' + P.dailyMax + '，保底／閃光額外）→ 最大 ' + Math.max(...perDay));
+  { let mx = 0; for (let seed = 1; seed <= 60; seed++) { const r = simulate(seed, 7, SESS); const dd = {}; r.recs.forEach(x => { if (x.kind === 'draw' && !x.offline) dd[x.day] = (dd[x.day] || 0) + 1; }); mx = Math.max(mx, ...Object.values(dd)); }
+    ok(mx <= P.dailyMax, '線上抽選單日上限 ' + P.dailyMax + '（離線補抽唔計上限，保底／閃光額外）→ 線上最大 ' + mx + '；連離線單日最大 ' + Math.max(...perDay)); }
   ok(back / pairs < 0.06, '連續重複同一事件比例 < 6%（' + (back / pairs * 100).toFixed(1) + '%，防重複×0.25＋冷卻）');
   ok(rainbowBad === 0 && rainbow > 0, '彩虹只喺 17–23 時出現（' + rainbow + ' 次）', rainbowBad);
   ok(cooldownBreakGuar.length / evTot < 0.05, '保底只喺別無選擇先破冷卻（' + cooldownBreakGuar.length + '/' + evTot + '）');
@@ -124,7 +125,7 @@ console.log('# 事件池權重表（遊策 v3）＋螢火散步');
   console.log('    池：' + D.EVENTS.map(e => e.id + '(w' + e.weight + (e.hours ? ' ' + e.hours.join('-') : '') + (e.rare ? ' rare' : '') + (e.lowNeed ? ' lowNeed' : '') + ')').join(' '));
   ok(W.firefly_walk.weight === 14 && W.firefly_walk.hours.join() === '17,23' && W.firefly_walk.grains[0] === 5 && W.firefly_walk.grains[1] === 5 && W.firefly_walk.mood[0] === 10 && W.firefly_walk.mood[1] === 10, '螢火散步：傍晚 17–23、權重 14（PR #19 P1）、✦+5、心情 +10');
   ok(W.firefly_walk.iconPlaceholder === undefined && W.firefly_walk.icon === 'firefly_walk' && W.firefly_walk.clipHint === 'play', '已用遊美真 icon（冇 placeholder）＋用現有 play clip');
-  ok(W.rainbow.weight === 4 && W.rainbow.rare && W.meteor.rare && D.EVENTS.filter(e => e.rare && !e.special).length === 2, '彩虹權重 4；稀有＝流星夜＋彩虹');
+  ok(W.rainbow.weight === 1 && W.rainbow.rare && W.meteor.rare && D.EVENTS.filter(e => e.rare && !e.special).length === 2, '彩虹權重 1（QA：pity 補底）；稀有＝流星夜＋彩虹');
   const cue = D.AUDIO.cues[D.AUDIO.eventCue.firefly_walk];
   ok(cue.file === D.AUDIO.cues.event_butterfly.file && Math.abs(cue.fixedRate - Math.pow(2, -3 / 12)) < 1e-9 && cue.temp === true, '音效：暫借蝴蝶提示音，playbackRate＝2^(-3/12)≈0.841（temp＝暫用）');
   const rec = (() => { const s = adult(5); SIM.advance(s, 60, { hour: 19, now: BASE }, 30); s.evs.flashToday = false; const g0 = s.grains, m0 = s.needs.mood; s.needs.mood = 50; const r = EV.force(s, 'firefly_walk'); return { r, dg: s.grains - g0, dm: s.needs.mood - 50 }; })();
@@ -359,7 +360,7 @@ console.log('# PR #19 P0／P1');
 {
   // 權重對齊 QA v5.1
   const W = {}; D.EVENTS.forEach(e => W[e.id] = e);
-  ok(W.gift.weight === 22 && W.butterfly.weight === 20 && W.meteor.weight === 10 && W.sleeptalk.weight === 11 && W.treasure.weight === 18 && W.rainbow.weight === 4 && W.firefly_walk.weight === 14, '池權重：禮物 22／蝴蝶 20／流星 10／夢話 11／寶物 18／彩虹 4／螢火 14');
+  ok(W.gift.weight === 22 && W.butterfly.weight === 20 && W.meteor.weight === 10 && W.sleeptalk.weight === 11 && W.treasure.weight === 18 && W.rainbow.weight === 1 && W.firefly_walk.weight === 14, '池權重：禮物 22／蝴蝶 20／流星 10／夢話 11／寶物 18／彩虹 1／螢火 14');
   ok(W.grumpy.cond === true && W.grumpy.weight === 0 && P.offlineMaxDays === 14 && P.diaryMax === 50 && P.offlineStepSec === 600, '鬧脾氣唔入池（cond）；離線補抽最多 14 日、步長 600s；日記保存上限 50');
   // P0-1 按日離線 14 日 ≈33 條
   const cnt = [];
@@ -372,7 +373,21 @@ console.log('# PR #19 P0／P1');
   }
   cnt.sort((a, b) => a - b); const mean = cnt.reduce((a, b) => a + b, 0) / cnt.length, p95 = cnt[Math.floor(cnt.length * 0.95)];
   console.log('    14 日離線入日記：平均 ' + mean.toFixed(1) + '、p95 ' + p95 + '、最多 ' + cnt[cnt.length - 1]);
-  ok(mean >= 29 && mean <= 37 && cnt[cnt.length - 1] <= P.diaryMax, '14 日離線 ≈33 條入日記（29–37；最多 ≤ ' + P.diaryMax + '）', mean.toFixed(1));
+  ok(mean >= 30 && mean <= 37 && cnt[cnt.length - 1] <= P.diaryMax, '14 日離線 ≈33 條入日記（29–37；最多 ≤ ' + P.diaryMax + '）', mean.toFixed(1));
+  // 遊策 10-31：離線補抽唔計 dailyMax；彈窗仍 2；冷卻照計；日均 ≤2.95
+  ok(P.offlineIgnoreDailyMax === true, '參數 offlineIgnoreDailyMax＝true');
+  { const run = (flag) => { const f0 = P.offlineIgnoreDailyMax; P.offlineIgnoreDailyMax = flag; let n = 0, pop = 0, cdv = 0, over4 = 0;
+      for (let sd = 1; sd <= 200; sd++) { const t = adult(sd), T1 = new Date(2026, 5, 1, 21, 0, 0).getTime(); SIM.advance(t, 30, { hour: 21, now: T1 }, 30); t.lastSeen = T1; t.lastSaveTime = T1;
+        const rep = SIM.applyOffline(t, T1 + 14 * DAY); n += t.evs.offLog.length; pop = Math.max(pop, rep.popups);
+        const last = {}, perDay = {}; t.evs.offLog.slice().sort((a, b) => a.at - b.at).forEach(x => { const d = EV.DEF[x.id], need = (d.cooldownH || (d.rare ? 72 : 24)) * H; if (last[x.id] != null && x.at - last[x.id] < need - 1) cdv++; last[x.id] = x.at; const k = new Date(x.ts).toDateString(); perDay[k] = (perDay[k] || 0) + 1; });
+        over4 += Object.values(perDay).filter(v => v > P.dailyMax).length; }
+      P.offlineIgnoreDailyMax = f0; return { n: n / 200, pop, cdv, over4 }; };
+    const on = run(true), off = run(false);
+    console.log('    14 日離線（200 種子）：唔計上限 ' + on.n.toFixed(1) + ' 個（' + on.over4 + ' 日 >4）／計上限 ' + off.n.toFixed(1) + ' 個（' + off.over4 + ' 日 >4）');
+    ok(on.n > off.n && on.over4 > 0 && off.over4 === 0, '離線補抽唔計每日上限 4（開關有效）');
+    ok(on.pop === 2 && on.cdv === 0 && on.n / 14 <= 2.95, '唔計上限時：彈窗仍最多 2、冷卻零違反、離線日均 ' + (on.n / 14).toFixed(2) + ' ≤ 2.95', JSON.stringify(on)); }
+  { let ev = 0, days = 0; for (let sd = 1; sd <= 150; sd++) { const sim = simulate(3000 + sd, 14, [8, 21]); days += 14; ev += sim.s.evs.stats.events; }
+    ok(ev / days <= 2.95, '線上＋離線合計日均事件 ' + (ev / days).toFixed(2) + ' ≤ 2.95（每日開 2 次 × 14 日 × 150）'); }
   // 超過 14 日：只補 14 日
   { const t = adult(4), T1 = new Date(2026, 5, 1, 21, 0, 0).getTime(); SIM.advance(t, 30, { hour: 21, now: T1 }, 30); t.lastSeen = T1; t.lastSaveTime = T1;
     SIM.applyOffline(t, T1 + 40 * DAY); const old = t.evs.offLog.filter(x => x.ts < T1 + 26 * DAY - 60e3).length;
@@ -418,6 +433,97 @@ console.log('# PR #19 P0／P1');
     s.evs.cd = {}; s.evs.lastAt = s.evs.clock - 600; ok(EV.tapTantrum(s, {}) === null, '全域 20 分鐘間隔內唔觸發');
     s.evs.lastAt = -1e9; s.sleeping = true; ok(EV.tapTantrum(s, {}) === null && s.evs.stats.tapSleepWake >= 1, '瞓緊連點唔會鬧脾氣');
     let inPool = 0; for (let sd = 1; sd <= 40; sd++) simulate(sd, 7, SESS).recs.forEach(x => { if (x.id === 'grumpy' && x.kind === 'draw') inPool++; }); ok(inPool === 0, '鬧脾氣唔會由抽選觸發', inPool); }
+}
+
+
+console.log('# QA 修正（PR #17）：P0 回撥日離線補抽／P1 重設日跳保底／P1 早鳥＋彩虹 pity／P2 閃光 72h');
+{
+  const T0 = Date.UTC(2026, 5, 10, 4, 0, 0);          // UTC 04:00（UTC 日頭 = T0 − 4h）
+  const utcDay = (ms) => Math.floor(ms / 86400e3);
+  const pc = P.drawChance, de = P.drawEveryH.slice(), fr = P.flashDayRate;
+  const hot = () => { P.drawChance = 1; P.drawEveryH[0] = P.drawEveryH[1] = 0.5; P.flashDayRate = 0; };
+  const cool = () => { P.drawChance = pc; P.drawEveryH[0] = de[0]; P.drawEveryH[1] = de[1]; P.flashDayRate = fr; };
+  // P0：121 秒回撥＋離線補抽：當日（UTC）一個事件都唔出
+  hot();
+  // 情境（121 秒個 case）：UTC 04:00 離開（lastSeen＝lastSaveTime＝T0）→ 時鐘撥早 121 秒開 app（判回撥，noDrawDay＝當日）
+  const a = adult(31); SIM.advance(a, 60, { hour: 12, now: T0 }, 30); a.evs.flashToday = false; a.lastSeen = T0; a.lastSaveTime = T0;
+  const nowA = T0 - 121e3; SIM.applyOffline(a, nowA); const r0 = EV.noteOpen(a, { hour: SIM.hourOf(nowA), now: nowA });
+  a.lastSeen = Math.max(a.lastSeen, nowA); EV.markSave(a, nowA);          // 同 G.save 一樣：lastSeen／lastSaveTime 都唔向後拉
+  ok(r0 === null && a.evs.noDrawDay === utcDay(nowA) && a.lastSeen === T0 && a.lastSaveTime === T0, 'P0 早 121 秒開 app：判回撥（noDrawDay＝UTC 當日），lastSeen 唔向後拉');
+  ok(EV.noDrawAt(a, a.evs, T0 + H * 1000) && EV.noDrawAt(a, a.evs, nowA - 60e3) && !EV.noDrawAt(a, a.evs, T0 + 22 * H * 1000), 'P0 noDrawAt：回撥日 true、下一個 UTC 日 false');
+  // 同一 UTC 日稍後再開（時間已追過 lastSaveTime）：離線補抽（p_hit＝1）都係 0
+  const evN = a.evs.stats.events; const later = T0 + 6 * H * 1000;
+  const repL = SIM.applyOffline(a, later); EV.noteOpen(a, { hour: SIM.hourOf(later), now: later });
+  ok(utcDay(later) === utcDay(nowA) && repL.T > 0 && a.evs.stats.events === evN && a.evs.offLog.length === 0 && a.evs.stats.suppressed > 0, 'P0 同一 UTC 日 6 小時後再開：離線補抽 0、保底 0（p_hit＝1 壓測）', a.evs.stats.events - evN);
+  // 舊存檔（修正前 G.save 將 lastSeen 拉後咗）：lastSeen 喺回撥時間，補抽段落喺回撥日 → 仍然 0
+  const a2 = adult(36); SIM.advance(a2, 60, { hour: 12, now: T0 }, 30); a2.evs.flashToday = false; a2.lastSaveTime = T0; a2.lastSeen = T0;
+  EV.noteOpen(a2, { hour: 12, now: nowA }); a2.lastSeen = nowA;     // 模擬舊版行為
+  const ev2 = a2.evs.stats.events; SIM.applyOffline(a2, later);
+  ok(a2.evs.offLog.length === 0 && a2.evs.stats.events === ev2, 'P0 舊存檔 lastSeen 已被拉後：回撥日補抽仍然 0');
+  a.lastSeen = later; a.lastSaveTime = later;
+  const nextD = T0 + 22 * H * 1000; SIM.applyOffline(a, nextD);
+  ok(a.evs.offLog.length > 0 && a.evs.offLog.every(x => utcDay(x.ts) > utcDay(nowA)), 'P0 下一個 UTC 日恢復補抽（' + a.evs.offLog.length + '）');
+  // 對照：唔回撥（早 60 秒）→ 當日照補
+  const b = adult(31); SIM.advance(b, 60, { hour: 0, now: T0 - 20 * H * 1000 }, 30); b.evs.flashToday = false;
+  b.lastSeen = T0 - 20 * H * 1000; b.lastSaveTime = T0; SIM.applyOffline(b, T0 - 60e3);
+  ok(b.evs.noDrawDay === null && b.evs.offLog.some(x => utcDay(x.ts) === utcDay(T0)), '對照：早 60 秒（容差內）當日照常補抽');
+  cool();
+
+  // P1：時鐘超前重設（lastSaveTime > now+24h）當日跳過保底 +3
+  const c = adult(32); SIM.advance(c, 60, { hour: 12, now: T0 }, 30); c.evs.flashToday = false; c.lastSaveTime = T0 + 30 * DAY;
+  const g0 = c.grains; const rc = EV.noteOpen(c, { hour: 12.1, now: T0 + 60e3 });
+  ok(rc === null && c.evs.dayCount === 0 && c.evs.gDone === true && c.evs.stats.resetSkipGuarantee === 1 && c.saveResetAt === T0 + 60e3 && c.grains === g0, 'P1 重設當日：開 app 唔派保底（+3 光粒都冇）', JSON.stringify([rc && rc.id, c.evs.dayCount, c.evs.stats.resetSkipGuarantee]));
+  for (let i = 0; i < 10; i++) SIM.advance(c, 1800, { hour: 12.1 + (i + 1) / 2, now: T0 + 60e3 + (i + 1) * 1800e3 }, 60);
+  ok(c.evs.stats.guarantee === 0 && c.evs.stats.guaranteeOpen === 0, 'P1 重設當日過咗 16:00 仍然唔保底', c.evs.stats.guarantee);
+  const nd = T0 + DAY; const rc2 = EV.noteOpen(c, { hour: 12, now: nd });
+  ok(!!rc2 && rc2.kind === 'guarantee', 'P1 第二日恢復保底', rc2 && rc2.kind);
+  const d0 = adult(33); SIM.advance(d0, 60, { hour: 12, now: T0 }, 30); d0.evs.flashToday = false; d0.lastSaveTime = T0 + 23 * H * 1000; d0.evs.lastAt = -1e9;
+  ok(!EV.resetToday(d0, d0.evs) && !d0.saveResetAt, 'P1 未超 24h（冇重設）：resetToday false');
+
+  // P1 早鳥：05–09 命中率 × hitMul；早鳥作息池抽取／日 2.2–2.4，總數 ≤2.95
+  const EB = P.earlyBird;
+  ok(EB && EB.hours[0] === 5 && EB.hours[1] === 9 && EB.hitMul === 1.1 && Math.abs(EV.hitChance(6) - Math.min(1, P.drawChance * 1.1)) < 1e-9 && EV.hitChance(12) === P.drawChance && EV.hitChance(9) === P.drawChance, '早鳥參數：05–09 p_hit × 1.1；其餘時段不變');
+  const prof = (times, miss, seeds, days) => { let pool = 0, tot = 0, n = 0; for (let sd = 1; sd <= seeds; sd++) {
+      let rs = sd * 99991; const rnd = () => ((rs = (rs * 16807) % 2147483647) / 2147483647); const s = adult(5000 + sd); s.lastSeen = BASE;
+      for (let d = 0; d < days; d++) for (const h of times) { if (rnd() < miss) continue; const now = BASE + d * DAY + (h + (rnd() - .5) * .8) * H * 1000;
+        SIM.applyOffline(s, now); care(s); EV.noteOpen(s, { hour: SIM.hourOf(now), now });
+        for (let k = 0; k < 180; k += 30) { SIM.advance(s, 30, { hour: SIM.hourOf(now + k * 1000), now: now + k * 1000 }, 30); while (EV.takePending(s)) { } } s.lastSeen = now + 180e3; }
+      const st = s.evs.stats; tot += st.events; pool += st.events - st.guarantee - st.guaranteeOpen - (st.byId.flash || 0) - (st.byId.grumpy || 0); n += days; }
+    return { pool: pool / n, tot: tot / n }; };
+  const eb = prof([7.5, 12.5], 0.1, 120, 28);
+  console.log('    早鳥作息（7:30／12:30，miss 10%）：池抽取 ' + eb.pool.toFixed(2) + '／日，總 ' + eb.tot.toFixed(2) + '／日');
+  ok(eb.pool >= 2.2 && eb.pool <= 2.4 && eb.tot <= 2.95, '早鳥：池抽取／日 2.2–2.4、總 ≤2.95', eb.pool.toFixed(3));
+  const gen = prof([8, 12.5, 18.5, 22], 0.1, 80, 28);
+  ok(gen.pool >= 2.2 && gen.pool <= 2.4 && gen.tot <= 2.95, '一般作息：池抽取 ' + gen.pool.toFixed(2) + '、總 ' + gen.tot.toFixed(2) + '（≤2.95）');
+
+  // P1 彩虹 pity：≥14 日必出（保證 ≤14 日一次），仍守 17–23 時段窗
+  ok(P.rainbowPityDays === 14 && P.rainbowPityLeadH === 26, '彩虹 pity 參數：14 日／提前 26h 起（窗內）');
+  let maxGap = 0, badHour = 0, rbN = 0, pityN = 0, rbDays = 0, cdV = 0;
+  for (let sd = 1; sd <= 80; sd++) { const sim = simulate(7000 + sd, 56, [8, 12.5, 18.5, 22]); rbDays += 56;
+    const rb = sim.recs.filter(x => x.id === 'rainbow').concat(sim.s.evs.diary.filter(x => x.id === 'rainbow')).sort((x, y) => x.ts - y.ts);
+    let prev = BASE + 8 * H * 1000; rb.forEach(x => { maxGap = Math.max(maxGap, (x.ts - prev) / DAY); prev = x.ts; const hr = new Date(x.ts).getHours(); if (hr < 17 || hr >= 23) badHour++; if (x.kind === 'pity') pityN++; });
+    for (let i = 1; i < rb.length; i++) if (rb[i].at - rb[i - 1].at < 72 * H - 1) cdV++;
+    rbN += rb.length; }
+  console.log('    彩虹（一般作息 80×56 日）：每 ' + (rbDays / rbN).toFixed(1) + ' 日一次、最長間隔 ' + maxGap.toFixed(2) + ' 日、pity 佔 ' + (100 * pityN / rbN).toFixed(0) + '%');
+  ok(maxGap <= 14, '彩虹最長間隔 ≤14 日（由第一次開 app 計）', maxGap.toFixed(2));
+  ok(badHour === 0 && cdV === 0, 'pity 彩虹仍守 17–23 窗、72h 冷卻零違規', JSON.stringify([badHour, cdV]));
+  ok(rbDays / rbN >= 11 && rbDays / rbN <= 15, '彩虹平均 11–15 日一次（加 pity 後）', (rbDays / rbN).toFixed(1));
+  { const s = adult(34); SIM.advance(s, 60, { hour: 12, now: T0 }, 30); const E = s.evs; E.rbAt = E.clock - 13.5 * 86400; E.cd = {};
+    ok(EV.rainbowPity(s, E, 18) === EV.DEF.rainbow && EV.rainbowPity(s, E, 12) === null && EV.rainbowPity(s, E, 23.5) === null, 'rainbowPity：到期時窗內回傳彩虹、窗外 null');
+    E.cd.rainbow = E.clock + 3600; ok(EV.rainbowPity(s, E, 18) === null, 'rainbowPity：唔打穿冷卻');
+    E.cd = {}; E.rbAt = E.clock - 10 * 86400; ok(EV.rainbowPity(s, E, 18) === null, 'rainbowPity：未到期（10 日）唔強制'); }
+
+  // P2 閃光日 72h 冷卻
+  ok(P.flashCooldownH === 72 && EV.DEF.flash.cooldownH === 72, '閃光日冷卻 72h（參數＋事件定義）');
+  { const s = adult(35); SIM.advance(s, 60, { hour: 12, now: T0 }, 30); const E = s.evs;
+    E.flashAtMs = T0 - 48 * H * 1000; E.nowMs = T0; ok(!EV.flashCdOk(E), 'flashCdOk：48h 前閃過 → false');
+    E.flashAtMs = T0 - 72 * H * 1000; ok(EV.flashCdOk(E), 'flashCdOk：72h → true'); }
+  P.flashDayRate = 1;
+  let fl = 0, flV = 0, skip = 0;
+  for (let sd = 1; sd <= 20; sd++) { const sim = simulate(8000 + sd, 14, [9, 13, 20]); const f = sim.recs.filter(x => x.id === 'flash').sort((x, y) => x.ts - y.ts);
+    for (let i = 1; i < f.length; i++) if (f[i].ts - f[i - 1].ts < 72 * H * 1000) flV++; fl += f.length; skip += sim.s.evs.stats.flashCdSkip || 0; }
+  P.flashDayRate = fr;
+  ok(fl > 0 && flV === 0 && skip > 0, '閃光日率 100%（壓測）14 日：兩次閃光相距全部 ≥72h（' + fl + ' 次、跳過 ' + skip + ' 日）', JSON.stringify([fl, flV, skip]));
 }
 
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);

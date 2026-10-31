@@ -27,7 +27,8 @@
     if (qs.get('q')) s.settings.quality = qs.get('q');
     return { s, rep };
   }
-  G.save = function () { try { G.state.lastSeen = G.now(); EV.markSave(G.state, G.now()); localStorage.setItem(P.saveKey, SIM.serialize(G.state)); } catch (e) { /* 私隱模式等 */ } };
+  G.save = function () { try { G.state.lastSeen = Math.max(+G.state.lastSeen || 0, G.now());   // P1：lastSeen 只可向前（max），回撥時鐘唔可以拉後
+    EV.markSave(G.state, G.now()); localStorage.setItem(P.saveKey, SIM.serialize(G.state)); } catch (e) { /* 私隱模式等 */ } };
   G.resetSave = function () { try { localStorage.removeItem(P.saveKey); } catch (e) { } window.__noSaveOnHide = true; location.reload(); };
   G.setQuality = function (q) { G.state.settings.quality = q; G.renderer.blurEvery = 1; G.save(); };
   G.fastForward = function (sec) { SIM.advance(G.state, sec, {}, 30); };

@@ -108,6 +108,11 @@
       pendingMax: 2, historyLen: 12,
       offlinePopupMax: 2,                    // 離線返嚟最多彈 2 個事件卡，其餘入日記
       offlineMaxEvents: 120,                 // 單次離線結算事件總上限（彈出＋日記；14 日約 35 條，留作安全網）
+      offlineIgnoreDailyMax: true,           // 遊策 10-31：離線補抽唔計每日上限 dailyMax（對齊 QA v5.1）；冷卻／全域間隔照計，彈窗仍最多 2
+      // QA 修正（10-31）
+      earlyBird: { hours: [5, 9], hitMul: 1.1 },   // 早鳥時段（本機 05–09）抽選命中率倍數（p_hit × hitMul，上限 1）；令早鳥作息池抽取/日 落 2.2–2.4
+      rainbowPityDays: 14, rainbowPityLeadH: 26,   // 彩虹 pity：距上次彩虹（或開始）≥14 日 − 26h 起（前一次喺窗內任何鐘點，第 13 日個窗都必有機會），時段窗（17–23）內嘅抽選必出彩虹（唔打穿冷卻／全域間隔／回撥日）→ 保證 ≤14 日一次
+      flashCooldownH: 72,                    // 閃光日 72h 冷卻：上次閃光日觸發後 72 小時（有效時間）內唔再觸發
       offlineMaxDays: 14,                    // 離線事件按「日」模擬，最多補 14 日（實時鐘）；需求衰減／離線禮物仍用有效時間 E
       offlineStepSec: 600,                   // 離線補抽嘅時間步長（10 分鐘，鐘點／日界／保底按本機時間）
       offlineNeedAssume: 50,                 // 離線補抽時，條件判斷用「離開前需求」但每項至少 50（唔因為離線衰減而擋事件）
@@ -233,7 +238,7 @@
     { id: 'meteor', icon: 'meteor_night', name: '流星夜', weight: 10, rare: true, hours: [19, 5], sleeping: false,
       grains: [3, 4], mood: [3, 5], dur: 6, visual: true, off: '睇到流星劃過夜空',
       flavor: ['幾顆流星劃過夜空，團絨仰高頭睇到入神。'] },
-    { id: 'rainbow', icon: 'rainbow', name: '雨後彩虹', weight: 4, rare: true, hours: [17, 23], sleeping: false,
+    { id: 'rainbow', icon: 'rainbow', name: '雨後彩虹', weight: 1,  /* QA：4→1（pity 補底後平均 11–12.5 日一次）*/ rare: true, hours: [17, 23], sleeping: false,
       grains: [3, 4], mood: [4, 6], dur: 7, visual: true, off: '見到雨後出咗條彩虹',
       flavor: ['陣雨過後，園圃上空掛住一條淡淡嘅彩虹。'] },
     { id: 'firefly_walk', icon: 'firefly_walk', name: '螢火散步', weight: 14, hours: [17, 23], sleeping: false, clipHint: 'play',
@@ -248,7 +253,7 @@
     { id: 'treasure', icon: 'treasure', name: '尋寶', weight: 18, hours: [8, 22], sleeping: false, energyAtLeast: 25, fallback: true,
       grains: [3, 6], mood: [2, 3], dur: 7, visual: true, off: '喺泥土度掘到啲閃閃嘢',
       flavor: ['團絨喺泥土度掘呀掘，搵到一堆閃閃發光嘅光粒！'] },
-    { id: 'flash', icon: 'shiny_day', name: '閃光日', special: true, rare: true, weight: 0,
+    { id: 'flash', icon: 'shiny_day', name: '閃光日', special: true, rare: true, weight: 0, cooldownH: 72,   // P2：72h 冷卻（PARAMS.events.flashCooldownH）
       grains: [8, 8], mood: [8, 10], dur: 4, visual: true, off: '成日都閃閃發光，開心到飛起',
       flavor: ['今日係「閃光日」！團絨成身金光閃閃，心情特別好。'] },
   ];

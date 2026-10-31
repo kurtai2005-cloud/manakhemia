@@ -95,5 +95,9 @@
   ✓ 序列化／還原一致
   ✓ 壞檔返回 null
   ✓ RNG 可設種子
+# QA P1：lastSeen 只可向前
+  ✓ 回撥 121 秒開 app：applyOffline 唔將 lastSeen 拉後
+  ✓ 正常前進：lastSeen 跟住 now
+  ✓ 超前 >24h 重設：lastSeen／saveResetAt＝now（唯一例外）
 
-結果：82 通過，0 失敗
+結果：85 通過，0 失敗

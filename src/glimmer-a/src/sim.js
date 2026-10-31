@@ -160,7 +160,7 @@
   // lastSaveTime（UTC ms）> now+24h → 無效（時鐘曾被撥前又改返）：重設為 now，lastSeen 一併設為 now → 該段唔派離線獎
   function sanitizeSaveTime(s, nowMs) {
     const A = D.PARAMS.events.lastSaveMaxAheadH * 3600e3;
-    if (s.lastSaveTime && nowMs != null && s.lastSaveTime > nowMs + A) { s.lastSaveTime = nowMs; s.lastSeen = nowMs; s.saveTimeResets = (s.saveTimeResets || 0) + 1; return true; }
+    if (s.lastSaveTime && nowMs != null && s.lastSaveTime > nowMs + A) { s.lastSaveTime = nowMs; s.lastSeen = nowMs; s.saveTimeResets = (s.saveTimeResets || 0) + 1; s.saveResetAt = nowMs; return true; }   // saveResetAt：當日跳過保底（events）
     return false;
   }
   const offlineHooks = [];
@@ -176,7 +176,7 @@
       advance(s, E, { offline: true, growthMul: P.offlineGrowthRatio, off }, 60);
     }
     for (let i = 0; i < offlineHooks.length; i++) offlineHooks[i](s, { from: s.lastSeen, now: nowMs, T, E, tampered: reset, before });
-    s.lastSeen = nowMs;
+    s.lastSeen = reset ? nowMs : Math.max(+s.lastSeen || 0, nowMs);   // P1：回撥時鐘唔可以將 lastSeen 拉後（重設除外）
     const rep = { T, E, tampered: reset, show: T >= P.offlineMinAwaySec, summary: [], gift: 0, giftTotal: 0, eventGrains: 0, events: [], stageChanged: s.stage !== before.stage, withdrawn: false };
     if (s.stage !== 'egg' && E > 0) {
       for (const k of KEYS) if (s.needs[k] <= P.offlineNeedFloor + 0.5 && before.needs[k] > P.offlineNeedFloor) { rep.withdrawn = true; }
