@@ -225,8 +225,30 @@
 - 只改 fall_asleep／sleep_loop／wake（wake_04＝原樣）；其餘 clip 同形態不變。預覽 `../preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png`。
 <!-- EVO6E-END -->
 
+<!-- EVO6F-START -->
+## 進化 6 階 batch F — 新支線 ×5（水珠／菇傘／晶角／月眠／火苗）
+- 外觀＝`../evo6_concept/branches5/`（v3 lumi feel，逐幀 pose-aware 重畫）；姿勢＝現有同名 clip；4×5 L 級 kit；picked_up pivot＝grab；bulb＝燈中心。
+- 每形態全套 41 clip／180 幀：std23＋生命感 s1/s2（含 picked_up）＋s3 nuzzle_purr／reunion_happy；frames／layers（_noface／_faceov）／emissive／atlas。
+- 靜光 fall_asleep aura 0.8→0.2、sleep_loop 0.2（同靜光 ×4）；大件發光飾物跟住暗。
+- F1 水珠：浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺
+- F2 菇傘：菇帽搖：菇帽逐幀左右擺＋斜（帽邊一高一低）、細菇燈跟住晃、孢子飄
+- F3 晶角：晶光閃：晶耳／晶燈／身上晶粉閃點逐幀輪住閃（glint）
+- F4 月眠：渴瞓：idle／生命感 clip 間中半瞇眼、睡帽尖跟住點頭；fall_asleep 月牙燈漸暗、sleep_loop 暗、wake 返光
+- F5 火苗：火苗閃：頭頂火苗燈／尾尖火／耳尖逐幀高低擺、火星點閃
 
-
+| batch | 形態 | px | pivot | clip | 幀 | atlas | 色盤 |
+|---|---|---|---|---|---|---|---|
+| F1 | 守夜者・水珠 `evo_guard_tide` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_tide.png`（1024×1024，444 塊）＋ `_emissive` | palette_tide.json |
+| F1 | 靜光・水珠 `evo_still_tide` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_tide.png`（1024×1024，444 塊）＋ `_emissive` | palette_tide.json |
+| F2 | 守夜者・菇傘 `evo_guard_shroom` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_shroom.png`（1024×1024，444 塊）＋ `_emissive` | palette_shroom.json |
+| F2 | 靜光・菇傘 `evo_still_shroom` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_shroom.png`（1024×1024，444 塊）＋ `_emissive` | palette_shroom.json |
+| F3 | 守夜者・晶角 `evo_guard_crystal` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_crystal.png`（1024×1024，444 塊）＋ `_emissive` | palette_crystal.json |
+| F3 | 靜光・晶角 `evo_still_crystal` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_crystal.png`（1024×1024，444 塊）＋ `_emissive` | palette_crystal.json |
+| F4 | 守夜者・月眠 `evo_guard_moon` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_moon.png`（1024×1024，444 塊）＋ `_emissive` | palette_moon.json |
+| F4 | 靜光・月眠 `evo_still_moon` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_moon.png`（1024×1024，444 塊）＋ `_emissive` | palette_moon.json |
+| F5 | 守夜者・火苗 `evo_guard_ember` | 44 | (22, 41) | 41 | 180 | `../evo6/atlas_evo_guard_ember.png`（1024×1024，444 塊）＋ `_emissive` | palette_ember.json |
+| F5 | 靜光・火苗 `evo_still_ember` | 48 | (24, 45) | 41 | 180 | `../evo6/atlas_evo_still_ember.png`（1024×1024，444 塊）＋ `_emissive` | palette_ember.json |
+<!-- EVO6F-END -->
 
 
 <!-- LUMI-START -->

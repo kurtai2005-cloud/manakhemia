@@ -96,4 +96,37 @@
 - 預覽 `sprites/tuanrong/preview/evo6/evo6_radiant_halo_sleep_before_after_4x.png`；工具 `tools/build_evo6_animBC.py E`（Pillow/numpy，無 AI）；CLIPS.json 只更新 forms.evo_still_radiant＋clips[].evo_still_radiant／anchors＋新增 evo6E；CLIPS.md 加 EVO6E 段；備份 `_backups/pre_evo6_animE_20261031/`。
 <!-- EVO6E-LOG-END -->
 
+<!-- EVO6F1-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch F1（新支線・水珠 tide）
+- 守夜者 44＋靜光 48 全套 41 clip：`evo_guard_tide` 180 幀、`evo_still_tide` 180 幀；frames／layers／emissive／kit／face_anchors（bulb＝燈中心）／atlas＋emissive。色盤 `sprites/tuanrong/evo6/palette_tide.json`。
+- 分支動態：浮浮下：idle 身浮 1px、水珠燈逐幀上下、泡泡上升、肚波紋流、鰭耳／魚尾擺。靜光瞓覺 aura 漸暗同靜光 ×4。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchF1_contact_4x.png`；工具 `tools/build_evo6_animF.py F1`（Pillow/numpy 程式繪製，無 AI）；CLIPS.json 只新增自己 key（forms.<form>、clips[].<form>、anchors.<form>、evo6F.batches.F1）；CLIPS.md EVO6F 段；備份 `_backups/pre_evo6_branches5_anim_20261031/`。
+<!-- EVO6F1-LOG-END -->
 
+<!-- EVO6F2-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch F2（新支線・菇傘 shroom）
+- 守夜者 44＋靜光 48 全套 41 clip：`evo_guard_shroom` 180 幀、`evo_still_shroom` 180 幀；frames／layers／emissive／kit／face_anchors（bulb＝燈中心）／atlas＋emissive。色盤 `sprites/tuanrong/evo6/palette_shroom.json`。
+- 分支動態：菇帽搖：菇帽逐幀左右擺＋斜（帽邊一高一低）、細菇燈跟住晃、孢子飄。靜光瞓覺 aura 漸暗同靜光 ×4。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchF2_contact_4x.png`；工具 `tools/build_evo6_animF.py F2`（Pillow/numpy 程式繪製，無 AI）；CLIPS.json 只新增自己 key（forms.<form>、clips[].<form>、anchors.<form>、evo6F.batches.F2）；CLIPS.md EVO6F 段；備份 `_backups/pre_evo6_branches5_anim_20261031/`。
+<!-- EVO6F2-LOG-END -->
+
+<!-- EVO6F3-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch F3（新支線・晶角 crystal）
+- 守夜者 44＋靜光 48 全套 41 clip：`evo_guard_crystal` 180 幀、`evo_still_crystal` 180 幀；frames／layers／emissive／kit／face_anchors（bulb＝燈中心）／atlas＋emissive。色盤 `sprites/tuanrong/evo6/palette_crystal.json`。
+- 分支動態：晶光閃：晶耳／晶燈／身上晶粉閃點逐幀輪住閃（glint）。靜光瞓覺 aura 漸暗同靜光 ×4。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchF3_contact_4x.png`；工具 `tools/build_evo6_animF.py F3`（Pillow/numpy 程式繪製，無 AI）；CLIPS.json 只新增自己 key（forms.<form>、clips[].<form>、anchors.<form>、evo6F.batches.F3）；CLIPS.md EVO6F 段；備份 `_backups/pre_evo6_branches5_anim_20261031/`。
+<!-- EVO6F3-LOG-END -->
+
+<!-- EVO6F4-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch F4（新支線・月眠 moon）
+- 守夜者 44＋靜光 48 全套 41 clip：`evo_guard_moon` 180 幀、`evo_still_moon` 180 幀；frames／layers／emissive／kit／face_anchors（bulb＝燈中心）／atlas＋emissive。色盤 `sprites/tuanrong/evo6/palette_moon.json`。
+- 分支動態：渴瞓：idle／生命感 clip 間中半瞇眼、睡帽尖跟住點頭；fall_asleep 月牙燈漸暗、sleep_loop 暗、wake 返光。靜光瞓覺 aura 漸暗同靜光 ×4。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchF4_contact_4x.png`；工具 `tools/build_evo6_animF.py F4`（Pillow/numpy 程式繪製，無 AI）；CLIPS.json 只新增自己 key（forms.<form>、clips[].<form>、anchors.<form>、evo6F.batches.F4）；CLIPS.md EVO6F 段；備份 `_backups/pre_evo6_branches5_anim_20261031/`。
+<!-- EVO6F4-LOG-END -->
+
+<!-- EVO6F5-LOG-START -->
+## 2026-10-31 — 團絨 evo6 動畫 batch F5（新支線・火苗 ember）
+- 守夜者 44＋靜光 48 全套 41 clip：`evo_guard_ember` 180 幀、`evo_still_ember` 180 幀；frames／layers／emissive／kit／face_anchors（bulb＝燈中心）／atlas＋emissive。色盤 `sprites/tuanrong/evo6/palette_ember.json`。
+- 分支動態：火苗閃：頭頂火苗燈／尾尖火／耳尖逐幀高低擺、火星點閃。靜光瞓覺 aura 漸暗同靜光 ×4。
+- 預覽 `sprites/tuanrong/preview/evo6/evo6_batchF5_contact_4x.png`；工具 `tools/build_evo6_animF.py F5`（Pillow/numpy 程式繪製，無 AI）；CLIPS.json 只新增自己 key（forms.<form>、clips[].<form>、anchors.<form>、evo6F.batches.F5）；CLIPS.md EVO6F 段；備份 `_backups/pre_evo6_branches5_anim_20261031/`。
+<!-- EVO6F5-LOG-END -->

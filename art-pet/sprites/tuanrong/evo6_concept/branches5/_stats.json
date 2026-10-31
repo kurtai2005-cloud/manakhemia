@@ -1,0 +1,202 @@
+{
+ "evo6_5_guard_tide_44": {
+  "branch": "tide",
+  "name": "守夜者・水珠",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox": [
+   2,
+   10,
+   41,
+   42
+  ],
+  "colours": 13,
+  "palette": "palette_evo6_tide.json",
+  "emissivePx": 24,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_6_still_tide_48": {
+  "branch": "tide",
+  "name": "靜光・水珠",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox": [
+   1,
+   6,
+   43,
+   46
+  ],
+  "colours": 14,
+  "palette": "palette_evo6_tide.json",
+  "emissivePx": 39,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_5_guard_shroom_44": {
+  "branch": "shroom",
+  "name": "守夜者・菇傘",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox": [
+   4,
+   13,
+   40,
+   42
+  ],
+  "colours": 18,
+  "palette": "palette_evo6_shroom.json",
+  "emissivePx": 10,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_6_still_shroom_48": {
+  "branch": "shroom",
+  "name": "靜光・菇傘",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox": [
+   1,
+   8,
+   44,
+   46
+  ],
+  "colours": 18,
+  "palette": "palette_evo6_shroom.json",
+  "emissivePx": 58,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_5_guard_crystal_44": {
+  "branch": "crystal",
+  "name": "守夜者・晶角",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox": [
+   3,
+   9,
+   39,
+   42
+  ],
+  "colours": 14,
+  "palette": "palette_evo6_crystal.json",
+  "emissivePx": 50,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_6_still_crystal_48": {
+  "branch": "crystal",
+  "name": "靜光・晶角",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox": [
+   1,
+   5,
+   45,
+   46
+  ],
+  "colours": 14,
+  "palette": "palette_evo6_crystal.json",
+  "emissivePx": 101,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_5_guard_moon_44": {
+  "branch": "moon",
+  "name": "守夜者・月眠",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox": [
+   3,
+   4,
+   39,
+   42
+  ],
+  "colours": 15,
+  "palette": "palette_evo6_moon.json",
+  "emissivePx": 22,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_6_still_moon_48": {
+  "branch": "moon",
+  "name": "靜光・月眠",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox": [
+   1,
+   2,
+   43,
+   46
+  ],
+  "colours": 16,
+  "palette": "palette_evo6_moon.json",
+  "emissivePx": 109,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_5_guard_ember_44": {
+  "branch": "ember",
+  "name": "守夜者・火苗",
+  "canvas": 44,
+  "pivot": [
+   22,
+   41
+  ],
+  "bbox": [
+   3,
+   9,
+   40,
+   42
+  ],
+  "colours": 14,
+  "palette": "palette_evo6_ember.json",
+  "emissivePx": 18,
+  "touches_edge": false,
+  "below_ground": 8
+ },
+ "evo6_6_still_ember_48": {
+  "branch": "ember",
+  "name": "靜光・火苗",
+  "canvas": 48,
+  "pivot": [
+   24,
+   45
+  ],
+  "bbox": [
+   1,
+   9,
+   42,
+   46
+  ],
+  "colours": 14,
+  "palette": "palette_evo6_ember.json",
+  "emissivePx": 72,
+  "touches_edge": false,
+  "below_ground": 8
+ }
+}
