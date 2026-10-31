@@ -1,5 +1,5 @@
 /* systems12 第 1 批 Node 無依賴測試：node tests/systems12.test.js
-   系統 7 天氣／季節（14 日連續模擬：每週 1–3 場雨、每場 1–3h；季節＝香港月份）。數值讀 PARAMS.systems12。 */
+   系統 7 天氣／季節（v10.2 一日一抽：晴60／陰20／雨15／霧5；季節＝香港月份）。數值讀 PARAMS.systems12。 */
 const S = require('../src/sim.js');
 const D = require('../src/data.js');
 const X = require('../src/systems.js');
@@ -7,24 +7,29 @@ const P = D.PARAMS, C = P.systems12, W = C.weather;
 let pass = 0, fail = 0;
 function ok(cond, name, info) { if (cond) { pass++; console.log('  ✓ ' + name); } else { fail++; console.log('  ✗ ' + name + (info !== undefined ? '  → ' + info : '')); } }
 
-console.log('① 系統 7 天氣：14 日連續模擬（每週 1–3 場雨、每場 1–3h）');
+console.log('① 系統 7 天氣：v10.2 一日一抽（晴60／陰20／雨15／霧5，成日不變；舊每週雨場已刪）');
 {
-  const mon = new Date(2026, 10, 2).getTime();   // 2026-11-02 星期一 → 14 日＝兩個完整週
-  let allOk = true, lenOk = true, bad = '', tot = { clear: 0, overcast: 0, rain: 0, fog: 0 }, nSp = 0, days = 0, rainDays = 0;
-  for (let seed = 1; seed <= 200; seed++) {
-    const r = X.simulate(seed * 7919, mon, 14, 5), wk = Object.values(r.weeks);
-    if (Object.keys(r.weeks).length !== 2 || wk.some(n => n < W.rainPerWeek[0] || n > W.rainPerWeek[1])) { allOk = false; bad = bad || seed + ':' + JSON.stringify(r.weeks); }
-    r.spells.forEach(x => { nSp++; if (x.hours < W.rainHours[0] - 0.09 || x.hours > W.rainHours[1] + 0.09) { lenOk = false; bad = bad || 'len ' + JSON.stringify(x); } });
-    for (const k in r.hist) tot[k] += r.hist[k];
-    for (let d = 0; d < 14; d++) { days++; if (X.dayBase(seed * 7919, X.dayNum(mon) + d) === W.rainDayBase && X.rainSpells(seed * 7919, X.weekOf(X.dayNum(mon) + d)).some(s => s.dn === X.dayNum(mon) + d)) rainDays++; }
+  const mon = new Date(2026, 10, 2).getTime(), PR = Object.fromEntries(P.evo6.branch.weather.probs);
+  ok(PR.clear === 60 && PR.overcast === 20 && PR.rain === 15 && PR.fog === 5, '機率 config：晴60／陰20／雨15／霧5', JSON.stringify(PR));
+  ok(W.perDay === true && !('rainPerWeek' in W) && !('rainHours' in W) && !('rainDayBase' in W) && !('weights' in W) && !X.rainSpells && !X.dayBase, '舊「每週落雨 1–3 次、每次 1–3h」config／函數已刪');
+  let mixed = 0, tot = { clear: 0, overcast: 0, rain: 0, fog: 0 }, days = 0, rainWk0 = 0, wks = 0;
+  for (let seed = 1; seed <= 400; seed++) {
+    const r = X.simulate(seed * 7919, mon, 28, 20); mixed += r.mixed; days += r.days.length;
+    for (const k in r.dayHist) tot[k] += r.dayHist[k];
+    for (let w = 0; w < 4; w++) { wks++; if (!r.days.slice(w * 7, w * 7 + 7).some(d => d.w === 'rain')) rainWk0++; }
   }
-  ok(allOk, `200 個 seed × 14 日：每週雨場數 ∈ [${W.rainPerWeek}]`, bad);
-  ok(lenOk, `每場雨 ${W.rainHours[0]}–${W.rainHours[1]}h（${nSp} 場）`, bad);
-  const rdp = rainDays / days * 100; ok(rdp >= 12 && rdp <= 25, `落雨日比例 ≈ 雨 ${W.weights.rain}%（實際 ${rdp.toFixed(1)}%）`);
-  const n = Object.values(tot).reduce((a, b) => a + b, 0), fogP = tot.fog / n * 100, ovP = tot.overcast / n * 100, clP = tot.clear / n * 100;
-  ok(fogP > 2 && fogP < 9, `霧 ≈ ${W.weights.fog}%（${fogP.toFixed(1)}%）`); ok(clP > 50 && clP < 70, `晴 ≈ ${W.weights.clear}%（${clP.toFixed(1)}%）`); ok(ovP > 18 && ovP < 40, `陰（含落雨日底色）（${ovP.toFixed(1)}%）`);
-  const t = mon + 5 * 3600e3 + 123456; ok(X.weatherAt(t, 99) === X.weatherAt(t, 99) && X.simulate(99, mon, 14).spells.length === X.simulate(99, mon, 14).spells.length, '同 seed 同時刻 → 同天氣（決定性）');
-  const one = X.simulate(4242, mon, 14, 10); ok(one.spells.every(x => x.from >= W.rainFromH - 0.01 && x.from + x.hours <= W.rainToH + 0.01), `雨只喺 ${W.rainFromH}:00–${W.rainToH}:00`, JSON.stringify(one.spells));
+  ok(mixed === 0 && days === 400 * 28, `400 seed × 28 日（每 20 分鐘取樣）：每日天氣全日一致（混雜樣本 ${mixed}）`);
+  for (const k of ['clear', 'overcast', 'rain', 'fog']) { const pc = tot[k] / days * 100; ok(Math.abs(pc - PR[k]) < (PR[k] >= 15 ? 1.5 : 0.8), `${X.WEATHER_NAME[k]}日 ≈ ${PR[k]}%（實際 ${pc.toFixed(2)}%）`); }
+  ok(rainWk0 > 0, `冇保底每週雨場（成週無雨 ${(rainWk0 / wks * 100).toFixed(1)}% ≈ 0.85^7≈32%）`);
+  const t = mon + 5 * 3600e3 + 123456; ok(X.weatherAt(t, 99) === X.weatherAt(t, 99) && X.weatherAt(t, 99) === S.dayWeather(99, mon + 23.9 * 3600e3), '同 seed 同日 → 同天氣（決定性；00:00–23:59 同一個）');
+  ok(X.weatherAt(t, 99) === X.dayWeatherN(99, X.dayNum(t)) && S.dayWeatherN === S.dayWeatherN && typeof S.dayWeather === 'function', '遊戲／日記／sweep 共用 sim.dayWeatherN');
+  { let diff = 0; for (let d = 0; d < 200; d++) if (S.dayWeatherN(1, 20000 + d) !== S.dayWeatherN(2, 20000 + d)) diff++; ok(diff > 40, `唔同 seed → 唔同日程（200 日 ${diff} 日唔同）`); }
+  { // 舊存檔：v10.1 前 rain 窗只係 seed＋時間計（冇入存檔）；diary 今日 tr.wx 記住雨 → 讀入唔殘留、唔 crash
+    const s0 = S.newState(mon, 4242), k0 = S.dayKey(mon + 13 * 3600e3); s0.sys12 = { diary: { list: [], tr: { day: k0, gen: 1, foods: {}, care: {}, n: 0, stages: [], st0: 'sprout', stLast: 'sprout', mood: [0, 0], mt: 0, wt: 0, wx: { rain: 4, overcast: 2 } } }, wx: { rainUntil: mon + 14 * 3600e3 } };
+    const s1 = S.deserialize(S.serialize(s0)); X.st(s1);
+    ok(s1.sys12.diary.tr.wx.rain === 4 && X.weatherAt(mon + 13 * 3600e3, s1.seed) === S.dayWeather(s1.seed >>> 0, mon) && X.weatherAt(mon + 14.5 * 3600e3, s1.seed) === X.weatherAt(mon + 13 * 3600e3, s1.seed), '舊存檔（落緊雨中途）讀入：天氣即跟當日抽籤、成日一致；日記已見天氣保留');
+    ok(!('wx' in s1.sys12), '舊存檔多餘 sys12.wx（雨窗）欄位 → 遷移清走', JSON.stringify(Object.keys(s1.sys12)));
+  }
   ok(P.evo6.branch.weather.states.includes('fog') && P.evo6.branch.weather.route.fog && P.evo6.branch.weather.route.fog.w === P.evo6.branch.weather.route.overcast.w, 'fog 喺天氣狀態；v10：霧當陰（菇傘 0.5）');
   ok(P.evo6.branch.weather.route.rain.to === 'shroom', '落雨路線照 v4/v5 config（菇傘）— 見報告詮釋');
 }
@@ -42,13 +47,22 @@ console.log('③ 系統 1 每日小委託＋星星碎錢包（每日 30＝委託
   const mk = (stage) => { const s = S.newState(day0, 4242); s.stage = stage || 'sprout'; s.cq = 60; s.ev = []; return s; };
   let s = mk(); X.questTick(s, now, s.ev); let q = X.quests(s, now);
   ok(q.list.length === Q.perDay && q.list.every(x => Q.kinds[x.k]) && new Set(q.list.map(x => x.k)).size === Q.perDay, `每日 ${Q.perDay} 個委託（唔重覆）`, JSON.stringify(q.list));
-  ok(!q.list.some(x => x.route), '冇照顧分 → 冇路線委託（3 個基本）', JSON.stringify(q.list.map(x => x.k)));
-  ok(q.list.map(x => x.k).sort().join() === Q.base.slice().sort().join(), '基本委託＝餵 2／淋水 1／陪玩 1（spec 例）');
-  // 偏向領先路線：先做 rinse 照顧令水珠領先
-  s = mk(); for (let i = 0; i < 6; i++) S.noteCare(s, 12, 'rinse'); s.evo.b5sys = null; s.sys12 = null; X.st(s); now = day0 + 86400e3; X.questTick(s, now, s.ev); q = X.quests(s, now);
-  const rq = q.list.find(x => x.route);
-  ok(rq && rq.route === S.routeLead(s).form || (rq && rq.route === 'tide'), '領先水珠 → 其中 1 個委託偏向（淋水，標路線）', JSON.stringify(q.list));
-  for (const r of ['shroom', 'crystal', 'moon', 'ember']) { const s2 = mk(); s2.evo = { evIn: {}, care: {}, b5: { sprout: Object.assign({ all: 10, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, [r]: 8 }, r === 'crystal' ? { crystal: 0, loginPoop: 5, quickLogin: 5 } : {}) }, cl: { sprout: { sum: 95 * 100, sec: 100 } } }; const L = X.genQuests(s2, '2026-11-05'); ok(L[0].route === r && L[0].k === Q.routeKind[r] && L.length === 3 && new Set(L.map(x => x.k)).size === 3, `領先 ${r} → 委託 ${Q.routeKind[r]}`, JSON.stringify(L)); }
+  ok(q.list.filter(x => x.route).length === 1 && q.list[0].route && q.list[0].k === Q.routeKind[q.list[0].route], 'v10.2：每日 1 個路線委託（冇照顧分都有；平均輪）', JSON.stringify(q.list.map(x => x.k + ':' + x.route)));
+  ok(q.list.slice(1).every(x => Q.base.includes(x.k) && !x.route), '其餘 2 個＝基本委託（餵／淋水／陪玩，唔重覆路線嗰個）', JSON.stringify(q.list.map(x => x.k)));
+  { // 平均分晒：任何連續 5 日每條路線剛好 1 次；200 seed × 100 日每條 20%；唔理領先路線
+    let rot = true, cnt = {}, n = 0; const R = D.BRANCH5;
+    for (let sd = 1; sd <= 200; sd++) { const s2 = S.newState(day0, sd * 31); s2.stage = 'sprout'; const seq = [];
+      for (let d = 0; d < 100; d++) { const k = S.dayKey(day0 + d * 86400e3), r = X.questRoute(s2, k); seq.push(r); cnt[r] = (cnt[r] || 0) + 1; n++; }
+      for (let i = 0; i + 5 <= seq.length; i++) if (new Set(seq.slice(i, i + 5)).size !== 5) rot = false; }
+    ok(rot, '任何連續 5 日：5 條路線各 1 次（平均輪）');
+    ok(R.every(r => cnt[r] === n / 5), '200 seed × 100 日：每條路線 20%', JSON.stringify(cnt));
+    const sA = mk(); for (let i = 0; i < 9; i++) S.noteCare(sA, 12, 'play'); const sB = mk();
+    ok(X.questRoute(sA, '2026-11-05') === X.questRoute(sB, '2026-11-05'), '領先火苗都唔會改路線委託（唔跟領先）');
+    ok(typeof SY.sources.questRoute.pts === 'number' && SY.sources.questRoute.pts === 1 && !SY.sources.questRoute.perRoute, '路線委託分：5 條路線同一個 pts（1），火苗唔多攞', JSON.stringify(SY.sources.questRoute));
+    ok(SY.maxRouteSharePct === 25, '25% 單路線 cap 保留');
+    for (const r of R) { const kd = Q.routeKind[r]; ok(Q.kinds[kd] && Q.kinds[kd].n >= 1, `路線 ${r} → 委託 ${kd}（${Q.kinds[kd].label}）`); }
+    ok(Q.kinds.poopQuick.label === '返嚟 2 分鐘內執晒便便', '晶角委託文案確認不變');
+  }
   { const s3 = mk(); s3.poops = 1; S.poopAges(s3).push(0); const got = []; S.addCareHook((x, k) => { if (x === s3) got.push(k); }); const b0 = X.bond(s3, now).v;
     S.noteLogin(s3, now); S.clearPoop(s3); const b1 = X.bond(s3, now).v;
     ok(got.join() === 'poop,poopQuick', 'v10 即清上線 → hook 收 poop 再收 poopQuick（推委託）', got.join());

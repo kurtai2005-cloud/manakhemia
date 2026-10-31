@@ -84,7 +84,7 @@
           enabled: true,
           maxRouteSharePct: 25,    // 新系統分最多佔該路線分 25%（唔好蓋過照顧本身）：sys ≤ care × 25/75
           stardustDailyCap: 30,    // 星星碎每日入帳上限（委託 15＋其他 15）
-          sources: { questRoute: { pts: 1 } },   // 系統 1：「領先路線」嗰個委託完成 → 該路線 +1（受 25% cap）
+          sources: { questRoute: { pts: 1 } },   // 系統 1：路線委託完成 → 該路線 +1（v10.2：5 條路線同分、逐日平均輪；受 25% cap）
         },
       },
       // §7 路線清晰化（pet-template-v1「§7 路線清晰化」）：顏色／時間全部喺度；螢絨隱藏（燈泡唔顯示、預告唔洩露）
@@ -104,16 +104,15 @@
       } },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
     // ── systems12 第 1 批（docs-gdd/systems12-v1.md；遊美 b1 美術 12b13ec）。數值全部喺度 ──
     systems12: {
-      // 系統 7 天氣／季節：每日天氣＝真實日期＋seed；晴60／陰20／霧5（雨另外按週排 1–3 場，每場 1–3h，平均≈15% 日數）
-      weather: { auto: true, weights: { clear: 60, overcast: 20, rain: 15, fog: 5 }, rainPerWeek: [1, 3], rainHours: [1, 3], rainFromH: 6, rainToH: 22,
-        rainDayBase: 'overcast',   // 落雨嗰日其餘時間＝陰
+      // 系統 7 天氣／季節：每日天氣＝真實日期＋seed，一日一抽（v10.2）
+      weather: { auto: true, perDay: true,   // v10.2：一日一抽（機率＝evo6.branch.weather.probs 晴60／陰20／雨15／霧5），成日不變；舊每週雨場已刪
         rainDim: 0.18,             // H3 雨畫面再暗 18%（雨聲不變）
         shiverEverySec: [25, 50], shiverFogMul: 2, shiverWinterMul: 2, shiverBaseChance: 0.25 },   // 打冷震：idle 時每 25–50s 擲一次；霧／冬機率 ×2
       seasons: { spring: [3, 4, 5], summer: [6, 7, 8], autumn: [9, 10, 11], winter: [12, 1, 2] }, seasonFadeSec: 3,
       // 星星碎錢包：每日入帳上限＝evo6.branch.systems.stardustDailyCap（30）；分帳：委託 15＋其他 15（日界 00:00 本機）
       wallet: { questCap: 15, otherCap: 15 },
       // 系統 1 每日小委託：每日 3 個、每個 5 星星碎、3 個齊即刻發獎（15）；00:00 重置；唔做唔罰；斷線／閂咗 app 未發 → 下次開補發
-      // 其中 1 個按「領先路線」揀（routeKind）；完成嗰個 → 該路線 +evo6.branch.systems.sources.questRoute.pts（受 25% cap）
+      // 其中 1 個係路線委託（routeKind）：v10.2 逐日平均輪晒 5 條路線（唔再跟領先路線）；完成嗰個 → 該路線 +evo6.branch.systems.sources.questRoute.pts（受 25% cap）
       quests: { perDay: 3, reward: 5, base: ['feed', 'rinse', 'play'],
         kinds: {
           feed: { n: 2, counts: ['feed'], icon: 'icon_commission_feed', label: '餵佢食嘢' },

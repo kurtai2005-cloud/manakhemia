@@ -1,6 +1,6 @@
 /* 《微光小圃》 systems.js — systems12 第 1 批（docs-gdd/systems12-v1.md）。原創代碼。
    DOM-free、Node 可 require（純邏輯＋狀態）；main.js 掛入遊戲迴圈，devpanel 加觸發掣。數值全部喺 data.js PARAMS.systems12／evo6.branch.systems。
-   系統 7 天氣／季節：每日天氣（真實日期＋seed）＋每週 1–3 場雨（每場 1–3h）；季節跟香港月份。 */
+   系統 7 天氣／季節：v10.2 每日一抽（真實日期＋seed；晴60／陰20／雨15／霧5，成日不變）；季節跟香港月份。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory(require('./data.js'), require('./sim.js'));
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.sys12 = factory(root.Glimmer.data, root.Glimmer.sim); }
@@ -14,46 +14,23 @@
   function hash(seed, a, b) { let h = (seed >>> 0) ^ 0x9e3779b9; h = Math.imul(h ^ (a >>> 0), 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h ^ ((b | 0) >>> 0), 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; }
   function rngFor(seed, a, b) { return SIM.makeRng(hash(seed, a, b)); }
 
-  // ── 系統 7：天氣 ──
-  /* 週＝由星期一起（dayNum 0＝1970-01-01 星期四 → +3）。每週 1–3 場雨：n＝clamp(Binomial(7, 雨%)), rainPerWeek)；
-     每場揀唔同日、起始 rainFromH–rainToH、長 1–3h（整點＋分鐘隨機）。其餘時間＝當日底色天氣（晴／陰／霧按權重；落雨日＝陰）。 */
+  // ── 系統 7：天氣（v10.2：一日一抽）──
+  /* 每日（本機 00:00 起）用 seed＋日數抽一次：晴 60／陰 20／雨 15／霧 5（evo6.branch.weather.probs），成日都係呢個天氣。
+     抽法喺 sim.js dayWeatherN（遊戲／日記／route-sweep 共用）；舊「每週落雨 1–3 次、每次 1–3h」已刪。
+     天氣冇入存檔（純 seed＋日期計）→ 舊存檔讀入即跟當日抽籤，唔會殘留雨窗。 */
   function weekOf(dn) { return Math.floor((dn + 3) / 7); }
-  const wkCache = new Map();
-  function rainSpells(seed, wk) {
-    const key = seed + ':' + wk; if (wkCache.has(key)) return wkCache.get(key);
-    const W = C().weather, r = rngFor(seed, wk, 7), pr = W.weights.rain / 100;
-    let n = 0; for (let i = 0; i < 7; i++) if (r() < pr) n++;
-    n = Math.max(W.rainPerWeek[0], Math.min(W.rainPerWeek[1], n));
-    const days = [0, 1, 2, 3, 4, 5, 6]; for (let i = 6; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const t = days[i]; days[i] = days[j]; days[j] = t; }
-    const out = days.slice(0, n).sort((a, b) => a - b).map(di => {
-      const dur = W.rainHours[0] + r() * (W.rainHours[1] - W.rainHours[0]), from = W.rainFromH + r() * Math.max(0, W.rainToH - W.rainFromH - dur);
-      return { dn: wk * 7 - 3 + di, from: +from.toFixed(3), to: +(from + dur).toFixed(3), hours: +dur.toFixed(3) };
-    });
-    if (wkCache.size > 64) wkCache.clear(); wkCache.set(key, out); return out;
-  }
-  function dayBase(seed, dn) {
-    const W = C().weather, sp = rainSpells(seed, weekOf(dn));
-    if (sp.some(x => x.dn === dn)) return W.rainDayBase || 'overcast';
-    const w = W.weights, ks = Object.keys(w).filter(k => k !== 'rain'), tot = ks.reduce((a, k) => a + w[k], 0);
-    let u = rngFor(seed, dn, 1)() * tot; for (const k of ks) { u -= w[k]; if (u < 0) return k; } return 'clear';
-  }
-  function hourIn(ms) { const d = new Date(ms); return d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600; }
-  /* 某時刻天氣：落緊雨（喺某場雨入面）→ 'rain'；否則當日底色 */
-  function weatherAt(ms, seed) {
-    seed = seed >>> 0; const dn = dayNum(ms), h = hourIn(ms);
-    const sp = rainSpells(seed, weekOf(dn)).find(x => x.dn === dn && h >= x.from && h < x.to);
-    return sp ? 'rain' : dayBase(seed, dn);
-  }
-  /* 驗收：連續 N 日（每 10 分鐘取樣）統計雨場（連續落雨段）＋每週場數 */
+  function dayWeatherN(seed, dn) { return SIM.dayWeatherN(seed >>> 0, dn); }
+  function weatherAt(ms, seed) { return SIM.dayWeather(seed >>> 0, ms); }
+  /* 驗收：連續 N 日（每 stepMin 分鐘取樣）→ 每日天氣（檢查成日一致）＋樣本 hist＋日數 dayHist */
   function simulate(seed, fromMs, days, stepMin) {
-    stepMin = stepMin || 10; const steps = Math.round(days * 24 * 60 / stepMin), spells = [], hist = {};
-    let cur = null;
+    stepMin = stepMin || 60; const steps = Math.round(days * 24 * 60 / stepMin), hist = {}, byDay = {}, order = [];
+    let mixed = 0;
     for (let i = 0; i < steps; i++) {
-      const t = fromMs + i * stepMin * 60000, w = weatherAt(t, seed); hist[w] = (hist[w] || 0) + 1;
-      if (w === 'rain') { if (!cur) { cur = { start: t, end: t }; spells.push(cur); } cur.end = t + stepMin * 60000; } else cur = null;
+      const t = fromMs + i * stepMin * 60000, w = weatherAt(t, seed), k = SIM.dayKey(t); hist[w] = (hist[w] || 0) + 1;
+      if (!(k in byDay)) { byDay[k] = w; order.push(k); } else if (byDay[k] !== w) mixed++;
     }
-    const weeks = {}; spells.forEach(x => { const k = weekOf(dayNum(x.start)); weeks[k] = (weeks[k] || 0) + 1; });
-    return { spells: spells.map(x => ({ day: SIM.dayKey(x.start), from: +hourIn(x.start).toFixed(2), hours: +((x.end - x.start) / 3600e3).toFixed(2) })), weeks, hist };
+    const dayHist = {}; order.forEach(k => { dayHist[byDay[k]] = (dayHist[byDay[k]] || 0) + 1; });
+    return { days: order.map(k => ({ day: k, w: byDay[k] })), dayHist, hist, mixed };
   }
 
   // ── 系統 7：季節（香港月份）──
@@ -93,6 +70,7 @@
     if (!Array.isArray(dy.list)) dy.list = []; dy.list = dy.list.filter(e => e && typeof e === 'object' && typeof e.d === 'string' && Array.isArray(e.lines)).slice(-C().diary.keepDays);
     if (dy.tr && (typeof dy.tr !== 'object' || typeof dy.tr.day !== 'string')) dy.tr = null; if (dy.tr === undefined) dy.tr = null;
     if (dy.tr) { const r = dy.tr; for (const k of ['foods', 'care', 'wx']) if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; if (!Array.isArray(r.stages)) r.stages = []; if (!Array.isArray(r.mood) || r.mood.length !== 2) r.mood = [0, 0]; r.n = num(r.n, 0); r.mt = num(r.mt, 0); r.wt = num(r.wt, 0); r.gen = Math.max(1, Math.floor(num(r.gen, s.gen || 1))); }
+    for (const k of ['wx', 'rain', 'rainWin', 'weather']) if (k in o) delete o[k];   // v10.2：天氣＝一日一抽（seed＋日期計，唔入存檔）→ 舊／外來雨窗欄位清走
     return o;
   }
   const SYS = () => P.evo6.branch.systems;
@@ -113,12 +91,15 @@
   function spend(s, n) { const w = st(s).wallet; n = Math.floor(n); if (!(n > 0) || w.total < n) return false; w.total -= n; return true; }
 
   // ── 系統 1：每日小委託 ──
-  function questRoute(s) {                               // 領先路線（新 5 條之一）；未有領先 → 最高分嗰條；冇分 → null
+  /* v10.2：路線委託平均分晒 5 條（唔再跟領先路線 → 火苗唔會因為領先而日日攞分）。
+     每隻團絨（seed）有個起點，之後逐日輪：tide→shroom→crystal→moon→ember→…；任何連續 5 日每條路線剛好 1 次。 */
+  function questRoute(s, key) {
     if (s.stage === 'egg') return null;
-    try { const L = SIM.routeLead(s); if (D.BRANCH5.includes(L.form)) return L.form; return L.b5 && L.b5.topN > 0 ? L.b5.top : null; } catch (e) { return null; }
+    const R = D.BRANCH5, dn = key ? dayNum(keyDate(key).getTime()) : dayNum(SIM.nowMs ? SIM.nowMs() : Date.now());
+    return R[(((dn + hash(s.seed >>> 0, 0x51, 5) % R.length) % R.length) + R.length) % R.length];
   }
   function genQuests(s, key) {
-    const Q = C().quests, route = questRoute(s), rk = route && Q.routeKind[route], pool = Q.base.filter(k => k !== rk), list = [];
+    const Q = C().quests, route = questRoute(s, key), rk = route && Q.routeKind[route], pool = Q.base.filter(k => k !== rk), list = [];
     const r = rngFor(s.seed >>> 0, +key.replace(/-/g, ''), 0x51);
     if (rk) list.push({ k: rk, need: Q.kinds[rk].n, n: 0, route });
     const p = pool.slice(); for (let i = p.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; }
@@ -260,7 +241,7 @@
   function fill(str, o) { return str.replace(/\{(\w+)\}/g, (m, k) => (o[k] != null ? o[k] : m)); }
   function dayWeather(s, key, tr) {
     const ks = Object.keys(tr && tr.wx || {}); if (ks.length) return ks.sort((a, b) => tr.wx[b] - tr.wx[a])[0];
-    const dn = dayNum(keyDate(key).getTime()), seed = s.seed >>> 0; return rainSpells(seed, weekOf(dn)).some(x => x.dn === dn) ? 'rain' : dayBase(seed, dn);
+    return dayWeatherN(s.seed >>> 0, dayNum(keyDate(key).getTime()));
   }
   function buildEntry(s, tr) {
     const Dc = DC(), r = rngFor(s.seed >>> 0, +tr.day.replace(/-/g, ''), 0xd1 + (tr.gen | 0)), pick = (a) => a[Math.floor(r() * a.length)];
@@ -323,6 +304,6 @@
     m.diary = o.list.filter(e => e.gen === g).map(e => ({ d: e.d, kind: e.kind, special: !!e.special, lines: e.lines.slice(), stickers: e.stickers.slice() })); o.list = o.list.filter(e => e.gen !== g);
     o.tr = newTr(s, tr.day, now, g + 1); o.tr.st0 = o.tr.stLast = 'egg'; });
 
-  return { dayNum, dayStart, weekOf, hash, rngFor, rainSpells, dayBase, weatherAt, simulate, seasonOf, shiverMul, SEASON_NAME, WEATHER_NAME,
+  return { dayNum, dayStart, weekOf, hash, rngFor, dayWeatherN, weatherAt, simulate, questRoute, seasonOf, shiverMul, SEASON_NAME, WEATHER_NAME,
     st, grant, wallet, spend, bondOf, tierOf, bondAdd, bondTick, voiceLines, voicePick, voiceTry, bond, onLongPress, diaryTrack, diaryNote, diaryStep, diary, buildEntry, surp, surpSet, dropNext, waterDue, sleepDue, applyOverlay, overlaySys12, questRoute, genQuests, questTick, onCare, payQuests, addRoutePts, quests };
 });

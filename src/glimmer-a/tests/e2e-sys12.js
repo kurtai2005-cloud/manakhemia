@@ -37,11 +37,12 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     console.log('# ① 系統 7：自動天氣 → G.weather（DEV／?weather= 覆蓋）');
     await go('?q=high&hour=13&seed=21&ev=0&dev=1&wxauto=1');
     const C = await E(() => Glimmer.data.PARAMS.systems12);
-    // 假時鐘：搵一個落緊雨嘅時刻（用遊戲 seed）
+    // 假時鐘：v10.2 一日一抽 → 搵一個落雨日同一個晴日（用遊戲 seed），中午時刻
     const r = await E(() => { const G = __glimmer, X = Glimmer.sys12, seed = G.state.seed >>> 0, t0 = new Date(2026, 10, 2, 0, 0).getTime();
-      let rainT = null, clearT = null; for (let m = 0; m < 14 * 24 * 60 && (rainT == null || clearT == null); m += 10) { const t = t0 + m * 60000, h = new Date(t).getHours(); const w = X.weatherAt(t, seed); if (w === 'rain' && rainT == null && h >= 10 && h < 16) rainT = t; if (w === 'clear' && clearT == null && h >= 10 && h < 16) clearT = t; }
-      return { rainT, clearT, seed, sim: X.simulate(seed, t0, 14) }; });
-    ok(r.rainT && r.clearT && Object.values(r.sim.weeks).every(n => n >= C.weather.rainPerWeek[0] && n <= C.weather.rainPerWeek[1]), '遊戲 seed 14 日：每週 1–3 場雨', r.sim.weeks);
+      let rainT = null, clearT = null; for (let d = 0; d < 60 && (rainT == null || clearT == null); d++) { const t = t0 + d * 864e5 + 12 * 3600e3, w = X.weatherAt(t, seed); if (w === 'rain' && rainT == null) rainT = t; if (w === 'clear' && clearT == null) clearT = t; }
+      const day = []; for (let h = 0; h < 24; h++) day.push(X.weatherAt(rainT - 12 * 3600e3 + h * 3600e3 + 59 * 60e3, seed));
+      return { rainT, clearT, seed, day, sim: X.simulate(seed, t0, 28), legacy: !!(X.rainSpells || X.dayBase || 'rainPerWeek' in Glimmer.data.PARAMS.systems12.weather) }; });
+    ok(r.rainT && r.clearT && r.day.every(w => w === 'rain') && r.sim.mixed === 0 && !r.legacy, 'v10.2 遊戲 seed：落雨日 00:59–23:59 全日雨、28 日每日一個天氣、舊每週雨場已刪', { day: r.day.join(), dayHist: r.sim.dayHist, mixed: r.sim.mixed });
     await E((t) => { const G = __glimmer; G.clock.fake = true; G.clock.t = t; G.hourOverride = null; __qa.sys12.weather(); }, r.rainT); await page.waitForTimeout(2600);
     let w = await E(() => __qa.sys12.wx());
     ok(w.auto && !w.manual && w.autoWeather === 'rain' && w.weatherNow === 'rain' && w.scene === 'H3rain', '自動：落雨時段 → G.weather＝rain、H3rain', w);
@@ -63,6 +64,13 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     // ?weather= 覆蓋
     await go('?q=high&hour=13&seed=21&ev=0&dev=1&wxauto=1&weather=overcast'); w = await E(() => __qa.sys12.wx());
     ok(w.manual && w.weatherNow === 'overcast', '?weather=overcast → 覆蓋自動', w);
+    // v10.2 存讀檔：舊存檔（落雨日中途、sys12 帶多餘雨窗欄位）→ 讀入跟當日抽籤，清走雨窗；DEV 覆蓋唔入存檔
+    { await go('?q=high&hour=13&seed=21&ev=0&dev=1&wxauto=1');
+      const sv = await E(() => { const G = __glimmer, X0 = Glimmer.sys12, sd = G.state.seed >>> 0; let t = new Date(2026, 10, 2, 13, 0).getTime(); while (X0.weatherAt(t, sd) !== 'rain') t += 864e5; G.clock.fake = true; G.clock.t = t; G.hourOverride = null; const s = G.state; s.sys12 = s.sys12 || {}; s.sys12.wx = { rainUntil: t + 3600e3, from: t - 3600e3 }; const X = Glimmer.sys12; X.st(s);
+        const a = __qa.sys12.weather(); const raw = Glimmer.sim.serialize(s), s2 = Glimmer.sim.deserialize(raw); X.st(s2);
+        return { left: 'wx' in s.sys12, left2: 'wx' in s2.sys12, a, seed: s2.seed === s.seed, w2: X.weatherAt(t + 6 * 3600e3, s2.seed >>> 0), w0: X.weatherAt(t, s.seed >>> 0) }; });
+      ok(!sv.left && !sv.left2 && sv.seed && sv.w2 === sv.w0 && sv.w0 === 'rain', '存讀檔：雨窗欄位遷移清走；讀返同 seed → 同日同天氣（6 小時後仍係雨）', sv);
+      await page.waitForTimeout(2600); w = await E(() => __qa.sys12.wx()); ok(w.weatherNow === 'rain' && w.scene === 'H3rain', '讀檔後自動雨畫面照出（H3rain）', w); await shot('wx-rain-auto-v102'); }
     // 雨暗 18%
     const dim = await E(() => __glimmer.hd && Glimmer.hd2d.CFG.rainDim); ok(Math.abs(dim - C.weather.rainDim) < 1e-9, `H3 雨再暗 ${C.weather.rainDim * 100}%（config）`, dim);
     console.log('# ② 季節（香港月份）＋ DEV 強制');
@@ -91,7 +99,7 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     ok(chip.vis && /委託 0\/3/.test(chip.txt), 'HUD 星星碎＋委託進度 chip', chip);
     // 真照顧（sim.feed／play／rinse）
     const doK = (k) => E((k) => { const S = Glimmer.sim, s = __glimmer.state; s.sleeping = false; s.needs.hunger = 20; s.needs.clean = 30; s.needs.energy = 100;
-      if (k === 'feed') return S.feed(s, Glimmer.data.FOODS[0].id).ok; if (k === 'play') return S.play(s).ok; if (k === 'rinse') return S.rinse(s).ok; return false; }, k);
+      if (k === 'feed') return S.feed(s, Glimmer.data.FOODS[0].id).ok; if (k === 'play') return S.play(s).ok; if (k === 'rinse') return S.rinse(s).ok; S.noteCare(s, new Date(__glimmer.now()).getHours(), k); return true; }, k);   // v10.2：路線委託可能係 poopQuick／lull → 直接報照顧 hook
     const w0 = await E(() => __qa.sys12.wallet().total);
     for (const x of q.list.slice(0, 2)) for (let i = 0; i < x.need; i++) await doK(x.k);
     await page.waitForTimeout(1300); q = await E(() => __qa.sys12.quests());
@@ -106,10 +114,11 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     const gain = await E(() => document.querySelector('[data-testid="s12-gain"]').textContent); ok(/\+15 星星碎/.test(gain), '浮字「+15 星星碎（委託完成）」', gain);
     await shot('quest-done');
     await E(() => __qa.sys12.close());
-    // 路線委託（領先水珠）
+    // 路線委託（v10.2：唔跟領先；今日輪到邊條就邊條，平均分 5 條）
     await E(() => { const s = __glimmer.state; s.evo.b5 = { sprout: { all: 10, tide: 8, shroom: 1, crystal: 0, moon: 1, ember: 0 } }; s.evo.b5sys = {}; s.cq = 60; });
     await dev('dev-s12-qreset'); q = await E(() => __qa.sys12.quests()); const rq = q.list.find(x => x.route);
-    ok(rq && rq.k === Q.routeKind[rq.route], '有領先路線 → 1 個委託偏向該路線', q.list);
+    const rot = await E(() => { const X = Glimmer.sys12, s = __glimmer.state, t = __glimmer.now(), out = []; for (let d = 0; d < 5; d++) out.push(X.questRoute(s, Glimmer.sim.dayKey(t + d * 864e5))); return { today: out[0], five: out }; });
+    ok(rq && rq.k === Q.routeKind[rq.route] && rq.route === rot.today && new Set(rot.five).size === 5, '路線委託＝今日輪值路線（水珠領先都唔影響；5 日輪晒 5 條）', { list: q.list, rot });
     await dev('dev-s12-qall'); const b = await E(() => ({ sys: __glimmer.state.evo.b5sys, B: Glimmer.sim.branch5Check(__glimmer.state).sys }));
     ok(rq && b.sys.sprout && b.sys.sprout[rq.route] === 1 && b.B.capped[rq.route] <= 8 / 3 + 1e-6, '路線委託完成 → 路線新系統分 +1（≤25% cap）', b);
     w = await E(() => __qa.sys12.wallet()); ok(w.q === 15, '同日第二輪（DEV 重抽）唔會超過委託每日 15', w);

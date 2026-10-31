@@ -1,13 +1,14 @@
 /* §7 平衡掃描（v10，俾遊測對數用，唔係 gating test）：node tools/route-sweep.js [每表隻數=1000] [--json out.json]
    6 個代表時間表 × N 個 seed，由芽崽行到守夜者，用真 code（sim.decideBranch）統計 9 條路分佈，同遊測鎖定目標（QA/balance/scan-v10.js，PR #19）比較。
-   玩家隨機性同 scan-v10 一樣：主 rng（seed*7919+13）、±90 分鐘、漏上線 15%、動作跳 20%、加動作 30%、眼瞓時 50% 哄瞓、每 6 小時天氣；
+   玩家隨機性同 scan-v10 一樣：主 rng（seed*7919+13）、±90 分鐘、漏上線 15%、動作跳 20%、加動作 30%、眼瞓時 50% 哄瞓、天氣一日一抽（v10.2，同遊戲共用 sim.dayWeather）；
    小遊戲用獨立 rng（seed*7919+97）：表定鐘點（MG_AT）到場 80% 開一局（第 2 批未出 → 浮動團絨撳兩下＝一局，走 sim.overlayOpenGame 同一條 mgApply 路）。
-   天氣讀 config weather.probs（v10.1：晴60／陰20／雨15／霧5，抽籤次序 晴→陰→霧→雨；霧當陰 → 同 scan-v10 陰 25% 等價）。每次上線 sim.noteLogin（v7 晶角即清窗口）。
+   天氣讀 config weather.probs（晴60／陰20／雨15／霧5；霧當陰 0.5）。每次上線 sim.noteLogin（v7 晶角即清窗口）。
+   --quests：載入 systems.js（systems12 每日委託路線分，v10.2 平均輪 5 條路線、受 25% cap）。
    數值全部讀 PARAMS.evo6.branch；唔改 config。 */
 const S = require('../src/sim.js'), D = require('../src/data.js'), P = D.PARAMS, C = P.evo6.branch;
-const args = process.argv.slice(2), N = +(args.find(a => /^\d+$/.test(a))) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
+const args = process.argv.slice(2); if (args.includes('--quests')) require('../src/systems.js');
+const N = +(args.find(a => /^\d+$/.test(a))) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
 const JIT = 90, MISS = 0.15, LULL = 0.5, SKIP_ACT = 0.2, EXTRA_ACT = 0.3;
-const WX = C.weather.probs.map(([w, p]) => [w, p / 100]);
 const ACTS = ['feed', 'play', 'rinse', 'poop'];
 // 每個時間表：上線鐘點、每次做咩（feed／play／rinse／poop）；everyOtherDay＝隔日先上
 const SCHED = {
@@ -32,7 +33,7 @@ function run(name, seed) {
   sess.sort((a, b) => a.t - b.t); let k = 0, mgs = 0, lulls = 0;
   while (s.stage === 'sprout' || s.stage === 'juvenile') {
     if (now - T0 > 10 * 864e5) break;
-    if (Math.floor((now - T0) / 216e5) !== Math.floor((now - T0 - 1800e3) / 216e5)) { let r = rng(), w = 'clear'; for (const [n, p] of WX) { if (r < p) { w = n; break; } r -= p; } wx = w; }
+    wx = S.dayWeather(s.seed >>> 0, now);                 // v10.2：同遊戲一樣一日一抽（sim.dayWeatherN；seed＝隻團絨 seed）
     while (k < sess.length && sess[k].t < now) k++;
     if (k < sess.length && sess[k].t < now + 1800e3) {
       const slot = sess[k++]; s.lastSeen = now; if (s.sleeping) S.toggleSleep(s);
