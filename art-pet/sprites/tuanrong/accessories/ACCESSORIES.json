@@ -119,7 +119,12 @@
   "headCut": "head slot：頭頂以上、axis ±0.45hw 嘅身體像素（莖／燈／光芒）挖空",
   "visibility": "一個 clip 任何一幀 fit 唔成立／遮五官／挖空後剩 <65% → 成段收起",
   "headL": "ACC3 side_l：head_r 以兩眼中垂線鏡像（側面眼距 <0.75×idle 或冇眼就用 fit 中軸）；撞五官向左上推，最多 6px",
-  "glasses": "ACC3 face：鏡片中心＝eyeL／eyeR＋clip 平均眼 blob 偏移；半軸＝max(idle, clip) 眼 blob 半寬／半高＋1.5；跟兩眼連線傾角；L 級框粗 2；¾ 圓框（近口內下角開口，dot 用上半框）；faceVisible=false／冇眼成段收起；成個 clip 逐級試（收窄／壓扁／上移／向外，再試逐幀跟眼），全部幀過晒先用"
+  "glasses": "ACC3 face：鏡片中心＝eyeL／eyeR＋clip 平均眼 blob 偏移；半軸＝max(idle, clip) 眼 blob 半寬／半高＋1.5；跟兩眼連線傾角；L 級框粗 2；¾ 圓框（近口內下角開口，dot 用上半框）；faceVisible=false／冇眼成段收起；成個 clip 逐級試（收窄／壓扁／上移／向外，再試逐幀跟眼），全部幀過晒先用",
+  "leafcollar": "ACC4 neck：同頸巾一樣嘅頸位（眼下、頸寬 run、跟傾角斜）；尖頭葉一片片（兩隻綠交替）＋前右細花；五官像素清走",
+  "bulbAnchor": "ACC4 bulb slot：燈泡玻璃半徑用手調表 BR（evo 色唔係 v3，唔可以靠色量）；evo_dot／evo_sprout 冇燈泡 → fallback 頭頂；lumi 系／dust／moon 個 bulb 唔喺頭頂（觸角／尾燈／月牙）→ 光環改放頭頂",
+  "bell": "ACC4 bulb：鈴（suzu 5／7／9）吊喺燈泡右下（bulb＋(0.6br, br+1)）；冇燈泡就頭頂芽右邊；擺動＝阻尼彈簧（s=0.5s+7vx，夾 ±25°、每幀 ≤14°，loop clip 跑兩轉取第二轉，接得順）；撞五官向右上推",
+  "halo": "ACC4 bulb：橢圓環（後半 GOLDD、前半 GOLD、L 級白反光），環心喺燈泡玻璃上面 br+1.5+ry；非頭頂燈形態放頭頂最高點上 2px（保持水平）；燈泡版傾角夾 ±12°；環洞唔描邊、透明；高跳幀貼 padding 頂（PAD 8）",
+  "nightcap": "ACC4 head：圓錐睡帽（zzz 紫＋白斜紋＋白帽邊＋L 級金星），帽尖向左，長尾由帽尖垂落＋白波波；尾擺＝阻尼彈簧（s=0.55s+6vx+4vy，夾 ±30°、每幀 ≤14°，loop 兩轉）；尾撞五官／出 padding → 尾向外擺（dphi）再唔得縮短（tailK）；shroom／moon 用細 hatpin 版；sleep_* 照戴（sleepKeep）"
  },
  "items": {
   "straw": {
@@ -675,7 +680,272 @@
    "anchor": "top",
    "obtain": "日記連續寫滿 7 日；月眠路線領先時機會加倍",
    "batch": "ACC4",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/nightcap/fit_nightcap.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/nightcap/atlas_nightcap_sprout.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/nightcap/atlas_nightcap_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/nightcap/atlas_nightcap_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/nightcap/atlas_nightcap_lumi.json",
+     "clips": 26,
+     "visibleClips": 25,
+     "frames": 106,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 49,
+     "frames": 231,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 40,
+     "frames": 175,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_still_moon": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "hatpin"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/nightcap/atlas_nightcap_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 42,
+     "frames": 184,
+     "hidden": {
+      "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+     },
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_nightcap_S.png",
+    "M": "ref/acc_nightcap_M.png",
+    "L": "ref/acc_nightcap_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1030,
+    "clips": 1055,
+    "frames": 4524
+   },
+   "sleepKeep": true
   },
   "crown": {
    "key": "crown",
@@ -2445,7 +2715,221 @@
    "anchor": "neck",
    "obtain": "小圃 6 種花各開過一次",
    "batch": "ACC4",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/leafcollar/fit_leafcollar.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/leafcollar/atlas_leafcollar_sprout.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/leafcollar/atlas_leafcollar_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/leafcollar/atlas_leafcollar_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/leafcollar/atlas_leafcollar_lumi.json",
+     "clips": 26,
+     "visibleClips": 26,
+     "frames": 112,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 50,
+     "frames": 237,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_moon": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/leafcollar/atlas_leafcollar_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_leafcollar_S.png",
+    "M": "ref/acc_leafcollar_M.png",
+    "L": "ref/acc_leafcollar_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1055,
+    "clips": 1055,
+    "frames": 4674
+   }
   },
   "bell": {
    "key": "bell",
@@ -2454,7 +2938,221 @@
    "anchor": "bulb",
    "obtain": "每日委託連續 14 日",
    "batch": "ACC4",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/bell/fit_bell.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/bell/atlas_bell_sprout.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/bell/atlas_bell_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/bell/atlas_bell_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/bell/atlas_bell_lumi.json",
+     "clips": 26,
+     "visibleClips": 26,
+     "frames": 112,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/bell/atlas_bell_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/bell/atlas_bell_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/bell/atlas_bell_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 50,
+     "frames": 237,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/bell/atlas_bell_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/bell/atlas_bell_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/bell/atlas_bell_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/bell/atlas_bell_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/bell/atlas_bell_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/bell/atlas_bell_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/bell/atlas_bell_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/bell/atlas_bell_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/bell/atlas_bell_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/bell/atlas_bell_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/bell/atlas_bell_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/bell/atlas_bell_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/bell/atlas_bell_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/bell/atlas_bell_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/bell/atlas_bell_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_moon": {
+     "atlas": "items/bell/atlas_bell_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/bell/atlas_bell_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/bell/atlas_bell_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_bell_S.png",
+    "M": "ref/acc_bell_M.png",
+    "L": "ref/acc_bell_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1055,
+    "clips": 1055,
+    "frames": 4674
+   }
   },
   "halo": {
    "key": "halo",
@@ -2463,7 +3161,221 @@
    "anchor": "bulb",
    "obtain": "第一次進化成守護型／化光紀念",
    "batch": "ACC4",
-   "status": "planned"
+   "status": "done",
+   "fit": "items/halo/fit_halo.json",
+   "forms": {
+    "sprout": {
+     "atlas": "items/halo/atlas_halo_sprout.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "radiant": {
+     "atlas": "items/halo/atlas_halo_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "soft": {
+     "atlas": "items/halo/atlas_halo_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "lumi": {
+     "atlas": "items/halo/atlas_halo_lumi.json",
+     "clips": 26,
+     "visibleClips": 26,
+     "frames": 112,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_dot": {
+     "atlas": "items/halo/atlas_halo_evo_dot.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_sprout": {
+     "atlas": "items/halo/atlas_halo_evo_sprout.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_hop": {
+     "atlas": "items/halo/atlas_halo_evo_hop.json",
+     "clips": 50,
+     "visibleClips": 50,
+     "frames": 237,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_lumi": {
+     "atlas": "items/halo/atlas_halo_evo_guard_lumi.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_radiant": {
+     "atlas": "items/halo/atlas_halo_evo_guard_radiant.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_soft": {
+     "atlas": "items/halo/atlas_halo_evo_guard_soft.json",
+     "clips": 41,
+     "visibleClips": 41,
+     "frames": 181,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_dust": {
+     "atlas": "items/halo/atlas_halo_evo_guard_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_lumi": {
+     "atlas": "items/halo/atlas_halo_evo_still_lumi.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_radiant": {
+     "atlas": "items/halo/atlas_halo_evo_still_radiant.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_soft": {
+     "atlas": "items/halo/atlas_halo_evo_still_soft.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_dust": {
+     "atlas": "items/halo/atlas_halo_evo_still_dust.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_tide": {
+     "atlas": "items/halo/atlas_halo_evo_guard_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_tide": {
+     "atlas": "items/halo/atlas_halo_evo_still_tide.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_shroom": {
+     "atlas": "items/halo/atlas_halo_evo_guard_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_shroom": {
+     "atlas": "items/halo/atlas_halo_evo_still_shroom.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_crystal": {
+     "atlas": "items/halo/atlas_halo_evo_guard_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_crystal": {
+     "atlas": "items/halo/atlas_halo_evo_still_crystal.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_moon": {
+     "atlas": "items/halo/atlas_halo_evo_guard_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_moon": {
+     "atlas": "items/halo/atlas_halo_evo_still_moon.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_guard_ember": {
+     "atlas": "items/halo/atlas_halo_evo_guard_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    },
+    "evo_still_ember": {
+     "atlas": "items/halo/atlas_halo_evo_still_ember.json",
+     "clips": 43,
+     "visibleClips": 43,
+     "frames": 190,
+     "hidden": {},
+     "variant": "default"
+    }
+   },
+   "ref": {
+    "S": "ref/acc_halo_S.png",
+    "M": "ref/acc_halo_M.png",
+    "L": "ref/acc_halo_L.png"
+   },
+   "counts": {
+    "forms": 25,
+    "visibleClips": 1055,
+    "clips": 1055,
+    "frames": 4674
+   }
   }
  }
 }

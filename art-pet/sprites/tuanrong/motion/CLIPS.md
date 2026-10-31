@@ -352,3 +352,11 @@ std23 餘下：冇（已齊）
 - 髮夾／櫻花：1,055/1,055 clip 全部有 overlay。眼鏡：979/1,055 clip；faceVisible=false（turn_back）同鏡框會壓眼／遮五官嘅 clip 成段收起。
 - 合共 13,701 幀。身體 clip 定義冇改。
 <!-- ACC3-END -->
+
+<!-- ACC4-START -->
+## 飾品 overlay（ACC4，2026-11-01）
+- 加咗葉仔領 leafcollar（neck）、燈泡小鈴 bell 同燈泡光環 halo（bulb slot），仲有睡帽 nightcap（head，長尾）。格式同 ACC1–3 一樣，幀名＝身體幀名。
+- 葉仔領／小鈴／光環：1,055/1,055 clip 全部有 overlay。睡帽：1,030/1,055 clip，只係 leaf_umbrella 收起（同其他頭飾一樣）。
+- 睡帽 `sleepKeep: true`：sleep_*／fall_asleep／wake 都照戴。鈴同睡帽尾有擺動，fit 檔每幀有 `swing`（度數，＋＝順時針）。
+- 合共 18,546 幀。身體 clip 定義冇改。
+<!-- ACC4-END -->

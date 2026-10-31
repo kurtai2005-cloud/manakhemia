@@ -57,3 +57,22 @@
 - 眼鏡 `glasses_pre`＋`GL_RETRY`：clip 級鏡片大細，候選逐級試；`draw_glasses` 任何框像素落喺眼 blob 就當失敗。
 - 已知（留 ACC5）：背面 side_l／side_r 唔對調（同 ACC1 蝴蝶結一樣）；月眠／菇傘帽針（head_l 鏡像）同 side_l 撞位要喺多 slot 衝突處理；evo_dot 用半框。
 <!-- ACC3-END -->
+
+<!-- ACC4-START -->
+## ACC4 數量（2026-11-01）
+| item | 名 | slot | 幀 | clip（可見／總） | 備註 |
+|---|---|---|---|---|---|
+| leafcollar | 葉仔領 | neck | 4674 | 1055/1055 | 尖頭葉兩色交替＋前右細花 |
+| bell | 燈泡小鈴 | bulb | 4674 | 1055/1055 | suzu 模板 5／7／9；有擺動 |
+| halo | 燈泡光環 | bulb | 4674 | 1055/1055 | 燈泡上面；非頭頂燈形態放頭頂；環洞透明 |
+| nightcap | 睡帽 | head | 4524 | 1030/1055 | 長尾＋波波有擺動；shroom／moon 用 hatpin；sleepKeep |
+
+### bulb slot 規則（ACC4 起）
+- 燈泡玻璃半徑用 `BR` 表。`top_bulb(form)` 判斷燈泡係咪喺頭頂：lumi 系、dust、moon 唔係。
+- 冇燈泡嘅形態（evo_dot／evo_sprout）：鈴吊頭頂芽右邊，光環放頭頂。
+- 擺動 `_swing`：阻尼彈簧，夾 ±lim，每幀 ≤14°，loop clip 跑兩轉。
+- 已知（留 ACC5）：
+  - 睡帽／其他帽同 bulb slot（光環／鈴）同時戴嘅衝突。
+  - moon 嘅 hatpin 睡帽細，似羽毛。
+  - dust 個鈴吊喺尾燈下面，近地面。
+<!-- ACC4-END -->

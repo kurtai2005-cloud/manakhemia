@@ -197,3 +197,30 @@
 - validator：加 side_l（bbox 中心近 head_l）同 face（faceVisible、鏡片中點 ≤2.5px、傾角 ≤12°、L 級框粗 2、框唔壓眼 blob）檢查。
 - 預覽：`sprites/tuanrong/preview/accessories/acc3_*.png`（包括 `acc3_glasses_face_a／b_6x` 臉部特寫）。備份：`_backups/pre_acc3_20261101/`。全部 Pillow／numpy，冇 AI，v3 色盤，alpha 0/255。
 <!-- ACC3-LOG-END -->
+
+<!-- ACC4-LOG-START -->
+## 2026-11-01 — 飾品完整版 ACC4（葉仔領／燈泡小鈴／燈泡光環／睡帽）
+- 依 `sprites/tuanrong/accessories/ACC_PLAN.md` 第 4 批，四件 × 25 形態 × 全 clip：
+  - 葉仔領 4,674 幀（1,055/1,055 clip）
+  - 燈泡小鈴 4,674 幀（1,055/1,055 clip）
+  - 燈泡光環 4,674 幀（1,055/1,055 clip）
+  - 睡帽 4,524 幀（1,030/1,055 clip）
+- 燈泡錨點：evo 形態用非 v3 色，靠色量燈泡會漏落個頭，所以改用手調嘅玻璃半徑表 `BR`。
+  - evo_dot／evo_sprout 冇燈泡：鈴吊喺頭頂芽右邊，光環放頭頂。
+  - lumi 系（觸角）、dust（尾燈）、moon（新月）嘅 bulb 唔喺頭頂：光環放頭頂最高點上面，保持水平；鈴照吊喺佢哋嘅 bulb。
+- 光環：橢圓環，後半 GOLDD、前半 GOLD，L 級有白反光。環洞用暫時 label 填住先 render，所以唔會描內邊，洞係透明。高跳幀會貼住 PAD 8 頂。
+- 小鈴：suzu 手繪模板（5／7／9），金身、中間坑、下開口，頂有紅繩結。阻尼擺動夾 ±25°，每幀最多轉 14°。loop clip 跑兩轉取第二轉，所以頭尾接得順。
+- 葉仔領：頸位同頸巾一樣。尖頭葉兩隻綠交替（有分界），前右有粉紅細花＋金芯。
+- 睡帽：
+  - zzz 紫圓錐，白斜紋，白帽邊，L 級有金星。燈泡由帽頂個洞穿出嚟（head_cut）。
+  - 長尾由帽尖垂落，有白波波。尾擺用阻尼彈簧（vx＋vy），夾 ±30°，每幀 ≤14°。
+  - 尾撞五官或者出 padding，就先向外擺（dphi），再唔得就縮短（tailK）。統計：dphi0/tailK1.0 4466、dphi-15/tailK1.0 44、dphi-30/tailK1.0 14。
+  - shroom／moon 用細 hatpin 版。收起 clip：leaf_umbrella×25。
+- ACC1–3 輸出 byte-identical（md5 對過 `_backups/pre_acc4_20261101/`）。
+- validator 加咗以下檢查：
+  - 葉仔領頂行 = ny
+  - 鈴中心跟 fit，喺燈泡下面，擺幅 ≤25°，每幀 ≤14°
+  - 光環中心 ±1.6，喺燈泡或者頭頂上面
+  - 睡帽位跟 fit，傾角每幀 ≤8°，尾擺 ≤30°，每幀 ≤14°，尾端有波波
+- 預覽：`sprites/tuanrong/preview/accessories/acc4_*.png`。備份：`_backups/pre_acc4_20261101/`。全部 Pillow／numpy 做，冇用 AI，v3 色盤，alpha 0/255。
+<!-- ACC4-LOG-END -->

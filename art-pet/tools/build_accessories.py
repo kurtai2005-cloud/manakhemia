@@ -204,6 +204,14 @@ FIT = {
 FIT["starclip"] = {f: {"dx": 0, "dy": 0, "sc": 1.0} for f in FORMS}
 FIT["sakura"] = {f: {"dx": 0, "dy": 0, "sc": 1.0} for f in FORMS}
 FIT["glasses"] = {f: {"r": 0.0} for f in FORMS}
+FIT["leafcollar"] = {f: {"dy": 0} for f in FORMS}
+FIT["bell"] = {f: {"dx": 0, "dy": 0} for f in FORMS}
+FIT["halo"] = {f: {"dx": 0, "dy": 0, "sc": 1.0} for f in FORMS}
+FIT["nightcap"] = {f: {"dx": 0, "dy": 0, "sc": 1.0} for f in FORMS}
+for f in HATFORMS: FIT["nightcap"][f] = {"dx": 0, "dy": 0, "sc": 1.0, "variant": "hatpin"}
+for f in ("evo_guard_moon", "evo_still_moon"): FIT["nightcap"][f]["pin"] = "r"
+FIT["nightcap"]["evo_guard_moon"]["sc"] = 1.8; FIT["nightcap"]["evo_still_moon"]["sc"] = 0.8
+for f_, k_ in {"evo_still_radiant": 0.8, "evo_still_soft": 0.9, "evo_still_ember": 0.85}.items(): FIT["nightcap"][f_]["sc"] = k_
 FIT["glasses"]["evo_dot"]["half"] = True   # dot：口喺兩眼之間只低 2px，¾ 框都撞 → 半框（上半圈）；其餘形態一律 ¾ 圓框（近口內下角開口）
 for it_ in ("starclip", "sakura"):
     for f_, k_ in {"evo_still_moon": 0.62, "evo_guard_moon": 1.4, "evo_still_radiant": 0.8, "evo_still_ember": 0.85, "evo_still_soft": 0.9}.items(): FIT[it_][f_]["sc"] = k_
@@ -471,7 +479,7 @@ def eye_ref(form):
 GL_RETRY = tuple((a, b, c, d, pf) for pf in (0, 1) for a, b, c, d in (
     (0, 0, 0, 0), (0, 0, .5, .3), (-.5, -.5, .5, .3), (0, -1, .5, .3), (-.5, -1, .5, .5), (-.5, -1.5, 1, .5), (-1, -1, .5, .3),
     (-1, -1, 0, 0), (-1, -1, .5, 0)))
-def glasses_pre(fs, bodies, alist, form):
+def glasses_pre(fs, bodies, alist, form, clip=None):
     """成個 clip 用同一副眼鏡：中心＝anchor＋clip 平均偏移；鏡片半軸 ≥ idle"""
     er = eye_ref(form); off, bx, by = _eye_stats(bodies, alist)
     g = {"off": off, "bx": max(bx, er["bx"]), "by": max(by, er["by"])}
@@ -593,6 +601,247 @@ def draw_scarf(body, an, f, ref, form, prev=None):
     for px, py in face_px(an, S): img[py + PAD, px + PAD] = 0
     return img, {"ny": ny, "th": th, "run": [xl, xr], "lag": lag, "ang": round(f["ang"], 1)}
 
+# ================================================================ ACC4：葉仔領（neck）／燈泡小鈴・燈泡光環（bulb）／睡帽（head，長尾）
+# 燈泡玻璃半徑（idle 目測，逐形態手調）；dot／evo_sprout 冇燈泡 → fallback 用頭頂
+BR = {"sprout": 2, "radiant": 4.5, "soft": 2.5, "lumi": 2, "evo_hop": 2.5, "evo_guard_lumi": 1.5, "evo_guard_radiant": 4,
+      "evo_guard_soft": 2.5, "evo_guard_dust": 2.5, "evo_still_lumi": 1.5, "evo_still_radiant": 4.5, "evo_still_soft": 3,
+      "evo_still_dust": 2.5, "evo_guard_tide": 2.5, "evo_still_tide": 3, "evo_guard_shroom": 2, "evo_still_shroom": 2.5,
+      "evo_guard_crystal": 2, "evo_still_crystal": 2.5, "evo_guard_moon": 2, "evo_still_moon": 2.5, "evo_guard_ember": 2, "evo_still_ember": 2.5}
+TOPBULB = {}
+def top_bulb(form):
+    """燈泡係咪喺頭頂（同 fit 一樣：眼中點→燈泡同眼線垂直方向差 ≤40°）；lumi 系（觸角）／dust（尾燈）／moon（帽尖月）唔係"""
+    if form not in TOPBULB:
+        a = anchors(form)["idle"][0]; ok = "bulb" in a and AXIS.get(form) != "eyes"
+        if ok:
+            em = ((a["eyeL"][0] + a["eyeR"][0]) / 2, (a["eyeL"][1] + a["eyeR"][1]) / 2); ex, ey = a["eyeR"][0] - a["eyeL"][0], a["eyeR"][1] - a["eyeL"][1]
+            vb = (a["bulb"][0] - em[0], a["bulb"][1] - em[1]); d = math.degrees(math.atan2(vb[0], -vb[1]) - math.atan2(ey, ex))
+            ok = abs((d + 180) % 360 - 180) <= 40
+        TOPBULB[form] = ok and form not in ("evo_still_moon", "evo_guard_moon")   # 月眠：燈＝帽尖新月，唔當頭頂燈泡
+    return TOPBULB[form]
+def _loop(form, clip):
+    return bool(form_anims(form).get(clip, {}).get("loop", False)) if clip else False
+def _swing(pts, loop, k_x, k_y, decay, lim, maxd=14.0):
+    """擺動（慣性）：身體點向右郁 → 掛件向左拖（＋＝順時針）；loop clip 行兩轉，攞第二轉（頭尾接得順）；每幀變化夾 ±maxd°"""
+    n = len(pts); s = 0.0; out = [0.0] * n
+    for p_ in range(2 if loop and n > 1 else 1):
+        for k in range(n):
+            if k: vx, vy = pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]
+            elif loop and n > 1: vx, vy = pts[0][0] - pts[-1][0], pts[0][1] - pts[-1][1]
+            else: vx = vy = 0.0
+            t_ = max(-lim, min(lim, decay * s + k_x * vx + k_y * vy)); s = s + max(-maxd, min(maxd, t_ - s)); out[k] = round(s, 2)   # 每幀最多轉 maxd°（唔會一格飛
+    return out
+
+# ---- 葉仔領（neck）：同頸巾一樣搵頸位（mouth＋gap／idle 頸距），跟剪影收邊；一圈葉仔向下垂＋前面一朵細花
+def _neck_geom(body, an, f, ref, cfg):
+    S = body.shape[0]; a = body[..., 3] > 0
+    if "mouth" in an and an.get("faceVisible", True): ny = an["mouth"][1] + neck_gap(ref)
+    else: ny = int(round(f["em"][1] + ref["neck_off"] * f["hs"]))
+    ny += cfg["dy"]; cx = f["em"][0]; t = math.tan(math.radians(f["ang"])) if f["ang"] else 0.0
+    def run_at(y):
+        if not (0 <= y < S): return None
+        xc = int(round(cx))
+        if not a[y, xc]: return None
+        xl = xc
+        while xl - 1 >= 0 and a[y, xl - 1]: xl -= 1
+        xr = xc
+        while xr + 1 < S and a[y, xr + 1]: xr += 1
+        return xl, xr
+    rr = run_at(ny)
+    if rr is None: return None
+    if "neck_half" in ref:
+        lim = ref["neck_half"] * min(max(f["ws"], .8), 1.3) + 2
+        rr = (max(rr[0], int(math.floor(cx - lim))), min(rr[1], int(math.ceil(cx + lim))))
+    return ny, cx, t, rr, run_at
+LEAFA = mat("leafa", "leaf_d", "leaf", "sick1"); LEAFB = mat("leafb", "leaf_d", "leaf", "leaf")
+def draw_leafcollar(body, an, f, ref, form, prev=None):
+    S = body.shape[0]; cfg = FIT["leafcollar"][form]
+    g = _neck_geom(body, an, f, ref, cfg)
+    if g is None: return None, {"why": "頸位冇身體"}
+    ny, cx, t, (xl, xr), run_at = g
+    lw = 3 if S <= 32 else (4 if S <= 48 else 5); lh = 3 if S <= 32 else (4 if S <= 48 else 5)
+    lab = np.zeros((S + 2 * PAD, S + 2 * PAD), np.int16)
+    def put(x, y, c, clip=True):
+        if clip:
+            rr2 = run_at(y) if 0 <= y < S else None
+            if rr2 is None or not (max(rr2[0], xl) - 1 <= x <= min(rr2[1], xr) + 1): return
+        lab[y + PAD, x + PAD] = c
+    # 葉仔：一片片尖頭向下、左右交替兩隻綠（相鄰有分界），頂行貼住頸位；兩邊最尾一片向外斜
+    n = max(3, int(round((xr - xl + 3) / lw))); x0 = (xl + xr + 1) / 2 - n * lw / 2
+    shape = {3: ["xxx", "xxx", ".x."], 4: ["xxxx", "xxxx", ".xx.", ".x.."], 5: ["xxxxx", "xxxxx", ".xxxx", "..xx.", "..x.."]}[lw]
+    for i in range(n):
+        lx = int(round(x0 + i * lw)); yb = ny + int(round(-t * (lx + lw / 2 - cx))); c = LEAFA if i % 2 else LEAFB
+        sh = shape if i % 2 == 0 else [r[::-1] for r in shape]
+        for yy, row in enumerate(sh[:lh]):
+            for xx, ch in enumerate(row):
+                if ch == "x": put(lx + xx, yb + yy, c, clip=yy == 0)
+    fx = int(round(cx + (xr - xl) * 0.26)); fy = ny + int(round(-t * (fx - cx))) + (1 if S <= 32 else 2)   # 細花（前右）
+    pet = [(-1, 0), (1, 0), (0, -1), (0, 1)] + ([(-1, -1), (1, -1), (-1, 1), (1, 1)] if S > 32 else [])
+    for dx, dy in pet: put(fx + dx, fy + dy, PINK, clip=False)
+    if S >= 64:
+        for dx, dy in ((0, -2), (-2, 0), (2, 0), (0, 2)): put(fx + dx, fy + dy, PINK, clip=False)
+    put(fx, fy, GOLD, clip=False)
+    img = render(lab)[1:-1, 1:-1]
+    for px, py in face_px(an, S): img[py + PAD, px + PAD] = 0
+    return img, {"ny": ny, "run": [xl, xr], "lw": lw, "flower": [fx, fy], "ang": round(f["ang"], 1)}
+
+# ---- 燈泡小鈴（bulb）：紅繩綁喺燈泡玻璃下面（右下），金鈴向下垂，跟身體郁有慣性擺
+BELL_TPL = {   # 鈴（suzu）：圓身＋中間一條坑＋下面開口；頂一粒紅繩結
+    5: ["..R..", ".GGG.", "GWGGG", "DDDDD", "GGKGG", ".GKG."],
+    7: ["..R.R..", "...R...", "..GGG..", ".GWGGG.", "GWGGGGG", "DDDDDDD", "GGGKGGG", ".GGKGG.", "..GGG.."],
+    9: ["..RR.RR..", "...RRR...", "...GGG...", ".GGWGGGG.", ".GWGGGGG.", "GWGGGGGGG", "DDDDDDDDD", "GGGGKGGGG", ".GGGKGGG.", "..GKKKG..", "...GGG..."],
+}
+BELL_LAB = {"G": GOLD, "W": WHITE, "R": RED, "K": INK, "D": GOLDD, ".": 0}
+def bell_pre(fs, bodies, alist, form, clip=None):
+    pts = [tuple(a["bulb"]) if "bulb" in a else f["top"] for a, f in zip(alist, fs)]
+    for f, s in zip(fs, _swing(pts, _loop(form, clip), 7.0, 0.0, 0.5, 25.0)): f["swing"] = s
+def draw_bell(body, an, f, ref, form, prev=None):
+    S = body.shape[0]; cfg = FIT["bell"][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
+    n = 5 if S <= 32 else (7 if S <= 48 else 9); rows = BELL_TPL[n]
+    m = np.array([[BELL_LAB[c] for c in r] for r in rows], np.int16); piv = ((n - 1) / 2, 0)
+    sw = f.get("swing", 0.0); m, piv = rotate_labels(m, piv, sw)
+    spr = render(m); px_, py_ = piv[0] + 1, piv[1] + 1
+    if "bulb" in an:
+        bx, by = an["bulb"]; br = BR[form]; base = "bulb"
+        hx = bx + int(round(br * 0.6)) + cfg["dx"]; hy = by + int(math.ceil(br)) + 1 + cfg["dy"]
+    else:   # fallback：冇燈泡（dot／evo_sprout）→ 綁喺頭頂芽／毛嘅右邊
+        base = "top"; hx = f["top"][0] + f["pp"][0] * ref["hw"] * 0.22 + cfg["dx"]; hy = f["top"][1] + f["pp"][1] * ref["hw"] * 0.22 + cfg["dy"]
+    x, y = int(round(hx - px_)), int(round(hy - py_)); fp = face_px(an, S)
+    for _ in range(6):
+        tmp = np.zeros_like(can); place(tmp, spr, x + PAD, y + PAD)
+        if not any(tmp[py + PAD, px + PAD, 3] for px, py in fp if 0 <= px + PAD < tmp.shape[1] and 0 <= py + PAD < tmp.shape[0]): break
+        x += 1; y -= 1
+    place(can, spr, x + PAD, y + PAD)
+    return can, {"pos": [round(float(hx), 1), round(float(hy), 1)], "W": n, "swing": sw, "base": base}
+
+# ---- 燈泡光環（bulb）：金色扁圓環浮喺燈泡上面（頭頂燈泡形態）／頭頂上面（其餘），跟頭傾角
+HALOH = mat("haloh", "glow", "glow", "glow")   # 暫用 label：環中間嘅洞（render 後清走）
+def gen_halo(rx, ry, L=False):
+    W = int(math.ceil(rx)) * 2 + 1; H = int(math.ceil(ry)) * 2 + 1; cx, cy = (W - 1) / 2, (H - 1) / 2
+    yy, xx = np.mgrid[0:H, 0:W]; n0 = ((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2
+    n1 = ((xx - cx) / max(rx - 1.0, .5)) ** 2 + ((yy - cy) / max(ry - 1.0, .35)) ** 2
+    ring = (n0 <= 1.0) & (n1 > 1.0); m = np.zeros((H, W), np.int16); m[(n1 <= 1.0)] = HALOH
+    m[ring & (yy < cy)] = GOLDD; m[ring & (yy >= cy)] = GOLD     # 後半圈暗啲，前半圈亮
+    if L:
+        ys, xs = np.nonzero(ring & (yy > cy)); i = int(np.argmin(np.abs(xs - (cx - rx * 0.45)) + np.abs(ys - (H - 1))))
+        m[ys[i], xs[i]] = WHITE
+    return m, (cx, cy)
+def draw_halo(body, an, f, ref, form, prev=None):
+    S = body.shape[0]; cfg = FIT["halo"][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
+    a = body[..., 3] > 0
+    if top_bulb(form) and "bulb" in an:
+        br = BR[form]; rx = (br + 2.0) * cfg["sc"]; ry = max(1.6, rx * 0.4); base = "bulb"
+        bx, by = an["bulb"]; gap = br + 1.5 + ry + cfg["dy"]
+        cx, cy = bx + f["u"][0] * gap, by + f["u"][1] * gap
+    else:
+        rx = max(3.5, min(ref["hw"] * 0.3, S * 0.13)) * cfg["sc"]; ry = max(1.6, rx * 0.4); base = "top"
+        if "eyeL" in an: ex, ey = an["eyeR"][0] - an["eyeL"][0], an["eyeR"][1] - an["eyeL"][1]; L_ = math.hypot(ex, ey) or 1; ue = (ey / L_, -ex / L_)
+        else: ue = (0.0, -1.0)
+        cx = f["em"][0] + ue[0] * ref["hh"] + cfg.get("dx", 0)          # 眼中點沿眼線垂直方向上去（moon 唔會跌落月牙）
+        cols = a[:, max(0, int(cx - rx - 1)):min(S, int(cx + rx + 2))]
+        rows_ = np.nonzero(cols.any(1))[0]
+        yt = rows_.min() if len(rows_) else f["top"][1]
+        cy = yt - 2 - ry + cfg["dy"]
+    ha = max(-12.0, min(12.0, f["ang"])) if base == "bulb" else 0.0      # 光環：跟燈泡傾少少（夾 ±12°）；頭頂版保持水平（細環一轉就似塊葉）
+    m, piv = gen_halo(rx, ry, L=S >= 64); m, piv = rotate_labels(m, piv, ha)
+    spr = render(m); spr[np.pad(m, 1) == HALOH] = 0       # 環中間嘅洞：唔描邊，透明
+    px_, py_ = piv[0] + 1, piv[1] + 1
+    x, y = int(round(cx - px_)), int(round(cy - py_))
+    if y + PAD < 0: cy += -PAD - y; y = -PAD          # 跳得高嘅幀：光環貼住 padding 頂（落低少少，唔會俾切）
+    if x + PAD < 0 or x + PAD + spr.shape[1] > can.shape[1]: return None, {"why": "光環出咗 padding"}
+    place(can, spr, x + PAD, y + PAD)
+    return can, {"c": [round(float(cx), 1), round(float(cy), 1)], "rx": round(float(rx), 2), "ry": round(float(ry), 2), "base": base, "ang": round(ha, 1)}
+
+# ---- 睡帽（head）：紫白間條軟帽，帽尖向左瞓，長尾垂落左邊＋白色 pompom；尾有慣性擺動（loop clip 頭尾接順）
+NIGHT = mat("night", "zzz", "zzz", "zzz")
+def gen_nightcap(W, H, L=False):
+    """帽身（唔連尾）：底闊 W、高 H；回傳 label map、piv（帽底中心）、tip（帽尖，local 座標）"""
+    s = Spr(W, H); c = (W - 1) / 2; cuff = 3 if W >= 25 else 2
+    tipx = c - W * 0.34; tipy = 0.4
+    s.poly([(-.2, H - cuff + .6), (W + .2, H - cuff + .6), (W * 0.86, H * 0.42), (c + W * 0.06, H * 0.12), (tipx, tipy), (tipx - .8, tipy + 1.6), (W * 0.12, H * 0.45)], NIGHT)
+    sw = 2 if W < 25 else 3                                             # 斜間條（白）
+    for y in range(H - cuff):
+        for x in range(W):
+            if s.m[y, x] == NIGHT and ((x + y * 0.7) // sw) % 2 == 0 and y > 0: s.m[y, x] = WHITE
+    s.rect(0, H - cuff, W - 1, H - 1, WHITE)
+    for x in range(1, W - 1, 2): s.m[H - 1, x] = CREAMD
+    if L or W >= 17:                                                    # 細星（金）
+        sx, sy = int(round(c + W * 0.22)), int(round(H * 0.55))
+        if 0 <= sy < H - cuff: s.px(sx, sy, GOLD); s.px(sx - 1, sy, GOLD); s.px(sx + 1, sy, GOLD); s.px(sx, sy - 1, GOLD); s.px(sx, sy + 1, GOLD)
+    return s.m, ((W - 1) / 2, H - 1), (tipx, tipy + .6)
+def cap_pre(fs, bodies, alist, form, clip=None):
+    pts = [f["top"] for f in fs]
+    for f, s in zip(fs, _swing(pts, _loop(form, clip), 6.0, 4.0, 0.55, 30.0)): f["swing"] = s
+def _rot_pt(p, piv, ang):
+    a = math.radians(ang); ca, sa = math.cos(a), math.sin(a); dx, dy = p[0] - piv[0], p[1] - piv[1]
+    return (ca * dx - sa * dy, sa * dx + ca * dy)
+def draw_nightcap(body, an, f, ref, form, prev=None):
+    S = body.shape[0]; cfg = FIT["nightcap"][form]; can = np.zeros((S + 2 * PAD, S + 2 * PAD, 4), np.uint8)
+    pin = cfg.get("variant") == "hatpin"; P = HEAD["nightcap"]
+    if pin:
+        if cfg.get("pin") == "r": cx = an["head_r"][0] - 3; cy = an["head_r"][1] - 5
+        else: cx = 2 * f["em"][0] - an["head_r"][0]; cy = an["head_r"][1] - 1
+        W = odd(ref["hw"] * P["pin"] * cfg["sc"] * min(max(f["ws"], .85), 1.15), 7); H = max(4, int(round(W * P["hr"])))
+        ang = P["pin_ang"] + f["ang"]; bx, by = cx + cfg["dx"], cy + cfg["dy"]
+    else:
+        ws = min(max(f["ws"], 0.8), 1.3); hs = min(max(f["hs"], 0.8), 1.25)
+        W = odd(ref["hw"] * P["k"] * cfg["sc"] * ws, P["minW"]); H = max(5, int(round(ref["hw"] * P["k"] * cfg["sc"] * P["hr"] * (0.5 + 0.5 * hs))))
+        ang = f["ang"]; sink = max(1, int(round(ref["hw"] * P["sink"])))
+        bx = f["top"][0] - f["u"][0] * sink + cfg["dx"]; by = f["top"][1] - f["u"][1] * sink + cfg["dy"]
+    m0, piv0, tip0 = gen_nightcap(W, H, L=S >= 64)
+    m, piv = rotate_labels(m0, piv0, ang)
+    tdx, tdy = _rot_pt(tip0, piv0, ang)
+    sw = f.get("swing", 0.0); tl = max(4.0, W * (0.55 if pin else 0.62)) * cfg.get("tail", 1.0)
+    th0 = max(1.5, W * 0.11); pr = max(1.1, W * 0.085)
+    fp = face_px(an, S); best = None
+    tl0 = tl
+    for tk, dphi in [(k_, d_) for k_ in (1.0, 0.75, 0.55) for d_ in (0, 15, 30, -15, 45, 60, -30)]:   # 尾撞五官／出 padding → 向外擺、再唔得就縮短條尾
+        tl = tl0 * tk
+        lab = np.zeros((S + 2 * PAD, S + 2 * PAD), np.int16)
+        ox, oy = int(round(bx - piv[0])) + PAD, int(round(by - piv[1])) + PAD
+        h_, w_ = m.shape; ys_, xs_ = np.nonzero(m)
+        for yy_, xx_ in zip(ys_, xs_):
+            Y, X = oy + yy_, ox + xx_
+            if 0 <= Y < lab.shape[0] and 0 <= X < lab.shape[1]: lab[Y, X] = m[yy_, xx_]
+        tx, ty = bx + tdx + PAD, by + tdy + PAD
+        phi0 = 200 + ang + dphi; phi1 = 112 + dphi * 0.5          # 帽尖向左上 → 垂落（畫面角度：90＝向下，180＝向左）
+        x_, y_ = tx, ty; nseg = int(math.ceil(tl * 2)); pts = []; out = False
+        for i in range(nseg + 1):
+            r_ = i / nseg; phi = math.radians(phi0 + (phi1 - phi0) * (r_ ** 0.7) + sw * r_)
+            if i: x_ += math.cos(phi) * 0.5; y_ += math.sin(phi) * 0.5
+            pts.append((x_, y_))
+            th = th0 * (1 - 0.55 * r_); rr = th / 2
+            for yy in range(int(math.floor(y_ - rr)), int(math.ceil(y_ + rr)) + 1):
+                for xx in range(int(math.floor(x_ - rr)), int(math.ceil(x_ + rr)) + 1):
+                    if (xx - x_) ** 2 + (yy - y_) ** 2 <= rr * rr + .25:
+                        if not (1 <= yy < lab.shape[0] - 1 and 1 <= xx < lab.shape[1] - 1): out = True; continue
+                        if lab[yy, xx] in (0, NIGHT, WHITE): lab[yy, xx] = WHITE if int(i / (3 if W >= 17 else 2)) % 2 else NIGHT
+        ex, ey = pts[-1]
+        for yy in range(int(math.floor(ey - pr - 1)), int(math.ceil(ey + pr + 1)) + 1):
+            for xx in range(int(math.floor(ex - pr - 1)), int(math.ceil(ex + pr + 1)) + 1):
+                if (xx - ex) ** 2 + (yy - ey) ** 2 <= pr * pr + .3:
+                    if not (1 <= yy < lab.shape[0] - 1 and 1 <= xx < lab.shape[1] - 1): out = True; continue
+                    lab[yy, xx] = WHITE
+        img = render(lab)[1:-1, 1:-1]
+        lift = 0
+        if not pin:
+            for _ in range(8):     # 帽身遮五官 → 升
+                if not any(img[py + PAD - lift, px + PAD, 3] if 0 <= py + PAD - lift < img.shape[0] else 0 for px, py in fp): break
+                lift += 1
+            if lift:
+                img2 = np.zeros_like(img); img2[:img.shape[0] - lift] = img[lift:]; img = img2
+        hit = any(img[py + PAD, px + PAD, 3] for px, py in fp)
+        if not hit and not out: best = (img, dphi, (ex - PAD, ey - PAD - lift), lift, tk); break
+    if best is None: return None, {"why": "睡帽尾撞五官／出 padding"}
+    img, dphi, tend, lift, tk = best
+    if not pin: cut_hole(img[PAD:PAD + S, PAD:PAD + S], head_cut(body, f, full=form in CUT_FULL))
+    info = {"variant": "hatpin" if pin else "cap", "W": W, "H": H, "ang": round(ang, 1), "swing": sw, "dphi": dphi, "tailK": tk,
+            "tailEnd": [round(float(tend[0]), 1), round(float(tend[1]), 1)]}
+    if pin: info["pos"] = [round(float(bx), 1), round(float(by), 1)]
+    else: info["piv"] = [round(float(bx), 1), round(float(by - lift), 1)]
+    return img, info
+HEAD["nightcap"] = {"gen": None, "k": 1.06, "hr": 0.56, "sink": 0.2, "minW": 9, "pin": 0.55, "pin_ang": -16}
+
+
 ITEMS = {
     "straw": {"name": "草帽", "slot": "head", "anchor": "top", "draw": draw_straw, "batch": "ACC1"},
     "bow": {"name": "蝴蝶結", "slot": "side_r", "anchor": "head_r", "draw": draw_bow, "batch": "ACC1"},
@@ -603,6 +852,10 @@ ITEMS = {
     "starclip": {"name": "星星髮夾", "slot": "side_l", "anchor": "head_l", "draw": make_side_draw("starclip"), "batch": "ACC3"},
     "sakura": {"name": "櫻花髮飾", "slot": "side_l", "anchor": "head_l", "draw": make_side_draw("sakura"), "batch": "ACC3"},
     "glasses": {"name": "圓框眼鏡", "slot": "face", "anchor": "eyeL/eyeR", "draw": draw_glasses, "batch": "ACC3", "pre": glasses_pre, "retry": GL_RETRY},
+    "leafcollar": {"name": "葉仔領", "slot": "neck", "anchor": "neck", "draw": draw_leafcollar, "batch": "ACC4"},
+    "bell": {"name": "燈泡小鈴", "slot": "bulb", "anchor": "bulb", "draw": draw_bell, "batch": "ACC4", "pre": bell_pre},
+    "halo": {"name": "燈泡光環", "slot": "bulb", "anchor": "bulb", "draw": draw_halo, "batch": "ACC4"},
+    "nightcap": {"name": "睡帽", "slot": "head", "anchor": "top", "draw": draw_nightcap, "batch": "ACC4", "pre": cap_pre, "sleepKeep": True},
 }
 
 # ================================================================ 收藏品 12 件（16／32 各自 raster）
@@ -795,7 +1048,7 @@ def gen_item_form(item, form):
             w = raw[max(0, i - 1):i + 2]; f["ang"] = max(-28.0, min(28.0, (sum(w) + raw[i]) / (len(w) + 1)))
             if abs(f["ang"]) < 4: f["ang"] = 0.0
         if ITEMS[item]["slot"] == "head": stabilise_head(fs, bodies)
-        if ITEMS[item].get("pre"): ITEMS[item]["pre"](fs, bodies, alist, form)
+        if ITEMS[item].get("pre"): ITEMS[item]["pre"](fs, bodies, alist, form, clip=clip)
         why0 = None
         for adj in ITEMS[item].get("retry", (0,)):     # 例：眼鏡圈逐 0.5px 收細再試（成個 clip 一齊）
             if why and why0 is None: why0 = why
@@ -819,7 +1072,7 @@ def gen_item_form(item, form):
     return frames, fits, hidden, S
 
 # 手動收起（睇完動作 preview 決定；原因會寫入 ACCESSORIES.json）
-HIDE = {k_: {"*": {"leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"}} for k_ in ("straw", "beanie", "acorn", "crown")}
+HIDE = {k_: {"*": {"leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"}} for k_ in ("straw", "beanie", "acorn", "crown", "nightcap")}
 
 def pack_atlas(frames, S, pad=2, extrude=1, maxw=1024):
     """trim → shelf pack；回傳 PIL image + frames json（TexturePacker 風格，同 evo6 atlas 一致）"""
@@ -946,7 +1199,17 @@ def write_accessories_json(summary):
                      "headL": "ACC3 side_l：head_r 以兩眼中垂線鏡像（側面眼距 <0.75×idle 或冇眼就用 fit 中軸）；撞五官向左上推，最多 6px",
                      "glasses": "ACC3 face：鏡片中心＝eyeL／eyeR＋clip 平均眼 blob 偏移；半軸＝max(idle, clip) 眼 blob 半寬／半高＋1.5；"
                                 "跟兩眼連線傾角；L 級框粗 2；¾ 圓框（近口內下角開口，dot 用上半框）；faceVisible=false／冇眼成段收起；"
-                                "成個 clip 逐級試（收窄／壓扁／上移／向外，再試逐幀跟眼），全部幀過晒先用"}
+                                "成個 clip 逐級試（收窄／壓扁／上移／向外，再試逐幀跟眼），全部幀過晒先用",
+                     "leafcollar": "ACC4 neck：同頸巾一樣嘅頸位（眼下、頸寬 run、跟傾角斜）；尖頭葉一片片（兩隻綠交替）＋前右細花；五官像素清走",
+                     "bulbAnchor": "ACC4 bulb slot：燈泡玻璃半徑用手調表 BR（evo 色唔係 v3，唔可以靠色量）；evo_dot／evo_sprout 冇燈泡 → fallback 頭頂；"
+                                   "lumi 系／dust／moon 個 bulb 唔喺頭頂（觸角／尾燈／月牙）→ 光環改放頭頂",
+                     "bell": "ACC4 bulb：鈴（suzu 5／7／9）吊喺燈泡右下（bulb＋(0.6br, br+1)）；冇燈泡就頭頂芽右邊；"
+                             "擺動＝阻尼彈簧（s=0.5s+7vx，夾 ±25°、每幀 ≤14°，loop clip 跑兩轉取第二轉，接得順）；撞五官向右上推",
+                     "halo": "ACC4 bulb：橢圓環（後半 GOLDD、前半 GOLD、L 級白反光），環心喺燈泡玻璃上面 br+1.5+ry；非頭頂燈形態放頭頂最高點上 2px（保持水平）；燈泡版傾角夾 ±12°；"
+                             "環洞唔描邊、透明；高跳幀貼 padding 頂（PAD 8）",
+                     "nightcap": "ACC4 head：圓錐睡帽（zzz 紫＋白斜紋＋白帽邊＋L 級金星），帽尖向左，長尾由帽尖垂落＋白波波；"
+                                 "尾擺＝阻尼彈簧（s=0.55s+6vx+4vy，夾 ±30°、每幀 ≤14°，loop 兩轉）；尾撞五官／出 padding → 尾向外擺（dphi）再唔得縮短（tailK）；"
+                                 "shroom／moon 用細 hatpin 版；sleep_* 照戴（sleepKeep）"}
     items = {it["key"]: it for it in old.get("items", [])} if isinstance(old.get("items"), list) else dict(old.get("items", {}))
     for key, name, slot, anc, obtain, batch in ALL_ITEMS:
         e = dict(items.get(key, {})); e.update({"key": key, "name": name, "slot": slot, "anchor": anc, "obtain": obtain, "batch": batch})
@@ -956,6 +1219,7 @@ def write_accessories_json(summary):
             e["counts"] = {"forms": len(summary[key]), "visibleClips": sum(v["visibleClips"] for v in summary[key].values()),
                            "clips": sum(v["clips"] for v in summary[key].values()), "frames": sum(v["frames"] for v in summary[key].values())}
         else: e.setdefault("status", "planned")
+        if ITEMS.get(key, {}).get("sleepKeep"): e["sleepKeep"] = True   # 睡覺 clip 照戴（其他頭飾都冇收起 sleep，呢個係明確標記）
         items[key] = e
     d["items"] = items
     json.dump(d, open(p, "w"), ensure_ascii=False, indent=1)
@@ -1000,7 +1264,7 @@ def preview_face(item, forms, path, clips=FACE_CLIPS, sc=6):
 def build_previews(items):
     os.makedirs(PREV, exist_ok=True); out = []
     half = (len(FORMS) + 1) // 2
-    for bt in ("ACC1", "ACC2", "ACC3"):    # 每批一套：idle／walk_03 × 25 形態（A／B 兩半）
+    for bt in ("ACC1", "ACC2", "ACC3", "ACC4"):    # 每批一套：idle／walk_03 × 25 形態（A／B 兩半）
         its = [i for i in items if ITEMS[i]["batch"] == bt]
         if not its: continue
         p_ = bt.lower()
@@ -1018,7 +1282,12 @@ def build_previews(items):
             ("acc2", "hatpin"): (["evo_guard_moon", "evo_still_moon", "evo_guard_shroom", "evo_still_shroom"], ["idle", "cheer_jump", "lookup_tip"]),
             ("acc3", "starclip"): (["sprout", "evo_guard_radiant", "soft"], ["cheer_jump", "lookup_tip", "getup", "rush", "turn_back"]),
             ("acc3", "sakura"): (["evo_hop", "evo_still_moon", "lumi"], ["cheer_jump", "lookup_tip", "walk", "picked_up", "sleep_loop"]),
-            ("acc3", "glasses"): (["evo_guard_radiant", "radiant", "evo_sprout"], ["blink", "sleep_loop", "cheer_jump", "walk", "turn_back"])}
+            ("acc3", "glasses"): (["evo_guard_radiant", "radiant", "evo_sprout"], ["blink", "sleep_loop", "cheer_jump", "walk", "turn_back"]),
+            ("acc4", "leafcollar"): (["sprout", "evo_still_tide", "soft"], ["cheer_jump", "lookup_tip", "rush", "picked_up", "leaf_umbrella"]),
+            ("acc4", "bell"): (["sprout", "evo_dot", "radiant", "evo_guard_dust"], ["walk", "cheer_jump", "rush", "turn_back", "sleep_loop"]),
+            ("acc4", "halo"): (["evo_sprout", "evo_guard_radiant", "lumi", "evo_still_moon"], ["cheer_jump", "lookup_tip", "getup", "rush", "leaf_umbrella"]),
+            ("acc4", "nightcap"): (["sprout", "evo_guard_crystal", "radiant"], ["walk", "cheer_jump", "rush", "sleep_loop", "turn_back"]),
+            ("acc4", "nightcap_b"): (["evo_guard_moon", "evo_still_shroom", "lumi"], ["fall_asleep", "sleep_loop", "getup", "cheer_jump", "lookup_tip"])}
     for (bt, k), (forms, clips) in sets.items():
         if k == "hatpin":
             for it in ("beanie", "acorn", "crown"):

@@ -156130,24 +156130,23 @@
   "spec": "sprites/tuanrong/accessories/ACCESSORIES.json",
   "doc": "sprites/tuanrong/accessories/ACCESSORIES.md",
   "plan": "sprites/tuanrong/accessories/ACC_PLAN.md",
-  "batch": "ACC3",
+  "batch": "ACC4",
   "done": [
    "straw",
    "beanie",
+   "nightcap",
    "crown",
    "acorn",
    "bow",
    "starclip",
    "sakura",
    "glasses",
-   "scarf"
-  ],
-  "planned": [
-   "nightcap",
+   "scarf",
    "leafcollar",
    "bell",
    "halo"
   ],
+  "planned": [],
   "collectibles": "ui/collectibles/collectibles.json",
   "note": "飾品 overlay 幀名同身體 clip 幀一樣；hiddenClips 成段唔畫。身體 clip 定義唔改。",
   "batches": {
@@ -156165,7 +156164,16 @@
     "starclip",
     "sakura",
     "glasses"
+   ],
+   "ACC4": [
+    "leafcollar",
+    "bell",
+    "halo",
+    "nightcap"
    ]
-  }
+  },
+  "sleepKeep": [
+   "nightcap"
+  ]
  }
 }

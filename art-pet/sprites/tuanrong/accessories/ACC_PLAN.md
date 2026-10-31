@@ -29,6 +29,6 @@
 - ACC1 ✅ 2026-11-01：框架、收藏品 12 件、草帽／蝴蝶結／頸巾（`/workspace/acc1-staging`）。
 - ACC2 ✅ 2026-11-01：毛冷帽／橡果帽／小皇冠，加草帽 polish（`/workspace/acc2-staging`）。
 - ACC3 ✅ 2026-11-01：星星髮夾、櫻花髮飾、圓框眼鏡（`/workspace/acc3-staging`）。
-- ACC4 ⏳ 葉仔領、燈泡小鈴、燈泡光環、睡帽。
+- ACC4 ✅ 2026-11-01：葉仔領、燈泡小鈴、燈泡光環、睡帽（`/workspace/acc4-staging`）。
 - ACC5 ⏳ 多 slot 衝突、25×13 contact sheet、總覆核、文件定稿。
 <!-- ACC-PROGRESS-END -->

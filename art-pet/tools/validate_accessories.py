@@ -2,7 +2,7 @@
 """validate_accessories — 團絨飾品＋收藏品（ACC 批次）。檢查：
 schema／13 件總表／slot；每個 done item × 25 形態都有 atlas＋json；身體每一幀都要有 overlay，除非個 clip 喺 hiddenClips（有原因）；
 atlas 像素 v3＋alpha 0/255；幀 rect 喺 atlas 內；唔遮五官（eyeL/eyeR/mouth ±1，faceVisible）；唔遮燈泡（bulb/bulb2 ±1）；
-overlay 同 fit 一致（head slot 通用：草帽／毛冷帽／橡果帽／小皇冠；ACC2 起加傾角每幀 ≤8°、ws 0.85–1.12；帽底中心 ≤3px／蝴蝶結中心 ≤3px／頸巾頂行 = fit.ny；ACC3 side_l 中心跟 head_l；眼鏡 faceVisible＋跟兩眼中點同傾角＋L 級框粗 2＋唔壓眼 blob）；動畫 frames 對得上身體 clip 幀數；counts；
+overlay 同 fit 一致（head slot 通用：草帽／毛冷帽／橡果帽／小皇冠；ACC2 起加傾角每幀 ≤8°、ws 0.85–1.12；帽底中心 ≤3px／蝴蝶結中心 ≤3px／頸巾頂行 = fit.ny；ACC3 side_l 中心跟 head_l；眼鏡 faceVisible＋跟兩眼中點同傾角＋L 級框粗 2＋唔壓眼 blob；ACC4 葉仔領頂行 = fit.ny、鈴中心跟 fit＋喺燈泡下＋擺 ≤25°／每幀 ≤14°、光環中心跟 fit＋喺燈泡／頭頂上、睡帽位跟 fit＋傾角每幀 ≤8°＋尾擺 ≤30°／每幀 ≤14°＋尾端有波波）；動畫 frames 對得上身體 clip 幀數；counts；
 收藏品 12 件 × 16／32＋剪影、atlas、v3／alpha；CLIPS.json additive accessories key。"""
 import json, os, sys, math
 import numpy as np
@@ -79,7 +79,29 @@ def main():
                     # 同 fit 一致（跟變形）
                     fi = fl[k - 1]; ys, xs = np.nonzero(ov[..., 3]); xs = xs - B.PAD; ys = ys - B.PAD
                     head = B.ITEMS.get(it, {}).get("slot") == "head"
-                    if head and fi.get("variant") == "hat":
+                    if it == "nightcap":   # ACC4 睡帽：帽位跟 fit、尾擺有限、尾端有白波波
+                        if abs(fi.get("swing", 0)) > 30.01: err(f"{it}/{form}/{n}: 尾擺 {fi.get('swing')} 超 ±30°")
+                        if k > 1 and abs(fi.get("swing", 0) - fl[k - 2].get("swing", 0)) > 14.01: err(f"{it}/{form}/{n}: 尾擺每幀跳 >14°")
+                        if fi.get("variant") == "cap":
+                            pa = fl[k - 2]["ang"] if k > 1 else 0.0
+                            if abs(fi["ang"] - pa) > 8.01: err(f"{it}/{form}/{n}: 傾角跳 {pa}→{fi['ang']}（>8°）")
+                        px_, py_ = fi["piv"] if fi.get("variant") == "cap" else fi["pos"]
+                        if not (xs.min() - 3 <= px_ <= xs.max() + 3 and ys.min() - 3 <= py_ <= ys.max() + 3): err(f"{it}/{form}/{n}: 睡帽位 {fi.get('piv') or fi.get('pos')} 唔喺 overlay 範圍")
+                        ex, ey = fi["tailEnd"]; X0, Y0 = int(round(ex)) + B.PAD, int(round(ey)) + B.PAD
+                        win = ov[max(0, Y0 - 2):Y0 + 3, max(0, X0 - 2):X0 + 3]
+                        if not (win[..., 3] > 0).any(): err(f"{it}/{form}/{n}: 尾端冇波波")
+                    elif it == "bell":     # ACC4 鈴：吊喺燈泡下／頭頂、擺幅有限
+                        cx, cy = fi["pos"]; bw = fi["W"]
+                        if abs((xs.min() + xs.max()) / 2 - cx) > 2 + bw / 2 or abs((ys.min() + ys.max()) / 2 - cy) > 2 + bw / 2: err(f"{it}/{form}/{n}: 鈴位同 fit 唔一致")
+                        if abs(fi.get("swing", 0)) > 25.01: err(f"{it}/{form}/{n}: 鈴擺 {fi.get('swing')} 超 ±25°")
+                        if k > 1 and abs(fi.get("swing", 0) - fl[k - 2].get("swing", 0)) > 14.01: err(f"{it}/{form}/{n}: 鈴擺每幀跳 >14°")
+                        if fi.get("base") == "bulb" and "bulb" in a and cy < a["bulb"][1]: err(f"{it}/{form}/{n}: 鈴喺燈泡上面")
+                    elif it == "halo":     # ACC4 光環：環心跟 fit，喺燈泡／頭頂上面
+                        cx, cy = fi["c"]
+                        if abs((xs.min() + xs.max()) / 2 - cx) > 1.6 or abs((ys.min() + ys.max()) / 2 - cy) > 1.6: err(f"{it}/{form}/{n}: 光環中心同 fit 唔一致")
+                        if fi.get("base") == "bulb" and "bulb" in a and cy >= a["bulb"][1]: err(f"{it}/{form}/{n}: 光環唔喺燈泡上面")
+                        if fi.get("base") == "top" and cy >= fi["top"][1]: err(f"{it}/{form}/{n}: 光環唔喺頭頂上面")
+                    elif head and fi.get("variant") == "hat":
                         if fi.get("ws", 1) > 1.1201 or fi.get("ws", 1) < 0.8499: err(f"{it}/{form}/{n}: ws {fi.get('ws')} 出 0.85–1.12（頭飾闊度跳）")
                         pa = fl[k - 2]["ang"] if k > 1 and fl[k - 2].get("variant") == "hat" else 0.0
                         if abs(fi["ang"] - pa) > 8.01: err(f"{it}/{form}/{n}: 傾角跳 {pa}→{fi['ang']}（>8°）")
@@ -107,7 +129,7 @@ def main():
                             body = B.load(B.frame_path(form, clip, k))
                             for kk in ("eyeL", "eyeR"):
                                 if any(ov[y + B.PAD, x + B.PAD, 3] for x, y in B.eye_blob(body, a, kk)): err(f"{it}/{form}/{n}: 鏡框壓到眼 {kk}"); break
-                    elif it == "scarf":
+                    elif it in ("scarf", "leafcollar"):
                         if abs(ys.min() - (fi["ny"] - 1)) > 3 + abs(fi["ang"]) * 0.4: err(f"{it}/{form}/{n}: 頸巾頂 {ys.min()} vs ny {fi['ny']}")
                     tot["frames"] += 1
             extra = set(aj["frames"]) - {f"{c}_{k:02d}" for c, al in an.items() if c not in hid for k in range(1, len(al) + 1)}
