@@ -4,11 +4,11 @@
 - v2（2026-10-31，遊測：v1 1–8 kHz 只 39–43 %，似悶雨／遠雷）：雨床高通 320 Hz、主力 2–6 kHz 細密雨粒；
   目標 1–8 kHz ≥60 %、<250 Hz ≤10 %、寵物聲 400–1500 Hz ≤12 %、>8 kHz <5 %。冇雷。v1 備份喺 _prev/rain_v1/。
 - loop：7 小節 @68 BPM = 24.706 s → 1,089,529 samples（最接近整數樣本）。short：6.0 s（264,600 samples），淡入 1.5 s／淡出 2.0 s。
-- 響度：純增益迭代（解碼後 ogg 量 ebur128）至 -24 LUFS；TP ≤ -1 dBTP。ogg Vorbis -q:a 4，-fflags +bitexact。"""
+- 響度：純增益迭代（解碼後 ogg 量 ebur128）至 -27 LUFS；TP ≤ -1 dBTP。ogg Vorbis -q:a 4，-fflags +bitexact。"""
 import os, re, subprocess, numpy as np, soundfile as sf
 from dsp import SR
 FF = os.environ.get('FF', 'ffmpeg'); TMP = 'tmp'; os.makedirs(TMP, exist_ok=True); os.makedirs('amb', exist_ok=True)
-TARGET = -24.0
+TARGET = -27.0
 # v2 調音參數（v1：低帶 150–380 主導、雨粒 450/s、bed:tex = 1:0.55 → 1–8 kHz 只 38–41 %，似悶雨／遠雷）
 LOW_A, MID_A = 12.0, 0.06      # 低帶／中頻相對電平
 TEX_RATE = 1400                # 雨粒微脈衝密度（/s/聲道）

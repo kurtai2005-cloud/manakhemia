@@ -92,7 +92,7 @@ PY=python3 bash tools/build_all.sh      # 需要 numpy、scipy、soundfile、ffm
 | `gen_bgm_tod.py` | 方案 A ③：`bgm_care_{morning,evening,night}_loop.ogg`（派生自照顧版和弦／旋律；疊尾無縫；迭代增益至目標 LUFS；ogg 編碼）。`build_all.sh` 已包含 |
 | `gen_sfx_env.py` / `build_env.sh` | 方案 A ④：`sfx_env_flowerpot_bump`、`sfx_env_sunbathe_loop`（用 `norm_pet2.py` 純增益歸一＋ ogg 編碼）。`build_all.sh` 已包含 |
 | `gen_sfx_life.py` / `build_life.sh` / `measure_life.py` | 團絨生命感（精簡）16 檔（第 7.9 節）：同 `gen_sfx_pet2.py` 同一套共振峰聲線；4.2 kHz 低通、10 ms 淡入／40 ms 淡出＋10 ms 靜音；純增益迭代至 LUFS20 目標（峰值上限 -6 dBFS）；`-fflags +bitexact` 令重跑結果 byte 一致；`measure_life.py` 報 LUFS4s／LUFS20／TP／peak／>4 kHz 比／首尾電平。`build_all.sh` 已包含 |
-| `gen_amb_rain.py` / `build_rain.sh` / `measure_amb.py` | H3 雨層細雨環境聲 2 檔（`amb/`，第 7.10 節，v2 2026-10-31 提亮）：圓周（FFT）合成無縫 loop＋6 s 淡入淡出短版；純增益迭代至 -24 LUFS；`-q:a 4` 立體聲 `-fflags +bitexact`；`measure_amb.py` 報樣本數／LUFS／TP／頻帶比／重心／接縫／淡入淡出。`build_all.sh` 已包含 |
+| `gen_amb_rain.py` / `build_rain.sh` / `measure_amb.py` | H3 雨層細雨環境聲 2 檔（`amb/`，第 7.10 節，v2 2026-10-31 提亮）：圓周（FFT）合成無縫 loop＋6 s 淡入淡出短版；純增益迭代至 -27 LUFS（v2.1）；`-q:a 4` 立體聲 `-fflags +bitexact`；`measure_amb.py` 報樣本數／LUFS／TP／頻帶比／重心／接縫／淡入淡出。`build_all.sh` 已包含 |
 | `measure_tod.py` | 時段 BGM（立體聲）驗證：樣本數／小節數／LUFS／TP／循環接縫 |
 | `norm.py` | SFX 響度：`--linear name:目標LUFS`（純增益，峰值上限 -2 dBFS）；舊模式為 tanh 軟飽和 |
 | `build_sfx.sh` / `build_all.sh` | 一鍵生成＋編碼＋量度 |
@@ -251,20 +251,22 @@ Kurt 揀「精簡」級（經遊策轉達）。8 款 × 2 個變化（`_a`／`_b
 
 **未有人聽過**——尤其：`sfx_pet_nuzzle_purr_a/b` 連播似唔似持續呼嚕（有冇 0.6 s 脈動感）、`sfx_pet_sneeze_a/b` 似唔似噴嚏（定似咳）、`sfx_pet_step_hop/drag` 喺手機喇叭 -22 LUFS 低頻軟身聲聽唔聽到。
 
-### 7.10 H3 細雨環境聲（v2，2026-10-31）
+### 7.10 H3 細雨環境聲（v2.1，2026-10-31）
 
 經遊策轉達：配 H3 天氣場景（雨層）。新資料夾 `amb/`，`tools/gen_amb_rain.py`（`build_rain.sh`，量度 `measure_amb.py`）生成。全部原創程式合成（濾波噪音＋細密微脈衝雨粒＋合成雨滴＋圓周殘響），無取樣；冇雷。
 
-規格：ogg Vorbis 44.1 kHz **立體聲**（`-q:a 4`，`-fflags +bitexact`，重跑兩次 byte 一致）；純增益迭代至 -24 LUFS（冇 limiter／壓縮）。
+規格：ogg Vorbis 44.1 kHz **立體聲**（`-q:a 4`，`-fflags +bitexact`，重跑兩次 byte 一致）；純增益迭代至 -27 LUFS（冇 limiter／壓縮）。
 
 頻段量法（同遊測一致）：解碼後 L/R 平均 → 全檔 FFT 功率比（頻段可重疊）。
 
 | 檔名 | 用途 | 長度 | 樣本數 | I (LUFS) | TP (dBTP) | 重心 | <250 / 250–400 / 400–1500 / 1–8k / 2–6k / >8k Hz % | sha256 |
 |---|---|---|---|---|---|---|---|---|
-| `amb/amb_rain_light_loop.ogg` | 細雨持續 loop（雨層全程） | 24.706 s（7 小節 @68 BPM） | **1,089,529** | **-24.0** | -7.8 | 2776 Hz | 3.0 / 21.1 / 10.0 / **65.7** / 60.0 / 0.4 | `307d0eb3…2f13902d` |
-| `amb/amb_rain_light_short.ogg` | 落雨開始／停雨過渡、短陣雨（淡入 1.5 s、淡出 2.0 s 內建） | 6.000 s | 264,600 | **-24.0**（integrated；全音量段 1.5–4.0 s 為 -23.0） | -9.8 | 2796 Hz | 0.9 / 22.5 / 10.0 / **66.3** / 60.5 / 0.5 | `f5ffc6d5…89e30ce4` |
+| `amb/amb_rain_light_loop.ogg` | 細雨持續 loop（雨層全程） | 24.706 s（7 小節 @68 BPM） | **1,089,529** | **-27.0** | -9.7 | 2775 Hz | 2.9 / 21.1 / 10.0 / **65.7** / 60.0 / 0.4 | `a907c718…0f3e3dce` |
+| `amb/amb_rain_light_short.ogg` | 落雨開始／停雨過渡、短陣雨（淡入 1.5 s、淡出 2.0 s 內建） | 6.000 s | 264,600 | **-27.0**（integrated；全音量段 1.5–4.0 s 約 -26.0） | -12.8 | 2793 Hz | 0.9 / 22.5 / 10.1 / **66.2** / 60.4 / 0.5 | `ff11aa89…ee4d8209` |
 
-完整 sha256：loop `307d0eb30d788ebd45487415d109646862f3569b57705e619be2cfbe2f13902d`；short `f5ffc6d5a375f1afed5203f1eff458847d60d4c511148adf4507283389e30ce4`。
+完整 sha256：loop `a907c7180601e646b571953b90f589809409d7446446347607b07ef73f0e3dce`；short `ff11aa893d7f1827df848d15d7e356ab8653e96022d28d2dae097ca1ee4d8209`。
+
+**v2.1：依 Kurt 2026-10-31 要求 -3 dB → -27 LUFS**（純增益，聲音內容、長度、樣本數、頻段比例、接縫不變；loop 接縫差 L/R 0.0014/0.0142 < P99.9 0.068；v2 檔案備份喺 `_prev/rain_v2/`）。
 
 **聲音內容（v2）**：主力係 2–6 kHz 細粒、柔、隨機密集雨粒 patter（約 1400 粒微脈衝/秒/聲道，Rayleigh 振幅），>7 kHz 4 階陡降（>8 kHz 只 0.4–0.5 %，唔刺耳）；雨床高通 300 Hz（再加總 HPF 250 Hz 4 階），留少少 300–420 Hz 身位；疏落雨滴平均約 2.6 粒/秒（Poisson：葉面「滴」55 %、瓦面「答」30 %、較大粒「卜」15 %，隨機左右定位，雨滴亦高通 280 Hz），loop 內冇固定節奏；慢速強弱起伏約 ±1.5 dB。L/R 相關 0.11–0.13（闊）。**避開寵物聲**：400–1500 Hz 佔 10.0 %（≤12 %）。
 
