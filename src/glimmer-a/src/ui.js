@@ -63,6 +63,7 @@
       else if (e.type === 'rinsed') { SND('rinsed'); rd.wash = { until: rd.t + 1.4, dur: 1.4 }; rd.act('happy', 1.4); rd.burst('spark', R.CX, R.GROUND_Y - 40, 4, 50); }
       else if (e.type === 'poopCleared') { SND('poop'); rd.burst('spark', R.CX, R.GROUND_Y - 20, 3, 40); }
       else if (e.type === 'eggTap') { SND('tap'); rd.eggPulse = 1; rd.act && 0; rd.burst('spark', R.CX, R.GROUND_Y - 24, 3, 40); }
+      else if (e.type === 'sys12') { if (G.sysEvent) G.sysEvent(e); }   // systems12（委託／星星碎／心聲…）→ sys12ui
       else if (e.type === 'wake') { toast('團絨瞓醒咗，精神晒！'); SND('sleep', { on: false }); }
       else if (e.type === 'hatch') {
         SND('hatch'); rd.flash = 1.2; rd.burst('spark', R.CX, R.GROUND_Y - 24, 14, 90);

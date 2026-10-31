@@ -142,8 +142,11 @@
   // 瞓覺撫摸 → 月眠 +1；v8 哄瞓 → 月眠 +lull.pts（唔受時段影響）
   function addPts(b, k, w) { if (k && w) b[k] = +((+b[k] || 0) + w).toFixed(4); }
   function b5Bucket(s, st) { const E = evoOf(s); st = st || s.stage; return E.b5[st] || (E.b5[st] = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, loginPoop: 0, quickLogin: 0 }); }
+  const careHooks = [];
+  function addCareHook(fn) { if (!careHooks.includes(fn)) careHooks.push(fn); }
   function noteB5(s, kind, h, wx) {
     if (s.stage === 'egg') return; const b = b5Bucket(s), C = BR();
+    for (let i = 0; i < careHooks.length; i++) careHooks[i](s, kind, h);   // systems12：每日委託／親密度等（kind＝feed／play／mg／rinse／poop／poopQuick／lull／petSleep）
     h = h == null ? nowHour() : h; wx = wx == null ? weatherNow() : normWeather(wx === false ? 'clear' : wx);
     b.all++;
     if (kind === 'petSleep') { b.moon++; return; }
@@ -199,10 +202,15 @@
     const cleanAvg = cn > 0 ? cs / cn : null;
     const quickRate = T.loginPoop > 0 ? T.quickLogin / T.loginPoop : 0;   // v7：即清上線 ÷ 有便便上線（取消清潔 ≥60）
     const score = { tide: T.tide, shroom: Math.max(0, T.shroom), crystal: +(quickRate * C.crystal.k * T.all).toFixed(4), moon: T.moon, ember: T.ember };
+    // systems12：新系統路線分（E.b5sys，委託等）每條路線 ≤ maxRouteSharePct%（sys ≤ 照顧分 × pct/(100−pct)）；加入分數同總數（config evo6.branch.systems）
+    const SY = C.systems; let sysAdd = 0; const sysRaw = {}, sysCap = {};
+    if (SY && SY.enabled && E.b5sys) { EV6.careStages.forEach(st => { const b = E.b5sys[st]; if (b) for (const k in b) if (k in score) sysRaw[k] = (sysRaw[k] || 0) + (+b[k] || 0); });
+      for (const k in sysRaw) { const cap = score[k] * SY.maxRouteSharePct / (100 - SY.maxRouteSharePct), v = +Math.min(sysRaw[k], cap).toFixed(4); sysCap[k] = v; score[k] = +(score[k] + v).toFixed(4); sysAdd += v; } }
+    T.all = +(T.all + sysAdd).toFixed(4);
     const rank = D.BRANCH5.map(id => ({ id, n: score[id], share: T.all ? score[id] / T.all : 0 })).sort((a, b) => b.n - a.n || D.BRANCH5.indexOf(a.id) - D.BRANCH5.indexOf(b.id));
     const top = rank[0], second = rank[1], N = T.all;
     const days = careDaysCheck(s), need = b5Need(s, days);
-    const r = { all: N, score, raw: { loginPoop: T.loginPoop, quickLogin: T.quickLogin, quickRate: +quickRate.toFixed(4) }, cleanAvg: cleanAvg == null ? null : +cleanAvg.toFixed(1), cq: s.cq, cqNeed: need, span: days.span, cqOk: s.cq >= need,
+    const r = { all: N, score, raw: { loginPoop: T.loginPoop, quickLogin: T.quickLogin, quickRate: +quickRate.toFixed(4) }, sys: { raw: sysRaw, capped: sysCap, add: +sysAdd.toFixed(4) }, cleanAvg: cleanAvg == null ? null : +cleanAvg.toFixed(1), cq: s.cq, cqNeed: need, span: days.span, cqOk: s.cq >= need,
       top: top.id, topN: top.n, topShare: +top.share.toFixed(4), second: second.id, secondShare: +second.share.toFixed(4),
       topOk: N > 0 && top.n * 100 >= C.b5TopPct * N, gapOk: N > 0 && (top.n - second.n) * 100 >= C.drawGapPt * N, tie: top.n === second.n,
       brightTopOk: !(N > 0 && top.n * 100 >= C.brightMaxTopPct * N) };
@@ -629,7 +637,7 @@
 
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
-    step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, addCareHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
+    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

@@ -78,6 +78,48 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await E(() => { __glimmer.foreLog = []; __glimmer.state.ev.push({ type: 'foreshadow', form: 'tide', act: Glimmer.data.PARAMS.evo6.route.foreshadow.tide }); }); await page.waitForTimeout(250);
     w = await E(() => ({ log: __glimmer.foreLog, wx: __qa.sys12.wx() })); ok(w.log.length === 1 && w.log[0].tell === 'tell_tide' && w.wx.shown === 'tell_tide', '預告 tide → 播 tell_tide（行為照舊）', w); await shot('tell-tide', true);
   }
+  if (want('quest')) {
+    console.log('# ④ 系統 1：每日小委託（3 個、每個 5、齊即發；00:00 重置；補發；DEV）');
+    await go('?q=high&hour=13&seed=21&ev=0&dev=1'); await dev('dev-stage-sprout'); await closeModals(); await juv(); await E(() => { __glimmer.state.stage = 'sprout'; });
+    await dev('dev-s12-qreset'); await page.waitForTimeout(1200);
+    let q = await E(() => __qa.sys12.quests()); const Q = await E(() => Glimmer.data.PARAMS.systems12.quests);
+    ok(q.list.length === 3 && q.list.every(x => Q.kinds[x.k]), '芽崽 → 3 個委託', q.list);
+    const chip = await E(() => { const c = document.querySelector('[data-testid="s12-chip"]'), r = c.getBoundingClientRect(); return { vis: r.width > 0 && getComputedStyle(c).display !== 'none', txt: c.textContent, r: [r.x, r.y, r.width, r.height] }; });
+    ok(chip.vis && /委託 0\/3/.test(chip.txt), 'HUD 星星碎＋委託進度 chip', chip);
+    // 真照顧（sim.feed／play／rinse）
+    const doK = (k) => E((k) => { const S = Glimmer.sim, s = __glimmer.state; s.sleeping = false; s.needs.hunger = 20; s.needs.clean = 30; s.needs.energy = 100;
+      if (k === 'feed') return S.feed(s, Glimmer.data.FOODS[0].id).ok; if (k === 'play') return S.play(s).ok; if (k === 'rinse') return S.rinse(s).ok; return false; }, k);
+    const w0 = await E(() => __qa.sys12.wallet().total);
+    for (const x of q.list.slice(0, 2)) for (let i = 0; i < x.need; i++) await doK(x.k);
+    await page.waitForTimeout(1300); q = await E(() => __qa.sys12.quests());
+    ok(q.list.slice(0, 2).every(x => x.n >= x.need) && !q.paid && (await E(() => __qa.sys12.wallet().total)) === w0, '做咗 2 個 → 未發獎', q);
+    await page.click('[data-testid="s12-chip"]'); await page.waitForTimeout(400);
+    const pv = await E(() => ({ open: getComputedStyle(document.querySelector('[data-testid="s12-panel"]')).display, rows: document.querySelectorAll('.s12q').length, done: [...document.querySelectorAll('.s12q')].map(r => r.dataset.done).join(''), bi: getComputedStyle(document.getElementById('s12box')).borderImageSource }));
+    ok(pv.open === 'flex' && pv.rows === 3 && pv.done === '110' && /^url\("data:image\/png/.test(pv.bi), '撳 chip → 委託面板（遊美 9-slice、勾選 2/3）', pv);
+    await shot('quest-panel');
+    for (let i = 0; i < q.list[2].need; i++) await doK(q.list[2].k);
+    await page.waitForTimeout(1300); q = await E(() => __qa.sys12.quests()); let w = await E(() => __qa.sys12.wallet());
+    ok(q.done && q.paid && w.total === w0 + Q.reward * 3 && w.q === 15, `3 個齊 → 即刻 +${Q.reward * 3} 星星碎`, w);
+    const gain = await E(() => document.querySelector('[data-testid="s12-gain"]').textContent); ok(/\+15 星星碎/.test(gain), '浮字「+15 星星碎（委託完成）」', gain);
+    await shot('quest-done');
+    await E(() => __qa.sys12.close());
+    // 路線委託（領先水珠）
+    await E(() => { const s = __glimmer.state; s.evo.b5 = { sprout: { all: 10, tide: 8, shroom: 1, crystal: 0, moon: 1, ember: 0 } }; s.evo.b5sys = {}; s.cq = 60; });
+    await dev('dev-s12-qreset'); q = await E(() => __qa.sys12.quests()); const rq = q.list.find(x => x.route);
+    ok(rq && rq.k === Q.routeKind[rq.route], '有領先路線 → 1 個委託偏向該路線', q.list);
+    await dev('dev-s12-qall'); const b = await E(() => ({ sys: __glimmer.state.evo.b5sys, B: Glimmer.sim.branch5Check(__glimmer.state).sys }));
+    ok(rq && b.sys.sprout && b.sys.sprout[rq.route] === 1 && b.B.capped[rq.route] <= 8 / 3 + 1e-6, '路線委託完成 → 路線新系統分 +1（≤25% cap）', b);
+    w = await E(() => __qa.sys12.wallet()); ok(w.q === 15, '同日第二輪（DEV 重抽）唔會超過委託每日 15', w);
+    // 存檔＋斷線補發
+    await E(() => { const x = Glimmer.sys12.st(__glimmer.state).quests; x.list.forEach(y => { y.n = y.need; }); x.paid = false; const d = new Date(__glimmer.now() - 86400e3); x.day = Glimmer.sim.dayKey(d.getTime()); __glimmer.save && __glimmer.save(); });
+    const tot1 = await E(() => __qa.sys12.wallet().total);
+    await E(() => { localStorage.setItem(Glimmer.data.PARAMS.saveKey, Glimmer.sim.serialize(__glimmer.state)); window.__noSaveOnHide = true; });
+    await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); await page.waitForTimeout(1500);
+    w = await E(() => __qa.sys12.wallet()); q = await E(() => __qa.sys12.quests());
+    ok(w.total === tot1 + 15 && q.day === (await E(() => Glimmer.sim.dayKey(__glimmer.now()))) && !q.done, '重開：舊日 3 個齊未發 → 補發 15＋今日新委託', { w, q });
+    const lg = await E(() => __qa.sys12.log().filter(e => e.what === 'paid')); ok(lg.some(e => e.late), '補發有記錄（late）', lg);
+    await dev('dev-s12-shard5'); ok((await E(() => __qa.sys12.wallet().total)) === tot1 + 20, 'DEV +5 星星碎');
+  }
   ok(!errs.length, '冇 console error', errs.slice(0, 5));
   console.log(`\n結果：${pass} 通過，${fail} 失敗`);
   await browser.close(); process.exit(fail ? 1 : 0);

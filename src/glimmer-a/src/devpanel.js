@@ -115,6 +115,9 @@
       addPoop() { note('addPoop'); const S = s(); if (S.stage === 'egg') throw new Error('dev.addPoop: egg'); if (S.poops < P.poopMax) { S.poops++; SIM.poopAges(S).push(0); } G.save(); sync(); return S.poops; },
       overlayGame() { note('overlayGame'); const r = G.evo.overlayOpenGame(); sync(); return r; },
       weather(w) { note('weather', w); const W = D.PARAMS.evo6.branch.weather.states; if (G.weatherSet) G.weatherSet(w === 'auto' || W.includes(w) ? w : 'clear'); else G.weather = W.includes(w) && w !== 'clear' ? w : null; sync(); return SIM.weatherNow(); },   // systems12：自動天氣；DEV 揀 → 覆蓋（「自動」還原）
+      s12(a) { note('s12', a); const Q = window.__qa && __qa.sys12; if (!Q) return null; let r = null;   // systems12 DEV：委託／星星碎（之後：親密／心聲／驚喜／日記）
+        if (a === 'open') r = Q.open('quest'); else if (a === 'q0' || a === 'q1' || a === 'q2') r = Q.questDo(+a[1]); else if (a === 'qall') r = Q.questFill(); else if (a === 'qreset') r = Q.questReset(); else if (a === 'shard5') r = Q.grant(5, 'dev');
+        else if (G.s12dev && G.s12dev[a]) r = G.s12dev[a](); sync(); return r; },
       season(m) { note('season', m); const r = G.seasonSet ? G.seasonSet(m) : null; sync(); return r; },   // systems12 季節：auto／spring／summer／autumn／winter／none（基本款）   // v4：天氣系統未做 → DEV 設定（之後由天氣系統驅動）
       careDays(n) { note('careDays', n); const S = s(); n = Math.max(0, n | 0); const now = G.now ? G.now() : Date.now(), have = new Set(S.careDays || []); for (let i = 0; i < n; i++) have.add(SIM.dayKey(now - i * 86400000)); if (n === 0) have.clear(); S.careDays = [...have].sort(); if (n && S.evo) S.evo.day0 = SIM.dayKey(now - (n - 1) * 86400000); G.save(); sync(); return SIM.careDaysCheck(S); },   // v4 燦光：補最近 n 日照顧日（0＝清）
       dexUnlock(f) { note('dexUnlock', f); const S = s(); if (f === 'none') S.dex = []; else (f === 'all' ? D.BRANCHES : [f]).forEach(x => SIM.unlockDex(S, x)); G.save(); sync(); return (S.dex || []).slice(); },
@@ -184,6 +187,7 @@
         <div class="dr" data-testid="dev-season-row"><i>季節</i>${['auto', 'spring', 'summer', 'autumn', 'winter', 'none'].map(m => btn({ auto: '自動', spring: '春', summer: '夏', autumn: '秋', winter: '冬', none: '基本' }[m], 'season:' + m, 'dev-season-' + m)).join('')}<span data-testid="dev-season-state"></span></div>
         <div class="dr" data-testid="dev-crystal-row"><i>晶角</i>${btn('上線', 'login', 'dev-login')}${btn('出便便', 'addPoop', 'dev-add-poop')}<span data-testid="dev-crystal-state"></span></div>
         <div class="dr" data-testid="dev-ember-row"><i>火苗</i>${btn('浮動開 game', 'overlayGame', 'dev-overlay-game')}<span data-testid="dev-ember-state"></span></div>
+        <div class="dr" data-testid="dev-s12q-row"><i>委託</i>${btn('面板', 's12:open', 'dev-s12-open')}${btn('做#1', 's12:q0', 'dev-s12-q0')}${btn('做#2', 's12:q1', 'dev-s12-q1')}${btn('做#3', 's12:q2', 'dev-s12-q2')}${btn('全做', 's12:qall', 'dev-s12-qall')}${btn('重抽', 's12:qreset', 'dev-s12-qreset')}${btn('+5碎', 's12:shard5', 'dev-s12-shard5')}<span data-testid="dev-s12q-state"></span></div>
         <div class="dr" data-testid="dev-lull-row"><i>月眠</i>${btn('眼瞓', 'drowsy', 'dev-drowsy')}${btn('哄瞓', 'lull', 'dev-lull')}<span data-testid="dev-lull-state"></span></div>
         <div class="dr" data-testid="dev-route-row"><i>路線</i>${btn('預告', 'foreshadow', 'dev-foreshadow')}${btn('圖鑑', 'openDex', 'dev-dex')}${btn('解鎖全部', 'dexUnlock:all', 'dev-dex-all')}${btn('清圖鑑', 'dexUnlock:none', 'dev-dex-none')}</div>
         <div class="dr"><i>進化</i>${D.EVOLUTION.map(e => btn('▶' + e.name, 'playEvolve:' + e.form, 'dev-evolve-' + e.form)).join('')}</div>
@@ -211,6 +215,7 @@
         cs.textContent = `便便${S.poops}｜窗口${Lg ? (Lg.done ? '已即清' : !Lg.had ? '（上線冇便便）' : left ? '剩' + left + 's' : '過咗') : '-'}｜即清 ${B.raw.quickLogin}/${B.raw.loginPoop} → ${B.score.crystal}分`; }
       const es = q('[data-testid="dev-ember-state"]'); if (es && SIM.branch5Check) { const B = SIM.branch5Check(S), O = D.PARAMS.evo6.branch.overlayMg, at = S.mg && S.mg.overlayAt, cd = at ? Math.max(0, Math.ceil(O.cooldownSec - (G.now() - at) / 1000)) : 0;
         es.textContent = `火苗${B.score.ember}分｜今日小遊戲 ${S.mg ? S.mg.plays : 0}｜冷卻${cd ? cd + 's' : '無'}`; }
+      const s1q = q('[data-testid="dev-s12q-state"]'); if (s1q && window.__qa && __qa.sys12 && __qa.sys12.quests) { const Q = __qa.sys12.quests(), W = __qa.sys12.wallet(); s1q.textContent = `${Q.list.map(x => x.k + (x.route ? '*' : '') + ' ' + x.n + '/' + x.need).join('、') || '—'}${Q.paid ? '（已發）' : ''}｜碎 ${W.total}（今日 ${W.today}/${W.cap}）`; }
       const ss = q('[data-testid="dev-season-state"]'); if (ss && G.wx) ss.textContent = `${G.wx.season || '基本'}（${G.wx.seasonMode}）`;
       el.querySelectorAll('button[data-a^="season:"]').forEach(b => b.classList.toggle('on', !!G.wx && b.dataset.a.split(':')[1] === G.wx.seasonMode));
       const wa = q('[data-a="weather:auto"]'); if (wa && G.wx) wa.classList.toggle('on', G.wx.auto && !G.wx.manual);

@@ -110,6 +110,19 @@
         rainDim: 0.18,             // H3 雨畫面再暗 18%（雨聲不變）
         shiverEverySec: [25, 50], shiverFogMul: 2, shiverWinterMul: 2, shiverBaseChance: 0.25 },   // 打冷震：idle 時每 25–50s 擲一次；霧／冬機率 ×2
       seasons: { spring: [3, 4, 5], summer: [6, 7, 8], autumn: [9, 10, 11], winter: [12, 1, 2] }, seasonFadeSec: 3,
+      // 星星碎錢包：每日入帳上限＝evo6.branch.systems.stardustDailyCap（30）；分帳：委託 15＋其他 15（日界 00:00 本機）
+      wallet: { questCap: 15, otherCap: 15 },
+      // 系統 1 每日小委託：每日 3 個、每個 5 星星碎、3 個齊即刻發獎（15）；00:00 重置；唔做唔罰；斷線／閂咗 app 未發 → 下次開補發
+      // 其中 1 個按「領先路線」揀（routeKind）；完成嗰個 → 該路線 +evo6.branch.systems.sources.questRoute.pts（受 25% cap）
+      quests: { perDay: 3, reward: 5, base: ['feed', 'rinse', 'play'],
+        kinds: {
+          feed: { n: 2, counts: ['feed'], icon: 'icon_commission_feed', label: '餵佢食嘢' },
+          rinse: { n: 1, counts: ['rinse'], icon: 'icon_commission_water', label: '幫佢淋水沖身' },
+          play: { n: 1, counts: ['play', 'mg'], icon: 'icon_commission_play', label: '陪佢玩一陣' },
+          poopQuick: { n: 1, counts: ['poopQuick'], icon: 'sticker_heart', label: '便便一出即刻清' },
+          lull: { n: 1, counts: ['lull', 'petSleep'], icon: 'sticker_sleep', label: '夜晚哄佢瞓／陪瞓' },
+        },
+        routeKind: { tide: 'rinse', shroom: 'feed', crystal: 'poopQuick', moon: 'lull', ember: 'play' } },
     },
     overlayDpPerPx: 1.625,          // evo6 浮動 overlay：sizeDp＝frameSize×1.625（芽崽 32px＝舊 52dp）
     eggTapBoostSec: 75,           // 光卵每點一下 +75s（8 下 = 10 分鐘）
