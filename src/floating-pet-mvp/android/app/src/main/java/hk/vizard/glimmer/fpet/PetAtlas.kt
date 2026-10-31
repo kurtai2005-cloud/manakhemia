@@ -11,16 +11,20 @@ class PetClip(val name: String, val fps: Float, val loop: Boolean, val grabPivot
     val duration get() = frames.size / fps
 }
 
-/** 預烤 atlas（tools/bake_overlay_atlas.py：noface＋faceov＋bulb_base）。全部朝右畫。 */
+/** 預烤 atlas。全部朝右畫。
+ *  evo_*：tools/bake_evo_atlas.py 由遊戲 art/evo6 烤（assets/pet/evo/pet_<evoForm>.webp/json，同遊戲一樣）；
+ *  舊 sprout／soft／radiant：tools/bake_overlay_atlas.py（只做 fallback）。冇嘅 clip → clip() fallback 同形態 idle。 */
 class PetAtlas(val form: String, val size: Int, val bitmap: Bitmap, val clips: Map<String, PetClip>) {
     fun clip(name: String): PetClip = clips[name] ?: clips.getValue("idle")
     companion object {
         fun load(ctx: Context, form: String): PetAtlas {
-            val json = ctx.assets.open("pet/pet_$form.json").bufferedReader().use { it.readText() }
+            val dir = if (PetForm.isEvo(form)) "pet/evo" else "pet"
+            val json = ctx.assets.open("$dir/pet_$form.json").bufferedReader().use { it.readText() }
             val o = JSONObject(json)
+            val img = o.optString("image", "").ifEmpty { "pet_$form.png" }
             val size = o.getInt("frameSize")
             val opts = BitmapFactory.Options().apply { inScaled = false; inPreferredConfig = Bitmap.Config.ARGB_8888 }
-            val bmp = ctx.assets.open("pet/pet_$form.png").use { BitmapFactory.decodeStream(it, null, opts)!! }
+            val bmp = ctx.assets.open("$dir/$img").use { BitmapFactory.decodeStream(it, null, opts)!! }
             val cl = o.getJSONObject("clips"); val map = HashMap<String, PetClip>()
             for (k in cl.keys()) {
                 val c = cl.getJSONObject(k); val fa = c.getJSONArray("frames"); val fr = ArrayList<PetFrame>()

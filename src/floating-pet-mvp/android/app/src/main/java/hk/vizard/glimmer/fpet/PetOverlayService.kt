@@ -236,7 +236,7 @@ class PetOverlayService : Service() {
 
     private fun loadAtlas(form: String) {
         atlas = PetAtlas.load(this, form)
-        val target = dp(try { org.json.JSONObject(PetPrefs.cap(this).getString(PetPrefs.KEY_SNAPSHOT, null) ?: "{}").optDouble("sizeDp", Double.NaN).toFloat().takeIf { it.isFinite() && it > 0f } } catch (e: Exception) { null } ?: if (form == "sprout") 52f else 72f)   // 顯示大細（dp）：evo6 snapshot v2 sizeDp 跟階段；舊 snapshot 冇 sizeDp → 舊尺寸
+        val target = dp(try { org.json.JSONObject(PetPrefs.cap(this).getString(PetPrefs.KEY_SNAPSHOT, null) ?: "{}").optDouble("sizeDp", Double.NaN).toFloat().takeIf { it.isFinite() && it > 0f } } catch (e: Exception) { null } ?: PetForm.defaultDp(form, atlas.size))   // 顯示大細（dp）：evo6 snapshot v2 sizeDp 跟階段；舊 snapshot 冇 sizeDp → 舊尺寸
         scale = max(1, (target / atlas.size).roundToInt())
         // 頭頂圖示位：idle 第 1 幀實際像素 bbox
         val f0 = atlas.clip("idle").frames[0]; var top = atlas.size; var right = 0
@@ -247,7 +247,7 @@ class PetOverlayService : Service() {
     // 懸浮窗即時變大細（Kurt 10-31 批）：form 唔同，或者同 form 但 snapshot sizeDp 計出嘅 scale 唔同 → 都要 swapForm（同 loadAtlas 一樣計法）
     private fun needSwap(form: String): Boolean {
         if (form != atlas.form) return true
-        val target = dp(try { org.json.JSONObject(PetPrefs.cap(this).getString(PetPrefs.KEY_SNAPSHOT, null) ?: "{}").optDouble("sizeDp", Double.NaN).toFloat().takeIf { it.isFinite() && it > 0f } } catch (e: Exception) { null } ?: if (form == "sprout") 52f else 72f)
+        val target = dp(try { org.json.JSONObject(PetPrefs.cap(this).getString(PetPrefs.KEY_SNAPSHOT, null) ?: "{}").optDouble("sizeDp", Double.NaN).toFloat().takeIf { it.isFinite() && it > 0f } } catch (e: Exception) { null } ?: PetForm.defaultDp(form, if (form == atlas.form) atlas.size else 32))
         val s = max(1, (target / atlas.size).roundToInt())
         if (s != scale) Log.i(TAG, "resize form=$form scale $scale → $s")
         return s != scale
@@ -611,7 +611,7 @@ class PetOverlayService : Service() {
     }
 
     private fun emote(name: String, minT: Float, next: (() -> Unit)? = null) {
-        st = St.EMOTE; play(if (atlas.clips.containsKey(name)) name else "emo_happy"); stTimer = minT; emoteNext = next
+        st = St.EMOTE; play(if (atlas.clips.containsKey(name)) name else if (atlas.clips.containsKey("emo_happy") && !PetForm.isEvo(atlas.form)) "emo_happy" else "idle"); stTimer = minT; emoteNext = next   // evo：冇呢個 clip → 同形態 idle
     }
 
     private fun idleNext() {
@@ -622,6 +622,7 @@ class PetOverlayService : Service() {
             status.urgent != null && r < 0.35f -> emote(if (status.urgent == "hunger") "emo_hungry" else "droop", 3f)
             status.moodBand == "sad" && r < 0.35f -> emote("droop", 3f)
             status.moodBand == "happy" && r < 0.12f -> emote("cheer_jump", 0f) { emote("cheer_jump", 0f) }
+            !atlas.clips.containsKey("walk") -> emote("idle", 3f)   // 光卵：冇 walk（遊戲光卵唔郁）→ 原地 idle
             mode != PetPrefs.MODE_PIN && now >= nextPlayAt && r < 0.6f && PetPrefs.grid(this) != "off" -> startIconPlay()
             mode != PetPrefs.MODE_PIN -> startWalk()
             else -> stTimer = 3f

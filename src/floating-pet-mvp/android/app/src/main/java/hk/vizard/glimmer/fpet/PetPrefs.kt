@@ -14,7 +14,7 @@ object PetPrefs {
     const val MODE_EDGE = "edge"
     const val MODE_FREE = "free"
     const val MODE_PIN = "pin"
-    val FORMS = setOf("sprout", "radiant", "soft")
+    val FORMS = PetForm.LEGACY
     private const val QUEUE_CAP = 50
     private val lock = Any()
 
@@ -32,11 +32,19 @@ object PetPrefs {
     fun setPin(c: Context, x: Float, y: Float) = prefs(c).edit().putFloat("pinX", x).putFloat("pinY", y).apply()
     fun dozeMinutes(c: Context) = prefs(c).getInt("dozeMin", 60)
 
+    /** 懸浮用邊套 atlas：snapshot evoForm → evo atlas（同遊戲一樣）；v1／唔認得 → 舊 form（PetForm.pick）。 */
     fun snapshotForm(c: Context): String = try {
         val s = cap(c).getString(KEY_SNAPSHOT, null)
-        val f = if (s == null) "soft" else JSONObject(s).optString("form", "soft")
-        if (f in FORMS) f else "soft"
+        if (s == null) "soft" else { val o = JSONObject(s)
+            PetForm.pick(if (o.has("evoForm")) o.optString("evoForm") else null, o.optString("form", "soft"), evoAvail(c)) }
     } catch (e: Exception) { "soft" }
+
+    @Volatile private var evoAvailCache: Set<String>? = null
+    /** APK assets/pet/evo 入面實際有嘅 evo atlas（pet_<evoForm>.json＋圖都要有）。 */
+    fun evoAvail(c: Context): Set<String> = evoAvailCache ?: try {
+        val names = c.assets.list("pet/evo")?.toSet() ?: emptySet()
+        PetForm.EVO.filter { "pet_$it.json" in names && ("pet_$it.webp" in names || "pet_$it.png" in names) }.toSet()
+    } catch (e: Exception) { emptySet<String>() }.also { evoAvailCache = it }
 
     // 玩圖示（Kurt 10-31 批）：主畫面 icon 格「行×列」（col×row，預設 4×6）；"off"＝唔玩。只係估格位中心，唔讀其他 app（冇敏感權限）。
     val GRIDS = listOf("4x6", "4x5", "5x5", "5x6", "off")
