@@ -47,7 +47,8 @@
     offlineDiscountRate: 0.25,    // 折扣率
     offlineCapH: 24,              // 總上限（超過部分不計）
     offlineNeedFloor: 20,         // 需求保底
-    offlineGrowthRatio: 0.5,      // 離線成長比例
+    offlineGrowthRatio: 0.5,      // （evo6 前）離線成長比例；evo6 起成長改用 offlineGrowCapH，呢個唔再用
+    offlineGrowCapH: 24,          // evo6（遊策 10-31 §6 補充）：離線成長照真實時間計，單次上限 24h；每次返嚟最多升 1 階，升完停喺新階段開頭
     offlineMinAwaySec: 300,       // 離開 >= 5 分鐘先顯示回歸摘要
     offlineGiftPerH: 1, offlineGiftMax: 10, // 光粒小禮物（估計值）
     // ── 迷你遊戲：接星屑 ──

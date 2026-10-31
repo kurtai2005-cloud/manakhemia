@@ -74,19 +74,19 @@ console.log('# 離線保底 20 / 無死亡');
   const z = sprout(); let t = 1e12; for (let i = 0; i < 100; i++) { z.lastSeen = t; t += 30 * H * 1000; S.applyOffline(z, t); }
   ok(Object.values(z.needs).every(v => isFinite(v) && v >= 0 && v <= 100), '連續 100 次離線仍然有效，無死亡');
 }
-console.log('# 離線睡眠 / 成長 50%');
+console.log('# 離線睡眠 / 成長（evo6：真實時間、上限 24h、最多升 1 階）');
 {
   const s = adult({ energy: 50 }); s.sleeping = true; s.lastSeen = 1e12 - 6 * H * 1000; S.applyOffline(s, 1e12);
   const wakeH = (100 - 50) / (12 * P.traitSleepRegenMul);
   near(s.needs.energy, 100 - 5 * (6 - wakeH), 0.6, '離線睡到 100 自動醒後再衰減'); ok(!s.sleeping, '離線後已醒');
   const g = sprout(); g.lastSeen = 1e12 - 6 * H * 1000; S.applyOffline(g, 1e12);
-  near(g.growthSec, 6 * H * 0.5, 1, 'T=6h 離線成長 = E×50% = 3h');
+  near(g.growthSec, 6 * H, 1, 'T=6h 離線成長 = 真實 6h（evo6：唔再 ×50%）');
   const g2 = sprout(); g2.lastSeen = 1e12 - 12 * H * 1000; S.applyOffline(g2, 1e12);
-  near(g2.growthSec, 9 * H * 0.5, 1, 'T=12h 成長 = 9h×50%');
+  near(g2.growthSec, 12 * H, 1, 'T=12h 成長 = 12h（芽崽未夠 18h）');
   const g3 = sprout(); g3.lastSeen = 1e12 - 30 * H * 1000; S.applyOffline(g3, 1e12);
-  near(g3.growthSec, 12 * H * 0.5, 1, 'T=30h 成長 = 12h×50%');
+  ok(g3.stage === 'juvenile' && g3.growthSec === 0, 'T=30h（上限 24h ≥ 芽崽 18h）→ 升跳跳期、進度 0', [g3.stage, g3.growthSec]);
   const on = sprout(); S.advance(on, 6 * H, {}, 60); ok(on.growthSec >= 6 * H - 1 || on.stage !== 'sprout', '線上成長 100%（對比）', on.growthSec);
-  const e = S.newState(1e12, 1); e.lastSeen = 1e12 - 1000 * 1000; const r = S.applyOffline(e, 1e12); near(e.growthSec, 500, 1, '光卵離線成長亦按 50%');
+  const e = S.newState(1e12, 1); e.lastSeen = 1e12 - 1000 * 1000; const r = S.applyOffline(e, 1e12); ok(e.stage === 'newborn' && e.growthSec === 0, '光卵離線 1000s ≥ 10 分 → 孵化做絨點、進度 0', [e.stage, e.growthSec]);
   const sh = adult(); sh.lastSeen = 1e12 - 60 * 1000; const r2 = S.applyOffline(sh, 1e12); ok(!r2.show, '離開 <5 分鐘唔彈摘要');
 }
 console.log('# 不適（<15）停止成長');

@@ -199,6 +199,22 @@
     while (left > 1e-9) { const d = Math.min(chunk, left); step(s, d, opts); left -= d; }
   }
 
+  /* evo6 離線成長（遊策 10-31）：G = min(T, 24h) 真實時間；夠鐘就升 1 階，新階段由 0 開始、剩餘丟棄（唔跳階）。
+     靜光尾 → 只會設 fadeReady（化光仍要玩家確認），同樣最多一次。分支照舊喺 enterStage('adult') 判。 */
+  function offlineGrow(s, Tsec) {
+    const G = Math.min(Math.max(0, Tsec || 0), P.offlineGrowCapH * 3600), from = s.stage, sec = P.stageSec[s.stage];
+    const r = { G, from, to: from, up: false };
+    if (!(G > 0) || sec == null) return r;
+    if (s.stage === 'elder') {
+      s.growthSec = Math.min(sec, s.growthSec + G);
+      if (s.growthSec >= sec && !s.fadeReady) { s.fadeReady = true; s.ev.push({ type: 'fadeReady', form: s.form }); r.up = true; r.to = 'fade'; }
+      return r;
+    }
+    if (s.growthSec + G < sec) { s.growthSec += G; return r; }
+    enterStage(s, nextStage(s.stage)); s.growthSec = 0; r.up = true; r.to = s.stage;
+    return r;
+  }
+
   // ── 離線結算 ──
   function fmtDur(Tsec) {
     const h = Tsec / 3600;
@@ -223,11 +239,12 @@
     if (s.evs) { s.evs.offLog = []; s.evs.offPop = 0; }
     if (E > 0) {
       const off = { now: nowMs, hour0: hourOf(s.lastSeen), T: Math.min(T, P.offlineCapH * 3600), E, done: 0 };
-      advance(s, E, { offline: true, growthMul: P.offlineGrowthRatio, off }, 60);
+      advance(s, E, { offline: true, growthMul: 0, off }, 60);   // 需求：照舊用有效時間 E（≤12h、保底 20）；成長唔喺度計
     }
+    const grow = offlineGrow(s, T);
     for (let i = 0; i < offlineHooks.length; i++) offlineHooks[i](s, { from: s.lastSeen, now: nowMs, T, E, tampered: reset, before });
     s.lastSeen = reset ? nowMs : Math.max(+s.lastSeen || 0, nowMs);   // P1：回撥時鐘唔可以將 lastSeen 拉後（重設除外）
-    const rep = { T, E, tampered: reset, show: T >= P.offlineMinAwaySec, summary: [], gift: 0, giftTotal: 0, eventGrains: 0, events: [], stageChanged: s.stage !== before.stage, withdrawn: false };
+    const rep = { T, E, tampered: reset, show: T >= P.offlineMinAwaySec, summary: [], gift: 0, giftTotal: 0, eventGrains: 0, events: [], stageChanged: s.stage !== before.stage, withdrawn: false, grow };
     if (s.stage !== 'egg' && E > 0) {
       for (const k of KEYS) if (s.needs[k] <= P.offlineNeedFloor + 0.5 && before.needs[k] > P.offlineNeedFloor) { rep.withdrawn = true; }
       if (rep.withdrawn) s.withdrawn = { on: true, fed: false, played: false };
@@ -420,7 +437,7 @@
 
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm,
-    step, advance, applyOffline, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
+    step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
     eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

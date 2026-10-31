@@ -131,10 +131,10 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await G((hrs) => { window.__noSaveOnHide = true; const k = Glimmer.data.PARAMS.saveKey; const o = JSON.parse(localStorage.getItem(k)); o.lastSeen = Date.now() - hrs * 3600e3; localStorage.setItem(k, JSON.stringify(o)); }, hrs);
     await page.reload(); await page.waitForTimeout(1100);
     const after = await st();
-    const E = hrs === 6 ? 6 : 12;
     ok(await page.isVisible('#modal') && await page.textContent('#mbox h2').then(t => t.includes('你不在時')), `T=${hrs}h 重載出現回歸摘要`);
     const nLines = await page.$$eval('#mbox p', ps => ps.length); ok(nLines <= 3 && nLines >= 1, '摘要 ≤3 句（' + nLines + '）');
-    ok(Math.abs(after.growthSec - (1000 + E * 3600 * 0.5)) < 120, `離線成長 = E(${E}h)×50%`, after.growthSec.toFixed(0));
+    if (hrs === 6) ok(after.stage === 'sprout' && Math.abs(after.growthSec - (1000 + 6 * 3600)) < 120, '離線成長 = 真實 6h（evo6：上限 24h）', after.growthSec.toFixed(0));
+    else ok(after.stage === 'juvenile' && after.growthSec < 120, '30h（cap 24h，夠芽崽 18h）→ 只升 1 階到跳跳期、進度由 0 開始', after.stage + ' ' + after.growthSec.toFixed(0));
     ok(['hunger', 'mood', 'clean', 'energy'].every(k => after.needs[k] >= 19.9), '離線需求保底 ≥20', JSON.stringify(after.needs));
     ok(after.q === 'mid', '畫質設定經重載保留 (mid)', after.q);
     ok(after.grains > before.grains, '回歸禮物光粒 +' + (after.grains - before.grains));

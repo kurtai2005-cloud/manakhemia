@@ -30,7 +30,24 @@ console.log('# 時長表（pet-template-v1 §6）');
   ok(e.ev.filter(x => x.type === 'fadeReady').length === 1, 'fadeReady 事件只出一次'); S.advance(e, 10 * H, {}, 60); ok(e.ev.filter(x => x.type === 'fadeReady').length === 1 && e.stage === 'elder', '等確認期間唔重複／唔變');
   const r = S.fade(e, 2e12); ok(r.ok && e.stage === 'egg' && e.gen === 2 && e.memorial.length === 1 && e.memorial[0].form === 'bright' && !e.fadeReady, '化光 → 新光卵 gen 2＋紀念（燦光）');
   ok(!S.fade(at('adult')).ok, '未到靜光唔可以化光');
-  const off = at('newborn'); off.lastSeen = 1e12 - 8 * H * 1000; S.applyOffline(off, 1e12); ok(off.stage === 'newborn' && Math.abs(off.growthSec - 4 * H) < 60, '離線成長 50%（8h → 4h，絨點未完）', off.growthSec / H);
+  // 遊策 10-31：離線成長真實計、單次上限 24h、每次最多升 1 階、升後進度 0、唔夠唔升
+  const offAt = (stage, g, hrs, extra) => { const x = at(stage, Object.assign({ growthSec: g }, extra || {})); x.lastSeen = 1e12 - hrs * H * 1000; const r = S.applyOffline(x, 1e12); return { x, r }; };
+  ok(P.offlineGrowCapH === 24, 'offlineGrowCapH = 24');
+  let o = offAt('juvenile', 0, 23.9); ok(o.x.stage === 'juvenile' && Math.abs(o.x.growthSec - 23.9 * H) < 1, '23.9h → 成長 23.9h（未到 cap）', o.x.growthSec / H);
+  o = offAt('juvenile', 0, 24); ok(o.x.stage === 'juvenile' && Math.abs(o.x.growthSec - 24 * H) < 1, '24h → 成長 24h', o.x.growthSec / H);
+  o = offAt('juvenile', 0, 30); ok(o.x.stage === 'juvenile' && Math.abs(o.x.growthSec - 24 * H) < 1 && o.r.grow.G === 24 * H, '30h → cap 24h', o.x.growthSec / H);
+  o = offAt('juvenile', 0, 200); ok(Math.abs(o.x.growthSec - 24 * H) < 1, '200h → 仍係 24h', o.x.growthSec / H);
+  o = offAt('newborn', 0, 30); ok(o.x.stage === 'sprout' && o.x.growthSec === 0 && o.r.grow.up && o.r.grow.from === 'newborn' && o.r.grow.to === 'sprout', '絨點 6h 階段＋離線 30h（24h 夠升 2 階）→ 只升 1 階到芽崽、進度 0（唔跳去跳跳期）', [o.x.stage, o.x.growthSec]);
+  o = offAt('egg', 0, 24); ok(o.x.stage === 'newborn' && o.x.growthSec === 0, '光卵 + 24h → 只到絨點、進度 0', [o.x.stage, o.x.growthSec]);
+  o = offAt('newborn', 5 * H, 0.99); ok(o.x.stage === 'newborn' && Math.abs(o.x.growthSec - 5.99 * H) < 1, '唔夠時間（差 0.01h）→ 唔升、累積', o.x.growthSec / H);
+  o = offAt('newborn', 5 * H, 1); ok(o.x.stage === 'sprout' && o.x.growthSec === 0, '啱啱夠（5h + 1h = 6h）→ 升、進度 0', [o.x.stage, o.x.growthSec]);
+  ok(S.stageProgress(o.x) === 0, '升後 stageProgress = 0');
+  o = offAt('juvenile', 2.5 * DAY, 24, { cq: 80 }); ok(o.x.stage === 'adult' && o.x.form === 'bright' && o.x.growthSec === 0 && o.x.ev.some(e => e.type === 'evolve'), '跳跳期尾離線 → 照舊判分支（CQ 80 燦光）、進度 0', [o.x.stage, o.x.form]);
+  o = offAt('adult', 6.5 * DAY, 24); ok(o.x.stage === 'elder' && o.x.growthSec === 0 && o.x.form === 'soft', '守夜者 → 靜光 1 階、進度 0', [o.x.stage, o.x.growthSec]);
+  o = offAt('elder', 3.5 * DAY, 24); ok(o.x.stage === 'elder' && o.x.fadeReady && o.x.ev.filter(e => e.type === 'fadeReady').length === 1 && o.r.grow.to === 'fade', '靜光尾離線 → 只設 fadeReady（化光等玩家確認），最多一次');
+  { const x = o.x; x.lastSeen = 1e12 - 24 * H * 1000; S.applyOffline(x, 1e12); ok(x.stage === 'elder' && x.ev.filter(e => e.type === 'fadeReady').length === 1, '再離線唔會重複 fadeReady／自動化光'); }
+  // 需求：照舊用有效時間 E（cap 12h、保底 20）→ 24h／30h 離線唔會比之前更極端
+  for (const hrs of [24, 30, 200]) { o = offAt('juvenile', 0, hrs); ok(D.NEED_KEYS.every(k => o.x.needs[k] >= P.offlineNeedFloor - 1e-9) && Math.abs(o.r.E - 12 * H) < 1, `${hrs}h 離線：需求保底 ≥20、需求用 E=12h（同 evo6 前一樣）`, JSON.stringify(o.x.needs)); }
   ok(Math.abs(S.stageProgress(Object.assign(at('juvenile'), { growthSec: 1.5 * DAY })) - 0.5) < 1e-9, 'stageProgress 通用（跳跳期一半＝0.5）');
 }
 
