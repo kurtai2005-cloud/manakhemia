@@ -1,0 +1,328 @@
+{
+ "variant": "H1",
+ "count": 64,
+ "usedIndex": 62,
+ "usedColors": 62,
+ "colors": [
+  {
+   "index": 1,
+   "material": "SKY",
+   "hex": "#86bcea"
+  },
+  {
+   "index": 2,
+   "material": "SKY",
+   "hex": "#a2ccec"
+  },
+  {
+   "index": 3,
+   "material": "SKY",
+   "hex": "#bfdcee"
+  },
+  {
+   "index": 4,
+   "material": "SKY",
+   "hex": "#dae1dd"
+  },
+  {
+   "index": 5,
+   "material": "SKY",
+   "hex": "#f4e6cc"
+  },
+  {
+   "index": 6,
+   "material": "SKY",
+   "hex": "#fae2be"
+  },
+  {
+   "index": 7,
+   "material": "SKY",
+   "hex": "#ffddb0"
+  },
+  {
+   "index": 8,
+   "material": "CLOUD",
+   "hex": "#F6DCC4"
+  },
+  {
+   "index": 9,
+   "material": "CLOUD",
+   "hex": "#FFF8EA"
+  },
+  {
+   "index": 10,
+   "material": "SUN",
+   "hex": "#FFF4D0"
+  },
+  {
+   "index": 11,
+   "material": "MOON",
+   "hex": "#a8957d"
+  },
+  {
+   "index": 12,
+   "material": "STAR",
+   "hex": "#af9e8f"
+  },
+  {
+   "index": 13,
+   "material": "HILL_FAR",
+   "hex": "#a3947e"
+  },
+  {
+   "index": 14,
+   "material": "HILL_FAR",
+   "hex": "#cac195"
+  },
+  {
+   "index": 15,
+   "material": "HILL_NEAR",
+   "hex": "#6c6b56"
+  },
+  {
+   "index": 16,
+   "material": "HILL_NEAR",
+   "hex": "#a2ac74"
+  },
+  {
+   "index": 17,
+   "material": "TREE_FAR",
+   "hex": "#79775c"
+  },
+  {
+   "index": 18,
+   "material": "TREE_FAR",
+   "hex": "#9eaa71"
+  },
+  {
+   "index": 19,
+   "material": "FAR_HOUSE",
+   "hex": "#b18e70"
+  },
+  {
+   "index": 20,
+   "material": "FAR_WIN",
+   "hex": "#C8D4D8"
+  },
+  {
+   "index": 21,
+   "material": "TRUNK",
+   "hex": "#432c23"
+  },
+  {
+   "index": 22,
+   "material": "TRUNK",
+   "hex": "#986b46"
+  },
+  {
+   "index": 23,
+   "material": "LEAF",
+   "hex": "#334729"
+  },
+  {
+   "index": 24,
+   "material": "LEAF",
+   "hex": "#55753c"
+  },
+  {
+   "index": 25,
+   "material": "LEAF",
+   "hex": "#77a34f"
+  },
+  {
+   "index": 26,
+   "material": "WOOD",
+   "hex": "#593b2b"
+  },
+  {
+   "index": 27,
+   "material": "WOOD",
+   "hex": "#8e623f"
+  },
+  {
+   "index": 28,
+   "material": "WOOD",
+   "hex": "#c38a53"
+  },
+  {
+   "index": 29,
+   "material": "WALL",
+   "hex": "#684d41"
+  },
+  {
+   "index": 30,
+   "material": "WALL",
+   "hex": "#e0af72"
+  },
+  {
+   "index": 31,
+   "material": "ROOF",
+   "hex": "#592825"
+  },
+  {
+   "index": 32,
+   "material": "ROOF",
+   "hex": "#c36349"
+  },
+  {
+   "index": 33,
+   "material": "WIN",
+   "hex": "#9CC4D8"
+  },
+  {
+   "index": 34,
+   "material": "WIN",
+   "hex": "#E8F4F4"
+  },
+  {
+   "index": 35,
+   "material": "METAL",
+   "hex": "#2d2832"
+  },
+  {
+   "index": 36,
+   "material": "METAL",
+   "hex": "#6c635d"
+  },
+  {
+   "index": 37,
+   "material": "LAMP",
+   "hex": "#DCE2DA"
+  },
+  {
+   "index": 38,
+   "material": "LANTERN",
+   "hex": "#C07A5A"
+  },
+  {
+   "index": 39,
+   "material": "LANTERN",
+   "hex": "#E09A72"
+  },
+  {
+   "index": 40,
+   "material": "GRASS",
+   "hex": "#405132"
+  },
+  {
+   "index": 41,
+   "material": "GRASS",
+   "hex": "#698446"
+  },
+  {
+   "index": 42,
+   "material": "GRASS",
+   "hex": "#92b75b"
+  },
+  {
+   "index": 43,
+   "material": "MOSS",
+   "hex": "#4a5536"
+  },
+  {
+   "index": 44,
+   "material": "MOSS",
+   "hex": "#a6bf62"
+  },
+  {
+   "index": 45,
+   "material": "SOIL",
+   "hex": "#3c251d"
+  },
+  {
+   "index": 46,
+   "material": "SOIL",
+   "hex": "#895e3e"
+  },
+  {
+   "index": 47,
+   "material": "SPROUT",
+   "hex": "#3c512d"
+  },
+  {
+   "index": 48,
+   "material": "SPROUT",
+   "hex": "#89b755"
+  },
+  {
+   "index": 49,
+   "material": "POT",
+   "hex": "#5e3225"
+  },
+  {
+   "index": 50,
+   "material": "POT",
+   "hex": "#ce784a"
+  },
+  {
+   "index": 51,
+   "material": "FLOWER_P",
+   "hex": "#a96567"
+  },
+  {
+   "index": 52,
+   "material": "FLOWER_Y",
+   "hex": "#af853c"
+  },
+  {
+   "index": 53,
+   "material": "STONE",
+   "hex": "#5e5050"
+  },
+  {
+   "index": 54,
+   "material": "STONE",
+   "hex": "#ceb587"
+  },
+  {
+   "index": 55,
+   "material": "CAN",
+   "hex": "#2d4d50"
+  },
+  {
+   "index": 56,
+   "material": "CAN",
+   "hex": "#6caf87"
+  },
+  {
+   "index": 57,
+   "material": "MUSH",
+   "hex": "#703f32"
+  },
+  {
+   "index": 58,
+   "material": "MUSH",
+   "hex": "#f2925b"
+  },
+  {
+   "index": 59,
+   "material": "MUSH_ST",
+   "hex": "#a68c6f"
+  },
+  {
+   "index": 60,
+   "material": "FLEAF",
+   "hex": "#263d26"
+  },
+  {
+   "index": 61,
+   "material": "FLEAF",
+   "hex": "#5e8e4b"
+  },
+  {
+   "index": 62,
+   "material": "FFLOWER",
+   "hex": "#a8696f"
+  },
+  {
+   "index": 63,
+   "material": "FGRASS",
+   "hex": "#2d4225"
+  },
+  {
+   "index": 64,
+   "material": "FGRASS",
+   "hex": "#6a9849"
+  }
+ ]
+}

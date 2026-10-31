@@ -1,0 +1,68 @@
+{
+ "frames": {
+  "ripple_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 16,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 8
+   }
+  },
+  "ripple_02": {
+   "frame": {
+    "x": 20,
+    "y": 2,
+    "w": 16,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 8
+   }
+  },
+  "ripple_03": {
+   "frame": {
+    "x": 38,
+    "y": 2,
+    "w": 16,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 8
+   }
+  },
+  "ripple_04": {
+   "frame": {
+    "x": 56,
+    "y": 2,
+    "w": 16,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 8
+   }
+  }
+ },
+ "meta": {
+  "image": "ripple.png",
+  "size": {
+   "w": 74,
+   "h": 12
+  },
+  "format": "RGBA8888",
+  "padding": 2,
+  "fps": 10,
+  "loop": false,
+  "pivot": [
+   8,
+   4
+  ],
+  "note": "隨機落喺 layout.json ground.walkable；每 0.1–0.3 秒生一個，播完即消失。"
+ }
+}
