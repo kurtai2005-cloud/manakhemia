@@ -53,7 +53,7 @@
   function sigOf(g) {
     var st = statusOf(g) || {}, ov = g.evo && g.evo.overlayInfo ? g.evo.overlayInfo() : {}, s = g.state || {};
     var inf = st.info || {}, x = sys12Of(g) || {}, xs = x.surp || {}, xb = x.bond || {};
-    return [formOf(s), ov.sizeDp, ov.evoForm || '-', st.moodBand, !!st.sleeping, st.urgent || '-', !!st.egg, inf.stage || '-', inf.days == null ? '-' : inf.days, !!inf.unwell, !!inf.fadeReady, xb.tier == null ? '-' : xb.tier, xs.ts || 0, xs.drop ? xs.drop.room : '-', xs.drop ? xs.drop.day : '-', x.egg ? 1 : 0].join('|');
+    return [formOf(s), ov.sizeDp, ov.evoForm || '-', st.moodBand, !!st.sleeping, st.urgent || '-', !!st.egg, inf.stage || '-', inf.days == null ? '-' : inf.days, !!inf.unwell, !!inf.fadeReady, xb.tier == null ? '-' : xb.tier, xs.ts || 0, xs.drop ? xs.drop.room : '-', xs.drop ? xs.drop.day : '-', x.egg ? 1 : 0, x.wx ? (x.wx.manual || '') + JSON.stringify(x.wx.days || {}) + (x.wx.season || '') : '-'].join('|');   // v10.2：天氣／DEV 覆蓋一變即寫
   }
   function maybeWrite() { var g = G(); if (!g || !g.state) return; if (sigOf(g) !== lastSig) writeSnapshot(); }
   var busy = false;

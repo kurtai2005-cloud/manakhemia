@@ -385,6 +385,7 @@ class PetOverlayService : Service() {
             St.IDLE -> {
                 stTimer -= dt
                 if (now - lastInteract > dozeMs) { doze(); return }
+                tickWeather(dt); if (st != St.IDLE) return
                 if (stTimer <= 0) idleNext()
             }
             St.EMOTE -> { stTimer -= dt; if (stTimer <= 0 && (clip?.loop == true || clipDone())) { val n = emoteNext; emoteNext = null; if (n != null) n() else toIdle(1.5f) } }
@@ -447,7 +448,33 @@ class PetOverlayService : Service() {
         tickSys12(dt)
     }
 
-    private fun toIdle(t: Float) { st = St.IDLE; play("idle"); stTimer = t }
+    private fun toIdle(t: Float) { st = St.IDLE; playIdle(); stTimer = t }
+
+    // ── v10.2（遊測 40fe202 P2-1）：落雨 IDLE → 撐葉（leaf_umbrella_in 開葉一次 → leaf_umbrella loop）；霧／冬 → 間中打冷震（shiver ×3）。
+    //    天氣嚟自 snapshot.sys12.wx（JS 一日一抽、今日起 7 日；DEV 覆蓋 = manual），每 10 秒重讀；冇／舊 snapshot → 晴，照舊 idle。
+    private var wxAt = 0L; private var wxNow = "clear"; private var wxSnap: PetSys12.Wx? = null; private var shiverT = 30f
+    private fun curWeather(): String {
+        val now = System.currentTimeMillis()
+        if (now - wxAt > 10_000L) { wxAt = now; val sn = PetPrefs.snapshotSys12(this); wxSnap = if (sn == null || sn.egg) null else sn.wx; wxNow = PetSys12.weatherAt(wxSnap, now) }
+        return wxNow
+    }
+    private fun idleName() = PetSys12.idleClip(curWeather()) { atlas.clips.containsKey(it) }
+    private fun playIdle() {
+        val n = idleName()
+        if (n == "leaf_umbrella") { if (clip?.name != "leaf_umbrella") { play(if (atlas.clips.containsKey("leaf_umbrella_in")) "leaf_umbrella_in" else n); Log.i(TAG, "rain → leaf_umbrella") } }
+        else play(n)
+    }
+    private fun tickWeather(dt: Float) {
+        if (clip?.name == "leaf_umbrella_in" && clipDone()) { play("leaf_umbrella"); return }
+        val want = idleName(); val cur = clip?.name
+        val umb = cur == "leaf_umbrella" || cur == "leaf_umbrella_in"
+        if ((want == "leaf_umbrella") != umb) { playIdle(); return }   // 天氣轉咗 → 即刻換
+        shiverT -= dt
+        if (shiverT <= 0f) {
+            shiverT = PetSys12.shiverNextSec(wxSnap, Random.nextDouble()).toFloat()
+            if (!umb && atlas.clips.containsKey("shiver") && Random.nextDouble() < PetSys12.shiverChance(wxSnap, wxNow)) { Log.i(TAG, "shiver ($wxNow)"); emote("shiver", 0f) { toIdle(1.5f) } }
+        }
+    }
 
     private var sideSit = false
     private fun startWalk() {

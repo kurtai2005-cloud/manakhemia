@@ -72,6 +72,9 @@ const needs = (o) => Object.assign({ hunger: 80, mood: 80, clean: 80, energy: 80
   x12.surp.drop.room = 4; r.tick(2000); ok(r.writes.length === m0 + 2, '今日星星碎餘額變 → 即寫');
   x12.bond.tier = 3; r.tick(2000); ok(r.writes.length === m0 + 3, '親密 tier 升 → 即寫');
   r.tick(2000); ok(r.writes.length === m0 + 3, 'v5 冇變 → 唔寫');
+  x12.wx = { days: { '2026-11-01': 'clear' }, manual: null, season: 'autumn' }; r.tick(2000); ok(r.writes.length === m0 + 4 && r.writes[m0 + 3].sys12.wx.days['2026-11-01'] === 'clear', 'v10.2：snap.sys12.wx 天氣出現 → 即寫');
+  x12.wx.manual = 'rain'; r.tick(2000); ok(r.writes.length === m0 + 5 && r.writes[m0 + 4].sys12.wx.manual === 'rain', 'v10.2：DEV 轉落雨（manual）→ 即寫（懸浮撐葉）');
+  r.tick(2000); ok(r.writes.length === m0 + 5, 'v10.2：天氣冇變 → 唔寫');
   // 舊 www 冇 sys12Apply：systems12 item 照丟（唔當互動加 mood）
   g = { state: { stage: 'adult', form: 'soft', needs: needs({ mood: 50 }), sleeping: false }, save() {} };
   r = run(g, [{ t: Date.now(), k: 'drop' }, { t: Date.now(), k: 'tap' }]); await new Promise(s => setImmediate(s)); await new Promise(s => setImmediate(s));

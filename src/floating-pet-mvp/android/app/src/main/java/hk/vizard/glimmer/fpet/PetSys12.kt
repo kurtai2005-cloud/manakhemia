@@ -16,7 +16,10 @@ object PetSys12 {
     data class Surp(val on: Map<String, Boolean>, val waterH: Int, val sleepAt: String, val ts: Long,
                     val dropMinH: Double, val dropMaxH: Double, val perDay: Int, val dropShowSec: Int, val day: String, val room: Int,
                     val waterFromH: Int, val waterToH: Int, val sleepWinMin: Int, val showSec: Int, val lines: Map<String, List<String>>)
-    data class Snap(val egg: Boolean, val bond: Int, val tier: Int, val voice: Voice, val surp: Surp, val shards: Int)
+    /** v10.2 天氣（snapshot.sys12.wx）：days = 今日起 7 日一日一抽（dayKey→clear/overcast/rain/fog）；manual = DEV／?weather= 覆蓋。 */
+    data class Wx(val days: Map<String, String>, val manual: String?, val season: String?, val shiverMinSec: Double, val shiverMaxSec: Double,
+                  val shiverBase: Double, val fogMul: Double, val winterMul: Double)
+    data class Snap(val egg: Boolean, val bond: Int, val tier: Int, val voice: Voice, val surp: Surp, val shards: Int, val wx: Wx? = null)
 
     /** 有效設定（snapshot vs 懸浮本地改動：後改贏）。 */
     data class Settings(val on: Map<String, Boolean>, val waterH: Int, val sleepAt: String, val ts: Long)
@@ -34,9 +37,30 @@ object PetSys12 {
                     d.optDouble("minH", 2.0), d.optDouble("maxH", 4.0), d.optInt("perDay", 0), d.optInt("showSec", 30), d.optString("day", ""), d.optInt("room", 0),
                     w?.optInt("fromH", 9) ?: 9, w?.optInt("toH", 22) ?: 22, s.optInt("sleepWinMin", 60), s.optInt("showSec", 6),
                     SURP_KEYS.associateWith { strs(ln?.optJSONArray(it)) }),
-                o.optInt("shards", 0))
+                o.optInt("shards", 0), parseWx(o.optJSONObject("wx")))
         }
     } catch (e: Exception) { null }
+
+    fun parseWx(o: JSONObject?): Wx? = try {
+        if (o == null) null else {
+            val d = o.optJSONObject("days"); val days = HashMap<String, String>(); if (d != null) for (k in d.keys()) days[k] = d.optString(k, "clear")
+            val sh = o.optJSONObject("shiver"); val ev = sh?.optJSONArray("everySec")
+            Wx(days, o.optString("manual", "").takeIf { it.isNotEmpty() && it != "null" }, o.optString("season", "").takeIf { it.isNotEmpty() && it != "null" },
+                ev?.optDouble(0, 25.0) ?: 25.0, ev?.optDouble(1, 50.0) ?: 50.0, sh?.optDouble("base", 0.25) ?: 0.25, sh?.optDouble("fogMul", 2.0) ?: 2.0, sh?.optDouble("winterMul", 2.0) ?: 2.0)
+        }
+    } catch (e: Exception) { null }
+
+    /** 而家天氣：manual 贏；否則 days[今日]；過咗 7 日／冇 snapshot → 晴（唔亂撐葉）。 */
+    fun weatherAt(w: Wx?, nowMs: Long): String = w?.manual ?: w?.days?.get(dayKey(nowMs)) ?: "clear"
+    /** 打冷震機率（照 sys12ui：霧／冬先有，base×mul，上限 1）。 */
+    fun shiverChance(w: Wx?, weather: String): Double {
+        if (w == null) return 0.0
+        val mul = (if (weather == "fog") w.fogMul else 1.0) * (if (w.season == "winter") w.winterMul else 1.0)
+        return if (mul > 1.0) minOf(1.0, w.shiverBase * mul) else 0.0
+    }
+    fun shiverNextSec(w: Wx?, r: Double): Double = (w?.shiverMinSec ?: 25.0) + r * ((w?.shiverMaxSec ?: 50.0) - (w?.shiverMinSec ?: 25.0))
+    /** IDLE 用邊個 clip：落雨＋atlas 有 leaf_umbrella → 撐葉（光卵／瞓覺唔撐，由 caller 判斷）。 */
+    fun idleClip(weather: String, has: (String) -> Boolean): String = if (weather == "rain" && has("leaf_umbrella")) "leaf_umbrella" else "idle"
 
     fun settings(s: Surp?, local: Settings?): Settings? {
         val snap = s?.let { Settings(it.on, it.waterH, it.sleepAt, it.ts) }

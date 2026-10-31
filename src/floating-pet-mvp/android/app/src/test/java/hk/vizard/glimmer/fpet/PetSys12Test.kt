@@ -8,6 +8,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.io.File
 import java.util.Calendar
 import java.util.TimeZone
 
@@ -70,5 +71,37 @@ class PetSys12Test {
         assertEquals(1000L, PetSys12.settings(s, loc.copy(ts = 500))!!.ts)
         assertEquals(loc, PetSys12.settings(null, loc)); assertEquals(true, PetSys12.settings(s, null)!!.on["drop"])
         assertEquals("w2", PetSys12.line(s, "water", 0.9)); assertNull(PetSys12.line(s, "nope", 0.0))
+    }
+
+    // ── v10.2（遊測 40fe202 P2-1）：落雨撐葉／霧冬打冷震 ──
+    private fun wx(manual: String? = null, season: String = "autumn") = JSONObject(json).put("wx", JSONObject("""{"days":{"2026-11-01":"rain","2026-11-02":"fog","2026-11-03":"clear"},
+      "manual":${if (manual == null) "null" else "\"$manual\""},"season":"$season","shiver":{"everySec":[25,50],"base":0.25,"fogMul":2,"winterMul":2}}"""))
+    @Test fun weatherFromSnapshot() {
+        val w = PetSys12.parse(wx())!!.wx!!
+        assertEquals("rain", PetSys12.weatherAt(w, at(2026, 11, 1, 0, 5))); assertEquals("rain", PetSys12.weatherAt(w, at(2026, 11, 1, 23, 55)))   // 成日
+        assertEquals("fog", PetSys12.weatherAt(w, at(2026, 11, 2, 9))); assertEquals("clear", PetSys12.weatherAt(w, at(2026, 11, 9, 9)))         // 過咗 7 日 → 晴
+        assertEquals("fog", PetSys12.weatherAt(PetSys12.parse(wx("fog"))!!.wx, at(2026, 11, 1, 9)))                                              // DEV manual 贏
+        assertNull(snap().wx); assertEquals("clear", PetSys12.weatherAt(null, at(2026, 11, 1, 9)))                                              // 舊 snapshot 冇 wx → 晴
+    }
+    @Test fun rainPlaysLeafUmbrella() {
+        val has = setOf("idle", "leaf_umbrella", "leaf_umbrella_in", "shiver")
+        assertEquals("leaf_umbrella", PetSys12.idleClip("rain") { it in has }); assertEquals("idle", PetSys12.idleClip("fog") { it in has })
+        assertEquals("idle", PetSys12.idleClip("rain") { it == "idle" })   // 光卵／舊 atlas 冇 clip → idle
+    }
+    @Test fun shiverFogOrWinter() {
+        val a = PetSys12.parse(wx())!!.wx; val win = PetSys12.parse(wx(season = "winter"))!!.wx
+        assertEquals(0.5, PetSys12.shiverChance(a, "fog"), 1e-9); assertEquals(0.0, PetSys12.shiverChance(a, "clear"), 1e-9)
+        assertEquals(0.5, PetSys12.shiverChance(win, "clear"), 1e-9); assertEquals(1.0, PetSys12.shiverChance(win, "fog"), 1e-9)
+        assertEquals(25.0, PetSys12.shiverNextSec(a, 0.0), 1e-9); assertEquals(50.0, PetSys12.shiverNextSec(a, 1.0), 1e-9)
+    }
+    @Test fun bakedAtlasHasRainClips() {
+        val dir = listOf(File("src/main/assets/pet/evo"), File("app/src/main/assets/pet/evo")).first { it.isDirectory }
+        val js = dir.listFiles { f -> f.name.endsWith(".json") && f.name != "pet_evo_egg.json" }!!; assertEquals(21, js.size)
+        for (f in js) {
+            val c = JSONObject(f.readText()).getJSONObject("clips")
+            assertTrue(f.name, c.getJSONObject("leaf_umbrella").getBoolean("loop") && c.getJSONObject("leaf_umbrella").getJSONArray("frames").length() == 4)
+            assertTrue(f.name, !c.getJSONObject("leaf_umbrella_in").getBoolean("loop") && c.getJSONObject("leaf_umbrella_in").getJSONArray("frames").length() == 2)
+            assertTrue(f.name, !c.getJSONObject("shiver").getBoolean("loop") && c.getJSONObject("shiver").getJSONArray("frames").length() == 12)
+        }
     }
 }

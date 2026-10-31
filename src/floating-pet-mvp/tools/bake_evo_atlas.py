@@ -20,7 +20,11 @@ EVO = os.path.join(SRC, 'art/evo6')
 
 # 懸浮窗 PetOverlayService 用到嘅 clip（同舊 atlas 一樣；picked_up_enter 冇 evo 全幀 → fallback picked_up）
 CLIPS = ['idle', 'walk', 'turn_back', 'picked_up', 'emo_happy', 'sleep_loop', 'fall_asleep', 'wake',
-         'sniff', 'swat', 'cheer_jump', 'droop', 'emo_hungry']
+         'sniff', 'swat', 'cheer_jump', 'droop', 'emo_hungry',
+         'leaf_umbrella_in', 'leaf_umbrella', 'shiver']   # v10.2（遊測 40fe202 P2-1）：systems12 撐葉／打冷震
+# 懸浮專用切法（跟遊戲 data.js SYS_CLIPS）：leaf_umbrella 遊戲 loopRange [2,5] → 拆 _in（0–1 開葉，一次）＋ loop（2–5）；
+# shiver 遊戲 repeat 3、唔 loop → 烤成 3 次重覆、loop=false。
+CUT = {'leaf_umbrella_in': ('leaf_umbrella', 0, 2, False, 1), 'leaf_umbrella': ('leaf_umbrella', 2, None, True, 1), 'shiver': ('shiver', 0, None, False, 3)}
 ALIAS = {'evo_egg': {'emo_happy': 'tap'}}      # 光卵：點一下＝tap（遊戲 behavior 光卵輕點）
 GLOW_TINT, GLOW_I = (0xFF, 0xEF, 0xC4), 0.8   # data.js face.bulb.moods.neutral
 COLS = 16
@@ -54,10 +58,13 @@ def bake(form, F, glow):
     anchors = json.load(open(fa_p))['anchors'] if os.path.exists(fa_p) else {}
     cells, keyIdx, clips, fallback = [], {}, {}, []
     for name in CLIPS:
-        src = ALIAS.get(form, {}).get(name, name)
+        src = ALIAS.get(form, {}).get(name, name); cut = CUT.get(name)
+        if cut: src = cut[0]
         if src not in an: fallback.append(name); continue
         A = an[src]; out = []
-        for k, fn in enumerate(A['frames']):
+        seq = list(enumerate(A['frames']))
+        if cut: seq = seq[cut[1]:cut[2]] * cut[4]
+        for k, fn in seq:
             f = fr[fn]; r = f['frame']
             cell = Image.new('RGBA', (S, S), (0, 0, 0, 0))
             cell.paste(sheet.crop((r['x'], r['y'], r['x'] + r['w'], r['y'] + r['h'])), (f['spriteSourceSize']['x'], f['spriteSourceSize']['y']))
@@ -70,7 +77,7 @@ def bake(form, F, glow):
             if key not in keyIdx: keyIdx[key] = len(cells); cells.append(cell)
             i = keyIdx[key]
             out.append({'i': i, 'x': (i % COLS) * S, 'y': (i // COLS) * S, 'px': f['pivotPx']['x'], 'py': f['pivotPx']['y']})
-        clips[name] = {'fps': A['fps'], 'loop': bool(A.get('loop')), 'pivot': 'grab' if A.get('pivot') == 'grab' else 'feet', 'frames': out}
+        clips[name] = {'fps': A['fps'], 'loop': cut[3] if cut else bool(A.get('loop')), 'pivot': 'grab' if A.get('pivot') == 'grab' else 'feet', 'frames': out}
         if src != name: clips[name]['src'] = src
     rows = (len(cells) + COLS - 1) // COLS
     atlas = Image.new('RGBA', (COLS * S if len(cells) >= COLS else len(cells) * S, rows * S), (0, 0, 0, 0))
