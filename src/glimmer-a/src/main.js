@@ -66,6 +66,14 @@
   G.daylightReady = false;
   fetch(P.art.base + 'daylight/daylight.json').then(r => r.json()).then(j => { LIGHT.setDaylight(j); G.daylightJson = j; return G.renderer.loadDaylight(P.art.base); }).then(() => { G.daylightReady = G.renderer.dlReady; }).catch(e => { G.daylightError = String(e); });
   G.renderer.loadAtlases(P.art.base).then(() => { G.atlasReady = G.renderer.atlasReady; });
+  // 生命感（F1）：?live=0 停用；?face=off|native 臉模式；?bulb=0 關燈泡
+  if (qs.get('face')) P.face.mode = qs.get('face');
+  if (qs.get('bulb') === '0') P.face.bulb.enabled = false;
+  G.liveReady = false;
+  G.liveLoad = (P.face.liveliness.enabled && qs.get('live') !== '0') ? G.renderer.loadLive(P.face.liveliness).then((lv) => {
+    D.CLIPS.turn_back.ready = !!(lv && ['sprout', 'radiant', 'soft'].every(f => lv.atlas[f] && lv.atlas[f].json.animations.turn_back_noface));
+    G.liveReady = !!lv; return lv;
+  }) : Promise.resolve(null);
   UI.init(G);
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
@@ -190,7 +198,15 @@
     },
     force(name) { G.forceBeh(name); },
     forceEvent(id) { return G.forceEvent(id); },
-    tapPet(n) { for (let i = 0; i < (n || 1); i++) { if (G.state.sleeping) G.lightWake(); else BEH.tap(G.beh, 'pet', 0); } },   // 模擬點寵物（睡眠中＝輕喚醒）
+    tapPet(n) { for (let i = 0; i < (n || 1); i++) { if (G.state.sleeping) G.lightWake(); else BEH.tap(G.beh, 'pet', G.beh.x + G.beh.dir * 5, -20); } },   // 點寵物前面（唔觸發 D2 轉身）
+    // ── 生命感第一段（F1／F2／D2）──
+    tap(x, y) { BEH.tap(G.beh, 'pet', x, y == null ? -20 : y); },               // 指定觸點（相對地面中心 CX／GROUND_Y，art px）
+    gaze() { const L = G.beh.look; return { q: L.q, ql: L.ql, src: L.src, x: +L.x.toFixed(3), y: +L.y.toFixed(3), tx: +L.tx.toFixed(3), ty: +L.ty.toFixed(3), force: L.force, dir: G.beh.dir, turn: G.beh.turn ? Object.assign({}, G.beh.turn) : null }; },
+    face() { const f = G.beh.face, r = G.renderer, l = r.faceStat.last || {}; return { eyes: f.eyes, mouth: f.mouth, gaze: f.gaze, closed: f.closed, clip: f.clip, frame: f.frame, blink: f.blink, mode: P.face.mode, live: !!l.live, liveReady: !!G.liveReady, liveError: r.lvError, drawnClip: l.clip, drawnFrame: l.frame, faceVisible: !!l.faceVisible, pieces: l.eyes ? l.eyes.concat([l.mouth]) : [], placeholder: (l.placeholder || []).slice(), derived: !!l.derived, bulb: l.bulb || null, stat: { draws: r.faceStat.draws, tints: r.faceStat.tints, overlays: r.faceStat.overlays, faceDrawn: r.faceStat.faceDrawn, faceHidden: r.faceStat.faceHidden, placeholder: r.faceStat.placeholder, bulb: r.faceStat.bulb } }; },
+    setGaze(q) { G.beh.look.force = q || null; return q; },                    // QA：強制 gaze 格（null＝自動）
+    setFace(o) { G.beh.faceForce = o || null; return o; },                     // QA：強制 {eyes, mouth}（null＝自動）
+    faceMode(m) { P.face.mode = m || 'auto'; return P.face.mode; },             // auto｜native（舊 atlas 原臉）｜off（唔畫臉）
+    faceStatReset() { const fs = G.renderer.faceStat; for (const k in fs) if (typeof fs[k] === 'number') fs[k] = 0; },   // 模擬點寵物（睡眠中＝輕喚醒）
     lightWake() { return G.lightWake(); },
     events() { return G.state.evs; },
     eventLog() { return G.state.evs ? G.state.evs.log : []; },                    // 事件觸發紀錄 [{id,kind,day,date,hour,at,offline,diary}]

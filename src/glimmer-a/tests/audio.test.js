@@ -69,7 +69,7 @@ console.log('# 規則');
   let o = drive(d, 0.1, world(s, b, 14)).map(x => x.name); ok(o.includes('pet_yawn'), '呵欠 → pet_yawn', o.join(','));
   BEH.force(b, 'wake', c); for (let i = 0; i < 120; i++) BEH.step(b, c); b.state = 'stay'; b.phase = '';
   for (let i = 0; i < 700; i++) BEH.step(b, c);
-  BEH.tap(b, 'pet', 0); for (let i = 0; i < 20; i++) BEH.step(b, c); o = drive(d, 8, world(s, b, 14)).map(x => x.name);
+  BEH.tap(b, 'pet', b.x + b.dir * 5); for (let i = 0; i < 20; i++) BEH.step(b, c); o = drive(d, 8, world(s, b, 14)).map(x => x.name);   // 點正面（唔觸發回頭）
   ok(o.includes('pet_touch_a') || o.includes('pet_touch_b'), '摸 → pet_touch_a／b', o.join(','));
   const b2 = BEH.create(5), d2 = AUD.createDirector(5); BEH.force(b2, 'wake', c); for (let i = 0; i < 120; i++) BEH.step(b2, c); b2.state = 'stay'; b2.phase = ''; for (let i = 0; i < 700; i++) BEH.step(b2, c);
   for (let i = 0; i < 6; i++) { BEH.tap(b2, 'pet', 0); for (let k = 0; k < 90; k++) BEH.step(b2, c); }
@@ -90,6 +90,36 @@ console.log('# 規則');
   const bad = Object.keys(per).filter(h => AUD.update(AUD.createDirector(1), 0.03, world(mkS(), BEH.create(1), +h)).bgm !== per[h]);
   ok(bad.length === 0, 'BGM 跟時段（早07／午11／晚17／夜23）', bad.join(','));
   const e = mkS(); e.stage = 'egg'; let thr = false; try { drive(AUD.createDirector(1), 3, world(e, BEH.create(1), 14)); } catch (x) { thr = true; } ok(!thr, '蛋階段唔會拋錯');
+}
+
+{
+  // 第一段：D2 點一下回頭 → sfx_pet_turn_huh_a／b（隨機；共用冷卻 1.5s；代替 touch 聲）；其餘 14 個生命感音效已註冊但未觸發
+  const fs = require('fs'), path = require('path');
+  const LIVE = ['sneeze', 'scratch', 'step_hop', 'step_drag', 'turn_huh', 'nuzzle_purr', 'reunion_happy', 'bug_pat'];
+  const names = []; LIVE.forEach(n => ['a', 'b'].forEach(v => names.push('pet_' + n + '_' + v)));
+  const miss = names.filter(n => !AU.cues[n] || !fs.existsSync(path.join(__dirname, '..', 'audio', 'sfx', AU.cues[n].file + '.ogg')));
+  ok(miss.length === 0, '16 個生命感音效已註冊＋檔案喺 audio/sfx', miss.join(','));
+  ok(names.filter(n => !/turn_huh/.test(n)).every(n => AU.cues[n].reserved), '第一段只觸發 turn_huh：其餘 14 個標 reserved');
+  const s = mkS(), c = { s, pw: LT.compute(14), sun: 1, override: null, event: null };
+  let seen = { a: 0, b: 0 }, touchWithTurn = 0, turns = 0, cdOk = true;
+  for (let seed = 1; seed <= 40; seed++) {
+    const b = BEH.create(seed), d = AUD.createDirector(seed);
+    for (let i = 0; i < 30; i++) BEH.step(b, c);
+    b.state = 'stay'; b.phase = ''; b.dir = 1; b.x = 0; b.lastTouch = b.t;
+    BEH.tap(b, 'pet', -12); BEH.step(b, c);           // 背後點 → 回頭
+    const o = drive(d, 0.5, world(s, b, 14)).map(x => x.name);
+    if (b.dir === -1) turns++;
+    if (o.includes('pet_turn_huh_a')) seen.a++; if (o.includes('pet_turn_huh_b')) seen.b++;
+    if (o.some(n => /touch/.test(n))) touchWithTurn++;
+    // 0.5s 內再回頭一次（冷卻中）→ 唔再出 huh
+    b.state = 'stay'; b.lastTouch = b.t; BEH.tap(b, 'pet', 12); BEH.step(b, c);
+    const o2 = drive(d, 0.3, world(s, b, 14)).map(x => x.name);
+    if (o2.some(n => /turn_huh/.test(n))) cdOk = false;
+  }
+  ok(turns === 40, '背後點 → 轉身（40/40）', turns);
+  ok(seen.a > 0 && seen.b > 0 && seen.a + seen.b === 40, 'turn_huh a/b 隨機（a ' + seen.a + '／b ' + seen.b + '）');
+  ok(touchWithTurn === 0, '回頭嗰下唔疊 touch 聲', touchWithTurn);
+  ok(cdOk && AU.cues.pet_turn_huh_a.cd >= 1.5 && AU.cues.pet_turn_huh_a.cdKey === AU.cues.pet_turn_huh_b.cdKey, 'turn_huh 共用冷卻 ≥1.5s');
 }
 
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);

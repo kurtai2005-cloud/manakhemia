@@ -74,6 +74,22 @@
   ✓ 日誌有 event:firefly_walk
   ✓ 用現有 walk／play clip：walk,play
   ✓ 所有用到嘅 clip 喺 clip 表有定義
+# 生命感第一段（F1 表情 overlay／F2 gaze／A1 邊行邊望／D2 點一下回頭）
+  ✓ F2 gaze 量化：L/CL/C/CR/R/U/D（含中心死區）
+  ✓ F2 量化：斜角以較大分量為準
+  ✓ MIRROR：朝左時 sprite 空間 L↔R
+  ✓ A1 walk：大部分時間望行進方向（84%），間中望鏡頭（16%）
+  ✓ F2 gaze 轉格最少停 0.25s（113 次轉格，最短 0.250s）
+  ✓ D2 點地下左邊 → gaze 望左（L）
+  ✓ D2 點寵物頭頂右上 → gaze 望 U／右（U）
+  ✓ D2 冇 turn_back 美術：即刻翻轉（dir −1）＋記 turn
+  ✓ D2 有 turn_back：播 turn_back（frame0 起）、dir −1、face 跟 clip
+  ✓ D2 turn_back 播齊 4 幀（0.5s）後返回原 clip（emo_surprised）
+  ✓ D2 點寵物前面：唔轉身、唔播 turn_back
+  ✓ F1 鬧脾氣 → angry 眼＋口
+  ✓ F1 閉眼款（happy）gaze 固定 C
+  ✓ QA 強制 gaze R（sprite 空間跟 dir 鏡像）
+  ✓ 生命感 atlas：全部 ready clip＋turn_back 有 _noface（幀數同錨點一致）、kit 眼 8 款×gaze×l/r、口 8、燈泡 2；turn_back frame0 faceVisible=false
 # 遊美 daylight.json 時段 hook（lighting.setDaylight／daylightAt）
   ✓ 未載入 daylight.json → daylight:null（fallback 舊 grade）
   ✓ setDaylight 載入 daylight.json
@@ -92,4 +108,4 @@
   ✓ art/daylight bg／light_night.png 存在
   ✓ JSON 缺失 → 退返舊 grade（唔爆）
 
-結果：81 通過，0 失敗
+結果：96 通過，0 失敗

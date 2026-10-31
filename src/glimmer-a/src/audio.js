@@ -28,10 +28,11 @@
     if (after > 0 && !opts.now) { d.queue.push({ at, name, opts: Object.assign({}, opts, { now: true }) }); return false; }
     const pet = c.bus === 'pet';
     if (pet && d.t < d.evBlockUntil && !opts.force) { d.stats.skipped++; return false; }                 // 事件優先
-    if (c.cd && d.t < (d.cdUntil[name] || -1)) { d.stats.skipped++; return false; }
+    const ck = c.cdKey || name;
+    if (c.cd && d.t < (d.cdUntil[ck] || -1)) { d.stats.skipped++; return false; }
     if (c.gap && d.t - d.lastPet < A.petMinGap && !opts.force) { d.stats.skipped++; return false; }     // 寵物聲最短間隔
-    if (c.cd) d.cdUntil[name] = d.t + c.cd;
-    if (pet && !/touch/.test(name)) d.lastPet = d.t;
+    if (c.cd) d.cdUntil[ck] = d.t + c.cd;
+    if (pet && !/touch|turn/.test(name)) d.lastPet = d.t;
     let rate = opts.rate != null ? opts.rate : rateFor(d, c);
     out.push({ name, rate, gain: opts.gain != null ? opts.gain : 1, t: +d.t.toFixed(3) });
     d.stats.cues++; return true;
@@ -75,8 +76,9 @@
       for (let i = 0; i < J.length; i++) {
         const e = J[i]; if (e.n <= d.jn) continue; d.jn = e.n;
         if (e.ev === 'variant' && e.name === 'yawn') emit(d, out, 'pet_yawn');
+        else if (e.ev === 'turn') { if (b.state !== 'grumpy' && emit(d, out, d.rng() < 0.5 ? 'pet_turn_huh_a' : 'pet_turn_huh_b')) d.turnN = e.n; }   // D2 回頭「咦？」
         else if (e.ev === 'tap') {
-          if (e.name === 'pet') { if (!(+e.ph >= 4) && b.state !== 'grumpy') emit(d, out, d.touchAlt++ % 2 ? 'pet_touch_b' : 'pet_touch_a'); }
+          if (e.name === 'pet') { if (d.turnN === e.n - 1) d.turnN = -1; else if (!(+e.ph >= 4) && b.state !== 'grumpy') emit(d, out, d.touchAlt++ % 2 ? 'pet_touch_b' : 'pet_touch_a'); }
           else emit(d, out, 'pet_curious');
         } else if (e.ev === 'state') {
           if (e.name === 'grumpy') emit(d, out, 'pet_grumpy');

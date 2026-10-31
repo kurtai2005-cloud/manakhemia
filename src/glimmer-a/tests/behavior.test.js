@@ -163,7 +163,7 @@ console.log('# clip 表同 遊美 art/CLIPS.json 對齊');
     if (c.frames !== a.frames || c.fps !== a.fps || !!c.loop !== !!a.loop || c.priority !== a.priority || (c.cooldown || 0) !== (a.cooldown_s || 0) || c.ready !== (a.status === '已交付')) bad.push(a.name);
   });
   ok(bad.length === 0, 'data.js CLIPS 同 art 一致（frames／fps／loop／priority／cooldown／ready）', bad.join(','));
-  const extras = Object.keys(D.CLIPS).filter(k => !art.find(a => a.name === k));
+  const extras = Object.keys(D.CLIPS).filter(k => !art.find(a => a.name === k) && !D.CLIPS[k].live);
   ok(extras.every(k => D.CLIPS[k].extra), '額外 clip（' + extras.join(',') + '）全部標 extra:true');
   const atl = {}; ['egg', 'sprout', 'radiant', 'soft', 'props'].forEach(n => { atl[n] = JSON.parse(fs.readFileSync(path.join(__dirname, '../art/atlas_' + n + '.json'), 'utf8')); });
   ok(Object.values(atl).every(a => a.meta.size.w <= 1024 && a.meta.size.h <= 1024), '全部圖集 ≤ 1024×1024');
@@ -174,7 +174,7 @@ console.log('# clip 表同 遊美 art/CLIPS.json 對齊');
   ok(stale.length === 0 && !fs.existsSync(path.join(__dirname, '../art/pet_tuanrong_atlas.png')), '冇引用／冇附帶舊 2048 寬 pet_tuanrong_atlas', stale.join());
   const miss = []; ['sprout', 'radiant', 'soft'].forEach(f => Object.keys(D.CLIPS).filter(k => D.CLIPS[k].ready).forEach(k => { const an = atl[f].animations[k]; if (!an || an.frames.length !== D.CLIPS[k].frames) miss.push(f + '/' + k); }));
   ok(miss.length === 0, '每個 ready clip 喺三個形態圖集都有、幀數一致', miss.join(','));
-  const pend = Object.keys(D.CLIPS).filter(k => !D.CLIPS[k].ready && !D.CLIPS[k].extra);
+  const pend = Object.keys(D.CLIPS).filter(k => !D.CLIPS[k].ready && !D.CLIPS[k].extra && !D.CLIPS[k].live);
   ok(pend.length === 0 && art.every(a => D.CLIPS[a.name].ready), '遊美 23 個 clip 已全數交付（ready:true，冇待定／placeholder）', pend.join());
   ok(extras.every(k => !D.CLIPS[k].ready), '額外 clip（' + extras.join(',') + '）仍冇美術 → 保持程序化 placeholder');
   const rmp = D.PARAMS.art.playRootMotion; ok(rmp && rmp.frames.join() === '3,4' && rmp.dx64 === 4 && rmp.dx32 === 2, 'play root-motion：frame4–5（idx 3,4）64px +4／32px +2（遊美 play 位移為 0）');
@@ -191,6 +191,49 @@ console.log('# 螢火散步（firefly_walk）事件腳本');
   ok(b.journal.some(j => j.ev === 'event' && j.name === 'firefly_walk'), '日誌有 event:firefly_walk');
   ok(clips.has('play') || clips.has('walk'), '用現有 walk／play clip：' + [...clips].join());
   ok([...clips].every(c => !!D.CLIPS[c]), '所有用到嘅 clip 喺 clip 表有定義');
+}
+
+console.log('# 生命感第一段（F1 表情 overlay／F2 gaze／A1 邊行邊望／D2 點一下回頭）');
+{
+  const Q = BEH.quantGaze, LK = P.look;
+  ok(Q(0, 0) === 'C' && Q(-0.3, 0) === 'CL' && Q(-0.9, 0) === 'L' && Q(0.3, 0) === 'CR' && Q(0.9, 0) === 'R' && Q(0, -0.8) === 'U' && Q(0, 0.8) === 'D' && Q(0.2, 0.1) === 'C', 'F2 gaze 量化：L/CL/C/CR/R/U/D（含中心死區）');
+  ok(Q(-0.7, -0.6) === 'L' && Q(0.5, -0.7) === 'U', 'F2 量化：斜角以較大分量為準');
+  ok(BEH.MIRROR.L === 'R' && BEH.MIRROR.CL === 'CR' && BEH.MIRROR.U === 'U' && BEH.MIRROR.C === 'C', 'MIRROR：朝左時 sprite 空間 L↔R');
+  // A1：行路時望行進方向，間中望鏡頭
+  { const b = BEH.create(11), s = mkS(), ctx = ctxAt(s, 14); run(b, ctx, 1); BEH.force(b, 'walk', ctx); let fwd = 0, cam = 0, n = 0, ok1 = true;
+    for (let i = 0; i < 60 * 40; i++) { BEH.step(b, ctx); if (b.clip !== 'walk') { if (b.state !== 'walk') { BEH.force(b, 'walk', ctx); } continue; } n++; const src = b.look.src; if (src === 'walk') { fwd++; if (b.look.tx * b.dir <= 0) ok1 = false; } if (src === 'camera') cam++; }
+    ok(n > 300 && fwd / n > 0.6 && cam > 0 && ok1, 'A1 walk：大部分時間望行進方向（' + (100 * fwd / Math.max(1, n)).toFixed(0) + '%），間中望鏡頭（' + (100 * cam / Math.max(1, n)).toFixed(0) + '%）', JSON.stringify([n, fwd, cam, ok1])); }
+  // dwell：轉格後最少停 0.25s
+  { const b = BEH.create(12), s = mkS(), ctx = ctxAt(s, 14); let last = b.look.q, lastT = 0, minD = 99, ch = 0;
+    for (let i = 0; i < 60 * 120; i++) { BEH.step(b, ctx); if (i % 90 === 0) BEH.tap(b, 'ground', (i % 7 - 3) * 20, -20); if (b.look.q !== last) { if (ch) minD = Math.min(minD, b.t - lastT); ch++; last = b.look.q; lastT = b.t; } }
+    ok(ch > 10 && minD >= LK.dwellSec - 1e-6, 'F2 gaze 轉格最少停 ' + LK.dwellSec + 's（' + ch + ' 次轉格，最短 ' + minD.toFixed(3) + 's）', minD); }
+  // D2：點觸點 → gaze 望觸點；觸點喺背後 → 轉身
+  const mk = () => { const b = BEH.create(13), s = mkS(), ctx = ctxAt(s, 14); run(b, ctx, 2); b.state = 'stay'; b.phase = ''; b.variant = null; b.x = 0; b.dir = 1; b.clip = 'idle'; return { b, ctx }; };
+  { const { b, ctx } = mk(); BEH.tap(b, 'ground', -60, -20); run(b, ctx, 0.6);
+    ok(b.look.src === 'tap' && (b.look.q === 'L' || b.look.q === 'CL'), 'D2 點地下左邊 → gaze 望左（' + b.look.q + '）'); }
+  { const { b, ctx } = mk(); BEH.tap(b, 'pet', 30, -60); run(b, ctx, 0.5); ok(b.look.q === 'U' || b.look.q === 'CR' || b.look.q === 'R', 'D2 點寵物頭頂右上 → gaze 望 U／右（' + b.look.q + '）'); }
+  { const was = D.CLIPS.turn_back.ready; D.CLIPS.turn_back.ready = false;
+    const { b, ctx } = mk(); BEH.tap(b, 'pet', -10, -20); BEH.step(b, ctx);
+    ok(b.dir === -1 && b.turn && !b.turn.clip && b.show.clip !== 'turn_back' && b.journal.some(j => j.ev === 'turn' && j.name === 'L'), 'D2 冇 turn_back 美術：即刻翻轉（dir −1）＋記 turn');
+    D.CLIPS.turn_back.ready = true;
+    const B = mk(); B.b.journal.length = 0; BEH.tap(B.b, 'pet', -10, -20); BEH.step(B.b, B.ctx); const f0 = B.b.show.frame, c0 = B.b.show.clip, fv0 = B.b.face.clip;
+    const seen = new Set(); for (let i = 0; i < 40; i++) { BEH.step(B.b, B.ctx); if (B.b.show.clip === 'turn_back') seen.add(B.b.show.frame); }
+    ok(c0 === 'turn_back' && f0 === 0 && fv0 === 'turn_back' && B.b.dir === -1 && B.b.journal.some(j => j.ev === 'clip' && j.name === 'turn_back'), 'D2 有 turn_back：播 turn_back（frame0 起）、dir −1、face 跟 clip');
+    ok(seen.has(3) && B.b.show.clip !== 'turn_back' && !B.b.turn, 'D2 turn_back 播齊 4 幀（0.5s）後返回原 clip（' + B.b.show.clip + '）');
+    const C = mk(); BEH.tap(C.b, 'pet', 12, -20); BEH.step(C.b, C.ctx); ok(C.b.dir === 1 && !C.b.turn && C.b.show.clip !== 'turn_back', 'D2 點寵物前面：唔轉身、唔播 turn_back');
+    D.CLIPS.turn_back.ready = was; }
+  // F1：表情由 clip／需求決定；閉眼款 gaze 固定 C；faceForce（QA）
+  { const { b, ctx } = mk(); BEH.force(b, 'grumpy', ctx); BEH.step(b, ctx); ok(b.face.eyes === 'angry' && b.face.mouth === 'angry', 'F1 鬧脾氣 → angry 眼＋口');
+    b.faceForce = { eyes: 'happy' }; BEH.step(b, ctx); ok(b.face.eyes === 'happy' && b.face.closed && b.face.gaze === 'C', 'F1 閉眼款（happy）gaze 固定 C');
+    b.faceForce = null; b.look.force = 'R'; BEH.step(b, ctx); ok(b.look.q === 'R' && b.face.gaze === (b.dir < 0 ? 'L' : 'R'), 'QA 強制 gaze R（sprite 空間跟 dir 鏡像）'); }
+  // 生命感美術（遊美 10-31）：noface 身體、kit 五官、錨點齊
+  { const LV = path.join(root0, 'art/liveliness'); const fa = JSON.parse(fs.readFileSync(path.join(LV, 'face_anchors.json'), 'utf8')); const bad = [];
+    for (const f of ['sprout', 'radiant', 'soft']) { const A = JSON.parse(fs.readFileSync(path.join(LV, 'atlas_' + f + '_live.json'), 'utf8'));
+      Object.keys(D.CLIPS).filter(k => D.CLIPS[k].ready || k === 'turn_back').forEach(k => { const an = A.animations[k + '_noface']; const anc = fa.anchors[f][k]; if (!an || an.frames.length !== D.CLIPS[k].frames || !anc || anc.length !== D.CLIPS[k].frames) bad.push(f + '/' + k); });
+      D.PARAMS.face.eyes.forEach(st => (D.PARAMS.face.closedEyes.includes(st) ? ['C'] : D.PARAMS.face.gazeBins).forEach(g => ['l', 'r'].forEach(s => { if (!A.frames['eyes_' + st + '_' + g + '_' + s]) bad.push(f + '/eyes_' + st + '_' + g + '_' + s); })));
+      D.PARAMS.face.mouths.forEach(m => { if (!A.frames['mouth_' + m]) bad.push(f + '/mouth_' + m); }); ['bulb_base', 'bulb_glow'].forEach(n => { if (!A.frames[n] || !A.frames[n].pivotPx) bad.push(f + '/' + n); });
+      if (fa.anchors[f].turn_back[0].faceVisible !== false) bad.push(f + '/turn_back0 faceVisible'); }
+    ok(bad.length === 0, '生命感 atlas：全部 ready clip＋turn_back 有 _noface（幀數同錨點一致）、kit 眼 8 款×gaze×l/r、口 8、燈泡 2；turn_back frame0 faceVisible=false', bad.slice(0, 8).join()); }
 }
 
 console.log('# 遊美 daylight.json 時段 hook（lighting.setDaylight／daylightAt）');

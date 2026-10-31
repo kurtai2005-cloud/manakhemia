@@ -89,6 +89,22 @@
       },
       withdrawnMul: { walk: 0.3, jump: 0, play: 0, nap: 3 },  // 睏倦退縮時
       zzzEvery: 1.4, fxMax: 24, journalMax: 400,
+      // ── 團絨生命感 第一段：視線（F2 gaze／A1 邊行邊望／D2 點一下回頭）。用獨立 RNG（lookSalt），唔影響原有行為抽籤 ──
+      look: {
+        lookSalt: 0x10c4,
+        smooth: 9,                           // 指數平滑速率（1/s）；越大越快跟目標
+        smoothTap: 22,                       // 被點時轉眼速率
+        holdSec: 0.08,                       // 量化結果要穩定 0.08s 先換格（防閃）
+        dwellSec: 0.25,                      // FACE_RIG：每次 gaze 轉格後最少停 0.25s（避免抖）；QA 強制格唔受限
+        quant: { center: 0.22, side: 0.62, v: 0.55 },   // |gx|≤0.22 → C；≥0.62 → L/R；中間 CL/CR；|gy|≥0.55 且大過 |gx| → U/D
+        rangeX: 40, rangeY: 30, headY: { sprout: -16, adult: -30 },   // 目標點 → 視線向量嘅歸一化距離（art px）
+        walkGx: 0.85, walkGy: 0.05,          // A1：行路時望前面
+        walkCamEvery: [2.2, 4.5], walkCamDur: [0.45, 0.9],   // A1：行路途中偶爾望鏡頭
+        camEvery: [4, 9], camDur: [1.0, 2.2], // 待機：間中望鏡頭
+        wanderEvery: [1.4, 3.8], wanderGx: 0.55, wanderGy: 0.25,   // 待機：東張西望
+        tapLookSec: 1.6,                     // D2：被點／點地後望住觸點幾耐
+        turnSec: 0.22, turnMinDx: 3,         // D2：觸點喺背後（相對 x 差 > 3px）就轉身；有 turn_back clip 就播 0.22s
+      },
     },
     // ── 日常事件系統（src/events.js）；時間 = 有效時間（上線 100%；離線按第 7 節 E）──
     events: {
@@ -124,6 +140,25 @@
     },
     // ── 時段光照（src/lighting.js）──
     // 真 atlas（遊美團絨）：base＝圖集路徑；usePending＝true 先用圖集內「待定」clip（walk／play／sunbathe／pot_bump…）
+    // 表情 overlay（F1）：mode auto＝有 *_noface 身體就合成真五官；冇就「擦臉＋色塊臉 placeholder」；native＝用返圖集原本張臉；off＝唔畫臉（QA）
+    face: {
+      mode: 'auto',
+      liveliness: { enabled: true, base: 'art/liveliness/', anchors: 'face_anchors.json', atlases: { sprout: 'atlas_sprout_live', radiant: 'atlas_radiant_live', soft: 'atlas_soft_live' } },   // 遊美生命感 v1（10-31）：<clip>_noface 身體＋kit 五官＋燈泡；缺檔／缺件一律 fallback（色塊臉 placeholder）；?live=0 停用
+      eyes: ['neutral', 'happy', 'surprised', 'sleepy', 'squint', 'wink', 'angry', 'sad'],
+      closedEyes: ['happy', 'sleepy', 'wink'],   // 閉眼款只有 C
+      gazeBins: ['L', 'CL', 'C', 'CR', 'R', 'U', 'D'],
+      mouths: ['neutral', 'happy', 'surprised', 'sleepy', 'squint', 'wink', 'angry', 'sad'],   // kit 8 款（wink＝伸脷、squint＝ω）
+      exprMap: { happy: ['happy', 'happy'], neutral: ['neutral', 'neutral'], hungry: ['sad', 'sad'], tired: ['sleepy', 'sleepy'], bored: ['squint', 'neutral'], dirty: ['squint', 'sad'], unwell: ['sad', 'sad'], sick: ['sad', 'sad'] },
+      clipMap: {                             // clip 優先過需求表情：[eyes, mouth]
+        emo_surprised: ['surprised', 'surprised'], grumpy: ['angry', 'angry'], emo_happy: ['happy', 'happy'], celebrate: ['happy', 'happy'], cheer_jump: ['happy', 'happy'],
+        turn_back: ['surprised', 'neutral'], emo_cuddly: ['wink', 'happy'], yawn: ['squint', 'surprised'], sleep_loop: ['sleepy', 'sleepy'], fall_asleep: ['sleepy', 'sleepy'], wake: ['sleepy', 'neutral'],
+        sunbathe: ['happy', 'happy'], droop: ['sad', 'sad'], sick: ['sad', 'sad'], emo_sleepy: ['sleepy', 'sleepy'], emo_hungry: ['sad', 'sad'], pot_bump: ['surprised', 'surprised'], play: ['happy', 'happy'], eat: ['happy', 'happy'],
+      },
+      blinkFrames: [1, 2],                   // blink clip 呢幾幀用閉眼
+      ink: '#3b2a3e', shine: '#fff8e0', mouthIn: '#c8506a',
+      // 光芽燈泡（CLIPS.json bulb）：bulb_base＋bulb_glow（multiply tint × intensity）；sick 唔疊；情緒轉換 0.4s 漸變
+      bulb: { enabled: true, fadeSec: 0.4, moods: { happy: { tint: '#FFD45E', i: 1.0, pulse: [1.2, 0.85, 1.0] }, neutral: { tint: '#FFEFC4', i: 0.8 }, sleepy: { tint: '#8F85C2', i: 0.55, pulse: [3, 0.4, 0.6] }, hungry: { tint: '#F2A65A', i: 0.75, pulse: [0.8, 0.6, 0.8] }, grumpy: { tint: '#E5584D', i: 0.85, pulse: [0.4, 0.7, 0.85] } } },
+    },
     art: { base: 'art/', usePending: false, useAtlas: true, playRootMotion: { frames: [3, 4], dx64: 4, dx32: 2 }, daylight: true, daylightBg: false },   // play 位移為 0（遊美）→ 引擎於 frame4–5（idx 3,4）加前衝 root-motion：64px +4／32px +2；daylight＝用 art/daylight/daylight.json
     // ── 畫質自動降級：用 rAF 幀間隔（唔再用連續掉幀計）──
     quality: {
@@ -193,6 +228,7 @@
     droop: {"name": "droop", "frames": 6, "fps": 4, "loop": true, "pivot": "bottom-center", "priority": 6, "interruptible": true, "cooldown": 0, "next": null, "ready": true, "loopFrom": 3, "attach": [{"prop": "sweat", "anchor": "head_r", "from": 3, "under": false}]},
     eat: {"name": "eat", "frames": 4, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 5, "interruptible": false, "cooldown": 0, "next": "emo_happy", "ready": true},
     celebrate: {"name": "celebrate", "frames": 4, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 5, "interruptible": false, "cooldown": 0, "next": "idle", "ready": true},
+    turn_back: {"name": "turn_back", "frames": 4, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 4, "interruptible": false, "cooldown": 0, "next": "idle", "ready": false, "live": true},   // 生命感 D2：只喺 liveliness atlas 有 turn_back_noface 先 ready（main 載入後設）；frame0 背面 faceVisible=false
     sick: {"name": "sick", "frames": 2, "fps": 3, "loop": true, "pivot": "bottom-center", "priority": 5, "interruptible": true, "cooldown": 0, "next": null, "ready": true},
     jump: {"name": "jump", "frames": 4, "fps": 8, "loop": false, "pivot": "bottom-center", "priority": 2, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "extra": true},
     grumpy: {"name": "grumpy", "frames": 4, "fps": 8, "loop": true, "pivot": "bottom-center", "priority": 5, "interruptible": true, "cooldown": 0, "next": "idle", "ready": false, "extra": true},
@@ -285,6 +321,16 @@
       pet_yawn: { file: 'sfx_pet_yawn', bus: 'pet', gain: 1, gap: true, rate: true },
       pet_touch_a: { file: 'sfx_pet_touch_a', bus: 'pet', gain: 1, cd: 0.15, rate: true }, pet_touch_b: { file: 'sfx_pet_touch_b', bus: 'pet', gain: 1, cd: 0.15, rate: true },
       pet_grumpy: { file: 'sfx_pet_grumpy', bus: 'pet', gain: 1, cd: 3, rate: true },
+      // D2 點一下回頭「咦？」（遊音 10-31；a/b 隨機，共用冷卻 1.5s；回頭嗰下代替 touch 聲；連點交畀 grumpy）
+      pet_turn_huh_a: { file: 'sfx_pet_turn_huh_a', bus: 'pet', gain: 1, cd: 1.5, cdKey: 'pet_turn', rate: true }, pet_turn_huh_b: { file: 'sfx_pet_turn_huh_b', bus: 'pet', gain: 1, cd: 1.5, cdKey: 'pet_turn', rate: true },
+      // 生命感音效（遊音 10-31，已註冊；第一段只觸發 turn_huh，其餘 reserved＝等 code/glimmer-liveliness 分支接；冷卻按遊音 README）
+      pet_sneeze_a: { file: 'sfx_pet_sneeze_a', bus: 'pet', gain: 1, cd: 20, cdKey: 'pet_sneeze', rate: true, reserved: true }, pet_sneeze_b: { file: 'sfx_pet_sneeze_b', bus: 'pet', gain: 1, cd: 20, cdKey: 'pet_sneeze', rate: true, reserved: true },
+      pet_scratch_a: { file: 'sfx_pet_scratch_a', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_scratch', reserved: true }, pet_scratch_b: { file: 'sfx_pet_scratch_b', bus: 'pet', gain: 1, cd: 0.5, cdKey: 'pet_scratch', reserved: true },
+      pet_step_hop_a: { file: 'sfx_pet_step_hop_a', bus: 'pet', gain: 1, cd: 0.1, cdKey: 'pet_step', rate: true, reserved: true }, pet_step_hop_b: { file: 'sfx_pet_step_hop_b', bus: 'pet', gain: 1, cd: 0.1, cdKey: 'pet_step', rate: true, reserved: true },
+      pet_step_drag_a: { file: 'sfx_pet_step_drag_a', bus: 'pet', gain: 1, cd: 0.4, cdKey: 'pet_step', rate: true, reserved: true }, pet_step_drag_b: { file: 'sfx_pet_step_drag_b', bus: 'pet', gain: 1, cd: 0.4, cdKey: 'pet_step', rate: true, reserved: true },
+      pet_nuzzle_purr_a: { file: 'sfx_pet_nuzzle_purr_a', bus: 'pet', gain: 1, reserved: true }, pet_nuzzle_purr_b: { file: 'sfx_pet_nuzzle_purr_b', bus: 'pet', gain: 1, reserved: true },
+      pet_reunion_happy_a: { file: 'sfx_pet_reunion_happy_a', bus: 'pet', gain: 1, cdKey: 'pet_reunion', rate: true, reserved: true }, pet_reunion_happy_b: { file: 'sfx_pet_reunion_happy_b', bus: 'pet', gain: 1, cdKey: 'pet_reunion', rate: true, reserved: true },
+      pet_bug_pat_a: { file: 'sfx_pet_bug_pat_a', bus: 'pet', gain: 1, cdKey: 'pet_bug_pat', rate: true, reserved: true }, pet_bug_pat_b: { file: 'sfx_pet_bug_pat_b', bus: 'pet', gain: 1, cdKey: 'pet_bug_pat', rate: true, reserved: true },
       // 事件音（事件優先；閃光日只喺閃光日用）
       event_gift: { file: 'sfx_event_gift_return', bus: 'event', gain: 1 }, event_butterfly: { file: 'sfx_event_butterfly_visit', bus: 'event', gain: 1 },
       event_meteor: { file: 'sfx_event_meteor_night', bus: 'event', gain: 1 }, event_rainbow: { file: 'sfx_event_rainbow', bus: 'event', gain: 1 },

@@ -80,10 +80,10 @@
   ✓ 縮放至適合視窗
   📷 27-small-360x740
 # 後處理幀時間（headless 軟件渲染，非真機；每檔 120 幀 renderer.frame 耗時）
-  {"quality":"off","frames":120,"avgMs":2.95,"maxMs":44}
-  {"quality":"low","frames":120,"avgMs":3,"maxMs":45.3}
-  {"quality":"mid","frames":120,"avgMs":7.05,"maxMs":111.8}
-  {"quality":"high","frames":120,"avgMs":8.85,"maxMs":10.7}
+  {"quality":"off","frames":120,"avgMs":2.99,"maxMs":43.8}
+  {"quality":"low","frames":120,"avgMs":3.11,"maxMs":45.2}
+  {"quality":"mid","frames":120,"avgMs":7,"maxMs":111.9}
+  {"quality":"high","frames":120,"avgMs":8.87,"maxMs":9.6}
   ✓ 各畫質平均幀時間 < 60ms（headless）
 # 無 debug 時唔顯示面板
   ✓ 無 ?debug=1 → 冇 debug 控制
