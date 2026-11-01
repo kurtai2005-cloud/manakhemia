@@ -284,13 +284,13 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     const d = await E(() => __qa.pet.daylight()); ok(d.room && d.ready && d.dl.id === id, 'room 皮膚 ' + id + ' 啟用', JSON.stringify(d)); await shot('room-' + id);
   }
 
-  console.log('# P2 .ibtn 熱區（縮放後 ≥44 CSS px，含 360 闊直向）');
+  console.log('# P2 .ibtn 熱區（縮放後 ≥48 CSS px，含 360 闊直向）');
   for (const vp of [{ width: 360, height: 780, dpr: 1 }, { width: 360, height: 800, dpr: 2 }, { width: 360, height: 640, dpr: 1 }]) {
     const c = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.dpr });
     const p = await c.newPage();
     await p.goto(BASE + '?debug=1&q=off&hour=13&ev=0'); await p.waitForTimeout(500);
     const box = await p.evaluate(() => [...document.querySelectorAll('.ibtn')].map(el => { const r = el.getBoundingClientRect(); return { id: el.id, w: r.width, h: r.height }; }));
-    ok(box.length >= 2 && box.every(b => b.w >= 44 && b.h >= 44), '360×' + vp.height + ' dpr' + vp.dpr + ' .ibtn ≥44 CSS px', JSON.stringify(box));
+    ok(box.length >= 2 && box.every(b => b.w >= 48 && b.h >= 48), '360×' + vp.height + ' dpr' + vp.dpr + ' .ibtn ≥48 CSS px', JSON.stringify(box));
     await c.close();
   }
 

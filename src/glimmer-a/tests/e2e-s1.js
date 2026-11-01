@@ -51,7 +51,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     o = await open({ width: 1280, height: 720 }, 'seed=3&ev=0&orient=landscape');
     r = await o.E(() => getComputedStyle(document.getElementById('rotate')).display); ok(r === 'flex', '?orient=landscape 強制顯示（桌面測試用）', r); await o.ctx.close();
     o = await open({ width: 1280, height: 720 }, 'seed=3&ev=0');
-    r = await o.E(() => getComputedStyle(document.getElementById('rotate')).display); ok(r === 'none', '桌面滑鼠橫向視窗：唔擋（方便電腦試玩）', r); await o.ctx.close();
+    r = await o.E(() => getComputedStyle(document.getElementById('rotate')).display); ok(r === 'flex', '桌面滑鼠橫向視窗：都顯示「請轉直向」（遊測 P2：橫向一律擋）', r); await o.ctx.close();
   }
 
   console.log('# P1-5 按短邊 fit＋背景延伸（唔留黑邊）');

@@ -15,7 +15,7 @@
     const gain = (n, why) => { if (G.s12gain) G.s12gain(n, why); else if (UI && UI.toast) UI.toast(why); };
     const css = document.createElement('style'); css.textContent = `
       .s12tabs { flex-wrap:wrap; } .s12tabs b { min-width:22%; }
-      .s12b-btn { display:inline-block; padding:4px 10px; margin:2px; border-radius:7px; background:#7a4a24; color:#fff6dc; cursor:pointer; font-weight:700; font-size:12px; min-height:28px; line-height:20px; }
+      .s12b-btn { display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; padding:4px 10px; margin:2px; border-radius:7px; background:#7a4a24; color:#fff6dc; cursor:pointer; font-weight:700; font-size:12px; min-width:var(--devhit, 48px); min-height:var(--devhit, 48px); line-height:20px; vertical-align:middle; }   /* 遊測 P2：≥48 CSS px（按 uiScale 反算，同 DEV 掣） */
       .s12b-btn.off { background:#b9a184; cursor:default; }
       .s12b-pot { display:flex; align-items:center; gap:6px; } .s12b-pot[data-state="empty"] { flex-wrap:wrap; } .s12b-pot[data-state="empty"] .t { flex:1 0 100%; } .s12b-pot[data-state="empty"] > div { display:flex; flex-wrap:wrap; } .s12b-pot .dot { width:18px; height:18px; border-radius:50%; flex:none; box-shadow:inset 0 -2px 0 rgba(0,0,0,.25); }
       .s12b-grid { display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; } .s12b-grid div { aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:6px; background:rgba(74,46,26,.14); font-weight:700; color:#8a6a4a; }

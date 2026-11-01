@@ -96,7 +96,7 @@
     window.addEventListener('resize', () => { if (H0) fit(); });
     // ── 輸入（邏輯座標）──
     const lp = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H }; };
-    function inQuit(p) { return Math.hypot(p.x - 167, p.y - 15) < 13; }
+    function inQuit(p) { const s = (cv.getBoundingClientRect().width / W) || K; return Math.abs(p.x - 167) <= Math.max(13, 26 / s) && Math.abs(p.y - 15) <= Math.max(13, 26 / s); }   // 遊測 P2：× 撳位 ≥ 52 CSS px 方格（任何畫面縮放）
     function down(p) {
       if (!H0) return false;
       if (H0.ph === 'result') { if (H0.rt > 0.6) close(); return true; }

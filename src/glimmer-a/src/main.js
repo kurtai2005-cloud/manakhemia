@@ -76,8 +76,8 @@
     const wrap = document.getElementById('stagewrap'); wrap.style.width = cssW + 'px'; wrap.style.height = cssH + 'px';
     const uiScale = cssW / 390;
     document.getElementById('ui').style.transform = 'scale(' + uiScale + ')';
-    // 熱區以縮放後嘅 CSS px 計。390 版面再乘 uiScale；360 闊直向（含整數倍像素縮放）都要 ≥44。
-    const hit = Math.ceil((44 + 0.5) / uiScale);
+    // 熱區以縮放後嘅 CSS px 計。390 版面再乘 uiScale；360 闊直向（含整數倍像素縮放）都要 ≥48（遊測 P2：⚙／📖 由 45 → 48）。
+    const hit = Math.ceil((48 + 0.5) / uiScale);
     document.querySelectorAll('.ibtn').forEach((el) => { el.style.width = hit + 'px'; el.style.height = hit + 'px'; });
     // P2：DEV 抽屜掣 ≥48dp（同 .ibtn 一樣按 uiScale 反算；#devp 喺 #ui 入面）
     const ui = document.getElementById('ui'); ui.style.setProperty('--devhit', Math.ceil((48 + 0.5) / uiScale) + 'px');
