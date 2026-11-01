@@ -68,8 +68,7 @@ ${H}[data-rol="1"] { ${OL8} }
 ${H}.hdTg { padding:0 !important; margin-left:40px !important; text-indent:-34px; line-height:22px !important; text-align:left; white-space:nowrap; overflow:visible !important; }
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] > div[style*="grid"] { grid-template-columns:1fr !important; gap:6px !important; }
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] > div:first-child, ${H}#mbox[data-kind="devmode"] > div:first-child { flex-wrap:wrap; gap:0 12px; }
-${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn, ${H}#mbox[data-kind="devmode"] [data-testid="dev-toggle-btn"] { height:auto !important; min-height:44px; padding:6px 12px 10px !important; line-height:28px !important; white-space:normal !important; overflow:visible !important; text-overflow:clip !important; text-align:left; box-sizing:border-box; border-image-repeat:stretch !important; }
-${H}#mbox .btn:not(.hdTg):not(.seg .btn) { height:auto !important; min-height:40px; white-space:normal !important; border-image-repeat:stretch !important; }
+${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn { text-align:left; padding:0 12px !important; }
 ${H}.dexGrid > p { grid-column:1 / -1; }
 ${H}#s2houseV [data-testid="house-hint"] { left:72px !important; right:72px !important; }
 ${H}#substage { overflow:hidden !important; text-overflow:ellipsis !important; white-space:nowrap !important; }
@@ -304,6 +303,7 @@ ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] { border:0 !important; 
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] b { font:20px/24px ${F10}; color:${GOLD}; ${OL} }
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-status-"] { font:16px/20px ${F8} !important; }
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn, ${H}#mbox[data-kind="devmode"] [data-testid="dev-toggle-btn"] { height:32px !important; min-width:0; padding:0 6px !important; font:16px/32px ${F8} !important; ${OL8} white-space:nowrap; overflow:hidden; ${bi('btn16_pri')} }
+${H}#mbox .btn[data-tall="1"], ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn[data-tall="1"] { height:auto !important; min-height:44px; padding:6px 14px !important; line-height:28px !important; white-space:normal !important; overflow:visible !important; text-overflow:clip !important; ${bi('card_sel')} }
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn:active { ${bi('btn16_pri_p')} }
 ${H}#mbox[data-kind="devmode"] [data-testid="dev-toggle-btn"] { ${bi('btn16_sec')} }
 ${H}#mbox[data-kind="devmode"] [data-testid="dev-sec-uiv2"] .btn[data-on="1"] { ${bi('btn16_violet')} }
@@ -378,7 +378,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
     // ── tick：名牌 stage tag 位、toast 字號、頭像 ──
     let lastSub = '', lastFace = -1e9, lastToast = '';
     function tick() {
-      if (!U.on) return;
+      if (!U.on) return; U.tallPass();
       const nm = $('#stagename'), sb = $('#substage');
       if (nm && sb) { const k = nm.textContent + '|' + sb.textContent + '|' + (U.fonts.GlimmerFP12 ? 1 : 0); if (k !== lastSub) { lastSub = k; const Lx = 116 + nm.offsetWidth + 6, W = Math.max(40, 284 - Lx); sb.style.setProperty('--sub2L', Lx + 'px'); sb.style.setProperty('--sub2W', W + 'px'); sb.style.setProperty('--sub2F', '24px'); } }
       const t = $('#toast'); if (t) { const k = t.textContent; if (k !== lastToast) { lastToast = k; t.classList.remove('sm2'); if (t.scrollWidth > 338) t.classList.add('sm2'); } }
@@ -441,10 +441,19 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize) || 0;
       if (fs > 0 && fs < 23.5) { el.style.setProperty('font-size', '24px', 'important'); el.dataset.rf = '1'; const lh = parseFloat(cs.lineHeight); if (!(lh >= 27)) el.style.setProperty('line-height', '28px', 'important'); if (cs.position === 'absolute' && txt.length <= 8) el.style.setProperty('white-space', 'nowrap'); }
       if (/GlimmerFP(8|10)\b/.test(cs.fontFamily)) { el.style.setProperty('font-family', cs.fontFamily.replace(/GlimmerFP(8|10)\b/g, 'GlimmerFP12'), 'important'); el.dataset.rf = '1'; }
+      tallBtn(el);   // 長字掣：唔縮字，轉做 9-slice 卡（kit 3h 掣唔拉高）
       let miss = false; if (U.cov) for (const ch of txt) { if (SKIP.test(ch)) continue; if (!U.cov.has(ch.codePointAt(0))) { miss = true; break; } }
       if (miss) el.dataset.fbk = '1'; else if (el.dataset.fbk) delete el.dataset.fbk;
       if (lum(cs.color) > 0.35 && (!cs.textShadow || cs.textShadow === 'none')) el.dataset.rol = '1';
     }
+    function tallBtn(el) {
+      if (!el.classList.contains('btn') || el.classList.contains('hdTg') || el.closest('.seg') || !el.closest('#mbox')) return;
+      const w = el.clientWidth; if (!w) { el._tk = ''; return; }                       // 未顯示（modal 未開）→ 下次 tick 再量
+      const k = el.textContent + '|' + w; if (el._tk === k) return; el._tk = k;
+      delete el.dataset.tall; const tops = new Set(); for (const n of el.childNodes) if (n.nodeType === 3 && n.nodeValue.trim()) { const rg = document.createRange(); rg.selectNodeContents(n); for (const r of rg.getClientRects()) if (r.width > 1) tops.add(Math.round(r.top)); } const over = tops.size > 1;   // 自然換咗行 ＝ 太長
+      if (over) { el.dataset.tall = '1'; el._tk = el.textContent + '|' + el.clientWidth; }
+    }
+    U.tallPass = () => { if (U.on) document.querySelectorAll('#mbox .btn').forEach(tallBtn); };
     function readPass(all) {
       if (!U.on) return;
       const list = (all || rAll) ? [ui] : Array.from(rSet); rAll = false; rSet.clear();

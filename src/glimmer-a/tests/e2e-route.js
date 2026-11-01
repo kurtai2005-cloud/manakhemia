@@ -67,7 +67,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const sil = hx(CFG.R.silhouette).join(',');
   ok(dx.length === 9 && dx.every(d => d.un === '0' && d.name === '？？？' && d.hint === CFG.hint[d.id] && d.px > 100 && d.cols === 1 && d.col === sil), '9 格全部剪影（單色、現有圖嘅形）＋一句提示', dx);
   ok(dx.find(d => d.id === 'lumi').hint === '？？？', '螢絨提示＝？？？');
-  ok(await E(() => document.getElementById('mbox').dataset.kind === 'dex' && document.querySelector('#mbox').getBoundingClientRect().bottom <= innerHeight), '圖鑑彈窗喺畫面內');
+  ok(await E(() => { const r = document.querySelector('#mbox').getBoundingClientRect(), md = document.getElementById('modal'); return document.getElementById('mbox').dataset.kind === 'dex' && r.top >= 0 && (r.bottom <= innerHeight || (!!(window.__qa.uiv2 && __qa.uiv2.st().on) && getComputedStyle(md).overflowY === 'auto' && md.scrollHeight > md.clientHeight)); }), '圖鑑彈窗喺畫面內（5a.1 v2 大字：唔縮字，碌得到）');
   await page.screenshot({ path: SHOTS + 'route-dex-locked.png' }); console.log('  📷 route-dex-locked');
   await closeModals();
   await E(() => { ['shroom', 'moon', 'bright', 'ember'].forEach(f => __qa.dev.dexUnlock(f)); }); await page.click('[data-testid="dex"]'); await page.waitForTimeout(300);
