@@ -128,7 +128,7 @@
   function questsDone(q, key) { const L = q.list.filter(x => x.d === key), b = q.bonus[key]; return !!(b && b.n > 0 && b.done >= b.n) || (L.length > 0 && L.every(qDone)); }
   /* v10.3：逐張發（perItem）→ 嗰日嘅 3 張齊再發小獎勵（allBonus）；路線分：每張 = 嗰日輪值路線 +pts/perDay（3 張齊＝+pts，同 v10.2 一樣平均輪） */
   function payItem(s, x, nowMs, ev, oldKey) {   // oldKey：斷線補發 → 計返嗰日上限（唔食今日）
-    const Q = C().quests, q = st(s).quests; if (x.paid) return 0; x.paid = true;
+    const Q = C().quests, q = st(s).quests; if (x.paid) return 0; x.paid = true; q.paidN = (q.paidN | 0) + 1;   /* systems12b 成就：完成委託累計 */
     const today = SIM.dayKey(nowMs), late = x.d !== today && kDn(x.d) < kDn(today);
     let g = grant(s, Q.perItem, 'quest', nowMs, oldKey || null);
     if (x.r && !x.rp) {   // 分母＝嗰日張數；用累計差計（0.3333＋0.3334＋0.3333＝1，唔會變 0.9999）

@@ -52,6 +52,7 @@ function run(name, seed, o) {
       for (const a of acts) { if (a === 'feed') { s.needs.hunger = Math.min(s.needs.hunger, 60); S.feed(s, 'meal'); } else if (a === 'play') S.play(s); else if (a === 'rinse') S.rinse(s); else { while (s.poops > 0) S.clearPoop(s); } }
       if (MG_AT[name].includes(slot.h) && rngMg() >= SKIP_ACT) { const r = S.overlayOpenGame(s, now); if (r.ok) mgs++; }   // v8：浮動團絨撳兩下＝一局
       if (S.isDrowsy(s) && rng() < LULL) { const r = S.lullSleep(s); if (r.counted) lulls++; }
+      if (o.onSession) o.onSession(s, now, slot);   // systems12b 經濟 sim：每次上線之後（小遊戲／小圃／散步／徽章）；唔用主 rng
       const hr = new Date(now).getHours();
       if ((hr >= 17 || hr < 7) && rng() < 0.25) S.noteEvent(s, P.evo6.lumiEvent);
       S.advance(s, 1800, {}, 60); now += 1800e3; s.lastSeen = now;
