@@ -80,7 +80,7 @@ const near = (a, b, d) => Math.abs(a - b) <= (d || 2);
   const KEYS = ['toggle', 'settings', 'dex', 'journal', 'garden', 'feed', 'popup', 'toast', 'kid', 'house', 'deco', 'mood', 'reset'];
   ok(sec && JSON.stringify(sec.items) === JSON.stringify(KEYS), '「UI v2」組 13 個掣', sec);
   ok(secs.some(x => x.id === 's2') && secs.some(x => x.id === 'house'), '4a／4b 組照舊');
-  await openDev(); ok(await page.locator('[data-testid=dev-sec-uiv2]').isVisible(), '開發者面板有「UI v2」'); ok((await page.locator('[data-testid=dev-version]').innerText()).includes('版本 4b.1（UI v2）'), '版本 4b.1（UI v2）');
+  await openDev(); ok(await page.locator('[data-testid=dev-sec-uiv2]').isVisible(), '開發者面板有「UI v2」'); ok((await page.locator('[data-testid=dev-version]').innerText()).includes('版本 5a'), '版本 5a');
   ok(!(await E(() => !!document.querySelector('#mbox [data-testid=dev-sec-uiv2]') && document.getElementById('mbox').dataset.kind === 's2Settings')), '唔喺設定');
   await shot('02-devpanel');
   await dev('toggle'); S = await u(); ok(!S.on && !(await E(() => document.getElementById('ui').classList.contains('v2'))), '撳切換 → v1（即時）', S.on);
@@ -98,7 +98,7 @@ const near = (a, b, d) => Math.abs(a - b) <= (d || 2);
   ];
   for (const [k, fn, nm] of pops) { await dev(k); const r = await E(fn); ok(!!r, '「' + nm + '」掣開到', k); await shot('10-' + k); await closeModals(); }
   { await dev('popup'); const p = await box('#mbox'); const c = await cs('#mbox', ['border-image-source', 'font-family']); ok(p && near(p.w, L.popup.w * 2, 4), '彈窗寬 ' + L.popup.w + '×2', p); ok(c && /^url/.test(c['border-image-source']), '彈窗 panel 9-slice', c && c['border-image-source'].slice(0, 20)); await closeModals(); }
-  { await dev('settings'); ok(await page.locator('[data-testid=uiv2-font-credit]').isVisible(), '設定有「字型：Fusion Pixel（OFL 1.1）」'); ok((await page.locator('[data-testid=s2-version]').innerText()).includes('版本 4b.1（UI v2）'), '設定版本行'); await closeModals(); }
+  { await dev('settings'); ok(await page.locator('[data-testid=uiv2-font-credit]').isVisible(), '設定有「字型：Fusion Pixel（OFL 1.1）」'); ok((await page.locator('[data-testid=s2-version]').innerText()).includes('版本 5a'), '設定版本行'); await closeModals(); }
   await dev('mood'); ok((await u()).moodOv, '「頭像心情」輪住睇'); await dev('reset'); ok(!(await u()).moodOv, '「頭像還原」');
 
   console.log('# ⑤ 細佬卡／屋仔換皮（功能照舊）');

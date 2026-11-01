@@ -52,7 +52,7 @@
     o.seen = !!o.seen; o.welcomed = !!o.welcomed; o.visits = Math.max(0, o.visits | 0);
     return o;
   }
-  const unlocked = (s) => { const p = SR.st(s); return p.phase === 'kid' && p.rel === 'family'; };
+  const unlocked = (s) => { const p = SR.st(s); return (p.phase === 'kid' && p.rel === 'family') || !!(p.house && p.house.at) || !!(s.fam && Array.isArray(s.fam.res) && s.fam.res.length);   /* 5a：開咗屋就一直開（新細佬蛋都唔會鎖返）；有長住成年都開 */ };
   const paidN = (s) => { const q = s && s.sys12 && s.sys12.quests; return q ? q.paidN | 0 : 0; };
   const visitMax = (s, who) => { const v = s && s.b3b && s.b3b.vis && s.b3b.vis[who]; return !!(v && v.max); };
 

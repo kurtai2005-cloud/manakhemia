@@ -300,12 +300,21 @@
     if (s.stage !== 'elder' || !s.fadeReady) return { ok: false, reason: 'notReady' };
     const m = { gen: s.gen || 1, form: s.form, at: nowMs || Date.now(), ageSec: Math.round(s.ageSec) };
     for (let i = 0; i < fadeHooks.length; i++) fadeHooks[i](s, m);   // systems12：紀念冊記低親密度／日記
-    s.memorial = (s.memorial || []).concat([m]); s.gen = (s.gen || 1) + 1;
+    s.memorial = (s.memorial || []).concat([m]); s.gen = Math.max(s.gen || 1, (s.fam && s.fam.genMax) | 0) + 1;   // 5a：住客團絨可能已經用咗後面代數
     s.stage = 'egg'; s.form = null; s.growthSec = 0; s.fadeReady = false; s.sleeping = false; s.poops = 0; s.poopTimer = 0;
     s.needs = { hunger: 100, mood: 100, clean: 100, energy: 100 }; s.cq = P.cqStart; s.cqTimer = 0; s.withdrawn = { on: false, fed: false, played: false };
     s.evo = { evIn: {}, care: {} };
     s.ev.push({ type: 'fade', memorial: m });
     return { ok: true, memorial: m };
+  }
+  // 5a 揀「團絨蛋」：舊主養搬咗入屋（唔化光、冇紀念冊）→ 新一代光卵（同 fade 一樣重設寵物欄位；§7 路線照舊由零開始）
+  function rebirth(s, nowMs, gen) {
+    s.gen = Math.max((gen | 0) || 0, (s.gen || 1) + 1);
+    s.stage = 'egg'; s.form = null; s.growthSec = 0; s.fadeReady = false; s.sleeping = false; s.poops = 0; s.poopTimer = 0; s.poopAge = [];
+    s.needs = { hunger: 100, mood: 100, clean: 100, energy: 100 }; s.cq = P.cqStart; s.cqTimer = 0; s.withdrawn = { on: false, fed: false, played: false };
+    s.evo = { evIn: {}, care: {} };
+    s.ev.push({ type: 'rebirth', gen: s.gen, at: nowMs || Date.now() });
+    return { ok: true, gen: s.gen };
   }
   // 舊存檔（v1：egg／sprout 24h／adult）→ evo6 最近階段
   function migrate(o) {
@@ -669,6 +678,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, addCareHook, addFadeHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    mgCount, mgRouteOk, mgRouteW, eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, noteDexHint, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    mgCount, mgRouteOk, mgRouteW, eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, noteDexHint, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, rebirth, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

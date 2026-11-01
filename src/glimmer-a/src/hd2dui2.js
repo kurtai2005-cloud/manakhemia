@@ -15,7 +15,7 @@
   const NEED = { hunger: ['feed', 'pri'], mood: ['heart', 'rose'], clean: ['clean', 'sec'], energy: ['sleep', 'violet'] };
   const ACT = { 'btn-feed': ['feed', 'pri'], 'btn-play': ['play_cat', 'rose'], 'btn-clean': ['clean', 'sec'], 'btn-sleep': ['sleep', 'violet'] };
   const TABK = ['home', 'play', 'garden', 'journal', 'set'];
-  const SLOT_IC = { bed: 'furniture', table: 'cabinet', wall: 'pattern', rug: 'd_leaf', window: 'house', lamp: 'light' };
+  const SLOT_IC = { bed: 'furniture', table: 'cabinet', wall: 'pattern', rug: 'd_leaf', window: 'house', lamp: 'light', deco: 'gift' };   // deco＝5a 第 7 個 tab「擺設」（手信）
   const MOODS = ['normal', 'happy', 'hungry', 'sleepy', 'sick', 'sleep'];
   // 純函數（unit test 用）
   function pref(qsUi, stored) { if (qsUi === '1') return 1; if (qsUi === '2') return 2; return stored === '1' ? 1 : 2; }
@@ -271,11 +271,13 @@ ${H}#s2houseV [data-testid="house-decorate"]::after { content:''; position:absol
 ${H}#s2houseV [data-testid="house-sheet"] { left:${a2(HB.sheet[0])}px !important; top:${a2(HB.sheet[1])}px !important; width:${a2(HB.sheet[2])}px !important; height:${a2(HB.sheet[3])}px !important; ${bi('panel_navy')} }
 ${H}#s2houseV [data-testid="house-sheet"]::after { content:''; position:absolute; left:calc(50% - 24px); top:2px; ${sp('sheet_handle')} }
 ${H}#s2houseV [data-testid="house-sheet"] > img { display:none !important; }
-${['bed', 'table', 'wall', 'rug', 'window', 'lamp'].map((k, i) => `${H}#s2houseV [data-testid="house-tab-${k}"] { left:${a2(HB.sheet[0] + HB.sheet[2] / 2 + (i - 2.5) * 30) - 22}px !important; top:${a2(HB.tabsCy) - 22}px !important; ${sp('med22_navy')} } ${H}#s2houseV [data-testid="house-tab-${k}"][data-sel="1"] { ${spBg('med22_pri')} } ${H}#s2houseV [data-testid="house-tab-${k}"]::after { content:''; position:absolute; left:6px; top:6px; ${ic(SLOT_IC[k])} }`).join('\n')}
+${(NS.long5a ? ['bed', 'table', 'wall', 'rug', 'window', 'lamp', 'deco'] : ['bed', 'table', 'wall', 'rug', 'window', 'lamp']).map((k, i, L7) => `${H}#s2houseV [data-testid="house-tab-${k}"] { left:${a2(HB.sheet[0] + HB.sheet[2] / 2 + (L7.length > 6 ? (i - 3) * 26 : (i - 2.5) * 30)) - 22}px !important; top:${a2(HB.tabsCy) - 22}px !important; ${sp('med22_navy')} } ${H}#s2houseV [data-testid="house-tab-${k}"][data-sel="1"] { ${spBg('med22_pri')} } ${H}#s2houseV [data-testid="house-tab-${k}"]::after { content:''; position:absolute; left:6px; top:6px; ${ic(SLOT_IC[k])} }`).join('\n')}
 ${H}#s2houseV .hb[data-testid^="house-tab-"] .lbl { display:none; }
 ${H}#s2houseV [data-testid="house-tabtitle"] { left:${a2(HB.sheet[0]) + 14}px !important; top:${a2(HB.tabsCy) + 24}px !important; font:16px/20px ${F8} !important; color:${GOLD} !important; ${OL8} }
 ${H}#s2houseV [data-testid="house-tabtitle"] + div { top:${a2(HB.tabsCy) + 24}px !important; right:${390 - a2(HB.sheet[0] + HB.sheet[2]) + 14}px !important; font:16px/20px ${F8} !important; ${NOL} }
 ${HB.cards.map((c, i) => `${H}#s2houseV .card:nth-child(${i + 1}) { left:${a2(c[0])}px !important; top:${a2(c[1])}px !important; }`).join('\n')}
+${H}#s2houseV .svrow { left:${a2(HB.cards[0][0])}px !important; top:${a2(HB.cards[0][1])}px !important; width:${a2(HB.cards[2][0] + HB.cardWH[0] - HB.cards[0][0])}px !important; height:${a2(HB.cardWH[1]) + 6}px !important; gap:${a2(HB.cards[1][0] - HB.cards[0][0] - HB.cardWH[0])}px !important; }
+${H}#s2houseV .svrow .card.svc:nth-child(n) { position:relative !important; left:auto !important; top:auto !important; flex:0 0 auto; }
 ${H}#s2houseV .card { width:${a2(HB.cardWH[0])}px !important; height:${a2(HB.cardWH[1])}px !important; border:0; border-radius:0; box-shadow:none; background:none; ${bi('card')} }
 ${H}#s2houseV .card[data-state="equipped"] { ${bi('card_sel')} }
 ${H}#s2houseV .card[data-state="locked"] { ${bi('card_locked')} }
