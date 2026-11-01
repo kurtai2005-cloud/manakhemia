@@ -1,0 +1,573 @@
+{
+ "old_base": {
+  "token": "leaf",
+  "orbit": {
+   "file": "series/old_base_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_base_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "sprout",
+   "evo_dot",
+   "evo_sprout",
+   "evo_hop"
+  ]
+ },
+ "old_radiant": {
+  "token": "star",
+  "orbit": {
+   "file": "series/old_radiant_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_radiant_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "radiant",
+   "evo_guard_radiant",
+   "evo_still_radiant"
+  ]
+ },
+ "old_soft": {
+  "token": "fluff",
+  "orbit": {
+   "file": "series/old_soft_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_soft_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "soft",
+   "evo_guard_soft",
+   "evo_still_soft"
+  ]
+ },
+ "old_lumi": {
+  "token": "firefly",
+  "orbit": {
+   "file": "series/old_lumi_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_lumi_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "lumi",
+   "evo_guard_lumi",
+   "evo_still_lumi"
+  ]
+ },
+ "old_tide": {
+  "token": "drop",
+  "orbit": {
+   "file": "series/old_tide_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_tide_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "evo_guard_tide",
+   "evo_still_tide"
+  ]
+ },
+ "old_moon": {
+  "token": "crescent",
+  "orbit": {
+   "file": "series/old_moon_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_moon_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "evo_guard_moon",
+   "evo_still_moon"
+  ]
+ },
+ "old_shroom": {
+  "token": "spore",
+  "orbit": {
+   "file": "series/old_shroom_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_shroom_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "evo_guard_shroom",
+   "evo_still_shroom"
+  ]
+ },
+ "old_crystal": {
+  "token": "shard",
+  "orbit": {
+   "file": "series/old_crystal_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_crystal_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "evo_guard_crystal",
+   "evo_still_crystal"
+  ]
+ },
+ "old_ember": {
+  "token": "ember",
+  "orbit": {
+   "file": "series/old_ember_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_ember_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "evo_guard_ember",
+   "evo_still_ember"
+  ]
+ },
+ "old_dust": {
+  "token": "mote",
+  "orbit": {
+   "file": "series/old_dust_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/old_dust_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "evo_guard_dust",
+   "evo_still_dust"
+  ]
+ },
+ "new_A": {
+  "token": "drop",
+  "orbit": {
+   "file": "series/new_A_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/new_A_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "A1",
+   "A2",
+   "A3"
+  ]
+ },
+ "new_B": {
+  "token": "bubble",
+  "orbit": {
+   "file": "series/new_B_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/new_B_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "B1",
+   "B2",
+   "B3"
+  ]
+ },
+ "new_C": {
+  "token": "ember",
+  "orbit": {
+   "file": "series/new_C_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/new_C_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "C1",
+   "C2",
+   "C3"
+  ]
+ },
+ "new_D": {
+  "token": "pebble",
+  "orbit": {
+   "file": "series/new_D_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/new_D_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "D1",
+   "D2",
+   "D3"
+  ]
+ },
+ "new_E": {
+  "token": "flame",
+  "orbit": {
+   "file": "series/new_E_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/new_E_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "E1",
+   "E2",
+   "E3"
+  ]
+ },
+ "new_F": {
+  "token": "star",
+  "orbit": {
+   "file": "series/new_F_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/new_F_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "F1",
+   "F2",
+   "F3"
+  ]
+ },
+ "new_G": {
+  "token": "star_blue",
+  "orbit": {
+   "file": "series/new_G_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/new_G_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "G1",
+   "G2",
+   "G3"
+  ]
+ },
+ "new_H": {
+  "token": "crescent",
+  "orbit": {
+   "file": "series/new_H_orbit.png",
+   "frameW": 25,
+   "frameH": 13,
+   "frames": 8,
+   "pivot": [
+    12,
+    6
+   ],
+   "ms": 90,
+   "note": "暈：頭頂轉星（後半圈變暗＝喺頭後面）"
+  },
+  "puff": {
+   "file": "series/new_H_puff.png",
+   "frameW": 17,
+   "frameH": 10,
+   "frames": 3,
+   "pivot": [
+    8,
+    9
+   ],
+   "ms": 100,
+   "note": "撞／落地煙＋系列碎片"
+  },
+  "pets": [
+   "H1",
+   "H2",
+   "H3"
+  ]
+ }
+}
