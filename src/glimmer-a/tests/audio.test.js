@@ -141,7 +141,9 @@ console.log('# 生命感第二段音效（journal ev sfx → a/b 交替；遊音
   const gaps = scuff.slice(1).map((x, i) => x.t - scuff[i].t);
   ok(scuff.length >= 5 && alt(scuff) && gaps.every(g => g >= 0.4 - 1e-6), '精力 <40：walk_drag 拖地聲 step_drag（幀 1、4；4s ' + scuff.length + ' 下，最短間隔 ' + Math.min(...gaps).toFixed(2) + 's ≥0.4），a/b 交替');
   ok(plod.length >= 5 && alt(plod) && Math.abs(plod.length - scuff.length) <= 1 && drag.every(x => /step_(drag|plod)/.test(x.name)), 's2：walk_drag 踏地聲 step_plod（幀 2、5；' + plod.length + ' 下），a/b 交替，同拖地聲 1:1');
-  ok(AU.cues.pet_step_plod_a.gain < 1 && AU.cues.pet_step_plod_a.noLast && AU.cues.pet_step_plod_a.cdKey !== AU.cues.pet_step_drag_a.cdKey, 'step_plod 細聲（借 step_hop 檔，gain 0.5、低音高）、唔同拖地聲搶冷卻');
+  { const A_ = AU.cues.pet_step_plod_a, B_ = AU.cues.pet_step_plod_b; ok(A_.file === 'sfx_pet_step_plod_a' && B_.file === 'sfx_pet_step_plod_b' && A_.gain === 1 && B_.gain === 1 && !A_.fixedRate && A_.rateRange[0] === 0.95 && A_.rateRange[1] === 1.05 && A_.noLast && A_.cdKey !== AU.cues.pet_step_drag_a.cdKey, 'step_plod 用遊音專屬檔 plod a/b（gain 1.0、rate 0.95–1.05）、唔同拖地聲搶冷卻'); }
+  { const rs = drag.filter(x => /step_plod/.test(x.name)).map(x => x.rate); ok(rs.length && rs.every(r => r >= 0.95 - 1e-9 && r <= 1.05 + 1e-9) && new Set(rs.map(r => r.toFixed(3))).size > 1, 'step_plod rate 隨機 0.95–1.05', rs); }
+  ok(!Object.keys(AU.cues).some(n => /ui8/.test(n) || /sfx_ui8/.test(AU.cues[n].file || '')), '未接 sfx_ui8_*（等 Kurt）');
   const neu = walkCues({ mood: 55 }); ok(neu.length === 0, '普通 walk（心情 40–70、需求正常）冇腳步聲（維持舊行為）');
   // 腳步唔佔 petMinGap：行路中照可出 yawn／touch
   ok(AU.cues.pet_step_hop_a.noLast && AU.cues.pet_step_drag_a.noLast && !AU.cues.pet_step_hop_a.gap, '腳步聲 noLast：唔阻其他寵物聲（petMinGap）');
