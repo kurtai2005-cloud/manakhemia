@@ -85,6 +85,9 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   { const fr = new Set(); for (let i = 0; i < 30; i++) { await page.waitForTimeout(37); const J = await info(); if (J.used) fr.add(J.frame); }
     I = await info(); ok(I.idleMode === 'feel' && fr.has(0) && fr.has(1) && !fr.has(2), '?spr80idle=feel：0↔1 bob（唔用幀 2）', [...fr]); }
 
+  await load(Q + '&spr80hold=0'); await stage('adult', 'ember'); await idle();
+  { const fr = new Set(); for (let i = 0; i < 15; i++) { await page.waitForTimeout(61); const J = await info(); if (J.used) fr.add(J.frame); } ok(fr.size === 1 && fr.has(0), '?spr80hold=0：定格幀 0（截圖用）', [...fr]); }
+
   console.log('# ?spr=old → 退返舊 sprite');
   await load(Q + '&spr=old'); await stage('adult', 'ember'); await idle(); I = await info();
   ok(!I.enabled && !I.loaded && !I.used && I.key === null, '?spr=old：唔載 80px、用舊 evo sprite', I);

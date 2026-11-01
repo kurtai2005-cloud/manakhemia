@@ -448,6 +448,7 @@
     spr80Frame(clip, t) {                // clip → idle 幀 0..3（null＝呢個 clip 冇 80px 圖）
       const C = P.sprites80, m = C.clips[clip]; if (m == null) return null;
       if (typeof m === 'number') return m;
+      if (C.hold != null && C.hold >= 0 && C.hold <= 3) return C.hold;   // 截圖／feel-test：定格幀（?spr80hold=0..3）
       if (C.idleMode === 'feel') { const F = C.feel; let f = (t % F.bobSec) < F.bobDownSec ? 1 : 0; if (f === 0 && (t % F.blinkSec) < F.blinkMs / 1000) f = 3; return f; }
       const ms = C.idleMs, tot = ms.reduce((a, v) => a + v, 0); let u = ((t * 1000) % tot + tot) % tot;
       for (let i = 0; i < ms.length; i++) { if (u < ms[i]) return i; u -= ms[i]; } return 0;

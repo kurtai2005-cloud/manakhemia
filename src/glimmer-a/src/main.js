@@ -45,6 +45,7 @@
         drawX: pd.drawX, drawY: pd.drawY, footY: pd.footY, bud: pd.bud, glow: r.s80Glow || null, idleMode: C && C.idleMode, atlas: r.s80 ? { w: r.s80.img.width, h: r.s80.img.height, frames: Object.keys(r.s80.json.frames).length } : null }; },
     force(k) { P.sprites80.force = k || null; return this.info(); },
     setIdleMode(m) { P.sprites80.idleMode = m; return m; },
+    hold(f) { P.sprites80.hold = (f == null ? null : f); return P.sprites80.hold; },
   };
   G.evo = {
     info() { const s = G.state, fk = G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; return { stage: s.stage, form: s.form, evoForm: D.evoForm(s.stage, s.form), drawForm: fk, gen: s.gen, fadeReady: !!s.fadeReady, growthH: +(s.growthSec / 3600).toFixed(3), stageH: P.stageSec[s.stage] / 3600, progress: +SIM.stageProgress(s).toFixed(4), lumi: SIM.lumiCheck(s), b5: SIM.branch5Check(s), force: (s.evo && s.evo.force) || null, care: SIM.careShare(s), migrated: s.migrated || null, memorial: s.memorial }; },
@@ -118,6 +119,7 @@
   if (P.sprites80) {
     if (qs.get('spr') === 'old') P.sprites80.enabled = false;
     if (/^[A-H][1-3]$/.test(qs.get('spr80') || '')) P.sprites80.force = qs.get('spr80');
+    if (/^[0-3]$/.test(qs.get('spr80hold') || '')) P.sprites80.hold = +qs.get('spr80hold');
     if (qs.get('spr80idle') === 'feel' || qs.get('spr80idle') === 'strip') P.sprites80.idleMode = qs.get('spr80idle');
   }
   G.spr80Load = (P.sprites80 && P.sprites80.enabled) ? G.renderer.loadSprites80(P.sprites80) : Promise.resolve(null);
