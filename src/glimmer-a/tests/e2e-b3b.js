@@ -46,6 +46,7 @@ const V = require('../src/visit.js');
   ok(s.log.some(l => l.k === 'spawn'), '記錄 spawn');
   await shot('visitor-arrival');
   // 向左行：信＋心都要鏡像（錨點喺 pivot 左邊）
+  await until(s => s.vs && s.vs.x < 168, 12000);
   await E(() => __qa.b3b.props({ letter: 'wait', heart: true, heartT: 200, meter: true })); await W(150);
   s = await b3(); const sn = s.vs; ok(Math.abs(sn.head.x - (sn.x + (22 - 33))) < 0.1 && Math.abs(sn.bag.x - (sn.x + (22 - 28))) < 0.1, '向左：head／bag 錨點鏡像（W−1−x）', { head: sn.head, bag: sn.bag, x: sn.x });
   let a = await css(sn.x - 40, sn.y - 60), b = await css(sn.x + 40, sn.y + 8);
