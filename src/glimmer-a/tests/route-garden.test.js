@@ -24,8 +24,9 @@ const T0 = new Date(2026, 10, 2, 9, 0).getTime(), DAY = 864e5;
 }
 {
   // 遊策 2026-11-01：route sweep --mg2 經真 gameFinish 玩小遊戲 v2；火苗路線分每日 routeGamesPerDay 局（同浮動局共用）
+  const cap0 = D.PARAMS.minigames2.routeGamesPerDay, w0 = D.PARAMS.minigames2.routePtsPerGame;
   const r = SW.main(40, true, { garden: 'rand', drops: 5, fpats: 2, mg2: true }), r1 = SW.main(40, true, { garden: 'rand', drops: 5, fpats: 2, mg2: true, mgcap: 'none' });
   ok(r.mg2 && r.mg2.games > 0 && r.mg2.route > 0 && r.mg2.route < r.mg2.games, 'route sweep --mg2：有玩 v2，上限 ' + D.PARAMS.minigames2.routeGamesPerDay + ' 局令部分唔計火苗', r.mg2);
-  ok(r1.mg2.route === r1.mg2.games && r1.total.ember > r.total.ember && D.PARAMS.minigames2.routeGamesPerDay === 2, '--mgcap none 試算：全部計、火苗更高（跑完還原 config）', [r.total.ember, r1.total.ember]);
+  ok(r1.mg2.route === r1.mg2.games && r1.total.ember > r.total.ember && D.PARAMS.minigames2.routeGamesPerDay === cap0 && D.PARAMS.minigames2.routePtsPerGame === w0, '--mgcap none 試算：全部計、火苗更高（跑完還原 config）', [r.total.ember, r1.total.ember]);
 }
 console.log(`\n結果：${pass} 通過，${fail} 失敗`); process.exit(fail ? 1 : 0);

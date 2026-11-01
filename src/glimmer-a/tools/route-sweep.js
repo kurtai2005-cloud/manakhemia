@@ -9,7 +9,7 @@
      每盆每日淋一次（--drops N＝懸浮每日執 N 粒，遊測假設 5；--gshards N＝壓力測試：芽崽開始送 N 粒買種子）；開花 → 該路線 +bloomPts（systems.addRoutePts，判路時照 25% cap）；日菊冇路線分。rand＝6 種花隨機揀；lead＝揀而家領先路線嘅花（冇對應花就隨機）。
    --mg2（--quests／--garden 預設開；--no-mg2 關）：小遊戲 v2（彈彈葉／花園捉迷藏／追螢火夜晚）。每次上線（獨立 rng seed*7919+401）按 MG2_RATE[時間表] 開一局，
      再 MG2_EXTRA 機會連玩第 2 局；分數抽自真 minigames2＋tools/mg2-bots.js bot 預跑池（技術 0–1 隨機）；經真 systems2.gameFinish（星星碎＋每日有獎局＋mgCount 火苗，
-     火苗路線分受 PARAMS.minigames2.routeGamesPerDay 每日上限、同浮動局共用）。--mgw N＝只喺 sim 入面將 evo6.branch.kinds.mg.w 改做 N（試算用，跑完還原）。
+     火苗路線分＝每局 PARAMS.minigames2.routePtsPerGame、每日 routeGamesPerDay 局上限、同浮動局共用）。--mgw N／--mgcap N|none＝只喺 sim 入面臨時改 routePtsPerGame／routeGamesPerDay（試算用，跑完還原）。
    數值全部讀 PARAMS.evo6.branch；唔改 config。 */
 const S = require('../src/sim.js'), D = require('../src/data.js'), P = D.PARAMS, C = P.evo6.branch;
 const args = process.argv.slice(2); if (args.includes('--quests') || args.includes('--garden') || args.includes('--mg2')) require('../src/systems.js');
@@ -121,8 +121,8 @@ function main(n, quiet, ro) {
   ro = ro || Object.assign(FPATS ? { fpats: FPATS } : {}, DROPS ? { drops: DROPS } : {});
   const gmode = ro.garden || GARDEN, gst = { blooms: 0, byRoute: {}, gshards: ro.gshards || GSEED }, mg2 = ro.mg2 != null ? !!ro.mg2 : MG2_CLI, mst = { games: 0 };
   if (mg2 || gmode) require('../src/systems2.js');
-  const KM = P.evo6.branch.kinds.mg, w0 = KM.w, mgw = ro.mgw != null ? ro.mgw : MGW; if (mgw != null) KM.w = mgw;   // 試算：只喺呢次 sim 改，跑完還原
-  const M2P = P.minigames2, cap0 = M2P.routeGamesPerDay, mgcap = ro.mgcap !== undefined ? ro.mgcap : MGCAP; if (mgcap !== undefined) M2P.routeGamesPerDay = mgcap === 'none' ? null : mgcap;
+  const M2P = P.minigames2, w0 = M2P.routePtsPerGame, mgw = ro.mgw != null ? ro.mgw : MGW; if (mgw != null) M2P.routePtsPerGame = mgw;   // 試算：只喺呢次 sim 改，跑完還原
+  const cap0 = M2P.routeGamesPerDay, mgcap = ro.mgcap !== undefined ? ro.mgcap : MGCAP; if (mgcap !== undefined) M2P.routeGamesPerDay = mgcap === 'none' ? null : mgcap;
   const N = n || NARG, log = quiet ? () => {} : console.log;
 const all = {}, out = {}, NAMES = Object.keys(SCHED);
 for (const name of NAMES) {
@@ -135,10 +135,10 @@ for (const name of NAMES) {
   out[name] = { dist: c, pct, cqMed: +cqs[N >> 1].toFixed(2), cqP10: +cqs[Math.floor(N * 0.1)].toFixed(2), cqP90: +cqs[Math.floor(N * 0.9)].toFixed(2), mgs: +(mg / N).toFixed(2), lulls: +(lu / N).toFixed(2) };
   log(name.padEnd(4, '　'), D.BRANCHES.map(f => D.FORM_NAME[f] + ' ' + pct[f]).join('  '), '｜CQ p10/中/p90', out[name].cqP10, out[name].cqMed, out[name].cqP90, '｜小遊戲', out[name].mgs, '哄瞓', out[name].lulls);
 }
-KM.w = w0; const capUsed = M2P.routeGamesPerDay; M2P.routeGamesPerDay = cap0;
+M2P.routePtsPerGame = w0; const capUsed = M2P.routeGamesPerDay; M2P.routeGamesPerDay = cap0;
 const tot = N * NAMES.length, total = {};
 for (const f of D.BRANCHES) total[f] = +(100 * (all[f] || 0) / tot).toFixed(2);
-if (mg2) log('小遊戲 v2：每隻平均 ' + (mst.games / tot).toFixed(2) + ' 局（計火苗路線分 ' + ((mst.route || 0) / tot).toFixed(2) + ' 局）；火苗路線每日上限 ' + (capUsed == null ? '冇' : capUsed) + ' 局（同浮動局共用）；mg.w＝' + (mgw != null ? mgw : w0));
+if (mg2) log('小遊戲 v2：每隻平均 ' + (mst.games / tot).toFixed(2) + ' 局（計火苗路線分 ' + ((mst.route || 0) / tot).toFixed(2) + ' 局）；火苗路線每日上限 ' + (capUsed == null ? '冇' : capUsed) + ' 局（同浮動局共用）；每局 +' + (mgw != null ? mgw : w0));
 if (gmode) log('小圃（' + gmode + '）：每隻平均開花 ' + (gst.blooms / (N * NAMES.length)).toFixed(2) + ' 朵（有路線分：' + Object.entries(gst.byRoute).map(([r, n]) => D.FORM_NAME[r] + ' ' + (n / (N * NAMES.length)).toFixed(2)).join('、') + '）');
 log('\n全體 vs 遊測 v10 目標（差 >' + FLAG_PT + 'pt 標 ⚠）');
 const flags = [];
