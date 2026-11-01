@@ -4,7 +4,10 @@
  * 掃描覆寫：小遊戲 v2 同浮動雙擊共用「每日最多 cap 局計火苗路線分」。
  *   時段窗（20–03 月眠、06–09 水珠）嘅局照舊只計窗路線，唔佔呢個額。
  *   超額局：火苗權重 0；CQ、委託、天氣菇傘、星星碎照計。
- * A：每計分局 +2（config 原值）。B：每計分局 +1。cap＝2。
+ * A：每計分局 +2、cap 2。B：每計分局 +1、cap 2。
+ * 掃：C +2／cap 1；D +1／cap 3；E +1／cap 4；F +1.5／cap 2；G 第 1 局 +2、第 2 局 +1、cap 2。
+ * node scan-v10-5.js            → A、B（寫 scan-v10-5-result.json）
+ * node scan-v10-5.js --sweep    → C–G（寫 scan-v10-5-sweep.json）
  */
 'use strict';
 const fs = require('fs');
@@ -24,7 +27,7 @@ const FP = 2, DROPS = 5, CAP = 2;
 const BASE_W = C.kinds.mg.w;
 const PATHS = ['lumi', 'tide', 'shroom', 'crystal', 'moon', 'ember', 'bright', 'soft', 'dust'];
 const NAMES = Object.keys(SW.SCHED);
-const rule = { on: false, w: BASE_W, cap: CAP };
+const rule = { on: false, w: BASE_W, weights: null, cap: CAP };
 const used = new WeakMap();
 const stat = { counted: 0, skipped: 0 };
 
@@ -46,7 +49,8 @@ function plan(s) {
   if (!rule.on || !s || s.stage === 'egg' || inCareWindow(hourNow())) return null;
   const rec = dayRec(s);
   if (rec.n >= rule.cap) return { w: 0, rec, take: false };
-  return { w: rule.w, rec, take: true };
+  const ws = rule.weights && rule.weights.length ? rule.weights : [rule.w];
+  return { w: ws[Math.min(rec.n, ws.length - 1)], rec, take: true };
 }
 function countedOk(r) { return r === true || !!(r && r.ok); }
 function withWeight(s, fn) {
@@ -115,7 +119,25 @@ function prove() {
       configW: C.kinds.mg.w,
     };
   }
-  rule.on = false; rule.w = BASE_W;
+  function shape(name, weights, cap, rounds, expect) {
+    rule.on = true; rule.weights = weights; rule.cap = cap; rule.w = weights[0];
+    const s = S.newState(1, 11);
+    s.stage = 'sprout'; s.cq = 50; s.evo.day0 = '2026-11-02';
+    const t = new Date(2026, 10, 2, 13, 0, 0).getTime();
+    S.setNowFn(() => t); S.setHourFn(() => 13); S.setWeatherFn(() => 'clear');
+    for (let i = 0; i < rounds; i++) S.mgCount(s);
+    const ember = emberOf(s);
+    const s2 = S.newState(2, 11);
+    s2.stage = 'sprout'; s2.cq = 50;
+    S.overlayOpenGame(s2, t);
+    for (let i = 1; i < rounds; i++) S.mgCount(s2);
+    const shared = emberOf(s2);
+    out[name] = { ember, expect, shared, ok: ember === expect && shared === expect };
+  }
+  shape('C', [2], 1, 3, 2);
+  shape('F', [1.5], 2, 3, 3);
+  shape('G', [2, 1], 2, 3, 3);
+  rule.on = false; rule.w = BASE_W; rule.weights = null; rule.cap = CAP;
   S.setNowFn(null); S.setHourFn(null); S.setWeatherFn(null);
   return out;
 }
@@ -207,28 +229,69 @@ function checksFor(R, econ, code) {
   };
 }
 
-function runVariant(id, w) {
-  rule.on = true; rule.w = w; rule.cap = CAP;
+function runVariant(spec) {
+  const weights = spec.weights || [spec.w];
+  const cap = spec.cap == null ? CAP : spec.cap;
+  rule.on = true; rule.weights = weights; rule.w = weights[0]; rule.cap = cap;
   stat.counted = 0; stat.skipped = 0;
   const t0 = Date.now();
   const econ = economy();
   const R = routes();
   const row = checksFor(R, econ, checkCode());
-  row.id = id; row.w = w; row.cap = CAP; row.ms = Date.now() - t0;
+  row.id = spec.id; row.w = weights.length === 1 ? weights[0] : weights; row.weights = weights; row.cap = cap;
+  row.label = spec.label || '';
+  row.ms = Date.now() - t0;
   row.mgStat = { counted: stat.counted, skipped: stat.skipped };
   row.configWAfter = C.kinds.mg.w;
-  rule.on = false; rule.w = BASE_W;
+  row.emberBy = {};
+  for (const n of NAMES) row.emberBy[n] = R.tables[n].ember;
+  rule.on = false; rule.w = BASE_W; rule.weights = null; rule.cap = CAP;
   return row;
+}
+
+const SWEEP = [
+  { id: 'C', weights: [2], cap: 1, label: '+2，每日 1 局' },
+  { id: 'D', weights: [1], cap: 3, label: '+1，每日 3 局' },
+  { id: 'E', weights: [1], cap: 4, label: '+1，每日 4 局' },
+  { id: 'F', weights: [1.5], cap: 2, label: '+1.5，每日 2 局' },
+  { id: 'G', weights: [2, 1], cap: 2, label: '第 1 局 +2、第 2 局 +1，每日 2 局' },
+];
+
+function sweep(proof) {
+  const rows = {};
+  const destEarly = process.env.OUT || path.join(__dirname, 'scan-v10-5-sweep.json');
+  for (const spec of SWEEP) {
+    rows[spec.id] = runVariant(spec);
+    fs.writeFileSync(destEarly, JSON.stringify({ partial: true, rows, configW: C.kinds.mg.w }, null, 2));
+    console.error('done ' + spec.id + ' ember ' + rows[spec.id].total.ember + ' soft ' + rows[spec.id].total.soft + ' pass ' + rows[spec.id].passN);
+  }
+  const out = {
+    doc: '遊策預掃 C–G。火苗權重同每日局數只喺掃描覆寫。浮動雙擊共用額。星星碎唔封。遊戲碼未改。',
+    sim: 'bf57cb23a4fc743c8b89c6d9ea596f0c582f0407',
+    tree: 'b6e89349fcd7b06d7aac090bd8f620039eda6f76',
+    N, ECON_N, proof, configW: C.kinds.mg.w,
+    rows,
+    all16: Object.fromEntries(SWEEP.map(s => [s.id, rows[s.id].passN === 16])),
+  };
+  const dest = process.env.OUT || path.join(__dirname, 'scan-v10-5-sweep.json');
+  fs.writeFileSync(dest, JSON.stringify(out, null, 2));
+  const brief = {};
+  for (const id of Object.keys(rows)) {
+    const v = rows[id];
+    brief[id] = { passN: v.passN, fail: v.fail, total: v.total, emberBy: v.emberBy, nightMoon: v.nightMoon, cq: v.cqMed, econ: v.econ, ms: v.ms };
+  }
+  console.log(JSON.stringify({ proofOk: true, configW: C.kinds.mg.w, all16: out.all16, brief }, null, 2));
 }
 
 function main() {
   const proof = prove();
-  if (!proof.w2.ok || !proof.w1.ok || !proof.w2.shardStillPaid || C.kinds.mg.w !== 2) {
+  if (!proof.w2.ok || !proof.w1.ok || !proof.C.ok || !proof.F.ok || !proof.G.ok || !proof.w2.shardStillPaid || C.kinds.mg.w !== 2) {
     console.error(JSON.stringify({ proof, configW: C.kinds.mg.w }, null, 2));
     process.exit(1);
   }
-  const A = runVariant('A', 2);
-  const B = runVariant('B', 1);
+  if (process.argv.includes('--sweep')) return sweep(proof);
+  const A = runVariant({ id: 'A', weights: [2], cap: 2, label: '+2，每日 2 局' });
+  const B = runVariant({ id: 'B', weights: [1], cap: 2, label: '+1，每日 2 局' });
   const out = {
     doc: '遊策預掃：mg 火苗每日最多 2 局。A＝+2／局，B＝+1／局。星星碎唔封。遊戲碼未改。',
     sim: 'bf57cb23a4fc743c8b89c6d9ea596f0c582f0407',
