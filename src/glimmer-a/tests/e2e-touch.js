@@ -63,11 +63,11 @@ const LINES = require('../src/touch.js').LINES;
   await W(1000);
   await E(() => { const ev = (g) => window.dispatchEvent(new DeviceMotionEvent('devicemotion', { accelerationIncludingGravity: { x: g * 9.81, y: 0, z: 0 } })); ev(3); setTimeout(() => ev(3.2), 300); });
   await W(450); s = await st(); ok(s.act && s.act.key === 'g_dizzy' && okGrant(s, 'shake'), 'devicemotion 1s 內兩次 >2.5g：暈 g_dizzy', s.act);
-  const gz = await E(() => __glimmer.renderer.faceStat.last.gest); ok(gz && gz.fx.includes('stars') && gz.art === 'fx_dizzy_stars', '轉星疊層（art key fx_dizzy_stars 預留）', gz);
+  const gz = await E(() => __glimmer.renderer.faceStat.last.gest); ok(gz && gz.rx && gz.clip === 'touch_shake_dizzy' && gz.faceOn && /dizzy/.test(gz.face || ''), '暈：遊美 clip touch_shake_dizzy（face patch dizzy）', gz);
   await shot('dizzy');
   s = await st(); ok(s.mood.shared === 5 && s.grants.filter(g => g.ok).length === 5, '5 種手勢各一次 → 共用額 5', s.mood);
   const lsN = await E(() => { const d = new Date(); return JSON.parse(localStorage.getItem('fpet_daily_v1'))[d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()]; }); ok(lsN === 5, 'localStorage fpet_daily_v1（浮動團絨同一個 key）＝ 5', lsN);
-  await W(300); await E(() => { __qa.touch.shake(3, 1000); __qa.touch.shake(3, 1000.4); __qa.touch.shake(3, 1010); __qa.touch.shake(3, 1010.4); __qa.touch.shake(3, 1020); __qa.touch.shake(3, 1020.4); }); await W(100);
+  await W(300); await E(() => { __qa.touch.shake(3, 1000); __qa.touch.shake(3, 1000.4); __qa.touch.shake(3, 1010); __qa.touch.shake(3, 1010.4); __qa.touch.shake(3, 1020); __qa.touch.shake(3, 1020.4); }); await W(700);   // 遊美 touch_shake_pretend：line 事件喺 300ms
   v = await voice(); ok(v.text === LINES.brag || (await E(() => __glimmer.nq.log.some(l => l.line === '頭先係我故意轉嘅'))), '1 分鐘內搖 3 次 →「頭先係我故意轉嘅」', v);
 
   console.log('# 共用上限：浮動已用 4 → 手勢只得 1');
@@ -75,7 +75,9 @@ const LINES = require('../src/touch.js').LINES;
   await load('q=high&hour=13&seed=12&ev=0', { fpet_daily_v1: JSON.stringify({ [dk]: 4 }) });
   await E(() => { __qa.touch.gesture('poke'); __qa.touch.gesture('hold'); __qa.touch.reset(); }); s = await st();
   ok(okGrant(s, 'poke') && s.grants.find(g => g.kind === 'hold').reason === 'cap' && s.mood.shared === 5, '第 5 下之後 cap（同浮動 ≤5）', s.grants);
-  const rpA = await E(() => JSON.stringify(__glimmer.state.evo)); await E(() => { __qa.touch.gesture('tickle'); __qa.touch.gesture('pull', { dx: 60 }); }); ok(await E(() => JSON.stringify(__glimmer.state.evo)) === rpA, '手勢唔郁 evo／路線分');
+  // 同一個 evaluate 內前後比（唔會中間行 tick）；只比照顧／事件計數＋路線分（時間驅動欄唔比）
+  const rp = await E(() => { const S = __glimmer.state, snap = () => JSON.stringify({ care: S.evo && S.evo.care, evIn: S.evo && S.evo.evIn, route: S.route || null, b5: S.evo && S.evo.b5 }); const a = snap(); __qa.touch.gesture('tickle'); __qa.touch.gesture('pull', { dx: 60 }); __qa.touch.gesture('poke'); return { a, b: snap() }; });
+  ok(rp.a === rp.b, '手勢唔郁 evo 照顧／事件計數／路線分', rp.a === rp.b ? undefined : rp);
 
   console.log('# ⓪ 提示排隊');
   await E(() => { __qa.touch.reset(); Object.assign(__glimmer.state.needs, { hunger: 10 }); }); await W(400);
@@ -90,11 +92,14 @@ const LINES = require('../src/touch.js').LINES;
   ok(await E(() => !window.__vr.ok || __glimmer.nq.log.some(l => l.line === window.__vr.line)), '親密度心聲（sysVoice）都經排隊', await E(() => window.__vr));
 
   console.log('# ② 扮醒呆反應包');
+  const RXC = { glasses: 'dim_glasses_count', book: 'dim_book_sleep', wall: 'dim_wall_bump', mirror: 'dim_mirror', finger: 'dim_count_fingers', prof: 'dim_professor' };
   await load('q=high&hour=13&seed=13&ev=0');
   for (const k of ['glasses', 'book', 'wall', 'mirror', 'finger', 'prof']) {
     await E((k) => { __qa.touch.reset(); __glimmer.nq.clear(); __qa.touch.dumb(k); }, k); await W(2600);
     s = await st(); v = await voice();
     ok(s.act && s.act.key === 'd_' + k && LINES.dumb[k].includes(v.text) && v.src === 'dumb', k + '：動作 d_' + k + '＋自信錯誤心聲', { act: s.act, v });
+    const gk = await E(() => __glimmer.renderer.faceStat.last.gest); ok(gk && gk.rx && gk.clip === RXC[k] && gk.faceOn !== undefined, k + '：用遊美 clip ' + RXC[k], gk);
+    if (k === 'mirror') ok(gk.fx.includes('fx_mirror_back') && gk.fx.includes('fx_mirror_front') && (await E(() => __glimmer.renderer.faceStat.rxReflect || 0)) > 0, '鏡：前後層＋倒影有畫', { fx: gk.fx, n: await E(() => __glimmer.renderer.faceStat.rxReflect) });
     await shot('dumb-' + k);
   }
   ok(await E(() => __glimmer.beh.state === 'stay' && __glimmer.beh.hushUntil > __glimmer.beh.t), '扮緊嘢：團絨企定（唔行開）');
@@ -117,6 +122,10 @@ const LINES = require('../src/touch.js').LINES;
   await E(() => { __qa.touch.reset(); __glimmer.state.needs.energy = 10; __glimmer.state.sleeping = true; }); await W(200); ok(await E(() => __glimmer.state.sleeping), '（瞓緊）');
   await E(() => { __qa.touch.shake(3, 2000); __qa.touch.shake(3, 2000.4); }); s = await st();
   ok(s.act && s.act.key === 'g_rub' && !s.grants.some(g => g.ok), '瞓覺搖機 → g_rub，冇心情', s);
+  await W(300); const gr = await E(() => __glimmer.renderer.faceStat.last.gest); ok(gr && gr.rx && gr.clip === 'touch_sleep_rub', '瞓覺：遊美 clip touch_sleep_rub', gr);
+  console.log('# ?rx=0 → 程序化後備');
+  await load('q=high&hour=13&seed=15&ev=0&rx=0'); await E(() => { __qa.touch.reset(); __qa.touch.gesture('tickle'); }); await W(300);
+  const gf = await E(() => __glimmer.renderer.faceStat.last.gest); ok(gf && !gf.rx && gf.key === 'g_tickle', '?rx=0：冇遊美圖都照郁（程序化）', gf);
   await E(() => { __glimmer.state.sleeping = false; });
   ok(!errs.length, '冇 console error／pageerror', errs.slice(0, 5));
   await browser.close();

@@ -480,7 +480,7 @@
       }
     }
     rxReflect(x, RF, mx, my, fw, fh, mir, src) {   // 鏡中倒影：同一幀（已蓋 face patch）左右反轉縮細、tint＋add、clip 落玻璃 mask
-      const rx = this.rx, mk_ = rx.img[RF.mask]; if (!mk_) return;
+      const rx = this.rx, mk_ = rx.img[RF.mask]; if (!mk_) return; this.faceStat.rxReflect = (this.faceStat.rxReflect || 0) + 1;
       try {
         const c = this._rfC || (this._rfC = document.createElement('canvas')); c.width = fw; c.height = fh; const g = c.getContext('2d', { willReadFrequently: true }); g.imageSmoothingEnabled = false; g.clearRect(0, 0, fw, fh);
         const ob = this.opaqueBox(src), hgt = ob ? (ob.b - ob.t + 1) : src.sh, sc = Math.min(RF.scale, 16 / Math.max(1, hgt));
