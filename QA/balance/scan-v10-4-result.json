@@ -1,0 +1,386 @@
+{
+  "doc": "§7 v10.4。真 sim bf57cb2。小圃隨機花＋散步＋徽章＋mg2。",
+  "sim": "bf57cb23a4fc743c8b89c6d9ea596f0c582f0407",
+  "tree": "b6e89349fcd7b06d7aac090bd8f620039eda6f76",
+  "N": 1000,
+  "ECON_N": 200,
+  "fpats": 2,
+  "drops": 5,
+  "garden": "rand",
+  "docBand": "pet-template-v1／systems12-v1 仍然寫每日 15–30，冇改遊策定數",
+  "code": [
+    {
+      "name": "菇傘雨 0.8／陰霧 0.4",
+      "ok": true,
+      "info": {
+        "overcast": {
+          "to": "shroom",
+          "w": 0.4
+        },
+        "fog": {
+          "to": "shroom",
+          "w": 0.4
+        },
+        "rain": {
+          "to": "shroom",
+          "w": 0.8
+        }
+      }
+    },
+    {
+      "name": "天氣一日一抽 60/20/15/5",
+      "ok": true,
+      "info": {
+        "clear": 60,
+        "overcast": 20,
+        "fog": 5,
+        "rain": 15
+      }
+    },
+    {
+      "name": "委託池餵玩摸頭、淋水只水珠",
+      "ok": true,
+      "info": [
+        "feed",
+        "play",
+        "pat"
+      ]
+    },
+    {
+      "name": "每張4、齊+3、上限15/30、留1日最多6、摸頭12",
+      "ok": true,
+      "info": {
+        "perDay": 3,
+        "perItem": 4,
+        "allBonus": 3,
+        "keepDays": 1,
+        "maxHeld": 6,
+        "overlayPatPerDay": 12,
+        "pool": [
+          "feed",
+          "play",
+          "pat"
+        ],
+        "rinseIfLead": "tide",
+        "routeBonus": "perItem",
+        "kinds": {
+          "feed": {
+            "n": 2,
+            "counts": [
+              "feed"
+            ],
+            "icon": "icon_commission_feed",
+            "label": "餵佢食嘢"
+          },
+          "rinse": {
+            "n": 1,
+            "counts": [
+              "rinse"
+            ],
+            "icon": "icon_commission_water",
+            "label": "幫佢淋水沖身"
+          },
+          "play": {
+            "n": 1,
+            "counts": [
+              "play",
+              "mg"
+            ],
+            "icon": "icon_commission_play",
+            "label": "陪佢玩一陣"
+          },
+          "pat": {
+            "n": 2,
+            "counts": [
+              "pat"
+            ],
+            "icon": "sticker_heart",
+            "label": "摸摸佢個頭"
+          },
+          "poopQuick": {
+            "n": 1,
+            "counts": [
+              "poopQuick"
+            ],
+            "icon": "sticker_heart",
+            "label": "返嚟 2 分鐘內執晒便便"
+          },
+          "lull": {
+            "n": 1,
+            "counts": [
+              "lull",
+              "petSleep"
+            ],
+            "icon": "sticker_sleep",
+            "label": "夜晚哄佢瞓／陪瞓"
+          }
+        }
+      }
+    },
+    {
+      "name": "火苗 mg +2",
+      "ok": true,
+      "info": {
+        "to": "ember",
+        "w": 2
+      }
+    },
+    {
+      "name": "v1 預設閂",
+      "ok": true,
+      "info": false
+    },
+    {
+      "name": "追螢火夜窗",
+      "ok": true,
+      "info": {
+        "from": 17,
+        "to": 7
+      }
+    },
+    {
+      "name": "冷卻 600s",
+      "ok": true,
+      "info": 600
+    },
+    {
+      "name": "小物 30、每日 5、10%",
+      "ok": true,
+      "info": 30
+    },
+    {
+      "name": "徽章 30、日菊唔加路線分",
+      "ok": true,
+      "info": 30
+    },
+    {
+      "name": "新系統分封頂 25%",
+      "ok": true,
+      "info": 25
+    }
+  ],
+  "checks": [
+    [
+      "9 條路出齊（每條≥2%）",
+      "✅",
+      "齊"
+    ],
+    [
+      "每表≥2 結局（每個≥2%）",
+      "✅",
+      null
+    ],
+    [
+      "單一≤85%",
+      "✅",
+      81.8
+    ],
+    [
+      "螢絨 3–10%",
+      "✅",
+      5.27
+    ],
+    [
+      "每表菇傘≤30%",
+      "✅",
+      14.1
+    ],
+    [
+      "晶角全體≥5%",
+      "✅",
+      9.27
+    ],
+    [
+      "月眠全體≥5%",
+      "✅",
+      17.17
+    ],
+    [
+      "每表燦光≤50%",
+      "✅",
+      20
+    ],
+    [
+      "疏玩柔光＋微塵",
+      "✅",
+      "33.4/35.6"
+    ],
+    [
+      "疏玩 CQ 15–35",
+      "✅",
+      18
+    ],
+    [
+      "新系統路線分≤25%",
+      "✅",
+      25
+    ],
+    [
+      "疏玩上線日星碎 15–30",
+      "✅",
+      19
+    ],
+    [
+      "其他 5 表每日星碎 15–30",
+      "✅",
+      "勤力 26 普通 23 夜貓 24 早起 24 餵食狂 24"
+    ],
+    [
+      "冇一日穿 30",
+      "✅",
+      0
+    ]
+  ],
+  "passN": 14,
+  "total": {
+    "lumi": 5.27,
+    "tide": 12.47,
+    "shroom": 4.7,
+    "crystal": 9.27,
+    "moon": 17.17,
+    "ember": 33.1,
+    "bright": 5.48,
+    "soft": 6.62,
+    "dust": 5.93
+  },
+  "tables": {
+    "勤力": {
+      "lumi": 5,
+      "tide": 5.9,
+      "shroom": 5.8,
+      "crystal": 23.6,
+      "moon": 1.4,
+      "ember": 38.2,
+      "bright": 20,
+      "soft": 0.1,
+      "dust": 0
+    },
+    "普通": {
+      "lumi": 5.1,
+      "tide": 6.9,
+      "shroom": 5.5,
+      "crystal": 30.5,
+      "moon": 4.7,
+      "ember": 44.5,
+      "bright": 2.3,
+      "soft": 0.5,
+      "dust": 0
+    },
+    "疏玩": {
+      "lumi": 0,
+      "tide": 0,
+      "shroom": 1,
+      "crystal": 1.4,
+      "moon": 14.9,
+      "ember": 13.7,
+      "bright": 0,
+      "soft": 33.4,
+      "dust": 35.6
+    },
+    "夜貓": {
+      "lumi": 17.3,
+      "tide": 0,
+      "shroom": 0,
+      "crystal": 0,
+      "moon": 81.8,
+      "ember": 0.9,
+      "bright": 0,
+      "soft": 0,
+      "dust": 0
+    },
+    "早起": {
+      "lumi": 3.8,
+      "tide": 59.3,
+      "shroom": 1.8,
+      "crystal": 0.1,
+      "moon": 0.2,
+      "ember": 25.5,
+      "bright": 9.2,
+      "soft": 0.1,
+      "dust": 0
+    },
+    "餵食狂": {
+      "lumi": 0.4,
+      "tide": 2.7,
+      "shroom": 14.1,
+      "crystal": 0,
+      "moon": 0,
+      "ember": 75.8,
+      "bright": 1.4,
+      "soft": 5.6,
+      "dust": 0
+    }
+  },
+  "cqMed": 18,
+  "cqs": {
+    "勤力": 48.07,
+    "普通": 38.11,
+    "疏玩": 18,
+    "夜貓": 37.73,
+    "早起": 31.85,
+    "餵食狂": 40.32
+  },
+  "brightMax": 20,
+  "shroomMax": 14.1,
+  "nightMoon": 81.8,
+  "blooms": 4716,
+  "bloomByRoute": {
+    "moon": 815,
+    "crystal": 768,
+    "tide": 753,
+    "ember": 799,
+    "shroom": 764
+  },
+  "econ": {
+    "勤力": {
+      "playMed": 26,
+      "allMed": 26,
+      "max": 30
+    },
+    "普通": {
+      "playMed": 23,
+      "allMed": 23,
+      "max": 30
+    },
+    "疏玩": {
+      "playMed": 19,
+      "allMed": 9,
+      "max": 30
+    },
+    "夜貓": {
+      "playMed": 24,
+      "allMed": 24,
+      "max": 30
+    },
+    "早起": {
+      "playMed": 24,
+      "allMed": 24,
+      "max": 30
+    },
+    "餵食狂": {
+      "playMed": 24,
+      "allMed": 24,
+      "max": 30
+    }
+  },
+  "over30": 0,
+  "routeDiff": {
+    "crystal": {
+      "qa": 9.27,
+      "prog": 14.12,
+      "d": -4.85
+    },
+    "ember": {
+      "qa": 33.1,
+      "prog": 14.57,
+      "d": 18.53
+    },
+    "soft": {
+      "qa": 6.62,
+      "prog": 12.33,
+      "d": -5.71
+    }
+  },
+  "econDiff": {},
+  "ms": 79545
+}
