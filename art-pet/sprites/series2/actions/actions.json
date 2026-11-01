@@ -1,0 +1,558 @@
+{
+ "note": "細佬 5 動作：34 個階段（S1、S2、S4×8 新＋24 個 from_ref 1/2/3 階）一律有 strip；48×48，pivot (24,45)。clip 定義同 3a reactions schema，已烘焙；引擎直接播 strip。",
+ "frameSize": 48,
+ "pivot": [
+  24,
+  45
+ ],
+ "clips": {
+  "walk": {
+   "frames": 6,
+   "frameMs": 100,
+   "loop": true,
+   "note": "跳步行（向右；向左＝flipX）。引擎每幀移 1px（約 10px/s 慢行，可調）",
+   "body": [
+    {
+     "t": 0,
+     "y": 0,
+     "sx": 1.04,
+     "sy": 0.96
+    },
+    {
+     "t": 100,
+     "y": -1,
+     "sx": 0.98,
+     "sy": 1.03
+    },
+    {
+     "t": 200,
+     "y": -2,
+     "sx": 0.97,
+     "sy": 1.04
+    },
+    {
+     "t": 300,
+     "y": -1,
+     "sx": 1.0,
+     "sy": 1.0
+    },
+    {
+     "t": 400,
+     "y": 0,
+     "sx": 1.05,
+     "sy": 0.95
+    },
+    {
+     "t": 500,
+     "y": 0,
+     "sx": 1.0,
+     "sy": 1.0
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": null
+    }
+   ]
+  },
+  "cry": {
+   "frames": 6,
+   "frameMs": 150,
+   "loop": true,
+   "note": "喊（哄喊事件 loop；10 分鐘冇人理自己停）",
+   "body": [
+    {
+     "t": 0,
+     "x": 0,
+     "sy": 0.97,
+     "sx": 1.03
+    },
+    {
+     "t": 150,
+     "x": -1,
+     "sy": 1.0,
+     "sx": 1.0
+    },
+    {
+     "t": 300,
+     "x": 0,
+     "sy": 0.97,
+     "sx": 1.03
+    },
+    {
+     "t": 450,
+     "x": 1,
+     "sy": 1.0,
+     "sx": 1.0
+    },
+    {
+     "t": 600,
+     "x": 0,
+     "sy": 0.97,
+     "sx": 1.03
+    },
+    {
+     "t": 750,
+     "x": 0,
+     "sy": 1.0,
+     "sx": 1.0
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": [
+      "cry_a",
+      "cry_a",
+      "cry_b",
+      "cry_b"
+     ],
+     "ms": 150
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx2_tear",
+     "anchor": "eyeL",
+     "dx": -3,
+     "dy": 1,
+     "t0": 0,
+     "t1": 900,
+     "ms": 150,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       450,
+       0,
+       4
+      ]
+     ],
+     "loopMove": 450
+    },
+    {
+     "id": "fx2_tear",
+     "anchor": "eyeR",
+     "dx": 3,
+     "dy": 1,
+     "t0": 0,
+     "t1": 900,
+     "ms": 150,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       450,
+       0,
+       4
+      ]
+     ],
+     "loopMove": 450,
+     "mirrorX": 1
+    }
+   ]
+  },
+  "eat": {
+   "frames": 6,
+   "frameMs": 120,
+   "loop": true,
+   "note": "食（一齊食時 loop 2–3 次；食物 icon 由引擎喺 chest 前畫）",
+   "body": [
+    {
+     "t": 0,
+     "y": 0,
+     "sy": 1.0
+    },
+    {
+     "t": 120,
+     "y": 1,
+     "sy": 0.95,
+     "sx": 1.04
+    },
+    {
+     "t": 240,
+     "y": 0,
+     "sy": 1.0,
+     "sx": 1.0
+    },
+    {
+     "t": 360,
+     "y": 1,
+     "sy": 0.95,
+     "sx": 1.04
+    },
+    {
+     "t": 480,
+     "y": 0,
+     "sy": 1.02,
+     "sx": 0.99
+    },
+    {
+     "t": 600,
+     "y": 0,
+     "sy": 1.0,
+     "sx": 1.0
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "chew_o"
+    },
+    {
+     "t": 120,
+     "f": "chew_c"
+    },
+    {
+     "t": 240,
+     "f": "chew_o"
+    },
+    {
+     "t": 360,
+     "f": "chew_c"
+    },
+    {
+     "t": 480,
+     "f": "happy"
+    },
+    {
+     "t": 600,
+     "f": "chew_c"
+    }
+   ]
+  },
+  "sleep": {
+   "frames": 4,
+   "frameMs": 450,
+   "loop": true,
+   "note": "瞓（呼吸）；Zzz 用 3a fx_zzz（anchor headTop, dx 6）由引擎疊",
+   "body": [
+    {
+     "t": 0,
+     "sx": 1.0,
+     "sy": 1.0
+    },
+    {
+     "t": 450,
+     "sx": 1.02,
+     "sy": 0.97
+    },
+    {
+     "t": 900,
+     "sx": 1.03,
+     "sy": 0.96
+    },
+    {
+     "t": 1350,
+     "sx": 1.02,
+     "sy": 0.97
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "sleep"
+    }
+   ],
+   "engineFx": [
+    {
+     "id": "fx_zzz",
+     "anchor": "headTop",
+     "dx": 6,
+     "dy": -1,
+     "ms": 300
+    }
+   ]
+  }
+ },
+ "idleClip": {
+  "frames": 4,
+  "ms": [
+   260,
+   180,
+   260,
+   140
+  ]
+ },
+ "forms": {
+  "S1": {
+   "stage": "S1 蛋殼仔",
+   "idle": "actions/S1_idle.png",
+   "walk": "actions/S1_walk.png",
+   "cry": "actions/S1_cry.png",
+   "eat": "actions/S1_eat.png",
+   "sleep": "actions/S1_sleep.png"
+  },
+  "S2": {
+   "stage": "S2 BB",
+   "idle": "actions/S2_idle.png",
+   "walk": "actions/S2_walk.png",
+   "cry": "actions/S2_cry.png",
+   "eat": "actions/S2_eat.png",
+   "sleep": "actions/S2_sleep.png"
+  },
+  "S4A": {
+   "stage": "S4 A 少年",
+   "idle": "actions/S4A_idle.png",
+   "walk": "actions/S4A_walk.png",
+   "cry": "actions/S4A_cry.png",
+   "eat": "actions/S4A_eat.png",
+   "sleep": "actions/S4A_sleep.png"
+  },
+  "S4B": {
+   "stage": "S4 B 少年",
+   "idle": "actions/S4B_idle.png",
+   "walk": "actions/S4B_walk.png",
+   "cry": "actions/S4B_cry.png",
+   "eat": "actions/S4B_eat.png",
+   "sleep": "actions/S4B_sleep.png"
+  },
+  "S4C": {
+   "stage": "S4 C 少年",
+   "idle": "actions/S4C_idle.png",
+   "walk": "actions/S4C_walk.png",
+   "cry": "actions/S4C_cry.png",
+   "eat": "actions/S4C_eat.png",
+   "sleep": "actions/S4C_sleep.png"
+  },
+  "S4D": {
+   "stage": "S4 D 少年",
+   "idle": "actions/S4D_idle.png",
+   "walk": "actions/S4D_walk.png",
+   "cry": "actions/S4D_cry.png",
+   "eat": "actions/S4D_eat.png",
+   "sleep": "actions/S4D_sleep.png"
+  },
+  "S4E": {
+   "stage": "S4 E 少年",
+   "idle": "actions/S4E_idle.png",
+   "walk": "actions/S4E_walk.png",
+   "cry": "actions/S4E_cry.png",
+   "eat": "actions/S4E_eat.png",
+   "sleep": "actions/S4E_sleep.png"
+  },
+  "S4F": {
+   "stage": "S4 F 少年",
+   "idle": "actions/S4F_idle.png",
+   "walk": "actions/S4F_walk.png",
+   "cry": "actions/S4F_cry.png",
+   "eat": "actions/S4F_eat.png",
+   "sleep": "actions/S4F_sleep.png"
+  },
+  "S4G": {
+   "stage": "S4 G 少年",
+   "idle": "actions/S4G_idle.png",
+   "walk": "actions/S4G_walk.png",
+   "cry": "actions/S4G_cry.png",
+   "eat": "actions/S4G_eat.png",
+   "sleep": "actions/S4G_sleep.png"
+  },
+  "S4H": {
+   "stage": "S4 H 少年",
+   "idle": "actions/S4H_idle.png",
+   "walk": "actions/S4H_walk.png",
+   "cry": "actions/S4H_cry.png",
+   "eat": "actions/S4H_eat.png",
+   "sleep": "actions/S4H_sleep.png"
+  },
+  "A1": {
+   "stage": "S3 A",
+   "idle": "actions/A1_idle.png",
+   "walk": "actions/A1_walk.png",
+   "cry": "actions/A1_cry.png",
+   "eat": "actions/A1_eat.png",
+   "sleep": "actions/A1_sleep.png"
+  },
+  "A2": {
+   "stage": "S5 A",
+   "idle": "actions/A2_idle.png",
+   "walk": "actions/A2_walk.png",
+   "cry": "actions/A2_cry.png",
+   "eat": "actions/A2_eat.png",
+   "sleep": "actions/A2_sleep.png"
+  },
+  "A3": {
+   "stage": "S6 A",
+   "idle": "actions/A3_idle.png",
+   "walk": "actions/A3_walk.png",
+   "cry": "actions/A3_cry.png",
+   "eat": "actions/A3_eat.png",
+   "sleep": "actions/A3_sleep.png"
+  },
+  "B1": {
+   "stage": "S3 B",
+   "idle": "actions/B1_idle.png",
+   "walk": "actions/B1_walk.png",
+   "cry": "actions/B1_cry.png",
+   "eat": "actions/B1_eat.png",
+   "sleep": "actions/B1_sleep.png"
+  },
+  "B2": {
+   "stage": "S5 B",
+   "idle": "actions/B2_idle.png",
+   "walk": "actions/B2_walk.png",
+   "cry": "actions/B2_cry.png",
+   "eat": "actions/B2_eat.png",
+   "sleep": "actions/B2_sleep.png"
+  },
+  "B3": {
+   "stage": "S6 B",
+   "idle": "actions/B3_idle.png",
+   "walk": "actions/B3_walk.png",
+   "cry": "actions/B3_cry.png",
+   "eat": "actions/B3_eat.png",
+   "sleep": "actions/B3_sleep.png"
+  },
+  "C1": {
+   "stage": "S3 C",
+   "idle": "actions/C1_idle.png",
+   "walk": "actions/C1_walk.png",
+   "cry": "actions/C1_cry.png",
+   "eat": "actions/C1_eat.png",
+   "sleep": "actions/C1_sleep.png"
+  },
+  "C2": {
+   "stage": "S5 C",
+   "idle": "actions/C2_idle.png",
+   "walk": "actions/C2_walk.png",
+   "cry": "actions/C2_cry.png",
+   "eat": "actions/C2_eat.png",
+   "sleep": "actions/C2_sleep.png"
+  },
+  "C3": {
+   "stage": "S6 C",
+   "idle": "actions/C3_idle.png",
+   "walk": "actions/C3_walk.png",
+   "cry": "actions/C3_cry.png",
+   "eat": "actions/C3_eat.png",
+   "sleep": "actions/C3_sleep.png"
+  },
+  "D1": {
+   "stage": "S3 D",
+   "idle": "actions/D1_idle.png",
+   "walk": "actions/D1_walk.png",
+   "cry": "actions/D1_cry.png",
+   "eat": "actions/D1_eat.png",
+   "sleep": "actions/D1_sleep.png"
+  },
+  "D2": {
+   "stage": "S5 D",
+   "idle": "actions/D2_idle.png",
+   "walk": "actions/D2_walk.png",
+   "cry": "actions/D2_cry.png",
+   "eat": "actions/D2_eat.png",
+   "sleep": "actions/D2_sleep.png"
+  },
+  "D3": {
+   "stage": "S6 D",
+   "idle": "actions/D3_idle.png",
+   "walk": "actions/D3_walk.png",
+   "cry": "actions/D3_cry.png",
+   "eat": "actions/D3_eat.png",
+   "sleep": "actions/D3_sleep.png"
+  },
+  "E1": {
+   "stage": "S3 E",
+   "idle": "actions/E1_idle.png",
+   "walk": "actions/E1_walk.png",
+   "cry": "actions/E1_cry.png",
+   "eat": "actions/E1_eat.png",
+   "sleep": "actions/E1_sleep.png"
+  },
+  "E2": {
+   "stage": "S5 E",
+   "idle": "actions/E2_idle.png",
+   "walk": "actions/E2_walk.png",
+   "cry": "actions/E2_cry.png",
+   "eat": "actions/E2_eat.png",
+   "sleep": "actions/E2_sleep.png"
+  },
+  "E3": {
+   "stage": "S6 E",
+   "idle": "actions/E3_idle.png",
+   "walk": "actions/E3_walk.png",
+   "cry": "actions/E3_cry.png",
+   "eat": "actions/E3_eat.png",
+   "sleep": "actions/E3_sleep.png"
+  },
+  "F1": {
+   "stage": "S3 F",
+   "idle": "actions/F1_idle.png",
+   "walk": "actions/F1_walk.png",
+   "cry": "actions/F1_cry.png",
+   "eat": "actions/F1_eat.png",
+   "sleep": "actions/F1_sleep.png"
+  },
+  "F2": {
+   "stage": "S5 F",
+   "idle": "actions/F2_idle.png",
+   "walk": "actions/F2_walk.png",
+   "cry": "actions/F2_cry.png",
+   "eat": "actions/F2_eat.png",
+   "sleep": "actions/F2_sleep.png"
+  },
+  "F3": {
+   "stage": "S6 F",
+   "idle": "actions/F3_idle.png",
+   "walk": "actions/F3_walk.png",
+   "cry": "actions/F3_cry.png",
+   "eat": "actions/F3_eat.png",
+   "sleep": "actions/F3_sleep.png"
+  },
+  "G1": {
+   "stage": "S3 G",
+   "idle": "actions/G1_idle.png",
+   "walk": "actions/G1_walk.png",
+   "cry": "actions/G1_cry.png",
+   "eat": "actions/G1_eat.png",
+   "sleep": "actions/G1_sleep.png"
+  },
+  "G2": {
+   "stage": "S5 G",
+   "idle": "actions/G2_idle.png",
+   "walk": "actions/G2_walk.png",
+   "cry": "actions/G2_cry.png",
+   "eat": "actions/G2_eat.png",
+   "sleep": "actions/G2_sleep.png"
+  },
+  "G3": {
+   "stage": "S6 G",
+   "idle": "actions/G3_idle.png",
+   "walk": "actions/G3_walk.png",
+   "cry": "actions/G3_cry.png",
+   "eat": "actions/G3_eat.png",
+   "sleep": "actions/G3_sleep.png"
+  },
+  "H1": {
+   "stage": "S3 H",
+   "idle": "actions/H1_idle.png",
+   "walk": "actions/H1_walk.png",
+   "cry": "actions/H1_cry.png",
+   "eat": "actions/H1_eat.png",
+   "sleep": "actions/H1_sleep.png"
+  },
+  "H2": {
+   "stage": "S5 H",
+   "idle": "actions/H2_idle.png",
+   "walk": "actions/H2_walk.png",
+   "cry": "actions/H2_cry.png",
+   "eat": "actions/H2_eat.png",
+   "sleep": "actions/H2_sleep.png"
+  },
+  "H3": {
+   "stage": "S6 H",
+   "idle": "actions/H3_idle.png",
+   "walk": "actions/H3_walk.png",
+   "cry": "actions/H3_cry.png",
+   "eat": "actions/H3_eat.png",
+   "sleep": "actions/H3_sleep.png"
+  }
+ }
+}

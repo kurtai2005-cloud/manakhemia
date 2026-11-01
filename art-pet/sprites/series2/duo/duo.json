@@ -1,0 +1,503 @@
+{
+ "note": "雙人 clip 6（hatch_first_glance 係全畫面）",
+ "overlays": {
+  "ov_blanket": {
+   "png": "duo/overlays/ov_blanket.png",
+   "frames": 1,
+   "frameW": 40,
+   "frameH": 11,
+   "pivot": [
+    20,
+    10
+   ],
+   "note": "一齊瞓：被（蓋住兩隻下半身；pivot＝底中）"
+  },
+  "ov_rays": {
+   "png": "duo/overlays/ov_rays.png",
+   "frames": 4,
+   "frameW": 97,
+   "frameH": 97,
+   "pivot": [
+    48,
+    48
+   ],
+   "note": "孵化光芒（4 幀轉；引擎可再加 additive glow）"
+  },
+  "ov_shell_bits": {
+   "png": "duo/overlays/ov_shell_bits.png",
+   "frames": 2,
+   "frameW": 3,
+   "frameH": 3,
+   "pivot": [
+    1,
+    1
+   ],
+   "note": "蛋殼碎（兩款；引擎用拋物線飛）"
+  },
+  "ov_confetti": {
+   "png": "duo/overlays/ov_confetti.png",
+   "frames": 6,
+   "frameW": 60,
+   "frameH": 40,
+   "pivot": [
+    30,
+    0
+   ],
+   "note": "彩紙（6 幀落下，掛喺兩隻頭頂上 30px）"
+  },
+  "ov_ribbon": {
+   "png": "duo/overlays/ov_ribbon.png",
+   "frames": 1,
+   "frameW": 62,
+   "frameH": 7,
+   "pivot": [
+    31,
+    3
+   ],
+   "note": "空白絲帶（字由引擎寫：跟班／朋友／家人）"
+  },
+  "ov_heart_big": {
+   "png": "duo/overlays/ov_heart_big.png",
+   "frames": 2,
+   "frameW": 18,
+   "frameH": 16,
+   "pivot": [
+    9,
+    15
+   ],
+   "note": "大心心（0 細、1 大 2x）"
+  },
+  "badge_follow": {
+   "png": "duo/overlays/badge_follow.png",
+   "frames": 1,
+   "frameW": 12,
+   "frameH": 13,
+   "pivot": [
+    6,
+    12
+   ],
+   "note": "升級徽章：follow"
+  },
+  "badge_friend": {
+   "png": "duo/overlays/badge_friend.png",
+   "frames": 1,
+   "frameW": 12,
+   "frameH": 13,
+   "pivot": [
+    6,
+    12
+   ],
+   "note": "升級徽章：friend"
+  },
+  "badge_family": {
+   "png": "duo/overlays/badge_family.png",
+   "frames": 1,
+   "frameW": 12,
+   "frameH": 13,
+   "pivot": [
+    6,
+    12
+   ],
+   "note": "升級徽章：family"
+  },
+  "fx_zzz": {
+   "note": "3a 現有 FX"
+  },
+  "fx_heart": {
+   "note": "3a 現有 FX"
+  },
+  "fx_sparkle": {
+   "note": "3a 現有 FX"
+  },
+  "dream_slot": {
+   "note": "引擎位：夢泡泡"
+  },
+  "food_slot": {
+   "note": "引擎位：食物"
+  }
+ },
+ "clips": {
+  "cuddle_egg": {
+   "title": "攬蛋瞓（蛋期每晚 21:00 後，團絨瞓覺時自動）",
+   "durationMs": 2000,
+   "loop": true,
+   "actors": {
+    "tr": {
+     "who": "tr",
+     "dx": -8,
+     "z": 0,
+     "track": [
+      {
+       "t": 0,
+       "clip": "sleep_loop"
+      }
+     ]
+    },
+    "egg": {
+     "who": "egg",
+     "dx": 10,
+     "dy": 1,
+     "z": 1,
+     "track": [
+      {
+       "t": 0,
+       "crack": 0
+      },
+      {
+       "t": 1000,
+       "crack": 0,
+       "y": -1
+      },
+      {
+       "t": 1150,
+       "crack": 0,
+       "y": 0
+      }
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "id": "fx_zzz",
+     "x": -2,
+     "y": -30,
+     "t0": 0,
+     "t1": 2000,
+     "ms": 300,
+     "z": 5
+    },
+    {
+     "id": "dream_slot",
+     "x": 18,
+     "y": -40,
+     "t0": 0,
+     "t1": 2000,
+     "ms": 150,
+     "z": 9,
+     "note": "夢泡泡 UI（ui/dream_bubbles，當日最多照顧類型）由引擎喺呢度疊，1x 約 44×44"
+    }
+   ],
+   "scenePivot": [
+    97,
+    292
+   ],
+   "coord": "actor dx/dy＋track x/y＝寵物 pivot 相對場景 pivot；overlay x/y＝疊層 pivot 相對場景 pivot",
+   "actorsSpec": {
+    "tr": "團絨：evo_still_<路線>/frames/<clip>_NN.png（fps 跟 attach json）",
+    "kid": "細佬：series2/actions/<form>_<clip>.png（引擎用當時階段）",
+    "egg": "series2/egg/egg_crack.png"
+   }
+  },
+  "follow_walk": {
+   "title": "跟住行（跟班起；細佬跟喺團絨後面 30px，慢 300ms 起步）",
+   "durationMs": 3000,
+   "loop": true,
+   "followGapPx": 30,
+   "followDelayMs": 300,
+   "actors": {
+    "tr": {
+     "who": "tr",
+     "dx": -10,
+     "z": 1,
+     "track": [
+      {
+       "t": 0,
+       "clip": "walk",
+       "x": -30
+      },
+      {
+       "t": 3000,
+       "clip": "walk",
+       "x": 30
+      }
+     ]
+    },
+    "kid": {
+     "who": "kid",
+     "form": "S2",
+     "dx": -40,
+     "z": 0,
+     "track": [
+      {
+       "t": 0,
+       "clip": "idle",
+       "x": -30
+      },
+      {
+       "t": 300,
+       "clip": "walk",
+       "x": -30
+      },
+      {
+       "t": 3000,
+       "clip": "walk",
+       "x": 26
+      }
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "id": "fx_heart",
+     "x": -26,
+     "y": -34,
+     "t0": 1600,
+     "t1": 2200,
+     "ms": 150,
+     "z": 5
+    }
+   ],
+   "scenePivot": [
+    97,
+    292
+   ],
+   "coord": "actor dx/dy＋track x/y＝寵物 pivot 相對場景 pivot；overlay x/y＝疊層 pivot 相對場景 pivot",
+   "actorsSpec": {
+    "tr": "團絨：evo_still_<路線>/frames/<clip>_NN.png（fps 跟 attach json）",
+    "kid": "細佬：series2/actions/<form>_<clip>.png（引擎用當時階段）",
+    "egg": "series2/egg/egg_crack.png"
+   }
+  },
+  "comfort_cry": {
+   "title": "哄喊：細佬喊 → 團絨埋去挨挨 → 收聲",
+   "durationMs": 3600,
+   "loop": false,
+   "actors": {
+    "kid": {
+     "who": "kid",
+     "form": "S2",
+     "dx": 14,
+     "z": 0,
+     "track": [
+      {
+       "t": 0,
+       "clip": "cry"
+      },
+      {
+       "t": 2200,
+       "clip": "idle"
+      }
+     ]
+    },
+    "tr": {
+     "who": "tr",
+     "dx": -10,
+     "z": 1,
+     "track": [
+      {
+       "t": 0,
+       "clip": "walk",
+       "x": -14
+      },
+      {
+       "t": 700,
+       "clip": "nuzzle",
+       "x": 0
+      },
+      {
+       "t": 2200,
+       "clip": "emo_happy",
+       "x": 0
+      },
+      {
+       "t": 2700,
+       "clip": "idle",
+       "x": 0
+      }
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "id": "fx_heart",
+     "x": 3,
+     "y": -34,
+     "t0": 1200,
+     "t1": 2200,
+     "ms": 150,
+     "z": 5
+    },
+    {
+     "id": "fx_sparkle",
+     "x": 18,
+     "y": -30,
+     "t0": 2200,
+     "t1": 2800,
+     "ms": 120,
+     "z": 5
+    },
+    {
+     "id": "fx_heart",
+     "x": 14,
+     "y": -36,
+     "t0": 2700,
+     "t1": 3600,
+     "ms": 150,
+     "z": 5
+    }
+   ],
+   "scenePivot": [
+    97,
+    292
+   ],
+   "coord": "actor dx/dy＋track x/y＝寵物 pivot 相對場景 pivot；overlay x/y＝疊層 pivot 相對場景 pivot",
+   "actorsSpec": {
+    "tr": "團絨：evo_still_<路線>/frames/<clip>_NN.png（fps 跟 attach json）",
+    "kid": "細佬：series2/actions/<form>_<clip>.png（引擎用當時階段）",
+    "egg": "series2/egg/egg_crack.png"
+   }
+  },
+  "eat_together": {
+   "title": "一齊食：餵團絨時細佬一齊食（+1 親密）",
+   "durationMs": 1500,
+   "loop": true,
+   "actors": {
+    "tr": {
+     "who": "tr",
+     "dx": -12,
+     "z": 0,
+     "track": [
+      {
+       "t": 0,
+       "clip": "eat",
+       "loop": true
+      }
+     ]
+    },
+    "kid": {
+     "who": "kid",
+     "form": "S2",
+     "dx": 14,
+     "z": 1,
+     "track": [
+      {
+       "t": 0,
+       "clip": "eat"
+      }
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "id": "food_slot",
+     "x": 14,
+     "y": -6,
+     "t0": 0,
+     "t1": 1500,
+     "ms": 150,
+     "z": 9,
+     "note": "細佬份食物 icon 由引擎喺細佬 chest 前畫（同團絨嗰份一樣）"
+    }
+   ],
+   "scenePivot": [
+    97,
+    292
+   ],
+   "coord": "actor dx/dy＋track x/y＝寵物 pivot 相對場景 pivot；overlay x/y＝疊層 pivot 相對場景 pivot",
+   "actorsSpec": {
+    "tr": "團絨：evo_still_<路線>/frames/<clip>_NN.png（fps 跟 attach json）",
+    "kid": "細佬：series2/actions/<form>_<clip>.png（引擎用當時階段）",
+    "egg": "series2/egg/egg_crack.png"
+   }
+  },
+  "sleep_together": {
+   "title": "一齊瞓：21:00–03:00 兩隻都瞓（+2 親密，每晚 1 次）",
+   "durationMs": 1800,
+   "loop": true,
+   "actors": {
+    "tr": {
+     "who": "tr",
+     "dx": -9,
+     "z": 0,
+     "track": [
+      {
+       "t": 0,
+       "clip": "sleep_loop"
+      }
+     ]
+    },
+    "kid": {
+     "who": "kid",
+     "form": "S2",
+     "dx": 11,
+     "dy": 1,
+     "z": 1,
+     "track": [
+      {
+       "t": 0,
+       "clip": "sleep"
+      }
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "id": "ov_blanket",
+     "x": 1,
+     "y": 1,
+     "t0": 0,
+     "t1": 1800,
+     "ms": 150,
+     "z": 6
+    },
+    {
+     "id": "fx_zzz",
+     "x": -3,
+     "y": -30,
+     "t0": 0,
+     "t1": 1800,
+     "ms": 300,
+     "z": 5
+    },
+    {
+     "id": "fx_zzz",
+     "x": 18,
+     "y": -24,
+     "t0": 450,
+     "t1": 1800,
+     "ms": 300,
+     "z": 5
+    }
+   ],
+   "scenePivot": [
+    97,
+    292
+   ],
+   "coord": "actor dx/dy＋track x/y＝寵物 pivot 相對場景 pivot；overlay x/y＝疊層 pivot 相對場景 pivot",
+   "actorsSpec": {
+    "tr": "團絨：evo_still_<路線>/frames/<clip>_NN.png（fps 跟 attach json）",
+    "kid": "細佬：series2/actions/<form>_<clip>.png（引擎用當時階段）",
+    "egg": "series2/egg/egg_crack.png"
+   }
+  },
+  "hatch_first_glance": {
+   "title": "孵化第一眼（全畫面 2 秒，可跳）",
+   "grid": [
+    195,
+    422
+   ],
+   "durationMs": 2000,
+   "scale": 2,
+   "anchor": [
+    97,
+    292
+   ],
+   "timeline": {
+    "0-600": "蛋震＋裂 1→3",
+    "600-800": "閃光（rays）",
+    "800-1300": "殼飛開，S1 出場（眨眼）",
+    "1300-2000": "團絨由左邊探頭（驚→開心），中間心心"
+   },
+   "layers": {
+    "bg": "垂直漸層 #3C3460→#78689C（引擎畫）",
+    "egg": "egg/egg_crack.png 2x（0–600ms 每 200ms 一格，>150ms 左右震 ±2）",
+    "rays": "duo/overlays/ov_rays.png（500–1400ms，1100ms 起淡出）",
+    "shell": "duo/overlays/ov_shell_bits.png 2x，4 塊拋物線",
+    "kid": "actions/S1_idle.png 2x",
+    "tr": "團絨 emo_surprised → emo_happy 2x，由左邊滑入（終點 pivot x≈47）",
+    "heart": "3a fx_heart"
+   },
+   "skip": "撳任何位跳去最後一格"
+  }
+ }
+}

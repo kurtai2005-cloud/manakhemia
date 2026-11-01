@@ -1,0 +1,159 @@
+{
+ "style": "B2 繪本貼紙・甜甜版（ui/style_ref/v2），3x；icon 30 單位＝90px、夢泡泡 44 單位＝132px",
+ "props": {
+  "A": {
+   "png": "ui/prop_icons/icon_prop_A_can@3x.png",
+   "prop": "prop_can",
+   "zh": "水壺",
+   "size": [
+    90,
+    90
+   ]
+  },
+  "B": {
+   "png": "ui/prop_icons/icon_prop_B_wand@3x.png",
+   "prop": "prop_wand",
+   "zh": "泡泡棒",
+   "size": [
+    90,
+    90
+   ]
+  },
+  "C": {
+   "png": "ui/prop_icons/icon_prop_C_match@3x.png",
+   "prop": "prop_match",
+   "zh": "火柴",
+   "size": [
+    90,
+    90
+   ]
+  },
+  "D": {
+   "png": "ui/prop_icons/icon_prop_D_pebble@3x.png",
+   "prop": "prop_pebble",
+   "zh": "石仔",
+   "size": [
+    90,
+    90
+   ]
+  },
+  "E": {
+   "png": "ui/prop_icons/icon_prop_E_chili@3x.png",
+   "prop": "prop_chili",
+   "zh": "辣椒",
+   "size": [
+    90,
+    90
+   ]
+  },
+  "F": {
+   "png": "ui/prop_icons/icon_prop_F_scope@3x.png",
+   "prop": "prop_scope",
+   "zh": "望遠鏡",
+   "size": [
+    90,
+    90
+   ]
+  },
+  "G": {
+   "png": "ui/prop_icons/icon_prop_G_book@3x.png",
+   "prop": "prop_book",
+   "zh": "書",
+   "size": [
+    90,
+    90
+   ]
+  },
+  "H": {
+   "png": "ui/prop_icons/icon_prop_H_moonlamp@3x.png",
+   "prop": "prop_moonlamp",
+   "zh": "月亮燈",
+   "size": [
+    90,
+    90
+   ]
+  }
+ },
+ "dreams": {
+  "A": {
+   "png": "ui/dream_bubbles/dream_A_can@3x.png",
+   "care": "淋花／飲水",
+   "zh": "水壺",
+   "size": [
+    132,
+    132
+   ],
+   "anchor": "團絨 headTop 右上（dx +10, dy −8 @1x）；泡泡尾（左下細泡）指向團絨"
+  },
+  "B": {
+   "png": "ui/dream_bubbles/dream_B_wand@3x.png",
+   "care": "沖涼／吹泡泡",
+   "zh": "泡泡棒",
+   "size": [
+    132,
+    132
+   ],
+   "anchor": "團絨 headTop 右上（dx +10, dy −8 @1x）；泡泡尾（左下細泡）指向團絨"
+  },
+  "C": {
+   "png": "ui/dream_bubbles/dream_C_match@3x.png",
+   "care": "取暖／點燈",
+   "zh": "火柴",
+   "size": [
+    132,
+    132
+   ],
+   "anchor": "團絨 headTop 右上（dx +10, dy −8 @1x）；泡泡尾（左下細泡）指向團絨"
+  },
+  "D": {
+   "png": "ui/dream_bubbles/dream_D_pebble@3x.png",
+   "care": "執石仔／砌嘢",
+   "zh": "石仔",
+   "size": [
+    132,
+    132
+   ],
+   "anchor": "團絨 headTop 右上（dx +10, dy −8 @1x）；泡泡尾（左下細泡）指向團絨"
+  },
+  "E": {
+   "png": "ui/dream_bubbles/dream_E_chili@3x.png",
+   "care": "食嘢（辣）",
+   "zh": "辣椒",
+   "size": [
+    132,
+    132
+   ],
+   "anchor": "團絨 headTop 右上（dx +10, dy −8 @1x）；泡泡尾（左下細泡）指向團絨"
+  },
+  "F": {
+   "png": "ui/dream_bubbles/dream_F_scope@3x.png",
+   "care": "睇星",
+   "zh": "望遠鏡",
+   "size": [
+    132,
+    132
+   ],
+   "anchor": "團絨 headTop 右上（dx +10, dy −8 @1x）；泡泡尾（左下細泡）指向團絨"
+  },
+  "G": {
+   "png": "ui/dream_bubbles/dream_G_book@3x.png",
+   "care": "講故仔",
+   "zh": "書",
+   "size": [
+    132,
+    132
+   ],
+   "anchor": "團絨 headTop 右上（dx +10, dy −8 @1x）；泡泡尾（左下細泡）指向團絨"
+  },
+  "H": {
+   "png": "ui/dream_bubbles/dream_H_moonlamp@3x.png",
+   "care": "開夜燈陪瞓",
+   "zh": "月亮燈",
+   "size": [
+    132,
+    132
+   ],
+   "anchor": "團絨 headTop 右上（dx +10, dy −8 @1x）；泡泡尾（左下細泡）指向團絨"
+  }
+ }
+}

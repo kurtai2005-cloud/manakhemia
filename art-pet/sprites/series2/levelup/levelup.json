@@ -1,0 +1,390 @@
+{
+ "note": "升級小場面 3（4–6 秒）；絲帶字由引擎寫 ribbonText；疊層喺 duo/overlays",
+ "scenes": {
+  "lv_follow": {
+   "title": "升級：跟班",
+   "durationMs": 4000,
+   "loop": false,
+   "ribbonText": "跟班",
+   "actors": {
+    "tr": {
+     "who": "tr",
+     "dx": 0,
+     "z": 1,
+     "track": [
+      {
+       "t": 0,
+       "clip": "idle",
+       "x": -6
+      },
+      {
+       "t": 600,
+       "clip": "walk",
+       "x": -6
+      },
+      {
+       "t": 2200,
+       "clip": "smug_pose",
+       "x": 18
+      },
+      {
+       "t": 3000,
+       "clip": "idle",
+       "x": 18
+      }
+     ]
+    },
+    "kid": {
+     "who": "kid",
+     "form": "S1",
+     "dx": -26,
+     "z": 0,
+     "track": [
+      {
+       "t": 0,
+       "clip": "idle",
+       "x": 0
+      },
+      {
+       "t": 900,
+       "clip": "walk",
+       "x": 0
+      },
+      {
+       "t": 2400,
+       "clip": "idle",
+       "x": 22
+      }
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "id": "badge_follow",
+     "x": -4,
+     "y": -44,
+     "t0": 2400,
+     "t1": 4000,
+     "ms": 120,
+     "z": 8,
+     "move": [
+      [
+       0,
+       0,
+       8
+      ],
+      [
+       200,
+       0,
+       -2
+      ],
+      [
+       320,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "ov_ribbon",
+     "x": 0,
+     "y": -60,
+     "t0": 2600,
+     "t1": 4000,
+     "ms": 150,
+     "z": 9
+    },
+    {
+     "id": "ov_confetti",
+     "x": 0,
+     "y": -70,
+     "t0": 2400,
+     "t1": 3600,
+     "ms": 100,
+     "z": 5,
+     "loop": false
+    }
+   ],
+   "scenePivot": [
+    97,
+    292
+   ],
+   "coord": "actor dx/dy＋track x/y＝寵物 pivot 相對場景 pivot；overlay x/y＝疊層 pivot 相對場景 pivot",
+   "actorsSpec": {
+    "tr": "團絨：evo_still_<路線>/frames/<clip>_NN.png（fps 跟 attach json）",
+    "kid": "細佬：series2/actions/<form>_<clip>.png（引擎用當時階段）",
+    "egg": "series2/egg/egg_crack.png"
+   }
+  },
+  "lv_friend": {
+   "title": "升級：朋友（親密 30）",
+   "durationMs": 5000,
+   "loop": false,
+   "ribbonText": "朋友",
+   "actors": {
+    "tr": {
+     "who": "tr",
+     "dx": -16,
+     "z": 0,
+     "track": [
+      {
+       "t": 0,
+       "clip": "idle"
+      },
+      {
+       "t": 900,
+       "clip": "emo_surprised"
+      },
+      {
+       "t": 1300,
+       "clip": "cheer_jump",
+       "loop": false
+      },
+      {
+       "t": 2000,
+       "clip": "nuzzle_purr"
+      },
+      {
+       "t": 3800,
+       "clip": "emo_happy",
+       "loop": false
+      }
+     ]
+    },
+    "kid": {
+     "who": "kid",
+     "form": "S2",
+     "dx": 16,
+     "z": 1,
+     "flip": 1,
+     "track": [
+      {
+       "t": 0,
+       "clip": "walk",
+       "x": 10,
+       "flip": 1
+      },
+      {
+       "t": 900,
+       "clip": "idle",
+       "x": 0,
+       "flip": 1
+      },
+      {
+       "t": 2000,
+       "clip": "eat",
+       "x": -2,
+       "flip": 1
+      },
+      {
+       "t": 2800,
+       "clip": "idle",
+       "x": -2,
+       "flip": 1
+      }
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "id": "ov_heart_big",
+     "x": 0,
+     "y": -28,
+     "t0": 1800,
+     "t1": 2600,
+     "ms": 200,
+     "z": 7,
+     "loop": false,
+     "frames": [
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "id": "badge_friend",
+     "x": 0,
+     "y": -46,
+     "t0": 2700,
+     "t1": 5000,
+     "ms": 150,
+     "z": 8,
+     "move": [
+      [
+       0,
+       0,
+       8
+      ],
+      [
+       200,
+       0,
+       -2
+      ],
+      [
+       320,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "ov_ribbon",
+     "x": 0,
+     "y": -62,
+     "t0": 2900,
+     "t1": 5000,
+     "ms": 150,
+     "z": 9
+    },
+    {
+     "id": "ov_confetti",
+     "x": 0,
+     "y": -72,
+     "t0": 2700,
+     "t1": 3900,
+     "ms": 100,
+     "z": 5,
+     "loop": false
+    }
+   ],
+   "scenePivot": [
+    97,
+    292
+   ],
+   "coord": "actor dx/dy＋track x/y＝寵物 pivot 相對場景 pivot；overlay x/y＝疊層 pivot 相對場景 pivot",
+   "actorsSpec": {
+    "tr": "團絨：evo_still_<路線>/frames/<clip>_NN.png（fps 跟 attach json）",
+    "kid": "細佬：series2/actions/<form>_<clip>.png（引擎用當時階段）",
+    "egg": "series2/egg/egg_crack.png"
+   }
+  },
+  "lv_family": {
+   "title": "升級：家人（屋仔解鎖）",
+   "durationMs": 6000,
+   "loop": false,
+   "ribbonText": "家人",
+   "actors": {
+    "tr": {
+     "who": "tr",
+     "dx": -12,
+     "z": 0,
+     "track": [
+      {
+       "t": 0,
+       "clip": "idle"
+      },
+      {
+       "t": 800,
+       "clip": "nuzzle"
+      },
+      {
+       "t": 2600,
+       "clip": "celebrate",
+       "loop": false
+      },
+      {
+       "t": 3200,
+       "clip": "idle"
+      }
+     ]
+    },
+    "kid": {
+     "who": "kid",
+     "form": "S4A",
+     "dx": 13,
+     "z": 1,
+     "track": [
+      {
+       "t": 0,
+       "clip": "idle"
+      },
+      {
+       "t": 2600,
+       "clip": "walk"
+      },
+      {
+       "t": 3400,
+       "clip": "idle"
+      }
+     ]
+    }
+   },
+   "overlays": [
+    {
+     "id": "fx_heart",
+     "x": -2,
+     "y": -34,
+     "t0": 900,
+     "t1": 2600,
+     "ms": 150,
+     "z": 5
+    },
+    {
+     "id": "badge_family",
+     "x": 0,
+     "y": -48,
+     "t0": 3000,
+     "t1": 6000,
+     "ms": 150,
+     "z": 8,
+     "move": [
+      [
+       0,
+       0,
+       8
+      ],
+      [
+       200,
+       0,
+       -2
+      ],
+      [
+       320,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "ov_ribbon",
+     "x": 0,
+     "y": -64,
+     "t0": 3200,
+     "t1": 6000,
+     "ms": 150,
+     "z": 9
+    },
+    {
+     "id": "ov_confetti",
+     "x": 0,
+     "y": -74,
+     "t0": 3000,
+     "t1": 4200,
+     "ms": 100,
+     "z": 5,
+     "loop": false
+    },
+    {
+     "id": "ov_confetti",
+     "x": 6,
+     "y": -74,
+     "t0": 4200,
+     "t1": 5400,
+     "ms": 100,
+     "z": 5,
+     "loop": false
+    }
+   ],
+   "scenePivot": [
+    97,
+    292
+   ],
+   "coord": "actor dx/dy＋track x/y＝寵物 pivot 相對場景 pivot；overlay x/y＝疊層 pivot 相對場景 pivot",
+   "actorsSpec": {
+    "tr": "團絨：evo_still_<路線>/frames/<clip>_NN.png（fps 跟 attach json）",
+    "kid": "細佬：series2/actions/<form>_<clip>.png（引擎用當時階段）",
+    "egg": "series2/egg/egg_crack.png"
+   }
+  }
+ }
+}
