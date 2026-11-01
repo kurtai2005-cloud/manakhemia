@@ -39,6 +39,13 @@
   G.fastForward = function (sec) { SIM.advance(G.state, sec, {}, 30); };
   // ── evo6 ──
   G.fade = function () { const r = SIM.fade(G.state, G.now()); G.save(); return r; };
+  G.sprites80 = {
+    info() { const r = G.renderer, C = P.sprites80, st = r.s80Stat || {}, pd = r.petDraw || {};
+      return { enabled: !!(C && C.enabled), loaded: !!r.s80, error: r.s80Error || null, key: r.spr80Key ? r.spr80Key(G.state) : null, used: !!pd.s80, drawn: pd.s80 || null, frame: pd.s80f, clip: st.clip,
+        drawX: pd.drawX, drawY: pd.drawY, footY: pd.footY, bud: pd.bud, glow: r.s80Glow || null, idleMode: C && C.idleMode, atlas: r.s80 ? { w: r.s80.img.width, h: r.s80.img.height, frames: Object.keys(r.s80.json.frames).length } : null }; },
+    force(k) { P.sprites80.force = k || null; return this.info(); },
+    setIdleMode(m) { P.sprites80.idleMode = m; return m; },
+  };
   G.evo = {
     info() { const s = G.state, fk = G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; return { stage: s.stage, form: s.form, evoForm: D.evoForm(s.stage, s.form), drawForm: fk, gen: s.gen, fadeReady: !!s.fadeReady, growthH: +(s.growthSec / 3600).toFixed(3), stageH: P.stageSec[s.stage] / 3600, progress: +SIM.stageProgress(s).toFixed(4), lumi: SIM.lumiCheck(s), b5: SIM.branch5Check(s), force: (s.evo && s.evo.force) || null, care: SIM.careShare(s), migrated: s.migrated || null, memorial: s.memorial }; },
     // 浮動 overlay：只傳大細（Kotlin 照讀 form；sizeDp／size／pivot 係新欄）
@@ -107,6 +114,13 @@
   if (qs.get('evo') === '0') P.art.evo.enabled = false;
   G.evoReady = false;
   G.evoLoad = P.art.evo.enabled ? Promise.all([G.renderer.loadEvo(P.art.evo), G.liveLoad.catch(() => null)]).then(() => { G.renderer.attachEvoLive(); G.evoReady = Object.keys(G.renderer.evoOK || {}).length > 0; }) : Promise.resolve();
+  // 遊美 80px 正式版寵物（PARAMS.sprites80；?spr=old → 舊 sprite；?spr80=C2 強制；?spr80idle=feel｜strip）
+  if (P.sprites80) {
+    if (qs.get('spr') === 'old') P.sprites80.enabled = false;
+    if (/^[A-H][1-3]$/.test(qs.get('spr80') || '')) P.sprites80.force = qs.get('spr80');
+    if (qs.get('spr80idle') === 'feel' || qs.get('spr80idle') === 'strip') P.sprites80.idleMode = qs.get('spr80idle');
+  }
+  G.spr80Load = (P.sprites80 && P.sprites80.enabled) ? G.renderer.loadSprites80(P.sprites80) : Promise.resolve(null);
   G.liveSettled = false; G.liveLoad.then(() => { G.liveSettled = true; }, () => { G.liveSettled = true; });   // s3：重逢等 live atlas 載完先衝（rush 用真 clip）
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
   if (NS.hd2d) NS.hd2d.install(G, NS);

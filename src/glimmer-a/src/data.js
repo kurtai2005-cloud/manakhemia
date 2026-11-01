@@ -495,6 +495,18 @@
       bulb: { enabled: true, fadeSec: 0.4, moods: { happy: { tint: '#FFD45E', i: 1.0, pulse: [1.2, 0.85, 1.0] }, neutral: { tint: '#FFEFC4', i: 0.8 }, sleepy: { tint: '#8F85C2', i: 0.55, pulse: [3, 0.4, 0.6] }, hungry: { tint: '#F2A65A', i: 0.75, pulse: [0.8, 0.6, 0.8] }, grumpy: { tint: '#E5584D', i: 0.85, pulse: [0.4, 0.7, 0.85] } } },
     },
     art: { base: 'art/', usePending: false, useAtlas: true, playRootMotion: { frames: [3, 4], dx64: 4, dx32: 2 }, daylight: true, daylightBg: false, evo: { enabled: true, base: 'art/evo6/' } },   // evo6：?evo=0 停用 → 舊 form   // play 位移為 0（遊美）→ 引擎於 frame4–5（idx 3,4）加前衝 root-motion：64px +4／32px +2；daylight＝用 art/daylight/daylight.json
+    // 遊美 80px 正式版寵物（tuned_80／ENGINE_80）：pets_idle_80 atlas（320×1920，一行一隻 A1→H3，4 幀 idle）＋ bulb_anchors_80；
+    // pivot (40,77) → 腳底照落 art (97,292)。?spr=old 停用（返舊 evo sprite）；?spr80=C2 強制 24 隻任一隻（feel-test）；?spr80idle=feel 用 feeltest 節奏。
+    // 只有 idle（＋blink＝幀 3）有 80px 圖：其餘 clip 一律 fallback 返現有 sprite（clipsFallback:'old'）。form→line／stage→tier 係引擎暫定，待遊策／Kurt 確認。
+    sprites80: {
+      enabled: true, base: 'art/sprites80/', atlas: 'pets_idle_80', anchors: 'bulb_anchors_80.json',
+      frame: 80, pivot: [40, 77], idleMs: [260, 180, 260, 140], idleMode: 'strip',      // strip＝0→1→2→3 循環；feel＝0↔1 bob 0.9s（幀 1 0.36s）＋約 3.3s 眨眼（幀 3 140ms）
+      feel: { bobSec: 0.9, bobDownSec: 0.36, blinkSec: 3.3, blinkMs: 140 },
+      clips: { idle: 'idle', blink: 3 },                                              // 有 80px 圖嘅 clip（其餘 → 舊 sprite）
+      lines: { tide: 'A', lumi: 'B', ember: 'C', crystal: 'D', bright: 'F', radiant: 'F', moon: 'G', dust: 'H' },   // E 線（第二條火系）未用；soft／shroom 冇對應 → 舊 sprite
+      tiers: { adult: 2, elder: 3 },                                                   // egg／newborn／sprout／juvenile → 舊 sprite（tier 1 只經 ?spr80= 用）
+      glowR: 14, glowA: [0.42, 0.18], glowHz: 2.2, shadowHalfW: 21, force: null,
+    },
     // ── 畫質自動降級：用 rAF 幀間隔（唔再用連續掉幀計）──
     quality: {
       windowFrames: 120,                     // 每 120 個 rAF 幀為一個量度窗口
