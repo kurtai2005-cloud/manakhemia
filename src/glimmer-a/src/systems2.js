@@ -38,17 +38,18 @@
 
   // ── 系統 5：小遊戲 ──
   /* 星數 0–3：接光點按分數、捉迷藏按總分（starsAt＝1／2／3★ 門檻） */
-  function gameStars(kind, v) { const a = (kind === 'catch' ? C().games.catch : C().games.hide).starsAt; let n = 0; for (let i = 0; i < a.length; i++) if (v >= a[i]) n = i + 1; return Math.min(3, n); }
+  const V2 = { bounce: 1, ghide: 1, firefly: 1 };   // 小遊戲 v2（games2）
+  function gameStars(kind, v) { const a = (V2[kind] ? C().games2[kind] : kind === 'catch' ? C().games.catch : C().games.hide).starsAt; let n = 0; for (let i = 0; i < a.length; i++) if (v >= a[i]) n = i + 1; return Math.min(3, n); }
   /* 一局完：頭 dailyRewarded 局（兩隻合計）有星星碎（＝星數）；每局都計 mg（火苗分）；唔加光粒／心情
      o.noMg：浮動團絨嗰局（mg 已由 overlayOpenGame 計）；o.firstHits：捉迷藏第 1 下就搵到嘅回合數（成就） */
   function gameFinish(s, kind, v, nowMs, opt) {
-    if (kind !== 'catch' && kind !== 'hide') throw new Error('sys12b.gameFinish: kind');
+    if (kind !== 'catch' && kind !== 'hide' && !V2[kind]) throw new Error('sys12b.gameFinish: kind');
     opt = opt || {};
     const t = now(nowMs), G = C().games, o = st(s), g = o.games, key = SIM.dayKey(t);
     if (g.day !== key) { g.day = key; g.plays = 0; }
     const stars = gameStars(kind, v), rewarded = g.plays < G.dailyRewarded; g.plays++; g.total++;
     g.best[kind] = Math.max(num(g.best[kind], 0), v); g.stars[kind] = Math.max(num(g.stars[kind], 0), stars);
-    if (kind === 'hide' && opt.firstHits > 0) g.hideFirst += opt.firstHits | 0;
+    if ((kind === 'hide' || kind === 'ghide') && opt.firstHits > 0) g.hideFirst += opt.firstHits | 0;
     const want = rewarded ? (G.shardsByStars[stars] | 0) : 0, shards = want ? X.grant(s, want, 'mg', t) : 0;
     const counted = G.countsMg && !opt.noMg ? SIM.mgCount(s) : false;
     const r = { kind, value: v, stars, rewarded, want, shards, playIndex: g.plays, left: Math.max(0, G.dailyRewarded - g.plays), counted, overlay: !!opt.overlay };
@@ -218,7 +219,7 @@
     if (when.lull) return o.stats.lull >= when.lull;
     if (when.lullNight) return o.stats.lullNight >= when.lullNight;
     if (when.quick) return o.stats.quick >= when.quick;
-    if (when.catchStars) return num(o.games.stars.catch, 0) >= when.catchStars;
+    if (when.catchStars) return Math.max(num(o.games.stars.catch, 0), num(o.games.stars.bounce, 0)) >= when.catchStars;   // v2：彈彈葉 3★ 都算（TBD 遊策）
     if (when.hideFirst) return o.games.hideFirst >= when.hideFirst;
     if (when.bloomKinds) return Object.keys(o.garden.bloomed).filter(k => FL(k)).length >= when.bloomKinds;
     if (when.acc) return o.walk.acc >= when.acc;
