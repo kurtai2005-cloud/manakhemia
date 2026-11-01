@@ -1,0 +1,2292 @@
+{
+ "note": "團絨示範（錯）＋細佬照抄（錯）。座標同 3a reactions clip schema 一樣（body/face/fx，anchor 用 rig 錨點）。道具係 fx id prop_*。",
+ "propsBySeries": {
+  "A": {
+   "id": "prop_can",
+   "zh": "水壺",
+   "png": "lessons/props/prop_can.png",
+   "frameW": 15,
+   "frameH": 12,
+   "frames": 2,
+   "pivot": [
+    7,
+    11
+   ],
+   "note": "水壺：0 企、1 倒水（嘴向左下）"
+  },
+  "B": {
+   "id": "prop_wand",
+   "zh": "泡泡棒",
+   "png": "lessons/props/prop_wand.png",
+   "frameW": 7,
+   "frameH": 10,
+   "frames": 1,
+   "pivot": [
+    3,
+    9
+   ],
+   "note": "泡泡棒（粉紅圈＋木柄）"
+  },
+  "C": {
+   "id": "prop_match",
+   "zh": "火柴",
+   "png": "lessons/props/prop_match.png",
+   "frameW": 7,
+   "frameH": 14,
+   "frames": 2,
+   "pivot": [
+    3,
+    13
+   ],
+   "note": "火柴：0 未點、1 着咗"
+  },
+  "D": {
+   "id": "prop_pebble",
+   "zh": "石仔",
+   "png": "lessons/props/prop_pebble.png",
+   "frameW": 10,
+   "frameH": 7,
+   "frames": 1,
+   "pivot": [
+    5,
+    6
+   ],
+   "note": "石仔（放地上孵）"
+  },
+  "E": {
+   "id": "prop_chili",
+   "zh": "辣椒",
+   "png": "lessons/props/prop_chili.png",
+   "frameW": 7,
+   "frameH": 10,
+   "frames": 1,
+   "pivot": [
+    3,
+    9
+   ],
+   "note": "辣椒（團絨當士多啤梨）"
+  },
+  "F": {
+   "id": "prop_scope",
+   "zh": "望遠鏡",
+   "png": "lessons/props/prop_scope.png",
+   "frameW": 11,
+   "frameH": 6,
+   "frames": 2,
+   "pivot": [
+    5,
+    5
+   ],
+   "note": "望遠鏡：0 正（大頭向左）、1 倒轉（細頭向眼）"
+  },
+  "G": {
+   "id": "prop_book",
+   "zh": "書",
+   "png": "lessons/props/prop_book.png",
+   "frameW": 16,
+   "frameH": 14,
+   "frames": 3,
+   "pivot": [
+    8,
+    13
+   ],
+   "note": "書：0 打開、1 拎倒轉、2 合埋跌低（同 3a fx_book 一套）"
+  },
+  "H": {
+   "id": "prop_moonlamp",
+   "zh": "月亮燈",
+   "png": "lessons/props/prop_moonlamp.png",
+   "frameW": 8,
+   "frameH": 11,
+   "frames": 2,
+   "pivot": [
+    4,
+    10
+   ],
+   "note": "月亮燈：0 熄、1 着（glow 交引擎）"
+  }
+ },
+ "fx2": {
+  "fx2_drops": {
+   "png": "lessons/fx/fx2_drops.png",
+   "frameW": 13,
+   "frameH": 12,
+   "frames": 3,
+   "pivot": [
+    6,
+    11
+   ],
+   "note": "水滴落（3 幀 loop）"
+  },
+  "fx2_splash": {
+   "png": "lessons/fx/fx2_splash.png",
+   "frameW": 21,
+   "frameH": 7,
+   "frames": 1,
+   "pivot": [
+    10,
+    6
+   ],
+   "note": "甩水（身兩邊）"
+  },
+  "fx2_bubble": {
+   "png": "lessons/fx/fx2_bubble.png",
+   "frameW": 27,
+   "frameH": 27,
+   "frames": 4,
+   "pivot": [
+    13,
+    13
+   ],
+   "note": "泡泡：0 細、1 中、2 大（包住身）、3 爆"
+  },
+  "fx2_fire": {
+   "png": "lessons/fx/fx2_fire.png",
+   "frameW": 11,
+   "frameH": 7,
+   "frames": 2,
+   "pivot": [
+    0,
+    3
+   ],
+   "note": "噴火（向右；左用 mirrorX）"
+  },
+  "fx2_steam": {
+   "png": "lessons/fx/fx2_steam.png",
+   "frameW": 7,
+   "frameH": 6,
+   "frames": 2,
+   "pivot": [
+    3,
+    5
+   ],
+   "note": "頭頂冒煙（2 幀）"
+  },
+  "fx2_tiny": {
+   "png": "lessons/fx/fx2_tiny.png",
+   "frameW": 5,
+   "frameH": 3,
+   "frames": 1,
+   "pivot": [
+    2,
+    2
+   ],
+   "note": "望遠鏡入面嘅細細粒星"
+  },
+  "fx2_tear": {
+   "png": "lessons/fx/fx2_tear.png",
+   "frameW": 2,
+   "frameH": 3,
+   "frames": 1,
+   "pivot": [
+    1,
+    0
+   ],
+   "note": "細佬喊：眼淚（1 色＋白點，向下流用 move）"
+  }
+ },
+ "demo": {
+  "A": {
+   "durationMs": 3000,
+   "loop": false,
+   "who": "團絨（任何 evo_still_* 靜光形態）",
+   "title": "淋花 → 淋自己個頭",
+   "prop": "prop_can",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 600,
+     "y": -1,
+     "sy": 1.03
+    },
+    {
+     "t": 900,
+     "y": 0,
+     "sy": 0.95,
+     "sx": 1.04
+    },
+    {
+     "t": 1800,
+     "sy": 0.96,
+     "sx": 1.03
+    },
+    {
+     "t": 1900,
+     "x": -1,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 2000,
+     "x": 1
+    },
+    {
+     "t": 2100,
+     "x": -1
+    },
+    {
+     "t": 2200,
+     "x": 1
+    },
+    {
+     "t": 2300,
+     "x": 0
+    },
+    {
+     "t": 2500,
+     "y": -1
+    },
+    {
+     "t": 3000,
+     "y": 0
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    },
+    {
+     "t": 900,
+     "f": "squint"
+    },
+    {
+     "t": 1300,
+     "f": "surprised"
+    },
+    {
+     "t": 1850,
+     "f": [
+      "dizzy_a",
+      "dizzy_b"
+     ],
+     "ms": 100
+    },
+    {
+     "t": 2400,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_can",
+     "anchor": "side_r",
+     "dx": 3,
+     "dy": 0,
+     "t0": 0,
+     "t1": 700,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_can",
+     "anchor": "headTop",
+     "dx": 7,
+     "dy": -3,
+     "t0": 700,
+     "t1": 1800,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true
+    },
+    {
+     "id": "fx2_drops",
+     "anchor": "headTop",
+     "dx": -1,
+     "dy": -1,
+     "t0": 900,
+     "t1": 1800,
+     "ms": 120,
+     "loop": true
+    },
+    {
+     "id": "fx2_splash",
+     "anchor": "center",
+     "dx": 0,
+     "dy": 2,
+     "t0": 1850,
+     "t1": 2350,
+     "ms": 100,
+     "loop": true
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": -2,
+     "t0": 2400,
+     "t1": 3000,
+     "ms": 120,
+     "loop": true
+    }
+   ]
+  },
+  "B": {
+   "durationMs": 3000,
+   "loop": false,
+   "who": "團絨（任何 evo_still_* 靜光形態）",
+   "title": "吹泡泡 → 自己入咗泡泡",
+   "prop": "prop_wand",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 700,
+     "sy": 1.04,
+     "sx": 0.97
+    },
+    {
+     "t": 1300,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 1500,
+     "y": -6,
+     "e": "out"
+    },
+    {
+     "t": 2200,
+     "y": -8
+    },
+    {
+     "t": 2350,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 2450,
+     "sy": 0.9,
+     "sx": 1.08
+    },
+    {
+     "t": 2600,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 3000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "squint"
+    },
+    {
+     "t": 700,
+     "f": "blink"
+    },
+    {
+     "t": 1300,
+     "f": "surprised"
+    },
+    {
+     "t": 2350,
+     "f": [
+      "dizzy_a",
+      "dizzy_b"
+     ],
+     "ms": 100
+    },
+    {
+     "t": 2650,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_wand",
+     "anchor": "mouth",
+     "dx": 5,
+     "dy": 1,
+     "t0": 0,
+     "t1": 1300,
+     "ms": 200,
+     "z": "front"
+    },
+    {
+     "id": "fx2_bubble",
+     "anchor": "center",
+     "dx": 0,
+     "dy": 0,
+     "t0": 700,
+     "t1": 2350,
+     "ms": 300,
+     "loop": false,
+     "frames": [
+      0,
+      1,
+      2,
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "id": "fx2_bubble",
+     "anchor": "center",
+     "dx": 0,
+     "dy": 0,
+     "t0": 2350,
+     "t1": 2550,
+     "ms": 150,
+     "loop": true,
+     "frames": [
+      3
+     ]
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": 0,
+     "t0": 2650,
+     "t1": 3000,
+     "ms": 120,
+     "loop": true
+    }
+   ]
+  },
+  "C": {
+   "durationMs": 3000,
+   "loop": false,
+   "who": "團絨（任何 evo_still_* 靜光形態）",
+   "title": "點火柴 → 用個頭擦",
+   "prop": "prop_match",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 500,
+     "sy": 0.97
+    },
+    {
+     "t": 600,
+     "x": -1
+    },
+    {
+     "t": 700,
+     "x": 1
+    },
+    {
+     "t": 800,
+     "x": -1
+    },
+    {
+     "t": 900,
+     "x": 1
+    },
+    {
+     "t": 1000,
+     "x": 0,
+     "sy": 1
+    },
+    {
+     "t": 1300,
+     "y": -5,
+     "e": "out"
+    },
+    {
+     "t": 1500,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 1600,
+     "sy": 0.92,
+     "sx": 1.06
+    },
+    {
+     "t": 1800,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 3000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    },
+    {
+     "t": 550,
+     "f": "squint"
+    },
+    {
+     "t": 1150,
+     "f": "surprised"
+    },
+    {
+     "t": 1700,
+     "f": "embarrassed"
+    },
+    {
+     "t": 2400,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_match",
+     "anchor": "side_r",
+     "dx": 3,
+     "dy": 0,
+     "t0": 0,
+     "t1": 550,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_match",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 550,
+     "t1": 1100,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true,
+     "move": [
+      [
+       0,
+       -4,
+       0
+      ],
+      [
+       100,
+       4,
+       0
+      ],
+      [
+       200,
+       -4,
+       0
+      ],
+      [
+       300,
+       4,
+       0
+      ],
+      [
+       400,
+       -4,
+       0
+      ],
+      [
+       550,
+       3,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "prop_match",
+     "anchor": "side_r",
+     "dx": 3,
+     "dy": 0,
+     "t0": 1100,
+     "t1": 2400,
+     "ms": 120,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true
+    },
+    {
+     "id": "fx_puff",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 1100,
+     "t1": 1500,
+     "ms": 100,
+     "loop": false
+    },
+    {
+     "id": "fx2_steam",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 1500,
+     "t1": 3000,
+     "ms": 200,
+     "loop": true
+    },
+    {
+     "id": "fx_sweat",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": 4,
+     "t0": 1700,
+     "t1": 2400,
+     "ms": 150,
+     "loop": true
+    }
+   ]
+  },
+  "D": {
+   "durationMs": 3000,
+   "loop": false,
+   "who": "團絨（任何 evo_still_* 靜光形態）",
+   "title": "孵蛋 → 坐喺石仔上面孵",
+   "prop": "prop_pebble",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 600,
+     "x": 0,
+     "y": 0
+    },
+    {
+     "t": 800,
+     "y": -6,
+     "e": "out"
+    },
+    {
+     "t": 1000,
+     "y": -4,
+     "sy": 0.94,
+     "sx": 1.05,
+     "e": "in"
+    },
+    {
+     "t": 1800,
+     "y": -4,
+     "sy": 0.96,
+     "sx": 1.04
+    },
+    {
+     "t": 2000,
+     "rot": -6
+    },
+    {
+     "t": 2300,
+     "rot": -6
+    },
+    {
+     "t": 2500,
+     "rot": 0
+    },
+    {
+     "t": 3000,
+     "y": -4
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    },
+    {
+     "t": 1000,
+     "f": "squint_blush"
+    },
+    {
+     "t": 1950,
+     "f": "lookup"
+    },
+    {
+     "t": 2500,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_pebble",
+     "anchor": "side_r",
+     "dx": 2,
+     "dy": 2,
+     "t0": 0,
+     "t1": 700,
+     "ms": 200,
+     "z": "front"
+    },
+    {
+     "id": "prop_pebble",
+     "anchor": "pivot",
+     "dx": 0,
+     "dy": 1,
+     "t0": 700,
+     "t1": 3000,
+     "ms": 150,
+     "loop": true,
+     "follow": false,
+     "z": "back"
+    },
+    {
+     "id": "fx_question",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": -3,
+     "t0": 1950,
+     "t1": 2500,
+     "ms": 150,
+     "loop": true
+    },
+    {
+     "id": "fx_heart",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": 0,
+     "t0": 2550,
+     "t1": 3000,
+     "ms": 150,
+     "loop": true
+    }
+   ],
+   "rotStep": 3
+  },
+  "E": {
+   "durationMs": 3000,
+   "loop": false,
+   "who": "團絨（任何 evo_still_* 靜光形態）",
+   "title": "食辣椒 → 當士多啤梨",
+   "prop": "prop_chili",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 700,
+     "sy": 1.04
+    },
+    {
+     "t": 800,
+     "sy": 0.94,
+     "sx": 1.05
+    },
+    {
+     "t": 1100,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 1300,
+     "y": -4,
+     "e": "out"
+    },
+    {
+     "t": 1500,
+     "x": -1,
+     "y": -3
+    },
+    {
+     "t": 1600,
+     "x": 1
+    },
+    {
+     "t": 1700,
+     "x": -1
+    },
+    {
+     "t": 1800,
+     "x": 1
+    },
+    {
+     "t": 1900,
+     "x": -1
+    },
+    {
+     "t": 2000,
+     "x": 1
+    },
+    {
+     "t": 2200,
+     "x": 0,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 3000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "squint_blush"
+    },
+    {
+     "t": 800,
+     "f": [
+      "laugh_b",
+      "squint"
+     ],
+     "ms": 120
+    },
+    {
+     "t": 1150,
+     "f": "surprised"
+    },
+    {
+     "t": 1400,
+     "f": "laugh_a"
+    },
+    {
+     "t": 2300,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_chili",
+     "anchor": "chest",
+     "dx": 6,
+     "dy": -4,
+     "t0": 0,
+     "t1": 800,
+     "ms": 200,
+     "z": "front"
+    },
+    {
+     "id": "fx_exclaim",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": -4,
+     "t0": 1150,
+     "t1": 1500,
+     "ms": 150,
+     "loop": true
+    },
+    {
+     "id": "fx2_fire",
+     "anchor": "mouth",
+     "dx": 4,
+     "dy": -1,
+     "t0": 1400,
+     "t1": 2300,
+     "ms": 100,
+     "loop": true
+    },
+    {
+     "id": "fx_sweat",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": 4,
+     "t0": 1400,
+     "t1": 2300,
+     "ms": 150,
+     "loop": true
+    },
+    {
+     "id": "fx2_steam",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 2300,
+     "t1": 3000,
+     "ms": 200,
+     "loop": true
+    }
+   ]
+  },
+  "F": {
+   "durationMs": 3000,
+   "loop": false,
+   "who": "團絨（任何 evo_still_* 靜光形態）",
+   "title": "望遠鏡 → 拎倒轉睇",
+   "prop": "prop_scope",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 1600
+    },
+    {
+     "t": 1800,
+     "x": 4
+    },
+    {
+     "t": 2000,
+     "x": 7
+    },
+    {
+     "t": 2050,
+     "x": 5,
+     "sx": 0.92
+    },
+    {
+     "t": 2200,
+     "x": 4,
+     "sx": 1
+    },
+    {
+     "t": 2700,
+     "x": 2
+    },
+    {
+     "t": 3000,
+     "x": 0
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    },
+    {
+     "t": 600,
+     "f": "lookup"
+    },
+    {
+     "t": 2050,
+     "f": [
+      "dizzy_a",
+      "dizzy_b"
+     ],
+     "ms": 100
+    },
+    {
+     "t": 2600,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_scope",
+     "anchor": "side_r",
+     "dx": 2,
+     "dy": 0,
+     "t0": 0,
+     "t1": 600,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_scope",
+     "anchor": "eyeR",
+     "dx": 7,
+     "dy": 1,
+     "t0": 600,
+     "t1": 2050,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true
+    },
+    {
+     "id": "fx2_tiny",
+     "anchor": "eyeR",
+     "dx": 17,
+     "dy": 0,
+     "t0": 900,
+     "t1": 1600,
+     "ms": 200,
+     "loop": true
+    },
+    {
+     "id": "fx_star_orbit",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 2050,
+     "t1": 2600,
+     "ms": 100,
+     "loop": true
+    }
+   ]
+  },
+  "G": {
+   "durationMs": 3000,
+   "loop": false,
+   "who": "團絨（任何 evo_still_* 靜光形態）",
+   "title": "讀故仔 → 拎倒轉本書，讀到瞓著",
+   "prop": "prop_book",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 1600,
+     "sy": 1.0
+    },
+    {
+     "t": 2000,
+     "y": 1,
+     "sy": 0.96,
+     "sx": 1.03
+    },
+    {
+     "t": 2400,
+     "sy": 0.97
+    },
+    {
+     "t": 2700,
+     "sy": 0.96
+    },
+    {
+     "t": 3000,
+     "sy": 0.97
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    },
+    {
+     "t": 700,
+     "f": "lookup"
+    },
+    {
+     "t": 1300,
+     "f": "sleepy"
+    },
+    {
+     "t": 1900,
+     "f": "sleep"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_book",
+     "anchor": "chest",
+     "dx": 0,
+     "dy": -3,
+     "t0": 0,
+     "t1": 1900,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_book",
+     "anchor": "pivot",
+     "dx": 10,
+     "dy": 0,
+     "t0": 1900,
+     "t1": 3000,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      2
+     ],
+     "loop": true
+    },
+    {
+     "id": "fx_zzz",
+     "anchor": "headTop",
+     "dx": 7,
+     "dy": -1,
+     "t0": 2000,
+     "t1": 3000,
+     "ms": 300,
+     "loop": true
+    }
+   ]
+  },
+  "H": {
+   "durationMs": 3000,
+   "loop": false,
+   "who": "團絨（任何 evo_still_* 靜光形態）",
+   "title": "月亮燈 → 當帽戴",
+   "prop": "prop_moonlamp",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 700,
+     "y": -3,
+     "e": "out"
+    },
+    {
+     "t": 900,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 1300
+    },
+    {
+     "t": 1500,
+     "x": -2
+    },
+    {
+     "t": 1800,
+     "x": 2
+    },
+    {
+     "t": 2100,
+     "x": 0
+    },
+    {
+     "t": 2300,
+     "sy": 0.95
+    },
+    {
+     "t": 2500,
+     "sy": 1
+    },
+    {
+     "t": 3000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    },
+    {
+     "t": 900,
+     "f": "squint_blush"
+    },
+    {
+     "t": 2250,
+     "f": "embarrassed"
+    },
+    {
+     "t": 2650,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_moonlamp",
+     "anchor": "side_r",
+     "dx": 3,
+     "dy": 0,
+     "t0": 0,
+     "t1": 700,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_moonlamp",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": 1,
+     "t0": 700,
+     "t1": 3000,
+     "ms": 200,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       1550,
+       0,
+       0
+      ],
+      [
+       1700,
+       0,
+       9
+      ],
+      [
+       2300,
+       0,
+       9
+      ]
+     ]
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 10,
+     "dy": -6,
+     "t0": 1000,
+     "t1": 1500,
+     "ms": 120,
+     "loop": true
+    }
+   ]
+  }
+ },
+ "copy": {
+  "A": {
+   "durationMs": 2000,
+   "loop": false,
+   "who": "細佬 S2 BB（其他階段同一份 JSON 用 rig 錨點都得）",
+   "title": "照抄：淋花 → 淋自己個頭",
+   "prop": "prop_can",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 400,
+     "y": -1,
+     "sy": 1.03
+    },
+    {
+     "t": 600,
+     "y": 0,
+     "sy": 0.95,
+     "sx": 1.04
+    },
+    {
+     "t": 1200,
+     "sy": 0.96,
+     "sx": 1.03
+    },
+    {
+     "t": 1267,
+     "x": -1,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 1333,
+     "x": 1
+    },
+    {
+     "t": 1400,
+     "x": -1
+    },
+    {
+     "t": 1467,
+     "x": 1
+    },
+    {
+     "t": 1533,
+     "x": 0
+    },
+    {
+     "t": 1667,
+     "y": -1
+    },
+    {
+     "t": 2000,
+     "y": 0
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "happy"
+    },
+    {
+     "t": 600,
+     "f": "squint"
+    },
+    {
+     "t": 867,
+     "f": "surprised"
+    },
+    {
+     "t": 1233,
+     "f": [
+      "dizzy_a",
+      "dizzy_b"
+     ],
+     "ms": 100
+    },
+    {
+     "t": 1600,
+     "f": "happy"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_can",
+     "anchor": "side_r",
+     "dx": 3,
+     "dy": 0,
+     "t0": 0,
+     "t1": 467,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_can",
+     "anchor": "headTop",
+     "dx": 7,
+     "dy": -3,
+     "t0": 467,
+     "t1": 1200,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true
+    },
+    {
+     "id": "fx2_drops",
+     "anchor": "headTop",
+     "dx": -1,
+     "dy": -1,
+     "t0": 600,
+     "t1": 1200,
+     "ms": 80,
+     "loop": true
+    },
+    {
+     "id": "fx2_splash",
+     "anchor": "center",
+     "dx": 0,
+     "dy": 2,
+     "t0": 1233,
+     "t1": 1567,
+     "ms": 80,
+     "loop": true
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": -2,
+     "t0": 1600,
+     "t1": 2000,
+     "ms": 80,
+     "loop": true
+    }
+   ]
+  },
+  "B": {
+   "durationMs": 2000,
+   "loop": false,
+   "who": "細佬 S2 BB（其他階段同一份 JSON 用 rig 錨點都得）",
+   "title": "照抄：吹泡泡 → 自己入咗泡泡",
+   "prop": "prop_wand",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 467,
+     "sy": 1.04,
+     "sx": 0.97
+    },
+    {
+     "t": 867,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 1000,
+     "y": -6,
+     "e": "out"
+    },
+    {
+     "t": 1467,
+     "y": -8
+    },
+    {
+     "t": 1567,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 1633,
+     "sy": 0.9,
+     "sx": 1.08
+    },
+    {
+     "t": 1733,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 2000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "squint"
+    },
+    {
+     "t": 467,
+     "f": "blink"
+    },
+    {
+     "t": 867,
+     "f": "surprised"
+    },
+    {
+     "t": 1567,
+     "f": [
+      "dizzy_a",
+      "dizzy_b"
+     ],
+     "ms": 100
+    },
+    {
+     "t": 1767,
+     "f": "happy"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_wand",
+     "anchor": "mouth",
+     "dx": 5,
+     "dy": 1,
+     "t0": 0,
+     "t1": 867,
+     "ms": 133,
+     "z": "front"
+    },
+    {
+     "id": "fx2_bubble",
+     "anchor": "center",
+     "dx": 0,
+     "dy": 0,
+     "t0": 467,
+     "t1": 1567,
+     "ms": 200,
+     "loop": false,
+     "frames": [
+      0,
+      1,
+      2,
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "id": "fx2_bubble",
+     "anchor": "center",
+     "dx": 0,
+     "dy": 0,
+     "t0": 1567,
+     "t1": 1700,
+     "ms": 100,
+     "loop": true,
+     "frames": [
+      3
+     ]
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": 0,
+     "t0": 1767,
+     "t1": 2000,
+     "ms": 80,
+     "loop": true
+    }
+   ]
+  },
+  "C": {
+   "durationMs": 2000,
+   "loop": false,
+   "who": "細佬 S2 BB（其他階段同一份 JSON 用 rig 錨點都得）",
+   "title": "照抄：點火柴 → 用個頭擦",
+   "prop": "prop_match",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 333,
+     "sy": 0.97
+    },
+    {
+     "t": 400,
+     "x": -1
+    },
+    {
+     "t": 467,
+     "x": 1
+    },
+    {
+     "t": 533,
+     "x": -1
+    },
+    {
+     "t": 600,
+     "x": 1
+    },
+    {
+     "t": 667,
+     "x": 0,
+     "sy": 1
+    },
+    {
+     "t": 867,
+     "y": -5,
+     "e": "out"
+    },
+    {
+     "t": 1000,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 1067,
+     "sy": 0.92,
+     "sx": 1.06
+    },
+    {
+     "t": 1200,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 2000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "happy"
+    },
+    {
+     "t": 367,
+     "f": "squint"
+    },
+    {
+     "t": 767,
+     "f": "surprised"
+    },
+    {
+     "t": 1133,
+     "f": "pout"
+    },
+    {
+     "t": 1600,
+     "f": "happy"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_match",
+     "anchor": "side_r",
+     "dx": 3,
+     "dy": 0,
+     "t0": 0,
+     "t1": 367,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_match",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 367,
+     "t1": 733,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true,
+     "move": [
+      [
+       0,
+       -4,
+       0
+      ],
+      [
+       66,
+       4,
+       0
+      ],
+      [
+       133,
+       -4,
+       0
+      ],
+      [
+       200,
+       4,
+       0
+      ],
+      [
+       266,
+       -4,
+       0
+      ],
+      [
+       366,
+       3,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "prop_match",
+     "anchor": "side_r",
+     "dx": 3,
+     "dy": 0,
+     "t0": 733,
+     "t1": 1600,
+     "ms": 80,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true
+    },
+    {
+     "id": "fx_puff",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 733,
+     "t1": 1000,
+     "ms": 80,
+     "loop": false
+    },
+    {
+     "id": "fx2_steam",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 1000,
+     "t1": 2000,
+     "ms": 133,
+     "loop": true
+    },
+    {
+     "id": "fx_sweat",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": 4,
+     "t0": 1133,
+     "t1": 1600,
+     "ms": 100,
+     "loop": true
+    }
+   ]
+  },
+  "D": {
+   "durationMs": 2000,
+   "loop": false,
+   "who": "細佬 S2 BB（其他階段同一份 JSON 用 rig 錨點都得）",
+   "title": "照抄：孵蛋 → 坐喺石仔上面孵",
+   "prop": "prop_pebble",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 400,
+     "x": 0,
+     "y": 0
+    },
+    {
+     "t": 533,
+     "y": -6,
+     "e": "out"
+    },
+    {
+     "t": 667,
+     "y": -4,
+     "sy": 0.94,
+     "sx": 1.05,
+     "e": "in"
+    },
+    {
+     "t": 1200,
+     "y": -4,
+     "sy": 0.96,
+     "sx": 1.04
+    },
+    {
+     "t": 1333,
+     "rot": -6
+    },
+    {
+     "t": 1533,
+     "rot": -6
+    },
+    {
+     "t": 1667,
+     "rot": 0
+    },
+    {
+     "t": 2000,
+     "y": -4
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "happy"
+    },
+    {
+     "t": 667,
+     "f": "squint_blush"
+    },
+    {
+     "t": 1300,
+     "f": "surprised"
+    },
+    {
+     "t": 1667,
+     "f": "happy"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_pebble",
+     "anchor": "side_r",
+     "dx": 2,
+     "dy": 2,
+     "t0": 0,
+     "t1": 467,
+     "ms": 133,
+     "z": "front"
+    },
+    {
+     "id": "prop_pebble",
+     "anchor": "pivot",
+     "dx": 0,
+     "dy": 1,
+     "t0": 467,
+     "t1": 2000,
+     "ms": 100,
+     "loop": true,
+     "follow": false,
+     "z": "back"
+    },
+    {
+     "id": "fx_question",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": -3,
+     "t0": 1300,
+     "t1": 1667,
+     "ms": 100,
+     "loop": true
+    },
+    {
+     "id": "fx_heart",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": 0,
+     "t0": 1700,
+     "t1": 2000,
+     "ms": 100,
+     "loop": true
+    }
+   ],
+   "rotStep": 3
+  },
+  "E": {
+   "durationMs": 2000,
+   "loop": false,
+   "who": "細佬 S2 BB（其他階段同一份 JSON 用 rig 錨點都得）",
+   "title": "照抄：食辣椒 → 當士多啤梨",
+   "prop": "prop_chili",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 467,
+     "sy": 1.04
+    },
+    {
+     "t": 533,
+     "sy": 0.94,
+     "sx": 1.05
+    },
+    {
+     "t": 733,
+     "sy": 1,
+     "sx": 1
+    },
+    {
+     "t": 867,
+     "y": -4,
+     "e": "out"
+    },
+    {
+     "t": 1000,
+     "x": -1,
+     "y": -3
+    },
+    {
+     "t": 1067,
+     "x": 1
+    },
+    {
+     "t": 1133,
+     "x": -1
+    },
+    {
+     "t": 1200,
+     "x": 1
+    },
+    {
+     "t": 1267,
+     "x": -1
+    },
+    {
+     "t": 1333,
+     "x": 1
+    },
+    {
+     "t": 1467,
+     "x": 0,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 2000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "squint_blush"
+    },
+    {
+     "t": 533,
+     "f": [
+      "laugh_b",
+      "squint"
+     ],
+     "ms": 120
+    },
+    {
+     "t": 767,
+     "f": "surprised"
+    },
+    {
+     "t": 933,
+     "f": "laugh_a"
+    },
+    {
+     "t": 1533,
+     "f": "happy"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_chili",
+     "anchor": "chest",
+     "dx": 6,
+     "dy": -4,
+     "t0": 0,
+     "t1": 533,
+     "ms": 133,
+     "z": "front"
+    },
+    {
+     "id": "fx_exclaim",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": -4,
+     "t0": 767,
+     "t1": 1000,
+     "ms": 100,
+     "loop": true
+    },
+    {
+     "id": "fx2_fire",
+     "anchor": "mouth",
+     "dx": 4,
+     "dy": -1,
+     "t0": 933,
+     "t1": 1533,
+     "ms": 80,
+     "loop": true
+    },
+    {
+     "id": "fx_sweat",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": 4,
+     "t0": 933,
+     "t1": 1533,
+     "ms": 100,
+     "loop": true
+    },
+    {
+     "id": "fx2_steam",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 1533,
+     "t1": 2000,
+     "ms": 133,
+     "loop": true
+    }
+   ]
+  },
+  "F": {
+   "durationMs": 2000,
+   "loop": false,
+   "who": "細佬 S2 BB（其他階段同一份 JSON 用 rig 錨點都得）",
+   "title": "照抄：望遠鏡 → 拎倒轉睇",
+   "prop": "prop_scope",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 1067
+    },
+    {
+     "t": 1200,
+     "x": 4
+    },
+    {
+     "t": 1333,
+     "x": 7
+    },
+    {
+     "t": 1367,
+     "x": 5,
+     "sx": 0.92
+    },
+    {
+     "t": 1467,
+     "x": 4,
+     "sx": 1
+    },
+    {
+     "t": 1800,
+     "x": 2
+    },
+    {
+     "t": 2000,
+     "x": 0
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "happy"
+    },
+    {
+     "t": 400,
+     "f": "surprised"
+    },
+    {
+     "t": 1367,
+     "f": [
+      "dizzy_a",
+      "dizzy_b"
+     ],
+     "ms": 100
+    },
+    {
+     "t": 1733,
+     "f": "happy"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_scope",
+     "anchor": "side_r",
+     "dx": 2,
+     "dy": 0,
+     "t0": 0,
+     "t1": 400,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_scope",
+     "anchor": "eyeR",
+     "dx": 7,
+     "dy": 1,
+     "t0": 400,
+     "t1": 1367,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true
+    },
+    {
+     "id": "fx2_tiny",
+     "anchor": "eyeR",
+     "dx": 17,
+     "dy": 0,
+     "t0": 600,
+     "t1": 1067,
+     "ms": 133,
+     "loop": true
+    },
+    {
+     "id": "fx_star_orbit",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 1367,
+     "t1": 1733,
+     "ms": 80,
+     "loop": true
+    }
+   ]
+  },
+  "G": {
+   "durationMs": 2000,
+   "loop": false,
+   "who": "細佬 S2 BB（其他階段同一份 JSON 用 rig 錨點都得）",
+   "title": "照抄：讀故仔 → 拎倒轉本書，讀到瞓著",
+   "prop": "prop_book",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 1067,
+     "sy": 1.0
+    },
+    {
+     "t": 1333,
+     "y": 1,
+     "sy": 0.96,
+     "sx": 1.03
+    },
+    {
+     "t": 1600,
+     "sy": 0.97
+    },
+    {
+     "t": 1800,
+     "sy": 0.96
+    },
+    {
+     "t": 2000,
+     "sy": 0.97
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "happy"
+    },
+    {
+     "t": 467,
+     "f": "surprised"
+    },
+    {
+     "t": 867,
+     "f": "sleepy"
+    },
+    {
+     "t": 1267,
+     "f": "sleep"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_book",
+     "anchor": "chest",
+     "dx": 0,
+     "dy": -3,
+     "t0": 0,
+     "t1": 1267,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_book",
+     "anchor": "pivot",
+     "dx": 10,
+     "dy": 0,
+     "t0": 1267,
+     "t1": 2000,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      2
+     ],
+     "loop": true
+    },
+    {
+     "id": "fx_zzz",
+     "anchor": "headTop",
+     "dx": 7,
+     "dy": -1,
+     "t0": 1333,
+     "t1": 2000,
+     "ms": 200,
+     "loop": true
+    }
+   ]
+  },
+  "H": {
+   "durationMs": 2000,
+   "loop": false,
+   "who": "細佬 S2 BB（其他階段同一份 JSON 用 rig 錨點都得）",
+   "title": "照抄：月亮燈 → 當帽戴",
+   "prop": "prop_moonlamp",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 467,
+     "y": -3,
+     "e": "out"
+    },
+    {
+     "t": 600,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 867
+    },
+    {
+     "t": 1000,
+     "x": -2
+    },
+    {
+     "t": 1200,
+     "x": 2
+    },
+    {
+     "t": 1400,
+     "x": 0
+    },
+    {
+     "t": 1533,
+     "sy": 0.95
+    },
+    {
+     "t": 1667,
+     "sy": 1
+    },
+    {
+     "t": 2000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "happy"
+    },
+    {
+     "t": 600,
+     "f": "squint_blush"
+    },
+    {
+     "t": 1500,
+     "f": "pout"
+    },
+    {
+     "t": 1767,
+     "f": "happy"
+    }
+   ],
+   "fx": [
+    {
+     "id": "prop_moonlamp",
+     "anchor": "side_r",
+     "dx": 3,
+     "dy": 0,
+     "t0": 0,
+     "t1": 467,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      0
+     ],
+     "loop": true
+    },
+    {
+     "id": "prop_moonlamp",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": 1,
+     "t0": 467,
+     "t1": 2000,
+     "ms": 133,
+     "z": "front",
+     "frames": [
+      1
+     ],
+     "loop": true,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       1033,
+       0,
+       0
+      ],
+      [
+       1133,
+       0,
+       9
+      ],
+      [
+       1533,
+       0,
+       9
+      ]
+     ]
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 10,
+     "dy": -6,
+     "t0": 667,
+     "t1": 1000,
+     "ms": 80,
+     "loop": true
+    }
+   ]
+  }
+ }
+}

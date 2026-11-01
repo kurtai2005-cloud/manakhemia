@@ -1,0 +1,589 @@
+{
+ "size": [
+  48,
+  48
+ ],
+ "pivot": [
+  24,
+  45
+ ],
+ "groundRow": 46,
+ "alpha": "0/255 only",
+ "idle": {
+  "frames": 4,
+  "frameW": 48,
+  "durationsMs": [
+   260,
+   180,
+   260,
+   140
+  ]
+ },
+ "creatures": {
+  "S1": {
+   "name": "蛋殼仔",
+   "stage": "S1",
+   "outline": "#34264a",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 33,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 26,
+     "y": 33,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "bulbXY": [
+    24,
+    17
+   ],
+   "bulbType": "none",
+   "face": {
+    "mouth": null,
+    "blush": 3
+   },
+   "note": "頂住上半殼、下半殼兜住，只露一對眼；全系共用",
+   "mass": 489,
+   "colors": 11,
+   "idleCut": 35
+  },
+  "S2": {
+   "name": "BB",
+   "stage": "S2",
+   "outline": "#34264a",
+   "eyes": [
+    {
+     "x": 17,
+     "y": 31,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 27,
+     "y": 31,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "bulbXY": [
+    24,
+    17
+   ],
+   "bulbType": "bulb",
+   "glowTint": "#fff4d0",
+   "face": {
+    "mouth": [
+     22,
+     37,
+     4
+    ],
+    "blush": 3
+   },
+   "note": "圓粒＋細手腳＋頭頂未定色光（glow 交引擎）；全系共用",
+   "mass": 531,
+   "colors": 9,
+   "idleCut": 33
+  },
+  "S4A": {
+   "name": "滴滴少年",
+   "from": "A1",
+   "outline": "#1a3059",
+   "eyes": [
+    {
+     "x": 17,
+     "y": 32,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 29,
+     "y": 32,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "bulbXY": [
+    24,
+    6
+   ],
+   "bulbType": "bulb",
+   "face": {
+    "mouth": [
+     22,
+     37,
+     4
+    ],
+    "blush": 12
+   },
+   "insertRows": {
+    "body": [
+     41,
+     2
+    ],
+    "feature": [
+     13,
+     1
+    ]
+   },
+   "scarfRow": 40,
+   "lavaVeins": 0,
+   "veinPx": [],
+   "stage": "S4",
+   "series": "A",
+   "mass": 702,
+   "colors": 12,
+   "idleCut": 29
+  },
+  "S4B": {
+   "name": "燈燈少年",
+   "from": "B1",
+   "outline": "#162766",
+   "eyes": [
+    {
+     "x": 16,
+     "y": 25,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 26,
+     "y": 24,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "bulbXY": [
+    25,
+    15
+   ],
+   "bulbType": "own",
+   "face": {
+    "mouth": [
+     20,
+     30,
+     4
+    ],
+    "blush": 11
+   },
+   "insertRows": {
+    "body": [
+     34,
+     2
+    ],
+    "feature": [
+     13,
+     1
+    ]
+   },
+   "scarfRow": 33,
+   "lavaVeins": 0,
+   "veinPx": [],
+   "stage": "S4",
+   "series": "B",
+   "mass": 643,
+   "colors": 12,
+   "idleCut": 30
+  },
+  "S4C": {
+   "name": "火仔少年",
+   "from": "C1",
+   "outline": "#61192e",
+   "eyes": [
+    {
+     "x": 17,
+     "y": 31,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 30,
+     "y": 32,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "bulbXY": [
+    13,
+    16
+   ],
+   "bulbType": "bulb",
+   "face": {
+    "mouth": [
+     23,
+     37,
+     4
+    ],
+    "blush": 12
+   },
+   "insertRows": {
+    "body": [
+     41,
+     2
+    ],
+    "feature": [
+     17,
+     1
+    ]
+   },
+   "scarfRow": 40,
+   "lavaVeins": 0,
+   "veinPx": [],
+   "stage": "S4",
+   "series": "C",
+   "mass": 703,
+   "colors": 12,
+   "idleCut": 32
+  },
+  "S4D": {
+   "name": "熔石少年",
+   "from": "D1",
+   "outline": "#1e0c1b",
+   "eyes": [
+    {
+     "x": 19,
+     "y": 31,
+     "kind": "glow_angry",
+     "side": 0,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    },
+    {
+     "x": 30,
+     "y": 30,
+     "kind": "glow_angry",
+     "side": 1,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    }
+   ],
+   "bulbXY": [
+    18,
+    14
+   ],
+   "bulbType": "bulb",
+   "face": {
+    "mouth": null,
+    "blush": 0
+   },
+   "insertRows": {
+    "body": [
+     39,
+     2
+    ],
+    "feature": [
+     18,
+     1
+    ]
+   },
+   "scarfRow": 37,
+   "lavaVeins": 0,
+   "veinPx": [],
+   "stage": "S4",
+   "series": "D",
+   "mass": 674,
+   "colors": 12,
+   "idleCut": 31
+  },
+  "S4E": {
+   "name": "火糰少年",
+   "from": "E1",
+   "outline": "#470f1c",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 30,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 29,
+     "y": 30,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "bulbXY": [
+    24,
+    9
+   ],
+   "bulbType": "bulb",
+   "face": {
+    "mouth": [
+     23,
+     35,
+     4
+    ],
+    "blush": 12
+   },
+   "insertRows": {
+    "body": [
+     39,
+     2
+    ],
+    "feature": [
+     16,
+     1
+    ]
+   },
+   "scarfRow": 38,
+   "lavaVeins": 0,
+   "veinPx": [],
+   "stage": "S4",
+   "series": "E",
+   "mass": 686,
+   "colors": 12,
+   "idleCut": 30
+  },
+  "S4F": {
+   "name": "星彈少年",
+   "from": "F1",
+   "outline": "#160e31",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 31,
+     "kind": "half",
+     "side": 0,
+     "lineC": [
+      18,
+      11,
+      39
+     ]
+    },
+    {
+     "x": 28,
+     "y": 31,
+     "kind": "half",
+     "side": 1,
+     "lineC": [
+      18,
+      11,
+      39
+     ]
+    }
+   ],
+   "bulbXY": [
+    24,
+    11
+   ],
+   "bulbType": "star",
+   "face": {
+    "mouth": [
+     22,
+     36,
+     4
+    ],
+    "blush": 12
+   },
+   "insertRows": {
+    "body": [
+     40,
+     2
+    ],
+    "feature": [
+     15,
+     1
+    ]
+   },
+   "scarfRow": 39,
+   "lavaVeins": 0,
+   "veinPx": [],
+   "stage": "S4",
+   "series": "F",
+   "mass": 681,
+   "colors": 12,
+   "idleCut": 30
+  },
+  "S4G": {
+   "name": "夜糰少年",
+   "from": "G1",
+   "outline": "#1a1234",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 30,
+     "kind": "half",
+     "side": 0,
+     "lineC": [
+      21,
+      14,
+      42
+     ]
+    },
+    {
+     "x": 28,
+     "y": 30,
+     "kind": "half",
+     "side": 1,
+     "lineC": [
+      21,
+      14,
+      42
+     ]
+    }
+   ],
+   "bulbXY": [
+    21,
+    10
+   ],
+   "bulbType": "star",
+   "face": {
+    "mouth": [
+     22,
+     35,
+     4
+    ],
+    "blush": 12
+   },
+   "insertRows": {
+    "body": [
+     39,
+     2
+    ],
+    "feature": [
+     17,
+     1
+    ]
+   },
+   "scarfRow": 38,
+   "lavaVeins": 0,
+   "veinPx": [],
+   "stage": "S4",
+   "series": "G",
+   "mass": 673,
+   "colors": 12,
+   "idleCut": 30
+  },
+  "S4H": {
+   "name": "月角少年",
+   "from": "H1",
+   "outline": "#24132d",
+   "eyes": [
+    {
+     "x": 20,
+     "y": 31,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 30,
+     "y": 31,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "bulbXY": [
+    24,
+    15
+   ],
+   "bulbType": "bulb",
+   "face": {
+    "mouth": [
+     24,
+     36,
+     4
+    ],
+    "blush": 12
+   },
+   "insertRows": {
+    "body": [
+     40,
+     2
+    ],
+    "feature": [
+     19,
+     1
+    ]
+   },
+   "scarfRow": 39,
+   "lavaVeins": 0,
+   "veinPx": [],
+   "stage": "S4",
+   "series": "H",
+   "mass": 677,
+   "colors": 12,
+   "idleCut": 32
+  }
+ }
+}
