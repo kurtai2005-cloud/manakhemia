@@ -127,6 +127,46 @@
     if (qs.get('spr80idle') === 'feel' || qs.get('spr80idle') === 'strip') P.sprites80.idleMode = qs.get('spr80idle');
   }
   G.spr80Load = (P.sprites80 && P.sprites80.enabled) ? G.renderer.loadSprites80(P.sprites80) : Promise.resolve(null);
+  // 新系列（新蛋）48px：純預覽（PARAMS.newSeries；?ns=0 停用）。只載 atlas＋anchors；唔掛入 renderer／主寵 path。
+  if (qs.get('ns') === '0' && P.newSeries) P.newSeries.enabled = false;
+  G.newSeries = (function () {
+    const C = P.newSeries; let data = null, err = null, cur = null;   // cur：預覽中嘅 key（只喺記憶體，唔入存檔）
+    const img = (src) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error(src)); im.src = src; });
+    const jget = (u) => fetch(u).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); });
+    const KEYS = []; for (const l of 'ABCDEFGH') for (let t = 1; t <= 3; t++) KEYS.push(l + t);
+    const load = (C && C.enabled) ? Promise.all([jget(C.base + C.atlas + '.json'), img(C.base + C.atlas + '.png'), jget(C.base + C.anchors)])
+      .then(([json, im, an]) => { data = { json, img: im, anchors: an.creatures || {}, meta: an }; return data; })
+      .catch(e => { err = String(e && e.message || e); return null; }) : Promise.resolve(null);
+    const frameAt = (t) => { const ms = C.idleMs, tot = ms.reduce((a, v) => a + v, 0); let u = ((t * 1000) % tot + tot) % tot; for (let i = 0; i < ms.length; i++) { if (u < ms[i]) return i; u -= ms[i]; } return 0; };
+    const api = {
+      KEYS, load, cfg: C,
+      info() { return { enabled: !!(C && C.enabled), loaded: !!data, error: err, preview: cur, activeSeries: C ? C.activeSeries : 'tuanrong', atlas: data ? { w: data.img.width, h: data.img.height, frames: Object.keys(data.json.frames).length } : null, last: api._last || null }; },
+      petName(k) { const a = data && data.anchors[k]; return a && a.name || ''; },
+      preview(k) { if (k === undefined) return cur; cur = (k && KEYS.includes(k)) ? k : null; return cur; },   // 只改預覽；唔寫 G.state、唔 G.save()
+      frameAt,
+      // 畫一隻新寵落 canvas（獨立預覽）：影 → 燈泡光暈（lighter）→ sprite（nearest、整數 px）
+      draw(cv, k, t) {
+        if (!cv || !data || !k || !data.anchors[k]) return null;
+        const g = cv.getContext('2d'), Z = C.previewScale, F = C.frame, f = frameAt(t), row = KEYS.indexOf(k), A = data.anchors[k];
+        g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cv.width, cv.height); g.imageSmoothingEnabled = false;
+        const ox = Math.round(cv.width / 2 - C.pivot[0] * Z), oy = Math.round(cv.height - 6 * Z - C.pivot[1] * Z);
+        const fx = ox + C.pivot[0] * Z, fy = oy + (C.pivot[1] + 1) * Z;
+        g.fillStyle = 'rgba(40,30,50,0.28)'; g.beginPath(); g.ellipse(fx, fy, C.shadowHalfW * Z, 2.5 * Z, 0, 0, Math.PI * 2); g.fill();
+        const pf = (A.perFrame && A.perFrame[f]) || A.anchor, bx = ox + (pf[0] + 0.5) * Z, by = oy + (pf[1] + 0.5) * Z;
+        const a = Math.max(0, Math.min(1, C.glowA[0] + C.glowA[1] * Math.sin(t * C.glowHz * Math.PI))), R = C.glowR * Z;
+        const gr = g.createRadialGradient(bx, by, 0, bx, by, R), hex = A.glowTint || '#ffe9a0';
+        const rgb = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(',');
+        gr.addColorStop(0, 'rgba(' + rgb + ',' + a.toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+        g.globalCompositeOperation = 'lighter'; g.fillStyle = gr; g.fillRect(bx - R, by - R, R * 2, R * 2); g.globalCompositeOperation = 'source-over';
+        g.drawImage(data.img, f * F, row * F, F, F, ox, oy, F * Z, F * Z);
+        api._last = { key: k, frame: f, ox, oy, scale: Z, bulb: [bx, by], glowR: R, glowA: +a.toFixed(3) }; return api._last;
+      },
+      // 將來「新蛋／切換系列」hook：等遊策定新系列進化規則先開；而家唔郁 G.state，返 not-ready。
+      switchSeries(id) { return { ok: false, reason: 'not-ready', note: '新系列進化規則待遊策', requested: id || null, active: C ? C.activeSeries : 'tuanrong' }; },
+    };
+    return api;
+  })();
+  G.nsLoad = G.newSeries.load;
   G.liveSettled = false; G.liveLoad.then(() => { G.liveSettled = true; }, () => { G.liveSettled = true; });   // s3：重逢等 live atlas 載完先衝（rush 用真 clip）
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
   if (NS.hd2d) NS.hd2d.install(G, NS);

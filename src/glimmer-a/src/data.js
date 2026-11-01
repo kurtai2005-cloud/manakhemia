@@ -498,8 +498,9 @@
     // 遊美 80px 正式版寵物（tuned_80／ENGINE_80）：pets_idle_80 atlas（320×1920，一行一隻 A1→H3，4 幀 idle）＋ bulb_anchors_80；
     // pivot (40,77) → 腳底照落 art (97,292)。?spr=old 停用（返舊 evo sprite）；?spr80=C2 強制 24 隻任一隻（feel-test）；?spr80idle=feel 用 feeltest 節奏。
     // 只有 idle（＋blink＝幀 3）有 80px 圖：其餘 clip 一律 fallback 返現有 sprite（clipsFallback:'old'）。form→line／stage→tier 係引擎暫定，待遊策／Kurt 確認。
+    // sprite48（Kurt 11-01 經遊美）：24 隻新寵係「新蛋」另一個系列，唔取代舊團絨 → 80px 主寵 path 停用（主寵＝evo6 原樣）；新寵見 PARAMS.newSeries（⚙「試新寵」只係預覽）。
     sprites80: {
-      enabled: true, base: 'art/sprites80/', atlas: 'pets_idle_80', anchors: 'bulb_anchors_80.json',
+      enabled: false, base: 'art/sprites80/', atlas: 'pets_idle_80', anchors: 'bulb_anchors_80.json',
       frame: 80, pivot: [40, 77], idleMs: [260, 180, 260, 140], idleMode: 'strip',      // strip＝0→1→2→3 循環；feel＝0↔1 bob 0.9s（幀 1 0.36s）＋約 3.3s 眨眼（幀 3 140ms）
       feel: { bobSec: 0.9, bobDownSec: 0.36, blinkSec: 3.3, blinkMs: 140 },
       clips: { idle: 'idle', blink: 3 },                                              // 有 80px 圖嘅 clip
@@ -509,6 +510,15 @@
       tiers: { juvenile: 1, adult: 2, elder: 3 },                                      // 遊美 11-01：成年前一階（evo6 juvenile／跳跳 evo_hop）→ tier 1（form 未定 → 用 sim.routeLead 領先路線）；egg／newborn／sprout → 舊 sprite
       glowR: 14, glowA: [0.72, 0.26], glowHz: 2.2, moodMix: 0.55,   // glowA：遊美 11-01 調高（feeltest 0.42±0.18 → 引擎光經 hd 混色後 H3 實測約弱 1.8×；0.72±0.26 ≈ feeltest 中午）；moodMix：燈泡情緒／路線色混入 80px 引擎光（保留燈泡情緒 feature）
       shadowHalfW: 21, force: null, hold: null,
+    },
+    // 新系列（新蛋）48px 寵物（遊美 tuned_48／ENGINE_48）：⚙「試新寵」純預覽（獨立 canvas，唔改主寵／存檔／路線）。
+    // 48×48、pivot (24,45)、1x（預覽放大 previewScale 倍，nearest）；alpha 0/255，燈泡光暈由引擎畫（glowR ~9、glowA 0.42±0.18）；影 shadowHalfW ~13。
+    // 進化規則等遊策：activeSeries 永遠係 'tuanrong'；將來「新蛋／切換系列」經 G.newSeries.switchSeries()（而家只返 not-ready）。
+    newSeries: {
+      enabled: true, id: 'fromref48', name: '新蛋系列', activeSeries: 'tuanrong',
+      base: 'art/sprites48/', atlas: 'pets_idle_48', anchors: 'bulb_anchors_48.json',
+      frame: 48, pivot: [24, 45], idleMs: [260, 180, 260, 140], tiers: 3,
+      glowR: 9, glowA: [0.42, 0.18], glowHz: 2.2, shadowHalfW: 13, previewScale: 3,
     },
     // ── 畫質自動降級：用 rAF 幀間隔（唔再用連續掉幀計）──
     quality: {
