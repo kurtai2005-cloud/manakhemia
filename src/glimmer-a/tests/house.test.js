@@ -22,7 +22,7 @@ console.log('⓪ 美術／資料');
   for (const k in ACT.forms) for (const c of ['sit', 'prank_do', 'prank_got']) chk(ACT.forms[k][c] && ACT.forms[k][c].png);
   ok(!miss.length, '所有引用圖檔存在', miss.slice(0, 5));
   ok(['S1', 'S2', 'A3', 'H3', 'S4A'].every(k => ACT.forms[k]) && ['sprout', 'radiant', 'soft', 'lumi'].every(k => ACT.forms[k]), '細佬＋團絨形態有 sit／prank strip');
-  ok(D.PARAMS.series2.version === '4b', 'PARAMS.series2.version＝4b', D.PARAMS.series2.version);
+  ok(/^4b/.test(D.PARAMS.series2.version), 'PARAMS.series2.version＝4b…', D.PARAMS.series2.version);
 }
 console.log('① 解鎖／預設床');
 { const s = fam({ rel: 'friend' }); ok(!HS.unlocked(s) && HS.ensure(s, at(0, 12)).reason === 'locked' && HS.enter(s, at(0, 12), T.memStore()).ok === false, '未做家人：鎖');

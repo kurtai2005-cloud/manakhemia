@@ -16,7 +16,7 @@
     const wd = !!(navigator && navigator.webdriver), R = G.renderer, UI = NS.ui, X2 = NS.sys12b, BEH = NS.behavior, RC = NS.reactclip, C = SR.CFG, L_ = SR.LINES_OUT;
     const native = !!(window.Capacitor && (typeof window.Capacitor.isNativePlatform === 'function' ? window.Capacitor.isNativePlatform() : window.Capacitor.isNative));   // 4a.1：APK（Capacitor）一定開自動送蛋／喊
     const on = (k) => qs.get(k) === '1' || qs.get('s2x') === '1' || ((native || !wd) && qs.get(k) !== '0' && qs.get('s2x') !== '0');
-    const VERSION = P.version || '4b';
+    const VERSION = P.version || '4b.1（UI v2）';
     const AUTO = { deliver: on('s2deliver'), cry: on('s2cry') };
     const BASE = P.art.base, S = () => G.state, pnow = () => performance.now();
     const say = (line, o) => (G.say ? G.say(Object.assign({ line, src: 's2', sec: 3.5 }, o || {})) : UI.toast(line, 2600));

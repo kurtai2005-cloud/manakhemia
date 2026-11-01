@@ -824,7 +824,7 @@
   PARAMS.systems12b.badges.list.splice(PARAMS.systems12b.badges.list.length - 2, 0,   // 3b：朋友訪客友好度滿 5 → 普通徽章 5 碎（日上限外）
     { k: 'friend_snail', name: '蝸牛郵差好朋友', when: { friend: 'snail_postman' } }, { k: 'friend_granny', name: '蘑菇婆婆好朋友', when: { friend: 'mushroom_granny' } }, { k: 'friend_vendor', name: '螢火小販好朋友', when: { friend: 'firefly_vendor' } });
   PARAMS.b3b = { enabled: true, art: { base: 'art/batch3b/' } };   // 第 3 批 3b（visit.js／b3bui.js；?b3b=0 停用）
-  PARAMS.series2 = { enabled: true, version: '4b', art: { base: 'art/series2/' } };   // 第 4 批 4a 細佬（series2.js／s2ui.js；?s2=0 停用；cfg 覆寫 series2.CFG）
+  PARAMS.series2 = { enabled: true, version: '4b.1（UI v2）', art: { base: 'art/series2/' } };   // 第 4 批 4a 細佬（series2.js／s2ui.js；?s2=0 停用；cfg 覆寫 series2.CFG）
   PARAMS.house = { enabled: true, art: { base: 'art/series2_house/' } };   // 第 4 批 4b 屋仔（house.js／houseui.js；美術 art/series2_house）
   PARAMS.systems12b.badges.total = PARAMS.systems12b.badges.list.length;
   return { SYS_CLIPS, ROUTE_HINT, EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };

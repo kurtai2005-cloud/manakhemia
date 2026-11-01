@@ -47,13 +47,13 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   await load('q=high&hour=13&seed=21&ev=0');
   let s = await h(); ok(s.ready && !s.errors.length, '4b 屋仔圖全部載入', s.errors);
   ok(await E(() => Glimmer.data.PARAMS.house && Glimmer.data.PARAMS.house.enabled === true), 'PARAMS.house 開');
-  ok(await E(() => Glimmer.data.PARAMS.series2.version === '4b'), '版本 4b');
+  ok(await E(() => /^4b/.test(Glimmer.data.PARAMS.series2.version)), '版本 4b（4b.1 UI v2）');
   ok(!s.open && (!s.rail || !s.rail.shown), '未有細佬 → 冇屋仔掣', s.rail);
 
   console.log('# 入口：上鎖（細佬未係家人）');
   await toKid(); const evo0 = await evoSnap(); await E(() => { window.__toasts = []; const U = Glimmer.ui, t = U.toast; U.toast = function (m) { window.__toasts.push(String(m)); return t.apply(this, arguments); }; }); await E(() => __qa.house.rail()); await W(300); s = await h();
   ok(s.rail && s.rail.shown && s.rail.locked === '1' && !s.rail.dot, '有細佬未家人 → 屋仔掣上鎖', s.rail);
-  { const b = await page.locator('[data-testid=s2-rail-house]').boundingBox(); ok(b && Math.abs(b.x + b.width / 2 - 360) < 3 && Math.abs(b.y + b.height / 2 - 336) < 3, '入口喺 rail（細佬掣下面 360／336）', b); }
+  { const b = await page.locator('[data-testid=s2-rail-house]').boundingBox(); const X = await E(() => (window.__qa && __qa.uiv2 && __qa.uiv2.st().on) ? __qa.uiv2.st().rail.house : { x: 360, y: 336 }); ok(b && Math.abs(b.x + b.width / 2 - X.x) < 3 && Math.abs(b.y + b.height / 2 - X.y) < 3, '入口喺 rail（v1 360／336；v2 跟 layout rail）', b, X); }
   await page.locator('[data-testid=s2-rail-house]').click(); await W(300);
   ok((await toast()).includes('同細佬做咗家人就可以一齊住'), '撳上鎖掣 → 「同細佬做咗家人就可以一齊住」'); s = await h(); ok(!s.open, '上鎖入唔到');
   await shot('01-entry-locked');

@@ -5,7 +5,7 @@
 import base64, json, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'dist', 'glimmer-live-s1.html')   # 合併版：python3 tools/build-single.py dist/glimmer-combo.html
-MIME = {'.png': 'image/png', '.json': 'application/json', '.ogg': 'audio/ogg'}
+MIME = {'.png': 'image/png', '.json': 'application/json', '.ogg': 'audio/ogg', '.ttf': 'font/ttf'}
 assets = {}
 for d in ('art', 'audio'):
     for dp, _, fs in os.walk(os.path.join(ROOT, d)):
