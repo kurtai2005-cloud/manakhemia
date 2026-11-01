@@ -34,7 +34,7 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
   const juv = () => E(() => { const s = __glimmer.state; s.stage = 'juvenile'; s.form = null; s.sleeping = false; s.growthSec = 10; Object.assign(s.needs, { hunger: 100, mood: 80, clean: 100, energy: 100 }); s.poops = 0; __qa.pet.force('stay'); __glimmer.beh.x = 0; });
 
   const dev0 = dev; const devF = async (tid) => { await E(() => { const p = document.getElementById('devp'); if (p) p.classList.add('open'); }); await dev0(tid); await E(() => { const p = document.getElementById('devp'); if (p) { p.classList.add('fold'); p.classList.remove('open'); } }); };
-  await go('?q=high&hour=13&seed=21&ev=0&dev=1');
+  await go('?q=high&hour=13&seed=21&ev=0&dev=1&mgv1=1');   // 舊接光點／捉迷藏預設閂（games.v1Enabled）→ 呢個測試用 ?mgv1=1 重開
   await juv(); await closeModals();
   const C = await E(() => Glimmer.data.PARAMS.systems12b);
   const TAIL_SEED = (() => { const B2 = require('../src/systems2.js'); for (let sd = 1; sd < 500; sd++) { const g = new B2.HideGame(sd); if (g.tail) return sd; } return 1; })();
