@@ -73,6 +73,7 @@ ${H}#mbox .btn:not(.hdTg):not(.seg .btn) { height:auto !important; min-height:40
 ${H}.dexGrid > p { grid-column:1 / -1; }
 ${H}#s2houseV [data-testid="house-hint"] { left:72px !important; right:72px !important; }
 ${H}#substage { overflow:hidden !important; text-overflow:ellipsis !important; white-space:nowrap !important; }
+${H}#modal { padding:14px 0 24px; box-sizing:border-box; }
 ${H}.s12tabs { flex-wrap:wrap; }
 ${H}.s12tabs b { flex:1 0 auto !important; white-space:nowrap; padding:0 6px !important; }
 ${H}.s12foot { flex-wrap:wrap; }

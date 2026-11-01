@@ -6,3 +6,4 @@
 - `fp{8,10,12}-subset.ttf`：用 fontTools `pyftsubset` 抽出遊戲源碼／資料用到嘅 1574 個字（ASCII＋中文＋標點），冇改字形；
   原裝 TTF 3.7–7.3 MB，子集 190–300 KB。Modified Version 照樣以 OFL 1.1 發佈，唔單獨出售。
 - 用法（UI_KIT_V2.md §字體）：fp12＝標題、fp10＝掣／內文、fp8＝細字；CSS 字號＝像素尺寸 × 2（1 art px ＝ 2 CSS px）。
+- 5a.1（清晰度）：`fp12-subset.ttf` 由同一個原裝 `fusion-pixel-12px-proportional-zh_hk.ttf` 重新抽（pyftsubset，1599 字，涵蓋而家源碼／資料用到嘅全部字）。v2 UI 而家只用 FP12，字號 24px（2×）或 36px（3×）；子集冇嘅字（例如 ✓ ✿ ≥）由 hd2dui2 讀 cmap 判斷，成句轉系統中文字型。fp8／fp10 子集留低未刪（v1／後備），v2 唔再用。
