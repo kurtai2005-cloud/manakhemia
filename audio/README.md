@@ -299,78 +299,81 @@ Kurt 揀「精簡」級（經遊策轉達）。8 款 × 2 個變化（`_a`／`_b
 
 **未有人聽過**——尤其：似唔似細雨（定似沙沙底噪）、2–6 kHz 會唔會刺耳、雨滴會唔會喺 loop 入面聽得出重複。
 
-### 7.11 萌系 8bit／16bit UI 音效（`sfx_ui8_*`，v2 按 MOTION.md 對拍，2026-11-01）
+### 7.11 HD-2D UI 音效（`sfx_ui8_*`，v3 按 MOTION_HD2D.md 對拍，2026-11-01）
 
-Kurt 原話（經遊美轉達）：「個ui會唔會轉介面起上黑有動感同cute d，d聲音8bit 16 bit d萌d」。介面美術：繪本貼紙風（B2 甜甜貼紙版）。19 檔，`sfx/`，`tools/gen_sfx_ui8.py`（`build_ui8.sh`：連 plod 同試聽合輯一齊出）。**全部原創程式合成，無取樣、無第三方素材。** 舊 `sfx_tap／coin／confirm／cancel／error／hit` 保留不變。
+Kurt 揀咗 **HD-2D「金邊玻璃・寶石光」UI**（取代 B2 繪本貼紙）。19 檔，`sfx/`，`tools/gen_sfx_ui8.py`（`build_ui8.sh`：連 plod 同試聽合輯一齊出）。**全部原創程式合成，無取樣、無第三方素材。** 舊 `sfx_tap／coin／confirm／cancel／error／hit` 保留做 fallback，冇改。
 
-音色：帶限加法方波／脈衝波（佔空比 12.5／25／50 %，諧波只到約 9 kHz）＋三角波低音＋NES 式 sample-and-hold 噪音＋16bit（SNES 式）低通回聲。C 大調五聲（C D E G A），同 care BGM 相容。每粒音餘弦起音 ≥3 ms、收尾 ≥8 ms；總線 HPF 120 Hz＋LPF 9 kHz（>9 kHz 0.00 %）、檔頭 3 ms 淡入、檔尾 15 ms 淡出＋10 ms 靜音；解碼後最大相鄰樣本差 ≤ 0.49（無 click 跡象）。ogg Vorbis 44.1 kHz 單聲道 `-q:a 4`，`-fflags +bitexact`（重跑 sha256 一樣）；sample peak ≤ -1.24 dBFS。純增益，冇 limiter。每個聲用自己嘅隨機種子（crc32(檔名)）。
+**v3 音色（HD-2D note）**：保留 chip 底（柔 50／25 % 方波／脈衝，諧波只去到約 4.5–5.5 kHz），加暖三角／正弦 pad（輕微 detune chorus）、鋼片琴／鐘琴式鈴（celesta 1,2,3,4.2 倍；glock 1,2.76,5.4 倍；>6.5 kHz 泛音唔生成）、短 shimmer 閃粒、短 SNES 式回聲（50 ms，1 次）。轉場**冇心形**，改為「金色光幕」：暖 pad 漸強＋上行／下行閃粒＋細 air。C 大調五聲（pad 用 C 大調和弦音）。**>6 kHz 能量 ≤ 0.19 %**（v2 好多檔 >4 kHz 有 20–44 %），>9 kHz 0.00 %。每粒音餘弦起音 ≥3 ms、收尾 ≥8 ms；總線 HPF 120 Hz＋LPF 9 kHz、檔頭 3 ms 淡入、檔尾 15 ms 淡出＋10 ms 靜音；有長度上限嘅檔，超出部分截走並淡出。解碼後最大相鄰樣本差 ≤ 0.27（無 click 跡象）。ogg Vorbis 44.1 kHz 單聲道 `-q:a 4`，`-fflags +bitexact`（重跑 sha256 一樣）；sample peak ≤ -1.80 dBFS。純增益，冇 limiter。每個檔用自己嘅隨機種子（crc32(檔名)）。
 
-響度（LUFS20：解碼後無間隔重複 20 次）：主要點擊 -14（tap、tab、btn_press、confirm）；次要 -16；轉場／背景式 -18（兩個轉場、badge_wiggle、btn_sparkle——sparkle 通常疊喺 press／tab 後）。
+響度（LUFS20：解碼後無間隔重複 20 次）：-14 主要點擊（tap、tab、btn_press、confirm）；-16 次要（popup、toast、coin、cancel、error、toggle）；-18 轉場／背景式（veil 兩個、badge_wiggle、btn_sparkle）。
 
-**v2（2026-11-01）**：依遊美 `/workspace/game-design/art-pet/ui/style_ref/v2/MOTION.md`（概念稿，未批）嘅 ms 時間軸重新對拍；**每個檔 0 ms ＝ 對應 hook 觸發點**，檔內重音對準動畫關鍵幀。新增 `sfx_ui8_tap_a/b`、`sfx_ui8_coin`。重做：tab_switch、btn_press、btn_sparkle、popup_open、popup_close、toast_in、badge_wiggle、兩個轉場。confirm／cancel／error 冇 hook，設計不變（位元一樣）；toggle_on／off 設計不變，但因隨機種子改為逐檔，12 ms 細 tick 噪音重新生成（sha256 變咗）。v1 全部檔（16 個 ogg＋preview＋腳本）備份喺 `_prev/ui8_v1/`（有 `SHA256SUMS`）。
+**版本**：v1（預設時間）→ `_prev/ui8_v1/`；v2（B2 MOTION.md 對拍，心形轉場）→ `_prev/ui8_v2/`（19 個 ogg＋preview＋3 個腳本＋舊 README，連 `SHA256SUMS`）。**v3 改名**：`sfx_ui8_transition_heart_close/open` **停用**，已由 `sfx/` 移去 `_prev/ui8_v2/`；新檔 `sfx_ui8_transition_veil_close/open`。全部 17 個其他 ui8 檔都按 HD-2D 重做（confirm／cancel／error 都改暖音色）。`badge_wiggle` 冇改名（MOTION_HD2D §8 話 `reddot_wiggle` 係可選）。
 
-#### Hook → 檔案
+#### Hook → 檔案（每個檔 0 ms ＝ hook 觸發點；時間跟 `kit_hd2d/MOTION_HD2D.md`）
 
-| MOTION.md hook | 觸發時機（MOTION.md） | 相對 tap／t0 | 檔案 |
+| 用喺（MOTION_HD2D） | 觸發點 | 檔案 | 接線 |
 |---|---|---|---|
-| `sfx_tap` | 任何 tap ripple 開始 | 0 ms | `sfx_ui8_tap_a/b`（交替） |
-| `sfx_tab_pop` | tab 新泡泡 | tap 後 40 ms | `sfx_ui8_tab_switch_a/b`（交替） |
-| `sfx_popup_open` | 彈窗 pop 起點 | tap 委託後 80 ms | `sfx_ui8_popup_open` |
-| `sfx_popup_peel` | peel 起點 | tap ✕ 後 150 ms | `sfx_ui8_popup_close` |
-| `sfx_button_squish` | 按鈕 squish | 0 ms | `sfx_ui8_btn_press_a/b`（交替） |
-| `sfx_sparkle` | sparkle burst 起點 | tab 120／按鈕 70／彈窗 500／chip 2000 ms | `sfx_ui8_btn_sparkle` |
-| `sfx_toast_drop` | toast 落到第一下彈 | toast t0 後 **133 ms**（spring z=.32 f=2.4 第一次到位） | `sfx_ui8_toast_in` |
-| `sfx_coin` | chip pop | toast t0 後 2000 ms | `sfx_ui8_coin`（新） |
-| `sfx_reddot` | 每次 jiggle（可關） | 每週期 0 ms（1400 ms 一週期） | `sfx_ui8_badge_wiggle` |
-| `sfx_iris_close` | iris 收段頭 | tap 後 100 ms | `sfx_ui8_transition_heart_close` |
-| `sfx_iris_open` | iris 開段頭 | tap 後 650 ms | `sfx_ui8_transition_heart_open` |
+| §1 Tab switch（240 ms） | t=0 撳中 | `sfx_ui8_tab_switch_a`／`_b` | 交替；tab 返回都用佢 |
+| §2 Popup open（420 ms） | t=0 | `sfx_ui8_popup_open` | |
+| §2 Popup close（200 ms） | t=0 ✕／背景撳 | `sfx_ui8_popup_close` | 「取消」掣用 `sfx_ui8_cancel` |
+| §3 一般掣 pointerdown（60 ms） | down | `sfx_ui8_btn_press_a`／`_b` | 隨機；唔再疊 `sfx_ui8_tap_*` |
+| §3 圓章掣／§7 seg 分段 | down | `sfx_ui8_tap_a`／`_b` | seg 用 `tap_a` |
+| §3 主掣確認 | 確認一刻 | `sfx_ui8_confirm`＋`sfx_ui8_btn_sparkle` | 同時播（fx_spark ×3＋fx_sweep） |
+| §7 委託完成 stamp | stamp 起 | `sfx_ui8_confirm` | |
+| §3 停用掣 | 撳 | `sfx_ui8_error` | |
+| §4 Toast in（220 ms） | t=0 | `sfx_ui8_toast_in` | 一次一個（隊列） |
+| §4 貨幣 toast | toast t=140 | `sfx_ui8_coin` | |
+| §5 Red dot wiggle（360 ms） | wiggle 起 | `sfx_ui8_badge_wiggle` | 冷卻 ≥5 s，一個畫面只響一次；出現冇聲 |
+| §6 轉場收 | 轉場 t=0 | `sfx_ui8_transition_veil_close` | |
+| §6 轉場開 | 轉場 t=420 | `sfx_ui8_transition_veil_open` | 返回（600 ms）只播呢個 |
+| §6 卡／列 pop（520＋40·i） | 每張卡 | `sfx_ui8_popup_open` 0.5 音量、隨機 `playbackRate` | 沿用之前約定（見問題 2） |
+| §7 toggle（120 ms） | 撳 | `sfx_ui8_toggle_on`／`_off` | |
 
-**注意：** hook 名 `sfx_tap`、`sfx_coin` 同舊檔 `sfx/sfx_tap.ogg`、`sfx/sfx_coin.ogg` 撞名——遊程接線時 hook 要指去 `sfx_ui8_*`，唔好直接用 hook 名當檔名。建議：有專屬 hook（tab_pop／button_squish）嘅元件**唔好再疊 `sfx_tap`**，否則同一下 tap 會有 2–3 個聲。
+#### 檔案（重音 ms ＝ 檔內時間，對應 MOTION_HD2D 關鍵幀）
 
-#### 檔案（0 ms ＝ hook 觸發；重音 ms ＝ 檔內時間）
-
-| 檔名 | 長度 | 樣本 | LUFS20 | peak dBFS | 重音 ms（對應動畫） |
+| 檔名 | 長度 | 樣本 | LUFS20 | peak dBFS | 重音 ms（動畫） |
 |---|---|---|---|---|---|
-| `sfx_ui8_tap_a` | 0.055 s | 2,405 | -14.3 | -5.1 | 0 C7 "pip"（ripple 起） |
-| `sfx_ui8_tap_b` | 0.055 s | 2,405 | -13.9 | -4.7 | 0 A6 "pip" |
-| `sfx_ui8_tab_switch_a` | 0.313 s | 13,799 | -14.0 | -2.2 | 0 "pi" G6 → **126 "pu" C7**（sx 峰 1.25 overshoot）→ 257 落地軟 tick（dy 小跳落地） |
-| `sfx_ui8_tab_switch_b` | 0.313 s | 13,803 | -14.0 | -2.8 | 同上（A6 → D7） |
-| `sfx_ui8_btn_press_a` | 0.331 s | 14,588 | -14.0 | -1.7 | 0–76 下滑 A5↘E5，**76 壓扁到底軟 thump**（sy .84）→ 190 回彈上滑（sy 1.1）→ 285 極輕尾（回穩） |
-| `sfx_ui8_btn_press_b` | 0.331 s | 14,607 | -14.0 | -1.5 | 同上（G5↘D5） |
-| `sfx_ui8_btn_sparkle` | 0.509 s | 22,451 | -18.0 | -5.0 | 0／40／80 E6 G6 C7 → **130 E7 最亮**（粒子 scale 峰 u=.25）→ 220／310／400 閃爍漸弱（alpha 1−u²，約 500 ms 收） |
-| `sfx_ui8_popup_open` | 0.507 s | 22,378 | -16.0 | -2.3 | 0–189 "boing" 上滑 C5→C6（oCubic）→ **189「啵」G6**（scale 1.1 overshoot）→ 294 音高微跌（.96）→ 357 微升（1.02）→ 420 定 |
-| `sfx_ui8_popup_close` | 0.471 s | 20,777 | -16.0 | -4.8 | 0–248 撕紙 noise 由高掃低（摺角 d，頭快尾慢）→ **203 fly 起**：下行滑音先微升（iBack）再加速跌＋輕風聲 → 450 收（alpha→0） |
-| `sfx_ui8_toast_in` | 0.669 s | 29,498 | -16.0 | -1.2 | **0 "dun"＋小鈴**（第一次到位）→ 87 最大過衝（無聲，鈴尾延續）→ 220 細 dun＋鈴（第二次到位）→ 439 極細鈴（第三次） |
-| `sfx_ui8_coin` | 0.462 s | 20,373 | -16.0 | -4.5 | 0 "ding" G6 → **117 "ding" C7 長音**（chip scale 峰 1.18）→ 233 vibrato 回落（.95） |
-| `sfx_ui8_badge_wiggle` | 0.436 s | 19,228 | -18.0 | -3.1 | 0–75 靜音 → **78 A6 bip**（scale 1.35／−14°）→ 182 G6（.85／+12°）→ 286 A6（1.12／−7°）→ 390 G6（.96／+3°）漸弱 |
-| `sfx_ui8_transition_heart_close` | 0.637 s | 28,111 | -18.0 | -3.7 | 0–400 下行五聲 C7→C5（10 粒，音距由疏到密跟 iCubic 加速）＋漸強風聲 → **400 關閘「噗」**（全遮）→ 400–450 心形「啵」上滑 C6→E6，**450 峰**（大心 1.2）→ 500／550 wobble |
-| `sfx_ui8_transition_heart_open` | 0.583 s | 25,729 | -18.1 | -2.0 | 0 細「啾」下滑（大心縮走 0–135）＋三角低音 C4→G4 → 0–380 上行五聲 C5→C7（音距由密到疏跟 oCubic 減速）→ 420／450 尾閃光（cover 淡出完） |
-| `sfx_ui8_confirm` | 0.309 s | 13,609 | -14.0 | -3.8 | 0／40／80 C6 E6 G6 → 120 C7（無 hook，v1 不變） |
-| `sfx_ui8_cancel` | 0.169 s | 7,470 | -16.0 | -2.0 | 0 G5 → 60 C5↘A4（無 hook，v1 不變） |
-| `sfx_ui8_error` | 0.210 s | 9,245 | -15.9 | -1.8 | 0／120 低「噗噗」A4（無 hook，v1 不變） |
-| `sfx_ui8_toggle_on` | 0.079 s | 3,500 | -16.1 | -4.5 | 0–30 E6↗A6（無 hook） |
-| `sfx_ui8_toggle_off` | 0.079 s | 3,504 | -16.0 | -5.5 | 0–30 A6↘E6（無 hook） |
+| `sfx_ui8_tap_a` | 0.086 s | 3,800 | -14.0 | -2.8 | 0 暖 pip C6＋細鈴（pointerdown，0–60 下沉） |
+| `sfx_ui8_tap_b` | 0.086 s | 3,790 | -14.0 | -1.9 | 0 A5 |
+| `sfx_ui8_tab_switch_a` | 0.330 s | 14,553 | -14.1 | -1.8 | 0 軟 pip（撳中縮 .92）→ 40 三角低音＋上滑（新 active 起）→ **180 鈴 C7**（scale 1.08 overshoot）→ 240 細鈴（定） |
+| `sfx_ui8_tab_switch_b` | 0.330 s | 14,553 | -14.0 | -2.7 | 同上（A5→D7） |
+| `sfx_ui8_btn_press_a` | 0.136 s | 6,003 | -14.0 | -3.3 | 0–60 暖「啵」下滑 A5↘E5 → **60 到底軟 thump**（pointerdown 完）；冇回彈（up 冇 hook） |
+| `sfx_ui8_btn_press_b` | 0.136 s | 6,004 | -13.9 | -2.8 | 同上（G5↘D5） |
+| `sfx_ui8_btn_sparkle` | 0.560 s | 24,696 | -18.1 | -6.1 | 0／60／**120** 鈴 G6 C7 E7（fx_spark ×3，200 ms 內）→ 200–520 上行閃粒（fx_sweep 320 ms） |
+| `sfx_ui8_confirm` | 0.390 s | 17,199 | -13.9 | -1.8 | 0 暖和弦＋E6 → 40 G6 → **80 落章 thump＋鈴 C7**（stamp 1.6→.9） |
+| `sfx_ui8_cancel` | 0.189 s | 8,326 | -16.1 | -3.7 | 0 G5 → 60 E5↘C5（close 200 ms 內收） |
+| `sfx_ui8_error` | 0.156 s | 6,891 | -16.0 | -4.0 | 0／**80** 低暖「噗噗」（停用掣震 ±1.5 ×2，160 ms） |
+| `sfx_ui8_popup_open` | 0.510 s | 22,491 | -16.0 | -1.9 | 0 軟 pip → 40–216 暖上滑 C5→C6＋pad → **216 鈴 C7＋G6**（panel 1.05 overshoot）→ 296 微跌（.985）→ 200–420 shimmer（金框光脈衝，310 最密） |
+| `sfx_ui8_popup_close` | 0.197 s | 8,680 | -16.0 | -6.5 | 0 軟 pip（✕ 按下）→ 0–180 下滑 C6→C5，振幅跟 1−iCubic（尾段急收，同 α） |
+| `sfx_ui8_toast_in` | 0.430 s | 18,963 | -16.0 | -4.3 | 0–140 暖滑入 → **140 鈴 G6**（oBack overshoot）→ **234 鈴 C7**（icon 1.15 峰） |
+| `sfx_ui8_coin` | 0.430 s | 18,963 | -16.1 | -5.7 | 0 "ding" G6（toast t=140）→ **94 "ding" C7 長鈴**（icon 峰 ≈ toast t=234）→ 120 數完細閃粒 |
+| `sfx_ui8_badge_wiggle` | 0.370 s | 16,317 | -17.9 | -5.8 | 0–87 靜音 → 90 A6（−12°）→ **180 C7**（+10°、scale 1.1 峰）→ 270 G6（−6°） |
+| `sfx_ui8_toggle_on` | 0.170 s | 7,497 | -16.1 | -3.6 | 0 tick＋滑 E5→A5 → **76 細鈴 A6**（knob oBack overshoot） |
+| `sfx_ui8_toggle_off` | 0.170 s | 7,497 | -16.1 | -3.8 | 同上（A5→E5，鈴 E6） |
+| `sfx_ui8_transition_veil_close` | 0.570 s | 25,137 | -18.1 | -3.0 | 0 軟觸（ripple）→ 150–349 金色 pad 漸強＋上行閃粒（veil α 0→.88）→ **349 鈴 C7**（全光）→ 349–420 shimmer → 420 後約 0.15 s 淡走（交畀 open） |
+| `sfx_ui8_transition_veil_open` | 0.570 s | 25,137 | -18.0 | -4.0 | **0 暖鈴和弦 C6 E6 G6＋pad**（新頁出現，轉場 t=420）→ 0–280 下行閃粒漸疏（veil 91–280 退）→ 140 低鈴 C5（頁 .99 落定）→ 280–480 上行細閃粒（fx_sweep 700–900） |
 
-試聽合輯：`sfx/_preview_ui8_all.ogg`（13.719 s，19 個，次序 tap_a/b → tab → press → sparkle → popup_open → popup_close → toast_in → coin → badge → 轉場 close／open → confirm → cancel → error → toggle on／off，每個之間 0.4 s 靜音）——**只供試聽，唔係遊戲資源，唔好入 build**。
+試聽合輯：`sfx/_preview_ui8_all.ogg`（13.016 s，19 個，每個之間 0.4 s 靜音；次序 tap_a/b → tab → press → sparkle → popup_open → popup_close → toast_in → coin → badge → veil close／open → confirm → cancel → error → toggle on／off）——**只供試聽，唔係遊戲資源，唔好入 build**。
 
-**MOTION.md 未清楚嘅地方（要遊美／遊程確認）**：
-1. `sfx_toast_drop`「落到第一下彈」：我當係 toast t0 後 133 ms（spring 第一次到位）觸發；如果遊程喺 t0 觸發，要延遲 133 ms。
-2. 轉場返程時間唔同（iris 收 350 → 心 pop 100 → iris 開 400 ms），而家兩個檔按去程（400／150／450）做；返程可以 `playbackRate` ≈1.12 或者另出 `_return` 版。
-3. 手帳卡 pop（iris 開 +100 ms 起每張 +60 ms）冇 hook、冇講幾多張，所以冇獨立聲；`sfx_iris_open` 冇逐張對拍。
-4. `sfx_tap` 同 `sfx_tab_pop`／`sfx_button_squish`／`sfx_sparkle` 一齊觸發會疊 2–3 個聲；建議有專屬 hook 就唔播 tap。
-5. 第 6 節轉場開頭「tab squash + ripple」（0–260 ms）冇專屬 hook，可用 `sfx_tap` 或 `sfx_tab_pop`。
-6. 第 7 節寫「10 SFX hooks」，但 iris_close／open 兩個名共 11 個 hook 名。
-7. GIF 檔頭寫 30 ms/幀，但 ffprobe 平均 20–33 fps（幀時長唔一）；我跟 MOTION.md 嘅 ms 數，冇跟 GIF 幀數。
-8. 「時間數值可以按手感 ±20% 調」：動畫改咗時間就要重新對拍（改 `gen_sfx_ui8.py` 入面註明嘅 ms 再重跑）。
+**MOTION_HD2D.md 未清楚嘅地方（要遊美／遊程確認）**：
+1. §5 紅點：MOTION_HD2D 寫「wiggle 有聲（冷卻 ≥5 s，一個畫面只響一次）、出現冇聲」，同之前約定「紅點只喺第一次出現響」唔同。v3 跟 MOTION_HD2D（wiggle 觸發）；如果要跟返舊約定，同一個檔可以喺出現時播（重音 90／180 ms 就唔再對準 scale 0→1.25 嘅 240 ms 出現動畫）。
+2. §6 卡 pop 520＋40·i、240 ms：40 ms 一張，用 `popup_open`（0.51 s）0.5 音量會疊好多個；建議只播頭 3 張，或者每 2 張播一次。MOTION 冇寫幾多張卡。
+3. §3 pointerup（0–120 oBack）冇 hook，所以 btn_press 冇回彈聲；如果想要「啵—彈」，要加 up hook。
+4. §3 `fx_spark` ×3「200 ms」冇逐粒時間；我用 0／60／120。`fx_sweep` 長度：§2 寫 320 ms，§6 寫 700–900（200 ms）；sparkle 用 320 ms，veil_open 嘅 sweep 用 200 ms。
+5. §2 open 嘅主掣 pop（300–620，峰 ≈460 ms）同 3 行列（220＋60·i）冇獨立聲；popup_open 喺 0.51 s 收，冇包主掣 pop。
+6. §4 數字 140–260 數上去：冇逐格 tick；coin 只有兩下 ding＋閃粒。
+7. §6 返回 600 ms 只播 veil_open：返回冇「新頁出現 t=420」呢個點，我假設返回 t=0 就播。
+8. §7 委託完成 stamp keys（1.6→.9→1，160 ms）冇寫中間點時間；假設平均（80 ms 到 .9）。
+9. STYLE_HD2D.md 嘅概念 GIF 時間（彈窗約 2.0 s、轉場約 1.9 s）比 production MOTION_HD2D 長；v3 只跟 MOTION_HD2D（production）。
+10. MOTION_HD2D §8 列嘅舊長度（例如 tab 0.129 s）係 v1 數；v3 長度見上表。
 
 **偏差（如實）**：
-1. v2 對拍後好多檔長過 v1（tab 0.31、press 0.33、popup 0.47–0.51、sparkle 0.51、toast 0.67 s），因為跟動畫時長；過咗 v1「UI ≤0.3 s」預設。
-2. 起音刻意脆（8bit 感），3 ms 淡入後首 5 ms 已到峰值附近；冇由數碼靜音硬跳。
-3. sparkle、tap_a、coin、toast、badge、tab 嘅 >4 kHz 能量 22–44 %（高音鈴／琶音），已 9 kHz 低通，但最可能「刺」嘅係呢幾個。
-4. `badge_wiggle` 頭 75 ms 靜音（因為第一個重音對準 78 ms 嘅 scale 峰）；每 1.4 s 一次播落去可能好煩——MOTION 都寫「可關」，建議預設關或者只喺紅點出現時播一次。
-5. `tap_a/b` 0.055 s 好短，LUFS20 -14.3／-13.9（±0.3 內）。
+1. 鈴聲尾令幾個檔長過動畫：tab 0.33 s（動畫 240 ms）、toast 0.43 s（220 ms）、popup_open 0.51 s（420 ms）、sparkle 0.56 s；尾段係細聲鈴餘音。
+2. veil_close 0.57 s 會同 veil_open（t=420 起）重疊約 0.15 s，係刻意交接。
+3. `badge_wiggle` 頭 87 ms 靜音（第一個重音對準 90 ms 嘅 −12°）。
+4. `popup_close` 同 `error` 尾 10 ms 約 -51 dBFS（其他 ≤ -56），因為長度短、尾淡出只 15 ms；冇 click 跡象。
 
-**未有人聽過**——尤其：夠唔夠「萌」、對拍喺實機有冇延遲感、tap 同其他 hook 疊埋會唔會太吵、sparkle／coin 高音會唔會刺耳、toast 鈴聲同 coin 會唔會太似、轉場琶音節奏（加速／減速）聽唔聽得出。
+**未有人聽過**——尤其：暖唔暖、夠唔夠「寶石光」又保持萌、鈴聲會唔會太多（tab／toast／coin／confirm 都有鈴）、光幕 shimmer 似唔似金色光（定似沙沙）、confirm＋sparkle 同時播會唔會太滿、手機喇叭聽唔聽到暖 pad。
 
 ### 7.7 如實聲明
 
