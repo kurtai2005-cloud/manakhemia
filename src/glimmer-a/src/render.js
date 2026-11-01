@@ -1099,8 +1099,8 @@
         } else c.lights.push({ x: it.x + offs[2][0], y: it.y, r: 10, col: [120, 60, 160], a: 0.25 });
       }
       for (const f of mg.fx) {
-        if (f.type === 'stone') { this.burst('spark', f.x, f.y, 3, 30); this.spawn('text', f.x - 5, f.y - 14, { text: '-' + P.mg.stonePenalty, col: '#c898ff', vy: -20, max: 0.9 }); }
-        else { this.spawn('spark', f.x, f.y - 6, { max: 0.6, vy: -22 }); this.spawn('text', f.x - 4, f.y - 12, { text: '+' + (f.type === 'big' ? P.mg.bigStarScore : P.mg.starScore), vy: -22, max: 0.7 }); }
+        if (f.type === 'stone') { this.burst('spark', f.x, f.y, 3, 30); this.spawn('text', f.x - 5, f.y - 14, { text: '-' + (mg.M || P.mg).stonePenalty, col: '#c898ff', vy: -20, max: 0.9 }); }
+        else { this.spawn('spark', f.x, f.y - 6, { max: 0.6, vy: -22 }); this.spawn('text', f.x - 4, f.y - 12, { text: '+' + (f.type === 'big' ? (mg.M || P.mg).bigStarScore : (mg.M || P.mg).starScore), vy: -22, max: 0.7 }); }
       }
       mg.fx.length = 0;
       for (const f of this.fx) {

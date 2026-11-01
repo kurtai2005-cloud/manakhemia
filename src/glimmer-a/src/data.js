@@ -102,6 +102,69 @@
         silhouette: '#3B2A3E',        // 圖鑑未解鎖剪影色（遊美 batch G collection_route.json；冇剪影圖時用守夜者圖 alpha 生）
         silArt: 'evo6/route/sil_',    // 遊美 batch G 圖鑑剪影 art/evo6/route/sil_<atlas id>_48.png（bright→radiant）；載唔到 → fallback 程式剪影
       } },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
+    // ── systems12 第 2 批（docs-gdd/systems12-v1.md 第 2 批：5 小遊戲 → 2 小圃種花 → 4 散步收集＋收藏櫃 → 11 成就）──
+    // 規格有寫嘅數照抄；規格冇寫嘅數標「TBD 遊策」＝暫定值，等遊策落 config（唔好當定案）。星星碎一律經 systems12 wallet（其他上限 15／日、總 30）。
+    systems12b: {
+      // 系統 5：小遊戲（接光點＋捉迷藏）。規格：每局 1–3 星星碎、每日頭 5 局有獎、計 mg＝火苗分、直向單手、每局 ≤45 秒
+      games: {
+        dailyRewarded: 5,                 // 規格：每日頭 5 局有獎（兩隻遊戲合計）
+        shardsByStars: [0, 1, 2, 3],      // 規格：每局 1–3 星星碎（星數＝星星碎）
+        countsMg: true,                   // 規格：計 mg（noteCare 'mg' → 火苗 kinds.mg.w）；唔加心情／光粒（規格：新系統唔加心情池）
+        catch: { name: '接光點', durationSec: 30,              // 規格：30 秒
+          starsAt: [0, 27, 67],           // TBD 遊策：1／2／3 星分數線（暫按舊接星屑 45 秒及格 40／高分 100 × 30/45）
+          dots: { small: 3, big: 10, dark: -10 },               // 光點 3 種（遊美素材清單）；TBD 遊策：分數（暫用接星屑 star／bigStar／stone）
+          stoneProb: 0.22, bigStarProb: 0.14 },
+        hide: { name: '捉迷藏', spots: [3, 5],                  // 規格：匿喺 3–5 個位
+          rounds: 3, triesPerRound: 2, timeLimitSec: 40,       // TBD 遊策：每局 3 輪、每輪揀 2 次、40 秒（規格只要 ≤45 秒）
+          starsByFound: [1, 1, 2, 3],     // TBD 遊策：搵到 0／1／2／3 輪 → 星數（最少 1 星＝規格每局 1–3）
+          spotNames: ['花盆後面', '草叢', '石頭後面', '燈柱後面', '葉堆'] },   // 規格：匿位跟房間家具（第 3 批先有家具）→ 暫用花園固定位
+      },
+      // 系統 2：小圃種花。規格：3 格花盆；種子用星星碎買；淋水先會大；2–3 日開花；唔淋水會枯但唔死團絨；開花加路線分（少量）
+      garden: {
+        pots: 3,                          // 規格
+        growDays: 2,                      // 要淋水 2 個唔同日先開花 → 視乎種嘅時間 2–3 日開（規格 2–3 日）
+        stages: 4,                        // 種子／芽／花苞／開花（遊美素材：6 種花 × 4 個生長階段）
+        dryDaysToWilt: 2,                 // TBD 遊策：連續幾日冇淋水就枯
+        bloomPts: 0.25,                   // TBD 遊策：每朵開花 +少量路線分（經 systems.addRoutePts，受 25% cap）
+        seedPrice: 5,                     // TBD 遊策：種子價（星星碎）
+        flowers: [                        // 規格：花種 → 路線
+          { k: 'bluebell', name: '藍鈴', route: 'moon' }, { k: 'daisy', name: '日菊', route: 'bright' },
+          { k: 'mossshroom', name: '苔菇', route: 'shroom' }, { k: 'crystalgrass', name: '晶草', route: 'crystal' },
+          { k: 'firebell', name: '火鈴', route: 'ember' }, { k: 'dewgrass', name: '露草', route: 'tide' }],
+      },
+      // 系統 4：散步收集＋收藏櫃。規格：團絨行路 10% 執到小物；每日最多 5 件；收藏櫃 30 格剪影；按天氣／季節／時段；部分只喺某路線出
+      walk: {
+        chance: 0.10, perDay: 5, slots: 30,                  // 規格
+        // 小物：遊美 ACC1 collectibles.json 12 件（攞法係遊美「建議值，等遊策落 config」）；其餘 18 件＋路線限定（例：月眠星屑）規格未列 → 未做
+        // months／weather／hours（[from,to)，跨午夜得）／afterRainH（雨日之後頭 N 粒鐘）／pct（稀有：每次散步獨立機率）／routeMul（領先路線倍數）／pity（累計執 N 件必出）
+        items: [
+          { k: 'petal', name: '櫻花瓣', months: [3, 4, 5], weather: ['clear'], hours: [6, 16] },
+          { k: 'snail', name: '蝸牛殼', weather: ['rain'], afterRainH: 2 },
+          { k: 'cicada', name: '蟬殼', months: [6, 7, 8], hours: [6, 16] },
+          { k: 'sunflower', name: '迷你向日葵', months: [6, 7, 8], weather: ['clear'] },
+          { k: 'maple', name: '紅楓葉', months: [9, 10, 11] },
+          { k: 'acorn', name: '橡果', months: [9, 10, 11] },
+          { k: 'snowflake', name: '雪花結晶', months: [12, 1, 2], weather: ['overcast', 'fog'] },
+          { k: 'snowman', name: '迷你雪人', months: [12, 1, 2], loginStreak: 3 },
+          { k: 'meteor', name: '流星碎', rare: true, hours: [19, 6], pct: 0.01, routeMul: { moon: 2 } },
+          { k: 'marble', name: '彩虹玻璃珠', rare: true, afterRainH: 1, onlyAfterRain: true, pct: 0.02 },
+          { k: 'clover', name: '四葉草', rare: true, weather: ['clear'], pct: 0.01 },
+          { k: 'goldbulb', name: '金燈泡', rare: true, pct: 0.002, pity: 50 }],
+      },
+      // 系統 11：成就徽章。規格：30 個；9 條路嘅徽章＝路線圖鑑進度；有通知、唔重覆給；獎勵只係星星碎＋稱號
+      badges: {
+        total: 30,                        // 規格：30 個（下面只有規格舉例嘅 11 個；其餘 19 個未有規格）
+        reward: 5,                        // TBD 遊策：每個徽章星星碎（經 wallet 其他上限；爆上限 → 留住第二日補發）
+        list: [
+          { k: 'first_evolve', name: '第一次進化', title: '第一次進化', when: { stageAtLeast: 'adult' } },   // TBD 遊策：「進化」暫當成為守夜者（adult，定支線）；曾化光／有圖鑑都算
+          { k: 'route_lumi', name: '螢絨圖鑑', when: { dex: 'lumi' } }, { k: 'route_tide', name: '水珠圖鑑', when: { dex: 'tide' } },
+          { k: 'route_shroom', name: '菇傘圖鑑', when: { dex: 'shroom' } }, { k: 'route_crystal', name: '晶角圖鑑', when: { dex: 'crystal' } },
+          { k: 'route_moon', name: '月眠圖鑑', when: { dex: 'moon' } }, { k: 'route_ember', name: '火苗圖鑑', when: { dex: 'ember' } },
+          { k: 'route_bright', name: '燦光圖鑑', when: { dex: 'bright' } }, { k: 'route_soft', name: '柔光圖鑑', when: { dex: 'soft' } },
+          { k: 'route_dust', name: '微塵圖鑑', when: { dex: 'dust' } },
+          { k: 'collect_10', name: '收藏 10 件', title: '收藏 10 件', when: { collected: 10 } }],
+      },
+    },
     // ── systems12 第 1 批（docs-gdd/systems12-v1.md；遊美 b1 美術 12b13ec）。數值全部喺度 ──
     systems12: {
       // 系統 7 天氣／季節：每日天氣＝真實日期＋seed，一日一抽（v10.2）

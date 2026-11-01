@@ -553,8 +553,8 @@
 
   // ── 迷你遊戲：接星屑 ──
   class Minigame {
-    constructor(seed) {
-      const M = P.mg;
+    constructor(seed, Mo) {   // systems12 第 2 批：Mo＝覆寫參數（接光點 30 秒等）；冇 → P.mg（接星屑不變）
+      const M = Mo ? Object.assign({}, P.mg, Mo) : P.mg;
       this.M = M; this.rng = makeRng(seed || 12345);
       this.t = 0; this.score = 0; this.over = false;
       this.items = []; this.fx = []; this.snd = [];   // snd：音訊事件佇列（catch／big／stone），UI 每幀清空
@@ -613,6 +613,8 @@
     return r;
   }
 
+  // systems12 第 2 批小遊戲（接光點／捉迷藏）：只計一局 mg（火苗 noteCare 'mg'、委託 hook、mgPlays、冷淡解除），唔加光粒／心情（規格：新系統唔加心情池）
+  function mgCount(s) { if (!s || s.stage === 'egg') return false; s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg'); return true; }
   // v8 火苗：第 2 批小遊戲未出之前，浮動團絨撳兩下開 game ＝ 一局（mgApply 及格分 → 火苗 +kinds.mg.w；獎勵同普通一局）。cooldownSec 內重複唔計
   function overlayOpenGame(s, t) {
     const O = BR().overlayMg; t = t == null ? nowMs() : +t;
@@ -653,6 +655,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, addCareHook, addFadeHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    mgCount, eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });
