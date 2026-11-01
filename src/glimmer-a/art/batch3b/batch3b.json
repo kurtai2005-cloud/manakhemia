@@ -1,0 +1,1182 @@
+{
+ "version": "batch3b-1",
+ "units": "px（art 1x）；時間 ms",
+ "generated": "2026-11-01 HKT",
+ "tool": "tools/build_batch3b.py",
+ "visitors": {
+  "snail_postman": {
+   "name": "蝸牛郵差",
+   "order": 1,
+   "note": "帶信＝一句日記；先做呢隻",
+   "frameW": 44,
+   "frameH": 37,
+   "pivot": [
+    22,
+    34
+   ],
+   "facing": "right（向左 = 引擎 flipX，pivot.x 鏡像 = W−1−x）",
+   "clips": {
+    "idle": {
+     "file": "visitors/snail_postman/snail_postman_idle.png",
+     "frames": 6,
+     "ms": 180,
+     "loop": true
+    },
+    "walk": {
+     "file": "visitors/snail_postman/snail_postman_walk.png",
+     "frames": 6,
+     "ms": 120,
+     "loop": true
+    },
+    "happy": {
+     "file": "visitors/snail_postman/snail_postman_happy.png",
+     "frames": 6,
+     "ms": 100,
+     "loop": false
+    }
+   },
+   "anchors": {
+    "head": [
+     33,
+     8
+    ],
+    "bag": [
+     28,
+     21
+    ]
+   },
+   "hitbox": {
+    "rel": [
+     -18,
+     -24,
+     18,
+     1
+    ],
+    "note": "相對 pivot 嘅 [x0,y0,x1,y1]；拖禮物落呢個框＝送禮"
+   },
+   "hover": false,
+   "walkSpeed": 10,
+   "palette": 12,
+   "portrait": {
+    "file": "visitors/snail_postman/snail_postman_portrait.png",
+    "w": 26,
+    "h": 26
+   },
+   "badge": {
+    "file": "visitors/snail_postman/snail_postman_badge.png",
+    "w": 18,
+    "h": 18,
+    "note": "友好度滿 5 嘅徽章（spec 有提，額外加嘅小圖）"
+   },
+   "decor": {
+    "id": "deco_mailbox",
+    "name": "郵筒仔",
+    "file": "decor/deco_mailbox.png",
+    "w": 18,
+    "h": 27,
+    "pivot": [
+     9,
+     25
+    ]
+   }
+  },
+  "mushroom_granny": {
+   "name": "蘑菇婆婆",
+   "order": 2,
+   "note": "送 1 粒種子＋種花貼士",
+   "frameW": 38,
+   "frameH": 45,
+   "pivot": [
+    19,
+    42
+   ],
+   "facing": "right（向左 = 引擎 flipX，pivot.x 鏡像 = W−1−x）",
+   "clips": {
+    "idle": {
+     "file": "visitors/mushroom_granny/mushroom_granny_idle.png",
+     "frames": 6,
+     "ms": 180,
+     "loop": true
+    },
+    "walk": {
+     "file": "visitors/mushroom_granny/mushroom_granny_walk.png",
+     "frames": 6,
+     "ms": 120,
+     "loop": true
+    },
+    "happy": {
+     "file": "visitors/mushroom_granny/mushroom_granny_happy.png",
+     "frames": 6,
+     "ms": 100,
+     "loop": false
+    }
+   },
+   "anchors": {
+    "head": [
+     19,
+     4
+    ],
+    "bag": [
+     19,
+     31
+    ]
+   },
+   "hitbox": {
+    "rel": [
+     -17,
+     -40,
+     17,
+     1
+    ],
+    "note": "相對 pivot 嘅 [x0,y0,x1,y1]；拖禮物落呢個框＝送禮"
+   },
+   "hover": false,
+   "walkSpeed": 12,
+   "palette": 12,
+   "portrait": {
+    "file": "visitors/mushroom_granny/mushroom_granny_portrait.png",
+    "w": 26,
+    "h": 26
+   },
+   "badge": {
+    "file": "visitors/mushroom_granny/mushroom_granny_badge.png",
+    "w": 18,
+    "h": 18,
+    "note": "友好度滿 5 嘅徽章（spec 有提，額外加嘅小圖）"
+   },
+   "decor": {
+    "id": "deco_mushroom_lamp",
+    "name": "蘑菇夜燈",
+    "file": "decor/deco_mushroom_lamp.png",
+    "w": 18,
+    "h": 23,
+    "pivot": [
+     9,
+     21
+    ],
+    "emissive": "decor/deco_mushroom_lamp_emissive.png"
+   }
+  },
+  "firefly_vendor": {
+   "name": "螢火小販",
+   "order": 3,
+   "note": "只 17:00–07:00；賣擺設 10–20 碎；身體懸空，地影由引擎畫",
+   "frameW": 42,
+   "frameH": 43,
+   "pivot": [
+    21,
+    40
+   ],
+   "facing": "right（向左 = 引擎 flipX，pivot.x 鏡像 = W−1−x）",
+   "clips": {
+    "idle": {
+     "file": "visitors/firefly_vendor/firefly_vendor_idle.png",
+     "frames": 6,
+     "ms": 180,
+     "loop": true,
+     "emissive": "visitors/firefly_vendor/firefly_vendor_idle_emissive.png"
+    },
+    "walk": {
+     "file": "visitors/firefly_vendor/firefly_vendor_walk.png",
+     "frames": 6,
+     "ms": 120,
+     "loop": true,
+     "emissive": "visitors/firefly_vendor/firefly_vendor_walk_emissive.png"
+    },
+    "happy": {
+     "file": "visitors/firefly_vendor/firefly_vendor_happy.png",
+     "frames": 6,
+     "ms": 100,
+     "loop": false,
+     "emissive": "visitors/firefly_vendor/firefly_vendor_happy_emissive.png"
+    }
+   },
+   "anchors": {
+    "head": [
+     25,
+     6
+    ],
+    "bag": [
+     8,
+     22
+    ]
+   },
+   "hitbox": {
+    "rel": [
+     -19,
+     -34,
+     17,
+     1
+    ],
+    "note": "相對 pivot 嘅 [x0,y0,x1,y1]；拖禮物落呢個框＝送禮"
+   },
+   "hover": true,
+   "walkSpeed": 20,
+   "palette": 12,
+   "glow": {
+    "color": "#FFE68A",
+    "radius": 10,
+    "anchor": [
+     12,
+     30
+    ],
+    "pulseMs": 1400,
+    "note": "尾燈 glow：引擎 radial；emissive 白＝發光像素"
+   },
+   "portrait": {
+    "file": "visitors/firefly_vendor/firefly_vendor_portrait.png",
+    "w": 26,
+    "h": 26
+   },
+   "badge": {
+    "file": "visitors/firefly_vendor/firefly_vendor_badge.png",
+    "w": 18,
+    "h": 18,
+    "note": "友好度滿 5 嘅徽章（spec 有提，額外加嘅小圖）"
+   },
+   "decor": {
+    "id": "deco_firefly_jar",
+    "name": "螢火瓶燈",
+    "file": "decor/deco_firefly_jar.png",
+    "w": 14,
+    "h": 22,
+    "pivot": [
+     7,
+     20
+    ],
+    "emissive": "decor/deco_firefly_jar_emissive.png"
+   }
+  }
+ },
+ "visitorProps": {
+  "letter": {
+   "file": "props/prop_letter.png",
+   "w": 13,
+   "h": 10,
+   "pivot": [
+    6,
+    9
+   ],
+   "note": "蝸牛信：由 bag 錨點彈上頭頂（move），撳 → 開日記一句（文字引擎出）"
+  },
+  "seed": {
+   "file": "props/prop_seed.png",
+   "w": 10,
+   "h": 12,
+   "pivot": [
+    5,
+    11
+   ],
+   "note": "蘑菇婆婆送嘅種子；彈去背包"
+  },
+  "friend_heart": {
+   "file": "props/friend_heart.png",
+   "frameW": 9,
+   "frameH": 8,
+   "frames": 2,
+   "note": "友好度格：幀0 空、幀1 滿；5 粒一行，間距 10px"
+  }
+ },
+ "visitRules": {
+  "spawn": "存檔第 3 日起；每日最多 1 位；隨機一次上線時出；留 10 分鐘或到落線",
+  "vendorHours": "firefly_vendor 只 17:00–07:00",
+  "enter": "由畫面左或右邊（x −30 / 225）walk 入，企喺團絨旁 ±46px（地面 y 292）",
+  "lead": {
+   "note": "art 座標；團絨行頭、訪客跟尾（落後 path 距離 30px）；y 細＝遠（引擎按 y 排深淺）",
+   "loop": [
+    [
+     97,
+     296
+    ],
+    [
+     128,
+     300
+    ],
+    [
+     150,
+     292
+    ],
+    [
+     132,
+     284
+    ],
+    [
+     97,
+     282
+    ],
+    [
+     62,
+     284
+    ],
+    [
+     44,
+     292
+    ],
+    [
+     66,
+     300
+    ],
+    [
+     97,
+     296
+    ]
+   ],
+   "lapMs": 8000,
+   "followGap": 30,
+   "visitorSpeedDuringLead": "跟團絨速度（約 23px/s），walk 幀 ms ×0.7"
+  },
+  "gift": "拖散步收集品／花落 hitbox → 訪客 happy 1 次（6 幀）＋ 3a fx_heart 喺 head 錨點；團絨 visit_gift_cheer；每位每日最多 1",
+  "friendshipMax": 5,
+  "reward": "滿 5 → decor（專屬擺設）＋ badge",
+  "leave": "walk 出畫面（反方向）"
+ },
+ "petClips3aFormat": {
+  "visit_lead_start": {
+   "group": "visit",
+   "dur": 900,
+   "loop": false,
+   "trigger": "訪客企定後 400ms；之後接 visit_lead_strut",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 180,
+     "sx": 0.94,
+     "sy": 1.08,
+     "y": -1,
+     "e": "out"
+    },
+    {
+     "t": 420,
+     "sx": 0.96,
+     "sy": 1.07,
+     "rot": -4,
+     "e": "inout"
+    },
+    {
+     "t": 700,
+     "sx": 0.96,
+     "sy": 1.07,
+     "rot": -4
+    },
+    {
+     "t": 900,
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "e": "outBack"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 6,
+     "dy": -2,
+     "t0": 250,
+     "t1": 750,
+     "ms": 120,
+     "loop": false
+    }
+   ],
+   "events": [
+    {
+     "t": 300,
+     "id": "line:visit_lead"
+    }
+   ]
+  },
+  "visit_lead_strut": {
+   "group": "visit",
+   "dur": 600,
+   "loop": true,
+   "trigger": "帶路行一圈時；引擎沿 path 郁 x/y；舊形態可改用 atlas walk_happy＋smug 面",
+   "body": [
+    {
+     "t": 0,
+     "sx": 1,
+     "sy": 1
+    },
+    {
+     "t": 150,
+     "sx": 1.05,
+     "sy": 0.94,
+     "y": 0,
+     "e": "out"
+    },
+    {
+     "t": 300,
+     "sx": 0.97,
+     "sy": 1.05,
+     "y": -2,
+     "rot": -3,
+     "e": "out"
+    },
+    {
+     "t": 450,
+     "sx": 1.05,
+     "sy": 0.94,
+     "y": 0,
+     "rot": 0,
+     "e": "in"
+    },
+    {
+     "t": 600,
+     "sx": 0.97,
+     "sy": 1.05,
+     "y": -2,
+     "rot": 3,
+     "e": "out"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    }
+   ]
+  },
+  "visit_gift_cheer": {
+   "group": "visit",
+   "dur": 700,
+   "loop": false,
+   "trigger": "送禮成功（友好度 +1）",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 120,
+     "sx": 1.12,
+     "sy": 0.88,
+     "e": "out"
+    },
+    {
+     "t": 300,
+     "sx": 0.94,
+     "sy": 1.08,
+     "y": -5,
+     "e": "out"
+    },
+    {
+     "t": 520,
+     "sx": 1.06,
+     "sy": 0.95,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 700,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "laugh_b"
+    },
+    {
+     "t": 600,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_heart",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 200,
+     "t1": 700,
+     "ms": 160,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       500,
+       0,
+       -8
+      ]
+     ]
+    }
+   ]
+  }
+ },
+ "evolution": {
+  "assets": {
+   "evo_mote": {
+    "file": "evo/evo_mote.png",
+    "frameW": 7,
+    "frameH": 7,
+    "frames": 3,
+    "pivot": [
+     3,
+     3
+    ],
+    "note": "聚光粒（螺旋吸入寵物）",
+    "ms": 80,
+    "loop": true
+   },
+   "evo_cocoon_form": {
+    "file": "evo/evo_cocoon_form.png",
+    "frameW": 64,
+    "frameH": 72,
+    "frames": 6,
+    "pivot": [
+     32,
+     68
+    ],
+    "note": "光繭由下包上（6 幀）；pivot 對寵物 pivot",
+    "ms": 200,
+    "loop": false
+   },
+   "evo_cocoon_pulse": {
+    "file": "evo/evo_cocoon_pulse.png",
+    "frameW": 64,
+    "frameH": 72,
+    "frames": 4,
+    "pivot": [
+     32,
+     68
+    ],
+    "note": "光繭呼吸 loop；配 body sx/sy keys",
+    "ms": 150,
+    "loop": true
+   },
+   "evo_cocoon_crack": {
+    "file": "evo/evo_cocoon_crack.png",
+    "frameW": 64,
+    "frameH": 72,
+    "frames": 4,
+    "pivot": [
+     32,
+     68
+    ],
+    "note": "裂開 4 幀，最後一幀分兩邊",
+    "ms": 125,
+    "loop": false
+   },
+   "evo_shard": {
+    "file": "evo/evo_shard.png",
+    "frameW": 6,
+    "frameH": 6,
+    "frames": 3,
+    "pivot": [
+     4,
+     3
+    ],
+    "note": "繭碎 3 款（幀 index＝款），爆開時放射飛走"
+   },
+   "evo_rays": {
+    "file": "evo/evo_rays.png",
+    "frameW": 112,
+    "frameH": 112,
+    "frames": 6,
+    "pivot": [
+     56,
+     56
+    ],
+    "note": "背光放射線（寵物後）；引擎可再慢慢 rotate（snap 15°）",
+    "ms": 90,
+    "loop": true
+   },
+   "evo_ring": {
+    "file": "evo/evo_ring.png",
+    "frameW": 96,
+    "frameH": 96,
+    "frames": 5,
+    "pivot": [
+     47,
+     47
+    ],
+    "note": "衝擊光圈 5 幀",
+    "ms": 70,
+    "loop": false
+   },
+   "evo_confetti": {
+    "file": "evo/evo_confetti.png",
+    "frameW": 7,
+    "frameH": 7,
+    "frames": 8,
+    "pivot": [
+     3,
+     3
+    ],
+    "note": "彩紙：每款 2 幀 → ['star', 'heart', 'diamond', 'dot']（index = 款×2 + 幀）",
+    "ms": 140,
+    "loop": true
+   },
+   "evo_skip_hint": {
+    "file": "evo/evo_skip_hint.png",
+    "frameW": 15,
+    "frameH": 15,
+    "frames": 2,
+    "pivot": [
+     7,
+     7
+    ],
+    "note": "2s 後右下角出，肉球 tap 印（冇字）",
+    "ms": 450,
+    "loop": true
+   },
+   "omen_dream_bubble": {
+    "file": "evo/omen_dream_bubble.png",
+    "frameW": 34,
+    "frameH": 34,
+    "frames": 3,
+    "pivot": [
+     3,
+     32
+    ],
+    "note": "預兆怪夢泡泡：幀0→1→2 冒出；夢圖中心 = [19, 13]",
+    "ms": 220,
+    "loop": false
+   },
+   "omen_dream_icons": {
+    "file": "evo/omen_dream_icons.png",
+    "frameW": 12,
+    "frameH": 10,
+    "frames": 6,
+    "pivot": [
+     6,
+     5
+    ],
+    "note": "6 個怪夢（index）：['square_sun', 'fish_hat', 'flying_shoe', 'walking_teacup', 'upside_moon', 'cake_mountain']"
+   },
+   "_dreamCenter": [
+    19,
+    13
+   ]
+  },
+  "timeline": {
+   "durMs": 8000,
+   "skippableAfterMs": 2000,
+   "art": "195×422；寵物 pivot art (97,292)；全畫面（HUD 收起）",
+   "rules": [
+    "唔會打斷小遊戲／拖動：有嘢做緊就排隊，做完先播",
+    "2000ms 後撳一下 → 直接跳去 5600（現身）再 300ms 後出名卡；名卡出咗再撳 = 收"
+   ],
+   "tracks": [
+    {
+     "id": "dim",
+     "t0": 0,
+     "t1": 600,
+     "color": "#1E1630",
+     "alpha": [
+      0,
+      0.7
+     ],
+     "ease": "ioSine",
+     "note": "之後保持 0.7；5600 起 0.7→0.45（400ms）；7700–8000 →0"
+    },
+    {
+     "id": "pet_shake",
+     "t0": 300,
+     "t1": 1500,
+     "x": "round(sin(t*0.09)*k)，k 0→1.5 線性",
+     "face": "surprised"
+    },
+    {
+     "id": "evo_mote",
+     "t0": 400,
+     "t1": 2200,
+     "count": 14,
+     "spawnSpreadMs": 600,
+     "lifeMs": 1100,
+     "path": "螺旋：r = 90·(1−oCubic(u))，θ = θ0 + 2.5π·u；目標 = 寵物中心 (pivot.x, pivot.y − h/2)",
+     "ms": 80
+    },
+    {
+     "id": "pet_flicker",
+     "t0": 900,
+     "t1": 1500,
+     "mode": "silhouette #FFF6DA 同原色交替",
+     "intervalMs": [
+      120,
+      60
+     ]
+    },
+    {
+     "id": "pet_silhouette",
+     "t0": 1500,
+     "t1": 5600,
+     "color": "#FFF6DA",
+     "note": "canvas：drawImage → globalCompositeOperation='source-in' fillRect（offscreen）；再加 1px 描邊 #967EDC（剪影 4 方向偏 1px 先畫描邊色，再畫剪影）——唔加會同 rays 溶埋",
+     "outline": "#967EDC"
+    },
+    {
+     "id": "evo_cocoon_form",
+     "t0": 1500,
+     "t1": 2700,
+     "anchor": "pivot"
+    },
+    {
+     "id": "evo_cocoon_pulse",
+     "t0": 2700,
+     "t1": 3900,
+     "anchor": "pivot",
+     "body": {
+      "t": [
+       0,
+       300,
+       600,
+       900,
+       1200
+      ],
+      "sx": [
+       1,
+       1.04,
+       0.98,
+       1.06,
+       1
+      ],
+      "sy": [
+       1,
+       0.97,
+       1.03,
+       0.95,
+       1
+      ]
+     },
+     "msRamp": [
+      150,
+      90
+     ]
+    },
+    {
+     "id": "evo_cocoon_crack",
+     "t0": 3900,
+     "t1": 4400,
+     "anchor": "pivot"
+    },
+    {
+     "id": "evo_shard",
+     "t0": 4400,
+     "t1": 4900,
+     "count": 8,
+     "path": "由繭中心放射，dist 0→40 oCubic，重力 +30px/s²，alpha 照 0/255（最後 100ms 隔幀閃）"
+    },
+    {
+     "id": "evo_ring",
+     "t0": 4400,
+     "t1": 4750,
+     "anchor": "center"
+    },
+    {
+     "id": "evo_rays",
+     "t0": 4400,
+     "t1": 7000,
+     "anchor": "center",
+     "z": "back",
+     "note": "6 幀 loop；6500 後隔幀閃收"
+    },
+    {
+     "id": "silhouette_swap",
+     "t0": 4400,
+     "t1": 5600,
+     "swapsAt": [
+      4400,
+      4620,
+      4800,
+      4940,
+      5050,
+      5140,
+      5210,
+      5270,
+      5320,
+      5360,
+      5400,
+      5440,
+      5480,
+      5520,
+      5560
+     ],
+     "note": "每次換：舊剪影 ↔ 新剪影，同時 squash sx 1.15/sy 0.88 → 1（90ms）；最後一個係新形態"
+    },
+    {
+     "id": "flash",
+     "t0": 5600,
+     "t1": 5900,
+     "color": "#FFFFFF",
+     "alpha": [
+      0.85,
+      0
+     ],
+     "ease": "oCubic"
+    },
+    {
+     "id": "pet_reveal",
+     "t0": 5600,
+     "t1": 6100,
+     "body": {
+      "t": [
+       0,
+       120,
+       260,
+       380,
+       500
+      ],
+      "sx": [
+       1.3,
+       0.9,
+       1.06,
+       0.98,
+       1
+      ],
+      "sy": [
+       0.7,
+       1.12,
+       0.96,
+       1.01,
+       1
+      ]
+     },
+     "face": "smug",
+     "then": "新形態 celebrate（舊線 atlas）／3a smug 面"
+    },
+    {
+     "id": "evo_confetti",
+     "t0": 5600,
+     "t1": 7400,
+     "count": 28,
+     "path": "由寵物中心向上噴：vx ±60, vy −90..−140 px/s，重力 160px/s²；各自 ms 120–180"
+    },
+    {
+     "id": "name_card",
+     "t0": 6000,
+     "t1": 7700,
+     "center": [
+      97,
+      352
+     ],
+     "pop": "MOTION.md 彈窗 sticker pop：t=[0,.45,.7,.85,1] scale=[0,1.1,.96,1.02,1] rot=[−8,4,−2,1,0]°（500ms）",
+     "exit": "7500–7700：scale 1→0.6（iBack）alpha 1→0",
+     "portraitPet": "新形態 idle 幀 0，pivot 落 card petPivot（可以凸出圓框，故意）",
+     "text": "名（card.textBoxes.name，白字）＋呆介紹（line）；打字效果 30ms/字"
+    },
+    {
+     "id": "evo_skip_hint",
+     "t0": 2000,
+     "t1": 5600,
+     "pos": [
+      180,
+      400
+     ]
+    }
+   ],
+   "sfxHooks": [
+    "evo_dim",
+    "evo_mote_tick",
+    "evo_cocoon_wrap",
+    "evo_heartbeat(每次 pulse)",
+    "evo_crack",
+    "evo_burst",
+    "evo_swap_tick",
+    "evo_reveal_jingle",
+    "card_pop"
+   ]
+  },
+  "omens": {
+   "window": "達下一階門檻前最後 24h，隨機 1 款",
+   "flicker": {
+    "everyMs": [
+     4000,
+     7000
+    ],
+    "flashes": 2,
+    "flashMs": 80,
+    "gapMs": 100,
+    "color": "#FFF6DA",
+    "alpha": 0.6,
+    "note": "寵物剪影疊色（同進化 silhouette 一樣做法），冇新圖"
+   },
+   "appetite": {
+    "eatMul": 1.5,
+    "line": "line:omen_feel_strong",
+    "note": "冇新圖；食完用 3a smug 面 600ms"
+   },
+   "dream": {
+    "when": "瞓緊（sleep_loop）",
+    "everyMs": 20000,
+    "bubble": "omen_dream_bubble",
+    "anchor": "headTop",
+    "dx": 4,
+    "dy": -2,
+    "seq": "幀0 220ms → 幀1 220ms → 幀2 hold 2200ms（夢圖每 400ms 上下 1px）→ 3a fx_puff 收",
+    "icons": "omen_dream_icons 隨機 1 個，畫喺 bubble 夢中心（_dreamCenter）"
+   }
+  },
+  "cards": {
+   "files": {
+    "base": {
+     "file": "cards/card_base.png",
+     "w": 168,
+     "h": 64
+    },
+    "tide": {
+     "file": "cards/card_tide.png",
+     "w": 168,
+     "h": 64
+    },
+    "moon": {
+     "file": "cards/card_moon.png",
+     "w": 168,
+     "h": 64
+    },
+    "shroom": {
+     "file": "cards/card_shroom.png",
+     "w": 168,
+     "h": 64
+    },
+    "crystal": {
+     "file": "cards/card_crystal.png",
+     "w": 168,
+     "h": 64
+    },
+    "ember": {
+     "file": "cards/card_ember.png",
+     "w": 168,
+     "h": 64
+    },
+    "radiant": {
+     "file": "cards/card_radiant.png",
+     "w": 168,
+     "h": 64
+    },
+    "soft": {
+     "file": "cards/card_soft.png",
+     "w": 168,
+     "h": 64
+    },
+    "dust": {
+     "file": "cards/card_dust.png",
+     "w": 168,
+     "h": 64
+    },
+    "lumi": {
+     "file": "cards/card_lumi.png",
+     "w": 168,
+     "h": 64
+    }
+   },
+   "w": 168,
+   "h": 64,
+   "portrait": {
+    "cx": 33,
+    "cy": 32,
+    "r": 25,
+    "petPivot": [
+     33,
+     54
+    ]
+   },
+   "textBoxes": {
+    "name": [
+     66,
+     9,
+     158,
+     25
+    ],
+    "line": [
+     66,
+     31,
+     158,
+     55
+    ]
+   },
+   "formToCard": {
+    "evo_dot": "card_base",
+    "evo_sprout": "card_base",
+    "evo_hop": "card_base",
+    "evo_guard_tide": "card_tide",
+    "evo_guard_moon": "card_moon",
+    "evo_guard_shroom": "card_shroom",
+    "evo_guard_crystal": "card_crystal",
+    "evo_guard_ember": "card_ember",
+    "evo_guard_radiant": "card_radiant",
+    "evo_guard_soft": "card_soft",
+    "evo_guard_dust": "card_dust",
+    "evo_guard_lumi": "card_lumi",
+    "evo_still_tide": "card_tide",
+    "evo_still_moon": "card_moon",
+    "evo_still_shroom": "card_shroom",
+    "evo_still_crystal": "card_crystal",
+    "evo_still_ember": "card_ember",
+    "evo_still_radiant": "card_radiant",
+    "evo_still_soft": "card_soft",
+    "evo_still_dust": "card_dust",
+    "evo_still_lumi": "card_lumi"
+   },
+   "formName": {
+    "evo_dot": "絨點",
+    "evo_egg": "光卵",
+    "evo_guard_crystal": "守夜者・晶角",
+    "evo_guard_dust": "守夜者・微塵",
+    "evo_guard_ember": "守夜者・火苗",
+    "evo_guard_lumi": "守夜者・螢絨",
+    "evo_guard_moon": "守夜者・月眠",
+    "evo_guard_radiant": "守夜者・燦光",
+    "evo_guard_shroom": "守夜者・菇傘",
+    "evo_guard_soft": "守夜者・柔光",
+    "evo_guard_tide": "守夜者・水珠",
+    "evo_hop": "絨跳",
+    "evo_sprout": "絨芽",
+    "evo_still_crystal": "靜光・晶角",
+    "evo_still_dust": "靜光・微塵",
+    "evo_still_ember": "靜光・火苗",
+    "evo_still_lumi": "靜光・螢絨",
+    "evo_still_moon": "靜光・月眠",
+    "evo_still_radiant": "靜光・燦光",
+    "evo_still_shroom": "靜光・菇傘",
+    "evo_still_soft": "靜光・柔光",
+    "evo_still_tide": "靜光・水珠"
+   }
+  }
+ },
+ "comics": {
+  "panelW": 92,
+  "panelH": 84,
+  "inner": [
+   3,
+   3,
+   86,
+   78
+  ],
+  "layout": {
+   "grid": "2×2",
+   "pos": [
+    [
+     3,
+     60
+    ],
+    [
+     100,
+     60
+    ],
+    [
+     3,
+     168
+    ],
+    [
+     100,
+     168
+    ]
+   ],
+   "captionBox": "每格下面 [x, y+86, 92, 18]，文字引擎畫",
+   "note": "團絨日記頁（art 195×422）；橫向讀：左上→右上→左下→右下"
+  },
+  "nodes": {
+   "n1": {
+    "from": "evo_egg",
+    "to": "evo_dot",
+    "unlock": "進化節點 1（evo_egg → evo_dot）",
+    "panels": [
+     "n1_p1",
+     "n1_p2",
+     "n1_p3",
+     "n1_p4"
+    ]
+   },
+   "n2": {
+    "from": "evo_dot",
+    "to": "evo_sprout",
+    "unlock": "進化節點 2（evo_dot → evo_sprout）",
+    "panels": [
+     "n2_p1",
+     "n2_p2",
+     "n2_p3",
+     "n2_p4"
+    ]
+   },
+   "n3": {
+    "from": "evo_sprout",
+    "to": "evo_hop",
+    "unlock": "進化節點 3（evo_sprout → evo_hop）",
+    "panels": [
+     "n3_p1",
+     "n3_p2",
+     "n3_p3",
+     "n3_p4"
+    ]
+   },
+   "n4": {
+    "from": "evo_hop",
+    "to": "evo_guard_{r}",
+    "unlock": "進化節點 4（evo_hop → evo_guard_{r}）",
+    "panels": [
+     "n4_p1",
+     "n4_p2",
+     "n4_p3",
+     "n4_p4_{route}"
+    ]
+   },
+   "n5": {
+    "from": "evo_guard_{r}",
+    "to": "evo_still_{r}",
+    "unlock": "進化節點 5（evo_guard_{r} → evo_still_{r}）",
+    "panels": [
+     "n5_p1_{route}",
+     "n5_p2_{route}",
+     "n5_p3_{route}",
+     "n5_p4_{route}"
+    ]
+   }
+  },
+  "captionDraft": {
+   "n1": [
+    "夜晚，蛋好靜。",
+    "蛋：「我覺得我就嚟好勁。」",
+    "光！好多光！",
+    "「出嚟喇，好易啫。」（殼仲喺頭）"
+   ],
+   "n2": [
+    "見到棵芽仔。",
+    "「我都種自己落泥度。」",
+    "泥入面發光喇……",
+    "「睇！我自己種出片葉。」"
+   ],
+   "n3": [
+    "隻蝴蝶飛得好高。",
+    "「跳！」（撻低）",
+    "光又嚟喇。",
+    "「我一早識跳㗎。」"
+   ],
+   "n4": [
+    "夜晚要有人守。",
+    "「我守緊……zzz」",
+    "光繭包住佢。",
+    "{route}守夜者：「完全計劃之內。」"
+   ],
+   "n5": [
+    "睇住落葉，諗嘢。",
+    "夢見茶杯識行路。",
+    "最後一次光。",
+    "{route}靜光：「我一直都好醒。」"
+   ]
+  },
+  "captionNote": "{route} = 路線中文名（ROUTE_ZH）；文案遊策定，呢度只係草稿",
+  "routeZh": {
+   "tide": "潮汐",
+   "moon": "月影",
+   "shroom": "菇菇",
+   "crystal": "晶石",
+   "ember": "餘燼",
+   "radiant": "燦光",
+   "soft": "柔光",
+   "dust": "微塵",
+   "lumi": "螢光"
+  }
+ }
+}
