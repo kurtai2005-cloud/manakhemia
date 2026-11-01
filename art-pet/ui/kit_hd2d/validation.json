@@ -1,0 +1,188 @@
+{
+ "result": "PASS",
+ "errors": [],
+ "warnings": [],
+ "info": {
+  "ui_hd2d@3x": {
+   "size": [
+    1024,
+    2048
+   ],
+   "count": 190
+  },
+  "icons_hd2d@3x": {
+   "size": [
+    1024,
+    1024
+   ],
+   "count": 53
+  },
+  "ui_hd2d@2x": {
+   "size": [
+    1024,
+    1024
+   ],
+   "count": 190
+  },
+  "icons_hd2d@2x": {
+   "size": [
+    1024,
+    512
+   ],
+   "count": 53
+  },
+  "fonts": {
+   "px7": 55,
+   "px7_ol": 55,
+   "gold": 21,
+   "round": 17
+  },
+  "layout": {
+   "top": 38,
+   "garden": 310,
+   "bottom": 74,
+   "garden_pct": 73.5
+  },
+  "doc_refs_checked": 250
+ },
+ "contrast": [
+  {
+   "pair": "btn_pri 字描邊 vs 掣底",
+   "ratio": 4.92,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "btn_pri 白字 vs 描邊",
+   "ratio": 8.61,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "btn_sec 字描邊 vs 掣底",
+   "ratio": 4.85,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "btn_sec 白字 vs 描邊",
+   "ratio": 9.72,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "btn_rose 字描邊 vs 掣底",
+   "ratio": 4.32,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "btn_rose 白字 vs 描邊",
+   "ratio": 10.42,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "btn_violet 字描邊 vs 掣底",
+   "ratio": 4.72,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "btn_violet 白字 vs 描邊",
+   "ratio": 12.6,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "btn_dis 深字 vs 停用底",
+   "ratio": 7.15,
+   "need": 4.5,
+   "ok": true
+  },
+  {
+   "pair": "pill_dis 深字 vs 停用底",
+   "ratio": 7.14,
+   "need": 4.5,
+   "ok": true
+  },
+  {
+   "pair": "card_locked 字 vs 底",
+   "ratio": 8.14,
+   "need": 4.5,
+   "ok": true
+  },
+  {
+   "pair": "card_locked 底 vs 面板底（可分辨）",
+   "ratio": 1.45,
+   "need": 1.4,
+   "ok": true
+  },
+  {
+   "pair": "正文 cream vs panel_glass",
+   "ratio": 11.81,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "正文 cream vs panel_inset",
+   "ratio": 14.18,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "ink vs panel_paper",
+   "ratio": 13.32,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "分頁字 vs dock",
+   "ratio": 10.2,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "need_fill_feed vs 槽",
+   "ratio": 15.83,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "need_fill_mood vs 槽",
+   "ratio": 13.71,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "need_fill_clean vs 槽",
+   "ratio": 16.09,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "need_fill_energy vs 槽",
+   "ratio": 17.19,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "need_fill_low vs 槽",
+   "ratio": 11.65,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "prog_fill_teal vs 槽",
+   "ratio": 16.24,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "px7_ol 字 vs 描邊",
+   "ratio": 16.49,
+   "need": 7.0,
+   "ok": true
+  }
+ ]
+}

@@ -1,0 +1,255 @@
+{
+ "top": {
+  "h": 38,
+  "note": "頂部 UI 帶 0–38（名牌 h20＋需要值 h10＋光暈）"
+ },
+ "bottom": {
+  "y": 348,
+  "h": 74,
+  "note": "底部 UI 帶 348–422（動作掣 d28＋字牌＋dock h34）"
+ },
+ "garden": {
+  "y": 38,
+  "h": 310,
+  "pct": 73.5
+ },
+ "nameplate": {
+  "x": 3,
+  "y": 3,
+  "w": 92,
+  "h": 20,
+  "portrait": {
+   "cx": 13,
+   "cy": 13,
+   "frame": "med19_paper",
+   "head": 15
+  },
+  "name": {
+   "x": 25.5,
+   "y": 9.2,
+   "size": 9,
+   "font": "serif"
+  },
+  "stage": {
+   "x": 62,
+   "y": 4.4,
+   "w": 24,
+   "h": 10
+  },
+  "exp": {
+   "x": 25,
+   "y": 15.2,
+   "w": 66,
+   "h": 5,
+   "gems": [
+    0.33,
+    0.66
+   ]
+  }
+ },
+ "chips": [
+  {
+   "x": 99,
+   "y": 5,
+   "w": 44,
+   "h": 16,
+   "icon": "light",
+   "val": 140
+  },
+  {
+   "x": 151,
+   "y": 5,
+   "w": 38,
+   "h": 16,
+   "icon": "star",
+   "val": 10
+  }
+ ],
+ "needs": [
+  {
+   "x": 3.0,
+   "y": 26,
+   "w": 45.5,
+   "h": 10,
+   "icon": "feed",
+   "fill": "feed"
+  },
+  {
+   "x": 50.5,
+   "y": 26,
+   "w": 45.5,
+   "h": 10,
+   "icon": "heart_bunny",
+   "fill": "mood"
+  },
+  {
+   "x": 98.0,
+   "y": 26,
+   "w": 45.5,
+   "h": 10,
+   "icon": "clean",
+   "fill": "clean"
+  },
+  {
+   "x": 145.5,
+   "y": 26,
+   "w": 45.5,
+   "h": 10,
+   "icon": "sleep",
+   "fill": "energy"
+  }
+ ],
+ "rail": [
+  {
+   "id": "quest",
+   "cx": 180,
+   "cy": 52,
+   "d": 22,
+   "icon": "gift",
+   "label": "委託",
+   "labelY": 65.5
+  },
+  {
+   "id": "mail",
+   "cx": 180,
+   "cy": 81,
+   "d": 20,
+   "icon": "mail",
+   "note": "P0-1 通知佇列；冇字"
+  },
+  {
+   "id": "house",
+   "cx": 178,
+   "cy": 104,
+   "d": 24,
+   "icon": "house",
+   "label": "屋仔",
+   "labelY": 120.5,
+   "note": "4b layout.json gardenEntry 原位"
+  }
+ ],
+ "acts": [
+  {
+   "cx": 26.0,
+   "cy": 362,
+   "d": 28,
+   "fill": "pri",
+   "icon": "feed",
+   "label": "餵食",
+   "plate": {
+    "w": 28,
+    "h": 10,
+    "y": 372
+   }
+  },
+  {
+   "cx": 73.7,
+   "cy": 362,
+   "d": 28,
+   "fill": "rose",
+   "icon": "play_cat",
+   "label": "玩耍",
+   "plate": {
+    "w": 28,
+    "h": 10,
+    "y": 372
+   }
+  },
+  {
+   "cx": 121.4,
+   "cy": 362,
+   "d": 28,
+   "fill": "sec",
+   "icon": "clean",
+   "label": "清潔",
+   "plate": {
+    "w": 28,
+    "h": 10,
+    "y": 372
+   }
+  },
+  {
+   "cx": 169.1,
+   "cy": 362,
+   "d": 28,
+   "fill": "violet",
+   "icon": "sleep",
+   "label": "瞓覺",
+   "plate": {
+    "w": 28,
+    "h": 10,
+    "y": 372
+   }
+  }
+ ],
+ "dock": {
+  "x": 3,
+  "y": 386,
+  "w": 189,
+  "h": 34,
+  "tabs": [
+   "照顧",
+   "玩",
+   "小圃",
+   "手帳",
+   "設定"
+  ],
+  "icons": [
+   "heart_bunny",
+   "play_cat",
+   "sprout",
+   "book_bear",
+   "gear_chick"
+  ],
+  "idle": {
+   "d": 18,
+   "cy": 398,
+   "frame": "med18_navy_in",
+   "icon": 14,
+   "labelY": 414
+  },
+  "active": {
+   "d": 24,
+   "cy": 393,
+   "frame": "med24_pri",
+   "icon": 19,
+   "labelY": 414,
+   "pillar": "dock_pillar"
+  }
+ },
+ "toast": {
+  "x": 31.5,
+  "y": 44,
+  "w": 132,
+  "h": 18
+ },
+ "bubble": {
+  "x": 56,
+  "y": 236,
+  "w": 60,
+  "h": 20
+ },
+ "popup": {
+  "x": 19,
+  "y": 104,
+  "w": 157,
+  "h": 148,
+  "title_y": 95,
+  "close": {
+   "dx": -11,
+   "dy": 11
+  },
+  "row": {
+   "x": 9,
+   "y": 18,
+   "w": 139,
+   "h": 27,
+   "gap": 30
+  },
+  "btn": {
+   "w": 84,
+   "h": 20,
+   "dy": -28
+  }
+ }
+}
