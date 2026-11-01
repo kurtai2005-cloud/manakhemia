@@ -1,6 +1,6 @@
 /* 《微光小圃》 touch.js — 第 3 批 3a（docs-gdd/batch3-fun-spec.md §①②）：觸摸互動＋扮醒呆反應包＋提示排隊。原創代碼。
    DOM-free、Node 可 require（純邏輯）：手勢辨識（tap／長按／搔癢／拉開／搖機）、心情每日上限（同浮動團絨共用）、扮醒呆排程、
-   提示排隊（同一時間一個氣泡／心聲）、程序化動作表 MOTIONS（每個 key 預留 art 疊層名，遊美交圖後換）。
+   提示排隊（同一時間一個氣泡／心聲）、程序化動作表 MOTIONS（clip＝遊美 batch3a 反應 clip 名；有圖就 render 用 reactclip 播，冇圖先用程序化 f）。
    唔加路線分、唔經 sim.noteCare（唔計 CQ／路線照顧分）→ §7 平衡唔郁。數值＝data.js PARAMS.touch。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory(require('./data.js'));
@@ -163,28 +163,29 @@
   // f(u: 0–1 進度, e: 已過秒, x: 參數) → { sx, sy, dx, dy, rot, face:{eyes,mouth}, fx:[...] }
   const sinP = (u) => Math.sin(Math.PI * clamp(u, 0, 1));
   const MOTIONS = {
-    g_poke: { sec: 0.15, art: 'fx_touch_poke', f: (u) => ({ sx: 1 + 0.14 * sinP(u), sy: 1 - 0.18 * sinP(u), face: { eyes: 'sleepy' } }) },
-    g_hold: { sec: 0, loop: true, art: 'face_touch_squint', f: (u, e) => ({ sy: 1 + 0.025 * Math.sin(e * 2.6), rot: 0.04 * Math.sin(e * 1.6), face: { eyes: 'happy', mouth: 'squint' }, fx: ['heart'] }) },
-    g_tickle: { sec: 1.2, art: 'fx_touch_laugh', f: (u, e) => ({ rot: 0.12 * Math.sin(e * 30), sy: 1 + 0.05 * Math.abs(Math.sin(e * 15)), face: { eyes: 'happy', mouth: 'happy' }, fx: ['laugh'] }) },
-    g_roll: { sec: 2.6, art: 'clip_touch_roll_laugh', f: (u, e) => ({ rot: 0.55 * Math.sin(e * 6) * (1 - 0.4 * u), dy: -2 * Math.abs(Math.sin(e * 6)), sx: 1.06, sy: 0.92, face: { eyes: 'happy', mouth: 'happy' }, fx: ['laugh'] }) },
-    g_pull: { sec: 0, loop: true, art: 'clip_touch_stretch', f: (u, e, x) => { const d = clamp((x && x.d) || 0, -1, 1); return { dx: d * C().pull.maxArt, sx: 1 + 0.18 * Math.abs(d), sy: 1 - 0.1 * Math.abs(d), rot: -0.15 * d, face: { eyes: 'surprised', mouth: 'surprised' } }; } },
-    g_spring: { sec: 0.9, art: 'clip_touch_spring', f: (u, e, x) => { const d = clamp((x && x.d) || 0, -1, 1), k = Math.exp(-5 * u) * Math.cos(u * 18); const land = u > 0.78 ? sinP((u - 0.78) / 0.22) : 0; return { dx: d * C().pull.maxArt * k, rot: -0.15 * d * k, sx: 1 + 0.12 * land, sy: 1 - 0.16 * land, face: { eyes: 'surprised', mouth: 'happy' } }; } },
-    g_dizzy: { sec: 2, art: 'fx_dizzy_stars', f: (u, e) => ({ rot: 0.16 * Math.sin(e * 8), dx: 2 * Math.sin(e * 4), face: { eyes: 'squint', mouth: 'wink' }, fx: ['stars'] }) },
-    g_rub: { sec: 1.6, art: 'clip_sleep_rub_turn', f: (u) => ({ rot: 0.28 * sinP(u), sy: 1 - 0.05 * sinP(u), face: { eyes: 'sleepy', mouth: 'sleepy' }, fx: ['zzz'] }) },
-    d_glasses: { sec: 6, art: 'fx_dumb_glasses+fx_qmark', f: (u, e) => ({ rot: 0.07 * Math.sin(e * 2), face: { eyes: 'squint', mouth: u > 0.5 ? 'happy' : 'neutral' }, fx: u > 0.25 ? ['glasses', 'qmark'] : ['glasses'] }) },
-    d_book: { sec: 7, art: 'fx_dumb_book', f: (u, e) => (u < 0.45 ? { rot: 0.03 * Math.sin(e * 3), face: { eyes: 'neutral' }, fx: ['book'] } : { sy: 0.96, rot: 0.08, face: { eyes: 'sleepy', mouth: 'sleepy' }, fx: ['book', 'zzz'] }) },
-    d_wall: { sec: 6, art: 'fx_dumb_bump', f: (u, e) => { const w = clamp(u / 0.42, 0, 1), b = u >= 0.42 && u < 0.52 ? sinP((u - 0.42) / 0.1) : 0; return { dx: 14 * w - 3 * b, dy: u < 0.42 ? -(Math.sin(e * 11) > 0.5 ? 1 : 0) : 0, sx: 1 - 0.18 * b, sy: 1 + 0.08 * b, face: u < 0.42 ? { eyes: 'neutral', mouth: 'neutral' } : u < 0.7 ? { eyes: 'squint', mouth: 'surprised' } : { eyes: 'happy', mouth: 'happy' }, fx: u >= 0.42 && u < 0.75 ? ['stars', 'sweat'] : u >= 0.75 ? ['sweat'] : [] }; } },
-    d_mirror: { sec: 6, art: 'fx_dumb_mirror', f: (u, e) => ({ dy: u > 0.3 && u < 0.4 ? -2 : 0, face: u < 0.3 ? { eyes: 'surprised', mouth: 'surprised' } : { eyes: 'happy', mouth: 'happy' }, fx: ['mirror'] }) },
-    d_finger: { sec: 6, art: 'fx_dumb_nums', f: (u, e) => ({ dy: -(Math.floor(u * 6) % 2), face: { eyes: 'squint', mouth: u > 0.66 ? 'happy' : 'neutral' }, fx: ['nums'], n: Math.min(3, Math.floor(u * 4)) }) },
-    d_prof: { sec: 6, art: 'fx_dumb_prof_hat', f: (u, e) => ({ rot: -0.06, dy: -(Math.sin(e * 3) > 0.7 ? 1 : 0), face: { eyes: 'squint', mouth: 'happy' }, fx: ['hat'] }) },
-    d_caught: { sec: 1.6, art: 'face_dumb_caught+fx_sweat', f: (u) => ({ sx: 1 - 0.05 * sinP(u), sy: 1 + 0.03 * sinP(u), face: { eyes: 'sad', mouth: 'wink' }, fx: ['sweat'] }) },
+    g_poke: { clip: 'touch_poke', sec: 0.15, art: 'fx_touch_poke', f: (u) => ({ sx: 1 + 0.14 * sinP(u), sy: 1 - 0.18 * sinP(u), face: { eyes: 'sleepy' } }) },
+    g_hold: { clip: 'touch_pet_loop', sec: 0, loop: true, art: 'face_touch_squint', f: (u, e) => ({ sy: 1 + 0.025 * Math.sin(e * 2.6), rot: 0.04 * Math.sin(e * 1.6), face: { eyes: 'happy', mouth: 'squint' }, fx: ['heart'] }) },
+    g_tickle: { clip: 'touch_tickle_laugh', sec: 1.2, art: 'fx_touch_laugh', f: (u, e) => ({ rot: 0.12 * Math.sin(e * 30), sy: 1 + 0.05 * Math.abs(Math.sin(e * 15)), face: { eyes: 'happy', mouth: 'happy' }, fx: ['laugh'] }) },
+    g_roll: { clip: 'touch_tickle_roll', sec: 2.6, art: 'clip_touch_roll_laugh', f: (u, e) => ({ rot: 0.55 * Math.sin(e * 6) * (1 - 0.4 * u), dy: -2 * Math.abs(Math.sin(e * 6)), sx: 1.06, sy: 0.92, face: { eyes: 'happy', mouth: 'happy' }, fx: ['laugh'] }) },
+    g_pull: { clip: 'touch_pull_hold', sec: 0, loop: true, art: 'clip_touch_stretch', f: (u, e, x) => { const d = clamp((x && x.d) || 0, -1, 1); return { dx: d * C().pull.maxArt, sx: 1 + 0.18 * Math.abs(d), sy: 1 - 0.1 * Math.abs(d), rot: -0.15 * d, face: { eyes: 'surprised', mouth: 'surprised' } }; } },
+    g_spring: { clip: 'touch_pull_release', sec: 0.9, art: 'clip_touch_spring', f: (u, e, x) => { const d = clamp((x && x.d) || 0, -1, 1), k = Math.exp(-5 * u) * Math.cos(u * 18); const land = u > 0.78 ? sinP((u - 0.78) / 0.22) : 0; return { dx: d * C().pull.maxArt * k, rot: -0.15 * d * k, sx: 1 + 0.12 * land, sy: 1 - 0.16 * land, face: { eyes: 'surprised', mouth: 'happy' } }; } },
+    g_dizzy: { clip: 'touch_shake_dizzy', sec: 2, art: 'fx_dizzy_stars', f: (u, e) => ({ rot: 0.16 * Math.sin(e * 8), dx: 2 * Math.sin(e * 4), face: { eyes: 'squint', mouth: 'wink' }, fx: ['stars'] }) },
+    g_rub: { clip: 'touch_sleep_rub', sec: 1.6, art: 'clip_sleep_rub_turn', f: (u) => ({ rot: 0.28 * sinP(u), sy: 1 - 0.05 * sinP(u), face: { eyes: 'sleepy', mouth: 'sleepy' }, fx: ['zzz'] }) },
+    g_brag: { clip: 'touch_shake_pretend', sec: 2.4, art: 'clip_shake_pretend', f: (u) => ({ dx: 2 * sinP(Math.min(1, u * 1.2)), rot: 0.05 * sinP(Math.min(1, u * 1.2)), face: { eyes: 'squint', mouth: 'happy' }, fx: ['sweat'] }) },
+    d_glasses: { clip: 'dim_glasses_count', sec: 6, art: 'fx_dumb_glasses+fx_qmark', f: (u, e) => ({ rot: 0.07 * Math.sin(e * 2), face: { eyes: 'squint', mouth: u > 0.5 ? 'happy' : 'neutral' }, fx: u > 0.25 ? ['glasses', 'qmark'] : ['glasses'] }) },
+    d_book: { clip: 'dim_book_sleep', sec: 7, art: 'fx_dumb_book', f: (u, e) => (u < 0.45 ? { rot: 0.03 * Math.sin(e * 3), face: { eyes: 'neutral' }, fx: ['book'] } : { sy: 0.96, rot: 0.08, face: { eyes: 'sleepy', mouth: 'sleepy' }, fx: ['book', 'zzz'] }) },
+    d_wall: { clip: 'dim_wall_bump', sec: 6, art: 'fx_dumb_bump', f: (u, e) => { const w = clamp(u / 0.42, 0, 1), b = u >= 0.42 && u < 0.52 ? sinP((u - 0.42) / 0.1) : 0; return { dx: 14 * w - 3 * b, dy: u < 0.42 ? -(Math.sin(e * 11) > 0.5 ? 1 : 0) : 0, sx: 1 - 0.18 * b, sy: 1 + 0.08 * b, face: u < 0.42 ? { eyes: 'neutral', mouth: 'neutral' } : u < 0.7 ? { eyes: 'squint', mouth: 'surprised' } : { eyes: 'happy', mouth: 'happy' }, fx: u >= 0.42 && u < 0.75 ? ['stars', 'sweat'] : u >= 0.75 ? ['sweat'] : [] }; } },
+    d_mirror: { clip: 'dim_mirror', sec: 6, art: 'fx_dumb_mirror', f: (u, e) => ({ dy: u > 0.3 && u < 0.4 ? -2 : 0, face: u < 0.3 ? { eyes: 'surprised', mouth: 'surprised' } : { eyes: 'happy', mouth: 'happy' }, fx: ['mirror'] }) },
+    d_finger: { clip: 'dim_count_fingers', sec: 6, art: 'fx_dumb_nums', f: (u, e) => ({ dy: -(Math.floor(u * 6) % 2), face: { eyes: 'squint', mouth: u > 0.66 ? 'happy' : 'neutral' }, fx: ['nums'], n: Math.min(3, Math.floor(u * 4)) }) },
+    d_prof: { clip: 'dim_professor', sec: 6, art: 'fx_dumb_prof_hat', f: (u, e) => ({ rot: -0.06, dy: -(Math.sin(e * 3) > 0.7 ? 1 : 0), face: { eyes: 'squint', mouth: 'happy' }, fx: ['hat'] }) },
+    d_caught: { clip: 'touch_embarrassed', sec: 1.6, art: 'face_dumb_caught+fx_sweat', f: (u) => ({ sx: 1 - 0.05 * sinP(u), sy: 1 + 0.03 * sinP(u), face: { eyes: 'sad', mouth: 'wink' }, fx: ['sweat'] }) },
   };
   /* 計一個動作嘅一格（t、t0 秒）；完咗返 null（loop 款一直有） */
-  function motionAt(key, t0, t, x) {
-    const M = MOTIONS[key]; if (!M) return null; const e = Math.max(0, t - t0);
-    if (!M.loop && e > M.sec) return null;
-    const u = M.loop ? 0 : clamp(e / M.sec, 0, 1), r = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0, rot: 0, face: null, fx: [] }, M.f(u, e, x || {}));
-    r.key = key; r.art = M.art; r.u = u; return r;
+  function motionAt(key, t0, t, x, secOv) {   // secOv：遊美 clip 長度（秒；有圖時用，loop 款唔使）
+    const M = MOTIONS[key]; if (!M) return null; const e = Math.max(0, t - t0), sec = secOv || M.sec;
+    if (!M.loop && e > sec) return null;
+    const u = M.loop ? 0 : clamp(e / sec, 0, 1), r = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0, rot: 0, face: null, fx: [] }, M.f(u, e, x || {}));
+    r.key = key; r.art = M.art; r.clip = M.clip || null; r.ms = e * 1000; r.u = u; return r;
   }
 
   return { KINDS, DUMB, DUMB_NAME, LINES, MOTIONS, st, bridgeDay, simDay, memStore, sharedLeft, moodGrant, moodToday, createRecognizer, createShake, dumbCan, dumbRoll, dumbStart, dumbSeenN, dumbDex, createQueue, motionAt };

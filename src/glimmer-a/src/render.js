@@ -430,6 +430,68 @@
       if (!this.evoOK) return; if (!this.lv) return;
       for (const k in this.evoOK) { const A = this.atlas['atlas_' + k]; this.lv.atlas[k] = { json: A.json, img: A.img }; if (this.lv.anchors && this.evoAnchors[k]) this.lv.anchors[k] = this.evoAnchors[k]; }
     }
+    // 第 3 批 3a：遊美 batch3a 反應圖（art/reactions：reactions.json／anchors.json（舊 25 形態）／fx／series／faces／wear／paws）。逐檔容錯；某形態缺面圖 → 嗰隻用程序化 fallback
+    loadReactions(cfg) {
+      cfg = cfg || (P.touch && P.touch.art); if (!cfg || cfg.enabled === false) return Promise.resolve(null);
+      const base = cfg.base, rx = { clips: null, anchors: null, fx: null, series: null, img: {}, ready: false, errors: [], base };
+      const img = (src) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error(src)); im.src = src; });
+      const jget = (u) => fetch(u).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); });
+      return Promise.all([jget(base + 'reactions.json'), jget(base + 'anchors.json'), jget(base + 'fx/fx.json'), jget(base + 'series/series.json')]).then(([r, a, f, se]) => {
+        rx.clips = r.clips; rx.anchors = a; rx.fx = f; rx.series = se;
+        const files = new Set(['fx/fx_mirror_mask.png']);
+        for (const k in f) files.add(f[k].file);
+        for (const k in se) { files.add(se[k].orbit.file); files.add(se[k].puff.file); }
+        for (const k in a) { files.add(a[k].faces.file); files.add(a[k].wear.glasses); files.add(a[k].wear.hat); files.add(a[k].paw.file); }
+        return Promise.all([...files].map(fn => img(base + fn).then(im => { rx.img[fn] = im; }).catch(() => rx.errors.push(fn))));
+      }).then(() => { rx.ready = !!rx.clips; this.rx = rx; this.rxError = rx.errors.length ? rx.errors.join('; ') : null; return rx; })
+        .catch(e => { this.rxError = String(e && e.message || e); return null; });
+    }
+    rxForm(fk) { const rx = this.rx, a = rx && rx.ready && rx.anchors[fk]; return !!(a && rx.img[a.faces.file]); }
+    rxInfo(id, A) {                      // fx 圖資料：fx_*（fx.json）／series_orbit・series_puff（按『系』）／paw（每隻手仔）
+      const rx = this.rx; if (!rx) return null;
+      if (id === 'paw') return A.paw; if (id === 'series_orbit' || id === 'series_puff') { const S = rx.series[A.series]; return S ? S[id.slice(7)] : null; }
+      return rx.fx[id] || null;
+    }
+    rxEdge(src) {                        // 實色像素外圈點（相對 pivot）：碌地 groundLock 用
+      const m = this._rxE || (this._rxE = new WeakMap()); let per = m.get(src.img); if (!per) { per = {}; m.set(src.img, per); }
+      const key = src.sx + ',' + src.sy + ',' + src.sw + ',' + src.sh; if (key in per) return per[key];
+      const pts = [];
+      try {
+        const c = this._obC || (this._obC = document.createElement('canvas')); c.width = src.sw; c.height = src.sh; const g = c.getContext('2d', { willReadFrequently: true }); g.clearRect(0, 0, src.sw, src.sh); g.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, 0, 0, src.sw, src.sh);
+        const d = g.getImageData(0, 0, src.sw, src.sh).data, A = (x, y) => d[(y * src.sw + x) * 4 + 3] > 24;
+        for (let y = 0; y < src.sh; y++) { let l = -1, r = -1; for (let x = 0; x < src.sw; x++) if (A(x, y)) { if (l < 0) l = x; r = x; } if (l >= 0) { pts.push([l - src.px, y - src.py], [r + 1 - src.px, y - src.py]); } }
+        for (let x = 0; x < src.sw; x++) { let t = -1, b = -1; for (let y = 0; y < src.sh; y++) if (A(x, y)) { if (t < 0) t = y; b = y; } if (t >= 0) pts.push([x - src.px, t - src.py], [x - src.px, b - src.py]); }
+      } catch (e) { }
+      per[key] = pts; return pts;
+    }
+    drawRxFx(x, R, z, px, pyB, mir, src) {
+      const A = R.a, rx = this.rx, an = A.anchors, pv = A.pivot, FLIP = /^(fx_laugh_|fx_pointer|fx_wall|fx_mirror|paw|fx_book|fx_sweat|fx_tear|series_puff)/;
+      for (const f of R.ev.fx) {
+        if ((f.z || 'front') !== z) continue; const info = this.rxInfo(f.id, A), im = info && rx.img[info.file]; if (!im) continue;
+        const L = an[f.anchor === 'touch' ? 'headTop' : f.anchor] || pv, l = [L[0] - pv[0], L[1] - pv[1]], m = f.follow ? R.mapL(l) : l;
+        const sx = MX + px + mir * (m[0] + f.dx), sy = MY + (f.atGround ? pyB : pyB + m[1]) + f.dy;
+        const fw = info.frameW, fh = info.frameH, fr = Math.max(0, Math.min((info.frames || 1) - 1, f.frame | 0)), pi = info.pivot || [0, 0];
+        const flip = (f.mirrorX ? -1 : 1) * (mir < 0 && FLIP.test(f.id) ? -1 : 1);
+        const X0 = Math.round(sx), Y0 = Math.round(sy);
+        if (flip < 0) { x.save(); x.translate(X0, Y0); x.scale(-1, 1); x.drawImage(im, fr * fw, 0, fw, fh, -pi[0], -pi[1], fw, fh); x.restore(); }
+        else x.drawImage(im, fr * fw, 0, fw, fh, X0 - pi[0], Y0 - pi[1], fw, fh);
+        const RF = R.clip.reflection; if (RF && RF.of === f.id) this.rxReflect(x, RF, flip < 0 ? X0 - (fw - 1 - pi[0]) : X0 - pi[0], Y0 - pi[1], fw, fh, mir, src);
+        R.drawn.push(f.id);
+      }
+    }
+    rxReflect(x, RF, mx, my, fw, fh, mir, src) {   // 鏡中倒影：同一幀（已蓋 face patch）左右反轉縮細、tint＋add、clip 落玻璃 mask
+      const rx = this.rx, mk_ = rx.img[RF.mask]; if (!mk_) return;
+      try {
+        const c = this._rfC || (this._rfC = document.createElement('canvas')); c.width = fw; c.height = fh; const g = c.getContext('2d', { willReadFrequently: true }); g.imageSmoothingEnabled = false; g.clearRect(0, 0, fw, fh);
+        const ob = this.opaqueBox(src), hgt = ob ? (ob.b - ob.t + 1) : src.sh, sc = Math.min(RF.scale, 16 / Math.max(1, hgt));
+        g.save(); g.translate(RF.footInGlass[0], RF.footInGlass[1]); g.scale((RF.flipX ? -1 : 1) * mir * sc, sc);
+        g.drawImage(this.tmpPet, 48 - src.px, 100 - src.py, src.sw, src.sh, -src.px, -src.py, src.sw, src.sh); g.restore();
+        if (!this._rfM) { const mc = document.createElement('canvas'); mc.width = mk_.width; mc.height = mk_.height; const mg = mc.getContext('2d', { willReadFrequently: true }); mg.drawImage(mk_, 0, 0); this._rfM = { d: mg.getImageData(0, 0, mc.width, mc.height).data, w: mc.width }; }
+        const id = g.getImageData(0, 0, fw, fh), d = id.data, M = this._rfM, T = RF.tint || [1, 1, 1], AD = RF.add || [0, 0, 0];
+        for (let yy = 0; yy < fh; yy++) for (let xx = 0; xx < fw; xx++) { const i = (yy * fw + xx) * 4, mi = (yy * M.w + xx) * 4 + 3; if (!d[i + 3]) continue; if (!(M.d[mi] > 0)) { d[i + 3] = 0; continue; } for (let k = 0; k < 3; k++) d[i + k] = Math.min(255, d[i + k] * T[k] + AD[k]); }
+        g.putImageData(id, 0, 0); x.drawImage(c, mx, my); this.faceStat.reflect = (this.faceStat.reflect || 0) + 1;
+      } catch (e) { }
+    }
     fkOf(s) {                            // 畫用 form key：evo 圖載咗就用 evo form，否則舊 sprout／radiant／soft／dust
       const ek = D.evoForm(s.stage, s.form);
       return (P.art.evo && P.art.evo.enabled !== false && this.evoOK && this.evoOK[ek]) ? ek : legacyFormKeyOf(s);
@@ -871,6 +933,10 @@
       const so = this.sysClipFor(b, t, fk); if (so) { dclip = so.clip; dframe = so.frame; }   // systems12：撐葉／打冷震／tell overlay clip
       if (EVO) { const A0 = this.atlas[D.FORMS[fk].atlas], an0 = A0 && A0.json.animations, fb = D.EVO_CLIP_FALLBACK[dclip];
         if (an0 && !an0[dclip + '_noface'] && fb && an0[fb + '_noface']) { this.evoFallback = this.evoFallback || {}; this.evoFallback[fk + ':' + dclip] = fb; dclip = fb; } }   // evo6：形態冇呢個 clip → 最近 clip
+      // 3a 遊美反應 clip：base＝idle 幀 0（反應期間 idle 停）→ face／wear patch → body transform → fx
+      const gm0 = b.gest || null, RC = (typeof self !== 'undefined' && self.Glimmer && self.Glimmer.reactclip) || null, TA = (P.touch && P.touch.art) || {};
+      const RXA = (gm0 && gm0.clip && RC && TA.enabled !== false && this.rxForm(fk) && this.rx.clips[gm0.clip]) ? { clip: this.rx.clips[gm0.clip], a: this.rx.anchors[fk], drawn: [] } : null;
+      if (RXA) { dclip = 'idle'; dframe = 0; RXA.ev = RC.evalClip(RXA.clip, gm0.ms || 0, { rotStep: TA.rotStep, frameInfo: (id) => this.rxInfo(id, RXA.a) }); }
       let src = null, ph = null, live = null;
       this.faceStat.draws++;
       // F1：生命感 noface 身體（有就用；顯示 clip 可以係 turn_back）
@@ -893,8 +959,18 @@
         src = { img: sp, sx: 0, sy: 0, sw: sp.width, sh: sp.height, px: sp.anchor.x, py: sp.anchor.y, bud: sp.anchor.bud };
         if (!cdef.ready) ph = placeholderXform(clip, b, t);
       }
-      if (b.pose) { ph = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0 }, ph || {}); ph.dx += b.pose.dx; ph.sy *= b.pose.sy; ph.rot = b.pose.rot; }
-      const gm = b.gest || null;   // 3a 觸摸互動／扮醒呆：程序化形變疊喺 clip 上面（touch.js MOTIONS；遊美交圖後 gm.art 換疊層）
+      if (b.pose && !RXA) { ph = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0 }, ph || {}); ph.dx += b.pose.dx; ph.sy *= b.pose.sy; ph.rot = b.pose.rot; }
+      const gm = RXA ? null : (b.gest || null);
+      if (RXA) {                                       // clip body：{sx,sy,rot(度順時針),x,y,flip}；origin 錨點補償；拉扯 hold 實時拉長；碌地 groundLock
+        const A = RXA.a, body = Object.assign({}, RXA.ev.body), m0 = b.dir < 0 ? -1 : 1, PS = TA.pullStretch || [160, 0.25, 320, 0.12, 12];
+        if (gm0.key === 'g_pull' && gm0.drag) { const d = Math.abs(gm0.drag); body.sy *= 1 + Math.min(d / PS[0], PS[1]); body.sx *= 1 - Math.min(d / PS[2], PS[3]); body.rot += PS[4] * Math.max(-1, Math.min(1, gm0.drag / 120)) * m0; }
+        const on = RXA.ev.origin, O = on && on !== 'pivot' && A.anchors[on] ? [A.anchors[on][0] - A.pivot[0], A.anchors[on][1] - A.pivot[1]] : [0, 0];
+        const xf = RC.xform(body, O); let gy = 0;
+        if (RXA.ev.groundLock && src) { let my = -1e9; for (const p of this.rxEdge(src)) { const q = xf.map(p); if (q[1] > my) my = q[1]; } if (my > -1e9) gy = my; }
+        RXA.mapL = (p) => { const q = xf.map(p); return [q[0], q[1] - gy]; };
+        RXA.okSz = !!(src && src.sw === A.frameSize[0] && src.sh === A.frameSize[1]);
+        ph = { sx: xf.sx, sy: xf.sy, dx: xf.tx, dy: xf.ty - gy, rot: -xf.rad };
+      }   // 3a 觸摸互動／扮醒呆：程序化形變疊喺 clip 上面（touch.js MOTIONS；遊美交圖後 gm.art 換疊層）
       if (gm) { ph = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0, rot: 0 }, ph || {}); ph.sx *= gm.sx; ph.sy *= gm.sy; ph.dx += gm.dx; ph.dy += gm.dy; ph.rot = (ph.rot || 0) + gm.rot; }   // 生命感第二段：望天後仰（缺 lookup_tip 美術 → 程序化）
       const PX = 48, PY = 100;
       let draw = src, anc = null; const fst = { live: !!live, clip: live ? live.clip : dclip, frame: live ? live.frame : dframe, faceVisible: false, eyes: null, mouth: null, placeholder: [], bulb: null, derived: false };
@@ -916,7 +992,7 @@
           if (kind === 'eye') tx.fillRect(o0x + at[0] - (sm >> 1), o0y + at[1] - sm, sm, sm + 1); else { tx.fillRect(o0x + at[0] - sm, o0y + at[1], sm * 2, 1); }
           return false;
         };
-        if (vis) {
+        if (vis && !(RXA && RXA.okSz && RXA.ev.face)) {   // 反應 face patch 蓋面 → 唔畫 kit 五官
           const moving = FCP.closedEyes.indexOf(f.eyes) < 0, g = moving ? (f.gaze || 'C') : 'C';
           let nl = 'eyes_' + f.eyes + '_' + g + '_l', nr = 'eyes_' + f.eyes + '_' + g + '_r';
           if (f.eyes === 'wink') { const gg = f.gaze || 'C'; nl = 'eyes_neutral_' + gg + '_l'; nr = 'eyes_wink_C_r'; }
@@ -935,6 +1011,11 @@
         for (let k = 0; k < 7; k++) { const dx = Math.round((hash(k * 3.1) - 0.5) * fs * 0.6), dy = -Math.round(fs * (0.12 + hash(k * 5.3) * 0.38)); tx.fillStyle = k % 3 ? '#5a4632' : '#3e3024'; tx.fillRect(PX + dx, PY + dy, 2, 2); tx.fillStyle = '#7a6444'; tx.fillRect(PX + dx, PY + dy, 1, 1); }
         tx.globalCompositeOperation = 'source-over';
       }
+      if (RXA && RXA.okSz) {                           // face patch（clip.face 軌）＋ wear patch（眼鏡／四方帽），全幀，transform 之前蓋（同身一齊 tint）
+        const tx = (live || draw !== src) ? this.tmpPet.getContext('2d') : comp(), A = RXA.a, fw = A.frameSize[0], fh = A.frameSize[1], o0x = PX - src.px, o0y = PY - src.py, ev = RXA.ev;
+        if (ev.face) { const i = A.faces.order.indexOf(ev.face), im = this.rx.img[A.faces.file]; if (i >= 0 && im) tx.drawImage(im, i * fw, 0, fw, fh, o0x, o0y, fw, fh); }
+        for (const w of ev.wear) { const im = this.rx.img[A.wear[w.id]]; if (im) tx.drawImage(im, (w.f | 0) * fw, 0, fw, fh, o0x, o0y, fw, fh); }
+      }
       const mir = b.dir < 0 ? -1 : 1, prm = art.playRootMotion;
       // 時段 tint：五官已喺上面合成入 tmpPet → 呢度成個合成只 tint 一次（HD-2D 取代 daylight tint，唔加多一次）
       if (c.hd) { this.faceStat.tints++; draw = this.hd.tintPet(draw, { mir, form: fk, rimKey: live ? fk + '_live' : fk, frame: draw.name, quality: c.q, lumi: s.form === 'lumi' && !EVO }); }   // evo 螢絨有自己色 → 唔再螢綠 tint   // petTint×ambientTint＋rim（唔過 LUT）
@@ -942,6 +1023,8 @@
       const rm = (prm && clip === 'play' && real && !ph && prm.frames.indexOf(b.frame) >= 0) ? ((D.FORMS[fk] ? D.FORMS[fk].frameSize : 64) <= 40 ? prm.dx32 : prm.dx64) * mir : 0;   // play 前衝 root-motion（只喺真 clip 幀）
       const px = Math.round(gx + rm), py = Math.round(base + b.lift + (ph ? ph.dy : 0));
       { const sx = ph ? ph.sx : 1, sy = ph ? ph.sy : 1, w = draw.sw * Math.abs(sx), h = draw.sh * sy, l = px + (ph ? ph.dx * mir : 0) - (mir > 0 ? draw.px : draw.sw - draw.px) * Math.abs(sx); const ob = this.opaqueBox(src); if (ob) { const ax = Math.abs(sx); const l0 = mir > 0 ? ob.l : draw.sw - ob.r; this.petRect = { x: l + l0 * ax, y: py - draw.py * sy + ob.t * sy, w: (ob.r - ob.l) * ax, h: (ob.b - ob.t) * sy, opaque: true }; } else this.petRect = { x: l, y: py - draw.py * sy, w, h, opaque: false }; }   // P2：觸控用真身框（art 座標，未加視差）
+      const pyB = Math.round(base + b.lift);
+      if (RXA) this.drawRxFx(x, RXA, 'back', px, pyB, mir, src);
       x.save(); x.imageSmoothingEnabled = false;
       x.translate(ox(px + (ph ? ph.dx * mir : 0)), oy(py)); x.scale(mir * (ph ? ph.sx : 1), ph ? ph.sy : 1); if (ph && ph.rot) x.rotate(-ph.rot);   // 以腳底 pivot 向後仰
       x.drawImage(draw.img, draw.sx, draw.sy, draw.sw, draw.sh, -draw.px, -draw.py, draw.sw, draw.sh);
@@ -959,7 +1042,8 @@
         if (gl) { x.globalAlpha = Math.max(0, Math.min(1, S.i)); x.drawImage(gl.c, -src.px + anc.bulb[0] - gl.px, -src.py + anc.bulb[1] - gl.py); if (anc.bulb2) x.drawImage(gl.c, -src.px + anc.bulb2[0] - gl.px, -src.py + anc.bulb2[1] - gl.py); x.globalAlpha = 1; this.faceStat.bulb++; fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)), route: this.routeS ? { form: this.routeS.form, mix: +this.routeS.mix.toFixed(3), target: this.routeS.target, rgb: this.routeS.rgb.map(v => Math.round(v)) } : null }; }
       }
       x.restore();
-      if (gm && gm.fx && gm.fx.length) { const pr = this.petRect || { x: px - 10, y: py - 30, w: 20, h: 30 }; this.drawGestFx(x, gm, t, ox(pr.x + pr.w / 2), oy(pr.y), mir, pr.h); fst.gest = { key: gm.key, art: gm.art, fx: gm.fx.slice() }; } else if (gm) fst.gest = { key: gm.key, art: gm.art, fx: [] };
+      if (RXA) { this.drawRxFx(x, RXA, 'front', px, pyB, mir, src); fst.gest = { key: gm0.key, art: gm0.art, clip: gm0.clip, rx: true, t: Math.round(RXA.ev.t), face: RXA.ev.face, faceOn: !!(RXA.okSz && RXA.ev.face), wear: RXA.ev.wear.map(w => w.id), fx: RXA.drawn.slice(), rot: +(RXA.ev.body.rot).toFixed(1) }; this.faceStat.rx = (this.faceStat.rx || 0) + 1; }
+      else if (gm && gm.fx && gm.fx.length) { const pr = this.petRect || { x: px - 10, y: py - 30, w: 20, h: 30 }; this.drawGestFx(x, gm, t, ox(pr.x + pr.w / 2), oy(pr.y), mir, pr.h); fst.gest = { key: gm.key, art: gm.art, fx: gm.fx.slice() }; } else if (gm) fst.gest = { key: gm.key, art: gm.art, fx: [] };
       if (b.bug) {                                    // A2 swat 蟲仔 fx：遊美 fx/atlas_fx_live（fx_bug 01→02→03→02，10fps，pivot (4,4)，朝右）；冇就程序化 2×2 點＋1px 翼閃
         const bx = Math.round(px + b.bug.x), by = Math.round(py + b.bug.y), FX = this.lv && this.lv.fx, an = FX && FX.json.animations && FX.json.animations.fx_bug;
         const fr = an && FX.json.frames[an.frames[Math.floor((b.bug.t || 0) * (an.fps || 10)) % an.frames.length]];

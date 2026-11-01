@@ -107,6 +107,7 @@
   if (qs.get('evo') === '0') P.art.evo.enabled = false;
   G.evoReady = false;
   G.evoLoad = P.art.evo.enabled ? Promise.all([G.renderer.loadEvo(P.art.evo), G.liveLoad.catch(() => null)]).then(() => { G.renderer.attachEvoLive(); G.evoReady = Object.keys(G.renderer.evoOK || {}).length > 0; }) : Promise.resolve();
+  G.rxLoad = (P.touch && P.touch.art && P.touch.art.enabled !== false && qs.get('rx') !== '0') ? G.renderer.loadReactions(P.touch.art) : Promise.resolve(null);   // 3a 遊美反應圖（?rx=0 → 程序化）
   G.liveSettled = false; G.liveLoad.then(() => { G.liveSettled = true; }, () => { G.liveSettled = true; });   // s3：重逢等 live atlas 載完先衝（rush 用真 clip）
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
   if (NS.hd2d) NS.hd2d.install(G, NS);
