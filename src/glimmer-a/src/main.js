@@ -118,6 +118,7 @@
   if (NS.touchui && NS.touch) NS.touchui.install(G, NS);   // 第 3 批 3a：觸摸互動＋扮醒呆＋提示排隊（docs-gdd/batch3-fun-spec.md）
   if (NS.b3bui && NS.visit) NS.b3bui.install(G, NS);   // 第 3 批 3b：朋友訪客＋進化大場面＋團絨日記四格（docs-gdd/batch3-fun-spec.md §③④；?b3b=0 全停）
   if (NS.s2ui && NS.series2) NS.s2ui.install(G, NS);   // 第 4 批 4a：細佬（docs-gdd/series2-4a4b-spec.md；?s2=0 全停）
+  if (NS.houseui && NS.house) NS.houseui.install(G, NS);   // 第 4 批 4b：屋仔（house.js＋houseui.js；?house=0 全停）
   if (NS.hd2dui && NS.uisfx) NS.hd2dui.install(G, NS);   // HD-2D UI 換膚（遊美 ui-kit-hd2d）＋ ui8 v3 音效 hook（遊音 §7.11；?hdui=0 → 舊 UI）
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底

@@ -27,6 +27,14 @@ shim = r"""<script>/* 單檔 build：內嵌資產解析器（fetch／Image） */
   var d = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
   Object.defineProperty(HTMLImageElement.prototype, 'src', { configurable: true, enumerable: d.enumerable, get: function () { return d.get.call(this); },
     set: function (v) { var k = hit(v); d.set.call(this, k ? 'data:' + A[k][0] + ';base64,' + A[k][1] : v); } });
+  /* innerHTML 嘅 <img src>／inline style url(...) 唔經 setter → MutationObserver 補換（4a 細佬卡／托盤／rail icon） */
+  function dataOf(k) { return 'data:' + A[k][0] + ';base64,' + A[k][1]; }
+  function fix(el) { if (!el || el.nodeType !== 1) return;
+    if (el.tagName === 'IMG') { var v = el.getAttribute('src'), k = hit(v); if (k) d.set.call(el, dataOf(k)); }
+    var st = el.getAttribute('style'); if (st && st.indexOf('url(') >= 0) { var ch = false, ns = st.replace(/url\((['"]?)([^)'"]+)\1\)/g, function (m, q, u) { var k = hit(u); if (!k) return m; ch = true; return 'url("' + dataOf(k) + '")'; }); if (ch) el.setAttribute('style', ns); } }
+  function scan(n) { if (!n || n.nodeType !== 1) return; fix(n); if (n.querySelectorAll) { var l = n.querySelectorAll('img,[style*="url("]'); for (var i = 0; i < l.length; i++) fix(l[i]); } }
+  new MutationObserver(function (ms) { for (var i = 0; i < ms.length; i++) { var m = ms[i]; if (m.type === 'attributes') fix(m.target); else for (var j = 0; j < m.addedNodes.length; j++) scan(m.addedNodes[j]); } })
+    .observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['src', 'style'] });
 })();
 </script>""" % json.dumps(assets, separators=(',', ':'))
 html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()

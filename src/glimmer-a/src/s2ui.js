@@ -1,7 +1,7 @@
 /* 《微光小圃》 s2ui.js — 第 4 批 4a 瀏覽器膠水：細佬（docs-gdd/series2-4a4b-spec.md v1.1 §4a；遊美 art/series2-4a）。原創代碼。
    攞蛋（團絨首次靜光 → 翌日蝸牛郵差送）→ 蛋 3 晚（團絨瞓 → 攬蛋＋夢泡泡＝當日最多照顧）→ 孵化第一眼（全畫面 2s，撳跳）→ 跟班升級小場面。
    細佬（S1–S6，遊美 5 clip strip）：跟住團絨行／一齊食／一齊瞓、每日喊 2–3 次（拖團絨過去哄 → 哄喊 clip）、S1–S2 撳細佬 → 道具托盤 → 拖畀團絨 → 團絨示範錯 3s（3a 反應 clip 形變＋道具疊層）→ 細佬照抄 2s。
-   S3 揭曉系（series2.settle）；親密度（每日上限 10）→ 朋友（雙人彈彈葉：mg2ui opt.duo，唔出碎唔食額）→ 家人（4b 屋仔：只顯示「即將開放」）。
+   S3 揭曉系（series2.settle）；親密度（每日上限 10）→ 朋友（雙人彈彈葉：mg2ui opt.duo，唔出碎唔食額）→ 家人（4b 屋仔：houseui.js／house.js；卡入面「入屋仔」）。
    團絨 §7／路線分／浮動 overlay 全部唔掂；只讀 s.stats／sys12b 計照顧類型（夢用）。Playwright 預設唔自動送蛋／喊（?s2x=1 開）；__qa.s2 直接觸發。?s2=0 全停。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -16,7 +16,7 @@
     const wd = !!(navigator && navigator.webdriver), R = G.renderer, UI = NS.ui, X2 = NS.sys12b, BEH = NS.behavior, RC = NS.reactclip, C = SR.CFG, L_ = SR.LINES_OUT;
     const native = !!(window.Capacitor && (typeof window.Capacitor.isNativePlatform === 'function' ? window.Capacitor.isNativePlatform() : window.Capacitor.isNative));   // 4a.1：APK（Capacitor）一定開自動送蛋／喊
     const on = (k) => qs.get(k) === '1' || qs.get('s2x') === '1' || ((native || !wd) && qs.get(k) !== '0' && qs.get('s2x') !== '0');
-    const VERSION = P.version || '4a.3';
+    const VERSION = P.version || '4b';
     const AUTO = { deliver: on('s2deliver'), cry: on('s2cry') };
     const BASE = P.art.base, S = () => G.state, pnow = () => performance.now();
     const say = (line, o) => (G.say ? G.say(Object.assign({ line, src: 's2', sec: 3.5 }, o || {})) : UI.toast(line, 2600));
@@ -65,7 +65,7 @@
     const SC = { cur: null, q: [] };            // 細佬場面：hatch（全畫面）／level／comfort／lesson
     const sess = { t0: pnow(), nextCry: pnow() + (C.cry.firstDelaySec[0] + Math.random() * (C.cry.firstDelaySec[1] - C.cry.firstDelaySec[0])) * 1000, deliverAt: 0, deliverTry: 0 };
     let lastStage = null;
-    const busyOther = () => G.mode === 'minigame' || !!G.mg2Busy || UI.isModalOpen() || document.body.classList.contains('b3b-evo') || document.hidden || !!(G.beh && G.beh.puppet && !MINE.p);
+    const busyOther = () => !!G.houseIsOpen || G.mode === 'minigame' || !!G.mg2Busy || UI.isModalOpen() || document.body.classList.contains('b3b-evo') || document.hidden || !!(G.beh && G.beh.puppet && !MINE.p);
     const MINE = { p: false };
     function puppet(p) { const b = G.beh; if (!b) return; b.puppet = p; MINE.p = true; }
     function release() { const b = G.beh; if (b && MINE.p) { MINE.p = false; if (b.puppet) { b.puppet = null; b.depth = 0; b.faceAct = null; try { if (BEH.force) BEH.force(b, 'stay', G.behCtx || { s: S() }); } catch (e) { } } } }
@@ -176,7 +176,7 @@
     function levelTick() {
       const o = st(); if (o.phase !== 'kid' || SC.cur || !o.relQ.length || busyOther() || S().sleeping || !A.ready) return;
       const rel = o.relQ.shift(), clip = A.lv.scenes['lv_' + rel]; if (G.save) G.save();
-      playClip('level', clip, { rel, after: () => { say(rel === 'friend' ? L_.lvFriend : rel === 'family' ? L_.lvFamily : L_.lvFollow, { sec: 4 }); UI.toast((rel === 'friend' ? '朋友' : rel === 'family' ? '家人' : '跟班') + '！' + (rel === 'family' ? '屋仔即將開放（4b）' : ''), 2600); } });
+      playClip('level', clip, { rel, after: () => { say(rel === 'friend' ? L_.lvFriend : rel === 'family' ? L_.lvFamily : L_.lvFollow, { sec: 4 }); UI.toast((rel === 'friend' ? '朋友' : rel === 'family' ? '家人' : '跟班') + '！' + (rel === 'family' ? '屋仔開咗！撳右邊「屋仔」入去' : ''), 2600); } });
     }
 
     // ── 喊／哄喊（拖團絨過去）──
@@ -301,7 +301,9 @@
       const bt = [];
       const du = SR.canDuo(s, now); if (du.ok) bt.push({ text: '二人彈彈葉（今日仲有 ' + du.left + '）', primary: true, onClick: () => { duoStart(); } });
       else { const h = document.createElement('div'); h.dataset.testid = 's2-duo-hint'; h.dataset.reason = du.reason; h.style.cssText = 'margin-top:8px;font-size:11px;opacity:.85'; h.textContent = '🎾 二人彈彈葉：' + (du.reason === 'rel' ? '做咗朋友先開（親密 ' + o.intim + '／' + C.friendAt + '）' : du.reason === 'today' ? '今日玩夠 ' + C.duoPerDay + ' 次，聽日再嚟' : '孵化後先開'); node.appendChild(h); }
-      if (o.rel === 'family') { const h = document.createElement('div'); h.dataset.testid = 's2-house'; h.style.cssText = 'margin-top:8px;font-size:11px;opacity:.85'; h.textContent = '🔒 屋仔：即將開放（4b）'; node.appendChild(h); }
+      { const h = document.createElement('div'); h.dataset.testid = 's2-house'; h.dataset.open = o.rel === 'family' ? '1' : '0'; h.style.cssText = 'margin-top:8px;font-size:11px;opacity:.85';   /* 4b：家人 → 真入口 */
+        h.textContent = o.rel === 'family' ? '🏠 屋仔：細佬同團絨一齊住緊（撳「入屋仔」）' : '🔒 屋仔：做咗家人先開（親密 ' + C.familyAt + '＋成年）'; node.appendChild(h);
+        if (o.rel === 'family' && G.houseOpen) bt.push({ text: '🏠 入屋仔', primary: !bt.length, testid: 's2-house-go', onClick: () => { setTimeout(() => G.houseOpen('card'), 0); } }); }
       bt.push({ text: '好', primary: !bt.length });
       UI.modal({ title: '細佬', kind: 's2Card', node, buttons: bt }); UIS('popupOpen'); note('card');
     }
@@ -423,7 +425,7 @@
       hatch() { let o = st(); const now = G.now(); if (o.phase === 'kid') return { ok: false, msg: '細佬已經孵咗' }; if (o.phase !== 'egg') { const r = TEST.deliver(); if (!r.ok) return r; o = st(); }
         if (SC.cur) return { ok: false, msg: '而家播緊場面' }; for (let i = o.dreams.length; i < C.eggNights; i++) o.dreams.push({ day: SR.nightOf(now) - (C.eggNights - 1 - i), line: SR.topCare(S(), SR.nightOf(now)) || null, at: now, live: false, test: true });
         o.test = true; S().sleeping = false; hatchStart(); return { ok: true, msg: '孵化！' }; },
-      level() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (o.rel === 'family') return { ok: false, msg: '已經係家人（屋仔即將開放（4b））' };
+      level() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (o.rel === 'family') return { ok: false, msg: '已經係家人（可以入屋仔）' };
         const to = o.rel === 'follow' ? 'friend' : 'family'; o.intim = Math.max(o.intim, to === 'friend' ? C.friendAt : C.familyAt); o.rel = to; o.relQ.push(to); o.test = true; if (G.save) G.save(); note('testLevel', { to }); return { ok: true, msg: '關係 → ' + SR.REL_ZH[to] }; },
       _kid() { let o = st(); const now = G.now(); if (o.phase === 'kid') return null; if (SC.cur) return { ok: false, msg: '而家播緊場面' };
         if (o.phase !== 'egg') { const r = TEST.deliver(); if (!r.ok) return r; o = st(); }
@@ -437,8 +439,14 @@
         const d = SR.today(S(), now); if (d.duo >= C.duoPerDay) d.duo = C.duoPerDay - 1; S().sleeping = false; if (G.save) G.save();
         return duoStart() ? { ok: true, msg: '二人彈彈葉開始！' } : { ok: false, msg: '開唔到二人彈' }; },
       card() { const e = TEST._kid(); if (e) return e; card(); return { ok: true, msg: '細佬卡' }; },
+      family() { const e = TEST._kid(); if (e) return e; const o = st(), now = G.now();   /* 4b 試玩：細佬即刻成年＋家人（唔播升級場面） */
+        if (SR.stageOf(S(), now) !== 'S6') { const SD = C.stageDays; o.hatchDay = SR.dayNum(now) - (SD.S1 + SD.S2 + SD.S3 + SD.S4 + SD.S5); lastStage = 'S6'; }
+        const was = o.rel === 'family'; o.intim = Math.max(o.intim, C.familyAt); o.rel = 'family'; o.relQ.length = 0; o.test = true; if (G.save) G.save(); note('testFamily', { was });
+        return { ok: true, msg: was ? '細佬已經係家人' : '細佬 → 成年＋家人' }; },
       cry() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (K.cry) return { ok: false, msg: '細佬喊緊' }; if (SC.cur) return { ok: false, msg: '而家播緊場面' }; if (S().sleeping) S().sleeping = false; { const bx = trX(), gap = trHalf() + 16; if (Math.abs(K.x - bx) < gap) { const sd = bx + gap <= 70 ? 1 : -1; K.x = clamp(bx + sd * gap, -70, 70); K.dir = -sd; } } /* 試玩：唔好匿喺團絨後面 */ cryStart(); return { ok: true, msg: '細佬喊喇！拖團絨過去哄佢' }; },
     };
+    G.s2Test = TEST;
+    G.s2Art = { A, im, strip, kidFrame, atlasSrc, fxInfo, formNow, BASE, kidHide: (v) => { K.hidden = !!v; }, sleeping: () => K.clip === 'sleep' };   // 4b houseui 借用
     G.s2Settings = function (node) {   // 4a.3：設定只留版本（試玩掣搬咗去「🛠 開發者模式」）；撳版本 5 下 → 出返開發者掣
       const v = document.createElement('div'); v.dataset.testid = 's2-version'; v.style.cssText = 'text-align:right;font-size:11px;opacity:.8;margin:0 0 6px'; v.textContent = '版本 ' + VERSION;
       v.addEventListener('click', () => { const D = NS.devmode; if (D) D.versionTap(); }); node.insertBefore(v, node.firstChild);

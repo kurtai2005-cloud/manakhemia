@@ -51,7 +51,7 @@
     hatch: '細佬出世喇！第一眼就見到團絨', lessonDone: '細佬學識咗（錯嘅）{prop}！', lessonFull: '今日教夠喇，聽日再教', lessonDone6: '細佬已經學滿 6 堂',
     lessonNot: '而家唔係上堂時間', cry: '細佬喊喊…拖團絨過去哄下佢', comfort: '團絨挨住細佬，細佬收聲喇', cryStop: '細佬自己收咗聲',
     eat: '細佬都一齊食！', sleep: '兩隻一齊瞓…', capFull: '今日親密度滿咗（10）',
-    reveal: '細佬變咗「{zh}系」！', lvFriend: '細佬同團絨做咗朋友！可以玩雙人彈彈葉', lvFamily: '細佬同團絨成為家人！（屋仔 4b 即將開放）', lvFollow: '細佬會跟住團絨周圍行',
+    reveal: '細佬變咗「{zh}系」！', lvFriend: '細佬同團絨做咗朋友！可以玩雙人彈彈葉', lvFamily: '細佬同團絨成為家人！一齊搬入屋仔', lvFollow: '細佬會跟住團絨周圍行',
     duoDone: '雙人彈彈葉：細佬好開心（親密 +{n}）', duoFull: '今日雙人彈彈葉玩夠 2 局',
   };
 
