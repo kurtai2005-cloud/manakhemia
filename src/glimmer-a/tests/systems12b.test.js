@@ -191,7 +191,7 @@ console.log('④ 系統 11 成就徽章（30 個）');
 }
 console.log('⑤ 經濟：每日（唔計徽章）≤30；徽章一次性另計');
 {
-  const s = mk('adult'); for (let i = 0; i < 10; i++) B.gameFinish(s, 'catch', 99, T0 + i);
+  const s = mk('adult'); for (let i = 0; i < 10; i++) B.gameFinish(s, 'bounce', 99, T0 + i);   // 徽章「彈彈葉 3★」只計彈彈葉
   for (let q = 0; q < 30; q++) X.grant(s, 3, 'quest', T0);
   X.grant(s, 2, 'garden', T0); S.unlockDex(s, 'moon'); B.badgeCheck(s, T0);
   const w = X.wallet(s, T0), bad = X.st(s).wallet.log.filter(l => l.src === 'badge').reduce((a, l) => a + l.n, 0);
