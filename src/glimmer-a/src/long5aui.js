@@ -41,7 +41,7 @@
     const mk = (tag, css, txt, tid) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (txt != null) e.textContent = txt; if (tid) e.dataset.testid = tid; return e; };
     const img = (src, css) => { const i = new Image(); i.draggable = false; i.alt = ''; i.style.cssText = 'position:absolute;image-rendering:pixelated;pointer-events:none;' + (css || ''); i.src = src; return i; };
     const icon = (n, size, css) => { const d = mk('i', `position:absolute;display:block;pointer-events:none;width:${size}px;height:${size}px;` + (css || '')); const c = icCss(n, 0); if (c) { d.style.cssText += c + `width:${size}px !important;height:${size}px !important;background-size:${size}px ${size}px !important;`; } else { const im = img(ui5('icon_' + n), `left:0;top:0;width:${size}px;height:${size}px`); d.appendChild(im); } return d; };
-    const TXT = (size, color, extra) => `font:${size}px/1.2 ${size >= 22 ? F12() : F8()};color:${color || CREAM};${color === INK ? '' : OL}-webkit-font-smoothing:none;` + (extra || '');
+    const TXT = (size, color, extra) => `font:${U() ? (size <= 24 ? 24 : 36) : size}px/1.2 ${U() ? F12() : F8()};color:${color || CREAM};${color === INK ? '' : OL}-webkit-font-smoothing:none;` + (extra || '');
     function btn(label, kind, w, h, tid, onClick, icn) {
       const b = mk('div', `position:absolute;width:${w}px;height:${h}px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;${bi(kind)}` + TXT(h >= 34 ? 18 : 16), null, tid);
       if (icn) { const ii = icon(icn, 22, 'position:relative'); b.appendChild(ii); } b.appendChild(mk('span', 'position:relative', label));

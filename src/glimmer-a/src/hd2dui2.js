@@ -37,6 +37,49 @@
     return `border-style:solid !important; border-color:transparent !important; border-width:0 !important; border-image:url(${u}) ${t} ${r} ${b} ${l} fill / ${t}px ${r}px ${b}px ${l}px / 0 repeat !important; image-rendering:pixelated;`;
   }
 
+  // TTF cmap（format 4／12）→ Set(codepoint)：用嚟判斷 FP12 子集有冇呢個字
+  function cmapOf(buf) {
+    const v = new DataView(buf), n = v.getUint16(4); let cm = -1;
+    for (let i = 0; i < n; i++) { const o = 12 + i * 16; if (String.fromCharCode(v.getUint8(o), v.getUint8(o + 1), v.getUint8(o + 2), v.getUint8(o + 3)) === 'cmap') cm = v.getUint32(o + 8); }
+    if (cm < 0) throw new Error('冇 cmap'); const out = new Set(), nt = v.getUint16(cm + 2); let best = -1, bf = 0;
+    for (let i = 0; i < nt; i++) { const off = cm + v.getUint32(cm + 8 + i * 8), f = v.getUint16(off); if (f === 12 || (f === 4 && bf !== 12)) { best = off; bf = f; } }
+    if (best < 0) throw new Error('冇 format 4/12');
+    if (bf === 12) { const g = v.getUint32(best + 12); for (let i = 0; i < g; i++) { const o = best + 16 + i * 12, a = v.getUint32(o), b = v.getUint32(o + 4); for (let c = a; c <= b; c++) out.add(c); } }
+    else { const sx = v.getUint16(best + 6) / 2; for (let i = 0; i < sx; i++) { const e = v.getUint16(best + 14 + i * 2), st = v.getUint16(best + 16 + sx * 2 + i * 2); for (let c = st; c <= e && c !== 0xFFFF; c++) out.add(c); } }
+    return out;
+  }
+  // v2 CSS：FP8／FP10 → FP12，字號 floor 24px（FP12 嘅 2×），超過就去 36（3×）；line-height ≥ 28，同 line-height 一樣高嘅固定高度一齊升
+  function readable(css) {
+    const sz = (s) => s <= 0 ? s : s <= 24 ? 24 : s <= 36 ? 36 : Math.round(s / 12) * 12;
+    return css.split('\n').map((ln) => {
+      ln = ln.replace(/"GlimmerFP(8|10)"/g, '"GlimmerFP12"'); const ups = [];
+      ln = ln.replace(/font:(var\(--sub2F,)?(\d+(?:\.\d+)?)px(\))?\/(\d+(?:\.\d+)?)px/g, (m, v, s, c, l) => { s = +s; l = +l; if (!s) return m; const ns = sz(s), nl = Math.max(l, Math.round(ns * 7 / 6)); if (nl > l) ups.push([l, nl]); return 'font:' + (v ? 'var(--sub2F,' + ns + 'px)' : ns + 'px') + '/' + nl + 'px'; });
+      ln = ln.replace(/font-size:(\d+(?:\.\d+)?)px/g, (m, s) => +s ? 'font-size:' + sz(+s) + 'px' : m);
+      for (const [l, nl] of ups) ln = ln.replace(new RegExp('([;{ ])height:' + l + 'px', 'g'), '$1height:' + nl + 'px');
+      return ln;
+    }).join('\n');
+  }
+  function readCss(H, FALL, F12, OL8, INK, CREAM, LINE) {
+    return `
+/* 5a.1 清晰度 */
+#ui.hd.v2, #ui.hd.v2 * { -webkit-font-smoothing:none; font-smooth:never; font-synthesis:none; text-rendering:optimizeSpeed; }
+#ui.hd.v2 :is([data-fbk="1"], #_z#_z#_z) { font-family:${FALL} !important; -webkit-font-smoothing:antialiased !important; }
+${H}[data-rol="1"] { ${OL8} }
+${H}.hdTg { padding:0 !important; margin-left:40px !important; text-indent:-34px; line-height:22px !important; text-align:left; white-space:nowrap; overflow:visible !important; }
+${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] > div[style*="grid"] { grid-template-columns:1fr !important; gap:6px !important; }
+${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] > div:first-child, ${H}#mbox[data-kind="devmode"] > div:first-child { flex-wrap:wrap; gap:0 12px; }
+${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn, ${H}#mbox[data-kind="devmode"] [data-testid="dev-toggle-btn"] { height:auto !important; min-height:44px; padding:6px 12px 10px !important; line-height:28px !important; white-space:normal !important; overflow:visible !important; text-overflow:clip !important; text-align:left; box-sizing:border-box; border-image-repeat:stretch !important; }
+${H}#mbox .btn:not(.hdTg):not(.seg .btn) { height:auto !important; min-height:40px; white-space:normal !important; border-image-repeat:stretch !important; }
+${H}.dexGrid > p { grid-column:1 / -1; }
+${H}#s2houseV [data-testid="house-hint"] { left:72px !important; right:72px !important; }
+${H}#substage { overflow:hidden !important; text-overflow:ellipsis !important; white-space:nowrap !important; }
+${H}.s12tabs { flex-wrap:wrap; }
+${H}.s12tabs b { flex:1 0 auto !important; white-space:nowrap; padding:0 6px !important; }
+${H}.s12foot { flex-wrap:wrap; }
+${H}.rt { white-space:nowrap; display:inline-block; }
+#ui.hd.v2.sysf, #ui.hd.v2.sysf :is(*, #_z#_z#_z) { font-family:${FALL} !important; -webkit-font-smoothing:antialiased !important; text-rendering:auto !important; }
+`;
+  }
   function install(G, NS) {
     if (typeof document === 'undefined') return false;
     const HD = G.hdui; if (!HD || !HD.load) return false;          // 冇 v1 換膚（?hdui=0）→ v2 都唔掛
@@ -49,7 +92,7 @@
     const img = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error('img ' + src)); i.src = src; });
     const json = (n) => fetch(BASE + n).then(r => { if (!r.ok) throw new Error(n + ' ' + r.status); return r.json(); });
     const atlas = (n) => json(n + '.json').then(j => img(BASE + (j.image ? j.image.replace(/^.*\//, '') : n + '.png')).then(im => ({ j, im })));
-    const font = (n, fam) => fetch(BASE + 'fonts/' + n).then(r => r.arrayBuffer()).then(b => { const f = new FontFace(fam, b); return f.load(); }).then(f => { document.fonts.add(f); U.fonts[fam] = true; }).catch(e => { U.errors.push('font ' + n + ': ' + (e && e.message || e)); });
+    const font = (n, fam) => fetch(BASE + 'fonts/' + n).then(r => r.arrayBuffer()).then(b => { if (fam === 'GlimmerFP12') { try { U.cov = cmapOf(b); } catch (e) { U.errors.push('cmap ' + e.message); } } const f = new FontFace(fam, b); return f.load(); }).then(f => { document.fonts.add(f); U.fonts[fam] = true; }).catch(e => { U.errors.push('font ' + n + ': ' + (e && e.message || e)); });
     U.load = Promise.all([HD.load, atlas('ui_hd2d_v2@1x'), atlas('icons_hd2d_v2@1x'), json('layout_hd2d_v2.json'), json('portrait_rects.json'),
       font('fp8-subset.ttf', 'GlimmerFP8'), font('fp10-subset.ttf', 'GlimmerFP10'), font('fp12-subset.ttf', 'GlimmerFP12')])
       .then(([, A, I, L, PR]) => { if (!HD.ready) throw new Error('v1 未 ready'); build(A, I, L, PR); })
@@ -90,7 +133,7 @@
       const NEEDK = ['hunger', 'mood', 'clean', 'energy'];
       const actCx = (i) => +(AC.cx0 * 2 + AC.dx * 2 * i).toFixed(1);
       const d30 = AC.d * 2;
-      const css = `
+      let css = `
 ${H}{ font-family:${F10}; ${PX} }
 ${H}.panel { ${bi('panel_navy_flat')} }
 /* ── 頂旗 banner_top（y −5，全闊）＋頭像 ── */
@@ -209,6 +252,9 @@ ${H}.btn[disabled], ${H}.btn.dis, ${H}.btn.off { color:#C9C3D6 !important; ${bi(
 ${H}.seg { height:28px; padding:0 4px; ${bi('seg_bg')} }
 ${H}.seg .btn { height:20px; min-width:0; padding:0 8px !important; font:16px/20px ${F8} !important; color:${CREAM} !important; ${NOL} border-image:none !important; }
 ${H}.seg .btn.on { color:#4A2410 !important; ${bi('seg_on')} }
+${H}.seg { height:40px !important; width:auto !important; max-width:none !important; padding:0 6px !important; flex:none; ${bi('panel_inset')} }
+${H}.seg .btn { height:32px !important; flex:none !important; margin:0 2px !important; padding:0 10px !important; line-height:32px !important; ${OL8} }
+${H}.seg .btn.on { color:${CREAM} !important; ${OL8} ${bi('btn16_pri')} }
 ${H}.hdTg { width:44px !important; height:22px !important; ${spBg('toggle_track_on')} }
 ${H}.hdTg.sec { ${spBg('toggle_track_off')} }
 ${H}.hdTg::after { top:0; left:22px; ${sp('toggle_knob_on')} }
@@ -304,8 +350,10 @@ ${H}#s2houseV .hb[data-testid^="house-pin-"]::after { content:''; position:absol
 ${H}#s2houseV .hb[data-testid^="house-pin-"][data-filled="1"]::after { ${icBg('mini_check')} }
 ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL8} }
 `;
+      css = readable(css) + readCss(H, FALL, F12, OL8, INK, CREAM, LINE);
       const st = document.createElement('style'); st.id = 'hd2dui2-css'; st.textContent = css; document.head.appendChild(st); U.css = css;
       dom(); U.ready = true; U.readyAt = performance.now(); set(U.want, 'boot'); note('ready', { on: U.on });
+      readInit();
       setInterval(tick, 400); tick();
     }
 
@@ -322,7 +370,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       on = !!on; U.want = on; if (!U.ready) return on;
       U.on = on; ui.classList.toggle('v2', on); document.body.classList.toggle('uiv2', on);
       if (why === 'dev' || why === 'qa') { try { localStorage.setItem(KEY, on ? '2' : '1'); } catch (e) { } }
-      lastSub = ''; if (on) { face(true); tick(); }
+      lastSub = ''; if (on) { face(true); tick(); } readPass(true);
       note('set', { on, why: why || '' }); return on;
     }
     U.set = set; U.toggle = (why) => set(!U.on, why || 'dev');
@@ -331,7 +379,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
     function tick() {
       if (!U.on) return;
       const nm = $('#stagename'), sb = $('#substage');
-      if (nm && sb) { const k = nm.textContent + '|' + sb.textContent + '|' + (U.fonts.GlimmerFP12 ? 1 : 0); if (k !== lastSub) { lastSub = k; const Lx = 116 + nm.offsetWidth + 6, W = Math.max(40, 284 - Lx); sb.style.setProperty('--sub2L', Lx + 'px'); sb.style.setProperty('--sub2W', W + 'px'); sb.style.setProperty('--sub2F', '20px'); if (sb.scrollWidth > W) sb.style.setProperty('--sub2F', '16px'); } }
+      if (nm && sb) { const k = nm.textContent + '|' + sb.textContent + '|' + (U.fonts.GlimmerFP12 ? 1 : 0); if (k !== lastSub) { lastSub = k; const Lx = 116 + nm.offsetWidth + 6, W = Math.max(40, 284 - Lx); sb.style.setProperty('--sub2L', Lx + 'px'); sb.style.setProperty('--sub2W', W + 'px'); sb.style.setProperty('--sub2F', '24px'); } }
       const t = $('#toast'); if (t) { const k = t.textContent; if (k !== lastToast) { lastToast = k; t.classList.remove('sm2'); if (t.scrollWidth > 338) t.classList.add('sm2'); } }
       const tn = performance.now(); if (tn - lastFace > 1000) { lastFace = tn; face(); }
     }
@@ -368,6 +416,39 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
     }
     const PIMG = () => U.atlasImg;
 
+    // ── 5a.1 清晰度（Kurt：「d字完全睇唔清楚」）──
+    //  ① 唔准細過 FP12：v2 CSS 入面 FP8／FP10 全部換 FP12，字號＝24px（FP12×2，整數倍）；line-height ≥ 28
+    //  ② 其他模組 inline 細字（圖鑑／細佬卡／開發者／手帳／屋仔…）→ readPass 逐個 floor 到 24px
+    //  ③ 子集冇嘅字 → 成句轉系統中文字型（data-fbk）；淺色字冇描邊 → 補 1 art px 深色描邊（data-rol）
+    //  ④ 開發者「清晰字型（系統字）」：成個 UI 用系統字（localStorage glimmer.sysf）
+    const SYSK = 'glimmer.sysf';
+    try { U.sysf = localStorage.getItem(SYSK) === '1'; } catch (e) { U.sysf = false; }
+    function sysFont(on) { U.sysf = !!on; ui.classList.toggle('sysf', U.sysf); try { localStorage.setItem(SYSK, U.sysf ? '1' : '0'); } catch (e) { } readPass(true); note('sysf', { on: U.sysf }); return U.sysf; }
+    const SKIP = /[\s\u200b-\u200f\ufe00-\ufe0f\u2600-\u27bf\u2b00-\u2bff\u{1F000}-\u{1FFFF}]/u;
+    const lum = (c) => { const m = String(c).match(/[\d.]+/g); if (!m) return 0; const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(+m[0]) + 0.7152 * f(+m[1]) + 0.0722 * f(+m[2]); };
+    let rq = 0, rAll = true; const rSet = new Set();
+    function readInit() {
+      ui.classList.toggle('sysf', !!U.sysf);
+      try { new MutationObserver((ms) => { if (!U.on) return; for (const m of ms) { const t = m.target.nodeType === 1 ? m.target : m.target.parentElement; if (t && !(m.type === 'attributes' && m.attributeName === 'style' && t.dataset.rf)) rSet.add(t); } if (!rq) rq = requestAnimationFrame(() => { rq = 0; readPass(false); }); })
+        .observe(ui, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class'] }); } catch (e) { }
+      readPass(true);
+    }
+    function readEl(el) {
+      if (!el || el.nodeType !== 1 || el.tagName === 'CANVAS' || el.tagName === 'STYLE' || el.tagName === 'SCRIPT') return;
+      let txt = ''; for (const n of el.childNodes) if (n.nodeType === 3) txt += n.nodeValue;
+      txt = txt.trim(); if (!txt) return;
+      const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize) || 0;
+      if (fs > 0 && fs < 23.5) { el.style.setProperty('font-size', '24px', 'important'); el.dataset.rf = '1'; const lh = parseFloat(cs.lineHeight); if (!(lh >= 27)) el.style.setProperty('line-height', '28px', 'important'); if (cs.position === 'absolute' && txt.length <= 8) el.style.setProperty('white-space', 'nowrap'); }
+      if (/GlimmerFP(8|10)\b/.test(cs.fontFamily)) { el.style.setProperty('font-family', cs.fontFamily.replace(/GlimmerFP(8|10)\b/g, 'GlimmerFP12'), 'important'); el.dataset.rf = '1'; }
+      let miss = false; if (U.cov) for (const ch of txt) { if (SKIP.test(ch)) continue; if (!U.cov.has(ch.codePointAt(0))) { miss = true; break; } }
+      if (miss) el.dataset.fbk = '1'; else if (el.dataset.fbk) delete el.dataset.fbk;
+      if (lum(cs.color) > 0.35 && (!cs.textShadow || cs.textShadow === 'none')) el.dataset.rol = '1';
+    }
+    function readPass(all) {
+      if (!U.on) return;
+      const list = (all || rAll) ? [ui] : Array.from(rSet); rAll = false; rSet.clear();
+      for (const r of list) { if (!r.isConnected) continue; readEl(r); const w = r.getElementsByTagName('*'); for (let i = 0; i < w.length; i++) readEl(w[i]); }
+    }
     // ── 🛠 開發者模式「UI v2」──
     const UIm = () => NS.ui || {};
     const sample = () => { const U2 = UIm(); if (!U2.modal) return { ok: false, msg: '冇 modal' }; U2.modal({ title: '收到小禮物', kind: 'uiv2Sample', lines: ['鄰居松鼠送咗嘢俾團絨！', '附上一封信：「多謝你嘅花！」'], buttons: [{ text: '睇信' }, { text: '收下', primary: true }] }); return { ok: true, msg: '示範彈窗' }; };
@@ -386,6 +467,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
         ['house', '睇屋仔', () => { const q = window.__qa && window.__qa.house; if (!q) return { ok: false, msg: '冇屋仔' }; const r = q.open('dev'); return r ? { ok: true, msg: '屋仔' } : { ok: false, msg: '入唔到屋仔（細佬要先變家人：「家 4b」→ 準備）' }; }],
         ['deco', '睇佈置', () => { const q = window.__qa && window.__qa.house; if (!q) return { ok: false, msg: '冇屋仔' }; if (!q.st().open && !q.open('dev')) return { ok: false, msg: '入唔到屋仔（細佬要先變家人）' }; q.decorate(true); return { ok: true, msg: '佈置' }; }],
         ['mood', '頭像心情輪住睇', () => { const i = MOODS.indexOf(U.moodOv || moodOf(G.state)); U.moodOv = MOODS[(i + 1) % MOODS.length]; face(true); return { ok: true, msg: '頭像：' + U.moodOv + '（再撳「還原」跟返狀態）' }; }],
+        ['sysf', '清晰字型（系統字）', () => { const v = sysFont(!U.sysf); return { ok: true, msg: v ? '清晰字型：開（系統中文字型）' : '清晰字型：關（像素字 FP12）' }; }],
         ['reset', '頭像還原', () => { U.moodOv = null; U.accOv = null; face(true); return { ok: true, msg: '頭像跟返團絨狀態' }; }],
       ].map(([k, label, run]) => ({ k, label, run })) };
     if (NS.devmode) NS.devmode.register(DEV); else (NS.devSections = NS.devSections || []).push(DEV);
@@ -396,6 +478,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
     window.__qa.uiv2 = {
       st: () => ({ ready: U.ready, on: U.on, want: U.want, forced: U.forced, errors: U.errors.slice(), missing: U.missing.slice(), fonts: Object.assign({}, U.fonts), face: U.faceInfo || null, moodOv: U.moodOv, rail: U.rail, log: U.log.slice(-10) }),
       set: (v) => set(v, 'qa'), toggle: () => U.toggle('qa'), face: () => { face(true); return U.faceInfo; }, mood: (m) => { U.moodOv = m || null; face(true); return U.faceInfo; }, acc: (k) => { U.accOv = k || null; face(true); return U.faceInfo; },
+      sysFont: (v) => sysFont(v === undefined ? !U.sysf : !!v), read: () => { readPass(true); return { sysf: !!U.sysf, cov: U.cov ? U.cov.size : 0, fbk: document.querySelectorAll('#ui [data-fbk="1"]').length, floor: document.querySelectorAll('#ui [data-rf]').length }; },
       layout: () => U.layout, sample, part: (n) => U.FR && U.FR[n] ? Object.assign({}, U.FR[n]) : null,
     };
     note('install', { want: U.want });
