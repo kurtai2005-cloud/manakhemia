@@ -91,6 +91,11 @@ console.log('② 系統 2 小圃種花');
   const w0 = X.wallet(s3, T0 + 2 * DAY).o, b50 = JSON.stringify(s3.evo.b5sys || {}); r = B.water(s3, 0, T0 + 2 * DAY);
   ok(r.bloom && r.bloom.pts === 0 && r.bloom.shards === 2 && X.wallet(s3, T0 + 2 * DAY).o === w0 + 2 && JSON.stringify(s3.evo.b5sys || {}) === b50, '日菊開花：+2 星星碎（照計上限）、冇路線分');
   ok(r.bloom.hint && r.bloom.hint.route === 'bright' && r.bloom.hint.text === D.ROUTE_HINT.bright && B.garden(s3, T0).hint[0].route === 'bright', '日菊：燦光圖鑑提示', JSON.stringify(r.bloom.hint));
+  { const dl = S.dexList(s3).find(d => d.id === 'bright'); ok(s3.dexHint && s3.dexHint.bright && s3.dexHint.bright.src === 'daisy' && dl.hintRec === 'daisy' && !dl.unlocked && S.dexList(s3).filter(d => d.hintRec).length === 1, '日菊提示記入圖鑑燦光頁（未解鎖都記；淨係燦光）', JSON.stringify(dl));
+    const t2 = S.deserialize(S.serialize(s3), T0 + 2 * DAY); ok(t2 && S.dexList(t2).find(d => d.id === 'bright').hintRec === 'daisy', '圖鑑提示記錄：存檔讀返仲喺度');
+    const t3 = S.deserialize(JSON.stringify(Object.assign(JSON.parse(S.serialize(s3)), { dexHint: { bright: { src: 'daisy', t: 1 }, bogus: { src: 'x' } } })), T0); ok(Object.keys(t3.dexHint).join() === 'bright', '壞 key 清走');
+    const old = mk(); B.st(old).garden.hint = {}; delete old.dexHint; old.sys12b.garden.hint = { bright: T0 }; B.st(old); ok(old.dexHint && old.dexHint.bright && old.dexHint.bright.src === 'daisy', '舊存檔：小圃已有燦光提示 → 補入圖鑑');
+    const el = mk('elder'); el.form = 'tide'; el.fadeReady = true; el.dexHint = { bright: { src: 'daisy', t: T0 } }; S.fade(el, T0); ok(el.stage === 'egg' && el.dexHint.bright, '化光重養：圖鑑提示保留'); }
   const s4 = mk(); X.grant(s4, 15, 'dev', T0); B.plant(s4, 2, 'firebell', T0 + 11 * 3600e3); B.water(s4, 2, T0 + 12 * 3600e3); B.water(s4, 2, T0 + DAY + 3600e3);
   ok(!B.potInfo(s4.sys12b.garden.pots[2], T0 + DAY + 3600e3).bloomed && B.water(s4, 2, T0 + 2 * DAY).bloom, '每日最多升 1 階：夜晚種都要第 3 個淋水日先開（3 日內一定開）');
 }
@@ -116,6 +121,12 @@ console.log('③ 系統 4 散步收集＋收藏櫃＋飾品');
   const ju = mk('juvenile'); ju.form = 'tide'; ok(B.walkCtx(ju, T0, nov).form === null, '守夜者之前冇路線限定');
   const lu = mk('elder'); lu.form = 'lumi'; const gp = W.items.find(i => i.k === 'glowpowder');
   ok(B.eligible(gp, B.walkCtx(lu, T0, Object.assign({}, nov, { hour: 22 })), B.st(lu)) && !B.eligible(gp, B.walkCtx(lu, T0, nov), B.st(lu)), '螢光粉：螢絨＋淨係夜晚');
+  { const gs = W.items.find(i => i.k === 'glowstone'), at = (it, h) => B.eligible(it, B.walkCtx(lu, T0, Object.assign({}, nov, { hour: h, hourOfDay: h })), B.st(lu));
+    const hrs = [17, 19, 20, 23, 0, 2, 3, 6, 7], pat = hrs.map(h => +at(gp, h)).join('') + '/' + hrs.map(h => +at(gs, h)).join('');
+    ok(pat === '001111000/001111000', '螢光粉＋螢光石：夜晚＝20:00–03:00（17／19 唔得、3 點唔得）', pat);
+    const mw = P.evo6.branch.windows.find(w => w.id === 'moon');
+    ok(W.nightHours.join() === [mw.from, mw.to].join() && gp.night && gs.night && !gp.hours && !gs.hours, 'walk.nightHours＝月眠時段（20–03），兩件小物都讀呢個 key');
+    ok(P.evo6.nightFrom === 17 && P.evo6.nightTo === 7, '螢絨進化夜晚 key 唔變（evo6.nightFrom／nightTo＝17–07）'); }
   const s = mk();
   let r = B.walkRoll(s, T0, Object.assign({}, nov, { rng: seq([0.10, 0.0]) })); ok(r === null, '擲唔中（≥10%）→ 冇');
   r = B.walkRoll(s, T0, Object.assign({}, nov, { rng: seq([0.05, 0.99, 0.0]) })); ok(r && ['maple', 'acorn', 'ginkgo'].includes(r.k) && r.first, '11 月 → 秋天小物', JSON.stringify(r));

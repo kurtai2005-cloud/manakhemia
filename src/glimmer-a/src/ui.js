@@ -211,6 +211,7 @@
       cell.appendChild(dexThumb(d.id, d.unlocked));
       const n = document.createElement('b'); n.textContent = d.name; cell.appendChild(n);
       const h = document.createElement('small'); h.textContent = d.hint; h.dataset.testid = 'dex-hint-' + d.id; cell.appendChild(h);
+      if (d.hintRec) { const fl = ((P.systems12b && P.systems12b.garden.flowers) || []).find(f => f.k === d.hintRec); const r = document.createElement('small'); r.className = 'dexRec'; r.dataset.testid = 'dex-hintrec-' + d.id; r.dataset.src = d.hintRec; r.textContent = '✿ ' + (fl ? fl.name : d.hintRec) + '提示已記錄'; cell.dataset.hintrec = d.hintRec; cell.appendChild(r); }
       node.appendChild(cell);
     });
     const p = document.createElement('p'); p.style.cssText = 'font-size:11px;opacity:.75;margin:6px 0 0'; p.textContent = '已解鎖 ' + list.filter(d => d.unlocked).length + '／' + list.length; node.appendChild(p);

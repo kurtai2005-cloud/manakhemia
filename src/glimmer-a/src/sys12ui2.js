@@ -119,7 +119,7 @@
     (G.sysListeners = G.sysListeners || []).push(e => {
       if (e.sys === 'walk' && e.what === 'pickup') gain(0, '團絨執到「' + e.name + '」' + (e.first ? '（新！）' : ''));
       if (e.sys === 'walk' && e.what === 'acc') gain(0, '解鎖飾品「' + e.name + '」');
-      if (e.sys === 'garden' && e.what === 'bloom') gain(e.n || 0, e.name + '開花喇' + (e.pts ? '（' + (D.FORM_NAME[e.route] || '') + ' +' + e.pts + '）' : '') + (e.hint ? '・燦光提示：' + e.hint.text : ''));
+      if (e.sys === 'garden' && e.what === 'bloom') gain(e.n || 0, e.name + '開花喇' + (e.pts ? '（' + (D.FORM_NAME[e.route] || '') + ' +' + e.pts + '）' : '') + (e.hint ? '・燦光提示：' + e.hint.text + '（已記入圖鑑燦光頁）' : ''));
       if (e.sys === 'garden' && e.what === 'wilt') gain(0, e.name + '冇水枯咗，花冇咗（團絨冇事）');
       if (e.sys === 'badge' && e.what === 'got') gain(e.n, '徽章「' + e.name + '」' + (e.title ? '・稱號「' + e.title + '」' : ''));
       redraw();

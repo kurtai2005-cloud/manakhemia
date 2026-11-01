@@ -119,6 +119,9 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     await E(() => __qa.sys12.open('garden')); await page.waitForTimeout(200);
     const ht = await E(() => { const h = document.querySelector('[data-testid="s12b-hint-bright"]'); return h ? h.textContent : ''; });
     ok(o1 - o0 === C.garden.daisy.shards && /燦光提示/.test(ht), '日菊開花：+2 星星碎＋燦光圖鑑提示（冇路線分）', { o0, o1, ht }); await shot('garden-daisy'); await E(() => __glimmer.s12close());
+    await E(() => Glimmer.ui.openDex()); await page.waitForTimeout(250);
+    const dx = await E(() => { const r = document.querySelector('[data-testid="dex-hintrec-bright"]'); return { rec: r ? r.textContent : '', n: document.querySelectorAll('[data-testid^="dex-hintrec-"]').length, cell: (document.querySelector('[data-testid="dex-bright"]') || {}).dataset }; });
+    ok(/日菊提示已記錄/.test(dx.rec) && dx.n === 1 && dx.cell && dx.cell.hintrec === 'daisy', '圖鑑燦光頁記低日菊提示', dx); await shot('dex-daisy-hint'); await closeModals();
   }
   if (want('walk')) {
     console.log('# ③ 系統 4 散步收集＋收藏櫃');

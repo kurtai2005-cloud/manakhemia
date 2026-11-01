@@ -270,8 +270,11 @@
     }
   }
   function dexList(s) {                                  // 圖鑑：9 條支線，解鎖＝曾經成為守夜者（s.dex）
-    const got = new Set(s.dex || []); return D.BRANCHES.map(id => ({ id, unlocked: got.has(id), name: got.has(id) ? D.FORM_NAME[id] : '？？？', hint: D.ROUTE_HINT[id] || '' }));
+    const got = new Set(s.dex || []), rec = s.dexHint && typeof s.dexHint === 'object' ? s.dexHint : {};
+    return D.BRANCHES.map(id => ({ id, unlocked: got.has(id), name: got.has(id) ? D.FORM_NAME[id] : '？？？', hint: D.ROUTE_HINT[id] || '', hintRec: rec[id] ? rec[id].src : null, hintAt: rec[id] ? rec[id].t : null }));
   }
+  /* 圖鑑提示記錄（systems12b：日菊開花 → 燦光頁記低「日菊提示」）；同 s.dex 一樣化光都保留 */
+  function noteDexHint(s, id, src, t) { if (!D.BRANCHES.includes(id)) return false; if (!s.dexHint || typeof s.dexHint !== 'object' || Array.isArray(s.dexHint)) s.dexHint = {}; if (s.dexHint[id]) return false; s.dexHint[id] = { src: String(src || ''), t: +t || 0 }; return true; }
   function unlockDex(s, f) { if (!D.BRANCHES.includes(f)) return false; s.dex = Array.isArray(s.dex) ? s.dex : []; if (s.dex.includes(f)) return false; s.dex.push(f); return true; }
   function enterStage(s, st) {
     s.stage = st;
@@ -648,6 +651,7 @@
       s.poopAge = Array.isArray(s.poopAge) ? s.poopAge.filter(x => typeof x === 'number' && isFinite(x) && x >= 0) : []; poopAges(s);
       s.careDays = Array.isArray(s.careDays) ? s.careDays.filter(k => typeof k === 'string' && /^\d{4}-\d\d-\d\d$/.test(k)).sort().slice(-60) : [];   // v4 照顧日
       s.dex = Array.isArray(s.dex) ? s.dex.filter(f => D.BRANCHES.includes(f)) : []; s.memorial.forEach(m => unlockDex(s, m.form)); if (s.stage === 'adult' || s.stage === 'elder') unlockDex(s, s.form);   // 圖鑑：舊存檔由紀念＋而家形態補返
+      if (s.dexHint != null) { const h = s.dexHint, o = {}; if (h && typeof h === 'object' && !Array.isArray(h)) for (const k of Object.keys(h)) if (D.BRANCHES.includes(k) && h[k] && typeof h[k] === 'object') o[k] = { src: String(h[k].src || ''), t: +h[k].t || 0 }; s.dexHint = o; }
       return s;
     } catch (e) { return null; }
   }
@@ -655,6 +659,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, addCareHook, addFadeHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    mgCount, eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    mgCount, eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, noteDexHint, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

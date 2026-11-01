@@ -142,7 +142,9 @@
       // 系統 4：散步收集＋收藏櫃（30 件）。每次團絨開始行一段路擲一次：總執到率 ≤ chance（稀有都喺呢 10% 入面抽）；每日最多 perDay
       walk: {
         chance: 0.10, perDay: 5, slots: 30,
-        // 規則欄：months／weather／hours（[from,to)，跨午夜得）／afterRainH／onlyAfterRain／loginStreak／route（守夜者之後嗰條路線先會執到）
+        // 夜晚小物（螢光石／螢光粉，night:true）＝同月眠時段一樣 20:00–03:00（遊策 2026-11-01）；同螢絨進化嘅夜晚（evo6.nightFrom／nightTo＝17–07）分開兩個 key
+        nightHours: [20, 3],
+        // 規則欄：months／weather／hours（[from,to)，跨午夜得）／night（＝walk.nightHours）／afterRainH／onlyAfterRain／loginStreak／route（守夜者之後嗰條路線先會執到）
         //        rare＋pct（絕對機率，喺 chance 入面）／routeMul（領先路線倍數）／pity（累計執 N 件必出）／ph（冇美術 → 佔位 icon）
         items: [
           // 遊美 ACC1 12 件（建議值，遊策批准；唔超過 10%／每日 5 件）
@@ -163,12 +165,12 @@
           { k: 'crystalchip', name: '碎晶片', route: 'crystal', ph: true }, { k: 'stardust', name: '星屑', route: 'moon', ph: true },
           { k: 'warmstone', name: '暖石', route: 'ember', ph: true }, { k: 'goldleaf', name: '金葉', route: 'bright', ph: true },
           { k: 'cloudfluff', name: '雲絮', route: 'soft', ph: true }, { k: 'dustball', name: '灰毛球', route: 'dust', ph: true },
-          { k: 'glowpowder', name: '螢光粉', route: 'lumi', hours: [19, 6], ph: true },
+          { k: 'glowpowder', name: '螢光粉', route: 'lumi', night: true, ph: true },
           // 遊策補 9 件天氣／季節／時段（同現有撞名嘅 5 件已改名：蝸牛殼→雨滴石、櫻瓣→櫻花蕾、蟬殼→蟬翼、楓葉→銀杏葉、雪晶→冰凌）
           { k: 'raindrop', name: '雨滴石', weather: ['rain'], ph: true }, { k: 'fogbead', name: '霧珠', weather: ['fog'], ph: true },
           { k: 'seedhusk', name: '種子殼', weather: ['clear'], ph: true }, { k: 'sakurabud', name: '櫻花蕾', months: [3, 4, 5], ph: true },
           { k: 'cicadawing', name: '蟬翼', months: [6, 7, 8], ph: true }, { k: 'ginkgo', name: '銀杏葉', months: [9, 10, 11], ph: true },
-          { k: 'icicle', name: '冰凌', months: [12, 1, 2], ph: true }, { k: 'glowstone', name: '螢光石', hours: [20, 3], ph: true },
+          { k: 'icicle', name: '冰凌', months: [12, 1, 2], ph: true }, { k: 'glowstone', name: '螢光石', night: true, ph: true },
           { k: 'dewleaf', name: '露葉', hours: [6, 9], ph: true }],
         // 湊 5 解鎖飾品：每收集滿 5 件唔同小物 → 1 件，共 6 件（只係外觀；著上身美術未有）
         accPer: 5,

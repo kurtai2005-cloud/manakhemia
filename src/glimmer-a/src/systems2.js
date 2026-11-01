@@ -23,6 +23,7 @@
     while (G.pots.length < C().garden.pots) G.pots.push(null); G.pots.length = C().garden.pots;
     G.pots = G.pots.map(p => (obj(p) && typeof p.k === 'string' && isFinite(p.planted) ? Object.assign({ w: [], paid: false }, p, { w: Array.isArray(p.w) ? p.w.filter(isFinite) : [] }) : null));
     if (!obj(G.vase)) G.vase = {}; if (!obj(G.bloomed)) G.bloomed = {}; if (!obj(G.hint)) G.hint = {}; G.wilts = cnt(G.wilts);
+    for (const r of Object.keys(G.hint)) if (!(s.dexHint && s.dexHint[r])) SIM.noteDexHint(s, r, C().garden.daisy.k, G.hint[r]);   /* 舊存檔：小圃提示補入圖鑑 */
     const W = obj(o.walk) ? o.walk : (o.walk = {}); W.day = typeof W.day === 'string' ? W.day : ''; W.count = cnt(W.count);
     W.total = cnt(W.total); if (!obj(W.got)) W.got = {}; if (!Array.isArray(W.log)) W.log = []; W.acc = cnt(W.acc);
     const B = obj(o.badges) ? o.badges : (o.badges = {}); if (!obj(B.got)) B.got = {}; B.pending = cnt(B.pending);
@@ -126,7 +127,7 @@
       if (p.paid || !I.bloomed) return;
       p.paid = true; o.garden.bloomed[p.k] = (o.garden.bloomed[p.k] | 0) + 1;
       const r = { pot: i, k: p.k, name: I.name, route: I.route, pts: 0, shards: 0, hint: null };
-      if (p.k === Gc.daisy.k) { r.shards = X.grant(s, Gc.daisy.shards, 'garden', t); o.garden.hint[Gc.daisy.hint] = t; r.hint = { route: Gc.daisy.hint, text: D.ROUTE_HINT[Gc.daisy.hint] || '' }; }
+      if (p.k === Gc.daisy.k) { r.shards = X.grant(s, Gc.daisy.shards, 'garden', t); o.garden.hint[Gc.daisy.hint] = t; SIM.noteDexHint(s, Gc.daisy.hint, Gc.daisy.k, t); r.hint = { route: Gc.daisy.hint, text: D.ROUTE_HINT[Gc.daisy.hint] || '' }; }
       else if (X.addRoutePts(s, I.route, Gc.bloomPts)) r.pts = Gc.bloomPts;
       out.push(r);
       s.ev && s.ev.push({ type: 'sys12', sys: 'garden', what: 'bloom', k: p.k, name: I.name, route: I.route, n: r.shards, pts: r.pts, hint: r.hint });
@@ -152,6 +153,7 @@
     if (it.route && ctx.form !== it.route) return false;
     if (it.months && !it.months.includes(ctx.month)) return false;
     if (it.hours && !inHours(ctx.hour, it.hours)) return false;
+    if (it.night && !inHours(ctx.hour, C().walk.nightHours)) return false;   /* 夜晚小物＝月眠時段 20–03（唔係螢絨進化嘅 17–07） */
     if (it.loginStreak && streak(o, ctx.dn) < it.loginStreak) return false;
     const afterRain = it.afterRainH != null && ctx.prevWeather === 'rain' && ctx.weather !== 'rain' && ctx.hourOfDay < it.afterRainH;
     if (it.onlyAfterRain) return afterRain;
