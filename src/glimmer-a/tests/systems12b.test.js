@@ -152,7 +152,7 @@ console.log('③ 系統 4 散步收集＋收藏櫃＋飾品');
 }
 console.log('④ 系統 11 成就徽章（30 個）');
 {
-  const L = C.badges.list; ok(C.badges.total === 31 && L.length === 31 && new Set(L.map(b => b.k)).size === 31 && L.some(b => b.k === 'dumb_all' && !b.big), '31 個徽章（30＋3a 呆呆時刻 dumb_all）、冇重覆');
+  const L = C.badges.list; ok(C.badges.total === 34 && L.length === 34 && new Set(L.map(b => b.k)).size === 34 && L.some(b => b.k === 'dumb_all' && !b.big), '34 個徽章（30＋3a 呆呆時刻＋3b 朋友 3 個；dumb_all）、冇重覆');
   ok(D.BRANCHES.every(id => L.some(b => b.when.dex === id)), '9 條路徽章＝路線圖鑑 9 條');
   ok(C.badges.reward === 5 && C.badges.bigReward === 10 && L.filter(b => b.big).map(b => b.k).join() === 'routes_all,collect_30' && L.filter(b => b.big).every(b => b.title), '一般 5；大成就（9 條路齊／收藏 30 件）10＋稱號');
   ok(L.filter(b => b.title).map(b => b.title).sort().join() === ['自稱天才飼主', '雲朵研究員', '執屎專家', '收藏界權威', '園藝大師（自封）', '夜貓哄瞓師'].sort().join(), '6 個稱號＝遊策清單');

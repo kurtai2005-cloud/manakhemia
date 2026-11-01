@@ -228,6 +228,7 @@
     if (when.weathers) return Object.keys(o.wx).length >= when.weathers;
     if (when.diary) return (X.st(s).diary.list || []).length >= when.diary;
     if (when.dumbAll) { const sn = s.touch && s.touch.seen; return !!sn && typeof sn === 'object' && Object.keys(sn).filter(k => sn[k]).length >= when.dumbAll; }   // 3a 圖鑑「呆呆時刻」6 格
+    if (when.friend) { const v = s.b3b && s.b3b.vis && s.b3b.vis[when.friend]; return !!(v && typeof v === 'object' && (v.fr | 0) >= 5); }   // 3b 朋友訪客友好度滿 5
     if (when.fade) return (s.memorial || []).length >= when.fade || (s.gen | 0) > when.fade;
     return false;
   }

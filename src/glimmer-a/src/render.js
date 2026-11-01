@@ -700,6 +700,7 @@
         hd.draw(this.ctx, k, { pet: L[2], offs, lights, quality: q, dt, t, dim: 0.34 * sm + 0.2 * hDim + (unwell ? 0.08 : 0) });
         const ctx = this.ctx;
         if (this.flash > 0) { ctx.globalAlpha = Math.min(1, this.flash); ctx.fillStyle = '#fff6d0'; ctx.fillRect(0, 0, W * k, H * k); ctx.globalAlpha = 1; }
+        if (this.b3bOverlay) this.b3bOverlay(ctx, k, dt);   // 3b 進化大場面（全畫面）
         const ms = performance.now() - t0; this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
         return;
       }
@@ -756,6 +757,7 @@
       // 暈影
       if (post) this.vignette(ctx);
       if (this.flash > 0) { ctx.globalAlpha = Math.min(1, this.flash); ctx.fillStyle = '#fff6d0'; ctx.fillRect(0, 0, W * k, H * k); ctx.globalAlpha = 1; }
+      if (this.b3bOverlay) this.b3bOverlay(ctx, k, dt);   // 3b 進化大場面（全畫面）
       const ms = performance.now() - t0; this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
     }
 
@@ -791,17 +793,21 @@
       // ── 寵物 ──
       const ph = c.sm;
       const beh = view.beh, useBeh = !!(beh && s.stage !== 'egg');
-      const gx = CX + (useBeh ? beh.x : 0), base = GROUND_Y;
+      const gx = CX + (useBeh ? beh.x : 0), base = GROUND_Y + (useBeh && beh.depth ? Math.round(beh.depth) : 0);   // 3b 帶路 loop：depth＝y 偏移（y 細＝遠）
+      const hidePet = !!(useBeh && beh.puppet && beh.puppet.hidden);   // 3b 進化大場面：世界入面唔畫（overlay 畫）
       this.petX = gx - CX;
       if (beh) this.drawGarden(x, view, c, beh);
       const lift = useBeh ? beh.lift : c.lift;
+      if (this.b3bLayer) this.b3bLayer(x, 'back', c, base);   // 3b 訪客／擺設／道具（y ≤ 寵物腳底）
       // 影子
-      x.fillStyle = 'rgba(10,20,20,0.35)';
+      x.fillStyle = hidePet ? 'rgba(0,0,0,0)' : 'rgba(10,20,20,0.35)';
       const efk = this.fkOf(s), efs = D.FORMS[efk] && D.FORMS[efk].evo ? D.FORMS[efk].frameSize : 0;
       const shw = efs ? Math.round(efs * 0.36) : D.isBig(s.stage) ? 24 : s.stage === 'sprout' ? 13 : 12, shl = 1 - Math.min(1, Math.abs(lift) / 18) * 0.35;
       for (let dy = -3; dy <= 3; dy++) { const w = Math.round(shw * shl * Math.sqrt(1 - dy * dy / 16)); x.fillRect(ox(gx - w), oy(base - 1 + dy), w * 2, 1); }
       let an, sx, sy;
-      if (useBeh) this.petDraw = this.drawPetBeh(x, s, view, c, gx, base);
+      this.petBlit = null;
+      if (useBeh && hidePet) this.petDraw = { x: gx - 10, y: base - 30, w: 20, h: 30, bud: { x: gx, y: base - 20 }, footY: base, hidden: true };
+      else if (useBeh) this.petDraw = this.drawPetBeh(x, s, view, c, gx, base);
       else if (s.stage === 'egg' && efs && P.art.useAtlas !== false) {
         // evo6 光卵：evo_egg（idle／glow／tap；進度 ≥50% 或輕點時 glow；輕點脈衝 tap）
         const prog = SIM.eggProgress(s), clip = this.eggPulse > 0.3 ? 'tap' : (prog >= 0.5 || this.eggPulse > 0.05) ? 'glow' : 'idle', an2 = this.atlas.atlas_evo_egg.json.animations[clip];
@@ -826,6 +832,7 @@
         x.drawImage(sprite, ox(sx), oy(sy));
         this.petDraw = { x: sx, y: sy, w: an.w, h: an.h, bud: { x: sx + an.bud.x, y: sy + an.bud.y }, footY: base + c.lift };
       }
+      if (this.b3bLayer) this.b3bLayer(x, 'front', c, base);   // 3b：y > 寵物腳底嘅訪客／道具＋預兆（閃剪影／怪夢泡泡）
       const pd = this.petDraw;
       // 寵物光（絨芽）——狀態光色
       let gcol = s.form === 'dust' ? [210, 205, 190] : s.form === 'lumi' ? [200, 255, 140] : (D.isBig(s.stage) && BR5_GLOW[s.form]) || [255, 214, 110];
@@ -1028,6 +1035,7 @@
       x.save(); x.imageSmoothingEnabled = false;
       x.translate(ox(px + (ph ? ph.dx * mir : 0)), oy(py)); x.scale(mir * (ph ? ph.sx : 1), ph ? ph.sy : 1); if (ph && ph.rot) x.rotate(-ph.rot);   // 以腳底 pivot 向後仰
       x.drawImage(draw.img, draw.sx, draw.sy, draw.sw, draw.sh, -draw.px, -draw.py, draw.sw, draw.sh);
+      this.petBlit = { img: draw.img, sx: draw.sx, sy: draw.sy, sw: draw.sw, sh: draw.sh, px: draw.px, py: draw.py, X: ox(px + (ph ? ph.dx * mir : 0)), Y: oy(py), scx: mir * (ph ? ph.sx : 1), scy: ph ? ph.sy : 1, rot: ph && ph.rot ? ph.rot : 0 };   // 3b 預兆閃剪影
       if (live && anc && anc.bulb && FCP.bulb && FCP.bulb.enabled && live.clip !== 'sick') {     // 燈泡 glow：情緒 tint（0.4s 漸變）× intensity（呼吸／閃）
         const BM = FCP.bulb.moods, mood = this.bulbMood(b), m = BM[mood] || BM.neutral, hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
         let tgt = hx(m.tint); const dt = Math.max(0, Math.min(0.1, this.bulbLastT == null ? 0 : t - this.bulbLastT)), kf = 1 - Math.exp(-dt * 3 / Math.max(0.05, FCP.bulb.fadeSec));

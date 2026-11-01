@@ -821,6 +821,9 @@
     art: { enabled: true, base: 'art/reactions/', rotStep: 45, pullStretch: [160, 0.25, 320, 0.12, 12], yieldTo: ['nuzzle', 'nuzzle_purr', 'rush', 'reunion_happy', 'eat', 'play', 'catch_reach', 'dig'] }   // yieldTo：行為播緊呢啲專屬 clip（s3 撒嬌／衝刺／重逢等）就唔用反應 clip 蓋，只疊程序化,
   };
   PARAMS.systems12b.badges.list.splice(PARAMS.systems12b.badges.list.length - 2, 0, { k: 'dumb_all', name: '收齊呆呆時刻', when: { dumbAll: 6 } });   // 3a：圖鑑「呆呆時刻」6 格收齊 → 普通徽章 5 碎（日上限外）
+  PARAMS.systems12b.badges.list.splice(PARAMS.systems12b.badges.list.length - 2, 0,   // 3b：朋友訪客友好度滿 5 → 普通徽章 5 碎（日上限外）
+    { k: 'friend_snail', name: '蝸牛郵差好朋友', when: { friend: 'snail_postman' } }, { k: 'friend_granny', name: '蘑菇婆婆好朋友', when: { friend: 'mushroom_granny' } }, { k: 'friend_vendor', name: '螢火小販好朋友', when: { friend: 'firefly_vendor' } });
+  PARAMS.b3b = { enabled: true, art: { base: 'art/batch3b/' } };   // 第 3 批 3b（visit.js／b3bui.js；?b3b=0 停用）
   PARAMS.systems12b.badges.total = PARAMS.systems12b.badges.list.length;
   return { SYS_CLIPS, ROUTE_HINT, EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
 });

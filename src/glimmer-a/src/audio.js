@@ -41,7 +41,7 @@
   function comboRate(n) { let r = 1; for (const [k, v] of A.comboRates) if (n >= k) r = v; return r; }
 
   /* UI／sim 行動通知（回傳 void；cue 入 queue，下次 update 流出）。
-     kind: tap confirm cancel error fed played rinsed poop sleep wake hatch evolve mg-start mg-result mg-catch mg-big mg-stone reward */
+     kind: tap confirm cancel error fed played rinsed poop sleep wake hatch evolve mg-start mg-result mg-catch mg-big mg-stone reward cue({name}) */
   function notify(d, kind, info, s) {
     info = info || {};
     const q = (name, after, opts) => d.queue.push({ at: d.t + (after || 0), name, opts: Object.assign({ now: true }, opts || {}) });
@@ -60,6 +60,7 @@
       case 'mg-stone': d.combo = 0; q('mg_miss'); break;
       case 'mg-result': if (info.win) q('mg_win'); q('reward_orb', info.win ? 1.4 : 0.3); break;
       case 'reward': q('reward_orb'); break;
+      case 'cue': if (info.name && typeof info.name === 'string' && CUES[info.name]) q(info.name, (info.after || 0)); break;   // 3b 訪客：event_butterfly（到訪）／event_gift（收禮）等現成 cue
       default: break;
     }
   }

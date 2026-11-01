@@ -771,12 +771,20 @@
 
   /* 每幀呼叫：dt 實時秒；ctx = { s（sim state）, pw（lighting.compute 結果）, sun（0–1）, override（'eat'|'happy'|'celebrate'|null）, event（{id,t,dur,vis}|null） } */
   function update(b, dt, ctx) {
+    if (b.puppet) { puppet(b, dt); return; }                                        // 3b 帶訪客行一圈／進化大場面：b3bui 每幀寫 b.puppet（狀態機暫停，放手後 force stay）
     b.acc += Math.min(dt, 0.25);
     let n = 0;
     while (b.acc >= FIX - 1e-9 && n < 40) { step(b, ctx); b.acc -= FIX; n++; }
     if (b.acc < 0 || n >= 40) b.acc = 0;
   }
 
+  /* 3b puppet：{x, dir, clip, frame, face:{eyes,mouth}|null, depth, hidden}；只寫顯示欄位，唔郁 state／seq（放手由 b3bui force stay） */
+  function puppet(b, dt) {
+    const p = b.puppet; b.t += Math.min(dt, 0.25); b.acc = 0;
+    if (typeof p.x === 'number') b.x = p.x; if (p.dir) b.dir = p.dir < 0 ? -1 : 1;
+    const clip = p.clip || 'idle'; b.clip = clip; b.frame = p.frame | 0; b.show = { clip, frame: b.frame }; b.lift = 0; b.pose = null; b.depth = p.depth || 0;
+    b.faceAct = p.face || null; b.face = faceFor(b);
+  }
   // debug／測試：強制進入狀態或變體
   // 即刻觸發（開發者面板）：唔理冷卻／機率；鏈照抽
   function forceNow(b, k, ctx) {

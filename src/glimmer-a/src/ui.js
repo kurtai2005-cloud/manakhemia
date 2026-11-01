@@ -57,6 +57,7 @@
   function processEvents() {
     const s = G.state, ev = s.ev.splice(0, s.ev.length);
     for (const e of ev) {
+      if ((e.type === 'hatch' || e.type === 'grow' || e.type === 'evolve' || e.type === 'elder') && !e._b3b && G.b3bEvo && G.b3bEvo(e)) continue;   // 3b 進化大場面：播完先出原本彈窗（e._b3b）
       const pd = rd.petDraw, hx = pd && pd.bud ? pd.bud.x : R.CX, hy = pd ? pd.y + 20 : R.GROUND_Y - 40;
       if (e.type === 'fed' && G.sysFed) G.sysFed(e.food);                 // systems12 日記：記低食咗乜
       if (e.type === 'fed') { const fd = D.FOODS.find(x => x.id === e.food); SND('fed', { kind: fd ? fd.kind : 'snack' }); rd.food = { id: e.food, until: rd.t + 1.1, dur: 1.1 }; rd.act('eat', 1.1); setTimeout(() => rd.burst('heart', R.CX, R.GROUND_Y - 50, 2, 30), 700); }
@@ -67,23 +68,23 @@
       else if (e.type === 'sys12') { if (G.sysEvent) G.sysEvent(e); }   // systems12（委託／星星碎／心聲…）→ sys12ui
       else if (e.type === 'wake') { toast('團絨瞓醒咗，精神晒！'); SND('sleep', { on: false }); }
       else if (e.type === 'hatch') {
-        SND('hatch'); rd.flash = 1.2; rd.burst('spark', R.CX, R.GROUND_Y - 24, 14, 90);
+        if (!e._b3b) { SND('hatch'); rd.flash = 1.2; rd.burst('spark', R.CX, R.GROUND_Y - 24, 14, 90); }
         modal({ title: '孵化咗！', kind: 'hatch', lines: ['光卵裂開，一粒細細嘅絨點碌咗出嚟，望住你一面「我好醒㗎」。', '佢係「團絨」，而家仲係絨點仔——蠢蠢地，但自己覺得好叻。', '餵食、玩耍、清潔、關燈瞓覺——慢慢陪佢長大。'], onClose: () => { rd.act('celebrate', 1.0); } });
       } else if (e.type === 'foreshadow') {
         UI.pendingFore = e;                         // §7 路線清晰化：判定前 12h 預告（醒咗／冇彈窗先做）
       } else if (e.type === 'evolve') {
-        SND('evolve'); rd.flash = 1.4; rd.burst('spark', R.CX, R.GROUND_Y - 40, 18, 110);
+        if (!e._b3b) { SND('evolve'); rd.flash = 1.4; rd.burst('spark', R.CX, R.GROUND_Y - 40, 18, 110); }
         const t = { bright: ['燦光形態！', '絨芽放射出光芒，你照顧得好好，佢成為最亮嘅守夜者。'], soft: ['柔光形態', '圓潤又溫柔，伴你度過每個夜晚。'], dust: ['微塵形態', '素素地都好靚。呢個唔係失敗結局，日後可以再重養。'], lumi: ['螢絨形態（隱藏）', '你陪佢喺夜晚追過螢火，佢身上嘅絨毛開始發出淡淡螢光。'],
           tide: ['水珠形態', '成日淋水、陪佢聽雨，佢頭頂多咗粒水珠燈，仲自稱游水冠軍（其實靠水珠浮住）。'], shroom: ['菇傘形態', '你餵得佢多，佢戴住菇帽自稱森林博士，見菇就話食得。'],
           crystal: ['晶角形態', '你成日幫佢執到乾乾淨淨，佢長出晶角，覺得自己閃到冇朋友。'], moon: ['月眠形態', '夜深仲陪住佢，佢戴起睡帽吊住月牙燈，話自己係守夜專家（企住都瞓著）。'],
           ember: ['火苗形態', '玩完又玩，佢頭頂燒起細火苗，好熱血——一熱就喊熱。'] }[e.form] || [D.FORM_NAME[e.form] || e.form, ''];
         modal({ title: '成長為守夜者：' + t[0], kind: 'evolve', lines: [t[1], '（照顧品質 CQ ＝ ' + Math.round(e.cq) + '）'], onClose: () => rd.act('celebrate', 1.0) });
       } else if (e.type === 'grow') {               // evo6：絨點 → 芽崽 → 跳跳期
-        SND('evolve'); rd.flash = 1.0; rd.burst('spark', R.CX, R.GROUND_Y - 30, 12, 90);
+        if (!e._b3b) { SND('evolve'); rd.flash = 1.0; rd.burst('spark', R.CX, R.GROUND_Y - 30, 12, 90); }
         const t = { sprout: ['長成芽崽！', '頭頂撮絨芽企咗起身。佢自己覺得：「我已經大個仔，乜都識。」（其實未識）'], juvenile: ['跳跳期！', '成日跳嚟跳去，跳完又扮冇事。佢深信自己係全花園最醒嗰隻。'] }[e.stage] || [D.STAGE_NAME[e.stage], ''];
         modal({ title: t[0], kind: 'grow', lines: [t[1]], onClose: () => rd.act('celebrate', 1.0) });
       } else if (e.type === 'elder') {
-        SND('evolve'); rd.flash = 1.0;
+        if (!e._b3b) { SND('evolve'); rd.flash = 1.0; }
         modal({ title: '成為靜光：' + (D.FORM_NAME[e.form] || ''), kind: 'elder', lines: ['佢慢落嚟，成日坐喺度發住柔光，好似諗緊好深奧嘅嘢（其實諗緊食乜）。', '靜光期會陪你多幾日，之後會化光，留低一份紀念。'], onClose: () => rd.act('celebrate', 1.0) });
       } else if (e.type === 'fadeReady') {
         modal({ title: '佢準備好化光', kind: 'fade', lines: ['佢已經陪你行完成段路，身上嘅光愈來愈輕。', '化光唔係告別：佢會留低一份紀念，然後花圃會出現一粒新嘅光卵。'],
@@ -222,6 +223,7 @@
         dd.map(x => '<div data-testid="dex-dumb-' + x.k + '" data-got="' + (x.got ? 1 : 0) + '" style="font-size:11px;padding:6px 2px;border-radius:6px;text-align:center;background:' + (x.got ? '#f3e1b8;color:#4a2e1a' : 'rgba(255,255,255,.12)') + '">' + (x.got ? x.name : '？？？') + '</div>').join('') + '</div>';
       node.appendChild(sec);
     }
+    if (G.b3bDex) { const cs = G.b3bDex(); if (cs) node.appendChild(cs); }   // 3b 圖鑑「團絨日記」四格小故事（進化節點解鎖）
     modal({ title: '圖鑑', kind: 'dex', node, buttons: [{ text: '關閉', primary: true }] });
   }
   UI.openDex = openDex;
@@ -334,6 +336,7 @@
     hit.addEventListener('pointerdown', (e) => {
       const a = toArt(e);
       if (G.mode === 'minigame') { if (mgs) mgs.target = a.x; return; }
+      if (G.b3bTap && G.b3bTap(a, e)) return;   // 3b：撳訪客／信／擺設
       if (e.isPrimary !== false && ptrs.size) { ptrs.clear(); endNuzzle(press); press = null; }   // 新手勢嘅第一隻手指／滑鼠：清走漏咗 up 嘅舊 pointer（保險）
       if (ptrs.size) { ptrs.add(e.pointerId); return; }   // 第 2 隻手指：唔當新一下撳（唔洗走第 1 隻嘅 press／磨蹭）
       ptrs.add(e.pointerId); closePop(); down = true; press = null; try { hit.setPointerCapture(e.pointerId); } catch (er) { }   // 拖出 #hit（例：經過 HUD）都繼續收 move／up
