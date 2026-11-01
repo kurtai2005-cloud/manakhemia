@@ -1,0 +1,2528 @@
+{
+"image": "ui_hd2d_v2@1x.png",
+"scale": 1,
+"size": [
+512,
+256
+],
+"note": "1x 原生像素；@2x/@3x nearest。nine＝[l,t,r,b] 喺 sprite px（×scale）；mode tile＝中段／邊用 tile（唔好拉伸）",
+"frames": {
+"portrait_bg_happy": {
+"x": 0,
+"y": 0,
+"w": 52,
+"h": 52,
+"group": "portrait"
+},
+"portrait_bg_hungry": {
+"x": 53,
+"y": 0,
+"w": 52,
+"h": 52,
+"group": "portrait"
+},
+"portrait_bg_normal": {
+"x": 106,
+"y": 0,
+"w": 52,
+"h": 52,
+"group": "portrait"
+},
+"portrait_bg_sick": {
+"x": 159,
+"y": 0,
+"w": 52,
+"h": 52,
+"group": "portrait"
+},
+"portrait_bg_sleep": {
+"x": 212,
+"y": 0,
+"w": 52,
+"h": 52,
+"group": "portrait"
+},
+"portrait_bg_sleepy": {
+"x": 265,
+"y": 0,
+"w": 52,
+"h": 52,
+"group": "portrait"
+},
+"portrait_frame": {
+"x": 318,
+"y": 0,
+"w": 52,
+"h": 52,
+"group": "portrait",
+"note": "52×52；內窗 44×44 @(4,4)；寵物 crop ×2"
+},
+"portrait_mask": {
+"x": 371,
+"y": 0,
+"w": 52,
+"h": 52,
+"group": "portrait",
+"note": "白＝畫得寵物（destination-in）"
+},
+"family_crest": {
+"x": 424,
+"y": 0,
+"w": 40,
+"h": 40,
+"group": "family",
+"note": "家族等級大章（中間 gold 字）"
+},
+"med40_gold": {
+"x": 465,
+"y": 0,
+"w": 40,
+"h": 40,
+"group": "medal",
+"note": "d40"
+},
+"banner_top": {
+"x": 0,
+"y": 53,
+"w": 28,
+"h": 36,
+"group": "hud",
+"slice": "9",
+"mode": "tile",
+"note": "A 版頂旗（全闊，y −5）",
+"nine": [
+10,
+18,
+10,
+10
+]
+},
+"med34_pri": {
+"x": 29,
+"y": 53,
+"w": 34,
+"h": 34,
+"group": "medal",
+"note": "d34"
+},
+"med34_sec": {
+"x": 64,
+"y": 53,
+"w": 34,
+"h": 34,
+"group": "medal",
+"note": "d34"
+},
+"panel_navy": {
+"x": 99,
+"y": 53,
+"w": 28,
+"h": 34,
+"group": "panel",
+"slice": "9",
+"mode": "tile",
+"note": "主面板／彈窗；中間＋邊 tile（周期 8）",
+"nine": [
+10,
+16,
+10,
+10
+]
+},
+"dock_bar": {
+"x": 128,
+"y": 53,
+"w": 26,
+"h": 31,
+"group": "hud",
+"slice": "9",
+"mode": "tile",
+"nine": [
+9,
+14,
+9,
+9
+]
+},
+"med30_dis": {
+"x": 155,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "d30"
+},
+"med30_pri": {
+"x": 186,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "d30"
+},
+"med30_pri_p": {
+"x": 217,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med30_rose": {
+"x": 248,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "d30"
+},
+"med30_rose_p": {
+"x": 279,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med30_sec": {
+"x": 310,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "d30"
+},
+"med30_sec_p": {
+"x": 341,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med30_violet": {
+"x": 372,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "d30"
+},
+"med30_violet_p": {
+"x": 403,
+"y": 53,
+"w": 30,
+"h": 30,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med28_dis": {
+"x": 434,
+"y": 53,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "d28"
+},
+"med28_navy": {
+"x": 463,
+"y": 53,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "d28"
+},
+"med28_pri": {
+"x": 0,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "d28"
+},
+"med28_pri_p": {
+"x": 29,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med28_rose": {
+"x": 58,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "d28"
+},
+"med28_rose_p": {
+"x": 87,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med28_sec": {
+"x": 116,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "d28"
+},
+"med28_sec_p": {
+"x": 145,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med28_violet": {
+"x": 174,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "d28"
+},
+"med28_violet_p": {
+"x": 203,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"panel_navy_flat": {
+"x": 232,
+"y": 90,
+"w": 28,
+"h": 28,
+"group": "panel",
+"slice": "9",
+"mode": "tile",
+"nine": [
+10,
+10,
+10,
+10
+]
+},
+"panel_paper": {
+"x": 261,
+"y": 90,
+"w": 26,
+"h": 26,
+"group": "panel",
+"slice": "9",
+"mode": "tile",
+"note": "羊皮紙（日記內頁）",
+"nine": [
+9,
+9,
+9,
+9
+]
+},
+"med25_pri": {
+"x": 288,
+"y": 90,
+"w": 25,
+"h": 25,
+"group": "medal",
+"note": "d25"
+},
+"dock_pillar": {
+"x": 314,
+"y": 90,
+"w": 20,
+"h": 24,
+"group": "hud",
+"slice": "9",
+"mode": "tile",
+"note": "已選 tab 光柱",
+"nine": [
+6,
+10,
+6,
+6
+]
+},
+"med24_dis": {
+"x": 335,
+"y": 90,
+"w": 24,
+"h": 24,
+"group": "medal",
+"note": "d24"
+},
+"med24_gold": {
+"x": 360,
+"y": 90,
+"w": 24,
+"h": 24,
+"group": "medal",
+"note": "d24"
+},
+"med24_navy": {
+"x": 385,
+"y": 90,
+"w": 24,
+"h": 24,
+"group": "medal",
+"note": "d24"
+},
+"med24_navy_p": {
+"x": 410,
+"y": 90,
+"w": 24,
+"h": 24,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med24_paper": {
+"x": 435,
+"y": 90,
+"w": 24,
+"h": 24,
+"group": "medal",
+"note": "d24"
+},
+"med24_pri": {
+"x": 460,
+"y": 90,
+"w": 24,
+"h": 24,
+"group": "medal",
+"note": "d24"
+},
+"stamp_done": {
+"x": 485,
+"y": 90,
+"w": 24,
+"h": 24,
+"group": "fx",
+"note": "完成蓋印"
+},
+"card_sel": {
+"x": 0,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "card",
+"slice": "9",
+"mode": "tile",
+"nine": [
+7,
+7,
+7,
+7
+]
+},
+"egg_card": {
+"x": 23,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "family",
+"slice": "9",
+"mode": "tile",
+"nine": [
+7,
+7,
+7,
+7
+]
+},
+"med22_navy": {
+"x": 46,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "medal",
+"note": "d22"
+},
+"med22_navy_p": {
+"x": 69,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med22_pri": {
+"x": 92,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "medal",
+"note": "d22"
+},
+"med22_pri_p": {
+"x": 115,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "medal",
+"note": "按下：向下 1px＋暗 22%"
+},
+"med22_violet": {
+"x": 138,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "medal",
+"note": "d22"
+},
+"panel_inset_sel": {
+"x": 161,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "panel",
+"slice": "9",
+"mode": "tile",
+"nine": [
+7,
+7,
+7,
+7
+]
+},
+"tree_node": {
+"x": 184,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "family",
+"slice": "9",
+"mode": "tile",
+"nine": [
+7,
+7,
+7,
+7
+]
+},
+"tree_node_gold": {
+"x": 207,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "family",
+"slice": "9",
+"mode": "tile",
+"nine": [
+7,
+7,
+7,
+7
+]
+},
+"tree_node_sel": {
+"x": 230,
+"y": 119,
+"w": 22,
+"h": 22,
+"group": "family",
+"slice": "9",
+"mode": "tile",
+"nine": [
+7,
+7,
+7,
+7
+]
+},
+"btn_dis": {
+"x": 253,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"note": "h20 主／次／警告／特別／停用",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_dis_p": {
+"x": 278,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_pri": {
+"x": 303,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"note": "h20 主／次／警告／特別／停用",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_pri_p": {
+"x": 328,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_rose": {
+"x": 353,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"note": "h20 主／次／警告／特別／停用",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_rose_p": {
+"x": 378,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_sec": {
+"x": 403,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"note": "h20 主／次／警告／特別／停用",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_sec_p": {
+"x": 428,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_violet": {
+"x": 453,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"note": "h20 主／次／警告／特別／停用",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn_violet_p": {
+"x": 478,
+"y": 119,
+"w": 24,
+"h": 20,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"card": {
+"x": 0,
+"y": 142,
+"w": 20,
+"h": 20,
+"group": "card",
+"slice": "9",
+"mode": "tile",
+"nine": [
+6,
+6,
+6,
+6
+]
+},
+"card_locked": {
+"x": 21,
+"y": 142,
+"w": 20,
+"h": 20,
+"group": "card",
+"slice": "9",
+"mode": "tile",
+"nine": [
+6,
+6,
+6,
+6
+]
+},
+"card_paper": {
+"x": 42,
+"y": 142,
+"w": 20,
+"h": 20,
+"group": "card",
+"slice": "9",
+"mode": "tile",
+"nine": [
+6,
+6,
+6,
+6
+]
+},
+"med20_navy": {
+"x": 63,
+"y": 142,
+"w": 20,
+"h": 20,
+"group": "medal",
+"note": "d20"
+},
+"med20_paper": {
+"x": 84,
+"y": 142,
+"w": 20,
+"h": 20,
+"group": "medal",
+"note": "d20"
+},
+"med20_pri": {
+"x": 105,
+"y": 142,
+"w": 20,
+"h": 20,
+"group": "medal",
+"note": "d20"
+},
+"panel_inset": {
+"x": 126,
+"y": 142,
+"w": 20,
+"h": 20,
+"group": "panel",
+"slice": "9",
+"mode": "tile",
+"note": "列／內格",
+"nine": [
+6,
+6,
+6,
+6
+]
+},
+"fx_ripple": {
+"x": 147,
+"y": 142,
+"w": 19,
+"h": 19,
+"group": "fx"
+},
+"med18_navy": {
+"x": 167,
+"y": 142,
+"w": 18,
+"h": 18,
+"group": "medal",
+"note": "d18"
+},
+"med17_green": {
+"x": 186,
+"y": 142,
+"w": 17,
+"h": 17,
+"group": "medal",
+"note": "d17"
+},
+"med17_navy": {
+"x": 204,
+"y": 142,
+"w": 17,
+"h": 17,
+"group": "medal",
+"note": "d17"
+},
+"med17_pri": {
+"x": 222,
+"y": 142,
+"w": 17,
+"h": 17,
+"group": "medal",
+"note": "d17"
+},
+"med17_rose": {
+"x": 240,
+"y": 142,
+"w": 17,
+"h": 17,
+"group": "medal",
+"note": "d17"
+},
+"med17_sec": {
+"x": 258,
+"y": 142,
+"w": 17,
+"h": 17,
+"group": "medal",
+"note": "d17"
+},
+"med17_violet": {
+"x": 276,
+"y": 142,
+"w": 17,
+"h": 17,
+"group": "medal",
+"note": "d17"
+},
+"plaque": {
+"x": 294,
+"y": 142,
+"w": 22,
+"h": 17,
+"group": "label",
+"slice": "3h",
+"mode": "tile",
+"note": "彈窗標題帶 h17",
+"nine": [
+7,
+0,
+7,
+0
+]
+},
+"plaque_pri": {
+"x": 317,
+"y": 142,
+"w": 22,
+"h": 17,
+"group": "label",
+"slice": "3h",
+"mode": "tile",
+"note": "彈窗標題帶 h17",
+"nine": [
+7,
+0,
+7,
+0
+]
+},
+"toast": {
+"x": 340,
+"y": 142,
+"w": 32,
+"h": 17,
+"group": "hud",
+"slice": "3h",
+"mode": "tile",
+"note": "h17；兩端 cap 已含寶石",
+"nine": [
+12,
+0,
+12,
+0
+]
+},
+"btn16_dis": {
+"x": 373,
+"y": 142,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_dis_p": {
+"x": 398,
+"y": 142,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_pri": {
+"x": 423,
+"y": 142,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_pri_p": {
+"x": 448,
+"y": 142,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_rose": {
+"x": 473,
+"y": 142,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_rose_p": {
+"x": 0,
+"y": 163,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_sec": {
+"x": 25,
+"y": 163,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_sec_p": {
+"x": 50,
+"y": 163,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_violet": {
+"x": 75,
+"y": 163,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"btn16_violet_p": {
+"x": 100,
+"y": 163,
+"w": 24,
+"h": 16,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+8,
+0,
+8,
+0
+]
+},
+"bubble": {
+"x": 125,
+"y": 163,
+"w": 16,
+"h": 16,
+"group": "hud",
+"slice": "9",
+"mode": "tile",
+"nine": [
+4,
+4,
+4,
+4
+]
+},
+"med16_navy": {
+"x": 142,
+"y": 163,
+"w": 16,
+"h": 16,
+"group": "medal",
+"note": "d16"
+},
+"med16_paper": {
+"x": 159,
+"y": 163,
+"w": 16,
+"h": 16,
+"group": "medal",
+"note": "d16"
+},
+"med16_pri": {
+"x": 176,
+"y": 163,
+"w": 16,
+"h": 16,
+"group": "medal",
+"note": "d16"
+},
+"close": {
+"x": 193,
+"y": 163,
+"w": 15,
+"h": 15,
+"group": "button",
+"note": "✕ 一律右上內"
+},
+"close_p": {
+"x": 209,
+"y": 163,
+"w": 15,
+"h": 15,
+"group": "button",
+"note": "✕ 一律右上內"
+},
+"med15_pri": {
+"x": 225,
+"y": 163,
+"w": 15,
+"h": 15,
+"group": "medal",
+"note": "d15"
+},
+"med15_rose": {
+"x": 241,
+"y": 163,
+"w": 15,
+"h": 15,
+"group": "medal",
+"note": "d15"
+},
+"subtab": {
+"x": 257,
+"y": 163,
+"w": 18,
+"h": 15,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"subtab_on": {
+"x": 276,
+"y": 163,
+"w": 24,
+"h": 15,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+6,
+0,
+6,
+0
+]
+},
+"ribbon_navy": {
+"x": 301,
+"y": 163,
+"w": 18,
+"h": 14,
+"group": "label",
+"slice": "3h",
+"mode": "tile",
+"note": "字牌／階段 tag（字 10px 置中）",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"ribbon_pri": {
+"x": 320,
+"y": 163,
+"w": 18,
+"h": 14,
+"group": "label",
+"slice": "3h",
+"mode": "tile",
+"note": "字牌／階段 tag（字 10px 置中）",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"ribbon_rose": {
+"x": 339,
+"y": 163,
+"w": 18,
+"h": 14,
+"group": "label",
+"slice": "3h",
+"mode": "tile",
+"note": "字牌／階段 tag（字 10px 置中）",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"ribbon_sec": {
+"x": 358,
+"y": 163,
+"w": 18,
+"h": 14,
+"group": "label",
+"slice": "3h",
+"mode": "tile",
+"note": "字牌／階段 tag（字 10px 置中）",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"ribbon_violet": {
+"x": 377,
+"y": 163,
+"w": 18,
+"h": 14,
+"group": "label",
+"slice": "3h",
+"mode": "tile",
+"note": "字牌／階段 tag（字 10px 置中）",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"seg_bg": {
+"x": 396,
+"y": 163,
+"w": 18,
+"h": 14,
+"group": "ctl",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"chip": {
+"x": 415,
+"y": 163,
+"w": 20,
+"h": 13,
+"group": "hud",
+"slice": "3h",
+"mode": "tile",
+"note": "貨幣 chip；左端疊 med13_navy＋icon，右端 chip_plus",
+"nine": [
+6,
+0,
+6,
+0
+]
+},
+"hint_arrow": {
+"x": 436,
+"y": 163,
+"w": 16,
+"h": 13,
+"group": "fx"
+},
+"job_lv_badge": {
+"x": 453,
+"y": 163,
+"w": 13,
+"h": 13,
+"group": "job",
+"note": "Lv 章（字 8 白）"
+},
+"med13_green": {
+"x": 467,
+"y": 163,
+"w": 13,
+"h": 13,
+"group": "medal",
+"note": "d13"
+},
+"med13_navy": {
+"x": 481,
+"y": 163,
+"w": 13,
+"h": 13,
+"group": "medal",
+"note": "d13"
+},
+"med13_paper": {
+"x": 495,
+"y": 163,
+"w": 13,
+"h": 13,
+"group": "medal",
+"note": "d13"
+},
+"med13_pri": {
+"x": 0,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "medal",
+"note": "d13"
+},
+"med13_rose": {
+"x": 14,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "medal",
+"note": "d13"
+},
+"med13_sec": {
+"x": 28,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "medal",
+"note": "d13"
+},
+"med13_violet": {
+"x": 42,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "medal",
+"note": "d13"
+},
+"mood_badge_happy": {
+"x": 56,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "portrait"
+},
+"mood_badge_hungry": {
+"x": 70,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "portrait"
+},
+"mood_badge_sick": {
+"x": 84,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "portrait"
+},
+"mood_badge_sleep": {
+"x": 98,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "portrait"
+},
+"mood_badge_sleepy": {
+"x": 112,
+"y": 180,
+"w": 13,
+"h": 13,
+"group": "portrait"
+},
+"plaque_tail_l": {
+"x": 126,
+"y": 180,
+"w": 8,
+"h": 13,
+"group": "label"
+},
+"plaque_tail_r": {
+"x": 135,
+"y": 180,
+"w": 8,
+"h": 13,
+"group": "label"
+},
+"fx_sweep": {
+"x": 144,
+"y": 180,
+"w": 6,
+"h": 12,
+"group": "fx"
+},
+"scroll_thumb": {
+"x": 151,
+"y": 180,
+"w": 4,
+"h": 12,
+"group": "ctl",
+"slice": "3v",
+"mode": "tile",
+"nine": [
+0,
+2,
+0,
+2
+]
+},
+"scroll_track": {
+"x": 156,
+"y": 180,
+"w": 4,
+"h": 12,
+"group": "ctl",
+"slice": "3v",
+"mode": "tile",
+"nine": [
+0,
+2,
+0,
+2
+]
+},
+"stage_tag": {
+"x": 161,
+"y": 180,
+"w": 18,
+"h": 12,
+"group": "label",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"swatch_frame": {
+"x": 180,
+"y": 180,
+"w": 12,
+"h": 12,
+"group": "inherit",
+"note": "花紋色塊框（內 6×6 由引擎填父母 tint）"
+},
+"check_off": {
+"x": 193,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "ctl"
+},
+"check_on": {
+"x": 205,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "ctl"
+},
+"med11_navy": {
+"x": 217,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "medal",
+"note": "d11"
+},
+"med11_paper": {
+"x": 229,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "medal",
+"note": "d11"
+},
+"med11_rose": {
+"x": 241,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "medal",
+"note": "d11"
+},
+"pill_dis": {
+"x": 253,
+"y": 180,
+"w": 24,
+"h": 11,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"pill_fast_locked": {
+"x": 278,
+"y": 180,
+"w": 24,
+"h": 11,
+"group": "inherit",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"pill_fast_on": {
+"x": 303,
+"y": 180,
+"w": 24,
+"h": 11,
+"group": "inherit",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"pill_navy": {
+"x": 328,
+"y": 180,
+"w": 18,
+"h": 11,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"pill_pri": {
+"x": 347,
+"y": 180,
+"w": 24,
+"h": 11,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"pill_rose": {
+"x": 372,
+"y": 180,
+"w": 24,
+"h": 11,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"pill_sec": {
+"x": 397,
+"y": 180,
+"w": 24,
+"h": 11,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"pill_violet": {
+"x": 422,
+"y": 180,
+"w": 24,
+"h": 11,
+"group": "button",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+5,
+0,
+5,
+0
+]
+},
+"red_dot_num": {
+"x": 447,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "hud"
+},
+"slider_knob": {
+"x": 459,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "ctl"
+},
+"star_off": {
+"x": 471,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "ctl"
+},
+"star_on": {
+"x": 483,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "ctl"
+},
+"toggle_knob_off": {
+"x": 495,
+"y": 180,
+"w": 11,
+"h": 11,
+"group": "ctl"
+},
+"toggle_knob_on": {
+"x": 0,
+"y": 194,
+"w": 11,
+"h": 11,
+"group": "ctl"
+},
+"toggle_track_off": {
+"x": 12,
+"y": 194,
+"w": 22,
+"h": 11,
+"group": "ctl"
+},
+"toggle_track_on": {
+"x": 35,
+"y": 194,
+"w": 22,
+"h": 11,
+"group": "ctl"
+},
+"acc_thumb_starclip": {
+"x": 58,
+"y": 194,
+"w": 9,
+"h": 10,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"seg_locked": {
+"x": 68,
+"y": 194,
+"w": 24,
+"h": 10,
+"group": "ctl",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+4,
+0,
+4,
+0
+]
+},
+"seg_on": {
+"x": 93,
+"y": 194,
+"w": 24,
+"h": 10,
+"group": "ctl",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+4,
+0,
+4,
+0
+]
+},
+"acc_thumb_hat_watch": {
+"x": 118,
+"y": 194,
+"w": 10,
+"h": 9,
+"group": "portrait"
+},
+"chip_plus": {
+"x": 129,
+"y": 194,
+"w": 9,
+"h": 9,
+"group": "hud"
+},
+"chip_plus_p": {
+"x": 139,
+"y": 194,
+"w": 9,
+"h": 9,
+"group": "hud"
+},
+"med9_rose": {
+"x": 149,
+"y": 194,
+"w": 9,
+"h": 9,
+"group": "medal",
+"note": "d9"
+},
+"med9_sec": {
+"x": 159,
+"y": 194,
+"w": 9,
+"h": 9,
+"group": "medal",
+"note": "d9"
+},
+"red_dot": {
+"x": 169,
+"y": 194,
+"w": 9,
+"h": 9,
+"group": "hud",
+"note": "d9；字用 font 8 白"
+},
+"acc_thumb_bell": {
+"x": 179,
+"y": 194,
+"w": 7,
+"h": 8,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_hat_chef": {
+"x": 187,
+"y": 194,
+"w": 10,
+"h": 8,
+"group": "portrait"
+},
+"acc_thumb_bow": {
+"x": 198,
+"y": 194,
+"w": 11,
+"h": 7,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_sakura": {
+"x": 210,
+"y": 194,
+"w": 9,
+"h": 7,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_scarf": {
+"x": 220,
+"y": 194,
+"w": 4,
+"h": 7,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"bar_trough_h7": {
+"x": 225,
+"y": 194,
+"w": 12,
+"h": 7,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "條槽 h7；填色 = bar_fill_*_h7，由 x2 起，闊＝(w−4)×值",
+"nine": [
+3,
+0,
+3,
+0
+]
+},
+"gem_green_7": {
+"x": 238,
+"y": 194,
+"w": 7,
+"h": 7,
+"group": "deco"
+},
+"gem_pri_7": {
+"x": 246,
+"y": 194,
+"w": 7,
+"h": 7,
+"group": "deco"
+},
+"gem_rose_7": {
+"x": 254,
+"y": 194,
+"w": 7,
+"h": 7,
+"group": "deco"
+},
+"gem_sec_7": {
+"x": 262,
+"y": 194,
+"w": 7,
+"h": 7,
+"group": "deco"
+},
+"gem_violet_7": {
+"x": 270,
+"y": 194,
+"w": 7,
+"h": 7,
+"group": "deco"
+},
+"sparkle_7": {
+"x": 278,
+"y": 194,
+"w": 7,
+"h": 7,
+"group": "fx"
+},
+"timeline_dot": {
+"x": 286,
+"y": 194,
+"w": 7,
+"h": 7,
+"group": "list"
+},
+"acc_thumb_beanie": {
+"x": 294,
+"y": 194,
+"w": 9,
+"h": 6,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_hat_post": {
+"x": 304,
+"y": 194,
+"w": 11,
+"h": 6,
+"group": "portrait"
+},
+"bar_trough_h6": {
+"x": 316,
+"y": 194,
+"w": 12,
+"h": 6,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "條槽 h6；填色 = bar_fill_*_h6，由 x2 起，闊＝(w−4)×值",
+"nine": [
+3,
+0,
+3,
+0
+]
+},
+"scroll_fade_bot": {
+"x": 329,
+"y": 194,
+"w": 4,
+"h": 6,
+"group": "list",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"scroll_fade_top": {
+"x": 334,
+"y": 194,
+"w": 4,
+"h": 6,
+"group": "list",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"acc_thumb_acorn": {
+"x": 339,
+"y": 194,
+"w": 9,
+"h": 5,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_cherry": {
+"x": 349,
+"y": 194,
+"w": 8,
+"h": 5,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_halo": {
+"x": 358,
+"y": 194,
+"w": 9,
+"h": 5,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_leafcollar": {
+"x": 368,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_nightcap": {
+"x": 374,
+"y": 194,
+"w": 9,
+"h": 5,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_straw": {
+"x": 384,
+"y": 194,
+"w": 9,
+"h": 5,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"bar_trough_h5": {
+"x": 394,
+"y": 194,
+"w": 12,
+"h": 5,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "條槽 h5；填色 = bar_fill_*_h5，由 x2 起，闊＝(w−4)×值",
+"nine": [
+3,
+0,
+3,
+0
+]
+},
+"bubble_tail": {
+"x": 407,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "hud",
+"note": "貼 bubble 底邊（x＝6，y＝h−1）"
+},
+"exp_gem_off": {
+"x": 413,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "bar"
+},
+"exp_gem_on": {
+"x": 419,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "bar"
+},
+"gem_green_5": {
+"x": 425,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "deco"
+},
+"gem_pri_5": {
+"x": 431,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "deco"
+},
+"gem_rose_5": {
+"x": 437,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "deco"
+},
+"gem_sec_5": {
+"x": 443,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "deco"
+},
+"gem_violet_5": {
+"x": 449,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "deco"
+},
+"room_dot_cur": {
+"x": 455,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "family"
+},
+"room_dot_locked": {
+"x": 461,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "family"
+},
+"room_dot_open": {
+"x": 467,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "family"
+},
+"slider_track": {
+"x": 473,
+"y": 194,
+"w": 12,
+"h": 5,
+"group": "ctl",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+3,
+0,
+3,
+0
+]
+},
+"sparkle_5": {
+"x": 486,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "fx"
+},
+"tree_joint": {
+"x": 492,
+"y": 194,
+"w": 5,
+"h": 5,
+"group": "family"
+},
+"acc_thumb_crown": {
+"x": 498,
+"y": 194,
+"w": 7,
+"h": 4,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_glasses": {
+"x": 0,
+"y": 206,
+"w": 10,
+"h": 4,
+"group": "portrait",
+"note": "頭像飾品細章（疊 med13_paper 中間）"
+},
+"acc_thumb_hat_garden": {
+"x": 11,
+"y": 206,
+"w": 8,
+"h": 4,
+"group": "portrait"
+},
+"acc_thumb_wear_hat": {
+"x": 20,
+"y": 206,
+"w": 10,
+"h": 4,
+"group": "portrait"
+},
+"fx_veil25_tile": {
+"x": 31,
+"y": 206,
+"w": 4,
+"h": 4,
+"group": "fx",
+"slice": "9",
+"mode": "tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"fx_veil_tile": {
+"x": 36,
+"y": 206,
+"w": 4,
+"h": 4,
+"group": "fx",
+"slice": "9",
+"mode": "tile",
+"note": "全畫面 tile＝50% 抖色暗幕（冇半透明）",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"sheet_handle": {
+"x": 41,
+"y": 206,
+"w": 24,
+"h": 4,
+"group": "panel"
+},
+"timeline_line": {
+"x": 66,
+"y": 206,
+"w": 3,
+"h": 4,
+"group": "list",
+"slice": "3v",
+"mode": "tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"tree_line_v": {
+"x": 70,
+"y": 206,
+"w": 3,
+"h": 4,
+"group": "family",
+"slice": "3v",
+"mode": "tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_gold_h7": {
+"x": 74,
+"y": 206,
+"w": 5,
+"h": 3,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_green_h7": {
+"x": 80,
+"y": 206,
+"w": 5,
+"h": 3,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_pri_h7": {
+"x": 86,
+"y": 206,
+"w": 5,
+"h": 3,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_rose_h7": {
+"x": 92,
+"y": 206,
+"w": 5,
+"h": 3,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_sec_h7": {
+"x": 98,
+"y": 206,
+"w": 5,
+"h": 3,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_violet_h7": {
+"x": 104,
+"y": 206,
+"w": 5,
+"h": 3,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_tip_h7": {
+"x": 110,
+"y": 206,
+"w": 1,
+"h": 3,
+"group": "bar",
+"note": "填色尾光 1px"
+},
+"divider": {
+"x": 112,
+"y": 206,
+"w": 16,
+"h": 3,
+"group": "panel",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"fx_mote": {
+"x": 129,
+"y": 206,
+"w": 3,
+"h": 3,
+"group": "fx"
+},
+"rivet": {
+"x": 133,
+"y": 206,
+"w": 3,
+"h": 3,
+"group": "deco"
+},
+"sparkle_3": {
+"x": 137,
+"y": 206,
+"w": 3,
+"h": 3,
+"group": "fx"
+},
+"tree_line_h": {
+"x": 141,
+"y": 206,
+"w": 4,
+"h": 3,
+"group": "family",
+"slice": "3h",
+"mode": "tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_gold_h6": {
+"x": 146,
+"y": 206,
+"w": 5,
+"h": 2,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_green_h6": {
+"x": 152,
+"y": 206,
+"w": 5,
+"h": 2,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_pri_h6": {
+"x": 158,
+"y": 206,
+"w": 5,
+"h": 2,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_rose_h6": {
+"x": 164,
+"y": 206,
+"w": 5,
+"h": 2,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_sec_h6": {
+"x": 170,
+"y": 206,
+"w": 5,
+"h": 2,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_violet_h6": {
+"x": 176,
+"y": 206,
+"w": 5,
+"h": 2,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_tip_h6": {
+"x": 182,
+"y": 206,
+"w": 1,
+"h": 2,
+"group": "bar",
+"note": "填色尾光 1px"
+},
+"bar_fill_gold_h5": {
+"x": 184,
+"y": 206,
+"w": 5,
+"h": 1,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_green_h5": {
+"x": 190,
+"y": 206,
+"w": 5,
+"h": 1,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_pri_h5": {
+"x": 196,
+"y": 206,
+"w": 5,
+"h": 1,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_rose_h5": {
+"x": 202,
+"y": 206,
+"w": 5,
+"h": 1,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_sec_h5": {
+"x": 208,
+"y": 206,
+"w": 5,
+"h": 1,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_fill_violet_h5": {
+"x": 214,
+"y": 206,
+"w": 5,
+"h": 1,
+"group": "bar",
+"slice": "3h",
+"mode": "tile",
+"note": "每 5px 一格，tile",
+"nine": [
+0,
+0,
+0,
+0
+]
+},
+"bar_tip_h5": {
+"x": 220,
+"y": 206,
+"w": 1,
+"h": 1,
+"group": "bar",
+"note": "填色尾光 1px"
+}
+}
+}

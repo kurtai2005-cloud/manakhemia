@@ -1,0 +1,620 @@
+{
+"image": "icons_hd2d_v2@2x.png",
+"scale": 2,
+"size": [
+1024,
+128
+],
+"note": "1x 原生像素；@2x/@3x nearest。nine＝[l,t,r,b] 喺 sprite px（×scale）；mode tile＝中段／邊用 tile（唔好拉伸）",
+"frames": {
+"back": {
+"x": 0,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"badge": {
+"x": 34,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"bedtime": {
+"x": 68,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"bond": {
+"x": 102,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"book": {
+"x": 136,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"book_bear": {
+"x": 170,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"cabinet": {
+"x": 204,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"check": {
+"x": 238,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"clean": {
+"x": 272,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"clear": {
+"x": 306,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"crown": {
+"x": 340,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"d_cloud": {
+"x": 374,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"d_heart": {
+"x": 408,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"d_leaf": {
+"x": 442,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"d_paw": {
+"x": 476,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"d_spark": {
+"x": 510,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"d_star": {
+"x": 544,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"decorate": {
+"x": 578,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"dex": {
+"x": 612,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"diary": {
+"x": 646,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"egg_kid": {
+"x": 680,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"egg_tr": {
+"x": 714,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"ev_treasure": {
+"x": 748,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"expedition": {
+"x": 782,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"family_level": {
+"x": 816,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"family_tree": {
+"x": 850,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"fast": {
+"x": 884,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"feed": {
+"x": 918,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"flip": {
+"x": 952,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"furniture": {
+"x": 986,
+"y": 0,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"gear": {
+"x": 0,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"gear_chick": {
+"x": 34,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"gift": {
+"x": 68,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"heart": {
+"x": 102,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"heart_bunny": {
+"x": 136,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"hint": {
+"x": 170,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"house": {
+"x": 204,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"info": {
+"x": 238,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"inherit": {
+"x": 272,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"job_chef": {
+"x": 306,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"light": {
+"x": 340,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"lightning": {
+"x": 374,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"lock": {
+"x": 408,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"mail": {
+"x": 442,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"mg_firefly": {
+"x": 476,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"mg_hide": {
+"x": 510,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"mg_leaf": {
+"x": 544,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"mg_stardust": {
+"x": 578,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"mg_tease": {
+"x": 612,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"minigame": {
+"x": 646,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"pattern": {
+"x": 680,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"pets": {
+"x": 714,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"play": {
+"x": 748,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"play_cat": {
+"x": 782,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"plus": {
+"x": 816,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"quality": {
+"x": 850,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"reset": {
+"x": 884,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"rest": {
+"x": 918,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"rotate": {
+"x": 952,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"seed": {
+"x": 986,
+"y": 34,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"shards": {
+"x": 0,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"sleep": {
+"x": 34,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"sound": {
+"x": 68,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"sprout": {
+"x": 102,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"star": {
+"x": 136,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"store": {
+"x": 170,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"surprise": {
+"x": 204,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"title": {
+"x": 238,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"trick": {
+"x": 272,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"visitor": {
+"x": 306,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"water": {
+"x": 340,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"xp": {
+"x": 374,
+"y": 68,
+"w": 32,
+"h": 32,
+"group": "icon"
+},
+"mini_back": {
+"x": 408,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_check": {
+"x": 432,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_clean": {
+"x": 456,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_feed": {
+"x": 480,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_gift": {
+"x": 504,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_heart": {
+"x": 528,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_house": {
+"x": 552,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_light": {
+"x": 576,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_lock": {
+"x": 600,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_mail": {
+"x": 624,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_plus": {
+"x": 648,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_reset": {
+"x": 672,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_sleep": {
+"x": 696,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_sprout": {
+"x": 720,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+},
+"mini_star": {
+"x": 744,
+"y": 68,
+"w": 22,
+"h": 22,
+"group": "icon"
+}
+}
+}

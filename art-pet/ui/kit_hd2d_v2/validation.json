@@ -1,0 +1,124 @@
+{
+ "kit": "kit_hd2d_v2",
+ "date": "2026-11-02",
+ "pass_": true,
+ "passed": 23,
+ "total": 23,
+ "checks": [
+  {
+   "check": "ui_hd2d_v2 bounds+overlap",
+   "ok": true,
+   "detail": "236 frames, (512, 256)"
+  },
+  {
+   "check": "ui_hd2d_v2 @2x/@3x = nearest ×s",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "9-slice insets valid + 中間 tile 周期整除（≤8，無接縫）",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "required UI frames",
+   "ok": true,
+   "detail": "63 required"
+  },
+  {
+   "check": "icons_hd2d_v2 bounds+overlap",
+   "ok": true,
+   "detail": "87 frames, (512, 64)"
+  },
+  {
+   "check": "icons_hd2d_v2 @2x/@3x = nearest ×s",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "icons ≥ 60 手點",
+   "ok": true,
+   "detail": "87 icons（16px 72 + mini 15）"
+  },
+  {
+   "check": "alpha 0/255（sprite／atlas／icon／font）",
+   "ok": true,
+   "detail": "214 png"
+  },
+  {
+   "check": "icons/ 每個 icon 有 @1x @3x",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "font atlas glyph bounds + TTF",
+   "ok": true,
+   "detail": "fp8 992 字 lineH 8, fp10 992 字 lineH 10, fp12 992 字 lineH 12"
+  },
+  {
+   "check": "OFL licence 喺 fonts/",
+   "ok": true,
+   "detail": "OFL_fusion-pixel.txt"
+  },
+  {
+   "check": "mockup 字串 CJK 全部有 glyph（8/10/12）",
+   "ok": true,
+   "detail": "273 字"
+  },
+  {
+   "check": "layout bands 0→422 連續 + 花園 > 50%",
+   "ok": true,
+   "detail": "top [0, 42] garden [42, 348]（73%） bottom [348, 422]"
+  },
+  {
+   "check": "layout rect 喺畫面內（容許出血 8）",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "portrait_rects 覆蓋全部 form",
+   "ok": true,
+   "detail": "59 forms（old 25 / from_ref 48 24 / series2 10）"
+  },
+  {
+   "check": "aliases 指向存在 form",
+   "ok": true,
+   "detail": "24 aliases"
+  },
+  {
+   "check": "portrait rect 喺 canvas 內 + shift ≤ 4 + pop ≤ 3",
+   "ok": true,
+   "detail": "498 acc entries, badge 89, hidden 0"
+  },
+  {
+   "check": "每個 badge 飾品有 acc_thumb_<key>",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "mockups 585×1266 + smallphone 360×779（14 畫面）",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "smallphone 360w 比例 = 360/195",
+   "ok": true,
+   "detail": "×1.846；8px 字 ≈ 14.8px 高"
+  },
+  {
+   "check": "docs 存在 + 反引號引用檔案存在",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "冇 _backups／暫存檔",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "kit_hd2d（v1）冇改到",
+   "ok": true,
+   "detail": "119 檔，最新 mtime 早過 2026-11-02"
+  }
+ ]
+}
