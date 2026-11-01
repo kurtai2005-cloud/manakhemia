@@ -44,9 +44,10 @@ for fid, e in F.items():
     px, py = e["pivot"]; w, h = e["size"]
     if not (0 <= px < w and 0 <= py < h): err(f"{fid} pivot 出界")
 shop = [f for f, e in F.items() if e["source"] == "shop"]
-if len(shop) != 8: err(f"商店 {len(shop)} 件 ≠8")
+if len(shop) != 7: err(f"商店 {len(shop)} 件 ≠7（葉仔床改預設）")
+if J["defaultState"]["slots"].get("bed") != "bed_leaf": err("預設床唔係 bed_leaf")
 tot = sum(F[f]["price"] for f in shop)
-if not 190 <= tot <= 210: err(f"商店總價 {tot} 唔係約 200")
+if tot != 165: err(f"商店總價 {tot} ≠165")
 if any(not 15 <= F[f]["price"] <= 40 for f in shop): err("價錢出 15–40")
 if sum(e["source"] == "commission" for e in F.values()) != 2: err("委託獎 ≠2")
 if sum(e["source"].startswith("visitor:") for e in F.values()) != 2: err("訪客獎 ≠2")

@@ -3,10 +3,11 @@ batch4b staging — 屋仔 4b 美術（HD-2D 房間日夜、家具 12、坐／�
 重跑：cd art-pet && python3 tools/build_house_4b_actions.py && python3 tools/build_house_4b.py && python3 tools/build_house_4b_ui.py && python3 tools/build_house_4b_preview.py
 驗證：python3 tools/validate_house_4b.py → PASS
 說明：art-pet/sprites/series2_house/HOUSE_4B.md；UI 只做 HD-2D（Kurt 揀咗），冇 B2 版
+更新：遊策定葉仔床入屋預設免費擺好，商店 7 件共 165 碎
 冇 push／merge；冇 _backups。
 sha1(12)  bytes  path
-8b9176b00946      5163  art-pet/sprites/series2_house/HOUSE_4B.md
-32c5f4c56c51     17451  art-pet/sprites/series2_house/house.json
+27fde54e8084      5238  art-pet/sprites/series2_house/HOUSE_4B.md
+893b27e747d3     17535  art-pet/sprites/series2_house/house.json
 70d6a74814a3      3807  art-pet/sprites/series2_house/actions/A1_prank_do.png
 38f35b992fec      3848  art-pet/sprites/series2_house/actions/A1_prank_got.png
 2f18f1476225      2139  art-pet/sprites/series2_house/actions/A1_sit.png
@@ -293,4 +294,4 @@ e7f71b9db526     21812  art-pet/sprites/series2_house/ui/tab_window_sel@3x.png
 1bdacaa0fea6     10319  art-pet/tools/build_house_4b.py
 ee3cfbabba6e     21747  art-pet/tools/build_house_4b_ui.py
 aa53323a4460      7065  art-pet/tools/build_house_4b_preview.py
-2402bd69a336      5423  art-pet/tools/validate_house_4b.py
+fe7b62f84928      5517  art-pet/tools/validate_house_4b.py

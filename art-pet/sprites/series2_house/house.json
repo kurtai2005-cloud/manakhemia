@@ -205,9 +205,9 @@
   "bed_leaf": {
    "slot": "bed",
    "zh": "葉仔床",
-   "price": 35,
-   "source": "shop",
-   "sourceZh": "碎商店",
+   "price": 0,
+   "source": "default",
+   "sourceZh": "入屋預設（免費）",
    "png": "furniture/bed_leaf.png",
    "front": "furniture/bed_leaf_front.png",
    "pivot": [
@@ -236,7 +236,8 @@
    "shadow": [
     88,
     8
-   ]
+   ],
+   "firstPlaceMood": true
   },
   "bed_cloud": {
    "slot": "bed",
@@ -477,7 +478,6 @@
  },
  "economy": {
   "shopItems": [
-   "bed_leaf",
    "bed_cloud",
    "table_stump",
    "table_round",
@@ -486,23 +486,23 @@
    "rug_leaf",
    "win_curtain"
   ],
-  "shopTotal": 200,
+  "shopTotal": 165,
   "range": [
    15,
    40
   ],
-  "note": "價錢係美術建議，遊策／遊測可改；換擺唔使碎；每件首次擺心情 +1（共用每日上限 5）"
+  "note": "遊策 2026-11-01 確認價錢同來源；葉仔床改入屋預設擺好、唔收碎，當新家具照加心情 +1（共用每日上限 5）；商店剩 7 件；換擺唔使碎"
  },
  "defaultState": {
   "slots": {
-   "bed": null,
+   "bed": "bed_leaf",
    "table": null,
    "wall": null,
    "rug": null,
    "window": null,
    "lamp": null
   },
-  "note": "初始全部空位（只有房間背景）。冇床時夜晚一齊瞓用 4a duo.sleep_together（ov_blanket）喺地氈位"
+  "note": "入屋時預設擺好葉仔床（入屋第一晚兩隻可以同床瞓），計首次擺心情 +1；其餘位空"
  },
  "sets": {
   "A": {
