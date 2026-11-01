@@ -1,0 +1,35 @@
+{
+ "variant": "night",
+ "name": "森林閣樓・夜晚",
+ "hours": "19–06",
+ "ambientTint": "#b4b8e4",
+ "petTint": "#f2eaff",
+ "saturation": 0.96,
+ "contrast": 1.06,
+ "bloom": {
+  "threshold": 0.7,
+  "intensity": 0.6
+ },
+ "fog": {
+  "color": "#2a2e5a",
+  "density": 0.06
+ },
+ "dof": {
+  "far": 0,
+  "mid": 0,
+  "fore": 0.8
+ },
+ "vignette": 0.32,
+ "rim": {
+  "color": "#c8d4ff",
+  "intensity": 0.35,
+  "dir": [
+   -0.7,
+   -0.7
+  ]
+ },
+ "bulbGlowTint": "#ffe0a0",
+ "particles": {
+  "type": "none"
+ }
+}

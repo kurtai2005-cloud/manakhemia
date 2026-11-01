@@ -1,0 +1,294 @@
+{
+ "style": "HD-2D（ui/style_ref/hd2d）；零件 3x（1 art 單位＝3px）",
+ "assets": {
+  "chip_family_level": "ui/chip_family_level@3x.png",
+  "chip_family_level_max": "ui/chip_family_level_max@3x.png",
+  "btn_room_l_idle": "ui/btn_room_l_idle@3x.png",
+  "btn_room_l_locked": "ui/btn_room_l_locked@3x.png",
+  "btn_room_r_idle": "ui/btn_room_r_idle@3x.png",
+  "btn_room_r_locked": "ui/btn_room_r_locked@3x.png",
+  "chip_capacity_bg": "ui/chip_capacity_bg@3x.png",
+  "btn_tree": "ui/btn_tree@3x.png",
+  "dot_room_cur": "ui/dot_room_cur@3x.png",
+  "dot_room_open": "ui/dot_room_open@3x.png",
+  "dot_room_locked": "ui/dot_room_locked@3x.png",
+  "pet_card_example": "ui/pet_card_example@3x.png",
+  "icon_crown": "ui/icon_crown@3x.png",
+  "icon_egg_tr": "ui/icon_egg_tr@3x.png",
+  "icon_egg_kid": "ui/icon_egg_kid@3x.png",
+  "icon_pets": "ui/icon_pets@3x.png",
+  "icon_xp": "ui/icon_xp@3x.png",
+  "icon_visitor": "ui/icon_visitor@3x.png",
+  "icon_title": "ui/icon_title@3x.png",
+  "icon_fast": "ui/icon_fast@3x.png",
+  "icon_family_level": "ui/icon_family_level@3x.png",
+  "icon_family_tree": "ui/icon_family_tree@3x.png",
+  "egg_choice_tr": "ui/egg_choice_tr@3x.png",
+  "egg_choice_kid": "ui/egg_choice_kid@3x.png",
+  "egg_choice_kid_disabled": "ui/egg_choice_kid_disabled@3x.png",
+  "tree_node_g2a": "ui/tree_node_g2a@3x.png",
+  "tree_node_g4": "ui/tree_node_g4@3x.png",
+  "tree_node_g2a_gold": "ui/tree_node_g2a_gold@3x.png",
+  "tree_node_g4_gold": "ui/tree_node_g4_gold@3x.png",
+  "swatch_wave": "ui/swatch_wave@3x.png",
+  "swatch_bubble": "ui/swatch_bubble@3x.png",
+  "swatch_spark": "ui/swatch_spark@3x.png",
+  "swatch_spot": "ui/swatch_spot@3x.png",
+  "swatch_flame": "ui/swatch_flame@3x.png",
+  "swatch_star": "ui/swatch_star@3x.png",
+  "swatch_diamond": "ui/swatch_diamond@3x.png",
+  "swatch_crescent": "ui/swatch_crescent@3x.png",
+  "bar_xp": "ui/bar_xp@3x.png"
+ },
+ "houseHud": {
+  "back": {
+   "cx": 16,
+   "cy": 18,
+   "d": 22,
+   "icon": "back(4b)"
+  },
+  "title": {
+   "cx": 97.5,
+   "y": 8,
+   "w": 70,
+   "label": "房名（屋仔／森林閣樓／星夜書房／海風小屋）"
+  },
+  "familyChip": {
+   "x": 136,
+   "y": 9,
+   "w": 54,
+   "h": 17,
+   "icon": "family_level",
+   "bar": {
+    "x": 152,
+    "y": 20.5,
+    "w": 34,
+    "h": 4
+   },
+   "tap": "開族譜"
+  },
+  "roomDots": {
+   "cx": 97.5,
+   "y": 30,
+   "gap": 7,
+   "d": 4,
+   "note": "4 粒；而家間＝金、已開＝白、未開＝灰鎖"
+  },
+  "arrows": {
+   "l": {
+    "cx": 11,
+    "cy": 214,
+    "d": 18
+   },
+   "r": {
+    "cx": 184,
+    "cy": 214,
+    "d": 18
+   },
+   "note": "左右撳／橫掃切房（300ms 橫向 parallax：far 0.6、mid 1.0、fore 1.3）；冇下一間＝唔顯示；下一間未開＝灰＋鎖，撳出 toast「家族 LvN 開」"
+  },
+  "capacity": {
+   "x": 6,
+   "y": 33,
+   "w": 42,
+   "h": 13,
+   "icon": "pets",
+   "fmt": "{n}/4 隻"
+  },
+  "tree": {
+   "cx": 23,
+   "cy": 392,
+   "d": 30,
+   "icon": "family_tree",
+   "label": "族譜",
+   "labelY": 411
+  },
+  "decorate": {
+   "cx": 172,
+   "cy": 392,
+   "d": 30,
+   "note": "沿用 4b 佈置掣"
+  }
+ },
+ "petCard": {
+  "panel": {
+   "x": 20,
+   "y": 112,
+   "w": 155,
+   "h": 168
+  },
+  "portrait": {
+   "cx": 97.5,
+   "cy": 152,
+   "d": 50
+  },
+  "name": {
+   "y": 186
+  },
+  "tags": {
+   "y": 199
+  },
+  "info": {
+   "y": 214
+  },
+  "btnMain": {
+   "x": 32,
+   "y": 232,
+   "w": 131,
+   "h": 18,
+   "label": "做主養",
+   "icon": "crown",
+   "kind": "pri"
+  },
+  "btnGreet": {
+   "x": 32,
+   "y": 254,
+   "w": 63,
+   "h": 15,
+   "label": "打招呼",
+   "kind": "sec"
+  },
+  "btnMove": {
+   "x": 100,
+   "y": 254,
+   "w": 63,
+   "h": 15,
+   "label": "搬房",
+   "kind": "violet"
+  },
+  "close": {
+   "cx": 168,
+   "cy": 117
+  },
+  "isMain": "已經係主養：主養掣變 dis「主養緊」＋portrait 金冠",
+  "note": "屋內撳成年寵物出；做主養＝佢做浮動寵物（只限團絨系；細佬系做主養會留喺屋，但花園主養位用佢）— 見 open question"
+ },
+ "levelUp": {
+  "rays": {
+   "cx": 97.5,
+   "cy": 150,
+   "r": 70
+  },
+  "medal": {
+   "cx": 97.5,
+   "cy": 150,
+   "d": 56
+  },
+  "lv": {
+   "y": 150
+  },
+  "plaque": {
+   "y": 98,
+   "w": 92,
+   "label": "家族升級！"
+  },
+  "unlockCard": {
+   "x": 26,
+   "y": 196,
+   "w": 143,
+   "h": 54
+  },
+  "btn": {
+   "x": 57,
+   "y": 262,
+   "w": 81,
+   "h": 18,
+   "label": "好嘢！"
+  },
+  "anim": "medal scale 0.6→1.08→1（easeOutBack 420ms）；rays 慢轉 8s/圈；金粉 motes"
+ },
+ "eggChoice": {
+  "panel": {
+   "x": 14,
+   "y": 104,
+   "w": 167,
+   "h": 196
+  },
+  "plaque": {
+   "y": 96,
+   "w": 104,
+   "label": "新蛋嚟咗！"
+  },
+  "sub": {
+   "y": 124,
+   "text": "揀一隻嚟養（最多養 2 隻）"
+  },
+  "cards": {
+   "x": [
+    22,
+    101
+   ],
+   "y": 134,
+   "w": 72,
+   "h": 128
+  },
+  "egg": {
+   "cy": 180
+  },
+  "name": {
+   "y": 222
+  },
+  "desc": {
+   "y": 234
+  },
+  "pill": {
+   "y": 244,
+   "h": 13
+  },
+  "disabled": "細佬蛋：有細佬養緊 → 灰卡＋鎖＋「細佬養緊」",
+  "note": "團絨蛋 egg sheet 第 1 格 32px ×2；細佬蛋 egg_48 ×2（crop）"
+ },
+ "tree": {
+  "bg": "navy 漸變＋星塵；金色版（Lv10）＝金邊 ornate 框＋暖金底＋金連線發光",
+  "topBar": {
+   "back": {
+    "cx": 16,
+    "cy": 18
+   },
+   "title": {
+    "cx": 97.5,
+    "y": 8,
+    "w": 70,
+    "label": "族譜"
+   }
+  },
+  "levelCard": {
+   "x": 8,
+   "y": 32,
+   "w": 179,
+   "h": 40
+  },
+  "rows": {
+   "y0": 92,
+   "dy": 74,
+   "label": "第 N 代（金字，左上）"
+  },
+  "node": {
+   "w": 84,
+   "h": 56,
+   "portrait": {
+    "dx": 20,
+    "dy": 26,
+    "d": 34
+   },
+   "name": {
+    "dx": 40,
+    "dy": 12
+   },
+   "tag": {
+    "dx": 40,
+    "dy": 23
+   },
+   "chips": {
+    "dx": 40,
+    "dy": 34,
+    "note": "花紋色塊（上一代遺落）＋教錯咗乜道具（lesson prop pixel ×2）"
+   },
+   "raising": "養緊＝藍綠框＋「養緊」細 pill；主養＝金冠"
+  },
+  "link": "金線：上一代 node 底中 → 下一代 node 頂中（直角折）",
+  "legend": {
+   "y": 400
+  }
+ }
+}
