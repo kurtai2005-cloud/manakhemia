@@ -341,6 +341,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       try {
         let src = null, fk = 'egg';
         if (s.stage === 'egg') src = R.atlasSrc('atlas_evo_egg', 'egg_idle', 0) || R.atlasSrc('atlas_egg', 'egg_idle', 0);
+        else if (s.fam && s.fam.km && R.s2MainFace && (src = R.s2MainFace())) fk = 'km:' + src.fk;   // 5a.1 細佬做主養
         else { fk = R.fkOf(s); const F = D.FORMS[fk]; if (F) src = R.atlasSrc(F.atlas, 'idle', 0); }
         const mood = U.moodOv || moodOf(s), sig = fk + '|' + mood + '|' + (U.accOv || '') + '|' + (src ? src.sx + ',' + src.sy : '-');
         if (!force && sig === U.faceSig) return; U.faceSig = sig;
@@ -350,7 +351,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
         part(g, 'portrait_bg_' + mood, 0, 0);
         let info = { fk, hit: false, rect: null, badge: false };
         if (src && src.img) {
-          const pad = U.rects.pad || 8, rr = rectOf(U.rects, fk, Math.max(src.sw, src.sh)), fs = rr.frame || Math.max(src.sw, src.sh);
+          const pad = U.rects.pad || 8, rr = src.km ? { rect: [pad + 24 - 17, pad + src.headY - 5, 34], frame: 48, acc: {}, hit: true } : rectOf(U.rects, fk, Math.max(src.sw, src.sh)), fs = rr.frame || Math.max(src.sw, src.sh);
           const cv = document.createElement('canvas'); cv.width = fs + pad * 2; cv.height = fs + pad * 2; const q = cv.getContext('2d'); q.imageSmoothingEnabled = false;
           q.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, pad + Math.round((fs - src.sw) / 2), pad + (fs - src.sh), src.sw, src.sh);
           const ad = accAdj(rr.rect, U.accOv ? rr.acc[U.accOv] : null), [rx, ry, n] = ad.rect, win = U.layout.portrait.win;

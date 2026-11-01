@@ -188,7 +188,7 @@ body.l5-on #toast{z-index:70 !important}
       const where = r ? '住喺' + FAM.ROOM[r.room].zh : main ? (n.kind === 'kid' ? '喺花園（主養）' : '主養・花園＋屋仔') : '喺花園';
       const age = r ? '成年' : n.kind === 'tr' ? (n.tag || '') : (n.raising ? (n.tag || '養緊') : '成年');
       el.appendChild(mk('div', `position:absolute;left:0;width:390px;top:${a2(214) - 10}px;text-align:center;` + TXT(13, '#E8DDBE'), [age, where].filter(Boolean).join('・'), 'l5-card-info'));
-      const cm = r ? FAM.canMain(s, id, now()) : { ok: false, zh: main ? '' : '要搬咗入屋先可以做主養' };
+      const cm = main ? { ok: false, zh: '' } : FAM.canMain(s, id, now());   // 5a.1：成年 pet2 細佬／住客都可以做主養
       const bm = btn(main ? '主養緊' : '做主養', main || !cm.ok ? 'btn_dis' : 'btn_pri', a2(131), a2(18), 'l5-card-main', () => doMain(id), 'crown');
       bm.style.left = a2(32) + 'px'; bm.style.top = a2(232) + 'px'; if (main || !cm.ok) { bm.dataset.dis = '1'; bm._why = main ? '佢已經係主養' : cm.zh || '而家做唔到主養'; } el.appendChild(bm);
       const bg = btn('打招呼', 'btn16_sec', a2(63), a2(15), 'l5-card-greet', () => doGreet(id)); bg.style.left = a2(32) + 'px'; bg.style.top = a2(254) + 'px'; el.appendChild(bg);
@@ -200,7 +200,7 @@ body.l5-on #toast{z-index:70 !important}
     function doMain(id) {
       const s = S(), r = FAM.makeMain(s, id, now(), env()); note('main', { id, ok: r.ok, reason: r.reason || '' });
       if (!r.ok) { toast(r.zh || '做唔到主養', 2000); return r; }
-      save(); closeOv(); SND('reward'); toast(fmt(r.kind === 'kid' ? FAM.LINES.kidOut : FAM.LINES.madeMain, { name: r.name }), 2600);
+      save(); closeOv(); SND('reward'); toast(fmt(r.kind === 'kid' && r.tr ? FAM.LINES.kidOut : FAM.LINES.madeMain, { name: r.name, tr: r.tr || '' }), 2600);
       if (G.house5 && G.house5.isOpen()) G.house5.refresh(); return r;
     }
     function doGreet(id) {
@@ -326,6 +326,12 @@ body.l5-on #toast{z-index:70 !important}
         ['offerFull', '新蛋：屋企爆滿（兩邊都灰）', () => { const e = prep(); if (e) return e; const s = S(); for (const k of FAM.openRooms(s)) while (FAM.count(s, k) < FAM.CAP) if (!addRes('tr', k)) break; elder(); FAM.st(s).offer = { due: SR.dayNum(now()), at: now(), why: 'dev' }; save(); offer('dev'); return { ok: true, msg: '已開嘅房全部住滿' }; }],
         ['pickTr', '揀團絨蛋（主養搬入屋）', () => { const e = prep(); if (e) return e; elder(); const s = S(); FAM.st(s).offer = { due: SR.dayNum(now()), at: now(), why: 'dev' }; const r = doPick('tr'); return r.ok ? { ok: true, msg: '第 ' + r.gen + ' 代團絨蛋；' + r.moved.name + '住' + FAM.ROOM[r.moved.room].zh } : { ok: false, msg: r.zh || r.reason }; }],
         ['pickKid', '揀細佬蛋（成年細佬搬入屋）', () => { const e = prep(); if (e) return e; const s = S(); FAM.st(s).offer = { due: SR.dayNum(now()), at: now(), why: 'dev' }; const r = doPick('kid'); return r.ok ? { ok: true, msg: '新細佬蛋' + (r.moved ? '；' + r.moved.name + '搬入屋' : '') } : { ok: false, msg: r.zh || r.reason }; }],
+        ['kidMain', '5a.1 細佬做主養（皇冠＋團絨入屋）', () => { const e = prep(); if (e) return e; const s = S(); if (FAM.kmOf(s)) return { ok: true, msg: FAM.kmOf(s).name + '已經係主養' }; elder();
+          const p = SR.st(s); if (p.phase === 'kid' && SR.stageOf(s, now()) !== 'S6') p.hatchDay = SR.dayNum(now()) - 20; if (p.phase === 'kid') { p.rel = 'family'; p.intim = Math.max(p.intim | 0, 90); } tick(true);
+          const ids = [p.phase === 'kid' ? p.fid : null].concat(FAM.st(s).res.filter(r => r.kind === 'kid').map(r => r.id)).filter(Boolean), id = ids.find(i => FAM.canMain(s, i, now()).ok);
+          if (!id) return { ok: false, msg: '冇成年細佬（撳「準備」或「加細佬住客」）' }; const r = doMain(id); if (!r.ok) return { ok: false, msg: r.zh || r.reason }; tick(true);
+          return { ok: true, msg: r.name + '做咗主養' + (r.tr ? '；' + r.tr + '搬入屋' : '') + (r.from === 'garden' ? '；pet2 空出嚟等新蛋' : '') }; }],
+        ['trMain', '5a.1 揀返團絨做主養', () => { const s = S(), K = FAM.kmOf(s); if (!K) return { ok: false, msg: '主養已經係團絨' }; const lt = FAM.latestTr(FAM.st(s)); if (!lt) return { ok: false, msg: '屋企冇團絨' }; const r = doMain(lt.id); return r.ok ? { ok: true, msg: r.name + '做返主養；' + K.name + '返屋' } : { ok: false, msg: r.zh || r.reason }; }],
         ['xp', '家族經驗 +60', () => { const s = S(), r = FAM.addXp(s, 'dev', 60, now(), 'dev'); save(); tick(true); return { ok: true, msg: '+60 → Lv' + r.lv + '（' + FAM.st(s).xp + ' XP）' }; }],
         ['lv5', '跳去 Lv5（開房 2、3）', () => { xpTo(5); tick(true); return { ok: true, msg: 'Lv' + FAM.st(S()).lv }; }],
         ['lv10', '跳去 Lv10（全開＋金族譜）', () => { xpTo(10); tick(true); return { ok: true, msg: 'Lv' + FAM.st(S()).lv + '・' + FAM.TITLE }; }],

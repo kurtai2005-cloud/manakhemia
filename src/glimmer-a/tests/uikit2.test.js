@@ -55,6 +55,6 @@ ok(/SIL OPEN FONT LICENSE/i.test(fs.readFileSync(path.join(K, 'fonts/OFL_fusion-
 ok(fs.existsSync(path.join(__dirname, '../art/ui_hd2d/ui_hd2d@3x.json')) && fs.existsSync(path.join(__dirname, '../src/hd2dui.js')), 'v1 kit＋hd2dui.js 保留（?ui=1 fallback）');
 
 console.log('⑦ 版本');
-ok(D.PARAMS.series2.version === '5a', '版本 5a', D.PARAMS.series2.version);
+ok(D.PARAMS.series2.version === '5a.1', '版本 5a.1', D.PARAMS.series2.version);
 
 console.log('\n' + pass + ' 過／' + fail + ' 唔過'); process.exit(fail ? 1 : 0);

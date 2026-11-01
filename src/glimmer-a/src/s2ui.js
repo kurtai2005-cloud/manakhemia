@@ -16,7 +16,7 @@
     const wd = !!(navigator && navigator.webdriver), R = G.renderer, UI = NS.ui, X2 = NS.sys12b, BEH = NS.behavior, RC = NS.reactclip, C = SR.CFG, L_ = SR.LINES_OUT;
     const native = !!(window.Capacitor && (typeof window.Capacitor.isNativePlatform === 'function' ? window.Capacitor.isNativePlatform() : window.Capacitor.isNative));   // 4a.1：APK（Capacitor）一定開自動送蛋／喊
     const on = (k) => qs.get(k) === '1' || qs.get('s2x') === '1' || ((native || !wd) && qs.get(k) !== '0' && qs.get('s2x') !== '0');
-    const VERSION = P.version || '5a';
+    const VERSION = P.version || '5a.1';
     const AUTO = { deliver: on('s2deliver'), cry: on('s2cry') };
     const BASE = P.art.base, S = () => G.state, pnow = () => performance.now();
     const say = (line, o) => (G.say ? G.say(Object.assign({ line, src: 's2', sec: 3.5 }, o || {})) : UI.toast(line, 2600));
@@ -382,6 +382,26 @@
       const c = SC.cur; if (!c || c.kind !== 'lesson' || c.rxOk || c.t >= 3000) return; const p = A.les.propsBySeries[c.L], I = p && A.img[p.png], pr = R.petRect; if (!I || !pr) return;
       const w = Math.sin(c.t / 120) * 2; x.drawImage(I, 0, 0, p.frameW, p.frameH, ox(Math.round(pr.x + pr.w / 2 + w)) - p.pivot[0], oy(Math.round(pr.y) - 2) - p.pivot[1], p.frameW, p.frameH); RST.prop++;
     }
+    // ── 5a.1 細佬做主養：花園中間主位畫細佬＋頭頂細皇冠（照顧循環用主養嘅 s.needs／瞓／便便）──
+    const KM = { ct: 0, t: 0, clip: 'idle', dir: 1 };
+    R.s2Main = function (x, s, view, cc, gx, base) {
+      const km = s.fam && s.fam.km; if (!km || !A.ready || !A.act) return null; const fk = A.act.forms[km.fk] ? km.fk : (A.act.forms.S2 ? 'S2' : null); if (!fk) return null;
+      const b = view && view.beh, bc = (b && b.clip) || '', now = pnow(), dt = KM.t ? Math.min(200, now - KM.t) : 0; KM.t = now;
+      const clip = s.sleeping ? 'sleep' : (cc && cc.anim === 'eat') ? 'eat' : /walk|run|hop/.test(bc) ? 'walk' : (cc && cc.anim === 'unwell') ? 'cry' : 'idle';
+      if (clip !== KM.clip) { KM.clip = clip; KM.ct = 0; } else KM.ct += dt; if (b && b.dir) KM.dir = b.dir < 0 ? -1 : 1;
+      const sp = strip(fk, clip); if (!sp) return null; const f = kidFrame(fk, clip, KM.ct, true), X = Math.round(gx);
+      x.fillStyle = 'rgba(10,20,20,0.35)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(10 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(X) - w, oy(base - 1 + dy), w * 2, 1); }
+      x.save(); x.imageSmoothingEnabled = false; const X0 = ox(X), Y0 = oy(base); if (KM.dir < 0) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
+      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); x.restore(); RST.km = (RST.km || 0) + 1;
+      const ka = (A.ka && (A.ka.forms[fk] || A.ka.forms.S2)) || { headTop: [24, 14] }, hy = base + ka.headTop[1] - 45, hx = X + (ka.headTop[0] - 24) * KM.dir;
+      const cr = im('../series2_long/5a/ui/icon_crown@3x.png'); if (cr) { const bob = Math.round(Math.sin(now / 600)); x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, ox(hx) - 7, oy(hy - 14 + bob), 14, 14); x.restore(); RST.crown = (RST.crown || 0) + 1; }
+      if (clip === 'sleep') { const z = fxInfo('fx_zzz'); if (z && z.img) { const fr = Math.floor(now / 300) % z.n; x.drawImage(z.img, fr * z.w, 0, z.w, z.h, ox(hx + 6) - z.pv[0], oy(hy - 1) - z.pv[1], z.w, z.h); } }
+      return { x: X - 14, y: hy - 2, w: 28, h: base - hy + 2, bud: { x: X, y: hy + 12 }, footY: base, km: km.id, clip };
+    };
+    R.s2MainFace = function () {   // 5a.1：HUD 頭像用細佬 idle 第 0 幀（48×48）
+      const s = S(), km = s && s.fam && s.fam.km; if (!km || !A.ready || !A.act) return null; const fk = A.act.forms[km.fk] ? km.fk : 'S2', sp = strip(fk, 'idle'); if (!sp) return null;
+      const ka = (A.ka && (A.ka.forms[fk] || A.ka.forms.S2)) || { headTop: [24, 14] }; return { img: sp, sx: 0, sy: 0, sw: 48, sh: 48, km: km.id, fk, headY: ka.headTop[1] };
+    };
     R.s2Layer = function (x, z, cc, base) {
       if (!A.ready || (SC.cur && SC.cur.kind === 'hatch')) return; const o = st(); base = GY;
       if (o.phase === 'egg') { if (z === 'front') { drawEgg(x, base); drawDream(x); } return; }

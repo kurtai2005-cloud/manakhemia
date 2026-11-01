@@ -52,9 +52,9 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3;
 
   console.log('# 🛠 開發者「5a」');
   await openDev();
-  ok((await page.locator('[data-testid=dev-version]').innerText()).includes('版本 5a'), '開發者模式「版本 5a」');
+  ok((await page.locator('[data-testid=dev-version]').innerText()).includes('版本 5a.1'), '開發者模式「版本 5a.1」');
   ok((await page.locator('[data-testid=dev-sec-l5]').innerText()).includes('5a'), '分組「5a（家族長線）」');
-  const KEYS = ['prep', 'offer', 'offerKidOff', 'offerFull', 'pickTr', 'pickKid', 'xp', 'lv5', 'lv10', 'lvup', 'room2', 'room3', 'room4', 'resTr', 'resKid', 'fill', 'card', 'greet', 'tree', 'treeGold', 'sv', 'reset'];
+  const KEYS = ['prep', 'offer', 'offerKidOff', 'offerFull', 'pickTr', 'pickKid', 'xp', 'lv5', 'lv10', 'lvup', 'room2', 'room3', 'room4', 'resTr', 'resKid', 'fill', 'card', 'greet', 'tree', 'treeGold', 'sv', 'reset', 'kidMain', 'trMain'];
   { let n = 0; for (const k of KEYS) if (await page.locator('[data-testid=dev-l5-' + k + ']').count()) n++; ok(n === KEYS.length, KEYS.length + ' 個掣齊', n); }
   ok(/Lv1・0 XP・住客 0/.test(await page.locator('[data-testid=dev-status-l5]').innerText()), 'status：Lv・XP・住客・房 n/4');
   await page.locator('[data-testid=dev-sec-l5]').scrollIntoViewIfNeeded(); await shot('01-dev-section'); await closeModals();
@@ -195,6 +195,30 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3;
   console.log('# 屋企爆滿');
   await dev('offerFull'); ok((await page.locator('[data-testid=l5-pick-tr]').getAttribute('data-reason')) === 'full' && (await page.locator('[data-testid=l5-pick-tr-why]').innerText()).includes('住滿'), '全部住滿 → 團絨蛋灰（屋企住滿）');
   await shot('17-offer-full'); await click('l5-later'); await W(200);
+
+  console.log('# 5a.1 細佬做主養（遊策裁定）');
+  await load('q=high&hour=13&seed=21&ev=0'); await toKid();
+  await dev('kidMain'); await closeModals(); await W(900); l = await L();
+  const km = await E(() => { const s = __glimmer.state; return { km: s.fam && s.fam.km, main: s.fam && s.fam.main, p2: Glimmer.series2.st(s).phase, res: s.fam.res.map(r => r.id + ':' + r.kind + ':' + r.room), stage: s.stage, form: s.form, ov: __glimmer.evo.overlayInfo(), pd: __glimmer.renderer.petDraw }; });
+  ok(km.km && km.main === 'kid:' + km.km.id, '①🛠「細佬做主養」→ 細佬做主養', km.main);
+  ok(km.p2 === 'none', '①pet2 空出嚟（等新蛋）', km.p2);
+  ok(km.res.some(x => /^tr\d+:tr:room1$/.test(x)), '①原主養團絨搬入房 1', km.res);
+  ok(km.pd && km.pd.km === km.km.id, '①花園主位畫細佬（petDraw＝細佬）', km.pd);
+  ok(await E(() => (__qa.s2.st().render.crown | 0) > 0 && (__qa.s2.st().render.km | 0) > 0), '①細佬（主位）＋頭頂皇冠有畫', await E(() => __qa.s2.st().render));
+  ok(km.stage === 'elder' && km.ov.form !== 'egg' && /團絨|soft|radiant|sprout/.test(km.ov.form + '') , '③浮動照顯示團絨（' + km.ov.form + '）', km.ov);
+  await shot('18-kidmain-garden');
+  const care = await E(() => { const G = __glimmer, s = G.state, SIM = Glimmer.sim, SYS = Glimmer.sys12; const r0 = JSON.stringify({ evo: s.evo, evs: s.evs, form: s.form }), g0 = s.growthSec; s.needs.hunger = 40; s.sleeping = false;
+    const f = SIM.feed(s, Glimmer.data.FOODS[0].id); for (let i = 0; i < 120; i++) SIM.step(s, 60, {}); return { fed: f.ok, h: s.needs.hunger, grow: s.growthSec - g0, route: JSON.stringify({ evo: s.evo, evs: s.evs, form: s.form }) === r0, mg: SYS.grant(s, 5, 'mg', G.now()), q: SYS.grant(s, 5, 'quest', G.now()), fade: SIM.fade(s, G.now()).ok }; });
+  ok(care.fed && care.grow === 0 && care.route, '②照顧循環（餵食／肚餓）照行；唔長大、§7 路線唔郁', care);
+  ok(care.mg === 0 && care.q === 0 && care.fade === false, '②冇碎（小遊戲／委託）、唔化光', care);
+  await E(() => __glimmer.house5.open()); await W(1600);
+  const ha = await E(() => __qa.house.st().res.map(a => a.id + ':' + a.kind)); ok(ha.includes(km.km.id + ':kid') && ha.some(x => /^tr\d+:tr$/.test(x)), '屋企房 1：細佬主養＋團絨住客', ha);
+  await shot('19-kidmain-house');
+  await E((id) => __glimmer.l5.card(id), km.km.id); await W(400);
+  ok(await vis('l5-card-crown') && (await page.locator('[data-testid=l5-card-main]').innerText()).includes('主養緊') && (await page.locator('[data-testid=l5-card-info]').innerText()).includes('主養'), '細佬寵物卡：皇冠＋主養緊');
+  await E(() => __qa.l5.close()); await E(() => __glimmer.house5.close()); await W(400);
+  const back = await devRun('trMain'); await W(300); const k2 = await E(() => ({ km: __glimmer.state.fam.km, res: __glimmer.state.fam.res.map(r => r.id + ':' + r.kind) }));
+  ok(back.ok && !k2.km && k2.res.includes(km.km.id + ':kid'), '🛠「揀返團絨做主養」→ 細佬返屋', { back, k2 });
 
   console.log('# 存檔');
   const before = await E(() => JSON.stringify({ lv: __qa.l5.fam().lv, res: __qa.l5.fam().res.map(r => r.id + ':' + r.room), deco: __qa.l5.fam().rooms }));

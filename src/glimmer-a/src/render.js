@@ -802,14 +802,16 @@
       const lift = useBeh ? beh.lift : c.lift;
       if (this.s2Layer) this.s2Layer(x, 'back', c, base);    // 4a 細佬／蛋（團絨後面）
       if (this.b3bLayer) this.b3bLayer(x, 'back', c, base);   // 3b 訪客／擺設／道具（y ≤ 寵物腳底）
+      const kmOn = !!(this.s2Main && s.fam && s.fam.km && s.stage !== 'egg');   // 5a.1：細佬做主養 → 主位畫細佬（s2ui），團絨唔畫
       // 影子
-      x.fillStyle = hidePet ? 'rgba(0,0,0,0)' : 'rgba(10,20,20,0.35)';
+      x.fillStyle = hidePet || kmOn ? 'rgba(0,0,0,0)' : 'rgba(10,20,20,0.35)';
       const efk = this.fkOf(s), efs = D.FORMS[efk] && D.FORMS[efk].evo ? D.FORMS[efk].frameSize : 0;
       const shw = efs ? Math.round(efs * 0.36) : D.isBig(s.stage) ? 24 : s.stage === 'sprout' ? 13 : 12, shl = 1 - Math.min(1, Math.abs(lift) / 18) * 0.35;
       for (let dy = -3; dy <= 3; dy++) { const w = Math.round(shw * shl * Math.sqrt(1 - dy * dy / 16)); x.fillRect(ox(gx - w), oy(base - 1 + dy), w * 2, 1); }
       let an, sx, sy;
       this.petBlit = null;
-      if (useBeh && hidePet) this.petDraw = { x: gx - 10, y: base - 30, w: 20, h: 30, bud: { x: gx, y: base - 20 }, footY: base, hidden: true };
+      if (kmOn && !hidePet) this.petDraw = this.s2Main(x, s, view, c, gx, base) || { x: gx - 12, y: base - 30, w: 24, h: 30, bud: { x: gx, y: base - 20 }, footY: base, km: true };
+      else if (useBeh && hidePet) this.petDraw = { x: gx - 10, y: base - 30, w: 20, h: 30, bud: { x: gx, y: base - 20 }, footY: base, hidden: true };
       else if (useBeh) this.petDraw = this.drawPetBeh(x, s, view, c, gx, base);
       else if (s.stage === 'egg' && efs && P.art.useAtlas !== false) {
         // evo6 光卵：evo_egg（idle／glow／tap；進度 ≥50% 或輕點時 glow；輕點脈衝 tap）
@@ -846,16 +848,16 @@
       if (c.sm > 0.01) { gcol = mixc(gcol, [190, 210, 255], c.sm * 0.8); gint *= 1 - c.sm * 0.55; }
       if (c.wd) gint *= 0.6;
       const gr = (efs && s.stage !== 'egg') ? Math.round(efs * (s.form === 'bright' ? 1.2 : s.form === 'dust' ? 0.62 : 0.95)) + (s.stage === 'elder' ? 4 : 0) : D.isBig(s.stage) ? (s.form === 'bright' ? 60 : (s.form === 'soft' || s.form === 'lumi') ? 44 : 28) : s.stage === 'sprout' ? 30 : 34 + this.eggPulse * 16;
-      c.lights.push({ x: pd.bud.x + offs[2][0], y: pd.bud.y, r: gr, col: gcol, a: 0.8 * gint, bud: 1 });
-      c.lights.push({ x: gx + offs[2][0], y: pd.footY - pd.h * 0.33, r: gr * 1.4, col: mixc(gcol, [255, 170, 90], 0.4), a: 0.18 * gint });
+      c.lights.push({ x: pd.bud.x + offs[2][0], y: pd.bud.y, r: kmOn ? 14 : gr, col: gcol, a: (kmOn ? 0.35 : 0.8) * gint, bud: 1 });
+      c.lights.push({ x: gx + offs[2][0], y: pd.footY - pd.h * 0.33, r: (kmOn ? 14 : gr) * 1.4, col: mixc(gcol, [255, 170, 90], 0.4), a: 0.18 * gint });
       c.em.fillStyle = rgb(gcol, 0.9 * Math.min(1, gint)); const bx = Math.round(pd.bud.x + offs[2][0]), by = Math.round(pd.bud.y);
-      c.em.fillRect(bx - 2, by - 2, 5, 5);
+      if (!kmOn) c.em.fillRect(bx - 2, by - 2, 5, 5);
       if (s.form === 'bright' && D.isBig(s.stage)) { c.em.fillRect(bx - 5, by, 11, 1); c.em.fillRect(bx, by - 5, 1, 11); }
       // 便便
       for (let i = 0; i < s.poops; i++) { const p = POOP_SLOTS[i]; x.drawImage(SPR.poop, ox(p[0] - 5), oy(p[1] - 8)); const w = Math.floor(t * 6 + i) % 3; x.fillStyle = '#a8d890'; x.fillRect(ox(p[0] - 3 + w), oy(p[1] - 12 - (w & 1)), 1, 3); x.fillRect(ox(p[0] + 3 - w), oy(p[1] - 11), 1, 3); }
       // 圖集未載入時退回舊 zZz／汗滴
       if (!this.atlasReady) {
-        if (c.anim === 'sleep') { for (let i = 0; i < 3; i++) { const u = ((t * 0.5 + i / 3) % 1); const zx = gx + 14 + u * 16, zy = base - (D.isBig(s.stage) ? 52 : 34) - u * 24; x.globalAlpha = Math.sin(u * Math.PI); x.drawImage(SPR.zz, ox(Math.round(zx)), oy(Math.round(zy)), 4 + i, 4 + i); } x.globalAlpha = 1; }
+        if (c.anim === 'sleep' && !kmOn) { for (let i = 0; i < 3; i++) { const u = ((t * 0.5 + i / 3) % 1); const zx = gx + 14 + u * 16, zy = base - (D.isBig(s.stage) ? 52 : 34) - u * 24; x.globalAlpha = Math.sin(u * Math.PI); x.drawImage(SPR.zz, ox(Math.round(zx)), oy(Math.round(zy)), 4 + i, 4 + i); } x.globalAlpha = 1; }
         if (c.unwell) { const u = (t * 1.2) % 1; x.drawImage(SPR.sweat, ox(gx + (D.isBig(s.stage) ? 18 : 10)), oy(Math.round(base - pd.h * 0.55 + u * 8))); }
       }
       if (view.event) this.drawEventFx(x, view, c, gx);

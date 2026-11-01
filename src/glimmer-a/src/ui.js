@@ -392,12 +392,12 @@
     }
     // 階段標籤
     const unwell = SIM.isUnwell(s);
-    const sn = D.STAGE_NAME[s.stage]; const sub = s.stage === 'egg' ? '輕點光卵，叫佢發亮' : D.STAGE_SUB[s.stage] ? D.STAGE_SUB[s.stage] : (D.FORM_NAME[s.form] + '形態' + (s.fadeReady ? ' · 準備化光' : ''));
+    const KM = s.fam && s.fam.km; const sn = KM ? KM.name : D.STAGE_NAME[s.stage]; const sub = KM ? '主養・細佬' : s.stage === 'egg' ? '輕點光卵，叫佢發亮' : D.STAGE_SUB[s.stage] ? D.STAGE_SUB[s.stage] : (D.FORM_NAME[s.form] + '形態' + (s.fadeReady ? ' · 準備化光' : ''));
     const chip = sn + '|' + sub + '|' + unwell + '|' + Math.round(SIM.stageProgress(s) * 100) + '|' + s.withdrawn.on;
     if (lastVals.chip !== chip) {
       lastVals.chip = chip; $('#stagename').textContent = sn;
       $('#substage').textContent = sub + (unwell ? ' · 不適' : s.withdrawn.on ? ' · 睏倦退縮' : '');
-      $('#progf').style.width = Math.round(SIM.stageProgress(s) * 100) + '%'; $('#prog').style.display = s.fadeReady ? 'none' : 'block';
+      $('#progf').style.width = Math.round(SIM.stageProgress(s) * 100) + '%'; $('#prog').style.display = s.fadeReady || KM ? 'none' : 'block';
     }
     const dn = s.evs && s.evs.diary ? s.evs.diary.length : 0; if (lastVals.dn !== dn) { lastVals.dn = dn; const bd = $('#diaryN'); bd.textContent = dn; bd.style.display = dn ? 'block' : 'none'; }
     const gr = (G.hd2dUI ? '' : '✦ ') + s.grains;   // HD-2D：光粒 icon 由 chip 畫 if (lastVals.gr !== gr) { lastVals.gr = gr; $('#grains').textContent = gr; }

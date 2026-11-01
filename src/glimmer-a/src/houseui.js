@@ -82,7 +82,8 @@
     const furnOf = (k) => { const id = slotsNow()[k]; return id ? Hj().furniture[id] : null; };
     const decoNow = () => (FAM ? FAM.st(S()).rooms[V.room].deco : null);
     /* 房 1 先有主養團絨（光卵唔出）＋細佬（孵咗先出）；其他房只有住客 */
-    const vis = (k) => V.room === 'room1' && (k === 'tr' ? S().stage !== 'egg' : SR.st(S()).phase === 'kid');
+    const kmNow = () => (FAM && FAM.kmOf ? FAM.kmOf(S()) : null);   // 5a.1：細佬做主養 → 屋企 room1 個主位係細佬（住客式畫）；團絨係住客
+    const vis = (k) => V.room === 'room1' && (k === 'tr' ? S().stage !== 'egg' && !kmNow() : SR.st(S()).phase === 'kid');
     const rugSpot = () => { const f = furnOf('rug'); return f ? slotAnchor('rug') : [100, 290]; };
     const walkRect = () => Hj().walk.rect;
     const bl = () => (FAM ? FAM.blockers(S(), V.room, Hj()) : HS.blockers(S(), Hj()));
@@ -146,15 +147,15 @@
     // ── 5a 長住（住客 actor）＋打招呼 ──
     const RS = new Map(); let rsKey = '';
     function syncRes(force) {
-      if (!FAM) return; const list = FAM.st(S()).res.filter(r => r.room === V.room), key = V.room + '|' + list.map(r => r.id + ':' + r.fk).join(',');
+      if (!FAM) return; const K = kmNow(), list = FAM.st(S()).res.filter(r => r.room === V.room).concat(K && V.room === 'room1' ? [{ id: K.id, kind: 'kid', fk: K.fk, km: 1 }] : []), key = V.room + '|' + list.map(r => r.id + ':' + r.fk).join(',');
       if (!force && key === rsKey) return; rsKey = key; const keep = new Map(RS); RS.clear();
       list.forEach((r, i) => { let p = keep.get(r.id); if (!p || p.fk !== r.fk) { const s = A.ready ? HS.pickSpot(walkRect(), bl()) : [60 + i * 24, 300];
-        p = Object.assign(ACT('res'), { id: r.id, kind: r.kind, fk: r.fk, x: s[0], y: s[1], dir: Math.random() < 0.5 ? 1 : -1 }); idle(p, rnd(0.5, 4)); } RS.set(r.id, p); });
+        p = Object.assign(ACT('res'), { id: r.id, kind: r.kind, fk: r.fk, x: s[0], y: s[1], dir: Math.random() < 0.5 ? 1 : -1 }); idle(p, rnd(0.5, 4)); } p.km = !!r.km; RS.set(r.id, p); });
       if (Z.greet && ![Z.greet.a, Z.greet.b].every(a => a.who !== 'res' || RS.get(a.id) === a)) Z.greet = null;
       note('res', { room: V.room, n: RS.size });
     }
     const actors = () => { const o = []; for (const k of ['tr', 'kid']) if (vis(k)) o.push(PET[k]); for (const p of RS.values()) o.push(p); return o; };
-    const actorOf = (id) => { if (!id) return null; if (id === 'tr' || (FAM && id === FAM.trId(S()))) return vis('tr') ? PET.tr : null; if (id === 'kid' || id === SR.st(S()).fid) return vis('kid') ? PET.kid : null; return RS.get(id) || null; };
+    const actorOf = (id) => { if (!id) return null; if (RS.get(id)) return RS.get(id); if (id === 'tr' || (FAM && id === FAM.trId(S()))) return vis('tr') ? PET.tr : null; if (id === 'kid' || id === SR.st(S()).fid) return vis('kid') ? PET.kid : null; return RS.get(id) || null; };
     const fkOfA = (p) => (p.who === 'res' ? p.fk : p.who === 'tr' ? trForm() : SA.formNow());
     const isTrA = (p) => p.who === 'tr' || (p.who === 'res' && p.kind === 'tr');
     const BW = {};
@@ -230,7 +231,7 @@
       const ys = []; for (const k of ['lamp', 'bed', 'table']) { const f = furnOf(k); if (f) { const a = slotAnchor(k); ys.push({ y: a[1], d: () => drawFurn(x, f, a, amb) }); if (k === 'bed' && f.front) ys.push({ y: a[1] + 0.1, d: () => drawFurn(x, f, a, amb, 'front') }); } }
       const bedY = furnOf('bed') ? slotAnchor('bed')[1] : 0;
       for (const k of ['tr', 'kid']) { const p = PET[k]; if (vis(k)) ys.push({ y: p.mode === 'sleep' && Z.bed ? bedY + (k === 'tr' ? 0.01 : 0.02) : p.y, d: () => drawPet(x, p, pt) }); }
-      for (const p of RS.values()) ys.push({ y: p.y, d: () => { drawPet(x, p, pt); V.stats.res++; } });
+      for (const p of RS.values()) ys.push({ y: p.y, d: () => { drawPet(x, p, pt); V.stats.res++; if (p.km && p.box) { const cr = im('L:5a/ui/icon_crown@3x.png'); if (cr) { x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, Math.round((p.box[0] + p.box[2]) / 2) - 7, p.box[1] - 13 + Math.round(Math.sin(pnow() / 600)), 14, 14); x.restore(); V.stats.crown = (V.stats.crown | 0) + 1; } } } });   // 5a.1：主養細佬頭頂細皇冠
       if (dvI) { const S0 = FAM.SV[dv], a = FAM.DECO_ANCHOR; ys.push({ y: a[1], d: () => { x.drawImage(tinted(dvI, amb), Math.round(a[0] - S0.pv[0]), Math.round(a[1] - S0.pv[1])); V.stats.deco++; } }); }
       ys.sort((a, b) => a.y - b.y); for (const e of ys) e.d();
       if (Z.mode === 'sleep' && !Z.bed) { const I = SA.fxInfo('ov_blanket'); if (I && I.img) { const m = (PET.tr.x + PET.kid.x) / 2; x.drawImage(I.img, 0, 0, I.w, I.h, Math.round(m) - I.pv[0], Math.round(PET.tr.y + 1) - I.pv[1], I.w, I.h); } }
