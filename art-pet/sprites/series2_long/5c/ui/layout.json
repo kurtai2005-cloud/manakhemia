@@ -1,0 +1,138 @@
+{
+ "style": "HD-2D；零件 3x",
+ "assets": {
+  "parent_card_A3": "ui/parent_card_A3@3x.png",
+  "parent_card_evo_still_moon": "ui/parent_card_evo_still_moon@3x.png",
+  "icon_inherit": "ui/icon_inherit@3x.png",
+  "icon_trick": "ui/icon_trick@3x.png",
+  "icon_pattern": "ui/icon_pattern@3x.png",
+  "icon_fast": "ui/icon_fast@3x.png",
+  "chip_trick_A": "ui/chip_trick_A@3x.png",
+  "chip_trick_B": "ui/chip_trick_B@3x.png",
+  "chip_trick_C": "ui/chip_trick_C@3x.png",
+  "chip_trick_D": "ui/chip_trick_D@3x.png",
+  "chip_trick_E": "ui/chip_trick_E@3x.png",
+  "chip_trick_F": "ui/chip_trick_F@3x.png",
+  "chip_trick_G": "ui/chip_trick_G@3x.png",
+  "chip_trick_H": "ui/chip_trick_H@3x.png",
+  "swatch_wave_A3": "ui/swatch_wave_A3@3x.png",
+  "swatch_bubble_B3": "ui/swatch_bubble_B3@3x.png",
+  "swatch_spark_C3": "ui/swatch_spark_C3@3x.png",
+  "swatch_spot_D3": "ui/swatch_spot_D3@3x.png",
+  "swatch_flame_E3": "ui/swatch_flame_E3@3x.png",
+  "swatch_star_F3": "ui/swatch_star_F3@3x.png",
+  "swatch_diamond_G3": "ui/swatch_diamond_G3@3x.png",
+  "swatch_crescent_H3": "ui/swatch_crescent_H3@3x.png",
+  "inherit_preview_bar": "ui/inherit_preview_bar@3x.png",
+  "pill_fast_on": "ui/pill_fast_on@3x.png",
+  "pill_fast_tr": "ui/pill_fast_tr@3x.png",
+  "pill_fast_locked": "ui/pill_fast_locked@3x.png"
+ },
+ "parentPick": {
+  "when": "揀蛋（5a 二揀一）之後即刻出；屋內冇成年＝跳過（冇遺傳）",
+  "panel": {
+   "x": 10,
+   "y": 60,
+   "w": 175,
+   "h": 300
+  },
+  "plaque": {
+   "y": 52,
+   "w": 104,
+   "label": "揀上一代"
+  },
+  "egg": {
+   "cx": 30,
+   "cy": 92
+  },
+  "sub": {
+   "x": 50,
+   "y": 86,
+   "text": "邊隻做 BB 嘅上一代？"
+  },
+  "cards": {
+   "x": [
+    18,
+    101
+   ],
+   "y0": 112,
+   "dy": 60,
+   "w": 76,
+   "h": 54,
+   "portrait": {
+    "dx": 19,
+    "dy": 25,
+    "d": 30
+   },
+   "name": {
+    "dx": 36,
+    "dy": 12
+   },
+   "swatch": {
+    "dx": 41,
+    "dy": 30,
+    "d": 11
+   },
+   "trick": {
+    "dx": 55,
+    "dy": 30,
+    "d": 11
+   },
+   "tag": {
+    "dx": 36,
+    "dy": 44
+   }
+  },
+  "preview": {
+   "x": 18,
+   "y": 296,
+   "w": 159,
+   "h": 30,
+   "note": "會遺傳：花紋 swatch＋名、招式道具＋名、（家族 Lv3＋細佬蛋）快 20% pill"
+  },
+  "btn": {
+   "x": 57,
+   "y": 332,
+   "w": 81,
+   "h": 18,
+   "label": "就佢喇！"
+  },
+  "rule": "揀咗嘅卡＝金光；主養都可以揀；遠足中都可以揀（唔使喺屋）"
+ },
+ "inheritResult": {
+  "rays": {
+   "cx": 97.5,
+   "cy": 150
+  },
+  "pet": {
+   "cx": 97.5,
+   "cy": 168,
+   "scale": 4
+  },
+  "plaque": {
+   "y": 86,
+   "w": 104,
+   "label": "遺傳咗！"
+  },
+  "rows": {
+   "x": 26,
+   "y": [
+    206,
+    232
+   ],
+   "w": 143,
+   "h": 22
+  },
+  "fast": {
+   "y": 262
+  },
+  "btn": {
+   "x": 57,
+   "y": 290,
+   "w": 81,
+   "h": 18,
+   "label": "好可愛！"
+  },
+  "anim": "蛋裂 → 白光 → 新 BB 出（花紋由底向上 300ms 掃入）→ 兩行逐行彈出 120ms 間隔"
+ }
+}
