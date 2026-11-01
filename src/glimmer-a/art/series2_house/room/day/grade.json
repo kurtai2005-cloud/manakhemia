@@ -1,0 +1,38 @@
+{
+ "variant": "day",
+ "name": "屋仔・日間（窗光暖調）",
+ "hours": "06–19",
+ "ambientTint": "#fff2e2",
+ "petTint": "#fff8f2",
+ "saturation": 1.05,
+ "contrast": 1.04,
+ "bloom": {
+  "threshold": 0.8,
+  "intensity": 0.35
+ },
+ "fog": {
+  "color": "#ffe8d0",
+  "density": 0.03
+ },
+ "dof": {
+  "far": 0,
+  "mid": 0,
+  "fore": 0.8
+ },
+ "vignette": 0.2,
+ "rim": {
+  "color": "#ffe2b0",
+  "intensity": 0.45,
+  "dir": [
+   -0.7,
+   -0.7
+  ]
+ },
+ "bulbGlowTint": "#ffe9a0",
+ "particles": {
+  "type": "dust_mote",
+  "area": "windowBeam",
+  "rate": 0.5,
+  "color": "#fff2c8"
+ }
+}

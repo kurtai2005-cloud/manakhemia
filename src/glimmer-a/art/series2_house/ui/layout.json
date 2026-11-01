@@ -1,0 +1,193 @@
+{
+ "style": "HD-2D（ui/style_ref/hd2d；Kurt 已揀）。零件 3x（1 art 單位＝3px）；B2 版冇整",
+ "gardenEntry": {
+  "btn": {
+   "cx": 178,
+   "cy": 104,
+   "d": 24,
+   "icon": "house",
+   "label": "屋仔",
+   "labelY": 120.5,
+   "png": "ui/btn_house@3x.png",
+   "lockedPng": "ui/btn_house_locked@3x.png"
+  },
+  "note": "花園 HUD 右邊、委託掣下面；家人未解鎖＝上鎖版（灰＋鎖），撳出 toast「同細佬做咗家人就可以一齊住」；解鎖第一次出紅點"
+ },
+ "houseHud": {
+  "back": {
+   "cx": 16,
+   "cy": 18,
+   "d": 22,
+   "icon": "back",
+   "to": "garden"
+  },
+  "title": {
+   "cx": 97.5,
+   "y": 8,
+   "w": 70,
+   "label": "屋仔"
+  },
+  "decorate": {
+   "cx": 172,
+   "cy": 392,
+   "d": 30,
+   "icon": "decorate",
+   "label": "佈置",
+   "labelY": 411
+  },
+  "note": "屋內平時：返花園、標題、右下「佈置」；撳寵物＝3a 觸摸反應"
+ },
+ "decorate": {
+  "roomOffsetY": -36,
+  "enterMs": 300,
+  "ease": "easeOutBack（sheet 由下滑上；房間同步上移）",
+  "topBar": {
+   "back": {
+    "cx": 16,
+    "cy": 18,
+    "d": 22,
+    "icon": "back"
+   },
+   "title": {
+    "cx": 97.5,
+    "y": 8,
+    "w": 84,
+    "label": "佈置屋仔"
+   },
+   "chip": {
+    "x": 147,
+    "y": 10,
+    "w": 40,
+    "kind": "star",
+    "note": "碎"
+   }
+  },
+  "pins": {
+   "d": 16,
+   "dSel": 20,
+   "note": "每個 slot 喺房入面（slot.pin＋roomOffsetY）一個圓章：已擺＝該 slot icon、未擺＝＋；揀中＝大啲＋金光＋上下浮 2px/1s；撳 pin＝跳去該 tab"
+  },
+  "sheet": {
+   "x": 4,
+   "y": 280,
+   "w": 187,
+   "h": 138,
+   "r": 10
+  },
+  "tabs": {
+   "cy": 297,
+   "cx": [
+    19.583333333333336,
+    50.75,
+    81.91666666666667,
+    113.08333333333334,
+    144.25,
+    175.41666666666669
+   ],
+   "d": 22,
+   "dSel": 25,
+   "labelY": 313,
+   "order": [
+    "bed",
+    "table",
+    "wall",
+    "rug",
+    "window",
+    "lamp"
+   ],
+   "selFill": "pri",
+   "idleFill": "navy"
+  },
+  "titleRow": {
+   "x": 14,
+   "y": 321,
+   "hintX": 181
+  },
+  "cards": {
+   "x": [
+    8.5,
+    70.5,
+    132.5
+   ],
+   "y": 328,
+   "w": 54,
+   "h": 66,
+   "thumb": {
+    "cy": 348,
+    "maxW": 46,
+    "maxH": 30,
+    "note": "家具 PNG nearest 整數倍縮放"
+   },
+   "nameY": 372,
+   "pill": {
+    "y": 379,
+    "h": 11,
+    "inset": 4
+   },
+   "states": {
+    "equipped": "藍綠 pill「擺緊」＋金框光＋右上寶石",
+    "owned": "橙 pill「擺上去」",
+    "buy": "橙 pill 星星碎 icon＋價錢（唔夠碎＝灰）",
+    "locked": "灰卡＋暗剪影＋鎖＋來源（委託獎／訪客禮）",
+    "clear": "第 3 張：收起（清空呢個 slot）"
+   }
+  },
+  "done": {
+   "x": 62,
+   "y": 398,
+   "w": 71,
+   "h": 16,
+   "label": "完成",
+   "kind": "pri"
+  },
+  "toastFirst": {
+   "x": 34,
+   "y": 140,
+   "w": 128,
+   "msg": "第一次擺：心情 +1",
+   "icon": "decorate"
+  },
+  "buyConfirm": "撳價錢 pill → 用現有 HD popup（ui/style_ref/hd2d/home_popup）問「用 N 碎買？」；唔夠碎 pill 變灰、撳出 toast「碎唔夠」"
+ },
+ "assets": {
+  "icon_bed": "ui/icon_bed@3x.png",
+  "icon_table": "ui/icon_table@3x.png",
+  "icon_wall": "ui/icon_wall@3x.png",
+  "icon_rug": "ui/icon_rug@3x.png",
+  "icon_window": "ui/icon_window@3x.png",
+  "icon_lamp": "ui/icon_lamp@3x.png",
+  "icon_house": "ui/icon_house@3x.png",
+  "icon_decorate": "ui/icon_decorate@3x.png",
+  "icon_back": "ui/icon_back@3x.png",
+  "icon_clear": "ui/icon_clear@3x.png",
+  "icon_plus": "ui/icon_plus@3x.png",
+  "icon_lock": "ui/icon_lock@3x.png",
+  "btn_house": "ui/btn_house@3x.png",
+  "btn_house_locked": "ui/btn_house_locked@3x.png",
+  "tab_bed_idle": "ui/tab_bed_idle@3x.png",
+  "tab_bed_sel": "ui/tab_bed_sel@3x.png",
+  "tab_table_idle": "ui/tab_table_idle@3x.png",
+  "tab_table_sel": "ui/tab_table_sel@3x.png",
+  "tab_wall_idle": "ui/tab_wall_idle@3x.png",
+  "tab_wall_sel": "ui/tab_wall_sel@3x.png",
+  "tab_rug_idle": "ui/tab_rug_idle@3x.png",
+  "tab_rug_sel": "ui/tab_rug_sel@3x.png",
+  "tab_window_idle": "ui/tab_window_idle@3x.png",
+  "tab_window_sel": "ui/tab_window_sel@3x.png",
+  "tab_lamp_idle": "ui/tab_lamp_idle@3x.png",
+  "tab_lamp_sel": "ui/tab_lamp_sel@3x.png",
+  "pin_plus_idle": "ui/pin_plus_idle@3x.png",
+  "pin_plus_sel": "ui/pin_plus_sel@3x.png",
+  "pin_filled_idle": "ui/pin_filled_idle@3x.png",
+  "pin_filled_sel": "ui/pin_filled_sel@3x.png",
+  "sheet_panel": "ui/sheet_panel@3x.png",
+  "card_equipped_example": "ui/card_equipped_example@3x.png",
+  "card_owned_example": "ui/card_owned_example@3x.png",
+  "card_buy_example": "ui/card_buy_example@3x.png",
+  "card_locked_example": "ui/card_locked_example@3x.png",
+  "card_clear_example": "ui/card_clear_example@3x.png",
+  "btn_done": "ui/btn_done@3x.png",
+  "btn_decorate": "ui/btn_decorate@3x.png",
+  "btn_back": "ui/btn_back@3x.png"
+ }
+}
