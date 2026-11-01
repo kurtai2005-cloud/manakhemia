@@ -141,6 +141,7 @@ console.log('# 純邏輯（Node）');
     const [fn, arg] = a.split(':'); const err = await E(() => __qa.dev.calls.filter(c => c.name === 'error').map(c => c.arg));
     if (n1 <= n0 || last.name !== fn || (arg != null && String(Array.isArray(last.arg) ? last.arg[0] : last.arg) !== arg) || err.length) bad.push(a + '→' + JSON.stringify(last) + JSON.stringify(err));
     await page.waitForTimeout(80); await closeModals();
+    await E(() => { if (Glimmer.ui.mgState && Glimmer.ui.mgState()) Glimmer.ui.endMG(true); const q = document.querySelector('[data-testid=s12b-hide-quit]'); if (window.__qa.sys12b && __qa.sys12b.hideState() && q) q.click(); });   // systems12 第 2 批 DEV 接光點／捉迷藏會開遊戲 → 掃完即退
   }
   ok(btns.length >= 30 && bad.length === 0, `全部 ${btns.length} 個掣都經 __qa.dev API`, bad.join(' | '));
   // 效果
