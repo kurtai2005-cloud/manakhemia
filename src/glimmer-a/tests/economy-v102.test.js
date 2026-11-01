@@ -24,8 +24,8 @@ for (const name of Object.keys(SW.SCHED)) {
   ok(m >= 15 && m <= 30, `${name}：每日星星碎中位 ${m} ∈ [15, 30]`);
   ok(mx <= 30, `${name}：每日唔超過上限 30（最高 ${mx}）`);
 }
-console.log(`② 路線分佈（N=${NARG}×6 表，有委託路線分）vs 遊測鎖定目標 ±${SW.FLAG_PT}pt`);
-const R = SW.main(NARG, true, { fpats: FP });
+console.log(`② 路線分佈（N=${NARG}×6 表，有委託路線分＋小遊戲 v2（經真 gameFinish，遊策 E：每局 +1、每日 4 局））vs 遊測鎖定目標 ±${SW.FLAG_PT}pt`);
+const R = SW.main(NARG, true, { fpats: FP, mg2: true });
 for (const f of D.BRANCHES) { const d = +(R.total[f] - SW.TARGET[f]).toFixed(2); ok(Math.abs(d) <= SW.FLAG_PT, `${D.FORM_NAME[f]} ${R.total[f]}%（目標 ${SW.TARGET[f]}，差 ${d >= 0 ? '+' : ''}${d}）`); }
 const shMax = Math.max(...Object.values(R.tables).map(t => t.pct.shroom)); ok(shMax <= 30, `每表菇傘 ≤30%（最高 ${shMax}%：${Object.entries(R.tables).map(([n, t]) => n + ' ' + t.pct.shroom).join('／')}）`);
 console.log(`  疏玩實數：上線日中位 ${ECON['疏玩'].median}｜全 7 日中位 ${ECON['疏玩'].medianAll7}｜冇懸浮粒 ${ECON['疏玩'].medianNoDrop}`);

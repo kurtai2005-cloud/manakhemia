@@ -36,7 +36,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); });
   await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&dev=1'); await ready(); await E(() => { window.__noSaveOnHide = true; });
-  const CFG = await E(() => ({ R: Glimmer.data.PARAMS.evo6.route, C: Glimmer.data.PARAMS.evo6.branch, J: Glimmer.data.PARAMS.stageSec.juvenile, hint: Glimmer.data.ROUTE_HINT }));
+  const CFG = await E(() => ({ R: Glimmer.data.PARAMS.evo6.route, C: Glimmer.data.PARAMS.evo6.branch, OW: Glimmer.data.PARAMS.minigames2.routePtsPerGame == null ? Glimmer.data.PARAMS.evo6.branch.kinds.mg.w : Glimmer.data.PARAMS.minigames2.routePtsPerGame, J: Glimmer.data.PARAMS.stageSec.juvenile, hint: Glimmer.data.ROUTE_HINT }));
   const hi = Math.max(CFG.C.brightCQ, CFG.C.b5CQ) + 15, hx = (h) => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 
   console.log('# ① 跳跳期燈泡：慢慢轉做領先路線色（螢絨唔顯示）');
@@ -176,8 +176,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     // v8 火苗：浮動團絨開 game
     const e0 = await E(() => Glimmer.sim.branch5Check(__glimmer.state).score.ember);
     await dclick('dev-overlay-game'); r = await E(() => ({ e: Glimmer.sim.branch5Check(__glimmer.state).score.ember, at: __glimmer.state.mg.overlayAt, txt: document.querySelector('[data-testid="dev-ember-state"]').textContent }));
-    ok(r.e === e0 + CFG.C.kinds.mg.w && r.at > 0 && /冷卻\d+s/.test(r.txt), `DEV「浮動開 game」→ 火苗 +${CFG.C.kinds.mg.w}（一局）＋冷卻`, r);
-    await dclick('dev-overlay-game'); ok(await E(() => Glimmer.sim.branch5Check(__glimmer.state).score.ember) === e0 + CFG.C.kinds.mg.w, '冷卻內再撳 → 唔計');
+    ok(r.e === e0 + CFG.OW && r.at > 0 && /冷卻\d+s/.test(r.txt), `DEV「浮動開 game」→ 火苗 +${CFG.OW}（一局）＋冷卻`, r);
+    await dclick('dev-overlay-game'); ok(await E(() => Glimmer.sim.branch5Check(__glimmer.state).score.ember) === e0 + CFG.OW, '冷卻內再撳 → 唔計');
     r = await E(() => __glimmer.evo.overlayOpenGame(Date.now() + 3600e3)); ok(r.ok, '__glimmer.evo.overlayOpenGame(t)（fpet-bridge 用）→ ok', r);
   }
 

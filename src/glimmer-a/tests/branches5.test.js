@@ -301,10 +301,11 @@ console.log('⑫ v8 火苗：浮動團絨撳兩下開 game ＝ 一局小遊戲')
 {
   const O = C.overlayMg; let T = new Date(2026, 9, 20, 12).getTime(); S.setNowFn(() => T); HOUR = DAY;
   ok(O.enabled === true && O.score == null && O.cooldownSec > 0, 'config overlayMg：開、及格分、cooldown', JSON.stringify(O));
-  const s = pet('sprout'); let r = S.overlayOpenGame(s, T); const b = s.evo.b5.sprout;
-  ok(r.ok && b.ember === C.kinds.mg.w && b.all === 1 && r.reward.score === P.mg.passScore && s.mg.plays === 1, `一局 → 火苗 +${C.kinds.mg.w}、獎勵＝及格一局`, JSON.stringify([b, r]));
-  r = S.overlayOpenGame(s, T + (O.cooldownSec - 1) * 1000); ok(!r.ok && r.reason === 'cooldown' && s.evo.b5.sprout.ember === C.kinds.mg.w, `${O.cooldownSec - 1}s 內再開 → 唔計`);
-  r = S.overlayOpenGame(s, T + O.cooldownSec * 1000); ok(r.ok && s.evo.b5.sprout.ember === 2 * C.kinds.mg.w, `${O.cooldownSec}s 後 → 再計一局`);
+  const OW = P.minigames2.routePtsPerGame == null ? C.kinds.mg.w : P.minigames2.routePtsPerGame, s = pet('sprout');   // 遊策 E：浮動局每局 routePtsPerGame（同小遊戲 v2 共用每日上限）
+  let r = S.overlayOpenGame(s, T); const b = s.evo.b5.sprout;
+  ok(r.ok && b.ember === OW && b.all === 1 && r.reward.score === P.mg.passScore && s.mg.plays === 1, `一局 → 火苗 +${OW}、獎勵＝及格一局`, JSON.stringify([b, r]));
+  r = S.overlayOpenGame(s, T + (O.cooldownSec - 1) * 1000); ok(!r.ok && r.reason === 'cooldown' && s.evo.b5.sprout.ember === OW, `${O.cooldownSec - 1}s 內再開 → 唔計`);
+  r = S.overlayOpenGame(s, T + O.cooldownSec * 1000); ok(r.ok && s.evo.b5.sprout.ember === 2 * OW, `${O.cooldownSec}s 後 → 再計一局`);
   ok(!S.overlayOpenGame(pet('egg'), T).ok, '光卵 → 唔計');
   { O.enabled = false; ok(S.overlayOpenGame(pet('sprout'), T).reason === 'off', 'config 關 → 唔計'); O.enabled = true; }
   { const t = pet('sprout'); S.overlayOpenGame(t, T); const u = S.deserialize(S.serialize(t), T); ok(u.mg.overlayAt === T, 'cooldown 跟存檔'); }
