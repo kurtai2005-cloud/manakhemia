@@ -252,3 +252,20 @@
 - 新飾品：櫻桃髮夾 cherry（只畫 3 view × S/M/L），25 形態 1055 clip／4674 幀全部 render。全部 Pillow／numpy，冇用 AI，v3 色盤，alpha 0/255。備份：`_backups/pre_attach_20261101/`。
 - 新形態擴充：`attach/FORMS_EXTRA.json`（data-only；example 檔＋ENGINE_ATTACH §12）；species_concept 16 個 route×stage dry-run（寫 /tmp）全部套到 6 件飾品。
 <!-- ATTACH-LOG-END -->
+
+<!-- SPECIES-CONCEPT-LOG-START -->
+## 2026-11-01 09:19 HKT 團絨變種族概念＋HD-2D 風格方向（遊美，概念，未交遊程）
+- `tools/build_species_concept.py` → `sprites/tuanrong/species_concept/`：9 原創種族（守夜者 44／靜光 48）、絨跳小特徵、進化鏈、扮醒 kit、lineup、場景 mockup、`SPECIES_CONCEPT.md`、`species.json`。
+- `species_concept/style_directions/`：夢幻柔光／繪本水彩／玻璃糖果 三板＋比較圖＋`STYLE_OPTIONS.md`。
+- 全部 Pillow／numpy，冇用 AI；sprite v3、alpha 0/255；`check` 0 error；重跑 byte-identical。冇改 atlas／CLIPS.json。
+<!-- SPECIES-CONCEPT-LOG-END -->
+
+<!-- STYLE-DIRECTIONS-4-7-LOG:BEGIN (2026-11-01 09:55 HKT) -->
+- species_concept/style_directions：新增風格 4 剪紙／5 毛絨／6 霓虹／7 琺瑯 board（style_4..7_board_2x.png）、1–3 重出 style_1..3_board_2x.png（加 2x inset），style_compare_all(.png/_half.png)；STYLE_OPTIONS.md 加 4–7 段。程序生成（Pillow/numpy），冇 AI、冇 repo 變動。工具 `tools/build_species_concept.py styles7`。
+<!-- STYLE-DIRECTIONS-4-7-LOG:END -->
+
+<!-- FROM-REF-TUNED-LOG:BEGIN (2026-11-01 12:20 HKT) -->
+- species_concept/from_ref/tuned：Kurt [pt92u] 確認參考圖係佢自己 AI 生成、可 100% 跟足 → 24 隻 fine tune 成遊戲用 64px（乾淨色盤、1px 深外框、同階同體量、地線 y=61、修 F1/G1 星天線、B3/C1 燈泡位、A2/A3 泡泡、H2 閃粉、H3 細節）＋ 4 幀 idle（bob／眨眼）。from_ref/feeltest：canvas2D 手感測試頁（H1–H4 場景、輕按換寵物）。腳本 tools/build_from_ref_tuned.py、tools/build_from_ref_feeltest.py。FROM_REF.md：擁有權已確認。numpy／Pillow，冇 AI 生圖。
+- 2026-11-01 13:15 HKT：Kurt [pt93u] 要比較尺寸 → tuned_80／tuned_96（由原圖重建，燈泡／星／泡泡按尺寸程序放大；64 不變）；size_compare/size_compare_3x.png（H1，64/80/96 × A1/C2/B3，UI 參考帶）＋ 每尺寸 lineup；feeltest 加尺寸掣（?size=）。腳本 tools/build_from_ref_sizecompare.py。建議 80px。
+- 2026-11-01 13:25 HKT：Kurt [pt94u] 定咗 80px 做正式版 → tuned_80：24 隻全部有眨眼（11 隻手放眼位 EYES[80]）、低對比 JPEG 雜點清理、80px 手畫 7×7 圓燈泡；ENGINE_80.md、atlas/pets_idle_80.png+json、bulb_anchors_80.json、lineup_80_4x.png、blink_check_3x.png；feeltest 預設 80。腳本 tools/build_from_ref_engine80.py。staging：/workspace/from_ref_80-staging.zip（未 commit／push）。
+<!-- FROM-REF-TUNED-LOG:END -->

@@ -1,0 +1,481 @@
+{
+ "source": "Kurt 參考圖（Kurt 自己用 AI 生成，擁有權已確認 [pt92u]）",
+ "size": [
+  80,
+  80
+ ],
+ "pivot": [
+  40,
+  77
+ ],
+ "pivotRule": "(w/2, h-3)",
+ "idle": {
+  "frames": 4,
+  "frameW": 80,
+  "durationsMs": [
+   260,
+   180,
+   260,
+   140
+  ],
+  "note": "0 原、1 上半身壓低 1px、2 原、3 眨眼（冇眨眼＝同 0）"
+ },
+ "creatures": {
+  "A1": {
+   "scale": 0.2721,
+   "colors": 27,
+   "outline": "#123c6c",
+   "glowTint": "#a0dff8",
+   "mass": 1937,
+   "stamps": 0,
+   "bulb": "(40,12)",
+   "bulbXY": [
+    40,
+    12
+   ],
+   "eyesHand": true,
+   "noiseFixed": 19,
+   "name": "滴滴",
+   "file": "sprites/A1_80.png",
+   "idle": "idle/A1_idle.png",
+   "blink": true
+  },
+  "A2": {
+   "scale": 0.2595,
+   "colors": 34,
+   "outline": "#1c1b50",
+   "glowTint": "#a2d1f5",
+   "mass": 2326,
+   "stamps": 8,
+   "bulb": "(44,17)",
+   "bulbXY": [
+    43,
+    17
+   ],
+   "eyesHand": false,
+   "noiseFixed": 22,
+   "name": "泡泡鰭",
+   "file": "sprites/A2_80.png",
+   "idle": "idle/A2_idle.png",
+   "blink": true
+  },
+  "A3": {
+   "scale": 0.2641,
+   "colors": 36,
+   "outline": "#1b184c",
+   "glowTint": "#adc7f3",
+   "mass": 2599,
+   "stamps": 9,
+   "bulb": "(44,9)",
+   "bulbXY": [
+    43,
+    9
+   ],
+   "eyesHand": true,
+   "noiseFixed": 41,
+   "name": "紋紋鰭",
+   "file": "sprites/A3_80.png",
+   "idle": "idle/A3_idle.png",
+   "blink": true
+  },
+  "B1": {
+   "scale": 0.2287,
+   "colors": 24,
+   "outline": "#0e2961",
+   "glowTint": "#beecff",
+   "mass": 1834,
+   "stamps": 2,
+   "bulb": "own light",
+   "bulbXY": [
+    56,
+    22
+   ],
+   "eyesHand": false,
+   "noiseFixed": 25,
+   "name": "燈燈滴",
+   "file": "sprites/B1_80.png",
+   "idle": "idle/B1_idle.png",
+   "blink": true
+  },
+  "B2": {
+   "scale": 0.2631,
+   "colors": 32,
+   "outline": "#1f3660",
+   "glowTint": "#9ee8df",
+   "mass": 2218,
+   "stamps": 5,
+   "bulb": "(40,6)",
+   "bulbXY": [
+    40,
+    6
+   ],
+   "eyesHand": true,
+   "noiseFixed": 26,
+   "name": "水母咪",
+   "file": "sprites/B2_80.png",
+   "idle": "idle/B2_idle.png",
+   "blink": true
+  },
+  "B3": {
+   "scale": 0.2245,
+   "colors": 28,
+   "outline": "#182956",
+   "glowTint": "#aacae2",
+   "mass": 2480,
+   "stamps": 1,
+   "bulb": "(44,9) 彎莖→(44,17)",
+   "bulbXY": [
+    44,
+    9
+   ],
+   "eyesHand": false,
+   "noiseFixed": 16,
+   "name": "珊瑚角鯨",
+   "file": "sprites/B3_80.png",
+   "idle": "idle/B3_idle.png",
+   "blink": true
+  },
+  "C1": {
+   "scale": 0.2672,
+   "colors": 28,
+   "outline": "#7a2d4b",
+   "glowTint": "#fdc345",
+   "mass": 1922,
+   "stamps": 0,
+   "bulb": "(21,16) 彎莖→(24,26)",
+   "bulbXY": [
+    21,
+    16
+   ],
+   "eyesHand": true,
+   "noiseFixed": 26,
+   "name": "火仔",
+   "file": "sprites/C1_80.png",
+   "idle": "idle/C1_idle.png",
+   "blink": true
+  },
+  "C2": {
+   "scale": 0.2521,
+   "colors": 32,
+   "outline": "#3d132c",
+   "glowTint": "#fcc366",
+   "mass": 2295,
+   "stamps": 3,
+   "bulb": "(42,25)",
+   "bulbXY": [
+    42,
+    25
+   ],
+   "eyesHand": false,
+   "noiseFixed": 20,
+   "name": "火角獸",
+   "file": "sprites/C2_80.png",
+   "idle": "idle/C2_idle.png",
+   "blink": true
+  },
+  "C3": {
+   "scale": 0.2391,
+   "colors": 29,
+   "outline": "#371128",
+   "glowTint": "#fbc559",
+   "mass": 2202,
+   "stamps": 7,
+   "bulb": "(43,6)",
+   "bulbXY": [
+    43,
+    6
+   ],
+   "eyesHand": false,
+   "noiseFixed": 23,
+   "name": "焦焦獸",
+   "file": "sprites/C3_80.png",
+   "idle": "idle/C3_idle.png",
+   "blink": true
+  },
+  "D1": {
+   "scale": 0.2259,
+   "colors": 32,
+   "outline": "#1f0d21",
+   "glowTint": "#face5e",
+   "mass": 1860,
+   "stamps": 3,
+   "bulb": "(29,20)",
+   "bulbXY": [
+    29,
+    20
+   ],
+   "eyesHand": true,
+   "noiseFixed": 25,
+   "name": "熔熔石",
+   "file": "sprites/D1_80.png",
+   "idle": "idle/D1_idle.png",
+   "blink": true
+  },
+  "D2": {
+   "scale": 0.2217,
+   "colors": 29,
+   "outline": "#1f0d20",
+   "glowTint": "#fad566",
+   "mass": 2151,
+   "stamps": 1,
+   "bulb": "(31,15)",
+   "bulbXY": [
+    31,
+    15
+   ],
+   "eyesHand": true,
+   "noiseFixed": 19,
+   "name": "尖尖岩",
+   "file": "sprites/D2_80.png",
+   "idle": "idle/D2_idle.png",
+   "blink": true
+  },
+  "D3": {
+   "scale": 0.2244,
+   "colors": 33,
+   "outline": "#3f132a",
+   "glowTint": "#fcc04b",
+   "mass": 2437,
+   "stamps": 5,
+   "bulb": "(40,9)",
+   "bulbXY": [
+    40,
+    9
+   ],
+   "eyesHand": false,
+   "noiseFixed": 30,
+   "name": "火翼仔",
+   "file": "sprites/D3_80.png",
+   "idle": "idle/D3_idle.png",
+   "blink": true
+  },
+  "E1": {
+   "scale": 0.2418,
+   "colors": 28,
+   "outline": "#47132a",
+   "glowTint": "#f8d598",
+   "mass": 1890,
+   "stamps": 0,
+   "bulb": "(40,18)",
+   "bulbXY": [
+    40,
+    18
+   ],
+   "eyesHand": false,
+   "noiseFixed": 39,
+   "name": "紅火糰",
+   "file": "sprites/E1_80.png",
+   "idle": "idle/E1_idle.png",
+   "blink": true
+  },
+  "E2": {
+   "scale": 0.2532,
+   "colors": 31,
+   "outline": "#47132e",
+   "glowTint": "#fbb85e",
+   "mass": 2224,
+   "stamps": 5,
+   "bulb": "(42,25)",
+   "bulbXY": [
+    42,
+    25
+   ],
+   "eyesHand": false,
+   "noiseFixed": 30,
+   "name": "火尾鬼",
+   "file": "sprites/E2_80.png",
+   "idle": "idle/E2_idle.png",
+   "blink": true
+  },
+  "E3": {
+   "scale": 0.2324,
+   "colors": 32,
+   "outline": "#1d091c",
+   "glowTint": "#fac756",
+   "mass": 2263,
+   "stamps": 2,
+   "bulb": "(26,22)",
+   "bulbXY": [
+    26,
+    22
+   ],
+   "eyesHand": true,
+   "noiseFixed": 24,
+   "name": "熔岩獸",
+   "file": "sprites/E3_80.png",
+   "idle": "idle/E3_idle.png",
+   "blink": true
+  },
+  "F1": {
+   "scale": 0.2324,
+   "colors": 24,
+   "outline": "#1a1038",
+   "glowTint": "#ffde6e",
+   "mass": 1749,
+   "stamps": 0,
+   "bulb": "星星天線 (40,22)",
+   "bulbXY": [
+    40,
+    22
+   ],
+   "eyesHand": true,
+   "noiseFixed": 21,
+   "name": "星星彈",
+   "file": "sprites/F1_80.png",
+   "idle": "idle/F1_idle.png",
+   "blink": true
+  },
+  "F2": {
+   "scale": 0.2499,
+   "colors": 29,
+   "outline": "#1e1640",
+   "glowTint": "#f1dd94",
+   "mass": 2152,
+   "stamps": 12,
+   "bulb": "(42,25)",
+   "bulbXY": [
+    41,
+    25
+   ],
+   "eyesHand": false,
+   "noiseFixed": 32,
+   "name": "星耳咪",
+   "file": "sprites/F2_80.png",
+   "idle": "idle/F2_idle.png",
+   "blink": true
+  },
+  "F3": {
+   "scale": 0.2559,
+   "colors": 26,
+   "outline": "#231740",
+   "glowTint": "#fbdf8c",
+   "mass": 2394,
+   "stamps": 0,
+   "bulb": "(24,36)",
+   "bulbXY": [
+    24,
+    36
+   ],
+   "eyesHand": true,
+   "noiseFixed": 17,
+   "name": "月亮糰",
+   "file": "sprites/F3_80.png",
+   "idle": "idle/F3_idle.png",
+   "blink": true
+  },
+  "G1": {
+   "scale": 0.2341,
+   "colors": 24,
+   "outline": "#211740",
+   "glowTint": "#ffde6e",
+   "mass": 1759,
+   "stamps": 0,
+   "bulb": "星星天線 (35,22)",
+   "bulbXY": [
+    35,
+    22
+   ],
+   "eyesHand": false,
+   "noiseFixed": 31,
+   "name": "夜夜糰",
+   "file": "sprites/G1_80.png",
+   "idle": "idle/G1_idle.png",
+   "blink": true
+  },
+  "G2": {
+   "scale": 0.2579,
+   "colors": 26,
+   "outline": "#211439",
+   "glowTint": "#f9e18c",
+   "mass": 2156,
+   "stamps": 8,
+   "bulb": "(42,24)",
+   "bulbXY": [
+    42,
+    24
+   ],
+   "eyesHand": false,
+   "noiseFixed": 20,
+   "name": "舉星咪",
+   "file": "sprites/G2_80.png",
+   "idle": "idle/G2_idle.png",
+   "blink": true
+  },
+  "G3": {
+   "scale": 0.2514,
+   "colors": 29,
+   "outline": "#20153d",
+   "glowTint": "#f5e195",
+   "mass": 2416,
+   "stamps": 3,
+   "bulb": "(31,21)",
+   "bulbXY": [
+    31,
+    21
+   ],
+   "eyesHand": true,
+   "noiseFixed": 20,
+   "name": "月角咪",
+   "file": "sprites/G3_80.png",
+   "idle": "idle/G3_idle.png",
+   "blink": true
+  },
+  "H1": {
+   "scale": 0.2221,
+   "colors": 25,
+   "outline": "#26163c",
+   "glowTint": "#f3d396",
+   "mass": 1849,
+   "stamps": 0,
+   "bulb": "(40,27)",
+   "bulbXY": [
+    40,
+    27
+   ],
+   "eyesHand": false,
+   "noiseFixed": 8,
+   "name": "月角仔",
+   "file": "sprites/H1_80.png",
+   "idle": "idle/H1_idle.png",
+   "blink": true
+  },
+  "H2": {
+   "scale": 0.2292,
+   "colors": 29,
+   "outline": "#261644",
+   "glowTint": "#ffec96",
+   "mass": 2188,
+   "stamps": 5,
+   "bulb": "(40,14)",
+   "bulbXY": [
+    40,
+    14
+   ],
+   "eyesHand": false,
+   "noiseFixed": 15,
+   "name": "環月精",
+   "file": "sprites/H2_80.png",
+   "idle": "idle/H2_idle.png",
+   "blink": true
+  },
+  "H3": {
+   "scale": 0.2276,
+   "colors": 32,
+   "outline": "#1f143b",
+   "glowTint": "#fff0aa",
+   "mass": 2612,
+   "stamps": 5,
+   "bulb": "own light",
+   "bulbXY": [
+    41,
+    22
+   ],
+   "eyesHand": true,
+   "noiseFixed": 13,
+   "name": "銀河靈",
+   "file": "sprites/H3_80.png",
+   "idle": "idle/H3_idle.png",
+   "blink": true
+  }
+ }
+}
