@@ -60,14 +60,15 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   ok(await E(() => document.querySelectorAll('#mg2 button, #mg2 .btn, #mg2 span, #mg2 div').length === 0), '冇 DOM／文字掣（全 canvas）');
   const r0 = await E(() => __qa.mg2.rect()); ok(r0.h > 600 && r0.w / r0.h > 0.55 && r0.w / r0.h < 0.58, '直向 9:16 填滿', r0);
   await shot('bounce-ready'); await E(() => __qa.mg2.quit());
+  { const hs = await E(() => { const o = []; for (let sd = 1; sd <= 30; sd++) { __qa.mg2.start('bounce', sd); const st = __qa.mg2.state(); o.push(__qa.mg2.game().mods.filter(m => m.hard).length); __qa.mg2.quit(); __qa.mg2.close(); } return o; });
+    ok(hs.length === 30 && hs.every(n => n <= 1) && hs.some(n => n === 1), '畫面局：每局 2 變化最多 1 個難（紅圈）', hs.join('')); }
   await E(() => __qa.mg2.start('bounce', 4242, ['wind', 'gold'])); await E(() => __qa.mg2.skipReady());
   await mdown(90, 280); await page.waitForTimeout(500); s = await S(); ok(s.phase === 'charge' && s.power > 0.2 && s.clip === 'catch_reach', '真手指撳住葉 → 儲力（團絨蹲低）', { p: s.power, c: s.clip });
   await shot('bounce-charge');
   await page.waitForTimeout(500); await mup(); s = await S(); ok(s.phase === 'air' && s.jumps === 1, '放手 → 彈起', s.phase);
   await mdown(40, 200); await mmove(30, 200); await page.waitForTimeout(250); s = await S(); ok(s.pet.x < 88, '半空拖手指 → 團絨向左', s.pet); await shot('bounce-air'); await mup();
-  await E(() => __qa.mg2.step(3, g => { if (g.phase === 'air') g.move(175, 0); }));
+  const seen = await E(() => { const cl = new Set(); __qa.mg2.step(4, g => { if (g.phase === 'air') g.move(175, 0); else cl.add(g.clip); }); return [...cl]; });
   s = await S(); ok(s.falls >= 1, '跌出葉外', s);
-  const seen = await E(() => { const cl = new Set(); __qa.mg2.step(2, g => cl.add(g.clip)); return [...cl]; });
   ok(seen.includes('getup') || seen.includes('act_cool') || seen.includes('walk'), '跌低 → 起身／扮冇事 → 行返', seen);
   const w0 = await shards(), g0 = await E(() => __qa.sys12b.games().plays);
   await E(() => { const g = __qa.mg2.game(); g.score = 21; }); await E(() => __qa.mg2.step(45)); s = await S();
@@ -78,7 +79,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   console.log('# ③ 花園捉迷藏');
   await dev('dev-s12-ghide'); s = await S(); ok(s && s.kind === 'ghide' && s.covers.length >= 5, 'DEV 開花園捉迷藏；遮擋物 ' + (s && s.covers.length));
-  await E(() => __qa.mg2.quit()); await E(() => __qa.mg2.start('ghide', 777, ['fog', 'calm'])); await E(() => __qa.mg2.skipReady()); s = await S();
+  await E(() => __qa.mg2.quit()); await E(() => __qa.mg2.start('ghide', 777, ['time', 'calm'])); await E(() => __qa.mg2.skipReady()); s = await S();
   ok(new Set(s.covers.map(c => c.type)).size >= 2, '遮擋物種類混合', s.covers.map(c => c.type));
   await shot('ghide-seek');
   const wrong = s.covers.findIndex((c, i) => i !== s.at); let xy = await E(i => __qa.mg2.coverXY(i), wrong);
