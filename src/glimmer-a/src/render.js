@@ -701,6 +701,7 @@
         const ctx = this.ctx;
         if (this.flash > 0) { ctx.globalAlpha = Math.min(1, this.flash); ctx.fillStyle = '#fff6d0'; ctx.fillRect(0, 0, W * k, H * k); ctx.globalAlpha = 1; }
         if (this.b3bOverlay) this.b3bOverlay(ctx, k, dt);   // 3b 進化大場面（全畫面）
+        if (this.s2Overlay) this.s2Overlay(ctx, k, dt);     // 4a 孵化第一眼（全畫面）
         const ms = performance.now() - t0; this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
         return;
       }
@@ -758,6 +759,7 @@
       if (post) this.vignette(ctx);
       if (this.flash > 0) { ctx.globalAlpha = Math.min(1, this.flash); ctx.fillStyle = '#fff6d0'; ctx.fillRect(0, 0, W * k, H * k); ctx.globalAlpha = 1; }
       if (this.b3bOverlay) this.b3bOverlay(ctx, k, dt);   // 3b 進化大場面（全畫面）
+      if (this.s2Overlay) this.s2Overlay(ctx, k, dt);     // 4a 孵化第一眼（全畫面）
       const ms = performance.now() - t0; this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
     }
 
@@ -798,6 +800,7 @@
       this.petX = gx - CX;
       if (beh) this.drawGarden(x, view, c, beh);
       const lift = useBeh ? beh.lift : c.lift;
+      if (this.s2Layer) this.s2Layer(x, 'back', c, base);    // 4a 細佬／蛋（團絨後面）
       if (this.b3bLayer) this.b3bLayer(x, 'back', c, base);   // 3b 訪客／擺設／道具（y ≤ 寵物腳底）
       // 影子
       x.fillStyle = hidePet ? 'rgba(0,0,0,0)' : 'rgba(10,20,20,0.35)';
@@ -832,6 +835,7 @@
         x.drawImage(sprite, ox(sx), oy(sy));
         this.petDraw = { x: sx, y: sy, w: an.w, h: an.h, bud: { x: sx + an.bud.x, y: sy + an.bud.y }, footY: base + c.lift };
       }
+      if (this.s2Layer) this.s2Layer(x, 'front', c, base);   // 4a 細佬（前）／蛋＋孵夢泡泡／場面疊層
       if (this.b3bLayer) this.b3bLayer(x, 'front', c, base);   // 3b：y > 寵物腳底嘅訪客／道具＋預兆（閃剪影／怪夢泡泡）
       const pd = this.petDraw;
       // 寵物光（絨芽）——狀態光色

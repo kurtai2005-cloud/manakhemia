@@ -119,7 +119,8 @@
     }
     function arrived(c) {
       const s = S(), now = G.now();
-      if (c.who === 'snail_postman') { c.letter = { st: 'fly', t: 0 }; }
+      if (c.who === 'snail_postman' && G.s2Arrived && G.s2Arrived(c.who)) { /* 4a：今次送細佬蛋（唔派信）*/ }
+      else if (c.who === 'snail_postman') { c.letter = { st: 'fly', t: 0 }; }
       else if (c.who === 'mushroom_granny') { c.seed = { t: 0 }; V.seedGift(s); const tip = V.LINES.tips[Math.floor(Math.random() * V.LINES.tips.length)]; UI.toast(V.LINES.seed, 2400); setTimeout(() => say(tip, { sec: 4 }), 900); if (G.save) G.save(); }
       else if (c.who === 'firefly_vendor') { say(V.LINES.vendor, { sec: 3 }); }
       note('arrived', { who: c.who });
@@ -442,6 +443,7 @@
     { const css = document.createElement('style'); css.textContent = 'body.b3b-evo #ui>*:not(#hit):not(#hdFx),body.b3b-evo #b3bTray{visibility:hidden!important}'; document.head.appendChild(css); }
 
     /* 每幀 */
+    G.b3bSpawn = (who, o) => spawn(who, o);   // 4a：蝸牛郵差送細佬蛋
     G.b3bTick = function (dt) {
       dt = Math.min(0.1, dt || 0); sceneTick(dt);
       if (!SC.cur) visitTick(dt); else if (VS.cur) VS.cur.ct += dt * 1000;

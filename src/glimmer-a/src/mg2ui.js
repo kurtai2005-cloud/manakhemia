@@ -81,13 +81,16 @@
       if (why) { if (UI.toast) UI.toast(WHY[why]); return false; }
       if (G.s12close && G.s12 && G.s12.open) G.s12close(); const pop = document.getElementById('pop'); if (pop) pop.style.display = 'none';
       const sd = (seed >>> 0) || G.fixedMg2Seed || ((Date.now() & 0xffffff) | 1);
-      H0 = { kind, g: M.create(kind, sd, mods ? { mods } : null), ph: 'ready', rt: 0, res: null, seed: sd, ptr: null, quitR: false };
+      H0 = { kind, g: M.create(kind, sd, mods ? { mods } : null), ph: 'ready', rt: 0, res: null, seed: sd, ptr: null, quitR: false, duo: !!opt.duo };   // 4a：opt.duo＝細佬雙人（唔出碎、唔食額）
       G.mg2Busy = true; box.style.display = 'flex'; fit(); SND('mg-start'); draw(); return true;
     }
     function finish(quit) {
       if (!H0 || H0.ph === 'result') return null; const g = H0.g;
       if (quit) { close(); return null; }
-      const r = X2.gameFinish(S(), H0.kind, g.score, now(), H0.kind === 'ghide' ? { firstHits: g.firstHits } : {});
+      let r;
+      if (H0.duo) { const a = (C2[H0.kind] && C2[H0.kind].starsAt) || []; let st = 0; for (let i = 0; i < a.length; i++) if (g.score >= a[i]) st = i + 1;   // 4a 雙人：唔經 gameFinish（冇碎、冇額、冇紀錄）
+        const d = G.s2DuoDone ? G.s2DuoDone(g.score) : null; r = { kind: H0.kind, value: g.score, stars: Math.min(3, st), rewarded: false, want: 0, shards: 0, duo: true, duoN: d && d.n | 0 }; }
+      else r = X2.gameFinish(S(), H0.kind, g.score, now(), H0.kind === 'ghide' ? { firstHits: g.firstHits } : {});
       r.mods = g.mods.map(m => m.k); r.hard = g.mods.filter(m => m.hard).map(m => m.k); r.seed = H0.seed; H0.res = r; H0.ph = 'result'; H0.rt = 0; G.lastMg2 = r;
       SND('mg-result', { win: r.stars >= 2 }); if (UI.processEvents) UI.processEvents(); G.save(); return r;
     }
@@ -148,6 +151,7 @@
       if (g.phase === 'charge') { ctx.strokeStyle = g.power >= M2.flipPower ? '#ffcf3a' : '#fff6dc'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, py - 14, 20, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * g.power); ctx.stroke(); }
       if (g.phase === 'air' && p.y < 0) { ctx.fillStyle = '#fff6dc'; ctx.beginPath(); ctx.moveTo(p.x, 32); ctx.lineTo(p.x - 4, 38); ctx.lineTo(p.x + 4, 38); ctx.fill(); }
       drawPet(p.x, py, g.clip, g.flip, g.face); petEmote(g, p.x, py);
+      if (H0.duo && G.s2DrawKid) G.s2DrawKid(ctx, Math.min(170, L.x + lw / 2 + 22), M2.groundY, g.phase === 'air', T);   // 4a 細佬喺葉邊打氣
     }
     function cover(c, i, g) {
       const sh = c.shake > 0 ? Math.sin(T * 60) * 2 * Math.min(1, c.shake * 4) : c.wig > 0 ? Math.sin(T * 30) * 1.5 : 0, x = c.x + c.dx + sh, y = c.y; ctx.save(); if (c.tried && !(g.phase === 'reveal' && i === g.at)) ctx.globalAlpha = 0.55;
@@ -201,9 +205,11 @@
       for (let i = 0; i < 3; i++) { const on = i < r.stars, pop = on ? Math.min(1, Math.max(0, (H0.rt - i * 0.25) * 4)) : 1; star(50 + i * 40, 92 - (i === 1 ? 8 : 0), (on ? 14 * (0.6 + 0.4 * pop) : 12), on && pop > 0); }
       digits(r.value, 90 + String(r.value).length * 6 - 4, 124, 4, '#fff6dc', true);
       const sh = img('shard', 'systems12/icon_star_shard_16.png'), n = r.rewarded ? r.shards : 0;
-      if (r.rewarded) { for (let i = 0; i < Math.max(1, n); i++) { const x = 90 - (Math.max(1, n) - 1) * 10 + i * 20; ctx.globalAlpha = n ? 1 : 0.3; if (sh) ctx.drawImage(sh, x - 8, 156, 16, 16); else { ctx.fillStyle = '#9fe0ff'; ctx.fillRect(x - 5, 159, 10, 10); } ctx.globalAlpha = 1; } }
+      if (r.duo) { ctx.fillStyle = '#ff9ab8'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('♥ 細佬親密 +' + (r.duoN | 0), 90, 170); ctx.textAlign = 'left'; }
+      else if (r.rewarded) { for (let i = 0; i < Math.max(1, n); i++) { const x = 90 - (Math.max(1, n) - 1) * 10 + i * 20; ctx.globalAlpha = n ? 1 : 0.3; if (sh) ctx.drawImage(sh, x - 8, 156, 16, 16); else { ctx.fillStyle = '#9fe0ff'; ctx.fillRect(x - 5, 159, 10, 10); } ctx.globalAlpha = 1; } }
       else { ctx.globalAlpha = 0.35; if (sh) ctx.drawImage(sh, 82, 156, 16, 16); ctx.globalAlpha = 1; ctx.strokeStyle = '#ff8a8a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(80, 174); ctx.lineTo(100, 154); ctx.stroke(); }
       drawPet(90, 262, g.clip, 0, 1); petEmote(g, 90, 262);
+      if (H0.duo && G.s2DrawKid) G.s2DrawKid(ctx, 130, 262, true, T);
       if (H0.rt > 0.6) { const a = 0.5 + 0.5 * Math.sin(T * 5); ctx.globalAlpha = a; ctx.fillStyle = '#fff6dc'; ctx.beginPath(); ctx.arc(90, 296, 5, 0, 7); ctx.fill(); ctx.fillRect(88, 296, 4, 10); ctx.globalAlpha = 1; }
     }
     function draw() {

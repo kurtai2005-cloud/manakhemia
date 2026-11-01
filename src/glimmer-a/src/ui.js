@@ -224,6 +224,7 @@
       node.appendChild(sec);
     }
     if (G.b3bDex) { const cs = G.b3bDex(); if (cs) node.appendChild(cs); }   // 3b 圖鑑「團絨日記」四格小故事（進化節點解鎖）
+    if (G.s2Dex) { const cs = G.s2Dex(); if (cs) node.appendChild(cs); }   // 4a 圖鑑「團絨教錯咗乜」
     modal({ title: '圖鑑', kind: 'dex', node, buttons: [{ text: '關閉', primary: true }] });
   }
   UI.openDex = openDex;
@@ -337,6 +338,7 @@
       const a = toArt(e);
       if (G.mode === 'minigame') { if (mgs) mgs.target = a.x; return; }
       if (G.b3bTap && G.b3bTap(a, e)) return;   // 3b：撳訪客／信／擺設
+      if (G.s2Tap && G.s2Tap(a, e)) return;     // 4a：撳細佬／蛋、拖團絨去哄喊
       if (e.isPrimary !== false && ptrs.size) { ptrs.clear(); endNuzzle(press); press = null; }   // 新手勢嘅第一隻手指／滑鼠：清走漏咗 up 嘅舊 pointer（保險）
       if (ptrs.size) { ptrs.add(e.pointerId); return; }   // 第 2 隻手指：唔當新一下撳（唔洗走第 1 隻嘅 press／磨蹭）
       ptrs.add(e.pointerId); closePop(); down = true; press = null; try { hit.setPointerCapture(e.pointerId); } catch (er) { }   // 拖出 #hit（例：經過 HUD）都繼續收 move／up

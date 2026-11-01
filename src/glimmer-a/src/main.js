@@ -117,6 +117,7 @@
   if (NS.mg2ui && NS.mg2 && NS.sys12b) NS.mg2ui.install(G, NS);   // 小遊戲 v2（docs-gdd/minigames-v2.md）：彈彈葉／花園捉迷藏／追螢火
   if (NS.touchui && NS.touch) NS.touchui.install(G, NS);   // 第 3 批 3a：觸摸互動＋扮醒呆＋提示排隊（docs-gdd/batch3-fun-spec.md）
   if (NS.b3bui && NS.visit) NS.b3bui.install(G, NS);   // 第 3 批 3b：朋友訪客＋進化大場面＋團絨日記四格（docs-gdd/batch3-fun-spec.md §③④；?b3b=0 全停）
+  if (NS.s2ui && NS.series2) NS.s2ui.install(G, NS);   // 第 4 批 4a：細佬（docs-gdd/series2-4a4b-spec.md；?s2=0 全停）
   if (NS.hd2dui && NS.uisfx) NS.hd2dui.install(G, NS);   // HD-2D UI 換膚（遊美 ui-kit-hd2d）＋ ui8 v3 音效 hook（遊音 §7.11；?hdui=0 → 舊 UI）
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
@@ -143,6 +144,7 @@
       if (G.sysTick) G.sysTick(dtW);
       if (G.touchTick) G.touchTick(dtReal);
       if (G.b3bTick) G.b3bTick(dtReal);   // 3b：訪客／大場面／預兆（實時）
+      if (G.s2Tick) G.s2Tick(dtReal);     // 4a：細佬（實時）
       saveT += dtReal; if (saveT >= P.autosaveSec) { saveT = 0; G.save(); }
       UI.update(dtW);
       const view = G.tickWorld(dtW);
