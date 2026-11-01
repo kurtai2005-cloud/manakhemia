@@ -25,6 +25,8 @@
 
   // ── step hook（方案 A：事件系統掛喺度；sim 本身唔依賴 events.js）──
   const stepHooks = [];
+  /* 5a.1：細佬做主養（s.fam.km）→ 團絨欄位凍結（唔長大、唔判路線、唔化光），照顧（肚餓／便便／瞓）照行；唔加 §7 路線分 */
+  const KM = (s) => !!(s && s.fam && s.fam.km);
   function addStepHook(fn) { if (!stepHooks.includes(fn)) stepHooks.push(fn); }
 
   // ── 新存檔 ──
@@ -145,7 +147,7 @@
   const careHooks = [];
   function addCareHook(fn) { if (!careHooks.includes(fn)) careHooks.push(fn); }
   function noteB5(s, kind, h, wx, ownW) {
-    if (s.stage === 'egg') return; const b = b5Bucket(s), C = BR();
+    if (s.stage === 'egg' || KM(s)) return; const b = b5Bucket(s), C = BR();
     for (let i = 0; i < careHooks.length; i++) careHooks[i](s, kind, h);   // systems12：每日委託／親密度等（kind＝feed／play／mg／rinse／poop／poopQuick／lull／petSleep）
     h = h == null ? nowHour() : h; wx = wx == null ? weatherNow() : normWeather(wx === false ? 'clear' : wx);
     b.all++;
@@ -158,13 +160,13 @@
   }
   // v7／v8 晶角：上線（開 app／離開 ≥ crystal.loginGapSec 再返嚟）→ 開 windowSec 窗口；上線嗰陣有便便 → 有便便上線 +1；窗口內便便清到 0 → 即清上線 +1（每次上線最多 1）
   function noteLogin(s, t) {
-    if (!s || s.stage === 'egg') return null; t = t == null ? nowMs() : t; const E = evoOf(s), had = (s.poops | 0) > 0;
+    if (!s || s.stage === 'egg' || KM(s)) return null; t = t == null ? nowMs() : t; const E = evoOf(s), had = (s.poops | 0) > 0;
     E.login = { at: t, had, done: false, stage: s.stage };
     if (had) { const b = b5Bucket(s); b.loginPoop = (b.loginPoop | 0) + 1; }   // 舊存檔 bucket 冇呢欄
     return E.login;
   }
   function checkQuickClean(s) {
-    const E = evoOf(s), L = E.login; if (!L || !L.had || L.done || (s.poops | 0) > 0 || L.stage === 'egg') return false;
+    if (KM(s)) return false; const E = evoOf(s), L = E.login; if (!L || !L.had || L.done || (s.poops | 0) > 0 || L.stage === 'egg') return false;
     if (nowMs() - L.at > BR().crystal.windowSec * 1000) return false;
     L.done = true; const b = b5Bucket(s, L.stage); b.quickLogin = (b.quickLogin | 0) + 1;
     for (let i = 0; i < careHooks.length; i++) careHooks[i](s, 'poopQuick', nowHour());   // systems12：v7 即清上線 → 委託「poopQuick」（唔係額外照顧；清便便本身已經以 'poop' 通知）
@@ -172,7 +174,7 @@
   }
   // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night；kind＝feed／play／rinse／poop／mg（§7 分數）
   function noteCare(s, h, kind, rain, ownW) {
-    if (s.stage === 'egg') return; const E = evoOf(s), c = E.care[s.stage] || (E.care[s.stage] = { all: 0, night: 0 });
+    if (s.stage === 'egg' || KM(s)) return; const E = evoOf(s), c = E.care[s.stage] || (E.care[s.stage] = { all: 0, night: 0 });
     c.all++; if (isNightHour(h == null ? nowHour() : h)) c.night++;
     noteB5(s, kind, h, rain, ownW); noteDay(s);
     cqCare(s);
@@ -188,7 +190,7 @@
     if (counted) { E.lull.n++; noteB5(s, 'lull', h); noteDay(s); }
     s.ev.push({ type: 'lull', counted, n: E.lull.n }); return { ok: true, counted, n: E.lull.n };
   }
-  function notePetSleep(s, h, rain) { if (!s || s.stage === 'egg' || !s.sleeping) return false; noteB5(s, 'petSleep', h, rain); noteDay(s); return true; }
+  function notePetSleep(s, h, rain) { if (!s || s.stage === 'egg' || !s.sleeping || KM(s)) return false; noteB5(s, 'petSleep', h, rain); noteDay(s); return true; }
   function noteClean(s, dt) {                            // 晶角：清潔度時間加權平均（每階段）
     if (s.stage === 'egg' || !(dt > 0)) return; const E = evoOf(s), c = E.cl[s.stage] || (E.cl[s.stage] = { sum: 0, sec: 0 });
     c.sum += s.needs.clean * dt; c.sec += dt;
@@ -222,7 +224,7 @@
     if (N > 0 && !r.gapOk && top.n + second.n > 0) { const u = branchRoll(s, 'b5draw'), pTop = top.n / (top.n + second.n); pick = u < pTop ? top.id : second.id; r.draw = { a: top.id, b: second.id, pTop: +pTop.toFixed(4), roll: +u.toFixed(4) }; }
     r.ok = r.cqOk && r.topOk; r.form = r.ok ? pick : null; return r;
   }
-  function noteEvent(s, id) { if (!s || s.stage === 'egg') return; const E = evoOf(s), m = E.evIn[s.stage] || (E.evIn[s.stage] = {}); m[id] = (m[id] || 0) + 1; }   // events.js trigger 掛
+  function noteEvent(s, id) { if (!s || s.stage === 'egg' || KM(s)) return; const E = evoOf(s), m = E.evIn[s.stage] || (E.evIn[s.stage] = {}); m[id] = (m[id] || 0) + 1; }   // events.js trigger 掛
   function careShare(s) {                                // 夜晚照顧佔比（careStages＝芽崽＋跳跳期）
     const E = evoOf(s); let all = 0, night = 0; EV6.careStages.forEach(st => { const c = E.care[st]; if (c) { all += c.all; night += c.night; } });
     return { all, night, share: all ? night / all : 0 };
@@ -297,6 +299,7 @@
   const fadeHooks = [];
   function addFadeHook(fn) { if (!fadeHooks.includes(fn)) fadeHooks.push(fn); }
   function fade(s, nowMs) {
+    if (KM(s)) return { ok: false, reason: 'kidMain' };
     if (s.stage !== 'elder' || !s.fadeReady) return { ok: false, reason: 'notReady' };
     const m = { gen: s.gen || 1, form: s.form, at: nowMs || Date.now(), ageSec: Math.round(s.ageSec) };
     for (let i = 0; i < fadeHooks.length; i++) fadeHooks[i](s, m);   // systems12：紀念冊記低親密度／日記
@@ -366,7 +369,7 @@
     if (slp) n.energy += P.sleepRegenPerHour * P.traitSleepRegenMul * hr;
     else n.energy -= P.decayPerHour.energy * dm * hr;
     for (const k of KEYS) n[k] = clamp(n[k], 0, 100);
-    noteClean(s, dt);
+    const km = KM(s); if (!km) noteClean(s, dt);
     if (slp && n.energy >= P.sleepWakeAt) { s.sleeping = false; n.energy = 100; s.ev.push({ type: 'wake' }); }
 
     s.poopTimer += dt;
@@ -383,6 +386,7 @@
     }
 
     if (s.poops > 0) { const a = poopAges(s); for (let i = 0; i < a.length; i++) a[i] = Math.min(1e9, a[i] + dt); } else if (s.poopAge && s.poopAge.length) s.poopAge = [];
+    if (km) { for (let i = 0; i < stepHooks.length; i++) stepHooks[i](s, dt, opts); return; }   // 5a.1 細佬主養：唔長大／唔結算 CQ／唔預告
     if (!isUnwell(s) || opts.offline) s.growthSec += dt * gm;
     if (s.stage !== 'egg') cqDecay(s, dt);
     checkForeshadow(s);
@@ -406,7 +410,7 @@
   function offlineGrow(s, Tsec) {
     const G = Math.min(Math.max(0, Tsec || 0), P.offlineGrowCapH * 3600), from = s.stage, sec = P.stageSec[s.stage];
     const r = { G, from, to: from, up: false };
-    if (!(G > 0) || sec == null) return r;
+    if (!(G > 0) || sec == null || KM(s)) return r;
     if (s.stage === 'elder') {
       s.growthSec = Math.min(sec, s.growthSec + G);
       if (s.growthSec >= sec && !s.fadeReady) { s.fadeReady = true; s.ev.push({ type: 'fadeReady', form: s.form }); r.up = true; r.to = 'fade'; }

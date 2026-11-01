@@ -76,11 +76,13 @@ console.log('④ 做主養／搬房');
   s.stage = 'elder'; s.form = 'moon'; s.growthSec = 5; const g2 = s.gen;
   const r = F.makeMain(s, 'tr1', NOW, env); ok(r.ok && s.gen === 1 && s.form === 'tide' && F.resOf(s, 'tr' + g2) && F.resOf(s, 'tr' + g2).snap.form === 'moon', '對調：水珠做返主養、月眠搬入同一間房', { gen: s.gen, form: s.form });
   ok(F.isMain(s, 'tr1') && F.tree(s, NOW).nodes.find(n => n.id === 'tr1').state === 'main', '族譜皇冠');
-  ok(F.canMain(s, kidOld.id, NOW).reason === 'raising', '細佬養緊（蛋）→ 成年細佬唔可以做主養');
-  // 細佬成年後先可以
-  const p2 = S2.st(s); Object.assign(p2, { phase: 'kid', line: 'B', rel: 'family', intim: 90, hatchDay: S2.dayNum(NOW) - 20 }); S2.st(s);
-  const r2 = F.makeMain(s, kidOld.id, NOW, env); ok(r2.ok && S2.st(s).line === kidOld.line && F.st(s).main === 'kid:' + kidOld.id && F.isMain(s, kidOld.id) && F.resOf(s, p2.fid), '成年細佬做主養（帶出花園；原本細佬搬入屋）', r2);
-  ok(s.form === 'tide' && s.stage === 'elder', '團絨照做大佬（浮動只顯示團絨）');
+  // 5a.1：細佬做主養唔使等 pet2 蛋；pet2 嘅蛋唔郁
+  const ph0 = S2.st(s).phase; ok(F.canMain(s, kidOld.id, NOW).ok, '5a.1：住客成年細佬可以做主養（pet2 有蛋都得）');
+  const r2 = F.makeMain(s, kidOld.id, NOW, env); const o2 = F.st(s);
+  ok(r2.ok && o2.km && o2.km.id === kidOld.id && o2.main === 'kid:' + kidOld.id && F.isMain(s, kidOld.id) && !F.resOf(s, kidOld.id), '細佬做主養（入花園中間位）', r2);
+  ok(F.resOf(s, 'tr1') && F.resOf(s, 'tr1').kind === 'tr' && S2.st(s).phase === ph0, '原主養水珠搬入屋做住客；pet2 唔郁', S2.st(s).phase);
+  ok(s.form === 'moon' && s.gen === g2 && s.stage === 'elder', '浮動：顯示屋企最新一代團絨（月眠）', { form: s.form, gen: s.gen });
+  ok(F.tree(s, NOW).nodes.find(n => n.id === kidOld.id).state === 'main' && !F.tree(s, NOW).nodes.some(n => n.id === 'tr' + g2 && n.state === 'main'), '族譜皇冠跟細佬');
   ok(F.moveRoom(s, 'tr' + g2, 'room2').ok && F.resOf(s, 'tr' + g2).room === 'room2' && F.moveRoom(s, 'tr' + g2, 'room4').reason === 'locked', '搬房：已開房 OK、未開房鎖');
 }
 console.log('⑤ 家具一件一間房＋手信擺設');
@@ -113,6 +115,33 @@ console.log('⑧ 節奏（Lv5 約 60–80 日）');
   const trForms = ['soft', 'tide', 'soft', 'moon', 'dust'];
   for (let i = 0; i < 9 && F.lvOf(xp) < 5; i++) { day += i === 0 ? 30 : 20; xp += 100; if (!seen.has('t' + trForms[i % 5])) { seen.add('t' + trForms[i % 5]); xp += 10; } for (const f of kidForms(i)) if (!seen.has(f)) { seen.add(f); xp += 10; } xp += i < 6 ? 10 : 0; }
   ok(day >= 55 && day <= 85, 'Lv5 約 ' + day + ' 日（60–80）', { day, xp });
+}
+console.log('⑨ 5a.1 細佬做主養（遊策裁定 3 條）');
+{ const SYS = require('../src/systems.js');
+  const s = fam(); const p = S2.st(s); p.hatchDay = S2.dayNum(NOW) - 20; F.scan(s, NOW, { kidFk: 'A3' }); const o = F.st(s);
+  ok(F.isPet2Kid(s, p.fid) && F.canMain(s, p.fid, NOW).ok, '成年 pet2 細佬可以做主養');
+  p.hatchDay = S2.dayNum(NOW) - 1; ok(F.canMain(s, p.fid, NOW).reason === 'kidYoung', '未成年細佬唔得（kidYoung）'); p.hatchDay = S2.dayNum(NOW) - 20;
+  const fid = p.fid, r = F.makeMain(s, fid, NOW, Object.assign({ kidFk: 'B3' }, env));
+  // 規則 1：細佬入主位、團絨搬入屋、pet2 空出嚟等新蛋
+  ok(r.ok && r.from === 'garden' && o.km && o.km.id === fid && o.km.fk === 'B3' && S2.st(s).phase === 'none', '①細佬做主養：pet2 空返', S2.st(s));
+  ok(F.resOf(s, 'tr1') && F.resOf(s, 'tr1').kind === 'tr' && F.resOf(s, 'tr1').room === 'room1', '①原主養團絨（靜光）搬入房 1 長住');
+  ok(o.offer && o.offer.due === S2.dayNum(NOW) + 1 && F.choices(s, NOW).tr.reason === 'kidMain' && F.choices(s, NOW).kid.ok, '①聽日新蛋：只揀到細佬蛋（團絨蛋要團絨做返主養）', F.choices(s, NOW));
+  F.st(s).offer = { due: 0, at: 1 }; ok(F.pick(s, 'tr', NOW, env).ok === false && F.pick(s, 'kid', NOW, env).ok && o.km && o.km.id === fid && S2.st(s).phase === 'egg', '①揀細佬蛋 → pet2 有新蛋、主養仍係細佬');
+  // 規則 2：照顧循環（肚餓／便便／瞓）照行；冇 §7 路線分、冇碎、唔長大、唔化光
+  const snap = routeSnap(s), g0 = s.growthSec, st0 = s.stage; s.needs.hunger = 60; s.poops = 0; s.poopTimer = 0;
+  for (let i = 0; i < 360; i++) SIM.step(s, 60, {});
+  ok(s.needs.hunger < 60 && s.stage === st0 && s.growthSec === g0, '②主養細佬：肚餓會跌、唔長大', { h: s.needs.hunger, g: s.growthSec });
+  ok(s.poops > 0 || s.poopTimer > 0, '②便便循環照行', { poops: s.poops, t: s.poopTimer });
+  s.needs.hunger = 30; const f = SIM.feed(s, D.FOODS[0].id); ok(f.ok && s.needs.hunger > 30 && routeSnap(s) === snap, '②餵食得、§7 路線唔郁');
+  ok(SIM.fade(s, NOW).ok === false && SYS.grant(s, 5, 'mg', NOW) === 0 && SYS.grant(s, 5, 'quest', NOW) === 0, '②唔化光、小遊戲／委託唔出碎');
+  ok(S2.noteElder(s, NOW) === false, '②唔觸發 4a 郵差送蛋');
+  // 規則 3：浮動只顯示團絨（s 嘅團絨欄位＝屋企最新團絨）
+  ok(s.stage === 'elder' && s.form === 'tide' && F.latestTr(o).id === 'tr1', '③浮動照顯示團絨（水珠靜光）', { st: s.stage, f: s.form });
+  // 對調返團絨：細佬帶住照顧欄位返屋
+  s.needs.hunger = 42; const back = F.makeMain(s, 'tr1', NOW, env);
+  ok(back.ok && !o.km && o.main === null && F.resOf(s, fid) && F.resOf(s, fid).care.needs.hunger === 42 && s.form === 'tide' && F.isMain(s, 'tr1'), '揀返團絨做主養：細佬（連照顧狀態）返屋');
+  ok(F.makeMain(s, fid, NOW, env).ok && s.needs.hunger === 42, '再做主養：照顧狀態還原');
+  const t = SIM.deserialize(SIM.serialize(s), NOW); ok(t.fam.km && t.fam.km.id === fid && t.fam.main === 'kid:' + fid, '序列化保留細佬主養');
 }
 console.log((fail ? '✗' : '✓') + ' long5a ' + pass + '/' + (pass + fail));
 if (fail) process.exit(1);

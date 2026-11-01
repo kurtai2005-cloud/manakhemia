@@ -31,7 +31,7 @@
   };
   /* 5a 有效（其餘係之後批次：5b 遠足／職業、5c 遺傳；新訪客／家具包／E 系未有美術＝記低解鎖，下批先生效） */
   const LIVE = { room2: 1, room3: 1, room4: 1, family_title: 1, tree_gold: 1 };
-  const LATER = { visitor_new: '下批', inherit_fast: '5c', furniture_pack1: '下批', kid_series_E: '下批', job_cap_plus1: '5b', furniture_pack2: '下批' };
+  const LATER = { visitor_new: '下批', inherit_fast: '5c', furniture_pack1: '下批', kid_series_E: '4a 已有', job_cap_plus1: '5b', furniture_pack2: '下批' };
   const ROOMS = ['room1', 'room2', 'room3', 'room4'];
   const ROOM = {
     room1: { zh: '屋仔', lv: 1, motif: 'house' },
@@ -51,7 +51,7 @@
   const LINES = {
     offer: '蝸牛郵差：「有新蛋！」揀一隻嚟養（最多養 2 隻）', moveTr: '{name}搬咗入{room}', moveKid: '{name}搬咗入{room}', newTr: '新一代團絨蛋嚟咗！', newKid: '新細佬蛋嚟咗！今晚團絨會攬住佢瞓',
     full: '屋企住滿咗（每間房 4 隻）— 升家族等級開新房', raising: '細佬養緊', mainYoung: '主養未成年（團絨到靜光先可以）', notAdult: '未成年',
-    madeMain: '{name}做咗主養！', kidOut: '{name}出咗花園陪團絨（做主養）', roomGift: '新房「{room}」開咗！送咗 1 件手信「{sv}」', lvUp: '家族升到 Lv{lv}！',
+    madeMain: '{name}做咗主養！', kidOut: '{name}做咗主養！{tr}搬咗入屋住', kidMain: '細佬做緊主養（揀返團絨做主養先孵團絨蛋）', kidYoung: '細佬未成年（成年家人先可以做主養）', mainAlready: '佢已經係主養', roomGift: '新房「{room}」開咗！送咗 1 件手信「{sv}」', lvUp: '家族升到 Lv{lv}！',
   };
   const DAY = 86400000;
   const dayNum = SR.dayNum;
@@ -74,6 +74,8 @@
     if (!obj(o.svPlaced)) o.svPlaced = {};
     if (o.offer != null && !(obj(o.offer) && Number.isFinite(+o.offer.due))) o.offer = null; if (o.offer === undefined) o.offer = null;
     if (o.main != null && typeof o.main !== 'string') o.main = null; if (o.main === undefined) o.main = null;
+    if (o.km != null && !(obj(o.km) && typeof o.km.id === 'string' && obj(o.km.snap))) o.km = null; if (o.km === undefined) o.km = null;   // 5a.1：細佬做主養（花園中間＝主養位）
+    if (o.km) { o.km.kind = 'kid'; o.km.fk = String(o.km.fk || 'S2'); o.main = 'kid:' + o.km.id; } else if (o.main && o.main.startsWith('kid:')) o.main = null;   // 5a 舊「細佬喺 pet2 做主養」→ 冇效
     if (!Array.isArray(o.lvQ)) o.lvQ = []; o.lvQ = o.lvQ.filter(x => Number.isFinite(+x)).map(x => clamp(x | 0, 2, 10)).slice(-9);
     if (!Array.isArray(o.mem)) o.mem = [];
     if (!Array.isArray(o.log)) o.log = []; if (o.log.length > 60) o.log.splice(0, o.log.length - 60);
@@ -113,6 +115,17 @@
   const kidAdult = (s, now) => { const p = SR.st(s); return p.phase === 'kid' && p.rel === 'family' && SR.stageOf(s, now) === 'S6'; };
   const kidRaising = (s, now) => { const p = SR.st(s); return p.phase === 'egg' || p.phase === 'due' || (p.phase === 'kid' && !kidAdult(s, now)); };
   const trAdult = (s) => s.stage === 'elder';
+  /* 5a.1 細佬做主養：o.km＝{ id, line, fk, name, bro, snap（pet2 細佬資料）}；s 嘅團絨欄位凍結（＝屋企最新嗰隻團絨，畀浮動顯示），
+     照顧欄位（肚餓／便便／瞓）由細佬用；sim 見 s.fam.km 就唔長大、唔加 §7 路線分、唔出碎 */
+  const kmOf = (s) => st(s).km || null;
+  const CARE_KEYS = ['needs', 'sleeping', 'poops', 'poopTimer', 'poopAge', 'withdrawn'];
+  function snapCare(s) { const o = {}; for (const k of CARE_KEYS) if (s[k] !== undefined) o[k] = clone(s[k]); return o; }
+  function applyCare(s, c) {
+    if (obj(c) && obj(c.needs)) { for (const k of CARE_KEYS) if (c[k] !== undefined) s[k] = clone(c[k]); return; }
+    s.needs = { hunger: 100, mood: 100, clean: 100, energy: 100 }; s.sleeping = false; s.poops = 0; s.poopTimer = 0; s.poopAge = []; s.withdrawn = { on: false, fed: false, played: false };
+  }
+  const latestTr = (o) => o.res.filter(r => r.kind === 'tr').sort((a, b) => (b.gen | 0) - (a.gen | 0) || (b.at || 0) - (a.at || 0))[0] || null;
+  const kidRow = (bro) => (parseInt(String(bro || 'tr1').slice(2), 10) || 1) + 1;
 
   /* 每 tick：補派身份、成年（+50＋排新蛋）、新圖鑑形態（+10）、新家具（+5）；ctx.kidFk＝而家細佬美術 key；回傳發生咗乜 */
   function scan(s, now, ctx) {
@@ -143,7 +156,7 @@
   /* 房：邊個住邊間（房 1：主養團絨＋養緊／出咗花園嘅細佬＋住客） */
   function occupants(s, room) {
     const o = st(s), p = SR.st(s), out = [];
-    if (room === 'room1') { out.push({ id: trId(s), kind: 'tr', live: 'main' }); if (p.phase === 'kid') out.push({ id: p.fid || 'kid', kind: 'kid', live: 'kid' }); }
+    if (room === 'room1') { const K = o.km; out.push(K ? { id: K.id, kind: 'kid', live: 'main' } : { id: trId(s), kind: 'tr', live: 'main' }); if (p.phase === 'kid') out.push({ id: p.fid || 'kid', kind: 'kid', live: 'kid' }); }
     for (const r of o.res) if (r.room === room) out.push({ id: r.id, kind: r.kind, live: null });
     return out;
   }
@@ -159,7 +172,7 @@
   const offerReady = (s, now) => { const f = st(s).offer; return !!f && dayNum(now) >= f.due; };
   function choices(s, now) {
     const p = SR.st(s), full = houseFull(s);
-    const tr = !trAdult(s) ? { ok: false, reason: 'mainYoung', zh: LINES.mainYoung } : full ? { ok: false, reason: 'full', zh: LINES.full } : { ok: true };
+    const tr = kmOf(s) ? { ok: false, reason: 'kidMain', zh: LINES.kidMain } : !trAdult(s) ? { ok: false, reason: 'mainYoung', zh: LINES.mainYoung } : full ? { ok: false, reason: 'full', zh: LINES.full } : { ok: true };
     let kid; if (kidRaising(s, now)) kid = { ok: false, reason: 'raising', zh: LINES.raising };
     else if (p.phase === 'kid' && full) kid = { ok: false, reason: 'full', zh: LINES.full };   // 成年細佬要搬入屋先有位
     else kid = { ok: true };
@@ -185,7 +198,7 @@
   function pick(s, which, now, env) {
     const o = st(s), c = choices(s, now); env = env || {};
     if (which === 'tr') {
-      if (!c.tr.ok) return { ok: false, reason: c.tr.reason, zh: c.tr.zh };
+      if (!c.tr.ok || o.km) return { ok: false, reason: c.tr.reason || 'kidMain', zh: c.tr.zh || LINES.kidMain };
       const mv = moveInTr(s, now, env.trFk); if (!mv.ok) return mv;
       const g = Math.max(o.genMax, s.gen || 1) + 1; o.genMax = g; if (env.rebirth) env.rebirth(s, now, g); else { s.gen = g; s.stage = 'egg'; s.form = null; s.growthSec = 0; s.fadeReady = false; }
       o.offer = null; o.main = o.main && o.main.startsWith('kid:') ? o.main : null; note(o, 'pick', { which, moved: mv.res.id, gen: g }, now);
@@ -195,31 +208,50 @@
       if (!c.kid.ok) return { ok: false, reason: c.kid.reason, zh: c.kid.zh };
       const p = SR.st(s); let moved = null; if (p.phase === 'kid') { const mv = moveInKid(s, now, env.kidFk); if (!mv.ok) return mv; moved = mv.res; }
       const house = p.house, bro = trId(s); s.pet2 = { phase: 'egg', gotAt: now || 1, d0: dayNum(now), elderAt: p.elderAt || now || 1, fid: 'k' + (++o.kidN), bro }; if (house) s.pet2.house = house; SR.st(s);
-      o.offer = null; if (o.main && o.main.startsWith('kid:')) o.main = null; note(o, 'pick', { which, moved: moved && moved.id }, now);
+      o.offer = null; note(o, 'pick', { which, moved: moved && moved.id }, now);
       return { ok: true, which, moved };
     }
     return { ok: false, reason: 'which' };
   }
   const resOf = (s, id) => st(s).res.find(r => r.id === id) || null;
-  /* 做主養（屋內撳成年住客） */
+  const entryOf = (s, id) => resOf(s, id) || (kmOf(s) && kmOf(s).id === id ? kmOf(s) : null);
+  const isPet2Kid = (s, id) => { const p = SR.st(s); return p.phase === 'kid' && !!id && id === kidId(s); };
+  /* 做主養（屋內住客／花園成年細佬）。5a.1 遊策：細佬做主養 → 佔主養位（花園中間），舊主養團絨（靜光）搬入屋長住，pet2 空返等新蛋 */
   function canMain(s, id, now) {
-    const r = resOf(s, id); if (!r) return { ok: false, reason: 'notRes' };
-    if (r.kind === 'tr') return trAdult(s) ? { ok: true } : { ok: false, reason: 'mainYoung', zh: LINES.mainYoung };
-    return kidRaising(s, now) ? { ok: false, reason: 'raising', zh: LINES.raising } : { ok: true };
+    const K = kmOf(s); if (K ? K.id === id : id === trId(s)) return { ok: false, reason: 'already', zh: LINES.mainAlready };
+    const r = resOf(s, id), p2 = !r && isPet2Kid(s, id); if (!r && !p2) return { ok: false, reason: 'notRes' };
+    if (r && r.kind === 'tr') return K || trAdult(s) ? { ok: true } : { ok: false, reason: 'mainYoung', zh: LINES.mainYoung };
+    if (p2 && !kidAdult(s, now)) return { ok: false, reason: 'kidYoung', zh: LINES.kidYoung };
+    if (!K && !trAdult(s)) return { ok: false, reason: 'mainYoung', zh: LINES.mainYoung };
+    return { ok: true };
   }
   function makeMain(s, id, now, env) {
-    const c = canMain(s, id, now); if (!c.ok) return Object.assign({ ok: false }, c); const o = st(s), r = resOf(s, id), room = r.room; env = env || {};
-    o.res = o.res.filter(x => x !== r);
-    if (r.kind === 'tr') {
+    const c = canMain(s, id, now); if (!c.ok) return Object.assign({ ok: false }, c); const o = st(s), K = o.km, r = resOf(s, id); env = env || {};
+    if (r && r.kind === 'tr') {
+      const room = r.room; o.res = o.res.filter(x => x !== r);
+      if (K) {   // 細佬主養返入屋（佢嘅照顧欄位跟埋走）→ 揀嗰隻團絨返主養
+        const kr = Object.assign({}, K, { room, at: now || 1, care: snapCare(s) }); applyTr(s, r.snap); s.gen = r.gen || s.gen; o.res.push(kr); o.adults[kr.id] = o.adults[kr.id] || now || 1; o.km = null; o.main = null;
+        note(o, 'main', { id, swap: kr.id }, now); return { ok: true, kind: 'tr', name: r.name, swapped: kr };
+      }
       const old = { id: trId(s), kind: 'tr', gen: s.gen || 1, form: s.form, fk: env.trFk || 'sprout', name: trName(s.form), room, at: now || 1, snap: snapTr(s) };
-      applyTr(s, r.snap); s.gen = r.gen || s.gen; o.res.push(old); o.adults[old.id] = o.adults[old.id] || now || 1; if (o.main && !o.main.startsWith('kid:')) o.main = null;
+      applyTr(s, r.snap); s.gen = r.gen || s.gen; o.res.push(old); o.adults[old.id] = o.adults[old.id] || now || 1; o.main = null;
       note(o, 'main', { id, swap: old.id }, now); return { ok: true, kind: 'tr', name: r.name, swapped: old };
     }
-    const p = SR.st(s); let old = null;
-    if (p.phase === 'kid') { old = { id: kidId(s), kind: 'kid', gen: 0, line: p.line, fk: env.kidFk || (p.line ? p.line + '3' : 'S2'), name: kidName(p.line), bro: p.bro || null, room, at: now || 1, snap: snapKid(s) }; o.res.push(old); }
-    applyKid(s, r.snap); o.main = 'kid:' + r.id; note(o, 'main', { id, swap: old && old.id }, now); return { ok: true, kind: 'kid', name: r.name, swapped: old };
+    const p = SR.st(s); let ent, room = null, from;
+    if (r) { o.res = o.res.filter(x => x !== r); ent = r; room = r.room; from = 'house'; }
+    else { ent = { id, kind: 'kid', gen: 0, line: p.line, fk: env.kidFk || (p.line ? p.line + '3' : 'S2'), name: kidName(p.line), bro: p.bro || null, at: now || 1, snap: snapKid(s) }; from = 'garden';
+      const house = p.house; s.pet2 = { phase: 'none', freedAt: now || 1 }; if (house) s.pet2.house = house; SR.st(s); if (!o.offer) o.offer = { due: dayNum(now) + 1, at: now || 1, why: id }; }   // pet2 空返：聽日新蛋（5a 新蛋二揀一）
+    let old;
+    if (K) old = Object.assign({}, K, { at: now || 1, care: snapCare(s) });
+    else old = { id: trId(s), kind: 'tr', gen: s.gen || 1, form: s.form, fk: env.trFk || 'sprout', name: trName(s.form), at: now || 1, snap: snapTr(s) };
+    old.room = room && count(s, room) < CAP ? room : (freeRoom(s, 'room1') || room || 'room1');
+    o.res = o.res.filter(x => x.id !== old.id); o.res.push(old); o.adults[old.id] = o.adults[old.id] || now || 1;
+    if (!K) { const lt = latestTr(o); if (lt && lt.id !== trId(s)) { applyTr(s, lt.snap); s.gen = lt.gen || s.gen; } }   // 浮動：顯示屋企最新嗰隻團絨
+    o.km = { id: ent.id, kind: 'kid', gen: 0, line: ent.line || null, fk: ent.fk, name: ent.name, bro: ent.bro || null, at: now || 1, snap: ent.snap };
+    applyCare(s, ent.care || null); s.sleeping = false; o.main = 'kid:' + ent.id;
+    note(o, 'main', { id, swap: old.id, from }, now); return { ok: true, kind: 'kid', name: ent.name, swapped: old, from, tr: old.kind === 'tr' ? old.name : null };
   }
-  const isMain = (s, id) => { const o = st(s); return o.main ? o.main === 'kid:' + id : id === trId(s); };
+  const isMain = (s, id) => { const o = st(s); return o.km ? o.km.id === id : !o.main && id === trId(s); };
   function moveRoom(s, id, room) {
     const r = resOf(s, id); if (!r) return { ok: false, reason: 'notRes' }; if (!ROOMS.includes(room) || !roomOpen(s, room)) return { ok: false, reason: 'locked' };
     if (r.room === room) return { ok: false, reason: 'same' }; if (count(s, room) >= CAP) return { ok: false, reason: 'full' }; r.room = room; return { ok: true, room };
@@ -266,7 +298,8 @@
     const add = (n) => { if (!nodes.some(x => x.id === n.id)) nodes.push(n); };
     for (const m of s.memorial || []) add({ id: 'tr' + (m.gen || 1), kind: 'tr', gen: m.gen || 1, row: m.gen || 1, name: trName(m.form), form: m.form, tag: '化光', state: 'memorial' });
     for (const r of o.res) add({ id: r.id, kind: r.kind, gen: r.gen, row: r.kind === 'tr' ? r.gen : (parseInt(String(r.bro || 'tr1').slice(2), 10) || 1) + 1, name: r.name, fk: r.fk, form: r.form || null, line: r.line || null, room: r.room, tag: ROOM[r.room].zh, state: isMain(s, r.id) ? 'main' : 'house', bro: r.bro || null });
-    add({ id: trId(s), kind: 'tr', gen: s.gen || 1, row: s.gen || 1, name: s.stage === 'egg' ? '團絨蛋' : trName(s.form), form: s.form, fk: ctx.trFk || null, tag: s.stage === 'elder' ? '靜光' : '養緊', state: o.main ? 'garden' : 'main', raising: !trAdult(s) });
+    const K = o.km; if (K) add({ id: K.id, kind: 'kid', gen: 0, row: kidRow(K.bro), name: K.name, fk: K.fk, line: K.line, tag: '主養', state: 'main', raising: false, bro: K.bro || null });
+    if (!K) add({ id: trId(s), kind: 'tr', gen: s.gen || 1, row: s.gen || 1, name: s.stage === 'egg' ? '團絨蛋' : trName(s.form), form: s.form, fk: ctx.trFk || null, tag: s.stage === 'elder' ? '靜光' : '養緊', state: 'main', raising: !trAdult(s) });
     if (p.phase === 'egg' || p.phase === 'kid') { const id = kidId(s); add({ id, kind: 'kid', gen: 0, row: (parseInt(String(p.bro || trId(s)).slice(2), 10) || 1) + 1, name: p.phase === 'egg' ? '細佬蛋' : kidName(p.line), line: p.line, fk: ctx.kidFk || null, tag: p.phase === 'egg' ? '孵緊' : SR.STAGE_ZH[SR.stageOf(s, now)] || '', state: isMain(s, id) ? 'main' : 'garden', raising: kidRaising(s, now), bro: p.bro || null, lessons: (p.lessons || []).map(l => l.line) }); }
     for (const n of nodes) { if (n.kind === 'tr' && n.gen > 1) { const par = nodes.find(x => x.kind === 'tr' && x.gen === n.gen - 1); if (par) links.push([par.id, n.id]); } if (n.kind === 'kid') { const bro = n.bro || 'tr' + (n.row - 1); if (nodes.some(x => x.id === bro)) links.push([bro, n.id]); } }
     const rows = [...new Set(nodes.map(n => n.row))].sort((a, b) => a - b);
@@ -274,11 +307,11 @@
   }
   function summary(s, now) {
     const o = st(s); return { lv: o.lv, xp: o.xp, info: lvInfo(s), unlocked: unlockedIds(s), rooms: Object.fromEntries(ROOMS.map(k => [k, { open: roomOpen(s, k), n: count(s, k), deco: o.rooms[k].deco, gift: o.rooms[k].gift, slots: Object.assign({}, slotsOf(s, k)) }])),
-      res: o.res.map(r => ({ id: r.id, kind: r.kind, fk: r.fk, name: r.name, room: r.room })), offer: o.offer ? Object.assign({}, o.offer) : null, ready: offerReady(s, now), main: o.main, sv: Object.keys(o.sv), lvQ: o.lvQ.slice(), choices: choices(s, now) };
+      res: o.res.map(r => ({ id: r.id, kind: r.kind, fk: r.fk, name: r.name, room: r.room })), offer: o.offer ? Object.assign({}, o.offer) : null, ready: offerReady(s, now), main: o.main, km: o.km ? { id: o.km.id, fk: o.km.fk, name: o.km.name, line: o.km.line } : null, sv: Object.keys(o.sv), lvQ: o.lvQ.slice(), choices: choices(s, now) };
   }
 
   return { THRESH, XP, UNLOCKS, LIVE, LATER, ROOMS, ROOM, CAP, RAISE_MAX, SOUV, SV, DECO_SLOT, DECO_ZH, DECO_ANCHOR, DECO_PIN, TITLE, LINES, TR_KEYS, DAY,
     st, lvOf, lvInfo, unlockList, unlockedIds, has, roomOpen, addXp, syncRooms, giftPick, trId, kidId, kidAdult, kidRaising, trAdult, scan,
-    occupants, count, openRooms, freeRoom, houseFull, offerReady, choices, snapTr, applyTr, snapKid, applyKid, trName, kidName, moveInTr, moveInKid, pick, resOf, canMain, makeMain, isMain, moveRoom,
+    occupants, count, openRooms, freeRoom, houseFull, offerReady, choices, snapTr, applyTr, snapKid, applyKid, trName, kidName, moveInTr, moveInKid, pick, resOf, entryOf, isPet2Kid, kmOf, snapCare, applyCare, latestTr, canMain, makeMain, isMain, moveRoom,
     slotsOf, whereIs, take, cardState, place, blockers, duoGap, interactFrame, tree, summary };
 });

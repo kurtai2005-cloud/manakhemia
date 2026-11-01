@@ -87,7 +87,7 @@
 
   /* ── 攞蛋 ── */
   function noteElder(s, now) {                // 團絨首次到靜光 → 翌日送蛋（每個存檔一次；永遠最多 1 隻）
-    const o = st(s); if (o.phase !== 'none' || s.stage !== 'elder') return false;
+    const o = st(s); if (o.phase !== 'none' || s.stage !== 'elder' || (s.fam && s.fam.km)) return false;   // 5a.1：細佬做主養 → pet2 空位等 5a 新蛋（唔再郵差送）
     o.elderAt = now; o.dueDay = dayNum(now) + 1; o.phase = 'due'; note(o, 'elder', { day: o.dueDay }, now); return true;
   }
   const canDeliver = (s, now) => { const o = st(s); return o.phase === 'due' && dayNum(now) >= o.dueDay; };

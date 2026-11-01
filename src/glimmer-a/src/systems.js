@@ -90,6 +90,7 @@
   function walletDay(s, key) { const w = st(s).wallet; if (!w.days[key]) { w.days[key] = { q: 0, o: 0 }; const ks = Object.keys(w.days).sort(); while (ks.length > 4) delete w.days[ks.shift()]; } return w.days[key] || { q: 0, o: 0 }; }
   /* src：'quest' 或其他（'drop'／'mg'…）；回實際入帳數（可能 0）。dayKey 可指定（補發舊日委託 → 計返嗰日嘅上限，唔食今日） */
   function grant(s, amt, src, nowMs, dayKey) {
+    if (s && s.fam && s.fam.km && (src === 'mg' || src === 'quest')) return 0;   // 5a.1：細佬做主養唔出碎（浮動團絨／花園照舊）
     const W = C().wallet, key = dayKey || SIM.dayKey(nowMs), e = walletDay(s, key), w = st(s).wallet;
     const isQ = src === 'quest', sub = isQ ? W.questCap - e.q : W.otherCap - e.o, tot = SYS().stardustDailyCap - (e.q + e.o);
     const g = Math.max(0, Math.min(Math.floor(amt), sub, tot)); if (!g) return 0;
@@ -167,9 +168,9 @@
     return hit;
   }
   /* v10.2：摸頭（撳／長撳團絨）→ 只推委託「摸摸佢個頭」；唔經 sim.noteCare（唔計 CQ／路線照顧分／親密照顧分） */
-  function notePat(s, nowMs, ev) { if (!s || s.stage === 'egg' || s.sleeping) return null; return onCare(s, 'pat', nowMs == null ? SIM.nowMs() : nowMs, ev || (Array.isArray(s.ev) ? s.ev : null)); }
+  function notePat(s, nowMs, ev) { if (!s || s.stage === 'egg' || s.sleeping || (s.fam && s.fam.km)) return null; return onCare(s, 'pat', nowMs == null ? SIM.nowMs() : nowMs, ev || (Array.isArray(s.ev) ? s.ev : null)); }
   function addRoutePts(s, route, pts) {
-    if (!SYS().enabled || !D.BRANCH5.includes(route) || s.stage === 'egg') return false;
+    if (!SYS().enabled || !D.BRANCH5.includes(route) || s.stage === 'egg' || (s.fam && s.fam.km)) return false;
     const E = s.evo && typeof s.evo === 'object' ? s.evo : (s.evo = { evIn: {}, care: {} });
     const m = E.b5sys || (E.b5sys = {}), b = m[s.stage] || (m[s.stage] = {}); b[route] = +((b[route] || 0) + pts).toFixed(4); return true;
   }
@@ -185,7 +186,7 @@
   function tierOf(v) { return Math.max(0, Math.min(BC().lines.length, Math.floor(v / BC().tierEvery))); }
   /* 加親密度（照顧 +1／長撳 +2）：每日加最多 dailyGainCap；回實際加咗幾多 */
   function bondAdd(s, n, nowMs, why, ev) {
-    if (s.stage === 'egg') return 0; const B = BC(), b = bondOf(s), key = SIM.dayKey(nowMs);
+    if (s.stage === 'egg' || (s.fam && s.fam.km)) return 0; const B = BC(), b = bondOf(s), key = SIM.dayKey(nowMs);
     if (b.day !== key) { b.day = key; b.gain = 0; }
     const g = Math.max(0, Math.min(n, B.dailyGainCap - b.gain, B.max - b.v)); if (!g) return 0;
     const t0 = tierOf(b.v); b.v = +(b.v + g).toFixed(2); b.gain += g;
