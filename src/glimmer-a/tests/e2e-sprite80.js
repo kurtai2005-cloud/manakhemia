@@ -111,6 +111,33 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     ok(r.umb === null && r.tell === null, 'keepOld：leaf_umbrella／tell_* → 舊 sprite（道具美術）', r); }
   await idle(); I = await info(); ok(I.used && I.kind === 'idle' && !I.ph, '返 idle → 80px idle 幀（冇 ph）', I);
 
+  console.log('# ⚙「試新寵」：強制顯示 80px 寵物（唔改進度、存 settings、唔使 URL）');
+  await stage('sprout'); await idle(); I = await info(); ok(I.key === null && !I.used && I.tryPet === null, 'sprout 預設：舊 sprite、tryPet 關', [I.key, I.tryPet]);
+  const prog0 = await E(() => { const s = __glimmer.state; return JSON.stringify({ st: s.stage, f: s.form, g: s.growthSec, cq: s.cq }); });
+  await page.click('#gear'); await page.waitForSelector('[data-testid=trypet]');
+  { const bx = await E(() => ['trypet-prev', 'trypet-next', 'trypet-off'].map(t => { const r = document.querySelector('[data-testid=' + t + ']').getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }));
+    ok(bx.every(([w, h]) => w >= 48 && h >= 48), '◀ ▶ 關 掣 ≥48px', bx); }
+  const lab = () => E(() => document.querySelector('[data-testid=trypet-label]').textContent);
+  ok(/^關/.test(await lab()), '預設顯示「關」', await lab());
+  await page.click('[data-testid=trypet-next]'); await page.waitForTimeout(300);
+  ok((await lab()) === 'A1 滴滴', '▶ → A1 滴滴', await lab());
+  I = await info(); ok(I.tryPet === 'A1' && I.key === 'A1' && I.used && I.drawn === 'A1', 'sprout 都畫 A1（80px）', [I.tryPet, I.key, I.used]);
+  await page.click('[data-testid=trypet-next]'); await page.click('[data-testid=trypet-next]'); await page.click('[data-testid=trypet-prev]'); await page.waitForTimeout(300);
+  I = await info(); ok(I.key === 'A2' && I.used && (await lab()).indexOf('A2') === 0, '▶▶◀ → A2', [I.key, await lab()]);
+  await page.click('[data-testid=trypet-off]'); await page.click('[data-testid=trypet-prev]'); await page.waitForTimeout(300);
+  I = await info(); ok(I.key === 'H3' && I.used, '關 → ◀ 循環去 H3', I.key);
+  await page.click('[data-testid=trypet-prev]'); await page.waitForTimeout(200);
+  const prog1 = await E(() => { const s = __glimmer.state; return JSON.stringify({ st: s.stage, f: s.form, g: s.growthSec, cq: s.cq }); });
+  ok(JSON.parse(prog1).st === 'sprout' && JSON.parse(prog1).f === JSON.parse(prog0).f, '試新寵唔改 stage／form', [prog0, prog1]);
+  await E(() => { const b = [...document.querySelectorAll('.btn')].find(x => x.textContent === '關閉'); if (b) b.click(); });
+  await page.screenshot({ path: SHOTS + 'sprite80-trypet-H2.png' });
+  await page.goto(BASE + '?' + Q); await page.waitForFunction(() => window.__glimmer && __glimmer.spr80Load); await E(() => __glimmer.spr80Load); await E(() => { window.__noSaveOnHide = true; }); await idle(); await page.waitForTimeout(300);
+  I = await info(); ok(I.tryPet === 'H2' && I.key === 'H2' && I.used, '重開（冇 URL param）→ 試新寵 H2 保留', [I.tryPet, I.key]);
+  await page.click('#gear'); await page.waitForSelector('[data-testid=trypet]'); ok((await lab()).indexOf('H2') === 0, '設定重開顯示 H2', await lab());
+  await page.click('[data-testid=trypet-off]'); await page.waitForTimeout(300); I = await info();
+  ok(I.tryPet === null && (await lab()).indexOf('關') === 0, '關 → tryPet null', [I.tryPet, await lab()]);
+  await E(() => { const b = [...document.querySelectorAll('.btn')].find(x => x.textContent === '關閉'); if (b) b.click(); });
+
   console.log('# ?spr80motion=old → 非 idle 用返舊 sprite');
   await load(Q + '&spr80motion=old'); await stage('adult', 'ember');
   await E(() => __glimmer.forceBeh('walk')); await page.waitForTimeout(400); I = await info();

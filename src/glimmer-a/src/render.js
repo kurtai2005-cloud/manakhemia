@@ -442,6 +442,7 @@
     spr80Key(s) {                        // 呢隻寵物用邊隻 80px（null＝用舊 sprite）
       const C = P.sprites80; if (!C || !C.enabled || !this.s80 || !s || s.stage === 'egg') return null;
       if (C.force) return this.s80.anchors[C.force] ? C.force : null;
+      const tp = s.settings && s.settings.tryPet; if (tp && this.s80.anchors[tp]) return tp;   // ⚙「試新寵」：只改顯示（唔改 stage／form／進度）
       const tr = C.tiers[s.stage], ln = C.lines[s.stage === 'juvenile' ? this.spr80Lead(s) : s.form], k = ln && tr ? ln + tr : null;
       return k && this.s80.anchors[k] ? k : null;
     }

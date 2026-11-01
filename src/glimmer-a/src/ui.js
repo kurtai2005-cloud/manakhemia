@@ -180,6 +180,19 @@
     sg.addEventListener('click', () => { s.settings.sound = s.settings.sound === false; sg.textContent = s.settings.sound ? '開' : '關'; sg.classList.toggle('sec', !s.settings.sound); window.Glimmer.audio.Engine.setEnabled(s.settings.sound); G.save(); }); rs.appendChild(sg); node.appendChild(rs);
     const lv = document.createElement('div'); lv.className = 'row'; lv.textContent = '音量'; node.appendChild(lv);
     const vseg = document.createElement('div'); vseg.className = 'seg'; [['low', '細'], ['mid', '中'], ['high', '大']].forEach(([k, n]) => { const b = document.createElement('div'); b.className = 'btn' + ((s.settings.volume || 'high') === k ? ' on' : ''); b.textContent = n; b.dataset.testid = 'vol-' + k; b.addEventListener('click', () => { s.settings.volume = k; window.Glimmer.audio.Engine.setVolume(k); vseg.querySelectorAll('.btn').forEach(x => x.classList.remove('on')); b.classList.add('on'); G.save(); }); vseg.appendChild(b); }); node.appendChild(vseg);
+    if (G.sprites80 && P.sprites80 && P.sprites80.enabled) {             // 遊美 80px：⚙「試新寵」— 強制顯示 24 隻其中一隻（只改外觀，唔改進度；APK 都用得）
+      const S8 = G.sprites80, opts = [null].concat(S8.KEYS);
+      const h = document.createElement('div'); h.className = 'row'; h.style.cssText = 'font-weight:700;margin-top:6px'; h.textContent = '試新寵'; node.appendChild(h);
+      const pk = document.createElement('div'); pk.className = 'row'; pk.dataset.testid = 'trypet'; pk.style.cssText = 'display:flex;align-items:center;gap:6px;justify-content:space-between';
+      const mkB = (txt, tid) => { const b = document.createElement('div'); b.className = 'btn sec'; b.dataset.testid = tid; b.textContent = txt; b.style.cssText = 'margin:0;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;font-size:18px;padding:0 8px;box-sizing:border-box'; return b; };
+      const prev = mkB('◀', 'trypet-prev'), next = mkB('▶', 'trypet-next'), off = mkB('關', 'trypet-off');
+      const lb = document.createElement('div'); lb.dataset.testid = 'trypet-label'; lb.style.cssText = 'flex:1;text-align:center;font-size:14px';
+      const show = () => { const k = S8.tryPet(); lb.textContent = k ? k + ' ' + S8.petName(k) : '關（用返自己隻）'; off.classList.toggle('sec', !!k); };
+      const step = (d) => { const i = Math.max(0, opts.indexOf(S8.tryPet())); S8.tryPet(opts[(i + d + opts.length) % opts.length]); show(); };
+      prev.addEventListener('click', () => step(-1)); next.addEventListener('click', () => step(1)); off.addEventListener('click', () => { S8.tryPet(null); show(); });
+      pk.appendChild(prev); pk.appendChild(lb); pk.appendChild(next); pk.appendChild(off); node.appendChild(pk);
+      const nt = document.createElement('div'); nt.style.cssText = 'font-size:11px;opacity:.75;text-align:left;margin-bottom:4px'; nt.textContent = '只改畫面上嘅樣（80px 新寵 A1–H3），唔會改階段／路線／進度；揀「關」用返自己隻。'; node.appendChild(nt); show();
+    }
     if (G.sysSettings) G.sysSettings(node);                              // systems12 小驚喜開關
     const r3 = document.createElement('div'); r3.className = 'row'; r3.innerHTML = '<span>重設存檔（重新開始）</span>'; const rb = document.createElement('div'); rb.className = 'btn sec'; rb.style.cssText = 'margin:0;padding:6px 16px'; rb.dataset.testid = 'reset-save'; rb.textContent = '重設'; let armed = false;
     rb.addEventListener('click', () => { if (!armed) { armed = true; rb.textContent = '再按確認'; return; } G.resetSave(); }); r3.appendChild(rb); node.appendChild(r3);

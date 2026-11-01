@@ -7,6 +7,7 @@ let chromium;
 for (const p of [process.env.PW, 'playwright-core', '/workspace/qa-live-s1/node_modules/playwright-core']) { try { if (p) { chromium = require(p).chromium; break; } } catch (e) { } }
 if (!chromium) { console.error('找不到 playwright-core'); process.exit(2); }
 const BASE = process.env.BASE || 'http://localhost:8138/index.html';
+const SPR = process.env.SPR80 === '1' ? '?' : '?spr80motion=old&';   // sprite80.1：呢個 suite 驗生命感 micro 五官（舊 noface＋art 五官）→ 預設 ?spr80motion=old（非 idle 用舊 sprite；proc 由 e2e-sprite80 驗；SPR80=1 用 proc 跑）
 const OUT = process.env.OUT || path.join(__dirname, '..', 'screens') + '/';
 require('fs').mkdirSync(OUT, { recursive: true });
 let pass = 0, fail = 0;
@@ -29,7 +30,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     console.log('  📷 live2-' + n);
   };
   const fresh = async (qs, form, needs) => {
-    await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + qs);
+    await page.goto(BASE + SPR + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + SPR + qs);
     await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { });
     await E(() => __glimmer.liveLoad); await page.waitForTimeout(300);
     await E(([form, needs]) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 3600; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }, needs || {}); s.poops = 0; s.settings.sound = true; }, [form || 'soft', needs]);

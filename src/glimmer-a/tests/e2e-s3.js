@@ -5,6 +5,7 @@ let chromium;
 for (const p of [process.env.PW, 'playwright-core', '/workspace/qa-live-s1/node_modules/playwright-core']) { try { if (p) { chromium = require(p).chromium; break; } } catch (e) { } }
 if (!chromium) { console.error('找不到 playwright-core'); process.exit(2); }
 const BASE = process.env.BASE || 'http://localhost:8138/index.html';
+const SPR = process.env.SPR80 === '1' ? '?' : '?spr80motion=old&';   // sprite80.1：驗 nuzzle／rush 舊 noface clip → 預設 ?spr80motion=old（idle 照 80px＋燈泡情緒；proc 由 e2e-sprite80 驗；SPR80=1 用 proc 跑）
 const SHOTS = process.env.SHOTS || path.join(__dirname, '..', '..', '..', 'screens') + '/';
 require('fs').mkdirSync(SHOTS, { recursive: true });
 let pass = 0, fail = 0;
@@ -22,8 +23,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const petClip = async () => { const h = await E(() => __qa.pet.hitBox()); return { x: Math.max(0, h.css.x - 60), y: Math.max(0, h.css.y - 70), width: h.css.w + 120, height: h.css.h + 110 }; };
   const adult = () => E(() => { window.__noSaveOnHide = true; const s = __glimmer.state; s.stage = 'adult'; s.form = 'dust';   /* evo6：守夜者・微塵（evo_guard_dust）有自己 s3 nuzzle_purr／reunion_happy；柔光 39 clip 冇 → fallback 喺 e2e-evo6 測 */  s.growthSec = 3600; Object.assign(s.needs, { hunger: 100, mood: 55, clean: 100, energy: 100 }); s.poops = 0; s.sleeping = false; });
   const load = async (qs, clear) => {
-    if (clear) { await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); }
-    await page.goto(BASE + '?' + qs); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { }); await E(() => __glimmer.liveLoad); await page.waitForTimeout(300);
+    if (clear) { await page.goto(BASE + SPR + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); }
+    await page.goto(BASE + SPR + qs); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { }); await E(() => __glimmer.liveLoad); await page.waitForTimeout(300);
     await adult(); await page.waitForTimeout(200);
   };
   const prep = () => E(() => { __qa.pet.pause(true); __qa.pet.force('stay'); __qa.pet.step(0.4); const b = __glimmer.beh; b.x = 0; b.dir = 1; b.bulbForce = null; Object.assign(__glimmer.state.needs, { mood: 55, energy: 100, hunger: 100 }); });
@@ -92,7 +93,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   console.log('# D5 真流程：存檔 lastSeen 離線 8h → 開 app → 摘要 → 關咗即衝埋嚟；同日唔再；<8h 唔衝');
   const reopen = async (h) => {
     await E((h) => { window.__noSaveOnHide = true; const k = 'glimmer_save_v1', o = JSON.parse(localStorage.getItem(k)); o.lastSeen = Date.now() - h * 3600e3; o.sleeping = false; localStorage.setItem(k, JSON.stringify(o)); }, h);
-    await page.goto(BASE + '?q=high&hour=13&seed=11&ev=0&dev=1'); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad); await E(() => __glimmer.liveLoad); await page.waitForTimeout(250);
+    await page.goto(BASE + SPR + 'q=high&hour=13&seed=11&ev=0&dev=1'); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad); await E(() => __glimmer.liveLoad); await page.waitForTimeout(250);
     return E(() => ({ r: __qa.pet.reunion(), modal: getComputedStyle(document.getElementById('modal')).display !== 'none', st: __qa.pet.state() }));
   };
   await E(() => { __glimmer.save(); }); await E(() => { const s = __glimmer.state; s.sleeping = false; __glimmer.save(); });
