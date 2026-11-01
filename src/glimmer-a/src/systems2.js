@@ -219,7 +219,8 @@
     if (when.lull) return o.stats.lull >= when.lull;
     if (when.lullNight) return o.stats.lullNight >= when.lullNight;
     if (when.quick) return o.stats.quick >= when.quick;
-    if (when.catchStars) return Math.max(num(o.games.stars.catch, 0), num(o.games.stars.bounce, 0)) >= when.catchStars;   // v2：彈彈葉 3★ 都算（待遊策確認）
+    if (when.catchStars) return num(o.games.stars.catch, 0) >= when.catchStars;
+    if (when.bounceStars) return num(o.games.stars.bounce, 0) >= when.bounceStars;   // v2：徽章「彈彈葉 3★」只計彈彈葉
     if (when.hideFirst) return o.games.hideFirst >= when.hideFirst;
     if (when.bloomKinds) return Object.keys(o.garden.bloomed).filter(k => FL(k)).length >= when.bloomKinds;
     if (when.acc) return o.walk.acc >= when.acc;

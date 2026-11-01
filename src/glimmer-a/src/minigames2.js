@@ -1,8 +1,8 @@
 /* 《微光小圃》 minigames2.js — 小遊戲 v2 邏輯（docs-gdd/minigames-v2.md；DOM-free，Node 測得）。原創代碼。
-   Kurt 揀：彈彈葉（bounce）、花園捉迷藏重做（ghide）、追螢火（firefly，夜晚限定）。數值＝PARAMS.systems12b.games2。
+   Kurt 揀：彈彈葉（bounce）、花園捉迷藏重做（ghide）、追螢火（firefly，夜晚限定）。數值＝PARAMS.minigames2（遊策定稿）。
    場地＝邏輯 180×320（直向單手）；輸入＝press／move／release（手指座標）；update(dt) 定步長都得（60fps 友好，冇 alloc 熱點）。
    團絨反應：this.clip（現有 clip 名，UI 冇呢個 clip 就畫 idle）＋ this.flip（翻筋斗角度）；反應序列 play([[key, 秒], ...])。
-   每局 2 個變化：mods＝[{cat, k}]（3 類：weather／speed／special 揀 2 類，每類抽 1 個）。獎勵唔喺呢度發 → systems2.gameFinish。 */
+   每局 2 個變化：mods＝[{cat, k, hard, s}]（3 類揀 2 類、每類抽 1 個；最多 1 個難，難強度 s＝20–25%）。獎勵唔喺呢度發 → systems2.gameFinish。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory(require('./data.js'), require('./sim.js'));
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.mg2 = factory(root.Glimmer.data, root.Glimmer.sim); }
@@ -12,13 +12,24 @@
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rr = (rng, a) => a[0] + rng() * (a[1] - a[0]);
   function inHours(h, a) { return a[0] <= a[1] ? h >= a[0] && h < a[1] : h >= a[0] || h < a[1]; }
-  function fireflyOpen(hour) { return inHours(hour, C().firefly.nightHours); }
-  /* 3 類揀 modCats 類、每類抽 1 個；fixed＝[{cat,k}] 或 ['wind','gold'] 指定（QA） */
+  function fireflyOpen(hour) { return SIM.isNightHour(hour); }   // 同螢絨夜窗共用 PARAMS.evo6.nightFrom／nightTo
+  /* 3 類揀 modCats 類、每類抽 1 個；最多 maxHard 個難（多咗 → 換同類嘅易，嗰類冇易就換第 3 類嘅易）；難嘅強度 s∈hardStr。
+     fixed＝[{cat,k}] 或 ['wind','gold'] 指定（QA，唔限難數） */
   function pickMods(rng, pool, fixed) {
-    const cats = Object.keys(pool);
-    if (fixed) return fixed.map(f => typeof f === 'string' ? { cat: cats.find(c => pool[c][f]) || null, k: f } : f).filter(m => m.cat && pool[m.cat][m.k]);
+    const P = C(), cats = Object.keys(pool), mk = (cat, k) => { const d = pool[cat][k]; return { cat, k, hard: !!d.hard, s: d.hard ? rr(rng, P.hardStr) : 0 }; };
+    if (fixed) return fixed.map(f => typeof f === 'string' ? { cat: cats.find(c => pool[c][f]) || null, k: f } : f).filter(m => m.cat && pool[m.cat][m.k]).map(m => mk(m.cat, m.k));
     const order = cats.slice(); for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); const t = order[i]; order[i] = order[j]; order[j] = t; }
-    return order.slice(0, C().modCats).sort((a, b) => cats.indexOf(a) - cats.indexOf(b)).map(cat => { const ks = Object.keys(pool[cat]); return { cat, k: ks[Math.floor(rng() * ks.length)] }; });
+    const pick = order.slice(0, P.modCats), ks = cat => Object.keys(pool[cat]), easy = cat => ks(cat).filter(k => !pool[cat][k].hard);
+    let out = pick.map(cat => { const a = ks(cat); return { cat, k: a[Math.floor(rng() * a.length)] }; });
+    let hard = out.filter(m => pool[m.cat][m.k].hard);
+    while (hard.length > P.maxHard) {
+      const keep = hard[Math.floor(rng() * hard.length)], m = hard.find(h => h !== keep && easy(h.cat).length) || hard.find(h => h !== keep);
+      const e = easy(m.cat);
+      if (e.length) m.k = e[Math.floor(rng() * e.length)];
+      else { const alt = cats.filter(c => !out.some(o => o.cat === c) && easy(c).length)[0]; const e2 = easy(alt); m.cat = alt; m.k = e2[Math.floor(rng() * e2.length)]; }
+      hard = out.filter(x => pool[x.cat][x.k].hard);
+    }
+    return out.sort((a, b) => cats.indexOf(a.cat) - cats.indexOf(b.cat)).map(m => mk(m.cat, m.k));
   }
   function stars(kind, v) { const a = C()[kind].starsAt; let n = 0; for (let i = 0; i < a.length; i++) if (v >= a[i]) n = i + 1; return Math.min(3, n); }
 
@@ -30,6 +41,9 @@
     }
     has(k) { return this.mods.some(m => m.k === k); }
     mod(k) { const m = this.mods.find(x => x.k === k); return m ? this.M.mods[m.cat][m.k] : null; }
+    eff(type) { const m = this.mods.find(x => { const d = this.M.mods[x.cat][x.k]; return d.hard === type || d.easy === type; }); return m || null; }   // 按效果類型搵 modifier
+    get hardS() { const m = this.mods.find(x => x.hard); return m ? m.s : 0; }
+    initEasy() { const E = C().easy; this.dur = (this.M.durationSec || this.M.timeLimitSec) + (this.eff('time') ? E.timeAdd : 0); this.goldP = (this.M.goldProb || 0) * (this.eff('gold') ? E.goldMul : 1); }
     /* 反應序列：[[反應 key, 秒], ...]；播完返 baseReact() */
     play(seq) { this.q = seq.slice(); this.qt = 0; this.clip = C().reactions[this.q[0][0]] || this.q[0][0]; this.react = this.q[0][0]; }
     tickReact(dt) {
@@ -39,23 +53,24 @@
     baseReact() { return 'idle'; }
     emit(type, x, y, v) { this.fx.push({ type, x, y, v }); if (this.fx.length > 40) this.fx.shift(); }
     get stars() { return stars(this.kind, this.score); }
-    get left() { return Math.max(0, (this.M.durationSec || this.M.timeLimitSec) - this.t); }
+    get left() { return Math.max(0, this.dur - this.t); }
   }
 
   // ── 1 彈彈葉：撳住葉片儲力 → 放手彈起團絨 → 半空左右拖 → 掂光點得分 ──
   class BounceGame extends Base {
     constructor(seed, opt) {
-      super('bounce', seed, opt); const M = this.M;
-      this.spd = (this.mod('fast') || this.mod('slow') || { mul: 1 }).mul;
-      this.leafW = M.leaf.w * (this.has('bigleaf') ? this.M.mods.special.bigleaf.wMul : 1);
-      this.windAx = this.has('wind') ? (this.rng() < 0.5 ? -1 : 1) * this.M.mods.weather.wind.ax : 0;
-      const R = this.mod('rain'); this.cloud = R ? { x: 30 + this.rng() * 120, y: rr(this.rng, R.cloudY), w: R.cloudW, dir: this.rng() < 0.5 ? -1 : 1 } : null;
+      super('bounce', seed, opt); const M = this.M; this.initEasy();
+      const sp = this.eff('speed'), tg = this.eff('target'), dr = this.eff('drift');
+      this.spd = sp ? 1 + sp.s : 1; this.tgt = tg ? 1 - tg.s : 1; this.leafW = M.leaf.w;
+      this.windAx = dr ? (this.rng() < 0.5 ? -1 : 1) * dr.s * M.steerMax : 0;   // 漂移：恆定橫風速度 ±s×steerMax
+      const h = M.vMax * M.vMax / (2 * M.gravity); this.unit = Math.max(1, M.jumpMinFrac * C().fieldH / h);   // 最大跳高 ≥45% 畫面，唔夠就放大單位
+      this.cloud = null;
       this.pet = { x: M.leaf.x, y: M.leaf.y, vx: 0, vy: 0, drift: 0, wv: 0 }; this.phase = 'ready'; this.power = 0; this.tx = M.leaf.x;
       this.dots = []; for (let i = 0; i < M.dots; i++) this.dots.push(this.newDot());
       this.jumps = 0; this.lands = 0; this.falls = 0; this.jumpGot = 0; this.best = 0; this.bend = 0; this.flipping = false;
     }
     newDot() {
-      const M = this.M, gold = this.has('gold') && this.rng() < M.goldProb; let x, y, k = 0;
+      const M = this.M, gold = this.rng() < this.goldP; let x, y, k = 0;
       do { x = 14 + this.rng() * 152; y = rr(this.rng, M.dotY); k++; } while (k < 8 && this.dots && this.dots.some(d => Math.hypot(d.x - x, d.y - y) < 24));
       return { x, y, gold, ph: this.rng() * 6.28 };
     }
@@ -64,60 +79,57 @@
     move(x, y) { if (this.phase === 'air' || this.phase === 'charge') this.tx = clamp(x, 8, 172); }
     release() {
       if (this.phase !== 'charge') return false; const M = this.M, p = this.pet;
-      p.vy = -(M.vMin + this.power * (M.vMax - M.vMin)) * this.spd; p.vx = 0; p.wv = 0;
-      this.flipping = this.power >= M.flipPower; p.drift = this.flipping ? (this.rng() * 2 - 1) * M.flipDrift : 0;
+      p.vy = -(M.vMin + this.power * (M.vMax - M.vMin)) * this.spd * this.unit; p.vx = 0; p.wv = 0; p.drift = 0;
+      this.flipping = this.power >= M.flipPower; if (this.flipping) this.flips = (this.flips || 0) + 1;   // 翻筋斗：純演出，唔改落點／分
       this.phase = 'air'; this.jumps++; this.jumpGot = 0; this.flip = 0; this.bend = 0; this.power = 0; this.snd.push('jump');
-      this.play([['jump', 0.4]]); return true;
+      this.play(this.flipping ? [['proud', 0.6]] : [['jump', 0.4]]); return true;
     }
     baseReact() { return this.phase === 'air' ? 'jump' : this.phase === 'walk' ? 'walk' : this.phase === 'charge' ? 'charge' : 'idle'; }
     update(dt) {
       if (this.over) return; const M = this.M, p = this.pet; this.t += dt;
-      if (this.cloud) { const R = M.mods.weather.rain, c = this.cloud; c.x += c.dir * R.speed * dt; if (c.x < 20 || c.x > 160) { c.dir *= -1; c.x = clamp(c.x, 20, 160); } }
       for (const d of this.dots) d.ph += dt * 3;
       if (this.phase === 'charge') { this.power = Math.min(1, this.power + dt / M.chargeSec); this.bend = this.power; }
       else if (this.phase === 'air') {
-        const sv = clamp((this.tx - p.x) * M.steer, -M.steerMax, M.steerMax); p.wv += this.windAx * dt;
-        p.x = clamp(p.x + (sv + p.drift + p.wv) * dt, 8, 172); p.vy += M.gravity * this.spd * this.spd * dt; p.y += p.vy * dt;
-        if (this.flipping && this.flip < Math.PI * 2) this.flip = Math.min(Math.PI * 2, this.flip + dt * 9);
+        const sv = clamp((this.tx - p.x) * M.steer, -M.steerMax, M.steerMax); p.wv = this.windAx;
+        p.x = clamp(p.x + (sv + p.drift + p.wv) * dt, 8, 172); p.vy += M.gravity * this.unit * this.spd * this.spd * dt; p.y += p.vy * dt;
+        if (this.flipping && this.flip < Math.PI * 2) this.flip = Math.min(Math.PI * 2, this.flip + dt * 9 * this.spd);
         if (p.vx !== 0) this.face = p.vx > 0 ? 1 : -1; if (Math.abs(sv) > 10) this.face = sv > 0 ? 1 : -1;
-        if (this.cloud && p.vy < 0 && Math.abs(p.x - this.cloud.x) < this.cloud.w / 2 && Math.abs(p.y - 14 - this.cloud.y) < 12) { p.vy = M.mods.weather.rain.push * 0.4; this.emit('rain', p.x, p.y - 20); this.snd.push('bonk'); this.play([['shiver', 0.5]]); }
-        for (let i = 0; i < this.dots.length; i++) { const d = this.dots[i]; if (Math.hypot(d.x - p.x, d.y - (p.y - 14)) < M.dotR + 10) { const v = d.gold ? M.gold : M.dot; this.score += v; this.jumpGot++; this.emit(d.gold ? 'gold' : 'dot', d.x, d.y, v); this.snd.push(d.gold ? 'big' : 'catch'); this.dots[i] = this.newDot(); if (this.jumpGot === 3) this.play([['proud', 0.5]]); } }
+        for (let i = 0; i < this.dots.length; i++) { const d = this.dots[i]; if (Math.hypot(d.x - p.x, d.y - (p.y - 14)) < (M.dotR + 10) * this.tgt) { const v = d.gold ? M.gold : M.dot; this.score += v; this.jumpGot++; this.emit(d.gold ? 'gold' : 'dot', d.x, d.y, v); this.snd.push(d.gold ? 'big' : 'catch'); this.dots[i] = this.newDot(); if (this.jumpGot === 3) this.play([['proud', 0.5]]); } }
         if (p.vy > 0 && p.y >= M.leaf.y) {
-          if (this.onLeaf()) { p.y = M.leaf.y; this.phase = 'ready'; this.lands++; this.flip = 0; this.flipping = false; this.best = Math.max(this.best, this.jumpGot); this.bend = 0.35; this.play(this.jumpGot >= 2 ? [['proud', 1.0]] : [['idle', 0.1]]); }
+          if (this.onLeaf()) { this.wasFlip = this.flipping; p.y = M.leaf.y; this.phase = 'ready'; this.lands++; this.flip = 0; this.flipping = false; this.best = Math.max(this.best, this.jumpGot); this.bend = 0.35; this.play(this.jumpGot >= 2 || this.wasFlip ? [['proud', 1.0]] : [['idle', 0.1]]); }
           else if (p.y >= M.groundY) { p.y = M.groundY; this.phase = 'fallen'; this.falls++; this.flip = 0; this.flipping = false; this.ft = 0; this.emit('thud', p.x, p.y); this.snd.push('stone'); this.play([['fall', 0.7], ['getup', 0.4], ['cool', M.fallSec - 1.1]]); }
         }
       } else if (this.phase === 'fallen') { this.ft += dt; if (this.ft >= M.fallSec) this.phase = 'walk'; }
       else if (this.phase === 'walk') { const dx = M.leaf.x - p.x, st = M.walkSpeed * dt; this.face = dx > 0 ? 1 : -1; if (Math.abs(dx) <= st) { p.x = M.leaf.x; p.y = M.leaf.y; this.phase = 'ready'; } else { p.x += Math.sign(dx) * st; p.y = M.groundY; } }
       if (this.bend > 0 && this.phase !== 'charge') this.bend = Math.max(0, this.bend - dt * 2);
       this.tickReact(dt);
-      if (this.t >= M.durationSec) { this.t = M.durationSec; this.over = true; this.play([[this.stars >= 2 ? 'win' : this.stars === 0 ? 'sad' : 'cool', 2]]); }
+      if (this.t >= this.dur) { this.t = this.dur; this.over = true; this.play([[this.stars >= 2 ? 'win' : this.stars === 0 ? 'sad' : 'cool', 2]]); }
     }
   }
 
   // ── 3 花園捉迷藏（重做）：真花園、遮擋物每回合唔同；撳＝搖嗰樣嘢；太慢佢會偷偷轉位；搵到扮冇事行出嚟 ──
   class GardenHide extends Base {
     constructor(seed, opt) {
-      super('ghide', seed, opt); const M = this.M;
-      this.nCovers = this.has('extra') ? M.mods.special.extra.covers : M.covers;
-      this.sneakSec = (this.mod('sneaky') || this.mod('calm') || { sneakSec: M.sneakSec }).sneakSec;
-      this.tailChance = this.has('bulb') ? M.mods.special.bulb.tailChance : M.tailChance;
-      this.peekA = this.has('fog') ? M.mods.weather.fog.peekA : 1;
+      super('ghide', seed, opt); const M = this.M; this.initEasy();
+      this.nCovers = M.covers; const sn = this.eff('sneak'), tg = this.eff('target'), dr = this.eff('drift');
+      this.sneakSec = sn ? this.M.mods[sn.cat][sn.k].sneakSec : M.sneakSec;
+      this.hitR = M.hitR * (tg ? 1 - tg.s : 1); this.sway = dr ? dr.s * M.area.minDist : 0;   // 目標細；漂移＝遮擋物隨風左右擺 ±s×minDist
+      this.tailChance = M.tailChance; this.peekA = 1;
       this.round = 0; this.found = 0; this.firstHits = 0; this.sneaks = 0; this.phase = 'seek'; this.covers = []; this.next();
     }
     next() {
       const M = this.M, A = M.area, n = this.nCovers, cs = []; let k = 0;
-      while (cs.length < n && k++ < 400) { const x = rr(this.rng, A.x), y = rr(this.rng, A.y); if (cs.every(c => Math.hypot(c.x - x, c.y - y) >= A.minDist)) cs.push({ x: Math.round(x), y: Math.round(y), type: M.coverTypes[Math.floor(this.rng() * M.coverTypes.length)], shake: 0, tried: false, rustle: 0 }); }
-      while (cs.length < n) cs.push({ x: 30 + cs.length * 28, y: A.y[1] - (cs.length % 2) * 30, type: 'bush', shake: 0, tried: false, rustle: 0 });
+      while (cs.length < n && k++ < 400) { const x = rr(this.rng, A.x), y = rr(this.rng, A.y); if (cs.every(c => Math.hypot(c.x - x, c.y - y) >= A.minDist)) cs.push({ x: Math.round(x), y: Math.round(y), type: M.coverTypes[Math.floor(this.rng() * M.coverTypes.length)], shake: 0, wig: 0, dx: 0, ph: this.rng() * 6.28, tried: false, rustle: 0 }); }
+      while (cs.length < n) cs.push({ x: 30 + cs.length * 28, y: A.y[1] - (cs.length % 2) * 30, type: 'bush', shake: 0, wig: 0, dx: 0, ph: 0, tried: false, rustle: 0 });
       cs.sort((a, b) => a.y - b.y); this.covers = cs; this.at = Math.floor(this.rng() * n); this.tries = M.triesPerRound; this.tryN = 0;
-      this.tail = this.rng() < this.tailChance; this.idle = 0; this.peekT = rr(this.rng, M.peekEvery); this.peek = 0; this.wigT = rr(this.rng, M.wiggleEvery);
-      this.decT = this.has('wind') ? M.mods.weather.wind.decoyEvery : 0; this.phase = 'seek'; this.play([['idle', 0.1]]);
+      this.tail = this.rng() < this.tailChance; this.peekKind = this.rng() < 0.5 ? 'tail' : 'bulb'; this.idle = 0; this.peekT = rr(this.rng, M.peekEvery); this.peek = 0; this.phase = 'seek'; this.play([['idle', 0.1]]);
     }
-    coverAt(x, y) { let best = -1, bd = 1e9; this.covers.forEach((c, i) => { const d = Math.hypot(c.x - x, c.y - 8 - y); if (d < this.M.hitR && d < bd) { bd = d; best = i; } }); return best; }
+    coverAt(x, y) { let best = -1, bd = 1e9; this.covers.forEach((c, i) => { const d = Math.hypot(c.x + c.dx - x, c.y - 8 - y); if (d < this.hitR && d < bd) { bd = d; best = i; } }); return best; }
     press(x, y) { const i = this.coverAt(x, y); return i < 0 ? { ok: false } : this.pick(i); }
     move() {} release() {}
     pick(i) {
       if (this.over || this.phase !== 'seek' || i < 0 || i >= this.covers.length) return { ok: false };
-      const c = this.covers[i]; c.shake = 0.5; this.idle = 0; this.snd.push('rustle');
+      const c = this.covers[i]; c.shake = this.M.tapShake; this.idle = 0; this.snd.push('rustle');
       if (c.tried) return { ok: true, again: true, hit: false };
       c.tried = true; this.tryN++; this.tries--; const hit = i === this.at, M = this.M, pts = hit ? (M.ptsByTry[this.tryN - 1] | 0) : 0;
       const r = { ok: true, hit, at: this.at, tryN: this.tryN, pts, tail: this.tail, round: this.round, roundOver: hit || this.tries <= 0 };
@@ -130,7 +142,7 @@
     baseReact() { return this.phase === 'reveal' ? (this.revealHit ? 'cool' : 'proud') : 'idle'; }
     update(dt) {
       if (this.over) return; const M = this.M; this.t += dt;
-      for (const c of this.covers) { c.shake = Math.max(0, c.shake - dt); c.rustle = Math.max(0, c.rustle - dt); }
+      for (const c of this.covers) { c.shake = Math.max(0, c.shake - dt); c.wig = Math.max(0, c.wig - dt); c.rustle = Math.max(0, c.rustle - dt); c.dx = this.sway ? Math.sin(this.t * 2.2 + c.ph) * this.sway : 0; }
       if (this.phase === 'seek') {
         this.idle += dt;
         if (this.idle >= this.sneakSec) {   // 你太慢 → 偷偷轉位（揀一個未撳過嘅，冇就隨便）
@@ -138,14 +150,14 @@
           if (pool.length) { this.covers[this.at].rustle = 0.4; this.at = pool[Math.floor(this.rng() * pool.length)]; this.covers[this.at].rustle = 0.4; this.sneaks++; this.snd.push('sneak'); }
           this.idle = 0;
         }
-        this.wigT -= dt; if (this.wigT <= 0) { this.covers[this.at].shake = Math.max(this.covers[this.at].shake, 0.25); this.wigT = rr(this.rng, M.wiggleEvery); }
-        if (this.decT) { this.decT -= dt; if (this.decT <= 0) { const j = Math.floor(this.rng() * this.covers.length); this.covers[j].shake = Math.max(this.covers[j].shake, 0.25); this.decT = M.mods.weather.wind.decoyEvery; } }
-        if (this.tail) { this.peek = Math.max(0, this.peek - dt); this.peekT -= dt; if (this.peekT <= 0) { this.peek = M.peekSec; this.peekT = rr(this.rng, M.peekEvery); } }
+        // 探頭每 2.5–4 秒一次、0.6 秒：露尾／燈泡回合＝見到尾巴或燈泡；其餘回合＝匿嗰樣嘢自己郁（c.wig）
+        this.peek = Math.max(0, this.peek - dt); this.peekT -= dt;
+        if (this.peekT <= 0) { if (this.tail) this.peek = M.peekSec; else this.covers[this.at].wig = M.peekSec; this.peekT = rr(this.rng, M.peekEvery); }
       } else if (this.phase === 'reveal') {
         this.rt += dt; if (this.rt >= M.revealSec) { this.round++; if (this.round >= M.rounds) { this.over = true; this.play([[this.stars >= 2 ? 'win' : this.stars === 0 ? 'proud' : 'cool', 2]]); } else this.next(); }
       }
       this.tickReact(dt);
-      if (!this.over && this.t >= M.timeLimitSec) { this.t = M.timeLimitSec; this.over = true; this.play([['proud', 2]]); }
+      if (!this.over && this.t >= this.dur) { this.t = this.dur; this.over = true; this.play([['proud', 2]]); }
     }
     get peeking() { return this.tail && this.peek > 0 && this.phase === 'seek'; }
   }
@@ -155,9 +167,11 @@
   class FireflyChase extends Base {
     constructor(seed, opt) {
       super('firefly', seed, opt); const M = this.M, F = M.field;
-      this.spd = (this.mod('dash') || this.mod('sleepy') || { mul: 1 }).mul; this.driftMul = this.has('breeze') ? M.mods.weather.breeze.driftMul : 1;
+      this.initEasy(); const sp = this.eff('speed'), tg = this.eff('target'), dr = this.eff('drift');
+      this.spd = 1; this.flySpd = sp ? 1 + sp.s : 1; this.tgt = tg ? 1 - tg.s : 1;   // 速度＝螢火飛快 ×(1+s)；目標細＝螢火判定 ×(1−s)
+      this.windX = dr ? (this.rng() < 0.5 ? -1 : 1) * dr.s * M.petSpeed : 0;            // 漂移：團絨被微風推 ±s×petSpeed
       this.pet = { x: 90, y: 270 }; this.path = []; this.drawing = false; this.pathLen = 0; this.stun = 0; this.bumps = 0; this.caught = 0;
-      this.branches = []; const nb = M.branches + (this.has('thicket') ? M.mods.special.thicket.extra : 0); let k = 0;
+      this.branches = []; const nb = M.branches; let k = 0;
       while (this.branches.length < nb && k++ < 300) {
         const x = rr(this.rng, F.x), y = rr(this.rng, [F.y[0] + 30, F.y[1] - 60]), a = this.rng() * Math.PI, L = rr(this.rng, M.branchLen) / 2;
         const b = { x1: x - Math.cos(a) * L, y1: y - Math.sin(a) * L, x2: x + Math.cos(a) * L, y2: y + Math.sin(a) * L };
@@ -168,7 +182,7 @@
     newFly() {
       const M = this.M, F = M.field; let x, y, k = 0;
       do { x = rr(this.rng, F.x); y = rr(this.rng, [F.y[0], F.y[1] - 40]); k++; } while (k < 10 && (Math.hypot(x - this.pet.x, y - this.pet.y) < 50 || this.branches.some(b => segDist(x, y, b) < 14)));
-      return { x, y, vx: 0, vy: 0, ph: this.rng() * 6.28, gold: this.has('gold') && this.rng() < M.goldProb };
+      return { x, y, vx: 0, vy: 0, ph: this.rng() * 6.28, gold: this.rng() < this.goldP };
     }
     press(x, y) { if (this.over) return false; this.drawing = true; this.path = [{ x: clamp(x, 6, 174), y: clamp(y, 30, 312) }]; this.pathLen = 0; return true; }
     move(x, y) {
@@ -180,7 +194,8 @@
     baseReact() { return this.stun > 0 ? 'cool' : this.path.length ? 'run' : 'idle'; }
     update(dt) {
       if (this.over) return; const M = this.M, F = M.field, p = this.pet; this.t += dt;
-      for (const f of this.flies) { f.ph += dt; const a = M.drift * this.driftMul; f.vx += (Math.sin(f.ph * 1.7 + f.y * 0.05) * a - f.vx) * dt * 1.5; f.vy += (Math.cos(f.ph * 1.3 + f.x * 0.05) * a - f.vy) * dt * 1.5; f.x = clamp(f.x + f.vx * dt, F.x[0], F.x[1]); f.y = clamp(f.y + f.vy * dt, F.y[0], F.y[1] - 30); }
+      for (const f of this.flies) { f.ph += dt * this.flySpd; const a = M.drift * this.flySpd; f.vx += (Math.sin(f.ph * 1.7 + f.y * 0.05) * a - f.vx) * dt * 1.5; f.vy += (Math.cos(f.ph * 1.3 + f.x * 0.05) * a - f.vy) * dt * 1.5; f.x = clamp(f.x + f.vx * dt, F.x[0], F.x[1]); f.y = clamp(f.y + f.vy * dt, F.y[0], F.y[1] - 30); }
+      if (this.windX && this.path.length && !this.stun) p.x = clamp(p.x + this.windX * dt, F.x[0], F.x[1]);
       if (this.stun > 0) this.stun = Math.max(0, this.stun - dt);
       else if (this.path.length) {
         let step = M.petSpeed * this.spd * dt;
@@ -191,9 +206,9 @@
           this.emit('bump', p.x, p.y - 20); this.snd.push('stone'); this.play([['bump', 0.4], ['cool', M.stunSec]]); break;
         }
       }
-      for (let i = 0; i < this.flies.length; i++) { const f = this.flies[i]; if (Math.hypot(f.x - p.x, f.y - (p.y - 8)) < M.flyR + M.petR) { const v = f.gold ? M.gold : M.fly; this.score += v; this.caught++; this.emit(f.gold ? 'gold' : 'fly', f.x, f.y, v); this.snd.push(f.gold ? 'big' : 'catch'); this.flies[i] = this.newFly(); if (this.caught % 3 === 0) this.play([['proud', 0.6]]); else this.play([['happy', 0.3]]); } }
+      for (let i = 0; i < this.flies.length; i++) { const f = this.flies[i]; if (Math.hypot(f.x - p.x, f.y - (p.y - 8)) < M.flyR * this.tgt + M.petR) { const v = f.gold ? M.gold : M.fly; this.score += v; this.caught++; this.emit(f.gold ? 'gold' : 'fly', f.x, f.y, v); this.snd.push(f.gold ? 'big' : 'catch'); this.flies[i] = this.newFly(); if (this.caught % 3 === 0) this.play([['proud', 0.6]]); else this.play([['happy', 0.3]]); } }
       this.tickReact(dt);
-      if (this.t >= M.durationSec) { this.t = M.durationSec; this.over = true; this.play([[this.stars >= 2 ? 'win' : this.stars === 0 ? 'sad' : 'cool', 2]]); }
+      if (this.t >= this.dur) { this.t = this.dur; this.over = true; this.play([[this.stars >= 2 ? 'win' : this.stars === 0 ? 'sad' : 'cool', 2]]); }
     }
   }
   const KINDS = { bounce: BounceGame, ghide: GardenHide, firefly: FireflyChase };

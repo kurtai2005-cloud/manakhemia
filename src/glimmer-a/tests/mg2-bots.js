@@ -16,9 +16,11 @@ function botStep(g, sk, rng, st) {
     if (g.phase !== 'seek') { st.seen = -1; st.round = -1; return st; }
     const cs = g.covers;
     if (st.round !== g.round) { st.round = g.round; st.seen = -1; }
-    // 睇住：露尾＝一定係；自己搖（唔係撳）＝可能係（風會有假線索）
-    if (g.peeking) st.seen = g.at; else { const sh = cs.findIndex((c, i) => c.shake > 0.2 && c.shake < 0.26 && !c.tried); if (sh >= 0 && st.seen !== g.at) st.seen = sh; }
-    st.w = (st.w || 0) + 1 / 60; if (st.w < 0.8 + (1 - sk) * 1.6) return st; st.w = 0;
+    // 睇住：露尾＝一定係；自己搖（唔係撳）＝可能係（風只係擺，唔係線索）
+    if (g.peeking) st.seen = g.at; else { const sh = cs.findIndex(c => c.wig > 0 && !c.tried); if (sh >= 0) st.seen = sh; }
+    st.w = (st.w || 0) + 1 / 60; if (st.w < 0.8 + (1 - sk) * 1.6) return st;
+    if (st.seen < 0 && sk > 0.4 && g.idle < Math.min(g.sneakSec - 0.3, 4.2) * sk) return st;   // 高手等線索（探頭／自己郁）先撳
+    st.w = 0;
     const free = cs.map((c, i) => i).filter(i => !cs[i].tried);
     const use = st.seen >= 0 && !cs[st.seen].tried && rng() < sk;
     g.pick(use ? st.seen : free[Math.floor(rng() * free.length)]); st.seen = -1;
