@@ -16,7 +16,7 @@
     const wd = !!(navigator && navigator.webdriver), R = G.renderer, UI = NS.ui, X2 = NS.sys12b, BEH = NS.behavior, RC = NS.reactclip, C = SR.CFG, L_ = SR.LINES_OUT;
     const native = !!(window.Capacitor && (typeof window.Capacitor.isNativePlatform === 'function' ? window.Capacitor.isNativePlatform() : window.Capacitor.isNative));   // 4a.1：APK（Capacitor）一定開自動送蛋／喊
     const on = (k) => qs.get(k) === '1' || qs.get('s2x') === '1' || ((native || !wd) && qs.get(k) !== '0' && qs.get('s2x') !== '0');
-    const VERSION = P.version || '4a.2';
+    const VERSION = P.version || '4a.3';
     const AUTO = { deliver: on('s2deliver'), cry: on('s2cry') };
     const BASE = P.art.base, S = () => G.state, pnow = () => performance.now();
     const say = (line, o) => (G.say ? G.say(Object.assign({ line, src: 's2', sec: 3.5 }, o || {})) : UI.toast(line, 2600));
@@ -439,18 +439,14 @@
       card() { const e = TEST._kid(); if (e) return e; card(); return { ok: true, msg: '細佬卡' }; },
       cry() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (K.cry) return { ok: false, msg: '細佬喊緊' }; if (SC.cur) return { ok: false, msg: '而家播緊場面' }; if (S().sleeping) S().sleeping = false; { const bx = trX(), gap = trHalf() + 16; if (Math.abs(K.x - bx) < gap) { const sd = bx + gap <= 70 ? 1 : -1; K.x = clamp(bx + sd * gap, -70, 70); K.dir = -sd; } } /* 試玩：唔好匿喺團絨後面 */ cryStart(); return { ok: true, msg: '細佬喊喇！拖團絨過去哄佢' }; },
     };
-    G.s2Settings = function (node) {
-      const o = st(), sec = document.createElement('div'); sec.dataset.testid = 's2-test'; sec.style.cssText = 'margin:2px 0 10px;padding:8px;border-radius:10px;background:rgba(255,214,110,.16);border:1px solid rgba(255,214,110,.55);text-align:left';
-      sec.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:13px">試玩：新寵物系列</b><span data-testid="s2-devmode" style="font-size:10px;padding:1px 5px;border-radius:5px;background:rgba(255,214,110,.35)">開發者模式</span><span data-testid="s2-version" style="font-size:11px;opacity:.85">版本 ' + VERSION + '</span></div>' +
-        '<div data-testid="s2-test-status" data-phase="' + o.phase + '" style="font-size:11px;opacity:.8;margin:3px 0 6px">細佬：' + ({ none: '未有蛋', due: '明日送蛋', egg: '蛋（孵夢 ' + o.dreams.length + '／' + C.eggNights + '）', kid: SR.STAGE_ZH[SR.stageOf(S(), G.now())] + '・' + SR.REL_ZH[o.rel] }[o.phase] || o.phase) + '</div>';
-      const grid = document.createElement('div'); grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:6px';
-      for (const [k, t] of [['deliver', '即刻送蛋'], ['hatch', '即刻孵化'], ['level', '升一級關係'], ['cry', '觸發喊'], ['evolve', '細佬進化'], ['duo', '開二人彈'], ['card', '開細佬卡']]) {
-        const b = document.createElement('div'); b.className = 'btn'; b.dataset.testid = 's2-test-' + k; b.textContent = t; b.style.cssText = 'margin:0;padding:8px 4px;font-size:13px';
-        b.addEventListener('click', () => { closeSettings(); setTimeout(() => { let r; try { r = TEST[k](); } catch (e) { r = { ok: false, msg: String(e && e.message || e) }; } note('test', { k, ok: r.ok }); UI.toast(r.msg, 2400); UIS(r.ok ? 'confirm' : 'disabled'); }, 60); });
-        grid.appendChild(b); }
-      sec.appendChild(grid); const n = document.createElement('div'); n.style.cssText = 'font-size:10px;opacity:.65;margin-top:5px'; n.textContent = '試玩用：唔會改團絨成長、星屑、路線同懸浮寵物'; sec.appendChild(n);
-      node.insertBefore(sec, node.firstChild);
+    G.s2Settings = function (node) {   // 4a.3：設定只留版本（試玩掣搬咗去「🛠 開發者模式」）；撳版本 5 下 → 出返開發者掣
+      const v = document.createElement('div'); v.dataset.testid = 's2-version'; v.style.cssText = 'text-align:right;font-size:11px;opacity:.8;margin:0 0 6px'; v.textContent = '版本 ' + VERSION;
+      v.addEventListener('click', () => { const D = NS.devmode; if (D) D.versionTap(); }); node.insertBefore(v, node.firstChild);
     };
+    { const DEV = { id: 's2', title: '新寵物系列 4a（細佬）', order: 40,
+        status: () => { const o = st(); return '細佬：' + ({ none: '未有蛋', due: '明日送蛋', egg: '蛋（孵夢 ' + o.dreams.length + '／' + C.eggNights + '）', kid: SR.STAGE_ZH[SR.stageOf(S(), G.now())] + '・' + SR.REL_ZH[o.rel] }[o.phase] || o.phase); },
+        items: [['deliver', '即刻送蛋'], ['hatch', '即刻孵化'], ['level', '升一級關係'], ['cry', '觸發喊'], ['evolve', '細佬進化'], ['duo', '開二人彈'], ['card', '開細佬卡']].map(([k, label]) => ({ k, label, run: () => { const r = TEST[k](); note('test', { k, ok: r.ok }); UIS(r.ok ? 'confirm' : 'disabled'); return r; } })) };
+      if (NS.devmode) NS.devmode.register(DEV); else (NS.devSections = NS.devSections || []).push(DEV); }
 
     // ── CSS ──
     { const css = document.createElement('style'); css.textContent = 'body.s2-scene #ui>*:not(#hit):not(#hdFx),body.s2-scene #s2Tray{visibility:hidden!important}'; document.head.appendChild(css); }
