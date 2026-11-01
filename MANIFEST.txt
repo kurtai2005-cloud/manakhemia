@@ -1,950 +1,135 @@
-團絨 evo6 batch C staging — 2026-10-31 16:02 HKT（遊美）。未 commit／未 push。路徑相對 repo 根（/workspace/game-design/ 對應）。
-疊落：art/glimmer-evo6-anim @ b9769d1 ＋ evo6-animB-staging，只新增／覆蓋，冇刪除。
-欄：status（對 base：new＝base 冇、changed＝內容唔同、unchanged＝同 base 一樣，只為依賴完整而放）｜vs-concept（對 concept branch 349211d／evo6-staging：absent／same／differs）｜md5｜bytes｜來源｜path
-統計：{'changed': 3, 'new': 938, 'unchanged': 2}，共 943 檔
-重建：cd art-pet/tools && python3 build_evo6_animBC.py C
-驗證：python3 validate_evo6_anim.py（＋其餘三個 validator）
-
-changed	differs	4c92d1f014976d1d079b0823d9a69285	10677	doc/tool	art-pet/ASSET_LOG.md
-new	absent	e46d5cfa0a33e15332ebb81c64730aeb	1187	evo6 C	art-pet/sprites/tuanrong/evo6/_stats_batchC.json
-new	absent	b85d295baabc521e587e50ef27a29bcd	53985	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_dust.json
-new	absent	aed246b6924cf33be3621de533ae8723	19515	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_dust.png
-new	absent	b521be4ace5207a4a740d5c9f60b97e5	3790	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_dust_emissive.png
-new	absent	0bda92d84c4ebfc0595b255e34ce060f	53996	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_lumi.json
-new	absent	5261ee0882f67be593fd6627fc643b49	22406	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_lumi.png
-new	absent	3207e286f54e5d835c0b79670b26a335	6993	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_lumi_emissive.png
-new	absent	352d49893c159fc2ac59c75afbb0ab80	54000	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_radiant.json
-new	absent	b242bc4cef4407970e085d3bd8464253	23047	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_radiant.png
-new	absent	6385e593d273bfec94c440b35f222a4f	6492	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_radiant_emissive.png
-new	absent	5be9dd28a85bd8dde9ee4374af0dddf6	53985	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_soft.json
-new	absent	897ddd1f8844e3a316a8299c1daea0dd	21306	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_soft.png
-new	absent	992179f19c12dc127e6abd96f7454282	1756	evo6 C	art-pet/sprites/tuanrong/evo6/atlas_evo_still_soft_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/blink_01_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/blink_01_noface_emissive.png
-new	absent	fbb189835b1522820ca1890d04094f13	182	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/blink_02_emissive.png
-new	absent	fbb189835b1522820ca1890d04094f13	182	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/blink_02_noface_emissive.png
-new	absent	56ada09722168d9d7f112adb7ba66de7	178	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/blink_03_emissive.png
-new	absent	56ada09722168d9d7f112adb7ba66de7	178	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/blink_03_noface_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/blink_04_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/blink_04_noface_emissive.png
-new	absent	d4263e6b1f94d2d033d6b488bd8eef8a	184	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/emo_happy_01_emissive.png
-new	absent	d4263e6b1f94d2d033d6b488bd8eef8a	184	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/emo_happy_01_noface_emissive.png
-new	absent	86492aaa597bafeeb733dd7bf080ed84	186	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/emo_happy_02_emissive.png
-new	absent	86492aaa597bafeeb733dd7bf080ed84	186	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/emo_happy_02_noface_emissive.png
-new	absent	cb94b25a649cc7b9e2bcb74607db13d5	188	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/fall_asleep_01_emissive.png
-new	absent	cb94b25a649cc7b9e2bcb74607db13d5	188	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/fall_asleep_01_noface_emissive.png
-new	absent	d002fbe708911e19436a1d7f1a5e6698	177	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/fall_asleep_02_emissive.png
-new	absent	d002fbe708911e19436a1d7f1a5e6698	177	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/fall_asleep_02_noface_emissive.png
-new	absent	9e738ceb7fb1a25fbdc55493281d4b1d	190	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/fall_asleep_03_emissive.png
-new	absent	9e738ceb7fb1a25fbdc55493281d4b1d	190	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/fall_asleep_03_noface_emissive.png
-new	absent	c70548c6697bd0f762b833611e054c5b	195	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/fall_asleep_04_emissive.png
-new	absent	c70548c6697bd0f762b833611e054c5b	195	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/fall_asleep_04_noface_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/idle_01_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/idle_01_noface_emissive.png
-new	absent	220e845ba77a5fcc36660ce237e9c067	193	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/idle_02_emissive.png
-new	absent	220e845ba77a5fcc36660ce237e9c067	193	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/idle_02_noface_emissive.png
-new	absent	ffce42abde0dce6174cc55f205b6536b	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/idle_03_emissive.png
-new	absent	ffce42abde0dce6174cc55f205b6536b	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/idle_03_noface_emissive.png
-new	absent	c966f17f4b96effde71c2ffcde4df036	192	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/idle_04_emissive.png
-new	absent	c966f17f4b96effde71c2ffcde4df036	192	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/idle_04_noface_emissive.png
-new	absent	5d45a38a582ee6ce8ce6f2dcef1ada5b	197	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_01_emissive.png
-new	absent	5d45a38a582ee6ce8ce6f2dcef1ada5b	197	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_01_noface_emissive.png
-new	absent	b92fd9e6b3a480a1003f7f7b04d4d9e7	193	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_02_emissive.png
-new	absent	b92fd9e6b3a480a1003f7f7b04d4d9e7	193	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_02_noface_emissive.png
-new	absent	5ea7deeb0be79eb4c94e015e3c50b058	199	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_03_emissive.png
-new	absent	5ea7deeb0be79eb4c94e015e3c50b058	199	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_03_noface_emissive.png
-new	absent	97621e475ca3ea77d6556ede2603b412	196	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_04_emissive.png
-new	absent	97621e475ca3ea77d6556ede2603b412	196	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_04_noface_emissive.png
-new	absent	6da5afd120279bf1df52a91f3a9cdc64	198	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_05_emissive.png
-new	absent	6da5afd120279bf1df52a91f3a9cdc64	198	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_05_noface_emissive.png
-new	absent	c6fa630c7a928714a3e90356e75d17fa	196	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_06_emissive.png
-new	absent	c6fa630c7a928714a3e90356e75d17fa	196	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/picked_up_06_noface_emissive.png
-new	absent	77080fff1263726eade7aa628a9dffa4	182	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/sleep_loop_01_emissive.png
-new	absent	77080fff1263726eade7aa628a9dffa4	182	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/sleep_loop_01_noface_emissive.png
-new	absent	c8b281b17e58a247557b01823d5d3624	193	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/sleep_loop_02_emissive.png
-new	absent	c8b281b17e58a247557b01823d5d3624	193	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/sleep_loop_02_noface_emissive.png
-new	absent	b7f379af45c9f10084b0ba21cc62ab60	172	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/sleep_loop_03_emissive.png
-new	absent	b7f379af45c9f10084b0ba21cc62ab60	172	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/sleep_loop_03_noface_emissive.png
-new	absent	79ae9bec99c66e3dcb0b572cd34fbe95	198	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/sleep_loop_04_emissive.png
-new	absent	79ae9bec99c66e3dcb0b572cd34fbe95	198	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/sleep_loop_04_noface_emissive.png
-new	absent	d002fbe708911e19436a1d7f1a5e6698	177	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/wake_01_emissive.png
-new	absent	d002fbe708911e19436a1d7f1a5e6698	177	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/wake_01_noface_emissive.png
-new	absent	cea3f882bf473924003e14c49cc94877	183	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/wake_02_emissive.png
-new	absent	cea3f882bf473924003e14c49cc94877	183	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/wake_02_noface_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/wake_03_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/wake_03_noface_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/wake_04_emissive.png
-new	absent	815e84effb322dd9ea3cdaf90074a904	185	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/emissive/wake_04_noface_emissive.png
-new	absent	8eb5a850f6001e5b21bfd6869ab2e79c	5908	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/face_anchors_evo_still_dust.json
-new	absent	4b08d5be53faceacc885b828cb3928b5	1103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/blink_01.png
-new	absent	fb27c512bf66411d0897becb5a4dc6de	1093	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/blink_02.png
-new	absent	5f2843d7d74f49c1466cb74a3080c056	1090	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/blink_03.png
-new	absent	e9784ad3cbc51d408262d0ade966869d	1089	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/blink_04.png
-new	absent	a380c70ecae0905e1ac523c8ab7a4780	1162	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/emo_happy_01.png
-new	absent	0683468cbc0b372c09f5f90a993f1ae0	1233	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/emo_happy_02.png
-new	absent	b1ede9bc663f805cc16ed9543bc4e453	1176	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/fall_asleep_01.png
-new	absent	c3c920c878b01248d01eb4478f599c33	1176	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/fall_asleep_02.png
-new	absent	ac336215067659907a9bae3f2570b79a	1141	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/fall_asleep_03.png
-new	absent	8ad7ba673b3db478cdd4d6ce8401784a	1064	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/fall_asleep_04.png
-new	absent	4b08d5be53faceacc885b828cb3928b5	1103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/idle_01.png
-new	absent	8bf099d8df8751b20c8666116dce5a2c	1119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/idle_02.png
-new	absent	514e648991a81bd2e5b20fc7ee341950	1150	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/idle_03.png
-new	absent	4a9ae4e43329b7bf755cf8a47f5ebaa6	1139	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/idle_04.png
-new	absent	724400ada42a8fd17134e5e5e3835a79	1274	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/picked_up_01.png
-new	absent	95e85003dc9727b7f57c67cd80bb75ec	1296	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/picked_up_02.png
-new	absent	7276b7d27b6d103e834cc3e39a1fd319	1248	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/picked_up_03.png
-new	absent	1a6a9b8c887a1f38b7fd0214f6b38dca	1279	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/picked_up_04.png
-new	absent	95fc73ee4aa558f1fd0f3530fc2035ab	1304	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/picked_up_05.png
-new	absent	dc11194aa6a66589cc8067face4e2e33	1210	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/picked_up_06.png
-new	absent	053751be23bca0ab3a547b947f17662a	1093	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/sleep_loop_01.png
-new	absent	47d7533944e2c5e663b69dac4fc842fa	1099	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/sleep_loop_02.png
-new	absent	95c8f72b42c19b8a7658bb3012c34d0b	1138	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/sleep_loop_03.png
-new	absent	8cf1fdd7f2f64c74de812fbcc793602a	1133	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/sleep_loop_04.png
-new	absent	d9996d449d595bf1c03cfe64605693ad	1195	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/wake_01.png
-new	absent	16257541fe69f3836a1c437d8bb5db14	1225	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/wake_02.png
-new	absent	757db5eb5148e765937fb330e92fe8aa	1099	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/wake_03.png
-new	absent	4b08d5be53faceacc885b828cb3928b5	1103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/frames/wake_04.png
-new	absent	0555c8381ea0d4cdb9b5efe58dea3c97	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_CL_l.png
-new	absent	356de25ccf14d2705540b999e8ce21ff	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_CL_r.png
-new	absent	9f5bf9c7b11fab21c204074cd5c29c98	112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_CR_l.png
-new	absent	d511097d91c05ec1589cef2cd1fa8025	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_CR_r.png
-new	absent	72b634ac1617805f7caff12e5f6ed897	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_C_l.png
-new	absent	8dea8f96634f8367d8304e0716b731ed	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_C_r.png
-new	absent	66e1c901d05bffa2c24e44d7143e55d4	110	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_D_l.png
-new	absent	fd29b6b0b7a7107e078513e91621373b	111	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_D_r.png
-new	absent	c4ddc1e21418c9052df1080c7e8a1a5f	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_L_l.png
-new	absent	371e0971ae226cac9533c3529eaabdfb	114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_L_r.png
-new	absent	c0450dbfdf300736e57aeac0f4882a5e	108	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_R_l.png
-new	absent	bdc870077ef18855fb2b27432dbdda51	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_R_r.png
-new	absent	ed5e0bb5689a5fdf9c6a11bb4a748462	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_U_l.png
-new	absent	3dd67b9e6de68d220e8e8f266a490de0	112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_angry_U_r.png
-new	absent	7af0a40e61b5943e32a68cb489b7ccf0	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_happy_C_l.png
-new	absent	7af0a40e61b5943e32a68cb489b7ccf0	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_happy_C_r.png
-new	absent	21d5d564db58b614ff193a540fe25944	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_CL_l.png
-new	absent	21d5d564db58b614ff193a540fe25944	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_CL_r.png
-new	absent	727dbd0c636b66a1e963353ae1eff36c	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_CR_l.png
-new	absent	727dbd0c636b66a1e963353ae1eff36c	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_CR_r.png
-new	absent	453f45465e2252b0319b5206949faae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_C_l.png
-new	absent	453f45465e2252b0319b5206949faae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_C_r.png
-new	absent	dd1dfab69638f09ea6434e7a9c72e3d0	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_D_l.png
-new	absent	dd1dfab69638f09ea6434e7a9c72e3d0	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_D_r.png
-new	absent	287f5aed1256f33dd2864a72fec45bd3	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_L_l.png
-new	absent	287f5aed1256f33dd2864a72fec45bd3	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_L_r.png
-new	absent	6ea56155296484b8ab2478b14f2e9f43	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_R_l.png
-new	absent	6ea56155296484b8ab2478b14f2e9f43	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_R_r.png
-new	absent	31edc4bcf5e03aaccfc08e624a1c3ae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_U_l.png
-new	absent	31edc4bcf5e03aaccfc08e624a1c3ae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_neutral_U_r.png
-new	absent	ce01d7e647e604adc7c6d10cd5b2b215	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_CL_l.png
-new	absent	1c95925381f306e2547d6aabc20bd229	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_CL_r.png
-new	absent	f5bc5707b31d5dedf6cab0294fc97e54	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_CR_l.png
-new	absent	c2ee9a804d8bb03e9c33e55e7ac7200a	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_CR_r.png
-new	absent	463bae6bd568f5f7c392b6b41b6428df	118	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_C_l.png
-new	absent	2b5c200ab22e82bcbb91370c6221ab0f	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_C_r.png
-new	absent	5fa12e1c54d40662e444320bbab3d4e9	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_D_l.png
-new	absent	9cba0687e791613d4d4704f3103e7728	114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_D_r.png
-new	absent	29b0d6588d4e7e0a61177d1a90ec62ce	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_L_l.png
-new	absent	64937f74a64b9cb6a7daa3d4769fa200	118	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_L_r.png
-new	absent	a6c35de2747ffc353d0d8b0c6b07a202	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_R_l.png
-new	absent	b4e18770b70c2d93054a671aca71d869	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_R_r.png
-new	absent	86f8ad852f6bf357bbf388581235a7ed	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_U_l.png
-new	absent	939b66cd07d60d983e99e2fbd327b2e8	121	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sad_U_r.png
-new	absent	8e57e59b1f20b5ce95f51560a38cb8a6	86	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sleepy_C_l.png
-new	absent	8e57e59b1f20b5ce95f51560a38cb8a6	86	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_sleepy_C_r.png
-new	absent	e8cae910056e1842d6c7c51c8ae26be8	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_CL_l.png
-new	absent	e8cae910056e1842d6c7c51c8ae26be8	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_CL_r.png
-new	absent	3b794ae0c34bccaead97db1965451a51	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_CR_l.png
-new	absent	3b794ae0c34bccaead97db1965451a51	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_CR_r.png
-new	absent	d018802c096d4e7147cfcaaaaa0ed74c	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_C_l.png
-new	absent	d018802c096d4e7147cfcaaaaa0ed74c	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_C_r.png
-new	absent	697594060cb21f2e02f6761c38c55ae1	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_D_l.png
-new	absent	697594060cb21f2e02f6761c38c55ae1	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_D_r.png
-new	absent	ac329f6b8325bfea75e0dae3e3bd059c	101	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_L_l.png
-new	absent	ac329f6b8325bfea75e0dae3e3bd059c	101	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_L_r.png
-new	absent	3aa8e98deca597baf84f0fa4b74e5928	99	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_R_l.png
-new	absent	3aa8e98deca597baf84f0fa4b74e5928	99	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_R_r.png
-new	absent	79a3e4ae2cf5f01b09a80ab547da8ea8	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_U_l.png
-new	absent	79a3e4ae2cf5f01b09a80ab547da8ea8	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_squint_U_r.png
-new	absent	6a64ddafa19c5b2ef623315421a2fc3f	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_CL_l.png
-new	absent	6a64ddafa19c5b2ef623315421a2fc3f	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_CL_r.png
-new	absent	8cedac4f9f2feb4864efe206eb6b14ae	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_CR_l.png
-new	absent	8cedac4f9f2feb4864efe206eb6b14ae	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_CR_r.png
-new	absent	8d633b5a86d7667627cb9c78cb50ea6c	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_C_l.png
-new	absent	8d633b5a86d7667627cb9c78cb50ea6c	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_C_r.png
-new	absent	d26d86c585051deb7723f28c5e05742d	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_D_l.png
-new	absent	d26d86c585051deb7723f28c5e05742d	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_D_r.png
-new	absent	5b9c4a4bbf1da085073260bc51280f77	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_L_l.png
-new	absent	5b9c4a4bbf1da085073260bc51280f77	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_L_r.png
-new	absent	66d115a5942be185b0ccac503008d3d0	129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_R_l.png
-new	absent	66d115a5942be185b0ccac503008d3d0	129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_R_r.png
-new	absent	7da9d2325cabafd269aeb35e5b10c176	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_U_l.png
-new	absent	7da9d2325cabafd269aeb35e5b10c176	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_surprised_U_r.png
-new	absent	e3b881be9d208662230b8b57a69bbede	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_wink_C_l.png
-new	absent	d83aec407e5c2a92c607aaab8ecdd8dd	88	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/eyes_wink_C_r.png
-new	absent	b54e450c4e214cfb202cdfe72de70cfb	82	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/mouth_angry.png
-new	absent	96f0c44af40add59b7e80fb1783de199	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/mouth_happy.png
-new	absent	9a7c937a4ce3d38d00b9ffab6967c680	92	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/mouth_neutral.png
-new	absent	ca91110c5c2612c0bb8df101f7e504c4	85	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/mouth_sad.png
-new	absent	b38a425c39a7110e41fd197b121ee664	87	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/mouth_sleepy.png
-new	absent	bf749cb8fd03b5d707bc9d3e825d2a82	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/mouth_squint.png
-new	absent	d663925841c182c8e73a66c568f78e88	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/mouth_surprised.png
-new	absent	fafacee7a0addec6cbf76e4cbaf4fc9a	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/kit/mouth_wink.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/blink_01_faceov.png
-new	absent	ea54a33bbfa7a1f19ce3a6e6accb3299	1064	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/blink_01_noface.png
-new	absent	c6015fd44d73da239e508e302f6e120e	157	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/blink_02_faceov.png
-new	absent	1593b5309991e167ed9628fa692b3a23	1109	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/blink_02_noface.png
-new	absent	c3a37abe6a485d53225758b8053bbea2	134	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/blink_03_faceov.png
-new	absent	24763e3e522424a8b60f6241ac056377	1133	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/blink_03_noface.png
-new	absent	c6015fd44d73da239e508e302f6e120e	157	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/blink_04_faceov.png
-new	absent	ea54a33bbfa7a1f19ce3a6e6accb3299	1064	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/blink_04_noface.png
-new	absent	069ac794496da6c46c922aed30a7e52d	168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/emo_happy_01_faceov.png
-new	absent	bd785bd8b8d61bad0cbdef26f8e11353	1127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/emo_happy_01_noface.png
-new	absent	f875e2568e35913e730139e88c00cc62	168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/emo_happy_02_faceov.png
-new	absent	01b48e1e5f7905eeb656b7f0ef339ed2	1153	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/emo_happy_02_noface.png
-new	absent	1b9ae6020cdf9fda82dd7a8ac9b04e7e	152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/fall_asleep_01_faceov.png
-new	absent	cf62d08a63905b29b845eeba3c45af20	1163	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/fall_asleep_01_noface.png
-new	absent	d13fa78c82a67f311f5659b44d2c6d30	150	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/fall_asleep_02_faceov.png
-new	absent	e1e11994c888d15839731a67d7ba348f	1144	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/fall_asleep_02_noface.png
-new	absent	1b9ae6020cdf9fda82dd7a8ac9b04e7e	152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/fall_asleep_03_faceov.png
-new	absent	f0325d2346dedfbdd1e3d2944e9785a2	1126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/fall_asleep_03_noface.png
-new	absent	53b5fdae321f6266690af236f66fac40	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/fall_asleep_04_faceov.png
-new	absent	c463254170870f32e75ea2ecc1c5391d	1028	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/fall_asleep_04_noface.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/idle_01_faceov.png
-new	absent	ea54a33bbfa7a1f19ce3a6e6accb3299	1064	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/idle_01_noface.png
-new	absent	e3dc5e9f4a9d7d50e2064445d7f921b5	170	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/idle_02_faceov.png
-new	absent	8a510d179113b19dd6d2adc32eed5c57	1082	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/idle_02_noface.png
-new	absent	c3a37abe6a485d53225758b8053bbea2	134	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/idle_03_faceov.png
-new	absent	ba0428438ea035c91d647c522d67346d	1140	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/idle_03_noface.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/idle_04_faceov.png
-new	absent	3e0f94871354bc5c409e3063038d32b0	1103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/idle_04_noface.png
-new	absent	3a2cf6277df3b184ff68a51870d1b18f	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_01_faceov.png
-new	absent	689f5a1fafbe63d2808c0629a235bfa4	1196	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_01_noface.png
-new	absent	8d02e59b2464063de14cbdbcf70b1d48	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_02_faceov.png
-new	absent	a1fbcc780d0374ec429df3b1fcb9f75b	1233	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_02_noface.png
-new	absent	3a2cf6277df3b184ff68a51870d1b18f	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_03_faceov.png
-new	absent	5d9beedf6ebe3277d012f212a7453390	1167	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_03_noface.png
-new	absent	c06990bd4ec410a1dfc560195b86e6a4	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_04_faceov.png
-new	absent	add1d755f1bc186233417ce9711bcb60	1210	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_04_noface.png
-new	absent	f40f296bf9379394ec00923f4c7ca9fd	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_05_faceov.png
-new	absent	a76866df9080f0583f50bdd2e8488649	1242	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_05_noface.png
-new	absent	c06990bd4ec410a1dfc560195b86e6a4	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_06_faceov.png
-new	absent	0b4cd0e6b1e31e218ba368c1a1c6a51c	1140	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/picked_up_06_noface.png
-new	absent	53b5fdae321f6266690af236f66fac40	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/sleep_loop_01_faceov.png
-new	absent	771640d736dc515c70ebce87e37380db	1099	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/sleep_loop_01_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/sleep_loop_02_faceov.png
-new	absent	61d3f78c1c83bee1368778eea2b79adb	1083	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/sleep_loop_02_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/sleep_loop_03_faceov.png
-new	absent	7baf02f4574a652953f83d294b7eb409	1129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/sleep_loop_03_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/sleep_loop_04_faceov.png
-new	absent	1bfffb54e0efa58b08596087783b12aa	1105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/sleep_loop_04_noface.png
-new	absent	4c2c3ef83e9031b8c733128426275d0b	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/wake_01_faceov.png
-new	absent	d3eac42ed67462ff30158875254bcd37	1153	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/wake_01_noface.png
-new	absent	7f7a8e6b5f4574c7062644787b63aa7f	188	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/wake_02_faceov.png
-new	absent	f166718cf2c177e8e4ac3247a0c47be9	1169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/wake_02_noface.png
-new	absent	5aef0312a2d4e7c85a105e13e497ed50	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/wake_03_faceov.png
-new	absent	b4c976647a16b4c0239164e65ca8e2fa	1070	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/wake_03_noface.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/wake_04_faceov.png
-new	absent	ea54a33bbfa7a1f19ce3a6e6accb3299	1064	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_dust/layers/wake_04_noface.png
-new	absent	8ae3ad5ea9058797fa2f317d326d0d11	286	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/blink_01_emissive.png
-new	absent	82fe845434c1a888f9d87d6b3e09f80f	282	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/blink_01_noface_emissive.png
-new	absent	faf6fff46666180f235eea714d15f16a	275	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/blink_02_emissive.png
-new	absent	e658db8aa44261fda29575ca811fd417	270	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/blink_02_noface_emissive.png
-new	absent	6ae6487718a374a593013b13a0613e90	269	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/blink_03_emissive.png
-new	absent	6ae6487718a374a593013b13a0613e90	269	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/blink_03_noface_emissive.png
-new	absent	c142e03bb011aad84b686529865bca69	284	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/blink_04_emissive.png
-new	absent	82fe845434c1a888f9d87d6b3e09f80f	282	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/blink_04_noface_emissive.png
-new	absent	dbb8da7140bf2b78437fb56c29a55fd6	282	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/emo_happy_01_emissive.png
-new	absent	dbb8da7140bf2b78437fb56c29a55fd6	282	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/emo_happy_01_noface_emissive.png
-new	absent	be5233bf32c01002a2f6f1f024f7d92d	269	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/emo_happy_02_emissive.png
-new	absent	be5233bf32c01002a2f6f1f024f7d92d	269	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/emo_happy_02_noface_emissive.png
-new	absent	7f29c0e931928589c2bc2272b02b3f7f	277	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/fall_asleep_01_emissive.png
-new	absent	b5f3ed90487135cc9f3628dee456b6d5	275	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/fall_asleep_01_noface_emissive.png
-new	absent	03cfe143c77b7cb394883882bcbbd970	238	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/fall_asleep_02_emissive.png
-new	absent	03cfe143c77b7cb394883882bcbbd970	238	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/fall_asleep_02_noface_emissive.png
-new	absent	faa0f9d6e0322370b62d2538df0649ab	259	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/fall_asleep_03_emissive.png
-new	absent	6905350d530ea3673710279a5e81da2b	255	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/fall_asleep_03_noface_emissive.png
-new	absent	9754369801fff865f665eb34cfc8c27c	248	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/fall_asleep_04_emissive.png
-new	absent	9754369801fff865f665eb34cfc8c27c	248	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/fall_asleep_04_noface_emissive.png
-new	absent	8ae3ad5ea9058797fa2f317d326d0d11	286	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/idle_01_emissive.png
-new	absent	82fe845434c1a888f9d87d6b3e09f80f	282	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/idle_01_noface_emissive.png
-new	absent	7d04b7468d4708e881cdb314c30566e0	295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/idle_02_emissive.png
-new	absent	73085e5c0a83a6d99b535aec6df19a5e	291	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/idle_02_noface_emissive.png
-new	absent	387be7ba7d9e4d65f4b5ba8a29ef86d6	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/idle_03_emissive.png
-new	absent	387be7ba7d9e4d65f4b5ba8a29ef86d6	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/idle_03_noface_emissive.png
-new	absent	237d43b5aba52a64f85340c804180791	278	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/idle_04_emissive.png
-new	absent	94de2671047a21765d4a2059db2c47ca	274	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/idle_04_noface_emissive.png
-new	absent	00eafbf64de8b6468efefaaecc993d5c	289	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_01_emissive.png
-new	absent	00eafbf64de8b6468efefaaecc993d5c	289	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_01_noface_emissive.png
-new	absent	d10df8aba1ab3422d958d83aeb09093d	295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_02_emissive.png
-new	absent	d10df8aba1ab3422d958d83aeb09093d	295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_02_noface_emissive.png
-new	absent	da56d684f6af3a72cc0537bab01d7917	284	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_03_emissive.png
-new	absent	da56d684f6af3a72cc0537bab01d7917	284	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_03_noface_emissive.png
-new	absent	3906c8022e69ef3e6c135d4614a2aa19	280	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_04_emissive.png
-new	absent	3906c8022e69ef3e6c135d4614a2aa19	280	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_04_noface_emissive.png
-new	absent	df0d1b53812b70755e6596f6784114b2	305	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_05_emissive.png
-new	absent	df0d1b53812b70755e6596f6784114b2	305	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_05_noface_emissive.png
-new	absent	22c4822e906673a7ca404afba5f0c276	305	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_06_emissive.png
-new	absent	22c4822e906673a7ca404afba5f0c276	305	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/picked_up_06_noface_emissive.png
-new	absent	d2bafa251117475700841d5b997f3096	251	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/sleep_loop_01_emissive.png
-new	absent	d2bafa251117475700841d5b997f3096	251	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/sleep_loop_01_noface_emissive.png
-new	absent	30eb8b80e906763fe455bd06ddd1302b	253	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/sleep_loop_02_emissive.png
-new	absent	30eb8b80e906763fe455bd06ddd1302b	253	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/sleep_loop_02_noface_emissive.png
-new	absent	3c30ac4fb65d3301a4e707922673c9b5	249	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/sleep_loop_03_emissive.png
-new	absent	3c30ac4fb65d3301a4e707922673c9b5	249	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/sleep_loop_03_noface_emissive.png
-new	absent	a12f58077ea412a5533d22e6831e156c	248	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/sleep_loop_04_emissive.png
-new	absent	a12f58077ea412a5533d22e6831e156c	248	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/sleep_loop_04_noface_emissive.png
-new	absent	6a688689046e678021a973202aab5d83	242	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/wake_01_emissive.png
-new	absent	03cfe143c77b7cb394883882bcbbd970	238	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/wake_01_noface_emissive.png
-new	absent	70328d14f39eabc0c0e0ef085eda5edb	264	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/wake_02_emissive.png
-new	absent	70328d14f39eabc0c0e0ef085eda5edb	264	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/wake_02_noface_emissive.png
-new	absent	7a40b5566bb5fd835a0d6796c6227856	287	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/wake_03_emissive.png
-new	absent	5c97186547d7062bbe9046819f596ab0	284	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/wake_03_noface_emissive.png
-new	absent	8ae3ad5ea9058797fa2f317d326d0d11	286	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/wake_04_emissive.png
-new	absent	82fe845434c1a888f9d87d6b3e09f80f	282	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/emissive/wake_04_noface_emissive.png
-new	absent	77fd9dc1d7e27dc52aa6e4c40769734d	6355	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/face_anchors_evo_still_lumi.json
-new	absent	07fe36c1b0d41c1b4034109317cf322c	1270	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/blink_01.png
-new	absent	da53b4600515ddcde8d3d9bb82c76628	1284	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/blink_02.png
-new	absent	74d852b72c3df47e95b039f1065ae6ed	1235	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/blink_03.png
-new	absent	c2e2fc5f28b5ecccedc1206a2e28b043	1265	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/blink_04.png
-new	absent	f9c97a511b8327bd83c36021d04b40c1	1287	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/emo_happy_01.png
-new	absent	0ad131ce2f2baca61cf9ae1980356c3d	1267	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/emo_happy_02.png
-new	absent	51a04e963d10837c5ab30da2c519dc50	1249	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/fall_asleep_01.png
-new	absent	bb062c6cae6be651e5af3e15eacac082	1187	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/fall_asleep_02.png
-new	absent	e634e74df34af4712fcef3e79deb99d1	1233	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/fall_asleep_03.png
-new	absent	f1cfced0af31ec5c5730f76c72b7be65	1180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/fall_asleep_04.png
-new	absent	07fe36c1b0d41c1b4034109317cf322c	1270	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/idle_01.png
-new	absent	f4107c4f65d581cc86792f2c82bbc059	1290	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/idle_02.png
-new	absent	ab6a54c3dfdaa43a3194fcd239ecb1c9	1230	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/idle_03.png
-new	absent	5d3b4d699ba4195f70bd0300a674afe1	1213	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/idle_04.png
-new	absent	be9170ace5f493664512e9a498c5e01d	1380	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/picked_up_01.png
-new	absent	06f7aa86afcfcec64b6a35b378c993b3	1386	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/picked_up_02.png
-new	absent	1c56ab5e8b1f3caa562c9c49cfe2666f	1373	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/picked_up_03.png
-new	absent	1ad734ea9fa7e21651c7f5a902760318	1360	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/picked_up_04.png
-new	absent	8814cb5ee7c2c0fcd59896b3bcf5c4e9	1369	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/picked_up_05.png
-new	absent	b9f505def265addf886f1c0990c43042	1371	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/picked_up_06.png
-new	absent	1713744cff8a0f1fa92b155d5bb4d738	1215	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/sleep_loop_01.png
-new	absent	58f922a5b41e8690a792991bfeea3550	1180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/sleep_loop_02.png
-new	absent	63cd41d9583d4477a2ac79c3de01cc9e	1187	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/sleep_loop_03.png
-new	absent	d3bc390c3d51add18691a624d7a129e6	1178	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/sleep_loop_04.png
-new	absent	ea13031fe1fc6b0f5691722afe1ba93f	1208	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/wake_01.png
-new	absent	9bc1594d83e7ebe9aac97ad56c531c5a	1333	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/wake_02.png
-new	absent	528411682ed858872e1f353a0dfcaa93	1252	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/wake_03.png
-new	absent	07fe36c1b0d41c1b4034109317cf322c	1270	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/frames/wake_04.png
-new	absent	15125618c178f631cb49ab88d550aa6c	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_CL_l.png
-new	absent	bb59830e3b7ff7e215c0d109a86637b2	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_CL_r.png
-new	absent	17764c7b7e3612c25271a01b6ddf87c1	112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_CR_l.png
-new	absent	4629ee4cb930d2af0789889c480c769b	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_CR_r.png
-new	absent	b7457ffd25e1dc11990e8601fb2aa3e8	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_C_l.png
-new	absent	77e4abd1c8b90e08a9f4f46df3bf06f8	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_C_r.png
-new	absent	60ec2a6d8e715cc85d59ebf405eeaf63	110	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_D_l.png
-new	absent	662a8ff560738502976687ba13eee179	111	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_D_r.png
-new	absent	254803546cf3f99e62ff99ebe2ca8a21	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_L_l.png
-new	absent	929e3b5dd13b5fa523aebbf3f17792e8	114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_L_r.png
-new	absent	d51796bd560c698f187f1fb9e321a808	108	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_R_l.png
-new	absent	d317b43d12cb58ad93ceba2e34f835f9	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_R_r.png
-new	absent	4e9bf5cbb291e16a4de7d7832735493b	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_U_l.png
-new	absent	398c6f599e551a92d6e113694da12dcb	112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_angry_U_r.png
-new	absent	7af0a40e61b5943e32a68cb489b7ccf0	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_happy_C_l.png
-new	absent	7af0a40e61b5943e32a68cb489b7ccf0	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_happy_C_r.png
-new	absent	293343df82b5180f45bcfc413378b7ef	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_CL_l.png
-new	absent	293343df82b5180f45bcfc413378b7ef	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_CL_r.png
-new	absent	a74527aa2ed47a36ea54d430a19786b1	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_CR_l.png
-new	absent	a74527aa2ed47a36ea54d430a19786b1	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_CR_r.png
-new	absent	9b0c6cb8201a0d75292019a3b800c9bf	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_C_l.png
-new	absent	9b0c6cb8201a0d75292019a3b800c9bf	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_C_r.png
-new	absent	faccd81d6d1cc95c75352a430444fe32	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_D_l.png
-new	absent	faccd81d6d1cc95c75352a430444fe32	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_D_r.png
-new	absent	3110f9ce83f3c01c0e457085f26f557e	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_L_l.png
-new	absent	3110f9ce83f3c01c0e457085f26f557e	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_L_r.png
-new	absent	40078243ffcacbe8c49b757b097f7141	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_R_l.png
-new	absent	40078243ffcacbe8c49b757b097f7141	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_R_r.png
-new	absent	2d5cd24922f459f132e9d4c14506129a	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_U_l.png
-new	absent	2d5cd24922f459f132e9d4c14506129a	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_neutral_U_r.png
-new	absent	fb7382aa6048c69ccc3e466d1eb9da7c	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_CL_l.png
-new	absent	fef9e2cc5eb78107d7f610005d845dc9	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_CL_r.png
-new	absent	3a36071a8ceccfbf5414bbe5c83c8e9d	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_CR_l.png
-new	absent	0dd489b8c5fd157f747c5d344bc6084b	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_CR_r.png
-new	absent	84b37da5b4e5408e3dd62d3af406b19f	118	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_C_l.png
-new	absent	d47645800b8428516dfc28e881008c8f	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_C_r.png
-new	absent	d07b462038dfd1b33140285e6a582dd4	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_D_l.png
-new	absent	fe729f6975ce3de34a6b0012090f8388	114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_D_r.png
-new	absent	536ea7f38f2a5c9d7452b4a75cb82872	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_L_l.png
-new	absent	6734f8073c70c84b0b35c016bc16c4d8	118	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_L_r.png
-new	absent	0b60885d2accf0de81534e41133c05be	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_R_l.png
-new	absent	36a3aa47ca209d4302779a32027f8e46	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_R_r.png
-new	absent	149366cc07ef81b02d48f303ffce00f9	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_U_l.png
-new	absent	108abbd5f0fc4909ad116dbcb42be7d7	121	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sad_U_r.png
-new	absent	8e57e59b1f20b5ce95f51560a38cb8a6	86	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sleepy_C_l.png
-new	absent	8e57e59b1f20b5ce95f51560a38cb8a6	86	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_sleepy_C_r.png
-new	absent	595b03bd9297e8f269670aca15f0f5a6	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_CL_l.png
-new	absent	595b03bd9297e8f269670aca15f0f5a6	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_CL_r.png
-new	absent	3ee0831e30ab80935baa490acc5de74b	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_CR_l.png
-new	absent	3ee0831e30ab80935baa490acc5de74b	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_CR_r.png
-new	absent	4585cd4e2da18d1c4cdf859b331f56fb	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_C_l.png
-new	absent	4585cd4e2da18d1c4cdf859b331f56fb	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_C_r.png
-new	absent	48aed1138c6a21c7dc152549a4301610	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_D_l.png
-new	absent	48aed1138c6a21c7dc152549a4301610	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_D_r.png
-new	absent	d6067c5677e5336eb6d12c901ba23507	101	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_L_l.png
-new	absent	d6067c5677e5336eb6d12c901ba23507	101	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_L_r.png
-new	absent	57b9d77ab9abeea8eb5ad77fca618106	99	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_R_l.png
-new	absent	57b9d77ab9abeea8eb5ad77fca618106	99	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_R_r.png
-new	absent	a63639bef06d856e469ceb013a2445a5	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_U_l.png
-new	absent	a63639bef06d856e469ceb013a2445a5	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_squint_U_r.png
-new	absent	61b6d6a15079848e9419915f1eb75208	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_CL_l.png
-new	absent	61b6d6a15079848e9419915f1eb75208	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_CL_r.png
-new	absent	0dec124ad53f8624ad66397868769fd5	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_CR_l.png
-new	absent	0dec124ad53f8624ad66397868769fd5	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_CR_r.png
-new	absent	7856fb044848e60ead33b96e3a93c721	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_C_l.png
-new	absent	7856fb044848e60ead33b96e3a93c721	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_C_r.png
-new	absent	83f5e1c13e801b5d746f7aea76bf089b	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_D_l.png
-new	absent	83f5e1c13e801b5d746f7aea76bf089b	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_D_r.png
-new	absent	2a293bcc80fb48ba256fa2cca8bb7b14	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_L_l.png
-new	absent	2a293bcc80fb48ba256fa2cca8bb7b14	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_L_r.png
-new	absent	b26aeba96b1ea04e95c76bb907b586b2	129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_R_l.png
-new	absent	b26aeba96b1ea04e95c76bb907b586b2	129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_R_r.png
-new	absent	2015a198f80ef7fa1654bc2349631b11	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_U_l.png
-new	absent	2015a198f80ef7fa1654bc2349631b11	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_surprised_U_r.png
-new	absent	e3b881be9d208662230b8b57a69bbede	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_wink_C_l.png
-new	absent	d83aec407e5c2a92c607aaab8ecdd8dd	88	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/eyes_wink_C_r.png
-new	absent	b54e450c4e214cfb202cdfe72de70cfb	82	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/mouth_angry.png
-new	absent	96f0c44af40add59b7e80fb1783de199	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/mouth_happy.png
-new	absent	9a7c937a4ce3d38d00b9ffab6967c680	92	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/mouth_neutral.png
-new	absent	ca91110c5c2612c0bb8df101f7e504c4	85	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/mouth_sad.png
-new	absent	b38a425c39a7110e41fd197b121ee664	87	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/mouth_sleepy.png
-new	absent	bf749cb8fd03b5d707bc9d3e825d2a82	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/mouth_squint.png
-new	absent	d663925841c182c8e73a66c568f78e88	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/mouth_surprised.png
-new	absent	fafacee7a0addec6cbf76e4cbaf4fc9a	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/kit/mouth_wink.png
-new	absent	0cc36df504cdcd267d1ce0dc6c4b5c64	172	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/blink_01_faceov.png
-new	absent	1e5518e12a3c4d2addfd2eb3d9de5256	1229	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/blink_01_noface.png
-new	absent	a9237fdbdddd01edda8a41a05f62fc55	158	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/blink_02_faceov.png
-new	absent	9612c235daf686f0efaf8a2e6f1eb163	1251	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/blink_02_noface.png
-new	absent	f805472876e76e5eba43d70a99143b36	133	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/blink_03_faceov.png
-new	absent	963b68eace2be7cf416acb9a7906fdca	1218	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/blink_03_noface.png
-new	absent	a9237fdbdddd01edda8a41a05f62fc55	158	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/blink_04_faceov.png
-new	absent	1e5518e12a3c4d2addfd2eb3d9de5256	1229	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/blink_04_noface.png
-new	absent	069ac794496da6c46c922aed30a7e52d	168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/emo_happy_01_faceov.png
-new	absent	85e540cb581e632f5ddc5f10660de40a	1240	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/emo_happy_01_noface.png
-new	absent	f875e2568e35913e730139e88c00cc62	168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/emo_happy_02_faceov.png
-new	absent	dfaf9194cd542135ae0cde64ec90f9f8	1217	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/emo_happy_02_noface.png
-new	absent	e7b3f2ed36c4c22695e73f464c5937a4	152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/fall_asleep_01_faceov.png
-new	absent	a8201a912c974af229f51e9f46519c69	1236	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/fall_asleep_01_noface.png
-new	absent	d13fa78c82a67f311f5659b44d2c6d30	150	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/fall_asleep_02_faceov.png
-new	absent	8fe4adaeb2557dae8b01327ecf7097d4	1167	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/fall_asleep_02_noface.png
-new	absent	e7b3f2ed36c4c22695e73f464c5937a4	152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/fall_asleep_03_faceov.png
-new	absent	09caabbff7767b3b4febc7985393e69d	1210	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/fall_asleep_03_noface.png
-new	absent	53b5fdae321f6266690af236f66fac40	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/fall_asleep_04_faceov.png
-new	absent	36716e19e8ad54fb63b8c80ddf840310	1144	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/fall_asleep_04_noface.png
-new	absent	0cc36df504cdcd267d1ce0dc6c4b5c64	172	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/idle_01_faceov.png
-new	absent	1e5518e12a3c4d2addfd2eb3d9de5256	1229	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/idle_01_noface.png
-new	absent	859887cea10279a8e507c7e975049c80	172	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/idle_02_faceov.png
-new	absent	d1522b9e03b1d40e5373f3fde6dfb287	1261	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/idle_02_noface.png
-new	absent	f805472876e76e5eba43d70a99143b36	133	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/idle_03_faceov.png
-new	absent	395984ed81333fbb072c7793929a4b08	1219	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/idle_03_noface.png
-new	absent	6cfda956ea2d5dc0168e870f38bd1104	171	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/idle_04_faceov.png
-new	absent	6585cc7917bf859d1f14088c5b9e48ed	1207	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/idle_04_noface.png
-new	absent	3a2cf6277df3b184ff68a51870d1b18f	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_01_faceov.png
-new	absent	1b9f3cbcc778697170e83b1646922edf	1311	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_01_noface.png
-new	absent	8d02e59b2464063de14cbdbcf70b1d48	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_02_faceov.png
-new	absent	ad5ca50e63aa69e034c0fdef7043c83d	1342	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_02_noface.png
-new	absent	3a2cf6277df3b184ff68a51870d1b18f	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_03_faceov.png
-new	absent	ce96e82b2b6306a52fdb00f2b5f9b4a2	1306	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_03_noface.png
-new	absent	c06990bd4ec410a1dfc560195b86e6a4	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_04_faceov.png
-new	absent	797add42671debba6327932d9087acb8	1275	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_04_noface.png
-new	absent	c6b5ed78d1d9c56a5965a65caf4c25fd	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_05_faceov.png
-new	absent	1e2eb1c1abef045d98d70013c63938e9	1309	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_05_noface.png
-new	absent	c06990bd4ec410a1dfc560195b86e6a4	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_06_faceov.png
-new	absent	5a94d43896e81e3ba79e024a179ccc8e	1311	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/picked_up_06_noface.png
-new	absent	53b5fdae321f6266690af236f66fac40	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/sleep_loop_01_faceov.png
-new	absent	cd556ff249a1ad28795d466fed9f32ad	1192	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/sleep_loop_01_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/sleep_loop_02_faceov.png
-new	absent	e24ae2a6e87222e9d34a3733d2ae9a24	1158	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/sleep_loop_02_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/sleep_loop_03_faceov.png
-new	absent	77a69d694dde1e4f17c6604a309d1787	1171	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/sleep_loop_03_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/sleep_loop_04_faceov.png
-new	absent	86a1316c08ecd698b5ea2e43a377d892	1143	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/sleep_loop_04_noface.png
-new	absent	f5ef7eacf3a7589bd1e0b17ff0f811c9	171	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/wake_01_faceov.png
-new	absent	c825958a885cb94c2ab5b49eb72104c5	1162	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/wake_01_noface.png
-new	absent	7f7a8e6b5f4574c7062644787b63aa7f	188	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/wake_02_faceov.png
-new	absent	79f55431c55bb3369f83a254bcaa8850	1281	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/wake_02_noface.png
-new	absent	1de0c816a90dd1497d9f4c3f9a1d6316	171	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/wake_03_faceov.png
-new	absent	a2f5bab034678d698c5edb8fb804844d	1218	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/wake_03_noface.png
-new	absent	0cc36df504cdcd267d1ce0dc6c4b5c64	172	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/wake_04_faceov.png
-new	absent	1e5518e12a3c4d2addfd2eb3d9de5256	1229	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_lumi/layers/wake_04_noface.png
-new	absent	bedd72f5959115584958b621302286d1	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/blink_01_emissive.png
-new	absent	bedd72f5959115584958b621302286d1	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/blink_01_noface_emissive.png
-new	absent	ecbaf8bbc0161015ad0b1ef9ef55b40d	296	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/blink_02_emissive.png
-new	absent	ecbaf8bbc0161015ad0b1ef9ef55b40d	296	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/blink_02_noface_emissive.png
-new	absent	ceca813acc2f19945c0fad012a1f140e	298	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/blink_03_emissive.png
-new	absent	ceca813acc2f19945c0fad012a1f140e	298	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/blink_03_noface_emissive.png
-new	absent	bedd72f5959115584958b621302286d1	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/blink_04_emissive.png
-new	absent	bedd72f5959115584958b621302286d1	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/blink_04_noface_emissive.png
-new	absent	2c5f8686520150b41b9192bd457c6188	303	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/emo_happy_01_emissive.png
-new	absent	7464fc5a8b34627ebb49f9a1de0c3993	307	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/emo_happy_01_noface_emissive.png
-new	absent	4b6de42af654d4bd6d03b99c18a3c232	266	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/emo_happy_02_emissive.png
-new	absent	4b6de42af654d4bd6d03b99c18a3c232	266	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/emo_happy_02_noface_emissive.png
-new	absent	9cd64040c329f12fe89a78b06c0823a8	304	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/fall_asleep_01_emissive.png
-new	absent	9cd64040c329f12fe89a78b06c0823a8	304	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/fall_asleep_01_noface_emissive.png
-new	absent	b3e3a3333aeb5fbfaa27f99d0f321f29	225	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/fall_asleep_02_emissive.png
-new	absent	a178091b4ad99d084518cc37e73865f2	227	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/fall_asleep_02_noface_emissive.png
-new	absent	159792bc90966334d150cc2cc2208fb6	244	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/fall_asleep_03_emissive.png
-new	absent	159792bc90966334d150cc2cc2208fb6	244	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/fall_asleep_03_noface_emissive.png
-new	absent	ebadc551e172b75d2946dd9f644e1850	235	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/fall_asleep_04_emissive.png
-new	absent	ebadc551e172b75d2946dd9f644e1850	235	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/fall_asleep_04_noface_emissive.png
-new	absent	bedd72f5959115584958b621302286d1	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/idle_01_emissive.png
-new	absent	bedd72f5959115584958b621302286d1	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/idle_01_noface_emissive.png
-new	absent	b45853ecff8ec942c400c7bf98f8189b	298	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/idle_02_emissive.png
-new	absent	b45853ecff8ec942c400c7bf98f8189b	298	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/idle_02_noface_emissive.png
-new	absent	39a465316713edad85b85996ec7f003f	310	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/idle_03_emissive.png
-new	absent	39a465316713edad85b85996ec7f003f	310	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/idle_03_noface_emissive.png
-new	absent	25f294d30b6e13d61d80743f578e29a1	295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/idle_04_emissive.png
-new	absent	25f294d30b6e13d61d80743f578e29a1	295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/idle_04_noface_emissive.png
-new	absent	b52b77f1b62d877031cd361369fbd6b2	300	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_01_emissive.png
-new	absent	fb66d0b4ee5b73293f6f3b45c1e2705f	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_01_noface_emissive.png
-new	absent	17e7374d17771f87cb79a28130c45167	276	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_02_emissive.png
-new	absent	9e97c03957fa97fb53a495a4a0d427d3	279	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_02_noface_emissive.png
-new	absent	2218e3ad21d5a8dfd2244d4ad94c660d	298	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_03_emissive.png
-new	absent	9c36dd5a34af405e562945a2ef84846c	301	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_03_noface_emissive.png
-new	absent	28d61313d091081835eb98ab2a45e5ed	293	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_04_emissive.png
-new	absent	f60de4bb503eb88dc1a5d8998c69bdb8	296	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_04_noface_emissive.png
-new	absent	c240b2e6aefdc59853b678ef804355ea	286	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_05_emissive.png
-new	absent	9e149c9925cfbdeba15b5a9f84eda418	288	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_05_noface_emissive.png
-new	absent	94c53f508463f7ef224b100b2c71de22	268	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_06_emissive.png
-new	absent	7e92ec882515e98cc6caccf7bc1a41e9	271	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/picked_up_06_noface_emissive.png
-new	absent	95342885f8e6b3a2a0f63d1d786e610d	228	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/sleep_loop_01_emissive.png
-new	absent	95342885f8e6b3a2a0f63d1d786e610d	228	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/sleep_loop_01_noface_emissive.png
-new	absent	1c2ae4e7f52436af0a74982fc8f5d133	250	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/sleep_loop_02_emissive.png
-new	absent	1c2ae4e7f52436af0a74982fc8f5d133	250	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/sleep_loop_02_noface_emissive.png
-new	absent	9962380e3d2446aeb10d87ab4fec378b	227	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/sleep_loop_03_emissive.png
-new	absent	9962380e3d2446aeb10d87ab4fec378b	227	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/sleep_loop_03_noface_emissive.png
-new	absent	624f8002001a42de547b878df246f86f	243	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/sleep_loop_04_emissive.png
-new	absent	624f8002001a42de547b878df246f86f	243	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/sleep_loop_04_noface_emissive.png
-new	absent	b3e3a3333aeb5fbfaa27f99d0f321f29	225	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/wake_01_emissive.png
-new	absent	a178091b4ad99d084518cc37e73865f2	227	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/wake_01_noface_emissive.png
-new	absent	eedf30bf234817639e754f5516bbf82c	270	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/wake_02_emissive.png
-new	absent	d305d2d1322711f4d40722b744200a4b	274	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/wake_02_noface_emissive.png
-new	absent	1381dee57520ce4a7af2c15f44e56df1	316	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/wake_03_emissive.png
-new	absent	1381dee57520ce4a7af2c15f44e56df1	316	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/wake_03_noface_emissive.png
-new	absent	bedd72f5959115584958b621302286d1	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/wake_04_emissive.png
-new	absent	bedd72f5959115584958b621302286d1	302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/emissive/wake_04_noface_emissive.png
-new	absent	c079c54c1a6c836a3f500ae245d406bd	5431	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/face_anchors_evo_still_radiant.json
-new	absent	12943d8ab28fa50238d7d6e923d6e2e7	1332	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/blink_01.png
-new	absent	7a11602af55e23832bff9261123ef0e4	1328	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/blink_02.png
-new	absent	c9c4809c0cc62236a8f2ec77c75539bb	1306	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/blink_03.png
-new	absent	d88ac4e8e2a48a9323ed4c33dd001c84	1327	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/blink_04.png
-new	absent	13d85e3da0e4b7a85608ebd6ca001614	1343	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/emo_happy_01.png
-new	absent	16d2940ad3fb1a0e3630b432ebf7b0b2	1343	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/emo_happy_02.png
-new	absent	6976cb39a620a6c8e55162fdc0312ee7	1316	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/fall_asleep_01.png
-new	absent	8c54cb01ebb0dec4e5c4f4d7373e0d8d	1151	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/fall_asleep_02.png
-new	absent	d510677d62f59def4de44305bb384579	1130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/fall_asleep_03.png
-new	absent	fc4f0319baff598243f71f51fca3c974	1133	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/fall_asleep_04.png
-new	absent	12943d8ab28fa50238d7d6e923d6e2e7	1332	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/idle_01.png
-new	absent	80414d54d27a261ac669732125aa0245	1409	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/idle_02.png
-new	absent	6851565d66757df9d55a8fb458c55ed0	1326	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/idle_03.png
-new	absent	550870db1c50f5386879055502f6ca10	1330	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/idle_04.png
-new	absent	ae9bd768cd5575cf5101e829129abaf4	1442	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/picked_up_01.png
-new	absent	23632489d93be9b0fb55d80650df05d8	1407	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/picked_up_02.png
-new	absent	7255333aa7498a018d85ac4b93be886d	1375	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/picked_up_03.png
-new	absent	9234ea9b28c918047413318d564c68e5	1401	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/picked_up_04.png
-new	absent	66a26453b92d32449a751e9a8d6e3019	1389	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/picked_up_05.png
-new	absent	481d6548cfc57bc826b6cb3a244c6a40	1456	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/picked_up_06.png
-new	absent	4dcf071475cea037ee1002e3ad2b978f	1148	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/sleep_loop_01.png
-new	absent	ffa9182ebbd34262776300da3a2d7aea	1130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/sleep_loop_02.png
-new	absent	647f548c7951e45e994b0378460b7863	1114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/sleep_loop_03.png
-new	absent	7078e04113451ae20ae199be788b97e8	1168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/sleep_loop_04.png
-new	absent	7e7f2f0dcba5947f69c6c9abe01056f7	1152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/wake_01.png
-new	absent	bc0fdb7a8a8e675125c62f70c6258d21	1374	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/wake_02.png
-new	absent	e9ea1e1c275fde2ff04b979c6cbd8611	1344	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/wake_03.png
-new	absent	12943d8ab28fa50238d7d6e923d6e2e7	1332	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/frames/wake_04.png
-new	absent	0555c8381ea0d4cdb9b5efe58dea3c97	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_CL_l.png
-new	absent	356de25ccf14d2705540b999e8ce21ff	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_CL_r.png
-new	absent	9f5bf9c7b11fab21c204074cd5c29c98	112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_CR_l.png
-new	absent	d511097d91c05ec1589cef2cd1fa8025	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_CR_r.png
-new	absent	72b634ac1617805f7caff12e5f6ed897	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_C_l.png
-new	absent	8dea8f96634f8367d8304e0716b731ed	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_C_r.png
-new	absent	66e1c901d05bffa2c24e44d7143e55d4	110	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_D_l.png
-new	absent	fd29b6b0b7a7107e078513e91621373b	111	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_D_r.png
-new	absent	c4ddc1e21418c9052df1080c7e8a1a5f	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_L_l.png
-new	absent	371e0971ae226cac9533c3529eaabdfb	114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_L_r.png
-new	absent	c0450dbfdf300736e57aeac0f4882a5e	108	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_R_l.png
-new	absent	bdc870077ef18855fb2b27432dbdda51	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_R_r.png
-new	absent	ed5e0bb5689a5fdf9c6a11bb4a748462	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_U_l.png
-new	absent	3dd67b9e6de68d220e8e8f266a490de0	112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_angry_U_r.png
-new	absent	7af0a40e61b5943e32a68cb489b7ccf0	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_happy_C_l.png
-new	absent	7af0a40e61b5943e32a68cb489b7ccf0	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_happy_C_r.png
-new	absent	21d5d564db58b614ff193a540fe25944	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_CL_l.png
-new	absent	21d5d564db58b614ff193a540fe25944	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_CL_r.png
-new	absent	727dbd0c636b66a1e963353ae1eff36c	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_CR_l.png
-new	absent	727dbd0c636b66a1e963353ae1eff36c	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_CR_r.png
-new	absent	453f45465e2252b0319b5206949faae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_C_l.png
-new	absent	453f45465e2252b0319b5206949faae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_C_r.png
-new	absent	dd1dfab69638f09ea6434e7a9c72e3d0	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_D_l.png
-new	absent	dd1dfab69638f09ea6434e7a9c72e3d0	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_D_r.png
-new	absent	287f5aed1256f33dd2864a72fec45bd3	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_L_l.png
-new	absent	287f5aed1256f33dd2864a72fec45bd3	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_L_r.png
-new	absent	6ea56155296484b8ab2478b14f2e9f43	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_R_l.png
-new	absent	6ea56155296484b8ab2478b14f2e9f43	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_R_r.png
-new	absent	31edc4bcf5e03aaccfc08e624a1c3ae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_U_l.png
-new	absent	31edc4bcf5e03aaccfc08e624a1c3ae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_neutral_U_r.png
-new	absent	ce01d7e647e604adc7c6d10cd5b2b215	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_CL_l.png
-new	absent	1c95925381f306e2547d6aabc20bd229	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_CL_r.png
-new	absent	f5bc5707b31d5dedf6cab0294fc97e54	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_CR_l.png
-new	absent	c2ee9a804d8bb03e9c33e55e7ac7200a	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_CR_r.png
-new	absent	463bae6bd568f5f7c392b6b41b6428df	118	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_C_l.png
-new	absent	2b5c200ab22e82bcbb91370c6221ab0f	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_C_r.png
-new	absent	5fa12e1c54d40662e444320bbab3d4e9	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_D_l.png
-new	absent	9cba0687e791613d4d4704f3103e7728	114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_D_r.png
-new	absent	29b0d6588d4e7e0a61177d1a90ec62ce	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_L_l.png
-new	absent	64937f74a64b9cb6a7daa3d4769fa200	118	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_L_r.png
-new	absent	a6c35de2747ffc353d0d8b0c6b07a202	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_R_l.png
-new	absent	b4e18770b70c2d93054a671aca71d869	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_R_r.png
-new	absent	86f8ad852f6bf357bbf388581235a7ed	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_U_l.png
-new	absent	939b66cd07d60d983e99e2fbd327b2e8	121	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sad_U_r.png
-new	absent	8e57e59b1f20b5ce95f51560a38cb8a6	86	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sleepy_C_l.png
-new	absent	8e57e59b1f20b5ce95f51560a38cb8a6	86	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_sleepy_C_r.png
-new	absent	e8cae910056e1842d6c7c51c8ae26be8	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_CL_l.png
-new	absent	e8cae910056e1842d6c7c51c8ae26be8	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_CL_r.png
-new	absent	3b794ae0c34bccaead97db1965451a51	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_CR_l.png
-new	absent	3b794ae0c34bccaead97db1965451a51	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_CR_r.png
-new	absent	d018802c096d4e7147cfcaaaaa0ed74c	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_C_l.png
-new	absent	d018802c096d4e7147cfcaaaaa0ed74c	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_C_r.png
-new	absent	697594060cb21f2e02f6761c38c55ae1	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_D_l.png
-new	absent	697594060cb21f2e02f6761c38c55ae1	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_D_r.png
-new	absent	ac329f6b8325bfea75e0dae3e3bd059c	101	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_L_l.png
-new	absent	ac329f6b8325bfea75e0dae3e3bd059c	101	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_L_r.png
-new	absent	3aa8e98deca597baf84f0fa4b74e5928	99	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_R_l.png
-new	absent	3aa8e98deca597baf84f0fa4b74e5928	99	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_R_r.png
-new	absent	79a3e4ae2cf5f01b09a80ab547da8ea8	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_U_l.png
-new	absent	79a3e4ae2cf5f01b09a80ab547da8ea8	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_squint_U_r.png
-new	absent	6a64ddafa19c5b2ef623315421a2fc3f	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_CL_l.png
-new	absent	6a64ddafa19c5b2ef623315421a2fc3f	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_CL_r.png
-new	absent	8cedac4f9f2feb4864efe206eb6b14ae	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_CR_l.png
-new	absent	8cedac4f9f2feb4864efe206eb6b14ae	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_CR_r.png
-new	absent	8d633b5a86d7667627cb9c78cb50ea6c	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_C_l.png
-new	absent	8d633b5a86d7667627cb9c78cb50ea6c	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_C_r.png
-new	absent	d26d86c585051deb7723f28c5e05742d	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_D_l.png
-new	absent	d26d86c585051deb7723f28c5e05742d	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_D_r.png
-new	absent	5b9c4a4bbf1da085073260bc51280f77	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_L_l.png
-new	absent	5b9c4a4bbf1da085073260bc51280f77	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_L_r.png
-new	absent	66d115a5942be185b0ccac503008d3d0	129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_R_l.png
-new	absent	66d115a5942be185b0ccac503008d3d0	129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_R_r.png
-new	absent	7da9d2325cabafd269aeb35e5b10c176	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_U_l.png
-new	absent	7da9d2325cabafd269aeb35e5b10c176	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_surprised_U_r.png
-new	absent	e3b881be9d208662230b8b57a69bbede	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_wink_C_l.png
-new	absent	d83aec407e5c2a92c607aaab8ecdd8dd	88	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/eyes_wink_C_r.png
-new	absent	b54e450c4e214cfb202cdfe72de70cfb	82	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/mouth_angry.png
-new	absent	96f0c44af40add59b7e80fb1783de199	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/mouth_happy.png
-new	absent	9a7c937a4ce3d38d00b9ffab6967c680	92	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/mouth_neutral.png
-new	absent	ca91110c5c2612c0bb8df101f7e504c4	85	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/mouth_sad.png
-new	absent	b38a425c39a7110e41fd197b121ee664	87	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/mouth_sleepy.png
-new	absent	bf749cb8fd03b5d707bc9d3e825d2a82	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/mouth_squint.png
-new	absent	d663925841c182c8e73a66c568f78e88	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/mouth_surprised.png
-new	absent	fafacee7a0addec6cbf76e4cbaf4fc9a	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/kit/mouth_wink.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/blink_01_faceov.png
-new	absent	ab192881500b005ef70c4076e2a8be93	1295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/blink_01_noface.png
-new	absent	c6015fd44d73da239e508e302f6e120e	157	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/blink_02_faceov.png
-new	absent	d23c1e0f5a2111922484c45aa02b2e03	1295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/blink_02_noface.png
-new	absent	c3a37abe6a485d53225758b8053bbea2	134	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/blink_03_faceov.png
-new	absent	adb2a7e65ea7be7800aed47f2556844f	1296	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/blink_03_noface.png
-new	absent	c6015fd44d73da239e508e302f6e120e	157	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/blink_04_faceov.png
-new	absent	ab192881500b005ef70c4076e2a8be93	1295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/blink_04_noface.png
-new	absent	069ac794496da6c46c922aed30a7e52d	168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/emo_happy_01_faceov.png
-new	absent	3b86ae4af701706a21c1d42757fae303	1255	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/emo_happy_01_noface.png
-new	absent	f875e2568e35913e730139e88c00cc62	168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/emo_happy_02_faceov.png
-new	absent	bc22e4930c4fe4f03bd1f71fe373be52	1319	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/emo_happy_02_noface.png
-new	absent	1b9ae6020cdf9fda82dd7a8ac9b04e7e	152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/fall_asleep_01_faceov.png
-new	absent	6f56127d84ff0fc06baa4b46852a2cd5	1281	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/fall_asleep_01_noface.png
-new	absent	d13fa78c82a67f311f5659b44d2c6d30	150	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/fall_asleep_02_faceov.png
-new	absent	0c37c10900c3a01b877813f0617aea40	1137	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/fall_asleep_02_noface.png
-new	absent	1b9ae6020cdf9fda82dd7a8ac9b04e7e	152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/fall_asleep_03_faceov.png
-new	absent	08302007492688f7b878503479711641	1095	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/fall_asleep_03_noface.png
-new	absent	53b5fdae321f6266690af236f66fac40	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/fall_asleep_04_faceov.png
-new	absent	1142edc02ebf54e09989dd57d0ea1fd3	1103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/fall_asleep_04_noface.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/idle_01_faceov.png
-new	absent	ab192881500b005ef70c4076e2a8be93	1295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/idle_01_noface.png
-new	absent	e3dc5e9f4a9d7d50e2064445d7f921b5	170	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/idle_02_faceov.png
-new	absent	07ac9a51bc9c9207d097a48e8651d573	1369	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/idle_02_noface.png
-new	absent	c3a37abe6a485d53225758b8053bbea2	134	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/idle_03_faceov.png
-new	absent	40c0e268b5fb96f729736987ae7adbe2	1302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/idle_03_noface.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/idle_04_faceov.png
-new	absent	511ea614d641593e74066cabb819fab8	1295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/idle_04_noface.png
-new	absent	3a2cf6277df3b184ff68a51870d1b18f	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_01_faceov.png
-new	absent	a4b234a15c4befa342e500c40e627766	1391	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_01_noface.png
-new	absent	8d02e59b2464063de14cbdbcf70b1d48	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_02_faceov.png
-new	absent	426a3b6200b9ef5a588dcc202b27c21a	1366	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_02_noface.png
-new	absent	3a2cf6277df3b184ff68a51870d1b18f	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_03_faceov.png
-new	absent	704488f7cc40bba226e19a7e689aea7d	1334	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_03_noface.png
-new	absent	c06990bd4ec410a1dfc560195b86e6a4	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_04_faceov.png
-new	absent	dbe3ea7f0a6f925156a3b8a8f8d4a63c	1356	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_04_noface.png
-new	absent	f40f296bf9379394ec00923f4c7ca9fd	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_05_faceov.png
-new	absent	60301986b026301acd445764153ca638	1325	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_05_noface.png
-new	absent	c06990bd4ec410a1dfc560195b86e6a4	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_06_faceov.png
-new	absent	6fcc1b2e05bfd62ccd7ce42e1d67eb20	1382	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/picked_up_06_noface.png
-new	absent	53b5fdae321f6266690af236f66fac40	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/sleep_loop_01_faceov.png
-new	absent	7bb13c248bec0f5d8dc17cf401f9d227	1133	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/sleep_loop_01_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/sleep_loop_02_faceov.png
-new	absent	42a991bc8f32d82b419541c10da5d6c6	1115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/sleep_loop_02_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/sleep_loop_03_faceov.png
-new	absent	00958a75943244d36fc99506c86d59ed	1115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/sleep_loop_03_noface.png
-new	absent	80baf3ca1d9f603d3147cbe00290f7ae	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/sleep_loop_04_faceov.png
-new	absent	28a91b5f89b1e44da2ee7862c56cc6f0	1141	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/sleep_loop_04_noface.png
-new	absent	4c2c3ef83e9031b8c733128426275d0b	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/wake_01_faceov.png
-new	absent	6b0305ecd17dac1633e0e7cadb605bf7	1128	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/wake_01_noface.png
-new	absent	7f7a8e6b5f4574c7062644787b63aa7f	188	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/wake_02_faceov.png
-new	absent	8ffcfcbb37f70ad598acebe71b2d04fa	1302	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/wake_02_noface.png
-new	absent	5aef0312a2d4e7c85a105e13e497ed50	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/wake_03_faceov.png
-new	absent	f6ad5151f0f8048172eeffb8e4602d1e	1313	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/wake_03_noface.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/wake_04_faceov.png
-new	absent	ab192881500b005ef70c4076e2a8be93	1295	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_radiant/layers/wake_04_noface.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/blink_01_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/blink_01_noface_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/blink_02_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/blink_02_noface_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/blink_03_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/blink_03_noface_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/blink_04_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/blink_04_noface_emissive.png
-new	absent	e821510031d79994b3b3193d41eacc39	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/emo_happy_01_emissive.png
-new	absent	e821510031d79994b3b3193d41eacc39	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/emo_happy_01_noface_emissive.png
-new	absent	fd876e905af740a1e2bbe6812780ceb6	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/emo_happy_02_emissive.png
-new	absent	fd876e905af740a1e2bbe6812780ceb6	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/emo_happy_02_noface_emissive.png
-new	absent	7744a14baf0dfbca36d1ee65c8e073e9	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/fall_asleep_01_emissive.png
-new	absent	7744a14baf0dfbca36d1ee65c8e073e9	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/fall_asleep_01_noface_emissive.png
-new	absent	67a8b1909c766223af3a0dab2b7388bc	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/fall_asleep_02_emissive.png
-new	absent	67a8b1909c766223af3a0dab2b7388bc	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/fall_asleep_02_noface_emissive.png
-new	absent	a0ad79a02484fd8e27335a1234396994	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/fall_asleep_03_emissive.png
-new	absent	a0ad79a02484fd8e27335a1234396994	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/fall_asleep_03_noface_emissive.png
-new	absent	1b678adc7190c28838caba6d924140a5	96	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/fall_asleep_04_emissive.png
-new	absent	1b678adc7190c28838caba6d924140a5	96	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/fall_asleep_04_noface_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/idle_01_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/idle_01_noface_emissive.png
-new	absent	a45fe102b1475c41c82f4d2efcc4d752	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/idle_02_emissive.png
-new	absent	a45fe102b1475c41c82f4d2efcc4d752	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/idle_02_noface_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/idle_03_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/idle_03_noface_emissive.png
-new	absent	1dde1e324ea2938eb587d3bc0a0871eb	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/idle_04_emissive.png
-new	absent	1dde1e324ea2938eb587d3bc0a0871eb	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/idle_04_noface_emissive.png
-new	absent	f9d2be6b29eb2c9827cb658eeb643ebb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_01_emissive.png
-new	absent	f9d2be6b29eb2c9827cb658eeb643ebb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_01_noface_emissive.png
-new	absent	0c2162f573a710ba07fad1e718cd057d	113	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_02_emissive.png
-new	absent	0c2162f573a710ba07fad1e718cd057d	113	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_02_noface_emissive.png
-new	absent	f9d2be6b29eb2c9827cb658eeb643ebb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_03_emissive.png
-new	absent	f9d2be6b29eb2c9827cb658eeb643ebb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_03_noface_emissive.png
-new	absent	f9d2be6b29eb2c9827cb658eeb643ebb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_04_emissive.png
-new	absent	f9d2be6b29eb2c9827cb658eeb643ebb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_04_noface_emissive.png
-new	absent	c1ca7d56184cc12d4c6efa59659dfbc3	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_05_emissive.png
-new	absent	c1ca7d56184cc12d4c6efa59659dfbc3	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_05_noface_emissive.png
-new	absent	f9d2be6b29eb2c9827cb658eeb643ebb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_06_emissive.png
-new	absent	f9d2be6b29eb2c9827cb658eeb643ebb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/picked_up_06_noface_emissive.png
-new	absent	1b678adc7190c28838caba6d924140a5	96	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/sleep_loop_01_emissive.png
-new	absent	1b678adc7190c28838caba6d924140a5	96	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/sleep_loop_01_noface_emissive.png
-new	absent	1a40d01bb4cd87a8b65b61532a19d4b4	96	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/sleep_loop_02_emissive.png
-new	absent	1a40d01bb4cd87a8b65b61532a19d4b4	96	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/sleep_loop_02_noface_emissive.png
-new	absent	976e60a1df10d6280e3883526b9a2e29	97	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/sleep_loop_03_emissive.png
-new	absent	976e60a1df10d6280e3883526b9a2e29	97	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/sleep_loop_03_noface_emissive.png
-new	absent	1a40d01bb4cd87a8b65b61532a19d4b4	96	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/sleep_loop_04_emissive.png
-new	absent	1a40d01bb4cd87a8b65b61532a19d4b4	96	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/sleep_loop_04_noface_emissive.png
-new	absent	67a8b1909c766223af3a0dab2b7388bc	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/wake_01_emissive.png
-new	absent	67a8b1909c766223af3a0dab2b7388bc	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/wake_01_noface_emissive.png
-new	absent	840b04fece42695c597a2e665dfe344d	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/wake_02_emissive.png
-new	absent	840b04fece42695c597a2e665dfe344d	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/wake_02_noface_emissive.png
-new	absent	0ff0e1dc4235e4a8d9ac10236ee6b5fb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/wake_03_emissive.png
-new	absent	0ff0e1dc4235e4a8d9ac10236ee6b5fb	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/wake_03_noface_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/wake_04_emissive.png
-new	absent	13b658956a0602a1a715f165e8e0c99a	131	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/emissive/wake_04_noface_emissive.png
-new	absent	c638223e4ec8ac2df1a94499e33d1312	5431	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/face_anchors_evo_still_soft.json
-new	absent	ee4273215cb6834f04823311fb10c7eb	1181	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/blink_01.png
-new	absent	431f50a140ab4747a839798d1a8d168a	1147	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/blink_02.png
-new	absent	1adee2ab841eff46b8082df65562463d	1176	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/blink_03.png
-new	absent	bb826d28f11109c6c825ade21b3f7bc5	1156	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/blink_04.png
-new	absent	625bce76c48ef5108d536b50eb8c92d9	1242	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/emo_happy_01.png
-new	absent	353aa0bf25f42f56efffa32bfe64ac65	1281	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/emo_happy_02.png
-new	absent	6d128abff69eb8058d131b71b153b0e7	1202	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/fall_asleep_01.png
-new	absent	53d56092dd46f31e95666f1c41ca120e	1199	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/fall_asleep_02.png
-new	absent	5b357c060ad79d98a487d7c4e5c08406	1184	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/fall_asleep_03.png
-new	absent	686e5ab92ae57888b3fa87469802ce51	1169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/fall_asleep_04.png
-new	absent	ee4273215cb6834f04823311fb10c7eb	1181	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/idle_01.png
-new	absent	f882fac0f79fe3379ffa90cec43de404	1285	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/idle_02.png
-new	absent	6256f422b19c642590e070f0814f3591	1143	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/idle_03.png
-new	absent	9d29080807d18c31bfff3bbfb7228aa3	1226	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/idle_04.png
-new	absent	bd85072ef8de34f18e54f527c00c09c4	1298	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/picked_up_01.png
-new	absent	8cb72c787f221fc090d5b3c756f7935c	1314	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/picked_up_02.png
-new	absent	e510550902bc12c585de17bef27ff031	1253	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/picked_up_03.png
-new	absent	7d7c0f7a7774788e7d2e1199fea30b61	1280	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/picked_up_04.png
-new	absent	39c63825bf0181119b7d0a07e3b52aa7	1333	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/picked_up_05.png
-new	absent	3954468f2f35599553bc6ae17d132bdd	1253	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/picked_up_06.png
-new	absent	35e42af7b23b65e17b96cb9d33f2e38e	1138	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/sleep_loop_01.png
-new	absent	0a662257865a2068c5ff8065bf4b7418	1143	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/sleep_loop_02.png
-new	absent	bdd9d281d6b771e0040fa29e7f551389	1192	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/sleep_loop_03.png
-new	absent	76e767b8c8b6f0094c24daaeaed767be	1153	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/sleep_loop_04.png
-new	absent	1b478958ac7e9e6b0cbd3f922b5baa8c	1191	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/wake_01.png
-new	absent	283c83ebfa590a7c29d8d1932891a595	1289	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/wake_02.png
-new	absent	8cb10ce5ba717106f27f2643d86de0a3	1160	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/wake_03.png
-new	absent	ee4273215cb6834f04823311fb10c7eb	1181	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/frames/wake_04.png
-new	absent	0555c8381ea0d4cdb9b5efe58dea3c97	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_CL_l.png
-new	absent	356de25ccf14d2705540b999e8ce21ff	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_CL_r.png
-new	absent	9f5bf9c7b11fab21c204074cd5c29c98	112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_CR_l.png
-new	absent	d511097d91c05ec1589cef2cd1fa8025	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_CR_r.png
-new	absent	72b634ac1617805f7caff12e5f6ed897	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_C_l.png
-new	absent	8dea8f96634f8367d8304e0716b731ed	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_C_r.png
-new	absent	66e1c901d05bffa2c24e44d7143e55d4	110	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_D_l.png
-new	absent	fd29b6b0b7a7107e078513e91621373b	111	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_D_r.png
-new	absent	c4ddc1e21418c9052df1080c7e8a1a5f	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_L_l.png
-new	absent	371e0971ae226cac9533c3529eaabdfb	114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_L_r.png
-new	absent	c0450dbfdf300736e57aeac0f4882a5e	108	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_R_l.png
-new	absent	bdc870077ef18855fb2b27432dbdda51	119	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_R_r.png
-new	absent	ed5e0bb5689a5fdf9c6a11bb4a748462	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_U_l.png
-new	absent	3dd67b9e6de68d220e8e8f266a490de0	112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_angry_U_r.png
-new	absent	7af0a40e61b5943e32a68cb489b7ccf0	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_happy_C_l.png
-new	absent	7af0a40e61b5943e32a68cb489b7ccf0	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_happy_C_r.png
-new	absent	21d5d564db58b614ff193a540fe25944	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_CL_l.png
-new	absent	21d5d564db58b614ff193a540fe25944	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_CL_r.png
-new	absent	727dbd0c636b66a1e963353ae1eff36c	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_CR_l.png
-new	absent	727dbd0c636b66a1e963353ae1eff36c	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_CR_r.png
-new	absent	453f45465e2252b0319b5206949faae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_C_l.png
-new	absent	453f45465e2252b0319b5206949faae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_C_r.png
-new	absent	dd1dfab69638f09ea6434e7a9c72e3d0	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_D_l.png
-new	absent	dd1dfab69638f09ea6434e7a9c72e3d0	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_D_r.png
-new	absent	287f5aed1256f33dd2864a72fec45bd3	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_L_l.png
-new	absent	287f5aed1256f33dd2864a72fec45bd3	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_L_r.png
-new	absent	6ea56155296484b8ab2478b14f2e9f43	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_R_l.png
-new	absent	6ea56155296484b8ab2478b14f2e9f43	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_R_r.png
-new	absent	31edc4bcf5e03aaccfc08e624a1c3ae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_U_l.png
-new	absent	31edc4bcf5e03aaccfc08e624a1c3ae6	106	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_neutral_U_r.png
-new	absent	ce01d7e647e604adc7c6d10cd5b2b215	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_CL_l.png
-new	absent	1c95925381f306e2547d6aabc20bd229	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_CL_r.png
-new	absent	f5bc5707b31d5dedf6cab0294fc97e54	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_CR_l.png
-new	absent	c2ee9a804d8bb03e9c33e55e7ac7200a	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_CR_r.png
-new	absent	463bae6bd568f5f7c392b6b41b6428df	118	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_C_l.png
-new	absent	2b5c200ab22e82bcbb91370c6221ab0f	120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_C_r.png
-new	absent	5fa12e1c54d40662e444320bbab3d4e9	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_D_l.png
-new	absent	9cba0687e791613d4d4704f3103e7728	114	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_D_r.png
-new	absent	29b0d6588d4e7e0a61177d1a90ec62ce	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_L_l.png
-new	absent	64937f74a64b9cb6a7daa3d4769fa200	118	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_L_r.png
-new	absent	a6c35de2747ffc353d0d8b0c6b07a202	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_R_l.png
-new	absent	b4e18770b70c2d93054a671aca71d869	116	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_R_r.png
-new	absent	86f8ad852f6bf357bbf388581235a7ed	117	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_U_l.png
-new	absent	939b66cd07d60d983e99e2fbd327b2e8	121	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sad_U_r.png
-new	absent	8e57e59b1f20b5ce95f51560a38cb8a6	86	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sleepy_C_l.png
-new	absent	8e57e59b1f20b5ce95f51560a38cb8a6	86	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_sleepy_C_r.png
-new	absent	e8cae910056e1842d6c7c51c8ae26be8	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_CL_l.png
-new	absent	e8cae910056e1842d6c7c51c8ae26be8	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_CL_r.png
-new	absent	3b794ae0c34bccaead97db1965451a51	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_CR_l.png
-new	absent	3b794ae0c34bccaead97db1965451a51	103	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_CR_r.png
-new	absent	d018802c096d4e7147cfcaaaaa0ed74c	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_C_l.png
-new	absent	d018802c096d4e7147cfcaaaaa0ed74c	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_C_r.png
-new	absent	697594060cb21f2e02f6761c38c55ae1	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_D_l.png
-new	absent	697594060cb21f2e02f6761c38c55ae1	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_D_r.png
-new	absent	ac329f6b8325bfea75e0dae3e3bd059c	101	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_L_l.png
-new	absent	ac329f6b8325bfea75e0dae3e3bd059c	101	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_L_r.png
-new	absent	3aa8e98deca597baf84f0fa4b74e5928	99	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_R_l.png
-new	absent	3aa8e98deca597baf84f0fa4b74e5928	99	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_R_r.png
-new	absent	79a3e4ae2cf5f01b09a80ab547da8ea8	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_U_l.png
-new	absent	79a3e4ae2cf5f01b09a80ab547da8ea8	100	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_squint_U_r.png
-new	absent	6a64ddafa19c5b2ef623315421a2fc3f	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_CL_l.png
-new	absent	6a64ddafa19c5b2ef623315421a2fc3f	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_CL_r.png
-new	absent	8cedac4f9f2feb4864efe206eb6b14ae	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_CR_l.png
-new	absent	8cedac4f9f2feb4864efe206eb6b14ae	127	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_CR_r.png
-new	absent	8d633b5a86d7667627cb9c78cb50ea6c	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_C_l.png
-new	absent	8d633b5a86d7667627cb9c78cb50ea6c	126	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_C_r.png
-new	absent	d26d86c585051deb7723f28c5e05742d	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_D_l.png
-new	absent	d26d86c585051deb7723f28c5e05742d	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_D_r.png
-new	absent	5b9c4a4bbf1da085073260bc51280f77	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_L_l.png
-new	absent	5b9c4a4bbf1da085073260bc51280f77	130	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_L_r.png
-new	absent	66d115a5942be185b0ccac503008d3d0	129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_R_l.png
-new	absent	66d115a5942be185b0ccac503008d3d0	129	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_R_r.png
-new	absent	7da9d2325cabafd269aeb35e5b10c176	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_U_l.png
-new	absent	7da9d2325cabafd269aeb35e5b10c176	124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_surprised_U_r.png
-new	absent	e3b881be9d208662230b8b57a69bbede	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_wink_C_l.png
-new	absent	d83aec407e5c2a92c607aaab8ecdd8dd	88	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/eyes_wink_C_r.png
-new	absent	b54e450c4e214cfb202cdfe72de70cfb	82	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/mouth_angry.png
-new	absent	96f0c44af40add59b7e80fb1783de199	115	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/mouth_happy.png
-new	absent	9a7c937a4ce3d38d00b9ffab6967c680	92	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/mouth_neutral.png
-new	absent	ca91110c5c2612c0bb8df101f7e504c4	85	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/mouth_sad.png
-new	absent	b38a425c39a7110e41fd197b121ee664	87	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/mouth_sleepy.png
-new	absent	bf749cb8fd03b5d707bc9d3e825d2a82	84	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/mouth_squint.png
-new	absent	d663925841c182c8e73a66c568f78e88	107	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/mouth_surprised.png
-new	absent	fafacee7a0addec6cbf76e4cbaf4fc9a	105	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/kit/mouth_wink.png
-new	absent	02a968da4d01052e27a6a040fd9de45b	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/blink_01_faceov.png
-new	absent	682e5930262b1ad3745f058cbc417a80	1142	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/blink_01_noface.png
-new	absent	21f0cf46ce3fe03df582401ed6fb911f	157	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/blink_02_faceov.png
-new	absent	eda694c032adb8174918a213f60a1558	1121	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/blink_02_noface.png
-new	absent	c3a37abe6a485d53225758b8053bbea2	134	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/blink_03_faceov.png
-new	absent	246d8d25448dcc9bc45034838ec08b8e	1144	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/blink_03_noface.png
-new	absent	21f0cf46ce3fe03df582401ed6fb911f	157	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/blink_04_faceov.png
-new	absent	682e5930262b1ad3745f058cbc417a80	1142	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/blink_04_noface.png
-new	absent	3c4e620e11cf8d6c963bb28586550721	167	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/emo_happy_01_faceov.png
-new	absent	efa11b0df0dbc281f18e18d6a420e356	1164	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/emo_happy_01_noface.png
-new	absent	f875e2568e35913e730139e88c00cc62	168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/emo_happy_02_faceov.png
-new	absent	e18b2841d1a2fab299f5f7e799524692	1251	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/emo_happy_02_noface.png
-new	absent	1b9ae6020cdf9fda82dd7a8ac9b04e7e	152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/fall_asleep_01_faceov.png
-new	absent	fe5fb645a23fbc6493067c676e346496	1163	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/fall_asleep_01_noface.png
-new	absent	d4efc9af43ae9445eecb8c50cc3c3c9f	150	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/fall_asleep_02_faceov.png
-new	absent	b4b2b0a8dbfbf856a46a99605080406e	1156	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/fall_asleep_02_noface.png
-new	absent	1b9ae6020cdf9fda82dd7a8ac9b04e7e	152	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/fall_asleep_03_faceov.png
-new	absent	836bc217115fd8ddc80058ac3fc6b0a3	1168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/fall_asleep_03_noface.png
-new	absent	0bdfdaa546ec2eeb9e054a71db2732a6	122	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/fall_asleep_04_faceov.png
-new	absent	8f665273ac5c9be25e6635ef33843be8	1155	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/fall_asleep_04_noface.png
-new	absent	02a968da4d01052e27a6a040fd9de45b	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/idle_01_faceov.png
-new	absent	682e5930262b1ad3745f058cbc417a80	1142	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/idle_01_noface.png
-new	absent	02a968da4d01052e27a6a040fd9de45b	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/idle_02_faceov.png
-new	absent	3c46ca8b82ffddc6117a0ae9efe42df8	1209	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/idle_02_noface.png
-new	absent	9d8a3bba7459ebd7b586d460b25ff9b6	134	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/idle_03_faceov.png
-new	absent	48bbc7e737130bb942fad48ed8dd8883	1147	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/idle_03_noface.png
-new	absent	1055bcf7263669e0301fd631dea68c1f	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/idle_04_faceov.png
-new	absent	4c9c8b25431d7f93df83fb25aeae3d43	1164	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/idle_04_noface.png
-new	absent	3a2cf6277df3b184ff68a51870d1b18f	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_01_faceov.png
-new	absent	83e1e2902a7875ed672880c1eca892b1	1218	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_01_noface.png
-new	absent	3f42feb9ddf33f34aab5861c3f51d021	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_02_faceov.png
-new	absent	5134902e7469a11c4ef05980b6d7d2a8	1257	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_02_noface.png
-new	absent	3a2cf6277df3b184ff68a51870d1b18f	179	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_03_faceov.png
-new	absent	b1878228615e102cb189b0e11b7c0fa4	1209	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_03_noface.png
-new	absent	c06990bd4ec410a1dfc560195b86e6a4	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_04_faceov.png
-new	absent	b81ad391cba6bc40a3a84ce9d56e7430	1243	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_04_noface.png
-new	absent	830402717af21a7b11bc04345257077d	178	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_05_faceov.png
-new	absent	63f0f6a8619dc8591d3738268e0112e1	1247	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_05_noface.png
-new	absent	c06990bd4ec410a1dfc560195b86e6a4	180	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_06_faceov.png
-new	absent	860290177f2b29b49f8a55891e00c10e	1182	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/picked_up_06_noface.png
-new	absent	0bdfdaa546ec2eeb9e054a71db2732a6	122	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/sleep_loop_01_faceov.png
-new	absent	490fc5d9bc49736673589172ebb3d0d3	1124	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/sleep_loop_01_noface.png
-new	absent	0bdfdaa546ec2eeb9e054a71db2732a6	122	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/sleep_loop_02_faceov.png
-new	absent	5bf17b80caba015bd0a81aa951f6a603	1110	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/sleep_loop_02_noface.png
-new	absent	4df2e0d8be3d52d14850289b026271c4	123	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/sleep_loop_03_faceov.png
-new	absent	6edf1a870bdd22e17cc858847b2107f8	1168	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/sleep_loop_03_noface.png
-new	absent	0bdfdaa546ec2eeb9e054a71db2732a6	122	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/sleep_loop_04_faceov.png
-new	absent	70ad9012ac4306571d67c3e437654a4a	1112	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/sleep_loop_04_noface.png
-new	absent	5aef0312a2d4e7c85a105e13e497ed50	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/wake_01_faceov.png
-new	absent	a9af17b7569e82f122378fb4b9a11c10	1154	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/wake_01_noface.png
-new	absent	2b9476c69421568f9a53338c10f6c307	189	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/wake_02_faceov.png
-new	absent	09a9332472d86da15144b2797ee8404d	1238	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/wake_02_noface.png
-new	absent	208f30431fd65bf2889cdeed4ba697a5	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/wake_03_faceov.png
-new	absent	54b4867244220263c80f7e61c2b14e34	1120	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/wake_03_noface.png
-new	absent	02a968da4d01052e27a6a040fd9de45b	169	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/wake_04_faceov.png
-new	absent	682e5930262b1ad3745f058cbc417a80	1142	evo6 C	art-pet/sprites/tuanrong/evo6/evo_still_soft/layers/wake_04_noface.png
-changed	differs	1049b55e96a177c59f0e6eb2ea38740e	1022397	doc/tool	art-pet/sprites/tuanrong/motion/CLIPS.json
-changed	differs	07d94c1797aa06f430adafa12c557724	25558	doc/tool	art-pet/sprites/tuanrong/motion/CLIPS.md
-new	absent	cbc70c297189f9608738595b9627a825	117774	preview C	art-pet/sprites/tuanrong/preview/evo6/evo6_batchC_contact_4x.png
-new	absent	5eea9bbd4436ff818878688408f4eb94	66327	preview C	art-pet/sprites/tuanrong/preview/evo6/evo_still_dust_contact_4x.png
-new	absent	b02ae64aa804be5472fe0a616618c502	69194	preview C	art-pet/sprites/tuanrong/preview/evo6/evo_still_lumi_contact_4x.png
-new	absent	77cf888049c99ebf83b369f449a02753	71767	preview C	art-pet/sprites/tuanrong/preview/evo6/evo_still_radiant_contact_4x.png
-new	absent	510c7ed7c9d9ebc2b4c6a7b599d139a4	67595	preview C	art-pet/sprites/tuanrong/preview/evo6/evo_still_soft_contact_4x.png
-new	absent	8e13b6926e1c91b6848bd1682a38a3f4	19446	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_dust_emo_happy_6x.gif
-new	absent	114897810213187c3053ccc162b73046	29170	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_dust_idle_6x.gif
-new	absent	ce6142f3333961893fcb00387ed848bc	52068	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_dust_picked_up_6x.gif
-new	absent	ccea89aec7eff17ec70ac63413eaa383	24842	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_dust_sleep_loop_6x.gif
-new	absent	7880dce76b17c590836c83e1641e3055	26806	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_dust_wake_6x.gif
-new	absent	97d2b14f4901143873290997254e5d71	20384	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_lumi_emo_happy_6x.gif
-new	absent	e569c29edfdc88362fd5a077723e3d4c	33344	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_lumi_idle_6x.gif
-new	absent	2046de724da77797bfacc7a704e9f852	54139	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_lumi_picked_up_6x.gif
-new	absent	7ae82111fe169971bbc3995eeb2c48c1	26098	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_lumi_sleep_loop_6x.gif
-new	absent	5c6da3b4d8abb87d21d917070927a33b	31008	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_lumi_wake_6x.gif
-new	absent	2fdef3b1a9e7541780da36220bfb2d55	23321	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_radiant_emo_happy_6x.gif
-new	absent	df260778e24210f0d18025693fc2cea9	37664	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_radiant_idle_6x.gif
-new	absent	56dda3cadfe75dbe077972920ad6b8f8	58468	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_radiant_picked_up_6x.gif
-new	absent	eb05dbbd686e2e75a2f580b407f6485c	26925	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_radiant_sleep_loop_6x.gif
-new	absent	bd8c70379c7de9fce0a3d0c7de81ed1b	35463	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_radiant_wake_6x.gif
-new	absent	bd2f92f799c8d230a2355031465b6233	20053	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_soft_emo_happy_6x.gif
-new	absent	419d3e3990b95beb696c50c913e4f0c7	29686	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_soft_idle_6x.gif
-new	absent	f0597bd0916f832a756e1367d6233c3a	50494	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_soft_picked_up_6x.gif
-new	absent	05776f944bfcd52bfaf66dd8585021cc	23717	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_soft_sleep_loop_6x.gif
-new	absent	dfcc93ee15b7353e1b3507d735e7a199	28682	preview C	art-pet/sprites/tuanrong/preview/evo6/gif/evo_still_soft_wake_6x.gif
-unchanged	absent	83f5f4d2ba83eae9d87464cf048bef31	47659	doc/tool	art-pet/tools/build_evo6_animBC.py
-unchanged	absent	8f652a0348412478d5f196ba534dbe9c	17028	doc/tool	art-pet/tools/validate_evo6_anim.py
+batch3b staging — ③ 朋友訪客（蝸牛郵差／蘑菇婆婆／螢火小販）＋ ④ 進化大場面（特效、名卡 9+1、四格漫畫 20 款／60 張）
+生成：2026-11-01（HKT）；純 Pillow/numpy 程序生成，冇 AI 圖。解壓到 /workspace/game-design/ 覆蓋同路徑即可。
+重跑：cd art-pet && python3 tools/build_batch3b.py && python3 tools/preview_batch3b.py && python3 tools/validate_batch3b.py
+說明：art-pet/sprites/batch3b/BATCH3B.md
+冇 push／merge；冇 _backups；冇掂 sprites/series2/。
+sha1(12)  bytes  path
+228de8d51368      7124  art-pet/sprites/batch3b/BATCH3B.md
+32c1fd6c6513     23270  art-pet/sprites/batch3b/batch3b.json
+7e177f7b61a2    314239  art-pet/sprites/batch3b/batch3b_overview_4x.png
+88561c083bf2      1374  art-pet/sprites/batch3b/cards/card_base.png
+a82be36d2dc8      1445  art-pet/sprites/batch3b/cards/card_crystal.png
+906152b5b262      1479  art-pet/sprites/batch3b/cards/card_dust.png
+c09ad556568e      1456  art-pet/sprites/batch3b/cards/card_ember.png
+6095268b900b      1424  art-pet/sprites/batch3b/cards/card_lumi.png
+bf427bdcf920      1422  art-pet/sprites/batch3b/cards/card_moon.png
+813d096186e1      1467  art-pet/sprites/batch3b/cards/card_radiant.png
+a24c2c5a8466      1363  art-pet/sprites/batch3b/cards/card_shroom.png
+5ac78c4bd1ae      1501  art-pet/sprites/batch3b/cards/card_soft.png
+8910a299f0f4      1445  art-pet/sprites/batch3b/cards/card_tide.png
+c19c57b00a49       148  art-pet/sprites/batch3b/check/validation.json
+3bb40111d6b5      7602  art-pet/sprites/batch3b/comics/n1_p1.png
+6c157f3fceb2      7696  art-pet/sprites/batch3b/comics/n1_p2.png
+b07d1c28fdda      8170  art-pet/sprites/batch3b/comics/n1_p3.png
+8c2ed4b156c1      7788  art-pet/sprites/batch3b/comics/n1_p4.png
+a8b7758cf659     10959  art-pet/sprites/batch3b/comics/n2_p1.png
+0765e18b8e89     10664  art-pet/sprites/batch3b/comics/n2_p2.png
+e24b1eaebedf     10462  art-pet/sprites/batch3b/comics/n2_p3.png
+0d1f7c3e4345     10932  art-pet/sprites/batch3b/comics/n2_p4.png
+2a8ded6ee801      7218  art-pet/sprites/batch3b/comics/n3_p1.png
+abac087305ec      7420  art-pet/sprites/batch3b/comics/n3_p2.png
+eb8800fb8759      7016  art-pet/sprites/batch3b/comics/n3_p3.png
+9d2db9fdda44      7358  art-pet/sprites/batch3b/comics/n3_p4.png
+60807e27cff4      7138  art-pet/sprites/batch3b/comics/n4_p1.png
+0ee77bff63c3      7139  art-pet/sprites/batch3b/comics/n4_p2.png
+bd69152f642d      6975  art-pet/sprites/batch3b/comics/n4_p3.png
+1219d2c3a6eb      7443  art-pet/sprites/batch3b/comics/n4_p4_crystal.png
+88258e7bfae7      7243  art-pet/sprites/batch3b/comics/n4_p4_dust.png
+f03f22c97e9f      7301  art-pet/sprites/batch3b/comics/n4_p4_ember.png
+95206ad310c2      7389  art-pet/sprites/batch3b/comics/n4_p4_lumi.png
+abfe2215e962      7240  art-pet/sprites/batch3b/comics/n4_p4_moon.png
+22078c4a1394      7443  art-pet/sprites/batch3b/comics/n4_p4_radiant.png
+ea36de79e731      7373  art-pet/sprites/batch3b/comics/n4_p4_shroom.png
+1a385f1b707f      7365  art-pet/sprites/batch3b/comics/n4_p4_soft.png
+3f20fc97d9ce      7403  art-pet/sprites/batch3b/comics/n4_p4_tide.png
+8e2f43708e60      9932  art-pet/sprites/batch3b/comics/n5_p1_crystal.png
+c073362be06f      9696  art-pet/sprites/batch3b/comics/n5_p1_dust.png
+b718b31cd661      9784  art-pet/sprites/batch3b/comics/n5_p1_ember.png
+02c7482e132d      9750  art-pet/sprites/batch3b/comics/n5_p1_lumi.png
+343239fcd677      9777  art-pet/sprites/batch3b/comics/n5_p1_moon.png
+e4d23215b69a      9831  art-pet/sprites/batch3b/comics/n5_p1_radiant.png
+8dd1aabd7719      9811  art-pet/sprites/batch3b/comics/n5_p1_shroom.png
+dce737ed84f1      9725  art-pet/sprites/batch3b/comics/n5_p1_soft.png
+33604772bbc2      9821  art-pet/sprites/batch3b/comics/n5_p1_tide.png
+b2d8a9204f44      9534  art-pet/sprites/batch3b/comics/n5_p2_crystal.png
+702ce8e185d9      9486  art-pet/sprites/batch3b/comics/n5_p2_dust.png
+0339325f6e2a      9502  art-pet/sprites/batch3b/comics/n5_p2_ember.png
+50744e4bb22c      9487  art-pet/sprites/batch3b/comics/n5_p2_lumi.png
+823159a13c16      9388  art-pet/sprites/batch3b/comics/n5_p2_moon.png
+a56a42c4b2df      9403  art-pet/sprites/batch3b/comics/n5_p2_radiant.png
+26ccff0ce358      9494  art-pet/sprites/batch3b/comics/n5_p2_shroom.png
+80e31475866d      9457  art-pet/sprites/batch3b/comics/n5_p2_soft.png
+20eb692f5af2      9558  art-pet/sprites/batch3b/comics/n5_p2_tide.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_crystal.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_dust.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_ember.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_lumi.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_moon.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_radiant.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_shroom.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_soft.png
+72da72b823a5      9417  art-pet/sprites/batch3b/comics/n5_p3_tide.png
+e246bdd16cc6     10073  art-pet/sprites/batch3b/comics/n5_p4_crystal.png
+2976060d25e0      9938  art-pet/sprites/batch3b/comics/n5_p4_dust.png
+fafd7ad63ecc      9872  art-pet/sprites/batch3b/comics/n5_p4_ember.png
+95c4e5db5b01     10099  art-pet/sprites/batch3b/comics/n5_p4_lumi.png
+d575e2671242      9800  art-pet/sprites/batch3b/comics/n5_p4_moon.png
+116cb459a5a7     10018  art-pet/sprites/batch3b/comics/n5_p4_radiant.png
+e4055c67d14b      9884  art-pet/sprites/batch3b/comics/n5_p4_shroom.png
+abea7d61946a     10080  art-pet/sprites/batch3b/comics/n5_p4_soft.png
+156f29fde4f9     10056  art-pet/sprites/batch3b/comics/n5_p4_tide.png
+371ba6326ef8    144055  art-pet/sprites/batch3b/comics_overview_2x.png
+bea7de654cc3     61716  art-pet/sprites/batch3b/comics_route_variants_2x.png
+ccfc196f5984       327  art-pet/sprites/batch3b/decor/deco_firefly_jar.png
+b38518ff8f30       105  art-pet/sprites/batch3b/decor/deco_firefly_jar_emissive.png
+8c79e1374585       357  art-pet/sprites/batch3b/decor/deco_mailbox.png
+483464877b34       332  art-pet/sprites/batch3b/decor/deco_mushroom_lamp.png
+2a2ec391cae2       127  art-pet/sprites/batch3b/decor/deco_mushroom_lamp_emissive.png
+dc3869c35240      2154  art-pet/sprites/batch3b/evo/evo_cocoon_crack.png
+5503946e9874      3595  art-pet/sprites/batch3b/evo/evo_cocoon_form.png
+cf150a357f09      2734  art-pet/sprites/batch3b/evo/evo_cocoon_pulse.png
+149093d2bf91       268  art-pet/sprites/batch3b/evo/evo_confetti.png
+a8eb8fdfcc12       141  art-pet/sprites/batch3b/evo/evo_mote.png
+1c8b83ee9a08      4022  art-pet/sprites/batch3b/evo/evo_rays.png
+437ae21c2376      2483  art-pet/sprites/batch3b/evo/evo_ring.png
+255225c75b7b       140  art-pet/sprites/batch3b/evo/evo_shard.png
+8d2af66690d5       422  art-pet/sprites/batch3b/evo/evo_skip_hint.png
+3633e1324429       521  art-pet/sprites/batch3b/evo/omen_dream_bubble.png
+0c4f7c599d82       558  art-pet/sprites/batch3b/evo/omen_dream_icons.png
+f490786f64d8     45470  art-pet/sprites/batch3b/preview/diary_page_n1_2x.png
+710b83920d02   2453114  art-pet/sprites/batch3b/preview/evolution_guard_moon_to_still_moon_2x.gif
+e20d4b7224c9   2259953  art-pet/sprites/batch3b/preview/evolution_hop_to_guard_ember_2x.gif
+0ebf3cb9fb74    191007  art-pet/sprites/batch3b/preview/evolution_keyframes_2x.png
+558de29e5ebb    254849  art-pet/sprites/batch3b/preview/omen_dream_4x.gif
+51a2d100cd6e   1522712  art-pet/sprites/batch3b/preview/visit_firefly_vendor_3x.gif
+03b843957469   2190844  art-pet/sprites/batch3b/preview/visit_mushroom_granny_3x.gif
+d44b4408c1ea   2034748  art-pet/sprites/batch3b/preview/visit_snail_postman_3x.gif
+0535c0c0275e    358804  art-pet/sprites/batch3b/preview/visitors_idle_walk_happy_4x.gif
+77a88e18f09c       210  art-pet/sprites/batch3b/props/friend_heart.png
+d919f6bb99e4       213  art-pet/sprites/batch3b/props/prop_letter.png
+3627a052953c       202  art-pet/sprites/batch3b/props/prop_seed.png
+97b482bf48ae      2503  art-pet/sprites/batch3b/visit_pet_clips.json
+39ae5b6c79d5       295  art-pet/sprites/batch3b/visitors/firefly_vendor/firefly_vendor_badge.png
+1096edfd5c87      1709  art-pet/sprites/batch3b/visitors/firefly_vendor/firefly_vendor_happy.png
+42956b712ca6       304  art-pet/sprites/batch3b/visitors/firefly_vendor/firefly_vendor_happy_emissive.png
+a821f625a1c9      1514  art-pet/sprites/batch3b/visitors/firefly_vendor/firefly_vendor_idle.png
+5f6e8ba9b8d2       261  art-pet/sprites/batch3b/visitors/firefly_vendor/firefly_vendor_idle_emissive.png
+50875b7ff629       586  art-pet/sprites/batch3b/visitors/firefly_vendor/firefly_vendor_portrait.png
+cb06a08ba258      1492  art-pet/sprites/batch3b/visitors/firefly_vendor/firefly_vendor_walk.png
+d333558e7a70       262  art-pet/sprites/batch3b/visitors/firefly_vendor/firefly_vendor_walk_emissive.png
+957921e21d02       274  art-pet/sprites/batch3b/visitors/mushroom_granny/mushroom_granny_badge.png
+b62661002589      2210  art-pet/sprites/batch3b/visitors/mushroom_granny/mushroom_granny_happy.png
+d5ffe9b5bafc      1495  art-pet/sprites/batch3b/visitors/mushroom_granny/mushroom_granny_idle.png
+61032e585358       426  art-pet/sprites/batch3b/visitors/mushroom_granny/mushroom_granny_portrait.png
+83bb5353bb62      1759  art-pet/sprites/batch3b/visitors/mushroom_granny/mushroom_granny_walk.png
+e4203a320ad6       308  art-pet/sprites/batch3b/visitors/snail_postman/snail_postman_badge.png
+cf50af204fae      2166  art-pet/sprites/batch3b/visitors/snail_postman/snail_postman_happy.png
+290d0f7817ff      1436  art-pet/sprites/batch3b/visitors/snail_postman/snail_postman_idle.png
+62fb7aeef916       605  art-pet/sprites/batch3b/visitors/snail_postman/snail_postman_portrait.png
+9a5264f8d9e0      2097  art-pet/sprites/batch3b/visitors/snail_postman/snail_postman_walk.png
+54969e85a350     13799  art-pet/tools/batch3b_fx.py
+70c330a319d8      7111  art-pet/tools/batch3b_paint.py
+4a0f766ce73d     13933  art-pet/tools/batch3b_visitors.py
+1892b5f4ca83     33843  art-pet/tools/build_batch3b.py
+df4ed1b806af     21139  art-pet/tools/preview_batch3b.py
+a9f121cb4537      4165  art-pet/tools/validate_batch3b.py

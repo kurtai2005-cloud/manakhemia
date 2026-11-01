@@ -1,0 +1,186 @@
+{
+ "clips": {
+  "visit_lead_start": {
+   "group": "visit",
+   "dur": 900,
+   "loop": false,
+   "trigger": "訪客企定後 400ms；之後接 visit_lead_strut",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 180,
+     "sx": 0.94,
+     "sy": 1.08,
+     "y": -1,
+     "e": "out"
+    },
+    {
+     "t": 420,
+     "sx": 0.96,
+     "sy": 1.07,
+     "rot": -4,
+     "e": "inout"
+    },
+    {
+     "t": 700,
+     "sx": 0.96,
+     "sy": 1.07,
+     "rot": -4
+    },
+    {
+     "t": 900,
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "e": "outBack"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 6,
+     "dy": -2,
+     "t0": 250,
+     "t1": 750,
+     "ms": 120,
+     "loop": false
+    }
+   ],
+   "events": [
+    {
+     "t": 300,
+     "id": "line:visit_lead"
+    }
+   ]
+  },
+  "visit_lead_strut": {
+   "group": "visit",
+   "dur": 600,
+   "loop": true,
+   "trigger": "帶路行一圈時；引擎沿 path 郁 x/y；舊形態可改用 atlas walk_happy＋smug 面",
+   "body": [
+    {
+     "t": 0,
+     "sx": 1,
+     "sy": 1
+    },
+    {
+     "t": 150,
+     "sx": 1.05,
+     "sy": 0.94,
+     "y": 0,
+     "e": "out"
+    },
+    {
+     "t": 300,
+     "sx": 0.97,
+     "sy": 1.05,
+     "y": -2,
+     "rot": -3,
+     "e": "out"
+    },
+    {
+     "t": 450,
+     "sx": 1.05,
+     "sy": 0.94,
+     "y": 0,
+     "rot": 0,
+     "e": "in"
+    },
+    {
+     "t": 600,
+     "sx": 0.97,
+     "sy": 1.05,
+     "y": -2,
+     "rot": 3,
+     "e": "out"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    }
+   ]
+  },
+  "visit_gift_cheer": {
+   "group": "visit",
+   "dur": 700,
+   "loop": false,
+   "trigger": "送禮成功（友好度 +1）",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 120,
+     "sx": 1.12,
+     "sy": 0.88,
+     "e": "out"
+    },
+    {
+     "t": 300,
+     "sx": 0.94,
+     "sy": 1.08,
+     "y": -5,
+     "e": "out"
+    },
+    {
+     "t": 520,
+     "sx": 1.06,
+     "sy": 0.95,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 700,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "laugh_b"
+    },
+    {
+     "t": 600,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_heart",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -2,
+     "t0": 200,
+     "t1": 700,
+     "ms": 160,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       500,
+       0,
+       -8
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}
