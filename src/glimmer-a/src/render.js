@@ -935,7 +935,7 @@
         if (an0 && !an0[dclip + '_noface'] && fb && an0[fb + '_noface']) { this.evoFallback = this.evoFallback || {}; this.evoFallback[fk + ':' + dclip] = fb; dclip = fb; } }   // evo6：形態冇呢個 clip → 最近 clip
       // 3a 遊美反應 clip：base＝idle 幀 0（反應期間 idle 停）→ face／wear patch → body transform → fx
       const gm0 = b.gest || null, RC = (typeof self !== 'undefined' && self.Glimmer && self.Glimmer.reactclip) || null, TA = (P.touch && P.touch.art) || {};
-      const RXA = (gm0 && gm0.clip && RC && TA.enabled !== false && this.rxForm(fk) && this.rx.clips[gm0.clip]) ? { clip: this.rx.clips[gm0.clip], a: this.rx.anchors[fk], drawn: [] } : null;
+      const RXA = (gm0 && gm0.clip && RC && TA.enabled !== false && !so && !(TA.yieldTo || []).includes(sc.clip) && this.rxForm(fk) && this.rx.clips[gm0.clip]) ? { clip: this.rx.clips[gm0.clip], a: this.rx.anchors[fk], drawn: [] } : null;
       if (RXA) { dclip = 'idle'; dframe = 0; RXA.ev = RC.evalClip(RXA.clip, gm0.ms || 0, { rotStep: TA.rotStep, frameInfo: (id) => this.rxInfo(id, RXA.a) }); }
       let src = null, ph = null, live = null;
       this.faceStat.draws++;

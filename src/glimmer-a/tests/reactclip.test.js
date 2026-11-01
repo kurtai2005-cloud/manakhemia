@@ -74,5 +74,6 @@ ok(mk.every(k => CL[T.MOTIONS[k].clip]), '每個 MOTIONS.clip 喺 reactions.json
 ok(names.every(n => mk.some(k => T.MOTIONS[k].clip === n)), '16 個 clip 全部有 MOTIONS 用', names.filter(n => !mk.some(k => T.MOTIONS[k].clip === n)));
 const TA = D.PARAMS.touch.art;
 ok(TA && TA.enabled === true && TA.rotStep === 45 && TA.base === 'art/reactions/', 'PARAMS.touch.art', TA);
+ok(['nuzzle', 'nuzzle_purr', 'rush', 'reunion_happy'].every(k => TA.yieldTo.includes(k)), '反應 clip 讓位畀 s3 專屬 clip（yieldTo）', TA.yieldTo);
 const m = T.motionAt('g_roll', 0, 1.2); ok(m && m.clip === 'touch_tickle_roll' && near(m.ms, 1200, 1), 'motionAt 回 clip＋ms', m);
 console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail ? 1 : 0);

@@ -805,7 +805,7 @@
     mood: { perKind: 1, sharedCap: 5, sharedKey: 'fpet_daily_v1' },   // 每種手勢每日第一次 +1；同浮動團絨（fpet-bridge DAILY_KEY）共用每日 ≤5
     dumb: { idleSec: 20, everySec: 60, chance: 0.25, gapSec: 180, perDay: 8, actSec: 6, caughtSec: 1.6, badge: 'dumb_all' },
     // 遊美 batch3a 反應圖（art/reactions：16 clip × 舊 25 形態；REACTIONS.md）。rotStep 45＝遊美建議（碌地；鋸齒嫌多可改 90）；pullStretch＝拉扯 hold 實時拉長 [dSy, maxSy, dSx, maxSx, maxRotDeg]；冇圖／形態唔喺 anchors → 程序化 fallback
-    art: { enabled: true, base: 'art/reactions/', rotStep: 45, pullStretch: [160, 0.25, 320, 0.12, 12] },
+    art: { enabled: true, base: 'art/reactions/', rotStep: 45, pullStretch: [160, 0.25, 320, 0.12, 12], yieldTo: ['nuzzle', 'nuzzle_purr', 'rush', 'reunion_happy', 'eat', 'play', 'catch_reach', 'dig'] }   // yieldTo：行為播緊呢啲專屬 clip（s3 撒嬌／衝刺／重逢等）就唔用反應 clip 蓋，只疊程序化,
   };
   PARAMS.systems12b.badges.list.splice(PARAMS.systems12b.badges.list.length - 2, 0, { k: 'dumb_all', name: '收齊呆呆時刻', when: { dumbAll: 6 } });   // 3a：圖鑑「呆呆時刻」6 格收齊 → 普通徽章 5 碎（日上限外）
   PARAMS.systems12b.badges.total = PARAMS.systems12b.badges.list.length;
