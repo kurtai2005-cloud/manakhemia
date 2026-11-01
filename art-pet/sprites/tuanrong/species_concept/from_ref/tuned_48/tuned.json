@@ -1,0 +1,1691 @@
+{
+ "source": "Kurt 參考圖（Kurt 自己用 AI 生成，擁有權已確認 [pt92u]）",
+ "size": [
+  48,
+  48
+ ],
+ "pivot": [
+  24,
+  45
+ ],
+ "groundRow": 46,
+ "pivotRule": "(w/2, h-3)，身體最底行 h-2（同舊 evo6 evo_still／guard／hop 一樣）",
+ "alpha": "0/255 only（柔光交引擎）",
+ "massRef": {
+  "1": {
+   "oldForm": "evo_hop",
+   "oldCanvas": 38,
+   "oldMassPx": 621
+  },
+  "2": {
+   "oldForm": "evo_guard_*",
+   "oldCanvas": 44,
+   "oldMassPx": 735
+  },
+  "3": {
+   "oldForm": "evo_still_*",
+   "oldCanvas": 48,
+   "oldMassPx": 900
+  }
+ },
+ "idle": {
+  "frames": 4,
+  "frameW": 48,
+  "durationsMs": [
+   260,
+   180,
+   260,
+   140
+  ],
+  "note": "0 原、1 上半壓落 1px、2 原、3 眨眼"
+ },
+ "creatures": {
+  "A1": {
+   "scale": 0.1559,
+   "colors": 36,
+   "outline": "#1a3059",
+   "mass": 629,
+   "bulb": "(24,9)",
+   "bulbXY": [
+    24,
+    9
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 17,
+     "y": 34,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 29,
+     "y": 34,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 0,
+    "notch": 0,
+    "specks": 78,
+    "finalSpeck": 0
+   },
+   "name": "滴滴",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     22,
+     39,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 30
+  },
+  "A2": {
+   "scale": 0.1495,
+   "colors": 34,
+   "outline": "#1b1a48",
+   "mass": 734,
+   "bulb": "(26,11)",
+   "bulbXY": [
+    26,
+    11
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 25,
+     "y": 32,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 36,
+     "y": 32,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 6,
+    "notch": 3,
+    "specks": 68,
+    "finalSpeck": 0
+   },
+   "name": "泡泡鰭",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     30,
+     37,
+     4
+    ],
+    "blush": 6
+   },
+   "idleCut": 31
+  },
+  "A3": {
+   "scale": 0.1591,
+   "colors": 34,
+   "outline": "#171744",
+   "mass": 900,
+   "bulb": "(26,6)",
+   "bulbXY": [
+    26,
+    6
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 24,
+     "y": 30,
+     "kind": "arc",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 38,
+     "y": 30,
+     "kind": "arc",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 2,
+    "notch": 2,
+    "specks": 94,
+    "finalSpeck": 1
+   },
+   "name": "紋紋鰭",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     30,
+     34,
+     4
+    ],
+    "blush": 6
+   },
+   "idleCut": 29
+  },
+  "B1": {
+   "scale": 0.1311,
+   "colors": 29,
+   "outline": "#162766",
+   "mass": 597,
+   "bulb": "own light",
+   "bulbXY": [
+    25,
+    18
+   ],
+   "bulbType": "own",
+   "eyes": [
+    {
+     "x": 16,
+     "y": 27,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 26,
+     "y": 26,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 2,
+    "islands": 0,
+    "spurs": 3,
+    "notch": 6,
+    "specks": 64,
+    "finalSpeck": 2
+   },
+   "name": "燈燈滴",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     20,
+     32,
+     4
+    ],
+    "blush": 11
+   },
+   "idleCut": 31
+  },
+  "B2": {
+   "scale": 0.1516,
+   "colors": 36,
+   "outline": "#0b2652",
+   "mass": 738,
+   "bulb": "(24,4)",
+   "bulbXY": [
+    24,
+    4
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 21,
+     "kind": "glow",
+     "side": 0,
+     "lineC": [
+      150,
+      255,
+      190
+     ]
+    },
+    {
+     "x": 30,
+     "y": 21,
+     "kind": "glow",
+     "side": 1,
+     "lineC": [
+      150,
+      255,
+      190
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 2,
+    "notch": 6,
+    "specks": 80,
+    "finalSpeck": 1
+   },
+   "name": "水母咪",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     24,
+     26,
+     4
+    ],
+    "blush": 0
+   },
+   "idleCut": 28
+  },
+  "B3": {
+   "scale": 0.1352,
+   "colors": 42,
+   "outline": "#15264d",
+   "mass": 883,
+   "bulb": "(26,13)",
+   "bulbXY": [
+    26,
+    13
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 22,
+     "y": 32,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 33,
+     "y": 33,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 5,
+    "notch": 9,
+    "specks": 75,
+    "finalSpeck": 1
+   },
+   "name": "珊瑚角鯨",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     27,
+     38,
+     4
+    ],
+    "blush": 11
+   },
+   "idleCut": 32
+  },
+  "C1": {
+   "scale": 0.1548,
+   "colors": 27,
+   "outline": "#61192e",
+   "mass": 610,
+   "bulb": "(13,19)",
+   "bulbXY": [
+    13,
+    19
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 17,
+     "y": 33,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 30,
+     "y": 34,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 1,
+    "notch": 1,
+    "specks": 50,
+    "finalSpeck": 0
+   },
+   "name": "火仔",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     23,
+     39,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 33
+  },
+  "C2": {
+   "scale": 0.1452,
+   "colors": 34,
+   "outline": "#3a0f1f",
+   "mass": 717,
+   "bulb": "(25,16)",
+   "bulbXY": [
+    25,
+    16
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 21,
+     "y": 30,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 31,
+     "y": 30,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 2,
+    "notch": 3,
+    "specks": 51,
+    "olOnly": 2,
+    "finalSpeck": 0
+   },
+   "name": "火角獸",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     26,
+     35,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 32
+  },
+  "C3": {
+   "scale": 0.1544,
+   "colors": 32,
+   "outline": "#340e1e",
+   "mass": 893,
+   "bulb": "(26,13)",
+   "bulbXY": [
+    26,
+    13
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 23,
+     "y": 29,
+     "kind": "glow_angry",
+     "side": 1,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    },
+    {
+     "x": 34,
+     "y": 29,
+     "kind": "glow_angry",
+     "side": 1,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 2,
+    "notch": 3,
+    "specks": 70,
+    "finalSpeck": 1
+   },
+   "name": "焦焦獸",
+   "featBox": null,
+   "face": {
+    "mouth": null,
+    "blush": 0
+   },
+   "idleCut": 31
+  },
+  "D1": {
+   "scale": 0.1295,
+   "colors": 25,
+   "outline": "#1e0c1b",
+   "mass": 603,
+   "bulb": "(18,17)",
+   "bulbXY": [
+    18,
+    17
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 19,
+     "y": 33,
+     "kind": "glow_angry",
+     "side": 0,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    },
+    {
+     "x": 30,
+     "y": 32,
+     "kind": "glow_angry",
+     "side": 1,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    }
+   ],
+   "lavaVeins": 3,
+   "veinPx": [
+    [
+     27,
+     29
+    ],
+    [
+     26,
+     29
+    ],
+    [
+     25,
+     29
+    ],
+    [
+     24,
+     28
+    ],
+    [
+     23,
+     28
+    ],
+    [
+     22,
+     28
+    ],
+    [
+     21,
+     28
+    ],
+    [
+     20,
+     28
+    ],
+    [
+     21,
+     41
+    ],
+    [
+     21,
+     42
+    ],
+    [
+     21,
+     43
+    ],
+    [
+     21,
+     44
+    ],
+    [
+     16,
+     34
+    ],
+    [
+     15,
+     34
+    ],
+    [
+     15,
+     35
+    ],
+    [
+     14,
+     35
+    ],
+    [
+     14,
+     36
+    ],
+    [
+     13,
+     36
+    ]
+   ],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 8,
+    "notch": 0,
+    "specks": 68,
+    "finalSpeck": 1
+   },
+   "name": "熔熔石",
+   "featBox": null,
+   "face": {
+    "mouth": null,
+    "blush": 0
+   },
+   "idleCut": 32
+  },
+  "D2": {
+   "scale": 0.1277,
+   "colors": 30,
+   "outline": "#1f0c1a",
+   "mass": 707,
+   "bulb": "(19,14)",
+   "bulbXY": [
+    19,
+    14
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 21,
+     "y": 30,
+     "kind": "glow_angry",
+     "side": 0,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    },
+    {
+     "x": 31,
+     "y": 29,
+     "kind": "glow_angry",
+     "side": 1,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    }
+   ],
+   "lavaVeins": 3,
+   "veinPx": [
+    [
+     32,
+     38
+    ],
+    [
+     31,
+     38
+    ],
+    [
+     30,
+     39
+    ],
+    [
+     29,
+     39
+    ],
+    [
+     28,
+     39
+    ],
+    [
+     27,
+     39
+    ],
+    [
+     26,
+     39
+    ],
+    [
+     25,
+     39
+    ],
+    [
+     18,
+     32
+    ],
+    [
+     17,
+     32
+    ],
+    [
+     17,
+     33
+    ],
+    [
+     16,
+     34
+    ],
+    [
+     16,
+     35
+    ],
+    [
+     15,
+     35
+    ],
+    [
+     15,
+     36
+    ],
+    [
+     14,
+     37
+    ],
+    [
+     14,
+     38
+    ],
+    [
+     33,
+     22
+    ],
+    [
+     32,
+     22
+    ],
+    [
+     32,
+     23
+    ],
+    [
+     31,
+     24
+    ],
+    [
+     31,
+     25
+    ],
+    [
+     30,
+     25
+    ],
+    [
+     30,
+     26
+    ]
+   ],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 3,
+    "notch": 2,
+    "specks": 99,
+    "olOnly": 7,
+    "finalSpeck": 0
+   },
+   "name": "尖尖岩",
+   "featBox": null,
+   "face": {
+    "mouth": null,
+    "blush": 0
+   },
+   "idleCut": 32
+  },
+  "D3": {
+   "scale": 0.1351,
+   "colors": 31,
+   "outline": "#3f0e1c",
+   "mass": 881,
+   "bulb": "(24,4)",
+   "bulbXY": [
+    24,
+    4
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 22,
+     "y": 32,
+     "kind": "dark_angry",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 31,
+     "y": 33,
+     "kind": "dark_angry",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 4,
+    "notch": 4,
+    "specks": 141,
+    "finalSpeck": 1
+   },
+   "name": "火翼仔",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     26,
+     38,
+     2
+    ],
+    "blush": 0
+   },
+   "idleCut": 28
+  },
+  "E1": {
+   "scale": 0.1385,
+   "colors": 25,
+   "outline": "#470f1c",
+   "mass": 614,
+   "bulb": "(24,12)",
+   "bulbXY": [
+    24,
+    12
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 32,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 29,
+     "y": 32,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 4,
+    "notch": 0,
+    "specks": 50,
+    "finalSpeck": 0
+   },
+   "name": "紅火糰",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     23,
+     37,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 31
+  },
+  "E2": {
+   "scale": 0.1459,
+   "colors": 30,
+   "outline": "#3f1127",
+   "mass": 722,
+   "bulb": "(25,16)",
+   "bulbXY": [
+    25,
+    16
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 23,
+     "y": 32,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 34,
+     "y": 31,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 5,
+    "notch": 1,
+    "specks": 65,
+    "finalSpeck": 0
+   },
+   "name": "火尾鬼",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     28,
+     37,
+     4
+    ],
+    "blush": 6
+   },
+   "idleCut": 33
+  },
+  "E3": {
+   "scale": 0.1456,
+   "colors": 26,
+   "outline": "#1e0b1c",
+   "mass": 880,
+   "bulb": "(15,12)",
+   "bulbXY": [
+    15,
+    12
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 20,
+     "y": 30,
+     "kind": "glow_angry",
+     "side": 0,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    },
+    {
+     "x": 33,
+     "y": 31,
+     "kind": "glow_angry",
+     "side": 1,
+     "lineC": [
+      255,
+      222,
+      96
+     ]
+    }
+   ],
+   "lavaVeins": 4,
+   "veinPx": [
+    [
+     28,
+     26
+    ],
+    [
+     27,
+     26
+    ],
+    [
+     27,
+     25
+    ],
+    [
+     26,
+     25
+    ],
+    [
+     25,
+     25
+    ],
+    [
+     25,
+     24
+    ],
+    [
+     24,
+     24
+    ],
+    [
+     23,
+     24
+    ],
+    [
+     23,
+     23
+    ],
+    [
+     22,
+     23
+    ],
+    [
+     17,
+     40
+    ],
+    [
+     16,
+     41
+    ],
+    [
+     16,
+     42
+    ],
+    [
+     15,
+     42
+    ],
+    [
+     13,
+     26
+    ],
+    [
+     13,
+     27
+    ],
+    [
+     14,
+     28
+    ],
+    [
+     15,
+     28
+    ],
+    [
+     15,
+     29
+    ],
+    [
+     16,
+     29
+    ],
+    [
+     16,
+     30
+    ],
+    [
+     10,
+     33
+    ],
+    [
+     11,
+     33
+    ],
+    [
+     11,
+     34
+    ],
+    [
+     12,
+     34
+    ],
+    [
+     12,
+     35
+    ],
+    [
+     13,
+     35
+    ],
+    [
+     13,
+     36
+    ],
+    [
+     14,
+     37
+    ]
+   ],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 1,
+    "notch": 5,
+    "specks": 125,
+    "finalSpeck": 0
+   },
+   "name": "熔岩獸",
+   "featBox": null,
+   "face": {
+    "mouth": null,
+    "blush": 0
+   },
+   "idleCut": 30
+  },
+  "F1": {
+   "scale": 0.1332,
+   "colors": 22,
+   "outline": "#160e31",
+   "mass": 603,
+   "bulb": "星星天線 (24, np.int64(14))",
+   "bulbXY": [
+    24,
+    14
+   ],
+   "bulbType": "star",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 33,
+     "kind": "half",
+     "side": 0,
+     "lineC": [
+      18,
+      11,
+      39
+     ]
+    },
+    {
+     "x": 28,
+     "y": 33,
+     "kind": "half",
+     "side": 1,
+     "lineC": [
+      18,
+      11,
+      39
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 1,
+    "notch": 3,
+    "specks": 62,
+    "finalSpeck": 0
+   },
+   "name": "星星彈",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     22,
+     38,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 32
+  },
+  "F2": {
+   "scale": 0.144,
+   "colors": 25,
+   "outline": "#191132",
+   "mass": 718,
+   "bulb": "(25,16)",
+   "bulbXY": [
+    25,
+    16
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 20,
+     "y": 33,
+     "kind": "half",
+     "side": 0,
+     "lineC": [
+      20,
+      13,
+      40
+     ]
+    },
+    {
+     "x": 32,
+     "y": 32,
+     "kind": "half",
+     "side": 1,
+     "lineC": [
+      20,
+      13,
+      40
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 1,
+    "notch": 3,
+    "specks": 65,
+    "finalSpeck": 2
+   },
+   "name": "星耳咪",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     26,
+     38,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 33
+  },
+  "F3": {
+   "scale": 0.1541,
+   "colors": 29,
+   "outline": "#27152d",
+   "mass": 890,
+   "bulb": "(14,11)",
+   "bulbXY": [
+    14,
+    11
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 23,
+     "y": 30,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 35,
+     "y": 31,
+     "kind": "wink",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 2,
+    "notch": 0,
+    "specks": 42,
+    "finalSpeck": 0
+   },
+   "name": "月亮糰",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     28,
+     35,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 30
+  },
+  "G1": {
+   "scale": 0.1341,
+   "colors": 20,
+   "outline": "#1a1234",
+   "mass": 603,
+   "bulb": "星星天線 (21, np.int64(13))",
+   "bulbXY": [
+    21,
+    13
+   ],
+   "bulbType": "star",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 32,
+     "kind": "half",
+     "side": 0,
+     "lineC": [
+      21,
+      14,
+      42
+     ]
+    },
+    {
+     "x": 28,
+     "y": 32,
+     "kind": "half",
+     "side": 1,
+     "lineC": [
+      21,
+      14,
+      42
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 3,
+    "notch": 0,
+    "specks": 68,
+    "finalSpeck": 0
+   },
+   "name": "夜夜糰",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     22,
+     37,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 31
+  },
+  "G2": {
+   "scale": 0.1486,
+   "colors": 28,
+   "outline": "#1c1333",
+   "mass": 715,
+   "bulb": "(25,16)",
+   "bulbXY": [
+    25,
+    16
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 21,
+     "y": 32,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 32,
+     "y": 31,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 1,
+    "islands": 0,
+    "spurs": 4,
+    "notch": 1,
+    "specks": 65,
+    "finalSpeck": 1
+   },
+   "name": "舉星咪",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     26,
+     37,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 33
+  },
+  "G3": {
+   "scale": 0.1514,
+   "colors": 28,
+   "outline": "#1c1334",
+   "mass": 887,
+   "bulb": "(19,12)",
+   "bulbXY": [
+    19,
+    12
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 20,
+     "y": 29,
+     "kind": "glow",
+     "side": 0,
+     "lineC": [
+      255,
+      226,
+      120
+     ]
+    },
+    {
+     "x": 33,
+     "y": 29,
+     "kind": "glow",
+     "side": 1,
+     "lineC": [
+      255,
+      226,
+      120
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 3,
+    "notch": 3,
+    "specks": 58,
+    "finalSpeck": 0
+   },
+   "name": "月角咪",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     26,
+     34,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 30
+  },
+  "H1": {
+   "scale": 0.1273,
+   "colors": 35,
+   "outline": "#24132d",
+   "mass": 607,
+   "bulb": "(24,18)",
+   "bulbXY": [
+    24,
+    18
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 20,
+     "y": 33,
+     "kind": "dark",
+     "side": 0,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    },
+    {
+     "x": 30,
+     "y": 33,
+     "kind": "dark",
+     "side": 1,
+     "lineC": [
+      34,
+      26,
+      44
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 2,
+    "notch": 2,
+    "specks": 30,
+    "finalSpeck": 0
+   },
+   "name": "月角仔",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     24,
+     38,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 34
+  },
+  "H2": {
+   "scale": 0.132,
+   "colors": 29,
+   "outline": "#1e1134",
+   "mass": 710,
+   "bulb": "(24,10)",
+   "bulbXY": [
+    24,
+    10
+   ],
+   "bulbType": "bulb",
+   "eyes": [
+    {
+     "x": 18,
+     "y": 33,
+     "kind": "half",
+     "side": 0,
+     "lineC": [
+      24,
+      14,
+      42
+     ]
+    },
+    {
+     "x": 29,
+     "y": 33,
+     "kind": "half",
+     "side": 1,
+     "lineC": [
+      24,
+      14,
+      42
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 9,
+    "notch": 4,
+    "specks": 44,
+    "olOnly": 9,
+    "finalSpeck": 1
+   },
+   "name": "環月精",
+   "featBox": null,
+   "face": {
+    "mouth": [
+     23,
+     38,
+     4
+    ],
+    "blush": 6
+   },
+   "idleCut": 30
+  },
+  "H3": {
+   "scale": 0.1312,
+   "colors": 30,
+   "outline": "#2f2540",
+   "mass": 864,
+   "bulb": "own light",
+   "bulbXY": [
+    25,
+    14
+   ],
+   "bulbType": "own",
+   "eyes": [
+    {
+     "x": 20,
+     "y": 31,
+     "kind": "star",
+     "side": 0,
+     "lineC": [
+      255,
+      224,
+      110
+     ]
+    },
+    {
+     "x": 31,
+     "y": 31,
+     "kind": "star",
+     "side": 1,
+     "lineC": [
+      255,
+      224,
+      110
+     ]
+    }
+   ],
+   "lavaVeins": 0,
+   "veinPx": [],
+   "fixes": {
+    "holes": 0,
+    "islands": 0,
+    "spurs": 9,
+    "notch": 4,
+    "specks": 65,
+    "finalSpeck": 0
+   },
+   "name": "銀河靈",
+   "featBox": [
+    0,
+    0,
+    48,
+    19
+   ],
+   "face": {
+    "mouth": [
+     25,
+     36,
+     4
+    ],
+    "blush": 12
+   },
+   "idleCut": 31
+  }
+ }
+}

@@ -1,0 +1,437 @@
+{
+ "note": "自動 crack 檢查（px48_check.py）：speck＝8 鄰全部色差 >90 嘅單點；gap＝外框位唔夠深；hole＝身體內 ≤6px 透明洞；frag＝6–11px 獨立碎件（9px 泡泡除外）",
+ "compare": {
+  "A1": {
+   "naive80to48": {
+    "speck": 1,
+    "hole": 0,
+    "gap": 5,
+    "frag": 0,
+    "noise": 4,
+    "soft": 63
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "A2": {
+   "naive80to48": {
+    "speck": 2,
+    "hole": 3,
+    "gap": 17,
+    "frag": 19,
+    "noise": 5,
+    "soft": 96
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "A3": {
+   "naive80to48": {
+    "speck": 5,
+    "hole": 0,
+    "gap": 20,
+    "frag": 18,
+    "noise": 6,
+    "soft": 68
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 1,
+    "soft": 0
+   }
+  },
+  "B1": {
+   "naive80to48": {
+    "speck": 3,
+    "hole": 3,
+    "gap": 28,
+    "frag": 0,
+    "noise": 4,
+    "soft": 60
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 1,
+    "frag": 0,
+    "noise": 3,
+    "soft": 0
+   }
+  },
+  "B2": {
+   "naive80to48": {
+    "speck": 5,
+    "hole": 2,
+    "gap": 21,
+    "frag": 10,
+    "noise": 4,
+    "soft": 72
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 4,
+    "soft": 0
+   }
+  },
+  "B3": {
+   "naive80to48": {
+    "speck": 2,
+    "hole": 0,
+    "gap": 25,
+    "frag": 0,
+    "noise": 16,
+    "soft": 115
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 10,
+    "soft": 0
+   }
+  },
+  "C1": {
+   "naive80to48": {
+    "speck": 1,
+    "hole": 0,
+    "gap": 7,
+    "frag": 6,
+    "noise": 4,
+    "soft": 73
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 2,
+    "soft": 0
+   }
+  },
+  "C2": {
+   "naive80to48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 12,
+    "frag": 7,
+    "noise": 12,
+    "soft": 100
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 2,
+    "soft": 0
+   }
+  },
+  "C3": {
+   "naive80to48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 6,
+    "frag": 20,
+    "noise": 9,
+    "soft": 99
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 2,
+    "soft": 0
+   }
+  },
+  "D1": {
+   "naive80to48": {
+    "speck": 9,
+    "hole": 0,
+    "gap": 3,
+    "frag": 0,
+    "noise": 21,
+    "soft": 54
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "D2": {
+   "naive80to48": {
+    "speck": 4,
+    "hole": 0,
+    "gap": 4,
+    "frag": 7,
+    "noise": 26,
+    "soft": 58
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 2,
+    "soft": 0
+   }
+  },
+  "D3": {
+   "naive80to48": {
+    "speck": 3,
+    "hole": 1,
+    "gap": 10,
+    "frag": 6,
+    "noise": 6,
+    "soft": 91
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 4,
+    "soft": 0
+   }
+  },
+  "E1": {
+   "naive80to48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 7,
+    "frag": 8,
+    "noise": 5,
+    "soft": 52
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 1,
+    "soft": 0
+   }
+  },
+  "E2": {
+   "naive80to48": {
+    "speck": 1,
+    "hole": 0,
+    "gap": 5,
+    "frag": 0,
+    "noise": 7,
+    "soft": 90
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 1,
+    "frag": 0,
+    "noise": 3,
+    "soft": 0
+   }
+  },
+  "E3": {
+   "naive80to48": {
+    "speck": 13,
+    "hole": 0,
+    "gap": 6,
+    "frag": 6,
+    "noise": 30,
+    "soft": 54
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 2,
+    "soft": 0
+   }
+  },
+  "F1": {
+   "naive80to48": {
+    "speck": 2,
+    "hole": 0,
+    "gap": 2,
+    "frag": 0,
+    "noise": 2,
+    "soft": 51
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "F2": {
+   "naive80to48": {
+    "speck": 7,
+    "hole": 1,
+    "gap": 3,
+    "frag": 0,
+    "noise": 4,
+    "soft": 61
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 1,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "F3": {
+   "naive80to48": {
+    "speck": 8,
+    "hole": 1,
+    "gap": 10,
+    "frag": 0,
+    "noise": 12,
+    "soft": 36
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 3,
+    "soft": 0
+   }
+  },
+  "G1": {
+   "naive80to48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 3,
+    "soft": 55
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "G2": {
+   "naive80to48": {
+    "speck": 5,
+    "hole": 1,
+    "gap": 9,
+    "frag": 0,
+    "noise": 3,
+    "soft": 55
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "G3": {
+   "naive80to48": {
+    "speck": 13,
+    "hole": 0,
+    "gap": 12,
+    "frag": 0,
+    "noise": 3,
+    "soft": 57
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "H1": {
+   "naive80to48": {
+    "speck": 4,
+    "hole": 0,
+    "gap": 20,
+    "frag": 0,
+    "noise": 4,
+    "soft": 51
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 0,
+    "soft": 0
+   }
+  },
+  "H2": {
+   "naive80to48": {
+    "speck": 11,
+    "hole": 4,
+    "gap": 26,
+    "frag": 12,
+    "noise": 9,
+    "soft": 102
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 1,
+    "soft": 0
+   }
+  },
+  "H3": {
+   "naive80to48": {
+    "speck": 16,
+    "hole": 7,
+    "gap": 24,
+    "frag": 8,
+    "noise": 13,
+    "soft": 71
+   },
+   "tuned48": {
+    "speck": 0,
+    "hole": 0,
+    "gap": 0,
+    "frag": 0,
+    "noise": 2,
+    "soft": 0
+   }
+  }
+ }
+}

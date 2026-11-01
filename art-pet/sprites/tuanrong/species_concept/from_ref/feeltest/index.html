@@ -24,8 +24,8 @@ const cv = document.getElementById('c'), ctx = cv.getContext('2d'); ctx.imageSmo
 const SCN = ['H1', 'H2', 'H3', 'H4'];
 let si = Math.max(0, SCN.indexOf(Q.get('scene') || 'H1'));
 let pi = Math.max(0, F.pets.findIndex(p => p.key === (Q.get('pet') || 'A1')));
-const SIZES = [64, 80, 96];
-let SZ = SIZES.includes(+Q.get('size')) ? +Q.get('size') : 80;   // 正式版 80px（Kurt [pt94u]）
+const SIZES = [48, 64, 80, 96];
+let SZ = SIZES.includes(+Q.get('size')) ? +Q.get('size') : 48;   // 正式版改返舊寵尺寸 48px（Kurt [pt98u]）
 const FIXT = Q.has('t') ? parseFloat(Q.get('t')) : null;
 if (Q.get('ui') === '0') { document.getElementById('ui').style.display = 'none'; }
 if (Q.has('t') || Q.get('hint') === '0') document.getElementById('hint').style.display = 'none';
@@ -100,9 +100,9 @@ let now = 0;
 cv.addEventListener('pointerdown', () => nextPet(1, now));
 document.getElementById('next').onclick = () => nextPet(1, now);
 document.getElementById('prev').onclick = () => nextPet(-1, now);
-document.getElementById('sz').onclick = () => { SZ = SIZES[(SIZES.indexOf(SZ) + 1) % 3]; swap = now; setName(); };
+document.getElementById('sz').onclick = () => { SZ = SIZES[(SIZES.indexOf(SZ) + 1) % SIZES.length]; swap = now; setName(); };
 document.getElementById('tod').onclick = () => { si = (si + 1) % 4; setName(); };
-addEventListener('keydown', e => { if (e.key === 'ArrowRight') nextPet(1, now); if (e.key === 'ArrowLeft') nextPet(-1, now); if (e.key === 's') { SZ = SIZES[(SIZES.indexOf(SZ) + 1) % 3]; swap = now; setName(); } if (e.key === 't') { si = (si + 1) % 4; setName(); } });
+addEventListener('keydown', e => { if (e.key === 'ArrowRight') nextPet(1, now); if (e.key === 'ArrowLeft') nextPet(-1, now); if (e.key === 's') { SZ = SIZES[(SIZES.indexOf(SZ) + 1) % SIZES.length]; swap = now; setName(); } if (e.key === 't') { si = (si + 1) % 4; setName(); } });
 setName();
 let t0 = null;
 function loop(ts) { if (t0 === null) t0 = ts; now = FIXT !== null ? FIXT : (ts - t0) / 1000; draw(now); requestAnimationFrame(loop); }

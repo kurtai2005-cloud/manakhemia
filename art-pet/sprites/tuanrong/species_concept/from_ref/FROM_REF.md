@@ -47,3 +47,6 @@
 - `ref_vs_cut_3x.png`：左＝原圖格／右＝切出（3x，淺底深底交替）
 - `from_ref.json`：每隻名、來源格、比例、色數、燈泡
 - 重建：`cd art-pet && python3 tools/build_from_ref.py`（`check` 只做檢查）
+
+## 正式版（2026-11-01 改）
+- **48px**：`tuned_48/ENGINE_48.md`（Kurt [pt98u] 返舊寵尺寸，48×48、pivot (24,45)）。`tuned_80`／`tuned_96`／`tuned` 只作參考。
