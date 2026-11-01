@@ -1,0 +1,1877 @@
+{
+ "version": "batch3a-1",
+ "units": {
+  "time": "ms",
+  "pos": "px（寵物原生像素，未放大）"
+ },
+ "engineModel": {
+  "drawOrder": [
+   "base = idle 幀 0（反應期間 idle 停）",
+   "face patch（clip.face 軌，null = 原面）",
+   "wear patch（glasses／hat，全幀，hat 已挖燈泡位）",
+   "→ body transform（下）",
+   "FX：z=back 喺寵物後、z=front 喺前；FX 本身唔縮放唔旋轉"
+  ],
+  "transform": "keys {t, sx, sy, rot(度，順時針), x, y, flip(0/1), e}；缺欄沿用；段內 easing 用『下一格』嘅 e；origin = 錨點名（預設 pivot）；最近鄰取樣；rotStep 有就 snap 角度；groundLock = 每幀將最低實色行貼返 pivot.y（碌地用）",
+  "easing": {
+   "linear": "t",
+   "in": "t²",
+   "out": "1-(1-t)²",
+   "inout": "2t² / 1-2(1-t)²",
+   "outBack": "1+2.70158(t-1)³+1.70158(t-1)²",
+   "step": "跳到下一格（到 t 先變）"
+  },
+  "fx": "{id, anchor, dx, dy, t0, t1, ms, loop(預設 true), frames(幀序列，選填), follow(預設 true：錨點跟 body 變形), atGround(y = pivot.y), mirrorX, z, move:[[ms,dx,dy]..] 線性}；id: fx_* = fx/fx.json；series_orbit / series_puff = series/<寵物系>.json；paw = paws/<pet>_paw.png",
+  "anchors": "anchors.json 每隻：pivot, face, eyeL, eyeR, mouth, headTop, bulb, side_l, side_r, center, chest（base 幀像素座標）；touch = 引擎傳入手指位置",
+  "events": "clip.events [{t, id}] — pat（摸頭計數）、line:*（對白，文字唔喺 art）"
+ },
+ "touchRules": {
+  "poke": "tap <250ms & <12px",
+  "longPress": ">=600ms → touch_pet_loop；3000ms = 1 次 pat event",
+  "tickle": "1000ms 內 >=4 次方向反轉（每段 >=8px）",
+  "pull": "拖 >40px → touch_pull_hold；放手 → touch_pull_release",
+  "shake": "1000ms 內 2 次 >2.5g → dizzy；cooldown 30000ms；60000ms 內第 3 次 → pretend",
+  "asleep": "任何手勢 → touch_sleep_rub",
+  "duringDim": "poke → touch_embarrassed（中斷 dim）"
+ },
+ "dimRule": {
+  "idleMinMs": 20000,
+  "rollEveryMs": 60000,
+  "chance": 0.25,
+  "minGapMs": 180000,
+  "maxPerDay": 8,
+  "pick": "6 款平均隨機，唔重複上一次；瞓緊／被摸緊／UI 開住唔觸發；被戳 → touch_embarrassed 中斷"
+ },
+ "faceNotes": {
+  "blink": "眨眼（戳）",
+  "squint": "^ ^ 舒服瞇眼（長按 loop）",
+  "squint_blush": "瞇眼＋腮紅加深（長按 loop 第 2 格）",
+  "laugh_a": "> < 大笑張大口（搔癢）",
+  "laugh_b": "> < 笑（細口）",
+  "dizzy_a": "@ @ 暈（搖機）",
+  "dizzy_b": "@ @ 暈第 2 格（轉 90°）",
+  "sleepy": "眼瞓半眼（睇書）",
+  "sleep": "瞓著 ︶ ︶",
+  "surprised": "驚訝：眼上移＋o 口（拉開／照鏡）",
+  "smug": "扮醒：半眼＋得意嘴角",
+  "embarrassed": "尷尬：眼望低＋斜線腮紅＋波浪口（呆反應做緊被戳）",
+  "lookup": "望上諗嘢（計數）"
+ },
+ "clips": {
+  "touch_poke": {
+   "group": "touch",
+   "dur": 500,
+   "loop": false,
+   "trigger": "tap（按落→放 <250ms、移動 <12px）。瞓緊 → touch_sleep_rub；蠢萌反應進行中 → touch_embarrassed",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 60,
+     "sx": 1.15,
+     "sy": 0.85,
+     "e": "out"
+    },
+    {
+     "t": 150,
+     "sx": 0.95,
+     "sy": 1.06,
+     "e": "inout"
+    },
+    {
+     "t": 260,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "blink"
+    },
+    {
+     "t": 150,
+     "f": null
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_poke",
+     "anchor": "touch",
+     "t0": 0,
+     "t1": 180,
+     "ms": 60,
+     "loop": false,
+     "follow": false
+    }
+   ]
+  },
+  "touch_pet_loop": {
+   "group": "touch",
+   "dur": 1200,
+   "loop": true,
+   "trigger": "長按 ≥600ms 開始 loop；放手即停（回 idle 用 120ms ease-out）。連續按滿 3000ms → event pat（計一次摸頭，之後每 3000ms 再計）",
+   "events": [
+    {
+     "t": 3000,
+     "id": "pat",
+     "repeatEvery": 3000,
+     "note": "相對 long-press 開始計（包埋前 600ms）"
+    }
+   ],
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 300,
+     "sx": 1.04,
+     "sy": 0.96,
+     "rot": -2,
+     "e": "inout"
+    },
+    {
+     "t": 600,
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "e": "inout"
+    },
+    {
+     "t": 900,
+     "sx": 1.04,
+     "sy": 0.96,
+     "rot": 2,
+     "e": "inout"
+    },
+    {
+     "t": 1200,
+     "sx": 1,
+     "sy": 1,
+     "rot": 0,
+     "e": "inout"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": [
+      "squint",
+      "squint",
+      "squint_blush",
+      "squint_blush"
+     ],
+     "ms": 300
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_heart",
+     "anchor": "headTop",
+     "dx": 7,
+     "dy": -2,
+     "t0": 200,
+     "t1": 1100,
+     "frames": [
+      0,
+      1,
+      1
+     ],
+     "ms": 300,
+     "loop": false,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       900,
+       2,
+       -9
+      ]
+     ]
+    }
+   ]
+  },
+  "touch_tickle_laugh": {
+   "group": "touch",
+   "dur": 480,
+   "loop": true,
+   "trigger": "搓：1000ms 內 ≥4 次方向反轉（每段 ≥8px）→ 笑 loop，持續搓就繼續；停手 → touch_tickle_roll",
+   "body": [
+    {
+     "t": 0,
+     "rot": -6,
+     "y": 0
+    },
+    {
+     "t": 120,
+     "rot": 6,
+     "y": -2,
+     "e": "inout"
+    },
+    {
+     "t": 240,
+     "rot": -6,
+     "y": 0,
+     "e": "inout"
+    },
+    {
+     "t": 360,
+     "rot": 6,
+     "y": -2,
+     "e": "inout"
+    },
+    {
+     "t": 480,
+     "rot": -6,
+     "y": 0,
+     "e": "inout"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": [
+      "laugh_a",
+      "laugh_b"
+     ],
+     "ms": 120
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_laugh_l",
+     "anchor": "side_l",
+     "dx": -1,
+     "t0": 0,
+     "t1": 480,
+     "ms": 120
+    },
+    {
+     "id": "fx_laugh_r",
+     "anchor": "side_r",
+     "dx": 1,
+     "t0": 0,
+     "t1": 480,
+     "ms": 120
+    },
+    {
+     "id": "fx_tear",
+     "anchor": "eyeR",
+     "dx": 3,
+     "dy": 1,
+     "t0": 0,
+     "t1": 480,
+     "ms": 240
+    }
+   ]
+  },
+  "touch_tickle_roll": {
+   "group": "touch",
+   "dur": 3000,
+   "loop": false,
+   "origin": "center",
+   "groundLock": true,
+   "rotStep": 45,
+   "trigger": "tickle_laugh 完（停搓 ≥300ms）→ 喺地上碌 3 秒：碌左一圈再碌返轉頭",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 1400,
+     "rot": -360,
+     "x": -18,
+     "e": "inout"
+    },
+    {
+     "t": 1600,
+     "rot": -360,
+     "x": -18
+    },
+    {
+     "t": 2850,
+     "rot": 0,
+     "x": 0,
+     "e": "inout"
+    },
+    {
+     "t": 3000
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": [
+      "laugh_a",
+      "laugh_b"
+     ],
+     "ms": 140
+    },
+    {
+     "t": 2850,
+     "f": "squint"
+    }
+   ],
+   "fx": [
+    {
+     "id": "series_puff",
+     "anchor": "pivot",
+     "t0": 1350,
+     "t1": 1650,
+     "ms": 100,
+     "loop": false,
+     "follow": false,
+     "dx": -18,
+     "z": "back"
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "t0": 2850,
+     "t1": 3000,
+     "ms": 50,
+     "loop": false,
+     "dy": -3
+    }
+   ]
+  },
+  "touch_pull_hold": {
+   "group": "touch",
+   "dur": 400,
+   "loop": true,
+   "trigger": "按住拖 >40px：hold loop；引擎按拖嘅距離 d 實時加 stretch：sy *= 1+min(d/160,0.25)、sx *= 1-min(d/320,0.12)，rot 向拖方向（±12°）",
+   "body": [
+    {
+     "t": 0,
+     "sx": 0.92,
+     "sy": 1.1,
+     "y": -2
+    },
+    {
+     "t": 200,
+     "sx": 0.9,
+     "sy": 1.12,
+     "y": -3,
+     "e": "inout"
+    },
+    {
+     "t": 400,
+     "sx": 0.92,
+     "sy": 1.1,
+     "y": -2,
+     "e": "inout"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "surprised"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_sweat",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": 2,
+     "t0": 0,
+     "t1": 400,
+     "frames": [
+      0
+     ],
+     "ms": 400
+    }
+   ]
+  },
+  "touch_pull_release": {
+   "group": "touch",
+   "dur": 700,
+   "loop": false,
+   "trigger": "拉住（>40px）後放手 → 彈返原位＋落地壓扁；系列煙",
+   "body": [
+    {
+     "t": 0,
+     "sx": 0.88,
+     "sy": 1.18,
+     "y": -6
+    },
+    {
+     "t": 120,
+     "sx": 1.22,
+     "sy": 0.8,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 260,
+     "sx": 0.94,
+     "sy": 1.08,
+     "e": "out"
+    },
+    {
+     "t": 420,
+     "sx": 1.03,
+     "sy": 0.97,
+     "e": "inout"
+    },
+    {
+     "t": 600,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    },
+    {
+     "t": 700
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "surprised"
+    },
+    {
+     "t": 120,
+     "f": "blink"
+    },
+    {
+     "t": 260,
+     "f": null
+    }
+   ],
+   "fx": [
+    {
+     "id": "series_puff",
+     "anchor": "pivot",
+     "t0": 120,
+     "t1": 420,
+     "ms": 100,
+     "loop": false,
+     "follow": false,
+     "dx": -11,
+     "z": "back"
+    },
+    {
+     "id": "series_puff",
+     "anchor": "pivot",
+     "t0": 120,
+     "t1": 420,
+     "ms": 100,
+     "loop": false,
+     "follow": false,
+     "dx": 11,
+     "mirrorX": true,
+     "z": "back"
+    }
+   ]
+  },
+  "touch_shake_dizzy": {
+   "group": "touch",
+   "dur": 2000,
+   "loop": false,
+   "trigger": "1000ms 內 2 次 >2.5g（加速度計）→ 暈 2 秒＋頭頂轉星；冷卻 30000ms（冷卻中再搖：唔觸發）。60s 內第 3 次 → touch_shake_pretend",
+   "cooldownMs": 30000,
+   "body": [
+    {
+     "t": 0,
+     "sx": 1.1,
+     "sy": 0.9
+    },
+    {
+     "t": 120,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    },
+    {
+     "t": 355,
+     "rot": 7,
+     "x": 1,
+     "e": "inout"
+    },
+    {
+     "t": 590,
+     "rot": -7,
+     "x": -1,
+     "e": "inout"
+    },
+    {
+     "t": 825,
+     "rot": 7,
+     "x": 1,
+     "e": "inout"
+    },
+    {
+     "t": 1060,
+     "rot": -7,
+     "x": -1,
+     "e": "inout"
+    },
+    {
+     "t": 1295,
+     "rot": 7,
+     "x": 1,
+     "e": "inout"
+    },
+    {
+     "t": 1530,
+     "rot": -7,
+     "x": -1,
+     "e": "inout"
+    },
+    {
+     "t": 1765,
+     "rot": 7,
+     "x": 1,
+     "e": "inout"
+    },
+    {
+     "t": 2000,
+     "rot": 0,
+     "x": 0,
+     "e": "inout"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": [
+      "dizzy_a",
+      "dizzy_b"
+     ],
+     "ms": 160
+    },
+    {
+     "t": 1900,
+     "f": "blink"
+    },
+    {
+     "t": 2000,
+     "f": null
+    }
+   ],
+   "fx": [
+    {
+     "id": "series_orbit",
+     "anchor": "headTop",
+     "dy": -3,
+     "t0": 0,
+     "t1": 1900,
+     "ms": 90
+    },
+    {
+     "id": "fx_sweat",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": 3,
+     "t0": 400,
+     "t1": 1300,
+     "frames": [
+      0,
+      1
+     ],
+     "ms": 450,
+     "loop": false,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       900,
+       0,
+       5
+      ]
+     ]
+    }
+   ]
+  },
+  "touch_shake_pretend": {
+   "group": "touch",
+   "dur": 2400,
+   "loop": false,
+   "trigger": "60s 內第 3 次搖：唔暈，扮冇事發生（望天吹口哨），引擎顯示對白 line_pretend（文字由 遊策 提供）",
+   "events": [
+    {
+     "t": 300,
+     "id": "line:shake_pretend"
+    }
+   ],
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 200,
+     "x": 2,
+     "rot": 3,
+     "e": "out"
+    },
+    {
+     "t": 2100,
+     "x": 2,
+     "rot": 3
+    },
+    {
+     "t": 2400,
+     "x": 0,
+     "rot": 0,
+     "e": "inout"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    },
+    {
+     "t": 1200,
+     "f": "lookup"
+    },
+    {
+     "t": 1350,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_sweat",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": 3,
+     "t0": 600,
+     "t1": 2000,
+     "frames": [
+      0,
+      1
+     ],
+     "ms": 700,
+     "loop": false,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       1400,
+       0,
+       6
+      ]
+     ]
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 10,
+     "dy": -4,
+     "t0": 300,
+     "t1": 900,
+     "ms": 120
+    }
+   ]
+  },
+  "touch_sleep_rub": {
+   "group": "touch",
+   "dur": 1600,
+   "loop": false,
+   "trigger": "瞓緊（sleep state）時任何手勢 → 揉眼、轉身（flipX）繼續瞓；唔會醒",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 120,
+     "sx": 1.06,
+     "sy": 0.94,
+     "e": "out"
+    },
+    {
+     "t": 300,
+     "sx": 1,
+     "sy": 1,
+     "e": "inout"
+    },
+    {
+     "t": 650,
+     "sx": 0.94,
+     "sy": 1.04,
+     "e": "in"
+    },
+    {
+     "t": 700,
+     "flip": 1,
+     "sx": 1.1,
+     "sy": 0.9,
+     "e": "step"
+    },
+    {
+     "t": 850,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    },
+    {
+     "t": 1600
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "sleepy"
+    },
+    {
+     "t": 650,
+     "f": "sleep"
+    }
+   ],
+   "fx": [
+    {
+     "id": "paw",
+     "anchor": "eyeR",
+     "dx": -1,
+     "dy": 1,
+     "t0": 100,
+     "t1": 620,
+     "frames": [
+      0
+     ],
+     "ms": 520,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       130,
+       -1,
+       -2
+      ],
+      [
+       260,
+       0,
+       0
+      ],
+      [
+       390,
+       -1,
+       -2
+      ],
+      [
+       520,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "fx_zzz",
+     "anchor": "headTop",
+     "dx": 6,
+     "dy": -1,
+     "t0": 900,
+     "t1": 1600,
+     "ms": 230
+    }
+   ]
+  },
+  "touch_embarrassed": {
+   "group": "touch",
+   "dur": 1000,
+   "loop": false,
+   "trigger": "蠢萌反應進行中被戳 → 中斷該反應，播尷尬臉（之後回 idle）",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 120,
+     "sx": 1.06,
+     "sy": 0.92,
+     "y": 1,
+     "e": "out"
+    },
+    {
+     "t": 800,
+     "sx": 1.04,
+     "sy": 0.94,
+     "y": 1
+    },
+    {
+     "t": 1000,
+     "sx": 1,
+     "sy": 1,
+     "y": 0,
+     "e": "outBack"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "embarrassed"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_sweat",
+     "anchor": "headTop",
+     "dx": 8,
+     "dy": 2,
+     "t0": 100,
+     "t1": 1000,
+     "frames": [
+      0,
+      1
+     ],
+     "ms": 450,
+     "loop": false,
+     "move": [
+      [
+       0,
+       0,
+       0
+      ],
+      [
+       900,
+       0,
+       5
+      ]
+     ]
+    }
+   ]
+  },
+  "dim_glasses_count": {
+   "group": "dim",
+   "dur": 4400,
+   "loop": false,
+   "trigger": "DIM（見下）：戴眼鏡數嘢 1、2、3…數唔掂 → 問號、側頭",
+   "wear": [
+    {
+     "id": "glasses",
+     "t0": 0,
+     "t1": 4400,
+     "frames": [
+      {
+       "t": 0,
+       "f": 0
+      },
+      {
+       "t": 300,
+       "f": 1
+      },
+      {
+       "t": 520,
+       "f": 0
+      },
+      {
+       "t": 3000,
+       "f": 1
+      },
+      {
+       "t": 3200,
+       "f": 0
+      }
+     ]
+    }
+   ],
+   "body": [
+    {
+     "t": 0,
+     "sy": 1.06,
+     "sx": 0.96
+    },
+    {
+     "t": 200,
+     "sy": 1,
+     "sx": 1,
+     "e": "outBack"
+    },
+    {
+     "t": 800
+    },
+    {
+     "t": 900,
+     "y": -1,
+     "e": "out"
+    },
+    {
+     "t": 1000,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 1500,
+     "y": -1,
+     "e": "out"
+    },
+    {
+     "t": 1600,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 2100,
+     "y": -1,
+     "e": "out"
+    },
+    {
+     "t": 2200,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 2800,
+     "rot": 0
+    },
+    {
+     "t": 3100,
+     "rot": -8,
+     "e": "outBack"
+    },
+    {
+     "t": 4100,
+     "rot": -8
+    },
+    {
+     "t": 4400,
+     "rot": 0,
+     "e": "inout"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": null
+    },
+    {
+     "t": 700,
+     "f": "lookup"
+    },
+    {
+     "t": 2800,
+     "f": "blink"
+    },
+    {
+     "t": 2950,
+     "f": null
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_num_1",
+     "anchor": "headTop",
+     "dx": -6,
+     "dy": -3,
+     "t0": 800,
+     "t1": 2700,
+     "follow": true
+    },
+    {
+     "id": "fx_num_2",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -5,
+     "t0": 1400,
+     "t1": 2700
+    },
+    {
+     "id": "fx_num_3",
+     "anchor": "headTop",
+     "dx": 6,
+     "dy": -3,
+     "t0": 2000,
+     "t1": 2700
+    },
+    {
+     "id": "fx_question",
+     "anchor": "headTop",
+     "dx": 7,
+     "dy": -3,
+     "t0": 2900,
+     "t1": 4400,
+     "move": [
+      [
+       0,
+       0,
+       4
+      ],
+      [
+       120,
+       0,
+       -2
+      ],
+      [
+       220,
+       0,
+       0
+      ]
+     ]
+    }
+   ]
+  },
+  "dim_book_sleep": {
+   "group": "dim",
+   "dur": 5200,
+   "loop": false,
+   "trigger": "DIM：睇書 → 揭頁 → 頭耷耷 → 瞓著，本書合埋跌落地；之後交返 sleep state（或 2s 後自己醒）",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 1800,
+     "y": 0
+    },
+    {
+     "t": 2100,
+     "y": 1,
+     "rot": 3,
+     "e": "inout"
+    },
+    {
+     "t": 2300,
+     "y": 0,
+     "rot": 0,
+     "e": "out"
+    },
+    {
+     "t": 2700,
+     "y": 1,
+     "rot": 4,
+     "e": "inout"
+    },
+    {
+     "t": 2900,
+     "y": 0,
+     "rot": 0,
+     "e": "out"
+    },
+    {
+     "t": 3200,
+     "y": 2,
+     "rot": 6,
+     "sx": 1.05,
+     "sy": 0.94,
+     "e": "in"
+    },
+    {
+     "t": 4200,
+     "sy": 0.96
+    },
+    {
+     "t": 4700,
+     "sy": 0.94,
+     "e": "inout"
+    },
+    {
+     "t": 5200,
+     "sy": 0.96,
+     "e": "inout"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": null
+    },
+    {
+     "t": 1000,
+     "f": "blink"
+    },
+    {
+     "t": 1150,
+     "f": null
+    },
+    {
+     "t": 1800,
+     "f": "sleepy"
+    },
+    {
+     "t": 3150,
+     "f": "sleep"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_book",
+     "anchor": "chest",
+     "dy": 4,
+     "t0": 0,
+     "t1": 3200,
+     "frames": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "ms": 300,
+     "loop": false
+    },
+    {
+     "id": "fx_book",
+     "anchor": "pivot",
+     "dx": 10,
+     "dy": 0,
+     "t0": 3200,
+     "t1": 5200,
+     "frames": [
+      2
+     ],
+     "follow": false,
+     "move": [
+      [
+       0,
+       -8,
+       -10
+      ],
+      [
+       200,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "fx_zzz",
+     "anchor": "headTop",
+     "dx": 6,
+     "dy": -1,
+     "t0": 3400,
+     "t1": 5200,
+     "ms": 300
+    }
+   ]
+  },
+  "dim_wall_bump": {
+   "group": "dim",
+   "dur": 3800,
+   "loop": false,
+   "origin": "side_r",
+   "trigger": "DIM：自己行去右邊，撞埋一幅牆（牆左邊緣 = side_r.x + 11px，貼地），彈返、暈、系列星",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 150,
+     "x": 1,
+     "y": -1,
+     "e": "linear"
+    },
+    {
+     "t": 300,
+     "x": 2,
+     "y": 0,
+     "e": "linear"
+    },
+    {
+     "t": 450,
+     "x": 3,
+     "y": -1,
+     "e": "linear"
+    },
+    {
+     "t": 600,
+     "x": 4,
+     "y": 0,
+     "e": "linear"
+    },
+    {
+     "t": 750,
+     "x": 5,
+     "y": -1,
+     "e": "linear"
+    },
+    {
+     "t": 900,
+     "x": 6,
+     "y": 0,
+     "e": "linear"
+    },
+    {
+     "t": 1050,
+     "x": 7,
+     "y": -1,
+     "e": "linear"
+    },
+    {
+     "t": 1200,
+     "x": 8,
+     "y": 0,
+     "e": "linear"
+    },
+    {
+     "t": 1350,
+     "x": 9,
+     "y": -1,
+     "e": "linear"
+    },
+    {
+     "t": 1500,
+     "x": 10,
+     "y": 0,
+     "e": "linear"
+    },
+    {
+     "t": 1560,
+     "x": 10,
+     "y": 0,
+     "sx": 0.82,
+     "sy": 1.08,
+     "e": "out"
+    },
+    {
+     "t": 1700,
+     "x": 8,
+     "sx": 1.04,
+     "sy": 0.97,
+     "e": "out"
+    },
+    {
+     "t": 1900,
+     "x": 6,
+     "y": -3,
+     "sx": 1,
+     "sy": 1,
+     "e": "out"
+    },
+    {
+     "t": 2100,
+     "x": 5,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 2200,
+     "sx": 1.08,
+     "sy": 0.92,
+     "e": "out"
+    },
+    {
+     "t": 2350,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    },
+    {
+     "t": 2590,
+     "rot": 5,
+     "e": "inout"
+    },
+    {
+     "t": 2830,
+     "rot": -5,
+     "e": "inout"
+    },
+    {
+     "t": 3070,
+     "rot": 5,
+     "e": "inout"
+    },
+    {
+     "t": 3310,
+     "rot": -5,
+     "e": "inout"
+    },
+    {
+     "t": 3550,
+     "rot": 0,
+     "e": "inout"
+    },
+    {
+     "t": 3800
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": null
+    },
+    {
+     "t": 1500,
+     "f": "surprised"
+    },
+    {
+     "t": 1700,
+     "f": [
+      "dizzy_a",
+      "dizzy_b"
+     ],
+     "ms": 160
+    },
+    {
+     "t": 3600,
+     "f": "blink"
+    },
+    {
+     "t": 3700,
+     "f": null
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_wall",
+     "anchor": "side_r",
+     "dx": 11,
+     "t0": 0,
+     "t1": 3800,
+     "follow": false,
+     "atGround": true,
+     "z": "front"
+    },
+    {
+     "id": "series_puff",
+     "anchor": "side_r",
+     "dx": 9,
+     "dy": -4,
+     "t0": 1500,
+     "t1": 1800,
+     "ms": 100,
+     "loop": false,
+     "follow": false
+    },
+    {
+     "id": "series_orbit",
+     "anchor": "headTop",
+     "dy": -3,
+     "t0": 1750,
+     "t1": 3500,
+     "ms": 90
+    }
+   ]
+  },
+  "dim_mirror": {
+   "group": "dim",
+   "dur": 4600,
+   "loop": false,
+   "trigger": "DIM：見到鏡，以為係另一隻寵物 → 嚇親（!）→ 眨眼、對方又一齊眨 → 側頭疑惑。倒影 = 同一幀寵物左右反轉縮細、clip 落玻璃",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 700
+    },
+    {
+     "t": 800,
+     "sx": 1.1,
+     "sy": 0.9,
+     "e": "out"
+    },
+    {
+     "t": 950,
+     "sx": 0.94,
+     "sy": 1.08,
+     "y": -4,
+     "e": "out"
+    },
+    {
+     "t": 1100,
+     "sx": 1,
+     "sy": 1,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 1200,
+     "sx": 1.06,
+     "sy": 0.94,
+     "e": "out"
+    },
+    {
+     "t": 1350,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    },
+    {
+     "t": 3300,
+     "rot": 0
+    },
+    {
+     "t": 3550,
+     "rot": 7,
+     "e": "outBack"
+    },
+    {
+     "t": 4400,
+     "rot": 7
+    },
+    {
+     "t": 4600,
+     "rot": 0,
+     "e": "inout"
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": null
+    },
+    {
+     "t": 750,
+     "f": "surprised"
+    },
+    {
+     "t": 1500,
+     "f": null
+    },
+    {
+     "t": 2000,
+     "f": "blink"
+    },
+    {
+     "t": 2150,
+     "f": null
+    },
+    {
+     "t": 2700,
+     "f": "blink"
+    },
+    {
+     "t": 2850,
+     "f": null
+    },
+    {
+     "t": 3300,
+     "f": "lookup"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_mirror_back",
+     "anchor": "side_r",
+     "dx": 13,
+     "t0": 0,
+     "t1": 4600,
+     "follow": false,
+     "atGround": true,
+     "z": "back"
+    },
+    {
+     "id": "fx_mirror_front",
+     "anchor": "side_r",
+     "dx": 13,
+     "t0": 0,
+     "t1": 4600,
+     "follow": false,
+     "atGround": true,
+     "frames": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+     ],
+     "ms": 400,
+     "z": "front"
+    },
+    {
+     "id": "fx_exclaim",
+     "anchor": "headTop",
+     "dx": 0,
+     "dy": -3,
+     "t0": 800,
+     "t1": 1500,
+     "move": [
+      [
+       0,
+       0,
+       4
+      ],
+      [
+       100,
+       0,
+       -1
+      ],
+      [
+       180,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "fx_question",
+     "anchor": "headTop",
+     "dx": 6,
+     "dy": -3,
+     "t0": 3450,
+     "t1": 4600,
+     "move": [
+      [
+       0,
+       0,
+       4
+      ],
+      [
+       120,
+       0,
+       -2
+      ],
+      [
+       220,
+       0,
+       0
+      ]
+     ]
+    }
+   ],
+   "reflection": {
+    "of": "fx_mirror_back",
+    "scale": 0.5,
+    "flipX": true,
+    "tint": [
+     0.8,
+     0.88,
+     1.0
+    ],
+    "add": [
+     20,
+     26,
+     40
+    ],
+    "mask": "fx/fx_mirror_mask.png",
+    "footInGlass": [
+     9,
+     20
+    ],
+    "note": "倒影用同一個 face 軌（所以一齊眨眼）；唔用 body 變形，只用 pet 靜態幀 bbox 縮放（目標高 ≈16px）"
+   }
+  },
+  "dim_count_fingers": {
+   "group": "dim",
+   "dur": 4200,
+   "loop": false,
+   "trigger": "DIM：舉手仔數手指 1、2、…4（數錯，第 3 下叫 4）→ 得意",
+   "body": [
+    {
+     "t": 0
+    },
+    {
+     "t": 200,
+     "rot": -3,
+     "e": "out"
+    },
+    {
+     "t": 3200,
+     "rot": -3
+    },
+    {
+     "t": 3350,
+     "rot": 0,
+     "y": -2,
+     "e": "out"
+    },
+    {
+     "t": 3500,
+     "y": 0,
+     "e": "in"
+    },
+    {
+     "t": 4200
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "lookup"
+    },
+    {
+     "t": 3200,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "paw",
+     "anchor": "side_r",
+     "dx": -1,
+     "dy": -3,
+     "t0": 200,
+     "t1": 4000,
+     "frames": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+     ],
+     "ms": 200,
+     "loop": false,
+     "move": [
+      [
+       0,
+       0,
+       2
+      ],
+      [
+       150,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "fx_num_1",
+     "anchor": "side_r",
+     "dx": 4,
+     "dy": -14,
+     "t0": 600,
+     "t1": 1400,
+     "move": [
+      [
+       0,
+       0,
+       2
+      ],
+      [
+       100,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "fx_num_2",
+     "anchor": "side_r",
+     "dx": 4,
+     "dy": -14,
+     "t0": 1400,
+     "t1": 2200,
+     "move": [
+      [
+       0,
+       0,
+       2
+      ],
+      [
+       100,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "fx_num_4",
+     "anchor": "side_r",
+     "dx": 4,
+     "dy": -14,
+     "t0": 2200,
+     "t1": 4000,
+     "move": [
+      [
+       0,
+       0,
+       2
+      ],
+      [
+       100,
+       0,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": -8,
+     "dy": -2,
+     "t0": 3200,
+     "t1": 3800,
+     "ms": 100
+    }
+   ]
+  },
+  "dim_professor": {
+   "group": "dim",
+   "dur": 4800,
+   "loop": false,
+   "trigger": "DIM：戴四方帽、拎教鞭，喺黑板寫「1+1=3」＋「雲＝棉花糖」；引擎同步出自信錯誤對白（6×3 條，由 遊策 提供）",
+   "events": [
+    {
+     "t": 2200,
+     "id": "line:professor"
+    }
+   ],
+   "wear": [
+    {
+     "id": "hat",
+     "t0": 0,
+     "t1": 4800,
+     "frames": [
+      {
+       "t": 0,
+       "f": [
+        0,
+        1
+       ],
+       "ms": 300
+      }
+     ]
+    }
+   ],
+   "body": [
+    {
+     "t": 0,
+     "sx": 1.06,
+     "sy": 0.94
+    },
+    {
+     "t": 180,
+     "sx": 1,
+     "sy": 1,
+     "e": "outBack"
+    },
+    {
+     "t": 2000
+    },
+    {
+     "t": 2150,
+     "rot": -4,
+     "e": "out"
+    },
+    {
+     "t": 2300,
+     "rot": 0,
+     "e": "out"
+    },
+    {
+     "t": 2450,
+     "rot": -4,
+     "e": "out"
+    },
+    {
+     "t": 2600,
+     "rot": 0,
+     "e": "out"
+    },
+    {
+     "t": 3300,
+     "sy": 1
+    },
+    {
+     "t": 3450,
+     "sy": 1.06,
+     "sx": 0.96,
+     "y": -1,
+     "e": "out"
+    },
+    {
+     "t": 3700,
+     "sy": 1,
+     "sx": 1,
+     "y": 0,
+     "e": "outBack"
+    },
+    {
+     "t": 4800
+    }
+   ],
+   "face": [
+    {
+     "t": 0,
+     "f": "smug"
+    },
+    {
+     "t": 1600,
+     "f": "blink"
+    },
+    {
+     "t": 1750,
+     "f": "smug"
+    }
+   ],
+   "fx": [
+    {
+     "id": "fx_board",
+     "anchor": "side_l",
+     "dx": -14,
+     "t0": 0,
+     "t1": 4800,
+     "follow": false,
+     "atGround": true,
+     "frames": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      2
+     ],
+     "ms": 400,
+     "loop": false,
+     "z": "back"
+    },
+    {
+     "id": "fx_pointer",
+     "anchor": "side_l",
+     "dx": 1,
+     "dy": 0,
+     "t0": 300,
+     "t1": 4800,
+     "mirrorX": true,
+     "frames": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+     ],
+     "ms": 175,
+     "loop": false
+    },
+    {
+     "id": "fx_sparkle",
+     "anchor": "headTop",
+     "dx": 9,
+     "dy": -3,
+     "t0": 3450,
+     "t1": 4100,
+     "ms": 110
+    }
+   ]
+  }
+ }
+}
