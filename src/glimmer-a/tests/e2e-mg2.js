@@ -116,6 +116,13 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const LC = await E(() => __qa.mg2.last()); ok(LC && !LC.rewarded && LC.shards === 0 && (await E(() => __qa.sys12b.games().left)) === 0, '第 ' + (await E(() => Glimmer.data.PARAMS.systems12b.games.dailyRewarded)) + ' 局之後冇碎', LC);
   await E(() => __qa.mg2.start('bounce', 1)); await E(() => { __qa.mg2.step(45); }); await page.waitForTimeout(700); await shot('result-capped'); await E(() => __qa.mg2.close());
   ok(await E(() => __qa.sys12b.badges().some ? true : true), '徽章頁照開');
+  console.log('# ⑥b 遊測 P2：× 撳位 ≥48 CSS px');
+  { const s0 = await E(() => { __qa.mg2.start('bounce', 5); const c = document.querySelector('[data-testid="mg2-canvas"]').getBoundingClientRect(); return c.width / 180; });
+    const q = await scr(167, 15), t = [];
+    for (const [dx, dy] of [[-23, -23], [23, 23], [-23, 23], [23, -23]]) { if (!(await E(() => __qa.mg2.open()))) await E(() => __qa.mg2.start('bounce', 5)); await page.mouse.click(q.x + dx, q.y + dy); await page.waitForTimeout(80); t.push(await E(() => !__qa.mg2.open())); }
+    ok(t.every(Boolean), '× 中心 ±23 CSS px（46 方格四角）都退出（縮放 ' + s0.toFixed(2) + '）', JSON.stringify(t));
+    await E(() => { if (!__qa.mg2.open()) __qa.mg2.start('bounce', 5); }); await page.mouse.click(q.x - 40, q.y + 40); await page.waitForTimeout(80);
+    ok(await E(() => __qa.mg2.open()), '× 外 40 CSS px 唔會誤退', ''); await E(() => { __qa.mg2.quit(); __qa.mg2.close(); }); }
   console.log('# ⑦ 舊遊戲 flag 可重開（?mgv1=1）');
   await go('?q=high&hour=13&seed=21&ev=0&dev=1&mgv1=1'); await juv(); await E(() => document.getElementById('btn-play').click());
   const menu2 = await E(() => [...document.querySelectorAll('#pop [data-testid]')].map(e => e.dataset.testid));

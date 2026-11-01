@@ -22,4 +22,10 @@ const T0 = new Date(2026, 10, 2, 9, 0).getTime(), DAY = 864e5;
   ok(r.garden && r.garden.blooms > 0, 'route sweep --garden 有開花（40×6 隻，壓力：種子任買）', r.garden);
   ok(D.BRANCHES.every(f => r.total[f] >= 0) && Math.abs(Object.values(r.total).reduce((a, b) => a + b, 0) - 100) < 0.5, '分佈加埋 100%', r.total);
 }
+{
+  // 遊策 2026-11-01：route sweep --mg2 經真 gameFinish 玩小遊戲 v2；火苗路線分每日 routeGamesPerDay 局（同浮動局共用）
+  const r = SW.main(40, true, { garden: 'rand', drops: 5, fpats: 2, mg2: true }), r1 = SW.main(40, true, { garden: 'rand', drops: 5, fpats: 2, mg2: true, mgcap: 'none' });
+  ok(r.mg2 && r.mg2.games > 0 && r.mg2.route > 0 && r.mg2.route < r.mg2.games, 'route sweep --mg2：有玩 v2，上限 ' + D.PARAMS.minigames2.routeGamesPerDay + ' 局令部分唔計火苗', r.mg2);
+  ok(r1.mg2.route === r1.mg2.games && r1.total.ember > r.total.ember && D.PARAMS.minigames2.routeGamesPerDay === 2, '--mgcap none 試算：全部計、火苗更高（跑完還原 config）', [r.total.ember, r1.total.ember]);
+}
 console.log(`\n結果：${pass} 通過，${fail} 失敗`); process.exit(fail ? 1 : 0);

@@ -84,7 +84,9 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     await E(() => { for (let i = 0; i < 5; i++) Glimmer.sys12b.gameFinish(__glimmer.state, 'hide', 0, __glimmer.now()); });
     const g = await E(() => __qa.sys12b.games()); ok(g.left === 0, '每日頭 5 局有獎（已用完）', g);
     await E(() => __qa.sys12.open('games')); await page.waitForTimeout(200); const gt = await E(() => document.querySelector('[data-testid="s12b-games-left"]').textContent);
-    ok(/5\/5/.test(gt), '小遊戲 tab 顯示今日局數', gt); await shot('tab-games'); await E(() => __glimmer.s12close());
+    ok(/5\/5/.test(gt), '小遊戲 tab 顯示今日局數', gt); await shot('tab-games');
+    { const bs = await E(() => [...document.querySelectorAll('.s12b-btn')].filter(e => e.offsetParent).map(e => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }));
+      ok(bs.length >= 2 && bs.every(b => b[0] >= 48 && b[1] >= 48), '遊測 P2：第 2 批面板掣 ≥48×48 CSS px', JSON.stringify(bs)); } await E(() => __glimmer.s12close());
     await devF('dev-s12-games-reset'); ok((await E(() => __qa.sys12b.games())).left === 5, 'DEV 今日局數清零');
   }
   if (want('garden')) {
