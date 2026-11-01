@@ -118,17 +118,20 @@
       item('play', '逗玩', '心情 +' + P.playTease, () => act.play(), 'play-tease');
       const left = G.state.mg.day === SIM.dayKey(G.now()) ? Math.max(0, P.mg.dailyFull - G.state.mg.plays) : P.mg.dailyFull;
       item('feed', '接星屑', left > 0 ? '今日全額 ' + left + '/' + P.mg.dailyFull : '今日獎勵減半', () => startMG(), 'play-mg');
+      if (window.Glimmer.sys12b && P.systems12b) { const g2 = window.Glimmer.sys12b.gamesToday(G.state, G.now()), C2 = P.systems12b.games, nt = g2.left > 0 ? '今日有獎 ' + g2.left + '/' + g2.cap : '今日獎勵已滿';   // systems12 第 2 批小遊戲
+        item('feed', C2.catch.name, nt, () => startMG('catch'), 'play-catch'); item('play', C2.hide.name, nt, () => { closePop(); if (G.s12hide) G.s12hide(); }, 'play-hide'); }
     }
   }
 
   // ── 迷你遊戲 ──
-  function startMG() {
+  function startMG(kind) {   // kind：undefined＝接星屑（舊）｜'catch'＝接光點（systems12 第 2 批，30 秒）
     const s = G.state;
     if (s.stage === 'egg') return toast('光卵仲未孵化');
     if (s.sleeping) return toast('團絨瞓緊，先開燈');
     closePop();
     mgs = { mg: new SIM.Minigame((Date.now() & 0xffffff) | 1), ready: 1.6, target: P.mg.fieldW / 2, done: false };
     if (G.fixedMgSeed) mgs.mg = new SIM.Minigame(G.fixedMgSeed);
+    if (kind === 'catch' && window.Glimmer.sys12b) { mgs.kind = 'catch'; mgs.mg = new SIM.Minigame(G.fixedMgSeed || ((Date.now() & 0xffffff) | 1), window.Glimmer.sys12b.catchParams()); }
     G.mode = 'minigame'; SND('mg-start');
     $('#hud').style.display = 'none'; $('#bar').style.display = 'none'; $('#bubble').style.display = 'none'; $('#mgHud').style.display = 'block';
     rd.parT.x = 0; rd.parT.y = 0; rd.parT.active = true; rd.parT.last = rd.t + 1e6;
@@ -138,6 +141,12 @@
     $('#hud').style.display = 'block'; $('#bar').style.display = 'flex'; $('#mgHud').style.display = 'none'; $('#mgMsg').style.display = 'none';
     rd.parT.last = -99;
     if (quit) { G.save(); return; }
+    if (m.kind === 'catch') {   // 接光點：星數 → 星星碎（頭 5 局）；計 mg；唔加光粒／心情
+      const r2 = window.Glimmer.sys12b.gameFinish(s, 'catch', m.mg.score, G.now()); G.lastMG = r2; SND('mg-result', { win: r2.stars >= 2 }); processEvents();
+      modal({ title: P.systems12b.games.catch.name + '完成', kind: 'mg-result', lines: ['得分 ' + m.mg.score + '　' + '★'.repeat(r2.stars) + '☆'.repeat(3 - r2.stars), r2.rewarded ? '星星碎 +' + r2.shards + '（今日有獎 ' + r2.playIndex + '/' + P.systems12b.games.dailyRewarded + '）' : '今日 ' + P.systems12b.games.dailyRewarded + ' 局獎勵已滿（照計火苗）'],
+        onClose: () => { rd.act('happy', 1.6); } });
+      G.save(); return;
+    }
     const r = SIM.mgApply(s, m.mg.score, G.now());
     G.lastMG = r; SND('mg-result', { win: m.mg.score >= P.mg.passScore });
     const lines = ['得分 ' + r.score + (m.mg.score >= P.mg.highScore ? '　高分！' : m.mg.score >= P.mg.passScore ? '　及格' : ''), '光粒 +' + r.grains + '　心情 +' + r.mood];
@@ -154,7 +163,7 @@
     }
     m.mg.update(dt, m.target);
     if (m.mg.snd.length) { m.mg.snd.splice(0).forEach(k => SND('mg-' + k)); }
-    $('#mgScore').textContent = '分數 ' + m.mg.score; $('#mgTime').textContent = Math.ceil(P.mg.durationSec - m.mg.t);
+    $('#mgScore').textContent = '分數 ' + m.mg.score; $('#mgTime').textContent = Math.ceil(m.mg.M.durationSec - m.mg.t);
     if (m.mg.over && !m.done) { m.done = true; setTimeout(() => endMG(false), 300); }
   }
 

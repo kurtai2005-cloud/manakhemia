@@ -176,8 +176,8 @@
     function draw() {
       if (!S12.open) return; const body = pan.querySelector('#s12body'), tabs = pan.querySelector('.s12tabs');
       tabs.innerHTML = S12.tabs.length > 1 ? S12.tabs.map(([k, l]) => `<b data-tab="${k}" data-testid="s12-tab-${k}" class="${k === S12.tab ? 'on' : ''}">${l}</b>`).join('') : '';
-      pan.querySelector('h3').textContent = { quest: '每日小委託', diary: '團絨日記', bond: '親密度', surp: '懸浮小驚喜' }[S12.tab] || '';
-      body.innerHTML = (RENDER[S12.tab] || renderQuest)(); hyd(body);
+      pan.querySelector('h3').textContent = { quest: '每日小委託', diary: '團絨日記', bond: '親密度', surp: '懸浮小驚喜' }[S12.tab] || (G.s12titles || {})[S12.tab] || '';
+      body.innerHTML = (RENDER[S12.tab] || renderQuest)(); hyd(body); (G.s12afterDraw || []).forEach(f => f(body));
       body.querySelectorAll('.s12row').forEach(r => { if (!r.dataset.nine) { r.dataset.nine = 1; nine(r, 'panel_commission_row_9s', [6, 6, 6, 6], 1.5); } });
       body.querySelectorAll('.s12page').forEach(p => nine(p, p.dataset.special === '1' ? 'diary_page_special_9s' : 'diary_page_9s', [12, 10, 12, 18], 2));
     }
@@ -196,6 +196,7 @@
       if (S12.open) draw();
     }
     function showGain(n, why) { gain.textContent = n ? `+${n} 星星碎${why ? '　' + why : ''}` : why; gain.style.transition = 'none'; gain.style.opacity = 1; gain.style.transform = 'translateY(0)'; void gain.offsetWidth; gain.style.transition = 'opacity .6s 1.4s, transform 2s'; gain.style.opacity = 0; gain.style.transform = 'translateY(-14px)'; chip.classList.remove('pulse'); void chip.offsetWidth; chip.classList.add('pulse'); }
+    G.s12gain = showGain;   // 第 2 批（sys12ui2）共用
     G.sysEvent = function (e) {
       S12.log.push(Object.assign({ t: now() }, e)); if (S12.log.length > 60) S12.log.shift();
       if (e.sys === 'quest' && e.what === 'paid' && e.n > 0) showGain(e.n, e.late ? '（委託補發）' : '（委託完成）');
