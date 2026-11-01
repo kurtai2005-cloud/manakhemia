@@ -119,7 +119,8 @@
       const left = G.state.mg.day === SIM.dayKey(G.now()) ? Math.max(0, P.mg.dailyFull - G.state.mg.plays) : P.mg.dailyFull;
       item('feed', '接星屑', left > 0 ? '今日全額 ' + left + '/' + P.mg.dailyFull : '今日獎勵減半', () => startMG(), 'play-mg');
       if (window.Glimmer.sys12b && P.systems12b) { const g2 = window.Glimmer.sys12b.gamesToday(G.state, G.now()), C2 = P.systems12b.games, nt = g2.left > 0 ? '今日有獎 ' + g2.left + '/' + g2.cap : '今日獎勵已滿';   // systems12 第 2 批小遊戲
-        item('feed', C2.catch.name, nt, () => startMG('catch'), 'play-catch'); item('play', C2.hide.name, nt, () => { closePop(); if (G.s12hide) G.s12hide(); }, 'play-hide'); }
+        if (C2.v1Enabled) { item('feed', C2.catch.name, nt, () => startMG('catch'), 'play-catch'); item('play', C2.hide.name, nt, () => { closePop(); if (G.s12hide) G.s12hide(); }, 'play-hide'); }   // 舊接光點／舊捉迷藏：games.v1Enabled 閂咗就唔出
+        if (G.mg2menu) G.mg2menu(item, nt); }   // 小遊戲 v2（mg2ui.js）：彈彈葉／花園捉迷藏／追螢火
     }
   }
 
@@ -409,6 +410,6 @@
     if (G.debug) refreshDbg();
   };
 
-  UI.modal = modal; UI.toast = toast; UI.isModalOpen = () => modalOpen; UI.startMG = startMG; UI.mgState = () => mgs; UI.endMG = endMG; UI.processEvents = processEvents;
+  UI.modal = modal; UI.toast = toast; UI.isModalOpen = () => modalOpen; UI.startMG = startMG; UI.mgState = () => mgs; UI.endMG = endMG; UI.processEvents = processEvents; UI.closePop = closePop;
   return UI;
 });

@@ -107,7 +107,7 @@
     next() {
       const M = this.M, A = M.area, n = this.nCovers, cs = []; let k = 0;
       while (cs.length < n && k++ < 400) { const x = rr(this.rng, A.x), y = rr(this.rng, A.y); if (cs.every(c => Math.hypot(c.x - x, c.y - y) >= A.minDist)) cs.push({ x: Math.round(x), y: Math.round(y), type: M.coverTypes[Math.floor(this.rng() * M.coverTypes.length)], shake: 0, tried: false, rustle: 0 }); }
-      while (cs.length < n) cs.push({ x: 30 + cs.length * 28, y: 200, type: 'bush', shake: 0, tried: false, rustle: 0 });
+      while (cs.length < n) cs.push({ x: 30 + cs.length * 28, y: A.y[1] - (cs.length % 2) * 30, type: 'bush', shake: 0, tried: false, rustle: 0 });
       cs.sort((a, b) => a.y - b.y); this.covers = cs; this.at = Math.floor(this.rng() * n); this.tries = M.triesPerRound; this.tryN = 0;
       this.tail = this.rng() < this.tailChance; this.idle = 0; this.peekT = rr(this.rng, M.peekEvery); this.peek = 0; this.wigT = rr(this.rng, M.wiggleEvery);
       this.decT = this.has('wind') ? M.mods.weather.wind.decoyEvery : 0; this.phase = 'seek'; this.play([['idle', 0.1]]);

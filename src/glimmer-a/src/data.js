@@ -146,7 +146,7 @@
                   special: { gold: {}, bigleaf: { wMul: 1.45 } } } },
         ghide: { name: '花園捉迷藏', icon: 'pot', rounds: 3, triesPerRound: 3, ptsByTry: [3, 2, 1], starsAt: [1, 4, 7], timeLimitSec: 45,   // 沿用 systems12b-params 捉迷藏數值
           covers: 5, coverTypes: ['pot', 'leaves', 'rock', 'bush', 'lantern'],  // 每回合遮擋物種類＋位置都唔同
-          area: { x: [26, 154], y: [118, 272], minDist: 44 }, hitR: 24,
+          area: { x: [22, 158], y: [226, 306], minDist: 36 }, hitR: 20,   // 花園地面（HD-2D 地平線以下）
           tailChance: 0.30, peekEvery: [1.6, 3.2], peekSec: 0.7,                // 30% 回合會露尾／燈泡（規格 v1）；露出節奏 TBD 遊策
           wiggleEvery: [1.4, 3.0],        // TBD 遊策：佢會郁（匿嗰樣嘢間中搖）
           sneakSec: 4.0,                  // TBD 遊策：你太慢（冇撳）4 秒 → 佢偷偷轉位

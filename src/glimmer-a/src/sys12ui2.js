@@ -36,8 +36,9 @@
     function renderGames() {
       const g = X2.gamesToday(S(), now()), C = P2.games, b = X2.st(S()).games.best;
       return `<div data-testid="s12b-games-left">今日有獎 ${g.cap - g.left}/${g.cap} 局（星星碎＝星數 0–3；之後照玩、照計火苗）</div>` +
+        (G.mg2rows ? G.mg2rows(btn) : '') + (!C.v1Enabled ? '' :
         `<div class="s12row"><span class="t">${C.catch.name}<small> ${C.catch.durationSec} 秒：光點 +${K2.dots.small}、金 +${K2.dots.big}、暗 ${K2.dots.dark}；${K2.starsAt.join('／')} 分＝1／2／3★・最高 ${b.catch || 0}</small></span>${btn('開始', 'catch', 's12b-play-catch')}</div>` +
-        `<div class="s12row"><span class="t">${C.hide.name}<small> ${H2.rounds} 回合，每回合撳 ≤${H2.triesPerRound} 下（${H2.ptsByTry.join('／')} 分）；${H2.starsAt.join('／')} 分＝1／2／3★・最好 ${b.hide || 0} 分</small></span>${btn('開始', 'hide', 's12b-play-hide')}</div>`;
+        `<div class="s12row"><span class="t">${C.hide.name}<small> ${H2.rounds} 回合，每回合撳 ≤${H2.triesPerRound} 下（${H2.ptsByTry.join('／')} 分）；${H2.starsAt.join('／')} 分＝1／2／3★・最好 ${b.hide || 0} 分</small></span>${btn('開始', 'hide', 's12b-play-hide')}</div>`);   // 舊接光點／舊捉迷藏：v1Enabled 先出
     }
     function renderGarden() {
       const gd = X2.garden(S(), now()), w = X.wallet(S(), now()), egg = S().stage === 'egg';
@@ -75,8 +76,10 @@
     });
     function doAct(act) {
       const [k, i, f] = act.split(':'), s = S(); let r = null;
+      if ((k === 'catch' || k === 'hide') && !P2.games.v1Enabled) return false;   // 舊遊戲閂咗（config games.v1Enabled）
       if (k === 'catch') { G.s12close(); if (UI.startMG) UI.startMG('catch'); return true; }
       if (k === 'hide') { G.s12close(); return hideStart(); }
+      if (k === 'mg2') { G.s12close(); return G.mg2 ? G.mg2.start(i) : false; }   // 小遊戲 v2
       if (k === 'plant') { r = X2.plant(s, +i, f, now()); if (!r.ok) UI.toast({ shards: '星星碎唔夠', egg: '光卵仲未孵化', busy: '呢盆有嘢種緊' }[r.reason] || '種唔到'); }
       if (k === 'water') { r = X2.water(s, +i, now()); if (!r.ok && r.reason === 'done') UI.toast('今日淋咗喇'); }
       if (k === 'harvest') r = X2.harvest(s, +i, now());

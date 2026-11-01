@@ -8,7 +8,8 @@
   if (qs.get('period') && LIGHT.representativeHour(qs.get('period')) != null && !qs.has('hour')) G.hourOverride = LIGHT.representativeHour(qs.get('period'));   // ?period=morning|noon|evening|night
   if (qs.get('ev') === '0') EV.enabled = false;                       // ?ev=0 關閉事件（舊流程測試用）
   if (qs.get('atlas') === '0') D.PARAMS.art.useAtlas = false;         // ?atlas=0 強制程序化精靈
-  if (qs.get('pending') === '1') D.PARAMS.art.usePending = true;      // ?pending=1 用圖集內待定 clip
+  if (qs.get('pending') === '1') D.PARAMS.art.usePending = true;
+  if (qs.get('mgv1') === '1' && P.systems12b) P.systems12b.games.v1Enabled = true;   // ?mgv1=1 重開舊接光點／舊捉迷藏（舊測試用；預設閂）      // ?pending=1 用圖集內待定 clip
   window.__glimmer = G; // 方便測試／除錯（只喺 ?debug=1 先有 UI 面板）
   // 假時鐘（遊測）：G.clock.fake=true 後 G.now() 只受 __qa.pet.clock 控制
   G.clock = { fake: false, t: 0 };
@@ -112,6 +113,7 @@
   if (NS.sys12ui && NS.sys12) NS.sys12ui.install(G, NS);   // systems12 第 1 批（天氣／季節、委託、親密度、小驚喜、日記）
   UI.init(G);
   if (NS.sys12ui2 && NS.sys12b) NS.sys12ui2.install(G, NS);   // systems12 第 2 批（小遊戲、小圃種花、散步收集＋收藏櫃、成就徽章）
+  if (NS.mg2ui && NS.mg2 && NS.sys12b) NS.mg2ui.install(G, NS);   // 小遊戲 v2（docs-gdd/minigames-v2.md）：彈彈葉／花園捉迷藏／追螢火
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
   { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事 2 日後作廢，記得領'), 1500); }
@@ -183,7 +185,7 @@
   G.tickWorld = function (dt) {
     const s = G.state, hr = G.hour();
     G.light = LIGHT.compute(hr, G.weather ? { weather: G.weather } : null);
-    const rd = G.renderer, mg = G.mode === 'minigame';
+    const rd = G.renderer, mg = G.mode === 'minigame' || !!G.mg2Busy;   // mg2Busy：小遊戲 v2 全螢幕玩緊（主世界行為／事件暫停）
     // 事件：取出 pending → active（畫面提示卡＋視覺）
     if (!mg && !UI.isModalOpen() && !G.ev) { const a = EV.takePending(s); if (a) { G.ev = a; UI.showEventCard(a.rec); if (a.rec.id === 'flash') rd.flash = 0.8; } }
     if (G.ev) { G.renderer.drawEventIcon(document.getElementById('evicon'), G.ev.rec.id, G.ev.t); const done = EV.tickActive(s, dt); if (done) { G.ev = null; UI.hideEventCard(); } }
@@ -226,7 +228,7 @@
     G.reunionTick = function () {
       const q = G.reunionPending; if (!q) return false;
       if (performance.now() - q.at > 120000) { G.reunionPending = null; G.reunionSkip = 'expired'; return false; }   // 2 分鐘內做唔到就算
-      if (G.mode === 'minigame' || UI.isModalOpen() || G.ev || G.state.sleeping || G.state.stage === 'egg' || (G.beh && G.beh.expr === 'unwell') || !G.liveSettled || (G.renderer.pet.act && G.renderer.t < G.renderer.pet.until)) return false;   // 等摘要「收下光粒」嘅開心反應做完先衝
+      if (G.mode === 'minigame' || G.mg2Busy || UI.isModalOpen() || G.ev || G.state.sleeping || G.state.stage === 'egg' || (G.beh && G.beh.expr === 'unwell') || !G.liveSettled || (G.renderer.pet.act && G.renderer.t < G.renderer.pet.until)) return false;   // 等摘要「收下光粒」嘅開心反應做完先衝
       G.reunionPending = null; if (q.src !== 'dev') try { localStorage.setItem(LVP.reunionDayKey, dayOf(G.now())); } catch (e) { }
       G.reunionLast = { T: q.T, src: q.src, at: G.now() }; G.beh.demo = G.liveDemo; BEH.force(G.beh, 'now_reunion', G.behCtx || {}); return true;
     };
