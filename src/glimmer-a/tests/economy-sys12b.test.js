@@ -21,7 +21,7 @@ function hookFor(seed, stat) {
   return (s, now) => {
     if (s.stage === 'egg') return;
     if (rng() < 0.4) { if (rng() < 0.5) { const r = B.gameFinish(s, 'catch', playCatch(rng), now); stat.stars.push(r.stars); } else { const h = playHide(rng), r = B.gameFinish(s, 'hide', h.v, now, { firstHits: h.first }); stat.hstars.push(r.stars); } }
-    const pots = B.st(s).garden.pots; if (!pots[0] && X.wallet(s, now).total >= P.systems12b.garden.seedPrice) B.plant(s, 0, 'daisy', now); if (pots[0]) B.water(s, 0, now);
+    const pots = () => B.st(s).garden.pots; if (!pots()[0] && X.wallet(s, now).total >= P.systems12b.garden.seedPrice) B.plant(s, 0, 'daisy', now); if (pots()[0]) B.water(s, 0, now);
     for (let i = 0; i < 3; i++) B.walkRoll(s, now, { rng });
     B.tick(s, now);
   };

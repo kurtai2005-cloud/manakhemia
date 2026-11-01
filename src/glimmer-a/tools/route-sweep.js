@@ -5,11 +5,34 @@
    天氣讀 config weather.probs（晴60／陰20／雨15／霧5；霧當陰 0.5）。每次上線 sim.noteLogin（v7 晶角即清窗口）。
    --quests：載入 systems.js（systems12 每日委託路線分，v10.2 平均輪 5 條路線、受 25% cap；v10.3 逐張 ⅓）。
    --fpats N：v10.3 懸浮團絨每日 12:00 摸頭 N 下（經 applyOverlay {k:'pat'}，同 fpet-bridge 一條路；要 --quests）。
+   --garden [rand|lead]：systems12b 小圃（載入 systems.js＋systems2.js；隱含 --quests）。每次上線（獨立 rng seed*7919+307）：收開咗嘅花、夠 seedPrice 就種滿 3 盆、
+     每盆每日淋一次（--drops N＝懸浮每日執 N 粒，遊測假設 5；--gshards N＝壓力測試：芽崽開始送 N 粒買種子）；開花 → 該路線 +bloomPts（systems.addRoutePts，判路時照 25% cap）；日菊冇路線分。rand＝6 種花隨機揀；lead＝揀而家領先路線嘅花（冇對應花就隨機）。
    數值全部讀 PARAMS.evo6.branch；唔改 config。 */
 const S = require('../src/sim.js'), D = require('../src/data.js'), P = D.PARAMS, C = P.evo6.branch;
-const args = process.argv.slice(2); if (args.includes('--quests')) require('../src/systems.js');
+const args = process.argv.slice(2); if (args.includes('--quests') || args.includes('--garden')) require('../src/systems.js');
+const GARDEN = args.includes('--garden') ? (/^(rand|lead)$/.test(args[args.indexOf('--garden') + 1] || '') ? args[args.indexOf('--garden') + 1] : 'rand') : null;
+/* 小圃玩家模型（route sweep／economy test 共用）：回傳 onSession hook；stat.blooms／stat.byRoute 累計開花數 */
+function gardenHook(seed, mode, stat) {
+  const X = require('../src/systems.js'), B = require('../src/systems2.js'), G = P.systems12b.garden, rng = S.makeRng(seed * 7919 + 307);
+  stat = stat || {}; stat.blooms = stat.blooms || 0; stat.byRoute = stat.byRoute || {};
+  let seeded = false;
+  return (s, now) => {
+    if (s.stage === 'egg') return;
+    if (!seeded) { seeded = true; if (stat.gshards) X.st(s).wallet.total += stat.gshards;   /* 壓力測試：唔經每日上限 */ }
+    const pots = () => B.st(s).garden.pots;   /* st() 會換 pots array → 每次重讀 */
+    for (let i = 0; i < G.pots; i++) { const p = pots()[i]; if (p && B.potInfo(p, now).bloomed) B.harvest(s, i, now); }
+    for (let i = 0; i < G.pots; i++) {
+      if (pots()[i] || X.wallet(s, now).total < G.seedPrice) continue;
+      let f = null; if (mode === 'lead') { const L = S.routeLead && S.routeLead(s); const lf = L && L.form; f = G.flowers.find(x => x.route === lf) || null; }
+      if (!f) f = G.flowers[Math.floor(rng() * G.flowers.length)];
+      B.plant(s, i, f.k, now);
+    }
+    for (let i = 0; i < G.pots; i++) if (pots()[i]) { const r = B.water(s, i, now); if (r.ok && r.bloom) { stat.blooms++; if (r.bloom.pts) stat.byRoute[r.bloom.route] = (stat.byRoute[r.bloom.route] || 0) + 1; } }
+  };
+}
+const DROPS = args.includes('--drops') ? +args[args.indexOf('--drops') + 1] || 0 : 0, GSEED = args.includes('--gshards') ? +args[args.indexOf('--gshards') + 1] || 0 : 0;
 const FPATS = args.includes('--fpats') ? +args[args.indexOf('--fpats') + 1] || 0 : 0;
-const NARG = +(args.find((a, i) => /^\d+$/.test(a) && args[i - 1] !== '--fpats')) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
+const NARG = +(args.find((a, i) => /^\d+$/.test(a) && !['--fpats', '--drops', '--gshards'].includes(args[i - 1]))) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
 const JIT = 90, MISS = 0.15, LULL = 0.5, SKIP_ACT = 0.2, EXTRA_ACT = 0.3;
 const ACTS = ['feed', 'play', 'rinse', 'poop'];
 // 每個時間表：上線鐘點、每次做咩（feed／play／rinse／poop）；everyOtherDay＝隔日先上
@@ -64,15 +87,16 @@ function run(name, seed, o) {
   return { shards, played, form: s.form, cq: ev ? ev.cq : s.cq, mgs, lulls, need: ev && ev.b5 ? ev.b5.cqNeed : null, quick: ev && ev.b5 ? ev.b5.raw : null };
 }
 function SYS12() { try { return require.cache[require.resolve('../src/systems.js')] ? require('../src/systems.js') : null; } catch (e) { return null; } }
-module.exports = { SCHED, MG_AT, TARGET, FLAG_PT, run, main };
+module.exports = { SCHED, MG_AT, TARGET, FLAG_PT, run, main, gardenHook };
 if (require.main === module) main();
 function main(n, quiet, ro) {
-  ro = ro || (FPATS ? { fpats: FPATS } : {});
+  ro = ro || Object.assign(FPATS ? { fpats: FPATS } : {}, DROPS ? { drops: DROPS } : {});
+  const gmode = ro.garden || GARDEN, gst = { blooms: 0, byRoute: {}, gshards: ro.gshards || GSEED };
   const N = n || NARG, log = quiet ? () => {} : console.log;
 const all = {}, out = {}, NAMES = Object.keys(SCHED);
 for (const name of NAMES) {
   const c = {}, cqs = []; let mg = 0, lu = 0;
-  for (let i = 1; i <= N; i++) { const r = run(name, i, ro); c[r.form] = (c[r.form] || 0) + 1; all[r.form] = (all[r.form] || 0) + 1; cqs.push(r.cq); mg += r.mgs; lu += r.lulls; }
+  for (let i = 1; i <= N; i++) { const r = run(name, i, gmode ? Object.assign({}, ro, { onSession: gardenHook(i, gmode, gst) }) : ro); c[r.form] = (c[r.form] || 0) + 1; all[r.form] = (all[r.form] || 0) + 1; cqs.push(r.cq); mg += r.mgs; lu += r.lulls; }
   cqs.sort((a, b) => a - b);
   const pct = {}; for (const f of D.BRANCHES) pct[f] = +(100 * (c[f] || 0) / N).toFixed(2);
   out[name] = { dist: c, pct, cqMed: +cqs[N >> 1].toFixed(2), cqP10: +cqs[Math.floor(N * 0.1)].toFixed(2), cqP90: +cqs[Math.floor(N * 0.9)].toFixed(2), mgs: +(mg / N).toFixed(2), lulls: +(lu / N).toFixed(2) };
@@ -80,6 +104,7 @@ for (const name of NAMES) {
 }
 const tot = N * NAMES.length, total = {};
 for (const f of D.BRANCHES) total[f] = +(100 * (all[f] || 0) / tot).toFixed(2);
+if (gmode) log('小圃（' + gmode + '）：每隻平均開花 ' + (gst.blooms / (N * NAMES.length)).toFixed(2) + ' 朵（有路線分：' + Object.entries(gst.byRoute).map(([r, n]) => D.FORM_NAME[r] + ' ' + (n / (N * NAMES.length)).toFixed(2)).join('、') + '）');
 log('\n全體 vs 遊測 v10 目標（差 >' + FLAG_PT + 'pt 標 ⚠）');
 const flags = [];
 for (const f of D.BRANCHES) { const d = +(total[f] - TARGET[f]).toFixed(2), bad = Math.abs(d) > FLAG_PT; if (bad) flags.push(f); log(`  ${(D.FORM_NAME[f] + '　').slice(0, 2)} ${String(total[f]).padStart(6)}%  目標 ${String(TARGET[f]).padStart(6)}%  差 ${(d >= 0 ? '+' : '') + d}${bad ? '  ⚠' : ''}`); }
@@ -98,6 +123,6 @@ const chk = [
 ];
 for (const [n, v] of chk) log((v ? '  ✓ ' : '  ✗ ') + n);
 log(`  ${chk.filter(c => c[1]).length}/${chk.length} 達標；差 >${FLAG_PT}pt：${flags.length ? flags.map(f => D.FORM_NAME[f]).join('、') : '冇'}`);
-if (jsonOut && !quiet) require('fs').writeFileSync(jsonOut, JSON.stringify({ N, ro, total, target: TARGET, flags, tables: out, checks: chk }, null, 2));
-return { total, flags, tables: out, checks: chk };
+if (jsonOut && !quiet) require('fs').writeFileSync(jsonOut, JSON.stringify({ N, ro, garden: gmode, gardenStat: gst, total, target: TARGET, flags, tables: out, checks: chk }, null, 2));
+return { total, flags, tables: out, checks: chk, garden: gmode ? gst : null };
 }
