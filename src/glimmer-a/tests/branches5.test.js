@@ -132,7 +132,7 @@ console.log('# ③ 分數來源（只計芽崽＋跳跳期）');
   { const s = pet('adult'); s.form = 'soft'; S.noteCare(s, null, 'feed'); ok(S.branch5Check(s).all === 0, '成年後照顧唔計'); }
   { // 用真實動作（feed／play／rinse／clearPoop／mgApply）
     const s = pet('sprout'); s.needs.hunger = 10; S.feed(s, 'meal'); S.play(s); S.rinse(s); s.poops = 1; s.poopAge = [0]; S.clearPoop(s); S.mgApply(s, 10, 1e12);   // 晴天
-    const b = s.evo.b5.sprout; ok(b.all === 5 && b.shroom === 0 && b.ember === C.kinds.play.w + C.kinds.mg.w && b.tide === 1 && b.crystal === 0 && b.moon === 0, '真實動作入分（晴天：feed 0／play＋mg／rinse／clearPoop 只入總數）', JSON.stringify(b));
+    const b = s.evo.b5.sprout; ok(b.all === 5 && b.shroom === 0 && b.ember === C.kinds.play.w + (P.minigames2.routePtsPerGame == null ? C.kinds.mg.w : P.minigames2.routePtsPerGame) && b.tide === 1 && b.crystal === 0 && b.moon === 0, '真實動作入分（晴天：feed 0／play＋mg（接星屑 +routePtsPerGame）／rinse／clearPoop 只入總數）', JSON.stringify(b));
   }
 }
 

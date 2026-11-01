@@ -197,6 +197,7 @@ console.log('⑤ 經濟：每日（唔計徽章）≤30；徽章一次性另計'
   const w = X.wallet(s, T0), bad = X.st(s).wallet.log.filter(l => l.src === 'badge').reduce((a, l) => a + l.n, 0);
   ok(w.today === 30 && w.o === 15 && w.q === 15 && bad === 20 && w.total >= 50, `今日 ${w.today}（委託 ${w.q}＋其他 ${w.o}）＋徽章 ${bad}（唔計上限）`);
 }
+S.setHourFn(() => 13);   // ⑫⑬：固定喺時段窗口外（13:00），唔受真鐘影響
 console.log('⑫ 遊策 2026-11-01（E 設定）：小遊戲每局 +routePtsPerGame 火苗、每日 routeGamesPerDay 局（浮動團絨撳兩下共用；星星碎唔變）');
 {
   const cap = P.minigames2.routeGamesPerDay, w = P.minigames2.routePtsPerGame, s = mk('juvenile'), em = () => ((s.evo && s.evo.b5 && s.evo.b5.juvenile) || {}).ember || 0;
@@ -220,5 +221,28 @@ console.log('⑫ 遊策 2026-11-01（E 設定）：小遊戲每局 +routePtsPerG
   const s2 = mk('juvenile'), e2 = () => ((s2.evo && s2.evo.b5 && s2.evo.b5.juvenile) || {}).ember || 0, f = []; for (let i = 0; i < cap + 2; i++) { const x = e2(); B.gameFinish(s2, 'bounce', 999, T0 + i * 600e3); f.push(e2() - x); }
   P.minigames2.routeGamesPerDay = sv; ok(f.every(v => v === f[0]) && f[0] - base === w, 'routeGamesPerDay＝null → 冇上限', f.join());
 }
+console.log('⑬ 遊測 69d1343：時段 +0 唔佔額；浮動局 overlayMg 事件；舊接星屑 +1 共用每日局數');
+{
+  const cap = P.minigames2.routeGamesPerDay, w = P.minigames2.routePtsPerGame, s = mk('juvenile'), b = () => (s.evo && s.evo.b5 && s.evo.b5.juvenile) || {};
+  const em = () => b().ember || 0, t0 = T0 + 5 * DAY;
+  for (const [hr, win] of [[22, 'moon'], [2, 'moon'], [7, 'tide']]) {
+    S.setHourFn(() => hr); const e0 = em(), n0 = s.evo.mgRoute ? s.evo.mgRoute.n : 0, m0 = b()[win] || 0;
+    B.gameFinish(s, 'bounce', 999, t0); S.mgApply(s, 100, t0); s.mg.overlayAt = 0; S.overlayOpenGame(s, t0);
+    ok(em() === e0 && (s.evo.mgRoute ? s.evo.mgRoute.n : 0) === n0 && (b()[win] || 0) - m0 === 3, hr + ':00 時段（' + win + '）：v2／接星屑／浮動 3 局 火苗 +0、唔佔每日額、照計時段 +1', [em() - e0, s.evo.mgRoute && s.evo.mgRoute.n, (b()[win] || 0) - m0].join());
+  }
+  S.setHourFn(() => 13); const g = [];
+  for (let i = 0; i < cap + 1; i++) { const x = em(); B.gameFinish(s, 'ghide', 999, t0 + i * 60e3); g.push(em() - x); }
+  ok(g.slice(0, cap).every(v => v === w) && g[cap] === 0, '同日時段內玩過之後，13:00 仲有足 ' + cap + ' 局', g.join());
+  // 浮動局事件
+  const s2 = mk('juvenile'); s2.ev = []; const r = S.overlayOpenGame(s2, t0);
+  ok(r.ok && s2.ev.some(e => e.type === 'overlayMg' && e.grains === r.reward.grains), '浮動局 push { type: overlayMg } 事件（恢復）', JSON.stringify(s2.ev.map(e => e.type)));
+  // 舊接星屑：+1、共用額、光粒照舊
+  const s3 = mk('juvenile'), e3 = () => ((s3.evo && s3.evo.b5 && s3.evo.b5.juvenile) || {}).ember || 0, x0 = e3(), gr0 = s3.grains;
+  const ra = S.mgApply(s3, 100, t0); ok(e3() - x0 === w && s3.grains - gr0 === ra.grains && ra.grains > 0 && s3.evo.mgRoute.n === 1, '接星屑一局 → 火苗 +' + w + '（唔再係 kinds.mg.w）、光粒照舊、佔 1 局', [e3() - x0, ra.grains].join());
+  for (let i = 1; i < cap; i++) B.gameFinish(s3, 'bounce', 999, t0 + i * 60e3);
+  const sh = X.wallet(s3, t0).today, x1 = e3(), gr1 = s3.grains, rb = S.mgApply(s3, 100, t0 + 3600e3);
+  ok(e3() === x1 && s3.grains - gr1 === rb.grains && rb.grains > 0 && X.wallet(s3, t0).today === sh, '接星屑＋v2 共用：額滿 → 接星屑火苗 +0，光粒照舊、星星碎唔變', [e3() - x1, rb.grains].join());
+}
+S.setHourFn(null);
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);
 process.exit(fail ? 1 : 0);

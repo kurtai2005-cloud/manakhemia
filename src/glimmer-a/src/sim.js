@@ -152,7 +152,8 @@
     if (kind === 'petSleep') { b.moon++; return; }
     if (kind === 'lull') { addPts(b, 'moon', C.lull.pts == null ? 1 : C.lull.pts); return; }
     const w = careWindow(h); if (w) { b[w.only]++; return; }
-    const own = C.kinds[kind], ow = ownW != null ? ownW : own && (own.w == null ? 1 : own.w); if (own && ow) addPts(b, own.to, ow);   // ownW：小遊戲 v2／浮動局（mgRouteW）每局路線分（超咗每日局數＝0）
+    // ownW＝{ mgRoute: t }：小遊戲（v2／浮動／接星屑）→ 時段外先扣每日局數（mgRouteW）；時段內 +0 嗰局唔佔額（遊測 69d1343）
+    const own = C.kinds[kind], ow = ownW && typeof ownW === 'object' ? mgRouteW(s, ownW.mgRoute) : ownW != null ? ownW : own && (own.w == null ? 1 : own.w); if (own && ow) addPts(b, own.to, ow);
     const wr = C.weather.route[wx]; if (wr && wr.to) addPts(b, wr.to, wr.w == null ? 1 : wr.w);
   }
   // v7／v8 晶角：上線（開 app／離開 ≥ crystal.loginGapSec 再返嚟）→ 開 windowSec 窗口；上線嗰陣有便便 → 有便便上線 +1；窗口內便便清到 0 → 即清上線 +1（每次上線最多 1）
@@ -607,32 +608,33 @@
     const baseMood = score >= M.highScore ? M.moodHigh : score >= M.passScore ? M.moodPass : M.moodFail;
     return { score, ratio, full, playIndex: s.mg.plays + 1, grains: Math.floor(baseGrains * ratio), mood: Math.round(baseMood * ratio), baseGrains, baseMood };
   }
-  /* 遊策 2026-11-01（E 設定）：小遊戲 v2（gameFinish）＋浮動團絨撳兩下嗰局：每局 PARAMS.minigames2.routePtsPerGame 火苗路線分（null＝kinds.mg.w），
-     共用每日上限 routeGamesPerDay 局（null＝冇上限）；超咗照計 mgPlays／照顧／CQ／星星碎，只係唔加火苗路線分。 */
+  /* 遊策 2026-11-01（E 設定）：小遊戲 v2（gameFinish）＋浮動團絨撳兩下＋舊接星屑（mgApply）：每局 PARAMS.minigames2.routePtsPerGame 火苗路線分（null＝kinds.mg.w），
+     共用每日上限 routeGamesPerDay 局（null＝冇上限）；只有真係加火苗嗰局先佔額（時段窗口 +0 唔計）；超咗照計 mgPlays／照顧／CQ／星星碎，只係唔加火苗路線分。 */
   function mgRouteOk(s, t) {
     const cap = P.minigames2 && P.minigames2.routeGamesPerDay; if (cap == null) return true;
     const E = evoOf(s), k = dayKey(t == null ? nowMs() : t); if (!E.mgRoute || E.mgRoute.day !== k) E.mgRoute = { day: k, n: 0 };
     if (E.mgRoute.n >= cap) return false; E.mgRoute.n++; return true;
   }
-  function mgRouteW(s, t) { if (!mgRouteOk(s, t)) return 0; const w = P.minigames2 && P.minigames2.routePtsPerGame; return w == null ? null : w; }
-  function mgApply(s, score, nowMs, capped) {
+  function mgRouteW(s, t) { if (!mgRouteOk(s, t)) return 0; const w = P.minigames2 && P.minigames2.routePtsPerGame, k = BR().kinds.mg; return w == null ? (k && k.w != null ? k.w : 1) : w; }
+  function mgApply(s, score, nowMs) {   // 舊接星屑（ui.js）＋浮動局：火苗同小遊戲 v2 共用每日局數（光粒／心情／星星碎照舊）
     const r = mgReward(s, score, nowMs);
     s.mg.plays++; s.mg.best = Math.max(s.mg.best || 0, score);
     s.grains += r.grains;
     s.needs.mood = clamp(s.needs.mood + r.mood, 0, 100);
-    s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg', undefined, capped ? mgRouteW(s, nowMs) : null);
+    s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg', undefined, { mgRoute: nowMs });
     return r;
   }
 
   // systems12 第 2 批小遊戲（接光點／捉迷藏）：只計一局 mg（火苗 noteCare 'mg'、委託 hook、mgPlays、冷淡解除），唔加光粒／心情（規格：新系統唔加心情池）
-  function mgCount(s, t) { if (!s || s.stage === 'egg') return false; s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg', undefined, mgRouteW(s, t)); return true; }   // 火苗路線分＝mgRouteW（每局 routePtsPerGame、每日上限）
-  // v8 火苗：第 2 批小遊戲未出之前，浮動團絨撳兩下開 game ＝ 一局（mgApply 及格分 → 火苗 +kinds.mg.w；獎勵同普通一局）。cooldownSec 內重複唔計
+  function mgCount(s, t) { if (!s || s.stage === 'egg') return false; s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg', undefined, { mgRoute: t }); return true; }   // 火苗路線分＝mgRouteW（每局 routePtsPerGame、每日上限）
+  // v8 火苗：第 2 批小遊戲未出之前，浮動團絨撳兩下開 game ＝ 一局（mgApply 及格分 → 火苗 +minigames2.routePtsPerGame，同小遊戲共用每日局數；獎勵同普通一局）。cooldownSec 內重複唔計
   function overlayOpenGame(s, t) {
     const O = BR().overlayMg; t = t == null ? nowMs() : +t;
     if (!O || !O.enabled) return { ok: false, reason: 'off' };
     if (!s || s.stage === 'egg') return { ok: false, reason: 'egg' };
     const last = s.mg && +s.mg.overlayAt || 0; if (last && t - last < O.cooldownSec * 1000 && t >= last) return { ok: false, reason: 'cooldown' };
-    const r = mgApply(s, O.score == null ? P.mg.passScore : O.score, t, true); s.mg.overlayAt = t;   // 同小遊戲 v2 共用每日火苗路線局數 s.ev.push({ type: 'overlayMg', grains: r.grains });
+    const r = mgApply(s, O.score == null ? P.mg.passScore : O.score, t); s.mg.overlayAt = t;   // 同小遊戲 v2 共用每日火苗路線局數
+    s.ev.push({ type: 'overlayMg', grains: r.grains });
     return { ok: true, reward: r };
   }
 

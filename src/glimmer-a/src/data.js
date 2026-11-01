@@ -108,7 +108,7 @@
     minigames2: {
       order: ['bounce', 'ghide', 'firefly'],
       modCats: 2, maxHard: 1,           // 每局 2 個、最多 1 個難
-      // 遊策 2026-11-01（E 設定）：小遊戲 v2＋浮動團絨撳兩下：每局 +routePtsPerGame 火苗（唔用 evo6.branch.kinds.mg.w），每日最多 routeGamesPerDay 局計（共用）；星星碎唔變
+      // 遊策 2026-11-01（E 設定）：小遊戲 v2＋浮動團絨撳兩下＋舊接星屑：每局 +routePtsPerGame 火苗（唔用 evo6.branch.kinds.mg.w），每日最多 routeGamesPerDay 局計（共用；時段窗口 +0 嗰局唔佔額）；星星碎唔變
       routePtsPerGame: 1, routeGamesPerDay: 4,
       hardStr: [0.20, 0.25],            // 難 modifier 強度 20–25%：速度 ×(1+s)、目標 ×(1−s)、漂移 ±s
       easy: { goldMul: 1.5, timeAdd: 5 },   // 易 modifier：金機率 ×1.5／時間 +5 秒
