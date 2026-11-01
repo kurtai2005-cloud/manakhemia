@@ -116,6 +116,7 @@
   if (NS.sys12ui2 && NS.sys12b) NS.sys12ui2.install(G, NS);   // systems12 第 2 批（小遊戲、小圃種花、散步收集＋收藏櫃、成就徽章）
   if (NS.mg2ui && NS.mg2 && NS.sys12b) NS.mg2ui.install(G, NS);   // 小遊戲 v2（docs-gdd/minigames-v2.md）：彈彈葉／花園捉迷藏／追螢火
   if (NS.touchui && NS.touch) NS.touchui.install(G, NS);   // 第 3 批 3a：觸摸互動＋扮醒呆＋提示排隊（docs-gdd/batch3-fun-spec.md）
+  if (NS.hd2dui && NS.uisfx) NS.hd2dui.install(G, NS);   // HD-2D UI 換膚（遊美 ui-kit-hd2d）＋ ui8 v3 音效 hook（遊音 §7.11；?hdui=0 → 舊 UI）
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
   { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事 2 日後作廢，記得領'), 1500); }

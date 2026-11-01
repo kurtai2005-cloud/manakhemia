@@ -394,7 +394,7 @@
       $('#progf').style.width = Math.round(SIM.stageProgress(s) * 100) + '%'; $('#prog').style.display = s.fadeReady ? 'none' : 'block';
     }
     const dn = s.evs && s.evs.diary ? s.evs.diary.length : 0; if (lastVals.dn !== dn) { lastVals.dn = dn; const bd = $('#diaryN'); bd.textContent = dn; bd.style.display = dn ? 'block' : 'none'; }
-    const gr = '✦ ' + s.grains; if (lastVals.gr !== gr) { lastVals.gr = gr; $('#grains').textContent = gr; }
+    const gr = (G.hd2dUI ? '' : '✦ ') + s.grains;   // HD-2D：光粒 icon 由 chip 畫 if (lastVals.gr !== gr) { lastVals.gr = gr; $('#grains').textContent = gr; }
     // 按鈕狀態
     const sleeping = s.sleeping, egg = s.stage === 'egg';
     ['feed', 'play', 'clean'].forEach(k => $('#btn-' + k).classList.toggle('dis', sleeping || egg));

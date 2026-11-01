@@ -157,7 +157,8 @@
       const def = CUES[c.name]; const rec = { t: c.t, name: c.name, rate: +c.rate.toFixed(3), played: false };
       this.log.push(rec); if (this.log.length > 400) this.log.shift();
       if (!this.ctx || !this.enabled || this.ctx.state !== 'running') { rec.why = !this.ctx ? 'locked' : !this.enabled ? 'muted' : 'suspended'; return; }
-      const buf = this.buf[def.file]; if (!buf) { rec.why = 'notReady'; return; }
+      let file = def.file; if (def.alt) { this.altN = (this.altN || 0) + 1; if (this.altN % 2 === 0) file = def.alt; rec.file = file; }   // a／b 交替（tap → ui8_tap_a／_b）
+      const buf = this.buf[file]; if (!buf) { rec.why = 'notReady'; return; }
       const src = this.ctx.createBufferSource(), g = this.ctx.createGain();
       src.buffer = buf; src.playbackRate.value = c.rate; g.gain.value = def.gain * (c.gain == null ? 1 : c.gain);
       src.connect(g); g.connect(this.buses[def.bus]); src.start(); rec.played = true;
@@ -253,7 +254,22 @@
       setTimeout(() => { if (st.fading === old) st.fading = null; }, (f + 0.3) * 1000);
     },
     // ── 對外 ──
-    notify(kind, info) { if (this.dir) notify(this.dir, kind, info, this.G.state); },
+    notify(kind, info) {
+      if (this.uis && this.UIS && this.UIS.LEGACY[kind] && !(info && info.legacy)) return this.ui(this.UIS.LEGACY[kind], info);   // HD-2D UI：tap／confirm／cancel／error／coin 交 uisfx 排（唔疊）
+      if (this.dir) notify(this.dir, kind, info, this.G.state);
+    },
+    // ── HD-2D UI 音效（uisfx.js 計時間；0 ms ＝ hook）──
+    ui(hook, info) { if (!this.uis) return []; const now = (typeof performance !== 'undefined' ? performance.now() : Date.now()); const l = this.UIS.plan(this.uis, hook, info, now); this.uiPlay(l, now); return l; },
+    uiPlay(list, now) {
+      for (const c of list) {
+        const rec = { t: this.dir ? this.dir.t : 0, name: 'ui8:' + c.file.replace('sfx_ui8_', ''), file: c.file, hook: c.hook, at: c.t, rate: c.rate, gain: c.gain, wall: now, played: false };
+        this.log.push(rec); if (this.log.length > 400) this.log.shift();
+        if (!this.ctx || !this.enabled || this.ctx.state !== 'running') { rec.why = !this.ctx ? 'locked' : !this.enabled ? 'muted' : 'suspended'; continue; }
+        const buf = this.buf[c.file]; if (!buf) { rec.why = 'notReady'; continue; }
+        const src = this.ctx.createBufferSource(), g = this.ctx.createGain(); src.buffer = buf; src.playbackRate.value = c.rate; g.gain.value = 0.8 * c.gain;
+        src.connect(g); g.connect(this.buses.ui); const when = this.ctx.currentTime + Math.max(0, c.t) / 1000; src.start(when); rec.played = true; rec.when = +when.toFixed(4);
+      }
+    },
     update(dt, w) {
       if (!this.dir) return;
       const r = update(this.dir, dt, w);

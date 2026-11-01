@@ -205,7 +205,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await page.click('[data-testid=feed]'); await page.waitForTimeout(150); await page.click('[data-testid=food-cookie]').catch(() => { });
   await page.waitForTimeout(1800);
   let log = await E(() => __qa.pet.audioLog().map(x => x.name));
-  ok(log.includes('tap') && log.some(n => /feed_/.test(n)) && log.includes('bgm:start:noon'), 'cue：tap／feed／bgm:start:noon', log.join(','));
+  ok((log.includes('tap') || log.some(n => /^ui8:tap_[ab]$/.test(n))) && log.some(n => /feed_/.test(n)) && log.includes('bgm:start:noon'), 'cue：tap／feed／bgm:start:noon', log.join(','));
   await E(() => __glimmer.setPeriod('night')); await page.waitForTimeout(6500);
   au = await E(() => __qa.pet.audio()); const xf = await E(() => __qa.pet.audioLog().filter(x => /xfade/.test(x.name)));
   ok(au.bgm === 'night' && xf.length >= 1 && Math.abs(xf[0].offset / 3.5294 - Math.round(xf[0].offset / 3.5294)) < 1e-3, 'BGM 午→夜 crossfade，目標 offset 對齊小節線（' + (xf[0] && xf[0].offset) + 's＝第 ' + (xf[0] && xf[0].bar) + ' 小節）', JSON.stringify(xf));

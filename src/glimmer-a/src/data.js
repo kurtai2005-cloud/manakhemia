@@ -704,7 +704,20 @@
     barSec: 240 / 68,                                               // 68 BPM 4/4：3.5294s／小節（用秒排程，唔用整數樣本）
     cues: {
       // UI
-      tap: { file: 'sfx_tap', bus: 'ui', gain: 0.8 }, confirm: { file: 'sfx_confirm', bus: 'ui', gain: 0.8 }, cancel: { file: 'sfx_cancel', bus: 'ui', gain: 0.8 }, error: { file: 'sfx_error', bus: 'ui', gain: 0.8 },
+      // HD-2D UI（遊音 ui8 v3，README §7.11）：舊 sfx_tap／coin／confirm／cancel／error 檔保留做 fallback（唔再接）；tap → ui8_tap_a／_b 交替（alt）
+      tap: { file: 'sfx_ui8_tap_a', alt: 'sfx_ui8_tap_b', bus: 'ui', gain: 0.8 }, confirm: { file: 'sfx_ui8_confirm', bus: 'ui', gain: 0.8 }, cancel: { file: 'sfx_ui8_cancel', bus: 'ui', gain: 0.8 }, error: { file: 'sfx_ui8_error', bus: 'ui', gain: 0.8 },
+      coin: { file: 'sfx_ui8_coin', bus: 'ui', gain: 0.8 },
+      // ui8 全套（uisfx.js 排時間 → Engine.uiPlay；呢度登記等 prefetch／unlock 一齊解碼）
+      ui8_tap_a: { file: 'sfx_ui8_tap_a', bus: 'ui', gain: 0.8 }, ui8_tap_b: { file: 'sfx_ui8_tap_b', bus: 'ui', gain: 0.8 },
+      ui8_tab_switch_a: { file: 'sfx_ui8_tab_switch_a', bus: 'ui', gain: 0.8 }, ui8_tab_switch_b: { file: 'sfx_ui8_tab_switch_b', bus: 'ui', gain: 0.8 },
+      ui8_btn_press_a: { file: 'sfx_ui8_btn_press_a', bus: 'ui', gain: 0.8 }, ui8_btn_press_b: { file: 'sfx_ui8_btn_press_b', bus: 'ui', gain: 0.8 },
+      ui8_btn_sparkle: { file: 'sfx_ui8_btn_sparkle', bus: 'ui', gain: 0.8 }, ui8_confirm: { file: 'sfx_ui8_confirm', bus: 'ui', gain: 0.8 },
+      ui8_cancel: { file: 'sfx_ui8_cancel', bus: 'ui', gain: 0.8 }, ui8_error: { file: 'sfx_ui8_error', bus: 'ui', gain: 0.8 },
+      ui8_popup_open: { file: 'sfx_ui8_popup_open', bus: 'ui', gain: 0.8 }, ui8_popup_close: { file: 'sfx_ui8_popup_close', bus: 'ui', gain: 0.8 },
+      ui8_toast_in: { file: 'sfx_ui8_toast_in', bus: 'ui', gain: 0.8 }, ui8_coin: { file: 'sfx_ui8_coin', bus: 'ui', gain: 0.8 },
+      ui8_badge_wiggle: { file: 'sfx_ui8_badge_wiggle', bus: 'ui', gain: 0.8 },
+      ui8_toggle_on: { file: 'sfx_ui8_toggle_on', bus: 'ui', gain: 0.8 }, ui8_toggle_off: { file: 'sfx_ui8_toggle_off', bus: 'ui', gain: 0.8 },
+      ui8_transition_veil_close: { file: 'sfx_ui8_transition_veil_close', bus: 'ui', gain: 0.8 }, ui8_transition_veil_open: { file: 'sfx_ui8_transition_veil_open', bus: 'ui', gain: 0.8 },
       // 照顧行動
       feed_snack: { file: 'sfx_feed_snack', bus: 'ui', gain: 1 }, feed_meal: { file: 'sfx_feed_meal', bus: 'ui', gain: 1 }, play_tease: { file: 'sfx_play_tease', bus: 'ui', gain: 1 },
       clean_wash: { file: 'sfx_clean_wash', bus: 'ui', gain: 1 }, clean_poop: { file: 'sfx_clean_poop', bus: 'ui', gain: 1 }, sleep_on: { file: 'sfx_sleep_on', bus: 'ui', gain: 1 },
@@ -752,7 +765,7 @@
       sunbathe: { file: 'sfx_env_sunbathe_loop', bus: 'env', gain: 1 },
     },
     eventCue: { gift: 'event_gift', butterfly: 'event_butterfly', meteor: 'event_meteor', rainbow: 'event_rainbow', sleeptalk: 'event_sleeptalk', grumpy: 'event_grumpy', grumpy_tap: 'event_grumpy', treasure: 'event_treasure', flash: 'event_flash', firefly_walk: 'event_firefly_walk' },
-    // 未用（舊通用／無對應功能）：sfx_coin／hit／win／lose（風野競走遺留）、（fade_light：MVP 無「化光」階段，cue 已備）
+    // 未用（舊通用／無對應功能）：sfx_tap／confirm／cancel／error／coin（HD-2D 改用 ui8，留做 fallback）／hit／win／lose（風野競走遺留）、（fade_light：MVP 無「化光」階段，cue 已備）
   };
 
   const STAGE_NAME = { egg: '光卵', newborn: '絨點', sprout: '芽崽', juvenile: '跳跳期', adult: '守夜者', elder: '靜光' };   // evo6 六階段（pet-template-v1 §6）
