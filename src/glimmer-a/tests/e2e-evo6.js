@@ -5,6 +5,7 @@ let chromium;
 for (const p of [process.env.PW, 'playwright-core', '/workspace/qa-live-s1/node_modules/playwright-core']) { try { if (p) { chromium = require(p).chromium; break; } } catch (e) { } }
 if (!chromium) { console.error('找不到 playwright-core'); process.exit(2); }
 const BASE = process.env.BASE || 'http://localhost:8138/index.html';
+const SPR = process.env.SPR80 === '1' ? '?' : '?spr=old&';   // sprite80：呢個 suite 驗舊 evo／生命感五官 pipeline → 預設 ?spr=old（80px 由 e2e-sprite80 驗；SPR80=1 用 80px 跑）
 const SHOTS = process.env.SHOTS || path.join(__dirname, '..', '..', '..', 'screens') + '/';
 require('fs').mkdirSync(SHOTS, { recursive: true });
 let pass = 0, fail = 0;
@@ -21,8 +22,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const shot = async (n) => { await page.waitForTimeout(250); await page.screenshot({ path: SHOTS + 'evo6-' + n + '.png' }); console.log('  📷 evo6-' + n); };
   const ready = async () => { await page.waitForFunction(() => window.__glimmer && __glimmer.evoLoad).catch(() => { }); await E(() => Promise.all([__glimmer.liveLoad, __glimmer.evoLoad])); await page.waitForTimeout(300); };
   const load = async (qs, clear) => {
-    if (clear) { await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); }
-    await page.goto(BASE + '?' + qs); await ready(); await E(() => { window.__noSaveOnHide = true; });
+    if (clear) { await page.goto(BASE + SPR + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); }
+    await page.goto(BASE + SPR + qs); await ready(); await E(() => { window.__noSaveOnHide = true; });
   };
   const closeModals = async () => { for (let i = 0; i < 6; i++) { const v = await E(() => getComputedStyle(document.getElementById('modal')).display !== 'none'); if (!v) break; await page.click('[data-testid="modal-btn-' + (await E(() => document.querySelectorAll('#mbox .btn').length > 1 ? 1 : 0)) + '"]').catch(() => { }); await page.waitForTimeout(120); } };
   const settle = () => E(() => { const s = __glimmer.state; Object.assign(s.needs, { hunger: 100, mood: 80, clean: 100, energy: 100 }); s.poops = 0; s.sleeping = false; __qa.pet.force('stay'); const b = __glimmer.beh; b.x = 0; b.dir = 1; });
@@ -108,14 +109,14 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await shot('fade-done'); await closeModals();
 
   console.log('# 舊存檔（v1）→ 遷移最近階段（瀏覽器）');
-  await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0'); await E(() => { window.__noSaveOnHide = true; const now = Date.now(); const s = JSON.parse(localStorage.getItem('glimmer_save_v1') || 'null') || {}; Object.assign(s, { v: 1, stage: 'sprout', form: null, growthSec: 10 * 3600, lastSeen: now, lastSaveTime: now }); delete s.evo; delete s.gen; delete s.memorial; localStorage.setItem('glimmer_save_v1', JSON.stringify(s)); });
-  await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0'); await ready();
+  await page.goto(BASE + SPR + 'q=high&hour=13&seed=21&ev=0'); await E(() => { window.__noSaveOnHide = true; const now = Date.now(); const s = JSON.parse(localStorage.getItem('glimmer_save_v1') || 'null') || {}; Object.assign(s, { v: 1, stage: 'sprout', form: null, growthSec: 10 * 3600, lastSeen: now, lastSaveTime: now }); delete s.evo; delete s.gen; delete s.memorial; localStorage.setItem('glimmer_save_v1', JSON.stringify(s)); });
+  await page.goto(BASE + SPR + 'q=high&hour=13&seed=21&ev=0'); await ready();
   r = await E(() => ({ i: __glimmer.evo.info(), v: __glimmer.state.v }));
   ok(r.v === 2 && r.i.stage === 'sprout' && Math.abs(r.i.growthH - 4) < 0.05 && r.i.migrated && r.i.migrated.stage === 'sprout', '舊 v1 芽崽 10h → v2 芽崽 4h（migrated 標記）', r);
   ok(await E(() => document.getElementById('stagename').textContent === '芽崽'), 'UI 顯示新階段名');
 
   console.log('# ?evo=0 → 舊 form（fallback 路徑仍可用）');
-  await page.goto(BASE + '?q=high&hour=13&seed=21&ev=0&evo=0'); await ready(); await E(() => { window.__noSaveOnHide = true; __glimmer.evo.setStage('adult', 'soft'); }); await page.waitForTimeout(400);
+  await page.goto(BASE + SPR + 'q=high&hour=13&seed=21&ev=0&evo=0'); await ready(); await E(() => { window.__noSaveOnHide = true; __glimmer.evo.setStage('adult', 'soft'); }); await page.waitForTimeout(400);
   r = await E(() => __qa.pet.face());
   ok(r.form === 'soft' && !r.evo, '停用 evo → 用返舊柔光 atlas', [r.form, r.evo]);
   ok(errs.length === 0, '全程冇 console error', errs.slice(0, 5));

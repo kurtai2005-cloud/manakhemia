@@ -505,7 +505,8 @@
       clips: { idle: 'idle', blink: 3 },                                              // 有 80px 圖嘅 clip（其餘 → 舊 sprite）
       lines: { tide: 'A', lumi: 'B', ember: 'C', crystal: 'D', bright: 'F', radiant: 'F', moon: 'G', dust: 'H' },   // E 線（第二條火系）未用；soft／shroom 冇對應 → 舊 sprite
       tiers: { adult: 2, elder: 3 },                                                   // egg／newborn／sprout／juvenile → 舊 sprite（tier 1 只經 ?spr80= 用）
-      glowR: 14, glowA: [0.42, 0.18], glowHz: 2.2, shadowHalfW: 21, force: null, hold: null,
+      glowR: 14, glowA: [0.42, 0.18], glowHz: 2.2, moodMix: 0.55,   // moodMix：燈泡情緒／路線色混入 80px 引擎光（保留燈泡情緒 feature）
+      shadowHalfW: 21, force: null, hold: null,
     },
     // ── 畫質自動降級：用 rAF 幀間隔（唔再用連續掉幀計）──
     quality: {

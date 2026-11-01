@@ -42,8 +42,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const seen = new Set(), budOk = [];
   for (let i = 0; i < 40; i++) { await page.waitForTimeout(53); const J = await info(); if (!J.used) continue; seen.add(J.frame);
     const pf = BA.creatures.C2.perFrame[J.frame], mirX = 97 + (pf[0] - 40) * -1, x0 = 57 + pf[0];
-    budOk.push((J.bud.x === x0 || J.bud.x === mirX) && J.bud.y === 215 + pf[1] && J.glow && J.glow.r === 14 && Math.abs(J.glow.x - J.bud.x) < 0.01 && J.glow.a >= 0.24 - 1e-6 && J.glow.a <= 0.6 + 1e-6); }
-  ok(budOk.length > 20 && budOk.every(Boolean), '燈泡 glow 喺 bulb anchor perFrame（幀 1 bob 低 1px）、r 14、alpha 0.42±0.18', budOk.length);
+    budOk.push((J.bud.x === x0 || J.bud.x === mirX) && J.bud.y === 215 + pf[1] && J.glow && J.glow.r === 14 && Math.abs(J.glow.x - J.bud.x) < 0.01 && J.glow.pulse >= 0.24 - 1e-6 && J.glow.pulse <= 0.6 + 1e-6 && J.glow.a > 0 && !!J.glow.mood); }
+  ok(budOk.length > 20 && budOk.every(Boolean), '燈泡 glow 喺 bulb anchor perFrame（幀 1 bob 低 1px）、r 14、alpha 0.42±0.18（× 燈泡情緒）', budOk.length);
   ok([0, 1, 2, 3].every(f => seen.has(f)), 'idle 4 幀都出（260/180/260/140）', [...seen]);
   const pr = await E(() => __glimmer.renderer.petRect);
   ok(pr && pr.opaque && pr.x >= 57 && pr.x + pr.w <= 137 && pr.y >= 215 && pr.y + pr.h <= 295, '觸控框＝80px 實體框', pr);

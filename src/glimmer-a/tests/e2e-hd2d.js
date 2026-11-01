@@ -8,6 +8,7 @@ for (const p of [process.env.PW, 'playwright-core', '/workspace/qa-live-s1/node_
 if (!chromium) { console.error('找不到 playwright-core'); process.exit(2); }
 const HD = require('../src/hd2d.js'), DP = require('../src/devpanel.js');
 const BASE = process.env.BASE || 'http://localhost:8138/index.html';
+const SPR = process.env.SPR80 === '1' ? '?' : '?spr=old&';   // sprite80：呢個 suite 驗舊 evo／生命感五官 pipeline → 預設 ?spr=old（80px 由 e2e-sprite80 驗；SPR80=1 用 80px 跑）
 const OUT = process.env.OUT || path.join(__dirname, '..', '..', 'screens') + '/';
 require('fs').mkdirSync(OUT, { recursive: true });
 let pass = 0, fail = 0;
@@ -38,7 +39,7 @@ console.log('# 純邏輯（Node）');
   const E = (fn, arg) => page.evaluate(fn, arg);
   const shot = async (n) => { await page.waitForTimeout(150); await page.screenshot({ path: OUT + n + '.png' }); console.log('  📷 ' + n); };
   const fresh = async (qs, form) => {
-    await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + qs);
+    await page.goto(BASE + SPR + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + SPR + qs);
     await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad && __glimmer.hdReady).catch(() => { });
     await E(() => Promise.all([__glimmer.liveLoad, __glimmer.hdReady])); await page.waitForTimeout(300);
     await E((form) => { const s = __glimmer.state; if (form === 'sprout') { s.stage = 'sprout'; s.form = null; s.growthSec = 100; } else { s.stage = 'adult'; s.form = form; s.growthSec = 3600; } Object.assign(s.needs, { hunger: 100, mood: 100, clean: 100, energy: 100 }); s.poops = 0; }, form || 'soft');

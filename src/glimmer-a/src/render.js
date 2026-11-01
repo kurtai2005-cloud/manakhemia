@@ -453,6 +453,19 @@
       const ms = C.idleMs, tot = ms.reduce((a, v) => a + v, 0); let u = ((t * 1000) % tot + tot) % tot;
       for (let i = 0; i < ms.length; i++) { if (u < ms[i]) return i; u -= ms[i]; } return 0;
     }
+    bulbTick(b, s, t) {                  // 燈泡情緒 tint（0.4s 漸變）＋路線色；live 五官 path 同 80px 共用
+      const FCP = P.face;
+      const BM = FCP.bulb.moods, mood = this.bulbMood(b), m = BM[mood] || BM.neutral, hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+      let tgt = hx(m.tint); const dt = Math.max(0, Math.min(0.1, this.bulbLastT == null ? 0 : t - this.bulbLastT)), kf = 1 - Math.exp(-dt * 3 / Math.max(0.05, FCP.bulb.fadeSec));
+      const RB = this.routeBulbOf(s, t), RC = P.evo6.route;   // §7 路線清晰化：跳跳期燈泡慢慢轉做領先路線色（螢絨唔顯示）
+      if (RB) { const rc = hx(RB.color), kr = 1 - Math.exp(-dt * 3 / Math.max(0.05, RC.bulbFadeSec)); if (!this.routeS) this.routeS = { rgb: rc.slice(), mix: 0 };
+        const RS = this.routeS; for (let i = 0; i < 3; i++) RS.rgb[i] += (rc[i] - RS.rgb[i]) * kr; RS.mix += (RB.mix - RS.mix) * kr; RS.form = RB.form; RS.target = RB.mix;
+        tgt = tgt.map((v, i) => v + (RS.rgb[i] - v) * RS.mix); } else this.routeS = null;
+      this.bulbLastT = t; if (!this.bulbS) this.bulbS = { rgb: tgt.slice(), i: m.i };
+      const S = this.bulbS; for (let i = 0; i < 3; i++) S.rgb[i] += (tgt[i] - S.rgb[i]) * kf;
+      const pu = m.pulse, it = pu ? pu[1] + (pu[2] - pu[1]) * (0.5 + 0.5 * Math.sin(t * 6.283 / pu[0])) : m.i; S.i += (it - S.i) * kf;
+      return { S: this.bulbS, mood };
+    }
     spr80Src(key, f) {
       const F = this.s80.json.frames[key + '_idle_' + f]; if (!F) return null;
       const A = this.s80.anchors[key], pf = (A.perFrame && A.perFrame[f]) || A.anchor, pv = F.pivot || { x: P.sprites80.pivot[0], y: P.sprites80.pivot[1] };
@@ -805,10 +818,10 @@
       const bx = Math.round(pd.bud.x + offs[2][0]), by = Math.round(pd.bud.y);
       if (pd.s80) {   // 80px：ENGINE_80 引擎光 — radial r≈14、additive、bulbGlowTint（hd 混 0.6）、alpha 0.42±0.18 @2.2 rad/s；glow 已畫入 sprite → 唔再加 emissive 點
         const C = P.sprites80, A = this.s80.anchors[pd.s80], hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
-        const gc80 = A.glowTint ? hx(A.glowTint) : gcol, ga = (C.glowA[0] + C.glowA[1] * Math.sin(t * C.glowHz)) * Math.min(1, gint);
+        const B80 = this.s80Bulb, gc0 = A.glowTint ? hx(A.glowTint) : gcol, gc80 = B80 ? mixc(gc0, B80.rgb, C.moodMix) : gc0, ga = (C.glowA[0] + C.glowA[1] * Math.sin(t * C.glowHz)) * Math.min(1, gint) * (B80 ? Math.max(0.4, Math.min(1.3, B80.i / 0.8)) : 1);
         c.lights.push({ x: pd.bud.x + offs[2][0] + 0.5, y: pd.bud.y + 0.5, r: C.glowR, col: gc80, a: ga, bud: 1, s80: pd.s80 });
         c.lights.push({ x: gx + offs[2][0], y: pd.footY - pd.h * 0.33, r: 40, col: mixc(gc80, [255, 170, 90], 0.4), a: 0.12 * gint });
-        this.s80Glow = { x: pd.bud.x, y: pd.bud.y, r: C.glowR, a: +ga.toFixed(3) };
+        this.s80Glow = { x: pd.bud.x, y: pd.bud.y, r: C.glowR, a: +ga.toFixed(3), pulse: +(C.glowA[0] + C.glowA[1] * Math.sin(t * C.glowHz)).toFixed(3), mood: B80 ? B80.mood : null, col: gc80.map(v => Math.round(v)) };
       } else {
       c.lights.push({ x: pd.bud.x + offs[2][0], y: pd.bud.y, r: gr, col: gcol, a: 0.8 * gint, bud: 1 });
       c.lights.push({ x: gx + offs[2][0], y: pd.footY - pd.h * 0.33, r: gr * 1.4, col: mixc(gcol, [255, 170, 90], 0.4), a: 0.18 * gint });
@@ -968,19 +981,15 @@
       x.translate(ox(px + (ph ? ph.dx * mir : 0)), oy(py)); x.scale(mir * (ph ? ph.sx : 1), ph ? ph.sy : 1); if (ph && ph.rot) x.rotate(-ph.rot);   // 以腳底 pivot 向後仰
       x.drawImage(draw.img, draw.sx, draw.sy, draw.sw, draw.sh, -draw.px, -draw.py, draw.sw, draw.sh);
       if (live && anc && anc.bulb && FCP.bulb && FCP.bulb.enabled && live.clip !== 'sick') {     // 燈泡 glow：情緒 tint（0.4s 漸變）× intensity（呼吸／閃）
-        const BM = FCP.bulb.moods, mood = this.bulbMood(b), m = BM[mood] || BM.neutral, hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
-        let tgt = hx(m.tint); const dt = Math.max(0, Math.min(0.1, this.bulbLastT == null ? 0 : t - this.bulbLastT)), kf = 1 - Math.exp(-dt * 3 / Math.max(0.05, FCP.bulb.fadeSec));
-        const RB = this.routeBulbOf(s, t), RC = P.evo6.route;   // §7 路線清晰化：跳跳期燈泡慢慢轉做領先路線色（螢絨唔顯示）
-        if (RB) { const rc = hx(RB.color), kr = 1 - Math.exp(-dt * 3 / Math.max(0.05, RC.bulbFadeSec)); if (!this.routeS) this.routeS = { rgb: rc.slice(), mix: 0 };
-          const RS = this.routeS; for (let i = 0; i < 3; i++) RS.rgb[i] += (rc[i] - RS.rgb[i]) * kr; RS.mix += (RB.mix - RS.mix) * kr; RS.form = RB.form; RS.target = RB.mix;
-          tgt = tgt.map((v, i) => v + (RS.rgb[i] - v) * RS.mix); } else this.routeS = null;
-        this.bulbLastT = t; if (!this.bulbS) this.bulbS = { rgb: tgt.slice(), i: m.i };
-        const S = this.bulbS; for (let i = 0; i < 3; i++) S.rgb[i] += (tgt[i] - S.rgb[i]) * kf;
-        const pu = m.pulse, it = pu ? pu[1] + (pu[2] - pu[1]) * (0.5 + 0.5 * Math.sin(t * 6.283 / pu[0])) : m.i; S.i += (it - S.i) * kf;
+        const { S, mood } = this.bulbTick(b, s, t);
         const gl = this.bulbGlow(fk, s.form === 'lumi' ? [S.rgb[0] * 0.75, 255, S.rgb[2] * 0.55] : S.rgb);   // 螢絨：燈泡偏螢綠
         if (gl) { x.globalAlpha = Math.max(0, Math.min(1, S.i)); x.drawImage(gl.c, -src.px + anc.bulb[0] - gl.px, -src.py + anc.bulb[1] - gl.py); if (anc.bulb2) x.drawImage(gl.c, -src.px + anc.bulb2[0] - gl.px, -src.py + anc.bulb2[1] - gl.py); x.globalAlpha = 1; this.faceStat.bulb++; fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)), route: this.routeS ? { form: this.routeS.form, mix: +this.routeS.mix.toFixed(3), target: this.routeS.target, rgb: this.routeS.rgb.map(v => Math.round(v)) } : null }; }
       }
       x.restore();
+      if (S80 && FCP.bulb && FCP.bulb.enabled && dclip !== 'sick') {   // 80px：燈泡已畫入圖 → 情緒／路線色經引擎光（drawL2 c.lights）表現
+        const { S, mood } = this.bulbTick(b, s, t); this.s80Bulb = { rgb: S.rgb.slice(), i: S.i, mood }; this.faceStat.bulb++;
+        fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)), route: this.routeS ? { form: this.routeS.form, mix: +this.routeS.mix.toFixed(3), target: this.routeS.target, rgb: this.routeS.rgb.map(v => Math.round(v)) } : null, s80: true };
+      } else if (S80) this.s80Bulb = null;
       if (b.bug) {                                    // A2 swat 蟲仔 fx：遊美 fx/atlas_fx_live（fx_bug 01→02→03→02，10fps，pivot (4,4)，朝右）；冇就程序化 2×2 點＋1px 翼閃
         const bx = Math.round(px + b.bug.x), by = Math.round(py + b.bug.y), FX = this.lv && this.lv.fx, an = FX && FX.json.animations && FX.json.animations.fx_bug;
         const fr = an && FX.json.frames[an.frames[Math.floor((b.bug.t || 0) * (an.fps || 10)) % an.frames.length]];
