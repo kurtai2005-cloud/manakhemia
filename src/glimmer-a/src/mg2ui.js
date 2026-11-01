@@ -11,7 +11,7 @@
   const W = 180, H = 320, K = 2;
   const DIG = ['111101101101111', '010110010010111', '111001111100111', '111001111001111', '101101111001001', '111100111001111', '111100111101111', '111001010010010', '111101111101111', '111101111001111'];
   function install(G, NS) {
-    const D = NS.data, P2 = D.PARAMS.systems12b, C2 = P2 && P2.games2, M = NS.mg2, X2 = NS.sys12b, UI = NS.ui;
+    const D = NS.data, P2 = D.PARAMS.systems12b, C2 = D.PARAMS.minigames2, M = NS.mg2, X2 = NS.sys12b, UI = NS.ui;
     if (!C2 || !M || !X2) return false;
     const S = () => G.state, now = () => G.now(), base = (D.PARAMS.art && D.PARAMS.art.base) || 'art/';
     const SND = (k, i) => { const a = NS.audio; if (a && a.Engine) a.Engine.notify(k, i || {}); };

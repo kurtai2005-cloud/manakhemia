@@ -102,6 +102,46 @@
         silhouette: '#3B2A3E',        // 圖鑑未解鎖剪影色（遊美 batch G collection_route.json；冇剪影圖時用守夜者圖 alpha 生）
         silArt: 'evo6/route/sil_',    // 遊美 batch G 圖鑑剪影 art/evo6/route/sil_<atlas id>_48.png（bright→radiant）；載唔到 → fallback 程式剪影
       } },   // 舊存檔守夜者：保留成長進度但最少留 1 日先變靜光
+    // 小遊戲 v2（docs-gdd/minigames-v2.md，遊策 2026-11-01 10:00）：直向單手、即時動作、每局 ≤45 秒、冇文字掣（手勢＋icon，canvas 畫）；
+    // 每局隨機 2 個變化（天氣／速度／特別物，3 類揀 2 類、每類抽 1 個）；團絨全程有反應（現有 clip）。獎勵同 v1：星數＝星星碎（games.shardsByStars／dailyRewarded 共用）＋計 mg（火苗）。
+    // 場地座標＝邏輯 180×320（直向）。標「TBD 遊策」＝規格冇講、暫定值。
+    minigames2: {
+      order: ['bounce', 'ghide', 'firefly'],
+      modCats: 2,                       // 每局 2 個變化（規格）
+      bounce: { name: '彈彈葉', icon: 'leaf', durationSec: 40,               // TBD 遊策：40 秒（規格 ≤45）
+        starsAt: [10, 20, 30],          // TBD 遊策：1／2／3★ 分數門檻
+        dot: 1, gold: 3,                // TBD 遊策：光點 +1、金光點 +3（跟 v1 接光點）
+        leaf: { x: 90, y: 286, w: 46 }, groundY: 300,
+        chargeSec: 0.9, vMin: 220, vMax: 470, gravity: 430,                 // TBD 遊策：儲力 0.9 秒滿；彈起初速；重力（px/s²）
+        steer: 7, steerMax: 170,        // 喺半空左右拖：追手指 x 嘅速度
+        flipPower: 0.8, flipDrift: 45,  // 儲力 ≥80% → 自信翻筋斗，然後亂飄（跌錯位要自己拖返）
+        dots: 5, dotR: 7, dotY: [40, 215], goldProb: 0.18,                   // 同時 5 粒；金光點只喺「金光點」變化出（18%）
+        fallSec: 1.6, walkSpeed: 90,    // 跌出葉外：跌低→起身→扮冇事，再行返葉度
+        mods: { weather: { wind: { ax: 38 }, rain: { cloudW: 46, cloudY: [80, 130], speed: 32, push: 160 } },   // 風向（每局左／右）、雨雲（掂到會被壓落嚟）
+                speed: { fast: { mul: 1.25 }, slow: { mul: 0.85 } },
+                special: { gold: {}, bigleaf: { wMul: 1.45 } } } },
+      ghide: { name: '花園捉迷藏', icon: 'pot', rounds: 3, triesPerRound: 3, ptsByTry: [3, 2, 1], starsAt: [1, 4, 7], timeLimitSec: 45,   // 沿用 systems12b-params 捉迷藏數值
+        covers: 5, coverTypes: ['pot', 'leaves', 'rock', 'bush', 'lantern'],  // 每回合遮擋物種類＋位置都唔同
+        area: { x: [22, 158], y: [226, 306], minDist: 36 }, hitR: 20,   // 花園地面（HD-2D 地平線以下）
+        tailChance: 0.30, peekEvery: [1.6, 3.2], peekSec: 0.7,                // 30% 回合會露尾／燈泡（規格 v1）；露出節奏 TBD 遊策
+        wiggleEvery: [1.4, 3.0],        // TBD 遊策：佢會郁（匿嗰樣嘢間中搖）
+        sneakSec: 4.0,                  // TBD 遊策：你太慢（冇撳）4 秒 → 佢偷偷轉位
+        revealSec: 1.5,                 // 搵到／撳晒 → 團絨行出嚟（扮冇事／扮勝利）嘅時間
+        mods: { weather: { fog: { peekA: 0.45 }, wind: { decoyEvery: 1.1 } },   // 霧：露尾淡啲；風：其他嘢都會搖（假線索）
+                speed: { sneaky: { sneakSec: 2.6 }, calm: { sneakSec: 6 } },
+                special: { bulb: { tailChance: 0.65 }, extra: { covers: 6 } } } },
+      firefly: { name: '追螢火', icon: 'firefly', durationSec: 40,           // TBD 遊策：40 秒
+        nightHours: [17, 7],            // TBD 遊策：夜晚＝17:00–07:00（跟螢絨 evo6 夜晚；月眠／夜晚小物係 20–03）
+        starsAt: [8, 16, 26],           // TBD 遊策
+        fly: 1, gold: 3, goldProb: 0.2, // TBD 遊策：螢火 +1、金螢火 +3（金螢火變化先有）
+        flies: 4, flyR: 9, drift: 20, petSpeed: 120, petR: 8, maxPath: 420, field: { x: [10, 170], y: [44, 300] },
+        branches: 3, branchLen: [26, 44], stunSec: 0.9,                       // 撞樹枝：停 0.9 秒、扮冇痛
+        mods: { weather: { breeze: { driftMul: 1.9 }, mist: { flicker: 0.5 } },
+                speed: { dash: { mul: 1.3 }, sleepy: { mul: 0.8 } },
+                special: { gold: {}, thicket: { extra: 2 } } } },
+      reactions: { proud: 'smug_pose', cool: 'act_cool', fall: 'droop', getup: 'getup', jump: 'cheer_jump', happy: 'emo_happy', surprised: 'emo_surprised',
+        run: 'rush', walk: 'walk', bump: 'pot_bump', charge: 'catch_reach', win: 'celebrate', sad: 'droop', shiver: 'shiver', idle: 'idle' },   // 團絨反應 → 現有 clip（冇就 idle）
+    },
     // ── systems12 第 2 批（docs-gdd/systems12-v1.md 第 2 批：5 小遊戲 → 2 小圃種花 → 4 散步收集＋收藏櫃 → 11 成就）──
     // 數值＝docs-gdd/systems12b-params.md（遊策 2026-11-01 補齊第 2 批缺數）。星星碎經 systems12 wallet（其他上限 15／日、總 30）；成就星星碎一次性、唔計上限。
     systems12b: {
@@ -125,46 +165,6 @@
           tailChance: 0.30,               // 每回合 30% 露出尾巴／燈泡（匿得差但自以為完美）
           tailLine: '你一定搵唔到我',
           spotNames: ['花盆後面', '草叢', '石頭後面', '燈柱後面', '葉堆'] },   // 花園固定位（匿位跟房間家具＝第 3 批）
-      },
-      // 小遊戲 v2（docs-gdd/minigames-v2.md，遊策 2026-11-01 10:00）：直向單手、即時動作、每局 ≤45 秒、冇文字掣（手勢＋icon，canvas 畫）；
-      // 每局隨機 2 個變化（天氣／速度／特別物，3 類揀 2 類、每類抽 1 個）；團絨全程有反應（現有 clip）。獎勵同 v1：星數＝星星碎（games.shardsByStars／dailyRewarded 共用）＋計 mg（火苗）。
-      // 場地座標＝邏輯 180×320（直向）。標「TBD 遊策」＝規格冇講、暫定值。
-      games2: {
-        order: ['bounce', 'ghide', 'firefly'],
-        modCats: 2,                       // 每局 2 個變化（規格）
-        bounce: { name: '彈彈葉', icon: 'leaf', durationSec: 40,               // TBD 遊策：40 秒（規格 ≤45）
-          starsAt: [10, 20, 30],          // TBD 遊策：1／2／3★ 分數門檻
-          dot: 1, gold: 3,                // TBD 遊策：光點 +1、金光點 +3（跟 v1 接光點）
-          leaf: { x: 90, y: 286, w: 46 }, groundY: 300,
-          chargeSec: 0.9, vMin: 220, vMax: 470, gravity: 430,                 // TBD 遊策：儲力 0.9 秒滿；彈起初速；重力（px/s²）
-          steer: 7, steerMax: 170,        // 喺半空左右拖：追手指 x 嘅速度
-          flipPower: 0.8, flipDrift: 45,  // 儲力 ≥80% → 自信翻筋斗，然後亂飄（跌錯位要自己拖返）
-          dots: 5, dotR: 7, dotY: [40, 215], goldProb: 0.18,                   // 同時 5 粒；金光點只喺「金光點」變化出（18%）
-          fallSec: 1.6, walkSpeed: 90,    // 跌出葉外：跌低→起身→扮冇事，再行返葉度
-          mods: { weather: { wind: { ax: 38 }, rain: { cloudW: 46, cloudY: [80, 130], speed: 32, push: 160 } },   // 風向（每局左／右）、雨雲（掂到會被壓落嚟）
-                  speed: { fast: { mul: 1.25 }, slow: { mul: 0.85 } },
-                  special: { gold: {}, bigleaf: { wMul: 1.45 } } } },
-        ghide: { name: '花園捉迷藏', icon: 'pot', rounds: 3, triesPerRound: 3, ptsByTry: [3, 2, 1], starsAt: [1, 4, 7], timeLimitSec: 45,   // 沿用 systems12b-params 捉迷藏數值
-          covers: 5, coverTypes: ['pot', 'leaves', 'rock', 'bush', 'lantern'],  // 每回合遮擋物種類＋位置都唔同
-          area: { x: [22, 158], y: [226, 306], minDist: 36 }, hitR: 20,   // 花園地面（HD-2D 地平線以下）
-          tailChance: 0.30, peekEvery: [1.6, 3.2], peekSec: 0.7,                // 30% 回合會露尾／燈泡（規格 v1）；露出節奏 TBD 遊策
-          wiggleEvery: [1.4, 3.0],        // TBD 遊策：佢會郁（匿嗰樣嘢間中搖）
-          sneakSec: 4.0,                  // TBD 遊策：你太慢（冇撳）4 秒 → 佢偷偷轉位
-          revealSec: 1.5,                 // 搵到／撳晒 → 團絨行出嚟（扮冇事／扮勝利）嘅時間
-          mods: { weather: { fog: { peekA: 0.45 }, wind: { decoyEvery: 1.1 } },   // 霧：露尾淡啲；風：其他嘢都會搖（假線索）
-                  speed: { sneaky: { sneakSec: 2.6 }, calm: { sneakSec: 6 } },
-                  special: { bulb: { tailChance: 0.65 }, extra: { covers: 6 } } } },
-        firefly: { name: '追螢火', icon: 'firefly', durationSec: 40,           // TBD 遊策：40 秒
-          nightHours: [17, 7],            // TBD 遊策：夜晚＝17:00–07:00（跟螢絨 evo6 夜晚；月眠／夜晚小物係 20–03）
-          starsAt: [8, 16, 26],           // TBD 遊策
-          fly: 1, gold: 3, goldProb: 0.2, // TBD 遊策：螢火 +1、金螢火 +3（金螢火變化先有）
-          flies: 4, flyR: 9, drift: 20, petSpeed: 120, petR: 8, maxPath: 420, field: { x: [10, 170], y: [44, 300] },
-          branches: 3, branchLen: [26, 44], stunSec: 0.9,                       // 撞樹枝：停 0.9 秒、扮冇痛
-          mods: { weather: { breeze: { driftMul: 1.9 }, mist: { flicker: 0.5 } },
-                  speed: { dash: { mul: 1.3 }, sleepy: { mul: 0.8 } },
-                  special: { gold: {}, thicket: { extra: 2 } } } },
-        reactions: { proud: 'smug_pose', cool: 'act_cool', fall: 'droop', getup: 'getup', jump: 'cheer_jump', happy: 'emo_happy', surprised: 'emo_surprised',
-          run: 'rush', walk: 'walk', bump: 'pot_bump', charge: 'catch_reach', win: 'celebrate', sad: 'droop', shiver: 'shiver', idle: 'idle' },   // 團絨反應 → 現有 clip（冇就 idle）
       },
       // 系統 2：小圃種花。3 格花盆；4 階段（種子→芽→花苞→開花）；每日淋水 1 次升 1 階 → 最快 2 日開花（種嗰日淋＝芽，第 2 日花苞，第 3 次淋＝開花）
       garden: {
@@ -238,7 +238,7 @@
           { k: 'lull_night3', name: '一晚哄瞓 3 次', title: '夜貓哄瞓師', when: { lullNight: 3 } },
           { k: 'quick_1', name: '第一次即清便便', when: { quick: 1 } },
           { k: 'quick_10', name: '即清 10 次', title: '執屎專家', when: { quick: 10 } },
-          { k: 'catch_3star', name: '彈彈葉 3★', when: { catchStars: 3 } },   // v2：key 保留（存檔相容）；接光點 3★（舊）或彈彈葉 3★ 都得（TBD 遊策）
+          { k: 'catch_3star', name: '彈彈葉 3★', when: { catchStars: 3 } },   // v2：key 保留（存檔相容）；接光點 3★（舊）或彈彈葉 3★ 都得（改名待遊策確認，見 PARAMS.minigames2）
           { k: 'hide_first', name: '捉迷藏一次就搵到', when: { hideFirst: 1 } },   // v2 花園捉迷藏第 1 下搵到都算
           { k: 'bloom_all', name: '開齊 6 種花', title: '園藝大師（自封）', when: { bloomKinds: 6 } },
           { k: 'collect_20', name: '收藏 20 件', when: { collected: 20 } },

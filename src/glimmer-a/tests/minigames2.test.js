@@ -2,7 +2,7 @@
    彈彈葉／花園捉迷藏（重做）／追螢火（夜晚限定）邏輯＋每局 2 變化＋團絨反應＋獎勵經 systems2.gameFinish（錢包／每日上限）。 */
 const D = require('../src/data.js'), S = require('../src/sim.js'), X = require('../src/systems.js'), B = require('../src/systems2.js');
 const M = require('../src/minigames2.js'), BOT = require('./mg2-bots.js');
-const P = D.PARAMS.systems12b, G2 = P.games2, R = G2.reactions;
+const P = D.PARAMS.systems12b, G2 = D.PARAMS.minigames2, R = G2.reactions;
 let pass = 0, fail = 0;
 function ok(c, n, i) { if (c) { pass++; console.log('  ✓ ' + n); } else { fail++; console.log('  ✗ ' + n + (i !== undefined ? '  → ' + JSON.stringify(i) : '')); } }
 const T0 = new Date(2026, 10, 2, 21, 0).getTime();

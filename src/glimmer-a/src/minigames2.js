@@ -8,7 +8,7 @@
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.mg2 = factory(root.Glimmer.data, root.Glimmer.sim); }
 })(typeof self !== 'undefined' ? self : this, function (D, SIM) {
   'use strict';
-  const C = () => D.PARAMS.systems12b.games2;
+  const C = () => D.PARAMS.minigames2;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rr = (rng, a) => a[0] + rng() * (a[1] - a[0]);
   function inHours(h, a) { return a[0] <= a[1] ? h >= a[0] && h < a[1] : h >= a[0] || h < a[1]; }

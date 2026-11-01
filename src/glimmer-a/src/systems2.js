@@ -38,8 +38,8 @@
 
   // ── 系統 5：小遊戲 ──
   /* 星數 0–3：接光點按分數、捉迷藏按總分（starsAt＝1／2／3★ 門檻） */
-  const V2 = { bounce: 1, ghide: 1, firefly: 1 };   // 小遊戲 v2（games2）
-  function gameStars(kind, v) { const a = (V2[kind] ? C().games2[kind] : kind === 'catch' ? C().games.catch : C().games.hide).starsAt; let n = 0; for (let i = 0; i < a.length; i++) if (v >= a[i]) n = i + 1; return Math.min(3, n); }
+  const V2 = { bounce: 1, ghide: 1, firefly: 1 };   // 小遊戲 v2（PARAMS.minigames2）
+  function gameStars(kind, v) { const a = (V2[kind] ? D.PARAMS.minigames2[kind] : kind === 'catch' ? C().games.catch : C().games.hide).starsAt; let n = 0; for (let i = 0; i < a.length; i++) if (v >= a[i]) n = i + 1; return Math.min(3, n); }
   /* 一局完：頭 dailyRewarded 局（兩隻合計）有星星碎（＝星數）；每局都計 mg（火苗分）；唔加光粒／心情
      o.noMg：浮動團絨嗰局（mg 已由 overlayOpenGame 計）；o.firstHits：捉迷藏第 1 下就搵到嘅回合數（成就） */
   function gameFinish(s, kind, v, nowMs, opt) {
@@ -219,7 +219,7 @@
     if (when.lull) return o.stats.lull >= when.lull;
     if (when.lullNight) return o.stats.lullNight >= when.lullNight;
     if (when.quick) return o.stats.quick >= when.quick;
-    if (when.catchStars) return Math.max(num(o.games.stars.catch, 0), num(o.games.stars.bounce, 0)) >= when.catchStars;   // v2：彈彈葉 3★ 都算（TBD 遊策）
+    if (when.catchStars) return Math.max(num(o.games.stars.catch, 0), num(o.games.stars.bounce, 0)) >= when.catchStars;   // v2：彈彈葉 3★ 都算（待遊策確認）
     if (when.hideFirst) return o.games.hideFirst >= when.hideFirst;
     if (when.bloomKinds) return Object.keys(o.garden.bloomed).filter(k => FL(k)).length >= when.bloomKinds;
     if (when.acc) return o.walk.acc >= when.acc;
