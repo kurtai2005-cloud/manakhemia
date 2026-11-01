@@ -99,13 +99,13 @@ comp('subtab_p', 32, 15, FP(32, 15, 7, C['navy_in'], dy=0.8, glow=.2, ornate=Fal
 def med(d, fill, pressed=False, glow=1.0):
     def fn(L, o): medallion(L, P(o + d / 2), P(o + d / 2), d, fill, pressed=pressed, glow=glow)
     return fn
-MEDS = [(28, ['pri', 'rose', 'sec', 'violet', 'dis'], True), (34, ['pri'], False), (30, ['pri'], True), (24, ['navy', 'pri', 'rose'], True),
+MEDS = [(28, ['pri', 'rose', 'sec', 'violet', 'dis'], True), (34, ['pri'], False), (30, ['pri'], True), (24, ['navy', 'pri', 'rose', 'dis'], True),
         (25, ['pri'], False), (22, ['navy'], True), (20, ['pri'], False), (18, ['navy_in'], False), (16, ['navy', 'pri'], False),
         (19, ['paper', 'navy', 'pri', 'sec', 'violet'], False), (11, ['navy'], False), (26, ['paper', 'violet'], False)]
 for d, fills, pr in MEDS:
     for f in fills:
         gl = 0 if f == 'dis' else (0.5 if d <= 13 else 0.25 if f == 'navy_in' else 1.0)
-        comp(f'med{d}_{f}', d, d, med(d, C[f], glow=gl), 'medallion', note='圓章底（icon 另疊）')
+        comp(f'med{d}_{f}', d, d, med(d, C[f], glow=gl), 'medallion', note='停用／上鎖圓章（part 2；icon α.55＋ic:lock 右下）' if f == 'dis' else '圓章底（icon 另疊）')
         if pr and f != 'dis': comp(f'med{d}_{f}_p', d, d, med(d, C[f], True, gl), 'medallion', note='按下（已含 0.9px 下沉）')
 
 def close(pressed):
@@ -180,7 +180,7 @@ def gem_s(fill, R, glow=True, star=True):
     return fn
 comp('dock_gem', 5.2, 5.2, gem_s(C['gem'], 2.0), 'dock', note='已選分頁底寶石')
 comp('label_plate', 28, 10, F(28, 10, 5, C['navy'], glow=0.4, ornate=False, rim=0.8), 'hud', nine=(6, 0, 6, 0), note='動作掣字牌／樹節點名牌')
-for kd in ('pri', 'sec', 'dis', 'rose'):
+for kd in ('pri', 'sec', 'dis', 'rose', 'navy'):
     comp(f'pill_{kd}', 40, 11, F(40, 11, 5.5, C[kd], glow=0 if kd == 'dis' else .5, ornate=False, rim=.8), 'button', nine=(6.5, 0, 6.5, 0), note='卡底 pill（4b「擺緊／擺上去／價錢」同款）' if kd == 'pri' else '')
 
 # ================= BADGES / TOAST / BUBBLE =================
@@ -273,6 +273,30 @@ def thumb(L, o):
     d = ImageDraw.Draw(L); d.rounded_rectangle([P(o - .4), P(o - .4), P(o + 4.4), P(o + 16.4)], radius=P(2.2), fill=C['line'])
     L.alpha_composite(vgrad((P(4), P(16)), [(0, C['g_hi']), (1, C['g_lo'])]), (P(o), P(o)))
     mk = Image.new('L', L.size, 0)
+def sfade(top):
+    def fn(L, o):
+        W, H = L.size; h = P(10); x0, y0 = P(o), P(o)
+        ys = np.linspace(0, 1, h)[:, None] if top else np.linspace(1, 0, h)[:, None]
+        a = (np.clip(1 - ys, 0, 1) ** 1.5 * 235).astype(np.uint8)
+        arr = np.zeros((h, P(40), 4), np.uint8); arr[..., :3] = C['navy'][1][:3]; arr[..., 3] = np.repeat(a, P(40), 1)
+        L.alpha_composite(Image.fromarray(arr, 'RGBA'), (x0, y0))
+        ly = y0 if top else y0 + h - P(0.6)
+        g = Image.new('L', (W, H), 0); ImageDraw.Draw(g).rectangle([x0 + P(3), ly, x0 + P(37), ly + P(0.6)], fill=150)
+        put(L, solid((W, H), C['glow']), gauss(g, P(0.6)))
+    return fn
+comp('scroll_fade_top', 40, 10, sfade(True), 'control', nine=(4, 0, 4, 0), note='part 2：捲動列表頂邊淡出（列表可再上捲先顯示；clip 內最上）', bloom=False)
+comp('scroll_fade_bot', 40, 10, sfade(False), 'control', nine=(4, 0, 4, 0), note='part 2：捲動列表底邊淡出（仲有內容喺下面）', bloom=False)
+def sglow(top):
+    def fn(L, o):
+        W, H = L.size; g = Image.new('L', (W, H), 0)
+        cy = o if top else o + 8
+        ImageDraw.Draw(g).ellipse([P(o + 2), P(cy - 6), P(o + 38), P(cy + 6)], fill=200)
+        m = Image.new('L', (W, H), 0); ImageDraw.Draw(m).rectangle([P(o), P(o), P(o + 40), P(o + 8)], fill=255)
+        put(L, solid((W, H), C['glow']), ImageChops.multiply(gauss(g, P(2.2)), m))
+        put(L, solid((W, H), hx('#FFFFFF', 200)), ImageChops.multiply(amul(gauss(g, P(0.8)), .35), m))
+    return fn
+comp('scroll_glow_top', 40, 8, sglow(True), 'fx', nine=(8, 0, 8, 0), note='part 2：overscroll 金光（拉過頂；α=拉距/24，放手 200ms 淡走）', bloom=False)
+comp('scroll_glow_bot', 40, 8, sglow(False), 'fx', nine=(8, 0, 8, 0), note='part 2：overscroll 金光（拉過底）', bloom=False)
 comp('scroll_thumb', 4, 16, thumb, 'control', nine=(0, 3, 0, 3), slice_='3v', note='捲動拇指（金）')
 def divider(L, o):
     d = ImageDraw.Draw(L); d.line([(P(o), P(o + 2)), (P(o + 40), P(o + 2))], fill=C['line'], width=P(1.2))
@@ -364,7 +388,7 @@ ICON_NOTE = {'feed': '餵食／飽腹', 'clean': '清潔', 'sleep': '瞓覺／�
              'water': '飲水提醒', 'bedtime': '早瞓時間', 'reset': '重設', 'hint': '提示', 'mg_tease': '逗玩', 'mg_stardust': '接星屑',
              'mg_leaf': '彈彈葉', 'mg_hide': '花園捉迷藏', 'mg_firefly': '追螢火', 'ev_treasure': '尋寶事件', 'seed': '種子',
              'house': '4b 屋仔', 'decorate': '4b 佈置', 'furniture': '4b 傢俬', 'rotate': '4b 轉向', 'flip': '4b 鏡像', 'store': '4b 收起',
-             'family_tree': '5a 族譜', 'family_level': '5a 家族等級'}
+             'family_tree': '5a 族譜', 'family_level': '5a 家族等級', 'back': '返回（part 2）', 'plus': '加／空 slot（part 2）', 'clear': '清空／收起（part 2）'}
 def hd_icon(kind):
     base = k.icon(K.HD_TH, kind)            # P(30) canvas, 24-art icon centred
     W0 = base.width; pad = P(3); W = W0 + 2 * pad
@@ -400,6 +424,14 @@ for s in ('餵食', '玩耍', '清潔', '瞓覺', '關燈'):
     lab(f'act_{s}', s, 'sans', 7.2, C['cream'], 0.8, hx('#141834'), 0, '動作掣字牌')
 for kd, ss in (('pri', ('好呀', '確定', '領取', '全部領取', '去完成', '開始', '完成', '擺上去')), ('sec', ('遲啲先', '取消', '關閉', '返回', '擺緊')), ('rose', ('重設', '刪除')), ('violet', ('佈置', '升級'))):
     for s in ss: lab(f'btn_{kd}_{s}', s, 'sans', 9.0, hx('#FFFFFF'), 1.0, BTN_STROKE[kd], 0, f'btn_{kd} 字')
+for kd, ss in (('pri', ('擺上去',)), ('sec', ('擺緊',)), ('navy', ('清空',))):
+    for s in ss: lab(f'pill_{kd}_{s}', s, 'sans', 7.6, hx('#FFFFFF'), 0.9, BTN_STROKE.get(kd) or hx('#141834'), 0, f'pill_{kd} 字（part 2，4b 卡）')
+lab('pill_dis_委託獎', '委託獎', 'sans', 7.6, INK_DIS, 0, None, 0, 'pill_dis 字（深字冇描邊）')
+lab('pill_dis_訪客禮', '訪客禮', 'sans', 7.6, INK_DIS, 0, None, 0, 'pill_dis 字')
+for s in ('佈置', '屋仔', '委託'):
+    lab(f'act_{s}', s, 'sans', 7.2, C['cream'], 0.8, hx('#141834'), 0, '圓章下字牌（part 2）')
+lab('title_佈置屋仔', '佈置屋仔', 'serif', 9.2, hx('#FFFFFF'), 1.1, hx('#2E1A52'), .35, '4b 佈置模式標題')
+lab('title_屋仔', '屋仔', 'serif', 9.2, hx('#FFFFFF'), 1.1, hx('#2E1A52'), .35, '4b 屋內標題')
 for s in ('未解鎖', '未完成'):
     lab(f'btn_dis_{s}', s, 'sans', 9.0, INK_DIS, 0, None, 0, 'btn_dis 字（深字冇描邊）')
 for s in ('飽腹', '心情', '清潔', '精力'):
@@ -441,7 +473,7 @@ PX5 = {
  ':': [" ","#"," "," "," ","#"," "], '.': [" "," "," "," "," "," ","#"], ',': [" "," "," "," "," ","#","#"],
  '!': ["#","#","#","#","#"," ","#"], '?': [" ### ","#   #","    #","   # ","  #  ","     ","  #  "],
  '(': ["  #"," # ","#  ","#  ","#  "," # ","  #"], ')': ["#  "," # ","  #","  #","  #"," # ","#  "],
- '×': ["     ","#   #"," # # ","  #  "," # # ","#   #","     "], ' ': ["  "] * 7,
+ '✦': ["  #  ","  #  "," ### ","#####"," ### ","  #  ","  #  "], '×': ["     ","#   #"," # # ","  #  "," # # ","#   #","     "], ' ': ["  "] * 7,
 }
 def pack(items, maxw=1024, gap=2):
     """items: dict name->img; returns (W,H, pos dict)"""
@@ -489,6 +521,17 @@ def build_px_font():
                           glyphs={ch: dict(x=pos[ch][0], y=pos[ch][1], w=items[ch].width, h=items[ch].height, **meta[ch]) for ch in items})
     return fonts
 
+def sparkle_glyph(L, cx, cy, R):
+    """✦（光粒）— Cinzel 冇呢個字，程序畫：4 角星、金漸變、深邊、bloom（同 gold_text 一樣嘅處理）"""
+    W, H = L.size; pts = []
+    for i in range(8):
+        t = math.radians(-90 + i * 45); r = R if i % 2 == 0 else R * 0.34
+        pts.append((cx + r * math.cos(t), cy + r * math.sin(t)))
+    m = Image.new('L', (W, H), 0); ImageDraw.Draw(m).polygon(pts, fill=255)
+    ms = k.dilate(m, P(1.0))
+    put(L, solid((W, H), C['glow']), amul(gauss(ms, P(1.5)), 0.6)); put(L, solid((W, H), C['line']), ms)
+    put(L, vgrad((W, H), [(0, C['g_hi']), (0.5, hx('#FFE08A')), (1, hx('#E59A3E'))]), m)
+    hl = Image.new('L', (W, H), 0); ImageDraw.Draw(hl).ellipse([cx - R * .22, cy - R * .5, cx + R * .08, cy - R * .1], fill=200); put(L, solid((W, H), hx('#FFFFFF')), ImageChops.multiply(hl, m))
 def build_vec_font(name, chars, kind, size, style):
     items, meta = {}, {}
     f = K.font(kind, size)
@@ -496,12 +539,13 @@ def build_vec_font(name, chars, kind, size, style):
     for ch in chars:
         W, H = P(size * 1.6) + 2 * padx, P(size * 1.9)
         L = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-        if style == 'gold': gold_text(L, (padx, asc), ch, size, kind, anchor='ls', glow=0.6, stroke=1.0)
+        if style == 'gold' and ch == '✦': sparkle_glyph(L, padx + P(size * 0.42), asc - P(size * 0.36), P(size * 0.42))
+        elif style == 'gold': gold_text(L, (padx, asc), ch, size, kind, anchor='ls', glow=0.6, stroke=1.0)
         else: text(L, (padx, asc), ch, size, hx('#FFFFFF'), kind, anchor='ls', stroke=0.8, stroke_col=hx('#6A0A24'))
         im = L.reduce(2); a = np.asarray(im)[..., 3]; ys, xs = np.where(a > 3)
         x0, y0, x1, y1 = xs.min(), ys.min(), xs.max() + 1, ys.max() + 1
         items[ch] = im.crop((x0, y0, x1, y1))
-        adv = f.getlength(ch) / 2 + (P(0.4) / 2 if style == 'gold' else 0)
+        adv = (P(size * 0.92) / 2) if ch == '✦' else f.getlength(ch) / 2 + (P(0.4) / 2 if style == 'gold' else 0)
         meta[ch] = dict(xoff=int(x0 - padx / 2), yoff=int(y0 - asc / 2), adv=round(adv))
     sp = round(f.getlength(' ') / 2)
     W, H, pos = save_atlas(items, f'{OUT}/fonts/font_{name}@3x.png', 512)
@@ -511,8 +555,8 @@ def build_vec_font(name, chars, kind, size, style):
                 size=[W, H], smoothing=True, glyphs=g)
 
 FONTS = build_px_font()
-FONTS['gold'] = build_vec_font('gold', '0123456789+-×/%:.,!?', 'cin', 12, 'gold')
-FONTS['gold']['note'] = 'Cinzel Black 金漸變＋深邊＋bloom：貨幣、獎勵、等級（×0.75 = 9 art 都得）'
+FONTS['gold'] = build_vec_font('gold', '0123456789+-×/%:.,!?LVx✦', 'cin', 12, 'gold')
+FONTS['gold']['note'] = 'Cinzel Black 金漸變＋深邊＋bloom：貨幣、獎勵、等級（×0.75 = 9 art 都得）；✦＝光粒符號（part 2 程序畫），用法：「✦+12」「✦ LV.4 ✦」；L/V/x 俾 LV.4、x3'
 FONTS['round'] = build_vec_font('round', '0123456789+-×/!x', 'fred', 6.5, 'round')
 FONTS['round']['note'] = 'Fredoka 白字玫瑰深邊：紅點數字、飄字 +5'
 
@@ -545,7 +589,7 @@ def emit(scale):
         if e['stub']: icons[n]['stub'] = True
     return dict(image=f'ui_hd2d{tag}.png', size=[W, H], scale=scale, frames=frames), dict(image=f'icons_hd2d{tag}.png', size=[IW, IH], scale=scale, icons=icons)
 
-META = dict(version='hd2d-kit-1', generated='2026-11-01 HKT', generator='tools/build_ui_kit_hd2d.py (Pillow/numpy, no AI)',
+META = dict(version='hd2d-kit-1.1 (part 2)', generated='2026-11-01 HKT', generator='tools/build_ui_kit_hd2d.py (Pillow/numpy, no AI)',
             art_grid=[195, 422], top_ui_max=52, bottom_ui_max=100, coords='frame x/y/w/h = atlas px; box = logical art rect inside sprite (px); '
             'nine = [l,t,r,b] px from sprite edges (0 = 唔切嗰邊); slice 9 | 3h (固定高) | 3v (固定闊); pivot = sprite px; art = logical size in art px',
             draw='drawImage(atlas, x,y,w,h, dx - box[0]/s*a, dy - box[1]/s*a, w/s*a, h/s*a)  where s = atlas scale, a = art->device px',

@@ -136,6 +136,7 @@ def settings():
     ry = row(4, 'surprise', '懸浮小驚喜'); kit.draw(bd, 'toggle_track_on', x + 138, ry + 7); kit.drawc(bd, 'toggle_knob_on', x + 138 + 19.5, ry + 13.5)
     ry = row(5, 'water', '飲水間隔'); seg(x + 84, ry + 5.5, ['30', '60', '90'], 1, 80)
     ry = row(6, 'bedtime', '早瞓時間'); seg(x + 74, ry + 5.5, ['21', '22', '23', '0', '關'], 1, 90)
+    kit.draw(bd, 'scroll_fade_bot', x + 5, y + 214, w - 16, 10)   # part 2：仲有內容喺下面
     kit.draw(bd, 'scroll_track', x + w - 6, y + 18, 4, 214); kit.draw(bd, 'scroll_thumb', x + w - 6, y + 22, 4, 60)
     kit.draw(bd, 'divider', x + 14, y + h - 58, w - 28, 4); kit.drawc(bd, 'dock_gem', x + w / 2, y + h - 56)
     kit.draw(bd, 'btn_rose', x + 14, y + h - 40, 70, 20); kit.lbl(bd, 'btn_rose_重設', x + 49, y + h - 30.3)
@@ -165,6 +166,8 @@ def journal():
         else: kit.drawc(bd, 'card_qmark', cx0 + 25, cy0 + 22); kit.icon(bd, 'lock', cx0 + 42, cy0 + 8, 10)
         kit.text(bd, lb, cx0 + 25, cy0 + 47, 7.4, (244, 245, 252) if st == 2 else CREAM, 'sans', 0.8, (20, 24, 52))
         if st == 1: kit.drawc(bd, 'red_dot', cx0 + 47, cy0 + 3)
+    kit.draw(bd, 'scroll_glow_top', x + 8, y + 50, w - 16, 8, alpha=.9)      # part 2：拉過頂 overscroll
+    kit.draw(bd, 'scroll_fade_bot', x + 6, y + h - 22, w - 12, 10)
     return bd
 
 def stubs():
@@ -181,7 +184,7 @@ def stubs():
         if os.path.exists(p):
             im = Image.open(p).convert('RGBA'); sc = size / 24; im = im.resize((round(im.width * sc), round(im.height * sc)), Image.LANCZOS)
             bd_.alpha_composite(im, (round(cx * 3 - im.width / 2), round(cy * 3 - im.height / 2)))
-    kit.drawc(A, 'med22_navy', 16, 18); ic4b(A, 'back', 16, 18, 16)
+    kit.drawc(A, 'med22_navy', 16, 18); kit.icon(A, 'back', 16, 18, 15)
     kit.draw(A, 'plaque_tail_l', 97.5 - 42 - 9, 12.5); kit.draw(A, 'plaque_tail_r', 97.5 + 42 - 4, 12.5)
     kit.draw(A, 'plaque', 97.5 - 42, 8, 84, 17); kit.lbl(A, 'title_屋仔佈置', 97.5, 16.8)
     for (px, py, st) in ((60, 150, 'pri'), (130, 210, 'navy')):
@@ -222,10 +225,35 @@ def stubs():
     bd.alpha_composite(B, (W + 30, 0))
     return bd
 
+def levelup():
+    bd = dimbg(home(toast=False, bubble=False)); x, y, w, h = 14, 84, 167, 240
+    kit.drawc(bd, 'fx_veil', 97.5, y + 58, 2.4, .9)
+    popup_window(bd, x, y, w, h, '升級啦', plaque='plaque_pri')
+    kit.drawc(bd, 'toast_wing_l', x + w / 2 - 50, y - 1, alpha=.9); kit.drawc(bd, 'toast_wing_r', x + w / 2 + 50, y - 1, alpha=.9)
+    for i, sx in enumerate((-22, 0, 22)): kit.drawc(bd, 'star_on', 97.5 + sx, y + 18 - (4 if sx == 0 else 0), 1.3 if sx == 0 else 1.1)
+    kit.drawc(bd, 'med34_pri', 97.5, y + 52, 1.35)
+    hh = head().resize((34 * S, 34 * S), Image.NEAREST); bd.alpha_composite(hh, (round((97.5 - 17) * S), round((y + 52 - 17) * S)))
+    for (dx, dy, sc) in ((-30, -8, 1.0), (31, -14, .8), (26, 16, .7), (-27, 18, .6)): kit.drawc(bd, 'fx_spark', 97.5 + dx, y + 52 + dy, sc)
+    kit.btext(bd, 'gold', '✦ LV.4 ✦', 97.5, y + 92, 'm', 1.0)
+    kit.text(bd, '滴滴升到 LV.4 喇！', 97.5, y + 103, 8.2, CREAM, 'sans', 0.9)
+    kit.draw(bd, 'divider', x + 18, y + 110, w - 36, 4); kit.drawc(bd, 'dock_gem', 97.5, y + 112)
+    rows = [('light', '光粒', '✦+20', None), ('star', '星星碎', '+5', None), ('sprout', '新解鎖：小圃第 2 盆', None, 'new')]
+    for i, (ic, lb, val, tag) in enumerate(rows):
+        rx, ry = x + 10, y + 119 + i * 29
+        kit.draw(bd, 'panel_inset_sel' if tag else 'panel_inset', rx, ry, w - 20, 25)
+        kit.drawc(bd, 'med19_paper', rx + 12, ry + 12.5); kit.icon(bd, ic, rx + 12, ry + 12.5, 15)
+        kit.text(bd, lb, rx + 25, ry + 12.5, 7.8, CREAM, 'sans', 0.8, anchor='lm')
+        if val: kit.btext(bd, 'gold', val, rx + w - 40, ry + 16.6, 'm', .8)
+        if tag: kit.drawc(bd, 'red_dot_num', rx + w - 28, ry + 3); kit.btext(bd, 'round', '!', rx + w - 28, ry + 5.3, 'm')
+    kit.draw(bd, 'btn_pri', x + (w - 84) / 2, y + h - 30, 84, 20); kit.lbl(bd, 'btn_pri_好呀', x + w / 2, y + h - 20.3)
+    kit.drawc(bd, 'fx_spark', x + w / 2 + 40, y + h - 28, .9)
+    for (mx, my) in ((30, 60), (165, 120), (40, 200), (150, 300), (100, 80), (60, 330)): kit.drawc(bd, 'fx_mote', mx, my, alpha=.8)
+    return bd
+
 def overview():
     A = kit.A['frames']; groups = {}
     for n, f in A.items(): groups.setdefault(f['group'], []).append(n)
-    BW = 1800; bd = Image.new('RGBA', (BW, 4200), (22, 26, 52, 255)); x = y = 30; rowh = 0
+    BW = 1800; bd = Image.new("RGBA", (BW, 7000), (22, 26, 52, 255)); x = y = 30; rowh = 0
     def head_(t):
         nonlocal x, y, rowh
         x = 30; y += rowh + 40; rowh = 0
@@ -248,9 +276,9 @@ def overview():
         kit.icon(bd, n, (x + 50) / 3, (y + 40) / 3, 24); kit.text(bd, n, (x + 50) / 3, (y + 95) / 3, 4.6, (200, 206, 232), 'sans', 0)
         x += 130; rowh = max(rowh, 110)
     head_('字體：gold（Cinzel）／round（Fredoka）／px7 像素（1x 整數倍）／標題 serif、正文 sans')
-    kit.btext(bd, 'gold', '0123456789 +-×/%:', x / 3, (y + 45) / 3); kit.btext(bd, 'round', '0123456789+×!', 330, (y + 45) / 3)
+    kit.btext(bd, 'gold', '0123456789 +-×/%: ✦+20 ✦ LV.4 ✦', x / 3, (y + 45) / 3); kit.btext(bd, 'round', '0123456789+×!', 420, (y + 45) / 3)
     y += 70; kit.btext(bd, 'px7_ol', '0123456789 +-/%: LV.3 x3 22:30 1/2 ABCDEFGHIJKLMNOPQRSTUVWXYZ', 10, (y + 30) / 3)
-    y += 50; kit.btext(bd, 'px7', '0123456789 LV.3 22:30', 10, (y + 30) / 3)
+    y += 50; kit.btext(bd, 'px7', '0123456789 LV.3 22:30 ✦12', 10, (y + 30) / 3)
     y += 40; x = 30; rowh = 0
     for n, f in A.items():
         if f['group'] != 'label': continue
@@ -268,8 +296,9 @@ popup().save(f'{OUT}/mockups/popup_3x.png')
 settings().save(f'{OUT}/mockups/settings_3x.png')
 journal().save(f'{OUT}/mockups/journal_dex_3x.png')
 stubs().save(f'{OUT}/mockups/stubs_4b_5a_3x.png')
+levelup().save(f'{OUT}/mockups/levelup_3x.png')
 overview().save(f'{OUT}/overview_3x.png')
 # 1x readability check: home + popup scaled to a small phone (360 px wide = 1.846 art px)
-for n in ('home_3x', 'popup_3x', 'settings_3x'):
+for n in ('home_3x', 'popup_3x', 'settings_3x', 'levelup_3x'):
     im = Image.open(f'{OUT}/mockups/{n}.png'); im.resize((360, 779), Image.LANCZOS).save(f'{OUT}/mockups/{n.replace("_3x", "")}_smallphone_360w.png')
 print('mockups ok')

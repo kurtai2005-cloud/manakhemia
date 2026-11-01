@@ -8,33 +8,33 @@
     1024,
     2048
    ],
-   "count": 190
+   "count": 206
   },
   "icons_hd2d@3x": {
    "size": [
     1024,
     1024
    ],
-   "count": 53
+   "count": 56
   },
   "ui_hd2d@2x": {
    "size": [
     1024,
     1024
    ],
-   "count": 190
+   "count": 206
   },
   "icons_hd2d@2x": {
    "size": [
     1024,
     512
    ],
-   "count": 53
+   "count": 56
   },
   "fonts": {
-   "px7": 55,
-   "px7_ol": 55,
-   "gold": 21,
+   "px7": 56,
+   "px7_ol": 56,
+   "gold": 25,
    "round": 17
   },
   "layout": {
@@ -43,7 +43,8 @@
    "bottom": 74,
    "garden_pct": 73.5
   },
-  "doc_refs_checked": 250
+  "doc_refs_checked": 295,
+  "reskin_items": 33
  },
  "contrast": [
   {
@@ -176,6 +177,36 @@
    "pair": "prog_fill_teal vs 槽",
    "ratio": 16.24,
    "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "pill_pri 字描邊 vs pill 底",
+   "ratio": 4.91,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "pill_sec 字描邊 vs pill 底",
+   "ratio": 4.84,
+   "need": 3.0,
+   "ok": true
+  },
+  {
+   "pair": "pill_navy cream 字 vs pill 底",
+   "ratio": 11.72,
+   "need": 7.0,
+   "ok": true
+  },
+  {
+   "pair": "med24_dis 鎖 icon 白 vs 停用底（形狀可讀）",
+   "ratio": 1.8,
+   "need": 1.5,
+   "ok": true
+  },
+  {
+   "pair": "med24_dis vs med24_navy（一眼分到停用）",
+   "ratio": 6.48,
+   "need": 2.0,
    "ok": true
   },
   {

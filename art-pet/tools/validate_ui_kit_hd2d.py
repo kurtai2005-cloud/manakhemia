@@ -54,7 +54,10 @@ REQ = ['panel_glass', 'panel_paper', 'panel_inset', 'panel_inset_sel', 'banner_e
        'red_dot', 'red_dot_num', 'toast', 'toast_wing_l', 'bubble', 'bubble_tail', 'thought_dots', 'plaque', 'plaque_tail_l', 'plaque_tail_r', 'plaque_gem',
        'toggle_track_on', 'toggle_track_off', 'toggle_knob_on', 'check_on', 'check_off', 'seg_bg', 'seg_on', 'scroll_thumb', 'divider', 'star_on', 'star_off',
        'stamp_done', 'timeline_dot', 'hint_arrow', 'fx_ripple', 'fx_spark', 'fx_mote', 'fx_sweep', 'fx_veil',
-       'med28_pri', 'med28_pri_p', 'med24_navy', 'med22_navy', 'med25_pri', 'med18_navy_in', 'med16_navy', 'med20_pri', 'med19_paper', 'med11_navy', 'med30_pri']
+       'med28_pri', 'med28_pri_p', 'med24_navy', 'med22_navy', 'med25_pri', 'med18_navy_in', 'med16_navy', 'med20_pri', 'med19_paper', 'med11_navy', 'med30_pri',
+       # part 2
+       'med24_dis', 'pill_navy', 'scroll_fade_top', 'scroll_fade_bot', 'scroll_glow_top', 'scroll_glow_bot',
+       'lbl_pill_pri_擺上去', 'lbl_pill_sec_擺緊', 'lbl_pill_navy_清空', 'lbl_pill_dis_委託獎', 'lbl_pill_dis_訪客禮', 'lbl_act_佈置', 'lbl_title_升級啦']
 for n in REQ:
     if n not in FR: err(f'missing frame {n}')
 STUB5A = ['family_crest', 'tree_node', 'tree_node_sel', 'tree_line_h', 'tree_line_v', 'tree_joint']
@@ -62,7 +65,7 @@ for n in STUB5A:
     if n not in FR or not FR[n].get('stub'): err(f'5a stub {n} missing/not flagged')
 ICREQ = ['feed', 'clean', 'sleep', 'light', 'star', 'gift', 'heart_bunny', 'play_cat', 'book_bear', 'gear_chick', 'sprout', 'dex', 'diary', 'bond', 'surprise', 'minigame',
          'cabinet', 'badge', 'mail', 'info', 'lock', 'check', 'sound', 'quality', 'water', 'bedtime', 'reset', 'hint', 'mg_tease', 'mg_stardust', 'mg_leaf', 'mg_hide', 'mg_firefly',
-         'house', 'decorate', 'furniture', 'family_tree', 'family_level']
+         'house', 'decorate', 'furniture', 'family_tree', 'family_level', 'back', 'plus', 'clear']
 for n in ICREQ:
     if n not in IC: err(f'missing icon {n}')
     elif not os.path.exists(f'{KIT}/icons/ic_{n}@3x.png'): err(f'missing icons/ic_{n}@3x.png')
@@ -76,6 +79,7 @@ for nm, F in FJ.items():
         if g['adv'] <= 0: err(f'font {nm} {ch!r} adv<=0')
         if g['w'] and (g['x'] + g['w'] > im.width or g['y'] + g['h'] > im.height): err(f'font {nm} {ch!r} out of bounds')
     need = '0123456789+-/' if nm != 'round' else '0123456789+'
+    if nm in ('gold', 'px7', 'px7_ol'): need += '✦'
     for ch in need:
         if ch not in F['glyphs']: err(f'font {nm} missing {ch!r}')
 INFO['fonts'] = {k: len(v['glyphs']) for k, v in FJ.items()}
@@ -110,6 +114,10 @@ chk('ink vs panel_paper', hx('#3A2840'), centre('panel_paper'), 7.0)
 chk('分頁字 vs dock', hx('#EFE6D0'), centre('dock_bar'), 7.0)
 for nk in ('feed', 'mood', 'clean', 'energy', 'low'): chk(f'need_fill_{nk} vs 槽', centre(f'need_fill_{nk}'), hx('#0B0E24'), 3.0)
 chk('prog_fill_teal vs 槽', centre('prog_fill_teal'), hx('#0B0E24'), 3.0)
+for kd, st in (('pri', '#7A3A10'), ('sec', '#0F4A5E')): chk(f'pill_{kd} 字描邊 vs pill 底', hx(st), centre(f'pill_{kd}'), 3.0)
+chk('pill_navy cream 字 vs pill 底', hx('#FFF5DC'), centre('pill_navy'), 7.0)
+chk('med24_dis 鎖 icon 白 vs 停用底（形狀可讀）', hx('#F4F5FC'), centre('med24_dis'), 1.5)
+chk('med24_dis vs med24_navy（一眼分到停用）', centre('med24_dis'), centre('med24_navy'), 2.0)
 chk('px7_ol 字 vs 描邊', hx('#FFF5DC'), hx('#1A1230'), 7.0)
 
 # ---- docs reference check ----
@@ -144,7 +152,23 @@ INFO['doc_refs_checked'] = refs
 # ---- folder hygiene ----
 for root, dirs, files in os.walk(KIT):
     if '_backups' in root.split(os.sep) or '_backups' in dirs: err('_backups found in kit')
-for m in ('mockups/home_3x.png', 'mockups/popup_3x.png', 'overview_3x.png'):
+# ---- 4b re-skin pack (part 2) ----
+RS = f'{KIT}/reskin_4b'; H4 = os.path.normpath(f'{KIT}/../../sprites/series2_house')
+if not os.path.exists(f'{RS}/reskin_map.json'): err('missing reskin_4b/reskin_map.json')
+else:
+    RM = json.load(open(f'{RS}/reskin_map.json')); base = os.path.normpath(f'{KIT}/../..')
+    for it in RM['items']:
+        o, r = f"{base}/{it['orig']}", f"{base}/{it['reskin']}"
+        if not os.path.exists(o): err(f"reskin orig missing {it['orig']}"); continue
+        if not os.path.exists(r): err(f"reskin png missing {it['reskin']}"); continue
+        so, sr = Image.open(o).size, Image.open(r).size
+        if so != sr or list(sr) != it['size']: err(f"reskin size mismatch {it['id']} {so} vs {sr}")
+    import hashlib
+    for f, h in RM.get('untouched4bSha1', {}).items():
+        p_ = f'{H4}/ui/{f}'
+        if not os.path.exists(p_) or hashlib.sha1(open(p_, 'rb').read()).hexdigest() != h: err(f'4b ui file changed since reskin build: {f}')
+    INFO['reskin_items'] = len(RM['items'])
+for m in ('mockups/home_3x.png', 'mockups/popup_3x.png', 'mockups/levelup_3x.png', 'overview_3x.png'):
     if not os.path.exists(f'{KIT}/{m}'): err(f'missing {m}')
     else:
         w, h = Image.open(f'{KIT}/{m}').size

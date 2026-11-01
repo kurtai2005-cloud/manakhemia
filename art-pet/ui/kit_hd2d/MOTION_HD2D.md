@@ -83,7 +83,7 @@
 | 520＋40·i | 卡／列 i | pop [.5,1.1,.97,1]，240ms | oCubic |
 | 700–900 | 頁框 | `fx_sweep` 掃一次 | linear |
 - 返回：倒播（場景 parallax 回 0，HUD／行動掣 dy 回 0，α 0→1，oCubic），600ms，冇卡 pop。
-- SFX：t=0 `sfx_ui8_transition_heart_close`（光幕收埋舊畫面），t=420 `sfx_ui8_transition_heart_open`（新頁出現）；返回只播 `sfx_ui8_transition_heart_open`。
+- SFX（遊音 README v3 已改名）：t=0 `sfx_ui8_transition_veil_close`（光幕收埋舊畫面），t=420 `sfx_ui8_transition_veil_open`（新頁出現）；返回只播 `sfx_ui8_transition_veil_open`。
 
 ## 7. 其他小動態
 | 元素 | 動態 | SFX |
@@ -91,14 +91,16 @@
 | toggle | knob dx 13 art，120ms oBack；track crossfade | `sfx_ui8_toggle_on`／`sfx_ui8_toggle_off` |
 | seg 分段 | `seg_on` 滑去新格 140ms oCubic | `sfx_ui8_tap_a` |
 | 需要條 | 數值變：fill 寬 300ms oCubic；補滿：`fx_sweep` 掃一次；<20%：換 `need_fill_low`，icon 每 2s 輕跳 1 art | — |
-| 委託完成 | `stamp_done` scale 1.6→.9→1（160ms）＋`fx_spark` | `sfx_ui8_confirm` |
+| 委託完成 | `stamp_done` scale 1.6→.9（0–100ms）→1（100–160ms）＋`fx_spark` | `sfx_ui8_confirm` |
 | hint | `hint_arrow` dy 0→2→0 1s loop | — |
 
 ## 8. SFX 對照＋建議改名（只係建議，遊音話事；冇改佢哋檔案）
+> 檔案長度以遊音 README §7.11 為準（下表長度係 v1 舊數，只供參考）。卡 pop 聲只播頭 3 張；pointerup 唔加聲。
+
 | 用喺 | 而家名（README §7.11） | 長度 | 建議名 | 原因 |
 |---|---|---|---|---|
-| §6 轉場收 | `sfx_ui8_transition_heart_close` | 0.847s | → transition_veil_close | HD-2D 係金光幕唔係心形 |
-| §6 轉場開 | `sfx_ui8_transition_heart_open` | 0.836s | → transition_veil_open | 同上；建議剪到 ≤0.6s 配 900ms 轉場 |
+| §6 轉場收 | `sfx_ui8_transition_veil_close` | 0.570s | ✅ 遊音 v3 已採用 | 舊 heart_close 停用 |
+| §6 轉場開 | `sfx_ui8_transition_veil_open` | 0.570s | ✅ 遊音 v3 已採用 | 舊 heart_open 停用 |
 | §1 tab | `sfx_ui8_tab_switch_a`/`sfx_ui8_tab_switch_b` | 0.129s | 唔使改 | |
 | §3 掣 | `sfx_ui8_btn_press_a`/`sfx_ui8_btn_press_b`、`sfx_ui8_btn_sparkle` | 0.099／0.277s | 唔使改 | |
 | §2 popup | `sfx_ui8_popup_open`/`sfx_ui8_popup_close` | 0.273／0.179s | 唔使改 | 長度啱 420／200ms |
@@ -107,3 +109,24 @@
 | 確認／取消／錯 | `sfx_ui8_confirm`/`sfx_ui8_cancel`/`sfx_ui8_error` | .309／.169／.210s | 唔使改 | |
 | toggle | `sfx_ui8_toggle_on`/`sfx_ui8_toggle_off` | 0.079s | 唔使改 | |
 | 舊 sfx_tap／confirm／cancel／error／hit | 保留做 fallback | | | |
+
+## 10. Part 2 新增動態
+### 10.1 升級 popup（mockups/levelup_3x.png）
+| t (ms) | 元素 | 動作 |
+|---|---|---|
+| 0 | 背景 dim | α 0→.55 200ms；`sfx_ui8_popup_open` |
+| 0–320 | 窗 `panel_glass`＋`plaque_pri`「升級啦」 | scale .86→1.04→1 easeOutBack；`toast_wing_l`/`toast_wing_r` 由內向外滑 6 art |
+| 200–600 | 寵物圓章 `med34_pri`＋`fx_veil` | 圓章 pop .6→1.08→1；veil α 0→.9→.6 breathe 2s loop |
+| 360 | 3 粒 `star_on` | 左→中→右 每粒 +80ms pop .4→1.2→1；每粒 `sfx_ui8_btn_sparkle` |
+| 600 | 金字「✦ LV.4 ✦」 | 數字 3→4 翻牌（y −4→0, α），兩邊 ✦ 旋 0→90° 一下；`sfx_ui8_confirm` |
+| 760–1000 | 獎勵行（`panel_inset`） | 每行由下 +6 art 淡入，間隔 90ms；「✦+20」數字由 0 滾到 20（400ms），每跳 4 一下 `sfx_ui8_coin` |
+| 1000 | 解鎖行（`panel_inset_sel`＋`red_dot_num`） | 紅點 `badge_wiggle`（MOTION §7）；`sfx_ui8_badge_wiggle` |
+| loop | `fx_spark`／`fx_mote` | spark 1.2s 閃，mote 慢飄 dy −8 art/3s |
+| 撳「好呀」 | `btn_pri` | 掣 §3 press；`sfx_ui8_btn_press_a`；窗 scale 1→.92 α→0 180ms；`sfx_ui8_popup_close` |
+- 細機（360w／`smallphone`）：同一 art 座標，窗高 240 art 以內，唔使改排位。
+- Reduced motion：跳過 scale/滾數，只做 α 淡入 150ms。
+
+### 10.2 長 list 邊緣（`scroll_fade_top`／`scroll_fade_bot`／`scroll_glow_top`／`scroll_glow_bot`）
+- 靜態：list 上／下仲有內容就顯示 fade（α 1；scrollTop=0 時 top fade α 0，到底時 bot fade α 0；變化 120ms）。
+- Overscroll：拉過頂／底時顯示 glow，α = min(1, pull/24 art)，放手 200ms 淡走；唔播聲（避免手指拖嘅時候連聲）。
+- fade 用 3h slice，闊度跟 list；glow 疊喺 fade 上面。

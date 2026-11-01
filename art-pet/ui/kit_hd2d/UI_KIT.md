@@ -7,15 +7,16 @@
 ## 0. 檔案
 | 路徑 | 內容 |
 |---|---|
-| `atlas/ui_hd2d@3x.png/.json`、`@2x` | 137 個 frame（面板、掣、圓章、HUD、dock、紅點、toast、泡泡、標題帶、控件、FX、5a stub）＋53 個預渲染字牌 `lbl_*` |
-| `atlas/icons_hd2d@3x.png/.json`、`@2x` | 53 個 icon（24 art 方格，含光暈 pad）；`icons/ic_<名>@3x.png` 單張版 |
+| `atlas/ui_hd2d@3x.png/.json`、`@2x` | 143 個 frame（面板、掣、圓章、HUD、dock、紅點、toast、泡泡、標題帶、控件、FX、5a stub）＋63 個預渲染字牌 `lbl_*`（part 2 數） |
+| `atlas/icons_hd2d@3x.png/.json`、`@2x` | 56 個 icon（24 art 方格，含光暈 pad）；`icons/ic_<名>@3x.png` 單張版 |
 | `fonts/font_px7@1x.png`、`font_px7_ol@1x.png` | 5×7 像素數字字（1x 原生，整數倍 nearest 放大）；`_ol`＝1px 深描邊版 |
 | `fonts/font_gold@3x.png`、`font_round@3x.png`、`fonts_hd2d.json` | 金色標題數字（Cinzel Black 12 art）、紅點數字（Fredoka 6.5，白字玫瑰描邊）＋ metrics（adv、yoff、lineH、base） |
 | `layout_hd2d.json` | 主畫面所有座標（art 單位）＝本文 §1 |
-| `mockups/home_3x.png`、`popup_3x.png`、`settings_3x.png`、`journal_dex_3x.png`、`stubs_4b_5a_3x.png` | 3x mockup（全部由 atlas 拼出，唔係另外畫） |
+| `mockups/home_3x.png`、`popup_3x.png`、`settings_3x.png`、`journal_dex_3x.png`、`stubs_4b_5a_3x.png`、`levelup_3x.png`（part 2） | 3x mockup（全部由 atlas 拼出，唔係另外畫） |
 | `mockups/*_smallphone_360w.png` | 細機 1x 預覽（360px 闊，約 1.85 px/art） |
 | `overview_3x.png` | 全 kit 總覽板 |
-| `MOTION_HD2D.md` | 6 種動態＋SFX 對照 |
+| `MOTION_HD2D.md` | 6 種動態＋SFX 對照＋§10 升級／list 邊緣 |
+| `reskin_4b/` | 4b 屋仔 UI 重砌包＋`reskin_map.json`＋前後對比圖（§6） |
 | `validation.json` | validator 結果 |
 
 ## 1. 佈局（slim 版，最終高度）
@@ -63,7 +64,7 @@
 | 星級／勾選 | `star_on`/`star_off`、`check_on`/`check_off` | 9／12 | — | `sfx_ui8_toggle_on` |
 | 教學提示（P1-2） | `hint_arrow`、`fx_ripple` | — | 上下 2 art 浮動 1s loop | — |
 | 標題 | `plaque`（紫）/`plaque_pri`（橙）＋`lbl_title_*`（serif ≥9.2） | h17 | 隨 popup | — |
-| 畫面轉場 | `fx_veil`、`fx_sweep`、`fx_mote`、`fx_spark` | — | MOTION 6 | `sfx_ui8_transition_heart_close`/`sfx_ui8_transition_heart_open` |
+| 畫面轉場 | `fx_veil`、`fx_sweep`、`fx_mote`、`fx_spark` | — | MOTION 6 | `sfx_ui8_transition_veil_close`/`sfx_ui8_transition_veil_open` |
 
 ## 3. 字同對比度（修「細字睇唔到」）
 | 用途 | 字 | 大小（art） | 顏色 | 對比 |
@@ -106,17 +107,29 @@
 | decorate.done | (62,398) 71×16 pri | `btn16_pri`＋sans「完成」 |
 | toastFirst | (34,140) w128 | `toast` |
 
-**建議 4b re-skin（由 4b 負責人/下一輪做，我冇郁 4b 檔）：**
-1. `btn_done@3x.png`：serif「完成」→ `btn16_pri`＋sans 9 白字深描邊（`lbl_btn_pri_完成`）。
-2. `card_locked_example@3x.png`：灰卡＋serif「委託獎」→ `card_locked`（`#363C66`）＋`pill_dis`＋sans 深字（對比 7:1）。
-3. `card_*_example`（equipped/owned/buy/clear）：pill 字改 sans（`lbl_btn_sec_擺緊`、`lbl_btn_pri_擺上去`），框用 `card`/`card_sel`。
-4. `sheet_panel@3x.png` → `panel_glass_plain`（9-slice，同 popup 一致金邊）。
-5. `tab_*_idle/_sel` → `med22_navy`/`med25_pri`＋4b 自己嘅家具 icon（icon 保留）。
-6. `pin_*` → `med16_navy`/`med20_pri`。
-7. 4b 嘅 btn_back、btn_house、btn_decorate → `med22_navy`、`med24_navy`、`med30_pri`；佈置字牌改 sans `label_plate`。
-8. 4b 嘅 btn_house_locked：kit 未有 med24 停用版 → 暫用 `med28_dis` 縮 0.86 或 part 2 補。
-4b 自己嘅 icon（bed/table/wall/rug/window/lamp/back/plus/clear）風格已一致，唔使改。
+**4b re-skin 包（part 2 做咗；4b 檔一個都冇改）：** `reskin_4b/`，對照表 `reskin_4b/reskin_map.json`，前後對比 `reskin_4b/preview_before_after_3x.png`，重跑 `python3 tools/build_ui_reskin_4b.py`。
+- 33 個 PNG，**同 4b 原檔同名、同 canvas 尺寸、同中心** → 遊程將路徑由 `orig` 換 `reskin` 就得，layout.json 數字唔使改。
+- btn_done → `btn16_pri`＋`lbl_btn_pri_完成`；sheet_panel → `panel_glass_plain`＋`sheet_handle`。
+- `card_*_example` → `card`/`card_sel`/`card_locked`＋`card_spot`＋家具縮圖（只讀 4b furniture）＋sans 名＋`pill_sec`/`pill_pri`/`pill_dis`/`pill_navy`（新 `lbl_pill_*` 字）；買＝`ic:star`＋gold 價錢；鎖＝暗剪影＋`ic:lock`；收起＝`ic:clear`。
+- `tab_*` → `med22_navy`/`med25_pri`＋4b 家具類別 icon（保留）；`pin_*` → `med16_navy`/`med20_pri`（選中加 `fx_ripple`）＋`ic:plus`。
+- btn_back/btn_house/btn_decorate → `med22_navy`＋`ic:back`／`med24_navy`＋`ic:house`／`med30_pri`＋`ic:decorate`＋`label_plate`＋`lbl_act_佈置`。
+- btn_house_locked → 新 `med24_dis`＋`ic:house`（α.55）＋`ic:lock`。
+- `icon_back/plus/clear/lock/house/decorate`：kit 版（map 標 optional，用唔用由遊程/4b 話事）；`icon_bed/table/wall/rug/window/lamp` 照用 4b。
 
-## 7. 已知限制（part 2）
-- 未有：med24_dis、back/plus/clear icon（4b 有）、捲動 list 嘅 overscroll 光、升級 popup 全版 mockup。
-- `ic:reset` 箭頭頭形略怪；`gold` 字冇 ✦。
+## 6b. Part 2 新零件
+| 零件 | 用途 |
+|---|---|
+| `med24_dis` | 停用／上鎖圓章（屋仔未解鎖）；疊 `ic:house` α.55＋`ic:lock` 右下 |
+| `ic:back`、`ic:plus`、`ic:clear` | 返回、加、清空（同 4b 意思一樣，kit 畫風） |
+| `scroll_fade_top`/`scroll_fade_bot` | 長 list 上下仲有內容嘅漸隱邊（3h slice）；見 MOTION §10.2 |
+| `scroll_glow_top`/`scroll_glow_bot` | overscroll 金光 |
+| `pill_navy` | 中性動作 pill（清空） |
+| `lbl_pill_*`（擺上去／擺緊／清空／委託獎／訪客禮）、`lbl_act_佈置`/屋仔/委託、`lbl_title_佈置屋仔`/屋仔 | 預烤字 |
+| 字 `✦` | gold／px7／px7_ol 都有（程序畫四角星）；用喺光粒獎勵「✦+20」、升級「✦ LV.4 ✦」、chip 數字前綴 |
+| `ic:reset` | 箭頭頭修正（↻ 清楚） |
+| `mockups/levelup_3x.png` | 升級 popup 全版；動態 MOTION §10.1 |
+
+## 7. 已知限制（part 3 可做）
+- 升級 popup 嘅寵物用 48px 概念 sprite 放大（nearest），正式版要 4c 嘅大頭像。
+- `ic:decorate` 係調色板；4b 自己嘅掃把＋星 icon 都夾，二揀一由遊程/Kurt 定。
+- 5a 家族仍係 stub；`fx_veil` 喺深底下好淡（設計如此，engine 可加 α）。

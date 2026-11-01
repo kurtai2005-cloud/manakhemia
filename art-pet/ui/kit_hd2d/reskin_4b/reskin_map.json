@@ -1,0 +1,601 @@
+{
+ "version": "reskin_4b-1.0",
+ "note": "遊美 HD-2D kit 重砌 4b 屋仔 UI。全部同 4b 原檔同名、同 canvas 尺寸、同中心 → 遊程 只要將 asset 路徑由 orig 換做 reskin（或者將 reskin_4b/*.png 覆蓋落 sprites/series2_house/ui/，由 4b 負責人決定），layout.json 數字唔使改。4b 檔冇改（建包時 sha1 前後對過）。",
+ "swap": "drop-in：同名、同尺寸、同 anchor",
+ "layoutChanges": "無",
+ "keptFrom4b": [
+  "icon_bed",
+  "icon_table",
+  "icon_wall",
+  "icon_rug",
+  "icon_window",
+  "icon_lamp",
+  "layout.json"
+ ],
+ "untouched4bSha1": {
+  "btn_back@3x.png": "906dd083c87b13a9888a0d23362d5aded1699025",
+  "btn_decorate@3x.png": "7c3298227b51d5758258f303d2680b6868575414",
+  "btn_done@3x.png": "a818ac49fe0b89f58b063ec546ef89f2a7517948",
+  "btn_house@3x.png": "ee9a2e23d8dd0f79db413186f2c7206bc97f4ab0",
+  "btn_house_locked@3x.png": "b0f1fa1e319d73e82f2c1b3611c3c015a1a603ff",
+  "card_buy_example@3x.png": "49277bd1267927ed1bf235832240863c4a65265e",
+  "card_clear_example@3x.png": "596aa2616c4aca1144ab8e7bb81f29f20931f0cf",
+  "card_equipped_example@3x.png": "62fa62f95001cf3f595fb0f09ec8ed152308098b",
+  "card_locked_example@3x.png": "5503dbdfa37709001530c2303f1e1b916d0431b5",
+  "card_owned_example@3x.png": "84d43d28054342fcf197cd7a70b0dd05a870a6b9",
+  "icon_back@3x.png": "667455b035864946263320952a390092dc2c1faf",
+  "icon_bed@3x.png": "99e4bd67fafa6062217595f970cb697e51dbb41a",
+  "icon_clear@3x.png": "12be11773389ee22dc58f6b9c9f6c9e6fc4a5d38",
+  "icon_decorate@3x.png": "0e1d199c4ca9255848bb130626ff662b94046a41",
+  "icon_house@3x.png": "9509790ce9f7faaf18b66cede48ed265c64e7770",
+  "icon_lamp@3x.png": "fc45d5271bc60b50a24c1dfe5e3c7930f06c63f7",
+  "icon_lock@3x.png": "4c96791266a04ce4fcf08df958472af9515d88dd",
+  "icon_plus@3x.png": "52491c45ddf854ae84d3b0ae0963f66b11fbcd2b",
+  "icon_rug@3x.png": "d9aeb40afbee2ad85378ab402aae0b0660a1e9c1",
+  "icon_table@3x.png": "e3b9b1356c363f7d6036a96d6207f2d8c19a8b02",
+  "icon_wall@3x.png": "9ed8d8c177d20be45ef031f63571194a329add33",
+  "icon_window@3x.png": "b501beb590f870796cee53c8715dc1d34b531c82",
+  "layout.json": "e80035794895e06df0dcee4dcaba7794ca1a3cd2",
+  "pin_filled_idle@3x.png": "58c808713c4cd4e0da781936155e323708815f87",
+  "pin_filled_sel@3x.png": "c31c02f3845c69eebdd7045d165d281fca15b76a",
+  "pin_plus_idle@3x.png": "ba0a5e44f1569462853db33384c89f5bb23b7da9",
+  "pin_plus_sel@3x.png": "fe661dd14eef6049a6d68044a05d68c27434fdff",
+  "sheet_panel@3x.png": "721205cdff470eab90837032c97895528a2df972",
+  "tab_bed_idle@3x.png": "3d4e4b4d1d4b8750177d1d374350aa5d9f86ca60",
+  "tab_bed_sel@3x.png": "dca4847028baa3c8e36bc1cade36a2c16ef3d6b5",
+  "tab_lamp_idle@3x.png": "34ff67d6d81d9497a33cfc607bbb64cdb75d45ea",
+  "tab_lamp_sel@3x.png": "9d21c52bd06fa2a2a952558a6a6aaa665d05e5b7",
+  "tab_rug_idle@3x.png": "b9a7c1349dbdb7bce608a7ec546f7bc800af4a21",
+  "tab_rug_sel@3x.png": "2166a4a17fb97636725d08b4da916fe8716ee6fd",
+  "tab_table_idle@3x.png": "06fedec7ef539c4c86d590aad9adeb78fcc5e4d4",
+  "tab_table_sel@3x.png": "0886ea2cbc64797d15810b05ee20233ed03a0420",
+  "tab_wall_idle@3x.png": "2d62a112dde7e74acded1b076e045f17f220385b",
+  "tab_wall_sel@3x.png": "66ee2cfcda74f745f1e3bc763d8aafd97866e77b",
+  "tab_window_idle@3x.png": "8473b46878ab4fe81741cc90c887601a628618c3",
+  "tab_window_sel@3x.png": "e7f71b9db526f5c03029dfb76c0c3fdb9e444879"
+ },
+ "items": [
+  {
+   "id": "btn_back",
+   "orig": "sprites/series2_house/ui/btn_back@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/btn_back@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med22_navy",
+    "ic:back"
+   ],
+   "change": "d22 金框海軍藍圓章＋kit icon（同 HUD 其他圓章一致）",
+   "optional": false
+  },
+  {
+   "id": "btn_house",
+   "orig": "sprites/series2_house/ui/btn_house@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/btn_house@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med24_navy",
+    "ic:house"
+   ],
+   "change": "d24 金框海軍藍圓章＋kit icon（同 HUD 其他圓章一致）",
+   "optional": false
+  },
+  {
+   "id": "btn_house_locked",
+   "orig": "sprites/series2_house/ui/btn_house_locked@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/btn_house_locked@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med24_dis",
+    "ic:house α.55",
+    "ic:lock"
+   ],
+   "change": "part 2 新 med24_dis 停用圓章；屋 icon α.55＋右下鎖",
+   "optional": false
+  },
+  {
+   "id": "btn_decorate",
+   "orig": "sprites/series2_house/ui/btn_decorate@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/btn_decorate@3x.png",
+   "size": [
+    120,
+    124
+   ],
+   "anchor": "center x；圓心 y=17 art（51px）",
+   "kitParts": [
+    "med30_pri",
+    "ic:decorate",
+    "label_plate",
+    "lbl_act_佈置"
+   ],
+   "change": "d30 橙金圓章＋kit 字牌（同 HUD 動作掣一致）；label 中心＝圓心下 19 art（= layout labelY）",
+   "optional": false
+  },
+  {
+   "id": "pin_plus_idle",
+   "orig": "sprites/series2_house/ui/pin_plus_idle@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/pin_plus_idle@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med16_navy",
+    "ic:plus"
+   ],
+   "change": "d16 kit 圓章＋part 2 新 ic:plus",
+   "optional": false
+  },
+  {
+   "id": "pin_filled_idle",
+   "orig": "sprites/series2_house/ui/pin_filled_idle@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/pin_filled_idle@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med16_navy"
+   ],
+   "change": "d16 kit 圓章底（engine 照舊疊 slot icon）",
+   "optional": false
+  },
+  {
+   "id": "pin_plus_sel",
+   "orig": "sprites/series2_house/ui/pin_plus_sel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/pin_plus_sel@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med20_pri",
+    "ic:plus",
+    "fx_ripple"
+   ],
+   "change": "d20 kit 圓章＋part 2 新 ic:plus",
+   "optional": false
+  },
+  {
+   "id": "pin_filled_sel",
+   "orig": "sprites/series2_house/ui/pin_filled_sel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/pin_filled_sel@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med20_pri",
+    "fx_ripple"
+   ],
+   "change": "d20 kit 圓章底（engine 照舊疊 slot icon）",
+   "optional": false
+  },
+  {
+   "id": "tab_bed_idle",
+   "orig": "sprites/series2_house/ui/tab_bed_idle@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_bed_idle@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med22_navy",
+    "4b icon_bed（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_bed_sel",
+   "orig": "sprites/series2_house/ui/tab_bed_sel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_bed_sel@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med25_pri",
+    "4b icon_bed（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_table_idle",
+   "orig": "sprites/series2_house/ui/tab_table_idle@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_table_idle@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med22_navy",
+    "4b icon_table（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_table_sel",
+   "orig": "sprites/series2_house/ui/tab_table_sel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_table_sel@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med25_pri",
+    "4b icon_table（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_wall_idle",
+   "orig": "sprites/series2_house/ui/tab_wall_idle@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_wall_idle@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med22_navy",
+    "4b icon_wall（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_wall_sel",
+   "orig": "sprites/series2_house/ui/tab_wall_sel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_wall_sel@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med25_pri",
+    "4b icon_wall（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_rug_idle",
+   "orig": "sprites/series2_house/ui/tab_rug_idle@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_rug_idle@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med22_navy",
+    "4b icon_rug（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_rug_sel",
+   "orig": "sprites/series2_house/ui/tab_rug_sel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_rug_sel@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med25_pri",
+    "4b icon_rug（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_window_idle",
+   "orig": "sprites/series2_house/ui/tab_window_idle@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_window_idle@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med22_navy",
+    "4b icon_window（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_window_sel",
+   "orig": "sprites/series2_house/ui/tab_window_sel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_window_sel@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med25_pri",
+    "4b icon_window（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_lamp_idle",
+   "orig": "sprites/series2_house/ui/tab_lamp_idle@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_lamp_idle@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med22_navy",
+    "4b icon_lamp（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "tab_lamp_sel",
+   "orig": "sprites/series2_house/ui/tab_lamp_sel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/tab_lamp_sel@3x.png",
+   "size": [
+    102,
+    102
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "med25_pri",
+    "4b icon_lamp（只讀）"
+   ],
+   "change": "kit 圓章底（idle 海軍藍 d22／sel 橙金 d25）；家具類別 icon 沿用 4b",
+   "optional": false
+  },
+  {
+   "id": "btn_done",
+   "orig": "sprites/series2_house/ui/btn_done@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/btn_done@3x.png",
+   "size": [
+    240,
+    72
+   ],
+   "anchor": "center（box 71×16）",
+   "kitParts": [
+    "btn16_pri",
+    "lbl_btn_pri_完成"
+   ],
+   "change": "16 art 細身主掣（同 popup 掣一致）",
+   "optional": false
+  },
+  {
+   "id": "sheet_panel",
+   "orig": "sprites/series2_house/ui/sheet_panel@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/sheet_panel@3x.png",
+   "size": [
+    600,
+    450
+   ],
+   "anchor": "center（box 187×138）",
+   "kitParts": [
+    "panel_glass_plain",
+    "sheet_handle"
+   ],
+   "change": "海軍藍玻璃 panel＋金邊＋拉柄（同 popup 一致）",
+   "optional": false
+  },
+  {
+   "id": "card_equipped_example",
+   "orig": "sprites/series2_house/ui/card_equipped_example@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/card_equipped_example@3x.png",
+   "size": [
+    186,
+    222
+   ],
+   "anchor": "center（box 54×66；縮圖 cy +20、名 +44、pill +51 h11 inset 4＝layout.cards）",
+   "kitParts": [
+    "card_sel",
+    "card_spot",
+    "furniture/bed_leaf",
+    "pill_sec",
+    "lbl_pill_sec_擺緊",
+    "dock_gem"
+   ],
+   "change": "揀中卡金光框＋右上寶石＋藍綠 pill",
+   "optional": false
+  },
+  {
+   "id": "card_owned_example",
+   "orig": "sprites/series2_house/ui/card_owned_example@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/card_owned_example@3x.png",
+   "size": [
+    186,
+    222
+   ],
+   "anchor": "center（box 54×66；縮圖 cy +20、名 +44、pill +51 h11 inset 4＝layout.cards）",
+   "kitParts": [
+    "card",
+    "card_spot",
+    "furniture/lamp_mushroom",
+    "pill_pri",
+    "lbl_pill_pri_擺上去"
+   ],
+   "change": "kit 卡＋橙 pill",
+   "optional": false
+  },
+  {
+   "id": "card_buy_example",
+   "orig": "sprites/series2_house/ui/card_buy_example@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/card_buy_example@3x.png",
+   "size": [
+    186,
+    222
+   ],
+   "anchor": "center（box 54×66；縮圖 cy +20、名 +44、pill +51 h11 inset 4＝layout.cards）",
+   "kitParts": [
+    "card",
+    "card_spot",
+    "furniture/bed_cloud",
+    "pill_pri",
+    "ic:star",
+    "font gold"
+   ],
+   "change": "kit 卡＋橙 pill（星星碎 icon＋金字價錢）；唔夠碎 → 換 pill_dis",
+   "optional": false
+  },
+  {
+   "id": "card_locked_example",
+   "orig": "sprites/series2_house/ui/card_locked_example@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/card_locked_example@3x.png",
+   "size": [
+    186,
+    222
+   ],
+   "anchor": "center（box 54×66；縮圖 cy +20、名 +44、pill +51 h11 inset 4＝layout.cards）",
+   "kitParts": [
+    "card_locked",
+    "furniture/win_star（剪影）",
+    "ic:lock",
+    "pill_dis",
+    "lbl_pill_dis_委託獎"
+   ],
+   "change": "灰卡＋暗剪影＋鎖＋來源 pill（訪客禮＝lbl_pill_dis_訪客禮）",
+   "optional": false
+  },
+  {
+   "id": "card_clear_example",
+   "orig": "sprites/series2_house/ui/card_clear_example@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/card_clear_example@3x.png",
+   "size": [
+    186,
+    222
+   ],
+   "anchor": "center（box 54×66；縮圖 cy +20、名 +44、pill +51 h11 inset 4＝layout.cards）",
+   "kitParts": [
+    "card",
+    "card_spot",
+    "ic:clear",
+    "pill_navy",
+    "lbl_pill_navy_清空"
+   ],
+   "change": "kit 卡＋part 2 新 ic:clear＋新 pill_navy",
+   "optional": false
+  },
+  {
+   "id": "icon_back",
+   "orig": "sprites/series2_house/ui/icon_back@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/icon_back@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "ic:back"
+   ],
+   "change": "可選：kit icon 同名替換（有樣仔面＋暖色描邊）；4b 原 icon 都夾，遊程/4b 話事",
+   "optional": true
+  },
+  {
+   "id": "icon_plus",
+   "orig": "sprites/series2_house/ui/icon_plus@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/icon_plus@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "ic:plus"
+   ],
+   "change": "可選：kit icon 同名替換（有樣仔面＋暖色描邊）；4b 原 icon 都夾，遊程/4b 話事",
+   "optional": true
+  },
+  {
+   "id": "icon_clear",
+   "orig": "sprites/series2_house/ui/icon_clear@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/icon_clear@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "ic:clear"
+   ],
+   "change": "可選：kit icon 同名替換（有樣仔面＋暖色描邊）；4b 原 icon 都夾，遊程/4b 話事",
+   "optional": true
+  },
+  {
+   "id": "icon_lock",
+   "orig": "sprites/series2_house/ui/icon_lock@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/icon_lock@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "ic:lock"
+   ],
+   "change": "可選：kit icon 同名替換（有樣仔面＋暖色描邊）；4b 原 icon 都夾，遊程/4b 話事",
+   "optional": true
+  },
+  {
+   "id": "icon_house",
+   "orig": "sprites/series2_house/ui/icon_house@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/icon_house@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "ic:house"
+   ],
+   "change": "可選：kit icon 同名替換（有樣仔面＋暖色描邊）；4b 原 icon 都夾，遊程/4b 話事",
+   "optional": true
+  },
+  {
+   "id": "icon_decorate",
+   "orig": "sprites/series2_house/ui/icon_decorate@3x.png",
+   "reskin": "ui/kit_hd2d/reskin_4b/icon_decorate@3x.png",
+   "size": [
+    90,
+    90
+   ],
+   "anchor": "center",
+   "kitParts": [
+    "ic:decorate"
+   ],
+   "change": "可選：kit icon 同名替換（有樣仔面＋暖色描邊）；4b 原 icon 都夾，遊程/4b 話事",
+   "optional": true
+  }
+ ]
+}

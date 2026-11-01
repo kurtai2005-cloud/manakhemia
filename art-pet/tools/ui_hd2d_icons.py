@@ -122,11 +122,23 @@ def _(ic):
     ic.part(E((11.0, 12.0, 13.0, 14.0)), PINK, gloss=False, outline=False)
 @reg('reset')
 def _(ic):
+    # part 2：圓弧 300° 留缺口喺右上，箭咀切線方向（順時針）、底邊貼住弧端 → 唔再似「歪咗嘅三角」
+    cx = cy = 12.4; R0, R1 = 9.0, 5.2; a0, a1 = 10, 268        # arc runs clockwise a0 -> a1 (PIL angles, y down)
     def arc(d, q):
-        d.ellipse([q(2.5), q(2.5), q(21.5), q(21.5)], fill=255); d.ellipse([q(6.6), q(6.6), q(17.4), q(17.4)], fill=0)
-        d.polygon([(q(12), q(12)), (q(24), q(1)), (q(24), q(8))], fill=0)
+        d.pieslice([q(cx - R0), q(cy - R0), q(cx + R0), q(cy + R0)], a0, a1, fill=255)
+        d.ellipse([q(cx - R1), q(cy - R1), q(cx + R1), q(cy + R1)], fill=0)
+        for a in (a0, a1):                                       # round caps
+            rm, t = (R0 + R1) / 2, math.radians(a); hw = (R0 - R1) / 2
+            ex, ey = cx + rm * math.cos(t), cy + rm * math.sin(t)
+            if a == a0: d.ellipse([q(ex - hw), q(ey - hw), q(ex + hw), q(ey + hw)], fill=255)
     ic.part(arc, PEACH, gloss=False)
-    ic.part(POLY([(16.0, 0.8), (23.4, 6.4), (15.0, 9.6)]), PEACH, gloss=False)
+    t = math.radians(a1); rm = (R0 + R1) / 2
+    ex, ey = cx + rm * math.cos(t), cy + rm * math.sin(t)
+    tx, ty = -math.sin(t), math.cos(t)                           # clockwise tangent
+    nx, ny = math.cos(t), math.sin(t)                            # radial
+    hw, ln = 5.0, 5.8
+    ic.part(POLY([(ex + nx * hw - tx * 1.4, ey + ny * hw - ty * 1.4), (ex + tx * ln, ey + ty * ln), (ex - nx * hw - tx * 1.4, ey - ny * hw - ty * 1.4)]), PEACH, gloss=False, round_=0.5)
+    ic.face(cx, cy + 0.6, 0.42)
 @reg('hint')
 def _(ic):
     ic.part(RR((8.0, 16.0, 16.0, 22.8), 1.6), GREY, gloss=False)
@@ -234,6 +246,25 @@ def _(ic):
     ic.part(POLY([(3.0, 6.5), (6.8, 3.0), (12, 6.0), (17.2, 3.0), (21.0, 6.5), (21.0, 13.0), (12, 23.0), (3.0, 13.0)]), LILAC, round_=0.5)
     ic.part(POLY([(6.0, 1.2), (8.6, 4.4), (12, 0.4), (15.4, 4.4), (18.0, 1.2), (17.4, 6.6), (6.6, 6.6)]), GOLD, gloss=False)
     ic.face(12, 12.6, 0.6, 'happy')
+
+# --- part 2：通用 back / plus / clear（取代 4b 自帶版，同一套金邊） ---
+@reg('back')
+def _(ic):
+    ic.part(POLY([(1.6, 12.0), (11.0, 3.2), (11.0, 8.2), (21.6, 8.2), (21.6, 15.8), (11.0, 15.8), (11.0, 20.8)]), PEACH, round_=1.2)
+    ic.face(15.6, 12.2, 0.48)
+@reg('plus')
+def _(ic):
+    ic.part(POLY([(9.0, 2.0), (15.0, 2.0), (15.0, 9.0), (22.0, 9.0), (22.0, 15.0), (15.0, 15.0), (15.0, 22.0), (9.0, 22.0), (9.0, 15.0), (2.0, 15.0), (2.0, 9.0), (9.0, 9.0)]), MINT, round_=1.4)
+    ic.face(12, 12.4, 0.48)
+@reg('clear')
+def _(ic):
+    def x_(d, q):
+        w = q(6.2) - q(0); r = (q(3.1) - q(0))
+        for (x0, y0, x1, y1) in ((4.6, 4.6, 19.4, 19.4), (19.4, 4.6, 4.6, 19.4)):
+            d.line([(q(x0), q(y0)), (q(x1), q(y1))], fill=255, width=int(w))
+            for x, y in ((x0, y0), (x1, y1)): d.ellipse([q(x) - r, q(y) - r, q(x) + r, q(y) + r], fill=255)
+    ic.part(x_, LILAC, round_=0.6)
+    ic.face(12, 12.2, 0.4)
 
 _prev = k.icon
 def icon3(th, kind):
