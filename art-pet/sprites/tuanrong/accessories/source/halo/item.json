@@ -1,0 +1,196 @@
+{
+ "id": "halo",
+ "name": "燈泡光環",
+ "slot": "bulb",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 0,
+  "steps": [
+   [
+    0,
+    -1
+   ],
+   [
+    0,
+    -2
+   ],
+   [
+    0,
+    -3
+   ],
+   [
+    0,
+    -4
+   ],
+   [
+    0,
+    -5
+   ],
+   [
+    0,
+    -6
+   ],
+   [
+    0,
+    -7
+   ],
+   [
+    0,
+    -8
+   ]
+  ],
+  "coverMax": 0.3,
+  "floatOk": true,
+  "anyOverlap": true
+ },
+ "views": {
+  "front": {
+   "rx3.5": {
+    "lab": "lab_front_rx3.5.png",
+    "w": 9,
+    "h": 5,
+    "pivot": [
+     4.0,
+     2.0
+    ],
+    "halo": {
+     "rx": 3.5,
+     "ry": 1.6
+    }
+   },
+   "rx4": {
+    "lab": "lab_front_rx4.png",
+    "w": 9,
+    "h": 5,
+    "pivot": [
+     4.0,
+     2.0
+    ],
+    "halo": {
+     "rx": 4.0,
+     "ry": 1.6
+    }
+   },
+   "rx4.5": {
+    "lab": "lab_front_rx4.5.png",
+    "w": 11,
+    "h": 5,
+    "pivot": [
+     5.0,
+     2.0
+    ],
+    "halo": {
+     "rx": 4.5,
+     "ry": 1.8
+    }
+   },
+   "rx5": {
+    "lab": "lab_front_rx5.png",
+    "w": 11,
+    "h": 5,
+    "pivot": [
+     5.0,
+     2.0
+    ],
+    "halo": {
+     "rx": 5.0,
+     "ry": 2.0
+    }
+   },
+   "rx5.5": {
+    "lab": "lab_front_rx5.5.png",
+    "w": 13,
+    "h": 7,
+    "pivot": [
+     6.0,
+     3.0
+    ],
+    "halo": {
+     "rx": 5.5,
+     "ry": 2.2
+    }
+   },
+   "rx6": {
+    "lab": "lab_front_rx6.png",
+    "w": 13,
+    "h": 7,
+    "pivot": [
+     6.0,
+     3.0
+    ],
+    "halo": {
+     "rx": 6.0,
+     "ry": 2.4
+    }
+   },
+   "rx6.5": {
+    "lab": "lab_front_rx6.5.png",
+    "w": 15,
+    "h": 7,
+    "pivot": [
+     7.0,
+     3.0
+    ],
+    "halo": {
+     "rx": 6.5,
+     "ry": 2.6
+    }
+   },
+   "rx7": {
+    "lab": "lab_front_rx7.png",
+    "w": 15,
+    "h": 7,
+    "pivot": [
+     7.0,
+     3.0
+    ],
+    "halo": {
+     "rx": 7.0,
+     "ry": 2.8
+    }
+   }
+  }
+ },
+ "parts": {},
+ "formOverrides": {},
+ "size": {
+  "mode": "halo",
+  "rule": "rx＝attach bulb.fw/2 × sc，揀最近一級（0.5px 一級；環唔縮放）；中心＝浮點＋u·ry"
+ },
+ "place": {
+  "anchor": "float",
+  "clampTop": true
+ },
+ "materials": {
+  "#ffd45e": {
+   "name": "gold",
+   "shade": "#d98f2e",
+   "base": "#ffd45e",
+   "hi": "#fffbd0"
+  },
+  "#d98f2e": {
+   "name": "goldd",
+   "shade": "#d98f2e",
+   "base": "#d98f2e",
+   "hi": "#ffd45e"
+  },
+  "#ffd45f": {
+   "name": "haloh",
+   "shade": "#ffd45e",
+   "base": "#ffd45e",
+   "hi": "#ffd45e",
+   "hole": true
+  },
+  "#f3eefa": {
+   "name": "white",
+   "shade": "#ffefc4",
+   "base": "#f3eefa",
+   "hi": "#f3eefa"
+  }
+ }
+}

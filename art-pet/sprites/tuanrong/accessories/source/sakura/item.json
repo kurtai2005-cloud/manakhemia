@@ -1,0 +1,337 @@
+{
+ "id": "sakura",
+ "name": "櫻花髮飾",
+ "slot": "side_l",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 3,
+  "steps": [
+   [
+    -1,
+    0
+   ],
+   [
+    -1,
+    1
+   ],
+   [
+    -1,
+    -1
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    -2,
+    0
+   ],
+   [
+    -2,
+    2
+   ],
+   [
+    -2,
+    -2
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    -3,
+    0
+   ],
+   [
+    -3,
+    3
+   ],
+   [
+    -3,
+    -3
+   ],
+   [
+    0,
+    3
+   ],
+   [
+    -4,
+    0
+   ],
+   [
+    -4,
+    4
+   ],
+   [
+    -4,
+    -4
+   ],
+   [
+    0,
+    4
+   ]
+  ],
+  "coverMax": 0.3,
+  "floatOk": false,
+  "anyOverlap": false
+ },
+ "views": {
+  "front": {
+   "S": {
+    "lab": "lab_front_S.png",
+    "w": 7,
+    "h": 7,
+    "pivot": [
+     3.0,
+     3.0
+    ]
+   },
+   "M": {
+    "lab": "lab_front_M.png",
+    "w": 11,
+    "h": 11,
+    "pivot": [
+     8.0,
+     5.0
+    ],
+    "anchors": {
+     "bud": [
+      11,
+      10
+     ]
+    },
+    "parts": [
+     {
+      "id": "bud",
+      "at": "bud",
+      "size": "*",
+      "angK": 1.0,
+      "sizeClass": [
+       "L"
+      ]
+     }
+    ]
+   },
+   "L": {
+    "lab": "lab_front_L.png",
+    "w": 13,
+    "h": 13,
+    "pivot": [
+     9.0,
+     6.0
+    ],
+    "anchors": {
+     "bud": [
+      13,
+      12
+     ]
+    },
+    "parts": [
+     {
+      "id": "bud",
+      "at": "bud",
+      "size": "*",
+      "angK": 1.0,
+      "sizeClass": [
+       "L"
+      ]
+     }
+    ]
+   }
+  },
+  "side": {
+   "S": {
+    "lab": "lab_side_S.png",
+    "w": 7,
+    "h": 7,
+    "pivot": [
+     2.0,
+     3.0
+    ]
+   },
+   "M": {
+    "lab": "lab_side_M.png",
+    "w": 11,
+    "h": 11,
+    "pivot": [
+     5.73,
+     5.0
+    ],
+    "anchors": {
+     "bud": [
+      7.93,
+      10
+     ]
+    },
+    "parts": [
+     {
+      "id": "bud",
+      "at": "bud",
+      "size": "*",
+      "angK": 1.0,
+      "sizeClass": [
+       "L"
+      ]
+     }
+    ]
+   },
+   "L": {
+    "lab": "lab_side_L.png",
+    "w": 13,
+    "h": 13,
+    "pivot": [
+     6.76,
+     6.0
+    ],
+    "anchors": {
+     "bud": [
+      9.82,
+      12
+     ]
+    },
+    "parts": [
+     {
+      "id": "bud",
+      "at": "bud",
+      "size": "*",
+      "angK": 1.0,
+      "sizeClass": [
+       "L"
+      ]
+     }
+    ]
+   }
+  },
+  "back": {
+   "S": {
+    "lab": "lab_back_S.png",
+    "w": 7,
+    "h": 7,
+    "pivot": [
+     3.0,
+     3.0
+    ]
+   },
+   "M": {
+    "lab": "lab_back_M.png",
+    "w": 11,
+    "h": 11,
+    "pivot": [
+     8.0,
+     5.0
+    ],
+    "anchors": {
+     "bud": [
+      11,
+      10
+     ]
+    },
+    "parts": [
+     {
+      "id": "bud",
+      "at": "bud",
+      "size": "*",
+      "angK": 1.0,
+      "sizeClass": [
+       "L"
+      ]
+     }
+    ]
+   },
+   "L": {
+    "lab": "lab_back_L.png",
+    "w": 13,
+    "h": 13,
+    "pivot": [
+     9.0,
+     6.0
+    ],
+    "anchors": {
+     "bud": [
+      13,
+      12
+     ]
+    },
+    "parts": [
+     {
+      "id": "bud",
+      "at": "bud",
+      "size": "*",
+      "angK": 1.0,
+      "sizeClass": [
+       "L"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "parts": {
+  "bud": {
+   "*": {
+    "lab": "lab_part_bud.png",
+    "pivot": [
+     0,
+     0
+    ]
+   }
+  }
+ },
+ "formOverrides": {},
+ "size": {
+  "mode": "rel",
+  "ref": "hw",
+  "k": 0.46,
+  "minW": 7,
+  "odd": true,
+  "ws": [
+   0.85,
+   1.15
+  ]
+ },
+ "place": {
+  "anchor": "side_l",
+  "rot": -10,
+  "mirrorOnBack": true,
+  "faceGuard": {
+   "step": [
+    -1,
+    -1
+   ],
+   "max": 6,
+   "mirrorFlipX": true
+  }
+ },
+ "slotScaleFrom": "side_r",
+ "materials": {
+  "#ffd45e": {
+   "name": "gold",
+   "shade": "#d98f2e",
+   "base": "#ffd45e",
+   "hi": "#fffbd0"
+  },
+  "#f28b9b": {
+   "name": "pink",
+   "shade": "#d9667a",
+   "base": "#f28b9b",
+   "hi": "#f3eefa"
+  },
+  "#d9667a": {
+   "name": "pinkd",
+   "shade": "#d9667a",
+   "base": "#d9667a",
+   "hi": "#d9667a"
+  },
+  "#6bbf6a": {
+   "name": "leaf",
+   "shade": "#3a7d4e",
+   "base": "#6bbf6a",
+   "hi": "#6bbf6a"
+  }
+ }
+}

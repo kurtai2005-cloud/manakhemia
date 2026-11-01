@@ -1,0 +1,417 @@
+{
+ "id": "cherry",
+ "name": "櫻桃髮夾",
+ "slot": "side_r",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 3.5,
+  "steps": [
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    -1
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    -2
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    3,
+    3
+   ],
+   [
+    3,
+    -3
+   ],
+   [
+    0,
+    3
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    4,
+    -4
+   ],
+   [
+    0,
+    4
+   ]
+  ],
+  "coverMax": 0.3,
+  "floatOk": false,
+  "anyOverlap": false
+ },
+ "views": {
+  "front": {
+   "S": {
+    "lab": "lab_front_S.png",
+    "w": 9,
+    "h": 4,
+    "pivot": [
+     4.0,
+     2.5
+    ],
+    "anchors": {
+     "hang": [
+      4.0,
+      2
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   },
+   "M": {
+    "lab": "lab_front_M.png",
+    "w": 13,
+    "h": 5,
+    "pivot": [
+     6.0,
+     3.5
+    ],
+    "anchors": {
+     "hang": [
+      6.0,
+      3
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   },
+   "L": {
+    "lab": "lab_front_L.png",
+    "w": 17,
+    "h": 7,
+    "pivot": [
+     8.0,
+     5.5
+    ],
+    "anchors": {
+     "hang": [
+      8.0,
+      5
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   }
+  },
+  "side": {
+   "S": {
+    "lab": "lab_side_S.png",
+    "w": 9,
+    "h": 4,
+    "pivot": [
+     3.0,
+     2.5
+    ],
+    "anchors": {
+     "hang": [
+      3.0,
+      2
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   },
+   "M": {
+    "lab": "lab_side_M.png",
+    "w": 13,
+    "h": 5,
+    "pivot": [
+     4.0,
+     3.5
+    ],
+    "anchors": {
+     "hang": [
+      4.0,
+      3
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   },
+   "L": {
+    "lab": "lab_side_L.png",
+    "w": 17,
+    "h": 7,
+    "pivot": [
+     6.0,
+     5.5
+    ],
+    "anchors": {
+     "hang": [
+      6.0,
+      5
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   }
+  },
+  "back": {
+   "S": {
+    "lab": "lab_back_S.png",
+    "w": 9,
+    "h": 4,
+    "pivot": [
+     4.0,
+     2.5
+    ],
+    "anchors": {
+     "hang": [
+      4.0,
+      2
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   },
+   "M": {
+    "lab": "lab_back_M.png",
+    "w": 13,
+    "h": 5,
+    "pivot": [
+     6.0,
+     3.5
+    ],
+    "anchors": {
+     "hang": [
+      6.0,
+      3
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   },
+   "L": {
+    "lab": "lab_back_L.png",
+    "w": 17,
+    "h": 7,
+    "pivot": [
+     8.0,
+     5.5
+    ],
+    "anchors": {
+     "hang": [
+      8.0,
+      5
+     ]
+    },
+    "parts": [
+     {
+      "id": "dangle",
+      "at": "hang",
+      "angK": 1.0
+     }
+    ]
+   }
+  }
+ },
+ "parts": {
+  "dangle": {
+   "S": {
+    "lab": "lab_part_dangle_S.png",
+    "pivot": [
+     5.0,
+     0.0
+    ]
+   },
+   "M": {
+    "lab": "lab_part_dangle_M.png",
+    "pivot": [
+     7.0,
+     0.0
+    ]
+   },
+   "L": {
+    "lab": "lab_part_dangle_L.png",
+    "pivot": [
+     9.0,
+     0.0
+    ]
+   }
+  }
+ },
+ "formOverrides": {},
+ "new": true,
+ "size": {
+  "mode": "rel",
+  "ref": "hw",
+  "k": 0.5,
+  "minW": 7,
+  "odd": true,
+  "ws": [
+   0.85,
+   1.15
+  ]
+ },
+ "place": {
+  "anchor": "side_r",
+  "rot": 8,
+  "mirrorOnBack": true,
+  "faceGuard": {
+   "step": [
+    1,
+    -1
+   ],
+   "max": 6,
+   "mirrorFlipX": true
+  }
+ },
+ "slotScaleFrom": "side_r",
+ "swing": {
+  "src": "side_r",
+  "kx": 6.0,
+  "ky": 3.0,
+  "decay": 0.55,
+  "lim": 28.0,
+  "maxd": 14.0,
+  "apply": "dangle",
+  "gain": 1.0
+ },
+ "partFallback": [
+  {
+   "rot": 0,
+   "scale": 1.0
+  },
+  {
+   "rot": 12,
+   "scale": 1.0
+  },
+  {
+   "rot": -12,
+   "scale": 1.0
+  },
+  {
+   "rot": 24,
+   "scale": 1.0
+  },
+  {
+   "rot": 0,
+   "scale": 0.8
+  },
+  {
+   "rot": 12,
+   "scale": 0.8
+  },
+  {
+   "rot": -12,
+   "scale": 0.8
+  },
+  {
+   "rot": 24,
+   "scale": 0.8
+  }
+ ],
+ "materials": {
+  "#e5584d": {
+   "name": "red",
+   "shade": "#a33f4a",
+   "base": "#e5584d",
+   "hi": "#f28b9b"
+  },
+  "#3a7d4e": {
+   "name": "leafd",
+   "shade": "#3a7d4e",
+   "base": "#3a7d4e",
+   "hi": "#3a7d4e"
+  },
+  "#6bbf6a": {
+   "name": "leaf",
+   "shade": "#3a7d4e",
+   "base": "#6bbf6a",
+   "hi": "#6bbf6a"
+  },
+  "#a33f4a": {
+   "name": "redd",
+   "shade": "#a33f4a",
+   "base": "#a33f4a",
+   "hi": "#a33f4a"
+  },
+  "#f3eefa": {
+   "name": "white",
+   "shade": "#ffefc4",
+   "base": "#f3eefa",
+   "hi": "#f3eefa"
+  }
+ }
+}

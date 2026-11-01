@@ -1,0 +1,5205 @@
+{
+ "items": {
+  "straw": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4524,
+   "okFrames": 4524,
+   "okPct": 100.0,
+   "meanPixelDiffPct": 29.47,
+   "meanIoU": 0.944,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 44.705,
+     "iouSum": 173.7
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 40.406,
+     "iouSum": 179.464
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 75.967,
+     "iouSum": 168.372
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 106,
+     "ok": 106,
+     "diffSum": 46.901,
+     "iouSum": 100.684
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 44.188,
+     "iouSum": 162.801
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 32.155,
+     "iouSum": 170.468
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 231,
+     "ok": 231,
+     "diffSum": 32.635,
+     "iouSum": 223.758
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 56.95,
+     "iouSum": 169.966
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 64.125,
+     "iouSum": 164.363
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 61.963,
+     "iouSum": 160.367
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 72.495,
+     "iouSum": 175.271
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 35.934,
+     "iouSum": 178.511
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 48.499,
+     "iouSum": 178.203
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 55.861,
+     "iouSum": 174.179
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 37.181,
+     "iouSum": 178.026
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 69.364,
+     "iouSum": 170.227
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 73.286,
+     "iouSum": 169.039
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 68.214,
+     "iouSum": 163.323
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 16.85,
+     "iouSum": 178.371
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 65.917,
+     "iouSum": 173.894
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 56.719,
+     "iouSum": 172.324
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 25.751,
+     "iouSum": 175.662
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 67.065,
+     "iouSum": 165.959
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 68.335,
+     "iouSum": 172.519
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 71.603,
+     "iouSum": 169.989
+    }
+   },
+   "problemFrames": [],
+   "visibilityMismatch": []
+  },
+  "bow": {
+   "clips": 1055,
+   "visAgree": 1050,
+   "visAgreePct": 99.53,
+   "frames": 4644,
+   "okFrames": 4638,
+   "okPct": 99.87,
+   "meanPixelDiffPct": 18.68,
+   "meanIoU": 0.924,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 85.77,
+     "iouSum": 152.671
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 45.6,
+     "iouSum": 170.98
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 9.798,
+     "iouSum": 186.376
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 112,
+     "ok": 112,
+     "diffSum": 22.657,
+     "iouSum": 103.646
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 45.939,
+     "iouSum": 161.645
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 67.401,
+     "iouSum": 153.082
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 237,
+     "ok": 237,
+     "diffSum": 20.579,
+     "iouSum": 228.955
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 40,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 55.693,
+     "iouSum": 152.01
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 25.188,
+     "iouSum": 172.73
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 29.568,
+     "iouSum": 170.312
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 11.849,
+     "iouSum": 185.795
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 51.272,
+     "iouSum": 163.088
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 42,
+     "frames": 184,
+     "ok": 179,
+     "diffSum": 24.966,
+     "iouSum": 174.122
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 27.071,
+     "iouSum": 180.795
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 10.454,
+     "iouSum": 185.814
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 18.778,
+     "iouSum": 183.446
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 15.153,
+     "iouSum": 184.513
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 24.727,
+     "iouSum": 181.244
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 35.703,
+     "iouSum": 177.713
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 189,
+     "diffSum": 31.273,
+     "iouSum": 179.23
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 42,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 27.81,
+     "iouSum": 174.114
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 64.485,
+     "iouSum": 159.5
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 57.978,
+     "iouSum": 161.499
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 29.254,
+     "iouSum": 180.458
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 178,
+     "ok": 178,
+     "diffSum": 28.304,
+     "iouSum": 167.846
+    }
+   },
+   "problemFrames": [
+    {
+     "form": "evo_still_radiant",
+     "frame": "emo_hungry_01",
+     "iou": 0.565,
+     "cd": 2.54,
+     "ar": 1.157,
+     "diff": 0.893,
+     "dxy": [
+      1.89,
+      -1.7
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "emo_sleepy_01",
+     "iou": 0.565,
+     "cd": 2.54,
+     "ar": 1.157,
+     "diff": 0.893,
+     "dxy": [
+      1.89,
+      -1.7
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "droop_02",
+     "iou": 0.565,
+     "cd": 2.54,
+     "ar": 1.157,
+     "diff": 0.893,
+     "dxy": [
+      1.89,
+      -1.7
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "sick_01",
+     "iou": 0.565,
+     "cd": 2.54,
+     "ar": 1.157,
+     "diff": 0.893,
+     "dxy": [
+      1.89,
+      -1.7
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "sick_02",
+     "iou": 0.565,
+     "cd": 2.54,
+     "ar": 1.157,
+     "diff": 0.893,
+     "dxy": [
+      1.89,
+      -1.7
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "play_01",
+     "iou": 0.538,
+     "cd": 2.77,
+     "ar": 1.212,
+     "diff": 0.877,
+     "dxy": [
+      2.07,
+      -1.83
+     ]
+    }
+   ],
+   "visibilityMismatch": [
+    {
+     "form": "evo_guard_lumi",
+     "clip": "play",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "play_05: 會遮五官",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_still_radiant",
+     "clip": "play",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "play_05: 會遮五官",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_still_crystal",
+     "clip": "play",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "play_05: 會遮五官",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_still_ember",
+     "clip": "play",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "play_05: 會遮五官",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_still_ember",
+     "clip": "rush",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "rush_03: 會遮五官",
+     "whyBaked": null
+    }
+   ]
+  },
+  "scarf": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4674,
+   "okFrames": 4650,
+   "okPct": 99.49,
+   "meanPixelDiffPct": 0.39,
+   "meanIoU": 0.998,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.078,
+     "iouSum": 189.58
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 188,
+     "diffSum": 0.489,
+     "iouSum": 189.661
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 188,
+     "diffSum": 0.743,
+     "iouSum": 189.482
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 112,
+     "ok": 112,
+     "diffSum": 0.0,
+     "iouSum": 112.0
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.278,
+     "iouSum": 180.883
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.0,
+     "iouSum": 181.0
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 237,
+     "ok": 237,
+     "diffSum": 0.497,
+     "iouSum": 236.771
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.0,
+     "iouSum": 181.0
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.084,
+     "iouSum": 180.952
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.094,
+     "iouSum": 180.95
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.477,
+     "iouSum": 189.984
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.248,
+     "iouSum": 189.88
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.324,
+     "iouSum": 189.871
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.467,
+     "iouSum": 189.845
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.218,
+     "iouSum": 189.868
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 189,
+     "diffSum": 0.442,
+     "iouSum": 189.731
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.062,
+     "iouSum": 189.962
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.292,
+     "iouSum": 189.855
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 171,
+     "diffSum": 4.496,
+     "iouSum": 186.172
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 7.79,
+     "iouSum": 185.441
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.269,
+     "iouSum": 189.908
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    }
+   },
+   "problemFrames": [
+    {
+     "form": "radiant",
+     "frame": "lookup_tip_02",
+     "iou": 0.868,
+     "cd": 3.08,
+     "ar": 0.868,
+     "diff": 0.163,
+     "dxy": [
+      2.68,
+      1.52
+     ]
+    },
+    {
+     "form": "radiant",
+     "frame": "lookup_tip_03",
+     "iou": 0.886,
+     "cd": 2.62,
+     "ar": 0.886,
+     "diff": 0.148,
+     "dxy": [
+      2.31,
+      1.24
+     ]
+    },
+    {
+     "form": "soft",
+     "frame": "lookup_tip_02",
+     "iou": 0.803,
+     "cd": 4.84,
+     "ar": 0.803,
+     "diff": 0.229,
+     "dxy": [
+      4.35,
+      2.13
+     ]
+    },
+    {
+     "form": "soft",
+     "frame": "lookup_tip_03",
+     "iou": 0.831,
+     "cd": 4.32,
+     "ar": 0.831,
+     "diff": 0.194,
+     "dxy": [
+      3.94,
+      1.75
+     ]
+    },
+    {
+     "form": "evo_still_shroom",
+     "frame": "lookup_tip_02",
+     "iou": 0.849,
+     "cd": 3.07,
+     "ar": 0.849,
+     "diff": 0.177,
+     "dxy": [
+      2.69,
+      1.47
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "yawn_02",
+     "iou": 0.835,
+     "cd": 2.78,
+     "ar": 0.835,
+     "diff": 0.183,
+     "dxy": [
+      2.39,
+      1.43
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "yawn_03",
+     "iou": 0.829,
+     "cd": 2.77,
+     "ar": 0.829,
+     "diff": 0.189,
+     "dxy": [
+      2.38,
+      1.41
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "emo_happy_02",
+     "iou": 0.868,
+     "cd": 2.15,
+     "ar": 0.868,
+     "diff": 0.149,
+     "dxy": [
+      1.87,
+      1.05
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "emo_wantplay_02",
+     "iou": 0.868,
+     "cd": 2.15,
+     "ar": 0.868,
+     "diff": 0.149,
+     "dxy": [
+      1.87,
+      1.05
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "emo_cuddly_01",
+     "iou": 0.877,
+     "cd": 2.19,
+     "ar": 0.877,
+     "diff": 0.139,
+     "dxy": [
+      1.91,
+      1.06
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "emo_surprised_02",
+     "iou": 0.839,
+     "cd": 2.71,
+     "ar": 0.839,
+     "diff": 0.178,
+     "dxy": [
+      2.38,
+      1.3
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "play_03",
+     "iou": 0.857,
+     "cd": 2.09,
+     "ar": 0.857,
+     "diff": 0.17,
+     "dxy": [
+      1.92,
+      0.84
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "wake_02",
+     "iou": 0.829,
+     "cd": 2.77,
+     "ar": 0.829,
+     "diff": 0.189,
+     "dxy": [
+      2.38,
+      1.41
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "wake_03",
+     "iou": 0.807,
+     "cd": 3.37,
+     "ar": 0.807,
+     "diff": 0.21,
+     "dxy": [
+      2.89,
+      1.73
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "catch_reach_02",
+     "iou": 0.798,
+     "cd": 3.43,
+     "ar": 0.798,
+     "diff": 0.219,
+     "dxy": [
+      2.92,
+      1.79
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "catch_reach_03",
+     "iou": 0.795,
+     "cd": 3.4,
+     "ar": 0.795,
+     "diff": 0.223,
+     "dxy": [
+      2.92,
+      1.75
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "swat_04",
+     "iou": 0.868,
+     "cd": 2.16,
+     "ar": 0.868,
+     "diff": 0.149,
+     "dxy": [
+      1.93,
+      0.96
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "sneeze_03",
+     "iou": 0.8,
+     "cd": 3.1,
+     "ar": 0.8,
+     "diff": 0.221,
+     "dxy": [
+      2.62,
+      1.66
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "sneeze_04",
+     "iou": 0.765,
+     "cd": 4.11,
+     "ar": 0.765,
+     "diff": 0.252,
+     "dxy": [
+      3.53,
+      2.12
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "rush_02",
+     "iou": 0.864,
+     "cd": 2.1,
+     "ar": 0.864,
+     "diff": 0.161,
+     "dxy": [
+      1.92,
+      0.85
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "rush_04",
+     "iou": 0.864,
+     "cd": 2.1,
+     "ar": 0.864,
+     "diff": 0.161,
+     "dxy": [
+      1.92,
+      0.85
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "act_cool_03",
+     "iou": 0.871,
+     "cd": 2.23,
+     "ar": 0.871,
+     "diff": 0.147,
+     "dxy": [
+      1.91,
+      1.15
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "getup_02",
+     "iou": 0.808,
+     "cd": 3.28,
+     "ar": 0.808,
+     "diff": 0.208,
+     "dxy": [
+      2.82,
+      1.67
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "getup_03",
+     "iou": 0.826,
+     "cd": 2.75,
+     "ar": 0.826,
+     "diff": 0.193,
+     "dxy": [
+      2.35,
+      1.43
+     ]
+    }
+   ],
+   "visibilityMismatch": []
+  },
+  "beanie": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4524,
+   "okFrames": 4524,
+   "okPct": 100.0,
+   "meanPixelDiffPct": 28.37,
+   "meanIoU": 0.966,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 56.469,
+     "iouSum": 177.166
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 54.859,
+     "iouSum": 178.477
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 84.429,
+     "iouSum": 174.608
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 106,
+     "ok": 106,
+     "diffSum": 41.79,
+     "iouSum": 102.256
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 49.557,
+     "iouSum": 167.846
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 28.729,
+     "iouSum": 170.911
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 231,
+     "ok": 231,
+     "diffSum": 36.92,
+     "iouSum": 224.446
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 44.547,
+     "iouSum": 171.623
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 64.772,
+     "iouSum": 168.431
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 67.864,
+     "iouSum": 166.014
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 46.705,
+     "iouSum": 176.713
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 36.882,
+     "iouSum": 178.525
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 55.919,
+     "iouSum": 180.144
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 50.081,
+     "iouSum": 177.923
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 51.3,
+     "iouSum": 178.483
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 71.399,
+     "iouSum": 176.33
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 76.955,
+     "iouSum": 174.527
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 65.455,
+     "iouSum": 178.465
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 19.258,
+     "iouSum": 182.252
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 54.576,
+     "iouSum": 176.146
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 45.737,
+     "iouSum": 174.068
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 29.361,
+     "iouSum": 181.412
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 41.388,
+     "iouSum": 180.317
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 69.671,
+     "iouSum": 175.169
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 38.769,
+     "iouSum": 175.963
+    }
+   },
+   "problemFrames": [],
+   "visibilityMismatch": []
+  },
+  "acorn": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4524,
+   "okFrames": 4524,
+   "okPct": 100.0,
+   "meanPixelDiffPct": 22.22,
+   "meanIoU": 0.962,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 44.881,
+     "iouSum": 176.705
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 41.076,
+     "iouSum": 178.982
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 48.523,
+     "iouSum": 176.879
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 106,
+     "ok": 106,
+     "diffSum": 27.883,
+     "iouSum": 103.02
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 27.973,
+     "iouSum": 169.409
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 35.187,
+     "iouSum": 168.485
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 231,
+     "ok": 231,
+     "diffSum": 27.307,
+     "iouSum": 223.536
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 34.249,
+     "iouSum": 171.634
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 46.761,
+     "iouSum": 168.098
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 39.127,
+     "iouSum": 165.414
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 39.763,
+     "iouSum": 177.815
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 42.411,
+     "iouSum": 178.779
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 41.683,
+     "iouSum": 179.15
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 36.871,
+     "iouSum": 178.335
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 39.438,
+     "iouSum": 178.431
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 47.066,
+     "iouSum": 175.036
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 47.459,
+     "iouSum": 174.728
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 71.882,
+     "iouSum": 165.562
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 20.809,
+     "iouSum": 178.653
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 44.124,
+     "iouSum": 178.67
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 40.44,
+     "iouSum": 179.195
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 32.754,
+     "iouSum": 175.57
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 36.748,
+     "iouSum": 175.515
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 48.405,
+     "iouSum": 176.811
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 42.476,
+     "iouSum": 178.917
+    }
+   },
+   "problemFrames": [],
+   "visibilityMismatch": []
+  },
+  "crown": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4524,
+   "okFrames": 4524,
+   "okPct": 100.0,
+   "meanPixelDiffPct": 16.63,
+   "meanIoU": 0.942,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 37.442,
+     "iouSum": 167.166
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 27.356,
+     "iouSum": 178.301
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 36.719,
+     "iouSum": 171.775
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 106,
+     "ok": 106,
+     "diffSum": 26.431,
+     "iouSum": 98.389
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 22.158,
+     "iouSum": 164.004
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 21.429,
+     "iouSum": 166.321
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 231,
+     "ok": 231,
+     "diffSum": 28.309,
+     "iouSum": 220.89
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 14.495,
+     "iouSum": 172.215
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 41.897,
+     "iouSum": 161.168
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 32.251,
+     "iouSum": 165.246
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 32.343,
+     "iouSum": 171.019
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 26.5,
+     "iouSum": 171.4
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 18.306,
+     "iouSum": 178.888
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 21.074,
+     "iouSum": 174.355
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 15.333,
+     "iouSum": 176.182
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 35.187,
+     "iouSum": 171.609
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 37.348,
+     "iouSum": 171.832
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 28.147,
+     "iouSum": 175.417
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 44.133,
+     "iouSum": 171.933
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 37.261,
+     "iouSum": 171.977
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 30.934,
+     "iouSum": 167.469
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 34.874,
+     "iouSum": 175.021
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 28.554,
+     "iouSum": 177.337
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 46.266,
+     "iouSum": 167.981
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 27.593,
+     "iouSum": 172.393
+    }
+   },
+   "problemFrames": [],
+   "visibilityMismatch": []
+  },
+  "starclip": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4674,
+   "okFrames": 4674,
+   "okPct": 100.0,
+   "meanPixelDiffPct": 25.9,
+   "meanIoU": 0.902,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 57.943,
+     "iouSum": 168.9
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 18.039,
+     "iouSum": 183.427
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 33.403,
+     "iouSum": 177.293
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 112,
+     "ok": 112,
+     "diffSum": 20.553,
+     "iouSum": 104.064
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.148,
+     "iouSum": 180.945
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 112.107,
+     "iouSum": 137.715
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 237,
+     "ok": 237,
+     "diffSum": 137.454,
+     "iouSum": 184.967
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.054,
+     "iouSum": 181.0
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 22.389,
+     "iouSum": 172.635
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 46.015,
+     "iouSum": 163.675
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 86.779,
+     "iouSum": 156.5
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 76.908,
+     "iouSum": 160.304
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 35.515,
+     "iouSum": 176.629
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 51.003,
+     "iouSum": 171.543
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 55.559,
+     "iouSum": 168.494
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 56.841,
+     "iouSum": 168.469
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 28.4,
+     "iouSum": 179.116
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 70.85,
+     "iouSum": 164.294
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 10.847,
+     "iouSum": 185.937
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 13.796,
+     "iouSum": 184.94
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.094,
+     "iouSum": 189.636
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 117.508,
+     "iouSum": 140.882
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 129.047,
+     "iouSum": 143.153
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 22.66,
+     "iouSum": 181.509
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 5.61,
+     "iouSum": 187.984
+    }
+   },
+   "problemFrames": [],
+   "visibilityMismatch": []
+  },
+  "sakura": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4674,
+   "okFrames": 4674,
+   "okPct": 100.0,
+   "meanPixelDiffPct": 20.69,
+   "meanIoU": 0.904,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 109.167,
+     "iouSum": 134.773
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 55.304,
+     "iouSum": 167.739
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 30.123,
+     "iouSum": 174.878
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 112,
+     "ok": 112,
+     "diffSum": 11.123,
+     "iouSum": 106.503
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.142,
+     "iouSum": 180.918
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 108.829,
+     "iouSum": 126.798
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 237,
+     "ok": 237,
+     "diffSum": 122.127,
+     "iouSum": 179.842
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 7.205,
+     "iouSum": 178.346
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 1.872,
+     "iouSum": 180.153
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 23.477,
+     "iouSum": 170.302
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 79.736,
+     "iouSum": 152.259
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 105.869,
+     "iouSum": 139.874
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 11.63,
+     "iouSum": 186.057
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.471,
+     "iouSum": 189.308
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 5.573,
+     "iouSum": 187.984
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 23.467,
+     "iouSum": 179.541
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 11.086,
+     "iouSum": 184.956
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 24.633,
+     "iouSum": 178.983
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.907,
+     "iouSum": 189.142
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.134,
+     "iouSum": 189.547
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.043,
+     "iouSum": 189.142
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 107.077,
+     "iouSum": 141.667
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 119.404,
+     "iouSum": 137.508
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.478,
+     "iouSum": 189.294
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.302,
+     "iouSum": 189.413
+    }
+   },
+   "problemFrames": [],
+   "visibilityMismatch": []
+  },
+  "glasses": {
+   "clips": 1055,
+   "visAgree": 1034,
+   "visAgreePct": 98.01,
+   "frames": 4320,
+   "okFrames": 4190,
+   "okPct": 96.99,
+   "meanPixelDiffPct": 10.98,
+   "meanIoU": 0.893,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 163,
+     "ok": 156,
+     "diffSum": 8.56,
+     "iouSum": 154.479
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 178,
+     "ok": 177,
+     "diffSum": 14.741,
+     "iouSum": 168.267
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 178,
+     "ok": 177,
+     "diffSum": 14.852,
+     "iouSum": 168.166
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 112,
+     "ok": 112,
+     "diffSum": 7.631,
+     "iouSum": 107.051
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 177,
+     "ok": 171,
+     "diffSum": 31.557,
+     "iouSum": 145.443
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 159,
+     "ok": 155,
+     "diffSum": 15.653,
+     "iouSum": 143.414
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 49,
+     "frames": 225,
+     "ok": 218,
+     "diffSum": 26.87,
+     "iouSum": 198.13
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 40,
+     "frames": 165,
+     "ok": 161,
+     "diffSum": 19.772,
+     "iouSum": 145.228
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 40,
+     "frames": 165,
+     "ok": 157,
+     "diffSum": 19.618,
+     "iouSum": 145.382
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 40,
+     "frames": 169,
+     "ok": 163,
+     "diffSum": 16.596,
+     "iouSum": 152.404
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 42,
+     "frames": 174,
+     "ok": 166,
+     "diffSum": 18.638,
+     "iouSum": 155.362
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 178,
+     "ok": 174,
+     "diffSum": 18.269,
+     "iouSum": 159.731
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 178,
+     "ok": 173,
+     "diffSum": 20.586,
+     "iouSum": 157.414
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 182,
+     "ok": 180,
+     "diffSum": 17.729,
+     "iouSum": 164.271
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 178,
+     "ok": 176,
+     "diffSum": 20.045,
+     "iouSum": 157.955
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 169,
+     "ok": 165,
+     "diffSum": 19.606,
+     "iouSum": 149.394
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 178,
+     "ok": 173,
+     "diffSum": 19.967,
+     "iouSum": 158.033
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 169,
+     "ok": 153,
+     "diffSum": 23.77,
+     "iouSum": 145.23
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 178,
+     "ok": 173,
+     "diffSum": 19.11,
+     "iouSum": 158.89
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 169,
+     "ok": 161,
+     "diffSum": 20.788,
+     "iouSum": 148.212
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 178,
+     "ok": 173,
+     "diffSum": 20.518,
+     "iouSum": 157.482
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 169,
+     "ok": 161,
+     "diffSum": 19.43,
+     "iouSum": 149.57
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 182,
+     "ok": 177,
+     "diffSum": 20.209,
+     "iouSum": 161.791
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 41,
+     "frames": 169,
+     "ok": 161,
+     "diffSum": 21.864,
+     "iouSum": 147.136
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 178,
+     "ok": 177,
+     "diffSum": 18.145,
+     "iouSum": 159.855
+    }
+   },
+   "problemFrames": [
+    {
+     "form": "sprout",
+     "frame": "wake_01",
+     "iou": 0.403,
+     "cd": 0.9,
+     "ar": 1.02,
+     "diff": 0.597,
+     "dxy": [
+      -0.73,
+      0.53
+     ]
+    },
+    {
+     "form": "sprout",
+     "frame": "wake_02",
+     "iou": 0.293,
+     "cd": 0.98,
+     "ar": 0.98,
+     "diff": 0.72,
+     "dxy": [
+      0.29,
+      0.94
+     ]
+    },
+    {
+     "form": "sprout",
+     "frame": "wake_03",
+     "iou": 0.293,
+     "cd": 0.98,
+     "ar": 0.98,
+     "diff": 0.72,
+     "dxy": [
+      0.29,
+      0.94
+     ]
+    },
+    {
+     "form": "sprout",
+     "frame": "wake_04",
+     "iou": 0.293,
+     "cd": 0.98,
+     "ar": 0.98,
+     "diff": 0.72,
+     "dxy": [
+      0.29,
+      0.94
+     ]
+    },
+    {
+     "form": "sprout",
+     "frame": "lookup_tip_01",
+     "iou": 0.304,
+     "cd": 0.46,
+     "ar": 1.028,
+     "diff": 0.696,
+     "dxy": [
+      0.45,
+      0.1
+     ]
+    },
+    {
+     "form": "sprout",
+     "frame": "lookup_tip_03",
+     "iou": 0.389,
+     "cd": 0.83,
+     "ar": 1.027,
+     "diff": 0.611,
+     "dxy": [
+      0.71,
+      -0.44
+     ]
+    },
+    {
+     "form": "sprout",
+     "frame": "lookup_tip_04",
+     "iou": 0.397,
+     "cd": 0.77,
+     "ar": 1.077,
+     "diff": 0.603,
+     "dxy": [
+      0.66,
+      -0.39
+     ]
+    },
+    {
+     "form": "radiant",
+     "frame": "lookup_04",
+     "iou": 0.412,
+     "cd": 0.99,
+     "ar": 0.939,
+     "diff": 0.779,
+     "dxy": [
+      0.0,
+      -0.99
+     ]
+    },
+    {
+     "form": "soft",
+     "frame": "lookup_04",
+     "iou": 0.412,
+     "cd": 0.99,
+     "ar": 0.939,
+     "diff": 0.779,
+     "dxy": [
+      0.0,
+      -0.99
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "walk_01",
+     "iou": 0.245,
+     "cd": 1.3,
+     "ar": 1.2,
+     "diff": 0.755,
+     "dxy": [
+      1.15,
+      -0.61
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "walk_02",
+     "iou": 0.38,
+     "cd": 0.53,
+     "ar": 1.156,
+     "diff": 0.62,
+     "dxy": [
+      0.5,
+      -0.17
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "walk_03",
+     "iou": 0.38,
+     "cd": 0.53,
+     "ar": 1.156,
+     "diff": 0.62,
+     "dxy": [
+      0.5,
+      -0.17
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "walk_04",
+     "iou": 0.245,
+     "cd": 1.3,
+     "ar": 1.2,
+     "diff": 0.755,
+     "dxy": [
+      1.15,
+      -0.61
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "walk_05",
+     "iou": 0.38,
+     "cd": 0.53,
+     "ar": 1.156,
+     "diff": 0.62,
+     "dxy": [
+      0.5,
+      -0.17
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "walk_06",
+     "iou": 0.38,
+     "cd": 0.53,
+     "ar": 1.156,
+     "diff": 0.62,
+     "dxy": [
+      0.5,
+      -0.17
+     ]
+    },
+    {
+     "form": "evo_sprout",
+     "frame": "smug_pose_01",
+     "iou": 0.136,
+     "cd": 0.84,
+     "ar": 0.887,
+     "diff": 0.875,
+     "dxy": [
+      0.71,
+      0.46
+     ]
+    },
+    {
+     "form": "evo_sprout",
+     "frame": "smug_pose_02",
+     "iou": 0.124,
+     "cd": 0.44,
+     "ar": 0.852,
+     "diff": 0.888,
+     "dxy": [
+      0.13,
+      0.42
+     ]
+    },
+    {
+     "form": "evo_sprout",
+     "frame": "smug_pose_03",
+     "iou": 0.112,
+     "cd": 1.01,
+     "ar": 0.8,
+     "diff": 0.91,
+     "dxy": [
+      -0.08,
+      1.01
+     ]
+    },
+    {
+     "form": "evo_sprout",
+     "frame": "smug_pose_04",
+     "iou": 0.112,
+     "cd": 1.01,
+     "ar": 0.8,
+     "diff": 0.91,
+     "dxy": [
+      -0.08,
+      1.01
+     ]
+    },
+    {
+     "form": "evo_hop",
+     "frame": "lookup_04",
+     "iou": 0.184,
+     "cd": 1.1,
+     "ar": 0.837,
+     "diff": 0.816,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_hop",
+     "frame": "scratch_01",
+     "iou": 0.447,
+     "cd": 0.84,
+     "ar": 1.115,
+     "diff": 0.553,
+     "dxy": [
+      -0.81,
+      0.24
+     ]
+    },
+    {
+     "form": "evo_hop",
+     "frame": "scratch_02",
+     "iou": 0.447,
+     "cd": 0.84,
+     "ar": 1.115,
+     "diff": 0.553,
+     "dxy": [
+      -0.81,
+      0.24
+     ]
+    },
+    {
+     "form": "evo_hop",
+     "frame": "scratch_03",
+     "iou": 0.447,
+     "cd": 0.84,
+     "ar": 1.115,
+     "diff": 0.553,
+     "dxy": [
+      -0.81,
+      0.24
+     ]
+    },
+    {
+     "form": "evo_hop",
+     "frame": "scratch_04",
+     "iou": 0.447,
+     "cd": 0.84,
+     "ar": 1.115,
+     "diff": 0.553,
+     "dxy": [
+      -0.81,
+      0.24
+     ]
+    },
+    {
+     "form": "evo_hop",
+     "frame": "scratch_05",
+     "iou": 0.447,
+     "cd": 0.84,
+     "ar": 1.115,
+     "diff": 0.553,
+     "dxy": [
+      -0.81,
+      0.24
+     ]
+    },
+    {
+     "form": "evo_hop",
+     "frame": "scratch_06",
+     "iou": 0.447,
+     "cd": 0.84,
+     "ar": 1.115,
+     "diff": 0.553,
+     "dxy": [
+      -0.81,
+      0.24
+     ]
+    },
+    {
+     "form": "evo_guard_lumi",
+     "frame": "eat_01",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_lumi",
+     "frame": "eat_02",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_lumi",
+     "frame": "eat_03",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_lumi",
+     "frame": "eat_04",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "eat_01",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "eat_02",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "eat_03",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "eat_04",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "scratch_01",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "scratch_02",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "scratch_04",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "scratch_06",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_soft",
+     "frame": "eat_01",
+     "iou": 0.444,
+     "cd": 0.5,
+     "ar": 0.926,
+     "diff": 0.556,
+     "dxy": [
+      0.41,
+      -0.29
+     ]
+    },
+    {
+     "form": "evo_guard_soft",
+     "frame": "eat_02",
+     "iou": 0.444,
+     "cd": 0.5,
+     "ar": 0.926,
+     "diff": 0.556,
+     "dxy": [
+      0.41,
+      -0.29
+     ]
+    },
+    {
+     "form": "evo_guard_soft",
+     "frame": "eat_04",
+     "iou": 0.444,
+     "cd": 0.5,
+     "ar": 0.926,
+     "diff": 0.556,
+     "dxy": [
+      0.41,
+      -0.29
+     ]
+    },
+    {
+     "form": "evo_guard_soft",
+     "frame": "lookup_04",
+     "iou": 0.184,
+     "cd": 1.1,
+     "ar": 0.837,
+     "diff": 0.816,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_guard_soft",
+     "frame": "scratch_03",
+     "iou": 0.447,
+     "cd": 0.84,
+     "ar": 1.115,
+     "diff": 0.553,
+     "dxy": [
+      -0.81,
+      0.24
+     ]
+    },
+    {
+     "form": "evo_guard_soft",
+     "frame": "scratch_05",
+     "iou": 0.447,
+     "cd": 0.84,
+     "ar": 1.115,
+     "diff": 0.553,
+     "dxy": [
+      -0.81,
+      0.24
+     ]
+    },
+    {
+     "form": "evo_guard_dust",
+     "frame": "eat_01",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_dust",
+     "frame": "eat_02",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_dust",
+     "frame": "eat_03",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_dust",
+     "frame": "eat_04",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_dust",
+     "frame": "scratch_01",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_dust",
+     "frame": "scratch_02",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_dust",
+     "frame": "scratch_04",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_dust",
+     "frame": "scratch_06",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_still_lumi",
+     "frame": "eat_01",
+     "iou": 0.444,
+     "cd": 0.5,
+     "ar": 0.926,
+     "diff": 0.556,
+     "dxy": [
+      0.41,
+      -0.29
+     ]
+    },
+    {
+     "form": "evo_still_lumi",
+     "frame": "eat_02",
+     "iou": 0.444,
+     "cd": 0.5,
+     "ar": 0.926,
+     "diff": 0.556,
+     "dxy": [
+      0.41,
+      -0.29
+     ]
+    },
+    {
+     "form": "evo_still_lumi",
+     "frame": "eat_04",
+     "iou": 0.444,
+     "cd": 0.5,
+     "ar": 0.926,
+     "diff": 0.556,
+     "dxy": [
+      0.41,
+      -0.29
+     ]
+    },
+    {
+     "form": "evo_still_lumi",
+     "frame": "lookup_04",
+     "iou": 0.184,
+     "cd": 1.1,
+     "ar": 0.837,
+     "diff": 0.816,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "eat_01",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "eat_02",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "eat_03",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "eat_04",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "lookup_04",
+     "iou": 0.175,
+     "cd": 1.1,
+     "ar": 0.843,
+     "diff": 0.825,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_still_soft",
+     "frame": "lookup_04",
+     "iou": 0.175,
+     "cd": 1.1,
+     "ar": 0.843,
+     "diff": 0.825,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_still_soft",
+     "frame": "swat_03",
+     "iou": 0.433,
+     "cd": 0.51,
+     "ar": 1.048,
+     "diff": 0.567,
+     "dxy": [
+      -0.46,
+      -0.21
+     ]
+    },
+    {
+     "form": "evo_still_dust",
+     "frame": "eat_03",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_dust",
+     "frame": "lookup_04",
+     "iou": 0.175,
+     "cd": 1.1,
+     "ar": 0.843,
+     "diff": 0.825,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_guard_tide",
+     "frame": "eat_01",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_tide",
+     "frame": "eat_02",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_tide",
+     "frame": "eat_03",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_tide",
+     "frame": "eat_04",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_still_tide",
+     "frame": "eat_01",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_tide",
+     "frame": "eat_02",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_tide",
+     "frame": "eat_03",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_tide",
+     "frame": "eat_04",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_tide",
+     "frame": "lookup_04",
+     "iou": 0.175,
+     "cd": 1.1,
+     "ar": 0.843,
+     "diff": 0.825,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "pot_bump_01",
+     "iou": 0.194,
+     "cd": 0.63,
+     "ar": 0.792,
+     "diff": 0.806,
+     "dxy": [
+      0.0,
+      0.63
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "pot_bump_02",
+     "iou": 0.184,
+     "cd": 0.64,
+     "ar": 0.8,
+     "diff": 0.816,
+     "dxy": [
+      0.0,
+      0.64
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "pot_bump_03",
+     "iou": 0.242,
+     "cd": 0.49,
+     "ar": 0.783,
+     "diff": 0.758,
+     "dxy": [
+      0.0,
+      0.49
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "pot_bump_04",
+     "iou": 0.303,
+     "cd": 0.79,
+     "ar": 0.87,
+     "diff": 0.697,
+     "dxy": [
+      -0.14,
+      0.78
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "pot_bump_05",
+     "iou": 0.278,
+     "cd": 0.65,
+     "ar": 1.0,
+     "diff": 0.722,
+     "dxy": [
+      0.0,
+      0.65
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "pot_bump_06",
+     "iou": 0.265,
+     "cd": 0.46,
+     "ar": 0.792,
+     "diff": 0.735,
+     "dxy": [
+      0.0,
+      0.46
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "pot_bump_07",
+     "iou": 0.194,
+     "cd": 0.63,
+     "ar": 0.792,
+     "diff": 0.806,
+     "dxy": [
+      0.0,
+      0.63
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "pot_bump_08",
+     "iou": 0.194,
+     "cd": 0.63,
+     "ar": 0.792,
+     "diff": 0.806,
+     "dxy": [
+      0.0,
+      0.63
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "eat_01",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "eat_02",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "eat_03",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "eat_04",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "scratch_01",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "scratch_02",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "scratch_04",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_shroom",
+     "frame": "scratch_06",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_still_shroom",
+     "frame": "eat_01",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_shroom",
+     "frame": "eat_02",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_shroom",
+     "frame": "eat_03",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_shroom",
+     "frame": "eat_04",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_shroom",
+     "frame": "lookup_04",
+     "iou": 0.175,
+     "cd": 1.1,
+     "ar": 0.843,
+     "diff": 0.825,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "eat_01",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "eat_02",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "eat_03",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "eat_04",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "scratch_01",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "scratch_02",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "scratch_04",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_crystal",
+     "frame": "scratch_06",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_still_crystal",
+     "frame": "eat_01",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_crystal",
+     "frame": "eat_02",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_crystal",
+     "frame": "eat_03",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_crystal",
+     "frame": "eat_04",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_crystal",
+     "frame": "lookup_04",
+     "iou": 0.175,
+     "cd": 1.1,
+     "ar": 0.843,
+     "diff": 0.825,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "eat_01",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "eat_02",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "eat_03",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "eat_04",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "scratch_01",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "scratch_02",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "scratch_04",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_moon",
+     "frame": "scratch_06",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_still_moon",
+     "frame": "eat_01",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_moon",
+     "frame": "eat_02",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_moon",
+     "frame": "eat_03",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_moon",
+     "frame": "eat_04",
+     "iou": 0.447,
+     "cd": 0.58,
+     "ar": 0.93,
+     "diff": 0.553,
+     "dxy": [
+      0.55,
+      -0.18
+     ]
+    },
+    {
+     "form": "evo_still_moon",
+     "frame": "lookup_04",
+     "iou": 0.175,
+     "cd": 1.1,
+     "ar": 0.843,
+     "diff": 0.825,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    },
+    {
+     "form": "evo_guard_ember",
+     "frame": "eat_01",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_ember",
+     "frame": "eat_02",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_ember",
+     "frame": "eat_03",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_ember",
+     "frame": "eat_04",
+     "iou": 0.44,
+     "cd": 0.56,
+     "ar": 0.929,
+     "diff": 0.56,
+     "dxy": [
+      0.53,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_ember",
+     "frame": "scratch_01",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_ember",
+     "frame": "scratch_02",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_ember",
+     "frame": "scratch_04",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_guard_ember",
+     "frame": "scratch_06",
+     "iou": 0.403,
+     "cd": 1.28,
+     "ar": 1.077,
+     "diff": 0.597,
+     "dxy": [
+      -1.27,
+      -0.19
+     ]
+    },
+    {
+     "form": "evo_still_ember",
+     "frame": "lookup_04",
+     "iou": 0.175,
+     "cd": 1.1,
+     "ar": 0.843,
+     "diff": 0.825,
+     "dxy": [
+      0.0,
+      -1.1
+     ]
+    }
+   ],
+   "visibilityMismatch": [
+    {
+     "form": "sprout",
+     "clip": "swat",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "swat_02: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "sprout",
+     "clip": "scratch",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "scratch_01: 眼距 8.5px 太窄（側面），戴唔落",
+     "whyBaked": null
+    },
+    {
+     "form": "radiant",
+     "clip": "swat",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "swat_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "radiant",
+     "clip": "lookup_tip",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "lookup_tip_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "soft",
+     "clip": "swat",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "swat_02: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "soft",
+     "clip": "lookup_tip",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "lookup_tip_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_hop",
+     "clip": "swat",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "swat_02: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_lumi",
+     "clip": "act_cool",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "act_cool_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_radiant",
+     "clip": "act_cool",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "act_cool_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_soft",
+     "clip": "lookup_tip",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "lookup_tip_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_dust",
+     "clip": "act_cool",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "act_cool_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_tide",
+     "clip": "act_cool",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "act_cool_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_tide",
+     "clip": "reunion_happy",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "reunion_happy_02: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_shroom",
+     "clip": "act_cool",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "act_cool_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_shroom",
+     "clip": "reunion_happy",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "reunion_happy_02: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_crystal",
+     "clip": "act_cool",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "act_cool_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_crystal",
+     "clip": "reunion_happy",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "reunion_happy_02: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_moon",
+     "clip": "act_cool",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "act_cool_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_moon",
+     "clip": "reunion_happy",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "reunion_happy_02: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_ember",
+     "clip": "act_cool",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "act_cool_01: 鏡框會壓到眼",
+     "whyBaked": null
+    },
+    {
+     "form": "evo_guard_ember",
+     "clip": "reunion_happy",
+     "runtime": false,
+     "baked": true,
+     "whyRuntime": "reunion_happy_02: 鏡框會壓到眼",
+     "whyBaked": null
+    }
+   ]
+  },
+  "leafcollar": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4674,
+   "okFrames": 4674,
+   "okPct": 100.0,
+   "meanPixelDiffPct": 0.36,
+   "meanIoU": 0.998,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.872,
+     "iouSum": 189.546
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.562,
+     "iouSum": 189.737
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.562,
+     "iouSum": 189.741
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 112,
+     "ok": 112,
+     "diffSum": 0.0,
+     "iouSum": 112.0
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.0,
+     "iouSum": 181.0
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.0,
+     "iouSum": 181.0
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 237,
+     "ok": 237,
+     "diffSum": 0.537,
+     "iouSum": 236.748
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.0,
+     "iouSum": 181.0
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.134,
+     "iouSum": 180.92
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.055,
+     "iouSum": 180.97
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.162,
+     "iouSum": 189.947
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.059,
+     "iouSum": 189.557
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.102,
+     "iouSum": 189.973
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.284,
+     "iouSum": 189.866
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.177,
+     "iouSum": 189.908
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.095,
+     "iouSum": 189.946
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.322,
+     "iouSum": 189.86
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.359,
+     "iouSum": 188.768
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 9.048,
+     "iouSum": 185.535
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.285,
+     "iouSum": 189.887
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.0,
+     "iouSum": 190.0
+    }
+   },
+   "problemFrames": [],
+   "visibilityMismatch": []
+  },
+  "bell": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4674,
+   "okFrames": 4674,
+   "okPct": 100.0,
+   "meanPixelDiffPct": 1.46,
+   "meanIoU": 0.994,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.51,
+     "iouSum": 189.793
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.426,
+     "iouSum": 189.36
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.357,
+     "iouSum": 189.38
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 112,
+     "ok": 112,
+     "diffSum": 0.705,
+     "iouSum": 111.81
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.255,
+     "iouSum": 180.923
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.533,
+     "iouSum": 180.82
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 237,
+     "ok": 237,
+     "diffSum": 3.912,
+     "iouSum": 235.253
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 4.013,
+     "iouSum": 179.34
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 2.66,
+     "iouSum": 179.896
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 3.023,
+     "iouSum": 179.723
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.572,
+     "iouSum": 189.0
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.067,
+     "iouSum": 188.855
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.309,
+     "iouSum": 188.629
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.493,
+     "iouSum": 189.006
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.086,
+     "iouSum": 188.795
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 4.939,
+     "iouSum": 188.057
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.881,
+     "iouSum": 188.866
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.731,
+     "iouSum": 188.452
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.054,
+     "iouSum": 188.799
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.984,
+     "iouSum": 188.881
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.755,
+     "iouSum": 188.914
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.955,
+     "iouSum": 188.632
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.078,
+     "iouSum": 188.753
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.141,
+     "iouSum": 188.783
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.688,
+     "iouSum": 188.91
+    }
+   },
+   "problemFrames": [],
+   "visibilityMismatch": []
+  },
+  "halo": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4674,
+   "okFrames": 4670,
+   "okPct": 99.91,
+   "meanPixelDiffPct": 5.21,
+   "meanIoU": 0.968,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.375,
+     "iouSum": 188.35
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.841,
+     "iouSum": 189.499
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 6.193,
+     "iouSum": 189.45
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 112,
+     "ok": 112,
+     "diffSum": 21.056,
+     "iouSum": 98.0
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.0,
+     "iouSum": 181.0
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 0.858,
+     "iouSum": 180.428
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 237,
+     "ok": 237,
+     "diffSum": 0.4,
+     "iouSum": 236.75
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 41.811,
+     "iouSum": 153.126
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 181,
+     "diffSum": 5.813,
+     "iouSum": 179.459
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 181,
+     "ok": 180,
+     "diffSum": 4.789,
+     "iouSum": 177.907
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 43.89,
+     "iouSum": 160.74
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 48.724,
+     "iouSum": 157.458
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 6.118,
+     "iouSum": 188.042
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.86,
+     "iouSum": 189.036
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 5.518,
+     "iouSum": 188.708
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.8,
+     "iouSum": 189.5
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 0.807,
+     "iouSum": 189.505
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 1.772,
+     "iouSum": 188.805
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 188,
+     "diffSum": 2.564,
+     "iouSum": 188.24
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.725,
+     "iouSum": 187.75
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 189,
+     "diffSum": 1.75,
+     "iouSum": 188.833
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 30.02,
+     "iouSum": 170.05
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 5.518,
+     "iouSum": 188.708
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 2.3,
+     "iouSum": 188.6
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 190,
+     "ok": 190,
+     "diffSum": 3.8,
+     "iouSum": 187.55
+    }
+   },
+   "problemFrames": [
+    {
+     "form": "evo_guard_soft",
+     "frame": "sneeze_02",
+     "iou": 0.357,
+     "cd": 1.0,
+     "ar": 1.0,
+     "diff": 0.964,
+     "dxy": [
+      0.0,
+      1.0
+     ]
+    },
+    {
+     "form": "evo_still_shroom",
+     "frame": "pot_bump_07",
+     "iou": 0.37,
+     "cd": 1.0,
+     "ar": 0.947,
+     "diff": 0.907,
+     "dxy": [
+      0.0,
+      1.0
+     ]
+    },
+    {
+     "form": "evo_still_shroom",
+     "frame": "swat_03",
+     "iou": 0.37,
+     "cd": 1.0,
+     "ar": 0.947,
+     "diff": 0.907,
+     "dxy": [
+      0.0,
+      1.0
+     ]
+    },
+    {
+     "form": "evo_still_crystal",
+     "frame": "lookup_tip_01",
+     "iou": 0.333,
+     "cd": 1.0,
+     "ar": 1.0,
+     "diff": 1.0,
+     "dxy": [
+      0.0,
+      1.0
+     ]
+    }
+   ],
+   "visibilityMismatch": []
+  },
+  "nightcap": {
+   "clips": 1055,
+   "visAgree": 1055,
+   "visAgreePct": 100.0,
+   "frames": 4524,
+   "okFrames": 4509,
+   "okPct": 99.67,
+   "meanPixelDiffPct": 42.87,
+   "meanIoU": 0.899,
+   "perForm": {
+    "sprout": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 89.805,
+     "iouSum": 164.298
+    },
+    "radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 58.509,
+     "iouSum": 169.222
+    },
+    "soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 95.842,
+     "iouSum": 159.215
+    },
+    "lumi": {
+     "clips": 26,
+     "visAgree": 26,
+     "frames": 106,
+     "ok": 106,
+     "diffSum": 55.708,
+     "iouSum": 97.428
+    },
+    "evo_dot": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 170,
+     "diffSum": 82.707,
+     "iouSum": 147.879
+    },
+    "evo_sprout": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 77.519,
+     "iouSum": 160.216
+    },
+    "evo_hop": {
+     "clips": 50,
+     "visAgree": 50,
+     "frames": 231,
+     "ok": 231,
+     "diffSum": 96.659,
+     "iouSum": 212.434
+    },
+    "evo_guard_lumi": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 72.958,
+     "iouSum": 160.251
+    },
+    "evo_guard_radiant": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 174,
+     "diffSum": 87.356,
+     "iouSum": 157.44
+    },
+    "evo_guard_soft": {
+     "clips": 41,
+     "visAgree": 41,
+     "frames": 175,
+     "ok": 175,
+     "diffSum": 82.944,
+     "iouSum": 154.793
+    },
+    "evo_guard_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 84.258,
+     "iouSum": 167.518
+    },
+    "evo_still_lumi": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 88.526,
+     "iouSum": 163.947
+    },
+    "evo_still_radiant": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 177,
+     "diffSum": 78.314,
+     "iouSum": 166.244
+    },
+    "evo_still_soft": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 77.481,
+     "iouSum": 168.515
+    },
+    "evo_still_dust": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 72.467,
+     "iouSum": 166.427
+    },
+    "evo_guard_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 81.496,
+     "iouSum": 165.35
+    },
+    "evo_still_tide": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 87.49,
+     "iouSum": 161.116
+    },
+    "evo_guard_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 88.615,
+     "iouSum": 161.497
+    },
+    "evo_still_shroom": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 49.539,
+     "iouSum": 166.901
+    },
+    "evo_guard_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 92.689,
+     "iouSum": 166.284
+    },
+    "evo_still_crystal": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 85.582,
+     "iouSum": 165.771
+    },
+    "evo_guard_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 28.046,
+     "iouSum": 170.754
+    },
+    "evo_still_moon": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 43.298,
+     "iouSum": 159.742
+    },
+    "evo_guard_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 184,
+     "diffSum": 93.653,
+     "iouSum": 166.095
+    },
+    "evo_still_ember": {
+     "clips": 43,
+     "visAgree": 43,
+     "frames": 184,
+     "ok": 182,
+     "diffSum": 88.07,
+     "iouSum": 166.922
+    }
+   },
+   "problemFrames": [
+    {
+     "form": "evo_dot",
+     "frame": "wake_01",
+     "iou": 0.086,
+     "cd": 6.97,
+     "ar": 0.883,
+     "diff": 0.985,
+     "dxy": [
+      0.28,
+      6.96
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "catch_reach_05",
+     "iou": 0.064,
+     "cd": 7.24,
+     "ar": 0.908,
+     "diff": 0.991,
+     "dxy": [
+      -0.04,
+      7.24
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "turn_back_02",
+     "iou": 0.033,
+     "cd": 7.49,
+     "ar": 0.952,
+     "diff": 0.989,
+     "dxy": [
+      0.03,
+      7.49
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "lookup_tip_04",
+     "iou": 0.043,
+     "cd": 7.65,
+     "ar": 0.921,
+     "diff": 0.98,
+     "dxy": [
+      -0.06,
+      7.65
+     ]
+    },
+    {
+     "form": "evo_dot",
+     "frame": "getup_01",
+     "iou": 0.049,
+     "cd": 7.58,
+     "ar": 0.921,
+     "diff": 0.983,
+     "dxy": [
+      0.31,
+      7.57
+     ]
+    },
+    {
+     "form": "evo_guard_radiant",
+     "frame": "getup_01",
+     "iou": 0.188,
+     "cd": 7.62,
+     "ar": 0.979,
+     "diff": 0.93,
+     "dxy": [
+      0.08,
+      7.62
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "sleep_loop_01",
+     "iou": 0.21,
+     "cd": 8.13,
+     "ar": 1.105,
+     "diff": 0.899,
+     "dxy": [
+      1.43,
+      8.0
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "wake_01",
+     "iou": 0.202,
+     "cd": 8.85,
+     "ar": 1.191,
+     "diff": 0.867,
+     "dxy": [
+      1.18,
+      8.77
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "sniff_03",
+     "iou": 0.218,
+     "cd": 9.0,
+     "ar": 1.137,
+     "diff": 0.868,
+     "dxy": [
+      2.79,
+      8.56
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "lookup_tip_02",
+     "iou": 0.177,
+     "cd": 8.18,
+     "ar": 1.494,
+     "diff": 0.9,
+     "dxy": [
+      1.86,
+      7.96
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "lookup_tip_04",
+     "iou": 0.386,
+     "cd": 5.7,
+     "ar": 1.157,
+     "diff": 0.803,
+     "dxy": [
+      2.73,
+      5.0
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "getup_01",
+     "iou": 0.283,
+     "cd": 7.21,
+     "ar": 1.143,
+     "diff": 0.848,
+     "dxy": [
+      2.95,
+      6.57
+     ]
+    },
+    {
+     "form": "evo_still_radiant",
+     "frame": "sniff_itch_01",
+     "iou": 0.208,
+     "cd": 9.3,
+     "ar": 1.19,
+     "diff": 0.845,
+     "dxy": [
+      2.29,
+      9.02
+     ]
+    },
+    {
+     "form": "evo_still_ember",
+     "frame": "lookup_tip_02",
+     "iou": 0.269,
+     "cd": 6.57,
+     "ar": 1.06,
+     "diff": 0.885,
+     "dxy": [
+      1.05,
+      6.48
+     ]
+    },
+    {
+     "form": "evo_still_ember",
+     "frame": "getup_01",
+     "iou": 0.183,
+     "cd": 7.75,
+     "ar": 0.989,
+     "diff": 0.927,
+     "dxy": [
+      0.65,
+      7.72
+     ]
+    }
+   ],
+   "visibilityMismatch": []
+  }
+ },
+ "fixes": [],
+ "criteria": "acceptable＝重心距離 ≤2px、面積比 0.6–1.67、IoU ≥0.45",
+ "severe": [
+  {
+   "item": "scarf",
+   "form": "soft",
+   "clips": [
+    "lookup_tip"
+   ]
+  },
+  {
+   "item": "scarf",
+   "form": "evo_guard_moon",
+   "clips": [
+    "sneeze"
+   ]
+  },
+  {
+   "item": "nightcap",
+   "form": "evo_dot",
+   "clips": [
+    "wake",
+    "catch_reach",
+    "turn_back",
+    "lookup_tip",
+    "getup"
+   ]
+  },
+  {
+   "item": "nightcap",
+   "form": "evo_guard_radiant",
+   "clips": [
+    "getup"
+   ]
+  },
+  {
+   "item": "nightcap",
+   "form": "evo_still_radiant",
+   "clips": [
+    "sleep_loop",
+    "wake",
+    "sniff",
+    "lookup_tip",
+    "getup",
+    "sniff_itch"
+   ]
+  },
+  {
+   "item": "nightcap",
+   "form": "evo_still_ember",
+   "clips": [
+    "lookup_tip",
+    "getup"
+   ]
+  }
+ ]
+}

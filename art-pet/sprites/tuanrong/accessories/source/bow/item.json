@@ -1,0 +1,222 @@
+{
+ "id": "bow",
+ "name": "蝴蝶結",
+ "slot": "side_r",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 4,
+  "steps": [
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    -1
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    -2
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    3,
+    3
+   ],
+   [
+    3,
+    -3
+   ],
+   [
+    0,
+    3
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    4,
+    -4
+   ],
+   [
+    0,
+    4
+   ]
+  ],
+  "coverMax": 0.3,
+  "floatOk": false,
+  "anyOverlap": false
+ },
+ "views": {
+  "front": {
+   "S": {
+    "lab": "lab_front_S.png",
+    "w": 9,
+    "h": 5,
+    "pivot": [
+     4.0,
+     2.0
+    ]
+   },
+   "M": {
+    "lab": "lab_front_M.png",
+    "w": 13,
+    "h": 7,
+    "pivot": [
+     6.0,
+     3.0
+    ]
+   },
+   "L": {
+    "lab": "lab_front_L.png",
+    "w": 17,
+    "h": 11,
+    "pivot": [
+     8.0,
+     5.0
+    ]
+   }
+  },
+  "side": {
+   "S": {
+    "lab": "lab_side_S.png",
+    "w": 9,
+    "h": 5,
+    "pivot": [
+     3.0,
+     2.0
+    ]
+   },
+   "M": {
+    "lab": "lab_side_M.png",
+    "w": 13,
+    "h": 7,
+    "pivot": [
+     4.0,
+     3.0
+    ]
+   },
+   "L": {
+    "lab": "lab_side_L.png",
+    "w": 17,
+    "h": 11,
+    "pivot": [
+     6.0,
+     5.0
+    ]
+   }
+  },
+  "back": {
+   "S": {
+    "lab": "lab_back_S.png",
+    "w": 9,
+    "h": 5,
+    "pivot": [
+     4.0,
+     2.0
+    ]
+   },
+   "M": {
+    "lab": "lab_back_M.png",
+    "w": 13,
+    "h": 7,
+    "pivot": [
+     6.0,
+     3.0
+    ]
+   },
+   "L": {
+    "lab": "lab_back_L.png",
+    "w": 17,
+    "h": 11,
+    "pivot": [
+     8.0,
+     5.0
+    ]
+   }
+  }
+ },
+ "parts": {},
+ "formOverrides": {
+  "evo_guard_lumi": {
+   "sc": 0.85,
+   "dy": 2
+  },
+  "evo_still_lumi": {
+   "sc": 0.9,
+   "dy": 1
+  }
+ },
+ "size": {
+  "mode": "rel",
+  "ref": "hw",
+  "k": 0.6,
+  "minW": 7,
+  "odd": true,
+  "ws": [
+   0.8,
+   1.25
+  ]
+ },
+ "place": {
+  "anchor": "side_r",
+  "rot": 12,
+  "mirrorOnBack": true,
+  "faceGuard": {
+   "step": [
+    1,
+    -1
+   ],
+   "max": 6,
+   "mirrorFlipX": true
+  }
+ },
+ "slotScaleFrom": "side_r",
+ "materials": {
+  "#f28b9b": {
+   "name": "pink",
+   "shade": "#d9667a",
+   "base": "#f28b9b",
+   "hi": "#f3eefa"
+  },
+  "#d9667a": {
+   "name": "pinkd",
+   "shade": "#d9667a",
+   "base": "#d9667a",
+   "hi": "#d9667a"
+  }
+ }
+}

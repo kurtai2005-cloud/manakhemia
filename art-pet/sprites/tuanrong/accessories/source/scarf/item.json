@@ -1,0 +1,85 @@
+{
+ "id": "scarf",
+ "name": "頸巾",
+ "slot": "neck",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 6,
+  "steps": [
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    2
+   ]
+  ],
+  "coverMax": 0.3,
+  "floatOk": false,
+  "anyOverlap": false
+ },
+ "views": {
+  "front": {
+   "S": {
+    "lab": "lab_band_tile.png",
+    "w": 6,
+    "h": 6,
+    "pivot": [
+     0,
+     0
+    ]
+   }
+  }
+ },
+ "parts": {},
+ "formOverrides": {},
+ "neck": {
+  "mode": "stripe",
+  "tile": {
+   "lab": "lab_band_tile.png",
+   "period": 6,
+   "note": "列 c＝(x−xl) mod 6；行數＝attach slots.neck.thRef＋formOverrides.th"
+  },
+  "tail": {
+   "sizes": {
+    "2": {
+     "lab": "lab_part_tail_th2.png"
+    },
+    "3": {
+     "lab": "lab_part_tail_th3.png"
+    },
+    "4": {
+     "lab": "lab_part_tail_th4.png"
+    },
+    "5": {
+     "lab": "lab_part_tail_th5.png"
+    }
+   }
+  },
+  "lag": true
+ },
+ "place": {
+  "anchor": "neck"
+ },
+ "faceClear": true,
+ "materials": {
+  "#e5584d": {
+   "name": "red",
+   "shade": "#a33f4a",
+   "base": "#e5584d",
+   "hi": "#f28b9b"
+  },
+  "#f3eefa": {
+   "name": "white",
+   "shade": "#ffefc4",
+   "base": "#f3eefa",
+   "hi": "#f3eefa"
+  }
+ }
+}

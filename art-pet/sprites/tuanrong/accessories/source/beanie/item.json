@@ -1,0 +1,184 @@
+{
+ "id": "beanie",
+ "name": "毛冷帽",
+ "slot": "head",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 9,
+  "steps": [
+   [
+    0,
+    -1
+   ],
+   [
+    0,
+    -2
+   ]
+  ],
+  "coverMax": 0.3,
+  "floatOk": false,
+  "anyOverlap": false
+ },
+ "views": {
+  "front": {
+   "S": {
+    "lab": "lab_front_S.png",
+    "w": 15,
+    "h": 9,
+    "pivot": [
+     7.0,
+     8
+    ]
+   },
+   "M": {
+    "lab": "lab_front_M.png",
+    "w": 21,
+    "h": 13,
+    "pivot": [
+     10.0,
+     12
+    ]
+   },
+   "L": {
+    "lab": "lab_front_L.png",
+    "w": 29,
+    "h": 18,
+    "pivot": [
+     14.0,
+     17
+    ]
+   }
+  },
+  "side": {
+   "S": {
+    "lab": "lab_side_S.png",
+    "w": 15,
+    "h": 9,
+    "pivot": [
+     6.0,
+     8
+    ]
+   },
+   "M": {
+    "lab": "lab_side_M.png",
+    "w": 21,
+    "h": 13,
+    "pivot": [
+     8.0,
+     12
+    ]
+   },
+   "L": {
+    "lab": "lab_side_L.png",
+    "w": 29,
+    "h": 18,
+    "pivot": [
+     12.0,
+     17
+    ]
+   }
+  },
+  "back": {
+   "S": {
+    "lab": "lab_back_S.png",
+    "w": 15,
+    "h": 9,
+    "pivot": [
+     7.0,
+     8
+    ]
+   },
+   "M": {
+    "lab": "lab_back_M.png",
+    "w": 21,
+    "h": 13,
+    "pivot": [
+     10.0,
+     12
+    ]
+   },
+   "L": {
+    "lab": "lab_back_L.png",
+    "w": 29,
+    "h": 18,
+    "pivot": [
+     14.0,
+     17
+    ]
+   }
+  }
+ },
+ "parts": {},
+ "formOverrides": {},
+ "size": {
+  "mode": "rel",
+  "ref": "hw",
+  "k": 1.04,
+  "minW": 9,
+  "odd": true,
+  "ws": [
+   0.8,
+   1.3
+  ],
+  "hr": 0.62,
+  "hs": [
+   0.8,
+   1.25
+  ],
+  "minH": 4
+ },
+ "place": {
+  "anchor": "head",
+  "sink": 0.22,
+  "faceGuard": {
+   "step": [
+    0,
+    -1
+   ],
+   "max": 8
+  }
+ },
+ "pin": {
+  "k": 0.55,
+  "ang": -18,
+  "minW": 7,
+  "minH": 3
+ },
+ "cutStem": true,
+ "hideClips": {
+  "*": {
+   "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+  }
+ },
+ "materials": {
+  "#f3eefa": {
+   "name": "white",
+   "shade": "#ffefc4",
+   "base": "#f3eefa",
+   "hi": "#f3eefa"
+  },
+  "#7fc4e8": {
+   "name": "knit",
+   "shade": "#7fc4e8",
+   "base": "#7fc4e8",
+   "hi": "#7ff0e0"
+  },
+  "#4fa3d9": {
+   "name": "knitd",
+   "shade": "#4fa3d9",
+   "base": "#4fa3d9",
+   "hi": "#4fa3d9"
+  },
+  "#ffefc4": {
+   "name": "creamd",
+   "shade": "#ffefc4",
+   "base": "#ffefc4",
+   "hi": "#ffefc4"
+  }
+ }
+}

@@ -5883,5 +5883,55 @@
     "bell": 242
    }
   }
+ },
+ "runtime": {
+  "version": 1,
+  "note": "畫一次、即場套落 25 形態／全部 clip（additive：baked atlas 照留）",
+  "attach": "attach/ATTACH.json",
+  "attachPerForm": "attach/<form>.json",
+  "source": "source/<item>/item.json",
+  "items": [
+   "acorn",
+   "beanie",
+   "bell",
+   "bow",
+   "crown",
+   "glasses",
+   "halo",
+   "leafcollar",
+   "nightcap",
+   "sakura",
+   "scarf",
+   "starclip",
+   "straw",
+   "cherry"
+  ],
+  "compositor": "tools/compose_accessory_runtime.py",
+  "builder": "tools/build_accessory_runtime.py",
+  "validator": "tools/validate_accessory_runtime.py",
+  "engineDoc": "accessories/ENGINE_ATTACH.md",
+  "compare": "accessories/RUNTIME_COMPARE.json",
+  "compareDoc": "accessories/RUNTIME_COMPARE.md",
+  "preview": "preview/accessories/runtime/",
+  "newItems": {
+   "cherry": {
+    "name": "櫻桃髮夾",
+    "slot": "side_r",
+    "sizes": {
+     "S": 9,
+     "M": 13,
+     "L": 17
+    },
+    "rot": 8,
+    "swing": "dangle",
+    "runtimeOnly": true
+   }
+  },
+  "extraForms": {
+   "registry": "attach/FORMS_EXTRA.json",
+   "example": "attach/FORMS_EXTRA.example.json",
+   "doc": "ENGINE_ATTACH.md §12",
+   "speciesDemo": "preview/accessories/runtime/species_extra_demo_3x.png"
+  }
  }
 }

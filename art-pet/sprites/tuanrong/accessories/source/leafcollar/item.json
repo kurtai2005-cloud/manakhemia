@@ -1,0 +1,116 @@
+{
+ "id": "leafcollar",
+ "name": "葉仔領",
+ "slot": "neck",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 5,
+  "steps": [
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    2
+   ]
+  ],
+  "coverMax": 0.3,
+  "floatOk": false,
+  "anyOverlap": false
+ },
+ "views": {
+  "front": {
+   "S": {
+    "lab": "lab_leaf_tile_S.png",
+    "w": 6,
+    "h": 3,
+    "pivot": [
+     0,
+     0
+    ]
+   }
+  }
+ },
+ "parts": {},
+ "formOverrides": {},
+ "neck": {
+  "mode": "leaves",
+  "leaf": {
+   "S": {
+    "lab": "lab_leaf_tile_S.png",
+    "lw": 3
+   },
+   "M": {
+    "lab": "lab_leaf_tile_M.png",
+    "lw": 4
+   },
+   "L": {
+    "lab": "lab_leaf_tile_L.png",
+    "lw": 5
+   }
+  },
+  "flower": {
+   "S": {
+    "lab": "lab_flower_S.png",
+    "pivot": [
+     1,
+     1
+    ],
+    "dy": 1
+   },
+   "M": {
+    "lab": "lab_flower_M.png",
+    "pivot": [
+     1,
+     1
+    ],
+    "dy": 2
+   },
+   "L": {
+    "lab": "lab_flower_L.png",
+    "pivot": [
+     2,
+     2
+    ],
+    "dy": 2
+   }
+  },
+  "flowerAt": 0.26
+ },
+ "place": {
+  "anchor": "neck"
+ },
+ "faceClear": true,
+ "materials": {
+  "#6bbf6a": {
+   "name": "leafa",
+   "shade": "#3a7d4e",
+   "base": "#6bbf6a",
+   "hi": "#c9d6b0"
+  },
+  "#6bbf6b": {
+   "name": "leafb",
+   "shade": "#3a7d4e",
+   "base": "#6bbf6a",
+   "hi": "#6bbf6a"
+  },
+  "#ffd45e": {
+   "name": "gold",
+   "shade": "#d98f2e",
+   "base": "#ffd45e",
+   "hi": "#fffbd0"
+  },
+  "#f28b9b": {
+   "name": "pink",
+   "shade": "#d9667a",
+   "base": "#f28b9b",
+   "hi": "#f3eefa"
+  }
+ }
+}

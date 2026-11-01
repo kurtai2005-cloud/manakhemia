@@ -116,3 +116,16 @@
 - 背面（turn_back_01）左右 slot 鏡像；moon 帽針睡帽 pincap；dust 鈴吊頭頂（top_low）；dot 眼鏡推上額頭。
 - 預覽：`preview/accessories/acc5_contact_25x13_idle_2x.png`、`acc5_contact_25x13_walk03_2x.png`、`acc5_outfits_idle_3x.png` 等。
 <!-- ACC5-END -->
+
+<!-- ATTACH-START -->
+## Runtime 飾品（ATTACH，2026-11-01）——畫一次、即場套落 25 形態／全部 clip
+- **additive**：baked atlas（ACC1–5）照留；runtime 係另一條路，引擎可以逐步轉。
+- attach 表：`attach/ATTACH.json`（index）＋`attach/<form>.json`（25 個）；slot：head／side_l／side_r／neck／bulb／face；逐幀 pos／angle／scale(ws,hs)／facing F·S·B／mirror／眼 blob／頸 rows／燈泡／五官保護點／glow／莖 run；clip 級 hidden＋原因。全部由現有 fit data 推出，冇重畫。
+- item source：`source/<item>/item.json`＋`lab_*.png`（label map）＋預覽 PNG。head／side 件 3 view × S/M/L；眼鏡＝lens ladder（1168 格）；頸飾＝tile；光環＝rx ladder。
+- compositor：`tools/compose_accessory_runtime.py`（nearest 縮放／整數度旋轉、round-half-even 落點、swing、faceGuard、hide 規則、多件 yield、同 slot 只戴一件、背面鏡像、emissive 遮罩）。引擎規格：`ENGINE_ATTACH.md`。
+- 對照：`RUNTIME_COMPARE.md`／`.json`——59,449／59,628 幀合格（99.70%）；clip 可見性一致 99.81%。
+- 新飾品示範：**櫻桃髮夾 cherry**（side_r，S9／M13／L17，rot +8，兩粒櫻桃跟住擺），只畫 3 view，25 形態 1055 clip 全部 render 到（0 收起）。
+- 預覽：`preview/accessories/runtime/`（cherry idle／walk／sleep_loop／turn_back × 25 形態 3x、source 6x、13 件 runtime｜baked 對照、combo 示範）。
+- 新形態／新種族：只要加 anchors＋`attach/FORMS_EXTRA.json` 一項（見 `ENGINE_ATTACH.md` §12、`FORMS_EXTRA.example.json`）；species_concept 16 個 route×stage dry-run 全部套到。
+- 驗證：`tools/validate_accessory_runtime.py`。
+<!-- ATTACH-END -->

@@ -1,0 +1,46 @@
+{
+ "note": "複製做 FORMS_EXTRA.json 就會被 build_attach 讀入（新種族／新形態）。frames 檔名 <clip>_<kk>.png；anchors 每幀一個 dict。",
+ "keys": {
+  "frameDir": "幀資料夾（相對 art-pet 或者絕對），檔名 <clip>_<kk>.png",
+  "anchors": "anchors json（{\"anchors\": {clip: [每幀 anchor]}}），相對 art-pet 或者絕對",
+  "animations": "可選 {clip: {fps, loop}}",
+  "emissiveDir": "可選 <clip>_<kk>_emissive.png 資料夾",
+  "bulbR": "可選，燈泡玻璃半徑（預設 2.5）",
+  "glassesForehead": "可選 bool：眼同口太近 → 眼鏡推上額頭",
+  "pinSide": "可選 r/l：頭飾改用帽針（頭頂有大物件嘅形態）",
+  "headSc": "可選 頭飾縮放",
+  "sideSc": "可選 側飾縮放",
+  "axisFromEyes": "可選 bool：燈泡唔喺頭頂（觸角／尾燈）→ 頭軸用眼線",
+  "species": "可選 資料",
+  "route": "可選",
+  "stage": "可選"
+ },
+ "anchorSchema": {
+  "eyeL": "[x,y] int，必須（冇眼可以用 grab）",
+  "eyeR": "[x,y] int，必須",
+  "mouth": "[x,y] int（頸線用；冇就用頭高估）",
+  "head_r": "[x,y] int，頭右上邊（耳邊飾／側飾）",
+  "bulb": "[x,y] int，可選（燈泡；冇就光環／鈴用頭頂）",
+  "bulb2": "[x,y] 可選第二發光點",
+  "faceVisible": "bool，背面幀 false"
+ },
+ "forms": {
+  "evo_guard_newkind": {
+   "frameDir": "sprites/tuanrong/evo6/evo_guard_newkind/frames",
+   "anchors": "sprites/tuanrong/evo6/evo_guard_newkind/face_anchors_evo_guard_newkind.json",
+   "animations": {
+    "idle": {
+     "fps": 6,
+     "loop": true
+    }
+   },
+   "emissiveDir": null,
+   "bulbR": 2.5,
+   "glassesForehead": false,
+   "pinSide": null,
+   "species": "（例）",
+   "route": "newkind",
+   "stage": "guard"
+  }
+ }
+}

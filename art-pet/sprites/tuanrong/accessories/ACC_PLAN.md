@@ -32,4 +32,5 @@
 - ACC4 ✅ 2026-11-01：葉仔領、燈泡小鈴、燈泡光環、睡帽（`/workspace/acc4-staging`）。
 - ACC5 ✅ 2026-11-01：同戴衝突（COMBOS.json）、25×13 contact sheet、可見度總覆核、emissive 規則、背面鏡像、moon 睡帽／dust 鈴／dot 眼鏡修正、文件定稿（`/workspace/acc5-staging`）。
 - 13 件全部完成。剩低交遊策／遊程：攞法數值、衣櫃 UI、引擎實作（drawOrder、COMBOS 查表、emissive 遮罩）。
+- ATTACH ✅ 2026-11-01：runtime 化（attach 表 25 形態、14 件 item source、reference compositor、ENGINE_ATTACH.md、runtime vs baked 99.70% 幀合格、新飾品櫻桃髮夾 runtime-only）（`/workspace/attach-staging`）。剩低遊程：照 ENGINE_ATTACH.md 實作 canvas2D compositor。
 <!-- ACC-PROGRESS-END -->

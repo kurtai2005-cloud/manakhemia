@@ -1,0 +1,274 @@
+{
+ "version": 1,
+ "generator": "tools/build_accessory_runtime.py",
+ "base": "da76a09（本機用 312b8838 worktree，art-pet 一致）",
+ "overlayPad": 8,
+ "slots": [
+  "head",
+  "side_l",
+  "side_r",
+  "neck",
+  "bulb",
+  "face"
+ ],
+ "fields": {
+  "head": [
+   "x",
+   "y",
+   "ux",
+   "uy",
+   "ang",
+   "ws",
+   "hs"
+  ],
+  "pin": [
+   "x",
+   "y",
+   "ang",
+   "ws"
+  ],
+  "side_r": [
+   "x",
+   "y",
+   "ang",
+   "ws",
+   "mirror"
+  ],
+  "side_l": [
+   "x",
+   "y",
+   "ang",
+   "ws",
+   "mirror"
+  ],
+  "face": [
+   "lx",
+   "ly",
+   "rx",
+   "ry",
+   "bx",
+   "by",
+   "plx",
+   "ply",
+   "prx",
+   "pry",
+   "pbx",
+   "pby",
+   "eyeTopL",
+   "eyeTopR"
+  ],
+  "eyes": [
+   "[x,y,x,y,…] 左眼 blob 像素",
+   "右眼 blob 像素（鏡框唔可以壓）"
+  ],
+  "facePts": [
+   "[[x,y]…] eyeL／eyeR／mouth：±1 係五官保護區"
+  ],
+  "glow": [
+   "[[x,y]…] 燈／光點：飾品 ±1 挖空"
+  ],
+  "bulbPt": [
+   "x",
+   "y"
+  ],
+  "stem": [
+   "[[y,x0,x1]…] 帽要挖空嘅芽／莖 run"
+  ],
+  "facing": [
+   "F|S|B"
+  ],
+  "dir": [
+   "+1|-1"
+  ],
+  "neck": [
+   "y",
+   "cx",
+   "ang",
+   "xl",
+   "xr",
+   "rows(y=ny-4..ny+9: [x0,x1] 可畫範圍 or null)"
+  ],
+  "bulb": [
+   "hx",
+   "hy",
+   "fx",
+   "fy",
+   "fang",
+   "fw",
+   "ux",
+   "uy"
+  ]
+ },
+ "forms": {
+  "sprout": {
+   "file": "attach/sprout.json",
+   "frameSize": 32,
+   "clips": 43,
+   "frames": 190
+  },
+  "radiant": {
+   "file": "attach/radiant.json",
+   "frameSize": 64,
+   "clips": 43,
+   "frames": 190
+  },
+  "soft": {
+   "file": "attach/soft.json",
+   "frameSize": 64,
+   "clips": 43,
+   "frames": 190
+  },
+  "lumi": {
+   "file": "attach/lumi.json",
+   "frameSize": 64,
+   "clips": 26,
+   "frames": 112
+  },
+  "evo_dot": {
+   "file": "attach/evo_dot.json",
+   "frameSize": 28,
+   "clips": 41,
+   "frames": 181
+  },
+  "evo_sprout": {
+   "file": "attach/evo_sprout.json",
+   "frameSize": 32,
+   "clips": 41,
+   "frames": 181
+  },
+  "evo_hop": {
+   "file": "attach/evo_hop.json",
+   "frameSize": 38,
+   "clips": 50,
+   "frames": 237
+  },
+  "evo_guard_lumi": {
+   "file": "attach/evo_guard_lumi.json",
+   "frameSize": 44,
+   "clips": 41,
+   "frames": 181
+  },
+  "evo_guard_radiant": {
+   "file": "attach/evo_guard_radiant.json",
+   "frameSize": 44,
+   "clips": 41,
+   "frames": 181
+  },
+  "evo_guard_soft": {
+   "file": "attach/evo_guard_soft.json",
+   "frameSize": 44,
+   "clips": 41,
+   "frames": 181
+  },
+  "evo_guard_dust": {
+   "file": "attach/evo_guard_dust.json",
+   "frameSize": 44,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_lumi": {
+   "file": "attach/evo_still_lumi.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_radiant": {
+   "file": "attach/evo_still_radiant.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_soft": {
+   "file": "attach/evo_still_soft.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_dust": {
+   "file": "attach/evo_still_dust.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_guard_tide": {
+   "file": "attach/evo_guard_tide.json",
+   "frameSize": 44,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_tide": {
+   "file": "attach/evo_still_tide.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_guard_shroom": {
+   "file": "attach/evo_guard_shroom.json",
+   "frameSize": 44,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_shroom": {
+   "file": "attach/evo_still_shroom.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_guard_crystal": {
+   "file": "attach/evo_guard_crystal.json",
+   "frameSize": 44,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_crystal": {
+   "file": "attach/evo_still_crystal.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_guard_moon": {
+   "file": "attach/evo_guard_moon.json",
+   "frameSize": 44,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_moon": {
+   "file": "attach/evo_still_moon.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_guard_ember": {
+   "file": "attach/evo_guard_ember.json",
+   "frameSize": 44,
+   "clips": 43,
+   "frames": 190
+  },
+  "evo_still_ember": {
+   "file": "attach/evo_still_ember.json",
+   "frameSize": 48,
+   "clips": 43,
+   "frames": 190
+  }
+ },
+ "extraForms": {
+  "registry": "attach/FORMS_EXTRA.json",
+  "example": "attach/FORMS_EXTRA.example.json",
+  "anchorSchema": {
+   "eyeL": "[x,y] int，必須（冇眼可以用 grab）",
+   "eyeR": "[x,y] int，必須",
+   "mouth": "[x,y] int（頸線用；冇就用頭高估）",
+   "head_r": "[x,y] int，頭右上邊（耳邊飾／側飾）",
+   "bulb": "[x,y] int，可選（燈泡；冇就光環／鈴用頭頂）",
+   "bulb2": "[x,y] 可選第二發光點",
+   "faceVisible": "bool，背面幀 false"
+  },
+  "how": "新形態（例：species_concept 嘅新種族）：準備 frames/<clip>_<kk>.png＋每幀 anchors（eyeL/eyeR/mouth/head_r/bulb/faceVisible）→ 喺 FORMS_EXTRA.json 加一項 → python3 build_accessory_runtime.py attach。飾品 source 唔使改；件件自動套。"
+ },
+ "notes": [
+  "每 clip：f.<field>[k-1]＝第 k 幀；hidden.<slot>＝成個 clip 收起嘅原因（引擎直接唔畫）",
+  "座標＝身體 frame 像素座標（未加 overlayPad）；角度＝度，正＝順時針（畫面 y 向下）",
+  "facing：F 正面／S 側面（眼距 < 0.6×idle）／B 背面（faceVisible=false）→ 揀 item 嘅 front／side／back view",
+  "詳細用法睇 accessories/ENGINE_ATTACH.md"
+ ]
+}

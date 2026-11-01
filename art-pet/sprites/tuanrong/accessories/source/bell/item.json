@@ -1,0 +1,197 @@
+{
+ "id": "bell",
+ "name": "燈泡小鈴",
+ "slot": "bulb",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 1,
+  "steps": [
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    1,
+    -1
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    2,
+    -2
+   ]
+  ],
+  "coverMax": 0.5,
+  "floatOk": false,
+  "anyOverlap": false
+ },
+ "views": {
+  "front": {
+   "S": {
+    "lab": "lab_front_S.png",
+    "w": 5,
+    "h": 6,
+    "pivot": [
+     2.0,
+     0
+    ]
+   },
+   "M": {
+    "lab": "lab_front_M.png",
+    "w": 7,
+    "h": 9,
+    "pivot": [
+     3.0,
+     0
+    ]
+   },
+   "L": {
+    "lab": "lab_front_L.png",
+    "w": 9,
+    "h": 11,
+    "pivot": [
+     4.0,
+     0
+    ]
+   }
+  },
+  "side": {
+   "S": {
+    "lab": "lab_side_S.png",
+    "w": 5,
+    "h": 6,
+    "pivot": [
+     2.0,
+     0
+    ]
+   },
+   "M": {
+    "lab": "lab_side_M.png",
+    "w": 7,
+    "h": 9,
+    "pivot": [
+     3.0,
+     0
+    ]
+   },
+   "L": {
+    "lab": "lab_side_L.png",
+    "w": 9,
+    "h": 11,
+    "pivot": [
+     4.0,
+     0
+    ]
+   }
+  },
+  "back": {
+   "S": {
+    "lab": "lab_back_S.png",
+    "w": 5,
+    "h": 6,
+    "pivot": [
+     2.0,
+     0
+    ]
+   },
+   "M": {
+    "lab": "lab_back_M.png",
+    "w": 7,
+    "h": 9,
+    "pivot": [
+     3.0,
+     0
+    ]
+   },
+   "L": {
+    "lab": "lab_back_L.png",
+    "w": 9,
+    "h": 11,
+    "pivot": [
+     4.0,
+     0
+    ]
+   }
+  }
+ },
+ "parts": {},
+ "formOverrides": {},
+ "size": {
+  "mode": "class",
+  "rule": "S≤32→5px、≤48→7px、64→9px（唔縮放）"
+ },
+ "place": {
+  "anchor": "hang",
+  "faceGuard": {
+   "step": [
+    1,
+    -1
+   ],
+   "max": 6
+  }
+ },
+ "swing": {
+  "src": "bulb",
+  "kx": 7.0,
+  "ky": 0.0,
+  "decay": 0.5,
+  "lim": 25.0,
+  "maxd": 14.0,
+  "apply": "item"
+ },
+ "materials": {
+  "#ffd45e": {
+   "name": "gold",
+   "shade": "#d98f2e",
+   "base": "#ffd45e",
+   "hi": "#fffbd0"
+  },
+  "#e5584d": {
+   "name": "red",
+   "shade": "#a33f4a",
+   "base": "#e5584d",
+   "hi": "#f28b9b"
+  },
+  "#f3eefa": {
+   "name": "white",
+   "shade": "#ffefc4",
+   "base": "#f3eefa",
+   "hi": "#f3eefa"
+  },
+  "#3b2a3e": {
+   "name": "ink",
+   "shade": "#3b2a3e",
+   "base": "#3b2a3e",
+   "hi": "#3b2a3e"
+  },
+  "#d98f2e": {
+   "name": "goldd",
+   "shade": "#d98f2e",
+   "base": "#d98f2e",
+   "hi": "#ffd45e"
+  }
+ }
+}

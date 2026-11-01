@@ -1,0 +1,181 @@
+{
+ "id": "straw",
+ "name": "草帽",
+ "slot": "head",
+ "version": 1,
+ "faceSafe": true,
+ "render": {
+  "outline": true,
+  "shade": true
+ },
+ "yield": {
+  "priority": 8,
+  "steps": [
+   [
+    0,
+    -1
+   ],
+   [
+    0,
+    -2
+   ]
+  ],
+  "coverMax": 0.3,
+  "floatOk": false,
+  "anyOverlap": false
+ },
+ "views": {
+  "front": {
+   "S": {
+    "lab": "lab_front_S.png",
+    "w": 17,
+    "h": 7,
+    "pivot": [
+     8.0,
+     6
+    ]
+   },
+   "M": {
+    "lab": "lab_front_M.png",
+    "w": 25,
+    "h": 10,
+    "pivot": [
+     12.0,
+     9
+    ]
+   },
+   "L": {
+    "lab": "lab_front_L.png",
+    "w": 35,
+    "h": 15,
+    "pivot": [
+     17.0,
+     14
+    ]
+   }
+  },
+  "side": {
+   "S": {
+    "lab": "lab_side_S.png",
+    "w": 17,
+    "h": 7,
+    "pivot": [
+     7.0,
+     6
+    ]
+   },
+   "M": {
+    "lab": "lab_side_M.png",
+    "w": 25,
+    "h": 10,
+    "pivot": [
+     10.0,
+     9
+    ]
+   },
+   "L": {
+    "lab": "lab_side_L.png",
+    "w": 35,
+    "h": 15,
+    "pivot": [
+     14.0,
+     14
+    ]
+   }
+  },
+  "back": {
+   "S": {
+    "lab": "lab_back_S.png",
+    "w": 17,
+    "h": 7,
+    "pivot": [
+     8.0,
+     6
+    ]
+   },
+   "M": {
+    "lab": "lab_back_M.png",
+    "w": 25,
+    "h": 10,
+    "pivot": [
+     12.0,
+     9
+    ]
+   },
+   "L": {
+    "lab": "lab_back_L.png",
+    "w": 35,
+    "h": 15,
+    "pivot": [
+     17.0,
+     14
+    ]
+   }
+  }
+ },
+ "parts": {},
+ "formOverrides": {},
+ "size": {
+  "mode": "rel",
+  "ref": "hw",
+  "k": 1.2,
+  "minW": 9,
+  "odd": true,
+  "ws": [
+   0.8,
+   1.3
+  ],
+  "hr": 0.42,
+  "hs": [
+   0.8,
+   1.25
+  ],
+  "minH": 4
+ },
+ "place": {
+  "anchor": "head",
+  "sink": 0.13,
+  "faceGuard": {
+   "step": [
+    0,
+    -1
+   ],
+   "max": 8
+  }
+ },
+ "pin": {
+  "k": 0.62,
+  "ang": -14,
+  "minW": 7,
+  "minH": 3,
+  "sc": {
+   "evo_still_moon": 0.9375
+  }
+ },
+ "cutStem": true,
+ "hideClips": {
+  "*": {
+   "leaf_umbrella": "撐葉傘：葉蓋住頭頂，頭飾收起（避免帽畫喺葉上面）"
+  }
+ },
+ "materials": {
+  "#f2b93c": {
+   "name": "straw",
+   "shade": "#d98f2e",
+   "base": "#f2b93c",
+   "hi": "#ffe98a"
+  },
+  "#d98f2e": {
+   "name": "strawd",
+   "shade": "#d98f2e",
+   "base": "#d98f2e",
+   "hi": "#f2b93c"
+  },
+  "#e5584d": {
+   "name": "red",
+   "shade": "#a33f4a",
+   "base": "#e5584d",
+   "hi": "#f28b9b"
+  }
+ }
+}

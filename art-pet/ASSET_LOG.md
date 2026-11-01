@@ -243,3 +243,12 @@
 - 同場：route 提示字跟遊策新版更新（`build_evo6_routeG.py --hints`、`validate_route_clarity.py` 檢查新字＋舊字唔可以再出現）。
 - 預覽：`sprites/tuanrong/preview/accessories/acc5_*.png`（25×13 contact sheet idle／walk_03、同戴示範、背面、moon 睡帽、dust 鈴、dot 眼鏡）。全部 Pillow／numpy，冇用 AI，v3 色盤，alpha 0/255。
 <!-- ACC5-LOG-END -->
+
+<!-- ATTACH-LOG-START -->
+## 2026-11-01 09:40 HKT 團絨飾品 runtime 化（ATTACH，遊美，未 commit）
+- 新：`accessories/attach/`（ATTACH.json＋25 個 <form>.json）、`accessories/source/`（13 件＋cherry）、`ENGINE_ATTACH.md`、`RUNTIME_COMPARE.md/.json`、`tools/build_accessory_runtime.py`、`tools/compose_accessory_runtime.py`、`tools/validate_accessory_runtime.py`、`preview/accessories/runtime/`。
+- 改：`ACCESSORIES.json`（加 `runtime` key，其他 key 不變）、`ACCESSORIES.md`、`ACC_PLAN.md`。baked atlas／COMBOS.json／CLIPS.json 冇改。
+- 對照：13 件 × 25 形態 59,449／59,628 幀合格（99.70%）；可見性一致 13,689／13,715 clip。nightcap 嚴重幀係 baked 浮高 ~7px（runtime 啱）；眼鏡／蝴蝶結有少量 runtime 保守收起。
+- 新飾品：櫻桃髮夾 cherry（只畫 3 view × S/M/L），25 形態 1055 clip／4674 幀全部 render。全部 Pillow／numpy，冇用 AI，v3 色盤，alpha 0/255。備份：`_backups/pre_attach_20261101/`。
+- 新形態擴充：`attach/FORMS_EXTRA.json`（data-only；example 檔＋ENGINE_ATTACH §12）；species_concept 16 個 route×stage dry-run（寫 /tmp）全部套到 6 件飾品。
+<!-- ATTACH-LOG-END -->
