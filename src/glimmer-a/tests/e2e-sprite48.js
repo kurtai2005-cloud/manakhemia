@@ -27,35 +27,65 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     ok(!pd.s80 && (!fk || ev.drawForm === fk) && /^evo_/.test(ev.drawForm || ''), st + (br ? ' ' + br : '') + ' → 舊 evo sprite（' + ev.drawForm + '）', [ev.drawForm, pd]); }
   const save0 = await E(() => { __glimmer.save(); return localStorage.getItem(window.Glimmer.data.PARAMS.saveKey); });
   const st0 = await E(() => JSON.stringify({ st: __glimmer.state.stage, f: __glimmer.state.form, tp: __glimmer.state.settings.tryPet || null }));
-  await page.click('#gear'); await page.waitForSelector('[data-testid=trypet]');
-  const bx = await E(() => ['trypet-prev', 'trypet-next', 'trypet-off'].map(t => { const r = document.querySelector('[data-testid=' + t + ']').getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }));
-  ok(bx.every(([w, h]) => w >= 48 && h >= 48), '◀ ▶ 關 ≥48px', bx);
+  const openPanel = async () => { await page.click('#gear'); await page.waitForSelector('[data-testid=trypet-open]'); await page.click('[data-testid=trypet-open]'); await page.waitForSelector('[data-testid=trypet-panel]'); await page.waitForTimeout(250); };
+  const isOpen = () => E(() => !!document.querySelector('[data-testid=trypet-panel]'));
+  const mainBack = () => E(() => !document.querySelector('[data-testid=trypet-panel]') && getComputedStyle(document.getElementById('modal')).display === 'none');
+  await openPanel();
+  ok(await E(() => getComputedStyle(document.getElementById('modal')).display === 'none'), '開預覽：設定已關（面板直接疊喺主畫面）');
+  const geo = await E(() => { const st = document.getElementById('modal').parentNode.getBoundingClientRect(), bx = document.querySelector('[data-testid=trypet-box]').getBoundingClientRect(), x = document.querySelector('[data-testid=trypet-close]').getBoundingClientRect();
+    return { stH: st.height, stW: st.width, bxH: bx.height, bxTop: bx.top, bxBot: bx.bottom, bxR: bx.right, xw: x.width, xh: x.height, xTop: x.top, xR: x.right, vh: innerHeight }; });
+  ok(geo.bxH <= geo.stH * 0.6 + 1 && geo.bxH <= geo.vh * 0.6 + 1, '面板高 ≤ 60%（' + Math.round(geo.bxH) + '／' + Math.round(geo.stH) + '）', geo);
+  ok(geo.xw >= 44 && geo.xh >= 44, '✕ ≥44px', [geo.xw, geo.xh]);
+  ok(geo.xTop >= geo.bxTop && geo.xTop - geo.bxTop < 12 && geo.bxR - geo.xR < 12 && geo.xTop >= 0 && geo.xR <= geo.stW + 1, '✕ 喺面板右上角、畫面內', geo);
+  const bx = await E(() => ['trypet-prev', 'trypet-next', 'trypet-close'].map(t => { const r = document.querySelector('[data-testid=' + t + ']').getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }));
+  ok(bx.every(([w, h]) => w >= 48 && h >= 48), '◀ ▶ ✕ ≥48px', bx);
   const lab = () => E(() => document.querySelector('[data-testid=trypet-label]').textContent);
-  const cvVis = () => E(() => getComputedStyle(document.querySelector('[data-testid=trypet-canvas]')).display !== 'none');
-  ok(/^關/.test(await lab()) && !(await cvVis()), '預設「關」、冇預覽畫布', await lab());
-  await page.click('[data-testid=trypet-next]'); await page.waitForTimeout(400);
-  ok((await lab()) === 'A1 滴滴' && await cvVis(), '▶ → A1 滴滴、預覽畫布出現', await lab());
+  ok((await lab()) === 'A1 滴滴', '開面板預設 A1 滴滴', await lab());
   const BA = await E(() => fetch('art/sprites48/bulb_anchors_48.json').then(r => r.json()));
   { const seen = new Set(), good = []; for (let i = 0; i < 30; i++) { await page.waitForTimeout(47); const L = (await E(() => __glimmer.newSeries.info())).last; if (!L) continue; seen.add(L.frame);
       const pf = BA.creatures[L.key].perFrame[L.frame]; good.push(L.key === 'A1' && L.scale === 3 && Math.abs(L.bulb[0] - (L.ox + (pf[0] + 0.5) * 3)) < 1e-6 && Math.abs(L.bulb[1] - (L.oy + (pf[1] + 0.5) * 3)) < 1e-6 && L.glowR === 27 && L.glowA >= 0.24 - 1e-6 && L.glowA <= 0.6 + 1e-6); }
     ok(good.length > 15 && good.every(Boolean), '預覽：燈泡 glow 喺 perFrame anchor、r 9×3、alpha 0.42±0.18', good.length);
     ok([0, 1, 2, 3].every(f => seen.has(f)), 'idle 4 幀都出', [...seen]); }
   { const px = await E(() => { const NS = __glimmer.newSeries, cv = document.querySelector('[data-testid=trypet-canvas]'), L = NS.info().last; const d = cv.getContext('2d').getImageData(L.ox, L.oy, 144, 144).data; let op = 0; for (let i = 3; i < d.length; i += 4) if (d[i] === 255) op++; return { op }; });
-    ok(px.op > 600 * 9 * 0.9, '預覽畫布有 3x 實體像素', px); }
+    ok(px.op > 600 * 9 * 0.9, '預覽畫布有實體像素', px); }
   await page.click('[data-testid=trypet-next]'); await page.click('[data-testid=trypet-next]'); await page.click('[data-testid=trypet-prev]'); await page.waitForTimeout(200);
   ok((await lab()).indexOf('A2') === 0, '▶▶◀ → A2', await lab());
-  await page.click('[data-testid=trypet-off]'); await page.click('[data-testid=trypet-prev]'); await page.waitForTimeout(300);
-  ok((await lab()).indexOf('H3') === 0, '關 → ◀ 循環 H3', await lab());
-  await page.screenshot({ path: SHOTS + 'sprite48-preview-H3.png' });
+  await page.click('[data-testid=trypet-prev]'); await page.click('[data-testid=trypet-prev]'); await page.waitForTimeout(300);
+  ok((await lab()).indexOf('H3') === 0, '◀ 循環 H3', await lab());
   const pd1 = await E(() => ({ s80: (__glimmer.renderer.petDraw || {}).s80 || null, fk: __glimmer.evo.info().drawForm }));
   ok(!pd1.s80 && /^evo_/.test(pd1.fk || ''), '預覽緊：主寵照畫舊 evo sprite', pd1);
+  await page.click('[data-testid=trypet-close]'); await page.waitForTimeout(250);
+  ok(await mainBack(), '✕ → 即返主畫面（冇設定、冇面板）');
+  ok((await E(() => __glimmer.newSeries.info())).preview === null, '關咗：預覽 key 清走');
+  await openPanel(); await page.mouse.click(10, 830); await page.waitForTimeout(250);
+  ok(await mainBack(), '撳面板外面 → 關、返主畫面');
+  await openPanel(); await page.click('[data-testid=trypet-canvas]'); await page.waitForTimeout(150);
+  ok(await isOpen(), '撳面板入面唔會關');
+  await page.goBack(); await page.waitForTimeout(400);
+  ok(await mainBack() && /index\.html/.test(page.url()), '返回鍵（history back）→ 關、仍喺遊戲', page.url());
+  await openPanel(); await page.keyboard.press('Escape'); await page.waitForTimeout(200);
+  ok(await mainBack(), 'Esc → 關');
+  { await openPanel(); await page.click('[data-testid=trypet-close]'); await page.waitForTimeout(300); ok(await mainBack() && /index\.html/.test(page.url()), '✕ 之後 history 已退返（唔會留低空返回步）', page.url());
+    ok(await E(() => !(history.state && history.state.nspanel)), 'history 冇殘留 nspanel entry'); }
+  await page.goto(BASE + '?' + Q); await page.waitForFunction(() => window.__glimmer && __glimmer.nsLoad); await E(() => Promise.all([__glimmer.nsLoad, __glimmer.evoLoad])); await E(() => { window.__noSaveOnHide = true; });
+  // 細畫面（360×640）都放得入
+  await page.setViewportSize({ width: 360, height: 640 }); await page.waitForTimeout(200); await openPanel();
+  { const g = await E(() => { const st = document.getElementById('modal').parentNode.getBoundingClientRect(), x = document.querySelector('[data-testid=trypet-close]').getBoundingClientRect(), bx = document.querySelector('[data-testid=trypet-box]').getBoundingClientRect(); return { x: [x.left, x.top, x.right, x.bottom], vw: innerWidth, vh: innerHeight, bh: bx.height, sh: st.height }; });
+    ok(g.x[0] >= 0 && g.x[1] >= 0 && g.x[2] <= g.vw && g.x[3] <= g.vh && g.bh <= g.sh * 0.6 + 1, '360×640：✕ 喺畫面內、面板 ≤60%', g); }
+  await page.screenshot({ path: SHOTS + 'sprite48-panel-small.png' });
+  await page.click('[data-testid=trypet-close]'); await page.setViewportSize({ width: 390, height: 844 });
   const st1 = await E(() => JSON.stringify({ st: __glimmer.state.stage, f: __glimmer.state.form, tp: __glimmer.state.settings.tryPet || null }));
   ok(st0 === st1, '唔改 stage／form／settings.tryPet', [st0, st1]);
   const save1 = await E(() => localStorage.getItem(window.Glimmer.data.PARAMS.saveKey));
-  ok(save1 === save0 || (JSON.parse(save1).settings || {}).tryPet == null, '存檔冇寫入預覽', null);
+  ok(!/nspanel|preview/.test(save1 || '') && (JSON.parse(save1).settings || {}).tryPet == null, '存檔冇寫入預覽');
   const sw = await E(() => __glimmer.newSeries.switchSeries('fromref48'));
   ok(sw.ok === false && sw.reason === 'not-ready' && sw.active === 'tuanrong', 'switchSeries hook：not-ready（等遊策）', sw);
-  await E(() => { const b = [...document.querySelectorAll('.btn')].find(x => x.textContent === '關閉'); if (b) b.click(); });
+  // 設定 modal 本身都要捲得到「關閉」
+  await page.setViewportSize({ width: 360, height: 640 }); await page.click('#gear'); await page.waitForSelector('[data-testid=modal-btn-0]');
+  { const g = await E(() => { const m = document.getElementById('mbox'); return { sh: m.scrollHeight, ch: m.clientHeight, ov: getComputedStyle(m).overflowY, mb: m.getBoundingClientRect().bottom, vh: innerHeight }; });
+    ok(g.mb <= g.vh + 1 && (g.sh <= g.ch || g.ov === 'auto'), '設定框唔超出畫面（入面 scroll）', g); }
+  await page.click('[data-testid=modal-btn-0]'); await page.waitForTimeout(200); ok(await mainBack(), '設定「關閉」撳得到');
+  await page.setViewportSize({ width: 390, height: 844 });
   // 舊存檔有 settings.tryPet（sprite80 版留低）→ 主寵都唔換
   await E(() => { __glimmer.state.settings.tryPet = 'C2'; __glimmer.save(); });
   await page.goto(BASE + '?' + Q); await page.waitForFunction(() => window.__glimmer && __glimmer.nsLoad); await E(() => Promise.all([__glimmer.nsLoad, __glimmer.evoLoad])); await E(() => { window.__noSaveOnHide = true; __glimmer.forceBeh('idle'); }); await page.waitForTimeout(400);

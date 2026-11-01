@@ -167,6 +167,53 @@
     return api;
   })();
   G.nsLoad = G.newSeries.load;
+  // 新蛋系列預覽面板（Kurt 11-01：預覽要細、✕ 永遠睇到；撳外面／Android 返回鍵都關；只係預覽，唔寫存檔）
+  G.newSeriesPanel = (function () {
+    let el = null, raf = 0, hist = false; const t0 = performance.now();
+    const N = G.newSeries;
+    function close(fromPop) {
+      if (!el) return false; if (raf) cancelAnimationFrame(raf); raf = 0;
+      el.remove(); el = null; N.preview(null);
+      const h = hist; hist = false; if (h && !fromPop) { try { history.back(); } catch (e) { } }
+      return true;
+    }
+    window.addEventListener('popstate', () => { if (el) close(true); });   // Android 返回鍵（WebView goBack）
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && el) close(); });
+    function open() {
+      if (el) return el; const modalEl = document.getElementById('modal'); if (!modalEl) return null;
+      const host = modalEl.parentNode, opts = N.KEYS;
+      el = document.createElement('div'); el.id = 'nspanel'; el.dataset.testid = 'trypet-panel';
+      el.style.cssText = 'position:absolute;inset:0;z-index:30;background:rgba(5,7,26,.55);display:flex;align-items:center;justify-content:center';
+      const box = document.createElement('div'); box.dataset.testid = 'trypet-box';
+      box.style.cssText = 'position:relative;width:min(300px,86%);max-height:60%;display:flex;flex-direction:column;background:#221e34;border:2px solid #f2c46d;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.5);overflow:hidden;box-sizing:border-box';
+      const hd = document.createElement('div'); hd.style.cssText = 'flex:none;display:flex;align-items:center;justify-content:space-between;padding:4px 4px 4px 14px;font-weight:700;color:#ffd98a;font-size:15px';
+      const tt = document.createElement('span'); tt.textContent = '試新寵（預覽）'; hd.appendChild(tt);
+      const x = document.createElement('div'); x.className = 'btn sec'; x.dataset.testid = 'trypet-close'; x.textContent = '✕'; x.setAttribute('aria-label', '關閉');
+      x.style.cssText = 'margin:0;width:48px;height:48px;min-width:48px;display:flex;align-items:center;justify-content:center;font-size:22px;padding:0;box-sizing:border-box';
+      x.addEventListener('click', (e) => { e.stopPropagation(); close(); }); hd.appendChild(x);
+      const body = document.createElement('div'); body.dataset.testid = 'trypet-body'; body.style.cssText = 'flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 12px 10px;-webkit-overflow-scrolling:touch';
+      const pk = document.createElement('div'); pk.dataset.testid = 'trypet'; pk.style.cssText = 'display:flex;align-items:center;gap:6px;justify-content:space-between';
+      const mkB = (txt, tid) => { const b = document.createElement('div'); b.className = 'btn sec'; b.dataset.testid = tid; b.textContent = txt; b.style.cssText = 'margin:0;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;font-size:18px;padding:0 8px;box-sizing:border-box'; return b; };
+      const prev = mkB('◀', 'trypet-prev'), next = mkB('▶', 'trypet-next');
+      const lb = document.createElement('div'); lb.dataset.testid = 'trypet-label'; lb.style.cssText = 'flex:1;text-align:center;font-size:14px;color:#fff';
+      const S = P.newSeries.previewScale, cv = document.createElement('canvas'); cv.width = 64 * S; cv.height = 56 * S; cv.dataset.testid = 'trypet-canvas';
+      cv.style.cssText = 'display:block;margin:6px auto;width:128px;height:112px;image-rendering:pixelated;background:radial-gradient(#3a3550,#221e30);border-radius:10px';
+      const nt = document.createElement('div'); nt.style.cssText = 'font-size:11px;opacity:.75;text-align:left;color:#fff'; nt.textContent = '新蛋系列 24 隻（48px）預覽；唔會改你隻團絨、階段、路線或存檔。撳 ✕／外面／返回鍵關。';
+      const show = () => { const k = N.preview(); lb.textContent = k + ' ' + N.petName(k); };
+      const step = (d) => { const i = Math.max(0, opts.indexOf(N.preview())); N.preview(opts[(i + d + opts.length) % opts.length]); show(); };
+      prev.addEventListener('click', () => step(-1)); next.addEventListener('click', () => step(1));
+      pk.appendChild(prev); pk.appendChild(lb); pk.appendChild(next); body.appendChild(pk); body.appendChild(cv); body.appendChild(nt);
+      box.appendChild(hd); box.appendChild(body); el.appendChild(box);
+      el.addEventListener('click', (e) => { if (e.target === el) close(); });   // 撳面板外面
+      host.appendChild(el);
+      if (!N.preview()) N.preview(opts[0]); show();
+      try { history.pushState({ nspanel: 1 }, ''); hist = true; } catch (e) { hist = false; }
+      const tick = () => { raf = 0; if (!el || !cv.isConnected) return; N.draw(cv, N.preview(), (performance.now() - t0) / 1000); raf = requestAnimationFrame(tick); };
+      N.load.then(() => { if (el && !raf) tick(); });
+      return el;
+    }
+    return { open, close: () => close(), isOpen: () => !!el };
+  })();
   G.liveSettled = false; G.liveLoad.then(() => { G.liveSettled = true; }, () => { G.liveSettled = true; });   // s3：重逢等 live atlas 載完先衝（rush 用真 clip）
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
   if (NS.hd2d) NS.hd2d.install(G, NS);
