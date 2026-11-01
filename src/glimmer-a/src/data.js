@@ -502,10 +502,12 @@
       enabled: true, base: 'art/sprites80/', atlas: 'pets_idle_80', anchors: 'bulb_anchors_80.json',
       frame: 80, pivot: [40, 77], idleMs: [260, 180, 260, 140], idleMode: 'strip',      // strip＝0→1→2→3 循環；feel＝0↔1 bob 0.9s（幀 1 0.36s）＋約 3.3s 眨眼（幀 3 140ms）
       feel: { bobSec: 0.9, bobDownSec: 0.36, blinkSec: 3.3, blinkMs: 140 },
-      clips: { idle: 'idle', blink: 3 },                                              // 有 80px 圖嘅 clip（其餘 → 舊 sprite）
+      clips: { idle: 'idle', blink: 3 },                                              // 有 80px 圖嘅 clip
+      motion: 'proc',                                                                 // 非 idle clip：proc＝用 80px idle 幀＋程序化 bob／squash（大細唔跳）；old＝退返舊 44/48px sprite（?spr80motion=old）
+      keepOld: ['leaf_umbrella', 'tell_'],                                            // proc 下都用舊 sprite 嘅 clip（前綴）：撐葉／tell 有專屬道具美術，80px 冇
       lines: { tide: 'A', lumi: 'B', ember: 'C', crystal: 'D', bright: 'F', radiant: 'F', moon: 'G', dust: 'H' },   // E 線（第二條火系）未用；soft／shroom 冇對應 → 舊 sprite
-      tiers: { adult: 2, elder: 3 },                                                   // egg／newborn／sprout／juvenile → 舊 sprite（tier 1 只經 ?spr80= 用）
-      glowR: 14, glowA: [0.42, 0.18], glowHz: 2.2, moodMix: 0.55,   // moodMix：燈泡情緒／路線色混入 80px 引擎光（保留燈泡情緒 feature）
+      tiers: { juvenile: 1, adult: 2, elder: 3 },                                      // 遊美 11-01：成年前一階（evo6 juvenile／跳跳 evo_hop）→ tier 1（form 未定 → 用 sim.routeLead 領先路線）；egg／newborn／sprout → 舊 sprite
+      glowR: 14, glowA: [0.72, 0.26], glowHz: 2.2, moodMix: 0.55,   // glowA：遊美 11-01 調高（feeltest 0.42±0.18 → 引擎光經 hd 混色後 H3 實測約弱 1.8×；0.72±0.26 ≈ feeltest 中午）；moodMix：燈泡情緒／路線色混入 80px 引擎光（保留燈泡情緒 feature）
       shadowHalfW: 21, force: null, hold: null,
     },
     // ── 畫質自動降級：用 rAF 幀間隔（唔再用連續掉幀計）──

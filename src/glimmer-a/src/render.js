@@ -442,8 +442,44 @@
     spr80Key(s) {                        // 呢隻寵物用邊隻 80px（null＝用舊 sprite）
       const C = P.sprites80; if (!C || !C.enabled || !this.s80 || !s || s.stage === 'egg') return null;
       if (C.force) return this.s80.anchors[C.force] ? C.force : null;
-      const ln = C.lines[s.form], tr = C.tiers[s.stage], k = ln && tr ? ln + tr : null;
+      const tr = C.tiers[s.stage], ln = C.lines[s.stage === 'juvenile' ? this.spr80Lead(s) : s.form], k = ln && tr ? ln + tr : null;
       return k && this.s80.anchors[k] ? k : null;
+    }
+    spr80Lead(s) {                       // juvenile 未有 form → 領先路線（sim.routeLead；每 1s 重算）
+      const now = Date.now(), L = this._s80Lead;
+      if (!L || L.st !== s || now - L.t >= 1000 || now < L.t) { let f = null; try { f = SIM.routeLead ? SIM.routeLead(s).form : null; } catch (e) { f = null; } this._s80Lead = { st: s, t: now, form: f }; }
+      return this._s80Lead.form;
+    }
+    // 非 idle clip（motion 'proc'）：80px idle 幀＋程序化 xform（腳底 pivot 為中心）。返 { f, ph } 或 null（用舊 sprite）
+    spr80Motion(clip, b, t) {
+      const C = P.sprites80, idle = this.spr80Frame(clip, t); if (idle != null) return { f: idle, ph: null, kind: 'idle' };
+      if (C.motion !== 'proc' || !D.CLIPS[clip] && !(D.SYS_CLIPS && D.SYS_CLIPS[clip])) return null;
+      if ((C.keepOld || []).some(k => clip === k || (k.endsWith('_') && clip.indexOf(k) === 0))) return null;
+      const ct = b.clipT || 0, T = { sx: 1, sy: 1, dx: 0, dy: 0 }, sn = Math.sin, ab = Math.abs, bob = this.spr80Frame('idle', t);
+      let f = bob, kind = 'other';
+      const hop = (hz, h) => { const u = ab(sn(t * hz)); T.dy = -Math.round(u * h); if (u < 0.25) { T.sy = 0.94; T.sx = 1.05; } };
+      const squash = (hz, k) => { const u = sn(t * hz); T.sy = 1 + k * u; T.sx = 1 - k * 0.7 * u; };
+      switch (clip) {
+        case 'walk': case 'walk_happy': case 'walk_drag': case 'rush': { const hz = clip === 'rush' ? 16 : clip === 'walk_drag' ? 7 : 11, u = sn(t * hz);   // 橫移由 beh.x 做；呢度 bob＋步頻 squash
+          kind = 'walk'; f = u > 0 ? 0 : 1; T.dy = u > 0.55 ? -1 : 0; T.sy = 1 - 0.035 * ab(u); T.sx = 1 + 0.02 * ab(u); if (clip === 'walk_happy') T.dy -= Math.round(ab(sn(t * hz / 2)) * 2); if (clip === 'walk_drag') T.sy = 0.95; break; }
+        case 'fall_asleep': case 'sleep_loop': case 'emo_sleepy': case 'yawn': {   // 慢呼吸 squash＋閉眼（幀 3＝眨眼幀）
+          kind = 'sleep'; f = clip === 'yawn' && ct < 0.4 ? 0 : 3; const u = 0.5 + 0.5 * sn(t * 1.7); T.sy = 1 - 0.045 * u; T.sx = 1 + 0.03 * u; if (clip === 'fall_asleep') T.sy -= Math.min(1, ct / 1.2) * 0.02; if (clip === 'yawn') T.sy = 1 + 0.05 * sn(Math.min(1, ct / 1.2) * Math.PI); break; }
+        case 'wake': case 'getup': kind = 'wake'; f = ct < 0.35 ? 3 : 0; T.sy = 1 + 0.06 * sn(Math.min(1, ct / 0.8) * Math.PI); T.sx = 2 - T.sy; break;
+        case 'sunbathe': kind = 'sleep'; f = 3; T.sy = 0.9; T.sx = 1.06; break;
+        case 'eat': kind = 'squash'; f = 0; squash(9, 0.06); T.dy = sn(t * 9) < -0.4 ? 1 : 0; break;
+        case 'jump': case 'cheer_jump': case 'catch_reach': case 'celebrate': kind = 'squash';
+          if (b.lift) { T.sy = 1.07; T.sx = 0.95; } else if (clip === 'celebrate') { hop(8, 4); } else { T.sy = 0.9; T.sx = 1.08; } f = 0; break;
+        case 'play': kind = 'squash'; hop(6, 3); f = 0; break;
+        case 'pot_bump': { const u = ct; kind = 'squash'; T.dx = u < 0.3 ? 1 : u < 0.5 ? -3 : u < 0.65 ? 1 : 0; T.sx = u >= 0.3 && u < 0.5 ? 1.08 : 1; T.sy = 2 - T.sx; break; }
+        case 'sick': case 'droop': kind = 'sad'; T.sy = 0.92; T.sx = 1.04; f = (t % 2.4) < 0.6 ? 3 : 0; break;
+        case 'grumpy': kind = 'emo'; T.dx = Math.round(sn(t * 55)); T.sy = 0.95; break;
+        case 'shiver': kind = 'emo'; T.dx = Math.round(sn(t * 60)); T.sy = 0.97; break;
+        case 'sway': kind = 'emo'; T.rot = 0.05 * sn(t * 2.4); break;
+        default:
+          if (clip.indexOf('emo_') === 0 || clip === 'reunion_happy' || clip === 'nuzzle' || clip === 'nuzzle_purr' || clip === 'smug_pose' || clip === 'act_cool') { kind = 'emo'; hop(7, 2); if (clip === 'nuzzle' || clip === 'nuzzle_purr') { T.dy = 0; T.rot = 0.06 * sn(t * 5); } if (clip === 'emo_surprised') { T.dy = ct < 0.3 ? -3 : 0; T.sy = ct < 0.3 ? 1.06 : 1; } }
+          else { const B = placeholderXform(clip, b, t); Object.assign(T, B); kind = 'xform'; if (clip === 'lookup' || clip === 'lookup_tip') T.rot = -0.06; }
+      }
+      return { f, ph: T, kind };
     }
     spr80Frame(clip, t) {                // clip → idle 幀 0..3（null＝呢個 clip 冇 80px 圖）
       const C = P.sprites80, m = C.clips[clip]; if (m == null) return null;
@@ -777,7 +813,7 @@
       // 影子
       x.fillStyle = 'rgba(10,20,20,0.35)';
       const efk = this.fkOf(s), efs = D.FORMS[efk] && D.FORMS[efk].evo ? D.FORMS[efk].frameSize : 0;
-      const s80on = useBeh && this.spr80Key(s) && this.spr80Frame((beh.show && beh.show.clip) || beh.clip, t) != null;
+      const s80on = useBeh && this.spr80Key(s) && this.spr80Motion((beh.show && beh.show.clip) || beh.clip, beh, t) != null;
       const shw = s80on ? P.sprites80.shadowHalfW : efs ? Math.round(efs * 0.36) : D.isBig(s.stage) ? 24 : s.stage === 'sprout' ? 13 : 12, shl = 1 - Math.min(1, Math.abs(lift) / 18) * 0.35;
       for (let dy = -3; dy <= 3; dy++) { const w = Math.round(shw * shl * Math.sqrt(1 - dy * dy / 16)); x.fillRect(ox(gx - w), oy(base - 1 + dy), w * 2, 1); }
       let an, sx, sy;
@@ -906,10 +942,10 @@
       let src = null, ph = null, live = null;
       this.faceStat.draws++;
       // 遊美 80px：有圖嘅 clip（idle／blink）用 pets_idle_80（五官、燈泡 glow 已畫入圖）；其餘 clip → 下面舊 path
-      const k80 = this.spr80Key(s), f80 = k80 && !so ? this.spr80Frame(dclip, t) : null;
-      if (f80 != null) src = this.spr80Src(k80, f80);
+      const c80 = so ? so.clip : sc.clip, k80 = this.spr80Key(s), m80 = k80 ? this.spr80Motion(c80, b, t) : null;   // motion 'proc'：非 idle clip 都用 80px（大細唔跳）
+      if (m80) src = this.spr80Src(k80, m80.f);
       const S80 = src ? src.s80 : null;
-      this.s80Stat = { key: k80, used: !!S80, clip: dclip, frame: S80 ? src.f : null };
+      this.s80Stat = { key: k80, used: !!S80, clip: c80, frame: S80 ? src.f : null, kind: S80 ? m80.kind : null, ph: S80 && m80.ph ? m80.ph : null };
       // F1：生命感 noface 身體（有就用；顯示 clip 可以係 turn_back）
       const lvA = !S80 && this.lv && FCP.mode !== 'native' && fk !== 'dust' && art.useAtlas !== false ? this.lv.atlas[fk] : null;
       if (lvA) {
@@ -930,6 +966,7 @@
         src = { img: sp, sx: 0, sy: 0, sw: sp.width, sh: sp.height, px: sp.anchor.x, py: sp.anchor.y, bud: sp.anchor.bud };
         if (!cdef.ready) ph = placeholderXform(clip, b, t);
       }
+      if (S80 && m80.ph) ph = Object.assign({}, m80.ph);
       if (b.pose) { ph = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0 }, ph || {}); ph.dx += b.pose.dx; ph.sy *= b.pose.sy; ph.rot = b.pose.rot; }   // 生命感第二段：望天後仰（缺 lookup_tip 美術 → 程序化）
       const PX = 48, PY = 100;
       let draw = src, anc = null; const fst = { s80: S80, live: !!live, clip: live ? live.clip : dclip, frame: live ? live.frame : dframe, faceVisible: false, eyes: null, mouth: null, placeholder: [], bulb: null, derived: false };

@@ -10,10 +10,16 @@ console.log('# config');
 ok(C && C.enabled === true, 'PARAMS.sprites80 存在、預設開');
 ok(C.frame === 80 && C.pivot[0] === 40 && C.pivot[1] === 77, 'frame 80、pivot (40,77)', C.pivot);
 ok(JSON.stringify(C.idleMs) === '[260,180,260,140]', 'idle 260/180/260/140ms', C.idleMs);
-ok(C.clips.idle === 'idle' && C.clips.blink === 3, 'idle／blink 有 80px；其餘 clip fallback');
-ok(Object.keys(D.CLIPS).filter(k => C.clips[k] != null).join() === 'idle,blink', '只有 idle＋blink 用 80px', Object.keys(C.clips));
+ok(C.clips.idle === 'idle' && C.clips.blink === 3, 'idle／blink 用 80px 幀');
+ok(C.motion === 'proc', 'motion 預設 proc（非 idle clip 用 80px idle 幀＋程序 bob／squash）', C.motion);
+ok(Array.isArray(C.keepOld) && C.keepOld.includes('leaf_umbrella') && C.keepOld.includes('tell_'), 'keepOld：leaf_umbrella／tell_* 照用舊 sprite（道具美術唔喺 80px）', C.keepOld);
 for (const [f, l] of Object.entries(C.lines)) ok(/^[A-H]$/.test(l) && (D.BRANCHES.includes(f) || f === 'radiant'), 'line ' + f + '→' + l);
+ok(JSON.stringify(C.lines) === JSON.stringify({ tide: 'A', lumi: 'B', ember: 'C', crystal: 'D', bright: 'F', radiant: 'F', moon: 'G', dust: 'H' }), '遊美確認 mapping（E 唔用；soft／shroom 冇）', C.lines);
 for (const [st, tr] of Object.entries(C.tiers)) ok(D.STAGES.includes(st) && tr >= 1 && tr <= 3, 'tier ' + st + '→' + tr);
+{ const ia = D.STAGES.indexOf('adult'); ok(C.tiers[D.STAGES[ia - 1]] === 1 && C.tiers.adult === 2 && C.tiers.elder === 3, '成年前一階（' + D.STAGES[ia - 1] + '）→1、adult→2、elder→3', C.tiers);
+  ok(D.STAGES.slice(0, ia - 1).every(st => !C.tiers[st]), '更早階段唔用 80px'); }
+ok(D.PARAMS.evo6.route.bulbStage === 'juvenile', 'juvenile 用領先路線（同燈泡路線色同一階）');
+ok(C.glowA[0] > 0.42 && C.glowA[0] + C.glowA[1] <= 1.0 && C.moodMix === 0.55, 'glowA 調高（≈feeltest 中午）、moodMix 唔郁', C.glowA);
 ok(!C.tiers.egg, 'egg 唔用 80px');
 
 console.log('# atlas');

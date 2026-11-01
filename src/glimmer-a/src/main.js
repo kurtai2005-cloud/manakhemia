@@ -41,7 +41,7 @@
   G.fade = function () { const r = SIM.fade(G.state, G.now()); G.save(); return r; };
   G.sprites80 = {
     info() { const r = G.renderer, C = P.sprites80, st = r.s80Stat || {}, pd = r.petDraw || {};
-      return { enabled: !!(C && C.enabled), loaded: !!r.s80, error: r.s80Error || null, key: r.spr80Key ? r.spr80Key(G.state) : null, used: !!pd.s80, drawn: pd.s80 || null, frame: pd.s80f, clip: st.clip,
+      return { enabled: !!(C && C.enabled), loaded: !!r.s80, error: r.s80Error || null, key: r.spr80Key ? r.spr80Key(G.state) : null, used: !!pd.s80, drawn: pd.s80 || null, frame: pd.s80f, clip: st.clip, kind: st.kind || null, ph: st.ph || null, motion: C && C.motion,
         drawX: pd.drawX, drawY: pd.drawY, footY: pd.footY, bud: pd.bud, glow: r.s80Glow || null, idleMode: C && C.idleMode, atlas: r.s80 ? { w: r.s80.img.width, h: r.s80.img.height, frames: Object.keys(r.s80.json.frames).length } : null }; },
     force(k) { P.sprites80.force = k || null; return this.info(); },
     setIdleMode(m) { P.sprites80.idleMode = m; return m; },
@@ -120,6 +120,7 @@
     if (qs.get('spr') === 'old') P.sprites80.enabled = false;
     if (/^[A-H][1-3]$/.test(qs.get('spr80') || '')) P.sprites80.force = qs.get('spr80');
     if (/^[0-3]$/.test(qs.get('spr80hold') || '')) P.sprites80.hold = +qs.get('spr80hold');
+    if (qs.get('spr80motion') === 'old' || qs.get('spr80motion') === 'proc') P.sprites80.motion = qs.get('spr80motion');
     if (qs.get('spr80idle') === 'feel' || qs.get('spr80idle') === 'strip') P.sprites80.idleMode = qs.get('spr80idle');
   }
   G.spr80Load = (P.sprites80 && P.sprites80.enabled) ? G.renderer.loadSprites80(P.sprites80) : Promise.resolve(null);
