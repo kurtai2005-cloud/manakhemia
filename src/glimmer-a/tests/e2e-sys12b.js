@@ -155,7 +155,7 @@ const Glimmer_lines_ok = (txt, L) => L.some(l => txt.includes(l));
     const h0 = b.have; await page.waitForTimeout(1200); b = await E(() => __qa.sys12b.badges()); ok(b.have === h0, '唔重覆給');
     await E(() => { __glimmer.state.dex = Glimmer.data.BRANCHES.slice(); }); await page.waitForTimeout(1300); b = await E(() => __qa.sys12b.badges());
     ok(b.list.find(x => x.k === 'routes_all').got && b.title === '自稱天才飼主', '9 條路齊（大）→ 稱號「自稱天才飼主」', { have: b.have, title: b.title });
-    await devF('dev-s12-badge-open'); await page.waitForTimeout(200); ok(await E(() => document.querySelectorAll('[data-testid^="s12b-badge-"][data-got]').length === 30 && document.querySelectorAll('[data-big]').length === 2), '徽章 tab：30 個（2 個大成就）'); await shot('badges');
+    await devF('dev-s12-badge-open'); await page.waitForTimeout(200); ok(await E(() => document.querySelectorAll('[data-testid^="s12b-badge-"][data-got]').length === 31 && document.querySelectorAll('[data-big]').length === 2), '徽章 tab：31 個（2 個大成就；3a 加呆呆時刻）'); await shot('badges');
     await E(() => __glimmer.s12close());
   }
   if (want('keep')) {

@@ -101,17 +101,28 @@
     vb.innerHTML = `<span data-testid="s12-voice-text"></span><img class="tail" data-s12="bubble_thought_tail" alt="">`; hyd(vb);
     if (uiRoot) uiRoot.appendChild(vb); nine(vb, 'bubble_thought_9s', [11, 11, 11, 11], 2);
     let vbHide = 0;
-    function showVoice(r) {
+    /* 3a 提示排隊（batch3-fun-spec 唯一技術前置）：心聲／觸摸／扮醒呆嘅句全部經 G.say → 同一時間只出一個泡（touch.createQueue） */
+    function paintVoice(r) {
       const b = NS.ui.petHitBox ? NS.ui.petHitBox() : { x: 80, y: 120, w: 36, h: 40 }; const sp = vb.querySelector('span'); sp.textContent = r.line; if (r.icon) { sp.insertAdjacentHTML('afterbegin', pimg(r.icon, 16) + ' '); hyd(sp); }
-      vb.style.opacity = 0; vb.style.left = '0px'; vb.style.top = '0px'; vb.style.display = 'block';
+      vb.style.opacity = 0; vb.style.left = '0px'; vb.style.top = '0px'; vb.style.display = 'block'; vb.dataset.src = r.src || '';
       const w = vb.offsetWidth, h = vb.offsetHeight, cx = (b.x + b.w / 2) * 2, x = Math.max(8, Math.min(390 - 8 - w, cx - w / 2)), y = Math.max(130, b.y * 2 - h - 26);
       vb.style.left = x + 'px'; vb.style.top = y + 'px'; vb.querySelector('.tail').style.left = Math.max(8, Math.min(w - 40, cx - x - 16)) + 'px'; vb.style.opacity = 1;
-      clearTimeout(vbHide); vbHide = setTimeout(() => { vb.style.opacity = 0; }, C.bond.voice.showSec * 1000);
+    }
+    const NQ = G.nq = NS.touch && NS.touch.createQueue ? NS.touch.createQueue() : null, qNow = () => performance.now();
+    G.sayPump = function () { if (!NQ) return null; const r = NQ.tick(qNow()); if (r.hide && !NQ.cur) { vb.style.opacity = 0; delete vb.dataset.src; } if (r.show) paintVoice(r.show); return r; };
+    /* o：{ line, icon?, src?, sec?, urgent? }；返 push 結果（dup／queued） */
+    G.say = function (o) {
+      if (!o || !o.line) return { ok: false };
+      if (!NQ) { paintVoice(o); clearTimeout(vbHide); vbHide = setTimeout(() => { vb.style.opacity = 0; }, (o.sec || C.bond.voice.showSec) * 1000); return { ok: true }; }
+      const r = NQ.push(Object.assign({ sec: C.bond.voice.showSec }, o), qNow()); G.sayPump(); return r;
+    };
+    function showVoice(r) {
+      G.say({ line: r.line, icon: r.icon, src: r.src || 'voice', sec: C.bond.voice.showSec });
       S12.lastVoice = r; G.state.ev.push({ type: 'sys12', sys: 'bond', what: 'voice', line: r.line, tier: r.tier, src: r.src });
     }
     G.sysVoice = function (o) { const r = X.voiceTry(G.state, now(), o); if (r.ok) showVoice(r); S12.lastTry = r; return r; };
     /* ui.js 撳寵物鬆手：長撳（≥ SHORT_MS）→ 親密 +2；短撳 → 心聲（30%、冷卻 10 分鐘、同懸浮共用） */
-    G.sysPress = function (p) { if (!p || G.state.stage === 'egg') return null; X.notePat(G.state, now(), G.state.ev);   /* v10.2 委託「摸摸佢個頭」：短撳／長撳都計 */ if (!p.short) return { bond: X.onLongPress(G.state, now(), G.state.ev) }; return { voice: G.sysVoice({ src: 'app' }) }; };
+    G.sysPress = function (p) { if (!p || G.state.stage === 'egg') return null; if (!p.patDone) X.notePat(G.state, now(), G.state.ev);   /* 3a：長按 3s 已經計咗一次摸頭 → 鬆手唔再計；v10.2 委託「摸摸佢個頭」：短撳／長撳都計 */ if (!p.short) return { bond: X.onLongPress(G.state, now(), G.state.ev) }; return { voice: G.sysVoice({ src: 'app' }) }; };
     function renderBond() {
       const s = G.state, b = X.bond(s, now()), L = C.bond.lines, mem = (s.memorial || []).slice(-6).reverse();
       return `<div data-testid="s12-bond-v">親密度 <b>${Math.round(b.v)}</b> / 100　第 ${b.tier} 段心聲<small>（今日 +${b.todayGain}/${b.cap}）</small></div><div class="s12bar"><i style="width:${b.v}%"></i></div>` +
@@ -208,7 +219,7 @@
       (G.sysListeners || []).forEach(fn => { try { fn(e); } catch (er) { } });
     };
     function questTick() { const ev = G.state.ev; X.questTick(G.state, now(), ev); X.bondTick(G.state, now(), ev); }
-    G.sysTick = function (dt) { wx.acc += dt; if (wx.acc >= 1) { wx.acc = 0; G.wxTick(); questTick(); chipTick(); if (G.weather && G.state.stage !== 'egg') X.diaryNote(G.state, 'wx', G.weather, now()); } petTick(dt); };
+    G.sysTick = function (dt) { if (NQ) G.sayPump(); wx.acc += dt; if (wx.acc >= 1) { wx.acc = 0; G.wxTick(); questTick(); chipTick(); if (G.weather && G.state.stage !== 'egg') X.diaryNote(G.state, 'wx', G.weather, now()); } petTick(dt); };
     questTick(); chipTick();
     G.wxTick(true);
     window.__qa = window.__qa || {};

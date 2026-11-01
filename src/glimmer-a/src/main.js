@@ -114,6 +114,7 @@
   UI.init(G);
   if (NS.sys12ui2 && NS.sys12b) NS.sys12ui2.install(G, NS);   // systems12 第 2 批（小遊戲、小圃種花、散步收集＋收藏櫃、成就徽章）
   if (NS.mg2ui && NS.mg2 && NS.sys12b) NS.mg2ui.install(G, NS);   // 小遊戲 v2（docs-gdd/minigames-v2.md）：彈彈葉／花園捉迷藏／追螢火
+  if (NS.touchui && NS.touch) NS.touchui.install(G, NS);   // 第 3 批 3a：觸摸互動＋扮醒呆＋提示排隊（docs-gdd/batch3-fun-spec.md）
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
   { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事 2 日後作廢，記得領'), 1500); }
@@ -137,6 +138,7 @@
       if (G.clockRun && G.clock.fake) G.clock.t += dtW * G.timeScale * 1000;   // 開發模式快進：假時鐘跟 ×N 行 → 時段／HD-2D 場景跟住變
       SIM.advance(s, dtW * G.timeScale, { hour: (G.hourOverride != null || G.timeScale === 1 || G.clockRun) ? G.hour() : null, now: G.now() }, 30);
       if (G.sysTick) G.sysTick(dtW);
+      if (G.touchTick) G.touchTick(dtReal);
       saveT += dtReal; if (saveT >= P.autosaveSec) { saveT = 0; G.save(); }
       UI.update(dtW);
       const view = G.tickWorld(dtW);

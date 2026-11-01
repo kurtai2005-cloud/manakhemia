@@ -371,11 +371,11 @@
         if (b.variant) { b.variantT += FIX; if (b.variantT >= clipDur(b.variant)) endVariant(b); }
         else {
           if (idleBase) {
-            b.nextVariant -= FIX;
+            if (!(b.hushUntil > b.t)) b.nextVariant -= FIX;   // 3a：扮醒呆／暈緊 → 唔開新 idle 變化
             if (b.nextVariant <= 0) { startVariant(b, s, ctx); break; }
           }
           if (b.expr === 'tired' && b.stateT >= 10) { startState(b, 'nap', ctx); break; }   // 精力<30 且閒置>10s 必定入睡（art weightMods）
-          b.nextDecide -= FIX;
+          if (!(b.hushUntil > b.t)) b.nextDecide -= FIX;   // 3a：扮醒呆／暈緊 → 企定
           if (b.nextDecide <= 0) { const n = pickW(r, weights(b, ctx)); if (n === 'stay') b.nextDecide = rf(r, P.decideEvery); else startState(b, n, ctx); }
         }
         break;
@@ -758,6 +758,7 @@
     if (cf) { const e = cf[clamp(frame, 0, cf.length - 1)]; em = [e[0], e[2]]; if (FC.clipFramesGaze.indexOf(clip) >= 0) gz = e[1]; }
     const fa = b.faceAct;                                                            // 行為指定（得意 pose／扮冷靜）優先過 clip 表
     if (fa) { em = [fa.eyes || em[0], fa.mouth || em[1]]; if (fa.gaze) gz = fa.gaze; if (fa.head) hd = fa.head; }
+    const fg = b.faceGest; if (fg) em = [fg.eyes || em[0], fg.mouth || em[1]];   // 3a 觸摸互動／扮醒呆（touchui 每幀寫；null＝冇）
     f.eyes = (ff && ff.eyes) || em[0]; f.mouth = (ff && ff.mouth) || em[1] || 'neutral';
     f.closed = FC.closedEyes.includes(f.eyes);
     const ql = (gz && !b.look.force && b.t >= b.look.tapUntil && b.t >= b.look.dragUntil) ? gz : b.look.ql;

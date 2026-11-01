@@ -227,6 +227,7 @@
     if (when.quests) return cnt(X.st(s).quests.paidN) >= when.quests;
     if (when.weathers) return Object.keys(o.wx).length >= when.weathers;
     if (when.diary) return (X.st(s).diary.list || []).length >= when.diary;
+    if (when.dumbAll) { const sn = s.touch && s.touch.seen; return !!sn && typeof sn === 'object' && Object.keys(sn).filter(k => sn[k]).length >= when.dumbAll; }   // 3a 圖鑑「呆呆時刻」6 格
     if (when.fade) return (s.memorial || []).length >= when.fade || (s.gen | 0) > when.fade;
     return false;
   }

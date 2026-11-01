@@ -216,6 +216,12 @@
       node.appendChild(cell);
     });
     const p = document.createElement('p'); p.style.cssText = 'font-size:11px;opacity:.75;margin:6px 0 0'; p.textContent = '已解鎖 ' + list.filter(d => d.unlocked).length + '／' + list.length; node.appendChild(p);
+    if (G.touchDex) {                                   // 3a 扮醒呆：圖鑑「呆呆時刻」6 格（收齊＝徽章 dumb_all 5 碎）
+      const dd = G.touchDex(), sec = document.createElement('div'); sec.dataset.testid = 'dex-dumb'; sec.style.cssText = 'grid-column:1/-1;margin-top:8px';
+      sec.innerHTML = '<b style="font-size:12px">呆呆時刻 ' + dd.filter(x => x.got).length + '／' + dd.length + '</b><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:4px">' +
+        dd.map(x => '<div data-testid="dex-dumb-' + x.k + '" data-got="' + (x.got ? 1 : 0) + '" style="font-size:11px;padding:6px 2px;border-radius:6px;text-align:center;background:' + (x.got ? '#f3e1b8;color:#4a2e1a' : 'rgba(255,255,255,.12)') + '">' + (x.got ? x.name : '？？？') + '</div>').join('') + '</div>';
+      node.appendChild(sec);
+    }
     modal({ title: '圖鑑', kind: 'dex', node, buttons: [{ text: '關閉', primary: true }] });
   }
   UI.openDex = openDex;
@@ -322,7 +328,7 @@
       const a = toArt(e);
       if (G.mode === 'minigame' && mgs) { if (e.buttons || e.pointerType === 'touch' || true) mgs.target = a.x; return; }
       if (down && G.beh && !G.state.sleeping && G.state.stage !== 'egg') NS_BEH.drag(G.beh, a.x - R.CX, a.y - R.GROUND_Y);   // P2：拖動手指 → 眼神跟手指
-      if (down && press) { press.mx = a.x - R.CX; press.my = a.y - R.GROUND_Y; }
+      if (down && press) { press.mx = a.x - R.CX; press.my = a.y - R.GROUND_Y; if (G.tch) G.tch.move(e.clientX, e.clientY); }   // 3a 手勢（搔癢／拉開）
       rd.parT.x = clamp((a.x / R.W - 0.5) * 2, -1, 1); rd.parT.y = clamp((a.y / R.H - 0.5) * 2, -1, 1); rd.parT.active = true; rd.parT.last = rd.t;
     });
     hit.addEventListener('pointerdown', (e) => {
@@ -337,8 +343,8 @@
       const b = petHitBox();
       if (inBox(a, b)) {
         if (s.stage === 'egg') { SIM.tapEgg(s); processEvents(); G.save(); }
-        else if (!s.sleeping) { if (G.beh) { const p = press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y, mx: a.x - R.CX, my: a.y - R.GROUND_Y, nuzzle: false }; p.timer = setTimeout(() => { if (press === p && down && G.beh && !G.state.sleeping && G.mode !== 'minigame') { p.nuzzle = true; NS_BEH.nuzzle(G.beh, p.mx, p.my, (performance.now() - p.t0) / 1000); } }, NUZZLE_MS); } else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
-        else if (G.lightWake && G.lightWake()) { toast('團絨揉揉眼醒咗…仲有啲睏睏'); SND('sleep', { on: false }); }
+        else if (!s.sleeping) { if (G.beh) { const p = press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y, mx: a.x - R.CX, my: a.y - R.GROUND_Y, nuzzle: false }; if (G.tch) G.tch.down(e.clientX, e.clientY); p.timer = setTimeout(() => { if (press === p && down && G.beh && !G.state.sleeping && G.mode !== 'minigame') { p.nuzzle = true; NS_BEH.nuzzle(G.beh, p.mx, p.my, (performance.now() - p.t0) / 1000); } }, NUZZLE_MS); } else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
+        else if (G.lightWake && G.lightWake()) { toast('團絨揉揉眼醒咗…仲有啲睏睏'); SND('sleep', { on: false }); if (G.tch) G.tch.sleepTouch(); }   // 3a：瞓覺中摸 → 揉眼翻身（唔加心情）
       } else if (s.stage !== 'egg' && !s.sleeping && G.beh && a.y > R.GROUND_Y - 50 && a.y < R.GROUND_Y + 40) {
         NS_BEH.tap(G.beh, 'ground', clamp(a.x - R.CX, -70, 70), a.y - R.GROUND_Y);
       }
@@ -347,8 +353,9 @@
       if (e) { ptrs.delete(e.pointerId); if (cancel && press && press.id === e.pointerId) press.cancel = true; if (ptrs.size) return; }   // 仲有手指撳住 → 未算鬆手
       if (!down) return; cancel = cancel || !!(press && press.cancel);
       down = false; if (G.beh) NS_BEH.dragEnd(G.beh);
-      const p = press; press = null; endNuzzle(p); if (!p || cancel || G.mode === 'minigame' || !G.beh || G.state.sleeping) return;
-      const ms = performance.now() - p.t0; G.lastPetPress = { ms: Math.round(ms), short: ms < SHORT_MS, nuzzle: !!p.nuzzle };
+      const p = press; press = null; endNuzzle(p); const tr = p && G.tch ? G.tch.up(e ? e.clientX : null, e ? e.clientY : null, cancel || G.mode === 'minigame') : null;   // 3a 手勢收尾（戳／拉開彈返）
+      if (!p || cancel || G.mode === 'minigame' || !G.beh || G.state.sleeping) return;
+      const ms = performance.now() - p.t0; G.lastPetPress = { ms: Math.round(ms), short: ms < SHORT_MS, nuzzle: !!p.nuzzle, patDone: !!(tr && tr.patDone) };
       if (G.sysPress) G.sysPress(G.lastPetPress);                        // systems12 親密：長撳 +2；短撳 → 心聲（30%、冷卻）
       if (ms >= SHORT_MS && G.lull && G.lull()) return;                  // v5 哄瞓：眼瞓時長撳／撫摸（磨蹭）→ 哄佢瞓著
       if (ms < SHORT_MS) NS_BEH.tap(G.beh, 'pet', p.x, p.y);             // 短 tap：照舊（望向＋回頭 D2＋反應／連點）
@@ -356,7 +363,7 @@
     };
     hit.addEventListener('pointerup', (e) => release(e, false));
     hit.addEventListener('pointercancel', (e) => release(e, true));
-    hit.addEventListener('pointerleave', (e) => { rd.parT.active = false; if (e && e.pointerId != null) ptrs.delete(e.pointerId); if (down && !ptrs.size) { down = false; endNuzzle(press); press = null; if (G.beh) NS_BEH.dragEnd(G.beh); } });
+    hit.addEventListener('pointerleave', (e) => { rd.parT.active = false; if (e && e.pointerId != null) ptrs.delete(e.pointerId); if (down && !ptrs.size) { down = false; endNuzzle(press); if (press && G.tch) G.tch.up(null, null, true); press = null; if (G.beh) NS_BEH.dragEnd(G.beh); } });
     UI.petHitBox = petHitBox; UI.activePointers = () => [...ptrs];
     window.addEventListener('deviceorientation', (e) => { if (e.gamma == null || G.mode === 'minigame') return; rd.parT.x = clamp(e.gamma / 22, -1, 1); rd.parT.y = clamp(((e.beta || 45) - 45) / 25, -1, 1); rd.parT.active = true; rd.parT.last = rd.t; });
     if (G.debug) buildDebug();
@@ -405,6 +412,7 @@
     else if (suggest) msg = '夜深喇，關燈瞓覺啦 ☾';
     else { const lk = SIM.lowestNeed(s); if (s.needs[lk] < 30) msg = { hunger: '好肚餓…', mood: '悶悶地…', clean: '污糟糟…', energy: '好眼瞓…' }[lk]; else if (s.poops >= 2) msg = '有便便呀…'; }
     const b = $('#bubble');
+    if (msg && G.nq && G.nq.busy(performance.now())) msg = '';                 // 3a 提示排隊：心聲泡出緊 → 狀態氣泡讓位（同一時間只出一個）
     if (msg !== lastBubble) { lastBubble = msg; b.textContent = msg; b.style.display = msg ? 'block' : 'none'; }
     if (msg && rd.petDraw) { const top = (rd.petDraw.y + (D.isBig(s.stage) ? 6 : 14)) * 2; b.style.top = Math.max(150, top - 40) + 'px'; }
     if (G.debug) refreshDbg();

@@ -792,5 +792,20 @@
     sick: ['#f0f0d0', '#d8e0b0', '#b8c890', '#98a870', '#788850', '#586838'],
   };
 
+  /* 第 3 批 3a（docs-gdd/batch3-fun-spec.md §①②；遊策 2026-11-01）：觸摸互動＋扮醒呆反應包＋提示排隊。唔加路線分（§7 平衡 v10.3＋mg2.3 唔郁）。
+     美術未到：全部程序化形變（touch.js MOTIONS），每個 key 預留 art 疊層名（遊美交圖後換）。 */
+  PARAMS.touch = {
+    enabled: true,
+    queue: { max: 3, maxWaitSec: 20, gapSec: 0.25 },          // 提示排隊：同一時間只出一個氣泡／心聲；排隊最多 3 個、等 >20s 作廢
+    poke: { maxMs: 300, squashSec: 0.15 },                    // 戳：短 tap（沿用 SHORT_MS 300）→ squash 0.15s＋眨眼
+    hold: { sec: 0.6, patSec: 3, moveTolPx: 14 },             // 長按 ≥0.6s 瞇眼舒服；持續 3s 算一次「摸頭」（委託摸頭，懸浮每日 12 上限照舊）
+    tickle: { winSec: 1, rubs: 4, minSwingPx: 6, rollSec: 3 }, // 1s 內 ≥4 次來回擦 → 笑；再 3s → 碌地笑
+    pull: { px: 40, maxArt: 10, springSec: 0.9 },             // 拖離 >40px 放手 → 彈簧彈返＋落地 squash
+    shake: { g: 2.5, peaks: 2, winSec: 1, dizzySec: 2, cooldownSec: 30, bragN: 3, bragWinSec: 60, peakGapSec: 0.15 },
+    mood: { perKind: 1, sharedCap: 5, sharedKey: 'fpet_daily_v1' },   // 每種手勢每日第一次 +1；同浮動團絨（fpet-bridge DAILY_KEY）共用每日 ≤5
+    dumb: { idleSec: 20, everySec: 60, chance: 0.25, gapSec: 180, perDay: 8, actSec: 6, caughtSec: 1.6, badge: 'dumb_all' },
+  };
+  PARAMS.systems12b.badges.list.splice(PARAMS.systems12b.badges.list.length - 2, 0, { k: 'dumb_all', name: '收齊呆呆時刻', when: { dumbAll: 6 } });   // 3a：圖鑑「呆呆時刻」6 格收齊 → 普通徽章 5 碎（日上限外）
+  PARAMS.systems12b.badges.total = PARAMS.systems12b.badges.list.length;
   return { SYS_CLIPS, ROUTE_HINT, EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
 });

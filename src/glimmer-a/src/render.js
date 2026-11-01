@@ -844,6 +844,24 @@
       }
       if (!SP.umbrella) SP.uStart = null; this.sysShown = null; return null;
     }
+    /* 3a 程序化疊層（佔位；遊美交 fx_dizzy_stars／fx_qmark／fx_sweat／眼鏡／書… 之後換圖）：hx,hy＝頭頂（畫布座標） */
+    drawGestFx(x, gm, t, hx, hy, mir) {
+      const P = (c, X, Y, w, h) => { x.fillStyle = c; x.fillRect(Math.round(X), Math.round(Y), w || 1, h || 1); };
+      x.save(); x.imageSmoothingEnabled = false;
+      for (const f of gm.fx) {
+        if (f === 'stars') for (let i = 0; i < 3; i++) { const a = t * 5 + i * 2.094, X = hx + Math.cos(a) * 9, Y = hy - 3 + Math.sin(a) * 3; P('#ffe27a', X - 1, Y, 3, 1); P('#ffe27a', X, Y - 1, 1, 3); }
+        else if (f === 'qmark') { const Y = hy - 12 - Math.abs(Math.sin(t * 4)) * 2; P('#fff6dc', hx + 6, Y, 3, 1); P('#fff6dc', hx + 8, Y + 1, 1, 2); P('#fff6dc', hx + 7, Y + 3, 1, 1); P('#fff6dc', hx + 7, Y + 5, 1, 1); }
+        else if (f === 'sweat') { P('#9fd8ff', hx + 7 * mir, hy + 3, 2, 3); P('#e8f6ff', hx + 7 * mir, hy + 3, 1, 1); }
+        else if (f === 'zzz') { const k = (t * 0.8) % 1; x.globalAlpha = 1 - k; P('#dfe6ff', hx + 5 + k * 4, hy - 4 - k * 8, 3, 1); P('#dfe6ff', hx + 6 + k * 4, hy - 3 - k * 8, 1, 1); P('#dfe6ff', hx + 5 + k * 4, hy - 2 - k * 8, 3, 1); x.globalAlpha = 1; }
+        else if (f === 'heart' || f === 'laugh') { const k = (t * 0.9) % 1; x.globalAlpha = 1 - k; const c = f === 'heart' ? '#ff8fb0' : '#ffe27a', X = hx - 8 * mir, Y = hy - 2 - k * 7; P(c, X, Y, 1, 1); P(c, X + 2, Y, 1, 1); P(c, X, Y + 1, 3, 1); P(c, X + 1, Y + 2, 1, 1); x.globalAlpha = 1; }
+        else if (f === 'glasses') { P('#3a2a3a', hx - 5, hy + 7, 4, 1); P('#3a2a3a', hx + 1, hy + 7, 4, 1); P('#3a2a3a', hx - 5, hy + 8, 1, 2); P('#3a2a3a', hx - 2, hy + 8, 1, 2); P('#3a2a3a', hx + 1, hy + 8, 1, 2); P('#3a2a3a', hx + 4, hy + 8, 1, 2); P('#3a2a3a', hx - 1, hy + 8, 2, 1); }
+        else if (f === 'book') { const X = hx + 6 * mir - 3, Y = hy + 12; P('#8a4f2a', X, Y, 7, 5); P('#f3e1b8', X + 1, Y + 1, 2, 3); P('#f3e1b8', X + 4, Y + 1, 2, 3); }
+        else if (f === 'mirror') { const X = hx + 16 * mir - 4, Y = hy - 2; P('#c9a35a', X, Y, 9, 1); P('#c9a35a', X, Y + 16, 9, 1); P('#c9a35a', X, Y, 1, 17); P('#c9a35a', X + 8, Y, 1, 17); x.globalAlpha = 0.35 + 0.1 * Math.sin(t * 3); P('#bfe6ff', X + 1, Y + 1, 7, 15); x.globalAlpha = 1; }
+        else if (f === 'nums') { const n = gm.n | 0, D3 = ['1', '2', '4', '?']; x.fillStyle = '#fff6dc'; x.font = '6px monospace'; for (let i = 0; i <= n && i < 4; i++) x.fillText(D3[i], hx - 9 + i * 6, hy - 4 - (i === n ? Math.abs(Math.sin(t * 6)) : 0)); }
+        else if (f === 'hat') { P('#2a2230', hx - 6, hy - 1, 12, 1); P('#2a2230', hx - 3, hy - 3, 6, 2); P('#ffd35a', hx + 5, hy, 1, 4); }
+      }
+      x.restore();
+    }
     drawPetBeh(x, s, view, c, gx, base) {
       const b = view.beh, t = c.t, clip = b.clip, cdef = D.CLIPS[clip], fk = this.fkOf(s), art = P.art, FCP = P.face, EVO = !!(D.FORMS[fk] && D.FORMS[fk].evo);
       const ox = (px) => px + MX, oy = (py) => py + MY;
@@ -874,7 +892,9 @@
         src = { img: sp, sx: 0, sy: 0, sw: sp.width, sh: sp.height, px: sp.anchor.x, py: sp.anchor.y, bud: sp.anchor.bud };
         if (!cdef.ready) ph = placeholderXform(clip, b, t);
       }
-      if (b.pose) { ph = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0 }, ph || {}); ph.dx += b.pose.dx; ph.sy *= b.pose.sy; ph.rot = b.pose.rot; }   // 生命感第二段：望天後仰（缺 lookup_tip 美術 → 程序化）
+      if (b.pose) { ph = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0 }, ph || {}); ph.dx += b.pose.dx; ph.sy *= b.pose.sy; ph.rot = b.pose.rot; }
+      const gm = b.gest || null;   // 3a 觸摸互動／扮醒呆：程序化形變疊喺 clip 上面（touch.js MOTIONS；遊美交圖後 gm.art 換疊層）
+      if (gm) { ph = Object.assign({ sx: 1, sy: 1, dx: 0, dy: 0, rot: 0 }, ph || {}); ph.sx *= gm.sx; ph.sy *= gm.sy; ph.dx += gm.dx; ph.dy += gm.dy; ph.rot = (ph.rot || 0) + gm.rot; }   // 生命感第二段：望天後仰（缺 lookup_tip 美術 → 程序化）
       const PX = 48, PY = 100;
       let draw = src, anc = null; const fst = { live: !!live, clip: live ? live.clip : dclip, frame: live ? live.frame : dframe, faceVisible: false, eyes: null, mouth: null, placeholder: [], bulb: null, derived: false };
       const comp = () => { const T = this.tmpPet, tx = T.getContext('2d'); tx.setTransform(1, 0, 0, 1, 0, 0); tx.globalCompositeOperation = 'source-over'; tx.globalAlpha = 1; tx.clearRect(0, 0, 96, 112); tx.imageSmoothingEnabled = false; tx.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, PX - src.px, PY - src.py, src.sw, src.sh); draw = { img: T, sx: PX - src.px, sy: PY - src.py, sw: src.sw, sh: src.sh, px: src.px, py: src.py, bud: src.bud, name: src.name }; return tx; };
@@ -938,6 +958,7 @@
         if (gl) { x.globalAlpha = Math.max(0, Math.min(1, S.i)); x.drawImage(gl.c, -src.px + anc.bulb[0] - gl.px, -src.py + anc.bulb[1] - gl.py); if (anc.bulb2) x.drawImage(gl.c, -src.px + anc.bulb2[0] - gl.px, -src.py + anc.bulb2[1] - gl.py); x.globalAlpha = 1; this.faceStat.bulb++; fst.bulb = { mood, i: +S.i.toFixed(2), rgb: S.rgb.map(v => Math.round(v)), route: this.routeS ? { form: this.routeS.form, mix: +this.routeS.mix.toFixed(3), target: this.routeS.target, rgb: this.routeS.rgb.map(v => Math.round(v)) } : null }; }
       }
       x.restore();
+      if (gm && gm.fx && gm.fx.length) { this.drawGestFx(x, gm, t, ox(px + (ph ? ph.dx * mir : 0)), oy(py - Math.round(draw.py * (ph ? ph.sy : 1))), mir); fst.gest = { key: gm.key, art: gm.art, fx: gm.fx.slice() }; } else if (gm) fst.gest = { key: gm.key, art: gm.art, fx: [] };
       if (b.bug) {                                    // A2 swat 蟲仔 fx：遊美 fx/atlas_fx_live（fx_bug 01→02→03→02，10fps，pivot (4,4)，朝右）；冇就程序化 2×2 點＋1px 翼閃
         const bx = Math.round(px + b.bug.x), by = Math.round(py + b.bug.y), FX = this.lv && this.lv.fx, an = FX && FX.json.animations && FX.json.animations.fx_bug;
         const fr = an && FX.json.frames[an.frames[Math.floor((b.bug.t || 0) * (an.fps || 10)) % an.frames.length]];
