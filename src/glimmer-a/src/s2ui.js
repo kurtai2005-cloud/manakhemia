@@ -14,7 +14,9 @@
     const SR = NS.series2, D = NS.data, P = D.PARAMS.series2; if (!SR || !P || P.enabled === false) return false;
     const qs = new URLSearchParams(location.search); if (qs.get('s2') === '0') return false;
     const wd = !!(navigator && navigator.webdriver), R = G.renderer, UI = NS.ui, X2 = NS.sys12b, BEH = NS.behavior, RC = NS.reactclip, C = SR.CFG, L_ = SR.LINES_OUT;
-    const on = (k) => qs.get(k) === '1' || qs.get('s2x') === '1' || (!wd && qs.get(k) !== '0');
+    const native = !!(window.Capacitor && (typeof window.Capacitor.isNativePlatform === 'function' ? window.Capacitor.isNativePlatform() : window.Capacitor.isNative));   // 4a.1：APK（Capacitor）一定開自動送蛋／喊
+    const on = (k) => qs.get(k) === '1' || qs.get('s2x') === '1' || ((native || !wd) && qs.get(k) !== '0' && qs.get('s2x') !== '0');
+    const VERSION = P.version || '4a.1';
     const AUTO = { deliver: on('s2deliver'), cry: on('s2cry') };
     const BASE = P.art.base, S = () => G.state, pnow = () => performance.now();
     const say = (line, o) => (G.say ? G.say(Object.assign({ line, src: 's2', sec: 3.5 }, o || {})) : UI.toast(line, 2600));
@@ -174,7 +176,7 @@
     function levelTick() {
       const o = st(); if (o.phase !== 'kid' || SC.cur || !o.relQ.length || busyOther() || S().sleeping || !A.ready) return;
       const rel = o.relQ.shift(), clip = A.lv.scenes['lv_' + rel]; if (G.save) G.save();
-      playClip('level', clip, { rel, after: () => { say(rel === 'friend' ? L_.lvFriend : rel === 'family' ? L_.lvFamily : L_.lvFollow, { sec: 4 }); UI.toast((rel === 'friend' ? '朋友' : rel === 'family' ? '家人' : '跟班') + '！' + (rel === 'family' ? '屋仔 4b 即將開放' : ''), 2600); } });
+      playClip('level', clip, { rel, after: () => { say(rel === 'friend' ? L_.lvFriend : rel === 'family' ? L_.lvFamily : L_.lvFollow, { sec: 4 }); UI.toast((rel === 'friend' ? '朋友' : rel === 'family' ? '家人' : '跟班') + '！' + (rel === 'family' ? '屋仔即將開放（4b）' : ''), 2600); } });
     }
 
     // ── 喊／哄喊（拖團絨過去）──
@@ -294,7 +296,7 @@
         '<div data-testid="s2-rel" data-rel="' + o.rel + '">關係：' + SR.REL_ZH[o.rel] + (o.rel === 'follow' ? '（' + C.friendAt + ' 做朋友）' : o.rel === 'friend' ? '（' + C.familyAt + '＋成年做家人）' : '') + '</div></div></div>';
       const bt = [];
       const du = SR.canDuo(s, now); if (du.ok) bt.push({ text: '雙人彈彈葉（' + du.left + '）', primary: true, onClick: () => { duoStart(); } });
-      if (o.rel === 'family') { const h = document.createElement('div'); h.dataset.testid = 's2-house'; h.style.cssText = 'margin-top:8px;font-size:11px;opacity:.85'; h.textContent = '🔒 屋仔（4b）即將開放'; node.appendChild(h); }
+      if (o.rel === 'family') { const h = document.createElement('div'); h.dataset.testid = 's2-house'; h.style.cssText = 'margin-top:8px;font-size:11px;opacity:.85'; h.textContent = '🔒 屋仔：即將開放（4b）'; node.appendChild(h); }
       bt.push({ text: '好', primary: !bt.length });
       UI.modal({ title: '細佬', kind: 's2Card', node, buttons: bt }); UIS('popupOpen'); note('card');
     }
@@ -384,15 +386,53 @@
 
     // ── 圖鑑「團絨教錯咗乜」──
     G.s2Dex = function () {
-      const o = st(); if (o.phase === 'none' || o.phase === 'due') return null; const s = S(), now = G.now(), sec = document.createElement('div'); sec.dataset.testid = 'dex-s2'; sec.style.cssText = 'grid-column:1/-1;margin-top:8px;font-size:11px';
+      const o = st(), s = S(), now = G.now(), sec = document.createElement('div'); sec.dataset.testid = 'dex-s2'; sec.style.cssText = 'grid-column:1/-1;margin-top:' + (o.phase === 'none' || o.phase === 'due' ? 2 : 8) + 'px;font-size:11px;line-height:1.35';
+      const sil = (src) => '<span style="display:inline-block;width:22px;height:22px">' + (src ? '<img src="' + BASE + src + '" width="22" height="22" style="image-rendering:pixelated;filter:brightness(0);opacity:.35">' : '') + '</span>';
+      const lockRow = (t, src, tid) => '<div data-testid="' + tid + '" data-locked="1" style="display:flex;gap:6px;align-items:center;padding:3px 4px;border-radius:6px;background:rgba(255,255,255,.06);margin-top:3px;opacity:.8"><span style="width:34px">' + t + '</span>' + sil(src) + '<span>未遇見</span></div>';
+      const propSrc = (i) => { const L = SR.LINES[i % SR.LINES.length], u = A.ui && A.ui.props[L]; return u ? u.png : null; }, dreamSrc = (i) => { const L = SR.LINES[i % SR.LINES.length], u = A.ui && A.ui.dreams[L]; return u ? u.png : null; };
+      if (o.phase === 'none' || o.phase === 'due') {   // 4a.1：未有蛋都顯示（全部「未遇見」剪影）
+        let h0 = '<b style="font-size:12px">新寵物系列・團絨教錯咗乜</b><div data-testid="dex-s2-status" data-stage="" data-line="" data-rel="" data-locked="1" style="opacity:.85">細佬：未遇見' + (o.phase === 'due' ? '（明日蝸牛郵差送蛋）' : '（團絨到「靜光」先會有蛋）') + '</div>';
+        const chip = (t, src, tid) => '<span data-testid="' + tid + '" data-locked="1" title="' + t + '：未遇見" style="display:flex;flex-direction:column;align-items:center;width:26px;font-size:8.5px;line-height:10px;opacity:.85">' + sil(src) + '<span>' + t + '</span></span>';   // 細格：未有蛋都塞得落一版
+        h0 += '<div data-testid="dex-s2-locked" style="display:flex;justify-content:space-between;margin-top:3px;padding:2px 2px;border-radius:6px;background:rgba(255,255,255,.06)">' + chip('細佬', 'egg/egg_48.png', 'dex-s2-lock-kid');
+        for (let i = 0; i < C.eggNights; i++) h0 += chip('夢' + (i + 1), dreamSrc(i), 'dex-s2-lock-dream-' + (i + 1));
+        for (let i = 0; i < C.lessonsMax; i++) h0 += chip('堂' + (i + 1), propSrc(i), 'dex-s2-lock-lesson-' + (i + 1));
+        h0 += '</div>';
+        sec.innerHTML = h0; return sec;
+      }
       const sk = SR.stageOf(s, now), row = (t, inner, tid) => '<div data-testid="' + tid + '" style="display:flex;gap:6px;align-items:center;padding:3px 4px;border-radius:6px;background:rgba(255,255,255,.1);margin-top:3px">' + t + inner + '</div>';
       const icon = (L, kind) => { const u = A.ui && (kind === 'dream' ? A.ui.dreams[L] : A.ui.props[L]); return u ? '<img src="' + BASE + u.png + '" width="22" height="22" style="image-rendering:pixelated">' : ''; };
       let h = '<b style="font-size:12px">團絨教錯咗乜</b>　<span data-testid="dex-s2-status" data-stage="' + sk + '" data-line="' + (o.line || '') + '" data-rel="' + o.rel + '">細佬：' + SR.STAGE_ZH[sk] + (o.line ? '・' + SR.LINE_ZH[o.line] + '系' : '') + '・親密 ' + o.intim + '・' + SR.REL_ZH[o.rel] + '</span>';
-      for (let i = 0; i < C.eggNights; i++) { const d = o.dreams[i]; h += row('<span style="width:34px">夢 ' + (i + 1) + '</span>', d ? (d.line ? icon(d.line, 'dream') + SR.CARE_ZH[d.line] + '（' + SR.LINE_ZH[d.line] + ' +1）' : '瞓得好熟，冇發夢') : '？？？', 'dex-s2-dream-' + (i + 1)); }
+      for (let i = 0; i < C.eggNights; i++) { const d = o.dreams[i]; h += d ? row('<span style="width:34px">夢 ' + (i + 1) + '</span>', d.line ? icon(d.line, 'dream') + SR.CARE_ZH[d.line] + '（' + SR.LINE_ZH[d.line] + ' +1）' : '瞓得好熟，冇發夢', 'dex-s2-dream-' + (i + 1)) : lockRow('夢 ' + (i + 1), dreamSrc(i), 'dex-s2-lock-dream-' + (i + 1)); }
       o.lessons.forEach((l, i) => { h += row('<span style="width:34px">堂 ' + (i + 1) + '</span>', icon(l.line, 'prop') + SR.PROP_ZH[l.line] + '：' + SR.WRONG[l.line] + '（' + SR.LINE_ZH[l.line] + ' +1）', 'dex-s2-lesson-' + (i + 1)); });
-      if (!o.lessons.length) h += row('', '<span style="opacity:.7">（蛋殼仔／BB 期撳細佬上堂）</span>', 'dex-s2-lesson-none');
+      for (let i = o.lessons.length; i < C.lessonsMax; i++) h += lockRow('堂 ' + (i + 1), propSrc(i), 'dex-s2-lock-lesson-' + (i + 1));
+      if (!o.lessons.length) h += '<div data-testid="dex-s2-lesson-hint" style="opacity:.7;margin-top:3px">（蛋殼仔／BB 期撳細佬上堂）</div>';
       if (o.settle) h += '<div data-testid="dex-s2-settle" data-how="' + o.settle.how + '" style="margin-top:4px;opacity:.85">結算：' + ({ max: '最高分', tieLesson: '打和 → 最近一堂', tieDream: '打和 → 最近一個夢', random: '冇分 → 隨機' }[o.settle.how] || o.settle.how) + ' → ' + SR.LINE_ZH[o.line] + '系</div>';
       sec.innerHTML = h; return sec;
+    };
+
+    // ── 4a.1 設定「試玩：新寵物系列」（永遠顯示；唔掂團絨成長／碎／路線／懸浮）──
+    function closeSettings() { const b = document.querySelector('#mbox[data-kind=settings] [data-testid=modal-btn-0]') || (document.getElementById('mbox').dataset.kind === 'settings' ? document.querySelector('#mbox [data-testid=modal-btn-0]') : null); if (b) b.click(); }
+    const TEST = {
+      deliver() { const o = st(), now = G.now(); if (o.phase === 'egg' || o.phase === 'kid') return { ok: false, msg: '已經有細佬（最多 1 隻）' };
+        if (o.phase === 'none') { o.phase = 'due'; o.elderAt = now; o.test = true; } o.dueDay = SR.dayNum(now); const r = deliverEgg('test'); if (r.ok) say(L_.deliver, { sec: 4 }); return { ok: !!r.ok, msg: r.ok ? '細佬蛋送到！' : '送唔到' }; },
+      hatch() { let o = st(); const now = G.now(); if (o.phase === 'kid') return { ok: false, msg: '細佬已經孵咗' }; if (o.phase !== 'egg') { const r = TEST.deliver(); if (!r.ok) return r; o = st(); }
+        if (SC.cur) return { ok: false, msg: '而家播緊場面' }; for (let i = o.dreams.length; i < C.eggNights; i++) o.dreams.push({ day: SR.nightOf(now) - (C.eggNights - 1 - i), line: SR.topCare(S(), SR.nightOf(now)) || null, at: now, live: false, test: true });
+        o.test = true; S().sleeping = false; hatchStart(); return { ok: true, msg: '孵化！' }; },
+      level() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (o.rel === 'family') return { ok: false, msg: '已經係家人（屋仔即將開放（4b））' };
+        const to = o.rel === 'follow' ? 'friend' : 'family'; o.intim = Math.max(o.intim, to === 'friend' ? C.friendAt : C.familyAt); o.rel = to; o.relQ.push(to); o.test = true; if (G.save) G.save(); note('testLevel', { to }); return { ok: true, msg: '關係 → ' + SR.REL_ZH[to] }; },
+      cry() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (K.cry) return { ok: false, msg: '細佬喊緊' }; if (SC.cur) return { ok: false, msg: '而家播緊場面' }; if (S().sleeping) S().sleeping = false; { const bx = trX(), gap = trHalf() + 16; if (Math.abs(K.x - bx) < gap) { const sd = bx + gap <= 70 ? 1 : -1; K.x = clamp(bx + sd * gap, -70, 70); K.dir = -sd; } } /* 試玩：唔好匿喺團絨後面 */ cryStart(); return { ok: true, msg: '細佬喊喇！拖團絨過去哄佢' }; },
+    };
+    G.s2Settings = function (node) {
+      const o = st(), sec = document.createElement('div'); sec.dataset.testid = 's2-test'; sec.style.cssText = 'margin:2px 0 10px;padding:8px;border-radius:10px;background:rgba(255,214,110,.16);border:1px solid rgba(255,214,110,.55);text-align:left';
+      sec.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:13px">試玩：新寵物系列</b><span data-testid="s2-version" style="font-size:11px;opacity:.85">版本 ' + VERSION + '</span></div>' +
+        '<div data-testid="s2-test-status" data-phase="' + o.phase + '" style="font-size:11px;opacity:.8;margin:3px 0 6px">細佬：' + ({ none: '未有蛋', due: '明日送蛋', egg: '蛋（孵夢 ' + o.dreams.length + '／' + C.eggNights + '）', kid: SR.STAGE_ZH[SR.stageOf(S(), G.now())] + '・' + SR.REL_ZH[o.rel] }[o.phase] || o.phase) + '</div>';
+      const grid = document.createElement('div'); grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:6px';
+      for (const [k, t] of [['deliver', '即刻送蛋'], ['hatch', '即刻孵化'], ['level', '升一級關係'], ['cry', '觸發喊']]) {
+        const b = document.createElement('div'); b.className = 'btn'; b.dataset.testid = 's2-test-' + k; b.textContent = t; b.style.cssText = 'margin:0;padding:8px 4px;font-size:13px';
+        b.addEventListener('click', () => { closeSettings(); setTimeout(() => { let r; try { r = TEST[k](); } catch (e) { r = { ok: false, msg: String(e && e.message || e) }; } note('test', { k, ok: r.ok }); UI.toast(r.msg, 2400); UIS(r.ok ? 'confirm' : 'disabled'); }, 60); });
+        grid.appendChild(b); }
+      sec.appendChild(grid); const n = document.createElement('div'); n.style.cssText = 'font-size:10px;opacity:.65;margin-top:5px'; n.textContent = '試玩用：唔會改團絨成長、星屑、路線同懸浮寵物'; sec.appendChild(n);
+      node.insertBefore(sec, node.firstChild);
     };
 
     // ── CSS ──
@@ -419,7 +459,7 @@
       kidCss: () => { const r = kidRect(), b = R.canvas.getBoundingClientRect(); return { x: b.left + (r.x + r.w / 2) / 195 * b.width, y: b.top + (r.y + r.h / 2) / 422 * b.height }; },
       petCss: () => { const r = UI.petHitBox(), b = R.canvas.getBoundingClientRect(); return { x: b.left + (r.x + r.w / 2) / 195 * b.width, y: b.top + (r.y + r.h / 2) / 422 * b.height }; },
       css: (x, y) => { const r = R.canvas.getBoundingClientRect(); return { x: r.left + x / 195 * r.width, y: r.top + y / 422 * r.height }; },
-      auto: (k, v) => { AUTO[k] = !!v; return Object.assign({}, AUTO); }, nextCry: (ms) => { sess.nextCry = pnow() + (ms || 0); }, kidX: (x) => { K.x = x; },
+      auto: (k, v) => { AUTO[k] = !!v; return Object.assign({}, AUTO); }, test: (k) => TEST[k](), version: VERSION, native, nextCry: (ms) => { sess.nextCry = pnow() + (ms || 0); }, kidX: (x) => { K.x = x; },
     };
     note('install'); return true;
   }

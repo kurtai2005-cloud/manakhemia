@@ -62,7 +62,7 @@
   #evcard b { display:block; color:var(--warm); font-size:15px; letter-spacing:2px; }
   #evcard small { display:block; margin-top:2px; color:var(--warm); font-size:12px; }
   #toast { position:absolute; left:50%; top:150px; transform:translateX(-50%); padding:7px 14px; font-size:13px; display:none; pointer-events:none; white-space:nowrap; }
-  #modal { position:absolute; inset:0; background:rgba(5,7,26,.62); display:none; align-items:center; justify-content:center; z-index:20; }
+  #modal { position:absolute; inset:0; background:rgba(5,7,26,.62); display:none; align-items:safe center; justify-content:center; z-index:20; overflow-y:auto; overscroll-behavior:contain; }   /* 4a.1：太長嘅彈窗可以碌（唔會頂出畫面） */
   #mbox { width:322px; padding:18px 18px 14px; text-align:center; }
   #mbox h2 { margin:0 0 10px; font-size:19px; color:var(--warm); letter-spacing:2px; }
   #mbox p { margin:6px 0; font-size:14px; line-height:1.55; }

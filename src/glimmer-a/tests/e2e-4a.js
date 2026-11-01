@@ -47,7 +47,8 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   let s = await q(); ok(s.ready && !s.errors.length, '4a 圖全部載入', s.errors);
   ok(!s.auto.deliver && !s.auto.cry, 'webdriver 下 AUTO 閂', s.auto);
   ok(s.save.phase === 'none' && s.form === null, '未到靜光 → 冇細佬', { p: s.save.phase, f: s.form });
-  ok(await E(() => __glimmer.s2Dex() === null), '未有蛋 → 圖鑑冇「團絨教錯咗乜」');
+  { const h = await E(() => __qa.s2.dex()); ok(h && h.includes('未遇見') && h.includes('dex-s2-lock-kid') && (h.match(/dex-s2-lock-dream-/g) || []).length === 3 && (h.match(/dex-s2-lock-lesson-/g) || []).length === 6, '4a.1：未有蛋圖鑑都有新寵物系列（未遇見剪影）', h && h.slice(0, 120)); }
+  await E(() => Glimmer.ui.openDex()); await W(400); await page.locator('[data-testid=dex-s2]').scrollIntoViewIfNeeded(); ok(await page.locator('[data-testid=dex-s2] [data-locked="1"]').count() >= 10, '圖鑑 DOM 有鎖住格'); ok(await E(() => { const r = document.getElementById('mbox').getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }), '未有蛋圖鑑（連新系列）成個塞得落一版'); await shot('00-dex-locked'); await closeModals();
   ok(await E(() => Glimmer.data.PARAMS.series2.enabled === true), 'PARAMS.series2 開');
 
   console.log('# 攞蛋：靜光 → 翌日蝸牛郵差送');
@@ -152,13 +153,14 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   await E(() => { const o = Glimmer.series2.st(__glimmer.state); o.intim = 79; }); await E(() => __qa.s2.cry()); await E(() => __qa.s2.comfort());
   s = await until(x => x.scene && x.scene.kind === 'level', 8000); ok(s.scene && s.scene.rel === 'family', '親密 ≥80＋成年 → 家人場面', s.scene); await W(1100); await shot('20-lv-family', ZOOM);
   await until(x => !x.scene, 6000); await closeModals(); await E(() => __qa.s2.card()); await W(300);
-  ok(await page.locator('[data-testid=s2-house]').count() === 1, '家人 → 屋仔 4b 即將開放（鎖）'); await shot('21-card-family'); await closeModals();
+  ok(await page.locator('[data-testid=s2-house]').count() === 1 && (await page.locator('[data-testid=s2-house]').innerText()).includes('即將開放（4b）'), '家人 → 屋仔「即將開放（4b）」'); await shot('21-card-family'); await closeModals();
 
   console.log('# 圖鑑');
   await E(() => Glimmer.ui.openDex()); await W(400);
   ok(await page.locator('[data-testid=dex-s2]').count() === 1, '圖鑑「團絨教錯咗乜」');
   ok(await page.locator('[data-testid^=dex-s2-dream-]').count() === 3 && await page.locator('[data-testid^=dex-s2-lesson-]').count() === 2, '3 個夢＋2 堂');
   ok(await page.locator('[data-testid=dex-s2-settle]').count() === 1, '結算方法有寫');
+  ok(await page.locator('[data-testid^=dex-s2-lock-lesson-]').count() === 4, '未上嘅 4 堂＝未遇見');
   await page.locator('[data-testid=dex-s2]').scrollIntoViewIfNeeded(); await shot('22-dex'); await closeModals();
 
   console.log('# 存檔／重開');
@@ -171,6 +173,30 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   console.log('# ?s2=0 全停');
   await page.goto(BASE + '?q=high&hour=13&ev=0&s2=0'); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { }); await W(600);
   ok(await E(() => !__glimmer.s2Tick && !(window.__qa && window.__qa.s2)), '?s2=0 → 冇 s2Tick／__qa.s2');
+
+  console.log('# 4a.1 設定「試玩：新寵物系列」');
+  await load('q=high&hour=13&seed=21&ev=0', { stage: 'adult' }); await E(() => Glimmer.sys12b.badgeCheck(__glimmer.state, __glimmer.now()));   // prep 改 stage 觸發嘅成就先結算（唔關試玩按鈕事）
+  const ev2 = await evoSnap(), stg = await E(() => [__glimmer.state.stage, __glimmer.state.form]);
+  const openSet = async () => { await closeModals(); await page.locator('#gear').click({ force: true }).catch(() => E(() => document.getElementById('gear').click())); await W(400); };
+  await openSet(); ok(await page.locator('[data-testid=s2-test]').count() === 1, '設定有「試玩：新寵物系列」');
+  ok(await E(() => { const m = document.getElementById('modal'), r = document.querySelector('[data-testid=s2-test]').getBoundingClientRect(); return document.getElementById('mbox').getBoundingClientRect().top >= 0 && r.top >= 0 && r.bottom <= innerHeight && m.scrollHeight > m.clientHeight; }), '設定太長 → 彈窗可以碌；試玩區喺頂、睇得晒');
+  ok((await page.locator('[data-testid=s2-version]').innerText()).includes('版本 4a.1'), '設定顯示「版本 4a.1」');
+  for (const k of ['deliver', 'hatch', 'level', 'cry']) ok(await page.locator('[data-testid=s2-test-' + k + ']').isVisible(), '按鈕 ' + k + ' 睇得到');
+  ok(await E(() => { const a = document.querySelector('[data-testid=s2-test]'), m = document.getElementById('mbox'); return a && m.firstElementChild && a.getBoundingClientRect().top < m.getBoundingClientRect().top + 140; }), '試玩區擺喺設定最頂');
+  await shot('23-settings-test');
+  await page.locator('[data-testid=s2-test-deliver]').click(); await W(400); s = await q();
+  ok(s.save.phase === 'egg' && !(await E(() => Glimmer.ui.isModalOpen())), '「即刻送蛋」（團絨未靜光都送）→ 蛋；設定收埋', s.save.phase);
+  await openSet(); await page.locator('[data-testid=s2-test-deliver]').click(); await W(300); s = await q(); ok(s.save.phase === 'egg', '再送 → 最多 1 隻');
+  await openSet(); await page.locator('[data-testid=s2-test-hatch]').click(); s = await until(x => x.scene && x.scene.kind === 'hatch', 3000); ok(s.scene && s.scene.kind === 'hatch', '「即刻孵化」→ 孵化場面', s.scene);
+  s = await until(x => x.save.phase === 'kid', 5000); ok(s.save.phase === 'kid' && s.save.dreams.length === 3, '孵化完 → 細佬（夢補夠 3 格）', s.save.dreams.length);
+  await until(x => !x.scene && !x.save.relQ.length, 8000); await W(300);
+  await openSet(); await page.locator('[data-testid=s2-test-level]').click(); s = await until(x => x.scene && x.scene.kind === 'level', 3000); ok(s.save.rel === 'friend' && s.scene && s.scene.rel === 'friend', '「升一級關係」跟班 → 朋友（場面）', { rel: s.save.rel, sc: s.scene });
+  await until(x => !x.scene, 8000); await openSet(); await page.locator('[data-testid=s2-test-level]').click(); s = await until(x => x.scene && x.scene.kind === 'level', 3000); ok(s.save.rel === 'family', '再撳 → 家人', s.save.rel);
+  await until(x => !x.scene, 8000); await closeModals(); await E(() => __qa.s2.card()); await W(300); ok((await page.locator('[data-testid=s2-house]').innerText()).includes('即將開放（4b）'), '家人卡：屋仔「即將開放（4b）」'); await closeModals();
+  await openSet(); await page.locator('[data-testid=s2-test-cry]').click(); await W(500); s = await q(); ok(s.kid.cry && s.kid.clip === 'cry', '「觸發喊」→ 細佬喊', s.kid);
+  { const d = await E(() => Math.abs(__qa.s2.st().kid.x - __glimmer.beh.x)); ok(d >= 20, '喊嗰陣細佬企喺團絨隔籬（睇得到）', d); }
+  await W(600); await shot('24-kid-on-screen'); await shot('24-kid-zoom', ZOOM);
+  ok(await evoSnap() === ev2 && JSON.stringify(await E(() => [__glimmer.state.stage, __glimmer.state.form])) === JSON.stringify(stg), '試玩按鈕唔改團絨成長／碎／路線', [ev2, await evoSnap()]);
 
   console.log('# ?s2x=1 → AUTO 開');
   await load('q=high&hour=13&seed=21&ev=0&s2x=1', { stage: 'adult' }); s = await q(); ok(s.auto.deliver && s.auto.cry, '?s2x=1 開 AUTO', s.auto);
