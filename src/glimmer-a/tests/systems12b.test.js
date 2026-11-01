@@ -197,5 +197,27 @@ console.log('⑤ 經濟：每日（唔計徽章）≤30；徽章一次性另計'
   const w = X.wallet(s, T0), bad = X.st(s).wallet.log.filter(l => l.src === 'badge').reduce((a, l) => a + l.n, 0);
   ok(w.today === 30 && w.o === 15 && w.q === 15 && bad === 20 && w.total >= 50, `今日 ${w.today}（委託 ${w.q}＋其他 ${w.o}）＋徽章 ${bad}（唔計上限）`);
 }
+console.log('⑫ 遊策 2026-11-01：小遊戲每日 routeGamesPerDay 局計火苗路線分（浮動團絨撳兩下共用；星星碎唔變）');
+{
+  const cap = P.minigames2.routeGamesPerDay, w = P.evo6.branch.kinds.mg.w, s = mk('juvenile'), em = () => ((s.evo && s.evo.b5 && s.evo.b5.juvenile) || {}).ember || 0;
+  ok(cap === 2 && w === 2, 'PARAMS.minigames2.routeGamesPerDay＝2；kinds.mg.w 仍＝+2', cap + '/' + w);
+  const d = [], rs = [];
+  for (let i = 0; i < 4; i++) { const e0 = em(), p0 = s.stats.mgPlays; rs.push(B.gameFinish(s, 'bounce', 999, T0 + i * 600e3)); d.push([em() - e0, s.stats.mgPlays - p0]); }
+  ok(d[0][0] - d[2][0] === w && d[1][0] === d[0][0] && d[3][0] === d[2][0], '同一日第 1、2 局 +' + w + ' 火苗，第 3、4 局唔加（差 ' + w + '）', JSON.stringify(d));
+  ok(d.every(x => x[1] === 1) && rs.every(r => r.counted && r.stars === 3), '超咗上限照計 mgPlays／counted', JSON.stringify(rs.map(r => [r.counted, r.stars])));
+  ok(rs[2].shards === rs[0].shards && rs[2].shards > 0, '第 3 局星星碎同第 1 局一樣（' + rs[2].shards + '）', rs.map(r => r.shards).join());
+  ok(s.evo.mgRoute.n === 2, 'evo.mgRoute 記今日 2 局', JSON.stringify(s.evo.mgRoute));
+  const e0 = em(); B.gameFinish(s, 'bounce', 999, T0 + DAY); ok(em() - e0 === d[0][0], '第二日重新計（+' + (em() - e0) + '）');
+  // 浮動團絨撳兩下嗰局共用上限：第 3 日先開浮動局，再玩 2 局 v2 → 第 2 局 v2 唔加
+  const t3 = T0 + 2 * DAY; s.mg.overlayAt = 0;
+  const o0 = em(), ro = S.overlayOpenGame(s, t3), o1 = em();
+  ok(ro.ok && s.evo.mgRoute.n === 1, '浮動局計 1 局', JSON.stringify(s.evo.mgRoute));
+  const a1 = em(); B.gameFinish(s, 'ghide', 999, t3 + 60e3); const a2 = em(); B.gameFinish(s, 'bounce', 999, t3 + 120e3); const a3 = em();
+  ok((a2 - a1) - (a3 - a2) === w && s.evo.mgRoute.n === 2, '浮動 1＋v2 1 已滿 → 再玩 v2 唔加火苗', [o1 - o0, a2 - a1, a3 - a2].join());
+  s.mg.overlayAt = 0; const b0 = em(), ro2 = S.overlayOpenGame(s, t3 + 3600e3); ok(ro2.ok && em() - b0 === (a3 - a2), '上限滿咗：浮動局都唔加火苗（照開 game）', em() - b0);
+  const sv = P.minigames2.routeGamesPerDay; P.minigames2.routeGamesPerDay = null;
+  const s2 = mk('juvenile'), e2 = () => ((s2.evo && s2.evo.b5 && s2.evo.b5.juvenile) || {}).ember || 0, f = []; for (let i = 0; i < 4; i++) { const x = e2(); B.gameFinish(s2, 'bounce', 999, T0 + i * 600e3); f.push(e2() - x); }
+  P.minigames2.routeGamesPerDay = sv; ok(f.every(v => v === f[0]) && f[0] >= w, 'routeGamesPerDay＝null → 冇上限（每局 +' + f[0] + '）', f.join());
+}
 console.log(`\n結果：${pass} 通過，${fail} 失敗`);
 process.exit(fail ? 1 : 0);

@@ -51,7 +51,7 @@
     g.best[kind] = Math.max(num(g.best[kind], 0), v); g.stars[kind] = Math.max(num(g.stars[kind], 0), stars);
     if ((kind === 'hide' || kind === 'ghide') && opt.firstHits > 0) g.hideFirst += opt.firstHits | 0;
     const want = rewarded ? (G.shardsByStars[stars] | 0) : 0, shards = want ? X.grant(s, want, 'mg', t) : 0;
-    const counted = G.countsMg && !opt.noMg ? SIM.mgCount(s) : false;
+    const counted = G.countsMg && !opt.noMg ? SIM.mgCount(s, t) : false;   // 火苗路線分：每日 minigames2.routeGamesPerDay 局（同浮動局共用）
     const r = { kind, value: v, stars, rewarded, want, shards, playIndex: g.plays, left: Math.max(0, G.dailyRewarded - g.plays), counted, overlay: !!opt.overlay };
     note(o, g.log, { t, kind, v, stars, shards }); s.ev && s.ev.push({ type: 'sys12', sys: 'game', what: 'done', game: kind, n: shards, stars, rewarded, overlay: !!opt.overlay });
     return r;

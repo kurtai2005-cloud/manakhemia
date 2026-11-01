@@ -144,7 +144,7 @@
   function b5Bucket(s, st) { const E = evoOf(s); st = st || s.stage; return E.b5[st] || (E.b5[st] = { all: 0, tide: 0, shroom: 0, crystal: 0, moon: 0, ember: 0, loginPoop: 0, quickLogin: 0 }); }
   const careHooks = [];
   function addCareHook(fn) { if (!careHooks.includes(fn)) careHooks.push(fn); }
-  function noteB5(s, kind, h, wx) {
+  function noteB5(s, kind, h, wx, noOwn) {
     if (s.stage === 'egg') return; const b = b5Bucket(s), C = BR();
     for (let i = 0; i < careHooks.length; i++) careHooks[i](s, kind, h);   // systems12：每日委託／親密度等（kind＝feed／play／mg／rinse／poop／poopQuick／lull／petSleep）
     h = h == null ? nowHour() : h; wx = wx == null ? weatherNow() : normWeather(wx === false ? 'clear' : wx);
@@ -152,7 +152,7 @@
     if (kind === 'petSleep') { b.moon++; return; }
     if (kind === 'lull') { addPts(b, 'moon', C.lull.pts == null ? 1 : C.lull.pts); return; }
     const w = careWindow(h); if (w) { b[w.only]++; return; }
-    const own = C.kinds[kind]; if (own) addPts(b, own.to, own.w == null ? 1 : own.w);
+    const own = C.kinds[kind]; if (own && !noOwn) addPts(b, own.to, own.w == null ? 1 : own.w);   // noOwn：小遊戲超咗每日路線局數（mgRouteOk）→ 唔計本身路線分
     const wr = C.weather.route[wx]; if (wr && wr.to) addPts(b, wr.to, wr.w == null ? 1 : wr.w);
   }
   // v7／v8 晶角：上線（開 app／離開 ≥ crystal.loginGapSec 再返嚟）→ 開 windowSec 窗口；上線嗰陣有便便 → 有便便上線 +1；窗口內便便清到 0 → 即清上線 +1（每次上線最多 1）
@@ -170,10 +170,10 @@
     return true;
   }
   // 照顧（餵／玩／沖洗／清便便／接星屑）：記入當前階段 care.all，夜晚（17:00–07:00）再記 care.night；kind＝feed／play／rinse／poop／mg（§7 分數）
-  function noteCare(s, h, kind, rain) {
+  function noteCare(s, h, kind, rain, noOwn) {
     if (s.stage === 'egg') return; const E = evoOf(s), c = E.care[s.stage] || (E.care[s.stage] = { all: 0, night: 0 });
     c.all++; if (isNightHour(h == null ? nowHour() : h)) c.night++;
-    noteB5(s, kind, h, rain); noteDay(s);
+    noteB5(s, kind, h, rain, noOwn); noteDay(s);
     cqCare(s);
   }
   // §7 月眠：瞓緊覺時撫摸（點寵物＝輕喚醒，所以每次瞓覺最多一次）；只入 §7 分數，唔改螢絨嘅夜晚照顧比例
@@ -607,24 +607,31 @@
     const baseMood = score >= M.highScore ? M.moodHigh : score >= M.passScore ? M.moodPass : M.moodFail;
     return { score, ratio, full, playIndex: s.mg.plays + 1, grains: Math.floor(baseGrains * ratio), mood: Math.round(baseMood * ratio), baseGrains, baseMood };
   }
-  function mgApply(s, score, nowMs) {
+  /* 遊策 2026-11-01：小遊戲 v2（gameFinish）＋浮動團絨撳兩下嗰局共用每日上限 PARAMS.minigames2.routeGamesPerDay 局計火苗路線分（kinds.mg.w）；
+     超咗照計 mgPlays／照顧／CQ／星星碎，只係唔加火苗路線分。true＝今局計（並記一局） */
+  function mgRouteOk(s, t) {
+    const cap = P.minigames2 && P.minigames2.routeGamesPerDay; if (cap == null) return true;
+    const E = evoOf(s), k = dayKey(t == null ? nowMs() : t); if (!E.mgRoute || E.mgRoute.day !== k) E.mgRoute = { day: k, n: 0 };
+    if (E.mgRoute.n >= cap) return false; E.mgRoute.n++; return true;
+  }
+  function mgApply(s, score, nowMs, capped) {
     const r = mgReward(s, score, nowMs);
     s.mg.plays++; s.mg.best = Math.max(s.mg.best || 0, score);
     s.grains += r.grains;
     s.needs.mood = clamp(s.needs.mood + r.mood, 0, 100);
-    s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg');
+    s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg', undefined, capped ? !mgRouteOk(s, nowMs) : false);
     return r;
   }
 
   // systems12 第 2 批小遊戲（接光點／捉迷藏）：只計一局 mg（火苗 noteCare 'mg'、委託 hook、mgPlays、冷淡解除），唔加光粒／心情（規格：新系統唔加心情池）
-  function mgCount(s) { if (!s || s.stage === 'egg') return false; s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg'); return true; }
+  function mgCount(s, t) { if (!s || s.stage === 'egg') return false; s.stats.mgPlays++; notePlayed(s); noteCare(s, null, 'mg', undefined, !mgRouteOk(s, t)); return true; }   // 計火苗路線分受 mgRouteOk 每日上限
   // v8 火苗：第 2 批小遊戲未出之前，浮動團絨撳兩下開 game ＝ 一局（mgApply 及格分 → 火苗 +kinds.mg.w；獎勵同普通一局）。cooldownSec 內重複唔計
   function overlayOpenGame(s, t) {
     const O = BR().overlayMg; t = t == null ? nowMs() : +t;
     if (!O || !O.enabled) return { ok: false, reason: 'off' };
     if (!s || s.stage === 'egg') return { ok: false, reason: 'egg' };
     const last = s.mg && +s.mg.overlayAt || 0; if (last && t - last < O.cooldownSec * 1000 && t >= last) return { ok: false, reason: 'cooldown' };
-    const r = mgApply(s, O.score == null ? P.mg.passScore : O.score, t); s.mg.overlayAt = t; s.ev.push({ type: 'overlayMg', grains: r.grains });
+    const r = mgApply(s, O.score == null ? P.mg.passScore : O.score, t, true); s.mg.overlayAt = t;   // 同小遊戲 v2 共用每日火苗路線局數 s.ev.push({ type: 'overlayMg', grains: r.grains });
     return { ok: true, reward: r };
   }
 
@@ -659,6 +666,6 @@
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
     step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, addCareHook, addFadeHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
-    mgCount, eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, noteDexHint, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
+    mgCount, mgRouteOk, eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, noteDexHint, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

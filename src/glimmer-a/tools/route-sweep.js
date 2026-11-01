@@ -7,9 +7,37 @@
    --fpats N：v10.3 懸浮團絨每日 12:00 摸頭 N 下（經 applyOverlay {k:'pat'}，同 fpet-bridge 一條路；要 --quests）。
    --garden [rand|lead]：systems12b 小圃（載入 systems.js＋systems2.js；隱含 --quests）。每次上線（獨立 rng seed*7919+307）：收開咗嘅花、夠 seedPrice 就種滿 3 盆、
      每盆每日淋一次（--drops N＝懸浮每日執 N 粒，遊測假設 5；--gshards N＝壓力測試：芽崽開始送 N 粒買種子）；開花 → 該路線 +bloomPts（systems.addRoutePts，判路時照 25% cap）；日菊冇路線分。rand＝6 種花隨機揀；lead＝揀而家領先路線嘅花（冇對應花就隨機）。
+   --mg2（--quests／--garden 預設開；--no-mg2 關）：小遊戲 v2（彈彈葉／花園捉迷藏／追螢火夜晚）。每次上線（獨立 rng seed*7919+401）按 MG2_RATE[時間表] 開一局，
+     再 MG2_EXTRA 機會連玩第 2 局；分數抽自真 minigames2＋tools/mg2-bots.js bot 預跑池（技術 0–1 隨機）；經真 systems2.gameFinish（星星碎＋每日有獎局＋mgCount 火苗，
+     火苗路線分受 PARAMS.minigames2.routeGamesPerDay 每日上限、同浮動局共用）。--mgw N＝只喺 sim 入面將 evo6.branch.kinds.mg.w 改做 N（試算用，跑完還原）。
    數值全部讀 PARAMS.evo6.branch；唔改 config。 */
 const S = require('../src/sim.js'), D = require('../src/data.js'), P = D.PARAMS, C = P.evo6.branch;
-const args = process.argv.slice(2); if (args.includes('--quests') || args.includes('--garden')) require('../src/systems.js');
+const args = process.argv.slice(2); if (args.includes('--quests') || args.includes('--garden') || args.includes('--mg2')) require('../src/systems.js');
+const MG2_CLI = !args.includes('--no-mg2') && (args.includes('--mg2') || args.includes('--quests') || args.includes('--garden'));
+const MGW = args.includes('--mgw') ? +args[args.indexOf('--mgw') + 1] : null;
+const MGCAP = args.includes('--mgcap') ? (/^\d+$/.test(args[args.indexOf('--mgcap') + 1]) ? +args[args.indexOf('--mgcap') + 1] : 'none') : undefined;   // 試算：--mgcap N／none 臨時改 routeGamesPerDay
+/* 小遊戲 v2 玩家模型：每次上線開一局機率（per 時間表）＋連玩第 2 局機率 */
+const MG2_RATE = { 勤力: 0.5, 普通: 0.4, 疏玩: 0.6, 夜貓: 0.5, 早起: 0.3, 餵食狂: 0.3 }, MG2_EXTRA = 0.25;
+let POOL = null;
+function mg2Pool() {
+  if (POOL) return POOL; const M2 = require('../src/minigames2.js'), BOT = require('./mg2-bots.js'), r = S.makeRng(424242); POOL = {};
+  for (const k of ['bounce', 'ghide', 'firefly']) { POOL[k] = []; for (let i = 1; i <= 240; i++) { const g = BOT.playBot(M2, k, 9000 + i, r(), r); POOL[k].push({ v: g.score, first: g.firstHits | 0 }); } }
+  return POOL;
+}
+function mg2Hook(seed, name, stat) {
+  const B = require('../src/systems2.js'), M2 = require('../src/minigames2.js'), rng = S.makeRng(seed * 7919 + 401), pool = mg2Pool(), rate = MG2_RATE[name] == null ? 0.4 : MG2_RATE[name];
+  stat = stat || {};
+  return (s, now) => {
+    if (s.stage === 'egg') return;
+    let n = rng() < rate ? 1 : 0; if (n && rng() < MG2_EXTRA) n++;
+    for (let i = 0; i < n; i++) {
+      const ks = M2.fireflyOpen(new Date(now).getHours()) ? ['bounce', 'ghide', 'firefly'] : ['bounce', 'ghide'], k = ks[Math.floor(rng() * ks.length)], p = pool[k][Math.floor(rng() * pool[k].length)];
+      const mr = s.evo && s.evo.mgRoute, n0 = mr && mr.day === S.dayKey(now + i * 60e3) ? mr.n : 0, st0 = s.stage;
+      B.gameFinish(s, k, p.v, now + i * 60e3, k === 'ghide' ? { firstHits: p.first } : {});
+      stat.games = (stat.games || 0) + 1; if (st0 !== 'egg' && (s.evo.mgRoute ? s.evo.mgRoute.n : 0) > n0 || (P.minigames2.routeGamesPerDay == null && st0 !== 'egg')) stat.route = (stat.route || 0) + 1;
+    }
+  };
+}
 const GARDEN = args.includes('--garden') ? (/^(rand|lead)$/.test(args[args.indexOf('--garden') + 1] || '') ? args[args.indexOf('--garden') + 1] : 'rand') : null;
 /* 小圃玩家模型（route sweep／economy test 共用）：回傳 onSession hook；stat.blooms／stat.byRoute 累計開花數 */
 function gardenHook(seed, mode, stat) {
@@ -32,7 +60,7 @@ function gardenHook(seed, mode, stat) {
 }
 const DROPS = args.includes('--drops') ? +args[args.indexOf('--drops') + 1] || 0 : 0, GSEED = args.includes('--gshards') ? +args[args.indexOf('--gshards') + 1] || 0 : 0;
 const FPATS = args.includes('--fpats') ? +args[args.indexOf('--fpats') + 1] || 0 : 0;
-const NARG = +(args.find((a, i) => /^\d+$/.test(a) && !['--fpats', '--drops', '--gshards'].includes(args[i - 1]))) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
+const NARG = +(args.find((a, i) => /^\d+$/.test(a) && !['--fpats', '--drops', '--gshards', '--mgw', '--mgcap'].includes(args[i - 1]))) || 1000, jsonOut = args.includes('--json') ? args[args.indexOf('--json') + 1] : null;
 const JIT = 90, MISS = 0.15, LULL = 0.5, SKIP_ACT = 0.2, EXTRA_ACT = 0.3;
 const ACTS = ['feed', 'play', 'rinse', 'poop'];
 // 每個時間表：上線鐘點、每次做咩（feed／play／rinse／poop）；everyOtherDay＝隔日先上
@@ -87,23 +115,30 @@ function run(name, seed, o) {
   return { shards, played, form: s.form, cq: ev ? ev.cq : s.cq, mgs, lulls, need: ev && ev.b5 ? ev.b5.cqNeed : null, quick: ev && ev.b5 ? ev.b5.raw : null };
 }
 function SYS12() { try { return require.cache[require.resolve('../src/systems.js')] ? require('../src/systems.js') : null; } catch (e) { return null; } }
-module.exports = { SCHED, MG_AT, TARGET, FLAG_PT, run, main, gardenHook };
+module.exports = { SCHED, MG_AT, MG2_RATE, MG2_EXTRA, TARGET, FLAG_PT, run, main, gardenHook, mg2Hook };
 if (require.main === module) main();
 function main(n, quiet, ro) {
   ro = ro || Object.assign(FPATS ? { fpats: FPATS } : {}, DROPS ? { drops: DROPS } : {});
-  const gmode = ro.garden || GARDEN, gst = { blooms: 0, byRoute: {}, gshards: ro.gshards || GSEED };
+  const gmode = ro.garden || GARDEN, gst = { blooms: 0, byRoute: {}, gshards: ro.gshards || GSEED }, mg2 = ro.mg2 != null ? !!ro.mg2 : MG2_CLI, mst = { games: 0 };
+  if (mg2 || gmode) require('../src/systems2.js');
+  const KM = P.evo6.branch.kinds.mg, w0 = KM.w, mgw = ro.mgw != null ? ro.mgw : MGW; if (mgw != null) KM.w = mgw;   // 試算：只喺呢次 sim 改，跑完還原
+  const M2P = P.minigames2, cap0 = M2P.routeGamesPerDay, mgcap = ro.mgcap !== undefined ? ro.mgcap : MGCAP; if (mgcap !== undefined) M2P.routeGamesPerDay = mgcap === 'none' ? null : mgcap;
   const N = n || NARG, log = quiet ? () => {} : console.log;
 const all = {}, out = {}, NAMES = Object.keys(SCHED);
 for (const name of NAMES) {
   const c = {}, cqs = []; let mg = 0, lu = 0;
-  for (let i = 1; i <= N; i++) { const r = run(name, i, gmode ? Object.assign({}, ro, { onSession: gardenHook(i, gmode, gst) }) : ro); c[r.form] = (c[r.form] || 0) + 1; all[r.form] = (all[r.form] || 0) + 1; cqs.push(r.cq); mg += r.mgs; lu += r.lulls; }
+  for (let i = 1; i <= N; i++) {
+    const hooks = []; if (mg2) hooks.push(mg2Hook(i, name, mst)); if (gmode) hooks.push(gardenHook(i, gmode, gst));
+    const r = run(name, i, hooks.length ? Object.assign({}, ro, { onSession: (s, now, slot) => { for (const h of hooks) h(s, now, slot); } }) : ro); c[r.form] = (c[r.form] || 0) + 1; all[r.form] = (all[r.form] || 0) + 1; cqs.push(r.cq); mg += r.mgs; lu += r.lulls; }
   cqs.sort((a, b) => a - b);
   const pct = {}; for (const f of D.BRANCHES) pct[f] = +(100 * (c[f] || 0) / N).toFixed(2);
   out[name] = { dist: c, pct, cqMed: +cqs[N >> 1].toFixed(2), cqP10: +cqs[Math.floor(N * 0.1)].toFixed(2), cqP90: +cqs[Math.floor(N * 0.9)].toFixed(2), mgs: +(mg / N).toFixed(2), lulls: +(lu / N).toFixed(2) };
   log(name.padEnd(4, '　'), D.BRANCHES.map(f => D.FORM_NAME[f] + ' ' + pct[f]).join('  '), '｜CQ p10/中/p90', out[name].cqP10, out[name].cqMed, out[name].cqP90, '｜小遊戲', out[name].mgs, '哄瞓', out[name].lulls);
 }
+KM.w = w0; const capUsed = M2P.routeGamesPerDay; M2P.routeGamesPerDay = cap0;
 const tot = N * NAMES.length, total = {};
 for (const f of D.BRANCHES) total[f] = +(100 * (all[f] || 0) / tot).toFixed(2);
+if (mg2) log('小遊戲 v2：每隻平均 ' + (mst.games / tot).toFixed(2) + ' 局（計火苗路線分 ' + ((mst.route || 0) / tot).toFixed(2) + ' 局）；火苗路線每日上限 ' + (capUsed == null ? '冇' : capUsed) + ' 局（同浮動局共用）；mg.w＝' + (mgw != null ? mgw : w0));
 if (gmode) log('小圃（' + gmode + '）：每隻平均開花 ' + (gst.blooms / (N * NAMES.length)).toFixed(2) + ' 朵（有路線分：' + Object.entries(gst.byRoute).map(([r, n]) => D.FORM_NAME[r] + ' ' + (n / (N * NAMES.length)).toFixed(2)).join('、') + '）');
 log('\n全體 vs 遊測 v10 目標（差 >' + FLAG_PT + 'pt 標 ⚠）');
 const flags = [];
@@ -123,6 +158,6 @@ const chk = [
 ];
 for (const [n, v] of chk) log((v ? '  ✓ ' : '  ✗ ') + n);
 log(`  ${chk.filter(c => c[1]).length}/${chk.length} 達標；差 >${FLAG_PT}pt：${flags.length ? flags.map(f => D.FORM_NAME[f]).join('、') : '冇'}`);
-if (jsonOut && !quiet) require('fs').writeFileSync(jsonOut, JSON.stringify({ N, ro, garden: gmode, gardenStat: gst, total, target: TARGET, flags, tables: out, checks: chk }, null, 2));
-return { total, flags, tables: out, checks: chk, garden: gmode ? gst : null };
+if (jsonOut && !quiet) require('fs').writeFileSync(jsonOut, JSON.stringify({ N, ro, garden: gmode, gardenStat: gst, mg2, mg2Stat: mst, mgw: mgw != null ? mgw : w0, routeGamesPerDay: capUsed, total, target: TARGET, flags, tables: out, checks: chk }, null, 2));
+return { total, flags, tables: out, checks: chk, garden: gmode ? gst : null, mg2: mg2 ? mst : null };
 }
