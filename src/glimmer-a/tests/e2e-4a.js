@@ -133,8 +133,8 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   s = await until(x => x.scene && x.scene.kind === 'level', 4000); ok(s.scene && s.scene.rel === 'friend' && s.save.rel === 'friend', '親密 ≥30 → 朋友場面', { sc: s.scene, rel: s.save.rel });
   await W(1100); await shot('14-lv-friend', ZOOM); await until(x => !x.scene, 6000); await closeModals();
   const ev1 = await evoSnap();
-  await E(() => __qa.s2.card()); await W(300); ok(await page.locator('[data-testid=s2-card]').count() === 1, '細佬卡'); ok(await page.locator('#mbox .btn', { hasText: '雙人彈彈葉' }).count() === 1, '朋友 → 有雙人彈彈葉');
-  await shot('15-card'); await page.locator('#mbox .btn', { hasText: '雙人彈彈葉' }).click(); await W(400);
+  await E(() => __qa.s2.card()); await W(300); ok(await page.locator('[data-testid=s2-card]').count() === 1, '細佬卡'); ok(await page.locator('#mbox .btn', { hasText: '二人彈彈葉' }).count() === 1, '朋友 → 有雙人彈彈葉');
+  await shot('15-card'); await page.locator('#mbox .btn', { hasText: '二人彈彈葉' }).click(); await W(400);
   ok(await E(() => !!__glimmer.mg2Busy), '雙人彈彈葉開始'); await E(() => __qa.mg2.skipReady()); await E(() => __qa.mg2.step(0.6)); await shot('16-duo-play');
   await E(() => { const g = __qa.mg2.game(); g.score = 12; g.t = g.dur - 0.02; }); await E(() => __qa.mg2.step(0.2)); await W(300); await shot('17-duo-result');
   const lm = await E(() => __qa.mg2.last()); ok(lm && lm.duo && !lm.rewarded && lm.shards === 0, '雙人：唔出碎', lm);
@@ -180,8 +180,9 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   const openSet = async () => { await closeModals(); await page.locator('#gear').click({ force: true }).catch(() => E(() => document.getElementById('gear').click())); await W(400); };
   await openSet(); ok(await page.locator('[data-testid=s2-test]').count() === 1, '設定有「試玩：新寵物系列」');
   ok(await E(() => { const m = document.getElementById('modal'), r = document.querySelector('[data-testid=s2-test]').getBoundingClientRect(); return document.getElementById('mbox').getBoundingClientRect().top >= 0 && r.top >= 0 && r.bottom <= innerHeight && m.scrollHeight > m.clientHeight; }), '設定太長 → 彈窗可以碌；試玩區喺頂、睇得晒');
-  ok((await page.locator('[data-testid=s2-version]').innerText()).includes('版本 4a.1'), '設定顯示「版本 4a.1」');
-  for (const k of ['deliver', 'hatch', 'level', 'cry']) ok(await page.locator('[data-testid=s2-test-' + k + ']').isVisible(), '按鈕 ' + k + ' 睇得到');
+  ok((await page.locator('[data-testid=s2-version]').innerText()).includes('版本 4a.2'), '設定顯示「版本 4a.2」');
+  ok((await page.locator('[data-testid=s2-devmode]').innerText()).includes('開發者模式'), '試玩區標「開發者模式」');
+  for (const k of ['deliver', 'hatch', 'level', 'cry', 'evolve', 'duo', 'card']) ok(await page.locator('[data-testid=s2-test-' + k + ']').isVisible(), '按鈕 ' + k + ' 睇得到');
   ok(await E(() => { const a = document.querySelector('[data-testid=s2-test]'), m = document.getElementById('mbox'); return a && m.firstElementChild && a.getBoundingClientRect().top < m.getBoundingClientRect().top + 140; }), '試玩區擺喺設定最頂');
   await shot('23-settings-test');
   await page.locator('[data-testid=s2-test-deliver]').click(); await W(400); s = await q();
@@ -197,6 +198,24 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   { const d = await E(() => Math.abs(__qa.s2.st().kid.x - __glimmer.beh.x)); ok(d >= 20, '喊嗰陣細佬企喺團絨隔籬（睇得到）', d); }
   await W(600); await shot('24-kid-on-screen'); await shot('24-kid-zoom', ZOOM);
   ok(await evoSnap() === ev2 && JSON.stringify(await E(() => [__glimmer.state.stage, __glimmer.state.form])) === JSON.stringify(stg), '試玩按鈕唔改團絨成長／碎／路線', [ev2, await evoSnap()]);
+
+  console.log('# 4a.2 設定：細佬進化／開二人彈／開細佬卡（自動準備）＋右側「細佬」掣');
+  await load('q=high&hour=13&seed=21&ev=0', { stage: 'adult' }); await E(() => Glimmer.sys12b.badgeCheck(__glimmer.state, __glimmer.now())); const ev3 = await evoSnap();
+  ok(!(await page.locator('[data-testid=s2-rail-kid]').isVisible().catch(() => false)), '未有細佬 → 冇「細佬」掣');
+  await openSet(); await shot('25-settings-4a2'); await page.locator('[data-testid=s2-test-card]').click(); await W(500); s = await q();
+  ok(s.save.phase === 'kid' && await E(() => document.getElementById('mbox').dataset.kind === 's2Card'), '「開細佬卡」（未有蛋）→ 自動孵化＋開卡', s.save.phase);
+  ok(await page.locator('[data-testid=s2-duo-hint]').count() === 1 && (await page.locator('[data-testid=s2-duo-hint]').innerText()).includes('做咗朋友先開'), '跟班卡：寫明二人彈點開');
+  await shot('26-kid-card'); await closeModals(); await W(300);
+  ok(await page.locator('[data-testid=s2-rail-kid]').isVisible(), '孵化後右側「細佬」掣睇得到');
+  await page.locator('[data-testid=s2-rail-kid]').click(); await W(400); ok(await E(() => document.getElementById('mbox').dataset.kind === 's2Card'), '撳「細佬」掣 → 細佬卡'); await closeModals();
+  for (const [from, to] of [['S1', 'S2'], ['S2', 'S3'], ['S3', 'S4']]) { await openSet(); await page.locator('[data-testid=s2-test-evolve]').click(); s = await until(x => x.stage === to, 3000); ok(s.stage === to && !!s.form, '「細佬進化」' + from + ' → ' + to, [s.stage, s.form]); }
+  s = await q(); ok(!!s.save.line, 'S3 揭曉系別', s.save.line);
+  await W(400); await shot('27-kid-evolved'); await shot('27-kid-evolved-zoom', ZOOM);
+  await openSet(); await page.locator('[data-testid=s2-test-duo]').click(); await W(700); ok(await E(() => !!__glimmer.mg2Busy), '「開二人彈」→ 即刻開雙人彈彈葉');
+  s = await q(); ok(s.save.rel === 'friend', '自動做朋友', s.save.rel); await E(() => __qa.mg2.skipReady()); await E(() => __qa.mg2.step(0.6)); await shot('28-duo-bounce');
+  await E(() => { const g = __qa.mg2.game(); g.score = 8; g.t = g.dur - 0.02; }); await E(() => __qa.mg2.step(0.2)); await W(300); await E(() => __qa.mg2.close()); await until(x => !x.scene, 8000); await W(300); await closeModals();
+  await page.locator('[data-testid=s2-rail-kid]').click(); await W(400); ok(await page.locator('#mbox .btn', { hasText: '二人彈彈葉' }).count() === 1, '朋友卡有「二人彈彈葉」掣'); await shot('29-kid-card-friend'); await closeModals();
+  ok(await evoSnap() === ev3, '4a.2 試玩掣唔改團絨成長／碎／路線', [ev3, await evoSnap()]);
 
   console.log('# ?s2x=1 → AUTO 開');
   await load('q=high&hour=13&seed=21&ev=0&s2x=1', { stage: 'adult' }); s = await q(); ok(s.auto.deliver && s.auto.cry, '?s2x=1 開 AUTO', s.auto);

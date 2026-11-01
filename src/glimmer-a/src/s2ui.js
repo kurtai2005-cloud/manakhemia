@@ -16,7 +16,7 @@
     const wd = !!(navigator && navigator.webdriver), R = G.renderer, UI = NS.ui, X2 = NS.sys12b, BEH = NS.behavior, RC = NS.reactclip, C = SR.CFG, L_ = SR.LINES_OUT;
     const native = !!(window.Capacitor && (typeof window.Capacitor.isNativePlatform === 'function' ? window.Capacitor.isNativePlatform() : window.Capacitor.isNative));   // 4a.1：APK（Capacitor）一定開自動送蛋／喊
     const on = (k) => qs.get(k) === '1' || qs.get('s2x') === '1' || ((native || !wd) && qs.get(k) !== '0' && qs.get('s2x') !== '0');
-    const VERSION = P.version || '4a.1';
+    const VERSION = P.version || '4a.2';
     const AUTO = { deliver: on('s2deliver'), cry: on('s2cry') };
     const BASE = P.art.base, S = () => G.state, pnow = () => performance.now();
     const say = (line, o) => (G.say ? G.say(Object.assign({ line, src: 's2', sec: 3.5 }, o || {})) : UI.toast(line, 2600));
@@ -222,11 +222,15 @@
     }
 
     // ── 細佬行為（跟住團絨）──
+    function evoFx(sk) {   // 4a.2：細佬進化 feedback（對白＋音效＋心心）
+      say('細佬進化喇！→ ' + SR.STAGE_ZH[sk], { sec: 3.5 }); SND('reward'); UIS('badge', {}); K.hearts.push({ t: 0 }); EVO.last = { sk, at: pnow() };
+    }
+    const EVO = { last: null };
     function kidTick(dt) {
       const s = S(), o = st(), ms = dt * 1000, now = G.now(); K.ct += ms; K.hearts = K.hearts.filter(h => (h.t += ms) < 900);
       if (o.phase === 'egg') { const tx = s.sleeping ? clamp(trX() + 18, -70, 70) : 30; EGG.x += clamp(tx - EGG.x, -20 * dt, 20 * dt); return; }
       if (o.phase !== 'kid' || (SC.cur && SC.cur.kind !== 'eat')) return;
-      const sk = SR.stageOf(s, now); if (sk !== lastStage) { if (lastStage && sk !== lastStage) { note('stage', { sk }); if (o.stageSeen !== sk) { o.stageSeen = sk; if (SR.stageIdx(sk) >= 3 && !o.line) { const r = SR.settle(s, now); say(fmt(L_.reveal, { zh: SR.LINE_ZH[o.line] }), { sec: 4 }); note('reveal', { line: o.line, how: r && r.how }); } SR.checkLevel(s, now); if (G.save) G.save(); } } lastStage = sk; }
+      const sk = SR.stageOf(s, now); if (sk !== lastStage) { if (lastStage && sk !== lastStage) { note('stage', { sk }); evoFx(sk); if (o.stageSeen !== sk) { o.stageSeen = sk; if (SR.stageIdx(sk) >= 3 && !o.line) { const r = SR.settle(s, now); say(fmt(L_.reveal, { zh: SR.LINE_ZH[o.line] }), { sec: 4 }); note('reveal', { line: o.line, how: r && r.how }); } SR.checkLevel(s, now); if (G.save) G.save(); } } lastStage = sk; }
       if (SR.stageIdx(sk) >= 3 && !o.line) { SR.settle(s, now); if (G.save) G.save(); }
       const bx = trX(), fr = o.rel === 'friend' || o.rel === 'family', walkSp = fr ? 26 : 22;
       const go = (tx, sp) => { const d = tx - K.x; if (Math.abs(d) <= 1.5) return true; K.x += clamp(d, -sp * dt, sp * dt); K.dir = d > 0 ? 1 : -1; return false; };
@@ -295,7 +299,8 @@
         '<div style="font-size:12px;line-height:1.6"><b>細佬</b>　' + SR.STAGE_ZH[sk] + (o.line ? '・' + SR.LINE_ZH[o.line] + '系' : '') + '<div data-testid="s2-intim" data-v="' + o.intim + '" data-today="' + d.n + '">親密 ' + o.intim + '（今日 ' + d.n + '／' + C.intimacyCap + '）</div>' +
         '<div data-testid="s2-rel" data-rel="' + o.rel + '">關係：' + SR.REL_ZH[o.rel] + (o.rel === 'follow' ? '（' + C.friendAt + ' 做朋友）' : o.rel === 'friend' ? '（' + C.familyAt + '＋成年做家人）' : '') + '</div></div></div>';
       const bt = [];
-      const du = SR.canDuo(s, now); if (du.ok) bt.push({ text: '雙人彈彈葉（' + du.left + '）', primary: true, onClick: () => { duoStart(); } });
+      const du = SR.canDuo(s, now); if (du.ok) bt.push({ text: '二人彈彈葉（今日仲有 ' + du.left + '）', primary: true, onClick: () => { duoStart(); } });
+      else { const h = document.createElement('div'); h.dataset.testid = 's2-duo-hint'; h.dataset.reason = du.reason; h.style.cssText = 'margin-top:8px;font-size:11px;opacity:.85'; h.textContent = '🎾 二人彈彈葉：' + (du.reason === 'rel' ? '做咗朋友先開（親密 ' + o.intim + '／' + C.friendAt + '）' : du.reason === 'today' ? '今日玩夠 ' + C.duoPerDay + ' 次，聽日再嚟' : '孵化後先開'); node.appendChild(h); }
       if (o.rel === 'family') { const h = document.createElement('div'); h.dataset.testid = 's2-house'; h.style.cssText = 'margin-top:8px;font-size:11px;opacity:.85'; h.textContent = '🔒 屋仔：即將開放（4b）'; node.appendChild(h); }
       bt.push({ text: '好', primary: !bt.length });
       UI.modal({ title: '細佬', kind: 's2Card', node, buttons: bt }); UIS('popupOpen'); note('card');
@@ -420,14 +425,26 @@
         o.test = true; S().sleeping = false; hatchStart(); return { ok: true, msg: '孵化！' }; },
       level() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (o.rel === 'family') return { ok: false, msg: '已經係家人（屋仔即將開放（4b））' };
         const to = o.rel === 'follow' ? 'friend' : 'family'; o.intim = Math.max(o.intim, to === 'friend' ? C.friendAt : C.familyAt); o.rel = to; o.relQ.push(to); o.test = true; if (G.save) G.save(); note('testLevel', { to }); return { ok: true, msg: '關係 → ' + SR.REL_ZH[to] }; },
+      _kid() { let o = st(); const now = G.now(); if (o.phase === 'kid') return null; if (SC.cur) return { ok: false, msg: '而家播緊場面' };
+        if (o.phase !== 'egg') { const r = TEST.deliver(); if (!r.ok) return r; o = st(); }
+        for (let i = o.dreams.length; i < C.eggNights; i++) o.dreams.push({ day: SR.nightOf(now) - (C.eggNights - 1 - i), line: SR.topCare(S(), SR.nightOf(now)) || null, at: now, live: false, test: true });
+        o.test = true; S().sleeping = false; const r = SR.hatch(S(), now); if (!r || !r.ok) return { ok: false, msg: '孵唔到' }; o.relQ.length = 0; K.x = clamp(trX() + 26, -70, 70); K.mode = 'follow'; K.clip = 'idle'; lastStage = 'S1'; note('hatched', { test: true }); if (G.save) G.save(); return null; },
+      evolve() { const e = TEST._kid(); if (e) return e; const o = st(), now = G.now(), cur = SR.stageOf(S(), now), i = SR.STAGES.indexOf(cur); if (cur === 'S6') return { ok: false, msg: '細佬已經係成年（最大）' };
+        const to = SR.STAGES[i + 1], SD = C.stageDays; let acc = 0; for (const k of ['S1', 'S2', 'S3', 'S4', 'S5']) { if (k === to) break; acc += SD[k]; } if (to === 'S6') acc = SD.S1 + SD.S2 + SD.S3 + SD.S4 + SD.S5;
+        lastStage = cur; o.hatchDay = SR.dayNum(now) - acc; o.test = true; if (G.save) G.save(); note('testEvolve', { from: cur, to }); return { ok: true, msg: '細佬進化：' + SR.STAGE_ZH[cur] + ' → ' + SR.STAGE_ZH[to] }; },
+      duo() { const e = TEST._kid(); if (e) return e; const o = st(), now = G.now(); if (SC.cur) return { ok: false, msg: '而家播緊場面' };
+        if (o.rel === 'follow') { o.intim = Math.max(o.intim, C.friendAt); o.rel = 'friend'; o.test = true; }
+        const d = SR.today(S(), now); if (d.duo >= C.duoPerDay) d.duo = C.duoPerDay - 1; S().sleeping = false; if (G.save) G.save();
+        return duoStart() ? { ok: true, msg: '二人彈彈葉開始！' } : { ok: false, msg: '開唔到二人彈' }; },
+      card() { const e = TEST._kid(); if (e) return e; card(); return { ok: true, msg: '細佬卡' }; },
       cry() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (K.cry) return { ok: false, msg: '細佬喊緊' }; if (SC.cur) return { ok: false, msg: '而家播緊場面' }; if (S().sleeping) S().sleeping = false; { const bx = trX(), gap = trHalf() + 16; if (Math.abs(K.x - bx) < gap) { const sd = bx + gap <= 70 ? 1 : -1; K.x = clamp(bx + sd * gap, -70, 70); K.dir = -sd; } } /* 試玩：唔好匿喺團絨後面 */ cryStart(); return { ok: true, msg: '細佬喊喇！拖團絨過去哄佢' }; },
     };
     G.s2Settings = function (node) {
       const o = st(), sec = document.createElement('div'); sec.dataset.testid = 's2-test'; sec.style.cssText = 'margin:2px 0 10px;padding:8px;border-radius:10px;background:rgba(255,214,110,.16);border:1px solid rgba(255,214,110,.55);text-align:left';
-      sec.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:13px">試玩：新寵物系列</b><span data-testid="s2-version" style="font-size:11px;opacity:.85">版本 ' + VERSION + '</span></div>' +
+      sec.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:13px">試玩：新寵物系列</b><span data-testid="s2-devmode" style="font-size:10px;padding:1px 5px;border-radius:5px;background:rgba(255,214,110,.35)">開發者模式</span><span data-testid="s2-version" style="font-size:11px;opacity:.85">版本 ' + VERSION + '</span></div>' +
         '<div data-testid="s2-test-status" data-phase="' + o.phase + '" style="font-size:11px;opacity:.8;margin:3px 0 6px">細佬：' + ({ none: '未有蛋', due: '明日送蛋', egg: '蛋（孵夢 ' + o.dreams.length + '／' + C.eggNights + '）', kid: SR.STAGE_ZH[SR.stageOf(S(), G.now())] + '・' + SR.REL_ZH[o.rel] }[o.phase] || o.phase) + '</div>';
       const grid = document.createElement('div'); grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:6px';
-      for (const [k, t] of [['deliver', '即刻送蛋'], ['hatch', '即刻孵化'], ['level', '升一級關係'], ['cry', '觸發喊']]) {
+      for (const [k, t] of [['deliver', '即刻送蛋'], ['hatch', '即刻孵化'], ['level', '升一級關係'], ['cry', '觸發喊'], ['evolve', '細佬進化'], ['duo', '開二人彈'], ['card', '開細佬卡']]) {
         const b = document.createElement('div'); b.className = 'btn'; b.dataset.testid = 's2-test-' + k; b.textContent = t; b.style.cssText = 'margin:0;padding:8px 4px;font-size:13px';
         b.addEventListener('click', () => { closeSettings(); setTimeout(() => { let r; try { r = TEST[k](); } catch (e) { r = { ok: false, msg: String(e && e.message || e) }; } note('test', { k, ok: r.ok }); UI.toast(r.msg, 2400); UIS(r.ok ? 'confirm' : 'disabled'); }, 60); });
         grid.appendChild(b); }
@@ -439,10 +456,21 @@
     { const css = document.createElement('style'); css.textContent = 'body.s2-scene #ui>*:not(#hit):not(#hdFx),body.s2-scene #s2Tray{visibility:hidden!important}'; document.head.appendChild(css); }
 
     /* 每幀（main loop，b3bTick 之後） */
+    // 4a.2：右側 rail「細佬」掣（孵化後一直見到 → 細佬卡／二人彈）
+    const CHIP = { el: null, fk: null };
+    function chipTick() {
+      const o = st(), show = o.phase === 'kid' && !SC.cur; let el = CHIP.el;
+      if (!el) { if (!show) return; const rail = document.getElementById('hdRail'), host = rail || document.getElementById('top-r'); if (!host) return;
+        el = CHIP.el = document.createElement('div'); el.id = 's2kid'; el.className = 'ibtn panel'; el.dataset.testid = 's2-rail-kid'; el.title = '細佬';
+        if (rail) { el.style.cssText = 'left:360px;top:278px'; el.innerHTML = '<i class="m"></i><i class="i" style="overflow:hidden;border-radius:50%"></i><i class="l">細佬</i>'; } else el.innerHTML = '<i class="i" style="display:inline-block;width:24px;height:24px"></i>';
+        el.addEventListener('click', (e) => { e.stopPropagation(); if (SC.cur || UI.isModalOpen()) return; UIS('tap'); card(); note('railCard'); }); host.appendChild(el); }
+      el.style.display = show ? '' : 'none'; const fk = show ? formNow() : null;
+      if (fk && fk !== CHIP.fk && A.act && A.act.forms[fk]) { CHIP.fk = fk; const ic = el.querySelector('i.i'); if (ic) ic.style.background = 'url(' + BASE + A.act.forms[fk].idle + ') 0 0/112px 28px no-repeat'; ic.style.imageRendering = 'pixelated'; }
+    }
     G.s2Tick = function (dt) {
       dt = Math.min(0.1, dt || 0); if (!A.ready) return;
       try { careTick(); } catch (e) { }
-      deliverTick(); dreamTick(); sceneTick(dt); dragTick(dt); levelTick(); cryTick(dt); sleepTick(); kidTick(dt);
+      deliverTick(); dreamTick(); sceneTick(dt); dragTick(dt); levelTick(); cryTick(dt); sleepTick(); kidTick(dt); try { chipTick(); } catch (e) { }
       if (trayOn && (SC.cur || UI.isModalOpen() || !SR.canLesson(S(), G.now()).ok)) tray(false);
     };
 
