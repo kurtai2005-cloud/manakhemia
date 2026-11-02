@@ -61,7 +61,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   console.log('# 載入：預設全部閂（冇權限）→ 遊戲照舊');
   await fresh();
   ok(await E(() => !!(Glimmer.long6b && Glimmer.long6bui && window.__qa && __qa.l6b && __glimmer.l6b)), 'long6b＋long6bui 裝咗');
-  ok(await E(() => Glimmer.data.PARAMS.series2.version === '6b'), '版本 6b');
+  ok(await E(() => /^6[bc]$/.test(Glimmer.data.PARAMS.series2.version)), '版本 6b+');
   ok(await E(() => Glimmer.data.PARAMS.SHARD_DAILY_TOTAL_CAP === 47), '星星碎每日總上限 47（30＋12＋5）');
   ok(await E(() => Glimmer.devmode.sections().some(s => s.id === 'l6b' && s.title.includes('6b'))), '🛠 開發者模式有「6b」分組');
   let q = await Q(); ok(!q.on.steps && !q.on.wx && !q.native && q.auto === false, '預設：計步閂、真天氣閂、冇原生、webdriver 唔自動', q);

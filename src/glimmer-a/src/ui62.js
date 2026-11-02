@@ -19,7 +19,7 @@
     '設定': '聲音、畫面同提示嘅開關。', '買家具': '用星星碎買家具，擺入屋仔。', '散步路': '真實行路儲步數，每 1000 步行一格，每日最多 5 粒碎。',
     '屋仔': '擺家具、睇住客；撳房門轉房。', '今日安排': '幫每隻住客揀今日：遠足、工作定休息。', '揀工作': '揀一份工，每日出糧，做得耐會升級。',
     '團絨日記': '遠足返嚟寫低嘅遊記同貼紙。', '工作': '返緊工嘅寵物：做緊乜、賺幾多、幾時收工。', '你不在時發生咗咩': '你離開咗嘅時候，團絨經歷咗呢啲。',
-    '委託': '幫街坊做小事，完成有星星碎同徽章。', '家族': '家族等級、房間同族譜。', '🛠 開發者模式': '測試用掣，正式玩唔使理。',
+    '委託': '幫街坊做小事，完成有星星碎同徽章。', '夢境': '陪團絨喺夢入面行，拾夢碎片砌夢圖鑑。', '夢醒喇': '今晚個夢拾到嘅嘢，聽晚可以再嚟。', '夢圖鑑': '夢碎片砌成嘅卡，每個主題 5 張。', '家族': '家族等級、房間同族譜。', '🛠 開發者模式': '測試用掣，正式玩唔使理。',
   };
   const TIPS = {   // 第一次打開功能：一次性小提示
     diary: ['日記', '團絨每日會寫低小事；有紅點即係有獎未領，記得 2 日內領。'],
@@ -32,6 +32,7 @@
     plan: ['今日安排', '每隻住客揀一樣：遠足（24 小時返嚟）、工作（每日出糧）或者休息。'],
     work: ['工作', '呢度見到返緊工嘅寵物；進度條行完就收工，糧已經自動入咗袋。'],
     quest: ['委託', '街坊有小事搵你；做完 3 件有額外獎勵。'],
+    dream: ['夢境', '撳格仔陪團絨行；行到發光嘅夢碎片就拾到，5 片砌 1 張夢圖鑑。睇提示嗰陣夢會停。'],
   };
   function install(G, NS) {
     const qs = new URLSearchParams(location.search);
@@ -95,7 +96,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     const say0 = G.say;
     if (say0 && !say0._u62) { G.say = function (o) { if (o && o.line && on()) o = Object.assign({}, o, { sec: (o.sec > 0 && o.sec < speechSec(o.line)) ? o.sec : speechSec(o.line) }); return say0.call(this, o); }; G.say._u62 = true; }
     // 心聲泡泡唔壓右邊 rail（重疊檢查）：paint 完如果撞 rail 掣 → 收窄／左移，底邊同尾巴位保持
-    const RAIL = '#diary, #dex, #s2kid, #s2house, #l6bbtn, #l5egg, #l5cbtn, #u62workbtn';
+    const RAIL = '#diary, #dex, #s2kid, #s2house, #l6bbtn, #l5egg, #l5cbtn, #u62workbtn, #l6cbtn';
     function fitVoice() { const vb = $('#s12voice'); if (!vb || !on() || vb.style.display === 'none') return; const ui = $('#ui'); if (!ui) return; const k = ui.getBoundingClientRect().width / 390 || 1, ur = ui.getBoundingClientRect();
       const rs = [...document.querySelectorAll(RAIL)].filter(e => e.offsetWidth && getComputedStyle(e).display !== 'none' && getComputedStyle(e).visibility !== 'hidden').map(e => { const r = e.getBoundingClientRect(); return { l: (r.left - ur.left) / k, t: (r.top - ur.top) / k, b: (r.bottom - ur.top) / k }; }).filter(r => r.l > 195);
       if (!rs.length) return; const x0 = vb.offsetLeft, y0 = vb.offsetTop, w0 = vb.offsetWidth, h0 = vb.offsetHeight; const hit = rs.filter(r => r.t < y0 + h0 && r.b > y0 && r.l < x0 + w0 + 4); if (!hit.length) return;
@@ -131,7 +132,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
         if (!e.getAttribute('aria-label')) e.setAttribute('aria-label', LBL[id]); }
     }
     // ── ⑦ 面板用途說明＋③ 面板換膚 ──
-    const OVS = ['#l5bov', '#l6bov', '#l5ov', '#u62work', '#s2houseView', '[data-testid="house-view"]'];
+    const OVS = ['#l6cov', '#l6cdex', '#l5bov', '#l6bov', '#l5ov', '#u62work', '#s2houseView', '[data-testid="house-view"]'];
     function subFor(t) { t = (t || '').replace(/\s+/g, ''); if (SUB[t]) return SUB[t]; for (const k in SUB) if (k.length >= 2 && t.indexOf(k) === 0) return SUB[k]; return ''; }
     function subTick() {
       if (!on()) return;
@@ -161,6 +162,8 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     function curFeature() {
       const md = $('#modal'), h2 = $('#mbox > h2');
       if (md && getComputedStyle(md).display !== 'none' && h2) { const t = h2.textContent.replace(/\s+/g, ''); const m = { '日記': 'diary', '圖鑑': 'dex', '細佬': 'kid', '設定': 'settings', '買家具': 'shop' }; for (const k in m) if (t.indexOf(k) === 0) return m[k]; return null; }
+      const dov = $('#l6cov'); if (dov) return dov.querySelector('[data-testid="l6c-sum"]') ? null : 'dream';
+      if ($('#l6cdex')) return null;
       if ($('#u62work')) return 'work';
       if ($('#l6bov')) return 'walk';
       const l5b = $('#l5bov'); if (l5b) return l5b.dataset.kind === 'plan' ? 'plan' : null;
@@ -182,7 +185,8 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     // ── ④ 重疊檢查（e2e＋🛠 用）：可見 UI 框兩兩相交 ──
     const CHROME = ['#ui .ibtn', '#ui .abtn', '#ui .hdTab', '#stagename', '#substage', '#prog', '#grains', '#s12chip', '[data-testid="s12-qprog"]', '#toast', '#s12gain', '#s12voice', '#bubble', '#devBtn',
       '[data-testid="uiv2-portrait"]', '#u62tip', '#u62tip .k', '[data-testid="house-back"]', '[data-testid="house-title"]', '[data-testid="house-decorate"]', '[data-testid="house-hint"]', '[data-testid="u62-sub"]',
-      '#mbox > h2', '#mbox .btn', '[data-testid$="-close"]', '[data-testid$="-title"]', '[role="button"]', '[data-testid^="u62w-back"]', '[data-testid="u62w-sum"]', '[data-testid^="u62w-st-"]', '[data-testid="u62w-rest"]', '[data-testid="u62w-plan"]', '[data-testid="u62w-empty"]', '#u63hide'];
+      '#mbox > h2', '#mbox .btn', '[data-testid$="-close"]', '[data-testid$="-title"]', '[role="button"]', '[data-testid^="u62w-back"]', '[data-testid="u62w-sum"]', '[data-testid^="u62w-st-"]', '[data-testid="u62w-rest"]', '[data-testid="u62w-plan"]', '[data-testid="u62w-empty"]', '#u63hide',
+      '[data-testid="l6c-time"]', '[data-testid="l6c-frags"]', '[data-testid="l6c-hint"]', '[data-testid="l6c-wake"]', '[data-testid="l6c-sum"]', '[data-testid^="l6c-sum-"]', '[data-testid="l6c-dex-panel"]', '[data-testid^="l6c-dex-th-"]', '[data-testid^="l6c-card-"]', '[data-testid="l6c-dex-detail"]', '[data-testid="l6c-dex-note"]'];
     function visBox(e) {
       if (!e || !e.isConnected) return null; const r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return null;
       for (let p = e; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity < 0.15) return null; }
@@ -207,7 +211,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     }
 
     // ── 主 loop ──
-    function ovTick() { const md = $('#modal'), o = (md && getComputedStyle(md).display !== 'none') || !!$('#l5bov') || !!$('#l6bov') || !!$('#l5ov'); document.body.classList.toggle('u62ov', o); const t = $('#toast'); document.body.classList.toggle('u62tg', o && !!t && getComputedStyle(t).display !== 'none' && +getComputedStyle(t).opacity > 0.15); }
+    function ovTick() { const md = $('#modal'), o = (md && getComputedStyle(md).display !== 'none') || !!$('#l5bov') || !!$('#l6bov') || !!$('#l5ov') || !!$('#l6cov') || !!$('#l6cdex'); document.body.classList.toggle('u62ov', o); const t = $('#toast'); document.body.classList.toggle('u62tg', o && !!t && getComputedStyle(t).display !== 'none' && +getComputedStyle(t).opacity > 0.15); }
     try { const mo = new MutationObserver(() => ovTick()); const md0 = $('#modal'); if (md0) mo.observe(md0, { attributes: true, attributeFilter: ['style', 'class'] }); mo.observe(document.body, { childList: true, subtree: false }); const ui0 = $('#ui'); if (ui0) mo.observe(ui0, { childList: true }); } catch (e) { }   // 開／閂面板即時更新（唔等 250ms tick）
     function tick() { try { ovTick(); bubbleTick(); hintTick(); labelTick(); subTick(); tipTick(); } catch (e) { note('err', { m: String(e && e.message || e) }); } }
     setInterval(tick, 250); setTimeout(tick, 300);

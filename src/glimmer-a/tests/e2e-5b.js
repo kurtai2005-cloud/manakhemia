@@ -54,7 +54,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
   console.log('# 載入');
   await load('q=high&hour=13&seed=21&ev=0');
   ok(await E(() => !!(Glimmer.long5b && Glimmer.long5bui && window.__qa && __qa.l5b && __glimmer.h5x)), 'long5b＋long5bui 裝咗');
-  ok(await E(() => /^6[ab]$/.test(Glimmer.data.PARAMS.series2.version)), '版本 5b');
+  ok(await E(() => /^6[abc]$/.test(Glimmer.data.PARAMS.series2.version)), '版本 5b');
   ok(await E(() => Glimmer.long5b.isOn() && !!Glimmer.long5a.LIVE.job_cap_plus1), '5b 開咗（job_cap_plus1 轉 LIVE）');
   ok((await Q()).json, 'long_5b.json 載入');
   ok(await E(() => Glimmer.devmode.sections().some(s => s.id === 'l5b' && s.title.includes('5b'))), '🛠 開發者模式有「5b」分組');

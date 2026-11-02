@@ -59,7 +59,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
   console.log('# 載入');
   await load('q=high&hour=13&seed=21&ev=0');
   ok(await E(() => !!(Glimmer.long5c && Glimmer.long5cui && window.__qa && __qa.l5c && __glimmer.l5c && __glimmer.pat5c)), 'long5c＋long5cui 裝咗');
-  ok(await E(() => /^6[ab]$/.test(Glimmer.data.PARAMS.series2.version)), '版本 5c');
+  ok(await E(() => /^6[abc]$/.test(Glimmer.data.PARAMS.series2.version)), '版本 5c');
   ok((await S5()).json, 'long_5c.json 載入');
   ok(await E(() => !!Glimmer.long5a.LIVE.inherit_fast && !Glimmer.long5a.LATER.inherit_fast), 'inherit_fast 轉 LIVE');
   ok(await E(() => Glimmer.devmode.sections().some(s => s.id === 'l5c' && s.title.includes('5c'))), '🛠 開發者模式有「5c」分組');
