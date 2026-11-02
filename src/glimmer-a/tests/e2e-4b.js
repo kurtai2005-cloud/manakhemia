@@ -85,7 +85,9 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   await page.locator('#mbox .btn', { hasText: '入屋仔' }).click(); await W(1500); s = await h();
   ok(s.open && !(await E(() => Glimmer.ui.isModalOpen())), '撳卡「入屋仔」→ 屋仔（卡收埋）', s.log.slice(-3));
   ok(await page.locator('[data-testid=house-view]').isVisible() && (await page.locator('[data-testid=house-title]').innerText()) === '屋仔', '屋仔畫面＋標題');
-  ok(s.stats.frames > 10 && s.stats.layers > 20 && s.stats.furn > 0 && s.stats.pets > 0, '畫緊（分層＋家具＋寵物）', s.stats);
+  { const v3 = await E(() => !!(__qa.v3 && __qa.v3.on()));   // #83 V3.1（遊測 P2）：V3 屋仔一次 blit（houseui render）layers 得 ~16 → V3 開時改驗 stats.v3＋家具 8＋寵物；v3=0 照舊 layers>20
+    if (v3) ok(s.stats.frames > 10 && s.stats.v3 === true && s.stats.furn >= 8 && s.stats.pets > 0, '畫緊（V3 合成＋家具 8＋寵物）', s.stats);
+    else ok(s.stats.frames > 10 && s.stats.layers > 20 && s.stats.furn > 0 && s.stats.pets > 0, '畫緊（分層＋家具＋寵物）', s.stats); }
   ok(s.pets.tr.last && s.pets.kid.last && s.pets.tr.last.w > 0 && s.pets.kid.last.w === 48, '兩隻都有畫（團絨 atlas＋細佬 48px）', s.pets);
   ok(s.stats.variant === 'day' && !s.night, '13:00 → 日間', s.stats.variant);
   ok(!s.rail.dot && s.save.seen, '入過 → 紅點消');

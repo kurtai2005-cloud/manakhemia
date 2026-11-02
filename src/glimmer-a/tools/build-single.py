@@ -100,6 +100,13 @@ shim = r"""<script>/* 單檔 build：內嵌資產解析器（fetch／Image） */
     if (el.tagName === 'IMG') { var v = el.getAttribute('src'), k = hit(v); if (k) d.set.call(el, dataOf(k)); }
     var st = el.getAttribute('style'); if (st && st.indexOf('url(') >= 0) { var ch = false, ns = st.replace(/url\((['"]?)([^)'"]+)\1\)/g, function (m, q, u) { var k = hit(u); if (!k) return m; ch = true; return 'url("' + dataOf(k) + '")'; }); if (ch) el.setAttribute('style', ns); } }
   function scan(n) { if (!n || n.nodeType !== 1) return; fix(n); if (n.querySelectorAll) { var l = n.querySelectorAll('img,[style*="url("]'); for (var i = 0; i < l.length; i++) fix(l[i]); } }
+  /* V3.1b：innerHTML／insertAdjacentHTML 嘅 <img src>／url() 喺解析前改寫（MutationObserver 太遲：瀏覽器已發出請求 → http／APK 會出 404 log） */
+  function rw(h) { if (typeof h !== 'string' || (h.indexOf('src=') < 0 && h.indexOf('url(') < 0)) return h;
+    return h.replace(/(\bsrc=)(["'])([^"']+)\2/g, function (m, a, q, u) { var k = hit(u); return k ? a + q + dataOf(k) + q : m; })
+            .replace(/url\((&quot;|['"]?)([^)'"&]+)\1\)/g, function (m, q, u) { var k = hit(u); return k ? 'url(' + q + dataOf(k) + q + ')' : m; }); }
+  var ih = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  Object.defineProperty(Element.prototype, 'innerHTML', { configurable: true, enumerable: ih.enumerable, get: function () { return ih.get.call(this); }, set: function (v) { ih.set.call(this, rw(v)); } });
+  var iah = Element.prototype.insertAdjacentHTML; Element.prototype.insertAdjacentHTML = function (pos, h) { return iah.call(this, pos, rw(h)); };
   new MutationObserver(function (ms) { for (var i = 0; i < ms.length; i++) { var m = ms[i]; if (m.type === 'attributes') fix(m.target); else for (var j = 0; j < m.addedNodes.length; j++) scan(m.addedNodes[j]); } })
     .observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['src', 'style'] });
 })();
