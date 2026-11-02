@@ -1,0 +1,3040 @@
+{
+ "version": 1,
+ "batch": "breakthrough 6c 夢境探索",
+ "spec": "docs-gdd/breakthrough-6a6d-spec.md §6c",
+ "screen": [
+  195,
+  422
+ ],
+ "keys": {
+  "6c:tile_forest": {
+   "1x": "tiles/tile_forest.png",
+   "3x": "tiles/tile_forest@3x.png",
+   "size": [
+    224,
+    56
+   ],
+   "colors": 11,
+   "tile": [
+    56,
+    56
+   ],
+   "variants": 4,
+   "note": "橫條 4 款；款 v 喺 x＝v×56；建議 variant＝(i＋theme seed)%4；中間留空俾團絨企"
+  },
+  "6c:tile_lake": {
+   "1x": "tiles/tile_lake.png",
+   "3x": "tiles/tile_lake@3x.png",
+   "size": [
+    224,
+    56
+   ],
+   "colors": 12,
+   "tile": [
+    56,
+    56
+   ],
+   "variants": 4,
+   "note": "橫條 4 款；款 v 喺 x＝v×56；建議 variant＝(i＋theme seed)%4；中間留空俾團絨企"
+  },
+  "6c:tile_toy": {
+   "1x": "tiles/tile_toy.png",
+   "3x": "tiles/tile_toy@3x.png",
+   "size": [
+    224,
+    56
+   ],
+   "colors": 12,
+   "tile": [
+    56,
+    56
+   ],
+   "variants": 4,
+   "note": "橫條 4 款；款 v 喺 x＝v×56；建議 variant＝(i＋theme seed)%4；中間留空俾團絨企"
+  },
+  "6c:tile_star": {
+   "1x": "tiles/tile_star.png",
+   "3x": "tiles/tile_star@3x.png",
+   "size": [
+    224,
+    56
+   ],
+   "colors": 11,
+   "tile": [
+    56,
+    56
+   ],
+   "variants": 4,
+   "note": "橫條 4 款；款 v 喺 x＝v×56；建議 variant＝(i＋theme seed)%4；中間留空俾團絨企"
+  },
+  "6c:fog": {
+   "1x": "tiles/fog.png",
+   "3x": "tiles/fog@3x.png",
+   "size": [
+    56,
+    56
+   ],
+   "colors": 3,
+   "tile": [
+    56,
+    56
+   ],
+   "note": "未揭開格；75% 棋盤實色（取代 rgba(10,8,26,.82)），透出去係 dream_bg"
+  },
+  "6c:frag_forest": {
+   "1x": "icons/frag_forest.png",
+   "3x": "icons/frag_forest@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7,
+   "note": "16×16，同 kit_hd2d_v2 ic_* 同規格；碎片：顯示 48 css＝16 art ×3"
+  },
+  "6c:frag_lake": {
+   "1x": "icons/frag_lake.png",
+   "3x": "icons/frag_lake@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7,
+   "note": "16×16，同 kit_hd2d_v2 ic_* 同規格；碎片：顯示 48 css＝16 art ×3"
+  },
+  "6c:frag_toy": {
+   "1x": "icons/frag_toy.png",
+   "3x": "icons/frag_toy@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7,
+   "note": "16×16，同 kit_hd2d_v2 ic_* 同規格；碎片：顯示 48 css＝16 art ×3"
+  },
+  "6c:frag_star": {
+   "1x": "icons/frag_star.png",
+   "3x": "icons/frag_star@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 6,
+   "note": "16×16，同 kit_hd2d_v2 ic_* 同規格；碎片：顯示 48 css＝16 art ×3"
+  },
+  "icon_dream": {
+   "1x": "icons/ic_dream.png",
+   "3x": "icons/ic_dream@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 12,
+   "note": "16×16，同 kit_hd2d_v2 ic_* 同規格；rail icon"
+  },
+  "icon_dreambook": {
+   "1x": "icons/ic_dreambook.png",
+   "3x": "icons/ic_dreambook@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7,
+   "note": "16×16，同 kit_hd2d_v2 ic_* 同規格；rail icon"
+  },
+  "6c:card_f1": {
+   "1x": "cards/card_f1.png",
+   "3x": "cards/card_f1@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 12,
+   "theme": "forest",
+   "title": "會唱歌嘅菇"
+  },
+  "6c:card_f2": {
+   "1x": "cards/card_f2.png",
+   "3x": "cards/card_f2@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 12,
+   "theme": "forest",
+   "title": "菇傘下避雨"
+  },
+  "6c:card_f3": {
+   "1x": "cards/card_f3.png",
+   "3x": "cards/card_f3@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 12,
+   "theme": "forest",
+   "title": "森林博士上堂"
+  },
+  "6c:card_f4": {
+   "1x": "cards/card_f4.png",
+   "3x": "cards/card_f4@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 11,
+   "theme": "forest",
+   "title": "巨型暖菇飯"
+  },
+  "6c:card_f5": {
+   "1x": "cards/card_f5.png",
+   "3x": "cards/card_f5@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 12,
+   "theme": "forest",
+   "title": "菇菇捉迷藏"
+  },
+  "6c:card_l1": {
+   "1x": "cards/card_l1.png",
+   "3x": "cards/card_l1@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 11,
+   "theme": "lake",
+   "title": "水珠浮浮"
+  },
+  "6c:card_l2": {
+   "1x": "cards/card_l2.png",
+   "3x": "cards/card_l2@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 8,
+   "theme": "lake",
+   "title": "湖底月光"
+  },
+  "6c:card_l3": {
+   "1x": "cards/card_l3.png",
+   "3x": "cards/card_l3@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 11,
+   "theme": "lake",
+   "title": "游水冠軍"
+  },
+  "6c:card_l4": {
+   "1x": "cards/card_l4.png",
+   "3x": "cards/card_l4@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 8,
+   "theme": "lake",
+   "title": "雨點合唱團"
+  },
+  "6c:card_l5": {
+   "1x": "cards/card_l5.png",
+   "3x": "cards/card_l5@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 11,
+   "theme": "lake",
+   "title": "倒影另一隻我"
+  },
+  "6c:card_t1": {
+   "1x": "cards/card_t1.png",
+   "3x": "cards/card_t1@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 11,
+   "theme": "toy",
+   "title": "積木城堡"
+  },
+  "6c:card_t2": {
+   "1x": "cards/card_t2.png",
+   "3x": "cards/card_t2@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 10,
+   "theme": "toy",
+   "title": "發條團絨"
+  },
+  "6c:card_t3": {
+   "1x": "cards/card_t3.png",
+   "3x": "cards/card_t3@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 12,
+   "theme": "toy",
+   "title": "波波池"
+  },
+  "6c:card_t4": {
+   "1x": "cards/card_t4.png",
+   "3x": "cards/card_t4@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 10,
+   "theme": "toy",
+   "title": "玩具火車"
+  },
+  "6c:card_t5": {
+   "1x": "cards/card_t5.png",
+   "3x": "cards/card_t5@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 8,
+   "theme": "toy",
+   "title": "拼圖少一塊"
+  },
+  "6c:card_s1": {
+   "1x": "cards/card_s1.png",
+   "3x": "cards/card_s1@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 9,
+   "theme": "star",
+   "title": "數星星"
+  },
+  "6c:card_s2": {
+   "1x": "cards/card_s2.png",
+   "3x": "cards/card_s2@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 11,
+   "theme": "star",
+   "title": "流星許願"
+  },
+  "6c:card_s3": {
+   "1x": "cards/card_s3.png",
+   "3x": "cards/card_s3@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 10,
+   "theme": "star",
+   "title": "月亮韆鞦"
+  },
+  "6c:card_s4": {
+   "1x": "cards/card_s4.png",
+   "3x": "cards/card_s4@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 7,
+   "theme": "star",
+   "title": "團絨星座"
+  },
+  "6c:card_s5": {
+   "1x": "cards/card_s5.png",
+   "3x": "cards/card_s5@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 11,
+   "theme": "star",
+   "title": "銀河散步"
+  },
+  "6c:card_back": {
+   "1x": "cards/card_back.png",
+   "3x": "cards/card_back@3x.png",
+   "size": [
+    28,
+    36
+   ],
+   "colors": 6,
+   "note": "未解鎖卡"
+  },
+  "6c:transition": {
+   "1x": "fx/transition_in.png",
+   "3x": "fx/transition_in@3x.png",
+   "size": [
+    1950,
+    422
+   ],
+   "colors": 9,
+   "frames": 10,
+   "fps": 8,
+   "durationMs": 1250,
+   "frame": [
+    195,
+    422
+   ],
+   "enter": "0→9 順播（夜幕由外圍收埋，最後一幀全黑夜＋月）",
+   "exit": "9→0 倒播",
+   "loop": false,
+   "note": "alpha 0／255；未覆蓋部分透明，畫喺現實畫面上面"
+  },
+  "6c:dream_bg": {
+   "1x": "fx/dream_bg.png",
+   "3x": "fx/dream_bg@3x.png",
+   "size": [
+    195,
+    422
+   ],
+   "colors": 12
+  },
+  "6c:nightcap_S": {
+   "1x": "nightcap/nightcap_S.png",
+   "3x": "nightcap/nightcap_S@3x.png",
+   "size": [
+    23,
+    10
+   ],
+   "colors": 4,
+   "pivot": [
+    14,
+    8
+   ],
+   "brimW": 15,
+   "note": "由 accessories/nightcap front＋tail 合成；pivot＝帽簷底中"
+  },
+  "6c:nightcap_M": {
+   "1x": "nightcap/nightcap_M.png",
+   "3x": "nightcap/nightcap_M@3x.png",
+   "size": [
+    35,
+    15
+   ],
+   "colors": 6,
+   "pivot": [
+    22,
+    13
+   ],
+   "brimW": 23,
+   "note": "由 accessories/nightcap front＋tail 合成；pivot＝帽簷底中"
+  },
+  "6c:nightcap_L": {
+   "1x": "nightcap/nightcap_L.png",
+   "3x": "nightcap/nightcap_L@3x.png",
+   "size": [
+    46,
+    19
+   ],
+   "colors": 6,
+   "pivot": [
+    29,
+    17
+   ],
+   "brimW": 31,
+   "note": "由 accessories/nightcap front＋tail 合成；pivot＝帽簷底中"
+  },
+  "6c:dream_walk": {
+   "perPet": "per_pet/<pid>/dream_walk.png",
+   "frames": 6,
+   "fps": 6,
+   "durationMs": 1000,
+   "facing": "right（向左 flipX，pivot x 鏡像：W−1−px）",
+   "layout": "橫條，幀 i 喺 x＝i×frameW；幀大小／pivot＝該形態 idle",
+   "method": "idle 幀 0 → 閉眼（眼 pix 填返 skin＋ink 畫 ‿）→ 6b 步序（feet／hop）只搬像素",
+   "pets": 49
+  }
+ },
+ "cards": {
+  "f1": {
+   "title": "會唱歌嘅菇",
+   "theme": "forest",
+   "index": 1,
+   "key": "6c:card_f1"
+  },
+  "f2": {
+   "title": "菇傘下避雨",
+   "theme": "forest",
+   "index": 2,
+   "key": "6c:card_f2"
+  },
+  "f3": {
+   "title": "森林博士上堂",
+   "theme": "forest",
+   "index": 3,
+   "key": "6c:card_f3"
+  },
+  "f4": {
+   "title": "巨型暖菇飯",
+   "theme": "forest",
+   "index": 4,
+   "key": "6c:card_f4"
+  },
+  "f5": {
+   "title": "菇菇捉迷藏",
+   "theme": "forest",
+   "index": 5,
+   "key": "6c:card_f5"
+  },
+  "l1": {
+   "title": "水珠浮浮",
+   "theme": "lake",
+   "index": 1,
+   "key": "6c:card_l1"
+  },
+  "l2": {
+   "title": "湖底月光",
+   "theme": "lake",
+   "index": 2,
+   "key": "6c:card_l2"
+  },
+  "l3": {
+   "title": "游水冠軍",
+   "theme": "lake",
+   "index": 3,
+   "key": "6c:card_l3"
+  },
+  "l4": {
+   "title": "雨點合唱團",
+   "theme": "lake",
+   "index": 4,
+   "key": "6c:card_l4"
+  },
+  "l5": {
+   "title": "倒影另一隻我",
+   "theme": "lake",
+   "index": 5,
+   "key": "6c:card_l5"
+  },
+  "t1": {
+   "title": "積木城堡",
+   "theme": "toy",
+   "index": 1,
+   "key": "6c:card_t1"
+  },
+  "t2": {
+   "title": "發條團絨",
+   "theme": "toy",
+   "index": 2,
+   "key": "6c:card_t2"
+  },
+  "t3": {
+   "title": "波波池",
+   "theme": "toy",
+   "index": 3,
+   "key": "6c:card_t3"
+  },
+  "t4": {
+   "title": "玩具火車",
+   "theme": "toy",
+   "index": 4,
+   "key": "6c:card_t4"
+  },
+  "t5": {
+   "title": "拼圖少一塊",
+   "theme": "toy",
+   "index": 5,
+   "key": "6c:card_t5"
+  },
+  "s1": {
+   "title": "數星星",
+   "theme": "star",
+   "index": 1,
+   "key": "6c:card_s1"
+  },
+  "s2": {
+   "title": "流星許願",
+   "theme": "star",
+   "index": 2,
+   "key": "6c:card_s2"
+  },
+  "s3": {
+   "title": "月亮韆鞦",
+   "theme": "star",
+   "index": 3,
+   "key": "6c:card_s3"
+  },
+  "s4": {
+   "title": "團絨星座",
+   "theme": "star",
+   "index": 4,
+   "key": "6c:card_s4"
+  },
+  "s5": {
+   "title": "銀河散步",
+   "theme": "star",
+   "index": 5,
+   "key": "6c:card_s5"
+  }
+ },
+ "pets": {
+  "sprout": {
+   "frameSize": [
+    32,
+    32
+   ],
+   "pivot": [
+    16,
+    29
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/sprout/dream_walk.png",
+   "3x": "per_pet/sprout/dream_walk@3x.png",
+   "colors": 12,
+   "idleColors": 12,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      2,
+      6
+     ],
+     [
+      3,
+      5
+     ],
+     [
+      2,
+      5
+     ],
+     [
+      2,
+      6
+     ],
+     [
+      3,
+      5
+     ],
+     [
+      2,
+      5
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "radiant": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/radiant/dream_walk.png",
+   "3x": "per_pet/radiant/dream_walk@3x.png",
+   "colors": 12,
+   "idleColors": 12,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      3,
+      14
+     ],
+     [
+      4,
+      13
+     ],
+     [
+      3,
+      13
+     ],
+     [
+      3,
+      14
+     ],
+     [
+      4,
+      13
+     ],
+     [
+      3,
+      13
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "soft": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/soft/dream_walk.png",
+   "3x": "per_pet/soft/dream_walk@3x.png",
+   "colors": 12,
+   "idleColors": 12,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      11,
+      13
+     ],
+     [
+      12,
+      12
+     ],
+     [
+      11,
+      12
+     ],
+     [
+      11,
+      13
+     ],
+     [
+      12,
+      12
+     ],
+     [
+      11,
+      12
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "lumi": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/lumi/dream_walk.png",
+   "3x": "per_pet/lumi/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      3,
+      14
+     ],
+     [
+      4,
+      13
+     ],
+     [
+      3,
+      13
+     ],
+     [
+      3,
+      14
+     ],
+     [
+      4,
+      13
+     ],
+     [
+      3,
+      13
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_dot": {
+   "frameSize": [
+    28,
+    28
+   ],
+   "pivot": [
+    14,
+    25
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/evo_dot/dream_walk.png",
+   "3x": "per_pet/evo_dot/dream_walk@3x.png",
+   "colors": 11,
+   "idleColors": 11,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      0,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_sprout": {
+   "frameSize": [
+    32,
+    32
+   ],
+   "pivot": [
+    16,
+    29
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_sprout/dream_walk.png",
+   "3x": "per_pet/evo_sprout/dream_walk@3x.png",
+   "colors": 11,
+   "idleColors": 11,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      -6,
+      1
+     ],
+     [
+      -5,
+      0
+     ],
+     [
+      -6,
+      0
+     ],
+     [
+      -6,
+      1
+     ],
+     [
+      -5,
+      0
+     ],
+     [
+      -6,
+      0
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_hop": {
+   "frameSize": [
+    38,
+    38
+   ],
+   "pivot": [
+    19,
+    35
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_hop/dream_walk.png",
+   "3x": "per_pet/evo_hop/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      -3,
+      4
+     ],
+     [
+      -2,
+      3
+     ],
+     [
+      -3,
+      3
+     ],
+     [
+      -3,
+      4
+     ],
+     [
+      -2,
+      3
+     ],
+     [
+      -3,
+      3
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_tide": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_tide/dream_walk.png",
+   "3x": "per_pet/evo_guard_tide/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      0,
+      8
+     ],
+     [
+      1,
+      7
+     ],
+     [
+      0,
+      7
+     ],
+     [
+      0,
+      8
+     ],
+     [
+      1,
+      7
+     ],
+     [
+      0,
+      7
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_moon": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_moon/dream_walk.png",
+   "3x": "per_pet/evo_guard_moon/dream_walk@3x.png",
+   "colors": 15,
+   "idleColors": 15,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      -2,
+      4
+     ],
+     [
+      -1,
+      3
+     ],
+     [
+      -2,
+      3
+     ],
+     [
+      -2,
+      4
+     ],
+     [
+      -1,
+      3
+     ],
+     [
+      -2,
+      3
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_shroom": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_shroom/dream_walk.png",
+   "3x": "per_pet/evo_guard_shroom/dream_walk@3x.png",
+   "colors": 18,
+   "idleColors": 18,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      1,
+      8
+     ],
+     [
+      2,
+      7
+     ],
+     [
+      1,
+      7
+     ],
+     [
+      1,
+      8
+     ],
+     [
+      2,
+      7
+     ],
+     [
+      1,
+      7
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_crystal": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_crystal/dream_walk.png",
+   "3x": "per_pet/evo_guard_crystal/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -8,
+      4
+     ],
+     [
+      -7,
+      3
+     ],
+     [
+      -8,
+      3
+     ],
+     [
+      -8,
+      4
+     ],
+     [
+      -7,
+      3
+     ],
+     [
+      -8,
+      3
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_ember": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_ember/dream_walk.png",
+   "3x": "per_pet/evo_guard_ember/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      -1,
+      8
+     ],
+     [
+      0,
+      7
+     ],
+     [
+      -1,
+      7
+     ],
+     [
+      -1,
+      8
+     ],
+     [
+      0,
+      7
+     ],
+     [
+      -1,
+      7
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_radiant": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_radiant/dream_walk.png",
+   "3x": "per_pet/evo_guard_radiant/dream_walk@3x.png",
+   "colors": 12,
+   "idleColors": 12,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      -1,
+      8
+     ],
+     [
+      0,
+      7
+     ],
+     [
+      -1,
+      7
+     ],
+     [
+      -1,
+      8
+     ],
+     [
+      0,
+      7
+     ],
+     [
+      -1,
+      7
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_soft": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_soft/dream_walk.png",
+   "3x": "per_pet/evo_guard_soft/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      -1,
+      6
+     ],
+     [
+      0,
+      5
+     ],
+     [
+      -1,
+      5
+     ],
+     [
+      -1,
+      6
+     ],
+     [
+      0,
+      5
+     ],
+     [
+      -1,
+      5
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_dust": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_dust/dream_walk.png",
+   "3x": "per_pet/evo_guard_dust/dream_walk@3x.png",
+   "colors": 12,
+   "idleColors": 13,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -8,
+      4
+     ],
+     [
+      -7,
+      3
+     ],
+     [
+      -8,
+      3
+     ],
+     [
+      -8,
+      4
+     ],
+     [
+      -7,
+      3
+     ],
+     [
+      -8,
+      3
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_guard_lumi": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_guard_lumi/dream_walk.png",
+   "3x": "per_pet/evo_guard_lumi/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -8,
+      4
+     ],
+     [
+      -7,
+      3
+     ],
+     [
+      -8,
+      3
+     ],
+     [
+      -8,
+      4
+     ],
+     [
+      -7,
+      3
+     ],
+     [
+      -8,
+      3
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_tide": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_tide/dream_walk.png",
+   "3x": "per_pet/evo_still_tide/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -6,
+      6
+     ],
+     [
+      -5,
+      5
+     ],
+     [
+      -6,
+      5
+     ],
+     [
+      -6,
+      6
+     ],
+     [
+      -5,
+      5
+     ],
+     [
+      -6,
+      5
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_moon": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_moon/dream_walk.png",
+   "3x": "per_pet/evo_still_moon/dream_walk@3x.png",
+   "colors": 16,
+   "idleColors": 16,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -12,
+      7
+     ],
+     [
+      -11,
+      6
+     ],
+     [
+      -12,
+      6
+     ],
+     [
+      -12,
+      7
+     ],
+     [
+      -11,
+      6
+     ],
+     [
+      -12,
+      6
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_shroom": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_shroom/dream_walk.png",
+   "3x": "per_pet/evo_still_shroom/dream_walk@3x.png",
+   "colors": 18,
+   "idleColors": 18,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -3,
+      5
+     ],
+     [
+      -2,
+      4
+     ],
+     [
+      -3,
+      4
+     ],
+     [
+      -3,
+      5
+     ],
+     [
+      -2,
+      4
+     ],
+     [
+      -3,
+      4
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_crystal": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_crystal/dream_walk.png",
+   "3x": "per_pet/evo_still_crystal/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -7,
+      6
+     ],
+     [
+      -6,
+      5
+     ],
+     [
+      -7,
+      5
+     ],
+     [
+      -7,
+      6
+     ],
+     [
+      -6,
+      5
+     ],
+     [
+      -7,
+      5
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_ember": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_ember/dream_walk.png",
+   "3x": "per_pet/evo_still_ember/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -7,
+      6
+     ],
+     [
+      -6,
+      5
+     ],
+     [
+      -7,
+      5
+     ],
+     [
+      -7,
+      6
+     ],
+     [
+      -6,
+      5
+     ],
+     [
+      -7,
+      5
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_radiant": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_radiant/dream_walk.png",
+   "3x": "per_pet/evo_still_radiant/dream_walk@3x.png",
+   "colors": 12,
+   "idleColors": 12,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -7,
+      7
+     ],
+     [
+      -6,
+      6
+     ],
+     [
+      -7,
+      6
+     ],
+     [
+      -7,
+      7
+     ],
+     [
+      -6,
+      6
+     ],
+     [
+      -7,
+      6
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_soft": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_soft/dream_walk.png",
+   "3x": "per_pet/evo_still_soft/dream_walk@3x.png",
+   "colors": 15,
+   "idleColors": 15,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -7,
+      5
+     ],
+     [
+      -6,
+      4
+     ],
+     [
+      -7,
+      4
+     ],
+     [
+      -7,
+      5
+     ],
+     [
+      -6,
+      4
+     ],
+     [
+      -7,
+      4
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_dust": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_dust/dream_walk.png",
+   "3x": "per_pet/evo_still_dust/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      1,
+      9
+     ],
+     [
+      2,
+      8
+     ],
+     [
+      1,
+      8
+     ],
+     [
+      1,
+      9
+     ],
+     [
+      2,
+      8
+     ],
+     [
+      1,
+      8
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "evo_still_lumi": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/evo_still_lumi/dream_walk.png",
+   "3x": "per_pet/evo_still_lumi/dream_walk@3x.png",
+   "colors": 14,
+   "idleColors": 14,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      2,
+      9
+     ],
+     [
+      3,
+      8
+     ],
+     [
+      2,
+      8
+     ],
+     [
+      2,
+      9
+     ],
+     [
+      3,
+      8
+     ],
+     [
+      2,
+      8
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "A1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/A1/dream_walk.png",
+   "3x": "per_pet/A1/dream_walk@3x.png",
+   "colors": 36,
+   "idleColors": 36,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      10,
+      12
+     ],
+     [
+      11,
+      11
+     ],
+     [
+      11,
+      10
+     ],
+     [
+      10,
+      10
+     ],
+     [
+      10,
+      11
+     ],
+     [
+      10,
+      12
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "A2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/A2/dream_walk.png",
+   "3x": "per_pet/A2/dream_walk@3x.png",
+   "colors": 34,
+   "idleColors": 34,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      10,
+      11
+     ],
+     [
+      11,
+      10
+     ],
+     [
+      10,
+      10
+     ],
+     [
+      10,
+      11
+     ],
+     [
+      11,
+      10
+     ],
+     [
+      10,
+      10
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "A3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/A3/dream_walk.png",
+   "3x": "per_pet/A3/dream_walk@3x.png",
+   "colors": 33,
+   "idleColors": 34,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      10,
+      5
+     ],
+     [
+      11,
+      4
+     ],
+     [
+      10,
+      4
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      11,
+      4
+     ],
+     [
+      10,
+      4
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "B1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/B1/dream_walk.png",
+   "3x": "per_pet/B1/dream_walk@3x.png",
+   "colors": 28,
+   "idleColors": 29,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      0,
+      7
+     ],
+     [
+      1,
+      6
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      5
+     ],
+     [
+      0,
+      6
+     ],
+     [
+      0,
+      7
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "B2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/B2/dream_walk.png",
+   "3x": "per_pet/B2/dream_walk@3x.png",
+   "colors": 34,
+   "idleColors": 36,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      12,
+      4
+     ],
+     [
+      13,
+      3
+     ],
+     [
+      13,
+      2
+     ],
+     [
+      12,
+      2
+     ],
+     [
+      12,
+      3
+     ],
+     [
+      12,
+      4
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "B3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/B3/dream_walk.png",
+   "3x": "per_pet/B3/dream_walk@3x.png",
+   "colors": 42,
+   "idleColors": 42,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      7,
+      11
+     ],
+     [
+      8,
+      10
+     ],
+     [
+      8,
+      9
+     ],
+     [
+      7,
+      9
+     ],
+     [
+      7,
+      10
+     ],
+     [
+      7,
+      11
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "C1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/C1/dream_walk.png",
+   "3x": "per_pet/C1/dream_walk@3x.png",
+   "colors": 27,
+   "idleColors": 27,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      11,
+      16
+     ],
+     [
+      12,
+      15
+     ],
+     [
+      12,
+      14
+     ],
+     [
+      11,
+      14
+     ],
+     [
+      11,
+      15
+     ],
+     [
+      11,
+      16
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "C2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/C2/dream_walk.png",
+   "3x": "per_pet/C2/dream_walk@3x.png",
+   "colors": 34,
+   "idleColors": 34,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -1,
+      7
+     ],
+     [
+      0,
+      6
+     ],
+     [
+      0,
+      5
+     ],
+     [
+      -1,
+      5
+     ],
+     [
+      -1,
+      6
+     ],
+     [
+      -1,
+      7
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "C3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/C3/dream_walk.png",
+   "3x": "per_pet/C3/dream_walk@3x.png",
+   "colors": 30,
+   "idleColors": 32,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      1,
+      4
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      1,
+      4
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "D1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/D1/dream_walk.png",
+   "3x": "per_pet/D1/dream_walk@3x.png",
+   "colors": 23,
+   "idleColors": 25,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      4,
+      12
+     ],
+     [
+      5,
+      11
+     ],
+     [
+      5,
+      10
+     ],
+     [
+      4,
+      10
+     ],
+     [
+      4,
+      11
+     ],
+     [
+      4,
+      12
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "D2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/D2/dream_walk.png",
+   "3x": "per_pet/D2/dream_walk@3x.png",
+   "colors": 28,
+   "idleColors": 30,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      6,
+      10
+     ],
+     [
+      7,
+      9
+     ],
+     [
+      7,
+      8
+     ],
+     [
+      6,
+      8
+     ],
+     [
+      6,
+      9
+     ],
+     [
+      6,
+      10
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "D3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/D3/dream_walk.png",
+   "3x": "per_pet/D3/dream_walk@3x.png",
+   "colors": 31,
+   "idleColors": 31,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      14,
+      9
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      14,
+      8
+     ],
+     [
+      14,
+      9
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      14,
+      8
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "E1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/E1/dream_walk.png",
+   "3x": "per_pet/E1/dream_walk@3x.png",
+   "colors": 25,
+   "idleColors": 25,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      11,
+      15
+     ],
+     [
+      12,
+      14
+     ],
+     [
+      12,
+      13
+     ],
+     [
+      11,
+      13
+     ],
+     [
+      11,
+      14
+     ],
+     [
+      11,
+      15
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "E2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/E2/dream_walk.png",
+   "3x": "per_pet/E2/dream_walk@3x.png",
+   "colors": 30,
+   "idleColors": 30,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      1,
+      8
+     ],
+     [
+      2,
+      7
+     ],
+     [
+      2,
+      6
+     ],
+     [
+      1,
+      6
+     ],
+     [
+      1,
+      7
+     ],
+     [
+      1,
+      8
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "E3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/E3/dream_walk.png",
+   "3x": "per_pet/E3/dream_walk@3x.png",
+   "colors": 24,
+   "idleColors": 26,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      6,
+      5
+     ],
+     [
+      7,
+      4
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      7,
+      4
+     ],
+     [
+      6,
+      4
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "F1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/F1/dream_walk.png",
+   "3x": "per_pet/F1/dream_walk@3x.png",
+   "colors": 20,
+   "idleColors": 22,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      10,
+      14
+     ],
+     [
+      11,
+      13
+     ],
+     [
+      11,
+      12
+     ],
+     [
+      10,
+      12
+     ],
+     [
+      10,
+      13
+     ],
+     [
+      10,
+      14
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "F2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/F2/dream_walk.png",
+   "3x": "per_pet/F2/dream_walk@3x.png",
+   "colors": 23,
+   "idleColors": 25,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -1,
+      7
+     ],
+     [
+      0,
+      6
+     ],
+     [
+      0,
+      5
+     ],
+     [
+      -1,
+      5
+     ],
+     [
+      -1,
+      6
+     ],
+     [
+      -1,
+      7
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "F3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/F3/dream_walk.png",
+   "3x": "per_pet/F3/dream_walk@3x.png",
+   "colors": 28,
+   "idleColors": 29,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      1,
+      4
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      1,
+      3
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "G1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/G1/dream_walk.png",
+   "3x": "per_pet/G1/dream_walk@3x.png",
+   "colors": 18,
+   "idleColors": 20,
+   "nightcap": {
+    "size": "S",
+    "key": "6c:nightcap_S",
+    "xy": [
+     [
+      10,
+      16
+     ],
+     [
+      11,
+      15
+     ],
+     [
+      11,
+      14
+     ],
+     [
+      10,
+      14
+     ],
+     [
+      10,
+      15
+     ],
+     [
+      10,
+      16
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "G2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/G2/dream_walk.png",
+   "3x": "per_pet/G2/dream_walk@3x.png",
+   "colors": 28,
+   "idleColors": 28,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -1,
+      7
+     ],
+     [
+      0,
+      6
+     ],
+     [
+      0,
+      5
+     ],
+     [
+      -1,
+      5
+     ],
+     [
+      -1,
+      6
+     ],
+     [
+      -1,
+      7
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "G3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/G3/dream_walk.png",
+   "3x": "per_pet/G3/dream_walk@3x.png",
+   "colors": 26,
+   "idleColors": 28,
+   "nightcap": {
+    "size": "M",
+    "key": "6c:nightcap_M",
+    "xy": [
+     [
+      6,
+      5
+     ],
+     [
+      7,
+      4
+     ],
+     [
+      6,
+      4
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      7,
+      4
+     ],
+     [
+      6,
+      4
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "H1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/H1/dream_walk.png",
+   "3x": "per_pet/H1/dream_walk@3x.png",
+   "colors": 35,
+   "idleColors": 35,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -3,
+      9
+     ],
+     [
+      -2,
+      8
+     ],
+     [
+      -3,
+      8
+     ],
+     [
+      -3,
+      9
+     ],
+     [
+      -2,
+      8
+     ],
+     [
+      -3,
+      8
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "H2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "hop",
+   "1x": "per_pet/H2/dream_walk.png",
+   "3x": "per_pet/H2/dream_walk@3x.png",
+   "colors": 27,
+   "idleColors": 29,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -4,
+      8
+     ],
+     [
+      -3,
+      7
+     ],
+     [
+      -3,
+      6
+     ],
+     [
+      -4,
+      6
+     ],
+     [
+      -4,
+      7
+     ],
+     [
+      -4,
+      8
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  },
+  "H3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "mode": "feet",
+   "1x": "per_pet/H3/dream_walk.png",
+   "3x": "per_pet/H3/dream_walk@3x.png",
+   "colors": 29,
+   "idleColors": 30,
+   "nightcap": {
+    "size": "L",
+    "key": "6c:nightcap_L",
+    "xy": [
+     [
+      -1,
+      2
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      -1,
+      1
+     ],
+     [
+      -1,
+      2
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      -1,
+      1
+     ]
+    ],
+    "z": "above",
+    "note": "xy＝帽圖左上角喺該幀嘅 art 座標（可以係負數＝出幀）；向左行：x'＝frameW−x−capW 並 flipX"
+   }
+  }
+ },
+ "grid": {
+  "cols": 3,
+  "rows": 5,
+  "tileArt": 56,
+  "tileCss": 112,
+  "note": "遊程 st_long6c.js：TX＝23＋c·116 css → art x＝11.5＋58c（半格），建議 TX 改 22 或 24 css 保持整數 art 像素"
+ }
+}
