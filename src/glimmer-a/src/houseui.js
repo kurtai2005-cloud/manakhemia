@@ -216,8 +216,16 @@
       if (p.hop > 0) oy -= Math.round(Math.sin((1 - p.hop / 400) * Math.PI) * 5);
       const X0 = Math.round(p.x + p.dx + ox), Y0 = Math.round(p.y + oy), flip = p.dir < 0;
       p.at = [X0, Y0, flip ? -1 : 1, src.frame != null ? src.frame : 0, src.px, src.py]; x.save(); x.translate(X0, Y0); x.scale((flip ? -1 : 1) * sx, sy); x.drawImage(tinted(src.img, tint), src.sx, src.sy, src.sw, src.sh, -src.px, -src.py, src.sw, src.sh); if (G.pat5c) G.pat5c.house(x, p, src, tint, tinted); x.restore();
+      if (V3H) p.blit = { img: src.img, sx: src.sx, sy: src.sy, sw: src.sw, sh: src.sh, px: src.px, py: src.py, X0, Y0, fx: (flip ? -1 : 1) * sx, fy: sy, name: src.name || ((p.clip === 'walk' ? 'walk' : 'idle') + '_0' + ((src.frame | 0) % 9 + 1)), fk: isTrA(p) ? null : (p.who === 'res' ? p.fk : SA.formNow()) };   // #83 V3：窗光剪影＋寵物光 anchor
       p.box = [X0 - Math.min(src.px, 20), Y0 - Math.min(src.py, 34), X0 + Math.min(src.sw - src.px, 20), Y0 + 3]; p.last = { clip: p.clip, frame: src.frame != null ? src.frame : src.name, w: src.sw }; V.stats.pets++;
     }
+    function drawRes(x, p, pt) { const HX = G.h5x; if (!(HX && HX.draw && HX.draw(x, p, pt, tinted))) drawPet(x, p, pt); if (HX && HX.post) HX.post(x, p, pt, tinted); V.stats.res++; if (p.km && p.box) { const cr = im('L:5a/ui/icon_crown@3x.png'); if (cr) { x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, Math.round((p.box[0] + p.box[2]) / 2) - 7, p.box[1] - 13 + Math.round(Math.sin(pnow() / 600)), 14, 14); x.restore(); V.stats.crown = (V.stats.crown | 0) + 1; } } }
+    function blanket(x) { if (Z.mode === 'sleep' && !Z.bed) { const I = SA.fxInfo('ov_blanket'); if (I && I.img) { const m = (PET.tr.x + PET.kid.x) / 2; x.drawImage(I.img, 0, 0, I.w, I.h, Math.round(m) - I.pv[0], Math.round(PET.tr.y + 1) - I.pv[1], I.w, I.h); } } }
+    function drawDeco(x, amb) { const dv = decoNow(), dvI = dv && FAM.SV[dv] ? im('L:' + FAM.SV[dv].px) : null; if (!dvI) return; const S0 = FAM.SV[dv], a = FAM.DECO_ANCHOR; x.drawImage(tinted(dvI, amb), Math.round(a[0] - S0.pv[0]), Math.round(a[1] - S0.pv[1])); V.stats.deco++; }
+    /* #83 屋仔 V3-A：@3x 合成（housev3.js）；?v3=0 或未 load 完 → 舊 composeRoom */
+    const V3H = (NS.housev3 && G.v3 && G.v3.want) ? NS.housev3.make({ G, NS, base: 'art/v3/house/', LX, LY, room: () => V.room, idOf: (k) => slotsNow()[k] || null, furnOf, slotAnchor, PET, vis, RS, Z, decoNow, FAM,
+      drawPet, drawRes, drawFurn, drawDeco, blanket, shadowAt, tinted, mulHex, trForm: () => trForm() }) : null;
+    const v3h = () => !!(V3H && G.v3.on());
     function composeRoom(v, x) {
       const L = (n) => A.img[roomDir(V.room, v) + n + '.png'] || A.img['room/' + v + '/' + n + '.png'], gr = gradeOf(V.room, v), amb = gr.ambientTint, pt = mulHex(gr.petTint, amb), Hd = Hj(), o = HS.st(S());
       x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.clearRect(0, 0, W, H); x.imageSmoothingEnabled = false;
@@ -233,10 +241,10 @@
       const ys = []; for (const k of ['lamp', 'bed', 'table']) { const f = furnOf(k); if (f) { const a = slotAnchor(k); ys.push({ y: a[1], d: () => drawFurn(x, f, a, amb) }); if (k === 'bed' && f.front) ys.push({ y: a[1] + 0.1, d: () => drawFurn(x, f, a, amb, 'front') }); } }
       const bedY = furnOf('bed') ? slotAnchor('bed')[1] : 0;
       for (const k of ['tr', 'kid']) { const p = PET[k]; if (vis(k)) ys.push({ y: p.mode === 'sleep' && Z.bed ? bedY + (k === 'tr' ? 0.01 : 0.02) : p.y, d: () => drawPet(x, p, pt) }); }
-      for (const p of RS.values()) ys.push({ y: p.y, d: () => { const HX = G.h5x; if (!(HX && HX.draw && HX.draw(x, p, pt, tinted))) drawPet(x, p, pt); if (HX && HX.post) HX.post(x, p, pt, tinted); V.stats.res++; if (p.km && p.box) { const cr = im('L:5a/ui/icon_crown@3x.png'); if (cr) { x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, Math.round((p.box[0] + p.box[2]) / 2) - 7, p.box[1] - 13 + Math.round(Math.sin(pnow() / 600)), 14, 14); x.restore(); V.stats.crown = (V.stats.crown | 0) + 1; } } } });   // 5a.1：主養細佬頭頂細皇冠
+      for (const p of RS.values()) ys.push({ y: p.y, d: () => drawRes(x, p, pt) });   // 5a.1：主養細佬頭頂細皇冠（drawRes）
       if (dvI) { const S0 = FAM.SV[dv], a = FAM.DECO_ANCHOR; ys.push({ y: a[1], d: () => { x.drawImage(tinted(dvI, amb), Math.round(a[0] - S0.pv[0]), Math.round(a[1] - S0.pv[1])); V.stats.deco++; } }); }
       ys.sort((a, b) => a.y - b.y); for (const e of ys) e.d();
-      if (Z.mode === 'sleep' && !Z.bed) { const I = SA.fxInfo('ov_blanket'); if (I && I.img) { const m = (PET.tr.x + PET.kid.x) / 2; x.drawImage(I.img, 0, 0, I.w, I.h, Math.round(m) - I.pv[0], Math.round(PET.tr.y + 1) - I.pv[1], I.w, I.h); } }
+      blanket(x);
       lay('fore'); lay('lightmap', 'multiply'); lay('light_add', 'lighter'); lay('emissive_blur', 'lighter', gr.bloom ? gr.bloom.intensity : 0.4);
       { const f = furnOf('lamp'); if (f) { const a = slotAnchor('lamp'), ga = v === 'night' ? 1 : 0.35, e = im(f.emissive), gl = im(f.glow);
         x.globalCompositeOperation = 'lighter'; if (e) { x.globalAlpha = (gr.bloom ? gr.bloom.intensity : 0.4); x.drawImage(e, Math.round(a[0] - f.pivot[0]), Math.round(a[1] - f.pivot[1])); }
@@ -245,14 +253,17 @@
       if (gr.fog) { x.globalAlpha = gr.fog.density; x.fillStyle = gr.fog.color; x.fillRect(0, 0, W, H); x.globalAlpha = 1; }
       lay('vignette');
     }
-    function offCv(k) { let c = V.off[k]; if (!c) { c = V.off[k] = document.createElement('canvas'); c.width = W; c.height = H; } return c; }
+    function offCv(k, w, h) { let c = V.off[k]; if (!c) { c = V.off[k] = document.createElement('canvas'); c.width = w || W; c.height = h || H; } return c; }
     function render() {
       const x = V.ctx; if (!x || !A.ready) return; const tgt = night() ? 1 : 0; if (V.mix == null) V.mix = tgt;
       const dt = Math.min(0.1, (pnow() - (V.lastR || pnow())) / 1000); V.lastR = pnow(); V.mix += clamp(tgt - V.mix, -dt / 3, dt / 3);
       x.setTransform(1, 0, 0, 1, 0, 0); x.imageSmoothingEnabled = false; x.fillStyle = '#20182a'; x.fillRect(0, 0, V.cv.width, V.cv.height);
       const oy = Math.round(V.offY * KP);
-      if (V.mix < 1) { const c = offCv('day'); composeRoom('day', c.getContext('2d')); x.drawImage(c, 0, 0, W, H, 0, oy, W * KP, H * KP); }
-      if (V.mix > 0) { const c = offCv('night'); composeRoom('night', c.getContext('2d')); x.globalAlpha = V.mix; x.drawImage(c, 0, 0, W, H, 0, oy, W * KP, H * KP); x.globalAlpha = 1; }
+      const room = (v) => { if (v3h()) { const c3 = offCv('v3' + v, 585, 1266); if (V3H.compose(v, c3.getContext('2d'))) { x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; return c3; } }   // #83 V3：585×1266 → 390×844
+        const c = offCv(v); composeRoom(v, c.getContext('2d')); x.imageSmoothingEnabled = false; return c; };
+      const blit = (c) => { x.drawImage(c, 0, 0, c.width, c.height, 0, oy, W * KP, H * KP); x.imageSmoothingEnabled = false; V.stats.v3 = c.width === 585; };
+      if (V.mix < 1) blit(room('day'));
+      if (V.mix > 0) { const c = room('night'); x.globalAlpha = V.mix; blit(c); x.globalAlpha = 1; }
       V.stats.variant = V.mix >= 0.5 ? 'night' : 'day';
       // fx（心心／zzz／哇）喺放大後畫（2x nearest）
       const now = pnow(), fx2 = (id, f, ax, ay) => { const I = SA.fxInfo(id); if (!I || !I.img) return false; x.drawImage(I.img, clamp(f, 0, I.n - 1) * I.w, 0, I.w, I.h, Math.round((ax - I.pv[0]) * KP), Math.round((ay - I.pv[1]) * KP + oy), I.w * KP, I.h * KP); return true; };
@@ -526,6 +537,7 @@
 
     window.__qa = window.__qa || {};
     window.__qa.house = {
+      v3: () => V3H ? Object.assign({ on: v3h() }, V3H.ST) : null,   // #83 屋仔 V3 狀態
       st: () => ({ ready: A.ready, errors: A.errors.slice(), open: V.open, room: V.room, res: G.house5.actors().filter(a => a.who === 'res'), greet: G.house5.greetSt(), deco: V.deco, sel: V.sel, offY: V.offY, mix: V.mix, night: night(), sleepWanted: sleepWanted(), mode: Z.mode, bed: !!Z.bed,
         pets: Object.fromEntries(Object.entries(PET).map(([k, p]) => [k, { x: +p.x.toFixed(1), y: +p.y.toFixed(1), dir: p.dir, mode: p.mode, clip: p.clip, box: p.box, last: p.last || null }])),
         prank: Z.prank ? { p: Z.prank.p, v: Z.prank.v, t: Math.round(Z.prank.t), counted: Z.prank.counted } : null, stats: Object.assign({}, V.stats), save: HS.summary(S(), nowMs()), wallet: wallet(), log: log.slice(), gest: G.beh && G.beh.gest ? { key: G.beh.gest.key } : null,
