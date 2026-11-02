@@ -72,7 +72,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await hitOk('rail「散步」', '[data-testid=l6b-rail]');
   await click('l6b-rail'); await W(500); ok((await Q()).ov, '撳「散步」→ 散步路面板');
   await E(() => __qa.l6b.artLoad()); await W(400);
-  ok(await E(() => ['6b:walk_bg', '6b:walk_clip'].every(k => document.querySelector('#l6bov [data-art="' + k + '"]')) && !document.querySelector('#l6bov [data-ph]')), '6b.1 美術：walk_bg＋walk_clip 取代 placeholder');
+  const V3 = await E(() => document.getElementById('ui').classList.contains('v3'));   // #83：V3 換 walk_bg_v3＋deco @3x（顯示仍 16）
+  ok(await E((V3) => [V3 ? '6b:walk_bg_v3' : '6b:walk_bg', '6b:walk_clip'].every(k => document.querySelector('#l6bov [data-art="' + k + '"]')) && !document.querySelector('#l6bov [data-ph]'), V3), '6b.1 美術：walk_bg' + (V3 ? '（V3）' : '') + '＋walk_clip 取代 placeholder');
   { const A = await E(() => __qa.l6b.art()); const J = await E(() => fetch('art/breakthrough/6b/walk6b.json').then(r => r.json()));
     const st = J.keys['6b:walk_bg'].stones.slice().reverse(); ok(A.json && A.err.length === 0 && A.path.length === 12 && st.every((p, i) => A.path[i * 2][0] === p[0] && A.path[i * 2][1] === p[1]), '12 格＝6 粒踏腳石（json 座標，由近到遠）＋中點', A.path);
     const pet = await E(() => { const c = document.querySelector('[data-testid=l6b-walkpet]'); return { fk: c.dataset.fk, w: c.width, h: c.height, cw: c.offsetWidth }; }); const pj = J.pets[pet.fk];
@@ -146,7 +147,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await closeModals(); await E(() => __qa.devmode.setShown(true)); await W(100); await page.locator('[data-testid=dev-btn]').click(); await W(400);
   ok(await page.locator('[data-testid=dev-sec-l6b]').isVisible(), '分組「6b（真世界連動）」喺開發者模式');
   await hitOk('6b 掣', '[data-testid^=dev-l6b-]', 10);
-  await page.locator('[data-testid=dev-sec-l6b]').scrollIntoViewIfNeeded(); await readOk('開發者「6b」', '[data-testid=dev-sec-l6b]');
+  await E(() => document.querySelector('[data-testid=dev-sec-l6b]').scrollIntoView({ block: 'start' })); await W(150); await readOk(   /* #83：V3 長字換行令組變高；hitOk 捲到尾之後頭一粒掣會俾面板裁走一半 → 捲返組頂先審 */ '開發者「6b」', '[data-testid=dev-sec-l6b]');
   const dclick = async (k) => { if (!(await page.locator('[data-testid=dev-sec-l6b]').isVisible().catch(() => false))) { await closeModals(); await page.locator('[data-testid=dev-btn]').click(); await W(400); } await page.locator('[data-testid=dev-l6b-' + k + ']').scrollIntoViewIfNeeded(); await page.locator('[data-testid=dev-l6b-' + k + ']').click(); await W(150); };
   await dclick('reset'); await W(200); await dclick('s12k'); await W(300);
   q = await Q(); ok(q.today === 12000 && q.shards === 5, '撳「+12000 步」→ 碎 5（上限）', { today: q.today, sh: q.shards });
@@ -160,7 +161,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   { const P = await E(() => { const c = document.querySelector('[data-testid=l6b-walkpet]'); return { dir: c.dataset.dir, tf: c.style.transform, tile: Glimmer.long6b.pos(__glimmer.state).tile }; });
     ok(P.dir === 'L' && /scaleX\(-1\)/.test(P.tf), '下一格喺左 → flipX（第 ' + (P.tile + 1) + ' 格）', P);
     const D = await E(() => [...document.querySelectorAll('img[data-testid^=l6b-deco-]')].map(e => e.dataset.art)); ok(['6b:deco_maple_leaf', '6b:deco_acorn', '6b:deco_clover4'].every(k => D.includes(k)), '今日執到小物用 deco 圖（16×16）', D);
-    await W(300); { const L = await E(() => [...document.querySelectorAll('img[data-testid^=l6b-deco-]')].map(e => [e.dataset.art, e.offsetWidth, e.complete, e.naturalWidth])); ok(L.length >= 3 && L.every(x => x[1] === 16 && x[2] && x[3] === 16), 'deco 16×16 載到', L); } }
+    await W(300); { const L = await E(() => [...document.querySelectorAll('img[data-testid^=l6b-deco-]')].map(e => [e.dataset.art, e.offsetWidth, e.complete, e.naturalWidth])); const V3d = await E(() => document.getElementById('ui').classList.contains('v3')), NW = V3d ? 48 : 16; ok(L.length >= 3 && L.every(x => x[1] === 16 && x[2] && x[3] === NW), 'deco 16×16 載到' + (V3d ? '（V3 @3x 原圖 48）' : ''), L); } }
   await readOk('散步路（新美術）', '#l6bov'); await shot('06-walk-art'); await click('l6b-close'); await W(200);
 
   console.log('# ?l6b=0');

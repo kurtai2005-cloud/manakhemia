@@ -398,7 +398,7 @@
       season(v) { if (v !== undefined && G.seasonSet) G.seasonSet(v); return sc.season || null; },
       seasonParts() { const sp = sc.seasonPartsOn(sc.st.cur); return { loaded: Object.keys(sc.spart || {}), on: !!sp, n: (sc.sps || []).length, types: [...new Set((sc.sps || []).map(p => p.T.name))] }; },
       enable(on) { sc.enabled = on !== false; return sc.enabled; },
-      skipFade() { sc.st.mix = 1; sc.st.prev = null; }, stat() { return Object.assign({}, sc.stat); }, v3() { return sc.v3stat ? sc.v3stat() : null; }, cache(on) { if (on !== undefined) { sc.cacheOn = on !== false; sc.lc = {}; } return { on: sc.cacheOn !== false, variants: Object.keys(sc.lc || {}), builds: sc.stat.cacheBuilds || 0, hits: sc.stat.cacheHits || 0 }; }, CYCLE: CYCLE.slice(), LABEL,
+      skipFade() { sc.st.mix = 1; sc.st.prev = null; }, stat() { return Object.assign({}, sc.stat); }, v3() { return sc.v3stat ? sc.v3stat() : null; }, cache(on) { if (on !== undefined) { sc.cacheOn = on !== false; sc.lc = {}; } return { on: sc.cacheOn !== false, variants: Object.keys(sc.lc || {}).concat(Object.keys(sc.lc3 || {}).map(k => 'v3:' + k)), builds: (sc.stat.cacheBuilds || 0) + ((sc.s3 && sc.s3.cacheBuilds) || 0), hits: (sc.stat.cacheHits || 0) + ((sc.s3 && sc.s3.cacheHits) || 0) }; }   /* #83：V3 背景層 cache（cache3）一齊計 */, CYCLE: CYCLE.slice(), LABEL,
     };
     return sc;
   }

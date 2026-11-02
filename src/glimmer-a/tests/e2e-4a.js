@@ -40,7 +40,8 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
     await W(300);
   };
   const evoSnap = () => E(() => JSON.stringify({ evo: Object.assign({}, __glimmer.state.evo, { cl: null }),   // evo.cl＝時間累計（唔關事）
-    w: Glimmer.sys12 && Glimmer.sys12.st ? Glimmer.sys12.st(__glimmer.state).wallet : null, g: Glimmer.sys12b.st(__glimmer.state).games.total }));
+    // 過咗真實午夜：walletDay() 讀額度會懶開一格空 {q:0,o:0}（假鐘日 ≠ 真日）→ 唔算改咗碎；只比有數嘅日
+    w: Glimmer.sys12 && Glimmer.sys12.st ? ((w) => w && Object.assign({}, w, { days: Object.fromEntries(Object.entries(w.days || {}).filter(([, e]) => e && (e.q || e.o)).sort()) }))(Glimmer.sys12.st(__glimmer.state).wallet) : null, g: Glimmer.sys12b.st(__glimmer.state).games.total }));
 
   console.log('# 載入／預設（webdriver 下唔自動送蛋／喊）');
   await load('q=high&hour=13&seed=21&ev=0', { stage: 'adult' });
@@ -76,7 +77,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   console.log('# 孵化第一眼（2s；撳跳）');
   await E(() => { __glimmer.clock.t += 15 * 3600e3; __glimmer.state.sleeping = false; }); s = await until(x => x.scene && x.scene.kind === 'hatch', 4000);
   ok(s.scene && s.scene.kind === 'hatch', '孵化場面自動開始（第 3 晚之後醒）', s.scene);
-  await until(x => x.scene && x.scene.last && x.scene.last.t >= 520, 2000); await shot('03-hatch-crack'); s = await q(); ok(s.scene && s.scene.last && s.scene.last.egg && s.scene.last.rays, '殼裂＋光芒', s.scene && s.scene.last);
+  s = await until(x => x.scene && x.scene.last && x.scene.last.t >= 520, 2000); await shot('03-hatch-crack'); ok(   /* #83：用 until 嗰格判斷（截圖慢過 ~300ms 會讀到殼已散） */ s.scene && s.scene.last && s.scene.last.egg && s.scene.last.rays, '殼裂＋光芒', s.scene && s.scene.last);
   ok(await E(() => document.body.classList.contains('s2-scene')), 'HUD 收埋（body.s2-scene）');
   await page.mouse.click(195, 400); await W(150); s = await q(); ok(s.scene && s.scene.skip && s.scene.t >= 2000, '撳 → 跳去最後一格', s.scene);
   await shot('04-hatch-glance');
@@ -192,7 +193,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   ok((await page.locator('[data-testid=dev-sec-s2]').innerText()).includes('新寵物系列 4a'), '分組：新寵物系列 4a');
   for (const k of ['deliver', 'hatch', 'level', 'cry', 'evolve', 'duo', 'card']) ok(await page.locator('[data-testid=dev-s2-' + k + ']').isVisible(), '按鈕 ' + k + ' 睇得到');
   ok(await E(() => __qa.devmode.sections().some(x => x.id === 'uiv2')), '4b.1：有「UI v2」組');
-  ok(JSON.stringify(await E(() => __qa.devmode.sections().filter(x => x.id !== 'uiv2' && x.id !== 'l5' && x.id !== 'l5b' && x.id !== 'l5c' && x.id !== 'l6a' && x.id !== 'l6b' && x.id !== 'ui62' && x.id !== 'ui63'))) === JSON.stringify([{ id: 's2', title: '新寵物系列 4a（細佬）', items: ['deliver', 'hatch', 'level', 'cry', 'evolve', 'duo', 'card'] }, { id: 'house', title: '家 4b（屋仔）', items: ['prep', 'entry', 'locked', 'open', 'deco', 'shards', 'rewards', 'setA', 'setB', 'sit', 'prank', 'sleep', 'night', 'touch', 'auto', 'close'] }]), 'register 結構（4a＋4b 兩組）');
+  ok(JSON.stringify(await E(() => __qa.devmode.sections().filter(x => x.id !== 'uiv2' && x.id !== 'l5' && x.id !== 'l5b' && x.id !== 'l5c' && x.id !== 'l6a' && x.id !== 'l6b' && x.id !== 'ui62' && x.id !== 'ui63' && x.id !== 'v3'))   /* #83 V3 組 */) === JSON.stringify([{ id: 's2', title: '新寵物系列 4a（細佬）', items: ['deliver', 'hatch', 'level', 'cry', 'evolve', 'duo', 'card'] }, { id: 'house', title: '家 4b（屋仔）', items: ['prep', 'entry', 'locked', 'open', 'deco', 'shards', 'rewards', 'setA', 'setB', 'sit', 'prank', 'sleep', 'night', 'touch', 'auto', 'close'] }]), 'register 結構（4a＋4b 兩組）');
   await shot('32-dev-panel'); await shot('23-settings-test');
   await page.locator('[data-testid=dev-s2-deliver]').click(); await W(400); s = await q();
   ok(s.save.phase === 'egg' && !(await E(() => Glimmer.ui.isModalOpen())), '「即刻送蛋」（團絨未靜光都送）→ 蛋；彈窗收埋', s.save.phase);

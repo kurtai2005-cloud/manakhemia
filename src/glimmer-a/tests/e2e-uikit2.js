@@ -6,6 +6,7 @@ let chromium;
 for (const p of [process.env.PW, 'playwright-core', '/workspace/qa-live-s1/node_modules/playwright-core']) { try { if (p) { chromium = require(p).chromium; break; } } catch (e) { } }
 if (!chromium) { console.error('找不到 playwright-core'); process.exit(2); }
 const BASE = process.env.BASE || 'http://localhost:8240/index.html';
+// #83：本份測 6b.x 像素 UI kit（FP12、tile＋pixelated、toast 掣）→ 固定 ?v3=0；V3 換皮等價檢查喺 e2e-v3.js
 const SHOTS = process.env.SHOTS || process.env.OUT || path.join(__dirname, '..', '..', '..', 'screens') + '/';
 require('fs').mkdirSync(SHOTS, { recursive: true });
 let pass = 0, fail = 0;
@@ -28,8 +29,8 @@ const near = (a, b, d) => Math.abs(a - b) <= (d || 2);
   const prep = () => E(() => { window.__noSaveOnHide = true; const s = __glimmer.state; s.stage = 'adult'; s.form = 'dust'; s.sleeping = false; Object.assign(s.needs, { mood: 50, energy: 100, hunger: 60, clean: 100 }); s.poops = 0; });
   const load = async (qs, clear) => {
     qs += '&ui63=0';   // 6b.3：呢個 suite 驗 6b.2 原尺寸 layout；縮細層由 e2e-6b3 驗
-    if (clear !== false) { await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); }
-    await page.goto(BASE + '?' + qs); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { }); await E(() => __glimmer.liveLoad);
+    if (clear !== false) { await page.goto(BASE + '?' + qs + '&v3=0'); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); }
+    await page.goto(BASE + '?' + qs + '&v3=0'); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { }); await E(() => __glimmer.liveLoad);
     await E(() => __glimmer.s2Load); await E(() => __glimmer.houseLoad);
     await page.waitForFunction(() => window.__qa && __qa.uiv2 && __qa.uiv2.st().ready, null, { timeout: 15000 }).catch(() => { });
     await setT(T0); if (clear !== false) await prep(); await W(500);

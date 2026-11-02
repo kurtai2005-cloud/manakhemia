@@ -76,7 +76,11 @@ const DAY = 86400e3;
   const gid = (q.log.find(x => x[2] === 'greet') || [])[1];
   ok(gid && !/^a[123]_/.test(gid), '琴日有嚟 → 講琴日嘅事（' + gid + '）', q.log);
   ok(!/\{\w+\}/.test(v.txt), '空位全部填好', v.txt);
-  ok(v.fs === '24px' && /GlimmerFP12/.test(v.ff), '記憶句泡泡 FP12 24px', v);
+  const V3 = await E(() => document.getElementById('ui').classList.contains('v3'));   // #83：V3 換皮 → Noto CJK TC subset（GlimmerV3Sans）代 FP12
+  ok(v.fs === '24px' && (V3 ? /GlimmerV3Sans/ : /GlimmerFP12/).test(v.ff), '記憶句泡泡 ' + (V3 ? 'V3 字' : 'FP12') + ' 24px', v);
+  // 遊測：淡入（transition .35s）第一格 computed opacity 仲 <0.05 就截圖審查 → flaky；等淡入完（computed ≥0.99，連續 2 格）先審
+  const fadeIn = async () => { let n = 0; for (let i = 0; i < 40; i++) { const o = await E(() => +getComputedStyle(document.getElementById('s12voice')).opacity); n = o >= 0.99 ? n + 1 : 0; if (n >= 2) return o; await W(50); } return -1; };
+  ok(await fadeIn() >= 0.99, '招呼泡泡淡入完（computed opacity ≥0.99）先審對比');
   await E(() => { document.getElementById('s12voice').style.pointerEvents = 'auto'; }); await readOk('招呼泡泡', '#s12voice'); await E(() => { document.getElementById('s12voice').style.pointerEvents = ''; });
   ok(await faceSeen(null, 'bubble'), '講嘢時團絨換 6a 表情（遊美 per_pet patch，smug6a／pout6a）', await E(() => __qa.l6a.log().filter(x => x.k === 'face').slice(-3)));
   await shot('01-greet');

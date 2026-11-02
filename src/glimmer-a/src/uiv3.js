@@ -26,7 +26,7 @@
     const img = (u) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error('img ' + u)); i.src = u; });
     const js = (u) => fetch(u).then(r => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); });
     const fonts = {}, errs = [];
-    const font = (file, fam, w) => fetch(B + 'fonts/' + file).then(r => r.arrayBuffer()).then(b => new FontFace(fam, b, { weight: w }).load()).then(f => { document.fonts.add(f); fonts[fam + ':' + w] = true; }).catch(e => { errs.push('font ' + file + ': ' + (e && e.message)); });
+    const font = (file, fam, w) => fetch(B + 'fonts/' + file).then(r => r.arrayBuffer()).then(b => new FontFace(fam, b, { weight: w, ascentOverride: '88%', descentOverride: '12%', lineGapOverride: '0%' })   /* Noto CJK 字框 1em（subset hhea 偏大 → 文字框高過掣） */.load()).then(f => { document.fonts.add(f); fonts[fam + ':' + w] = true; }).catch(e => { errs.push('font ' + file + ': ' + (e && e.message)); });
     return Promise.all([js(B + 'atlas/ui_hd2d_v3@3x.json'), img(B + 'atlas/ui_hd2d_v3@3x.png'), js(B + 'atlas/icons_hd2d_v3@3x.json'), img(B + 'atlas/icons_hd2d_v3@3x.png'), js(B + 'atlas/v2_to_v3_map.json'), js(B + 'layout_hd2d_v3.json'),
       font('NotoSansCJKtc-Regular.subset.otf', 'GlimmerV3Sans', '400'), font('NotoSansCJKtc-Bold.subset.otf', 'GlimmerV3Sans', '700'), font('NotoSerifCJKtc-Bold.subset.otf', 'GlimmerV3Serif', '700')])
       .then(([aj, ai, ij, ii, mp, lay]) => ({ aj, ai, ij, ii, map: mp.map || {}, layout: lay, fonts, errs }))
@@ -77,6 +77,8 @@ ${A}#mbox, ${A}#mbox p, ${A}#mbox li, ${A}#mbox div { color:${rgb(C.cream)}; }
 ${A}.u62sub, ${A}[data-r62="a"] { color:${rgb(C.mute)} !important; }
 ${A}#modal.v3frost::before { content:''; position:absolute; inset:0; background:var(--v3frost) center / cover no-repeat; opacity:.9; pointer-events:none; z-index:-1; }
 ${A}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn { height:auto !important; min-height:52px !important; display:flex !important; align-items:center; justify-content:center; white-space:normal !important; overflow-wrap:anywhere; text-align:center !important; line-height:1.25 !important; padding:6px 20px !important; text-overflow:clip !important; overflow:visible !important; }   /* V3：掣 ≥48（360 寬面板縮 .92 都夠）；長字換行唔出界 */
+${A}#mbox .btn[data-tall="1"] { color:${rgb(C.cream)} !important; text-shadow:${SH} !important; }   /* 長字掣轉深色卡（card_sel）→ cream 字 */
+${A}.seg .btn { height:34px !important; line-height:34px !important; }   /* 揀咗嘅金膠囊包住成個字框（系統字 Noto Sans HK 字框高） */
 ${A}.hdTg { color:${rgb(C.cream)} !important; text-shadow:${SH} !important; }   /* 開／關 字喺掣外（text-indent），唔跟彩色軌用 ink */
 ${A}.v3ink, ${A}.v3ink * { color:${rgb(C.ink)} !important; text-shadow:none !important; }
 `;

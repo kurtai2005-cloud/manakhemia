@@ -35,7 +35,8 @@ let pass = 0, fail = 0; const ok = (c, m) => { if (c) { pass++; console.log('  �
     // ② 對比：字色 vs 字底主色（文字透明截圖、字框入面最多嘅色）
     const contrast = async (label, sel) => {
       const items = await E((sel) => [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 2 && r.height > 2 && (e.textContent || '').trim(); }).map(e => {
-        const rg = document.createRange(); rg.selectNodeContents(e); const rr = rg.getBoundingClientRect(), m = getComputedStyle(e).color.match(/[\d.]+/g).map(Number);
+        const tns = [], tw = document.createTreeWalker(e, NodeFilter.SHOW_TEXT); let tn; while ((tn = tw.nextNode())) if (tn.nodeValue.trim()) tns.push(tn);   // #83：只量文字節點（6b.3 u63hit 透明熱區會撐大 range → 漸變掣底俾面板色搶咗眾數）
+        const rs = tns.map(n => { const rg = document.createRange(); rg.selectNodeContents(n); return rg.getBoundingClientRect(); }).filter(r => r.width > 0), L0 = Math.min(...rs.map(r => r.left)), T0 = Math.min(...rs.map(r => r.top)), rr = { left: L0, top: T0, width: Math.max(...rs.map(r => r.right)) - L0, height: Math.max(...rs.map(r => r.bottom)) - T0 }, m = getComputedStyle(e).color.match(/[\d.]+/g).map(Number);
         return { id: e.dataset.testid || e.id || e.className, t: e.textContent.trim().slice(0, 10), col: m.slice(0, 3), r: [rr.left, rr.top, rr.width, rr.height] }; }).filter(Boolean), sel);
       ok(items.length > 0, label + '：有字 ' + items.length);
       if (!items.length) return;
@@ -59,8 +60,8 @@ let pass = 0, fail = 0; const ok = (c, m) => { if (c) { pass++; console.log('  �
     await run('uiv2', 'house'); await hitOk('屋仔返回', '[data-testid="house-back"]');
     await run('uiv2', 'deco'); await hitOk('佈置返回', '[data-testid="house-deco-back"]');
     const back = await E(() => { const e = document.querySelector('[data-testid="house-deco-back"]'); if (!e) return { w: 0, h: 0, bs: '' };
-      return { w: e.offsetWidth, h: e.offsetHeight, bs: getComputedStyle(e).backgroundSize }; });
-    ok(back.w >= 48 && back.h >= 48 && /^44px 44px/.test(back.bs), '返回掣 ' + back.w + '×' + back.h + '、med22 圓章冇拉（' + back.bs + '）');
+      return { w: e.offsetWidth, h: e.offsetHeight, bs: getComputedStyle(e).backgroundSize, v3: document.getElementById('ui').classList.contains('v3') }; });   // V3 圓章 contain（唔拉）
+    ok(back.w >= 48 && back.h >= 48 && (/^44px 44px/.test(back.bs) || (back.v3 && back.bs === 'contain')), '返回掣 ' + back.w + '×' + back.h + '、med22 圓章冇拉（' + back.bs + '）');
     const fonts = await E(() => ({ f: Object.keys(__qa.uiv2.st().fonts || {}), set: [...document.fonts].map(f => f.family) }));
     ok(!fonts.set.some(f => /GlimmerFP(8|10)/.test(f)) && fonts.set.some(f => /GlimmerFP12/.test(f)), 'document.fonts 只得 FP12（冇 FP8／FP10）' + JSON.stringify(fonts.set.filter(f => /Glimmer/.test(f))));
     ok(errs.length === 0, '冇 pageerror' + (errs.length ? ' ← ' + errs.slice(0, 2).join(' | ') : ''));
