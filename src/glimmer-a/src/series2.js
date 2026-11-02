@@ -67,6 +67,7 @@
     inPlace(o.dreams, o.dreams.filter(x => obj(x) && Number.isFinite(+x.day)).slice(0, CFG.eggNights)); for (const x of o.dreams) { x.day |= 0; if (!LINES.includes(x.line)) x.line = null; x.at = +x.at || 0; x.live = !!x.live; }
     if (!Array.isArray(o.lessons)) o.lessons = [];
     inPlace(o.lessons, o.lessons.filter(x => obj(x) && LINES.includes(x.line)).slice(0, CFG.lessonsMax)); for (const x of o.lessons) { x.day |= 0; x.at = +x.at || 0; x.stage = x.stage === 'S2' ? 'S2' : 'S1'; }
+    o.fast = +o.fast > 0 && +o.fast < 1 ? +o.fast : 0; if (!o.fast) delete o.fast;   // 5c 遺傳加速
     o.hatchAt = +o.hatchAt || 0; o.hatchDay = o.hatchDay | 0; if (o.phase === 'kid' && !o.hatchDay) o.hatchDay = o.hatchAt ? dayNum(o.hatchAt) : o.d0 + CFG.eggNights;
     if (o.line != null && !LINES.includes(o.line)) o.line = null; if (o.line === undefined) o.line = null;
     if (o.settle != null && !obj(o.settle)) o.settle = null; if (o.settle === undefined) o.settle = null;
@@ -136,10 +137,17 @@
   /* ── 時間線 ── */
   function stageOf(s, now) {
     const o = st(s); if (o.phase === 'none' || o.phase === 'due') return null; if (o.phase === 'egg') return 'egg';
-    const dd = dayNum(now) - o.hatchDay, SD = CFG.stageDays; let acc = 0;
+    const SD = CFG.stageDays; let t = now;
+    if (o.fast > 0 && o.fast < 1) {   // 5c 遺傳加速（家族 Lv3＋細佬蛋）：頭 2 階（S1、S2）實際時長 ×fast；之後嘅階段成條時間線提早（每階照舊整日）
+      const m1 = midOf(o.hatchDay + SD.S1), m2 = midOf(o.hatchDay + SD.S1 + SD.S2), h0 = clamp(o.hatchAt || 0, midOf(o.hatchDay), m1);
+      const e1 = h0 + (m1 - h0) * o.fast, e2 = e1 + (m2 - m1) * o.fast;
+      if (now < e1) return 'S1'; if (now < e2) return 'S2'; t = now + (m2 - e2);
+    }
+    const dd = dayNum(t) - o.hatchDay; let acc = 0;
     for (const k of ['S1', 'S2', 'S3', 'S4', 'S5']) { acc += SD[k]; if (dd < acc) return k; }
     return 'S6';
   }
+  function midOf(n) { const u = new Date(n * DAY); return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate()).getTime(); }   // dayNum → 本地午夜 ms
   const stageIdx = (k) => STAGES.indexOf(k);
   function formOf(s, now) {                    // 美術 key：S1／S2／A1（S3）／S4A（S4）／A2（S5）／A3（S6）；系未定（理論上唔會）→ S2
     const o = st(s), sk = stageOf(s, now); if (!sk) return null; if (sk === 'egg') return 'egg'; if (sk === 'S1' || sk === 'S2') return sk;
@@ -250,7 +258,7 @@
     return o;
   }
 
-  return { CFG, CFG0, LINES, LINE_ZH, PROP, PROP_ZH, WRONG, CARE_ZH, STAGES, STAGE_ZH, REL, REL_ZH, LINES_OUT, dayNum, dayKey, hourOf, nightOf,
+  return { CFG, CFG0, LINES, LINE_ZH, PROP, PROP_ZH, WRONG, CARE_ZH, STAGES, STAGE_ZH, REL, REL_ZH, LINES_OUT, dayNum, midOf, dayKey, hourOf, nightOf,
     st, noteElder, canDeliver, deliver, careNote, topCare, dreamDue, dream, hatchReady, hatch, stageOf, stageIdx, formOf, settle, settlePick,
     today, gain, checkLevel, canLesson, lesson, inSleepWin, sleepTogether, canDuo, duoDone, eatTogether, cryWanted, cryStart, comfort, cryTimeout,
     trackAt, moveAt, sceneAt, hatchFrame };

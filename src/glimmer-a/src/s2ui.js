@@ -163,6 +163,7 @@
       const c = SC.cur; if (!c) return; c.t += dt * 1000;
       if (c.kind === 'hatch') { if (c.t >= 2000) { c.end += dt * 1000; if (c.end >= (c.skip ? 900 : 700)) hatchEnd(); } return; }
       if (c.kind === 'lesson') return lessonTick(c, dt);
+      if (c.kind === 'trick' || c.kind === 'trickTr') return trickTick(c, dt);
       const F = SR.sceneAt(c.clip, c.t, fcount), b = G.beh; c.F = F;
       const tr = F.actors.tr; if (tr && b && !c.noTr) { const fk = R.fkOf(S()), a = atlasSrc(fk, tr.clip, tr.ct, tr.loop); puppet({ x: c.ox + tr.x, dir: c.trDir || 1, clip: a ? a.clip : 'idle', frame: a ? a.frame : 0, depth: 0 }); }
       const kd = F.actors.kid; if (kd) { K.x = c.ox + kd.x; K.clip = kd.clip; K.ct = kd.ct; K.flip = kd.flip; K.dir = kd.flip ? -1 : 1; }
@@ -284,6 +285,21 @@
       if (c.t >= 5000) { SC.cur = null; release(); if (b) b.gest = null; K.mode = 'follow'; heart(); say(fmt(L_.lessonDone, { prop: SR.PROP_ZH[c.L] }) + '（' + SR.WRONG[c.L] + '）', { sec: 3.5 }); note('lessonEnd', { L: c.L }); }
     }
 
+    // ── 5c 家傳招式：細佬 idle 時自己做一次上一代教錯嗰課（照抄 clip 2s）；團絨細佬做 s2_demo 示範（3s）──
+    function trickStart(L, who) {
+      const s = S(); if (!SR.LINES.includes(L)) return { ok: false, reason: 'line' }; if (SC.cur || busyOther() || s.sleeping) return { ok: false, reason: 'busy' };
+      if (who === 'tr') { const rxOk = !!(R.rxForm && R.rxForm(R.fkOf(s)) && R.rx.clips['s2_demo_' + L]); if (!rxOk || s.stage === 'egg' || !G.beh) return { ok: false, reason: 'rx' };
+        SC.cur = { kind: 'trickTr', L, t: 0, bx: trX(), side: G.beh.dir < 0 ? -1 : 1, rxOk }; note('trick', { L, who }); return { ok: true }; }
+      const o = st(); if (o.phase !== 'kid' || K.cry || !A.les || !A.les.copy[L] || (s.fam && s.fam.km)) return { ok: false, reason: 'phase' };
+      SC.cur = { kind: 'trick', L, t: 3000, noTr: true }; K.mode = 'follow'; note('trick', { L, who: 'kid' }); return { ok: true };
+    }
+    function trickTick(c, dt) {
+      const b = G.beh;
+      if (c.kind === 'trickTr') { if (b) { puppet({ x: c.bx, dir: c.side, clip: 'idle', frame: 0, depth: 0 }); b.gest = c.t < 3000 ? { key: 's2_demo', clip: 's2_demo_' + c.L, ms: c.t, sx: 1, sy: 1, dx: 0, dy: 0, rot: 0, rx: true } : null; }
+        if (c.t >= 3000) { SC.cur = null; release(); if (b) b.gest = null; note('trickEnd', { L: c.L }); } return; }
+      K.clip = 'idle'; if (c.t >= 5000) { SC.cur = null; K.mode = 'follow'; note('trickEnd', { L: c.L }); }
+    }
+
     // ── 細佬卡（撳細佬；S1–S2 有堂 → 直接開托盤）──
     function kidTap() {
       const s = S(), o = st(), now = G.now();
@@ -343,21 +359,21 @@
       const fxd = (z) => { for (const f of ev.fx) { if ((f.z || 'front') !== z) continue; const I = fxInfo(f.id); if (!I || !I.img) continue; const L = an[f.anchor] || pv, l = [L[0] - pv[0], L[1] - pv[1]], m = f.follow ? xf.map(l) : l;
         const sx = ox(px + mir * (m[0] + f.dx)), sy = oy(py + m[1] + f.dy), fr = clamp(f.frame | 0, 0, I.n - 1); x.save(); x.translate(Math.round(sx), Math.round(sy)); if (mir < 0) x.scale(-1, 1); x.drawImage(I.img, fr * I.w, 0, I.w, I.h, -I.pv[0], -I.pv[1], I.w, I.h); x.restore(); RST.fx++; } };
       fxd('back'); const bc = kidBase(fk, ev.face); if (!bc) return false;
-      x.save(); x.imageSmoothingEnabled = false; x.translate(ox(px) + xf.tx * mir, oy(py) + xf.ty); x.scale(mir * xf.sx, xf.sy); x.rotate(xf.rad); x.drawImage(bc, -pv[0], -pv[1]); x.restore(); fxd('front'); RST.copy++; c.copyEv = { t: Math.round(ev.t), face: ev.face, fx: ev.fx.map(f => f.id) }; return true;
+      x.save(); x.imageSmoothingEnabled = false; x.translate(ox(px) + xf.tx * mir, oy(py) + xf.ty); x.scale(mir * xf.sx, xf.sy); x.rotate(xf.rad); x.drawImage(G.pat5c ? G.pat5c.base(bc, 'pet2', fk, pv) : bc, -pv[0], -pv[1]); x.restore(); fxd('front'); RST.copy++; c.copyEv = { t: Math.round(ev.t), face: ev.face, fx: ev.fx.map(f => f.id) }; return true;
     }
     function drawKid(x, base) {
       const fk = formNow(); if (!fk || fk === 'egg' || !A.act) return; const c = SC.cur;
       x.fillStyle = 'rgba(10,20,20,0.3)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(9 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(Math.round(CX + K.x) - w), oy(base - 1 + dy), w * 2, 1); }
-      if (c && c.kind === 'lesson' && c.t >= 3000 && drawCopy(x, c, base)) return;
+      if (c && (c.kind === 'lesson' || c.kind === 'trick') && c.t >= 3000 && drawCopy(x, c, base)) return;
       const sp = strip(fk, K.clip); if (!sp) return; const loop = !(c && c.F && c.F.actors.kid && c.F.actors.kid.loop === false), f = kidFrame(fk, K.clip, K.ct, loop);
       const mir = K.dir < 0; x.save(); x.imageSmoothingEnabled = false; const X0 = ox(Math.round(CX + K.x)), Y0 = oy(base); if (mir) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
-      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); x.restore(); RST.kid++;
+      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'pet2', fk, sp, f * 48, 0, 48, 48, -24, -45); x.restore(); RST.kid++;
       if (K.clip === 'sleep') { const z = fxInfo('fx_zzz'); if (z && z.img) { const fr = Math.floor(pnow() / 300) % z.n, ka = A.ka.forms[fk] || A.ka.forms.S2; x.drawImage(z.img, fr * z.w, 0, z.w, z.h, ox(Math.round(CX + K.x + (ka.headTop[0] - 24) + 6) - z.pv[0]), oy(base + ka.headTop[1] - 45 - 1) - z.pv[1], z.w, z.h); } }
     }
     function drawEgg(x, base) {
       const e = A.img['egg/egg_48.png']; if (!e) return; const t = pnow() % 2000, bob = t > 1000 && t < 1150 ? -1 : 0, X0 = ox(Math.round(CX + EGG.x)), Y0 = oy(base + bob);
       x.fillStyle = 'rgba(10,20,20,0.3)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(8 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(X0 - w, oy(base - 1 + dy), w * 2, 1); }
-      x.drawImage(e, 0, 0, 48, 48, X0 - 24, Y0 - 45, 48, 48); RST.egg++;
+      x.drawImage(e, 0, 0, 48, 48, X0 - 24, Y0 - 45, 48, 48); if (G.pat5c) G.pat5c.egg(x, 'pet2', X0 - 24, Y0 - 45); RST.egg++;
     }
     function drawDream(x) {
       const L = dreamLine(); if (!L || !A.ui) return; const d = A.img[A.ui.dreams[L].png], pr = R.petRect; if (!d || !pr) return;
@@ -392,7 +408,7 @@
       const sp = strip(fk, clip); if (!sp) return null; const f = kidFrame(fk, clip, KM.ct, true), X = Math.round(gx);
       x.fillStyle = 'rgba(10,20,20,0.35)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(10 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(X) - w, oy(base - 1 + dy), w * 2, 1); }
       x.save(); x.imageSmoothingEnabled = false; const X0 = ox(X), Y0 = oy(base); if (KM.dir < 0) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
-      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); x.restore(); RST.km = (RST.km || 0) + 1;
+      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'km', fk, sp, f * 48, 0, 48, 48, -24, -45); x.restore(); RST.km = (RST.km || 0) + 1;
       const ka = (A.ka && (A.ka.forms[fk] || A.ka.forms.S2)) || { headTop: [24, 14] }, hy = base + ka.headTop[1] - 45, hx = X + (ka.headTop[0] - 24) * KM.dir;
       const cr = im('../series2_long/5a/ui/icon_crown@3x.png'); if (cr) { const bob = Math.round(Math.sin(now / 600)); x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, ox(hx) - 7, oy(hy - 14 + bob), 14, 14); x.restore(); RST.crown = (RST.crown || 0) + 1; }
       if (clip === 'sleep') { const z = fxInfo('fx_zzz'); if (z && z.img) { const fr = Math.floor(now / 300) % z.n; x.drawImage(z.img, fr * z.w, 0, z.w, z.h, ox(hx + 6) - z.pv[0], oy(hy - 1) - z.pv[1], z.w, z.h); } }
@@ -466,7 +482,7 @@
       cry() { const o = st(); if (o.phase !== 'kid') return { ok: false, msg: '要先孵化細佬' }; if (K.cry) return { ok: false, msg: '細佬喊緊' }; if (SC.cur) return { ok: false, msg: '而家播緊場面' }; if (S().sleeping) S().sleeping = false; { const bx = trX(), gap = trHalf() + 16; if (Math.abs(K.x - bx) < gap) { const sd = bx + gap <= 70 ? 1 : -1; K.x = clamp(bx + sd * gap, -70, 70); K.dir = -sd; } } /* 試玩：唔好匿喺團絨後面 */ cryStart(); return { ok: true, msg: '細佬喊喇！拖團絨過去哄佢' }; },
     };
     G.s2Test = TEST;
-    G.s2Art = { A, im, strip, kidFrame, atlasSrc, fxInfo, formNow, BASE, kidHide: (v) => { K.hidden = !!v; }, sleeping: () => K.clip === 'sleep' };   // 4b houseui 借用
+    G.s2Art = { A, im, strip, kidFrame, atlasSrc, fxInfo, formNow, BASE, trick: (L, who) => trickStart(L, who), scene: () => (SC.cur ? SC.cur.kind : null), kidBase: (fk, face) => kidBase(fk, face), kidHide: (v) => { K.hidden = !!v; }, sleeping: () => K.clip === 'sleep' };   // 4b houseui 借用
     G.s2Settings = function (node) {   // 4a.3：設定只留版本（試玩掣搬咗去「🛠 開發者模式」）；撳版本 5 下 → 出返開發者掣
       const v = document.createElement('div'); v.dataset.testid = 's2-version'; v.style.cssText = 'text-align:right;font-size:11px;opacity:.8;margin:0 0 6px'; v.textContent = '版本 ' + VERSION;
       v.addEventListener('click', () => { const D = NS.devmode; if (D) D.versionTap(); }); node.insertBefore(v, node.firstChild);
@@ -506,7 +522,7 @@
       elder: () => SR.noteElder(S(), G.now()), deliver: () => deliverEgg('qa'), arrive: () => G.s2Arrived('snail_postman'),
       set: (o) => { Object.assign(st(), o || {}); SR.st(S()); if (G.save) G.save(); return JSON.parse(JSON.stringify(st())); },
       hatch: () => { if (!SC.cur) hatchStart(); return !!SC.cur; }, tap: () => sceneTap(), sceneAt: (ms) => { if (SC.cur) SC.cur.t = ms; return !!SC.cur; },
-      cry: () => cryStart(), comfort: () => comfortStart(trX()), lesson: (L) => lessonStart(L), eat: () => eatTogether(), card: () => card(), kidTap: () => kidTap(), duo: () => duoStart(),
+      trick: (L, who) => trickStart(L, who), cry: () => cryStart(), comfort: () => comfortStart(trX()), lesson: (L) => lessonStart(L), eat: () => eatTogether(), card: () => card(), kidTap: () => kidTap(), duo: () => duoStart(),
       level: (rel) => { st().relQ.push(rel || 'follow'); return true; }, tray: (v) => { tray(v !== false); return trayOn; }, dex: () => { const n = G.s2Dex(); return n ? n.outerHTML : null; },
       kidCss: () => { const r = kidRect(), b = R.canvas.getBoundingClientRect(); return { x: b.left + (r.x + r.w / 2) / 195 * b.width, y: b.top + (r.y + r.h / 2) / 422 * b.height }; },
       petCss: () => { const r = UI.petHitBox(), b = R.canvas.getBoundingClientRect(); return { x: b.left + (r.x + r.w / 2) / 195 * b.width, y: b.top + (r.y + r.h / 2) / 422 * b.height }; },

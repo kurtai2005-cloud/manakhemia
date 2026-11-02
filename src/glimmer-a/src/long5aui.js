@@ -279,6 +279,7 @@ body.l5-on #toast{z-index:70 !important}
           if (n.raising) pills.appendChild(mk('span', `padding:2px 8px;${bi('pill_sec')}` + TXT(11), '養緊'));
           if (n.state === 'memorial') pills.appendChild(mk('span', `padding:2px 8px;${bi('pill_dis')}` + TXT(11), '化光'));
           if (n.lessons && n.lessons.length) for (const ln of n.lessons.slice(0, 3)) pills.appendChild(mk('span', `padding:2px 6px;${bi('pill_navy')}` + TXT(10), ln));
+          if (G.l5cNode) try { G.l5cNode(d, n); } catch (e) { }   // 5c：上一代＋花紋＋家傳招式
           d.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); card(n.id); }); RW.appendChild(d); pos[n.id] = d;
         }
         IN.appendChild(RW);

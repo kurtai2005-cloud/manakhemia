@@ -241,7 +241,7 @@ body.l5b-on #toast{z-index:72 !important}
         p.until = pnow() + 400; const f = Math.floor((pnow() - a.go) / 120);
         if (f >= 10) { AN.delete(p.id); p.dx = 0; p.mode = 'idle'; note('animEnd', { id: p.id, k: a.k }); if (a.k === 'depart') { p.box = null; refreshHouse(); return true; } return false; }
         const dx = a.k === 'depart' ? (f > 3 ? (f - 3) * 2 : 0) : (f < 4 ? (4 - f) * 2 : 0), al = a.k === 'depart' && f >= 7 ? Math.max(0, 1 - (f - 6) / 3.5) : 1; p.dx = dx;
-        const X0 = Math.round(p.x + dx), Y0 = Math.round(p.y); x.save(); x.globalAlpha = al; x.drawImage(tinted ? tinted(I, tint) : I, f * c.frameW, 0, c.frameW, c.frameH, X0 - c.pivot[0], Y0 - c.pivot[1], c.frameW, c.frameH); x.restore();
+        const X0 = Math.round(p.x + dx), Y0 = Math.round(p.y); x.save(); x.globalAlpha = al; x.drawImage(tinted ? tinted(I, tint) : I, f * c.frameW, 0, c.frameW, c.frameH, X0 - c.pivot[0], Y0 - c.pivot[1], c.frameW, c.frameH); if (G.pat5c) G.pat5c.row(x, p.id, p.fk, a.k, f, X0 - c.pivot[0], Y0 - c.pivot[1], tint, tinted); x.restore();
         p.at = [X0, Y0, 1, f, c.pivot[0], c.pivot[1]]; p.box = [X0 - 14, Y0 - 40, X0 + 14, Y0]; p.last = { clip: a.k, frame: f }; a.f = f; a.al = al; STAT.anims++;
         if (a.k === 'return' && a.sv && f >= J5.sor.frames[0]) { const s1 = imI(sv1(a.sv)); if (s1) { const ht = fm.headTop || [c.frameW / 2, 18], bob = J5.sor.bobPx[Math.min(J5.sor.bobPx.length - 1, f - J5.sor.frames[0])] || 0;
           x.drawImage(s1, Math.round(X0 - c.pivot[0] + ht[0] - s1.width / 2), Math.round(Y0 - c.pivot[1] + ht[1] + J5.sor.dy - s1.height + bob)); STAT.sv++; } }

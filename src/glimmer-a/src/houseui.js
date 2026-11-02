@@ -213,7 +213,7 @@
       let ox = 0, oy = 0, sx = 1, sy = 1; const g = p.who === 'tr' && G.beh && G.beh.gest; if (g) { ox = g.dx || 0; oy = g.dy || 0; sx = g.sx || 1; sy = g.sy || 1; }
       if (p.hop > 0) oy -= Math.round(Math.sin((1 - p.hop / 400) * Math.PI) * 5);
       const X0 = Math.round(p.x + p.dx + ox), Y0 = Math.round(p.y + oy), flip = p.dir < 0;
-      p.at = [X0, Y0, flip ? -1 : 1, src.frame != null ? src.frame : 0, src.px, src.py]; x.save(); x.translate(X0, Y0); x.scale((flip ? -1 : 1) * sx, sy); x.drawImage(tinted(src.img, tint), src.sx, src.sy, src.sw, src.sh, -src.px, -src.py, src.sw, src.sh); x.restore();
+      p.at = [X0, Y0, flip ? -1 : 1, src.frame != null ? src.frame : 0, src.px, src.py]; x.save(); x.translate(X0, Y0); x.scale((flip ? -1 : 1) * sx, sy); x.drawImage(tinted(src.img, tint), src.sx, src.sy, src.sw, src.sh, -src.px, -src.py, src.sw, src.sh); if (G.pat5c) G.pat5c.house(x, p, src, tint, tinted); x.restore();
       p.box = [X0 - Math.min(src.px, 20), Y0 - Math.min(src.py, 34), X0 + Math.min(src.sw - src.px, 20), Y0 + 3]; p.last = { clip: p.clip, frame: src.frame != null ? src.frame : src.name, w: src.sw }; V.stats.pets++;
     }
     function composeRoom(v, x) {
