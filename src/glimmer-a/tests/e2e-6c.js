@@ -34,7 +34,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     Object.assign(s.needs, { mood: 70, energy: 20, hunger: 80, clean: 100 }); s.sleeping = true;
     for (let i = 0; i < r[0]; i++) M6.note(s, 'food', 'meal', 0, 0, 0, t); for (let i = 0; i < r[1]; i++) M6.note(s, 'care', 'rinse', 0, 0, 0, t); for (let i = 0; i < r[2]; i++) M6.note(s, 'care', 'play', 0, 0, 0, t); __glimmer.save && __glimmer.save(); }, r || [3, 1, 0]);
   const sleep = () => E(() => { const s = __glimmer.state; s.sleeping = true; s.needs.energy = 20; });
-  const fresh = async (qs, r) => { await page.goto(BASE + '?' + (qs || QS)); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + (qs || QS)); await ready(); await prep(r); await W(1300); await closeModals(); await sleep(); await W(1200); };
+  const fresh = async (qs, r) => { await page.goto(BASE + '?' + (qs || QS)); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await page.goto(BASE + '?' + (qs || QS)); await ready(); await E(() => { if (__glimmer.state.dream6) Glimmer.long6c.reset(__glimmer.state); }); await prep(r); await W(1300); await closeModals(); await sleep(); await W(1200); };
   const vis = (tid) => page.locator('[data-testid=' + tid + ']').first().isVisible().catch(() => false);
   const click = (tid) => page.locator('[data-testid=' + tid + ']').first().click();
   const readOk = async (name, sel) => { const a = await audit(page, sel); ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam])); };
@@ -69,8 +69,15 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   ok(await E((g) => JSON.stringify(Glimmer.long6c.plan(__glimmer.state, __glimmer.now(), __glimmer.hour()).grid) === JSON.stringify(g), plan.grid), '畫面地圖＝邏輯重算（同一晚同記錄）');
   ok(await E(() => [...document.querySelectorAll('#l6cov .tile')].map(t => t.dataset.th).join()) === plan.grid.join(), '15 格主題同地圖一致');
   await W(1300); q = await Q(); ok(q.phase === 'play', '過場後可以行', q.phase);
-  ok(await E(() => ['6c:tile_forest', '6c:tile_lake', '6c:tile_star', '6c:dream_walk', '6c:nightcap', '6c:frag', '6c:transition'].every(k => document.querySelector('#l6cov [data-ph="' + k + '"]'))), 'placeholder：tile×3、dream_walk、nightcap、frag、transition');
-  ok(await E(() => getComputedStyle(document.querySelector('#l6cov [data-ph="6c:tile_forest"]')).outlineStyle === 'dashed'), 'placeholder 洋紅虛線');
+  await W(600); await E(() => __qa.l6c.artLoad()); await W(400);
+  { const a = await E(() => { const A = (k) => !!document.querySelector('#l6cov [data-art="' + k + '"]'), v3 = document.getElementById('ui').classList.contains('v3'), sx = v3 ? '_v3' : '';
+      return { v3, ph: [...document.querySelectorAll('#l6cov [data-ph]')].map(e => e.dataset.ph), need: ['6c:dream_bg' + sx, '6c:tile_forest' + sx, '6c:tile_lake' + sx, '6c:tile_star' + sx, '6c:fog' + sx, '6c:dream_walk', '6c:frag_forest', '6c:transition' + sx].filter(k => !A(k)),
+        cap: !!document.querySelector('#l6cov [data-testid=l6c-cap][data-art^="6c:nightcap_"]'), glow: v3 ? document.querySelectorAll('#l6cov canvas.gl[data-art]').length : 15, err: __qa.l6c.st().artErr,
+        tile: (() => { const t = document.querySelector('[data-testid=l6c-tile-0]'), r = t.getBoundingClientRect(), k = document.getElementById('ui').getBoundingClientRect().width / document.getElementById('ui').offsetWidth; return [t.offsetLeft, t.offsetTop, t.offsetWidth, +(r.width / k).toFixed(1)]; })() }; });
+    ok(a.ph.length === 0 && a.need.length === 0 && a.cap && a.glow === 15 && a.err.length === 0, '6c 美術：' + (a.v3 ? 'V3 dream_bg_v3／tile_v3＋glow／fog_v3／過場 v3' : '1x') + '、dream_walk＋睡帽、碎片（冇 placeholder）', a);
+    ok(a.tile[0] === 22 && a.tile[1] === 164 && a.tile[2] === 112 && Math.abs(a.tile[3] - 112) < 0.5, '格 56 art＝112 CSS、x0 22（art 整數倍，唔跟 UI 縮）', a.tile); }
+  { const g = await E(() => ({ on: !!(__qa.v3 && __qa.v3.on()), st: __qa.v3 && __qa.v3.state(), glow: __qa.v3 && __qa.v3.glow() })); ok(!g.on || (g.st === 'dreaming' && g.glow === 0), 'V3：夢入面寵物光＝0（petGlow dreaming）', g); }
+  { const pz = await E(async () => { const P = document.querySelector('[data-testid=l6c-pet]'); const f0 = P.dataset.frame; await new Promise(r => setTimeout(r, 400)); return { f0, f1: P.dataset.frame, fk: P.dataset.fk }; }); ok(pz.fk && pz.f0 !== pz.f1, 'dream_walk 6fps 郁緊（幀 ' + pz.f0 + '→' + pz.f1 + '）', pz); }
   await readOk('夢境畫面', '#l6cov');
   await hitOk('15 格＋醒返', '#l6cov .tile,[data-testid=l6c-wake]', 16);
   await shot('02-dream-map');
@@ -94,7 +101,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const lg = (await Q()).log.slice(-1)[0]; ok(lg && lg.sec <= 180 && lg.got === 2, '記錄：' + (lg && lg.sec) + ' 秒 ≤180', lg);
   await shot('03-summary');
   await click('l6c-sum-dexbtn'); await W(400); q = await Q(); ok(!q.on && q.dex, '「睇夢圖鑑」→ 夢圖鑑');
-  ok(await E(() => document.querySelectorAll('#l6cdex [data-ph^="6c:card_"]').length === 20), '夢圖鑑 20 張 placeholder（6c:card_*）');
+  await W(400); ok(await E(() => document.querySelectorAll('#l6cdex .card6[data-art^="6c:card_back"]').length === 20 && !document.querySelector('#l6cdex [data-ph]')), '夢圖鑑 20 張（未砌到 → card_back 美術）');
   await readOk('夢圖鑑', '#l6cdex'); await hitOk('夢圖鑑卡＋✕', '#l6cdex .card6,[data-testid=l6c-dex-close]', 21);
   await click('l6c-card-f1'); await W(150); ok((await E(() => document.querySelector('[data-testid=l6c-dex-detail]').textContent)).includes('未砌到'), '撳未有嘅卡 → 未砌到');
   await click('l6c-dex-close'); await W(300); q = await Q(); ok(!q.dex && q.rail && q.railMode === 'dex', '今晚用咗 → rail 變「夢簿」', { rail: q.rail, m: q.railMode });
@@ -111,8 +118,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await click('l6c-sum-ok'); await W(300); ok(!(await Q()).on && !(await E(() => !!document.getElementById('l6cov'))), '「好」→ 返花園');
 
   console.log('# 醒返（提早）＋玩具房');
-  await fresh(QS, [0, 0, 3]); const p3 = await E(() => (__qa.l6c.start('qa'), __qa.l6c.plan())); ok(cnt(p3.grid).toy >= 2 && !cnt(p3.grid).forest, '淨係玩 3 次 → 玩具房（冇森林）', cnt(p3.grid));
-  ok(await E(() => !!document.querySelector('#l6cov [data-ph="6c:tile_toy"]')), 'placeholder：6c:tile_toy');
+  await fresh(QS, [0, 0, 3]); const p3 = await E(() => { const r = __qa.l6c.start('qa'); if (!r.ok) return { grid: [], bad: r, st: __qa.l6c.st() }; return __qa.l6c.plan(); }); ok(cnt(p3.grid).toy >= 2 && !cnt(p3.grid).forest, '淨係玩 3 次 → 玩具房（冇森林）', p3.bad ? p3 : cnt(p3.grid));
+  await W(300); ok(await E(() => !!document.querySelector('#l6cov [data-art^="6c:tile_toy"]')), '美術：6c:tile_toy');
   await W(1400); await click('l6c-wake'); await W(1600); q = await Q(); ok(q.endWhy === 'wake' && (await vis('l6c-sum')), '撳「醒返」→ 小結');
   await click('l6c-sum-ok'); await W(300);
 
@@ -188,6 +195,19 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     }
     await c2.close();
   }
+
+  console.log('# V3 關（?v3=0）→ 1x 美術；?l6cart=0 → placeholder');
+  await fresh(QS + '&v3=0', [3, 1, 3]); await E(() => __qa.l6c.artLoad()); await W(600); await E(() => __qa.l6c.start('qa')); await W(1500);
+  { const a = await E(() => ({ v3: document.getElementById('ui').classList.contains('v3'), arts: [...new Set([...document.querySelectorAll('#l6cov [data-art]')].map(e => e.dataset.art))], ph: document.querySelectorAll('#l6cov [data-ph]').length }));
+    ok(!a.v3 && a.ph === 0 && ['6c:dream_bg', '6c:tile_forest', '6c:fog', '6c:dream_walk', '6c:transition'].every(k => a.arts.includes(k)) && !a.arts.some(k => /_v3$/.test(k)), 'v3=0：用 1x dream_bg／tile／fog／transition（冇 V3 圖）', a); }
+  await shot('07-dream-v3off');
+  await E(() => __qa.l6c.finish()); await E(() => __qa.l6c.openDex('qa')); await W(500);
+  ok(await E(() => document.querySelectorAll('#l6cdex .card6[data-art="6c:card_back"]').length === 20), 'v3=0：夢卡 1x card_back'); await E(() => __qa.l6c.closeDex());
+  await fresh(QS + '&l6cart=0', [3, 1, 3]); await E(() => __qa.l6c.start('qa')); await W(1500);
+  ok(await E(() => ['6c:tile_forest', '6c:tile_lake', '6c:tile_toy', '6c:dream_walk', '6c:nightcap', '6c:frag', '6c:transition'].every(k => document.querySelector('#l6cov [data-ph="' + k + '"]'))), '?l6cart=0：placeholder tile×3、dream_walk、nightcap、frag、transition');
+  ok(await E(() => getComputedStyle(document.querySelector('#l6cov [data-ph="6c:tile_forest"]')).outlineStyle === 'dashed'), 'placeholder 洋紅虛線');
+  await E(() => __qa.l6c.finish()); await E(() => __qa.l6c.openDex('qa')); await W(300);
+  ok(await E(() => document.querySelectorAll('#l6cdex [data-ph^="6c:card_"]').length === 20), '?l6cart=0：夢圖鑑 20 張 placeholder（6c:card_*）'); await E(() => __qa.l6c.closeDex());
 
   console.log('# ?l6c=0');
   await fresh('q=high&seed=21&ev=0&hour=22&l6c=0'); await W(800);
