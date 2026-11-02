@@ -1,0 +1,168 @@
+{
+ "kit": "kit_hd2d_v3",
+ "passed": 32,
+ "total": 32,
+ "allPass": true,
+ "results": [
+  {
+   "check": "files_exist",
+   "ok": true,
+   "detail": "38/38"
+  },
+  {
+   "check": "v2_kit_untouched",
+   "ok": true,
+   "detail": "kit_hd2d_v2 保留"
+  },
+  {
+   "check": "atlas_ui_hd2d_v3@3x",
+   "ok": true,
+   "detail": "200 frames (1024, 2498)"
+  },
+  {
+   "check": "nine_valid_ui_hd2d_v3@3x",
+   "ok": true,
+   "detail": "93 9-slice"
+  },
+  {
+   "check": "atlas_ui_hd2d_v3@2x",
+   "ok": true,
+   "detail": "200 frames (768, 1425)"
+  },
+  {
+   "check": "nine_valid_ui_hd2d_v3@2x",
+   "ok": true,
+   "detail": "93 9-slice"
+  },
+  {
+   "check": "atlas_icons_hd2d_v3@3x",
+   "ok": true,
+   "detail": "121 frames (512, 270)"
+  },
+  {
+   "check": "atlas_icons_hd2d_v3@6x",
+   "ok": true,
+   "detail": "121 frames (1024, 526)"
+  },
+  {
+   "check": "atlas_icons_glow_hd2d_v3@3x",
+   "ok": true,
+   "detail": "121 frames (1024, 318)"
+  },
+  {
+   "check": "v2_map_100pct",
+   "ok": true,
+   "detail": "236/236"
+  },
+  {
+   "check": "icons_cover_v2_and_6bcd",
+   "ok": true,
+   "detail": "121 icons（v2 87 + 6b/6c/6d 11）"
+  },
+  {
+   "check": "icons_alpha_0_255",
+   "ok": true,
+   "detail": "121 sprite"
+  },
+  {
+   "check": "icons_dims_2x_src",
+   "ok": true,
+   "detail": "EPX ×2"
+  },
+  {
+   "check": "icons_glow_layer",
+   "ok": true,
+   "detail": "121/121"
+  },
+  {
+   "check": "icons_more_detail_than_v2",
+   "ok": true,
+   "detail": "色數 v3>v2：121/121"
+  },
+  {
+   "check": "text_min_px_18",
+   "ok": true,
+   "detail": "317 段字，最細 18px@3x"
+  },
+  {
+   "check": "text_contrast_4_5",
+   "ok": true,
+   "detail": "最低 4.55"
+  },
+  {
+   "check": "text_fonts_noto",
+   "ok": true,
+   "detail": "Noto Sans／Serif CJK TC"
+  },
+  {
+   "check": "charset_covers_used",
+   "ok": true,
+   "detail": "charset 1073；用到 337"
+  },
+  {
+   "check": "font_subsets_load",
+   "ok": true,
+   "detail": "3 個 .otf"
+  },
+  {
+   "check": "bands_ratio",
+   "ok": true,
+   "detail": "{'top': [0, 126], 'garden': [126, 1044], 'bottom': [1044, 1266]} ratio 0.725"
+  },
+  {
+   "check": "layout_screens_17",
+   "ok": true,
+   "detail": "17 screens"
+  },
+  {
+   "check": "layout_in_bounds",
+   "ok": true,
+   "detail": "168 elements"
+  },
+  {
+   "check": "hit_area_66",
+   "ok": true,
+   "detail": "168 hits ≥66px@3x（22pt）"
+  },
+  {
+   "check": "parts_used_in_atlas",
+   "ok": true,
+   "detail": "126 parts used / 200 in atlas"
+  },
+  {
+   "check": "icons_used_in_atlas",
+   "ok": true,
+   "detail": "58 icons used"
+  },
+  {
+   "check": "rail_has_dex_kid",
+   "ok": true,
+   "detail": "['rail:gift', 'rail:mail', 'rail:house', 'rail:dex', 'rail:egg_kid', 'rail:walk']"
+  },
+  {
+   "check": "pet_glow_sleep_off",
+   "ok": true,
+   "detail": "states {'awake': 1.0, 'sleepy': 0.6, 'sleep': 0.0, 'sleepClip': 0.0, 'dreamEnter': 0.0, 'dreaming': 0.0}；fadeOut 600ms／fadeIn 400ms"
+  },
+  {
+   "check": "portrait_rects_59",
+   "ok": true,
+   "detail": "59 forms；v3 window 110"
+  },
+  {
+   "check": "mockups_585x1266",
+   "ok": true,
+   "detail": "17 張"
+  },
+  {
+   "check": "no_backups_pycache",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "check": "part_names_unique",
+   "ok": true,
+   "detail": "200 parts"
+  }
+ ]
+}

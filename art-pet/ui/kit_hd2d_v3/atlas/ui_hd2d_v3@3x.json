@@ -1,0 +1,2676 @@
+{
+ "image": "ui_hd2d_v3@3x.png",
+ "scale": 3,
+ "size": [
+  1024,
+  2498
+ ],
+ "mode": "9-slice stretch（nine＝[l,t,r,b] @3x px）；backdrop:true＝先畫預烘模糊場景再疊",
+ "frames": {
+  "share_card_bg": {
+   "x": 0,
+   "y": 0,
+   "w": 495,
+   "h": 756,
+   "slice": null,
+   "nine": null,
+   "group": "6d",
+   "note": "6d 分享名片底（存相 @3x 495×756；整張唔切）",
+   "backdrop": false
+  },
+  "fx_rays": {
+   "x": 497,
+   "y": 0,
+   "w": 420,
+   "h": 420,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "升級光芒（取代棋盤 dither 光芒）",
+   "backdrop": false
+  },
+  "egg_card": {
+   "x": 0,
+   "y": 758,
+   "w": 216,
+   "h": 336,
+   "slice": "9",
+   "nine": [
+    24,
+    24,
+    24,
+    24
+   ],
+   "group": "panel",
+   "note": "揀蛋卡（暖光）",
+   "backdrop": true
+  },
+  "dream_card_frame": {
+   "x": 218,
+   "y": 758,
+   "w": 196,
+   "h": 268,
+   "slice": "9",
+   "nine": [
+    30,
+    30,
+    30,
+    30
+   ],
+   "group": "6c",
+   "note": "6c 夢卡外框光（疊喺 card 圖外）",
+   "backdrop": false
+  },
+  "scrim_top": {
+   "x": 416,
+   "y": 758,
+   "w": 585,
+   "h": 200,
+   "slice": "3v",
+   "nine": [
+    0,
+    112,
+    0,
+    0
+   ],
+   "group": "hud",
+   "note": "頂部漸層遮罩（取代 v2 banner_top）",
+   "backdrop": false
+  },
+  "qr_frame": {
+   "x": 0,
+   "y": 1096,
+   "w": 198,
+   "h": 198,
+   "slice": "9",
+   "nine": [
+    24,
+    24,
+    24,
+    24
+   ],
+   "group": "6d",
+   "note": "6d QR 框（白位 inset 12）",
+   "backdrop": false
+  },
+  "glow_80": {
+   "x": 200,
+   "y": 1096,
+   "w": 160,
+   "h": 160,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "柔光暈（可 tint）",
+   "backdrop": false
+  },
+  "card_locked": {
+   "x": 362,
+   "y": 1096,
+   "w": 120,
+   "h": 150,
+   "slice": "9",
+   "nine": [
+    24,
+    24,
+    24,
+    24
+   ],
+   "group": "panel",
+   "note": "未解鎖卡",
+   "backdrop": true
+  },
+  "card_paper": {
+   "x": 484,
+   "y": 1096,
+   "w": 120,
+   "h": 150,
+   "slice": "9",
+   "nine": [
+    22,
+    22,
+    22,
+    22
+   ],
+   "group": "panel",
+   "note": "紙卡",
+   "backdrop": false
+  },
+  "card_sel": {
+   "x": 606,
+   "y": 1096,
+   "w": 120,
+   "h": 150,
+   "slice": "9",
+   "nine": [
+    24,
+    24,
+    24,
+    24
+   ],
+   "group": "panel",
+   "note": "選中卡",
+   "backdrop": true
+  },
+  "scrim_bottom": {
+   "x": 0,
+   "y": 1296,
+   "w": 585,
+   "h": 150,
+   "slice": "3v",
+   "nine": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "group": "hud",
+   "note": "底部漸層",
+   "backdrop": false
+  },
+  "act_glow": {
+   "x": 587,
+   "y": 1296,
+   "w": 140,
+   "h": 140,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "建議動作光暈（真 alpha）",
+   "backdrop": false
+  },
+  "family_crest": {
+   "x": 729,
+   "y": 1296,
+   "w": 130,
+   "h": 130,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "家族徽（金章＋光暈）",
+   "backdrop": false
+  },
+  "portrait_frame": {
+   "x": 861,
+   "y": 1296,
+   "w": 122,
+   "h": 122,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "頭像框（窗 @6,6）",
+   "backdrop": false
+  },
+  "card": {
+   "x": 0,
+   "y": 1448,
+   "w": 120,
+   "h": 120,
+   "slice": "9",
+   "nine": [
+    24,
+    24,
+    24,
+    24
+   ],
+   "group": "panel",
+   "note": "卡",
+   "backdrop": true
+  },
+  "fx_ripple": {
+   "x": 122,
+   "y": 1448,
+   "w": 120,
+   "h": 120,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "波紋（揀蛋／傳承）",
+   "backdrop": false
+  },
+  "panel": {
+   "x": 244,
+   "y": 1448,
+   "w": 120,
+   "h": 120,
+   "slice": "9",
+   "nine": [
+    30,
+    30,
+    30,
+    30
+   ],
+   "group": "panel",
+   "note": "主面板／彈窗",
+   "backdrop": true
+  },
+  "panel_flat": {
+   "x": 366,
+   "y": 1448,
+   "w": 120,
+   "h": 120,
+   "slice": "9",
+   "nine": [
+    24,
+    24,
+    24,
+    24
+   ],
+   "group": "panel",
+   "note": "冇金線版（行內分組）",
+   "backdrop": true
+  },
+  "panel_r16": {
+   "x": 488,
+   "y": 1448,
+   "w": 120,
+   "h": 120,
+   "slice": "9",
+   "nine": [
+    22,
+    22,
+    22,
+    22
+   ],
+   "group": "panel",
+   "note": "細面板",
+   "backdrop": true
+  },
+  "scroll_track": {
+   "x": 610,
+   "y": 1448,
+   "w": 6,
+   "h": 120,
+   "slice": "3v",
+   "nine": [
+    0,
+    4,
+    0,
+    4
+   ],
+   "group": "ctl",
+   "note": "捲軸",
+   "backdrop": false
+  },
+  "dock": {
+   "x": 0,
+   "y": 1570,
+   "w": 561,
+   "h": 116,
+   "slice": "9",
+   "nine": [
+    34,
+    34,
+    34,
+    34
+   ],
+   "group": "hud",
+   "note": "懸浮 dock（取代 dock_bar）",
+   "backdrop": true
+  },
+  "dock_on": {
+   "x": 563,
+   "y": 1570,
+   "w": 100,
+   "h": 110,
+   "slice": null,
+   "nine": null,
+   "group": "hud",
+   "note": "選中 tab 光（取代 dock_pillar）",
+   "backdrop": false
+  },
+  "portrait_bg_happy": {
+   "x": 665,
+   "y": 1570,
+   "w": 110,
+   "h": 110,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "頭像底（心情色漸層）",
+   "backdrop": false
+  },
+  "portrait_bg_hungry": {
+   "x": 777,
+   "y": 1570,
+   "w": 110,
+   "h": 110,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "頭像底（心情色漸層）",
+   "backdrop": false
+  },
+  "portrait_bg_normal": {
+   "x": 889,
+   "y": 1570,
+   "w": 110,
+   "h": 110,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "頭像底（心情色漸層）",
+   "backdrop": false
+  },
+  "portrait_bg_sick": {
+   "x": 0,
+   "y": 1688,
+   "w": 110,
+   "h": 110,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "頭像底（心情色漸層）",
+   "backdrop": false
+  },
+  "portrait_bg_sleep": {
+   "x": 112,
+   "y": 1688,
+   "w": 110,
+   "h": 110,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "頭像底（心情色漸層）",
+   "backdrop": false
+  },
+  "portrait_bg_sleepy": {
+   "x": 224,
+   "y": 1688,
+   "w": 110,
+   "h": 110,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "頭像底（心情色漸層）",
+   "backdrop": false
+  },
+  "portrait_mask": {
+   "x": 336,
+   "y": 1688,
+   "w": 110,
+   "h": 110,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "頭像窗遮罩（圓角 30；白＋alpha）",
+   "backdrop": false
+  },
+  "glow_48": {
+   "x": 448,
+   "y": 1688,
+   "w": 96,
+   "h": 96,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "柔光暈（可 tint）",
+   "backdrop": false
+  },
+  "tree_node": {
+   "x": 546,
+   "y": 1688,
+   "w": 96,
+   "h": 96,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "族譜節點（頭像窗 d80 @8,8）",
+   "backdrop": false
+  },
+  "tree_node_gold": {
+   "x": 644,
+   "y": 1688,
+   "w": 96,
+   "h": 96,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "族譜節點（頭像窗 d80 @8,8）",
+   "backdrop": false
+  },
+  "tree_node_sel": {
+   "x": 742,
+   "y": 1688,
+   "w": 96,
+   "h": 96,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "族譜節點（頭像窗 d80 @8,8）",
+   "backdrop": false
+  },
+  "act_dis": {
+   "x": 840,
+   "y": 1688,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 d78（色環）",
+   "backdrop": false
+  },
+  "act_dis_p": {
+   "x": 932,
+   "y": 1688,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 按下",
+   "backdrop": false
+  },
+  "act_gold": {
+   "x": 0,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 d78（色環）",
+   "backdrop": false
+  },
+  "act_gold_p": {
+   "x": 92,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 按下",
+   "backdrop": false
+  },
+  "act_mint": {
+   "x": 184,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 d78（色環）",
+   "backdrop": false
+  },
+  "act_mint_p": {
+   "x": 276,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 按下",
+   "backdrop": false
+  },
+  "act_pri": {
+   "x": 368,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 d78（色環）",
+   "backdrop": false
+  },
+  "act_pri_p": {
+   "x": 460,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 按下",
+   "backdrop": false
+  },
+  "act_rose": {
+   "x": 552,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 d78（色環）",
+   "backdrop": false
+  },
+  "act_rose_p": {
+   "x": 644,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 按下",
+   "backdrop": false
+  },
+  "act_sec": {
+   "x": 736,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 d78（色環）",
+   "backdrop": false
+  },
+  "act_sec_p": {
+   "x": 828,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 按下",
+   "backdrop": false
+  },
+  "act_violet": {
+   "x": 920,
+   "y": 1800,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 d78（色環）",
+   "backdrop": false
+  },
+  "act_violet_p": {
+   "x": 0,
+   "y": 1892,
+   "w": 90,
+   "h": 90,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "行動圓掣 按下",
+   "backdrop": false
+  },
+  "panel_paper": {
+   "x": 92,
+   "y": 1892,
+   "w": 120,
+   "h": 90,
+   "slice": "9",
+   "nine": [
+    22,
+    22,
+    22,
+    22
+   ],
+   "group": "panel",
+   "note": "米白紙（說明／信）",
+   "backdrop": false
+  },
+  "stamp_done": {
+   "x": 214,
+   "y": 1892,
+   "w": 78,
+   "h": 78,
+   "slice": null,
+   "nine": null,
+   "group": "deco",
+   "note": "完成印（玫瑰色）",
+   "backdrop": false
+  },
+  "rail_btn": {
+   "x": 294,
+   "y": 1892,
+   "w": 76,
+   "h": 76,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "右 rail 圓掣 d64",
+   "backdrop": false
+  },
+  "rail_btn_p": {
+   "x": 372,
+   "y": 1892,
+   "w": 76,
+   "h": 76,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "rail 按下",
+   "backdrop": false
+  },
+  "flare_34": {
+   "x": 450,
+   "y": 1892,
+   "w": 73,
+   "h": 73,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "四芒星光",
+   "backdrop": false
+  },
+  "back_btn": {
+   "x": 525,
+   "y": 1892,
+   "w": 68,
+   "h": 68,
+   "slice": null,
+   "nine": null,
+   "group": "button",
+   "note": "返回 d56",
+   "backdrop": false
+  },
+  "btn_dis": {
+   "x": 595,
+   "y": 1892,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60",
+   "backdrop": false
+  },
+  "btn_dis_p": {
+   "x": 757,
+   "y": 1892,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60 按下",
+   "backdrop": false
+  },
+  "btn_pri": {
+   "x": 0,
+   "y": 1984,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60",
+   "backdrop": false
+  },
+  "btn_pri_p": {
+   "x": 162,
+   "y": 1984,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60 按下",
+   "backdrop": false
+  },
+  "btn_rose": {
+   "x": 324,
+   "y": 1984,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60",
+   "backdrop": false
+  },
+  "btn_rose_p": {
+   "x": 486,
+   "y": 1984,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60 按下",
+   "backdrop": false
+  },
+  "btn_sec": {
+   "x": 648,
+   "y": 1984,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60",
+   "backdrop": false
+  },
+  "btn_sec_p": {
+   "x": 810,
+   "y": 1984,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60 按下",
+   "backdrop": false
+  },
+  "btn_violet": {
+   "x": 0,
+   "y": 2046,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60",
+   "backdrop": false
+  },
+  "btn_violet_p": {
+   "x": 162,
+   "y": 2046,
+   "w": 160,
+   "h": 60,
+   "slice": "3h",
+   "nine": [
+    34,
+    0,
+    34,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h60 按下",
+   "backdrop": false
+  },
+  "fx_sweep": {
+   "x": 324,
+   "y": 2046,
+   "w": 80,
+   "h": 60,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "掃光（斜白漸層）",
+   "backdrop": false
+  },
+  "med60_gold": {
+   "x": 406,
+   "y": 2046,
+   "w": 60,
+   "h": 60,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d60",
+   "backdrop": false
+  },
+  "med60_navy": {
+   "x": 468,
+   "y": 2046,
+   "w": 60,
+   "h": 60,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d60",
+   "backdrop": false
+  },
+  "med60_pri": {
+   "x": 530,
+   "y": 2046,
+   "w": 60,
+   "h": 60,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d60",
+   "backdrop": false
+  },
+  "med60_rose": {
+   "x": 592,
+   "y": 2046,
+   "w": 60,
+   "h": 60,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d60",
+   "backdrop": false
+  },
+  "med60_sec": {
+   "x": 654,
+   "y": 2046,
+   "w": 60,
+   "h": 60,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d60",
+   "backdrop": false
+  },
+  "med60_violet": {
+   "x": 716,
+   "y": 2046,
+   "w": 60,
+   "h": 60,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d60",
+   "backdrop": false
+  },
+  "panel_inset": {
+   "x": 778,
+   "y": 2046,
+   "w": 120,
+   "h": 60,
+   "slice": "9",
+   "nine": [
+    16,
+    16,
+    16,
+    16
+   ],
+   "group": "panel",
+   "note": "凹入行（設定／需求）",
+   "backdrop": false
+  },
+  "panel_inset_sel": {
+   "x": 900,
+   "y": 2046,
+   "w": 120,
+   "h": 60,
+   "slice": "9",
+   "nine": [
+    16,
+    16,
+    16,
+    16
+   ],
+   "group": "panel",
+   "note": "選中行（金幼線＋暖光）",
+   "backdrop": false
+  },
+  "timeline_line": {
+   "x": 0,
+   "y": 2108,
+   "w": 4,
+   "h": 60,
+   "slice": "3v",
+   "nine": [
+    0,
+    2,
+    0,
+    2
+   ],
+   "group": "deco",
+   "note": "時間線",
+   "backdrop": false
+  },
+  "tree_line_v": {
+   "x": 6,
+   "y": 2108,
+   "w": 4,
+   "h": 60,
+   "slice": "3v",
+   "nine": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "group": "5x",
+   "note": "族譜直線",
+   "backdrop": false
+  },
+  "close": {
+   "x": 12,
+   "y": 2108,
+   "w": 56,
+   "h": 56,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "關閉 d44",
+   "backdrop": false
+  },
+  "close_p": {
+   "x": 70,
+   "y": 2108,
+   "w": 56,
+   "h": 56,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "關閉按下",
+   "backdrop": false
+  },
+  "code_field": {
+   "x": 128,
+   "y": 2108,
+   "w": 300,
+   "h": 56,
+   "slice": "3h",
+   "nine": [
+    18,
+    0,
+    18,
+    0
+   ],
+   "group": "6d",
+   "note": "6d 輸入格",
+   "backdrop": false
+  },
+  "code_field_on": {
+   "x": 430,
+   "y": 2108,
+   "w": 300,
+   "h": 56,
+   "slice": "3h",
+   "nine": [
+    18,
+    0,
+    18,
+    0
+   ],
+   "group": "6d",
+   "note": "6d 輸入格 focus",
+   "backdrop": false
+  },
+  "btn_s_dis": {
+   "x": 732,
+   "y": 2108,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48",
+   "backdrop": false
+  },
+  "btn_s_dis_p": {
+   "x": 0,
+   "y": 2170,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48 按下",
+   "backdrop": false
+  },
+  "btn_s_pri": {
+   "x": 162,
+   "y": 2170,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48",
+   "backdrop": false
+  },
+  "btn_s_pri_p": {
+   "x": 324,
+   "y": 2170,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48 按下",
+   "backdrop": false
+  },
+  "btn_s_rose": {
+   "x": 486,
+   "y": 2170,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48",
+   "backdrop": false
+  },
+  "btn_s_rose_p": {
+   "x": 648,
+   "y": 2170,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48 按下",
+   "backdrop": false
+  },
+  "btn_s_sec": {
+   "x": 810,
+   "y": 2170,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48",
+   "backdrop": false
+  },
+  "btn_s_sec_p": {
+   "x": 0,
+   "y": 2220,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48 按下",
+   "backdrop": false
+  },
+  "btn_s_violet": {
+   "x": 162,
+   "y": 2220,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48",
+   "backdrop": false
+  },
+  "btn_s_violet_p": {
+   "x": 324,
+   "y": 2220,
+   "w": 160,
+   "h": 48,
+   "slice": "3h",
+   "nine": [
+    28,
+    0,
+    28,
+    0
+   ],
+   "group": "button",
+   "note": "按鈕 h48 按下",
+   "backdrop": false
+  },
+  "fx_bokeh": {
+   "x": 486,
+   "y": 2220,
+   "w": 48,
+   "h": 48,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "失焦光圈",
+   "backdrop": false
+  },
+  "glow_24": {
+   "x": 536,
+   "y": 2220,
+   "w": 48,
+   "h": 48,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "柔光暈（可 tint）",
+   "backdrop": false
+  },
+  "med48_gold": {
+   "x": 586,
+   "y": 2220,
+   "w": 48,
+   "h": 48,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d48",
+   "backdrop": false
+  },
+  "med48_navy": {
+   "x": 636,
+   "y": 2220,
+   "w": 48,
+   "h": 48,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d48",
+   "backdrop": false
+  },
+  "med48_pri": {
+   "x": 686,
+   "y": 2220,
+   "w": 48,
+   "h": 48,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d48",
+   "backdrop": false
+  },
+  "med48_rose": {
+   "x": 736,
+   "y": 2220,
+   "w": 48,
+   "h": 48,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d48",
+   "backdrop": false
+  },
+  "med48_sec": {
+   "x": 786,
+   "y": 2220,
+   "w": 48,
+   "h": 48,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d48",
+   "backdrop": false
+  },
+  "med48_violet": {
+   "x": 836,
+   "y": 2220,
+   "w": 48,
+   "h": 48,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d48",
+   "backdrop": false
+  },
+  "flare_20": {
+   "x": 886,
+   "y": 2220,
+   "w": 45,
+   "h": 45,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "四芒星光",
+   "backdrop": false
+  },
+  "ring_gauge": {
+   "x": 933,
+   "y": 2220,
+   "w": 44,
+   "h": 44,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "環形量表（runtime 用 arc 畫；呢張係樣）",
+   "backdrop": false
+  },
+  "bubble": {
+   "x": 0,
+   "y": 2270,
+   "w": 170,
+   "h": 42,
+   "slice": "3h",
+   "nine": [
+    22,
+    0,
+    22,
+    0
+   ],
+   "group": "hud",
+   "note": "泡泡（白玻璃）",
+   "backdrop": true
+  },
+  "toast": {
+   "x": 172,
+   "y": 2270,
+   "w": 286,
+   "h": 42,
+   "slice": "3h",
+   "nine": [
+    24,
+    0,
+    24,
+    0
+   ],
+   "group": "hud",
+   "note": "toast",
+   "backdrop": true
+  },
+  "scroll_thumb": {
+   "x": 460,
+   "y": 2270,
+   "w": 6,
+   "h": 40,
+   "slice": "3v",
+   "nine": [
+    0,
+    4,
+    0,
+    4
+   ],
+   "group": "ctl",
+   "note": "捲軸粒",
+   "backdrop": false
+  },
+  "seg_bg": {
+   "x": 468,
+   "y": 2270,
+   "w": 240,
+   "h": 40,
+   "slice": "3h",
+   "nine": [
+    20,
+    0,
+    20,
+    0
+   ],
+   "group": "label",
+   "note": "分段底",
+   "backdrop": false
+  },
+  "subtab": {
+   "x": 710,
+   "y": 2270,
+   "w": 90,
+   "h": 40,
+   "slice": "3h",
+   "nine": [
+    20,
+    0,
+    20,
+    0
+   ],
+   "group": "label",
+   "note": "分頁",
+   "backdrop": false
+  },
+  "subtab_on": {
+   "x": 802,
+   "y": 2270,
+   "w": 90,
+   "h": 40,
+   "slice": "3h",
+   "nine": [
+    20,
+    0,
+    20,
+    0
+   ],
+   "group": "label",
+   "note": "分頁選中",
+   "backdrop": false
+  },
+  "chip": {
+   "x": 0,
+   "y": 2314,
+   "w": 150,
+   "h": 38,
+   "slice": "3h",
+   "nine": [
+    20,
+    0,
+    20,
+    0
+   ],
+   "group": "hud",
+   "note": "貨幣／計數 chip",
+   "backdrop": true
+  },
+  "med36_gold": {
+   "x": 152,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d36",
+   "backdrop": false
+  },
+  "med36_navy": {
+   "x": 190,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d36",
+   "backdrop": false
+  },
+  "med36_pri": {
+   "x": 228,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d36",
+   "backdrop": false
+  },
+  "med36_rose": {
+   "x": 266,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d36",
+   "backdrop": false
+  },
+  "med36_sec": {
+   "x": 304,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d36",
+   "backdrop": false
+  },
+  "med36_violet": {
+   "x": 342,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "medal",
+   "note": "icon 底圓 d36",
+   "backdrop": false
+  },
+  "mood_badge_happy": {
+   "x": 380,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "心情章底（mini icon runtime 疊）",
+   "backdrop": false
+  },
+  "mood_badge_hungry": {
+   "x": 418,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "心情章底（mini icon runtime 疊）",
+   "backdrop": false
+  },
+  "mood_badge_normal": {
+   "x": 456,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "心情章底（mini icon runtime 疊）",
+   "backdrop": false
+  },
+  "mood_badge_sick": {
+   "x": 494,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "心情章底（mini icon runtime 疊）",
+   "backdrop": false
+  },
+  "mood_badge_sleep": {
+   "x": 532,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "心情章底（mini icon runtime 疊）",
+   "backdrop": false
+  },
+  "mood_badge_sleepy": {
+   "x": 570,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "心情章底（mini icon runtime 疊）",
+   "backdrop": false
+  },
+  "slider_knob": {
+   "x": 608,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "滑桿掣粒",
+   "backdrop": false
+  },
+  "toggle_knob": {
+   "x": 646,
+   "y": 2314,
+   "w": 36,
+   "h": 36,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "開關掣粒",
+   "backdrop": false
+  },
+  "acc_badge": {
+   "x": 684,
+   "y": 2314,
+   "w": 34,
+   "h": 34,
+   "slice": null,
+   "nine": null,
+   "group": "portrait",
+   "note": "飾品細章底（大部分出框嗰類，例如光環）",
+   "backdrop": false
+  },
+  "check_off": {
+   "x": 720,
+   "y": 2314,
+   "w": 34,
+   "h": 34,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "未剔",
+   "backdrop": false
+  },
+  "check_on": {
+   "x": 756,
+   "y": 2314,
+   "w": 34,
+   "h": 34,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "剔（金）",
+   "backdrop": false
+  },
+  "pill_fast_locked": {
+   "x": 792,
+   "y": 2314,
+   "w": 100,
+   "h": 34,
+   "slice": "3h",
+   "nine": [
+    17,
+    0,
+    17,
+    0
+   ],
+   "group": "5x",
+   "note": "快 ×3（鎖）",
+   "backdrop": false
+  },
+  "pill_fast_on": {
+   "x": 894,
+   "y": 2314,
+   "w": 100,
+   "h": 34,
+   "slice": "3h",
+   "nine": [
+    17,
+    0,
+    17,
+    0
+   ],
+   "group": "5x",
+   "note": "快 ×2（開）",
+   "backdrop": false
+  },
+  "seg_locked": {
+   "x": 0,
+   "y": 2354,
+   "w": 80,
+   "h": 34,
+   "slice": "3h",
+   "nine": [
+    17,
+    0,
+    17,
+    0
+   ],
+   "group": "label",
+   "note": "分段鎖",
+   "backdrop": false
+  },
+  "seg_on": {
+   "x": 82,
+   "y": 2354,
+   "w": 80,
+   "h": 34,
+   "slice": "3h",
+   "nine": [
+    17,
+    0,
+    17,
+    0
+   ],
+   "group": "label",
+   "note": "分段選中",
+   "backdrop": false
+  },
+  "toggle_track_off": {
+   "x": 164,
+   "y": 2354,
+   "w": 64,
+   "h": 34,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "開關（關）",
+   "backdrop": false
+  },
+  "toggle_track_on": {
+   "x": 230,
+   "y": 2354,
+   "w": 64,
+   "h": 34,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "開關（開）",
+   "backdrop": false
+  },
+  "pill_dis": {
+   "x": 296,
+   "y": 2354,
+   "w": 80,
+   "h": 32,
+   "slice": "3h",
+   "nine": [
+    16,
+    0,
+    16,
+    0
+   ],
+   "group": "label",
+   "note": "膠囊標籤",
+   "backdrop": false
+  },
+  "pill_navy": {
+   "x": 378,
+   "y": 2354,
+   "w": 80,
+   "h": 32,
+   "slice": "3h",
+   "nine": [
+    16,
+    0,
+    16,
+    0
+   ],
+   "group": "label",
+   "note": "膠囊標籤",
+   "backdrop": false
+  },
+  "pill_pri": {
+   "x": 460,
+   "y": 2354,
+   "w": 80,
+   "h": 32,
+   "slice": "3h",
+   "nine": [
+    16,
+    0,
+    16,
+    0
+   ],
+   "group": "label",
+   "note": "膠囊標籤",
+   "backdrop": false
+  },
+  "pill_rose": {
+   "x": 542,
+   "y": 2354,
+   "w": 80,
+   "h": 32,
+   "slice": "3h",
+   "nine": [
+    16,
+    0,
+    16,
+    0
+   ],
+   "group": "label",
+   "note": "膠囊標籤",
+   "backdrop": false
+  },
+  "pill_sec": {
+   "x": 624,
+   "y": 2354,
+   "w": 80,
+   "h": 32,
+   "slice": "3h",
+   "nine": [
+    16,
+    0,
+    16,
+    0
+   ],
+   "group": "label",
+   "note": "膠囊標籤",
+   "backdrop": false
+  },
+  "pill_violet": {
+   "x": 706,
+   "y": 2354,
+   "w": 80,
+   "h": 32,
+   "slice": "3h",
+   "nine": [
+    16,
+    0,
+    16,
+    0
+   ],
+   "group": "label",
+   "note": "膠囊標籤",
+   "backdrop": false
+  },
+  "scroll_fade_bot": {
+   "x": 0,
+   "y": 2390,
+   "w": 540,
+   "h": 30,
+   "slice": "3h",
+   "nine": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "group": "ctl",
+   "note": "捲動淡出（底）",
+   "backdrop": false
+  },
+  "scroll_fade_top": {
+   "x": 0,
+   "y": 2422,
+   "w": 540,
+   "h": 30,
+   "slice": "3h",
+   "nine": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "group": "ctl",
+   "note": "捲動淡出（頂）",
+   "backdrop": false
+  },
+  "star_off": {
+   "x": 542,
+   "y": 2422,
+   "w": 30,
+   "h": 30,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "星（暗）",
+   "backdrop": false
+  },
+  "star_on": {
+   "x": 574,
+   "y": 2422,
+   "w": 30,
+   "h": 30,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "星（亮）",
+   "backdrop": false
+  },
+  "flare_12": {
+   "x": 606,
+   "y": 2422,
+   "w": 29,
+   "h": 29,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "四芒星光",
+   "backdrop": false
+  },
+  "chip_plus": {
+   "x": 637,
+   "y": 2422,
+   "w": 28,
+   "h": 28,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "＋（金幼線圓）",
+   "backdrop": false
+  },
+  "chip_plus_p": {
+   "x": 667,
+   "y": 2422,
+   "w": 28,
+   "h": 28,
+   "slice": null,
+   "nine": null,
+   "group": "ctl",
+   "note": "＋按下",
+   "backdrop": false
+  },
+  "job_lv_badge": {
+   "x": 697,
+   "y": 2422,
+   "w": 28,
+   "h": 28,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "工作等級章（字 label 18 golddk）",
+   "backdrop": false
+  },
+  "red_dot_num": {
+   "x": 727,
+   "y": 2422,
+   "w": 28,
+   "h": 28,
+   "slice": null,
+   "nine": null,
+   "group": "deco",
+   "note": "紅點＋數字（字 label 18 白，對比 5.05）",
+   "backdrop": false
+  },
+  "label_pill": {
+   "x": 757,
+   "y": 2422,
+   "w": 60,
+   "h": 26,
+   "slice": "3h",
+   "nine": [
+    14,
+    0,
+    14,
+    0
+   ],
+   "group": "hud",
+   "note": "場景上細字底（rail 標籤等）",
+   "backdrop": true
+  },
+  "stage_tag": {
+   "x": 819,
+   "y": 2422,
+   "w": 62,
+   "h": 26,
+   "slice": "3h",
+   "nine": [
+    14,
+    0,
+    14,
+    0
+   ],
+   "group": "label",
+   "note": "形態 tag（金幼線膠囊）",
+   "backdrop": false
+  },
+  "swatch_frame": {
+   "x": 883,
+   "y": 2422,
+   "w": 26,
+   "h": 26,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "花紋色板框",
+   "backdrop": false
+  },
+  "fx_mote": {
+   "x": 911,
+   "y": 2422,
+   "w": 24,
+   "h": 24,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "光點粒子",
+   "backdrop": false
+  },
+  "walk_step": {
+   "x": 937,
+   "y": 2422,
+   "w": 22,
+   "h": 22,
+   "slice": null,
+   "nine": null,
+   "group": "6b",
+   "note": "6b 踏腳石格（已行：配 glow）",
+   "backdrop": false
+  },
+  "bar_tip_amber": {
+   "x": 961,
+   "y": 2422,
+   "w": 20,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "條頭光點（真 alpha）",
+   "backdrop": false
+  },
+  "bar_tip_gold": {
+   "x": 983,
+   "y": 2422,
+   "w": 20,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "條頭光點（真 alpha）",
+   "backdrop": false
+  },
+  "bar_tip_mint": {
+   "x": 0,
+   "y": 2454,
+   "w": 20,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "條頭光點（真 alpha）",
+   "backdrop": false
+  },
+  "bar_tip_red": {
+   "x": 22,
+   "y": 2454,
+   "w": 20,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "條頭光點（真 alpha）",
+   "backdrop": false
+  },
+  "bar_tip_rose": {
+   "x": 44,
+   "y": 2454,
+   "w": 20,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "條頭光點（真 alpha）",
+   "backdrop": false
+  },
+  "bar_tip_sky": {
+   "x": 66,
+   "y": 2454,
+   "w": 20,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "條頭光點（真 alpha）",
+   "backdrop": false
+  },
+  "bar_tip_violet": {
+   "x": 88,
+   "y": 2454,
+   "w": 20,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "條頭光點（真 alpha）",
+   "backdrop": false
+  },
+  "glow_10": {
+   "x": 110,
+   "y": 2454,
+   "w": 20,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "fx",
+   "note": "柔光暈（可 tint）",
+   "backdrop": false
+  },
+  "hint_arrow": {
+   "x": 132,
+   "y": 2454,
+   "w": 24,
+   "h": 20,
+   "slice": null,
+   "nine": null,
+   "group": "deco",
+   "note": "提示箭咀（上下浮動 4px）",
+   "backdrop": false
+  },
+  "red_dot": {
+   "x": 158,
+   "y": 2454,
+   "w": 18,
+   "h": 18,
+   "slice": null,
+   "nine": null,
+   "group": "deco",
+   "note": "紅點",
+   "backdrop": false
+  },
+  "bubble_tail": {
+   "x": 178,
+   "y": 2454,
+   "w": 18,
+   "h": 16,
+   "slice": null,
+   "nine": null,
+   "group": "hud",
+   "note": "泡泡尾",
+   "backdrop": false
+  },
+  "room_dot_cur": {
+   "x": 198,
+   "y": 2454,
+   "w": 16,
+   "h": 16,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "房間頁點",
+   "backdrop": false
+  },
+  "room_dot_locked": {
+   "x": 216,
+   "y": 2454,
+   "w": 16,
+   "h": 16,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "房間頁點",
+   "backdrop": false
+  },
+  "room_dot_open": {
+   "x": 234,
+   "y": 2454,
+   "w": 16,
+   "h": 16,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "房間頁點",
+   "backdrop": false
+  },
+  "timeline_dot": {
+   "x": 252,
+   "y": 2454,
+   "w": 16,
+   "h": 16,
+   "slice": null,
+   "nine": null,
+   "group": "deco",
+   "note": "時間線點",
+   "backdrop": false
+  },
+  "diamond_hi": {
+   "x": 270,
+   "y": 2454,
+   "w": 13,
+   "h": 13,
+   "slice": null,
+   "nine": null,
+   "group": "deco",
+   "note": "亮金菱形",
+   "backdrop": false
+  },
+  "exp_gem_off": {
+   "x": 285,
+   "y": 2454,
+   "w": 13,
+   "h": 13,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "經驗刻度（暗）",
+   "backdrop": false
+  },
+  "exp_gem_on": {
+   "x": 300,
+   "y": 2454,
+   "w": 13,
+   "h": 13,
+   "slice": null,
+   "nine": null,
+   "group": "bar",
+   "note": "經驗刻度（亮）",
+   "backdrop": false
+  },
+  "tree_joint": {
+   "x": 315,
+   "y": 2454,
+   "w": 13,
+   "h": 13,
+   "slice": null,
+   "nine": null,
+   "group": "5x",
+   "note": "族譜接點",
+   "backdrop": false
+  },
+  "title_rule": {
+   "x": 330,
+   "y": 2454,
+   "w": 300,
+   "h": 12,
+   "slice": "3h",
+   "nine": [
+    20,
+    0,
+    20,
+    0
+   ],
+   "group": "hud",
+   "note": "標題下金線（取代 plaque／ribbon）",
+   "backdrop": false
+  },
+  "diamond": {
+   "x": 632,
+   "y": 2454,
+   "w": 11,
+   "h": 11,
+   "slice": null,
+   "nine": null,
+   "group": "deco",
+   "note": "金菱形",
+   "backdrop": false
+  },
+  "bar_fill_amber_h8": {
+   "x": 645,
+   "y": 2454,
+   "w": 60,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_gold_h8": {
+   "x": 707,
+   "y": 2454,
+   "w": 60,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_mint_h8": {
+   "x": 769,
+   "y": 2454,
+   "w": 60,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_red_h8": {
+   "x": 831,
+   "y": 2454,
+   "w": 60,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_rose_h8": {
+   "x": 893,
+   "y": 2454,
+   "w": 60,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_sky_h8": {
+   "x": 955,
+   "y": 2454,
+   "w": 60,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_violet_h8": {
+   "x": 0,
+   "y": 2476,
+   "w": 60,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_track_h8": {
+   "x": 62,
+   "y": 2476,
+   "w": 60,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "bar",
+   "note": "條底",
+   "backdrop": false
+  },
+  "sheet_handle": {
+   "x": 124,
+   "y": 2476,
+   "w": 60,
+   "h": 8,
+   "slice": null,
+   "nine": null,
+   "group": "panel",
+   "note": "底 sheet 拉柄",
+   "backdrop": false
+  },
+  "slider_track": {
+   "x": 186,
+   "y": 2476,
+   "w": 200,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "ctl",
+   "note": "滑桿",
+   "backdrop": false
+  },
+  "veil": {
+   "x": 388,
+   "y": 2476,
+   "w": 8,
+   "h": 8,
+   "slice": "9",
+   "nine": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "group": "fx",
+   "note": "彈窗遮罩（navy 55%；真 alpha，取代棋盤 veil）",
+   "backdrop": false
+  },
+  "veil_light": {
+   "x": 398,
+   "y": 2476,
+   "w": 8,
+   "h": 8,
+   "slice": "9",
+   "nine": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "group": "fx",
+   "note": "輕遮罩（navy 30%）",
+   "backdrop": false
+  },
+  "walk_track": {
+   "x": 408,
+   "y": 2476,
+   "w": 300,
+   "h": 8,
+   "slice": "3h",
+   "nine": [
+    5,
+    0,
+    5,
+    0
+   ],
+   "group": "6b",
+   "note": "6b 散步進度（配 bar_fill_mint）",
+   "backdrop": false
+  },
+  "bar_fill_amber_h6": {
+   "x": 710,
+   "y": 2476,
+   "w": 60,
+   "h": 6,
+   "slice": "3h",
+   "nine": [
+    4,
+    0,
+    4,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_gold_h6": {
+   "x": 772,
+   "y": 2476,
+   "w": 60,
+   "h": 6,
+   "slice": "3h",
+   "nine": [
+    4,
+    0,
+    4,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_mint_h6": {
+   "x": 834,
+   "y": 2476,
+   "w": 60,
+   "h": 6,
+   "slice": "3h",
+   "nine": [
+    4,
+    0,
+    4,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_red_h6": {
+   "x": 896,
+   "y": 2476,
+   "w": 60,
+   "h": 6,
+   "slice": "3h",
+   "nine": [
+    4,
+    0,
+    4,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_rose_h6": {
+   "x": 958,
+   "y": 2476,
+   "w": 60,
+   "h": 6,
+   "slice": "3h",
+   "nine": [
+    4,
+    0,
+    4,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_sky_h6": {
+   "x": 0,
+   "y": 2486,
+   "w": 60,
+   "h": 6,
+   "slice": "3h",
+   "nine": [
+    4,
+    0,
+    4,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_violet_h6": {
+   "x": 62,
+   "y": 2486,
+   "w": 60,
+   "h": 6,
+   "slice": "3h",
+   "nine": [
+    4,
+    0,
+    4,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_track_h6": {
+   "x": 124,
+   "y": 2486,
+   "w": 60,
+   "h": 6,
+   "slice": "3h",
+   "nine": [
+    4,
+    0,
+    4,
+    0
+   ],
+   "group": "bar",
+   "note": "條底",
+   "backdrop": false
+  },
+  "bar_fill_amber_h5": {
+   "x": 186,
+   "y": 2486,
+   "w": 60,
+   "h": 5,
+   "slice": "3h",
+   "nine": [
+    3,
+    0,
+    3,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_gold_h5": {
+   "x": 248,
+   "y": 2486,
+   "w": 60,
+   "h": 5,
+   "slice": "3h",
+   "nine": [
+    3,
+    0,
+    3,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_mint_h5": {
+   "x": 310,
+   "y": 2486,
+   "w": 60,
+   "h": 5,
+   "slice": "3h",
+   "nine": [
+    3,
+    0,
+    3,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_red_h5": {
+   "x": 372,
+   "y": 2486,
+   "w": 60,
+   "h": 5,
+   "slice": "3h",
+   "nine": [
+    3,
+    0,
+    3,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_rose_h5": {
+   "x": 434,
+   "y": 2486,
+   "w": 60,
+   "h": 5,
+   "slice": "3h",
+   "nine": [
+    3,
+    0,
+    3,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_sky_h5": {
+   "x": 496,
+   "y": 2486,
+   "w": 60,
+   "h": 5,
+   "slice": "3h",
+   "nine": [
+    3,
+    0,
+    3,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_fill_violet_h5": {
+   "x": 558,
+   "y": 2486,
+   "w": 60,
+   "h": 5,
+   "slice": "3h",
+   "nine": [
+    3,
+    0,
+    3,
+    0
+   ],
+   "group": "bar",
+   "note": "條身（頭會加 bar_tip 光點）",
+   "backdrop": false
+  },
+  "bar_track_h5": {
+   "x": 620,
+   "y": 2486,
+   "w": 60,
+   "h": 5,
+   "slice": "3h",
+   "nine": [
+    3,
+    0,
+    3,
+    0
+   ],
+   "group": "bar",
+   "note": "條底",
+   "backdrop": false
+  },
+  "divider": {
+   "x": 682,
+   "y": 2486,
+   "w": 300,
+   "h": 4,
+   "slice": "3h",
+   "nine": [
+    20,
+    0,
+    20,
+    0
+   ],
+   "group": "hud",
+   "note": "分隔金線（兩頭淡出）",
+   "backdrop": false
+  },
+  "tree_line_h": {
+   "x": 0,
+   "y": 2494,
+   "w": 60,
+   "h": 4,
+   "slice": "3h",
+   "nine": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "group": "5x",
+   "note": "族譜橫線",
+   "backdrop": false
+  }
+ }
+}

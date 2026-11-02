@@ -1,0 +1,2541 @@
+{
+ "note": "每次落字：畫面、字、角色、px@3x、字型、對比（bbox 背景第 5 百分位 WCAG）",
+ "texts": [
+  {
+   "screen": "home",
+   "text": "團絨",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 12.79
+  },
+  {
+   "screen": "home",
+   "text": "靜光",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.15
+  },
+  {
+   "screen": "home",
+   "text": "Lv.12",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.59
+  },
+  {
+   "screen": "home",
+   "text": "140",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 12.6
+  },
+  {
+   "screen": "home",
+   "text": "10",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 12.28
+  },
+  {
+   "screen": "home",
+   "text": "收到小禮物",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 10.01
+  },
+  {
+   "screen": "home",
+   "text": "+5",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 9.53
+  },
+  {
+   "screen": "home",
+   "text": "委託",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.09
+  },
+  {
+   "screen": "home",
+   "text": "3",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 5.01
+  },
+  {
+   "screen": "home",
+   "text": "信",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.16
+  },
+  {
+   "screen": "home",
+   "text": "屋仔",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.9
+  },
+  {
+   "screen": "home",
+   "text": "圖鑑",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.56
+  },
+  {
+   "screen": "home",
+   "text": "細佬",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.11
+  },
+  {
+   "screen": "home",
+   "text": "散步",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.77
+  },
+  {
+   "screen": "home",
+   "text": "肚仔餓…",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 13.81
+  },
+  {
+   "screen": "home",
+   "text": "餵食",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 9.03
+  },
+  {
+   "screen": "home",
+   "text": "玩耍",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 9.3
+  },
+  {
+   "screen": "home",
+   "text": "清潔",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 8.66
+  },
+  {
+   "screen": "home",
+   "text": "瞓覺",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 9.06
+  },
+  {
+   "screen": "home",
+   "text": "照顧",
+   "role": "caption",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 10.67
+  },
+  {
+   "screen": "home",
+   "text": "玩",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.74
+  },
+  {
+   "screen": "home",
+   "text": "小圃",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.83
+  },
+  {
+   "screen": "home",
+   "text": "手帳",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.87
+  },
+  {
+   "screen": "home",
+   "text": "設定",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.86
+  },
+  {
+   "screen": "popup",
+   "text": "團絨",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 12.79
+  },
+  {
+   "screen": "popup",
+   "text": "靜光",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.15
+  },
+  {
+   "screen": "popup",
+   "text": "Lv.12",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.59
+  },
+  {
+   "screen": "popup",
+   "text": "140",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 12.6
+  },
+  {
+   "screen": "popup",
+   "text": "10",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 12.28
+  },
+  {
+   "screen": "popup",
+   "text": "收到小禮物",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 10.01
+  },
+  {
+   "screen": "popup",
+   "text": "+5",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 9.53
+  },
+  {
+   "screen": "popup",
+   "text": "委託",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.09
+  },
+  {
+   "screen": "popup",
+   "text": "3",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 5.01
+  },
+  {
+   "screen": "popup",
+   "text": "信",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.16
+  },
+  {
+   "screen": "popup",
+   "text": "屋仔",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.9
+  },
+  {
+   "screen": "popup",
+   "text": "圖鑑",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.56
+  },
+  {
+   "screen": "popup",
+   "text": "細佬",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.11
+  },
+  {
+   "screen": "popup",
+   "text": "散步",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.77
+  },
+  {
+   "screen": "popup",
+   "text": "肚仔餓…",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 13.81
+  },
+  {
+   "screen": "popup",
+   "text": "餵食",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 9.03
+  },
+  {
+   "screen": "popup",
+   "text": "玩耍",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 9.3
+  },
+  {
+   "screen": "popup",
+   "text": "清潔",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 8.66
+  },
+  {
+   "screen": "popup",
+   "text": "瞓覺",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 9.06
+  },
+  {
+   "screen": "popup",
+   "text": "照顧",
+   "role": "caption",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 10.67
+  },
+  {
+   "screen": "popup",
+   "text": "玩",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.74
+  },
+  {
+   "screen": "popup",
+   "text": "小圃",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.83
+  },
+  {
+   "screen": "popup",
+   "text": "手帳",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.87
+  },
+  {
+   "screen": "popup",
+   "text": "設定",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.86
+  },
+  {
+   "screen": "popup",
+   "text": "收到小禮物",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 9.98
+  },
+  {
+   "screen": "popup",
+   "text": "鄰居松鼠送咗嘢俾團絨！",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 10.86
+  },
+  {
+   "screen": "popup",
+   "text": "×30",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.47
+  },
+  {
+   "screen": "popup",
+   "text": "×2",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.45
+  },
+  {
+   "screen": "popup",
+   "text": "×1",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.49
+  },
+  {
+   "screen": "popup",
+   "text": "新",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 5.32
+  },
+  {
+   "screen": "popup",
+   "text": "附上一封信：「多謝你嘅花！」",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.87
+  },
+  {
+   "screen": "popup",
+   "text": "睇信",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.55
+  },
+  {
+   "screen": "popup",
+   "text": "收下",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.99
+  },
+  {
+   "screen": "levelup",
+   "text": "Lv",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 9.08
+  },
+  {
+   "screen": "levelup",
+   "text": "5",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 6.64
+  },
+  {
+   "screen": "levelup",
+   "text": "升級喇！",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 9.39
+  },
+  {
+   "screen": "levelup",
+   "text": "團絨 Lv4 → Lv5",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 4.87
+  },
+  {
+   "screen": "levelup",
+   "text": "新解鎖",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 9.34
+  },
+  {
+   "screen": "levelup",
+   "text": "新家具",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 13.64
+  },
+  {
+   "screen": "levelup",
+   "text": "螢火蟲遊戲",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 13.4
+  },
+  {
+   "screen": "levelup",
+   "text": "委託 +1",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 13.7
+  },
+  {
+   "screen": "levelup",
+   "text": "好嘢！",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.91
+  },
+  {
+   "screen": "settings",
+   "text": "團絨",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 12.79
+  },
+  {
+   "screen": "settings",
+   "text": "靜光",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.15
+  },
+  {
+   "screen": "settings",
+   "text": "Lv.12",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.59
+  },
+  {
+   "screen": "settings",
+   "text": "140",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 12.6
+  },
+  {
+   "screen": "settings",
+   "text": "10",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 12.28
+  },
+  {
+   "screen": "settings",
+   "text": "照顧",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.97
+  },
+  {
+   "screen": "settings",
+   "text": "玩",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.94
+  },
+  {
+   "screen": "settings",
+   "text": "小圃",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.05
+  },
+  {
+   "screen": "settings",
+   "text": "手帳",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.07
+  },
+  {
+   "screen": "settings",
+   "text": "設定",
+   "role": "caption",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 10.74
+  },
+  {
+   "screen": "settings",
+   "text": "設定",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 8.57
+  },
+  {
+   "screen": "settings",
+   "text": "音樂",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.96
+  },
+  {
+   "screen": "settings",
+   "text": "音效",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 13.41
+  },
+  {
+   "screen": "settings",
+   "text": "震動",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 13.99
+  },
+  {
+   "screen": "settings",
+   "text": "開",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 13.27
+  },
+  {
+   "screen": "settings",
+   "text": "瞓覺提醒",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 14.66
+  },
+  {
+   "screen": "settings",
+   "text": "關",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.93
+  },
+  {
+   "screen": "settings",
+   "text": "語言",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.57
+  },
+  {
+   "screen": "settings",
+   "text": "繁中",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.57
+  },
+  {
+   "screen": "settings",
+   "text": "English",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.26
+  },
+  {
+   "screen": "settings",
+   "text": "畫質",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 16.07
+  },
+  {
+   "screen": "settings",
+   "text": "省電",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.47
+  },
+  {
+   "screen": "settings",
+   "text": "標準",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.57
+  },
+  {
+   "screen": "settings",
+   "text": "靚",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.38
+  },
+  {
+   "screen": "settings",
+   "text": "存檔",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.24
+  },
+  {
+   "screen": "settings",
+   "text": "通知",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 4.98
+  },
+  {
+   "screen": "settings",
+   "text": "重置",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 5.68
+  },
+  {
+   "screen": "settings",
+   "text": "字型：Noto Sans／Serif CJK TC（OFL 1.1）",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.08
+  },
+  {
+   "screen": "settings",
+   "text": "版本 v0.6.0",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.21
+  },
+  {
+   "screen": "journal_dex",
+   "text": "照顧",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.97
+  },
+  {
+   "screen": "journal_dex",
+   "text": "玩",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.94
+  },
+  {
+   "screen": "journal_dex",
+   "text": "小圃",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.05
+  },
+  {
+   "screen": "journal_dex",
+   "text": "手帳",
+   "role": "caption",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 10.97
+  },
+  {
+   "screen": "journal_dex",
+   "text": "設定",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.0
+  },
+  {
+   "screen": "journal_dex",
+   "text": "手帳",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 8.75
+  },
+  {
+   "screen": "journal_dex",
+   "text": "圖鑑",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 5.65
+  },
+  {
+   "screen": "journal_dex",
+   "text": "日記",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.19
+  },
+  {
+   "screen": "journal_dex",
+   "text": "成就",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 6.56
+  },
+  {
+   "screen": "journal_dex",
+   "text": "家族",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 6.58
+  },
+  {
+   "screen": "journal_dex",
+   "text": "已收集 13／48",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 9.49
+  },
+  {
+   "screen": "journal_dex",
+   "text": "芽仔",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.14
+  },
+  {
+   "screen": "journal_dex",
+   "text": "光光",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.14
+  },
+  {
+   "screen": "journal_dex",
+   "text": "軟軟",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.14
+  },
+  {
+   "screen": "journal_dex",
+   "text": "螢螢",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.14
+  },
+  {
+   "screen": "journal_dex",
+   "text": "跳跳",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.28
+  },
+  {
+   "screen": "journal_dex",
+   "text": "潮守",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.28
+  },
+  {
+   "screen": "journal_dex",
+   "text": "月靜",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 12.82
+  },
+  {
+   "screen": "journal_dex",
+   "text": "新",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 5.37
+  },
+  {
+   "screen": "journal_dex",
+   "text": "團A1",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.33
+  },
+  {
+   "screen": "journal_dex",
+   "text": "團B2",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.33
+  },
+  {
+   "screen": "journal_dex",
+   "text": "團C3",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.33
+  },
+  {
+   "screen": "journal_dex",
+   "text": "團D1",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.33
+  },
+  {
+   "screen": "journal_dex",
+   "text": "細佬",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.33
+  },
+  {
+   "screen": "journal_dex",
+   "text": "火仔",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.49
+  },
+  {
+   "screen": "journal_dex",
+   "text": "？？？",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.28
+  },
+  {
+   "screen": "journal_dex",
+   "text": "？？？",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.28
+  },
+  {
+   "screen": "journal_dex",
+   "text": "？？？",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.28
+  },
+  {
+   "screen": "journal_dex",
+   "text": "月靜（靜光・月）",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 13.39
+  },
+  {
+   "screen": "journal_dex",
+   "text": "夜晚會喺窗邊發出淡淡月光，",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.96
+  },
+  {
+   "screen": "journal_dex",
+   "text": "最鍾意聽故事。",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.71
+  },
+  {
+   "screen": "house_4b",
+   "text": "團絨嘅屋仔",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 13.35
+  },
+  {
+   "screen": "house_4b",
+   "text": "36",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 13.22
+  },
+  {
+   "screen": "house_4b",
+   "text": "好攰呀…",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 13.68
+  },
+  {
+   "screen": "house_4b",
+   "text": "瞓覺",
+   "role": "caption",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 10.17
+  },
+  {
+   "screen": "house_4b",
+   "text": "玩",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 14.03
+  },
+  {
+   "screen": "house_4b",
+   "text": "餵食",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 14.06
+  },
+  {
+   "screen": "house_4b",
+   "text": "佈置",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 14.57
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "佈置屋仔",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 13.17
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "36",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 13.22
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "床",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.03
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "燈",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.57
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "檯",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.42
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "牆",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.19
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "窗",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.28
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "地氈",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.58
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "葉仔床",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 14.77
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "已擁有",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.9
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "雲朵床",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.5
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "使用中",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 6.6
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "星星床",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.77
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "40",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.3
+  },
+  {
+   "screen": "house_4b_decorate",
+   "text": "完成",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.91
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "家族樹",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 10.24
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "Lv",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 8.92
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "6",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 6.64
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "家族等級",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 9.2
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "58／100 XP",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.59
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "家族 Lv7 解鎖 Lv6 工作",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.15
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "團絨",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 11.55
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "靜光",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.2
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "Lv8",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.81
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "波波",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 14.06
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "成年",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 12.71
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "Lv5",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.65
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "火仔",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 14.02
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "少年",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 13.0
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "Lv3",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.4
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "豆豆",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 14.92
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "幼年",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 13.64
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "Lv1",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.96
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "咩咩",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 14.6
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "蛋",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 7.87
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "—",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.96
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "成員",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 14.94
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "5／6",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.05
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "蛋",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 14.94
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "1",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.05
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "傳承",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.11
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "2",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.2
+  },
+  {
+   "screen": "5a_family_tree",
+   "text": "孵新蛋",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.91
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "揀一隻蛋",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 10.67
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "家族 Lv6：可以孵第 5 隻",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 8.41
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "團絨蛋",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 9.68
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "會進化做靜光",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 9.1
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "揀呢隻",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.33
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "細佬蛋",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 14.94
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "花紋跟父母",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.32
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "揀",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 13.07
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "孵化！",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.99
+  },
+  {
+   "screen": "5a_egg_choice",
+   "text": "孵化要 3 日",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.57
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "寵物卡",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 10.51
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "波波",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 11.49
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "成年",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.68
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "主養",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.14
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "團絨線・A 系",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.91
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "Lv5",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 11.89
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "肚餓",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.36
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "80",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.4
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "開心",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.83
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "90",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.84
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "乾淨",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 16.03
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "40",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 15.13
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "精神",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 16.27
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "60",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 15.13
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "花紋",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.62
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "把戲",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.44
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "族譜",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 15.46
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "設為主養",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.47
+  },
+  {
+   "screen": "5a_pet_card",
+   "text": "放生",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 4.55
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "今日安排",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 9.91
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "遠足 1/2",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 11.53
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "碎 4/12",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 11.55
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "團絨",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 10.48
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "遠足中…返嚟 18:00",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.09
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "遠足",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.71
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "工作",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 11.15
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "休息",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 11.17
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "3",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 6.49
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "波波",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 15.36
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "園丁 Lv3・+3 碎",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.15
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "遠足",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.32
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "工作",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.77
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "休息",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.32
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "咩咩",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 16.16
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "休息：精神 +20",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.77
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "遠足",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.43
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "工作",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.43
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "休息",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.77
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "1",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 6.49
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "細佬",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 16.33
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "廚師 Lv1・+1 碎",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 12.1
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "遠足",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.56
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "工作",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 7.77
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "休息",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 12.65
+  },
+  {
+   "screen": "5b_daily_plan",
+   "text": "遠足每日最多 2 次・細佬未成年唔去得",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.45
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "揀工作",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 10.67
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "波波 想做咩？",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 11.21
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "每 5 日升 1 級",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.65
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "1",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 6.49
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "廚師",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.28
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "Lv1→2",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.2
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "每日 +1 碎",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.49
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "2",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 6.49
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "郵差助手",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.18
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "Lv2→3",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.2
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "每日 +2 碎",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.49
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "3",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 6.49
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "園丁",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 8.23
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "Lv3→4",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 9.04
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "每日 +3 碎",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 13.3
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "5",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 6.49
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "守夜",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.45
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "封頂",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 14.27
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "每日 +5 碎",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.51
+  },
+  {
+   "screen": "5b_job_picker",
+   "text": "確認",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.99
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "揀爸爸媽媽",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 10.48
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "揀 2 隻成年：細佬會傳承花紋",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 7.24
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "團絨",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.06
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "波紋",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 9.85
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "波波",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 14.94
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "月牙",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.37
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "月靜",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.11
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "斑點",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.58
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "咕咕",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.23
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "菱格",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.0
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "火火",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.16
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "火花",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.6
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "未成年",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.12
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "傳承：花紋 50％・顏色 50％",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 12.55
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "快 ×2",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 4.85
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "快 ×3",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 10.25
+  },
+  {
+   "screen": "5c_parent_pick",
+   "text": "孵細佬蛋",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.91
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "傳承結果",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 10.85
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "爸爸",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 9.04
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "媽媽",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 9.12
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "細佬「火仔」出世喇！",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 13.81
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "花紋",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 16.19
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "波紋（爸爸）",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.15
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "顏色",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 16.32
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "火橙（媽媽）",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.29
+  },
+  {
+   "screen": "5c_inherit_result",
+   "text": "好！",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.91
+  },
+  {
+   "screen": "6b_walk",
+   "text": "團絨",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 12.79
+  },
+  {
+   "screen": "6b_walk",
+   "text": "靜光",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 6.15
+  },
+  {
+   "screen": "6b_walk",
+   "text": "Lv.12",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 8.59
+  },
+  {
+   "screen": "6b_walk",
+   "text": "140",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 12.6
+  },
+  {
+   "screen": "6b_walk",
+   "text": "10",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 12.28
+  },
+  {
+   "screen": "6b_walk",
+   "text": "散步",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 8.52
+  },
+  {
+   "screen": "6b_walk",
+   "text": "今日 3,240 步",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 12.85
+  },
+  {
+   "screen": "6b_walk",
+   "text": "每 1000 步行一格",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.47
+  },
+  {
+   "screen": "6b_walk",
+   "text": "撿到",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 15.23
+  },
+  {
+   "screen": "6b_walk",
+   "text": "返屋企",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.55
+  },
+  {
+   "screen": "6c_dream",
+   "text": "夢遊",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 16.4
+  },
+  {
+   "screen": "6c_dream",
+   "text": "×3",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.03
+  },
+  {
+   "screen": "6c_dream",
+   "text": "×1",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.03
+  },
+  {
+   "screen": "6c_dream",
+   "text": "×5",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 14.03
+  },
+  {
+   "screen": "6c_dream",
+   "text": "×0",
+   "role": "value",
+   "px": 21,
+   "font": "sansb",
+   "contrast": 10.4
+  },
+  {
+   "screen": "6c_dream",
+   "text": "新夢卡！",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 15.43
+  },
+  {
+   "screen": "6c_dream",
+   "text": "森林・螢火蟲之夜",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 15.43
+  },
+  {
+   "screen": "6c_dream",
+   "text": "森林碎片 +1（3／5）",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 13.49
+  },
+  {
+   "screen": "6c_dream",
+   "text": "收入夢簿",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 5.06
+  },
+  {
+   "screen": "6c_dream",
+   "text": "團絨瞓緊：寵物光已熄（petGlow 0）",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 9.93
+  },
+  {
+   "screen": "6c_dream",
+   "text": "照顧",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.71
+  },
+  {
+   "screen": "6c_dream",
+   "text": "玩",
+   "role": "caption",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 10.95
+  },
+  {
+   "screen": "6c_dream",
+   "text": "小圃",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.09
+  },
+  {
+   "screen": "6c_dream",
+   "text": "手帳",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.92
+  },
+  {
+   "screen": "6c_dream",
+   "text": "設定",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 10.71
+  },
+  {
+   "screen": "6d_share",
+   "text": "朋友名片",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 7.98
+  },
+  {
+   "screen": "6d_share",
+   "text": "波波",
+   "role": "title",
+   "px": 30,
+   "font": "serif",
+   "contrast": 6.72
+  },
+  {
+   "screen": "6d_share",
+   "text": "家族 Lv4",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 6.31
+  },
+  {
+   "screen": "6d_share",
+   "text": "形態：泡泡",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 7.4
+  },
+  {
+   "screen": "6d_share",
+   "text": "第一次見到螢火蟲",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 14.36
+  },
+  {
+   "screen": "6d_share",
+   "text": "雨天一齊踩水氹",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 14.89
+  },
+  {
+   "screen": "6d_share",
+   "text": "識咗新朋友松鼠",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 15.36
+  },
+  {
+   "screen": "6d_share",
+   "text": "GLM1-7Q3K…9F2A",
+   "role": "h2",
+   "px": 24,
+   "font": "sansb",
+   "contrast": 15.79
+  },
+  {
+   "screen": "6d_share",
+   "text": "（QR 係示意，唔係真碼）",
+   "role": "caption",
+   "px": 18,
+   "font": "sans",
+   "contrast": 11.81
+  },
+  {
+   "screen": "6d_share",
+   "text": "複製碼",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.55
+  },
+  {
+   "screen": "6d_share",
+   "text": "存圖",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 7.91
+  },
+  {
+   "screen": "6d_share",
+   "text": "輸入朋友碼",
+   "role": "label",
+   "px": 18,
+   "font": "sansb",
+   "contrast": 8.34
+  },
+  {
+   "screen": "6d_share",
+   "text": "GLM1-",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 11.77
+  },
+  {
+   "screen": "6d_share",
+   "text": "貼上",
+   "role": "button",
+   "px": 20,
+   "font": "sansb",
+   "contrast": 4.98
+  },
+  {
+   "screen": "6d_share",
+   "text": "朋友掃描或貼上就可以探你",
+   "role": "body",
+   "px": 21,
+   "font": "sans",
+   "contrast": 9.17
+  }
+ ]
+}

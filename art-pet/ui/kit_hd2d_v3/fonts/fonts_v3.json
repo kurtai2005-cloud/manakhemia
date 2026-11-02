@@ -1,0 +1,60 @@
+{
+ "note": "v3 字：Noto Sans CJK TC Regular／Bold＋Noto Serif CJK TC Bold（只標題）。子集＝遊戲 src 字＋mockup 字＋ASCII＋常用標點。冇 brotli → 出 .otf；上線建議轉 woff2（見 UI_KIT_V3.md）",
+ "type": {
+  "title": {
+   "font": "serif",
+   "px3x": 30
+  },
+  "h2": {
+   "font": "sansb",
+   "px3x": 24
+  },
+  "body": {
+   "font": "sans",
+   "px3x": 21
+  },
+  "value": {
+   "font": "sansb",
+   "px3x": 21
+  },
+  "button": {
+   "font": "sansb",
+   "px3x": 20
+  },
+  "label": {
+   "font": "sansb",
+   "px3x": 18
+  },
+  "caption": {
+   "font": "sans",
+   "px3x": 18
+  }
+ },
+ "minPx3x": 18,
+ "charset": {
+  "file": "charset_v3.txt",
+  "count": 1073,
+  "fromGame": 872,
+  "fromMockups": 338
+ },
+ "fonts": {
+  "sans": {
+   "file": "NotoSansCJKtc-Regular.subset.otf",
+   "bytes": 509848,
+   "source": "NotoSansCJK-Regular.ttc",
+   "ttcIndex": 3
+  },
+  "sansb": {
+   "file": "NotoSansCJKtc-Bold.subset.otf",
+   "bytes": 511584,
+   "source": "NotoSansCJK-Bold.ttc",
+   "ttcIndex": 3
+  },
+  "serif": {
+   "file": "NotoSerifCJKtc-Bold.subset.otf",
+   "bytes": 751280,
+   "source": "NotoSerifCJK-Bold.ttc",
+   "ttcIndex": 3
+  }
+ }
+}
