@@ -27,7 +27,7 @@
     const ui5c = (n) => LB + 'ui/' + n + '@3x.png', ui5a = (n) => 'art/series2_long/5a/ui/' + n + '@3x.png', ui5b = (n) => 'art/series2_long/5b/ui/' + n + '@3x.png';
     const SW = { wave: 'A3', bubble: 'B3', spark: 'C3', spot: 'D3', flame: 'E3', star: 'F3', diamond: 'G3', crescent: 'H3' }, swatch = (p) => ui5c('swatch_' + p + '_' + (SW[p] || 'A3'));
     const FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif';
-    const F8 = () => (U() ? '"GlimmerFP8",' : '') + FALL, F12 = () => (U() ? '"GlimmerFP12",' : '') + FALL;
+    const F8 = () => (U() ? ((G.v3 && G.v3.want) ? '"GlimmerV3Sans",' : '"GlimmerFP8",') : '') + FALL, F12 = () => (U() ? ((G.v3 && G.v3.want) ? '"GlimmerV3Sans",' : '"GlimmerFP12",') : '') + FALL;   // #83 V3 → Noto Sans CJK TC
     const CREAM = '#FFF5DC', GOLD = '#FFE08A', SUB = '#E8DDBE';
     const OL = 'text-shadow:-2px 0 0 #24172C,2px 0 0 #24172C,0 -2px 0 #24172C,0 2px 0 #24172C,-2px -2px 0 #24172C,2px -2px 0 #24172C,-2px 2px 0 #24172C,2px 2px 0 #24172C;';
     const FB = { panel_navy: 'background:#2A2450;border:4px solid #F0D58A;border-radius:12px;', card: 'background:#3A3466;border:3px solid #C9B27A;border-radius:8px;', card_sel: 'background:#4A3F7A;border:3px solid #FFE08A;border-radius:8px;box-shadow:0 0 12px rgba(255,224,138,.75);',

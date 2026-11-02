@@ -24,7 +24,7 @@
     const U = () => (G.ui2 && G.ui2.on && G.ui2.bi ? G.ui2 : null);
     const ui5 = (n) => LB + '5a/ui/' + n + '@3x.png';
     const FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif';
-    const F8 = () => (U() ? '"GlimmerFP8",' : '') + FALL, F12 = () => (U() ? '"GlimmerFP12",' : '') + FALL;
+    const F8 = () => (U() ? ((G.v3 && G.v3.want) ? '"GlimmerV3Sans",' : '"GlimmerFP8",') : '') + FALL, F12 = () => (U() ? ((G.v3 && G.v3.want) ? '"GlimmerV3Sans",' : '"GlimmerFP12",') : '') + FALL;   // #83 V3 → Noto Sans CJK TC
     const CREAM = '#FFF5DC', LINE = '#24172C', GOLD = '#FFE08A', INK = '#3A2840';
     const OL = 'text-shadow:-2px 0 0 #24172C,2px 0 0 #24172C,0 -2px 0 #24172C,0 2px 0 #24172C,-2px -2px 0 #24172C,2px -2px 0 #24172C,-2px 2px 0 #24172C,2px 2px 0 #24172C;';
     const a2 = (v) => Math.round(v * 2);

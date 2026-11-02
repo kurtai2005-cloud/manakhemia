@@ -86,7 +86,7 @@
 
     // ── 樣式＋表情疊層 ──
     const css = document.createElement('style'); css.id = 'l6acss';
-    css.textContent = `#ui #s12voice[data-src="mem6"]{font:24px/28px "GlimmerFP12","Noto Sans HK","Noto Sans CJK TC",sans-serif !important;max-width:300px;white-space:normal}
+    css.textContent = `#ui #s12voice[data-src="mem6"]{font:24px/28px ${(G.v3 && G.v3.want) ? '"GlimmerV3Sans"' : '"GlimmerFP12"'},"Noto Sans HK","Noto Sans CJK TC",sans-serif !important;max-width:300px;white-space:normal}
 #l6aface{position:absolute;width:48px;height:48px;z-index:31;pointer-events:none;display:none;image-rendering:pixelated;transition:opacity 160ms}
 #l6aface[data-ph]{outline:2px dashed #FF2BD6;outline-offset:1px}
 #l6aface canvas,#l6aface img{width:48px;height:48px;image-rendering:pixelated;display:block}

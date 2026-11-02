@@ -93,9 +93,10 @@ ${H}.rt { white-space:nowrap; display:inline-block; }
     const json = (n) => fetch(BASE + n).then(r => { if (!r.ok) throw new Error(n + ' ' + r.status); return r.json(); });
     const atlas = (n) => json(n + '.json').then(j => img(BASE + (j.image ? j.image.replace(/^.*\//, '') : n + '.png')).then(im => ({ j, im })));
     const font = (n, fam) => fetch(BASE + 'fonts/' + n).then(r => r.arrayBuffer()).then(b => { if (fam === 'GlimmerFP12') { try { U.cov = cmapOf(b); } catch (e) { U.errors.push('cmap ' + e.message); } } const f = new FontFace(fam, b); return f.load(); }).then(f => { document.fonts.add(f); U.fonts[fam] = true; }).catch(e => { U.errors.push('font ' + n + ': ' + (e && e.message || e)); });
+    const V3P = (NS.uiv3 && G.v3 && G.v3.want) ? NS.uiv3.prep(G, NS) : Promise.resolve(null);   // #83 UI kit V3（?v3=0 → 唔 load）
     U.load = Promise.all([HD.load, atlas('ui_hd2d_v2@1x'), atlas('icons_hd2d_v2@1x'), json('layout_hd2d_v2.json'), json('portrait_rects.json'),
-      font('fp12-subset.ttf', 'GlimmerFP12')])   // 5a.2：FP8／FP10 唔再載（v2 畫字全部 FP12；單檔唔再打包）
-      .then(([, A, I, L, PR]) => { if (!HD.ready) throw new Error('v1 未 ready'); build(A, I, L, PR); })
+      font('fp12-subset.ttf', 'GlimmerFP12'), V3P])   // 5a.2：FP8／FP10 唔再載（v2 畫字全部 FP12；單檔唔再打包）
+      .then(([, A, I, L, PR, , V3D]) => { if (!HD.ready) throw new Error('v1 未 ready'); U.v3x = V3D ? NS.uiv3.make(V3D, U) : null; if (V3D) U.v3errs = V3D.errs; build(A, I, L, PR); })
       .catch(e => { U.errors.push(String(e && e.message || e)); console.warn('hd2dui2: kit v2 載唔到', e); });
 
     function build(A, I, L, PR) {
@@ -103,8 +104,9 @@ ${H}.rt { white-space:nowrap; display:inline-block; }
       U.layout = L; U.rects = PR; U.FR = FR; U.atlasImg = A.im;
       const crop2 = (src, f) => { const c = document.createElement('canvas'); c.width = f.w * 2; c.height = f.h * 2; const g = c.getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(src, f.x, f.y, f.w, f.h, 0, 0, f.w * 2, f.h * 2); return c.toDataURL(); };
       const fr = (n) => { const f = FR[n]; if (!f && !U.missing.includes(n)) U.missing.push(n); return f; };
-      const url = (n) => cache[n] || (cache[n] = fr(n) ? crop2(A.im, FR[n]) : '');
-      const iurl = (n) => { const k = 'ic:' + n; if (cache[k]) return cache[k]; if (!IC[n]) { if (!U.missing.includes('icon:' + n)) U.missing.push('icon:' + n); return ''; } return (cache[k] = crop2(I.im, IC[n])); };
+      const V3X = U.v3x;   // #83：V3 開 → 零件／icon 換 V3（v2_to_v3_map）
+      const url = (n) => cache[n] || (cache[n] = (V3X && V3X.has(n)) ? V3X.url(n) : fr(n) ? crop2(A.im, FR[n]) : '');
+      const iurl = (n) => { const k = 'ic:' + n; if (cache[k]) return cache[k]; if (V3X && V3X.has(n, true)) return (cache[k] = V3X.iurl(n)); if (!IC[n]) { if (!U.missing.includes('icon:' + n)) U.missing.push('icon:' + n); return ''; } return (cache[k] = crop2(I.im, IC[n])); };
       // 5a.2 對比：量 sprite 中間主色；淺字（#FFF5DC）對佢 <4.5 → 改白字，再唔夠就深字（#24172C、冇描邊）
       const lumC = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
       const crC = (a, b) => { const x = lumC(a), y = lumC(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
@@ -122,21 +124,28 @@ ${H}.rt { white-space:nowrap; display:inline-block; }
       // 淺字（#FFF5DC）對彩底 <4.5：白字夠（紫）就轉白字；唔夠（橙／玫瑰／青／綠）就用壓暗咗嘅同色底（「深底」），字色描邊照舊
       const tc = (n) => { const c = fillOf(n); if (!c || !COLR.test(n) || crC(c, TXC.cream) >= 4.5) return ''; return crC(c, TXC.white) >= 4.5 ? ' color:#FFFFFF !important;' : ''; };
       U.fillOf = fillOf; U.crC = crC; U.deepK = deepK; U.deep = {};
-      const bi = (n) => { const f = fr(n); if (!f) return ''; const k = deepK(n); if (k < 1) { U.deep[n] = k; return biCss(deepUrl(n, k), f) + tc(n); } return biCss(url(n), f) + tc(n); };
-      const sp = (n) => { const f = fr(n); return f ? `width:${f.w * 2}px !important; height:${f.h * 2}px !important; background:url(${url(n)}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border:0 !important; border-image:none !important; image-rendering:pixelated;` : ''; };
-      const spBg = (n) => { const f = fr(n); return f ? `background:url(${url(n)}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border-image:none !important; image-rendering:pixelated;` : ''; };
-      const ic = (n) => { const f = IC[n], u = iurl(n); return f ? `width:${f.w * 2}px; height:${f.h * 2}px; background:url(${u}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border:0 !important; border-image:none !important; image-rendering:pixelated;` : ''; };
-      const icBg = (n) => { const f = IC[n], u = iurl(n); return f ? `background:url(${u}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border-image:none !important;` : ''; };
-      const tile = (n) => { const f = fr(n); return f ? `background:url(${url(n)}) 0 0 / ${f.w * 2}px ${f.h * 2}px repeat !important; image-rendering:pixelated;` : ''; };
+      const bi = (n) => (V3X && V3X.has(n) && fr(n)) ? V3X.bi(n) : bi0(n);
+      const bi0 = (n) => { const f = fr(n); if (!f) return ''; const k = deepK(n); if (k < 1) { U.deep[n] = k; return biCss(deepUrl(n, k), f) + tc(n); } return biCss(url(n), f) + tc(n); };
+      const sp = (n) => (V3X && V3X.has(n) && fr(n)) ? V3X.sp(n, fr(n)) : sp0(n);
+      const sp0 = (n) => { const f = fr(n); return f ? `width:${f.w * 2}px !important; height:${f.h * 2}px !important; background:url(${url(n)}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border:0 !important; border-image:none !important; image-rendering:pixelated;` : ''; };
+      const spBg = (n) => (V3X && V3X.has(n) && fr(n)) ? V3X.spBg(n) : spBg0(n);
+      const spBg0 = (n) => { const f = fr(n); return f ? `background:url(${url(n)}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border-image:none !important; image-rendering:pixelated;` : ''; };
+      const ic = (n) => (V3X && V3X.has(n, true) && IC[n]) ? V3X.sp(n, IC[n], true) + ' border:0 !important;' : ic0(n);
+      const ic0 = (n) => { const f = IC[n], u = iurl(n); return f ? `width:${f.w * 2}px; height:${f.h * 2}px; background:url(${u}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border:0 !important; border-image:none !important; image-rendering:pixelated;` : ''; };
+      const icBg = (n) => (V3X && V3X.has(n, true) && IC[n]) ? V3X.spBg(n, true) : icBg0(n);
+      const icBg0 = (n) => { const f = IC[n], u = iurl(n); return f ? `background:url(${u}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border-image:none !important;` : ''; };
+      const tile = (n) => (V3X && V3X.has(n) && fr(n)) ? V3X.tile(n) : tile0(n);
+      const tile0 = (n) => { const f = fr(n); return f ? `background:url(${url(n)}) 0 0 / ${f.w * 2}px ${f.h * 2}px repeat !important; image-rendering:pixelated;` : ''; };
       U.url = url; U.iurl = iurl; U.bi = bi; U.sp = sp; U.ic = ic;
       const a2 = (v) => Math.round(v * 2);
       const INK = '#3A2840', CREAM = '#FFF5DC', LINE = '#24172C', GOLD = '#FFE08A';
       const FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif';
-      const F12 = `"GlimmerFP12",${FALL}`, F8 = F12, F10 = F12;   // 5a.2：舊 F8／F10 規則一律落 FP12（字號由 readPass 托底 24）
+      const F12 = (V3X ? '"GlimmerV3Sans",' : '"GlimmerFP12",') + FALL, F8 = F12, F10 = F12;   // 5a.2：舊 F8／F10 規則一律落 FP12（字號由 readPass 托底 24）
       const o8 = [[-2, 0], [2, 0], [0, -2], [0, 2], [-2, -2], [2, -2], [-2, 2], [2, 2]];
-      const OL8 = 'text-shadow:' + o8.map(([x, y]) => `${x}px ${y}px 0 ${LINE}`).join(',') + ' !important;';
-      const OL = 'text-shadow:' + o8.map(([x, y]) => `${x}px ${y}px 0 ${LINE}`).concat([`-2px 4px 0 ${LINE}`, `0 4px 0 ${LINE}`, `2px 4px 0 ${LINE}`]).join(',') + ' !important;';
+      let OL8 = 'text-shadow:' + o8.map(([x, y]) => `${x}px ${y}px 0 ${LINE}`).join(',') + ' !important;';
+      let OL = 'text-shadow:' + o8.map(([x, y]) => `${x}px ${y}px 0 ${LINE}`).concat([`-2px 4px 0 ${LINE}`, `0 4px 0 ${LINE}`, `2px 4px 0 ${LINE}`]).join(',') + ' !important;';
       const NOL = 'text-shadow:none !important;';
+      if (V3X) { OL8 = OL = V3X.shadow; }   // #83 V3：字陰影用 blur（唔描邊）
       const PX = '-webkit-font-smoothing:none; font-smooth:never; font-kerning:none;';
       const H = '#ui.hd.v2 ';
       const P = L.portrait, NP = L.nameplate, ND = L.needs, CH = L.chips, TO = L.toast, AC = L.acts, DK = L.dock, PU = L.popup, HB = L.house4b;
@@ -373,7 +382,7 @@ ${H}#s2houseV .hb[data-testid^="house-pin-"]::after { content:''; position:absol
 ${H}#s2houseV .hb[data-testid^="house-pin-"][data-filled="1"]::after { ${icBg('mini_check')} }
 ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL8} }
 `;
-      css = readable(css) + readCss(H, FALL, F12, OL8, INK, CREAM, LINE);
+      css = readable(css) + readCss(H, FALL, F12, OL8, INK, CREAM, LINE) + (V3X ? V3X.css(H) : '');
       const st = document.createElement('style'); st.id = 'hd2dui2-css'; st.textContent = css; document.head.appendChild(st); U.css = css;
       dom(); U.ready = true; U.readyAt = performance.now(); set(U.want, 'boot'); note('ready', { on: U.on });
       readInit();
@@ -392,7 +401,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
     // ── 切換 v1／v2（即時；CSS 層開關，DOM／事件冇變）──
     function set(on, why) {
       on = !!on; U.want = on; if (!U.ready) return on;
-      U.on = on; ui.classList.toggle('v2', on); document.body.classList.toggle('uiv2', on);
+      U.on = on; ui.classList.toggle('v2', on); document.body.classList.toggle('uiv2', on); ui.classList.toggle('v3', on && !!U.v3x);   // #83 V3 換皮跟 v2
       if (why === 'dev' || why === 'qa') { try { localStorage.setItem(KEY, on ? '2' : '1'); } catch (e) { } }
       lastSub = ''; if (on) { face(true); tick(); } readPass(true);
       note('set', { on, why: why || '' }); return on;
@@ -485,7 +494,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       const aux = el.dataset.r62 ? el.dataset.r62 === 'a' : (el.classList.contains('u62sub') || el.tagName === 'SMALL' || (fs > 0 && fs < 14));
       const S63 = k63[0] === 's' ? (U.u63 || 1) : 1, px = (v) => (v / S63).toFixed(1).replace(/\.0$/, '') + 'px';
       const fb = k63 ? Math.max(16, Math.ceil(14 / f63 * 10) / 10) : 18, fa = k63 ? Math.max(14, Math.ceil(14 / f63 * 10) / 10) : 16, lb = k63 ? Math.round(fb * 1.5) : 26, la = k63 ? Math.round(fa * 10 / 7) : 22;
-      el.dataset.r62 = aux ? 'a' : 'b'; el.dataset.r62k = k63; el.style.setProperty('font-family', '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif', 'important');
+      el.dataset.r62 = aux ? 'a' : 'b'; el.dataset.r62k = k63; el.style.setProperty('font-family', (U.v3x && ui.classList.contains('v3') ? '"GlimmerV3Sans",' : '') + '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif', 'important');   // #83 V3：內文都用 Noto Sans CJK TC subset
       el.style.setProperty('font-size', px(aux ? fa : fb), 'important'); el.style.setProperty('line-height', px(aux ? la : lb), 'important'); el.style.setProperty('letter-spacing', aux ? '.5px' : '.3px', 'important');
       if (!aux && !/[6-9]00|bold/.test(cs.fontWeight)) el.style.setProperty('font-weight', '500', 'important');
       if (cs.position === 'absolute' && txt.length <= 8) el.style.setProperty('white-space', 'nowrap');

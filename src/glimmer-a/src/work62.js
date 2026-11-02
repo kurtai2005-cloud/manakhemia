@@ -24,7 +24,7 @@
     const B = NS.long5b; if (!B || (B.isOn && !B.isOn())) return false;
     const S = () => G.state, now = () => (G.now ? G.now() : Date.now()), pnow = () => performance.now(), $ = (s) => document.querySelector(s);
     const UIS = (h) => { const a = NS.audio; if (a && a.Engine && a.Engine.ui) try { a.Engine.ui(h, {}); } catch (e) { } };
-    const LB5 = 'art/series2_long/5b/ui/', FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK",sans-serif', FP = '"GlimmerFP12",' + FALL;
+    const LB5 = 'art/series2_long/5b/ui/', FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK",sans-serif', FP = ((G.v3 && G.v3.want) ? '"GlimmerV3Sans",' : '"GlimmerFP12",') + FALL;   // #83 V3 → Noto Sans CJK TC
     const STAT = { opens: 0, frames: 0, ph: 0 };
     const css = document.createElement('style'); css.textContent = `
 #u62work { position:absolute; left:0; top:0; width:390px; height:844px; z-index:52; overflow:hidden; color:#F7EEDB; touch-action:pan-y; user-select:none; animation:u62fade 220ms ease;

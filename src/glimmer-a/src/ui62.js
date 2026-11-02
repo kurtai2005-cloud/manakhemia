@@ -40,7 +40,7 @@
     const U = () => G.ui2 || null, on = () => !!(U() && U().on && ui.classList.contains('v2'));
     const pnow = () => performance.now(), $ = (s) => document.querySelector(s);
     const log = [], note = (k, x) => { log.push(Object.assign({ k, t: Math.round(pnow()) }, x || {})); if (log.length > 120) log.shift(); };
-    const FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif', FP = '"GlimmerFP12",' + FALL;
+    const FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif', FP = ((G.v3 && G.v3.want) ? '"GlimmerV3Sans",' : '"GlimmerFP12",') + FALL;   // #83 V3 → Noto Sans CJK TC
     const GOLD = '#E8C27A', CREAM = '#F7EEDB', MUTE = '#D9CFBC';
     ui.classList.add('u62');
     if (U()) { U().live62 = true; U().t62 = true; }
