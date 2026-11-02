@@ -1,0 +1,97 @@
+[
+ {
+  "simHoursIn": 0,
+  "needs": {
+   "hunger": 69.73819999999145,
+   "mood": 69.82546666666097,
+   "clean": 89.82982999998471,
+   "energy": 99.78183333332622
+  },
+  "expr": "neutral",
+  "eyesShare": {
+   "neutral": 674,
+   "happy": 258,
+   "sleepy": 248,
+   "squint": 20
+  },
+  "gazeShare": {
+   "CL": 204,
+   "C": 851,
+   "CR": 115,
+   "R": 29,
+   "U": 1
+  },
+  "closedPct": 42.2,
+  "afterTap": [
+   "surprised:C:C",
+   "surprised:R:R",
+   "surprised:R:R",
+   "surprised:R:R",
+   "surprised:R:R",
+   "surprised:R:R",
+   "surprised:R:R",
+   "surprised:R:R"
+  ]
+ },
+ {
+  "simHoursIn": 3,
+  "needs": {
+   "hunger": 47.89659999997742,
+   "mood": 65.26439999997136,
+   "clean": 75.54918999996262,
+   "energy": 81.58050000000257
+  },
+  "expr": "neutral",
+  "eyesShare": {
+   "neutral": 962,
+   "sleepy": 179,
+   "happy": 59
+  },
+  "gazeShare": {
+   "CR": 146,
+   "C": 751,
+   "CL": 284,
+   "R": 19
+  },
+  "closedPct": 19.8,
+  "afterTap": [
+   "neutral:R:R",
+   "neutral:R:R",
+   "neutral:R:R",
+   "neutral:R:R",
+   "neutral:R:R",
+   "neutral:R:R",
+   "neutral:CR:CR",
+   "neutral:CR:CR"
+  ]
+ },
+ {
+  "simHoursIn": 6,
+  "needs": {
+   "hunger": 4.454999999965114,
+   "mood": 40.30333333326415,
+   "clean": 36.2240166666406,
+   "energy": 45.3791666666953
+  },
+  "expr": "unwell",
+  "eyesShare": {
+   "sad": 1200
+  },
+  "gazeShare": {
+   "CL": 233,
+   "C": 659,
+   "CR": 308
+  },
+  "closedPct": 0,
+  "afterTap": [
+   "sad:CL:CL",
+   "sad:R:R",
+   "sad:R:R",
+   "sad:R:R",
+   "sad:R:R",
+   "sad:R:R",
+   "sad:R:R",
+   "sad:R:R"
+  ]
+ }
+]

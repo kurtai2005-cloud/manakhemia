@@ -1,0 +1,309 @@
+[
+ {
+  "id": "載入無 pageerror",
+  "pass": true,
+  "errors": [],
+  "warns": []
+ },
+ {
+  "id": "__qa.pet.daylight 就緒",
+  "pass": false
+ },
+ {
+  "id": "時段邊界＋daylight id",
+  "pass": true,
+  "bad": []
+ },
+ {
+  "id": "池權重（出貨）螢火 20／彩虹 4",
+  "pass": true,
+  "pool": [
+   {
+    "id": "gift",
+    "weight": 3,
+    "hours": [
+     6,
+     24
+    ],
+    "rare": false,
+    "cooldownH": 24,
+    "special": false,
+    "lowNeed": false
+   },
+   {
+    "id": "butterfly",
+    "weight": 2.5,
+    "hours": [
+     7,
+     18
+    ],
+    "rare": false,
+    "cooldownH": 24,
+    "special": false,
+    "lowNeed": false
+   },
+   {
+    "id": "meteor",
+    "weight": 2,
+    "hours": [
+     19,
+     5
+    ],
+    "rare": true,
+    "cooldownH": 72,
+    "special": false,
+    "lowNeed": false
+   },
+   {
+    "id": "rainbow",
+    "weight": 4,
+    "hours": [
+     17,
+     23
+    ],
+    "rare": true,
+    "cooldownH": 72,
+    "special": false,
+    "lowNeed": false
+   },
+   {
+    "id": "firefly_walk",
+    "weight": 20,
+    "hours": [
+     17,
+     23
+    ],
+    "rare": false,
+    "cooldownH": 24,
+    "special": false,
+    "lowNeed": false
+   },
+   {
+    "id": "sleeptalk",
+    "weight": 2,
+    "hours": [
+     23,
+     7
+    ],
+    "rare": false,
+    "cooldownH": 24,
+    "special": false,
+    "lowNeed": false
+   },
+   {
+    "id": "grumpy",
+    "weight": 3,
+    "hours": null,
+    "rare": false,
+    "cooldownH": 48,
+    "special": false,
+    "lowNeed": true
+   },
+   {
+    "id": "treasure",
+    "weight": 2.2,
+    "hours": [
+     8,
+     22
+    ],
+    "rare": false,
+    "cooldownH": 24,
+    "special": false,
+    "lowNeed": false
+   },
+   {
+    "id": "flash",
+    "weight": 0,
+    "hours": null,
+    "rare": true,
+    "cooldownH": 72,
+    "special": true,
+    "lowNeed": false
+   }
+  ]
+ },
+ {
+  "id": "119s",
+  "pass": true,
+  "sup": false,
+  "lastSaveTime": 1781496000000,
+  "rollbacks": 0
+ },
+ {
+  "id": "120s",
+  "pass": true,
+  "sup": false,
+  "lastSaveTime": 1781496000000,
+  "rollbacks": 0
+ },
+ {
+  "id": "121s",
+  "pass": true,
+  "sup": true,
+  "lastSaveTime": 1781496000000,
+  "rollbacks": 1
+ },
+ {
+  "id": "save-rewinds-lastSeen",
+  "pass": true,
+  "lastSaveTime": 1781496000000,
+  "lastSeen": 1781495879000,
+  "before": 1781496000000
+ },
+ {
+  "id": "+23h59m",
+  "pass": true,
+  "tampered": false,
+  "sup": true,
+  "gift": 0,
+  "grainsAfterNote": 0,
+  "note": null
+ },
+ {
+  "id": "+25h",
+  "pass": true,
+  "tampered": true,
+  "T": 0,
+  "gift": 0,
+  "grainsOffline": 0,
+  "grainsAfterNote": 3,
+  "note": "gift",
+  "sup": false
+ },
+ {
+  "id": "PW 時鐘頁無 pageerror",
+  "pass": true,
+  "errors": []
+ },
+ {
+  "id": "PW DST 秋回撥 美東（UTC 前進）",
+  "pass": true,
+  "sup": false,
+  "tampered": false,
+  "rollbacks": 0,
+  "wallSave": "Sun Nov 01 2026 01:30:00 GMT-0400 (Eastern Daylight Time)",
+  "wallNow": "Sun Nov 01 2026 01:10:00 GMT-0500 (Eastern Standard Time)",
+  "hour": 1.1666666666666667,
+  "gift": 1,
+  "T": 2400,
+  "errors": []
+ },
+ {
+  "id": "PW DST 春前撥 美東",
+  "pass": true,
+  "sup": false,
+  "tampered": false,
+  "rollbacks": 0,
+  "wallSave": "Sun Mar 08 2026 01:30:00 GMT-0500 (Eastern Standard Time)",
+  "wallNow": "Sun Mar 08 2026 03:30:00 GMT-0400 (Eastern Daylight Time)",
+  "hour": 3.5,
+  "gift": 1,
+  "T": 3600,
+  "errors": []
+ },
+ {
+  "id": "PW 時區 HKT 牆鐘",
+  "pass": true,
+  "sup": false,
+  "tampered": false,
+  "rollbacks": 0,
+  "wallSave": "Mon Jun 15 2026 10:00:00 GMT+0800 (Hong Kong Standard Time)",
+  "wallNow": "Mon Jun 15 2026 10:01:00 GMT+0800 (Hong Kong Standard Time)",
+  "hour": 10.016666666666667,
+  "gift": 0,
+  "T": 60,
+  "errors": []
+ },
+ {
+  "id": "PW 時區洛杉矶 同一 UTC",
+  "pass": true,
+  "sup": false,
+  "tampered": false,
+  "rollbacks": 0,
+  "wallSave": "Sun Jun 14 2026 19:00:00 GMT-0700 (Pacific Daylight Time)",
+  "wallNow": "Sun Jun 14 2026 19:01:00 GMT-0700 (Pacific Daylight Time)",
+  "hour": 19.016666666666666,
+  "gift": 0,
+  "T": 60,
+  "errors": []
+ },
+ {
+  "id": "睡眠點寵物冇輕喚醒（UI 只吐司）",
+  "pass": true,
+  "toast": "噓…團絨瞓緊",
+  "expr": "happy",
+  "state": "simsleep",
+  "log": [],
+  "sleeping": true
+ },
+ {
+  "id": "清醒 5 下 → 行為鬧脾氣、但唔係 48h 事件",
+  "pass": false,
+  "state": "cuddly",
+  "taps": [
+   "pet:1",
+   "pet:2",
+   "pet:3"
+  ],
+  "events": []
+ },
+ {
+  "id": "餵食掣打開選單",
+  "pass": true,
+  "display": "flex"
+ },
+ {
+  "id": "觸控段無 pageerror",
+  "pass": true,
+  "errors": []
+ },
+ {
+  "id": "壞檔 非 JSON",
+  "pass": true,
+  "errors": [],
+  "navErr": null,
+  "alive": {
+   "qa": true,
+   "stage": "egg",
+   "raf": true
+  }
+ },
+ {
+  "id": "壞檔 diary 字串",
+  "pass": false,
+  "errors": [
+   "E.diary.filter is not a function"
+  ],
+  "navErr": null,
+  "alive": {
+   "qa": false,
+   "stage": "adult",
+   "raf": true
+  }
+ },
+ {
+  "id": "壞檔 diary [null]",
+  "pass": false,
+  "errors": [
+   "Cannot read properties of null (reading 'ts')"
+  ],
+  "navErr": null,
+  "alive": {
+   "qa": false,
+   "stage": "adult",
+   "raf": true
+  }
+ },
+ {
+  "id": "壞檔 stats 缺 byId",
+  "pass": false,
+  "errors": [
+   "Cannot read properties of undefined (reading 'sleeptalk')"
+  ],
+  "navErr": null,
+  "alive": {
+   "qa": false,
+   "raf": true
+  }
+ }
+]

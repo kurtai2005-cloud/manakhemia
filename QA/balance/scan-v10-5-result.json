@@ -1,0 +1,491 @@
+{
+  "doc": "遊策預掃：mg 火苗每日最多 2 局。A＝+2／局，B＝+1／局。星星碎唔封。遊戲碼未改。",
+  "sim": "bf57cb23a4fc743c8b89c6d9ea596f0c582f0407",
+  "tree": "b6e89349fcd7b06d7aac090bd8f620039eda6f76",
+  "base": "scan-v10-4",
+  "N": 1000,
+  "ECON_N": 200,
+  "fpats": 2,
+  "drops": 5,
+  "cap": 2,
+  "proof": {
+    "w2": {
+      "after3": 4,
+      "afterMoon": 4,
+      "afterOv": 4,
+      "nextDay": 6,
+      "expectAfter3": 4,
+      "expectAfterMoon": 4,
+      "expectAfterOv": 4,
+      "expectNext": 6,
+      "ok": true,
+      "shardStillPaid": true,
+      "configW": 2
+    },
+    "w1": {
+      "after3": 2,
+      "afterMoon": 2,
+      "afterOv": 2,
+      "nextDay": 3,
+      "expectAfter3": 2,
+      "expectAfterMoon": 2,
+      "expectAfterOv": 2,
+      "expectNext": 3,
+      "ok": true,
+      "shardStillPaid": true,
+      "configW": 2
+    }
+  },
+  "configW": 2,
+  "A": {
+    "checks": [
+      [
+        "9 條路出齊（每條≥2%）",
+        "✅",
+        "齊"
+      ],
+      [
+        "每表≥2 結局（每個≥2%）",
+        "✅",
+        null
+      ],
+      [
+        "單一≤85%",
+        "✅",
+        81.8
+      ],
+      [
+        "螢絨 3–10%",
+        "✅",
+        5.27
+      ],
+      [
+        "每表菇傘≤30%",
+        "✅",
+        18.1
+      ],
+      [
+        "晶角全體≥5%",
+        "✅",
+        11.93
+      ],
+      [
+        "月眠全體≥5%",
+        "✅",
+        17.3
+      ],
+      [
+        "每表燦光≤50%",
+        "✅",
+        21.8
+      ],
+      [
+        "疏玩柔光＋微塵",
+        "✅",
+        "33.4/35.6"
+      ],
+      [
+        "疏玩 CQ 15–35",
+        "✅",
+        18
+      ],
+      [
+        "新系統路線分≤25%",
+        "✅",
+        "同 v10.4 fixture，本掃冇改 cap"
+      ],
+      [
+        "疏玩上線日星碎 15–30",
+        "✅",
+        19
+      ],
+      [
+        "其他 5 表每日星碎 15–30",
+        "✅",
+        "勤力 26 普通 23 夜貓 24 早起 24 餵食狂 24"
+      ],
+      [
+        "冇一日穿 30",
+        "✅",
+        0
+      ],
+      [
+        "火苗全體 12–18%",
+        "❌",
+        27.7
+      ],
+      [
+        "柔光全體≥10%",
+        "❌",
+        6.93
+      ]
+    ],
+    "passN": 14,
+    "fail": [
+      "火苗全體 12–18%",
+      "柔光全體≥10%"
+    ],
+    "total": {
+      "lumi": 5.27,
+      "tide": 13.07,
+      "shroom": 5.88,
+      "crystal": 11.93,
+      "moon": 17.3,
+      "ember": 27.7,
+      "bright": 5.98,
+      "soft": 6.93,
+      "dust": 5.93
+    },
+    "tables": {
+      "勤力": {
+        "lumi": 5,
+        "tide": 7.8,
+        "shroom": 8.2,
+        "crystal": 37.4,
+        "moon": 2,
+        "ember": 17.3,
+        "bright": 21.8,
+        "soft": 0.5,
+        "dust": 0
+      },
+      "普通": {
+        "lumi": 5.1,
+        "tide": 7.3,
+        "shroom": 6.2,
+        "crystal": 32.7,
+        "moon": 4.9,
+        "ember": 41,
+        "bright": 2.3,
+        "soft": 0.5,
+        "dust": 0
+      },
+      "疏玩": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 1,
+        "crystal": 1.4,
+        "moon": 14.9,
+        "ember": 13.7,
+        "bright": 0,
+        "soft": 33.4,
+        "dust": 35.6
+      },
+      "夜貓": {
+        "lumi": 17.3,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 81.8,
+        "ember": 0.9,
+        "bright": 0,
+        "soft": 0,
+        "dust": 0
+      },
+      "早起": {
+        "lumi": 3.8,
+        "tide": 60.4,
+        "shroom": 1.8,
+        "crystal": 0.1,
+        "moon": 0.2,
+        "ember": 23.7,
+        "bright": 9.9,
+        "soft": 0.1,
+        "dust": 0
+      },
+      "餵食狂": {
+        "lumi": 0.4,
+        "tide": 2.9,
+        "shroom": 18.1,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 69.6,
+        "bright": 1.9,
+        "soft": 7.1,
+        "dust": 0
+      }
+    },
+    "cqs": {
+      "勤力": 48.07,
+      "普通": 38.11,
+      "疏玩": 18,
+      "夜貓": 37.73,
+      "早起": 31.85,
+      "餵食狂": 40.32
+    },
+    "cqMed": 18,
+    "nightMoon": 81.8,
+    "brightMax": 21.8,
+    "shroomMax": 18.1,
+    "econ": {
+      "勤力": {
+        "playMed": 26,
+        "allMed": 26,
+        "max": 30
+      },
+      "普通": {
+        "playMed": 23,
+        "allMed": 23,
+        "max": 30
+      },
+      "疏玩": {
+        "playMed": 19,
+        "allMed": 9,
+        "max": 30
+      },
+      "夜貓": {
+        "playMed": 24,
+        "allMed": 24,
+        "max": 30
+      },
+      "早起": {
+        "playMed": 24,
+        "allMed": 24,
+        "max": 30
+      },
+      "餵食狂": {
+        "playMed": 24,
+        "allMed": 24,
+        "max": 30
+      }
+    },
+    "over30": 0,
+    "blooms": 4716,
+    "codeOk": true,
+    "id": "A",
+    "w": 2,
+    "cap": 2,
+    "ms": 78162,
+    "mgStat": {
+      "counted": 24130,
+      "skipped": 4548
+    },
+    "configWAfter": 2
+  },
+  "B": {
+    "checks": [
+      [
+        "9 條路出齊（每條≥2%）",
+        "✅",
+        "齊"
+      ],
+      [
+        "每表≥2 結局（每個≥2%）",
+        "✅",
+        null
+      ],
+      [
+        "單一≤85%",
+        "✅",
+        82.4
+      ],
+      [
+        "螢絨 3–10%",
+        "✅",
+        5.27
+      ],
+      [
+        "每表菇傘≤30%",
+        "✅",
+        26.5
+      ],
+      [
+        "晶角全體≥5%",
+        "✅",
+        16.62
+      ],
+      [
+        "月眠全體≥5%",
+        "✅",
+        17.63
+      ],
+      [
+        "每表燦光≤50%",
+        "✅",
+        21.6
+      ],
+      [
+        "疏玩柔光＋微塵",
+        "✅",
+        "33.4/35.6"
+      ],
+      [
+        "疏玩 CQ 15–35",
+        "✅",
+        18
+      ],
+      [
+        "新系統路線分≤25%",
+        "✅",
+        "同 v10.4 fixture，本掃冇改 cap"
+      ],
+      [
+        "疏玩上線日星碎 15–30",
+        "✅",
+        19
+      ],
+      [
+        "其他 5 表每日星碎 15–30",
+        "✅",
+        "勤力 26 普通 23 夜貓 24 早起 24 餵食狂 24"
+      ],
+      [
+        "冇一日穿 30",
+        "✅",
+        0
+      ],
+      [
+        "火苗全體 12–18%",
+        "❌",
+        9.6
+      ],
+      [
+        "柔光全體≥10%",
+        "✅",
+        13.6
+      ]
+    ],
+    "passN": 15,
+    "fail": [
+      "火苗全體 12–18%"
+    ],
+    "total": {
+      "lumi": 5.27,
+      "tide": 15.73,
+      "shroom": 8.37,
+      "crystal": 16.62,
+      "moon": 17.63,
+      "ember": 9.6,
+      "bright": 7.25,
+      "soft": 13.6,
+      "dust": 5.93
+    },
+    "tables": {
+      "勤力": {
+        "lumi": 5,
+        "tide": 10.9,
+        "shroom": 9.4,
+        "crystal": 44.9,
+        "moon": 2.2,
+        "ember": 2.4,
+        "bright": 21.6,
+        "soft": 3.6,
+        "dust": 0
+      },
+      "普通": {
+        "lumi": 5.1,
+        "tide": 10.1,
+        "shroom": 9.3,
+        "crystal": 51.8,
+        "moon": 6.1,
+        "ember": 11.8,
+        "bright": 2.3,
+        "soft": 3.5,
+        "dust": 0
+      },
+      "疏玩": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 2.4,
+        "crystal": 2.9,
+        "moon": 14.9,
+        "ember": 10.8,
+        "bright": 0,
+        "soft": 33.4,
+        "dust": 35.6
+      },
+      "夜貓": {
+        "lumi": 17.3,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 82.4,
+        "ember": 0.2,
+        "bright": 0.1,
+        "soft": 0,
+        "dust": 0
+      },
+      "早起": {
+        "lumi": 3.8,
+        "tide": 69.7,
+        "shroom": 2.6,
+        "crystal": 0.1,
+        "moon": 0.2,
+        "ember": 5.8,
+        "bright": 17.6,
+        "soft": 0.2,
+        "dust": 0
+      },
+      "餵食狂": {
+        "lumi": 0.4,
+        "tide": 3.7,
+        "shroom": 26.5,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 26.6,
+        "bright": 1.9,
+        "soft": 40.9,
+        "dust": 0
+      }
+    },
+    "cqs": {
+      "勤力": 48.07,
+      "普通": 38.11,
+      "疏玩": 18,
+      "夜貓": 37.73,
+      "早起": 31.85,
+      "餵食狂": 40.32
+    },
+    "cqMed": 18,
+    "nightMoon": 82.4,
+    "brightMax": 21.6,
+    "shroomMax": 26.5,
+    "econ": {
+      "勤力": {
+        "playMed": 26,
+        "allMed": 26,
+        "max": 30
+      },
+      "普通": {
+        "playMed": 23,
+        "allMed": 23,
+        "max": 30
+      },
+      "疏玩": {
+        "playMed": 19,
+        "allMed": 9,
+        "max": 30
+      },
+      "夜貓": {
+        "playMed": 24,
+        "allMed": 24,
+        "max": 30
+      },
+      "早起": {
+        "playMed": 24,
+        "allMed": 24,
+        "max": 30
+      },
+      "餵食狂": {
+        "playMed": 24,
+        "allMed": 24,
+        "max": 30
+      }
+    },
+    "over30": 0,
+    "blooms": 4716,
+    "codeOk": true,
+    "id": "B",
+    "w": 1,
+    "cap": 2,
+    "ms": 77302,
+    "mgStat": {
+      "counted": 24131,
+      "skipped": 4548
+    },
+    "configWAfter": 2
+  },
+  "all16": {
+    "A": false,
+    "B": false
+  }
+}

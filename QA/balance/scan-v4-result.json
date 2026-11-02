@@ -1,0 +1,596 @@
+{
+  "doc": "附件 §7 平衡修訂 v4（2026-11-01 01:30）。",
+  "sim": "code/glimmer-evo6 @ 25e8c40c2ca96d1a514042f4d4a8d9074eaeb718",
+  "stars": "無。sim 冇星星碎欄位。",
+  "player": {
+    "jitterMin": 90,
+    "miss": {
+      "diligent": 0.1,
+      "normal": 0.15,
+      "office": 0.15,
+      "light": 0.18,
+      "early": 0.12,
+      "eod": 0.15
+    },
+    "act": {
+      "diligent": {
+        "feed": 0.95,
+        "play": 0.9,
+        "rinse": 0.95,
+        "poop": 0.95
+      },
+      "normal": {
+        "feed": 0.85,
+        "play": 0.75,
+        "rinse": 0.8,
+        "poop": 0.8
+      },
+      "office": {
+        "feed": 0.8,
+        "play": 0.7,
+        "rinse": 0.75,
+        "poop": 0.7
+      },
+      "light": {
+        "feed": 0.7,
+        "play": 0.65,
+        "rinse": 0.7,
+        "poop": 0.65
+      },
+      "early": {
+        "feed": 0.9,
+        "play": 0.7,
+        "rinse": 0.85,
+        "poop": 0.8
+      },
+      "eod": {
+        "feed": 0.75,
+        "play": 0.85,
+        "rinse": 0.65,
+        "poop": 0.6
+      }
+    },
+    "weather": {
+      "sun": 0.6,
+      "cloud": 0.2,
+      "rain": 0.15,
+      "fog": 0.05,
+      "scope": "成日"
+    },
+    "weekendExtra": false,
+    "eod": "單日先排 12:00，可以漏呢一次，唔會改成日日上線"
+  },
+  "uniq": {
+    "diligent": 500,
+    "normal": 500,
+    "office": 500,
+    "light": 500,
+    "early": 500,
+    "eod": 500
+  },
+  "shroomAtClean60": {
+    "diligent": {
+      "n": 500,
+      "top1": 47.6,
+      "top2": 84,
+      "feedOnlyTop2": 0,
+      "meanShare": {
+        "tide": 41.1,
+        "shroom": 41.8,
+        "crystal": 23.1,
+        "moon": 10.6,
+        "ember": 14.7,
+        "shroomFeed": 10.6
+      },
+      "aheadOfShroom": {
+        "tide": 48.6,
+        "crystal": 16.6,
+        "moon": 5.6,
+        "ember": 11.8
+      },
+      "top2Pct": {
+        "tide": 96.4,
+        "shroom": 84,
+        "crystal": 19.4,
+        "moon": 0.2,
+        "ember": 0
+      }
+    },
+    "normal": {
+      "n": 500,
+      "top1": 48,
+      "top2": 86,
+      "feedOnlyTop2": 0.4,
+      "meanShare": {
+        "tide": 40,
+        "shroom": 39.8,
+        "crystal": 18.7,
+        "moon": 14.1,
+        "ember": 15.7,
+        "shroomFeed": 10.1
+      },
+      "aheadOfShroom": {
+        "tide": 50.6,
+        "crystal": 12.8,
+        "moon": 10,
+        "ember": 11.2
+      },
+      "top2Pct": {
+        "tide": 97.4,
+        "shroom": 86,
+        "crystal": 9.4,
+        "moon": 4.8,
+        "ember": 2.4
+      }
+    },
+    "office": {
+      "n": 500,
+      "top1": 47,
+      "top2": 87.6,
+      "feedOnlyTop2": 1,
+      "meanShare": {
+        "tide": 40.5,
+        "shroom": 41.3,
+        "crystal": 9.3,
+        "moon": 17.8,
+        "ember": 15.4,
+        "shroomFeed": 9.9
+      },
+      "aheadOfShroom": {
+        "tide": 49.6,
+        "crystal": 5.2,
+        "moon": 11.2,
+        "ember": 6.6
+      },
+      "top2Pct": {
+        "tide": 96.8,
+        "shroom": 87.6,
+        "crystal": 2.2,
+        "moon": 10.6,
+        "ember": 2.8
+      }
+    },
+    "light": {
+      "n": 500,
+      "top1": 66.2,
+      "top2": 86.6,
+      "feedOnlyTop2": 0.4,
+      "meanShare": {
+        "tide": 31.6,
+        "shroom": 41.6,
+        "crystal": 0.2,
+        "moon": 26.8,
+        "ember": 17.3,
+        "shroomFeed": 9.9
+      },
+      "aheadOfShroom": {
+        "tide": 26.6,
+        "crystal": 0,
+        "moon": 18,
+        "ember": 3.6
+      },
+      "top2Pct": {
+        "tide": 67.4,
+        "shroom": 86.6,
+        "crystal": 0,
+        "moon": 40.6,
+        "ember": 5.4
+      }
+    },
+    "early": {
+      "n": 500,
+      "top1": 13,
+      "top2": 94.8,
+      "feedOnlyTop2": 8,
+      "meanShare": {
+        "tide": 63.6,
+        "shroom": 41.1,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 16.6,
+        "shroomFeed": 8.4
+      },
+      "aheadOfShroom": {
+        "tide": 86.2,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 5.2
+      },
+      "top2Pct": {
+        "tide": 99.8,
+        "shroom": 94.8,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 5.4
+      }
+    },
+    "eod": {
+      "n": 500,
+      "top1": 45.6,
+      "top2": 99.4,
+      "feedOnlyTop2": 67.4,
+      "meanShare": {
+        "tide": 15.1,
+        "shroom": 46.5,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 47.7,
+        "shroomFeed": 17.1
+      },
+      "aheadOfShroom": {
+        "tide": 0.2,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 54.4
+      },
+      "top2Pct": {
+        "tide": 0.6,
+        "shroom": 99.4,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 100
+      }
+    }
+  },
+  "shroomAll": {
+    "n": 3000,
+    "top1": 44.6,
+    "top2": 89.7,
+    "feedOnlyTop2": 12.9,
+    "meanShare": {
+      "tide": 38.7,
+      "shroom": 42,
+      "crystal": 8.6,
+      "moon": 11.5,
+      "ember": 21.2,
+      "shroomFeed": 11
+    },
+    "aheadOfShroom": {
+      "tide": 43.6,
+      "crystal": 5.8,
+      "moon": 7.5,
+      "ember": 15.5
+    },
+    "top2Pct": {
+      "tide": 76.4,
+      "shroom": 89.7,
+      "crystal": 5.2,
+      "moon": 9.4,
+      "ember": 19.3
+    }
+  },
+  "night": {
+    "diligent": {
+      "med": 0.416,
+      "p90": 0.534
+    },
+    "normal": {
+      "med": 0.434,
+      "p90": 0.545
+    },
+    "office": {
+      "med": 0.391,
+      "p90": 0.5
+    },
+    "light": {
+      "med": 0.521,
+      "p90": 0.615
+    },
+    "early": {
+      "med": 0.779,
+      "p90": 0.914
+    },
+    "eod": {
+      "med": 0,
+      "p90": 0
+    }
+  },
+  "cqAtStart": {
+    "diligent": {
+      "med": 30.13,
+      "max": 35.87,
+      "p95": 33.88,
+      "ge30": 51.4,
+      "ge60": 0,
+      "days5": 89.6
+    },
+    "normal": {
+      "med": 27.33,
+      "max": 35.34,
+      "p95": 32.26,
+      "ge30": 21,
+      "ge60": 0,
+      "days5": 98
+    },
+    "office": {
+      "med": 24.53,
+      "max": 35.39,
+      "p95": 31.06,
+      "ge30": 8,
+      "ge60": 0,
+      "days5": 100
+    },
+    "light": {
+      "med": 21.11,
+      "max": 32.53,
+      "p95": 27.94,
+      "ge30": 1.6,
+      "ge60": 0,
+      "days5": 100
+    },
+    "early": {
+      "med": 18.62,
+      "max": 31.81,
+      "p95": 19.67,
+      "ge30": 1,
+      "ge60": 0,
+      "days5": 100
+    },
+    "eod": {
+      "med": 17.86,
+      "max": 23.46,
+      "p95": 19.15,
+      "ge30": 0,
+      "ge60": 0,
+      "days5": 0
+    }
+  },
+  "v4start": {
+    "params": {
+      "gapPt": 5,
+      "nightLo": 0.3,
+      "nightHi": 0.5,
+      "pMax": 0.25,
+      "lumiCq": 40,
+      "brightCq": 30,
+      "brightMax": 0.45,
+      "brightDays": 5,
+      "specShare": 0.45,
+      "specCq": 0,
+      "softCq": 20,
+      "cleanMin": 60,
+      "gain": 1.5,
+      "decay": 0.05,
+      "floor": 8,
+      "cq0": 50
+    },
+    "fail": [
+      "螢絨 全體 0%<2",
+      "晶角 全體 0%<2",
+      "月眠 全體 0.38%<2",
+      "螢絨全體 0% 唔喺 3–10"
+    ],
+    "lumiPct": 0,
+    "cqMed": {
+      "diligent": 30.13,
+      "normal": 27.33,
+      "office": 24.53,
+      "light": 21.11,
+      "early": 18.62,
+      "eod": 17.86
+    },
+    "cqMax": {
+      "diligent": 35.87,
+      "normal": 35.34,
+      "office": 35.39,
+      "light": 32.53,
+      "early": 31.81,
+      "eod": 23.46
+    },
+    "tables": {
+      "diligent": {
+        "lumi": 0,
+        "tide": 19,
+        "shroom": 42,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 20,
+        "soft": 19,
+        "dust": 0
+      },
+      "normal": {
+        "lumi": 0,
+        "tide": 17.71,
+        "shroom": 37.89,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 8.6,
+        "soft": 35.6,
+        "dust": 0.2
+      },
+      "office": {
+        "lumi": 0,
+        "tide": 21.2,
+        "shroom": 37.2,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 3,
+        "soft": 36.2,
+        "dust": 2.4
+      },
+      "light": {
+        "lumi": 0,
+        "tide": 4,
+        "shroom": 39.3,
+        "crystal": 0,
+        "moon": 2.3,
+        "ember": 0,
+        "bright": 0.4,
+        "soft": 33.2,
+        "dust": 20.8
+      },
+      "early": {
+        "lumi": 0,
+        "tide": 81.85,
+        "shroom": 14.35,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0.2,
+        "soft": 0,
+        "dust": 3.6
+      },
+      "eod": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 42.9,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 45.9,
+        "bright": 0,
+        "soft": 0,
+        "dust": 10.2
+      }
+    },
+    "totalPct": {
+      "lumi": 0,
+      "tide": 23.96,
+      "shroom": 35.61,
+      "crystal": 0,
+      "moon": 0.38,
+      "ember": 7.65,
+      "bright": 5.37,
+      "soft": 20.67,
+      "dust": 6.2
+    },
+    "sparse": {
+      "soft": 16.6,
+      "dust": 15.5
+    }
+  },
+  "search": {
+    "tried": 5221,
+    "hits": 0,
+    "solved": false,
+    "method": "lumi×rank cartesian，再沿最佳點逐個參數"
+  },
+  "best": {
+    "params": {
+      "gapPt": 5,
+      "nightLo": 0.3,
+      "nightHi": 0.5,
+      "pMax": 0.25,
+      "lumiCq": 25,
+      "brightCq": 30,
+      "brightMax": 0.45,
+      "brightDays": 5,
+      "specShare": 0.45,
+      "specCq": 0,
+      "softCq": 20,
+      "cleanMin": 60,
+      "gain": 1.5,
+      "decay": 0.05,
+      "floor": 8,
+      "cq0": 50
+    },
+    "dist": 0.375,
+    "fail": [
+      "晶角 全體 0%<2",
+      "月眠 全體 0.38%<2"
+    ],
+    "lumiPct": 4.61,
+    "cqMed": {
+      "diligent": 30.13,
+      "normal": 27.33,
+      "office": 24.53,
+      "light": 21.11,
+      "early": 18.62,
+      "eod": 17.86
+    },
+    "cqMax": {
+      "diligent": 35.87,
+      "normal": 35.34,
+      "office": 35.39,
+      "light": 32.53,
+      "early": 31.81,
+      "eod": 23.46
+    },
+    "tables": {
+      "diligent": {
+        "lumi": 10.59,
+        "tide": 17.6,
+        "shroom": 37.62,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 17.07,
+        "soft": 17.13,
+        "dust": 0
+      },
+      "normal": {
+        "lumi": 9.89,
+        "tide": 16.26,
+        "shroom": 34.41,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 7.54,
+        "soft": 31.7,
+        "dust": 0.2
+      },
+      "office": {
+        "lumi": 4.07,
+        "tide": 20.18,
+        "shroom": 35.87,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 2.66,
+        "soft": 34.82,
+        "dust": 2.4
+      },
+      "light": {
+        "lumi": 2.73,
+        "tide": 3.9,
+        "shroom": 38.35,
+        "crystal": 0,
+        "moon": 2.25,
+        "ember": 0,
+        "bright": 0.3,
+        "soft": 31.66,
+        "dust": 20.8
+      },
+      "early": {
+        "lumi": 0.4,
+        "tide": 81.5,
+        "shroom": 14.35,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0.15,
+        "soft": 0,
+        "dust": 3.6
+      },
+      "eod": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 42.9,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 45.9,
+        "bright": 0,
+        "soft": 0,
+        "dust": 10.2
+      }
+    },
+    "totalPct": {
+      "lumi": 4.61,
+      "tide": 23.24,
+      "shroom": 33.92,
+      "crystal": 0,
+      "moon": 0.38,
+      "ember": 7.65,
+      "bright": 4.62,
+      "soft": 19.22,
+      "dust": 6.2
+    },
+    "sparse": {
+      "soft": 15.83,
+      "dust": 15.5
+    }
+  },
+  "ms": 15513
+}

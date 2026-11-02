@@ -1,0 +1,309 @@
+{
+  "doc": "5c.1 回歸。真參數。對 5c 鎖定值，要一模一樣。",
+  "sim": "0254f89b35f3d13b4629eb5713f7207c0975c683",
+  "tree": "f0bdc9897486036d5bffc3feb541aedc198cb3cc",
+  "N": 1000,
+  "ECON_N": 200,
+  "fpats": 2,
+  "drops": 5,
+  "proof": {
+    "params": {
+      "routePtsPerGame": 1,
+      "routeGamesPerDay": 4,
+      "kindsMgW": 2
+    },
+    "repro": {
+      "afterNight": {
+        "ember": 0,
+        "n": 0,
+        "moon": 4
+      },
+      "dayEmber": 1,
+      "dayShards": 3,
+      "n": 1
+    },
+    "reproOk": true,
+    "dew": {
+      "ember": 0,
+      "n": 0,
+      "tide": 1
+    },
+    "dewOk": true,
+    "mixed": [
+      {
+        "label": "v2",
+        "ember": 1,
+        "shards": 3
+      },
+      {
+        "label": "v2",
+        "ember": 1,
+        "shards": 3
+      },
+      {
+        "label": "v1",
+        "ember": 1,
+        "grains": 10,
+        "walletSame": true
+      },
+      {
+        "label": "float",
+        "ember": 1,
+        "ok": true,
+        "shards": 2,
+        "ev": true
+      },
+      {
+        "label": "5th",
+        "ember": 0,
+        "shards": 3,
+        "n": 4
+      }
+    ],
+    "mixedOk": true,
+    "cap25": true,
+    "configUntouched": true
+  },
+  "checks": [
+    [
+      "9 條路出齊（每條≥2%）",
+      "✅",
+      "齊"
+    ],
+    [
+      "每表≥2 結局（每個≥2%）",
+      "✅",
+      null
+    ],
+    [
+      "單一≤85%",
+      "✅",
+      82.4
+    ],
+    [
+      "螢絨 3–10%",
+      "✅",
+      5.47
+    ],
+    [
+      "每表菇傘≤30%",
+      "✅",
+      25.2
+    ],
+    [
+      "晶角全體≥5%",
+      "✅",
+      15.32
+    ],
+    [
+      "月眠全體≥5%",
+      "✅",
+      18.72
+    ],
+    [
+      "每表燦光≤50%",
+      "✅",
+      22.9
+    ],
+    [
+      "疏玩柔光＋微塵",
+      "✅",
+      "28.3/29.7"
+    ],
+    [
+      "疏玩 CQ 15–35",
+      "✅",
+      18
+    ],
+    [
+      "新系統路線分≤25%",
+      "✅",
+      25
+    ],
+    [
+      "疏玩上線日星碎 15–30",
+      "✅",
+      19
+    ],
+    [
+      "其他 5 表每日星碎 15–30",
+      "✅",
+      "勤力 28 普通 22 夜貓 25 早起 23 餵食狂 23"
+    ],
+    [
+      "冇一日穿 30",
+      "✅",
+      0
+    ],
+    [
+      "火苗全體 12–18%",
+      "✅",
+      14
+    ],
+    [
+      "柔光全體≥10%",
+      "✅",
+      10.92
+    ]
+  ],
+  "passN": 16,
+  "fail": [],
+  "total": {
+    "lumi": 5.47,
+    "tide": 15.27,
+    "shroom": 8.03,
+    "crystal": 15.32,
+    "moon": 18.72,
+    "ember": 14,
+    "bright": 7.33,
+    "soft": 10.92,
+    "dust": 4.95
+  },
+  "tables": {
+    "勤力": {
+      "lumi": 5.1,
+      "tide": 7.7,
+      "shroom": 8.7,
+      "crystal": 43,
+      "moon": 2.3,
+      "ember": 8.6,
+      "bright": 22.9,
+      "soft": 1.7,
+      "dust": 0
+    },
+    "普通": {
+      "lumi": 5.9,
+      "tide": 9.5,
+      "shroom": 9.1,
+      "crystal": 46.2,
+      "moon": 6.2,
+      "ember": 17.6,
+      "bright": 2.5,
+      "soft": 3,
+      "dust": 0
+    },
+    "疏玩": {
+      "lumi": 0,
+      "tide": 0,
+      "shroom": 2.7,
+      "crystal": 2.6,
+      "moon": 21.2,
+      "ember": 15.5,
+      "bright": 0,
+      "soft": 28.3,
+      "dust": 29.7
+    },
+    "夜貓": {
+      "lumi": 17.3,
+      "tide": 0,
+      "shroom": 0,
+      "crystal": 0,
+      "moon": 82.4,
+      "ember": 0.2,
+      "bright": 0.1,
+      "soft": 0,
+      "dust": 0
+    },
+    "早起": {
+      "lumi": 4.2,
+      "tide": 70.4,
+      "shroom": 2.5,
+      "crystal": 0.1,
+      "moon": 0.2,
+      "ember": 5.6,
+      "bright": 16.6,
+      "soft": 0.4,
+      "dust": 0
+    },
+    "餵食狂": {
+      "lumi": 0.3,
+      "tide": 4,
+      "shroom": 25.2,
+      "crystal": 0,
+      "moon": 0,
+      "ember": 36.5,
+      "bright": 1.9,
+      "soft": 32.1,
+      "dust": 0
+    }
+  },
+  "cqMed": 18,
+  "cqs": {
+    "勤力": 48.11,
+    "普通": 38.12,
+    "疏玩": 18,
+    "夜貓": 37.81,
+    "早起": 31.83,
+    "餵食狂": 40.28
+  },
+  "nightMoon": 82.4,
+  "shroomMax": 25.2,
+  "brightMax": 22.9,
+  "econ": {
+    "勤力": {
+      "playMed": 28,
+      "allMed": 28,
+      "max": 30
+    },
+    "普通": {
+      "playMed": 22,
+      "allMed": 22,
+      "max": 30
+    },
+    "疏玩": {
+      "playMed": 19,
+      "allMed": 9,
+      "max": 27
+    },
+    "夜貓": {
+      "playMed": 25,
+      "allMed": 25,
+      "max": 30
+    },
+    "早起": {
+      "playMed": 23,
+      "allMed": 23,
+      "max": 30
+    },
+    "餵食狂": {
+      "playMed": 23,
+      "allMed": 23,
+      "max": 30
+    }
+  },
+  "over30": 0,
+  "routeDiff": {},
+  "lockDiff": {},
+  "near": {
+    "ember": {
+      "qa": 14,
+      "prog": 14.03,
+      "d": -0.03
+    },
+    "soft": {
+      "qa": 10.92,
+      "prog": 10.92,
+      "d": 0
+    },
+    "dust": {
+      "qa": 4.95,
+      "prog": 4.95,
+      "d": 0
+    },
+    "moon": {
+      "qa": 18.72,
+      "prog": 18.73,
+      "d": -0.01
+    }
+  },
+  "mg2stat": {
+    "games": 16847,
+    "route": 12589
+  },
+  "configAfter": {
+    "w": 1,
+    "cap": 4,
+    "kinds": 2
+  },
+  "ms": 68537
+}

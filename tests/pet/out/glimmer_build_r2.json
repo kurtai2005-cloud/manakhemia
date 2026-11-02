@@ -1,0 +1,1532 @@
+{
+ "src": "/tmp/glimmer-a/src/glimmer-a",
+ "days": 3000,
+ "seeds": [
+  7,
+  3,
+  5,
+  11,
+  13,
+  17,
+  19,
+  23
+ ],
+ "tz": "Asia/Hong_Kong",
+ "commit": "6e89d887338013e56083e0e675fc5fe4d62ecea1",
+ "commitNote": "measured against events.js/sim.js of the given --src tree",
+ "params": {
+  "drawChance": 0.34,
+  "minGapSec": 1200,
+  "cooldownH": 24,
+  "cooldownRareH": 72,
+  "lastSaveTolSec": 120,
+  "lastSaveMaxAheadH": 24,
+  "guaranteeOpens": 1,
+  "dailyMax": 4,
+  "offlineMaxEvents": 120,
+  "offlinePopupMax": 2,
+  "diaryKeepDays": 14,
+  "diaryWarnDays": 12,
+  "diaryGrains": 3,
+  "diaryClaimMax": 60,
+  "weights": [
+   {
+    "id": "gift",
+    "weight": 22,
+    "hours": [
+     7,
+     23
+    ],
+    "moodAtLeast": 35
+   },
+   {
+    "id": "butterfly",
+    "weight": 20,
+    "hours": [
+     7,
+     17
+    ],
+    "energyAtLeast": 30
+   },
+   {
+    "id": "meteor",
+    "weight": 10,
+    "hours": [
+     19,
+     5
+    ]
+   },
+   {
+    "id": "rainbow",
+    "weight": 4,
+    "hours": [
+     17,
+     23
+    ]
+   },
+   {
+    "id": "firefly_walk",
+    "weight": 14,
+    "hours": [
+     17,
+     23
+    ]
+   },
+   {
+    "id": "sleeptalk",
+    "weight": 11,
+    "hours": [
+     23,
+     7
+    ]
+   },
+   {
+    "id": "grumpy",
+    "weight": 0,
+    "hours": null
+   },
+   {
+    "id": "treasure",
+    "weight": 18,
+    "hours": [
+     8,
+     22
+    ],
+    "energyAtLeast": 25
+   },
+   {
+    "id": "flash",
+    "weight": 0,
+    "hours": null
+   }
+  ]
+ },
+ "theoreticalEveningShipped": {
+  "byHour": [
+   {
+    "hour": 17,
+    "fireflyPct": 24.1,
+    "weights": {
+     "gift": 22,
+     "rainbow": 4,
+     "firefly_walk": 14,
+     "treasure": 18
+    }
+   },
+   {
+    "hour": 18,
+    "fireflyPct": 24.1,
+    "weights": {
+     "gift": 22,
+     "rainbow": 4,
+     "firefly_walk": 14,
+     "treasure": 18
+    }
+   },
+   {
+    "hour": 19,
+    "fireflyPct": 20.6,
+    "weights": {
+     "gift": 22,
+     "meteor": 10,
+     "rainbow": 4,
+     "firefly_walk": 14,
+     "treasure": 18
+    }
+   },
+   {
+    "hour": 20,
+    "fireflyPct": 20.6,
+    "weights": {
+     "gift": 22,
+     "meteor": 10,
+     "rainbow": 4,
+     "firefly_walk": 14,
+     "treasure": 18
+    }
+   },
+   {
+    "hour": 21,
+    "fireflyPct": 20.6,
+    "weights": {
+     "gift": 22,
+     "meteor": 10,
+     "rainbow": 4,
+     "firefly_walk": 14,
+     "treasure": 18
+    }
+   },
+   {
+    "hour": 22,
+    "fireflyPct": 28,
+    "weights": {
+     "gift": 22,
+     "meteor": 10,
+     "rainbow": 4,
+     "firefly_walk": 14
+    }
+   }
+  ],
+  "sharePct": {
+   "gift": 35.68,
+   "rainbow": 6.49,
+   "firefly_walk": 22.7,
+   "treasure": 24.32,
+   "meteor": 10.81
+  }
+ },
+ "clock": [
+  {
+   "id": "CG-18 回撥 119s",
+   "expect": "唔篡改",
+   "pass": true,
+   "sup": false,
+   "lastSaveTimeDeltaMs": 0,
+   "rollbacks": 0,
+   "noDrawDay": null,
+   "grainsDelta": 3
+  },
+  {
+   "id": "CG-19 回撥 120s",
+   "expect": "唔篡改",
+   "pass": true,
+   "sup": false,
+   "lastSaveTimeDeltaMs": 0,
+   "rollbacks": 0,
+   "noDrawDay": null,
+   "grainsDelta": 3
+  },
+  {
+   "id": "CG-21 回撥 121s",
+   "expect": "篡改、lastSaveTime 唔變、suppressed",
+   "pass": true,
+   "sup": true,
+   "lastSaveTimeDeltaMs": 0,
+   "rollbacks": 1,
+   "noDrawDay": 20478,
+   "grainsDelta": 0
+  },
+  {
+   "id": "CG-18b 追回後當日抽唔抽",
+   "expect": "當日有事件",
+   "pass": true,
+   "events": 2,
+   "sup": false,
+   "sample": [
+    "treasure",
+    "rainbow"
+   ],
+   "grainsDelta": 16
+  },
+  {
+   "id": "CG-19b 追回後當日抽唔抽",
+   "expect": "當日有事件",
+   "pass": true,
+   "events": 2,
+   "sup": false,
+   "sample": [
+    "treasure",
+    "rainbow"
+   ],
+   "grainsDelta": 16
+  },
+  {
+   "id": "CG-21b 追回後當日抽唔抽",
+   "expect": "當日 0 事件",
+   "pass": false,
+   "events": 2,
+   "sup": true,
+   "sample": [
+    "treasure",
+    "firefly_walk"
+   ],
+   "grainsDelta": 15
+  },
+  {
+   "id": "CG-15 lastSaveTime=now+23h59m",
+   "expect": "仍有效＝判篡改、唔重設、該次唔派離線獎",
+   "pass": true,
+   "reset": false,
+   "tampered": false,
+   "sup": true,
+   "gift": 0,
+   "T": 0,
+   "lastSaveUnchanged": true,
+   "grainsDelta": 0
+  },
+  {
+   "id": "CG-16 lastSaveTime=now+24h00m00s",
+   "expect": "剛好 24h 仍然有效＝篡改、唔重設",
+   "pass": true,
+   "reset": false,
+   "sup": true,
+   "tampered": false,
+   "grainsDelta": 0
+  },
+  {
+   "id": "CG-17 lastSaveTime=now+24h00m10s",
+   "expect": "無效→重設為 now、離線段 T=0 唔派離線獎、唔再鎖",
+   "pass": true,
+   "tampered": true,
+   "gift": 0,
+   "T": 0,
+   "grainsAfterOffline": 0,
+   "grainsAfterNoteOpen": 3,
+   "noteOpenEvent": "gift",
+   "sup": false,
+   "lastSaveIsNow": true,
+   "resets": 1,
+   "grainsDelta": 3
+  },
+  {
+   "id": "CG-08 lastSaveTime=now+25h",
+   "expect": "+25h 無效重設、10h 缺口唔派離線獎；下一次開 app 唔再被鎖",
+   "pass": true,
+   "tampered": true,
+   "gift": 0,
+   "T": 0,
+   "grainsAfterOffline": 0,
+   "grainsAfterNote": 3,
+   "noteOpenEvent": "gift",
+   "supAfter": false,
+   "nextTampered": false,
+   "nextTh": 8,
+   "grainsDelta": 16
+  },
+  {
+   "id": "CG-10 DST 秋季回撥（美東）",
+   "expect": "UTC 05:30→06:10 唔篡改（牆鐘 01:30→01:10 會誤判）",
+   "pass": true,
+   "sup": false,
+   "rollbacks": 0,
+   "wallEDT": "01:30",
+   "wallEST": "01:10",
+   "utcDeltaMin": 40,
+   "grainsDelta": 5
+  },
+  {
+   "id": "CG-11 DST 春季前撥（美東）",
+   "expect": "UTC 正常前進，唔篡改",
+   "pass": true,
+   "sup": false,
+   "wallA": "01:30",
+   "wallB": "03:30",
+   "grainsDelta": 5
+  },
+  {
+   "id": "CG-09 時區 HKT→UTC−8（UTC 只 +60s）",
+   "expect": "UTC 前進 60s 唔篡改；牆鐘由 10:00 變 19:00（前日）亦唔判",
+   "pass": true,
+   "sup": false,
+   "wallHKT": "10:00",
+   "wallLA": "19:01",
+   "grainsDelta": 3
+  },
+  {
+   "id": "CG-12 NTP 回撥 30s",
+   "expect": "30s 唔篡改",
+   "pass": true,
+   "sup": false,
+   "grainsDelta": 3
+  }
+ ],
+ "diary": [
+  {
+   "id": "FF-12/13 日記螢火 ×25",
+   "pass": true,
+   "got": {
+    "n": 20,
+    "grains": 60,
+    "mood": 0,
+    "left": 5,
+    "capped": true
+   },
+   "left": 5,
+   "mood": 90
+  },
+  {
+   "id": "FF-12 餘 5 條",
+   "pass": true,
+   "got": {
+    "n": 5,
+    "grains": 15,
+    "mood": 0,
+    "left": 0,
+    "capped": false
+   }
+  },
+  {
+   "id": "DT 第12日起提示條數",
+   "pass": true,
+   "warn": 2,
+   "note": "API 只回條數，文案唔分「2 日後／1 日後」"
+  },
+  {
+   "id": "DY 14.0 日保留、超過先刪",
+   "pass": true,
+   "gone": 0,
+   "left": 3
+  },
+  {
+   "id": "DY 14日+0.01h 作廢",
+   "pass": true,
+   "gone": 1
+  },
+  {
+   "id": "EV-22 損毀日記／已領旗",
+   "pass": true,
+   "crashes": [
+    {
+     "label": "diary 字串",
+     "threw": false
+    },
+    {
+     "label": "diary [null]",
+     "threw": false
+    },
+    {
+     "label": "diary 正常",
+     "threw": false
+    },
+    {
+     "label": "stats 缺 byId",
+     "threw": false
+    },
+    {
+     "label": "claimedFlashDates 數字",
+     "threw": false
+    }
+   ]
+  },
+  {
+   "id": "deserialize 壞 JSON／缺 needs",
+   "pass": true,
+   "bad": true,
+   "bad2": true,
+   "hunger": 10,
+   "lastSaveTime": "nope"
+  }
+ ],
+ "behavior": [
+  {
+   "id": "tapPet(5) 同一幀（<10秒）→ 鬧脾氣事件 48h",
+   "pass": true,
+   "state": "grumpy",
+   "tantrumReq": 1,
+   "event": "grumpy",
+   "cdH": 48
+  },
+  {
+   "id": "睡眠 lightWake：睏睏、唔鬧脾氣、唔扣需求",
+   "pass": true,
+   "sleeping": false,
+   "lightWake": 1,
+   "expr": "tired",
+   "state": "wake",
+   "needsSame": true
+  },
+  {
+   "id": "睡眠中連點 5 下：只翻身、唔鬧脾氣、唔扣需求",
+   "pass": true,
+   "state": "simsleep",
+   "stir": 5,
+   "tantrum": 0,
+   "needsSame": true
+  }
+ ],
+ "onlineCap": {
+  "id": "上線傍晚池抽取封頂 4（5 個事件喺時段內）",
+  "pass": true,
+  "max": 4,
+  "by": {
+   "2026-01-05": 4
+  },
+  "dayCount": 4,
+  "dailyMax": 4,
+  "eligible": [
+   "gift",
+   "meteor",
+   "rainbow",
+   "firefly_walk",
+   "treasure"
+  ],
+  "hours": 2.5
+ },
+ "rewind": {
+  "id": "回撥 30 分鐘期間 save 拉低 lastSeen，恢復後派離線禮物",
+  "pass": false,
+  "lastSaveTimeUnchanged": true,
+  "Tmin": 30,
+  "gift": 1,
+  "sup": false,
+  "note": "期望：篡改期間唔好用被拉低嘅 lastSeen 派離線禮物。pass＝恢復後禮物 0。"
+ },
+ "cold14": {
+  "n": 1000,
+  "nDays": 14,
+  "diaryMean": 30.64,
+  "diaryMed": 31,
+  "diaryP95": 37,
+  "diaryMax": 41,
+  "diaryMin": 19,
+  "totMean": 32.64,
+  "totMed": 33,
+  "totMax": 43,
+  "perDay": 2.331,
+  "offlineDayMax": 4,
+  "daysOver4": 0,
+  "rareFail": 0,
+  "popOver": 0,
+  "tsCollapsed": 0,
+  "claimGrainsMean": 91.92,
+  "diaryCap": 50,
+  "dailyMax": 4
+ },
+ "absence": {
+  "1": {
+   "n": 40,
+   "gen": 3.15,
+   "popups": 1.82,
+   "diaryNew": 1.32,
+   "maxPop": 2,
+   "popOver": 0,
+   "rareViol": 0,
+   "EHours": 12,
+   "THours": 34.93,
+   "capped": 0,
+   "tsCollapsed": 0,
+   "sampleOrder": [
+    "butterfly/d",
+    "sleeptalk/p",
+    "gift/p"
+   ],
+   "sample": {
+    "nDays": 1,
+    "gen": 3,
+    "popups": 2,
+    "diaryNew": 1,
+    "diaryTotal": 1,
+    "diaryBefore": 0,
+    "maxPopOk": true,
+    "rareViol": false,
+    "rareExpect": [
+     "gift",
+     "sleeptalk"
+    ],
+    "rareGot": [
+     "sleeptalk",
+     "gift"
+    ],
+    "order": [
+     "butterfly/d",
+     "sleeptalk/p",
+     "gift/p"
+    ],
+    "gift": 10,
+    "tampered": false,
+    "EHours": 12,
+    "THours": 34.35,
+    "diaryTsUnique": 1,
+    "diaryTsAllEqualReturn": false,
+    "diaryAgeDaysMax": 0.772,
+    "offLogCap": false
+   }
+  },
+  "3": {
+   "n": 40,
+   "gen": 7.33,
+   "popups": 2,
+   "diaryNew": 5.33,
+   "maxPop": 2,
+   "popOver": 0,
+   "rareViol": 0,
+   "EHours": 12,
+   "THours": 82.86,
+   "capped": 0,
+   "tsCollapsed": 0,
+   "sampleOrder": [
+    "sleeptalk/d",
+    "sleeptalk/d",
+    "gift/d",
+    "treasure/d",
+    "rainbow/p",
+    "meteor/p",
+    "butterfly/d",
+    "gift/d",
+    "firefly_walk/d"
+   ],
+   "sample": {
+    "nDays": 3,
+    "gen": 9,
+    "popups": 2,
+    "diaryNew": 7,
+    "diaryTotal": 7,
+    "diaryBefore": 0,
+    "maxPopOk": true,
+    "rareViol": false,
+    "rareExpect": [
+     "meteor",
+     "rainbow"
+    ],
+    "rareGot": [
+     "rainbow",
+     "meteor"
+    ],
+    "order": [
+     "sleeptalk/d",
+     "sleeptalk/d",
+     "gift/d",
+     "treasure/d",
+     "rainbow/p",
+     "meteor/p",
+     "butterfly/d",
+     "gift/d",
+     "firefly_walk/d"
+    ],
+    "gift": 10,
+    "tampered": false,
+    "EHours": 12,
+    "THours": 82.53,
+    "diaryTsUnique": 7,
+    "diaryTsAllEqualReturn": false,
+    "diaryAgeDaysMax": 3.202,
+    "offLogCap": false
+   }
+  },
+  "7": {
+   "n": 40,
+   "gen": 17.35,
+   "popups": 2,
+   "diaryNew": 15.35,
+   "maxPop": 2,
+   "popOver": 0,
+   "rareViol": 0,
+   "EHours": 12,
+   "THours": 179.1,
+   "capped": 0,
+   "tsCollapsed": 0,
+   "sampleOrder": [
+    "sleeptalk/d",
+    "treasure/d",
+    "butterfly/d",
+    "gift/d",
+    "treasure/d",
+    "butterfly/d",
+    "gift/d",
+    "meteor/p",
+    "treasure/d",
+    "gift/d",
+    "rainbow/p",
+    "firefly_walk/d",
+    "sleeptalk/d",
+    "gift/d",
+    "sleeptalk/d",
+    "treasure/d",
+    "firefly_walk/d",
+    "butterfly/d"
+   ],
+   "sample": {
+    "nDays": 7,
+    "gen": 18,
+    "popups": 2,
+    "diaryNew": 16,
+    "diaryTotal": 16,
+    "diaryBefore": 0,
+    "maxPopOk": true,
+    "rareViol": false,
+    "rareExpect": [
+     "rainbow",
+     "meteor"
+    ],
+    "rareGot": [
+     "meteor",
+     "rainbow"
+    ],
+    "order": [
+     "sleeptalk/d",
+     "treasure/d",
+     "butterfly/d",
+     "gift/d",
+     "treasure/d",
+     "butterfly/d",
+     "gift/d",
+     "meteor/p",
+     "treasure/d",
+     "gift/d",
+     "rainbow/p",
+     "firefly_walk/d",
+     "sleeptalk/d",
+     "gift/d",
+     "sleeptalk/d",
+     "treasure/d",
+     "firefly_walk/d",
+     "butterfly/d"
+    ],
+    "gift": 10,
+    "tampered": false,
+    "EHours": 12,
+    "THours": 178.06,
+    "diaryTsUnique": 16,
+    "diaryTsAllEqualReturn": false,
+    "diaryAgeDaysMax": 7.1,
+    "offLogCap": false
+   }
+  },
+  "14": {
+   "n": 40,
+   "gen": 32.48,
+   "popups": 2,
+   "diaryNew": 30.48,
+   "maxPop": 2,
+   "popOver": 0,
+   "rareViol": 0,
+   "EHours": 12,
+   "THours": 346.75,
+   "capped": 0,
+   "tsCollapsed": 0,
+   "sampleOrder": [
+    "treasure/d",
+    "rainbow/d",
+    "gift/d",
+    "sleeptalk/d",
+    "treasure/d",
+    "butterfly/d",
+    "firefly_walk/d",
+    "meteor/d",
+    "gift/d",
+    "treasure/d",
+    "sleeptalk/d",
+    "firefly_walk/d",
+    "gift/d",
+    "butterfly/d",
+    "firefly_walk/d",
+    "sleeptalk/d",
+    "meteor/d",
+    "treasure/d",
+    "gift/d",
+    "sleeptalk/d",
+    "firefly_walk/d",
+    "butterfly/d",
+    "sleeptalk/d",
+    "gift/d",
+    "treasure/d",
+    "firefly_walk/d",
+    "meteor/p",
+    "butterfly/d",
+    "sleeptalk/d",
+    "gift/d",
+    "treasure/d",
+    "sleeptalk/d",
+    "butterfly/d",
+    "butterfly/d",
+    "treasure/d",
+    "gift/d",
+    "meteor/p",
+    "sleeptalk/d"
+   ],
+   "sample": {
+    "nDays": 14,
+    "gen": 38,
+    "popups": 2,
+    "diaryNew": 36,
+    "diaryTotal": 36,
+    "diaryBefore": 0,
+    "maxPopOk": true,
+    "rareViol": false,
+    "rareExpect": [
+     "meteor",
+     "meteor"
+    ],
+    "rareGot": [
+     "meteor",
+     "meteor"
+    ],
+    "order": [
+     "treasure/d",
+     "rainbow/d",
+     "gift/d",
+     "sleeptalk/d",
+     "treasure/d",
+     "butterfly/d",
+     "firefly_walk/d",
+     "meteor/d",
+     "gift/d",
+     "treasure/d",
+     "sleeptalk/d",
+     "firefly_walk/d",
+     "gift/d",
+     "butterfly/d",
+     "firefly_walk/d",
+     "sleeptalk/d",
+     "meteor/d",
+     "treasure/d",
+     "gift/d",
+     "sleeptalk/d",
+     "firefly_walk/d",
+     "butterfly/d",
+     "sleeptalk/d",
+     "gift/d",
+     "treasure/d",
+     "firefly_walk/d",
+     "meteor/p",
+     "butterfly/d",
+     "sleeptalk/d",
+     "gift/d",
+     "treasure/d",
+     "sleeptalk/d",
+     "butterfly/d",
+     "butterfly/d",
+     "treasure/d",
+     "gift/d",
+     "meteor/p",
+     "sleeptalk/d"
+    ],
+    "gift": 10,
+    "tampered": false,
+    "EHours": 12,
+    "THours": 346.19,
+    "diaryTsUnique": 36,
+    "diaryTsAllEqualReturn": false,
+    "diaryAgeDaysMax": 13.931,
+    "offLogCap": false
+   }
+  },
+  "21": {
+   "n": 40,
+   "gen": 33.77,
+   "popups": 2,
+   "diaryNew": 31.77,
+   "maxPop": 2,
+   "popOver": 0,
+   "rareViol": 0,
+   "EHours": 12,
+   "THours": 514.98,
+   "capped": 0,
+   "tsCollapsed": 0,
+   "sampleOrder": [
+    "butterfly/d",
+    "treasure/d",
+    "sleeptalk/d",
+    "gift/d",
+    "treasure/d",
+    "meteor/d",
+    "sleeptalk/d",
+    "treasure/d",
+    "gift/d",
+    "gift/d",
+    "firefly_walk/d",
+    "sleeptalk/d",
+    "gift/d",
+    "firefly_walk/d",
+    "butterfly/d",
+    "gift/d",
+    "treasure/d",
+    "gift/d",
+    "meteor/d",
+    "treasure/d",
+    "rainbow/p",
+    "butterfly/d",
+    "gift/d",
+    "meteor/p",
+    "butterfly/d",
+    "treasure/d",
+    "sleeptalk/d",
+    "gift/d",
+    "treasure/d",
+    "sleeptalk/d"
+   ],
+   "sample": {
+    "nDays": 21,
+    "gen": 30,
+    "popups": 2,
+    "diaryNew": 28,
+    "diaryTotal": 28,
+    "diaryBefore": 0,
+    "maxPopOk": true,
+    "rareViol": false,
+    "rareExpect": [
+     "meteor",
+     "rainbow"
+    ],
+    "rareGot": [
+     "rainbow",
+     "meteor"
+    ],
+    "order": [
+     "butterfly/d",
+     "treasure/d",
+     "sleeptalk/d",
+     "gift/d",
+     "treasure/d",
+     "meteor/d",
+     "sleeptalk/d",
+     "treasure/d",
+     "gift/d",
+     "gift/d",
+     "firefly_walk/d",
+     "sleeptalk/d",
+     "gift/d",
+     "firefly_walk/d",
+     "butterfly/d",
+     "gift/d",
+     "treasure/d",
+     "gift/d",
+     "meteor/d",
+     "treasure/d",
+     "rainbow/p",
+     "butterfly/d",
+     "gift/d",
+     "meteor/p",
+     "butterfly/d",
+     "treasure/d",
+     "sleeptalk/d",
+     "gift/d",
+     "treasure/d",
+     "sleeptalk/d"
+    ],
+    "gift": 10,
+    "tampered": false,
+    "EHours": 12,
+    "THours": 517.98,
+    "diaryTsUnique": 28,
+    "diaryTsAllEqualReturn": false,
+    "diaryAgeDaysMax": 13.91,
+    "offLogCap": false
+   }
+  },
+  "30": {
+   "n": 40,
+   "gen": 33.4,
+   "popups": 2,
+   "diaryNew": 31.4,
+   "maxPop": 2,
+   "popOver": 0,
+   "rareViol": 0,
+   "EHours": 12,
+   "THours": 730.96,
+   "capped": 0,
+   "tsCollapsed": 0,
+   "sampleOrder": [
+    "treasure/d",
+    "gift/d",
+    "treasure/d",
+    "meteor/d",
+    "sleeptalk/d",
+    "gift/d",
+    "treasure/d",
+    "sleeptalk/d",
+    "butterfly/d",
+    "treasure/d",
+    "butterfly/d",
+    "firefly_walk/d",
+    "gift/d",
+    "firefly_walk/d",
+    "meteor/d",
+    "sleeptalk/d",
+    "firefly_walk/d",
+    "gift/d",
+    "treasure/d",
+    "butterfly/d",
+    "rainbow/p",
+    "gift/d",
+    "treasure/d",
+    "firefly_walk/d",
+    "sleeptalk/d",
+    "butterfly/d",
+    "gift/d",
+    "treasure/d",
+    "rainbow/p"
+   ],
+   "sample": {
+    "nDays": 30,
+    "gen": 29,
+    "popups": 2,
+    "diaryNew": 27,
+    "diaryTotal": 27,
+    "diaryBefore": 0,
+    "maxPopOk": true,
+    "rareViol": false,
+    "rareExpect": [
+     "rainbow",
+     "rainbow"
+    ],
+    "rareGot": [
+     "rainbow",
+     "rainbow"
+    ],
+    "order": [
+     "treasure/d",
+     "gift/d",
+     "treasure/d",
+     "meteor/d",
+     "sleeptalk/d",
+     "gift/d",
+     "treasure/d",
+     "sleeptalk/d",
+     "butterfly/d",
+     "treasure/d",
+     "butterfly/d",
+     "firefly_walk/d",
+     "gift/d",
+     "firefly_walk/d",
+     "meteor/d",
+     "sleeptalk/d",
+     "firefly_walk/d",
+     "gift/d",
+     "treasure/d",
+     "butterfly/d",
+     "rainbow/p",
+     "gift/d",
+     "treasure/d",
+     "firefly_walk/d",
+     "sleeptalk/d",
+     "butterfly/d",
+     "gift/d",
+     "treasure/d",
+     "rainbow/p"
+    ],
+    "gift": 10,
+    "tampered": false,
+    "EHours": 12,
+    "THours": 730.07,
+    "diaryTsUnique": 27,
+    "diaryTsAllEqualReturn": false,
+    "diaryAgeDaysMax": 13.771,
+    "offLogCap": false
+   }
+  }
+ },
+ "shippedSummary": [
+  {
+   "profile": "diligent",
+   "name": "勤力 6次/日",
+   "seeds": 8,
+   "pool": [
+    2.219,
+    2.259,
+    2.234
+   ],
+   "total": [
+    2.649,
+    2.687,
+    2.666
+   ],
+   "grumpy": [
+    0.033,
+    0.044
+   ],
+   "guar": [
+    0.383,
+    0.412
+   ],
+   "zero": [
+    0,
+    0.2
+   ],
+   "zeroLimit": 1,
+   "rainbow": [
+    12.2,
+    13.82
+   ],
+   "shiny": [
+    2.6,
+    3.033
+   ],
+   "cdViol": 9,
+   "cdByKind": {
+    "guarantee": 8,
+    "flash": 1
+   },
+   "cdById": {
+    "flash": 9
+   },
+   "gapViol": 0,
+   "rareViol": 0,
+   "maxPop": 2,
+   "rollbacks": 0,
+   "fireflyOut": 7,
+   "maxOnlineDraws": 2,
+   "eveningShareAvg": {
+    "treasure": 20.57,
+    "gift": 23.09,
+    "rainbow": 12.11,
+    "firefly_walk": 37.24,
+    "meteor": 6.83,
+    "grumpy": 0.12,
+    "butterfly": 0.04
+   },
+   "eveningNSeed7": 1865,
+   "seed7": {
+    "pool": 2.2443,
+    "total": 2.665,
+    "grumpy": 0.0333,
+    "guar": 0.3873,
+    "zero": 0.033,
+    "rainbow": 13.51,
+    "shiny": 2.833,
+    "eveningShare": {
+     "treasure": 20.21,
+     "gift": 22.79,
+     "rainbow": 11.9,
+     "firefly_walk": 37.43,
+     "meteor": 7.4,
+     "grumpy": 0.16,
+     "butterfly": 0.11
+    },
+    "eveningN": 1865,
+    "minGapMin": 22.5,
+    "cdSamples": [
+     {
+      "id": "flash",
+      "kind": "guarantee",
+      "gapH": 47.537,
+      "needH": 72
+     },
+     {
+      "id": "flash",
+      "kind": "guarantee",
+      "gapH": 47.72,
+      "needH": 72
+     }
+    ],
+    "gapSamples": [],
+    "rareSamples": []
+   }
+  },
+  {
+   "profile": "normal",
+   "name": "一般 4次/日",
+   "seeds": 8,
+   "pool": [
+    2.197,
+    2.254,
+    2.231
+   ],
+   "total": [
+    2.652,
+    2.704,
+    2.686
+   ],
+   "grumpy": [
+    0.079,
+    0.09
+   ],
+   "guar": [
+    0.365,
+    0.379
+   ],
+   "zero": [
+    0.067,
+    0.267
+   ],
+   "zeroLimit": 1,
+   "rainbow": [
+    12.1,
+    13.89
+   ],
+   "shiny": [
+    2.601,
+    3.036
+   ],
+   "cdViol": 8,
+   "cdByKind": {
+    "guarantee": 8
+   },
+   "cdById": {
+    "flash": 8
+   },
+   "gapViol": 0,
+   "rareViol": 0,
+   "maxPop": 2,
+   "rollbacks": 0,
+   "fireflyOut": 9,
+   "maxOnlineDraws": 2,
+   "eveningShareAvg": {
+    "treasure": 20.16,
+    "firefly_walk": 35.2,
+    "gift": 22.53,
+    "rainbow": 11.9,
+    "meteor": 6.34,
+    "grumpy": 3.83,
+    "butterfly": 0.03
+   },
+   "eveningNSeed7": 1901,
+   "seed7": {
+    "pool": 2.1973,
+    "total": 2.652,
+    "grumpy": 0.084,
+    "guar": 0.3707,
+    "zero": 0.067,
+    "rainbow": 12.1,
+    "shiny": 2.834,
+    "eveningShare": {
+     "treasure": 22.46,
+     "firefly_walk": 32.46,
+     "gift": 21.2,
+     "rainbow": 13.05,
+     "meteor": 6.68,
+     "grumpy": 4.16
+    },
+    "eveningN": 1901,
+    "minGapMin": 20.36,
+    "cdSamples": [],
+    "gapSamples": [],
+    "rareSamples": []
+   }
+  },
+  {
+   "profile": "office",
+   "name": "上班族 3次/日",
+   "seeds": 8,
+   "pool": [
+    2.227,
+    2.257,
+    2.235
+   ],
+   "total": [
+    2.674,
+    2.697,
+    2.686
+   ],
+   "grumpy": [
+    0.111,
+    0.125
+   ],
+   "guar": [
+    0.322,
+    0.343
+   ],
+   "zero": [
+    0.1,
+    0.3
+   ],
+   "zeroLimit": 1,
+   "rainbow": [
+    12.71,
+    14.42
+   ],
+   "shiny": [
+    2.606,
+    3.035
+   ],
+   "cdViol": 10,
+   "cdByKind": {
+    "flash": 3,
+    "guarantee": 7
+   },
+   "cdById": {
+    "flash": 10
+   },
+   "gapViol": 0,
+   "rareViol": 0,
+   "maxPop": 2,
+   "rollbacks": 0,
+   "fireflyOut": 7,
+   "maxOnlineDraws": 1,
+   "eveningShareAvg": {
+    "grumpy": 13.4,
+    "rainbow": 10.16,
+    "firefly_walk": 31.06,
+    "gift": 20.39,
+    "treasure": 19.55,
+    "meteor": 5.41,
+    "butterfly": 0.03
+   },
+   "eveningNSeed7": 2284,
+   "seed7": {
+    "pool": 2.2343,
+    "total": 2.6923,
+    "grumpy": 0.1147,
+    "guar": 0.3433,
+    "zero": 0.234,
+    "rainbow": 12.82,
+    "shiny": 2.838,
+    "eveningShare": {
+     "grumpy": 12.78,
+     "rainbow": 10.25,
+     "firefly_walk": 30.65,
+     "gift": 20.84,
+     "treasure": 19.53,
+     "meteor": 5.87,
+     "butterfly": 0.09
+    },
+    "eveningN": 2284,
+    "minGapMin": 20.09,
+    "cdSamples": [
+     {
+      "id": "flash",
+      "kind": "flash",
+      "gapH": 48.003,
+      "needH": 72
+     }
+    ],
+    "gapSamples": [],
+    "rareSamples": []
+   }
+  },
+  {
+   "profile": "light",
+   "name": "輕度 2次/日",
+   "seeds": 8,
+   "pool": [
+    2.228,
+    2.261,
+    2.241
+   ],
+   "total": [
+    2.679,
+    2.718,
+    2.693
+   ],
+   "grumpy": [
+    0.125,
+    0.142
+   ],
+   "guar": [
+    0.311,
+    0.327
+   ],
+   "zero": [
+    0.443,
+    0.548
+   ],
+   "zeroLimit": 3,
+   "rainbow": [
+    12.61,
+    15
+   ],
+   "shiny": [
+    2.52,
+    2.95
+   ],
+   "cdViol": 7,
+   "cdByKind": {
+    "guarantee": 7
+   },
+   "cdById": {
+    "flash": 7
+   },
+   "gapViol": 0,
+   "rareViol": 0,
+   "maxPop": 2,
+   "rollbacks": 0,
+   "fireflyOut": 8,
+   "maxOnlineDraws": 1,
+   "eveningShareAvg": {
+    "firefly_walk": 32.15,
+    "grumpy": 12.47,
+    "meteor": 5.96,
+    "rainbow": 9.87,
+    "treasure": 17.87,
+    "gift": 21.65,
+    "butterfly": 0.03
+   },
+   "eveningNSeed7": 2138,
+   "seed7": {
+    "pool": 2.2397,
+    "total": 2.6913,
+    "grumpy": 0.1317,
+    "guar": 0.32,
+    "zero": 0.477,
+    "rainbow": 15,
+    "shiny": 2.825,
+    "eveningShare": {
+     "firefly_walk": 32.04,
+     "grumpy": 12.54,
+     "meteor": 5.99,
+     "rainbow": 9.35,
+     "treasure": 18.57,
+     "gift": 21.52
+    },
+    "eveningN": 2138,
+    "minGapMin": 20.13,
+    "cdSamples": [
+     {
+      "id": "flash",
+      "kind": "guarantee",
+      "gapH": 71.405,
+      "needH": 72
+     }
+    ],
+    "gapSamples": [],
+    "rareSamples": []
+   }
+  },
+  {
+   "profile": "early",
+   "name": "早鳥朝午",
+   "seeds": 8,
+   "pool": [
+    2.174,
+    2.226,
+    2.207
+   ],
+   "total": [
+    2.689,
+    2.734,
+    2.719
+   ],
+   "grumpy": [
+    0.138,
+    0.157
+   ],
+   "guar": [
+    0.357,
+    0.373
+   ],
+   "zero": [
+    0.135,
+    0.269
+   ],
+   "zeroLimit": 3,
+   "rainbow": [
+    12.61,
+    15.46
+   ],
+   "shiny": [
+    2.564,
+    3.037
+   ],
+   "cdViol": 10,
+   "cdByKind": {
+    "guarantee": 10
+   },
+   "cdById": {
+    "flash": 10
+   },
+   "gapViol": 0,
+   "rareViol": 0,
+   "maxPop": 2,
+   "rollbacks": 0,
+   "fireflyOut": 6,
+   "maxOnlineDraws": 1,
+   "eveningShareAvg": {
+    "treasure": 21.73,
+    "gift": 22.74,
+    "firefly_walk": 37.18,
+    "rainbow": 11.68,
+    "meteor": 6.64,
+    "butterfly": 0.03
+   },
+   "eveningNSeed7": 1862,
+   "seed7": {
+    "pool": 2.2227,
+    "total": 2.734,
+    "grumpy": 0.1457,
+    "guar": 0.3657,
+    "zero": 0.135,
+    "rainbow": 13.89,
+    "shiny": 2.861,
+    "eveningShare": {
+     "treasure": 21.32,
+     "gift": 22.61,
+     "firefly_walk": 37.86,
+     "rainbow": 11.6,
+     "meteor": 6.55,
+     "butterfly": 0.05
+    },
+    "eveningN": 1862,
+    "minGapMin": 20.05,
+    "cdSamples": [
+     {
+      "id": "flash",
+      "kind": "guarantee",
+      "gapH": 24.402,
+      "needH": 72
+     },
+     {
+      "id": "flash",
+      "kind": "guarantee",
+      "gapH": 24.013,
+      "needH": 72
+     }
+    ],
+    "gapSamples": [],
+    "rareSamples": []
+   }
+  },
+  {
+   "profile": "eod",
+   "name": "隔日 1次",
+   "seeds": 8,
+   "pool": [
+    2.291,
+    2.333,
+    2.312
+   ],
+   "total": [
+    2.471,
+    2.503,
+    2.488
+   ],
+   "grumpy": [
+    0.132,
+    0.14
+   ],
+   "guar": [
+    0.032,
+    0.048
+   ],
+   "zero": [
+    0,
+    0.067
+   ],
+   "zeroLimit": 1,
+   "rainbow": [
+    13.16,
+    15.71
+   ],
+   "shiny": [
+    2.2,
+    3.2
+   ],
+   "cdViol": 1,
+   "cdByKind": {
+    "guarantee": 1
+   },
+   "cdById": {
+    "flash": 1
+   },
+   "gapViol": 0,
+   "rareViol": 0,
+   "maxPop": 2,
+   "rollbacks": 0,
+   "fireflyOut": 3,
+   "maxOnlineDraws": 1,
+   "eveningShareAvg": {
+    "gift": 23.09,
+    "firefly_walk": 27.88,
+    "treasure": 18.2,
+    "meteor": 5.25,
+    "rainbow": 8.87,
+    "grumpy": 16.69,
+    "butterfly": 0.03
+   },
+   "eveningNSeed7": 2432,
+   "seed7": {
+    "pool": 2.331,
+    "total": 2.4967,
+    "grumpy": 0.1333,
+    "guar": 0.0323,
+    "zero": 0,
+    "rainbow": 15,
+    "shiny": 3.067,
+    "eveningShare": {
+     "gift": 22.9,
+     "firefly_walk": 28.91,
+     "treasure": 18.67,
+     "meteor": 4.85,
+     "rainbow": 8.22,
+     "grumpy": 16.45
+    },
+    "eveningN": 2432,
+    "minGapMin": 20.13,
+    "cdSamples": [],
+    "gapSamples": [],
+    "rareSamples": []
+   }
+  }
+ ],
+ "whatif": null,
+ "ms": 53971
+}
