@@ -32,289 +32,469 @@
   "face": "cyl",
   "shadow": true,
   "layer": "mid",
-  "note": "團絨用 atlas pivotPx 對準 (0,0,0)；1 px＝1 unit"
+  "billboard": true,
+  "radius": 10,
+  "dir4": "sprites/tuanrong/motion/dir4/atlas_radiant_dir4.json",
+  "note": "團絨係唯一 billboard（面向鏡頭）；用 atlas pivotPx 對準 (x,0,z)；1 px＝1 unit；可喺 XZ 自由行，唔可以入任何 footprint（外擴 pad＋radius）；4 方向幀見 dir4（按移動方向揀 front／back／side，向左 scaleX −1）"
  },
  "objects": [
   {
    "id": "tree",
-   "zh": "大樹（連鳥屋、垂藤）",
-   "file": "objects/tree.png",
-   "file3x": "objects/tree@3x.png",
+   "type": "mesh",
+   "zh": "大樹（樹幹立體＋鳥屋＋樹冠前後葉片卡）",
+   "mesh": "meshes/tree.json",
+   "glb": "meshes/tree.glb",
    "x": -88,
    "z": -44,
-   "w": 98,
-   "h": 242,
-   "pivot": [
-    0.2755,
-    0.9959
-   ],
-   "face": "cyl",
-   "shadow": true,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
    "layer": "mid",
-   "srcArt": {
-    "x0": -18,
-    "y0": 21,
-    "groundY": 262
+   "triangles": 32,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -98.0,
+     -78.0
+    ],
+    "z": [
+     -53,
+     -35
+    ],
+    "pad": 3
    }
   },
   {
    "id": "fence",
-   "zh": "籬笆＋灌木＋長春藤",
-   "file": "objects/fence.png",
-   "file3x": "objects/fence@3x.png",
+   "type": "mesh",
+   "zh": "籬笆（木板擠出厚 3）＋灌木／長春藤前後卡",
+   "mesh": "meshes/fence.json",
+   "glb": "meshes/fence.glb",
    "x": -29.0,
    "z": -52,
-   "w": 176,
-   "h": 36,
-   "pivot": [
-    0.5,
-    0.8333
-   ],
-   "face": "fixed",
-   "shadow": true,
-   "layer": "mid",
    "yawDeg": 0,
-   "srcArt": {
-    "x0": -20,
-    "y0": 232,
-    "groundY": 262
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 206,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -117.0,
+     59.0
+    ],
+    "z": [
+     -57,
+     -48
+    ],
+    "pad": 2
    }
   },
   {
    "id": "cottage",
-   "zh": "小屋（連窗台花箱）",
-   "file": "objects/cottage.png",
-   "file3x": "objects/cottage@3x.png",
+   "type": "mesh",
+   "zh": "小屋（立體盒：牆盒＋人字屋頂＋屋簷＋屋簷底＋門窗凹位＋花箱＋煙囪）",
+   "mesh": "meshes/cottage.json",
+   "glb": "meshes/cottage.glb",
    "x": 82.5,
-   "z": -50,
-   "w": 84,
-   "h": 130,
-   "pivot": [
-    0.4464,
-    1.0
-   ],
-   "face": "fixed",
-   "shadow": true,
-   "layer": "mid",
+   "z": -72.0,
    "yawDeg": 0,
-   "emissive": "objects/cottage_emissive.png",
-   "emissive3x": "objects/cottage_emissive@3x.png",
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 84,
    "emissiveLight": "window",
-   "srcArt": {
-    "x0": 142,
-    "y0": 132,
-    "groundY": 262
+   "footprint": {
+    "type": "rect",
+    "x": [
+     53.0,
+     112.0
+    ],
+    "z": [
+     -94.0,
+     -50.0
+    ],
+    "pad": 4
    }
   },
   {
    "id": "lanterns",
-   "zh": "旗串燈籠＋小燈泡",
-   "file": "objects/lanterns.png",
-   "file3x": "objects/lanterns@3x.png",
+   "type": "mesh",
+   "zh": "旗串：燈籠／燈泡擠出（厚 2–5，發光）＋鐵線旗（厚 1）",
+   "mesh": "meshes/lanterns.json",
+   "glb": "meshes/lanterns.glb",
    "x": -0.5,
    "z": -46,
-   "w": 121,
-   "h": 59,
-   "pivot": [
-    0.5,
-    1.0
-   ],
-   "face": "fixed",
-   "shadow": false,
-   "layer": "mid",
    "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 290,
    "y": 99,
-   "emissive": "objects/lanterns_emissive.png",
-   "emissive3x": "objects/lanterns_emissive@3x.png",
-   "emissiveLight": "lantern_1",
-   "srcArt": {
-    "x0": 36,
-    "y0": 104,
-    "groundY": null
-   }
+   "emissiveLight": "lantern_1"
   },
   {
    "id": "bed",
-   "zh": "菜畦（木框＋苗）",
-   "file": "objects/bed.png",
-   "file3x": "objects/bed@3x.png",
+   "type": "mesh",
+   "zh": "菜畦（木框盒＋泥面頂＋苗卡兩排）",
+   "mesh": "meshes/bed.json",
+   "glb": "meshes/bed.glb",
    "x": -47,
-   "z": -22,
-   "w": 68,
-   "h": 29,
-   "pivot": [
-    0.5,
-    1.0
-   ],
-   "face": "fixed",
-   "shadow": true,
-   "layer": "mid",
+   "z": -31.0,
    "yawDeg": 0,
-   "srcArt": {
-    "x0": 16,
-    "y0": 249,
-    "groundY": 278
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 18,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -81.0,
+     -13.0
+    ],
+    "z": [
+     -40.0,
+     -22.0
+    ],
+    "pad": 2
    }
   },
   {
    "id": "lamp",
-   "zh": "燈柱",
-   "file": "objects/lamp.png",
-   "file3x": "objects/lamp@3x.png",
+   "type": "mesh",
+   "zh": "燈柱（按行寬分段擠出；燈頭發光）",
+   "mesh": "meshes/lamp.json",
+   "glb": "meshes/lamp.glb",
    "x": -72.5,
    "z": 22,
-   "w": 14,
-   "h": 69,
-   "pivot": [
-    0.4643,
-    1.0
-   ],
-   "face": "cyl",
-   "shadow": true,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
    "layer": "mid",
-   "emissive": "objects/lamp_emissive.png",
-   "emissive3x": "objects/lamp_emissive@3x.png",
-   "emissiveLight": "lamp",
-   "srcArt": {
-    "x0": 18,
-    "y0": 237,
-    "groundY": 306
-   }
-  },
-  {
-   "id": "pot_L",
-   "zh": "花盆 L",
-   "file": "objects/pot_L.png",
-   "file3x": "objects/pot_L@3x.png",
-   "x": -81,
-   "z": 70,
-   "w": 20,
-   "h": 27,
-   "pivot": [
-    0.5,
-    0.963
-   ],
-   "face": "cyl",
-   "shadow": true,
-   "layer": "near",
-   "srcArt": {
-    "x0": 6,
-    "y0": 310,
-    "groundY": 336
-   }
-  },
-  {
-   "id": "pot_R",
-   "zh": "花盆 R",
-   "file": "objects/pot_R.png",
-   "file3x": "objects/pot_R@3x.png",
-   "x": 81,
-   "z": 54,
-   "w": 20,
-   "h": 27,
-   "pivot": [
-    0.5,
-    0.963
-   ],
-   "face": "cyl",
-   "shadow": true,
-   "layer": "near",
-   "srcArt": {
-    "x0": 168,
-    "y0": 300,
-    "groundY": 326
-   }
-  },
-  {
-   "id": "pot_S",
-   "zh": "花盆 S",
-   "file": "objects/pot_S.png",
-   "file3x": "objects/pot_S@3x.png",
-   "x": 49,
-   "z": 22,
-   "w": 14,
-   "h": 20,
-   "pivot": [
-    0.5,
-    0.95
-   ],
-   "face": "cyl",
-   "shadow": true,
-   "layer": "mid",
-   "srcArt": {
-    "x0": 139,
-    "y0": 287,
-    "groundY": 306
-   }
+   "triangles": 80,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -77.0,
+     -68.0
+    ],
+    "z": [
+     19,
+     25
+    ],
+    "pad": 2
+   },
+   "emissiveLight": "lamp"
   },
   {
    "id": "mushrooms",
-   "zh": "蘑菇叢",
-   "file": "objects/mushrooms.png",
-   "file3x": "objects/mushrooms@3x.png",
+   "type": "mesh",
+   "zh": "蘑菇叢（每朵擠出：菇傘闊、菇柄細）",
+   "mesh": "meshes/mushrooms.json",
+   "glb": "meshes/mushrooms.glb",
    "x": 71,
    "z": 24,
-   "w": 27,
-   "h": 14,
-   "pivot": [
-    0.4815,
-    1.0
-   ],
-   "face": "cyl",
-   "shadow": true,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
    "layer": "mid",
-   "srcArt": {
-    "x0": 155,
-    "y0": 293,
-    "groundY": 307
+   "triangles": 92,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     62.0,
+     82.0
+    ],
+    "z": [
+     20,
+     28
+    ],
+    "pad": 2
    }
   },
   {
    "id": "can",
-   "zh": "花灑",
-   "file": "objects/can.png",
-   "file3x": "objects/can@3x.png",
+   "type": "mesh",
+   "zh": "花灑（擠出；壺身厚、壺嘴薄）",
+   "mesh": "meshes/can.json",
+   "glb": "meshes/can.glb",
    "x": -39,
    "z": 42,
-   "w": 24,
-   "h": 15,
-   "pivot": [
-    0.2917,
-    1.0
-   ],
-   "face": "cyl",
-   "shadow": true,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
    "layer": "near",
-   "srcArt": {
-    "x0": 51,
-    "y0": 303,
-    "groundY": 318
+   "triangles": 124,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -46.0,
+     -30.0
+    ],
+    "z": [
+     37,
+     47
+    ],
+    "pad": 2
    }
   },
   {
    "id": "jar",
-   "zh": "螢火瓶",
-   "file": "objects/jar.png",
-   "file3x": "objects/jar@3x.png",
+   "type": "mesh",
+   "zh": "螢火瓶（擠出；發光）",
+   "mesh": "meshes/jar.json",
+   "glb": "meshes/jar.glb",
    "x": 35,
    "z": 22,
-   "w": 6,
-   "h": 11,
-   "pivot": [
-    0.5,
-    1.0
-   ],
-   "face": "cyl",
-   "shadow": true,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
    "layer": "mid",
-   "emissive": "objects/jar_emissive.png",
-   "emissive3x": "objects/jar_emissive@3x.png",
-   "emissiveLight": "jar",
-   "srcArt": {
-    "x0": 129,
-    "y0": 295,
-    "groundY": 306
+   "triangles": 20,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     32.0,
+     38.0
+    ],
+    "z": [
+     19,
+     25
+    ],
+    "pad": 2
+   },
+   "emissiveLight": "jar"
+  },
+  {
+   "id": "pot_L",
+   "type": "mesh",
+   "zh": "花盆 L（八角錐台＋泥面＋花苗交叉卡）",
+   "mesh": "meshes/pot_L.json",
+   "glb": "meshes/pot_L.glb",
+   "x": -81,
+   "z": 70,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "near",
+   "triangles": 32,
+   "footprint": {
+    "type": "poly",
+    "points": [
+     [
+      -81.0,
+      77.5
+     ],
+     [
+      -75.7,
+      75.3
+     ],
+     [
+      -73.5,
+      70.0
+     ],
+     [
+      -75.7,
+      64.7
+     ],
+     [
+      -81.0,
+      62.5
+     ],
+     [
+      -86.3,
+      64.7
+     ],
+     [
+      -88.5,
+      70.0
+     ],
+     [
+      -86.3,
+      75.3
+     ]
+    ],
+    "pad": 2
    }
+  },
+  {
+   "id": "pot_R",
+   "type": "mesh",
+   "zh": "花盆 R（八角錐台＋泥面＋花苗交叉卡）",
+   "mesh": "meshes/pot_R.json",
+   "glb": "meshes/pot_R.glb",
+   "x": 81,
+   "z": 54,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "near",
+   "triangles": 32,
+   "footprint": {
+    "type": "poly",
+    "points": [
+     [
+      81.0,
+      61.5
+     ],
+     [
+      86.3,
+      59.3
+     ],
+     [
+      88.5,
+      54.0
+     ],
+     [
+      86.3,
+      48.7
+     ],
+     [
+      81.0,
+      46.5
+     ],
+     [
+      75.7,
+      48.7
+     ],
+     [
+      73.5,
+      54.0
+     ],
+     [
+      75.7,
+      59.3
+     ]
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "pot_S",
+   "type": "mesh",
+   "zh": "花盆 S（八角錐台＋泥面＋花苗交叉卡）",
+   "mesh": "meshes/pot_S.json",
+   "glb": "meshes/pot_S.glb",
+   "x": 49,
+   "z": 22,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 32,
+   "footprint": {
+    "type": "poly",
+    "points": [
+     [
+      49.0,
+      27.0
+     ],
+     [
+      52.54,
+      25.54
+     ],
+     [
+      54.0,
+      22.0
+     ],
+     [
+      52.54,
+      18.46
+     ],
+     [
+      49.0,
+      17.0
+     ],
+     [
+      45.46,
+      18.46
+     ],
+     [
+      44.0,
+      22.0
+     ],
+     [
+      45.46,
+      25.54
+     ]
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "bush_bR",
+   "type": "mesh",
+   "zh": "屋後矮樹叢（±10° 先見）（交叉卡）",
+   "mesh": "meshes/bush_bR.json",
+   "glb": "meshes/bush_bR.glb",
+   "x": 82,
+   "z": -198,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 8,
+   "backfill": true
+  },
+  {
+   "id": "trees_bR",
+   "type": "mesh",
+   "zh": "屋後遠樹林剪影（±10° 先見）（交叉卡）",
+   "mesh": "meshes/trees_bR.json",
+   "glb": "meshes/trees_bR.glb",
+   "x": 95,
+   "z": -228,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 8,
+   "backfill": true
+  },
+  {
+   "id": "bush_bL",
+   "type": "mesh",
+   "zh": "屋後矮樹叢（±10° 先見）（交叉卡）",
+   "mesh": "meshes/bush_bL.json",
+   "glb": "meshes/bush_bL.glb",
+   "x": -132,
+   "z": -206,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 8,
+   "backfill": true
+  },
+  {
+   "id": "bush_bL2",
+   "type": "mesh",
+   "zh": "屋後矮樹叢（±10° 先見）（交叉卡）",
+   "mesh": "meshes/bush_bL2.json",
+   "glb": "meshes/bush_bL2.glb",
+   "x": -126,
+   "z": -176,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 8,
+   "backfill": true
+  },
+  {
+   "id": "trees_bL",
+   "type": "mesh",
+   "zh": "屋後遠樹林剪影（±10° 先見）（交叉卡）",
+   "mesh": "meshes/trees_bL.json",
+   "glb": "meshes/trees_bL.glb",
+   "x": -150,
+   "z": -262,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 8,
+   "backfill": true
   },
   {
    "id": "bg_sky",
@@ -334,7 +514,8 @@
    "shadow": false,
    "layer": "far",
    "unitsPerPx": 1.552,
-   "unlit": true
+   "unlit": true,
+   "type": "backdrop"
   },
   {
    "id": "bg_hills",
@@ -354,7 +535,8 @@
    "shadow": false,
    "layer": "far",
    "unitsPerPx": 1.397,
-   "unlit": true
+   "unlit": true,
+   "type": "backdrop"
   }
  ]
 }

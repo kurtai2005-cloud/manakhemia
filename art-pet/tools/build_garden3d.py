@@ -12,11 +12,14 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 sys.dont_write_bytecode = True
 import build_hd2d_scenes as B
 import build_garden_hd2d_v3 as G
+import garden3d_house as GH
+import garden3d_mesh as GM
+import garden3d_props as GP
 ART = os.path.abspath(f'{HERE}/..'); OUT = f'{ART}/scenes/garden3d/H1'
 KEY = 'H1'; S = 3; PADX = 64            # 加闊畫布（4 嘅倍數 → Bayer 抖動同原圖一致）
 FOOT = B.FOOT; GROUND_LINE = 262         # 後排物件（籬笆／屋／樹）接地 art y
 ZK = 1.6                                 # 前排 art y → 世界 z：z = (y − 292) × 1.6
-CAM = dict(target=[0, 30, -72], pitchDeg=30, dist=580, fovDeg=40, yawDeg=0, orbitMinDeg=-30, orbitMaxDeg=30, near=10, far=4000)
+CAM = dict(target=[0, 30, -72], pitchDeg=30, dist=580, fovDeg=40, yawDeg=0, orbitMinDeg=-10, orbitMaxDeg=10, near=10, far=4000)
 
 def save(a, p):
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -79,7 +82,7 @@ def capture():
 OBJ = {
  'tree':      dict(zh='大樹（連鳥屋、垂藤）', groundY=262, baseX=9,   z=-44, face='cyl',   shadow=True,  layer='mid', light=None),
  'fence':     dict(zh='籬笆＋灌木＋長春藤',   groundY=262, baseX=None, z=-52, face='fixed', shadow=True,  layer='mid', light=None),
- 'cottage':   dict(zh='小屋（連窗台花箱）',   groundY=262, baseX=179.5, z=-50, face='fixed', shadow=True, layer='mid', light='window'),
+ 'cottage':   dict(zh='小屋（連窗台花箱）',   groundY=262, baseX=179.5, z=-50, face='fixed', shadow=True, layer='mid', light='window', mesh=True),  # 立體 mesh：見 garden3d_house.py
  'lanterns':  dict(zh='旗串燈籠＋小燈泡',     groundY=None, baseX=None, z=-46, face='fixed', shadow=False, layer='mid', light='lantern_1'),
  'bed':       dict(zh='菜畦（木框＋苗）',     groundY=278, baseX=50,  z=None, face='fixed', shadow=True,  layer='mid', light=None),
  'lamp':      dict(zh='燈柱',                 groundY=306, baseX=24.5, z=None, face='cyl',  shadow=True,  layer='mid', light='lamp'),
@@ -93,10 +96,12 @@ OBJ = {
 EMI_COL = {'LAMP': '#ffd890', 'LANTERN': '#ff9a50', 'WIN': '#ffc870', 'BULB': '#ffe9a0', 'JAR': '#c8ffb0'}
 def zof(y): return int(round((y - FOOT[1]) * ZK))
 
-def billboards(cap, meta, lut, ok):
+def billboards(cap, meta, lut, ok, write=False):
+    """逐物件抽 2D 像素（同舊 billboard 一樣）→ parts[oid]＝(rgba, idx, emis, ent)，畀 garden3d_props 起 mesh；write＝True 先寫舊 billboard png。"""
     objs = []; parts = {}
     MX, MY = meta['MX'], meta['MY']
     for oid, M in OBJ.items():
+        if M.get('mesh'): continue                             # 大型建築改做立體 mesh（garden3d_house）
         m = cap[oid]; al = (m > 0) & ok[m]
         ys, xs = np.where(al); r0, r1, c0, c1 = ys.min(), ys.max()+1, xs.min(), xs.max()+1
         sub = m[r0:r1, c0:c1]; a = al[r0:r1, c0:c1]
@@ -114,16 +119,17 @@ def billboards(cap, meta, lut, ok):
             if mat not in B.IDX: continue
             k = np.isin(sub, B.IDX[mat]) & a
             if k.any(): e[k, :3] = (hx(col)*255+.5).astype(np.uint8); e[k, 3] = 255; has_e = True
-        f1 = f'objects/{oid}.png'; save(rgba, f'{OUT}/{f1}'); save(up3(rgba), f'{OUT}/objects/{oid}@3x.png')
-        ent = dict(id=oid, zh=M['zh'], file=f1, file3x=f'objects/{oid}@3x.png', x=round(bx - FOOT[0], 1), z=z, w=int(w), h=int(h),
+        f1 = f'objects/{oid}.png'
+        if write: save(rgba, f'{OUT}/{f1}'); save(up3(rgba), f'{OUT}/objects/{oid}@3x.png')
+        ent = dict(id=oid, type='billboard', zh=M['zh'], file=f1, file3x=f'objects/{oid}@3x.png', x=round(bx - FOOT[0], 1), z=z, w=int(w), h=int(h),
                    pivot=[pvx, pvy], face=M['face'], shadow=M['shadow'], layer=M['layer'])
         if M['face'] == 'fixed': ent['yawDeg'] = 0
         if yel: ent['y'] = int(yel)
         if has_e:
-            save(e, f'{OUT}/objects/{oid}_emissive.png'); save(up3(e), f'{OUT}/objects/{oid}_emissive@3x.png')
+            if write: save(e, f'{OUT}/objects/{oid}_emissive.png'); save(up3(e), f'{OUT}/objects/{oid}_emissive@3x.png')
             ent['emissive'] = f'objects/{oid}_emissive.png'; ent['emissive3x'] = f'objects/{oid}_emissive@3x.png'; ent['emissiveLight'] = M['light']
         ent['srcArt'] = dict(x0=int(ax0), y0=int(ay0), groundY=M['groundY'])
-        objs.append(ent); parts[oid] = rgba
+        objs.append(ent); parts[oid] = (rgba, sub, e if has_e else None, ent)
     return objs, parts
 
 # ---------------------------------------------------------------- ② 地面（俯視 256×256 units）
@@ -228,6 +234,13 @@ def ground_ao(objs, ring_st, aoctx):
     X3, Z3, occ, blob = aoctx
     for o in objs:
         if o['layer'] == 'far' or o.get('y'): continue
+        if o.get('type') == 'mesh':                            # 立體 mesh：footprint 四周接地 AO（多邊形用外接矩形）
+            if o.get('backfill') or not o.get('footprint'): continue
+            fp = o['footprint']
+            if fp['type'] == 'rect': fx, fz = fp['x'], fp['z']
+            else: P_ = np.array(fp['points']); fx, fz = [P_[:, 0].min(), P_[:, 0].max()], [P_[:, 1].min(), P_[:, 1].max()]
+            dx = np.maximum(np.maximum(fx[0] - X3, X3 - fx[1]), 0); dz = np.maximum(np.maximum(fz[0] - Z3, Z3 - fz[1]), 0)
+            occ[:] = np.maximum(occ, .5*np.exp(-np.hypot(dx, dz)/3.2)); continue
         if o['face'] == 'cyl':
             rx = {'tree': 11}.get(o['id'], max(4, min(o['w']*.42, 14))); blob(o['x'], o['z'], rx, rx*.7, .45)
         else:
@@ -268,8 +281,53 @@ def backdrops(idx, meta, lut, ok):
     for nm, z, zh in (('bg_sky', -470, '天空背景板（左右鏡像延伸，旁邊兩格冇太陽）'), ('bg_hills', -380, '遠山＋遠樹＋遠屋背景板')):
         h_px, w_px = out[nm].shape[:2]; sc = round((cz_cam - z)/CAM['dist'], 3)
         ents.append(dict(id=nm, zh=zh, file=f'backdrop/{nm}.png', file3x=f'backdrop/{nm}@3x.png', x=0, z=z, w=round(w_px*sc, 1), h=round(h_px*sc, 1),
-                         pivot=[0.5, 1.0], face='fixed', yawDeg=0, shadow=False, layer='far', unitsPerPx=sc, unlit=True))
+                         pivot=[0.5, 1.0], face='fixed', yawDeg=0, shadow=False, layer='far', unitsPerPx=sc, unlit=True, type='backdrop'))
     return ents, out
+
+
+# ---------------------------------------------------------------- ③b 屋後補位（擺鏡 ±10° 先會露出：矮樹叢＋遠樹林剪影）
+# 0° 時全部被屋／樹／籬笆擋住（preview 會出 0° 差異圖驗證），所以 0° 構圖同平面版一樣。
+BACKFILL = [  # id, kind, w, h, x, z, seed（位置用 preview 嘅可見度搜尋揀：0° 完全被擋／出框，±10° 露出）
+    ('bush_bR', 'bush', 32, 19, 82, -198, 11), ('trees_bR', 'trees', 46, 40, 95, -228, 21),     # 屋後（−10° 喺屋左邊露出）
+    ('bush_bL', 'bush', 28, 17, -132, -206, 12), ('bush_bL2', 'bush', 24, 15, -126, -176, 13),  # 大樹後（+10° 喺畫面左邊露出）
+    ('trees_bL', 'trees', 60, 48, -150, -262, 22),
+]
+def _bush(w, h, seed):
+    rng = np.random.default_rng(seed); m = np.zeros((h, w), np.uint8); Y, X = np.mgrid[0:h, 0:w].astype(float)
+    shape = np.zeros((h, w), bool); k = int(max(3, w//8))
+    for i in range(k):
+        cx = (i + .5)/k*w + rng.uniform(-2, 2); r = rng.uniform(.30, .45)*min(w, 2*h)*(.75 + .5*math.sin(math.pi*(i + .5)/k))
+        cy = h - r*.75; shape |= ((X + .5 - cx)/r)**2 + ((Y + .5 - cy)/(r*.85))**2 <= 1
+    shape[-2:] |= (X[-2:] > w*.08) & (X[-2:] < w*.92)
+    n = pnoise(max(w, h), max(4, max(w, h)//5), seed)[:h, :w]
+    f = np.clip(.25 + .55*(1 - Y/h) + .35*(n - .5), 0, 1)
+    mput(m, shape, 'LEAF', f, .5)
+    hl = shape & (rng.random((h, w)) < .06) & (Y < h*.6); mput(m, hl, 'LEAF', 1., 0)
+    if seed % 2: mput(m, shape & (rng.random((h, w)) < .025) & (Y < h*.7), 'BERRY', .6, 0)
+    return m
+def _trees(w, h, seed):
+    rng = np.random.default_rng(seed); m = np.zeros((h, w), np.uint8); Y, X = np.mgrid[0:h, 0:w].astype(float); shape = np.zeros((h, w), bool)
+    x = rng.uniform(4, 10)
+    while x < w - 4:
+        r = rng.uniform(8, 13)*min(1, h/48); top = rng.uniform(0, h*.35) + r; cy = top
+        shape |= ((X + .5 - x)/r)**2 + ((Y + .5 - cy)/(r*1.1))**2 <= 1
+        shape |= (np.abs(X + .5 - x) < r*.92) & (Y >= cy) & (Y < h)
+        x += r*rng.uniform(1.0, 1.5)
+    n = pnoise(max(w, h), 10, seed)[:h, :w]
+    mput(m, shape, 'LEAF', np.clip(.02 + .4*(1 - Y/h) + .3*(n - .5), 0, 1), .5)
+    mput(m, shape & (rng.random((h, w)) < .03) & (Y < h*.5), 'LEAF', .6, 0)
+    return m
+def backfill(lut, ok):
+    ents = {}
+    for oid, kind, w, h, x, z, seed in BACKFILL:
+        m = (_bush if kind == 'bush' else _trees)(w, h, seed); a = (m > 0) & ok[m]
+        rgba = np.zeros(m.shape + (4,), np.uint8); rgba[..., :3] = lut[m]; rgba[..., 3] = a*255; rgba[~a, :3] = 0
+        e = dict(id=oid, type='billboard', zh=('屋後矮樹叢（±10° 先見）' if kind == 'bush' else '屋後遠樹林剪影（±10° 先見）'),
+                 file=f'objects/{oid}.png', file3x=f'objects/{oid}@3x.png', x=x, z=z, w=w, h=h, pivot=[0.5, 1.0],
+                 face='cyl' if kind == 'bush' else 'fixed', shadow=False, layer='mid', backfill=True)
+        if kind != 'bush': e['yawDeg'] = 0
+        ents[oid] = (rgba, e)
+    return ents
 
 # ---------------------------------------------------------------- ④ lights / camera
 def lights_json(objs):
@@ -283,12 +341,15 @@ def lights_json(objs):
         L.append(dict(id=f'lantern_{i+1}', zh=f'旗串燈籠 {i+1}', x=lx-FOOT[0], y=GROUND_LINE-(ly+1), z=lan['z']+1, color='#ff9a50', radius=28,
                       intensity=0.0, intensityNight=0.7, flicker=0.12))
     a, b, c, d = B.LAYOUT['cottage']['window']
-    L.append(dict(id='window', zh='小屋窗', x=(a+c)/2-FOOT[0], y=GROUND_LINE-(b+d)/2, z=o['cottage']['z']+2, color='#ffc870', radius=48, intensity=0.0, intensityNight=0.8, flicker=0.02))
+    L.append(dict(id='window', zh='小屋窗', x=(a+c)/2-FOOT[0], y=GROUND_LINE-(b+d)/2, z=GH.ZF+2, color='#ffc870', radius=48, intensity=0.0, intensityNight=0.8, flicker=0.02))
+    L.append(dict(GH.LIGHT_SIDE))
     j = o['jar']; L.append(dict(id='jar', zh='螢火瓶', x=j['x'], y=5, z=j['z']+1, color='#c8ffb0', radius=22, intensity=0.0, intensityNight=0.6, flicker=0.25))
     sun = dict(dir=[0.42, -0.72, 0.55], color='#ffe6b8', intensity=1.0, ambient=dict(color='#cfe0f0', intensity=0.55),
                note='dir＝光行進方向（由太陽射向場景），已正規化；H1 太陽喺左後上方。')
     v = np.array(sun['dir']); sun['dir'] = [round(float(t), 4) for t in v/np.linalg.norm(v)]
-    return dict(variant=KEY, name='晨光暖調', lights=L, sun=sun,
+    fd = np.array([0.2, -0.12, -0.97]); fill = dict(dir=[round(float(t), 4) for t in fd/np.linalg.norm(fd)], color='#ffe2c4', intensity=0.38, intensityNight=0.0,
+        note='補光（方向光，唔投影）：由鏡頭方向略低照入去，補返背光嘅前牆（太陽喺左後上）；全場景 lit 物件都受，唔烘入貼圖')
+    return dict(variant=KEY, name='晨光暖調', lights=L, sun=sun, fill=fill,
                 night=dict(note='夜間測試用：sun.intensity 0.12、ambient #4a5a90 0.35、燈用 intensityNight', sun=0.12, ambient='#4a5a90', ambientIntensity=0.35),
                 fog=dict(color='#ffe8c8', near=420, far=1400))
 
@@ -345,7 +406,13 @@ def pet_normals():
 def build_all():
     lut, ok = graded_lut()
     cap, idx, meta = capture()
-    objs, parts = billboards(cap, meta, lut, ok)
+    import shutil
+    for d in ('objects', 'mesh', GP.REL):                     # 舊 billboard／舊 house_mesh 全部由 meshes/ 取代
+        if os.path.isdir(f'{OUT}/{d}'): shutil.rmtree(f'{OUT}/{d}')
+    _, parts = billboards(cap, meta, lut, ok)
+    parts['_backfill'] = backfill(lut, ok)
+    X = GP.Ctx(B, lut, ok, mput, pnoise); X.OUT = OUT
+    objs = GP.build_all(X, parts, GH.build_mesh(cap, meta, lut, ok, mput, GM))
     gm, ring_st, aoctx = ground(); T, _ = grass_tile()
     g1 = lut[gm]; save(g1, f'{OUT}/ground/ground.png'); save(up3(g1), f'{OUT}/ground/ground@3x.png')
     ao1, ao3 = ground_ao(objs, ring_st, aoctx); save(ao1, f'{OUT}/ground/ground_ao.png'); save(ao3, f'{OUT}/ground/ground_ao@3x.png')
@@ -357,7 +424,9 @@ def build_all():
                          size=[256, 256], center=[0, 0], uv='u=(x+128)/256，v=(z+128)/256（圖頂＝z −128，遠）', lit=True,
                          outerTile=dict(file='ground/ground_tile.png', file3x='ground/ground_tile@3x.png', size=[64, 64],
                                         note='256 片外圍用：以 (−128,−128) 對齊每 64 units 平鋪，同 256 片無縫（256 片底色就係呢個 tile ×4）；建議外圍平面 ≥ x ±640、z −480…+320')),
-             pet=dict(x=0, z=0, face='cyl', shadow=True, layer='mid', note='團絨用 atlas pivotPx 對準 (0,0,0)；1 px＝1 unit'),
+             pet=dict(x=0, z=0, face='cyl', shadow=True, layer='mid', billboard=True, radius=10,
+                      dir4='sprites/tuanrong/motion/dir4/atlas_radiant_dir4.json',
+                      note='團絨係唯一 billboard（面向鏡頭）；用 atlas pivotPx 對準 (x,0,z)；1 px＝1 unit；可喺 XZ 自由行，唔可以入任何 footprint（外擴 pad＋radius）；4 方向幀見 dir4（按移動方向揀 front／back／side，向左 scaleX −1）'),
              objects=objs + bents)
     for p, d in (('objects.json', J), ('lights.json', lights_json(objs)), ('camera.json', dict(CAM, note='target＝鏡頭望住嘅點（寵物略前方，令寵物落喺畫面下半）；pitchDeg 向下俯角；dist＝target→鏡頭距離；fovDeg＝垂直 FOV（40° 時 target 處畫面高≈422 units＝2D 美術格高）；orbit 繞 Y 軸'))):
         with open(f'{OUT}/{p}', 'w') as f: json.dump(d, f, ensure_ascii=False, indent=1)

@@ -1,0 +1,137 @@
+MANIFEST_GARDEN3DMESH — 《微光小圃》3D 花園 H1 全 mesh 版（跟八方旅人：寵物 billboard，場景全部立體）
+疊喺 art/garden3d-h1 @ 5831554a 之上（解壓到 repo 根，覆蓋）。[M]＝改檔、[A]＝新檔、[D]＝要刪（zip 冇包，請手動 git rm）。
+（呢個 overlay 已包埋之前「立體屋」嗰輪嘅改動；舊 mesh/cottage/house_mesh 格式已由 meshes/*.json（garden3d.mesh/2）＋.glb 取代。）
+mesh 格式（遊程定）：units＝1x px、Y 上、原點底中；positions／normals／uvs（V 上 0–1）／indices（逆時針）；2 次方像素貼圖；emissive／alphaTest；每件 ≤300 三角；footprint rect／poly；castShadow／receiveShadow；同內容 .glb。
+生成：PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/build_pet_dir4.py && PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/build_garden3d.py all
+驗證：PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/validate_garden3d.py [--src DIR]  → 402/402 通過
+預覽：PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/preview_garden3d.py [--src DIR] [--out DIR] [--cmp billboard 版場景]（或 env GARDEN3D_SRC／GARDEN3D_OUT／GARDEN3D_CMP）→ /workspace/game-design/pilot3d_h1_mesh/
+全程序生成（numpy／Pillow），冇 AI 圖；貼圖／sprite alpha 0/255；文字 Noto CJK TC ≥18px；petGlow 規則不變。冇 git commit／push。
+
+[M] art-pet/scenes/garden3d/H1/FORMAT.md  13272B  sha1:3ef059964e45
+[M] art-pet/scenes/garden3d/H1/camera.json  414B  sha1:c7c9863ccace
+[M] art-pet/scenes/garden3d/H1/ground/ground_ao.png  4989B  sha1:89af5d6c23ad
+[M] art-pet/scenes/garden3d/H1/ground/ground_ao@3x.png  24064B  sha1:9b4a23f60d61
+[M] art-pet/scenes/garden3d/H1/lights.json  2689B  sha1:093ef1dbfba3
+[M] art-pet/scenes/garden3d/H1/objects.json  9736B  sha1:efa1ee7c0c5a
+[M] art-pet/scenes/garden3d/H1/validation.json  47684B  sha1:7a98fb6ba916
+[M] art-pet/tools/build_garden3d.py  30499B  sha1:087f48dd2628
+[M] art-pet/tools/preview_garden3d.py  32867B  sha1:c303fcda795f
+[M] art-pet/tools/validate_garden3d.py  16586B  sha1:9381bd3ffed7
+[A] art-pet/scenes/garden3d/H1/meshes/bed.glb  3884B  sha1:792e7c99ee35
+[A] art-pet/scenes/garden3d/H1/meshes/bed.json  2717B  sha1:28de95d231b9
+[A] art-pet/scenes/garden3d/H1/meshes/bed.png  1188B  sha1:dcaaf91cdc4e
+[A] art-pet/scenes/garden3d/H1/meshes/bed@3x.png  2089B  sha1:e4d4b369742c
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bL.glb  2380B  sha1:3cbcb98ddda5
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bL.json  1616B  sha1:dc100250db21
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bL.png  393B  sha1:905524361220
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bL2.glb  2384B  sha1:bad2326ea3c6
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bL2.json  1591B  sha1:4db8cb7795e9
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bL2.png  394B  sha1:8b0bd9a2b72e
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bL2@3x.png  539B  sha1:44221847040b
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bL@3x.png  541B  sha1:791dce2d1f87
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bR.glb  2492B  sha1:3c4651ec7ea3
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bR.json  1646B  sha1:d9ccee34afdf
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bR.png  501B  sha1:10dea95f3655
+[A] art-pet/scenes/garden3d/H1/meshes/bush_bR@3x.png  700B  sha1:9e7d825b4fdf
+[A] art-pet/scenes/garden3d/H1/meshes/can.glb  10724B  sha1:c1344fe64147
+[A] art-pet/scenes/garden3d/H1/meshes/can.json  13230B  sha1:5b1259ac2c94
+[A] art-pet/scenes/garden3d/H1/meshes/can.png  588B  sha1:dd14adda0a1d
+[A] art-pet/scenes/garden3d/H1/meshes/can@3x.png  977B  sha1:a54434c8e056
+[A] art-pet/scenes/garden3d/H1/meshes/cottage.glb  14244B  sha1:621a94942f88
+[A] art-pet/scenes/garden3d/H1/meshes/cottage.json  9980B  sha1:f0e7e34262e7
+[A] art-pet/scenes/garden3d/H1/meshes/cottage.png  6138B  sha1:776d5102056d
+[A] art-pet/scenes/garden3d/H1/meshes/cottage@3x.png  11764B  sha1:d2a85e301398
+[A] art-pet/scenes/garden3d/H1/meshes/cottage_emissive.png  469B  sha1:7485d18a92b6
+[A] art-pet/scenes/garden3d/H1/meshes/cottage_emissive@3x.png  2636B  sha1:a2468cfd9c7a
+[A] art-pet/scenes/garden3d/H1/meshes/fence.glb  18768B  sha1:69ae93f7c4bb
+[A] art-pet/scenes/garden3d/H1/meshes/fence.json  22365B  sha1:1ac14ffb6fb9
+[A] art-pet/scenes/garden3d/H1/meshes/fence.png  2856B  sha1:31a8883bcf77
+[A] art-pet/scenes/garden3d/H1/meshes/fence@3x.png  4643B  sha1:f362ddeb5abe
+[A] art-pet/scenes/garden3d/H1/meshes/jar.glb  3376B  sha1:a2002f088ccc
+[A] art-pet/scenes/garden3d/H1/meshes/jar.json  2772B  sha1:41695655f8fc
+[A] art-pet/scenes/garden3d/H1/meshes/jar.png  247B  sha1:705f9e7e6044
+[A] art-pet/scenes/garden3d/H1/meshes/jar@3x.png  362B  sha1:55b6eda7d2d6
+[A] art-pet/scenes/garden3d/H1/meshes/jar_emissive.png  147B  sha1:594fae1ce218
+[A] art-pet/scenes/garden3d/H1/meshes/jar_emissive@3x.png  218B  sha1:7d30a7772f29
+[A] art-pet/scenes/garden3d/H1/meshes/lamp.glb  8192B  sha1:3d115f052732
+[A] art-pet/scenes/garden3d/H1/meshes/lamp.json  8635B  sha1:60f1d624da07
+[A] art-pet/scenes/garden3d/H1/meshes/lamp.png  716B  sha1:c3864877ba0b
+[A] art-pet/scenes/garden3d/H1/meshes/lamp@3x.png  1330B  sha1:c153d64446ed
+[A] art-pet/scenes/garden3d/H1/meshes/lamp_emissive.png  235B  sha1:bcb71ac66b6a
+[A] art-pet/scenes/garden3d/H1/meshes/lamp_emissive@3x.png  571B  sha1:e560033105f5
+[A] art-pet/scenes/garden3d/H1/meshes/lanterns.glb  23260B  sha1:289b24f6d56e
+[A] art-pet/scenes/garden3d/H1/meshes/lanterns.json  29777B  sha1:bbe8ab5050fe
+[A] art-pet/scenes/garden3d/H1/meshes/lanterns.png  928B  sha1:539dab0f1c17
+[A] art-pet/scenes/garden3d/H1/meshes/lanterns@3x.png  1998B  sha1:7ac681636318
+[A] art-pet/scenes/garden3d/H1/meshes/lanterns_emissive.png  410B  sha1:e241ea800e48
+[A] art-pet/scenes/garden3d/H1/meshes/lanterns_emissive@3x.png  1050B  sha1:69b364804684
+[A] art-pet/scenes/garden3d/H1/meshes/mushrooms.glb  8440B  sha1:8c42e6490eff
+[A] art-pet/scenes/garden3d/H1/meshes/mushrooms.json  9656B  sha1:452ad8ec8bb0
+[A] art-pet/scenes/garden3d/H1/meshes/mushrooms.png  511B  sha1:d88996b98c50
+[A] art-pet/scenes/garden3d/H1/meshes/mushrooms@3x.png  845B  sha1:6c4c1d168176
+[A] art-pet/scenes/garden3d/H1/meshes/pot_L.glb  5104B  sha1:3794e1b52924
+[A] art-pet/scenes/garden3d/H1/meshes/pot_L.json  5826B  sha1:e1a7ef43bf55
+[A] art-pet/scenes/garden3d/H1/meshes/pot_L.png  557B  sha1:81766bd5707f
+[A] art-pet/scenes/garden3d/H1/meshes/pot_L@3x.png  857B  sha1:f246188e1065
+[A] art-pet/scenes/garden3d/H1/meshes/pot_R.glb  5112B  sha1:adccc5887e7a
+[A] art-pet/scenes/garden3d/H1/meshes/pot_R.json  5826B  sha1:40f36684fb41
+[A] art-pet/scenes/garden3d/H1/meshes/pot_R.png  566B  sha1:0e2529a43420
+[A] art-pet/scenes/garden3d/H1/meshes/pot_R@3x.png  871B  sha1:0370c1463650
+[A] art-pet/scenes/garden3d/H1/meshes/pot_S.glb  4960B  sha1:83397288969e
+[A] art-pet/scenes/garden3d/H1/meshes/pot_S.json  5448B  sha1:4a40969a378f
+[A] art-pet/scenes/garden3d/H1/meshes/pot_S.png  444B  sha1:9f0e9942c464
+[A] art-pet/scenes/garden3d/H1/meshes/pot_S@3x.png  601B  sha1:659c754ebd90
+[A] art-pet/scenes/garden3d/H1/meshes/tree.glb  8400B  sha1:f7a9af817965
+[A] art-pet/scenes/garden3d/H1/meshes/tree.json  4326B  sha1:f1bbce67ceb9
+[A] art-pet/scenes/garden3d/H1/meshes/tree.png  4646B  sha1:1fead7aaec12
+[A] art-pet/scenes/garden3d/H1/meshes/tree@3x.png  9042B  sha1:62127413960f
+[A] art-pet/scenes/garden3d/H1/meshes/trees_bL.glb  2720B  sha1:6e3e404101df
+[A] art-pet/scenes/garden3d/H1/meshes/trees_bL.json  1675B  sha1:576dc3e946a0
+[A] art-pet/scenes/garden3d/H1/meshes/trees_bL.png  751B  sha1:bd441c9524cc
+[A] art-pet/scenes/garden3d/H1/meshes/trees_bL@3x.png  1124B  sha1:c2003ee04458
+[A] art-pet/scenes/garden3d/H1/meshes/trees_bR.glb  2464B  sha1:a56a0c553c56
+[A] art-pet/scenes/garden3d/H1/meshes/trees_bR.json  1687B  sha1:8bef9c8365c1
+[A] art-pet/scenes/garden3d/H1/meshes/trees_bR.png  467B  sha1:8b8012aa52a7
+[A] art-pet/scenes/garden3d/H1/meshes/trees_bR@3x.png  706B  sha1:8034e3ef5cc4
+[A] art-pet/sprites/tuanrong/motion/dir4/atlas_radiant_dir4.json  6675B  sha1:7f228488c1a9
+[A] art-pet/sprites/tuanrong/motion/dir4/atlas_radiant_dir4.png  16559B  sha1:820e4ad4e3ae
+[A] art-pet/sprites/tuanrong/motion/dir4/atlas_radiant_dir4_emissive.png  5565B  sha1:38fcd866e7b9
+[A] art-pet/sprites/tuanrong/motion/dir4/atlas_radiant_dir4_n.png  74561B  sha1:16776518435d
+[A] art-pet/tools/build_pet_dir4.py  6566B  sha1:48dede52a7c5
+[A] art-pet/tools/garden3d_house.py  18658B  sha1:5f03df275bee
+[A] art-pet/tools/garden3d_mesh.py  16249B  sha1:54990d521513
+[A] art-pet/tools/garden3d_props.py  12406B  sha1:5d8654914771
+[D] art-pet/scenes/garden3d/H1/objects/bed.png
+[D] art-pet/scenes/garden3d/H1/objects/bed@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/can.png
+[D] art-pet/scenes/garden3d/H1/objects/can@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/cottage.png
+[D] art-pet/scenes/garden3d/H1/objects/cottage@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/cottage_emissive.png
+[D] art-pet/scenes/garden3d/H1/objects/cottage_emissive@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/fence.png
+[D] art-pet/scenes/garden3d/H1/objects/fence@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/jar.png
+[D] art-pet/scenes/garden3d/H1/objects/jar@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/jar_emissive.png
+[D] art-pet/scenes/garden3d/H1/objects/jar_emissive@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/lamp.png
+[D] art-pet/scenes/garden3d/H1/objects/lamp@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/lamp_emissive.png
+[D] art-pet/scenes/garden3d/H1/objects/lamp_emissive@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/lanterns.png
+[D] art-pet/scenes/garden3d/H1/objects/lanterns@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/lanterns_emissive.png
+[D] art-pet/scenes/garden3d/H1/objects/lanterns_emissive@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/mushrooms.png
+[D] art-pet/scenes/garden3d/H1/objects/mushrooms@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/pot_L.png
+[D] art-pet/scenes/garden3d/H1/objects/pot_L@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/pot_R.png
+[D] art-pet/scenes/garden3d/H1/objects/pot_R@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/pot_S.png
+[D] art-pet/scenes/garden3d/H1/objects/pot_S@3x.png
+[D] art-pet/scenes/garden3d/H1/objects/tree.png
+[D] art-pet/scenes/garden3d/H1/objects/tree@3x.png
+
+合計：[M] 10、[A] 84、[D] 32

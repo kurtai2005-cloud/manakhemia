@@ -8,8 +8,8 @@
  "dist": 580,
  "fovDeg": 40,
  "yawDeg": 0,
- "orbitMinDeg": -30,
- "orbitMaxDeg": 30,
+ "orbitMinDeg": -10,
+ "orbitMaxDeg": 10,
  "near": 10,
  "far": 4000,
  "note": "target＝鏡頭望住嘅點（寵物略前方，令寵物落喺畫面下半）；pitchDeg 向下俯角；dist＝target→鏡頭距離；fovDeg＝垂直 FOV（40° 時 target 處畫面高≈422 units＝2D 美術格高）；orbit 繞 Y 軸"
