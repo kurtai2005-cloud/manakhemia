@@ -43,7 +43,7 @@
 
   function st(s) {
     const p = SR.st(s); let o = p.house; if (!obj(o)) o = p.house = {};
-    o.v = 1; o.at = +o.at || 0; o.q0 = Math.max(0, o.q0 | 0);
+    o.v = 1; o.at = +o.at || 0; o.q0 = Math.max(0, o.q0 | 0); o.qb = Math.max(0, o.qb | 0);   /* qb：5b 郵差助手幫手嘅委託進度 */
     if (!obj(o.owned)) o.owned = {}; for (const k of Object.keys(o.owned)) if (!FURN[k]) delete o.owned[k];
     if (!obj(o.placed)) o.placed = {}; for (const k of Object.keys(o.placed)) if (!FURN[k]) delete o.placed[k];
     if (!obj(o.slots)) o.slots = {}; for (const k of Object.keys(o.slots)) if (!SLOTS.includes(k)) delete o.slots[k];
@@ -66,13 +66,13 @@
   /* 委託／訪客獎：條件達到 → 入 owned（回新得到嘅 id） */
   function syncRewards(s, now) {
     const o = st(s); if (!o.at) return [];
-    const out = [], n = paidN(s) - o.q0;
+    const out = [], n = paidN(s) - o.q0 + o.qb;
     for (const id of ['wall_frame', 'win_star']) if (!o.owned[id] && n >= CFG.commission[id]) { o.owned[id] = now || 1; out.push(id); }
     if (!o.owned.lamp_mushroom && visitMax(s, 'mushroom_granny')) { o.owned.lamp_mushroom = now || 1; out.push('lamp_mushroom'); }
     if (!o.owned.lamp_firefly && visitMax(s, 'firefly_vendor')) { o.owned.lamp_firefly = now || 1; out.push('lamp_firefly'); }
     return out;
   }
-  const commissionLeft = (s, id) => { const o = st(s); return Math.max(0, CFG.commission[id] - (paidN(s) - o.q0)); };
+  const commissionLeft = (s, id) => { const o = st(s); return Math.max(0, CFG.commission[id] - (paidN(s) - o.q0 + o.qb)); };
   /* 卡狀態：equipped／owned／buy／locked */
   function cardState(s, id) { const o = st(s), f = FURN[id]; if (!f) return null; if (o.slots[f.slot] === id) return 'equipped'; if (o.owned[id]) return 'owned'; return f.src === 'shop' ? 'buy' : 'locked'; }
   /* 買（spend＝sys12 錢包 spend(s, n) → bool）*/
