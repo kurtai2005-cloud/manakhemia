@@ -1,0 +1,514 @@
+[
+{
+"screen": "ws_post",
+"text": "郵局",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 12.37
+},
+{
+"screen": "ws_post",
+"text": "職業 Lv1",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.29
+},
+{
+"screen": "ws_post",
+"text": "日更 10:24",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.05
+},
+{
+"screen": "ws_post",
+"text": "撳信箱寄信",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 12.06
+},
+{
+"screen": "ws_post",
+"text": "今日成品",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 10.36
+},
+{
+"screen": "ws_post",
+"text": "2 件",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.38
+},
+{
+"screen": "ws_post",
+"text": "工作中",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.65
+},
+{
+"screen": "ws_post",
+"text": "出糧",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.47
+},
+{
+"screen": "ws_garden",
+"text": "花園",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.46
+},
+{
+"screen": "ws_garden",
+"text": "職業 Lv3",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.15
+},
+{
+"screen": "ws_garden",
+"text": "日更 14:05",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 12.16
+},
+{
+"screen": "ws_garden",
+"text": "今日成品",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 9.66
+},
+{
+"screen": "ws_garden",
+"text": "3 件",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 7.88
+},
+{
+"screen": "ws_garden",
+"text": "工作中",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.53
+},
+{
+"screen": "ws_garden",
+"text": "出糧",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.36
+},
+{
+"screen": "ws_tower_day",
+"text": "瞭望台",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 8.26
+},
+{
+"screen": "ws_tower_day",
+"text": "職業 Lv2",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.82
+},
+{
+"screen": "ws_tower_day",
+"text": "日更 16:30",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 12.24
+},
+{
+"screen": "ws_tower_day",
+"text": "撳星睇流星",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 7.38
+},
+{
+"screen": "ws_tower_day",
+"text": "今日成品",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 9.08
+},
+{
+"screen": "ws_tower_day",
+"text": "1 件",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 7.63
+},
+{
+"screen": "ws_tower_day",
+"text": "工作中",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.35
+},
+{
+"screen": "ws_tower_day",
+"text": "出糧",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.23
+},
+{
+"screen": "ws_tower_night",
+"text": "瞭望台",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 17.02
+},
+{
+"screen": "ws_tower_night",
+"text": "職業 Lv5",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 12.22
+},
+{
+"screen": "ws_tower_night",
+"text": "夜更 23:40",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.79
+},
+{
+"screen": "ws_tower_night",
+"text": "今日成品",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 10.81
+},
+{
+"screen": "ws_tower_night",
+"text": "4 件",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.66
+},
+{
+"screen": "ws_tower_night",
+"text": "工作中",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.79
+},
+{
+"screen": "ws_tower_night",
+"text": "出糧",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.47
+},
+{
+"screen": "ws_kitchen",
+"text": "廚房",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 12.21
+},
+{
+"screen": "ws_kitchen",
+"text": "職業 Lv5",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.27
+},
+{
+"screen": "ws_kitchen",
+"text": "日更 12:10",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.02
+},
+{
+"screen": "ws_kitchen",
+"text": "今日成品",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 10.15
+},
+{
+"screen": "ws_kitchen",
+"text": "3 件",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.29
+},
+{
+"screen": "ws_kitchen",
+"text": "工作中",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.65
+},
+{
+"screen": "ws_kitchen",
+"text": "出糧",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.47
+},
+{
+"screen": "ws_done_popup",
+"text": "郵局",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 15.49
+},
+{
+"screen": "ws_done_popup",
+"text": "職業 Lv3",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.91
+},
+{
+"screen": "ws_done_popup",
+"text": "夜更 05:00",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.26
+},
+{
+"screen": "ws_done_popup",
+"text": "今日成品",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 10.8
+},
+{
+"screen": "ws_done_popup",
+"text": "4 件",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.66
+},
+{
+"screen": "ws_done_popup",
+"text": "工作中",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.65
+},
+{
+"screen": "ws_done_popup",
+"text": "出糧",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.47
+},
+{
+"screen": "ws_done_popup",
+"text": "今日成品！",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 9.9
+},
+{
+"screen": "ws_done_popup",
+"text": "委託信",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 10.13
+},
+{
+"screen": "ws_done_popup",
+"text": "一封信變咗委託信！",
+"role": "body",
+"px": 21,
+"font": "sans",
+"contrast": 10.46
+},
+{
+"screen": "ws_done_popup",
+"text": "入咗「今日成品」",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 12.11
+},
+{
+"screen": "ws_dayoff",
+"text": "花園",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.46
+},
+{
+"screen": "ws_dayoff",
+"text": "職業 Lv3",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.15
+},
+{
+"screen": "ws_dayoff",
+"text": "日更 11:00",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 12.16
+},
+{
+"screen": "ws_dayoff",
+"text": "今日成品",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 9.66
+},
+{
+"screen": "ws_dayoff",
+"text": "0 件",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 7.88
+},
+{
+"screen": "ws_dayoff",
+"text": "放假中",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.53
+},
+{
+"screen": "ws_dayoff",
+"text": "—",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 14.69
+},
+{
+"screen": "ws_dayoff",
+"text": "今日放假",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 10.34
+},
+{
+"screen": "ws_dayoff",
+"text": "團絨去咗遠足",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 7.95
+},
+{
+"screen": "ws_garden_night",
+"text": "花園",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 14.69
+},
+{
+"screen": "ws_garden_night",
+"text": "職業 Lv3",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.75
+},
+{
+"screen": "ws_garden_night",
+"text": "夜更 22:15",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 12.8
+},
+{
+"screen": "ws_garden_night",
+"text": "今日成品",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 10.44
+},
+{
+"screen": "ws_garden_night",
+"text": "2 件",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.39
+},
+{
+"screen": "ws_garden_night",
+"text": "工作中",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.68
+},
+{
+"screen": "ws_garden_night",
+"text": "出糧",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.47
+}
+]

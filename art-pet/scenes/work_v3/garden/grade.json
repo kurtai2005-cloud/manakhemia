@@ -1,0 +1,136 @@
+{
+ "scene": "garden",
+ "name": "花園",
+ "job": "garden",
+ "ambient": "#ffffff",
+ "petTint": "#ffffff",
+ "rim": {
+  "color": "#fff2c8",
+  "dir": [
+   1,
+   -0.6
+  ],
+  "intensity": 0.6
+ },
+ "bloom": {
+  "threshold": 0.78,
+  "intensity": 0.45
+ },
+ "fog": {
+  "color": "#f4f6e6",
+  "density": 0.03
+ },
+ "vignette": 0.42,
+ "ambientTint": "#ffffff",
+ "foot": [
+  97,
+  300
+ ],
+ "tod": {
+  "dawn": {
+   "hours": [
+    5,
+    8
+   ],
+   "mul": "#ffd9c4",
+   "add": 0.8,
+   "emissive": 0.7
+  },
+  "day": {
+   "hours": [
+    8,
+    17
+   ],
+   "mul": "#ffffff",
+   "add": 1.0,
+   "emissive": 0.35
+  },
+  "dusk": {
+   "hours": [
+    17,
+    20
+   ],
+   "mul": "#ffbf94",
+   "add": 0.75,
+   "emissive": 0.95
+  },
+  "night": {
+   "hours": [
+    20,
+    5
+   ],
+   "mul": "#6c78b4",
+   "add": 0.3,
+   "emissive": 1.45
+  }
+ },
+ "todNote": "runtime：(sky→fore 合成)×tod.mul，light_add×tod.add，emissive／bloom×tod.emissive；按遊戲時鐘喺 hours 之間 600ms 漸變。",
+ "emitters": [
+  {
+   "type": "pollen",
+   "rect": [
+    0,
+    120,
+    195,
+    360
+   ],
+   "max": 18,
+   "tint": "#fff6b0",
+   "alpha": 0.7,
+   "src": "scenes/hd2d_v3/fx/particles_v3@3x#pollen"
+  },
+  {
+   "type": "petal",
+   "rect": [
+    90,
+    70,
+    195,
+    330
+   ],
+   "max": 8,
+   "tint": "#ffd0dc",
+   "alpha": 1,
+   "src": "scenes/hd2d_v3/fx/particles_v3@3x#petal"
+  }
+ ],
+ "petLight": {
+  "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#pet_pool",
+  "anchor": "foot",
+  "offset3x": [
+   0,
+   6
+  ],
+  "size3x": [
+   240,
+   96
+  ],
+  "blend": "lighter",
+  "intensity": 0.55,
+  "multiplyBy": "petGlow",
+  "rule": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow：awake 1／sleepy .6／sleep・sleepClip・dreamEnter・dreaming 0；淡出 600ms easeInQuad、淡入 400ms easeOutQuad＋150ms pulse 1→1.15→1。場景燈（窗、吊燈、爐火、月、道具燈）唔受影響。"
+ },
+ "lights": {
+  "sun": [
+   175,
+   -20
+  ],
+  "rays": {
+   "src": [
+    200,
+    -30
+   ],
+   "toward": [
+    80,
+    330
+   ],
+   "col": "#fff0c0",
+   "strength": 0.24,
+   "spread": 0.5
+  },
+  "ambient": "#ffffff",
+  "dapple": true,
+  "lamps": [],
+  "emissiveRects": [],
+  "warm": false
+ }
+}

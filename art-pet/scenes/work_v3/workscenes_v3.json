@@ -1,0 +1,4091 @@
+{
+ "name": "微光小圃・工作場景 V3-A（第 8 批）",
+ "version": "workscenes_v3",
+ "spec": "V3-A：金光海軍藍磨砂＋1.5px 金幼線；@3x 烘焙光影＋粒子；HD-2D；sprite alpha 0/255，光影層真 alpha；字 Noto CJK TC ≥18px@3x，對比 ≥4.5；procedural Pillow/numpy（冇 AI 圖）",
+ "gdd": {
+  "doc": "docs-gdd/family-work-scenes-v1.md §2.1",
+  "mapping": {
+   "5 張背景（瞭望台日／夜）": "scenes",
+   "8 個可撳道具動畫（每場景 2）": "props",
+   "Lv3 多 1 件擺設": "decoLv3",
+   "Lv5 寵物戴職業帽": "hatsLv5",
+   "24 個工作 clip（4 職業×S/M/L×loop/done）": "clips",
+   "成品 icon 8 個（4 基本＋4 機率版）48px": "icons",
+   "完成彈出 1.5s／今日成品欄": "ui.product_card_bg＋mockups.ws_done_popup",
+   "寵物唔喺度→今日放假": "ui.dayoff_tag_bg＋mockups.ws_dayoff",
+   "夜更 21–05": "tower_night＋tod night"
+  }
+ },
+ "numbersUnchanged": "純美術：薪金、機率（郵局委託 25%、花園裝飾 15%、…）、夜更上限 8、心情／親密全部照 5b 原數，撳道具唔影響任何數值。",
+ "canvas": {
+  "art1x": [
+   195,
+   422
+  ],
+  "layer1x": [
+   223,
+   446
+  ],
+  "margin1x": [
+   14,
+   12
+  ],
+  "layer3x": [
+   669,
+   1338
+  ],
+  "screen3x": [
+   585,
+   1266
+  ],
+  "crop3x": [
+   42,
+   36
+  ],
+  "map": "L3(x,y)=((x+14)*3,(y+12)*3)",
+  "parallax": "layer1x 四邊留 14／12px 俾 parallax／鏡頭 sway（同 hd2d_v3 格式）",
+  "foot1x": [
+   97,
+   300
+  ]
+ },
+ "bands3x": {
+  "top": [
+   0,
+   126
+  ],
+  "bottom": [
+   1044,
+   1266
+  ]
+ },
+ "stack": [
+  "sky",
+  "skyProps（瞭望台星）",
+  "far",
+  "haze_far",
+  "mid＋props／decoLv3（y-sort）",
+  "mist",
+  "pet shadow",
+  "petLight（×petGlow）",
+  "clip back",
+  "pet（＋Lv5 帽）",
+  "clip front",
+  "fore",
+  "×tod.mul（非瞭望台）",
+  "×lightmap",
+  "+light_add×tod.add",
+  "emissive／bloom×tod.emissive",
+  "prop glow（場景燈）＋clip glow（×petGlow）",
+  "particles",
+  "fog",
+  "crop",
+  "vignette",
+  "UI v3"
+ ],
+ "scenes": {
+  "post": {
+   "zh": "郵局",
+   "job": "post",
+   "dir": "post",
+   "layers1x": {
+    "sky": "post/sky.png",
+    "far": "post/far.png",
+    "mid": "post/mid.png",
+    "fore": "post/fore.png",
+    "lightmap": "post/lightmap.png",
+    "light_add": "post/light_add.png",
+    "emissive": "post/emissive.png",
+    "emissive_blur": "post/emissive_blur.png",
+    "vignette": "post/vignette.png",
+    "lut": "post/lut.png"
+   },
+   "layers3x": {
+    "sky": "post/x3/sky@3x.png",
+    "far": "post/x3/far@3x.png",
+    "haze_far": "post/x3/haze_far@3x.png",
+    "mid": "post/x3/mid@3x.png",
+    "mist": "post/x3/mist@3x.png",
+    "fore": "post/x3/fore@3x.png",
+    "lightmap": "post/x3/lightmap@3x.png",
+    "light_add": "post/x3/light_add@3x.png",
+    "emissive": "post/x3/emissive@3x.png",
+    "bloom": "post/x3/bloom@3x.png",
+    "vignette": "post/x3/vignette@3x.png"
+   },
+   "grade": "post/grade.json",
+   "palette": "post/palette.json",
+   "props": [
+    "post_mailbox",
+    "post_stamp"
+   ],
+   "decoLv3": "post"
+  },
+  "garden": {
+   "zh": "花園",
+   "job": "garden",
+   "dir": "garden",
+   "layers1x": {
+    "sky": "garden/sky.png",
+    "far": "garden/far.png",
+    "mid": "garden/mid.png",
+    "fore": "garden/fore.png",
+    "lightmap": "garden/lightmap.png",
+    "light_add": "garden/light_add.png",
+    "emissive": "garden/emissive.png",
+    "emissive_blur": "garden/emissive_blur.png",
+    "vignette": "garden/vignette.png",
+    "lut": "garden/lut.png"
+   },
+   "layers3x": {
+    "sky": "garden/x3/sky@3x.png",
+    "far": "garden/x3/far@3x.png",
+    "haze_far": "garden/x3/haze_far@3x.png",
+    "mid": "garden/x3/mid@3x.png",
+    "mist": "garden/x3/mist@3x.png",
+    "fore": "garden/x3/fore@3x.png",
+    "lightmap": "garden/x3/lightmap@3x.png",
+    "light_add": "garden/x3/light_add@3x.png",
+    "emissive": "garden/x3/emissive@3x.png",
+    "bloom": "garden/x3/bloom@3x.png",
+    "vignette": "garden/x3/vignette@3x.png"
+   },
+   "grade": "garden/grade.json",
+   "palette": "garden/palette.json",
+   "props": [
+    "garden_flower",
+    "garden_bucket"
+   ],
+   "decoLv3": "garden"
+  },
+  "tower_day": {
+   "zh": "瞭望台・日",
+   "job": "tower",
+   "dir": "tower_day",
+   "layers1x": {
+    "sky": "tower_day/sky.png",
+    "far": "tower_day/far.png",
+    "mid": "tower_day/mid.png",
+    "fore": "tower_day/fore.png",
+    "lightmap": "tower_day/lightmap.png",
+    "light_add": "tower_day/light_add.png",
+    "emissive": "tower_day/emissive.png",
+    "emissive_blur": "tower_day/emissive_blur.png",
+    "vignette": "tower_day/vignette.png",
+    "lut": "tower_day/lut.png"
+   },
+   "layers3x": {
+    "sky": "tower_day/x3/sky@3x.png",
+    "far": "tower_day/x3/far@3x.png",
+    "haze_far": "tower_day/x3/haze_far@3x.png",
+    "mid": "tower_day/x3/mid@3x.png",
+    "mist": "tower_day/x3/mist@3x.png",
+    "fore": "tower_day/x3/fore@3x.png",
+    "lightmap": "tower_day/x3/lightmap@3x.png",
+    "light_add": "tower_day/x3/light_add@3x.png",
+    "emissive": "tower_day/x3/emissive@3x.png",
+    "bloom": "tower_day/x3/bloom@3x.png",
+    "vignette": "tower_day/x3/vignette@3x.png"
+   },
+   "grade": "tower_day/grade.json",
+   "palette": "tower_day/palette.json",
+   "props": [
+    "tower_star",
+    "tower_lamp"
+   ],
+   "decoLv3": "tower"
+  },
+  "tower_night": {
+   "zh": "瞭望台・夜",
+   "job": "tower",
+   "dir": "tower_night",
+   "layers1x": {
+    "sky": "tower_night/sky.png",
+    "far": "tower_night/far.png",
+    "mid": "tower_night/mid.png",
+    "fore": "tower_night/fore.png",
+    "lightmap": "tower_night/lightmap.png",
+    "light_add": "tower_night/light_add.png",
+    "emissive": "tower_night/emissive.png",
+    "emissive_blur": "tower_night/emissive_blur.png",
+    "vignette": "tower_night/vignette.png",
+    "lut": "tower_night/lut.png"
+   },
+   "layers3x": {
+    "sky": "tower_night/x3/sky@3x.png",
+    "far": "tower_night/x3/far@3x.png",
+    "haze_far": "tower_night/x3/haze_far@3x.png",
+    "mid": "tower_night/x3/mid@3x.png",
+    "mist": "tower_night/x3/mist@3x.png",
+    "fore": "tower_night/x3/fore@3x.png",
+    "lightmap": "tower_night/x3/lightmap@3x.png",
+    "light_add": "tower_night/x3/light_add@3x.png",
+    "emissive": "tower_night/x3/emissive@3x.png",
+    "bloom": "tower_night/x3/bloom@3x.png",
+    "vignette": "tower_night/x3/vignette@3x.png"
+   },
+   "grade": "tower_night/grade.json",
+   "palette": "tower_night/palette.json",
+   "props": [
+    "tower_star",
+    "tower_lamp"
+   ],
+   "decoLv3": "tower"
+  },
+  "kitchen": {
+   "zh": "廚房",
+   "job": "kitchen",
+   "dir": "kitchen",
+   "layers1x": {
+    "sky": "kitchen/sky.png",
+    "far": "kitchen/far.png",
+    "mid": "kitchen/mid.png",
+    "fore": "kitchen/fore.png",
+    "lightmap": "kitchen/lightmap.png",
+    "light_add": "kitchen/light_add.png",
+    "emissive": "kitchen/emissive.png",
+    "emissive_blur": "kitchen/emissive_blur.png",
+    "vignette": "kitchen/vignette.png",
+    "lut": "kitchen/lut.png"
+   },
+   "layers3x": {
+    "sky": "kitchen/x3/sky@3x.png",
+    "far": "kitchen/x3/far@3x.png",
+    "haze_far": "kitchen/x3/haze_far@3x.png",
+    "mid": "kitchen/x3/mid@3x.png",
+    "mist": "kitchen/x3/mist@3x.png",
+    "fore": "kitchen/x3/fore@3x.png",
+    "lightmap": "kitchen/x3/lightmap@3x.png",
+    "light_add": "kitchen/x3/light_add@3x.png",
+    "emissive": "kitchen/x3/emissive@3x.png",
+    "bloom": "kitchen/x3/bloom@3x.png",
+    "vignette": "kitchen/x3/vignette@3x.png"
+   },
+   "grade": "kitchen/grade.json",
+   "palette": "kitchen/palette.json",
+   "props": [
+    "kitchen_pot",
+    "kitchen_spice"
+   ],
+   "decoLv3": "kitchen"
+  }
+ },
+ "props": {
+  "post_mailbox": {
+   "zh": "信箱",
+   "sheet": "props/post_mailbox@3x.png",
+   "sheet1x": "props/post_mailbox.png",
+   "frames": 6,
+   "frameSize3x": [
+    132,
+    192
+   ],
+   "anchor3x": [
+    66,
+    189
+   ],
+   "pos": [
+    160,
+    300
+   ],
+   "hit": [
+    146,
+    262,
+    176,
+    302
+   ],
+   "fps": 12,
+   "loop": false,
+   "tap": "寄信：信箱口打開，一封信飛出去（純視覺）",
+   "layer": "mid（同 mid 一齊位移；按腳底 y 同寵物 y-sort）",
+   "effects": "純視覺：唔改薪金／機率／上限，唔計委託／心情／親密",
+   "affectsGame": false
+  },
+  "post_stamp": {
+   "zh": "印章",
+   "sheet": "props/post_stamp@3x.png",
+   "sheet1x": "props/post_stamp.png",
+   "frames": 5,
+   "frameSize3x": [
+    84,
+    90
+   ],
+   "anchor3x": [
+    42,
+    87
+   ],
+   "pos": [
+    30,
+    237
+   ],
+   "hit": [
+    18,
+    210,
+    44,
+    240
+   ],
+   "fps": 12,
+   "loop": false,
+   "tap": "印章：按落去，換下一隻印色（紅→藍→綠→金循環，純視覺）",
+   "layer": "mid（同 mid 一齊位移；按腳底 y 同寵物 y-sort）",
+   "effects": "純視覺：唔改薪金／機率／上限，唔計委託／心情／親密",
+   "affectsGame": false,
+   "variants": {
+    "ink": [
+     "#c0392b",
+     "#2f6fb0",
+     "#3f8a4a",
+     "#c99a3c"
+    ],
+    "rows": 4,
+    "rule": "每撳一次行下一行（循環）"
+   }
+  },
+  "garden_flower": {
+   "zh": "花",
+   "sheet": "props/garden_flower@3x.png",
+   "sheet1x": "props/garden_flower.png",
+   "frames": 6,
+   "frameSize3x": [
+    84,
+    108
+   ],
+   "anchor3x": [
+    42,
+    105
+   ],
+   "pos": [
+    146,
+    296
+   ],
+   "hit": [
+    132,
+    258,
+    160,
+    298
+   ],
+   "fps": 12,
+   "loop": false,
+   "tap": "朵花：即刻開花＋閃光（純視覺；過幾秒慢慢合返）",
+   "layer": "mid（同 mid 一齊位移；按腳底 y 同寵物 y-sort）",
+   "effects": "純視覺：唔改薪金／機率／上限，唔計委託／心情／親密",
+   "affectsGame": false
+  },
+  "garden_bucket": {
+   "zh": "水桶",
+   "sheet": "props/garden_bucket@3x.png",
+   "sheet1x": "props/garden_bucket.png",
+   "frames": 5,
+   "frameSize3x": [
+    120,
+    120
+   ],
+   "anchor3x": [
+    60,
+    117
+   ],
+   "pos": [
+    44,
+    312
+   ],
+   "hit": [
+    28,
+    280,
+    60,
+    314
+   ],
+   "fps": 12,
+   "loop": false,
+   "tap": "水桶：濺水花（純視覺）",
+   "layer": "mid（同 mid 一齊位移；按腳底 y 同寵物 y-sort）",
+   "effects": "純視覺：唔改薪金／機率／上限，唔計委託／心情／親密",
+   "affectsGame": false
+  },
+  "tower_star": {
+   "zh": "星",
+   "sheet": "props/tower_star@3x.png",
+   "sheet1x": "props/tower_star.png",
+   "frames": 6,
+   "frameSize3x": [
+    216,
+    132
+   ],
+   "anchor3x": [
+    180,
+    129
+   ],
+   "pos": [
+    132,
+    120
+   ],
+   "hit": [
+    120,
+    96,
+    144,
+    124
+   ],
+   "fps": 12,
+   "loop": false,
+   "tap": "星：一粒流星劃過（純視覺；日版星淡啲）",
+   "layer": "sky（喺 far 之前）",
+   "effects": "純視覺：唔改薪金／機率／上限，唔計委託／心情／親密",
+   "affectsGame": false,
+   "glow": {
+    "sheet": "props/tower_star_glow@3x.png",
+    "blend": "lighter",
+    "note": "道具燈屬場景燈：唔乘 petGlow"
+   }
+  },
+  "tower_lamp": {
+   "zh": "燈",
+   "sheet": "props/tower_lamp@3x.png",
+   "sheet1x": "props/tower_lamp.png",
+   "frames": 4,
+   "frameSize3x": [
+    66,
+    192
+   ],
+   "anchor3x": [
+    33,
+    189
+   ],
+   "pos": [
+    24,
+    248
+   ],
+   "hit": [
+    12,
+    182,
+    36,
+    250
+   ],
+   "fps": 10,
+   "loop": false,
+   "tap": "燈：開／關（關→0、開＝1→2→3；再撳由 3 倒播返 0）；燈光屬場景燈，唔受 petGlow 影響",
+   "layer": "mid（同 mid 一齊位移；按腳底 y 同寵物 y-sort）",
+   "effects": "純視覺：唔改薪金／機率／上限，唔計委託／心情／親密",
+   "affectsGame": false,
+   "glow": {
+    "sheet": "props/tower_lamp_glow@3x.png",
+    "blend": "lighter",
+    "note": "道具燈屬場景燈：唔乘 petGlow"
+   }
+  },
+  "kitchen_pot": {
+   "zh": "煲",
+   "sheet": "props/kitchen_pot@3x.png",
+   "sheet1x": "props/kitchen_pot.png",
+   "frames": 6,
+   "frameSize3x": [
+    120,
+    156
+   ],
+   "anchor3x": [
+    60,
+    153
+   ],
+   "pos": [
+    156,
+    210
+   ],
+   "hit": [
+    136,
+    160,
+    176,
+    212
+   ],
+   "fps": 12,
+   "loop": false,
+   "tap": "煲：冒一嚿蒸氣（純視覺）",
+   "layer": "mid（同 mid 一齊位移；按腳底 y 同寵物 y-sort）",
+   "effects": "純視覺：唔改薪金／機率／上限，唔計委託／心情／親密",
+   "affectsGame": false
+  },
+  "kitchen_spice": {
+   "zh": "香料",
+   "sheet": "props/kitchen_spice@3x.png",
+   "sheet1x": "props/kitchen_spice.png",
+   "frames": 5,
+   "frameSize3x": [
+    102,
+    132
+   ],
+   "anchor3x": [
+    51,
+    129
+   ],
+   "pos": [
+    48,
+    232
+   ],
+   "hit": [
+    32,
+    190,
+    64,
+    234
+   ],
+   "fps": 12,
+   "loop": false,
+   "tap": "香料：搖一搖灑粉（純視覺）",
+   "layer": "mid（同 mid 一齊位移；按腳底 y 同寵物 y-sort）",
+   "effects": "純視覺：唔改薪金／機率／上限，唔計委託／心情／親密",
+   "affectsGame": false
+  }
+ },
+ "decoLv3": {
+  "post": {
+   "zh": "銅磅＋包裹",
+   "img": "deco_lv3/post@3x.png",
+   "pos": [
+    34,
+    318
+   ],
+   "anchor3x": [
+    60,
+    129
+   ],
+   "unlock": "職業 Lv3",
+   "note": "郵局 Lv3：分信枱前多咗個銅磅",
+   "layer": "mid（y-sort）"
+  },
+  "garden": {
+   "zh": "雀仔浴盆",
+   "img": "deco_lv3/garden@3x.png",
+   "pos": [
+    166,
+    352
+   ],
+   "anchor3x": [
+    60,
+    135
+   ],
+   "unlock": "職業 Lv3",
+   "note": "花園 Lv3：右下多咗個石浴盆（藍雀仔）",
+   "layer": "mid（y-sort）"
+  },
+  "tower": {
+   "zh": "渾天儀",
+   "img": "deco_lv3/tower@3x.png",
+   "pos": [
+    176,
+    330
+   ],
+   "anchor3x": [
+    60,
+    147
+   ],
+   "unlock": "職業 Lv3",
+   "note": "瞭望台 Lv3：右側多咗座渾天儀",
+   "layer": "mid（y-sort）"
+  },
+  "kitchen": {
+   "zh": "麵包籃＋香草",
+   "img": "deco_lv3/kitchen@3x.png",
+   "pos": [
+    178,
+    330
+   ],
+   "anchor3x": [
+    60,
+    129
+   ],
+   "unlock": "職業 Lv3",
+   "note": "廚房 Lv3：右下多咗籃新鮮麵包",
+   "layer": "mid（y-sort）"
+  }
+ },
+ "hatsLv5": {
+  "post": {
+   "zh": "郵局帽",
+   "unlock": "職業 Lv5",
+   "sizes": {
+    "S": {
+     "img": "hats_lv5/post_S@3x.png",
+     "size3x": [
+      60,
+      54
+     ],
+     "anchor3x": [
+      30,
+      48
+     ]
+    },
+    "M": {
+     "img": "hats_lv5/post_M@3x.png",
+     "size3x": [
+      72,
+      66
+     ],
+     "anchor3x": [
+      36,
+      60
+     ]
+    },
+    "L": {
+     "img": "hats_lv5/post_L@3x.png",
+     "size3x": [
+      84,
+      78
+     ],
+     "anchor3x": [
+      42,
+      72
+     ]
+    }
+   },
+   "attach": "帽 anchor（底中）對準寵物 headTop：x＝雙眼中點 x，y＝headTop＋5px（1x，S/M/L 一樣）；跟 clip 每幀 transform 一齊郁；寵物瞓覺唔戴（工作場景冇瞓覺）。",
+   "sizeRule": "按 sizeClass 揀 S/M/L"
+  },
+  "garden": {
+   "zh": "花園帽",
+   "unlock": "職業 Lv5",
+   "sizes": {
+    "S": {
+     "img": "hats_lv5/garden_S@3x.png",
+     "size3x": [
+      60,
+      54
+     ],
+     "anchor3x": [
+      30,
+      48
+     ]
+    },
+    "M": {
+     "img": "hats_lv5/garden_M@3x.png",
+     "size3x": [
+      72,
+      66
+     ],
+     "anchor3x": [
+      36,
+      60
+     ]
+    },
+    "L": {
+     "img": "hats_lv5/garden_L@3x.png",
+     "size3x": [
+      84,
+      78
+     ],
+     "anchor3x": [
+      42,
+      72
+     ]
+    }
+   },
+   "attach": "帽 anchor（底中）對準寵物 headTop：x＝雙眼中點 x，y＝headTop＋5px（1x，S/M/L 一樣）；跟 clip 每幀 transform 一齊郁；寵物瞓覺唔戴（工作場景冇瞓覺）。",
+   "sizeRule": "按 sizeClass 揀 S/M/L"
+  },
+  "tower": {
+   "zh": "瞭望台帽",
+   "unlock": "職業 Lv5",
+   "sizes": {
+    "S": {
+     "img": "hats_lv5/tower_S@3x.png",
+     "size3x": [
+      60,
+      54
+     ],
+     "anchor3x": [
+      30,
+      48
+     ]
+    },
+    "M": {
+     "img": "hats_lv5/tower_M@3x.png",
+     "size3x": [
+      72,
+      66
+     ],
+     "anchor3x": [
+      36,
+      60
+     ]
+    },
+    "L": {
+     "img": "hats_lv5/tower_L@3x.png",
+     "size3x": [
+      84,
+      78
+     ],
+     "anchor3x": [
+      42,
+      72
+     ]
+    }
+   },
+   "attach": "帽 anchor（底中）對準寵物 headTop：x＝雙眼中點 x，y＝headTop＋5px（1x，S/M/L 一樣）；跟 clip 每幀 transform 一齊郁；寵物瞓覺唔戴（工作場景冇瞓覺）。",
+   "sizeRule": "按 sizeClass 揀 S/M/L"
+  },
+  "kitchen": {
+   "zh": "廚房帽",
+   "unlock": "職業 Lv5",
+   "sizes": {
+    "S": {
+     "img": "hats_lv5/kitchen_S@3x.png",
+     "size3x": [
+      60,
+      54
+     ],
+     "anchor3x": [
+      30,
+      48
+     ]
+    },
+    "M": {
+     "img": "hats_lv5/kitchen_M@3x.png",
+     "size3x": [
+      72,
+      66
+     ],
+     "anchor3x": [
+      36,
+      60
+     ]
+    },
+    "L": {
+     "img": "hats_lv5/kitchen_L@3x.png",
+     "size3x": [
+      84,
+      78
+     ],
+     "anchor3x": [
+      42,
+      72
+     ]
+    }
+   },
+   "attach": "帽 anchor（底中）對準寵物 headTop：x＝雙眼中點 x，y＝headTop＋5px（1x，S/M/L 一樣）；跟 clip 每幀 transform 一齊郁；寵物瞓覺唔戴（工作場景冇瞓覺）。",
+   "sizeRule": "按 sizeClass 揀 S/M/L"
+  }
+ },
+ "icons": {
+  "letter": {
+   "zh": "一封信",
+   "img": "icons/letter@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "job": "post",
+   "kind": "basic"
+  },
+  "letter_commission": {
+   "zh": "委託信",
+   "img": "icons/letter_commission@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "job": "post",
+   "kind": "probability",
+   "glow": {
+    "img": "icons/letter_commission_glow@3x.png",
+    "size3x": [
+     72,
+     72
+    ],
+    "offset3x": [
+     -12,
+     -12
+    ],
+    "blend": "lighter"
+   }
+  },
+  "flowerpot": {
+   "zh": "一盆花",
+   "img": "icons/flowerpot@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "job": "garden",
+   "kind": "basic"
+  },
+  "decoration": {
+   "zh": "花園裝飾",
+   "img": "icons/decoration@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "job": "garden",
+   "kind": "probability",
+   "glow": {
+    "img": "icons/decoration_glow@3x.png",
+    "size3x": [
+     72,
+     72
+    ],
+    "offset3x": [
+     -12,
+     -12
+    ],
+    "blend": "lighter"
+   }
+  },
+  "starmap_sticker": {
+   "zh": "星圖貼紙",
+   "img": "icons/starmap_sticker@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "job": "tower",
+   "kind": "basic"
+  },
+  "starmap_rare": {
+   "zh": "金星圖貼紙",
+   "img": "icons/starmap_rare@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "job": "tower",
+   "kind": "probability",
+   "glow": {
+    "img": "icons/starmap_rare_glow@3x.png",
+    "size3x": [
+     72,
+     72
+    ],
+    "offset3x": [
+     -12,
+     -12
+    ],
+    "blend": "lighter"
+   }
+  },
+  "dish": {
+   "zh": "一碟餸",
+   "img": "icons/dish@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "job": "kitchen",
+   "kind": "basic"
+  },
+  "meal_shared": {
+   "zh": "共飯套餐",
+   "img": "icons/meal_shared@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "job": "kitchen",
+   "kind": "probability",
+   "glow": {
+    "img": "icons/meal_shared_glow@3x.png",
+    "size3x": [
+     72,
+     72
+    ],
+    "offset3x": [
+     -12,
+     -12
+    ],
+    "blend": "lighter"
+   }
+  }
+ },
+ "clips": {
+  "post_S_loop": {
+   "zh": "郵局・分信入格（S）",
+   "sheet": "clips/post_S_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": -1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": -4
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -2
+    },
+    {
+     "dx": 0,
+     "dy": -2,
+     "sx": 1,
+     "sy": 1.03,
+     "rot": 2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4
+    },
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 3
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 1
+    },
+    {
+     "dx": 0,
+     "dy": -2,
+     "sx": 1,
+     "sy": 1.03,
+     "rot": -1
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -3
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "post_S_done": {
+   "zh": "郵局・蓋印（S）",
+   "sheet": "clips/post_S_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": -1,
+     "dy": -3,
+     "sx": 0.97,
+     "sy": 1.05,
+     "rot": -3
+    },
+    {
+     "dx": 2,
+     "dy": 1,
+     "sx": 1.08,
+     "sy": 0.9,
+     "rot": 6
+    },
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1.04,
+     "sy": 0.96,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/post_S_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "post_M_loop": {
+   "zh": "郵局・分信入格（M）",
+   "sheet": "clips/post_M_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": -1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": -4
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -2
+    },
+    {
+     "dx": 0,
+     "dy": -2,
+     "sx": 1,
+     "sy": 1.03,
+     "rot": 2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4
+    },
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 3
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 1
+    },
+    {
+     "dx": 0,
+     "dy": -2,
+     "sx": 1,
+     "sy": 1.03,
+     "rot": -1
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -3
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "post_M_done": {
+   "zh": "郵局・蓋印（M）",
+   "sheet": "clips/post_M_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": -1,
+     "dy": -3,
+     "sx": 0.97,
+     "sy": 1.05,
+     "rot": -3
+    },
+    {
+     "dx": 2,
+     "dy": 1,
+     "sx": 1.08,
+     "sy": 0.9,
+     "rot": 6
+    },
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1.04,
+     "sy": 0.96,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/post_M_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "post_L_loop": {
+   "zh": "郵局・分信入格（L）",
+   "sheet": "clips/post_L_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": -1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": -4
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -2
+    },
+    {
+     "dx": 0,
+     "dy": -2,
+     "sx": 1,
+     "sy": 1.03,
+     "rot": 2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4
+    },
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 3
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 1
+    },
+    {
+     "dx": 0,
+     "dy": -2,
+     "sx": 1,
+     "sy": 1.03,
+     "rot": -1
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -3
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "post_L_done": {
+   "zh": "郵局・蓋印（L）",
+   "sheet": "clips/post_L_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": -1,
+     "dy": -3,
+     "sx": 0.97,
+     "sy": 1.05,
+     "rot": -3
+    },
+    {
+     "dx": 2,
+     "dy": 1,
+     "sx": 1.08,
+     "sy": 0.9,
+     "rot": 6
+    },
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1.04,
+     "sy": 0.96,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/post_L_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "garden_S_loop": {
+   "zh": "花園・淋水（S）",
+   "sheet": "clips/garden_S_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 1
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 2
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 0.99,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 2
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 1
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "garden_S_done": {
+   "zh": "花園・除草（S）",
+   "sheet": "clips/garden_S_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": -2,
+     "dy": 0,
+     "sx": 1,
+     "sy": 0.96,
+     "rot": -6
+    },
+    {
+     "dx": -1,
+     "dy": 0,
+     "sx": 0.96,
+     "sy": 1.04,
+     "rot": -3
+    },
+    {
+     "dx": 1,
+     "dy": -3,
+     "sx": 0.96,
+     "sy": 1.06,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1.02,
+     "sy": 0.98,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/garden_S_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "garden_M_loop": {
+   "zh": "花園・淋水（M）",
+   "sheet": "clips/garden_M_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 1
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 2
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 0.99,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 2
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 1
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "garden_M_done": {
+   "zh": "花園・除草（M）",
+   "sheet": "clips/garden_M_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": -2,
+     "dy": 0,
+     "sx": 1,
+     "sy": 0.96,
+     "rot": -6
+    },
+    {
+     "dx": -1,
+     "dy": 0,
+     "sx": 0.96,
+     "sy": 1.04,
+     "rot": -3
+    },
+    {
+     "dx": 1,
+     "dy": -3,
+     "sx": 0.96,
+     "sy": 1.06,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1.02,
+     "sy": 0.98,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/garden_M_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "garden_L_loop": {
+   "zh": "花園・淋水（L）",
+   "sheet": "clips/garden_L_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 1
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 2
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 0.99,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 3
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 2
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 1
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "garden_L_done": {
+   "zh": "花園・除草（L）",
+   "sheet": "clips/garden_L_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": -2,
+     "dy": 0,
+     "sx": 1,
+     "sy": 0.96,
+     "rot": -6
+    },
+    {
+     "dx": -1,
+     "dy": 0,
+     "sx": 0.96,
+     "sy": 1.04,
+     "rot": -3
+    },
+    {
+     "dx": 1,
+     "dy": -3,
+     "sx": 0.96,
+     "sy": 1.06,
+     "rot": 4
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1.02,
+     "sy": 0.98,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/garden_L_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "tower_S_loop": {
+   "zh": "瞭望台・望遠鏡掃天（S）",
+   "sheet": "clips/tower_S_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -0.0
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -4.2
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -6.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -4.2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -0.0
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4.2
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 6.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4.2
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/tower_S_loop_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "tower_S_done": {
+   "zh": "瞭望台・點燈（S）",
+   "sheet": "clips/tower_S_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": 2,
+     "dy": 0,
+     "sx": 1.04,
+     "sy": 0.96,
+     "rot": 3
+    },
+    {
+     "dx": 3,
+     "dy": -4,
+     "sx": 0.96,
+     "sy": 1.06,
+     "rot": 5
+    },
+    {
+     "dx": 2,
+     "dy": 0,
+     "sx": 1.06,
+     "sy": 0.94,
+     "rot": 2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/tower_S_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "唔乘（小燈屬場景燈）"
+   }
+  },
+  "tower_M_loop": {
+   "zh": "瞭望台・望遠鏡掃天（M）",
+   "sheet": "clips/tower_M_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -0.0
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -4.2
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -6.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -4.2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -0.0
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4.2
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 6.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4.2
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/tower_M_loop_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "tower_M_done": {
+   "zh": "瞭望台・點燈（M）",
+   "sheet": "clips/tower_M_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": 2,
+     "dy": 0,
+     "sx": 1.04,
+     "sy": 0.96,
+     "rot": 3
+    },
+    {
+     "dx": 3,
+     "dy": -4,
+     "sx": 0.96,
+     "sy": 1.06,
+     "rot": 5
+    },
+    {
+     "dx": 2,
+     "dy": 0,
+     "sx": 1.06,
+     "sy": 0.94,
+     "rot": 2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/tower_M_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "唔乘（小燈屬場景燈）"
+   }
+  },
+  "tower_L_loop": {
+   "zh": "瞭望台・望遠鏡掃天（L）",
+   "sheet": "clips/tower_L_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -0.0
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -4.2
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -6.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -4.2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": -0.0
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4.2
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 6.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 4.2
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/tower_L_loop_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "tower_L_done": {
+   "zh": "瞭望台・點燈（L）",
+   "sheet": "clips/tower_L_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": 2,
+     "dy": 0,
+     "sx": 1.04,
+     "sy": 0.96,
+     "rot": 3
+    },
+    {
+     "dx": 3,
+     "dy": -4,
+     "sx": 0.96,
+     "sy": 1.06,
+     "rot": 5
+    },
+    {
+     "dx": 2,
+     "dy": 0,
+     "sx": 1.06,
+     "sy": 0.94,
+     "rot": 2
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/tower_L_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "唔乘（小燈屬場景燈）"
+   }
+  },
+  "kitchen_S_loop": {
+   "zh": "廚房・攪拌（S）",
+   "sheet": "clips/kitchen_S_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 3,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 6.0
+    },
+    {
+     "dx": 2,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 5.1
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 3.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 0.98,
+     "rot": 0.9
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 0.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0.9
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 3.0
+    },
+    {
+     "dx": 2,
+     "dy": -1,
+     "sx": 1,
+     "sy": 0.98,
+     "rot": 5.1
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "kitchen_S_done": {
+   "zh": "廚房・試味（S）",
+   "sheet": "clips/kitchen_S_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 4
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 0.98,
+     "sy": 1.03,
+     "rot": 6
+    },
+    {
+     "dx": 0,
+     "dy": -4,
+     "sx": 0.94,
+     "sy": 1.08,
+     "rot": 0
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1.06,
+     "sy": 0.95,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/kitchen_S_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "kitchen_M_loop": {
+   "zh": "廚房・攪拌（M）",
+   "sheet": "clips/kitchen_M_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 3,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 6.0
+    },
+    {
+     "dx": 2,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 5.1
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 3.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 0.98,
+     "rot": 0.9
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 0.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0.9
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 3.0
+    },
+    {
+     "dx": 2,
+     "dy": -1,
+     "sx": 1,
+     "sy": 0.98,
+     "rot": 5.1
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "kitchen_M_done": {
+   "zh": "廚房・試味（M）",
+   "sheet": "clips/kitchen_M_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 4
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 0.98,
+     "sy": 1.03,
+     "rot": 6
+    },
+    {
+     "dx": 0,
+     "dy": -4,
+     "sx": 0.94,
+     "sy": 1.08,
+     "rot": 0
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1.06,
+     "sy": 0.95,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/kitchen_M_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  },
+  "kitchen_L_loop": {
+   "zh": "廚房・攪拌（L）",
+   "sheet": "clips/kitchen_L_loop@3x.png",
+   "frames": 8,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 110,
+   "loop": true,
+   "petTransform": [
+    {
+     "dx": 3,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 6.0
+    },
+    {
+     "dx": 2,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 5.1
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 3.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 0.98,
+     "rot": 0.9
+    },
+    {
+     "dx": -1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 0.0
+    },
+    {
+     "dx": 0,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.02,
+     "rot": 0.9
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 1,
+     "sy": 1.0,
+     "rot": 3.0
+    },
+    {
+     "dx": 2,
+     "dy": -1,
+     "sx": 1,
+     "sy": 0.98,
+     "rot": 5.1
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫"
+  },
+  "kitchen_L_done": {
+   "zh": "廚房・試味（L）",
+   "sheet": "clips/kitchen_L_done@3x.png",
+   "frames": 4,
+   "rows": [
+    "back（寵物後）",
+    "front（寵物前）"
+   ],
+   "frameSize3x": [
+    312,
+    288
+   ],
+   "pivot3x": [
+    156,
+    264
+   ],
+   "ms": 140,
+   "loop": false,
+   "petTransform": [
+    {
+     "dx": 1,
+     "dy": 0,
+     "sx": 1,
+     "sy": 1,
+     "rot": 4
+    },
+    {
+     "dx": 1,
+     "dy": -1,
+     "sx": 0.98,
+     "sy": 1.03,
+     "rot": 6
+    },
+    {
+     "dx": 0,
+     "dy": -4,
+     "sx": 0.94,
+     "sy": 1.08,
+     "rot": 0
+    },
+    {
+     "dx": 0,
+     "dy": 0,
+     "sx": 1.06,
+     "sy": 0.95,
+     "rot": 0
+    }
+   ],
+   "transformNote": "逐幀套落寵物 sprite：以腳底 pivot 為中心 scale(sx,sy)→rotate(rot°)→translate(dx,dy)（1x px，@3x ×3）；nearest，唔逐形態畫",
+   "glow": {
+    "sheet": "clips/kitchen_L_done_glow@3x.png",
+    "blend": "lighter",
+    "multiplyBy": "petGlow（寵物身邊光點）"
+   }
+  }
+ },
+ "sizeClass": {
+  "rule": "自定（GDD 冇講）：compose_pet bbox max(w,h)：S ≤32、M ≤40、L >40（1x px）",
+  "forms": {
+   "sprout": {
+    "size": "S",
+    "bbox": [
+     26,
+     28
+    ],
+    "headTop": 18.6,
+    "eyes": [
+     23.5,
+     28.2
+    ],
+    "pivot": [
+     24.0,
+     37.0
+    ]
+   },
+   "radiant": {
+    "size": "L",
+    "bbox": [
+     44,
+     56
+    ],
+    "headTop": 36.0,
+    "eyes": [
+     39.5,
+     53.5
+    ],
+    "pivot": [
+     40.0,
+     69.0
+    ]
+   },
+   "soft": {
+    "size": "L",
+    "bbox": [
+     48,
+     49
+    ],
+    "headTop": 31.4,
+    "eyes": [
+     39.5,
+     51.2
+    ],
+    "pivot": [
+     40.0,
+     69.0
+    ]
+   },
+   "lumi": {
+    "size": "L",
+    "bbox": [
+     50,
+     45
+    ],
+    "headTop": 36.0,
+    "eyes": [
+     41.5,
+     53.0
+    ],
+    "pivot": [
+     40.0,
+     69.0
+    ]
+   },
+   "evo_dot": {
+    "size": "S",
+    "bbox": [
+     22,
+     24
+    ],
+    "headTop": 15.3,
+    "eyes": [
+     22.5,
+     22.0
+    ],
+    "pivot": [
+     22.0,
+     33.0
+    ]
+   },
+   "evo_sprout": {
+    "size": "S",
+    "bbox": [
+     26,
+     27
+    ],
+    "headTop": 19.0,
+    "eyes": [
+     24.5,
+     28.0
+    ],
+    "pivot": [
+     24.0,
+     37.0
+    ]
+   },
+   "evo_hop": {
+    "size": "S",
+    "bbox": [
+     31,
+     32
+    ],
+    "headTop": 21.6,
+    "eyes": [
+     27.5,
+     32.0
+    ],
+    "pivot": [
+     27.0,
+     43.0
+    ]
+   },
+   "evo_guard_tide": {
+    "size": "M",
+    "bbox": [
+     40,
+     33
+    ],
+    "headTop": 26.0,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_guard_moon": {
+    "size": "M",
+    "bbox": [
+     37,
+     39
+    ],
+    "headTop": 22.3,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_guard_shroom": {
+    "size": "M",
+    "bbox": [
+     37,
+     30
+    ],
+    "headTop": 26.0,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_guard_crystal": {
+    "size": "M",
+    "bbox": [
+     37,
+     34
+    ],
+    "headTop": 26.4,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_guard_ember": {
+    "size": "M",
+    "bbox": [
+     38,
+     34
+    ],
+    "headTop": 26.1,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_guard_radiant": {
+    "size": "M",
+    "bbox": [
+     35,
+     39
+    ],
+    "headTop": 26.1,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_guard_soft": {
+    "size": "M",
+    "bbox": [
+     35,
+     35
+    ],
+    "headTop": 24.4,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_guard_dust": {
+    "size": "M",
+    "bbox": [
+     36,
+     30
+    ],
+    "headTop": 26.3,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_guard_lumi": {
+    "size": "M",
+    "bbox": [
+     36,
+     32
+    ],
+    "headTop": 26.3,
+    "eyes": [
+     30.5,
+     37.0
+    ],
+    "pivot": [
+     30.0,
+     49.0
+    ]
+   },
+   "evo_still_tide": {
+    "size": "L",
+    "bbox": [
+     42,
+     38
+    ],
+    "headTop": 28.3,
+    "eyes": [
+     32.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "evo_still_moon": {
+    "size": "L",
+    "bbox": [
+     42,
+     45
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     32.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "evo_still_shroom": {
+    "size": "L",
+    "bbox": [
+     42,
+     40
+    ],
+    "headTop": 27.3,
+    "eyes": [
+     32.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "evo_still_crystal": {
+    "size": "L",
+    "bbox": [
+     43,
+     42
+    ],
+    "headTop": 28.1,
+    "eyes": [
+     32.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "evo_still_ember": {
+    "size": "L",
+    "bbox": [
+     41,
+     45
+    ],
+    "headTop": 27.7,
+    "eyes": [
+     32.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "evo_still_radiant": {
+    "size": "L",
+    "bbox": [
+     43,
+     45
+    ],
+    "headTop": 28.7,
+    "eyes": [
+     32.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "evo_still_soft": {
+    "size": "L",
+    "bbox": [
+     43,
+     41
+    ],
+    "headTop": 26.7,
+    "eyes": [
+     32.5,
+     40.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "evo_still_dust": {
+    "size": "M",
+    "bbox": [
+     40,
+     38
+    ],
+    "headTop": 27.0,
+    "eyes": [
+     32.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "evo_still_lumi": {
+    "size": "L",
+    "bbox": [
+     42,
+     42
+    ],
+    "headTop": 27.0,
+    "eyes": [
+     32.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "A1": {
+    "size": "M",
+    "bbox": [
+     28,
+     40
+    ],
+    "headTop": 25.0,
+    "eyes": [
+     32.5,
+     43.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "A2": {
+    "size": "M",
+    "bbox": [
+     39,
+     38
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     40.0,
+     41.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "A3": {
+    "size": "L",
+    "bbox": [
+     41,
+     43
+    ],
+    "headTop": 23.0,
+    "eyes": [
+     40.5,
+     39.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "B1": {
+    "size": "M",
+    "bbox": [
+     28,
+     35
+    ],
+    "headTop": 25.0,
+    "eyes": [
+     30.5,
+     36.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "B2": {
+    "size": "L",
+    "bbox": [
+     32,
+     45
+    ],
+    "headTop": 17.0,
+    "eyes": [
+     33.5,
+     31.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "B3": {
+    "size": "M",
+    "bbox": [
+     36,
+     36
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     37.0,
+     42.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "C1": {
+    "size": "M",
+    "bbox": [
+     27,
+     33
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     33.0,
+     43.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "C2": {
+    "size": "M",
+    "bbox": [
+     34,
+     34
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     35.5,
+     39.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "C3": {
+    "size": "M",
+    "bbox": [
+     40,
+     38
+    ],
+    "headTop": 26.0,
+    "eyes": [
+     38.0,
+     39.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "D1": {
+    "size": "M",
+    "bbox": [
+     26,
+     34
+    ],
+    "headTop": 30.0,
+    "eyes": [
+     34.0,
+     42.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "D2": {
+    "size": "M",
+    "bbox": [
+     28,
+     35
+    ],
+    "headTop": 28.0,
+    "eyes": [
+     35.5,
+     39.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "D3": {
+    "size": "L",
+    "bbox": [
+     38,
+     45
+    ],
+    "headTop": 22.0,
+    "eyes": [
+     36.0,
+     42.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "E1": {
+    "size": "M",
+    "bbox": [
+     28,
+     37
+    ],
+    "headTop": 28.0,
+    "eyes": [
+     33.0,
+     41.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "E2": {
+    "size": "M",
+    "bbox": [
+     35,
+     33
+    ],
+    "headTop": 30.0,
+    "eyes": [
+     38.0,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "E3": {
+    "size": "M",
+    "bbox": [
+     36,
+     40
+    ],
+    "headTop": 23.0,
+    "eyes": [
+     36.0,
+     40.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "F1": {
+    "size": "M",
+    "bbox": [
+     28,
+     36
+    ],
+    "headTop": 27.0,
+    "eyes": [
+     32.5,
+     43.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "F2": {
+    "size": "M",
+    "bbox": [
+     37,
+     33
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     35.5,
+     42.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "F3": {
+    "size": "M",
+    "bbox": [
+     38,
+     39
+    ],
+    "headTop": 26.0,
+    "eyes": [
+     38.5,
+     40.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "G1": {
+    "size": "M",
+    "bbox": [
+     28,
+     37
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     32.5,
+     42.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "G2": {
+    "size": "M",
+    "bbox": [
+     36,
+     33
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     36.0,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "G3": {
+    "size": "M",
+    "bbox": [
+     38,
+     39
+    ],
+    "headTop": 23.0,
+    "eyes": [
+     36.0,
+     39.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "H1": {
+    "size": "S",
+    "bbox": [
+     30,
+     31
+    ],
+    "headTop": 31.0,
+    "eyes": [
+     34.5,
+     42.5
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "H2": {
+    "size": "M",
+    "bbox": [
+     36,
+     39
+    ],
+    "headTop": 30.0,
+    "eyes": [
+     33.0,
+     43.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "H3": {
+    "size": "M",
+    "bbox": [
+     38,
+     35
+    ],
+    "headTop": 24.0,
+    "eyes": [
+     35.5,
+     41.0
+    ],
+    "pivot": [
+     32.0,
+     53.0
+    ]
+   },
+   "S1": {
+    "size": "S",
+    "bbox": [
+     22,
+     28
+    ],
+    "headTop": 29.0,
+    "eyes": [
+     30.5,
+     41.5
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S2": {
+    "size": "S",
+    "bbox": [
+     30,
+     32
+    ],
+    "headTop": 25.0,
+    "eyes": [
+     30.5,
+     39.5
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S4A": {
+    "size": "L",
+    "bbox": [
+     31,
+     43
+    ],
+    "headTop": 14.0,
+    "eyes": [
+     31.5,
+     40.5
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S4B": {
+    "size": "M",
+    "bbox": [
+     28,
+     38
+    ],
+    "headTop": 18.0,
+    "eyes": [
+     29.5,
+     33.0
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S4C": {
+    "size": "M",
+    "bbox": [
+     31,
+     36
+    ],
+    "headTop": 21.0,
+    "eyes": [
+     32.0,
+     40.0
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S4D": {
+    "size": "M",
+    "bbox": [
+     26,
+     37
+    ],
+    "headTop": 20.0,
+    "eyes": [
+     33.0,
+     39.0
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S4E": {
+    "size": "M",
+    "bbox": [
+     31,
+     40
+    ],
+    "headTop": 17.0,
+    "eyes": [
+     32.0,
+     38.5
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S4F": {
+    "size": "M",
+    "bbox": [
+     28,
+     39
+    ],
+    "headTop": 18.0,
+    "eyes": [
+     31.5,
+     39.5
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S4G": {
+    "size": "M",
+    "bbox": [
+     28,
+     40
+    ],
+    "headTop": 17.0,
+    "eyes": [
+     31.5,
+     38.5
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   },
+   "S4H": {
+    "size": "M",
+    "bbox": [
+     30,
+     34
+    ],
+    "headTop": 23.0,
+    "eyes": [
+     33.5,
+     39.5
+    ],
+    "pivot": [
+     32,
+     53
+    ]
+   }
+  },
+  "counts": {
+   "S": 7,
+   "M": 37,
+   "L": 15
+  }
+ },
+ "fx": {
+  "work": "fx/particles_work@3x.json",
+  "reuse": [
+   "scenes/hd2d_v3/fx/particles_v3@3x.json",
+   "scenes/hd2d_v3/fx/fx_glow_v3@3x.json"
+  ]
+ },
+ "petGlow": {
+  "ref": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow",
+  "values": {
+   "awake": 1,
+   "sleepy": 0.6,
+   "sleep": 0,
+   "sleepClip": 0,
+   "dreamEnter": 0,
+   "dreaming": 0
+  },
+  "fadeOut": "600ms easeInQuad",
+  "fadeIn": "400ms easeOutQuad＋150ms pulse 1→1.15→1",
+  "appliesTo": [
+   "petLight（grade.json）",
+   "clips *_glow（除咗 tower_*_done 盞燈＝場景燈）",
+   "寵物 rim"
+  ],
+  "notAffected": [
+   "場景 emissive／bloom",
+   "props *_glow（道具燈／星）",
+   "lightmap／light_add",
+   "環境粒子"
+  ],
+  "test": {
+   "changedPx": 12655,
+   "changedBBox": [
+    191,
+    737,
+    389,
+    946
+   ],
+   "windowMaxDiff": 0.0,
+   "fireMaxDiff": 0.0,
+   "petFoot3x": [
+    291,
+    900
+   ]
+  }
+ },
+ "ui": {
+  "product_card_bg": {
+   "img": "ui/product_card_bg@3x.png",
+   "size": [
+    460,
+    550
+   ],
+   "note": "完成彈窗底（煙燻磨砂＋金幼線＋金暈；字 runtime 畫）。彈出 1.5s：scale .6→1.08→1 (220ms easeOutBack)，停 1.0s，飛入「今日成品」欄 (280ms easeInCubic)"
+  },
+  "product_burst": {
+   "img": "ui/product_burst@3x.png",
+   "size": [
+    300,
+    300
+   ],
+   "note": "產品 icon 後面金光芒（lighter，轉 12°/s）"
+  },
+  "today_slot": {
+   "img": "ui/today_slot@3x.png",
+   "size": [
+    76,
+    76
+   ],
+   "note": "「今日成品」格（空）"
+  },
+  "today_slot_new": {
+   "img": "ui/today_slot_new@3x.png",
+   "size": [
+    76,
+    76
+   ],
+   "note": "「今日成品」格（啱啱入，閃 600ms）"
+  },
+  "dayoff_tag_bg": {
+   "img": "ui/dayoff_tag_bg@3x.png",
+   "size": [
+    236,
+    56
+   ],
+   "note": "「今日放假」牌底（字 runtime：h2 goldhi）"
+  },
+  "tap_ripple": {
+   "img": "ui/tap_ripple@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "note": "撳道具時嘅金圈（scale .4→1.2，alpha 1→0，350ms）"
+  }
+ },
+ "mockups": {
+  "ws_post": {
+   "img": "mockups/ws_post.png",
+   "note": "郵局 Lv1：M 體型（S4C）分信 loop 第 3 幀；信箱撳咗（第 4 幀）；印章藍色（row 1）"
+  },
+  "ws_garden": {
+   "img": "mockups/ws_garden.png",
+   "note": "花園 Lv3：右下雀仔浴盆；S 體型（S2）淋水；朵花撳咗即開＋閃"
+  },
+  "ws_tower_day": {
+   "img": "mockups/ws_tower_day.png",
+   "note": "瞭望台日版：L 體型（evo_still_tide）望遠鏡掃天；燈熄"
+  },
+  "ws_tower_night": {
+   "img": "mockups/ws_tower_night.png",
+   "note": "瞭望台夜版（夜更 21–05）：Lv3 渾天儀＋Lv5 星帽；燈著（場景燈）；流星劃過；夜更上限 8 不變"
+  },
+  "ws_kitchen": {
+   "img": "mockups/ws_kitchen.png",
+   "note": "廚房 Lv5：廚師帽（M）＋Lv3 麵包籃；攪拌 loop；煲冒煙、香料灑粉"
+  },
+  "ws_done_popup": {
+   "img": "mockups/ws_done_popup.png",
+   "note": "出糧（夜更 05:00）：成品卡彈出 1.5s（5b 機率結果：委託信 25%）→ 飛入今日成品欄；郵局轉夜色（tod night）；寵物蓋印 done 第 3 幀"
+  },
+  "ws_dayoff": {
+   "img": "mockups/ws_dayoff.png",
+   "note": "寵物唔喺度（遠足／休息）：場景淨係擺設＋「今日放假」；道具照撳得（純視覺）"
+  },
+  "ws_garden_night": {
+   "img": "mockups/ws_garden_night.png",
+   "note": "花園夜色（tod night：場景轉色，花園燈／月光照常）；寵物 sleepy → petGlow .6（寵物光圈／光點 ×.6；場景燈唔郁）"
+  }
+ },
+ "layout": {
+  "ws_post": {
+   "prop:post_mailbox": [
+    438,
+    786,
+    90,
+    120
+   ],
+   "prop:post_stamp": [
+    54,
+    630,
+    78,
+    90
+   ],
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "jobLv": [
+    166.0,
+    42,
+    98,
+    32
+   ],
+   "shift": [
+    419,
+    39,
+    148,
+    38
+   ],
+   "product:0": [
+    42,
+    1114,
+    76,
+    76
+   ],
+   "product:1": [
+    128,
+    1114,
+    76,
+    76
+   ]
+  },
+  "ws_garden": {
+   "prop:garden_flower": [
+    396,
+    774,
+    84,
+    120
+   ],
+   "prop:garden_bucket": [
+    84,
+    840,
+    96,
+    102
+   ],
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "jobLv": [
+    166.0,
+    42,
+    98,
+    32
+   ],
+   "shift": [
+    419,
+    39,
+    148,
+    38
+   ],
+   "product:0": [
+    42,
+    1114,
+    76,
+    76
+   ],
+   "product:1": [
+    128,
+    1114,
+    76,
+    76
+   ],
+   "product:2": [
+    214,
+    1114,
+    76,
+    76
+   ]
+  },
+  "ws_tower_day": {
+   "prop:tower_star": [
+    360,
+    288,
+    72,
+    84
+   ],
+   "prop:tower_lamp": [
+    36,
+    546,
+    72,
+    204
+   ],
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "jobLv": [
+    196.0,
+    42,
+    98,
+    32
+   ],
+   "shift": [
+    419,
+    39,
+    148,
+    38
+   ],
+   "product:0": [
+    42,
+    1114,
+    76,
+    76
+   ]
+  },
+  "ws_tower_night": {
+   "prop:tower_star": [
+    360,
+    288,
+    72,
+    84
+   ],
+   "prop:tower_lamp": [
+    36,
+    546,
+    72,
+    204
+   ],
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "jobLv": [
+    196.0,
+    42,
+    98,
+    32
+   ],
+   "shift": [
+    419,
+    39,
+    148,
+    38
+   ],
+   "product:0": [
+    42,
+    1114,
+    76,
+    76
+   ],
+   "product:1": [
+    128,
+    1114,
+    76,
+    76
+   ],
+   "product:2": [
+    214,
+    1114,
+    76,
+    76
+   ],
+   "product:3": [
+    300,
+    1114,
+    76,
+    76
+   ]
+  },
+  "ws_kitchen": {
+   "prop:kitchen_pot": [
+    408,
+    480,
+    120,
+    156
+   ],
+   "prop:kitchen_spice": [
+    96,
+    570,
+    96,
+    132
+   ],
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "jobLv": [
+    166.0,
+    42,
+    98,
+    32
+   ],
+   "shift": [
+    419,
+    39,
+    148,
+    38
+   ],
+   "product:0": [
+    42,
+    1114,
+    76,
+    76
+   ],
+   "product:1": [
+    128,
+    1114,
+    76,
+    76
+   ],
+   "product:2": [
+    214,
+    1114,
+    76,
+    76
+   ]
+  },
+  "ws_done_popup": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "jobLv": [
+    166.0,
+    42,
+    98,
+    32
+   ],
+   "shift": [
+    419,
+    39,
+    148,
+    38
+   ],
+   "product:0": [
+    42,
+    1114,
+    76,
+    76
+   ],
+   "product:1": [
+    128,
+    1114,
+    76,
+    76
+   ],
+   "product:2": [
+    214,
+    1114,
+    76,
+    76
+   ],
+   "product:3": [
+    300,
+    1114,
+    76,
+    76
+   ],
+   "productCard": [
+    102,
+    325,
+    380,
+    470
+   ]
+  },
+  "ws_dayoff": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "jobLv": [
+    166.0,
+    42,
+    98,
+    32
+   ],
+   "shift": [
+    419,
+    39,
+    148,
+    38
+   ],
+   "dayoffTag": [
+    162.5,
+    540,
+    260,
+    64
+   ]
+  },
+  "ws_garden_night": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "jobLv": [
+    166.0,
+    42,
+    98,
+    32
+   ],
+   "shift": [
+    419,
+    39,
+    148,
+    38
+   ],
+   "product:0": [
+    42,
+    1114,
+    76,
+    76
+   ],
+   "product:1": [
+    128,
+    1114,
+    76,
+    76
+   ]
+  }
+ },
+ "hits": {
+  "ws_post": [
+   [
+    "prop:post_mailbox",
+    438.0,
+    786.0,
+    90,
+    120
+   ],
+   [
+    "prop:post_stamp",
+    54.0,
+    630.0,
+    78,
+    90
+   ],
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ]
+  ],
+  "ws_garden": [
+   [
+    "prop:garden_flower",
+    396.0,
+    774.0,
+    84,
+    120
+   ],
+   [
+    "prop:garden_bucket",
+    84.0,
+    840.0,
+    96,
+    102
+   ],
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ]
+  ],
+  "ws_tower_day": [
+   [
+    "prop:tower_star",
+    360.0,
+    288.0,
+    72,
+    84
+   ],
+   [
+    "prop:tower_lamp",
+    36.0,
+    546.0,
+    72,
+    204
+   ],
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ]
+  ],
+  "ws_tower_night": [
+   [
+    "prop:tower_star",
+    360.0,
+    288.0,
+    72,
+    84
+   ],
+   [
+    "prop:tower_lamp",
+    36.0,
+    546.0,
+    72,
+    204
+   ],
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ]
+  ],
+  "ws_kitchen": [
+   [
+    "prop:kitchen_pot",
+    408.0,
+    480.0,
+    120,
+    156
+   ],
+   [
+    "prop:kitchen_spice",
+    96.0,
+    570.0,
+    96,
+    132
+   ],
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ]
+  ],
+  "ws_done_popup": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ]
+  ],
+  "ws_dayoff": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ]
+  ],
+  "ws_garden_night": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ]
+  ]
+ },
+ "texts": "mockups/texts.json",
+ "tools": [
+  "tools/ws3_px.py",
+  "tools/ws3_scenes.py",
+  "tools/ws3_sprites.py",
+  "tools/build_workscenes_v3.py",
+  "tools/preview_workscenes_v3.py",
+  "tools/validate_workscenes_v3.py"
+ ]
+}

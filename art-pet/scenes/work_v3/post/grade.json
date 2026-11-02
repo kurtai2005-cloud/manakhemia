@@ -1,0 +1,176 @@
+{
+ "scene": "post",
+ "name": "郵局",
+ "job": "post",
+ "ambient": "#d8c4ae",
+ "petTint": "#fff4e6",
+ "rim": {
+  "color": "#ffe2a8",
+  "dir": [
+   -1,
+   -0.4
+  ],
+  "intensity": 0.55
+ },
+ "bloom": {
+  "threshold": 0.7,
+  "intensity": 0.55
+ },
+ "fog": {
+  "color": "#f6e2c0",
+  "density": 0.03
+ },
+ "vignette": 0.55,
+ "ambientTint": "#ffffff",
+ "foot": [
+  97,
+  300
+ ],
+ "tod": {
+  "dawn": {
+   "hours": [
+    5,
+    8
+   ],
+   "mul": "#ffd9c4",
+   "add": 0.8,
+   "emissive": 0.7
+  },
+  "day": {
+   "hours": [
+    8,
+    17
+   ],
+   "mul": "#ffffff",
+   "add": 1.0,
+   "emissive": 0.35
+  },
+  "dusk": {
+   "hours": [
+    17,
+    20
+   ],
+   "mul": "#ffbf94",
+   "add": 0.75,
+   "emissive": 0.95
+  },
+  "night": {
+   "hours": [
+    20,
+    5
+   ],
+   "mul": "#6c78b4",
+   "add": 0.3,
+   "emissive": 1.45
+  }
+ },
+ "todNote": "runtime：(sky→fore 合成)×tod.mul，light_add×tod.add，emissive／bloom×tod.emissive；按遊戲時鐘喺 hours 之間 600ms 漸變。",
+ "emitters": [
+  {
+   "type": "dust",
+   "rect": [
+    20,
+    90,
+    120,
+    330
+   ],
+   "max": 16,
+   "tint": "#fff0c8",
+   "alpha": 0.55,
+   "src": "scenes/hd2d_v3/fx/particles_v3@3x#dust"
+  },
+  {
+   "type": "paper",
+   "rect": [
+    90,
+    80,
+    186,
+    190
+   ],
+   "max": 4,
+   "tint": "#ffffff",
+   "alpha": 1,
+   "src": "work_v3/fx/particles_work@3x#paper"
+  }
+ ],
+ "petLight": {
+  "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#pet_pool",
+  "anchor": "foot",
+  "offset3x": [
+   0,
+   6
+  ],
+  "size3x": [
+   240,
+   96
+  ],
+  "blend": "lighter",
+  "intensity": 0.55,
+  "multiplyBy": "petGlow",
+  "rule": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow：awake 1／sleepy .6／sleep・sleepClip・dreamEnter・dreaming 0；淡出 600ms easeInQuad、淡入 400ms easeOutQuad＋150ms pulse 1→1.15→1。場景燈（窗、吊燈、爐火、月、道具燈）唔受影響。"
+ },
+ "lights": {
+  "windows": [
+   {
+    "rect": [
+     16,
+     76,
+     72,
+     162
+    ],
+    "col": "#fff1c8"
+   }
+  ],
+  "lamps": [
+   {
+    "pos": [
+     140,
+     92
+    ],
+    "col": "#ffd27a",
+    "r": 40
+   },
+   {
+    "pos": [
+     40,
+     84
+    ],
+    "col": "#ffd27a",
+    "r": 26
+   }
+  ],
+  "rays": {
+   "src": [
+    44,
+    110
+   ],
+   "toward": [
+    110,
+    330
+   ],
+   "col": "#ffe7b0",
+   "strength": 0.26,
+   "spread": 0.42
+  },
+  "ambient": "#c8b4a0",
+  "floorPool": [
+   [
+    44,
+    250,
+    150,
+    340
+   ]
+  ],
+  "emissiveRects": [
+   [
+    16,
+    76,
+    72,
+    162,
+    "#fff8e0",
+    0.2
+   ]
+  ],
+  "warm": true
+ }
+}

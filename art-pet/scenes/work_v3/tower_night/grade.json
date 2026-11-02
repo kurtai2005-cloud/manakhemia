@@ -1,0 +1,129 @@
+{
+ "scene": "tower_night",
+ "name": "瞭望台・夜",
+ "job": "tower",
+ "ambient": "#8a98d8",
+ "petTint": "#c8d0ff",
+ "rim": {
+  "color": "#bcd0ff",
+  "dir": [
+   0.6,
+   -1
+  ],
+  "intensity": 0.75
+ },
+ "bloom": {
+  "threshold": 0.55,
+  "intensity": 0.8
+ },
+ "fog": {
+  "color": "#1a2450",
+  "density": 0.05
+ },
+ "vignette": 0.7,
+ "ambientTint": "#ffffff",
+ "foot": [
+  97,
+  300
+ ],
+ "variantHours": [
+  18,
+  6
+ ],
+ "todNote": "瞭望台用日／夜兩張：06–18 日、18–06 夜（夜更 21–05 必定係夜版）；換版 crossfade 1200ms。",
+ "emitters": [
+  {
+   "type": "twinkle",
+   "rect": [
+    10,
+    70,
+    185,
+    200
+   ],
+   "max": 14,
+   "tint": "#ffffff",
+   "alpha": 1,
+   "src": "work_v3/fx/particles_work@3x#twinkle"
+  },
+  {
+   "type": "firefly",
+   "rect": [
+    0,
+    220,
+    195,
+    340
+   ],
+   "max": 8,
+   "tint": "#d8ff9a",
+   "alpha": 1,
+   "src": "scenes/hd2d_v3/fx/particles_v3@3x#firefly"
+  }
+ ],
+ "petLight": {
+  "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#pet_pool",
+  "anchor": "foot",
+  "offset3x": [
+   0,
+   6
+  ],
+  "size3x": [
+   240,
+   96
+  ],
+  "blend": "lighter",
+  "intensity": 0.8,
+  "multiplyBy": "petGlow",
+  "rule": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow：awake 1／sleepy .6／sleep・sleepClip・dreamEnter・dreaming 0；淡出 600ms easeInQuad、淡入 400ms easeOutQuad＋150ms pulse 1→1.15→1。場景燈（窗、吊燈、爐火、月、道具燈）唔受影響。"
+ },
+ "lights": {
+  "moon": [
+   142,
+   70
+  ],
+  "rays": {
+   "src": [
+    142,
+    70
+   ],
+   "toward": [
+    97,
+    300
+   ],
+   "col": "#9fb6ff",
+   "strength": 0.18,
+   "spread": 0.5
+  },
+  "ambient": "#6a78b8",
+  "lamps": [
+   {
+    "pos": [
+     163,
+     167
+    ],
+    "col": "#ffd27a",
+    "r": 10
+   },
+   {
+    "pos": [
+     97,
+     250
+    ],
+    "col": "#8aa0ff",
+    "r": 90,
+    "bulb": false
+   }
+  ],
+  "emissiveRects": [
+   [
+    130,
+    58,
+    154,
+    82,
+    "#fff4d6",
+    0.9
+   ]
+  ],
+  "warm": false,
+  "night": true
+ }
+}

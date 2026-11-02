@@ -1,0 +1,88 @@
+{
+ "scene": "tower_day",
+ "name": "瞭望台・日",
+ "job": "tower",
+ "ambient": "#ffffff",
+ "petTint": "#ffffff",
+ "rim": {
+  "color": "#fff6dc",
+  "dir": [
+   -1,
+   -0.5
+  ],
+  "intensity": 0.55
+ },
+ "bloom": {
+  "threshold": 0.8,
+  "intensity": 0.4
+ },
+ "fog": {
+  "color": "#eef4fc",
+  "density": 0.04
+ },
+ "vignette": 0.4,
+ "ambientTint": "#ffffff",
+ "foot": [
+  97,
+  300
+ ],
+ "variantHours": [
+  6,
+  18
+ ],
+ "todNote": "瞭望台用日／夜兩張：06–18 日、18–06 夜（夜更 21–05 必定係夜版）；換版 crossfade 1200ms。",
+ "emitters": [
+  {
+   "type": "mote",
+   "rect": [
+    0,
+    100,
+    195,
+    330
+   ],
+   "max": 10,
+   "tint": "#ffffff",
+   "alpha": 0.5,
+   "src": "scenes/hd2d_v3/fx/particles_v3@3x#mote"
+  }
+ ],
+ "petLight": {
+  "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#pet_pool",
+  "anchor": "foot",
+  "offset3x": [
+   0,
+   6
+  ],
+  "size3x": [
+   240,
+   96
+  ],
+  "blend": "lighter",
+  "intensity": 0.55,
+  "multiplyBy": "petGlow",
+  "rule": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow：awake 1／sleepy .6／sleep・sleepClip・dreamEnter・dreaming 0；淡出 600ms easeInQuad、淡入 400ms easeOutQuad＋150ms pulse 1→1.15→1。場景燈（窗、吊燈、爐火、月、道具燈）唔受影響。"
+ },
+ "lights": {
+  "sun": [
+   30,
+   -30
+  ],
+  "rays": {
+   "src": [
+    20,
+    -40
+   ],
+   "toward": [
+    120,
+    330
+   ],
+   "col": "#fff3d0",
+   "strength": 0.16,
+   "spread": 0.45
+  },
+  "ambient": "#ffffff",
+  "lamps": [],
+  "emissiveRects": [],
+  "warm": false
+ }
+}

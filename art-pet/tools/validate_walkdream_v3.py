@@ -16,7 +16,7 @@ def bin_(p): ok(set(np.unique(A(p))) <= {0, 255}, f'{os.path.relpath(p, BT)} alp
 def sz(p, wh): ok(os.path.exists(p) and Image.open(p).size == tuple(wh), f'{os.path.relpath(p, BT)} size != {wh}')
 # 1. 原檔冇郁
 for b, c in (('6b', 'a1a6e9a2'), ('6c', 'af5b4821')):
-    r = subprocess.run(['git', '-C', REPO, 'diff', '--quiet', c, '--', f'art/breakthrough/{b}'], capture_output=True); ok(r.returncode == 0, f'{b} 原檔同 {c} 唔同')
+    r = subprocess.run(['git', '-C', REPO, 'diff', '--quiet', c, '--', f'art/breakthrough/{b}', f':!art/breakthrough/{b}/v3'], capture_output=True); ok(r.returncode == 0, f'{b} 原檔同 {c} 唔同')
     ls = subprocess.run(['git', '-C', REPO, 'ls-tree', '-r', '--name-only', c, f'art/breakthrough/{b}'], capture_output=True, text=True).stdout.split()
     ok(len(ls) > 0 and all(os.path.exists(f'{REPO}/{p}') for p in ls), f'{b} 原檔缺失'); ok(not any('/v3/' in p for p in ls), f'{b} v3 唔應該喺 commit')
 # 2. 6b

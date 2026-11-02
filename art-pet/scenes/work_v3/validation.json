@@ -1,0 +1,148 @@
+{
+ "ok": true,
+ "pass_": 28,
+ "total": 28,
+ "files": 248,
+ "results": [
+  {
+   "check": "json_keys",
+   "ok": true,
+   "note": "22 keys"
+  },
+  {
+   "check": "canvas_bands",
+   "ok": true,
+   "note": "[585, 1266]"
+  },
+  {
+   "check": "gdd_scenes_5",
+   "ok": true,
+   "note": "post, garden, tower_day, tower_night, kitchen"
+  },
+  {
+   "check": "gdd_props_8",
+   "ok": true,
+   "note": "{'post_mailbox': 6, 'post_stamp': 5, 'garden_flower': 6, 'garden_bucket': 5, 'tower_star': 6, 'tower_lamp': 4, 'kitchen_pot': 6, 'kitchen_spice': 5}"
+  },
+  {
+   "check": "gdd_deco_lv3_4",
+   "ok": true,
+   "note": "銅磅＋包裹, 雀仔浴盆, 渾天儀, 麵包籃＋香草"
+  },
+  {
+   "check": "gdd_hats_lv5_12",
+   "ok": true,
+   "note": "12 頂"
+  },
+  {
+   "check": "gdd_clips_24",
+   "ok": true,
+   "note": "24 clips"
+  },
+  {
+   "check": "gdd_icons_8_48px",
+   "ok": true,
+   "note": "letter, letter_commission, flowerpot, decoration, starmap_sticker, starmap_rare, dish, meal_shared"
+  },
+  {
+   "check": "gdd_night_tower",
+   "ok": true,
+   "note": "瞭望台夜 18–06（夜更 21–05 包住）"
+  },
+  {
+   "check": "gdd_tod_others",
+   "ok": true,
+   "note": "dawn/day/dusk/night"
+  },
+  {
+   "check": "gdd_mockups",
+   "ok": true,
+   "note": "ws_post, ws_garden, ws_tower_day, ws_tower_night, ws_kitchen, ws_done_popup, ws_dayoff, ws_garden_night"
+  },
+  {
+   "check": "numbers_unchanged",
+   "ok": true,
+   "note": "道具 affectsGame=false"
+  },
+  {
+   "check": "scene_layers",
+   "ok": true,
+   "note": "105 層"
+  },
+  {
+   "check": "sprite_files_sizes",
+   "ok": true,
+   "note": "56 張 sprite"
+  },
+  {
+   "check": "sprite_alpha_0_255",
+   "ok": true,
+   "note": "sprite／solid 層 alpha 只有 0/255"
+  },
+  {
+   "check": "glow_true_alpha",
+   "ok": true,
+   "note": "21 glow 層真 alpha"
+  },
+  {
+   "check": "hat_sizes_SML",
+   "ok": true,
+   "note": "S<M<L"
+  },
+  {
+   "check": "size_class_all_forms",
+   "ok": true,
+   "note": "{'S': 7, 'M': 37, 'L': 15}"
+  },
+  {
+   "check": "text_min_18px",
+   "ok": true,
+   "note": "64 段字，最細 18px"
+  },
+  {
+   "check": "text_contrast_4_5",
+   "ok": true,
+   "note": "最低 7.38"
+  },
+  {
+   "check": "text_font_noto",
+   "ok": true,
+   "note": "Noto Sans/Serif CJK TC"
+  },
+  {
+   "check": "ui_parts_no_text",
+   "ok": true,
+   "note": "6 件（字 runtime 畫）"
+  },
+  {
+   "check": "mockup_sizes",
+   "ok": true,
+   "note": "8 張 585×1266"
+  },
+  {
+   "check": "petglow_rule",
+   "ok": true,
+   "note": "awake 1／sleepy .6／瞓 0；grade.petLight×petGlow"
+  },
+  {
+   "check": "petglow_scene_lights_fixed",
+   "ok": true,
+   "note": "petGlow 1→0 只郁寵物附近 bbox [191, 737, 389, 946]"
+  },
+  {
+   "check": "clip_glow_hook",
+   "ok": true,
+   "note": "clip glow ×petGlow"
+  },
+  {
+   "check": "no_junk",
+   "ok": true,
+   "note": "clean"
+  },
+  {
+   "check": "file_lt_20mb",
+   "ok": true,
+   "note": "13.2MB"
+  }
+ ]
+}
