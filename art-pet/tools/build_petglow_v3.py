@@ -305,7 +305,7 @@ def addc(img, sp, cx, cy, a):   # 已上色 sprite lighter
     h, w = sp.shape[:2]; x0, y0 = int(round(cx - w / 2)), int(round(cy - h / 2))
     xa, ya, xb, yb = max(0, x0), max(0, y0), min(img.shape[1], x0 + w), min(img.shape[0], y0 + h)
     if xa < xb and ya < yb: s = sp[ya - y0:yb - y0, xa - x0:xb - x0]; img[ya:yb, xa:xb] += s[..., :3] * s[..., 3:] * a
-def draw_pet(img, key, g, pet, glow, seed):
+def draw_pet(img, key, g, pet, glow, seed, foot=(97, 292), ss=None):   # 第 4 批：foot／ss 俾屋仔 v3 用（預設＝花園，行為不變）
     form, fn = pet; d, AT, EM = atlas(form); fi = d['frames'][fn]; f = fi['frame']
     pv = (fi['pivotPx']['x'], fi['pivotPx']['y']) if 'pivotPx' in fi else tuple(d['meta']['pivotPx'])
     sp = AT[f['y']:f['y'] + f['h'], f['x']:f['x'] + f['w']].copy(); em = EM[f['y']:f['y'] + f['h'], f['x']:f['x'] + f['w']].copy()
@@ -315,7 +315,7 @@ def draw_pet(img, key, g, pet, glow, seed):
     emk = (em[..., 3] > 0)[..., None] & (orig[..., 3:] > 0)
     if glow > 0: sp[..., :3] = np.where(emk, orig[..., :3] * glow + sp[..., :3] * (1 - glow), sp[..., :3])   # 發光像素醒時唔食 tint；瞓時同身體一樣
     sp3 = up3(sp); emc = up3(np.where(emk, orig[..., :3], 0))
-    J, FR = pg(form); ss = J['sceneScale'][key]; cx, cy = (97 + G.MX) * S, (292 + G.MY) * S
+    J, FR = pg(form); ss = J['sceneScale'][key] if ss is None else ss; cx, cy = (foot[0] + G.MX) * S, (foot[1] + G.MY) * S
     yy, xx = np.mgrid[0:G.H3, 0:G.W3]
     shd = np.exp(-(((xx - cx) / (sp3.shape[1] * .30)) ** 2 + ((yy - cy - 2) / 9) ** 2) ** 2) * .34; img *= 1 - shd[..., None]
     pl = g['v3']['petLight']; pool = G.fx()['pet_pool']

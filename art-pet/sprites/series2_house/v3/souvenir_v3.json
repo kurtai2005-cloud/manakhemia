@@ -1,0 +1,335 @@
+{
+ "note": "5b 遠足手信喺屋仔擺設（V3）：pixel sprite 唔改（alpha 0/255；x3 nearest），加 AO、倒影、發光手信嘅光暈＋星芒。",
+ "souvenirs": {
+  "sv_shell": {
+   "zh": "七彩貝殼",
+   "px": "sprites/series2_long/5b/souvenir/sv_shell_1x.png",
+   "x3": "souvenir/x3/sv_shell@3x.png",
+   "pivot": [
+    6,
+    10
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true,
+   "light": {
+    "glow": "souvenir/sv_shell_glow@3x.png",
+    "at": "pivot 上 5px（art）",
+    "blend": "lighter（lightmap 之後）",
+    "flicker": {
+     "type": "glint",
+     "hz": 0.3,
+     "amp": 1.0
+    },
+    "flare": "s",
+    "dayScale": 0.5,
+    "nightScale": 1.0,
+    "petGlow": false,
+    "note": "擺設光＝場景光，唔跟 petGlow"
+   }
+  },
+  "sv_pinecone": {
+   "zh": "松果",
+   "px": "sprites/series2_long/5b/souvenir/sv_pinecone_1x.png",
+   "x3": "souvenir/x3/sv_pinecone@3x.png",
+   "pivot": [
+    6,
+    11
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true
+  },
+  "sv_starstone": {
+   "zh": "星星石",
+   "px": "sprites/series2_long/5b/souvenir/sv_starstone_1x.png",
+   "x3": "souvenir/x3/sv_starstone@3x.png",
+   "pivot": [
+    6,
+    9
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true,
+   "light": {
+    "glow": "souvenir/sv_starstone_glow@3x.png",
+    "at": "pivot 上 5px（art）",
+    "blend": "lighter（lightmap 之後）",
+    "flicker": {
+     "type": "twinkle",
+     "hz": 1.2,
+     "amp": 0.3
+    },
+    "flare": "s",
+    "dayScale": 0.5,
+    "nightScale": 1.0,
+    "petGlow": false,
+    "note": "擺設光＝場景光，唔跟 petGlow"
+   }
+  },
+  "sv_feather": {
+   "zh": "藍羽毛",
+   "px": "sprites/series2_long/5b/souvenir/sv_feather_1x.png",
+   "x3": "souvenir/x3/sv_feather@3x.png",
+   "pivot": [
+    5,
+    11
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true
+  },
+  "sv_mushroom": {
+   "zh": "細蘑菇",
+   "px": "sprites/series2_long/5b/souvenir/sv_mushroom_1x.png",
+   "x3": "souvenir/x3/sv_mushroom@3x.png",
+   "pivot": [
+    6,
+    10
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true
+  },
+  "sv_maple": {
+   "zh": "紅楓葉",
+   "px": "sprites/series2_long/5b/souvenir/sv_maple_1x.png",
+   "x3": "souvenir/x3/sv_maple@3x.png",
+   "pivot": [
+    6,
+    10
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true
+  },
+  "sv_bottle": {
+   "zh": "樽中信",
+   "px": "sprites/series2_long/5b/souvenir/sv_bottle_1x.png",
+   "x3": "souvenir/x3/sv_bottle@3x.png",
+   "pivot": [
+    6,
+    10
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true,
+   "light": {
+    "glow": "souvenir/sv_bottle_glow@3x.png",
+    "at": "pivot 上 5px（art）",
+    "blend": "lighter（lightmap 之後）",
+    "flicker": {
+     "type": "glint",
+     "hz": 0.25,
+     "amp": 1.0
+    },
+    "flare": "s",
+    "dayScale": 0.5,
+    "nightScale": 1.0,
+    "petGlow": false,
+    "note": "擺設光＝場景光，唔跟 petGlow"
+   }
+  },
+  "sv_cloud": {
+   "zh": "雲朵糖",
+   "px": "sprites/series2_long/5b/souvenir/sv_cloud_1x.png",
+   "x3": "souvenir/x3/sv_cloud@3x.png",
+   "pivot": [
+    6,
+    10
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true,
+   "light": {
+    "glow": "souvenir/sv_cloud_glow@3x.png",
+    "at": "pivot 上 5px（art）",
+    "blend": "lighter（lightmap 之後）",
+    "flicker": null,
+    "flare": null,
+    "dayScale": 0.5,
+    "nightScale": 1.0,
+    "petGlow": false,
+    "note": "擺設光＝場景光，唔跟 petGlow"
+   }
+  },
+  "sv_lantern": {
+   "zh": "螢火燈",
+   "px": "sprites/series2_long/5b/souvenir/sv_lantern_1x.png",
+   "x3": "souvenir/x3/sv_lantern@3x.png",
+   "pivot": [
+    6,
+    10
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true,
+   "light": {
+    "glow": "souvenir/sv_lantern_glow@3x.png",
+    "at": "pivot 上 5px（art）",
+    "blend": "lighter（lightmap 之後）",
+    "flicker": {
+     "type": "breathe",
+     "hz": 0.6,
+     "amp": 0.15
+    },
+    "flare": "s",
+    "dayScale": 0.5,
+    "nightScale": 1.0,
+    "petGlow": false,
+    "note": "擺設光＝場景光，唔跟 petGlow"
+   }
+  },
+  "sv_rainbow": {
+   "zh": "彩虹糖",
+   "px": "sprites/series2_long/5b/souvenir/sv_rainbow_1x.png",
+   "x3": "souvenir/x3/sv_rainbow@3x.png",
+   "pivot": [
+    6,
+    12
+   ],
+   "ao": {
+    "png": "souvenir/sv_ao@3x.png",
+    "alpha": 0.8
+   },
+   "reflect": true,
+   "light": {
+    "glow": "souvenir/sv_rainbow_glow@3x.png",
+    "at": "pivot 上 5px（art）",
+    "blend": "lighter（lightmap 之後）",
+    "flicker": null,
+    "flare": null,
+    "dayScale": 0.5,
+    "nightScale": 1.0,
+    "petGlow": false,
+    "note": "擺設光＝場景光，唔跟 petGlow"
+   }
+  }
+ },
+ "spots": [
+  {
+   "id": "sill_0",
+   "pos": [
+    36,
+    151
+   ],
+   "requires": {
+    "window": null
+   },
+   "note": "窗台（窗 slot 空先用；窗簾／星星窗有花盆箱遮住）"
+  },
+  {
+   "id": "sill_1",
+   "pos": [
+    48,
+    151
+   ],
+   "requires": {
+    "window": null
+   },
+   "note": "窗台（窗 slot 空先用；窗簾／星星窗有花盆箱遮住）"
+  },
+  {
+   "id": "sill_2",
+   "pos": [
+    70,
+    151
+   ],
+   "requires": {
+    "window": null
+   },
+   "note": "窗台（窗 slot 空先用；窗簾／星星窗有花盆箱遮住）"
+  },
+  {
+   "id": "table_0",
+   "pos": [
+    32,
+    283
+   ],
+   "requires": {
+    "table": "table_stump"
+   }
+  },
+  {
+   "id": "table_1",
+   "pos": [
+    57,
+    283
+   ],
+   "requires": {
+    "table": "table_stump"
+   }
+  },
+  {
+   "id": "table_0r",
+   "pos": [
+    30,
+    281
+   ],
+   "requires": {
+    "table": "table_round"
+   }
+  },
+  {
+   "id": "table_1r",
+   "pos": [
+    56,
+    281
+   ],
+   "requires": {
+    "table": "table_round"
+   }
+  },
+  {
+   "id": "shelf_0",
+   "pos": [
+    152,
+    92
+   ],
+   "requires": {
+    "wall": "wall_shelf"
+   },
+   "note": "層架右端空位"
+  },
+  {
+   "id": "floor_0",
+   "pos": [
+    170,
+    318
+   ],
+   "requires": {},
+   "note": "右下牆角地板（永遠可用）"
+  },
+  {
+   "id": "floor_1",
+   "pos": [
+    176,
+    300
+   ],
+   "requires": {}
+  }
+ ],
+ "rules": {
+  "maxShown": 5,
+  "order": "最新攞返嚟嘅優先；spot 按表序揀第一個 requires 符合嘅空位",
+  "ysort": "floor_* 參與 ysort（sortY＝pos y）；sill／table／shelf 跟住佢下面嗰件家具 sortY＋0.05"
+ }
+}

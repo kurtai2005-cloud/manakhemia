@@ -1,0 +1,217 @@
+{
+ "variant": "night",
+ "name": "屋仔・夜晚（V3-A）",
+ "hours": "19–06",
+ "ambientTint": "#aab0e4",
+ "petTint": "#f2eaff",
+ "saturation": 0.98,
+ "contrast": 1.08,
+ "bloom": {
+  "threshold": 0.66,
+  "intensity": 0.75
+ },
+ "fog": {
+  "color": "#2a2e5a",
+  "density": 0.05
+ },
+ "dof": {
+  "far": 0,
+  "mid": 0,
+  "fore": 0.8
+ },
+ "vignette": 0.36,
+ "rim": {
+  "color": "#c8d4ff",
+  "intensity": 0.4,
+  "dir": [
+   -0.7,
+   -0.7
+  ]
+ },
+ "bulbGlowTint": "#ffe0a0",
+ "particles": {
+  "type": "none"
+ },
+ "splitTone": {
+  "shadow": "#283070",
+  "highlight": "#ffd090",
+  "amount": 0.11
+ },
+ "v3": {
+  "note": "V3-A 屋仔：@3x 烘焙層喺 x3/（669×1338＝層 223×446 ×3，同 4b 一樣 art＋(14,12)）；vignette@3x 係螢幕 585×1266。家具／寵物／紀念品同即時光唔烘焙。",
+  "layerSize3x": [
+   669,
+   1338
+  ],
+  "screenSize3x": [
+   585,
+   1266
+  ],
+  "layerOffset3x": [
+   42,
+   36
+  ],
+  "stack": "../../../house_v3.json#stack",
+  "windowBeam": {
+   "beam": "light/<window item 或 none>_beam@3x.png",
+   "patch": "light/<window item 或 none>_patch@3x.png",
+   "tint": "#a8c0ff",
+   "intensity": 0.22,
+   "patchTint": "#b8ccff",
+   "patchIntensity": 0.36,
+   "blend": "lighter",
+   "shimmer": {
+    "hz": 0.15,
+    "amp": 0.06,
+    "note": "窗外雲影：intensity 慢慢 ±6%"
+   },
+   "rule": "窗 slot 擺咩就揀邊張（none／win_curtain／win_star）；場景光，唔跟 petGlow"
+  },
+  "flares": [
+   {
+    "pos": [
+     34,
+     104
+    ],
+    "size": "s",
+    "tint": "#d8e4ff",
+    "fps": 2,
+    "phase": 0,
+    "intensity": 0.35,
+    "note": "窗角光芒"
+   },
+   {
+    "pos": [
+     70,
+     146
+    ],
+    "size": "s",
+    "tint": "#e0e8ff",
+    "fps": 3,
+    "phase": 0.5,
+    "intensity": 0.2
+   }
+  ],
+  "emitters": [
+   {
+    "type": "dust",
+    "glow": "glow_12",
+    "tint": "#d8e0ff",
+    "polygon": [
+     [
+      30,
+      98
+     ],
+     [
+      76,
+      98
+     ],
+     [
+      116,
+      250
+     ],
+     [
+      146,
+      312
+     ],
+     [
+      100,
+      312
+     ],
+     [
+      30,
+      150
+     ]
+    ],
+    "rate": 0.48999999999999994,
+    "life": [
+     5,
+     9
+    ],
+    "vy": [
+     -2,
+     1
+    ],
+    "vx": [
+     -1,
+     1
+    ],
+    "sway": 3,
+    "max": 8,
+    "add": 0.35,
+    "note": "浮塵：只喺窗光柱入面生（polygon art 座標）"
+   },
+   {
+    "type": "dust",
+    "glow": "glow_12",
+    "tint": "#c8d0ff",
+    "rect": [
+     16,
+     60,
+     179,
+     320
+    ],
+    "rate": 0.3,
+    "life": [
+     6,
+     10
+    ],
+    "vy": [
+     -2,
+     0
+    ],
+    "sway": 3,
+    "max": 5,
+    "add": 0.25,
+    "alpha": 0.5,
+    "note": "房內零星浮塵"
+   }
+  ],
+  "lamps": {
+   "scale": 1.0,
+   "note": "燈 slot 擺咗燈：furniture_v3.json lamps × 呢個 scale（日間 .35，夜晚 1）；場景燈唔跟 petGlow"
+  },
+  "reflection": {
+   "baked": "x3/floor_reflect@3x.png",
+   "realtime": {
+    "mirrorY": 238,
+    "alpha": 0.117,
+    "fadePx3": 150,
+    "blur3": 2,
+    "applyTo": [
+     "ysort 家具",
+     "寵物",
+     "紀念品（地板／檯面以外）"
+    ],
+    "note": "即時倒影：sprite 上下反轉，pivot y 鏡像到 2×地腳線… 實際做法：倒影頂＝sprite 底（pivot），alpha 由 alpha 向下 fadePx3 淡到 0；畫喺地氈之前（地氈唔反光）"
+   }
+  },
+  "petLight": {
+   "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#pet_pool",
+   "anchor": "foot",
+   "offset3x": [
+    0,
+    6
+   ],
+   "size3x": [
+    240,
+    96
+   ],
+   "tint": "#ffe0a0",
+   "intensity": 0.9,
+   "blend": "lighter",
+   "multiplyBy": "petGlow",
+   "formLight": "sprites/tuanrong/petglow_v3/<form>.json（逐幀 anchor）；sceneScale 用 houseScale",
+   "houseScale": 1.0,
+   "rule": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow — Kurt：「除左佢訓就會關」。屋仔：瞓床（sleep_same_bed／sleep_loop）＝0、sleepy＝.6、其餘醒＝1；fadeOut 600ms easeInQuad、醒返 fadeIn 400ms easeOutQuad＋150ms pulse 1→1.15→1。燈、窗光、紀念品光唔受影響。"
+  },
+  "petPop": {
+   "contactShadow": {
+    "alpha": 0.34,
+    "rx": 0.3,
+    "ry": 0.06
+   },
+   "rim": "同花園 v3（sprites/tuanrong/rim，rim.intensity ×1.15）"
+  }
+ }
+}

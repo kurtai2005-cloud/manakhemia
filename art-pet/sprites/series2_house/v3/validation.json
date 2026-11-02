@@ -1,0 +1,16 @@
+{
+ "ok": true,
+ "errors": [],
+ "checked": {
+  "png": 182,
+  "json": 11
+ },
+ "rooms": [
+  "room1",
+  "room2",
+  "room3",
+  "room4"
+ ],
+ "furniture": 12,
+ "souvenirs": 10
+}
