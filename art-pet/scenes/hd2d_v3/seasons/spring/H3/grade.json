@@ -1,0 +1,353 @@
+{
+ "variant": "H3",
+ "season": "spring",
+ "name": "春・清新冷調（V3-A）",
+ "hours": "10–16（晴／雨後）",
+ "baseVariant": "H3",
+ "ambientTint": "#f2f0f6",
+ "petTint": "#ecd7c4",
+ "saturation": 1.02,
+ "contrast": 1.1,
+ "bloom": {
+  "threshold": 0.86,
+  "intensity": 0.3
+ },
+ "fog": {
+  "color": "#e4f6f8",
+  "density": 0.04
+ },
+ "dof": {
+  "far": 1.2,
+  "mid": 0.6,
+  "fore": 2.2
+ },
+ "vignette": 0.14,
+ "rim": {
+  "color": "#5a6a8a",
+  "intensity": 0.6,
+  "dir": [
+   0.6,
+   0.8
+  ]
+ },
+ "bulbGlowTint": "#fff2b0",
+ "particles": {
+  "type": "petal",
+  "rate": 0.5,
+  "color": "#ffd0dc"
+ },
+ "rain": {
+  "saturation": 0.72,
+  "contrast": 0.9,
+  "tint": "#c8d8e4"
+ },
+ "splitTone": {
+  "shadow": "#5c7ca3",
+  "highlight": "#fff3e8",
+  "amount": 0.07
+ },
+ "seasonParams": {
+  "tint": "#fff4f6",
+  "sat": 1.05,
+  "con": 1.0,
+  "lift": 0.0,
+  "shadow": "#f2e8f4",
+  "shadowK": 1.0,
+  "lightTint": "#fff2f4",
+  "green": [
+   "#8fd07a",
+   0.0
+  ]
+ },
+ "v3": {
+  "note": "V3-A 季節：春（3–5 月）：櫻花樹（樹冠粉紅花團）、嫩綠草地、地上小花同落花瓣、吊藤開花、遠樹粉紅；花瓣粒子。同 scenes/hd2d_v3/H3 一樣嘅 @3x 疊層（x3/），季節內容已畫入 raw；天氣規則同 v2（落雨／陰／霧優先，季節只影響 ambientTint／petTint／粒子）。",
+  "layerSize3x": [
+   669,
+   1338
+  ],
+  "screenSize3x": [
+   585,
+   1266
+  ],
+  "layerOffset3x": [
+   42,
+   36
+  ],
+  "pivot": "同 v2：腳底 art (97,292)＝@3x 層 (333,912)；pivot (w/2, h−3)",
+  "stack": [
+   {
+    "layer": "sky",
+    "file": "x3/sky@3x.png",
+    "fallback1x": "sky.png",
+    "blend": "source-over",
+    "parallax": 0.15,
+    "baked": true
+   },
+   {
+    "layer": "far",
+    "file": "x3/far@3x.png",
+    "fallback1x": "far.png",
+    "blend": "source-over",
+    "parallax": 0.35,
+    "baked": true,
+    "note": "已烘 DoF"
+   },
+   {
+    "layer": "haze_far",
+    "file": "x3/haze_far@3x.png",
+    "blend": "source-over",
+    "parallax": 0.35,
+    "baked": true,
+    "note": "地平線高度霧"
+   },
+   {
+    "layer": "mid",
+    "file": "x3/mid@3x.png",
+    "fallback1x": "mid.png",
+    "blend": "source-over",
+    "parallax": 1.0,
+    "baked": true,
+    "note": "移軸 DoF：art y 262–340 清"
+   },
+   {
+    "layer": "mist",
+    "file": "x3/mist@3x.png",
+    "blend": "source-over",
+    "parallax": 1.0,
+    "baked": true,
+    "note": "地面薄霧；可橫向慢飄 2px@3x/s",
+    "drift3x": 2
+   },
+   {
+    "layer": "pet",
+    "realtime": true,
+    "note": "團絨＋細佬：sprite × petTint × ambientTint ＋ rim；contact shadow；petLight pool（× petGlow）"
+   },
+   {
+    "layer": "fore",
+    "file": "x3/fore@3x.png",
+    "fallback1x": "fore.png",
+    "blend": "source-over",
+    "parallax": 1.6,
+    "baked": true
+   },
+   {
+    "layer": "lightmap",
+    "file": "x3/lightmap@3x.png",
+    "fallback1x": "lightmap.png",
+    "blend": "multiply",
+    "parallax": 1.0,
+    "baked": true,
+    "note": "含葉隙光斑"
+   },
+   {
+    "layer": "light_add",
+    "file": "x3/light_add@3x.png",
+    "fallback1x": "light_add.png",
+    "blend": "lighter",
+    "parallax": 1.0,
+    "baked": true,
+    "note": "含體積光（god rays）"
+   },
+   {
+    "layer": "bloom",
+    "file": "x3/bloom@3x.png",
+    "fallback1x": "emissive_blur.png",
+    "blend": "lighter",
+    "parallax": 1.0,
+    "baked": true,
+    "alpha": "grade.bloom.intensity"
+   },
+   {
+    "layer": "emissive_flicker",
+    "file": "x3/emissive@3x.png",
+    "blend": "lighter",
+    "parallax": 1.0,
+    "realtime": true,
+    "note": "mask：燈泡／燈籠／窗閃爍時 globalAlpha 0–0.25 加多次"
+   },
+   {
+    "layer": "flares",
+    "realtime": true,
+    "blend": "lighter",
+    "sprite": "fx/fx_glow_v3@3x.json#flare_{s,m,l}_01..06",
+    "note": "grade.v3.flares：pos（art）、size、tint、fps、phase"
+   },
+   {
+    "layer": "particles",
+    "realtime": true,
+    "sprite": "fx/particles_v3@3x.json ＋ fx/fx_glow_v3@3x.json",
+    "note": "grade.v3.emitters；核心 source-over，glow lighter"
+   },
+   {
+    "layer": "fog",
+    "realtime": true,
+    "blend": "source-over",
+    "note": "fillRect grade.fog（同 v2）"
+   },
+   {
+    "layer": "vignette",
+    "file": "x3/vignette@3x.png",
+    "fallback1x": "vignette.png",
+    "blend": "source-over",
+    "screen": true,
+    "baked": true
+   }
+  ],
+  "bloom3x": {
+   "intensity": 0.3
+  },
+  "flares": [],
+  "emitters": [
+   {
+    "type": "petal",
+    "tint": "#ffe0ec",
+    "rect": [
+     0,
+     40,
+     195,
+     300
+    ],
+    "rate": 0.6,
+    "life": [
+     6,
+     9
+    ],
+    "vy": [
+     8,
+     12
+    ],
+    "vx": [
+     -4,
+     -2
+    ],
+    "sway": 6,
+    "max": 8
+   },
+   {
+    "type": "pollen",
+    "glow": "glow_12",
+    "tint": "#fff8d0",
+    "rect": [
+     0,
+     220,
+     195,
+     340
+    ],
+    "rate": 0.6,
+    "life": [
+     5,
+     7
+    ],
+    "vy": [
+     -2,
+     0
+    ],
+    "sway": 3,
+    "max": 8,
+    "add": 0.35
+   }
+  ],
+  "seasonParticles": {
+   "sheet": "../../fx/particles_seasons_v3@3x.json",
+   "types": [
+    {
+     "name": "petal",
+     "fps": 8,
+     "frames": 6,
+     "variants": [
+      "petal_0",
+      "petal_1",
+      "petal_2"
+     ],
+     "emitter": {
+      "spawn": "top+right",
+      "ratePerSec": 2.2,
+      "max": 14,
+      "vx": [
+       -14,
+       -5
+      ],
+      "vy": [
+       10,
+       20
+      ],
+      "sway": {
+       "amp": 6,
+       "periodSec": 2.4
+      },
+      "lifeSec": 14,
+      "perVariant": {
+       "H1": 1.0,
+       "H2": 0.8,
+       "H3": 1.0,
+       "H4": 0.4
+      }
+     },
+     "anims": {
+      "petal_0": [
+       "spring_petal_0_00",
+       "spring_petal_0_01",
+       "spring_petal_0_02",
+       "spring_petal_0_03",
+       "spring_petal_0_04",
+       "spring_petal_0_05"
+      ],
+      "petal_1": [
+       "spring_petal_1_00",
+       "spring_petal_1_01",
+       "spring_petal_1_02",
+       "spring_petal_1_03",
+       "spring_petal_1_04",
+       "spring_petal_1_05"
+      ],
+      "petal_2": [
+       "spring_petal_2_00",
+       "spring_petal_2_01",
+       "spring_petal_2_02",
+       "spring_petal_2_03",
+       "spring_petal_2_04",
+       "spring_petal_2_05"
+      ]
+     },
+     "rateScale": 1.0
+    }
+   ],
+   "layer": "fore 之上、vignette 之下；唔乘 lightmap（H4 × 0.75）"
+  },
+  "petLight": {
+   "sprite": "fx/fx_glow_v3@3x.json#pet_pool",
+   "anchor": "foot",
+   "offset3x": [
+    0,
+    6
+   ],
+   "size3x": [
+    240,
+    96
+   ],
+   "tint": "#fff2b0",
+   "intensity": 0.2,
+   "blend": "lighter",
+   "multiplyBy": "petGlow",
+   "rule": "layout_hd2d_v3.json → petGlow：瞓覺／sleepClip／入夢前＝0；淡出 600ms easeInQuad、醒返淡入 400ms＋pulse。場景燈唔受影響。逐形態光暈／光點 anchor 見 petglow_v3（第 3 批）。",
+   "formLight": "sprites/tuanrong/petglow_v3/<form>.json（有光源形態先有；冇就用呢個通用光池）",
+   "tintMode": "mix(scene tint, form pool.tint, form pool.mixWithScene)"
+  },
+  "petPop": {
+   "contactShadow": {
+    "alpha": 0.32,
+    "rx": 0.38,
+    "ry": 0.08
+   },
+   "rim": "用 sprites/tuanrong/rim（同 v2 FORMAT §5），rim.intensity ×1.15",
+   "focusBand": "mid DoF 喺 art y 262–340 = 0 → 團絨永遠最清"
+  },
+  "seasonLight": {
+   "lightmapRatio": "scenes/hd2d/seasons/<s>/<H>/lightmap ÷ scenes/hd2d/<H>/lightmap（已烘入）",
+   "lightTint": "#fff2f4",
+   "volumetricK": 0.9,
+   "dappleK": 1.0
+  }
+ }
+}
