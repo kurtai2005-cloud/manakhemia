@@ -28,12 +28,13 @@
     const LB5 = 'art/series2_long/5b/ui/', B6 = 'art/breakthrough/6b/';
     // 6b.1 美術：walk6b.json（pets／keys）＋圖 lazy 載入
     const A6 = { json: null, img: {}, want: {}, err: [] };
+    const V3W = (NS.walkv3 && G.v3 && G.v3.want) ? NS.walkv3.make(G, 'art/v3/walk/', 'art/v3/garden/fx/') : null, v3w = () => !!(V3W && G.v3.on());   // #83 walk_bg V3（日／黃昏／夜跟現實時間）
     const a6img = (f) => { if (A6.img[f]) return A6.img[f]; if (!A6.want[f]) { A6.want[f] = 1; const i = new Image(); i.onload = () => { if (i.naturalWidth) { A6.img[f] = i; if (OV.el) refresh(); } }; i.onerror = () => A6.err.push(f); i.src = B6 + f; } return null; };
     const DECO_F = { pebble: 'pebble', leaf: 'maple_leaf', acorn: 'acorn', feather: 'feather', shell: 'snail_shell', clover: 'clover4', button: 'button', ribbon: 'ribbon' };
     const fkNow = () => { const s = S(); if (!s || s.stage === 'egg') return null; if (s.fam && s.fam.km && s.fam.km.fk) return s.fam.km.fk; try { return G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; } catch (e) { return null; } };
     const A6load = fetch(B6 + 'walk6b.json').then(r => r.ok ? r.json() : null).then(j => { if (j && j.pets && j.keys) { A6.json = j; PATH = mkPath(); a6img('walk_bg.png'); const fk = fkNow(); if (fk && j.pets[fk]) a6img(j.pets[fk]['1x']); if (OV.el) refresh(); } }).catch(e => A6.err.push(String(e && e.message || e)));
     const FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif';
-    const F8 = () => (U() ? '"GlimmerFP8",' : '') + FALL, F12 = () => (U() ? '"GlimmerFP12",' : '') + FALL;
+    const F8 = () => (U() ? ((G.v3 && G.v3.want) ? '"GlimmerV3Sans",' : '"GlimmerFP8",') : '') + FALL, F12 = () => (U() ? ((G.v3 && G.v3.want) ? '"GlimmerV3Sans",' : '"GlimmerFP12",') : '') + FALL;   // #83 V3 → Noto Sans CJK TC
     const CREAM = '#FFF5DC', GOLD = '#FFE08A', MINT = '#B8F0C8';
     const OL = 'text-shadow:-2px 0 0 #24172C,2px 0 0 #24172C,0 -2px 0 #24172C,0 2px 0 #24172C,-2px -2px 0 #24172C,2px -2px 0 #24172C,-2px 2px 0 #24172C,2px 2px 0 #24172C;';
     const FB = { panel_navy: 'background:#2A2450;border:4px solid #F0D58A;border-radius:12px;', card: 'background:#3A3466;border:3px solid #C9B27A;border-radius:8px;',
@@ -128,7 +129,8 @@ body.l6b-on #toast{z-index:72 !important}
       while (pts.length < RW.CFG.pathTiles) pts.push(pts[pts.length - 1]); return pts.slice(0, RW.CFG.pathTiles); }
     let PATH = PATH0;
     function drawPath(cv) {
-      const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const W = 100, H = 120; g.clearRect(0, 0, W, H);
+      const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const W = 100, H = 120; g.setTransform(cv.width / W, 0, 0, cv.width / W, 0, 0); g.clearRect(0, 0, W, H);
+      if (cv.dataset.v3 && V3W && V3W.ready()) return;   // #83：V3 層由 walkv3 rAF 畫（未 load 完先用舊圖）
       const bg = A6.json && a6img('walk_bg.png');
       if (bg) { g.drawImage(bg, 0, 0, W, H); delete cv.dataset.ph; cv.dataset.art = '6b:walk_bg'; return; }
       cv.dataset.ph = '6b:walk_bg'; delete cv.dataset.art;
@@ -163,7 +165,8 @@ body.l6b-on #toast{z-index:72 !important}
       const o = RW.st(S()), today = RW.dayKey(now()), want = o.log.filter(e => RW.dayKey(e.t) === today && DECO_F[e.k]).slice(-8), key = want.map(e => e.k + e.tile).join();
       if (P.dk === key && P.dl.childElementCount === want.length) return; P.dk = key; P.dl.textContent = '';
       want.forEach(e => { const f = 'deco/deco_' + DECO_F[e.k] + '.png', im = A6.json && a6img(f); if (!im) { P.dk = null; return; } const pt = PATH[e.tile % PATH.length];
-        const d = img(B6 + f, `left:${Math.round(pt[0] * 2 + 10)}px;top:${Math.round(pt[1] * 2 - 14)}px;width:16px;height:16px`); d.dataset.art = '6b:deco_' + DECO_F[e.k]; d.dataset.testid = 'l6b-deco-' + e.k; P.dl.appendChild(d); });
+        if (v3w()) { const gl = img(V3W.decoGlow(DECO_F[e.k]), `left:${Math.round(pt[0] * 2 + 6)}px;top:${Math.round(pt[1] * 2 - 18)}px;width:24px;height:24px;mix-blend-mode:plus-lighter;opacity:.8;image-rendering:auto`); gl.dataset.art = '6b:deco_glow_v3'; P.dl.appendChild(gl); }   // #83 V3：glow（真 alpha）＋ rim 烘入嘅 sprite
+        const d = img(v3w() ? V3W.deco(DECO_F[e.k]) : B6 + f, `left:${Math.round(pt[0] * 2 + 10)}px;top:${Math.round(pt[1] * 2 - 14)}px;width:16px;height:16px` + (v3w() ? ';image-rendering:auto' : '')); d.dataset.art = '6b:deco_' + DECO_F[e.k]; d.dataset.testid = 'l6b-deco-' + e.k; P.dl.appendChild(d); });
     }
     function petThumb(c) {   // 團絨散步縮圖（未有 walk clip → idle 幀 0）
       const g = c.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, c.width, c.height); const SA = G.s2Art, s = S(); let src = null;
@@ -192,6 +195,7 @@ body.l6b-on #toast{z-index:72 !important}
       const dl = mk('div', 'position:absolute;inset:0;pointer-events:none', null, 'l6b-decos'); box.appendChild(dl);
       const sh = mk('div', 'position:absolute;height:6px;border-radius:50%;background:rgba(36,23,44,.32);pointer-events:none;display:none', null, 'l6b-walkshadow'); box.appendChild(sh);
       const pc = mk('canvas', 'position:absolute;width:48px;height:48px;image-rendering:pixelated;animation:l6bbob 900ms steps(2) infinite;pointer-events:none;', null, 'l6b-walkpet'); pc.width = 48; pc.height = 48; pc.dataset.ph = '6b:walk_clip'; box.appendChild(pc);
+      if (v3w()) V3W.attach(box, cv, () => ({ tile: RW.pos(S()).tile, pet: petAt() }));   // #83：前景 fore／lightmap／光層疊喺寵物上面
       const info = mk('div', `position:relative;${bi('panel_inset')}padding:4px 0;`, null, 'l6b-info'); p.appendChild(info);
       const row = (tid, icn) => { const r = mk('div', '', null, tid); r.className = 'row'; if (icn) r.appendChild(img(icn, 'position:relative;width:32px;height:32px;flex:0 0 32px')); const t = mk('span', 'position:relative;' + TXT(24, CREAM), '', tid + '-t'); r.appendChild(t); info.appendChild(r); return t; };
       const tSteps = row('l6b-steps'), tTile = row('l6b-tile'), tSh = row('l6b-shards', LB5 + 'icon_shards@3x.png'), tDeco = row('l6b-deco');
@@ -267,6 +271,7 @@ body.l6b-on #toast{z-index:72 !important}
     G.l6b = { open: openOv, close: closeOv, toggle, readSteps, refreshWx };
     window.__qa = window.__qa || {};
     window.__qa.l6b = {
+      v3: () => V3W ? Object.assign({ on: v3w() }, V3W.ST) : null,   // #83 walk_bg V3 狀態
       art: () => ({ json: !!A6.json, err: A6.err.slice(), loaded: Object.keys(A6.img), fk: fkNow(), has: !!(A6.json && A6.json.pets[fkNow()]), path: PATH.map(p => p.slice()), dir: WK.dir }), artLoad: () => A6load,
       st: () => Object.assign(RW.summary(S(), now()), { auto: AUTO.on, native: !!NAT(), perm: Object.assign({}, PERM), ov: !!OV.el, rail: !!(RB.el && RB.el.style.display !== 'none'), dot: RB.dot, wxs: Object.assign({}, WXS),
         visWx: G.visWeather(G.weather), gameWx: G.weather || 'clear', hour: G.hour ? G.hour() : null, visHour: G.hour ? G.visHour(G.hour()) : null }),
