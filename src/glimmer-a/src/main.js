@@ -110,6 +110,7 @@
   G.rxLoad = (P.touch && P.touch.art && P.touch.art.enabled !== false && qs.get('rx') !== '0') ? G.renderer.loadReactions(P.touch.art) : Promise.resolve(null);   // 3a 遊美反應圖（?rx=0 → 程序化）
   G.liveSettled = false; G.liveLoad.then(() => { G.liveSettled = true; }, () => { G.liveSettled = true; });   // s3：重逢等 live atlas 載完先衝（rush 用真 clip）
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
+  if (NS.v3) NS.v3.install(G, NS);   // #83 HD-2D V3：開關＋petGlow（?v3=0 → 6b.3 樣）
   if (NS.hd2d) NS.hd2d.install(G, NS);
   if (NS.sys12ui && NS.sys12) NS.sys12ui.install(G, NS);   // systems12 第 1 批（天氣／季節、委託、親密度、小驚喜、日記）
   UI.init(G);

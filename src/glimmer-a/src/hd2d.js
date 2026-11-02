@@ -382,8 +382,9 @@
   /* 開發用切換：window.__qa.hd2d（set／current／next／weather／enable） */
   function install(G, NS) {
     const P = NS.data.PARAMS, qs = new URLSearchParams(location.search);
-    const sc = new Scene({ base: P.art.base + 'hd2d/', rimBase: P.art.base + 'rim/', rimExtra: (NS.data.EVO_FORMS || []).filter(k => k !== 'evo_egg').map(k => k + '_live'), enabled: qs.get('hd2d') !== '0' && qs.get('hd') !== '0' && P.art.hd2d !== false });
-    G.hd = sc; G.renderer.hd = sc;
+    const V3 = !!(NS.hd2dv3 && G.v3 && G.v3.want), SC = V3 ? NS.hd2dv3.extend(Scene, { CFG }) : Scene;   // #83：V3 @3x 合成（?v3=0 → 照舊 v2）
+    const sc = new SC({ G, renderer: G.renderer, v3base: P.art.base + 'v3/', v3on: () => !!(G.v3 && G.v3.on()), base: P.art.base + 'hd2d/', rimBase: P.art.base + 'rim/', rimExtra: (NS.data.EVO_FORMS || []).filter(k => k !== 'evo_egg').map(k => k + '_live'), enabled: qs.get('hd2d') !== '0' && qs.get('hd') !== '0' && P.art.hd2d !== false });
+    G.hd = sc; G.renderer.hd = sc; G.renderer.v3 = G.v3 || null; if (V3) G.hd2dv3 = sc;   // #83：屋仔 V3 借用 fx／petglow（drawPool／drawHalos／formJ／tinted） sc.artBase = P.art.base;
     sc.cacheOn = qs.get('hdcache') !== '0';                              // P1-4：?hdcache=0 停用靜態層 cache（對照用）
     NS.light.addModifier('hd2d', lightModifier());
     const S12 = P.systems12; if (S12) { CFG.rainDim = S12.weather.rainDim || 0; CFG.seasonFadeSec = S12.seasonFadeSec || CFG.seasonFadeSec; }
@@ -397,7 +398,7 @@
       season(v) { if (v !== undefined && G.seasonSet) G.seasonSet(v); return sc.season || null; },
       seasonParts() { const sp = sc.seasonPartsOn(sc.st.cur); return { loaded: Object.keys(sc.spart || {}), on: !!sp, n: (sc.sps || []).length, types: [...new Set((sc.sps || []).map(p => p.T.name))] }; },
       enable(on) { sc.enabled = on !== false; return sc.enabled; },
-      skipFade() { sc.st.mix = 1; sc.st.prev = null; }, stat() { return Object.assign({}, sc.stat); }, cache(on) { if (on !== undefined) { sc.cacheOn = on !== false; sc.lc = {}; } return { on: sc.cacheOn !== false, variants: Object.keys(sc.lc || {}), builds: sc.stat.cacheBuilds || 0, hits: sc.stat.cacheHits || 0 }; }, CYCLE: CYCLE.slice(), LABEL,
+      skipFade() { sc.st.mix = 1; sc.st.prev = null; }, stat() { return Object.assign({}, sc.stat); }, v3() { return sc.v3stat ? sc.v3stat() : null; }, cache(on) { if (on !== undefined) { sc.cacheOn = on !== false; sc.lc = {}; } return { on: sc.cacheOn !== false, variants: Object.keys(sc.lc || {}), builds: sc.stat.cacheBuilds || 0, hits: sc.stat.cacheHits || 0 }; }, CYCLE: CYCLE.slice(), LABEL,
     };
     return sc;
   }
