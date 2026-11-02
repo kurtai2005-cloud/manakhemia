@@ -4,6 +4,7 @@
    前置 shim 攔截 fetch()／Image.src 相對路徑 → 內嵌資產（雙擊 file:// 即開，手機可用）。唔改 src。
    V3.1：art/v3/**.png → 無損 webp（exact，像素一樣；快取 /workspace/hdbuild/webp3 或 $GLIMMER_WEBP_CACHE）＋同內容去重；
    --ext DIR（APK 用）：art/v3 圖唔內嵌，寫去 DIR/art/v3/_x/<sha1>.webp，shim 將原路徑改指嗰個相對 URL（Capacitor 由 assets/public 供檔）。
+   6c：art/breakthrough/6c/**.png 同 art/v3 一樣處理（webp／去重／--ext 外置）。
    唔加 --ext＝單檔版照全內嵌（file:// 照開）。預設半透明圖照用 PNG（瀏覽器解碼逐 bit 一樣）；--webp-all 全轉 webp（細啲但半透明差 ≤3/255）。"""
 import base64, hashlib, json, os, re, sys
 from multiprocessing import Pool
@@ -43,7 +44,7 @@ for d in ('art', 'audio'):
             if ext not in MIME: continue
             p = os.path.join(dp, f); rel = os.path.relpath(p, ROOT).replace(os.sep, '/')
             if f in SKIP_FILES or rel in SKIP_REL or SKIP_RX.match(rel): skipped[0] += 1; skipped[1] += os.path.getsize(p); continue
-            if rel.startswith('art/v3/') and ext == '.png': v3png.append((rel, p)); continue
+            if (rel.startswith('art/v3/') or rel.startswith('art/breakthrough/6c/')) and ext == '.png': v3png.append((rel, p)); continue
             if EXT and ext == '.otf':   # V3.1b：APK 外置字體（原路徑；shim 唔攔 → Capacitor 供檔）＋ OFL 授權檔
                 import shutil; fp = os.path.join(EXT, rel); os.makedirs(os.path.dirname(fp), exist_ok=True); shutil.copyfile(p, fp); extfont.append(rel)
                 lic = os.path.join(dp, 'OFL_noto-cjk.txt')
