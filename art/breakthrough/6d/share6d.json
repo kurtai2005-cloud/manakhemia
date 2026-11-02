@@ -1,0 +1,1306 @@
+{
+ "version": 1,
+ "batch": "breakthrough 6d 社交（分享碼／QR／影子探訪／蛋碼）",
+ "spec": "docs-gdd/breakthrough-6a6d-spec.md §6d",
+ "screen": [
+  195,
+  422
+ ],
+ "kit": "art-pet/ui/kit_hd2d_v2（零件 key 直接用 kit atlas 名；以下只列 6d 新嘢）",
+ "keys": {
+  "6d:qr_frame": {
+   "1x": "parts/qr_frame.png",
+   "3x": "parts/qr_frame@3x.png",
+   "size": [
+    20,
+    20
+   ],
+   "colors": 6,
+   "slice": "9",
+   "nine": [
+    6,
+    6,
+    6,
+    6
+   ],
+   "mode": "tile",
+   "inner": "白 quiet zone＝(w−8)×(h−8) @ (4,4)"
+  },
+  "6d:code_field": {
+   "1x": "parts/code_field.png",
+   "3x": "parts/code_field@3x.png",
+   "size": [
+    24,
+    20
+   ],
+   "colors": 6,
+   "slice": "3h",
+   "nine": [
+    6,
+    0,
+    6,
+    0
+   ],
+   "mode": "tile",
+   "text": "FP12 cream，x＋8，垂直置中"
+  },
+  "6d:code_field_on": {
+   "1x": "parts/code_field_on.png",
+   "3x": "parts/code_field_on@3x.png",
+   "size": [
+    24,
+    20
+   ],
+   "colors": 6,
+   "slice": "3h",
+   "nine": [
+    6,
+    0,
+    6,
+    0
+   ],
+   "mode": "tile",
+   "note": "focus／已貼上"
+  },
+  "6d:shadow_mask": {
+   "1x": "parts/shadow_mask.png",
+   "3x": "parts/shadow_mask@3x.png",
+   "size": [
+    4,
+    4
+   ],
+   "colors": 1,
+   "note": "影子形態：pet 像素 ∧ 呢個 4×4 棋盤（白＝畫）＝50% 抽像素，取代半透明；色用 kit vi0／vi1／vi2 剪影"
+  },
+  "6d:share_card_bg": {
+   "1x": "parts/share_card_bg.png",
+   "3x": "parts/share_card_bg@3x.png",
+   "size": [
+    165,
+    252
+   ],
+   "colors": 34,
+   "slots": {
+    "title": {
+     "x": 82.5,
+     "y": 8.5,
+     "anchor": "m",
+     "font": "fp12",
+     "w": 96
+    },
+    "portrait": {
+     "x": 10,
+     "y": 24,
+     "w": 54,
+     "h": 56,
+     "note": "kit portrait()（52 框＋pop）"
+    },
+    "name": {
+     "x": 70,
+     "y": 34,
+     "font": "fp12",
+     "maxW": 85
+    },
+    "family": {
+     "x": 70,
+     "y": 52,
+     "font": "fp12",
+     "note": "家族 Lv＋kit ic_family_level mini"
+    },
+    "form": {
+     "x": 70,
+     "y": 70,
+     "font": "fp12",
+     "note": "形態名"
+    },
+    "memories": [
+     {
+      "x": 24,
+      "y": 101,
+      "font": "fp12",
+      "maxW": 126
+     },
+     {
+      "x": 24,
+      "y": 119,
+      "font": "fp12",
+      "maxW": 126
+     },
+     {
+      "x": 24,
+      "y": 137,
+      "font": "fp12",
+      "maxW": 126
+     }
+    ],
+    "qr": {
+     "x": 49,
+     "y": 160,
+     "w": 66,
+     "h": 66,
+     "inner": [
+      53,
+      164,
+      58,
+      58
+     ],
+     "note": "白 quiet zone 58×58；QR module 用整數 art px（v3 29 module ×2、或 ≤v10 57 module ×1）；四邊留 ≥4 module 白"
+    },
+    "code": {
+     "x": 82.5,
+     "y": 236,
+     "anchor": "m",
+     "font": "fp12",
+     "note": "顯示碼頭 8 位＋…＋checksum 4 位"
+    }
+   },
+   "note": "分享圖底（kit panel_navy／plaque／panel_inset／divider tile 砌＋qr_frame）；字同頭像由 code 落；存相＝@3x 495×756"
+  },
+  "icon_share": {
+   "1x": "icons/ic_share.png",
+   "3x": "icons/ic_share@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7,
+   "note": "16×16，同 kit ic_* 同規格"
+  },
+  "icon_copy": {
+   "1x": "icons/ic_copy.png",
+   "3x": "icons/ic_copy@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7,
+   "note": "16×16，同 kit ic_* 同規格"
+  },
+  "icon_paste": {
+   "1x": "icons/ic_paste.png",
+   "3x": "icons/ic_paste@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 9,
+   "note": "16×16，同 kit ic_* 同規格"
+  },
+  "icon_photo": {
+   "1x": "icons/ic_photo.png",
+   "3x": "icons/ic_photo@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 10,
+   "note": "16×16，同 kit ic_* 同規格"
+  },
+  "icon_qr": {
+   "1x": "icons/ic_qr.png",
+   "3x": "icons/ic_qr@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 6,
+   "note": "16×16，同 kit ic_* 同規格"
+  },
+  "icon_friend": {
+   "1x": "icons/ic_friend.png",
+   "3x": "icons/ic_friend@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 11,
+   "note": "16×16，同 kit ic_* 同規格"
+  },
+  "icon_egg_code": {
+   "1x": "icons/ic_egg_code.png",
+   "3x": "icons/ic_egg_code@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 6,
+   "note": "16×16，同 kit ic_* 同規格"
+  },
+  "6d:friend_badge": {
+   "1x": "icons/friend_badge.png",
+   "3x": "icons/friend_badge@3x.png",
+   "size": [
+    32,
+    32
+   ],
+   "colors": 10,
+   "note": "朋友牌（32×32）：探訪中影子頭頂／朋友列表；細版＝icon_friend 16×16"
+  }
+ },
+ "mockups": {
+  "share_card_sample": "mockups/share_card_sample.png",
+  "share": "mockups/share_3x.png",
+  "enter_code": "mockups/enter_code_3x.png",
+  "visit_shadow": "mockups/visit_shadow_3x.png",
+  "egg_code": "mockups/egg_code_3x.png"
+ },
+ "reuseKit": {
+  "icon_visitor": "ic_visitor",
+  "icon_family_level": "ic_family_level",
+  "icon_egg_tr": "ic_egg_tr",
+  "icon_gift": "ic_gift（影子留低嘅手信）",
+  "icon_badge": "ic_badge"
+ },
+ "text": [
+  {
+   "screen": "card_sample",
+   "text": "朋友名片",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    237,
+    190,
+    98
+   ]
+  },
+  {
+   "screen": "card_sample",
+   "text": "波波",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "card_sample",
+   "text": "家族 Lv4",
+   "size": 12,
+   "fg": [
+    255,
+    246,
+    207
+   ],
+   "fg2": [
+    255,
+    226,
+    154
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "card_sample",
+   "text": "形態：泡泡",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "card_sample",
+   "text": "第一次見到螢火蟲",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "card_sample",
+   "text": "雨天一齊踩水氹",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "card_sample",
+   "text": "識咗新朋友松鼠",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "card_sample",
+   "text": "GLM1-7Q3K…9F2A",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "朋友名片",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    237,
+    190,
+    98
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "波波",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "家族 Lv4",
+   "size": 12,
+   "fg": [
+    255,
+    246,
+    207
+   ],
+   "fg2": [
+    255,
+    226,
+    154
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "形態：泡泡",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "第一次見到螢火蟲",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "雨天一齊踩水氹",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "識咗新朋友松鼠",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "GLM1-7Q3K…9F2A",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": null,
+   "text": "複製碼",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    95,
+    211,
+    208
+   ]
+  },
+  {
+   "screen": null,
+   "text": "存圖",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    237,
+    190,
+    98
+   ]
+  },
+  {
+   "screen": "share",
+   "text": "朋友掃描或貼上就可以探你",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "enter",
+   "text": "加朋友",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    237,
+    190,
+    98
+   ]
+  },
+  {
+   "screen": "enter",
+   "text": "貼上朋友嘅碼",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "enter",
+   "text": "GLM1-7Q3K…9F2A",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": null,
+   "text": "貼上",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    95,
+    211,
+    208
+   ]
+  },
+  {
+   "screen": null,
+   "text": "揀相",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    95,
+    211,
+    208
+   ]
+  },
+  {
+   "screen": "enter",
+   "text": "讀到：",
+   "size": 12,
+   "fg": [
+    255,
+    246,
+    207
+   ],
+   "fg2": [
+    255,
+    226,
+    154
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "enter",
+   "text": "波波",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "enter",
+   "text": "家族 Lv4",
+   "size": 12,
+   "fg": [
+    255,
+    246,
+    207
+   ],
+   "fg2": [
+    255,
+    226,
+    154
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "enter",
+   "text": "校驗 OK",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    95,
+    211,
+    208
+   ]
+  },
+  {
+   "screen": "enter",
+   "text": "第一次見到螢火蟲",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": null,
+   "text": "請佢嚟玩",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    237,
+    190,
+    98
+   ]
+  },
+  {
+   "screen": "visit",
+   "text": "波波嚟探你！",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "visit",
+   "text": "仲有 23 粒鐘",
+   "size": 12,
+   "fg": [
+    255,
+    246,
+    207
+   ],
+   "fg2": [
+    255,
+    226,
+    154
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    38,
+    47,
+    96
+   ]
+  },
+  {
+   "screen": "visit",
+   "text": "影子",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    169,
+    139,
+    240
+   ]
+  },
+  {
+   "screen": "egg",
+   "text": "交換蛋碼",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    237,
+    190,
+    98
+   ]
+  },
+  {
+   "screen": "egg",
+   "text": "家族 Lv4 解鎖",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    237,
+    190,
+    98
+   ]
+  },
+  {
+   "screen": "egg",
+   "text": "團絨線・A 系",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "egg",
+   "text": "花紋：泡泡",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "egg",
+   "text": "我嘅蛋碼",
+   "size": 12,
+   "fg": [
+    255,
+    246,
+    207
+   ],
+   "fg2": [
+    255,
+    226,
+    154
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": "egg",
+   "text": "EGG4-M2TA…C81D",
+   "size": 12,
+   "fg": [
+    255,
+    245,
+    220
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    24,
+    29,
+    60
+   ]
+  },
+  {
+   "screen": null,
+   "text": "複製",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    95,
+    211,
+    208
+   ]
+  },
+  {
+   "screen": null,
+   "text": "貼上",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    245,
+    220
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    95,
+    211,
+    208
+   ]
+  },
+  {
+   "screen": null,
+   "text": "交換",
+   "size": 12,
+   "fg": [
+    255,
+    255,
+    255
+   ],
+   "fg2": [
+    255,
+    246,
+    207
+   ],
+   "outline": [
+    36,
+    23,
+    44
+   ],
+   "bg": [
+    237,
+    190,
+    98
+   ]
+  }
+ ]
+}
