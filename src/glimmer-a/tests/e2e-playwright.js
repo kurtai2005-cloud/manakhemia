@@ -133,7 +133,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     await page.reload(); await page.waitForTimeout(1100);
     const after = await st();
     ok(await page.isVisible('#modal') && await page.textContent('#mbox h2').then(t => t.includes('你不在時')), `T=${hrs}h 重載出現回歸摘要`);
-    const nLines = await page.$$eval('#mbox p', ps => ps.length); ok(nLines <= 3 && nLines >= 1, '摘要 ≤3 句（' + nLines + '）');
+    const nLines = await page.$$eval('#mbox p:not(.u62sub)', ps => ps.length); ok(nLines <= 3 && nLines >= 1, '摘要 ≤3 句（' + nLines + '）');
     if (hrs === 6) ok(after.stage === 'sprout' && Math.abs(after.growthSec - (1000 + 6 * 3600)) < 120, '離線成長 = 真實 6h（evo6：上限 24h）', after.growthSec.toFixed(0));
     else ok(after.stage === 'juvenile' && after.growthSec < 120, '30h（cap 24h，夠芽崽 18h）→ 只升 1 階到跳跳期、進度由 0 開始', after.stage + ' ' + after.growthSec.toFixed(0));
     ok(['hunger', 'mood', 'clean', 'energy'].every(k => after.needs[k] >= 19.9), '離線需求保底 ≥20', JSON.stringify(after.needs));

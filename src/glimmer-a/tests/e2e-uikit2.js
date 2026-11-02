@@ -58,7 +58,7 @@ const near = (a, b, d) => Math.abs(a - b) <= (d || 2);
   const L = await E(() => __qa.uiv2.layout());
   { const b = await box('#hdBan2'); ok(b && near(b.x, L.banner.x * 2) && near(b.y, L.banner.y * 2) && near(b.w, L.banner.w * 2) && near(b.h, L.banner.h * 2), 'banner ' + JSON.stringify(L.banner && [L.banner.x, L.banner.y, L.banner.w, L.banner.h]) + ' ×2', b); }
   { const b = await box('.hdFace2'); ok(b && near(b.x, L.portrait.x * 2) && near(b.y, L.portrait.y * 2) && near(b.w, L.portrait.w * 2), '頭像 ' + L.portrait.w + '×' + L.portrait.h + ' ×2', b); }
-  { const b = await box('#diary > i.m'), h = await box('#diary'), R = S.rail.mail; ok(b && near(b.x + b.w / 2, R.x, 3) && near(b.y + b.h / 2, R.y, 3) && near(b.w, 48) && h.w >= 64, 'rail 信件 card_sel 24×24×2 喺 layout 位（撳位 ≥64）', { b, h, R }); }
+  { const b = await box('#diary > i.m'), h = await box('#diary'), R = S.rail.mail, dy = await E(() => document.getElementById('ui').classList.contains('u62') ? -10 : 0); ok(b && near(b.x + b.w / 2, R.x, 3) && near(b.y + b.h / 2, R.y + dy, 3) && near(b.w, 48) && h.w >= 64, 'rail 信件 card_sel 24×24×2 喺 layout 位（撳位 ≥64）', { b, h, R }); }
   { const b = await box('#s12chip .q'), R = S.rail.gift; ok(b && near(b.x + b.w / 2, R.x, 3) && near(b.y + b.h / 2, R.y, 3), 'rail 委託（gift）喺 layout 位', { b, R }); }
   { const b = await box('#dex'), R = S.rail.dex; ok(b && near(b.x + b.w / 2, R.x, 3) && near(b.y + b.h / 2, R.y, 3), 'rail 圖鑑', { b, R }); }
   ok(await E(() => { const l = document.querySelector('#s12chip .hd2gl'); return l && l.textContent === '委託' && getComputedStyle(l).display !== 'none'; }), '委託字牌（ribbon）');
@@ -97,16 +97,16 @@ const near = (a, b, d) => Math.abs(a - b) <= (d || 2);
     ['toast', () => /收到小禮物/.test((window.__toasts || []).join('|') + (document.getElementById('toast') || {}).textContent), 'toast'],
   ];
   for (const [k, fn, nm] of pops) { await dev(k); const r = await E(fn); ok(!!r, '「' + nm + '」掣開到', k); await shot('10-' + k); await closeModals(); }
-  { await dev('popup'); const p = await box('#mbox'); const c = await cs('#mbox', ['border-image-source', 'font-family']); ok(p && near(p.w, L.popup.w * 2, 4), '彈窗寬 ' + L.popup.w + '×2', p); ok(c && /^url/.test(c['border-image-source']), '彈窗 panel 9-slice', c && c['border-image-source'].slice(0, 20)); await closeModals(); }
+  { await dev('popup'); const p = await box('#mbox'); const c = await cs('#mbox', ['border-image-source', 'font-family']); ok(p && near(p.w, L.popup.w * 2, 4), '彈窗寬 ' + L.popup.w + '×2', p); ok(c && (/^url/.test(c['border-image-source']) || await E(() => document.getElementById('ui').classList.contains('u62') && getComputedStyle(document.getElementById('mbox')).borderTopLeftRadius === '14px')), '彈窗 panel 9-slice（6b.2：CSS 金邊面板取代）', c && c['border-image-source'].slice(0, 20)); await closeModals(); }
   { await dev('settings'); ok(await page.locator('[data-testid=uiv2-font-credit]').isVisible(), '設定有「字型：Fusion Pixel（OFL 1.1）」'); ok((await page.locator('[data-testid=s2-version]').innerText()).match(/版本 (5[abc]|6[ab])/), '設定版本行'); await closeModals(); }
   await dev('mood'); ok((await u()).moodOv, '「頭像心情」輪住睇'); await dev('reset'); ok(!(await u()).moodOv, '「頭像還原」');
 
   console.log('# ⑤ 細佬卡／屋仔換皮（功能照舊）');
   await toKid(); await E(() => __qa.s2.test('family')); await W(800);
-  { const b = await box('[data-testid=s2-rail-house]'), R = S.rail.house; ok(b && near(b.x + b.w / 2, R.x, 3) && near(b.y + b.h / 2, R.y, 3) && near(b.w, 48), 'rail 屋仔喺 layout 位', { b, R }); }
+  { const b = await box('[data-testid=s2-rail-house]'), R = S.rail.house, dy = await E(() => document.getElementById('ui').classList.contains('u62') ? 6 : 0); ok(b && near(b.x + b.w / 2, R.x, 3) && near(b.y + b.h / 2, R.y + dy, 3) && near(b.w, 48), 'rail 屋仔喺 layout 位', { b, R }); }
   { const b = await box('[data-testid=s2-rail-kid]'), R = S.rail.kid; ok(b && near(b.x + b.w / 2, R.x, 3) && near(b.y + b.h / 2, R.y, 3), 'rail 細佬', { b, R }); }
   await dev('kid'); ok(await E(() => document.getElementById('mbox').dataset.kind === 's2Card'), '「睇細佬卡」→ 細佬卡'); await shot('20-kidcard');
-  { const c = await cs('#mbox', ['border-image-source']); ok(c && /^url/.test(c['border-image-source']), '細佬卡用 v2 panel'); } await closeModals();
+  { const c = await cs('#mbox', ['border-image-source']); ok(c && (/^url/.test(c['border-image-source']) || await E(() => document.getElementById('ui').classList.contains('u62') && getComputedStyle(document.getElementById('mbox')).borderTopLeftRadius === '14px')), '細佬卡用 v2 panel（6b.2：CSS 金邊面板）'); } await closeModals();
   await dev('house'); ok(await E(() => __qa.house.st().open), '「睇屋仔」→ 屋仔'); await W(800); await shot('21-house');
   { const b = await box('[data-testid=house-back]'), H = L.house4b; ok(b && near(b.x + b.w / 2, H.back[0] * 2, 2) && near(b.y + b.h / 2, H.back[1] * 2, 2) && near(b.w, Math.max(48, H.back[2] * 2)) && b.h >= 48, '屋仔返回掣喺 house4b.back（5a.2 熱區 ≥48）', { b, back: H.back }); }
   { const c = await cs('[data-testid=house-title]', ['font-family', 'border-image-source']); ok(c && /GlimmerFP/.test(c['font-family']), '屋仔標題用 Fusion Pixel', c && c['font-family']); }

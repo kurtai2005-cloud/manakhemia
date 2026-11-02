@@ -378,6 +378,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       dom(); U.ready = true; U.readyAt = performance.now(); set(U.want, 'boot'); note('ready', { on: U.on });
       readInit();
       setInterval(tick, 400); tick();
+      setInterval(() => { if (U.on && U.live62 && document.visibilityState !== 'hidden') { const tn = performance.now(); if (tn - lastFace > 90) { lastFace = tn; face(); } } }, 100);   // 6b.2 頭像即時（10fps）
     }
 
     function dom() {
@@ -404,7 +405,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       const nm = $('#stagename'), sb = $('#substage');
       if (nm && sb) { const k = nm.textContent + '|' + sb.textContent + '|' + (U.fonts.GlimmerFP12 ? 1 : 0); if (k !== lastSub) { lastSub = k; const Lx = 116 + nm.offsetWidth + 6, W = Math.max(40, 284 - Lx); sb.style.setProperty('--sub2L', Lx + 'px'); sb.style.setProperty('--sub2W', W + 'px'); sb.style.setProperty('--sub2F', '24px'); } }
       const t = $('#toast'); if (t) { const k = t.textContent; if (k !== lastToast) { lastToast = k; t.classList.remove('sm2'); if (t.scrollWidth > 338) t.classList.add('sm2'); } }
-      const tn = performance.now(); if (tn - lastFace > 1000) { lastFace = tn; face(); }
+      const tn = performance.now(); if (tn - lastFace > (U.live62 ? 90 : 1000)) { lastFace = tn; face(); }
     }
     // ── 頭像（PORTRAIT_SYNC）──
     function face(force) {
@@ -413,8 +414,10 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
         let src = null, fk = 'egg';
         if (s.stage === 'egg') src = R.atlasSrc('atlas_evo_egg', 'egg_idle', 0) || R.atlasSrc('atlas_egg', 'egg_idle', 0);
         else if (s.fam && s.fam.km && R.s2MainFace && (src = R.s2MainFace())) fk = 'km:' + src.fk;   // 5a.1 細佬做主養
-        else { fk = R.fkOf(s); const F = D.FORMS[fk]; if (F) src = R.atlasSrc(F.atlas, 'idle', 0); }
-        const mood = U.moodOv || moodOf(s), sig = fk + '|' + mood + '|' + (U.accOv || '') + '|' + (src ? src.sx + ',' + src.sy : '-');
+        else { fk = R.fkOf(s); const F = D.FORMS[fk]; if (F) src = R.atlasSrc(F.atlas, 'idle', 0);
+          const pb = U.live62 ? R.petBlit : null;   // 6b.2：頭像跟住寵物而家畫緊嗰幀（clip／表情 patch／動作），唔再死用 idle 第 0 幀
+          if (pb && pb.img && src && pb.sw === src.sw && pb.sh === src.sh && !document.body.classList.contains('s2-scene')) { src = { img: pb.img, sx: pb.sx, sy: pb.sy, sw: pb.sw, sh: pb.sh, mir: pb.scx < 0, live: true, fid: (pb.clip || '') + ':' + pb.fi }; U.liveN = (U.liveN || 0) + 1; } }
+        const mood = U.moodOv || moodOf(s), sig = fk + '|' + mood + '|' + (U.accOv || '') + '|' + (src ? src.sx + ',' + src.sy + (src.fid ? '|' + src.fid : '') : '-') + (src && src.live ? '|L' + U.liveN : '');
         if (!force && sig === U.faceSig) return; U.faceSig = sig;
         const x = c.getContext('2d'), W = c.width, Hh = c.height; x.imageSmoothingEnabled = false; x.clearRect(0, 0, W, Hh);
         const part = (g, n, dx, dy) => { const f = U.FR[n]; if (f) g.drawImage(PIMG(), f.x, f.y, f.w, f.h, dx, dy, f.w, f.h); };
@@ -424,11 +427,12 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
         if (src && src.img) {
           const pad = U.rects.pad || 8, rr = src.km ? { rect: [pad + 24 - 17, pad + src.headY - 5, 34], frame: 48, acc: {}, hit: true } : rectOf(U.rects, fk, Math.max(src.sw, src.sh)), fs = rr.frame || Math.max(src.sw, src.sh);
           const cv = document.createElement('canvas'); cv.width = fs + pad * 2; cv.height = fs + pad * 2; const q = cv.getContext('2d'); q.imageSmoothingEnabled = false;
-          q.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, pad + Math.round((fs - src.sw) / 2), pad + (fs - src.sh), src.sw, src.sh);
+          if (src.mir) { q.save(); q.translate(cv.width, 0); q.scale(-1, 1); }
+          q.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, pad + Math.round((fs - src.sw) / 2), pad + (fs - src.sh), src.sw, src.sh); if (src.mir) q.restore();
           const ad = accAdj(rr.rect, U.accOv ? rr.acc[U.accOv] : null), [rx, ry, n] = ad.rect, win = U.layout.portrait.win;
           if (s.stage === 'egg') { const sc = Math.max(1, Math.floor(Math.min(win[2] / src.sw, win[3] / src.sh))); g.drawImage(src.img, src.sx, src.sy, src.sw, src.sh, win[0] + Math.round((win[2] - src.sw * sc) / 2), win[1] + win[3] - src.sh * sc, src.sw * sc, src.sh * sc); }
           else g.drawImage(cv, rx, ry, n, n, win[0], win[1], win[2], win[3]);
-          info = { fk, hit: rr.hit, rect: ad.rect, badge: ad.badge };
+          info = { fk, hit: rr.hit, rect: ad.rect, badge: ad.badge, live: !!src.live, frame: src.live ? src.fid + (src.mir ? 'm' : '') : null, clip: src.live && src.fid.split(':')[0] || null };
         }
         g.globalCompositeOperation = 'destination-in'; part(g, 'portrait_mask', 0, 0); g.globalCompositeOperation = 'source-over';
         x.drawImage(lay, 0, 0); part(x, 'portrait_frame', 0, 0);
@@ -461,12 +465,26 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       let txt = ''; for (const n of el.childNodes) if (n.nodeType === 3) txt += n.nodeValue;
       txt = txt.trim(); if (!txt) return;
       const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize) || 0;
-      if (fs > 0 && fs < 23.5) { el.style.setProperty('font-size', '24px', 'important'); el.dataset.rf = '1'; const lh = parseFloat(cs.lineHeight); if (!(lh >= 27)) el.style.setProperty('line-height', '28px', 'important'); if (cs.position === 'absolute' && txt.length <= 8) el.style.setProperty('white-space', 'nowrap'); }
+      if (U.t62 && read62(el, cs, fs, txt)) { /* 6b.2 字級：面板內文／輔助字 → 系統字 18／16 */ }
+      else if (fs > 0 && fs < 23.5) { el.style.setProperty('font-size', '24px', 'important'); el.dataset.rf = '1'; const lh = parseFloat(cs.lineHeight); if (!(lh >= 27)) el.style.setProperty('line-height', '28px', 'important'); if (cs.position === 'absolute' && txt.length <= 8) el.style.setProperty('white-space', 'nowrap'); }
       if (/GlimmerFP(8|10)\b/.test(cs.fontFamily)) { el.style.setProperty('font-family', cs.fontFamily.replace(/GlimmerFP(8|10)\b/g, 'GlimmerFP12'), 'important'); el.dataset.rf = '1'; }
       tallBtn(el);   // 長字掣：唔縮字，轉做 9-slice 卡（kit 3h 掣唔拉高）
       let miss = false; if (U.cov) for (const ch of txt) { if (SKIP.test(ch)) continue; if (!U.cov.has(ch.codePointAt(0))) { miss = true; break; } }
       if (miss) el.dataset.fbk = '1'; else if (el.dataset.fbk) delete el.dataset.fbk;
       if (lum(cs.color) > 0.35 && (!cs.textShadow || cs.textShadow === 'none')) el.dataset.rol = '1';
+    }
+    // 6b.2 字級（Kurt：「字要清楚，但唔好咁大粒」）：標題／掣照 FP12 24；面板入面嘅內文 → 系統中文字 18px/26，輔助字（原本 <14px 或 .u62sub）16px/22
+    const Z62 = '#mbox, #l5bov, #l6bov, #l5ov, #u62work, #u62tip, #s12voice, #bubble, #toast, #s12gain', T62 = 'h2, h3, .ttl, .t, [data-testid$="-title"], #stagename, #substage, .plaque';
+    const B62 = '.btn, .k, .hdTg, .seg, .ibtn, .abtn, [data-testid*="-btn"], [data-testid$="-close"], [data-testid*="-tab"], [data-btn], [role="button"]';
+    function read62(el, cs, fs, txt) {
+      if (el.dataset.r62) return true; if (!el.closest(Z62) || el.closest(T62) || el.closest(B62)) return false;
+      if (cs.cursor === 'pointer' && el.offsetHeight >= 40 && !el.closest('#s12voice, #bubble, #toast, #s12gain, #u62tip')) return false;   // 撳得嘅卡／掣：照 FP12
+      const aux = el.classList.contains('u62sub') || el.tagName === 'SMALL' || (fs > 0 && fs < 14);
+      el.dataset.r62 = aux ? 'a' : 'b'; el.style.setProperty('font-family', '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif', 'important');
+      el.style.setProperty('font-size', aux ? '16px' : '18px', 'important'); el.style.setProperty('line-height', aux ? '22px' : '26px', 'important'); el.style.setProperty('letter-spacing', aux ? '.5px' : '.3px', 'important');
+      if (!aux && !/[6-9]00|bold/.test(cs.fontWeight)) el.style.setProperty('font-weight', '500', 'important');
+      if (cs.position === 'absolute' && txt.length <= 8) el.style.setProperty('white-space', 'nowrap');
+      return true;
     }
     function tallBtn(el) {
       if (!el.classList.contains('btn') || el.classList.contains('hdTg') || el.closest('.seg') || !el.closest('#mbox')) return;

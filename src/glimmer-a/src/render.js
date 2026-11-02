@@ -1045,7 +1045,7 @@
       x.save(); x.imageSmoothingEnabled = false;
       x.translate(ox(px + (ph ? ph.dx * mir : 0)), oy(py)); x.scale(mir * (ph ? ph.sx : 1), ph ? ph.sy : 1); if (ph && ph.rot) x.rotate(-ph.rot);   // 以腳底 pivot 向後仰
       x.drawImage(draw.img, draw.sx, draw.sy, draw.sw, draw.sh, -draw.px, -draw.py, draw.sw, draw.sh); if (this.pat5c) this.pat5c(x, draw, fk, s);   // 5c 遺傳花紋（團絨主養；剪影內）
-      this.petBlit = { img: draw.img, sx: draw.sx, sy: draw.sy, sw: draw.sw, sh: draw.sh, px: draw.px, py: draw.py, X: ox(px + (ph ? ph.dx * mir : 0)), Y: oy(py), scx: mir * (ph ? ph.sx : 1), scy: ph ? ph.sy : 1, rot: ph && ph.rot ? ph.rot : 0 };   // 3b 預兆閃剪影
+      this.petBlit = { img: draw.img, sx: draw.sx, sy: draw.sy, sw: draw.sw, sh: draw.sh, px: draw.px, py: draw.py, X: ox(px + (ph ? ph.dx * mir : 0)), Y: oy(py), scx: mir * (ph ? ph.sx : 1), scy: ph ? ph.sy : 1, rot: ph && ph.rot ? ph.rot : 0, clip: clip, fi: b.frame };   // 3b 預兆閃剪影
       if (live && anc && anc.bulb && FCP.bulb && FCP.bulb.enabled && live.clip !== 'sick') {     // 燈泡 glow：情緒 tint（0.4s 漸變）× intensity（呼吸／閃）
         const BM = FCP.bulb.moods, mood = this.bulbMood(b), m = BM[mood] || BM.neutral, hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
         let tgt = hx(m.tint); const dt = Math.max(0, Math.min(0.1, this.bulbLastT == null ? 0 : t - this.bulbLastT)), kf = 1 - Math.exp(-dt * 3 / Math.max(0.05, FCP.bulb.fadeSec));
