@@ -826,6 +826,9 @@
   PARAMS.b3b = { enabled: true, art: { base: 'art/batch3b/' } };   // 第 3 批 3b（visit.js／b3bui.js；?b3b=0 停用）
   PARAMS.series2 = { enabled: true, version: '5c', art: { base: 'art/series2/' } };   // 第 4 批 4a 細佬（series2.js／s2ui.js；?s2=0 停用；cfg 覆寫 series2.CFG）
   PARAMS.house = { enabled: true, art: { base: 'art/series2_house/' } };   // 第 4 批 4b 屋仔（house.js／houseui.js；美術 art/series2_house）
+  // 5b.1（遊策裁定）：星星碎每日上限分開兩個池，互不搶位 —— 舊來源（委託＋其他；evo6.branch.systems.stardustDailyCap）≤30、long5b（工作＋遠足；long5b.CFG.capPerDay）≤12；
+  // 合共每日上限 42（只係明文上限，唔改任何一邊嘅行為）。6b「步數」每日 ≤5 加入之後會升到 47。
+  PARAMS.SHARD_DAILY_TOTAL_CAP = 42;
   PARAMS.systems12b.badges.total = PARAMS.systems12b.badges.list.length;
   return { SYS_CLIPS, ROUTE_HINT, EVO_BRANCH, BRANCH5, BRANCHES, EVO_STAGE_FORM, evoForm, EVO_FORMS, isBig, legacyStage, EVO_CLIP_FALLBACK, STAGES: ['egg', 'newborn', 'sprout', 'juvenile', 'adult', 'elder'], STAGE_SUB: { newborn: '絨點仔', sprout: '絨芽', juvenile: '跳跳絨' }, PARAMS, STAGE_NAME, FORM_NAME, EVOLUTION, SPROUT_SUB, NEED_KEYS, NEED_LABEL, FOODS, PAL, CLIPS, FORMS, EXPRESSIONS, EXPR_RULES, PROP_KINDS, EVENTS, AUDIO };
 });

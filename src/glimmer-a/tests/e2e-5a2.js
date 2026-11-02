@@ -73,6 +73,12 @@ let pass = 0, fail = 0; const ok = (c, m) => { if (c) { pass++; console.log('  �
   ok(!keys.some(k => /\/reskin_4b\//.test(k)), '單檔冇 reskin_4b（' + keys.length + ' 個資產）');
   ok(!keys.some(k => /fp(8|10)-subset\.ttf$/.test(k)) && keys.some(k => /fp12-subset\.ttf$/.test(k)), '單檔冇 FP8／FP10，有 FP12');
   ok(keys.includes('art/ui_hd2d/ui_hd2d@3x.png'), 'v1 atlas 照留');
+  { const B5 = 'art/series2_long/5b/ui/', mock = ['diary_page_example', 'job_card_example', 'job_card_capped', 'toast_return', 'icon_job_lv'].concat(...['expedition', 'job', 'rest'].map(a => ['on', 'off', 'locked'].map(b => 'seg_' + a + '_' + b))).map(n => B5 + n + '@3x.png').concat(B5 + 'layout.json');
+    const left = mock.filter(k => keys.includes(k)); ok(mock.length === 15 && !left.length, '5b.1 單檔冇 5b 示意圖（' + mock.length + ' 個）', left);
+    ok(mock.every(k => fs.existsSync(path.join(ROOT, k))), '5b 示意圖仍然留喺 repo');
+    ok(['icon_expedition', 'icon_shards', 'icon_rest', 'icon_job_post', 'badge_job_lv1', 'badge_job_lv6'].every(n => keys.includes(B5 + n + '@3x.png')), '5b 用緊嘅 UI 照打包');
+    const src = fs.readdirSync(path.join(ROOT, 'src')).filter(f => f.endsWith('.js')).map(f => fs.readFileSync(path.join(ROOT, 'src', f), 'utf8')).join('\n');
+    ok(!/diary_page_example|job_card_example|job_card_capped|toast_return|icon_job_lv['@]|seg_(expedition|job|rest)_|5b\/ui\/layout/.test(src), 'src 冇載入 5b 示意圖'); }
   ok(/skipped \d+ files/.test(log), 'build log 報跳過 ' + (log.match(/skipped \d+ files \d+ raw bytes/) || [''])[0]);
   ok(fs.existsSync(path.join(ROOT, 'art/ui_hd2d_v2/fonts/fp8-subset.ttf')), 'FP8／FP10 檔仍然留喺 repo');
   fs.unlinkSync(out);

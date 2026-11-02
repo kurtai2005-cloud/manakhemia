@@ -43,6 +43,14 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
   const wallet = () => E(() => Glimmer.sys12.st(__glimmer.state).wallet.total);
   const readOk = async (name, sel) => { const a = await audit(page, sel); ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam])); };
 
+  // 5b.1：熱區 ≥48（同 e2e-5a2：48×48 四角＋四邊都要打中自己）
+  const hit = (sel) => E((sel) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth;
+      return [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; }).map(e => {
+        e.scrollIntoView({ block: 'center', inline: 'nearest' }); const r = e.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, h = 24 * k - 0.75; let n = 0, miss = [];
+        for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1], [0, -1], [0, 1], [-1, 0], [1, 0]]) { const t = document.elementFromPoint(cx + dx * h, cy + dy * h); if (t && (t === e || e.contains(t))) n++; else miss.push(dx + ',' + dy + '→' + (t ? (t.dataset.testid || t.id || t.className || t.tagName) : '-')); }
+        return { id: e.dataset.testid || e.id, n, miss: miss.slice(0, 2), lay: [Math.round(r.width / k), Math.round(r.height / k)] }; }); }, sel);
+  const hitOk = async (label, sel, min) => { const L = await hit(sel); ok(L.length >= (min || 1), label + '：搵到 ' + L.length + ' 個');
+    const bad = L.filter(x => x.n < 8); ok(bad.length === 0, label + '：熱區 ≥48' + (bad.length ? ' ← ' + JSON.stringify(bad.slice(0, 3)) : '（' + L.slice(0, 3).map(x => x.id + ' ' + x.lay.join('×')).join('，') + '）')); };
   console.log('# 載入');
   await load('q=high&hour=13&seed=21&ev=0');
   ok(await E(() => !!(Glimmer.long5b && Glimmer.long5bui && window.__qa && __qa.l5b && __glimmer.h5x)), 'long5b＋long5bui 裝咗');
@@ -66,6 +74,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
   ok(await vis('l5b-seg-expedition-' + tr.id) && await vis('l5b-seg-job-' + tr.id) && await vis('l5b-seg-rest-' + tr.id), '三段：遠足／工作／休息');
   ok((await txt('l5b-st-' + tr.id)).includes('未揀'), '狀態「未揀」');
   await readOk('每日安排', '#l5bov');
+  await hitOk('5b.1 三段掣', '#l5bov .l5bseg', 9); await hitOk('5b.1 「好！」＋閂', '[data-testid=l5b-ok],#l5bov [data-testid$=-close]', 2);
   await shot('plan');
 
   console.log('# 遠足');
@@ -103,6 +112,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
   ok(await E(() => { const c = document.querySelector('[data-testid=l5b-diary-pic]'); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) n++; return n > c.width * c.height * 0.9; }), '日記圖（場景＋返屋格＋手信）');
   await readOk('團絨日記', '#l5bov');
   await shot('diary');
+  await hitOk('5b.1 日記揭頁', '[data-testid=l5b-diary-prev],[data-testid=l5b-diary-next]', 2);
   await click('l5b-diary-prev'); await W(300); ok((await Q()).ovData.ix === 0, '◀ 上一篇');
   await E(() => __qa.l5b.close());
 

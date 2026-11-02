@@ -8,6 +8,10 @@ OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'dist', 'glimmer-
 MIME = {'.png': 'image/png', '.json': 'application/json', '.ogg': 'audio/ogg', '.ttf': 'font/ttf'}
 # 5a.2：唔打包運行時冇用嘅資產（檔仍然留喺 repo 畀測試）：成個 reskin_4b/（src 冇路徑）、FP8／FP10（v2 只用 FP12）
 SKIP_DIRS = ('reskin_4b',); SKIP_FILES = ('fp8-subset.ttf', 'fp10-subset.ttf')
+# 5b.1：遊美 5b 示意圖／排版稿（runtime 冇載入；檔留喺 repo 畀 long5b.test 對數）
+_B5 = 'art/series2_long/5b/ui/'
+SKIP_REL = set([_B5 + n + '@3x.png' for n in ('diary_page_example', 'job_card_example', 'job_card_capped', 'toast_return', 'icon_job_lv')]
+               + [_B5 + 'seg_%s_%s@3x.png' % (a, b) for a in ('expedition', 'job', 'rest') for b in ('on', 'off', 'locked')] + [_B5 + 'layout.json'])
 assets = {}; skipped = [0, 0]
 for d in ('art', 'audio'):
     for dp, dns, fs in os.walk(os.path.join(ROOT, d)):
@@ -20,7 +24,7 @@ for d in ('art', 'audio'):
             ext = os.path.splitext(f)[1]
             if ext not in MIME: continue
             p = os.path.join(dp, f); rel = os.path.relpath(p, ROOT).replace(os.sep, '/')
-            if f in SKIP_FILES: skipped[0] += 1; skipped[1] += os.path.getsize(p); continue
+            if f in SKIP_FILES or rel in SKIP_REL: skipped[0] += 1; skipped[1] += os.path.getsize(p); continue
             assets[rel] = [MIME[ext], base64.b64encode(open(p, 'rb').read()).decode()]
 shim = r"""<script>/* 單檔 build：內嵌資產解析器（fetch／Image） */
 (function () {

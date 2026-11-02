@@ -54,8 +54,9 @@ body.l5b-on #toast{z-index:72 !important}
 #l5bov .scr{position:absolute;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 #l5bov .scr::-webkit-scrollbar{display:none}
 #l5bov .l5bprow{position:relative;display:flex;gap:8px;box-sizing:border-box;margin:0 0 8px;padding:8px}
-#l5bov .l5bseg{position:relative;flex:1 1 0;min-width:0;min-height:40px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:2px 2px}
+#l5bov .l5bseg{position:relative;z-index:1;flex:1 1 0;min-width:0;min-height:40px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:2px 2px}
 #l5bov .l5bseg.lk{opacity:.92}
+#l5bov .l5bseg::after,#l5bov .l5bhit::after{content:'';position:absolute;left:0;right:0;top:var(--hy,-8px);bottom:var(--hy,-8px)}
 #l5bov .l5bjc{position:relative;width:150px;min-height:214px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px;cursor:pointer}
 #l5btoast{position:absolute;left:28px;top:200px;width:334px;z-index:61;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;transform:translateY(-260px);transition:transform 260ms cubic-bezier(.34,1.56,.64,1)}
 #l5btoast.in{transform:translateY(0)}
@@ -77,7 +78,9 @@ body.l5b-on #toast{z-index:72 !important}
     function panel(el, x, y, w, h, title, tid) {
       const p = mk('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;${h ? 'height:' + h + 'px;' : ''}box-sizing:border-box;${bi('panel_navy')}`, null, tid); el.appendChild(p);
       if (title) { const pl = mk('div', `position:absolute;left:50%;top:-22px;transform:translateX(-50%);min-width:200px;height:44px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:0 14px;white-space:nowrap;${bi('plaque_pri')}` + TXT(24, CREAM), title, tid + '-title'); p.appendChild(pl); }
-      const x0 = mk('div', `position:absolute;right:-12px;top:-14px;width:44px;height:44px;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:center;${sp('close') || bi('close')}` + TXT(24, CREAM), sp('close') ? '' : '✕', tid + '-close');
+      // 5b.1：熱區 52×52（透明），圖仍然係 sp('close') 原大、中心同舊位一樣
+      const x0 = mk('div', `position:absolute;right:-23px;top:-25px;z-index:5;width:52px;height:52px;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:center` + TXT(24, CREAM), null, tid + '-close');
+      x0.appendChild(mk('div', `position:relative;flex:0 0 auto;width:30px;height:30px;pointer-events:none;display:flex;align-items:center;justify-content:center;${sp('close') || bi('close')}`, sp('close') ? '' : '✕'));
       x0.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); closeOv(); }); p.appendChild(x0); return p;
     }
     // 頭像（團絨 atlas／細佬 strip）
@@ -117,7 +120,7 @@ body.l5b-on #toast{z-index:72 !important}
         if (r.a === 'job' && r.info) pc.appendChild(img(ui5b('badge_job_lv' + Math.min(6, Math.max(1, r.info.lv))), 'left:-6px;top:-6px;width:28px;height:28px'));
         const col = mk('div', 'position:relative;flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px'); row.appendChild(col);
         col.appendChild(mk('div', 'position:relative;' + TXT(24, GOLD), nm(r), 'l5b-name-' + r.id));
-        const segs = mk('div', 'position:relative;display:flex;gap:4px'); col.appendChild(segs);
+        const segs = mk('div', 'position:relative;z-index:2;display:flex;gap:4px'); col.appendChild(segs);
         const SEG = [['expedition', '遠足', 'icon_expedition', '#E8893A'], ['job', '工作', r.job ? 'icon_job_' + r.job : 'icon_job_post', '#2F95A8'], ['rest', '休息', 'icon_rest', '#7E66C4']];
         for (const [a, zh, ic, on] of SEG) {
           const lk = r.lock[a] && r.a !== a, sel = (!!o.plan[r.id] || !!r.away) && r.a === a, sg = mk('div', (sel ? `background:${on};border:3px solid ${GOLD};border-radius:8px;box-shadow:0 3px 0 #24172C;` : lk ? 'background:#4A4656;border:2px solid #6E6A7A;border-radius:8px;' : 'background:#1E1A3E;border:2px solid #8A80C0;border-radius:8px;') + TXT(24, lk ? '#D9D2E6' : CREAM), null, 'l5b-seg-' + a + '-' + r.id); sg.className = 'l5bseg' + (lk ? ' lk' : ''); sg.dataset.on = sel ? '1' : '0'; sg.dataset.lk = lk ? '1' : '0';
@@ -130,7 +133,7 @@ body.l5b-on #toast{z-index:72 !important}
         }
         col.appendChild(mk('div', 'position:relative;' + TXT(24, SUB), statusOf(r, o), 'l5b-st-' + r.id));
       }
-      const ok = btn('好！', 'btn_pri', 170, 46, 'l5b-ok', () => closeOv()); ok.style.left = '98px'; ok.style.bottom = '12px'; pn.appendChild(ok);
+      const ok = btn('好！', 'btn_pri', 170, 46, 'l5b-ok', () => closeOv()); ok.classList.add('l5bhit'); ok.style.setProperty('--hy', '-5px');   /* 5b.1：熱區 ≥48（透明），掣樣唔變 */ ok.style.left = '98px'; ok.style.bottom = '12px'; pn.appendChild(ok);
       return { ok: true, rows: P.rows.length };
     }
     function statusOf(r, o) {
@@ -185,7 +188,7 @@ body.l5b-on #toast{z-index:72 !important}
         loot.appendChild(ch(ui5b('icon_shards'), '+' + t.sh, 'l5b-diary-sh'));
         if (t.furn) loot.appendChild(ch(null, '家具：' + svName(t.furn), 'l5b-diary-furn'));
         const nav = mk('div', 'position:relative;display:flex;align-items:center;justify-content:space-between;margin-top:10px'); pn.appendChild(nav);
-        const nb = (lab, d, tid) => { const b = btn(lab, ix + d < 0 || ix + d >= N ? 'btn16_dis' : 'btn16_sec', 56, 44, tid, () => { if (ix + d >= 0 && ix + d < N) diaryView(ix + d); }); b.style.position = 'relative'; if (ix + d < 0 || ix + d >= N) b.dataset.dis = '1'; return b; };
+        const nb = (lab, d, tid) => { const b = btn(lab, ix + d < 0 || ix + d >= N ? 'btn16_dis' : 'btn16_sec', 56, 44, tid, () => { if (ix + d >= 0 && ix + d < N) diaryView(ix + d); }); b.style.position = 'relative'; b.classList.add('l5bhit'); b.style.setProperty('--hy', '-6px'); if (ix + d < 0 || ix + d >= N) b.dataset.dis = '1'; return b; };   /* 5b.1：熱區 56×50 */
         nav.appendChild(nb('◀', -1, 'l5b-diary-prev')); nav.appendChild(tx((ix + 1) + ' / ' + N, INK, 'l5b-diary-n')); nav.appendChild(nb('▶', 1, 'l5b-diary-next'));
       }
       const got = B.STICKERS.filter(k => o.stk[k]); const sk = mk('div', 'position:relative;margin-top:12px;padding-top:8px;border-top:2px dashed #C9A27A;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center', null, 'l5b-stk'); pn.appendChild(sk);
