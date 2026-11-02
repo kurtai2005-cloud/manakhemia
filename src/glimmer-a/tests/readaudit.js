@@ -22,8 +22,10 @@ async function collect(page, rootSel) {
   }, rootSel);
 }
 async function bgSample(page, items) {
-  await page.addStyleTag({ content: '*{color:transparent!important;text-shadow:none!important;-webkit-text-stroke:0!important;caret-color:transparent!important}', }).then(h => page.evaluate(() => document.head.lastElementChild.id = '__ra_hide'));
-  await page.waitForTimeout(60); const buf = await page.screenshot({ type: 'png' }); await page.evaluate(() => { const e = document.getElementById('__ra_hide'); if (e) e.remove(); });
+  // 5a.2：inline !important 收字（樣式表 !important 高 specificity 都蓋得到）
+  await page.evaluate(() => document.querySelectorAll('body *').forEach(e => { e.dataset.raHide = e.getAttribute('style') || ''; for (const [k, v] of [['color', 'transparent'], ['text-shadow', 'none'], ['-webkit-text-stroke', '0'], ['caret-color', 'transparent']]) e.style.setProperty(k, v, 'important'); }));
+  await page.waitForTimeout(60); const buf = await page.screenshot({ type: 'png' });
+  await page.evaluate(() => document.querySelectorAll('body [data-ra-hide]').forEach(e => { if (e.dataset.raHide) e.setAttribute('style', e.dataset.raHide); else e.removeAttribute('style'); delete e.dataset.raHide; }));
   return page.evaluate(async ([b64, items]) => {
     const im = new Image(); await new Promise(r => { im.onload = r; im.src = 'data:image/png;base64,' + b64; }); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const g = c.getContext('2d'); g.drawImage(im, 0, 0);
     const d = devicePixelRatio; return items.map(it => { const [x, y, w, h] = it.r, X = Math.max(0, Math.round(x * d)), Y = Math.max(0, Math.round(y * d)), W = Math.max(1, Math.min(c.width - X, Math.round(w * d))), H = Math.max(1, Math.min(c.height - Y, Math.round(h * d)));

@@ -6,13 +6,21 @@ import base64, json, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'dist', 'glimmer-live-s1.html')   # 合併版：python3 tools/build-single.py dist/glimmer-combo.html
 MIME = {'.png': 'image/png', '.json': 'application/json', '.ogg': 'audio/ogg', '.ttf': 'font/ttf'}
-assets = {}
+# 5a.2：唔打包運行時冇用嘅資產（檔仍然留喺 repo 畀測試）：成個 reskin_4b/（src 冇路徑）、FP8／FP10（v2 只用 FP12）
+SKIP_DIRS = ('reskin_4b',); SKIP_FILES = ('fp8-subset.ttf', 'fp10-subset.ttf')
+assets = {}; skipped = [0, 0]
 for d in ('art', 'audio'):
-    for dp, _, fs in os.walk(os.path.join(ROOT, d)):
+    for dp, dns, fs in os.walk(os.path.join(ROOT, d)):
+        for s in [x for x in dns if x in SKIP_DIRS]:
+            for sp, _, sf in os.walk(os.path.join(dp, s)):
+                for f in sf:
+                    if os.path.splitext(f)[1] in MIME: skipped[0] += 1; skipped[1] += os.path.getsize(os.path.join(sp, f))
+        dns[:] = sorted(x for x in dns if x not in SKIP_DIRS)
         for f in sorted(fs):
             ext = os.path.splitext(f)[1]
             if ext not in MIME: continue
             p = os.path.join(dp, f); rel = os.path.relpath(p, ROOT).replace(os.sep, '/')
+            if f in SKIP_FILES: skipped[0] += 1; skipped[1] += os.path.getsize(p); continue
             assets[rel] = [MIME[ext], base64.b64encode(open(p, 'rb').read()).decode()]
 shim = r"""<script>/* 單檔 build：內嵌資產解析器（fetch／Image） */
 (function () {
@@ -47,4 +55,4 @@ html = re.sub(r'<script src="([^"]+\.js)"></script>', inline, html)
 assert '<script src=' not in html
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 open(OUT, 'w', encoding='utf-8').write(html)
-print('wrote', OUT, os.path.getsize(OUT), 'bytes,', len(assets), 'assets')
+print('wrote', OUT, os.path.getsize(OUT), 'bytes,', len(assets), 'assets', '| skipped', skipped[0], 'files', skipped[1], 'raw bytes')

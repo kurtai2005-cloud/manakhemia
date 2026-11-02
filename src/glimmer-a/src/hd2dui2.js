@@ -94,7 +94,7 @@ ${H}.rt { white-space:nowrap; display:inline-block; }
     const atlas = (n) => json(n + '.json').then(j => img(BASE + (j.image ? j.image.replace(/^.*\//, '') : n + '.png')).then(im => ({ j, im })));
     const font = (n, fam) => fetch(BASE + 'fonts/' + n).then(r => r.arrayBuffer()).then(b => { if (fam === 'GlimmerFP12') { try { U.cov = cmapOf(b); } catch (e) { U.errors.push('cmap ' + e.message); } } const f = new FontFace(fam, b); return f.load(); }).then(f => { document.fonts.add(f); U.fonts[fam] = true; }).catch(e => { U.errors.push('font ' + n + ': ' + (e && e.message || e)); });
     U.load = Promise.all([HD.load, atlas('ui_hd2d_v2@1x'), atlas('icons_hd2d_v2@1x'), json('layout_hd2d_v2.json'), json('portrait_rects.json'),
-      font('fp8-subset.ttf', 'GlimmerFP8'), font('fp10-subset.ttf', 'GlimmerFP10'), font('fp12-subset.ttf', 'GlimmerFP12')])
+      font('fp12-subset.ttf', 'GlimmerFP12')])   // 5a.2：FP8／FP10 唔再載（v2 畫字全部 FP12；單檔唔再打包）
       .then(([, A, I, L, PR]) => { if (!HD.ready) throw new Error('v1 未 ready'); build(A, I, L, PR); })
       .catch(e => { U.errors.push(String(e && e.message || e)); console.warn('hd2dui2: kit v2 載唔到', e); });
 
@@ -105,7 +105,24 @@ ${H}.rt { white-space:nowrap; display:inline-block; }
       const fr = (n) => { const f = FR[n]; if (!f && !U.missing.includes(n)) U.missing.push(n); return f; };
       const url = (n) => cache[n] || (cache[n] = fr(n) ? crop2(A.im, FR[n]) : '');
       const iurl = (n) => { const k = 'ic:' + n; if (cache[k]) return cache[k]; if (!IC[n]) { if (!U.missing.includes('icon:' + n)) U.missing.push('icon:' + n); return ''; } return (cache[k] = crop2(I.im, IC[n])); };
-      const bi = (n) => { const f = fr(n); return f ? biCss(url(n), f) : ''; };
+      // 5a.2 對比：量 sprite 中間主色；淺字（#FFF5DC）對佢 <4.5 → 改白字，再唔夠就深字（#24172C、冇描邊）
+      const lumC = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+      const crC = (a, b) => { const x = lumC(a), y = lumC(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+      let AG = null; const fillOf = (n) => { const k = 'fill:' + n; if (k in cache) return cache[k]; let c = null; const f = FR[n];
+        try { if (f) { if (!AG) { const cv = document.createElement('canvas'); cv.width = A.im.width; cv.height = A.im.height; AG = cv.getContext('2d', { willReadFrequently: true }); AG.drawImage(A.im, 0, 0); }
+          const x0 = f.x + (f.w >> 2), y0 = f.y + (f.h >> 2), w = Math.max(1, f.w - 2 * (f.w >> 2)), h = Math.max(1, f.h - 2 * (f.h >> 2)), d = AG.getImageData(x0, y0, w, h).data, m = {}; let best = 0;
+          for (let i = 0; i < d.length; i += 4) { if (d[i + 3] < 200) continue; const key = d[i] + ',' + d[i + 1] + ',' + d[i + 2]; m[key] = (m[key] || 0) + 1; if (m[key] > best) { best = m[key]; c = key.split(',').map(Number); } } } } catch (e) { U.errors.push('fill ' + n); }
+        return (cache[k] = c); };
+      // 彩色字底（主／次／玫瑰／紫／綠 嘅掣、絲帶、牌、tab、pill）先處理；紙底、海軍底、圓章圖唔郁
+      const COLR = /^(btn|btn16|ribbon|pill|med\d+|subtab|seg|plaque|stage_tag|job_lv_badge)(_(pri|sec|rose|violet|green|on))?(_p)?$/;
+      const TXC = { cream: [255, 245, 220], white: [255, 255, 255] };
+      const deepK = (n) => { const c = fillOf(n); if (!c || !COLR.test(n) || crC(c, TXC.cream) >= 4.5 || crC(c, TXC.white) >= 4.5) return 1; let k = 1; while (k > 0.3 && crC(c.map(v => v * k), TXC.cream) < 4.7) k -= 0.02; return +k.toFixed(2); };
+      const deepUrl = (n, k) => { const ck = 'deep:' + n; if (cache[ck]) return cache[ck]; const f = FR[n], c = document.createElement('canvas'); c.width = f.w * 2; c.height = f.h * 2; const g = c.getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(A.im, f.x, f.y, f.w, f.h, 0, 0, f.w * 2, f.h * 2);
+        try { const im = g.getImageData(0, 0, c.width, c.height), d = im.data; for (let i = 0; i < d.length; i += 4) { d[i] *= k; d[i + 1] *= k; d[i + 2] *= k; } g.putImageData(im, 0, 0); } catch (e) { U.errors.push('deep ' + n); } return (cache[ck] = c.toDataURL()); };
+      // 淺字（#FFF5DC）對彩底 <4.5：白字夠（紫）就轉白字；唔夠（橙／玫瑰／青／綠）就用壓暗咗嘅同色底（「深底」），字色描邊照舊
+      const tc = (n) => { const c = fillOf(n); if (!c || !COLR.test(n) || crC(c, TXC.cream) >= 4.5) return ''; return crC(c, TXC.white) >= 4.5 ? ' color:#FFFFFF !important;' : ''; };
+      U.fillOf = fillOf; U.crC = crC; U.deepK = deepK; U.deep = {};
+      const bi = (n) => { const f = fr(n); if (!f) return ''; const k = deepK(n); if (k < 1) { U.deep[n] = k; return biCss(deepUrl(n, k), f) + tc(n); } return biCss(url(n), f) + tc(n); };
       const sp = (n) => { const f = fr(n); return f ? `width:${f.w * 2}px !important; height:${f.h * 2}px !important; background:url(${url(n)}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border:0 !important; border-image:none !important; image-rendering:pixelated;` : ''; };
       const spBg = (n) => { const f = fr(n); return f ? `background:url(${url(n)}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border-image:none !important; image-rendering:pixelated;` : ''; };
       const ic = (n) => { const f = IC[n], u = iurl(n); return f ? `width:${f.w * 2}px; height:${f.h * 2}px; background:url(${u}) 0 0 / ${f.w * 2}px ${f.h * 2}px no-repeat !important; border:0 !important; border-image:none !important; image-rendering:pixelated;` : ''; };
@@ -115,7 +132,7 @@ ${H}.rt { white-space:nowrap; display:inline-block; }
       const a2 = (v) => Math.round(v * 2);
       const INK = '#3A2840', CREAM = '#FFF5DC', LINE = '#24172C', GOLD = '#FFE08A';
       const FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif';
-      const F8 = `"GlimmerFP8",${FALL}`, F10 = `"GlimmerFP10",${FALL}`, F12 = `"GlimmerFP12",${FALL}`;
+      const F12 = `"GlimmerFP12",${FALL}`, F8 = F12, F10 = F12;   // 5a.2：舊 F8／F10 規則一律落 FP12（字號由 readPass 托底 24）
       const o8 = [[-2, 0], [2, 0], [0, -2], [0, 2], [-2, -2], [2, -2], [-2, 2], [2, 2]];
       const OL8 = 'text-shadow:' + o8.map(([x, y]) => `${x}px ${y}px 0 ${LINE}`).join(',') + ' !important;';
       const OL = 'text-shadow:' + o8.map(([x, y]) => `${x}px ${y}px 0 ${LINE}`).concat([`-2px 4px 0 ${LINE}`, `0 4px 0 ${LINE}`, `2px 4px 0 ${LINE}`]).join(',') + ' !important;';
@@ -244,7 +261,7 @@ ${H}#mbox > h2::before { left:-14px; } ${H}#mbox > h2::after { right:-14px; ${sp
 ${H}#mbox > p { font:20px/26px ${F10}; color:${CREAM}; ${OL} margin:6px 0; }
 ${H}#mbox small, ${H}#mbox .row, ${H}#mbox div { font-family:${F8}; }
 ${H}#mbox .row:has(> .btn), ${H}#mbox .row:has(> .seg) { min-height:48px; padding:4px 12px; font-size:16px; ${bi('panel_inset')} }
-${H}.btn { height:40px; min-width:92px; padding:0 18px; box-sizing:border-box; font:20px/40px ${F10} !important; color:${CREAM} !important; ${OL} ${bi('btn_pri')} background:none !important; border-radius:0 !important; box-shadow:none !important; }
+${H}.btn { height:48px; min-width:92px; padding:0 18px; box-sizing:border-box; font:20px/48px ${F10} !important; color:${CREAM} !important; ${OL} ${bi('btn_pri')} background:none !important; border-radius:0 !important; box-shadow:none !important; }
 ${H}.btn:active, ${H}.btn.hdDn { ${bi('btn_pri_p')} }
 ${H}.btn.sec { ${bi('btn_sec')} } ${H}.btn.sec:active, ${H}.btn.sec.hdDn { ${bi('btn_sec_p')} }
 ${H}.btn.sec[data-testid="reset-save"] { ${bi('btn_rose')} } ${H}.btn.sec[data-testid="reset-save"]:active { ${bi('btn_rose_p')} }
@@ -254,6 +271,10 @@ ${H}.seg .btn { height:20px; min-width:0; padding:0 8px !important; font:16px/20
 ${H}.seg .btn.on { color:#4A2410 !important; ${bi('seg_on')} }
 ${H}.seg { height:40px !important; width:auto !important; max-width:none !important; padding:0 6px !important; flex:none; ${bi('panel_inset')} }
 ${H}.seg .btn { height:32px !important; flex:none !important; margin:0 2px !important; padding:0 10px !important; line-height:32px !important; ${OL8} }
+${H}.seg .btn { position:relative; z-index:1; min-width:48px !important; overflow:visible !important; } ${H}.seg .btn::before { content:''; position:absolute; left:0; right:0; top:-8px; bottom:-8px; }   /* 5a.2：熱區 48×48（字同底唔變） */
+${H}.hdTg { flex:none !important; min-width:44px; z-index:1; } ${H}.hdTg::before { top:-13px !important; bottom:-13px !important; }   /* 5a.2：開關唔再俾長字擠扁；熱區 64×48 */
+${H}.rt { color:#24172C !important; text-shadow:none !important; }   /* 5a.2：路線小牌（淺彩底）→ 深字 */
+${H}.rt[data-testid="s12-q-old"] { background:#5A4F6E !important; color:#FFF5DC !important; }
 ${H}.seg .btn.on { color:${CREAM} !important; ${OL8} ${bi('btn16_pri')} }
 ${H}.hdTg { width:44px !important; height:22px !important; ${spBg('toggle_track_on')} }
 ${H}.hdTg.sec { ${spBg('toggle_track_off')} }
@@ -299,18 +320,19 @@ ${H}#hdFx .stamp::after { ${icBg('check')} }
 ${H}#hdFx > .ghost:not([data-hd-of]) { ${bi('panel_navy')} }
 /* ── 🛠 開發者掣＋面板 ── */
 ${H}#devBtn { top:${a2(P.y + P.h) + 8}px !important; height:22px; padding:0 10px !important; box-sizing:border-box; border:0 !important; border-radius:0 !important; background:none !important; font:16px/22px ${F8} !important; color:${CREAM} !important; ${OL8} ${bi('pill_navy')} }
+${H}#devBtn::before { content:''; position:absolute; left:0; right:0; top:-13px; bottom:-13px; min-height:48px; }   /* 5a.2：熱區 ≥48（樣唔變） */
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] { border:0 !important; border-radius:0 !important; background:none !important; padding:10px !important; ${bi('panel_inset')} }
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] b { font:20px/24px ${F10}; color:${GOLD}; ${OL} }
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-status-"] { font:16px/20px ${F8} !important; }
-${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn, ${H}#mbox[data-kind="devmode"] [data-testid="dev-toggle-btn"] { height:32px !important; min-width:0; padding:0 6px !important; font:16px/32px ${F8} !important; ${OL8} white-space:nowrap; overflow:hidden; ${bi('btn16_pri')} }
-${H}#mbox .btn[data-tall="1"], ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn[data-tall="1"] { height:auto !important; min-height:44px; padding:6px 14px !important; line-height:28px !important; white-space:normal !important; overflow:visible !important; text-overflow:clip !important; ${bi('card_sel')} }
+${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn, ${H}#mbox[data-kind="devmode"] [data-testid="dev-toggle-btn"] { height:48px !important; min-width:0; padding:0 6px !important; font:16px/48px ${F8} !important; ${OL8} white-space:nowrap; overflow:hidden; ${bi('btn16_pri')} }
+${H}#mbox .btn[data-tall="1"], ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn[data-tall="1"] { height:auto !important; min-height:48px; padding:6px 14px !important; line-height:28px !important; white-space:normal !important; overflow:visible !important; text-overflow:clip !important; ${bi('card_sel')} }
 ${H}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn:active { ${bi('btn16_pri_p')} }
 ${H}#mbox[data-kind="devmode"] [data-testid="dev-toggle-btn"] { ${bi('btn16_sec')} }
 ${H}#mbox[data-kind="devmode"] [data-testid="dev-sec-uiv2"] .btn[data-on="1"] { ${bi('btn16_violet')} }
 /* ── 4b 屋仔（house4b：back／title／decorate／sheet／tabs／cards／done）── */
 ${H}#s2houseV .hb > img { opacity:0 !important; }
-${H}#s2houseV [data-testid="house-back"], ${H}#s2houseV [data-testid="house-deco-back"] { left:${a2(HB.back[0] - HB.back[2] / 2)}px !important; top:${a2(HB.back[1] - HB.back[2] / 2)}px !important; ${sp('med22_navy')} }
-${H}#s2houseV [data-testid="house-back"]::after, ${H}#s2houseV [data-testid="house-deco-back"]::after { content:''; position:absolute; left:6px; top:6px; ${ic('back')} }
+${H}#s2houseV [data-testid="house-back"], ${H}#s2houseV [data-testid="house-deco-back"] { left:${a2(HB.back[0] - HB.back[2] / 2) - 2}px !important; top:${a2(HB.back[1] - HB.back[2] / 2) - 2}px !important; ${sp('med22_navy')} width:48px !important; height:48px !important; min-width:48px; min-height:48px; background-position:center !important; }
+${H}#s2houseV [data-testid="house-back"]::after, ${H}#s2houseV [data-testid="house-deco-back"]::after { content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); ${ic('back')} }   /* 5a.2：熱區 48、med22（44）＋返回圖居中，唔拉 */
 ${H}#s2houseV .ttl { left:${a2(HB.title[0] - HB.title[2] / 2)}px !important; top:${a2(HB.title[1]) - 14}px !important; width:${a2(HB.title[2])}px !important; height:28px; border:0; border-radius:0; box-shadow:none; background:none; font:20px/28px ${F10}; letter-spacing:0; ${OL} ${bi('ribbon_navy')} }
 ${H}#s2houseV [data-testid="house-decorate"] { left:${a2(HB.decorate[0] - HB.decorate[2] / 2)}px !important; top:${a2(HB.decorate[1] - HB.decorate[2] / 2)}px !important; ${sp('med30_violet')} }
 ${H}#s2houseV [data-testid="house-decorate"]:active { ${spBg('med30_violet_p')} }

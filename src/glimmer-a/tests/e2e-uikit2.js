@@ -46,9 +46,9 @@ const near = (a, b, d) => Math.abs(a - b) <= (d || 2);
   let S = await u();
   ok(S.ready && S.on, '預設開 UI v2', S);
   ok(!S.errors.length && !S.missing.length, 'kit 零件／icons 冇缺、冇錯', { e: S.errors, m: S.missing });
-  ok(S.fonts.GlimmerFP8 && S.fonts.GlimmerFP10 && S.fonts.GlimmerFP12, 'Fusion Pixel 8／10／12 載入', S.fonts);
+  ok(S.fonts.GlimmerFP12 && !S.fonts.GlimmerFP8 && !S.fonts.GlimmerFP10, 'Fusion Pixel 12 載入（5a.2：FP8／FP10 唔再載）', S.fonts);
   ok(await E(() => document.getElementById('ui').classList.contains('v2') && document.body.classList.contains('uiv2')), '#ui.v2＋body.uiv2');
-  ok(await E(() => document.fonts.check('20px GlimmerFP10')), 'document.fonts 有 GlimmerFP10');
+  ok(await E(() => document.fonts.check('24px GlimmerFP12') && ![...document.fonts].some(f => /GlimmerFP(8|10)/.test(f.family))), 'document.fonts 有 GlimmerFP12、冇 FP8／FP10');
   { const c = await cs('#stagename', ['font-family', 'font-size']); ok(c && /GlimmerFP12/.test(c['font-family']) && c['font-size'] === '24px', '名牌用 FP12 24px（×2）', c); }
   { const c = await cs('#hdBan2', ['border-image-repeat', 'image-rendering', 'border-image-source']); ok(c && /repeat/.test(c['border-image-repeat']) && !/stretch/.test(c['border-image-repeat']) && c['image-rendering'] === 'pixelated' && /^url\(/.test(c['border-image-source']), '9-slice：border-image repeat（tile）＋pixelated', c && { r: c['border-image-repeat'], i: c['image-rendering'] }); }
   ok(await E(() => [...document.styleSheets].every(s => { try { return ![...s.cssRules].some(r => /border-image[^;]*stretch/.test(r.cssText) && /#ui\.hd\.v2/.test(r.cssText)); } catch (e) { return true; } })), 'v2 CSS 冇 border-image stretch');
@@ -108,7 +108,7 @@ const near = (a, b, d) => Math.abs(a - b) <= (d || 2);
   await dev('kid'); ok(await E(() => document.getElementById('mbox').dataset.kind === 's2Card'), '「睇細佬卡」→ 細佬卡'); await shot('20-kidcard');
   { const c = await cs('#mbox', ['border-image-source']); ok(c && /^url/.test(c['border-image-source']), '細佬卡用 v2 panel'); } await closeModals();
   await dev('house'); ok(await E(() => __qa.house.st().open), '「睇屋仔」→ 屋仔'); await W(800); await shot('21-house');
-  { const b = await box('[data-testid=house-back]'), H = L.house4b; ok(b && near(b.x + b.w / 2, H.back[0] * 2, 2) && near(b.y + b.h / 2, H.back[1] * 2, 2) && near(b.w, H.back[2] * 2), '屋仔返回掣喺 house4b.back', { b, back: H.back }); }
+  { const b = await box('[data-testid=house-back]'), H = L.house4b; ok(b && near(b.x + b.w / 2, H.back[0] * 2, 2) && near(b.y + b.h / 2, H.back[1] * 2, 2) && near(b.w, Math.max(48, H.back[2] * 2)) && b.h >= 48, '屋仔返回掣喺 house4b.back（5a.2 熱區 ≥48）', { b, back: H.back }); }
   { const c = await cs('[data-testid=house-title]', ['font-family', 'border-image-source']); ok(c && /GlimmerFP/.test(c['font-family']), '屋仔標題用 Fusion Pixel', c && c['font-family']); }
   await E(() => { Glimmer.sys12.st(__glimmer.state).wallet.total += 200; }); await dev('deco'); await W(600);
   ok(await E(() => __qa.house.st().deco), '「睇佈置」→ 佈置'); await shot('22-decorate');
