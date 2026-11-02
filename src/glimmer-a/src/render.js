@@ -645,7 +645,7 @@
       const sleeping = s.sleeping;
       this.sleepMix += ((sleeping ? 1 : 0) - this.sleepMix) * Math.min(1, dt * 2.2);
       const sm = this.sleepMix;
-      if (this.v3 && this.v3.want) this.v3.tick(s, view.beh, { sleepy: s.withdrawn && s.withdrawn.on && s.stage !== 'egg' });   // #83 petGlow（瞓 0／睏 .6／醒 1）
+      if (this.v3 && this.v3.want) this.v3.tick(s, view.beh, { sleepy: s.withdrawn && s.withdrawn.on && s.stage !== 'egg', dreaming: !!this.v3.dream });   // #83 petGlow（瞓 0／睏 .6／醒 1）
       const hunger = s.needs.hunger, hDim = s.stage === 'egg' ? 0 : clamp((50 - hunger) / 50, 0, 1);
       const unwell = SIM.isUnwell(s), wd = s.withdrawn.on && s.stage !== 'egg';
       this.eggPulse = Math.max(0, this.eggPulse - dt * 1.8); this.flash = Math.max(0, this.flash - dt * 1.4);

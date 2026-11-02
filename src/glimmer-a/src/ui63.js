@@ -64,7 +64,7 @@ body.u62ov ${H}#u63hide, body.u62w-on ${H}#u63hide, body.s2-house ${H}#u63hide, 
       ['#toast', 'self:50% 0'], ['#s12gain', 'self:0 0'], ['#s12voice', 'self:50% 100%'], ['#bubble', 'self:50% 100%'], ['#u62tip', 'self:0 100%'], ['#mbox', 'self:50% 50%'],
     ];
     const OVS = ['#l5bov', '#l6bov', '#l5ov', '#u62work', '#s2houseV', '#l6cov', '#l6cdex'];
-    const SKIP = (e) => e.tagName === 'CANVAS' || e.tagName === 'STYLE' || (e.dataset.testid || '').indexOf('house-pin-') === 0 || e.classList.contains('hb') || e.classList.contains('u63hit');
+    const SKIP = (e) => e.tagName === 'CANVAS' || e.tagName === 'STYLE' || (e.dataset.testid || '').indexOf('house-pin-') === 0 || e.classList.contains('hb') || e.classList.contains('u63hit') || e.classList.contains('u63no');   // u63no：遊戲內容（6c 夢地圖格／團絨／碎片）唔縮，保持 art 整數倍
     function posOf(e) { let L = 0, T = 0, p = e; while (p && p !== ui) { L += p.offsetLeft; T += p.offsetTop; p = p.offsetParent; } return p === ui ? [L, T] : null; }
     function unScale(e) { if (!e.classList.contains('u63s')) return; e.classList.remove('u63s'); e.querySelectorAll('i.u63hit').forEach(h => h.remove()); e.querySelectorAll('[data-u63m]').forEach(x => { for (const k of ['margin-top', 'margin-right', 'margin-bottom', 'margin-left']) x.style.removeProperty(k); delete x.dataset.u63m; }); e.querySelectorAll('[data-u63c]').forEach(x => { x.style.removeProperty('overflow'); x.style.removeProperty('overflow-clip-margin'); delete x.dataset.u63c; }); }
     function setScale(e, o) {

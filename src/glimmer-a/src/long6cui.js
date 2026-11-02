@@ -4,8 +4,11 @@
    ・夢境疊層（全螢幕直向）：入夢過場 → 3×5 小地圖（當晚 6a 記錄砌）→ 撳格陪團絨行（逐格行，霧散開）→ 拾夢碎片（頭 2 片即有，之後每 25 秒浮 1 片）
      → 150 秒到／6 片拾晒／撳「醒返」→ 出夢過場 → 今晚小結（新夢圖鑑、送家具）。硬上限 180 秒。
    ・唔加月眠／路線分、唔出碎、唔郁需求、唔郁系統 6 親密度；團絨夢完照瞓。
-   ・美術未有 → placeholder（洋紅虛線＋data-ph）：6c:tile_{forest,lake,toy,star}（tileset，每格 50×50 → CSS 100）、6c:dream_walk（團絨夢中行 clip；暫用 idle 幀 0）、
-     6c:nightcap（睡帽疊層）、6c:card_<id>（夢圖鑑 20 張，28×36）、6c:transition（入／出夢過場）、6c:frag（夢碎片 icon）。
+   ・美術（art/breakthrough/6c：af5b4821 dream6c.json；V3-A ba0d4345 v3/dream6c_v3.json）：格 56 art＝112 CSS（x0 22、間 4）、tileset 4 款、
+     V3 開：dream_bg_v3（預合成）、tile_v3＋glow（lighter 呼吸）＋湖 caustic、fog_v3 流霧 8 幀＋fog_reveal 揭開、tile_reveal_glow、過場 v3 10 幀、卡 v3；
+     V3 關／v1：dream_bg、tile、fog、transition_in 橫條、卡 1x。團絨 dream_walk 6 幀 6fps（1 art px＝2 CSS；向左 flipX）＋睡帽另一層（json 逐幀 xy）；
+     夢入面寵物光＝0（G.v3.dream → petGlow dreaming）。入夢過場 0→9 → 地圖；出夢 0→9 收埋 → 小結 9→0 打開。
+   ・美術載唔到／?l6cart=0 → placeholder（洋紅虛線＋data-ph）：6c:tile_*、6c:dream_walk、6c:nightcap、6c:card_<id>、6c:transition、6c:frag。
    ・🛠 開發者模式「6c」；?l6c=0 全停。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -48,15 +51,28 @@
 body.l6c-on #toast{z-index:73 !important}
 #l6cov [data-ph],#l6cdex [data-ph]{outline:2px dashed #FF2BD6;outline-offset:-2px}
 #l6cdex .card6[data-ph]{outline-offset:1px}
-#l6cov .tile{position:absolute;width:100px;height:100px;box-sizing:border-box;cursor:pointer}
-#l6cov .tile canvas{position:absolute;left:0;top:0;width:100px;height:100px;image-rendering:pixelated;pointer-events:none}
-#l6cov .tile .fog{position:absolute;inset:0;border-radius:inherit;background:rgba(10,8,26,.82);transition:opacity .4s;pointer-events:none}
-#l6cov .tile[data-rev="1"] .fog{opacity:0}
+#l6cov .tile{position:absolute;width:112px;height:112px;box-sizing:border-box;cursor:pointer}
+#l6cov .tile canvas{position:absolute;left:0;top:0;width:112px;height:112px;image-rendering:pixelated;pointer-events:none}
+#l6cov .tile canvas.gl,#l6cov .tile canvas.cau{mix-blend-mode:plus-lighter;display:none}
+#l6cov .tile.v3 canvas.gl,#l6cov .tile.v3[data-th="lake"] canvas.cau{display:block}
+#l6cov .tile canvas.gl{animation:l6cbr var(--bp,2.86s) ease-in-out infinite}
+#l6cov .tile .rg{position:absolute;left:-16px;top:-16px;width:144px;height:144px;pointer-events:none;opacity:0;transition:opacity 1.2s;mix-blend-mode:plus-lighter;display:none;z-index:1}
+#l6cov .tile .fog{position:absolute;inset:0;border-radius:inherit;background:rgba(10,8,26,.82);transition:opacity .4s;pointer-events:none;z-index:2}
+#l6cov .tile canvas.fog.art{background:none;transition:none}
+#l6cov .tile[data-rev="1"] .fog:not(.art){opacity:0}
+#ui.hd.v2.u62 #l6cov .tile.art{border-radius:0;overflow:visible;box-shadow:none}
 #l6cov .frag{position:absolute;width:48px;height:48px;pointer-events:none;animation:l6ctw 1.2s steps(3) infinite}
-#l6cov .pet{position:absolute;width:80px;height:80px;pointer-events:none;transition:left .28s linear,top .28s linear;z-index:3}
-#l6cov .pet canvas.pc{position:absolute;left:0;top:0;width:80px;height:80px;image-rendering:pixelated;animation:l6cbob 1s steps(2) infinite}
-#l6cov .cap{position:absolute;left:24px;top:-4px;width:36px;height:28px;image-rendering:pixelated;animation:l6cbob 1s steps(2) infinite}
-#l6cov .tr{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:0;transition:opacity 1.2s;background:radial-gradient(circle at 50% 45%,#FFF5DC 0,#B9A2FF 18%,#3B2C6E 52%,#0C0920 100%)}
+#l6cov .pet{position:absolute;width:0;height:0;pointer-events:none;transition:left .28s linear,top .28s linear;z-index:3}
+#l6cov .pet canvas.pc,#l6cov .pet .cap{position:absolute;image-rendering:pixelated}
+#l6cov .pet.ph canvas.pc{left:-40px;top:-80px;width:80px;height:80px;animation:l6cbob 1s steps(2) infinite}
+#l6cov .pet.ph .cap{left:-16px;top:-84px;width:36px;height:28px;animation:l6cbob 1s steps(2) infinite}
+#l6cov .pet .sh{position:absolute;height:8px;margin-top:-4px;border-radius:50%;background:rgba(8,6,24,.4)}
+#l6cov .tr{position:absolute;left:0;top:0;width:390px;height:844px;z-index:9;pointer-events:none;opacity:0;transition:opacity 1.2s;background:radial-gradient(circle at 50% 45%,#FFF5DC 0,#B9A2FF 18%,#3B2C6E 52%,#0C0920 100%)}
+#l6cov canvas.tr.art{background:none;transition:opacity .35s;image-rendering:auto}
+#l6cov.pre > :not(.tr){visibility:hidden}
+#l6cov.pre{background:transparent !important}
+#l6cov .bgi{position:absolute;left:0;top:0;width:390px;height:844px;pointer-events:none;image-rendering:pixelated}
+#l6cov .bgi.v3{image-rendering:auto}
 #l6cov .btn{position:relative;box-sizing:border-box;min-height:56px;display:flex;align-items:center;justify-content:center;padding:4px 16px;cursor:pointer;text-align:center}
 #ui.hd.v2.u62 #l6cov .tile{border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px rgba(232,194,122,.35)}
 #ui.hd.v2.u62 #l6cov .u62sub,#ui.hd.v2.u62 #l6cdex .u62sub{margin:0 !important}
@@ -69,6 +85,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
 #l6cdex .card6 canvas{position:absolute;left:0;top:0;width:56px;height:72px;image-rendering:pixelated;pointer-events:none}
 #l6cbtn{cursor:pointer}
 #l6cbtn > i.i{position:absolute;left:50%;top:50%;width:36px;height:36px;margin:-18px 0 0 -18px;pointer-events:none}
+@keyframes l6cbr{0%,100%{opacity:var(--b0,.82)}50%{opacity:1}}
 @keyframes l6cbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes l6ctw{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}`;
     document.head.appendChild(css);
@@ -102,11 +119,100 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
       else { g.fillStyle = '#6A6296'; g.fillRect(12, 9, 4, 2); g.fillRect(15, 11, 2, 4); g.fillRect(13, 15, 2, 3); g.fillRect(13, 20, 2, 2); }
     }
 
+    // ── 6c 美術（dream6c.json＋V3-A v3/dream6c_v3.json）：載唔到／?l6cart=0 → 上面 placeholder ──
+    const B6C = 'art/breakthrough/6c/', NOART = qs.get('l6cart') === '0';
+    const A = { j: null, v: null, img: {}, want: {}, err: [], dirty: 0 };
+    const aimg = (f) => { if (NOART) return null; if (A.img[f]) return A.img[f]; if (!A.want[f]) { A.want[f] = 1; const i = new Image(); i.onload = () => { if (i.naturalWidth) { A.img[f] = i; A.dirty = 1; } }; i.onerror = () => A.err.push(f); i.src = B6C + f; } return null; };
+    const jget = (f) => fetch(B6C + f).then(r => (r.ok ? r.json() : null)).catch(() => { A.err.push(f); return null; });
+    const A6c = NOART ? Promise.resolve() : Promise.all([jget('dream6c.json'), jget('v3/dream6c_v3.json')]).then(([j, v]) => { A.j = j && j.keys && j.pets ? j : null; A.v = v && v.tiles ? v : null; A.dirty = 1; });
+    const isV3 = () => { const u = document.getElementById('ui'); return !!(A.v && u && u.classList.contains('v3') && G.v3 && G.v3.on && G.v3.on()); };
+    const fkNow = () => { const s = S(); if (!s || s.stage === 'egg') return null; try { return G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; } catch (e) { return null; } };
+    const ART = {   // 每樣嘢喺而家個模式用邊個檔：[file, 每幀 src 闊, 幀數]
+      bg: () => (isV3() ? 'v3/dream_bg/dream_bg_v3@3x.png' : 'fx/dream_bg.png'),
+      tile: (th) => (isV3() ? ['v3/tiles/tile_' + th + '_v3@3x.png', 168] : ['tiles/tile_' + th + '.png', 56]),
+      glow: (th) => 'v3/tiles/tile_' + th + '_glow@3x.png', cau: 'v3/tiles/tile_lake_caustic@3x.png', rg: 'v3/tiles/tile_reveal_glow@3x.png',
+      fog: () => (isV3() ? ['v3/tiles/fog_v3@3x.png', 168, 8] : ['tiles/fog.png', 56, 1]), fogRev: 'v3/tiles/fog_reveal@3x.png',
+      frag: (th) => 'icons/frag_' + th + '@3x.png',
+      card: (id, have) => (isV3() ? 'v3/cards/card_' + (have ? id : 'back') + '_v3@3x.png' : 'cards/card_' + (have ? id : 'back') + '.png'),
+      tr: (k) => (isV3() ? 'v3/transition/transition_in_v3_' + String(k).padStart(2, '0') + '@3x.png' : 'fx/transition_in.png'),
+      icon: (n) => 'icons/' + n + '.png',
+    };
+    const tvar = (i) => { const n = R.plan ? String(R.plan.night || '') : ''; let h = 0; for (const ch of n) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return (i + h) % 4; };
+    const flick = (th) => { const t = A.v && A.v.tiles['6c:tile_' + th + '_v3']; return (t && t.flicker) || { hz: 0.35, amp: 0.15 }; };
+    // 畫格（tileset／glow／caustic）；有圖返 true
+    function tileArt(t, i) {
+      const th = t.dataset.th, [f, w] = ART.tile(th), im = aimg(f), v3 = isV3(); if (!im || !A.j) return false;
+      const cv = t.querySelector('canvas.base'); if (cv.width !== w) { cv.width = w; cv.height = w; }
+      const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, w, w); g.drawImage(im, tvar(i) * w, 0, w, w, 0, 0, w, w);
+      t.classList.add('art'); t.classList.toggle('v3', v3); delete t.dataset.ph; t.dataset.art = '6c:tile_' + th + (v3 ? '_v3' : '');
+      if (v3) { const gi = aimg(ART.glow(th)), gl = t.querySelector('canvas.gl'); if (gi) { gl.width = 168; gl.height = 168; const q = gl.getContext('2d'); q.clearRect(0, 0, 168, 168); q.drawImage(gi, tvar(i) * 168, 0, 168, 168, 0, 0, 168, 168); const fl = flick(th); t.style.setProperty('--bp', (1 / (fl.hz || 0.35)).toFixed(2) + 's'); t.style.setProperty('--b0', (1 - 2 * (fl.amp || 0.15)).toFixed(2)); gl.dataset.art = '6c:tile_glow'; }
+        const ri = aimg(ART.rg), rg = t.querySelector('img.rg'); if (ri && !rg.src) { rg.src = B6C + ART.rg; rg.style.display = 'block'; } }
+      return true;
+    }
+    function fogDraw(t, i, ms) {   // 未揭：流霧（V3 8 幀 4fps）；啱啱揭：fog_reveal 8 幀 16fps；之後清走
+      const fc = t.querySelector('.fog'), [f, w, n] = ART.fog(), im = aimg(f); if (!im || !A.j) return;
+      if (!fc.classList.contains('art')) { fc.classList.add('art'); fc.width = w; fc.height = w; fc.dataset.art = '6c:fog' + (isV3() ? '_v3' : ''); }
+      if (fc.width !== w) { fc.width = w; fc.height = w; }
+      const g = fc.getContext('2d'); g.imageSmoothingEnabled = false; let src = im, k = Math.floor(ms / 250) % n, key;
+      if (R.rev[i]) { const dt = ms - (R.revT[i] || -1e9), ri = isV3() ? aimg(ART.fogRev) : null;
+        if (ri && dt < 500) { src = ri; k = Math.min(7, Math.floor(dt / 62.5)); key = 'r' + k; } else { if (fc._k !== 'off') { g.clearRect(0, 0, w, w); fc._k = 'off'; fc.style.display = 'none'; const rg = t.querySelector('img.rg'); if (rg && isV3()) { rg.style.opacity = '1'; setTimeout(() => { rg.style.opacity = '0'; }, 400); } } return; } }
+      else key = 'f' + k;
+      if (fc._k === key) return; fc._k = key; fc.style.display = ''; g.clearRect(0, 0, w, w); g.drawImage(src, k * w, 0, w, w, 0, 0, w, w);
+    }
+    function cauDraw(t, i, ms) { if (!isV3() || t.dataset.th !== 'lake') return; const im = aimg(ART.cau), c = t.querySelector('canvas.cau'); if (!im) return; const k = Math.floor(ms / 250) % 4; if (c._k === k) return; c._k = k; if (c.width !== 168) { c.width = 168; c.height = 168; } const g = c.getContext('2d'); g.clearRect(0, 0, 168, 168); g.drawImage(im, tvar(i) * 168, k * 168, 168, 168, 0, 0, 168, 168); }
+    // 團絨 dream_walk（6 幀 6fps；1 art px＝2 CSS；pivot 企喺格中）＋睡帽另一層（json 逐幀 xy；向左成組 flipX）
+    function petArt(P, ms) {
+      const fk = fkNow(), pj = fk && A.j && A.j.pets[fk], im = pj && aimg(pj['1x']), nc = pj && pj.nightcap, ck = nc && A.j.keys[nc.key], ci = ck && aimg(ck['1x']);
+      if (!im) return false;
+      const [fw, fh] = pj.frameSize, [px, py] = pj.pivot, n = pj.frames || 6, f = Math.floor(ms / (1000 / (pj.fps || 6))) % n;
+      const pc = P.pc; if (pc.width !== fw || pc.height !== fh) { pc.width = fw; pc.height = fh; pc.style.width = fw * 2 + 'px'; pc.style.height = fh * 2 + 'px'; }
+      pc.style.left = -px * 2 + 'px'; pc.style.top = -py * 2 + 'px';
+      if (pc._f !== f || pc._fk !== fk) { const g = pc.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, fw, fh); g.drawImage(im, f * fw, 0, fw, fh, 0, 0, fw, fh); pc._f = f; pc._fk = fk; }
+      P.pet.classList.remove('ph'); delete P.pet.dataset.ph; P.pet.dataset.art = '6c:dream_walk'; P.pet.dataset.fk = fk; P.pet.dataset.frame = f; P.pet.dataset.dir = R.dir < 0 ? 'L' : 'R';
+      P.pf.style.transform = R.dir < 0 ? 'scaleX(-1)' : '';
+      const sw = Math.max(20, Math.round(fw * 1.1)); P.sh.style.display = ''; P.sh.style.width = sw + 'px'; P.sh.style.left = -sw / 2 + 'px';
+      if (ci && nc.xy && nc.xy[f]) { const [cw, chh] = ck.size, cap = P.cap; if (cap.width !== cw || cap.height !== chh) { cap.width = cw; cap.height = chh; cap.style.width = cw * 2 + 'px'; cap.style.height = chh * 2 + 'px'; const g = cap.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, cw, chh); g.drawImage(ci, 0, 0); }
+        cap.style.left = (nc.xy[f][0] - px) * 2 + 'px'; cap.style.top = (nc.xy[f][1] - py) * 2 + 'px'; delete cap.dataset.ph; cap.dataset.art = ck === A.j.keys[nc.key] ? nc.key : '6c:nightcap'; }
+      return true;
+    }
+    // 過場：入夢 0→9（收埋花園）→ 地圖；出夢 0→9 收埋地圖 → 小結 9→0；每幀 125ms（8fps）
+    function trFrame(c, k) {
+      const v3 = isV3(), im = aimg(ART.tr(k)); if (!im) return false;
+      if (!c.classList.contains('art')) { c.classList.add('art'); c.style.background = 'none'; delete c.dataset.ph; c.dataset.art = '6c:transition' + (v3 ? '_v3' : ''); }
+      const W = v3 ? 585 : 195, H = v3 ? 1266 : 422; if (c.width !== W) { c.width = W; c.height = H; }
+      const g = c.getContext('2d'); g.imageSmoothingEnabled = !v3 ? false : true; g.clearRect(0, 0, W, H); if (v3) g.drawImage(im, 0, 0); else g.drawImage(im, k * 195, 0, 195, 422, 0, 0, 195, 422); return true;
+    }
+    const trReady = () => { if (!A.j) return false; if (isV3()) { let ok = true; for (let k = 0; k < 10; k++) if (!aimg(ART.tr(k))) ok = false; return ok; } return !!aimg(ART.tr(0)); };
+    function trPlay(dir, done) {   // dir 1：0→9；-1：9→0
+      const P = R.P; if (!P) { if (done) done(); return false; } const c = P.tr; R.trT = { t0: pnow(), dir, done };
+      if (!c.classList.contains('art')) return false; c.style.transition = 'none'; c.style.opacity = '1'; trFrame(c, dir > 0 ? 0 : 9); return true;
+    }
+    function trTick(ms) {
+      const T2 = R.trT, P = R.P; if (!T2 || !P) return; const e = pnow() - T2.t0, k = Math.min(9, Math.floor(e / 125)), fr = T2.dir > 0 ? k : 9 - k;
+      if (P.tr.classList.contains('art') && P.tr._k !== fr) { P.tr._k = fr; trFrame(P.tr, fr); }
+      if (e >= 1250) { R.trT = null; const d = T2.done; if (d) d(); }
+    }
+    // 每 frame（夢開住）：霧、caustic、團絨、過場
+    function anim() {
+      if (!R.el || !R.P) { R.raf = 0; return; } const ms = pnow();
+      if (A.dirty) { A.dirty = 0; artAll(); }
+      R.P.tiles.forEach((t, i) => { fogDraw(t, i, ms); cauDraw(t, i, ms); }); petArt(R.P, ms); trTick(ms);
+      R.raf = requestAnimationFrame(anim);
+    }
+    function artAll() {
+      const P = R.P; if (P) { const bf = ART.bg(), bi2 = aimg(bf); if (bi2 && A.j) { if (P.bgi.dataset.f !== bf) { P.bgi.src = B6C + bf; P.bgi.dataset.f = bf; } P.bgi.style.display = ''; P.bgi.classList.toggle('v3', isV3()); P.bgi.dataset.art = isV3() ? '6c:dream_bg_v3' : '6c:dream_bg'; P.bg.style.display = 'none'; }
+        P.tiles.forEach((t, i) => tileArt(t, i));
+        P.frs.forEach((d) => { const f = ART.frag(d.dataset.th), im = aimg(f); if (im && A.j && !d.dataset.art) { d.innerHTML = ''; d.appendChild(img(B6C + f, 'left:0;top:0;width:48px;height:48px')); delete d.dataset.ph; d.dataset.art = '6c:frag_' + d.dataset.th; } });
+        if (!R.trT && !P.tr.classList.contains('art') && trReady()) { P.tr.classList.add('art'); P.tr.style.background = 'none'; delete P.tr.dataset.ph; P.tr.dataset.art = '6c:transition' + (isV3() ? '_v3' : ''); } }
+      if (R.dexEl) dexArt();
+      railIcon();
+    }
+
     // ── 夢境狀態（唔存檔；已拾碎片即時入帳） ──
-    const R = { on: false, el: null, plan: null, pos: DR.CFG.start, rev: {}, got: {}, t0: 0, off: 0, phase: 'off', path: [], walkT: 0, seen: {}, res: [], endWhy: null, endAt: 0, sec: 0, P: null, dexEl: null, force: false };
+    const R = { on: false, el: null, plan: null, pos: DR.CFG.start, rev: {}, revT: {}, dir: 1, trT: null, raf: 0, got: {}, t0: 0, off: 0, phase: 'off', path: [], walkT: 0, seen: {}, res: [], endWhy: null, endAt: 0, sec: 0, P: null, dexEl: null, force: false };
     const elapsed = () => (R.on ? Math.max(0, (pnow() - R.t0) / 1000 + R.off) : 0);
     const left = () => Math.max(0, DR.CFG.durSec - elapsed());
-    const TS = 100, TX = (i) => 37 + (i % 3) * (TS + 8), TY = (i) => 196 + Math.floor(i / 3) * (TS + 8);   // 3×5：格 100、間 8；地圖 196–728
+    const TS = 112, TX = (i) => 22 + (i % 3) * (TS + 4), TY = (i) => 164 + Math.floor(i / 3) * (TS + 4);   // 3×5：格 112（56 art ×2）、間 4、x0 22（art 11）；地圖 164–740（頂留俾標題／時間／用途句）
     const mmss = (sec) => { sec = Math.ceil(sec); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); };
     const busy = () => R.on || !!R.dexEl || !!document.getElementById('l6bov') || !!document.getElementById('l5bov') || !!document.getElementById('l5ov') || !!document.getElementById('l5cov') || (UI.isModalOpen && UI.isModalOpen()) || document.body.classList.contains('s2-scene');
     function host() { return document.getElementById('ui') || document.body; }
@@ -124,42 +230,47 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
       else p = DR.enter(s, now(), h);
       if (!p.ok) { note('deny', { why: p.why }); return p; }
       save(); closeDex(true);
-      Object.assign(R, { on: true, plan: p, pos: p.start, rev: {}, got: {}, t0: pnow(), off: 0, phase: 'in', path: [], walkT: 0, seen: {}, res: [], endWhy: null, endAt: 0, sec: 0, force: !!force });
-      reveal(p.start); build(); note('enter', { why, night: p.night, n: p.n, facts: p.facts }); UIS('tap');
-      const tr = R.P.tr; tr.style.transition = 'none'; tr.style.opacity = '1'; void tr.offsetWidth; tr.style.transition = ''; setTimeout(() => { if (R.P && R.P.tr === tr) tr.style.opacity = '0'; }, 60);
+      Object.assign(R, { on: true, plan: p, pos: p.start, rev: {}, revT: {}, dir: 1, trT: null, got: {}, t0: pnow(), off: 0, phase: 'in', path: [], walkT: 0, seen: {}, res: [], endWhy: null, endAt: 0, sec: 0, force: !!force });
+      reveal(p.start); R.revT = {}; build(); note('enter', { why, night: p.night, n: p.n, facts: p.facts }); UIS('tap'); if (G.v3) G.v3.dream = true;   // 夢入面寵物光＝0
+      const tr = R.P.tr, el0 = R.el;
+      if (tr.classList.contains('art')) { el0.classList.add('pre'); trPlay(1, () => { if (R.el !== el0) return; el0.classList.remove('pre'); tr.style.transition = ''; void tr.offsetWidth; tr.style.opacity = '0'; }); }   // 夜幕收埋花園 → 地圖
+      else { tr.style.transition = 'none'; tr.style.opacity = '1'; void tr.offsetWidth; tr.style.transition = ''; setTimeout(() => { if (R.P && R.P.tr === tr) tr.style.opacity = '0'; }, 60); }
       setTimeout(() => { if (R.on && R.phase === 'in') R.phase = 'play'; }, DR.CFG.fadeSec * 1000);
       return { ok: true, plan: p };
     }
-    function reveal(i) { R.rev[i] = 1; for (let j = 0; j < 15; j++) if (DR.adj(i, j)) R.rev[j] = 1; }
+    function reveal(i) { const t = pnow(), rv = (j) => { if (!R.rev[j]) { R.rev[j] = 1; R.revT[j] = t; } }; rv(i); for (let j = 0; j < 15; j++) if (DR.adj(i, j)) rv(j); }
     function build() {
       if (R.el) R.el.remove(); const el = R.el = shell('l6c-ov'); const p = R.plan;
       // 星星背景
       const bg = mk('canvas', 'position:absolute;left:0;top:0;width:390px;height:844px;image-rendering:pixelated;pointer-events:none'); bg.width = 195; bg.height = 422; { const g = bg.getContext('2d'); for (let k = 0; k < 70; k++) { g.fillStyle = k % 5 ? 'rgba(255,245,220,.5)' : '#FFE08A'; g.fillRect((k * 53) % 195, (k * 97) % 422, 1, 1); } } el.appendChild(bg);
+      const bgi = mk('img', 'display:none', null, 'l6c-bg'); bgi.className = 'bgi u63no'; bgi.alt = ''; bgi.draggable = false; el.appendChild(bgi);
       // 頂：標題＋時間＋碎片
       el.appendChild(mk('div', `position:absolute;left:50%;top:16px;transform:translateX(-50%);min-width:160px;height:48px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:0 14px;white-space:nowrap;${bi('plaque_pri')}` + TXT(24, CREAM), '夢境', 'l6c-title'));
-      el.appendChild(subEl(SUBT.dream, 'position:absolute;left:16px;right:16px;top:72px;text-align:center;'));
-      const tTime = mk('div', `position:absolute;left:16px;top:132px;height:40px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;white-space:nowrap;${INSET()}` + TXT(24, CREAM), '', 'l6c-time');
-      const tFrag = mk('div', `position:absolute;right:16px;top:132px;height:40px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;white-space:nowrap;${INSET()}` + TXT(24, GOLD), '', 'l6c-frags');
+      el.appendChild(subEl(SUBT.dream, 'position:absolute;left:16px;right:16px;top:116px;text-align:center;'));
+      const tTime = mk('div', `position:absolute;left:16px;top:72px;height:40px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;white-space:nowrap;${INSET()}` + TXT(24, CREAM), '', 'l6c-time');
+      const tFrag = mk('div', `position:absolute;right:16px;top:72px;height:40px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;white-space:nowrap;${INSET()}` + TXT(24, GOLD), '', 'l6c-frags');
       el.appendChild(tTime); el.appendChild(tFrag);
       // 地圖 3×5
       const tiles = [];
-      for (let i = 0; i < 15; i++) { const th = p.grid[i], t = mk('div', `left:${TX(i)}px;top:${TY(i)}px`, null, 'l6c-tile-' + i); t.className = 'tile'; t.dataset.th = th; t.dataset.ph = '6c:tile_' + th;
-        const cv = mk('canvas'); cv.width = 50; cv.height = 50; drawTile(cv, th, i); t.appendChild(cv); t.appendChild(mk('div', '', null)).className = 'fog';
+      for (let i = 0; i < 15; i++) { const th = p.grid[i], t = mk('div', `left:${TX(i)}px;top:${TY(i)}px`, null, 'l6c-tile-' + i); t.className = 'tile u63no'; t.dataset.th = th; t.dataset.ph = '6c:tile_' + th;
+        const cv = mk('canvas'); cv.className = 'base'; cv.width = 50; cv.height = 50; drawTile(cv, th, i); t.appendChild(cv);
+        t.appendChild(mk('canvas')).className = 'gl'; t.appendChild(mk('canvas')).className = 'cau'; const rg = mk('img'); rg.className = 'rg'; rg.alt = ''; t.appendChild(rg); t.appendChild(mk('canvas')).className = 'fog';
         t.addEventListener('click', (e) => { e.stopPropagation(); tap(i); }); el.appendChild(t); tiles.push(t); }
       // 碎片
-      const frs = p.frags.map(f => { const d = mk('div', `left:${TX(f.tile) + 48}px;top:${TY(f.tile) + 4}px;display:none`, null, 'l6c-frag-' + f.id); d.className = 'frag'; d.dataset.ph = '6c:frag'; d.dataset.th = f.th;
+      const frs = p.frags.map(f => { const d = mk('div', `left:${TX(f.tile) + 48}px;top:${TY(f.tile) + 4}px;display:none`, null, 'l6c-frag-' + f.id); d.className = 'frag u63no'; d.dataset.ph = '6c:frag'; d.dataset.th = f.th;
         const cv = mk('canvas', 'position:absolute;left:0;top:0;width:48px;height:48px;image-rendering:pixelated'); cv.width = 24; cv.height = 24; drawFrag(cv, f.th); d.appendChild(cv); el.appendChild(d); return d; });
       // 團絨（夢中行 clip placeholder＋睡帽）
-      const pet = mk('div', '', null, 'l6c-pet'); pet.className = 'pet'; pet.dataset.ph = '6c:dream_walk'; const pc = mk('canvas'); pc.className = 'pc'; pc.width = 80; pc.height = 80; pet.appendChild(pc); petDraw(pc);
-      const cap = mk('canvas', '', null, 'l6c-cap'); cap.className = 'cap'; cap.width = 18; cap.height = 14; cap.dataset.ph = '6c:nightcap'; drawCap(cap); pet.appendChild(cap); el.appendChild(pet);
+      const pet = mk('div', '', null, 'l6c-pet'); pet.className = 'pet ph u63no'; pet.dataset.ph = '6c:dream_walk'; const pf = mk('div', 'position:absolute;left:0;top:0;width:0;height:0'); pf.className = 'pf'; pet.appendChild(pf);   // pf：向左 flipX（圍 pivot）
+      const sh = mk('div', 'display:none'); sh.className = 'sh'; pf.appendChild(sh); const pc = mk('canvas'); pc.className = 'pc'; pc.width = 80; pc.height = 80; pf.appendChild(pc); petDraw(pc);
+      const cap = mk('canvas', '', null, 'l6c-cap'); cap.className = 'cap'; cap.width = 18; cap.height = 14; cap.dataset.ph = '6c:nightcap'; drawCap(cap); pf.appendChild(cap); el.appendChild(pet);
       // 底：提示＋醒返
-      const hint = mk(V62() ? 'small' : 'div', 'position:absolute;left:16px;right:16px;top:740px;text-align:center;' + TXT(24, LAV), '撳格仔，陪團絨喺夢入面行', 'l6c-hint'); el.appendChild(hint);
-      const wake = mk('div', `position:absolute;left:115px;top:772px;width:160px;${bi('btn_sec')}` + TXT(24, CREAM), '醒返', 'l6c-wake'); wake.className = 'btn';
+      const hint = mk(V62() ? 'small' : 'div', 'position:absolute;left:16px;right:16px;top:748px;text-align:center;' + TXT(24, LAV), '撳格仔，陪團絨喺夢入面行', 'l6c-hint'); el.appendChild(hint);
+      const wake = mk('div', `position:absolute;left:115px;top:776px;width:160px;${bi('btn_sec')}` + TXT(24, CREAM), '醒返', 'l6c-wake'); wake.className = 'btn';
       wake.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); end('wake'); }); el.appendChild(wake);
-      const tr = mk('div', '', null, 'l6c-tr'); tr.className = 'tr'; tr.dataset.ph = '6c:transition'; el.appendChild(tr);
-      R.P = { tiles, frs, pet, pc, tTime, tFrag, hint, wake, tr }; place(true); render();
+      const tr = mk('canvas', '', null, 'l6c-tr'); tr.className = 'tr'; tr.width = 1; tr.height = 1; tr.dataset.ph = '6c:transition'; el.appendChild(tr);
+      R.P = { tiles, frs, pet, pf, pc, cap, sh, tTime, tFrag, hint, wake, tr, bg, bgi }; place(true); render(); artAll(); if (!R.raf) R.raf = requestAnimationFrame(anim);
     }
-    function place() { const P = R.P; if (!P) return; P.pet.style.left = (TX(R.pos) + 10) + 'px'; P.pet.style.top = (TY(R.pos) + 16) + 'px'; }
+    function place() { const P = R.P; if (!P) return; P.pet.style.left = (TX(R.pos) + 56) + 'px'; P.pet.style.top = (TY(R.pos) + 90) + 'px'; }
     function render() {
       const P = R.P, p = R.plan; if (!P || !p) return; const e = elapsed();
       P.tiles.forEach((t, i) => { t.dataset.rev = R.rev[i] ? '1' : '0'; });
@@ -174,7 +285,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
       R.path = path; UIS('tap'); note('tap', { i, n: path.length }); return true;
     }
     function step() {
-      const i = R.path.shift(); if (i == null) return; R.pos = i; reveal(i); place();
+      const i = R.path.shift(); if (i == null) return; if (i % 3 !== R.pos % 3) R.dir = i % 3 < R.pos % 3 ? -1 : 1; R.pos = i; reveal(i); place();
       const th = R.plan.grid[i]; if (!R.seen[th]) { R.seen[th] = 1; if (Object.keys(R.seen).length > 1 || th !== R.plan.grid[R.plan.start]) toast(DR.TH[th].zh + '（' + DR.TH[th].why + '）', 1800); }
       collect();
     }
@@ -191,13 +302,13 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
     function end(why) {
       if (!R.on || R.phase === 'out' || R.phase === 'sum') return false; R.phase = 'out'; R.endWhy = why; R.sec = elapsed(); R.path = [];
       const got = Object.keys(R.got).length; DR.endLog(S(), R.plan.night, got, R.sec, Object.keys(R.plan.n)); save(); note('end', { why, got, sec: Math.round(R.sec) });
-      if (R.P) R.P.tr.style.opacity = '1';
+      if (R.P) { if (R.P.tr.classList.contains('art')) trPlay(1); else R.P.tr.style.opacity = '1'; }   // 出夢：夜幕收埋地圖
       R.endAt = pnow(); setTimeout(() => { if (R.on && R.phase === 'out') summaryCard(); }, DR.CFG.fadeSec * 1000);
       return true;
     }
     function summaryCard() {
       R.phase = 'sum'; const s = S(), got = Object.keys(R.got).length, el = R.el; if (!el) return finish();
-      const P = R.P; if (P) P.tr.style.opacity = '0'; el.appendChild(mk('div', 'position:absolute;inset:0;z-index:8;background:rgba(12,9,32,.78)'));
+      const P = R.P; if (P) { if (P.tr.classList.contains('art')) trPlay(-1, () => { P.tr.style.transition = 'none'; P.tr.style.opacity = '0'; }); else P.tr.style.opacity = '0'; } el.appendChild(mk('div', 'position:absolute;inset:0;z-index:8;background:rgba(12,9,32,.78)'));   // 小結：9→0 打開
       const box = mk('div', `position:absolute;left:24px;top:212px;width:342px;box-sizing:border-box;z-index:10;padding:36px 16px 16px;${PAN()}`, null, 'l6c-sum'); if (V62()) box.className = 'u62pan'; el.appendChild(box);
       box.appendChild(mk('div', `position:absolute;left:50%;top:-22px;transform:translateX(-50%);min-width:180px;height:44px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:0 14px;white-space:nowrap;${bi('plaque_pri')}` + TXT(24, CREAM), '夢醒喇', 'l6c-sum-title'));
       box.appendChild(subEl(SUBT.sum, 'position:relative;margin:0 0 12px !important;text-align:center;'));
@@ -212,7 +323,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
       const b1 = mk('div', `flex:1 1 0;${bi('btn_sec')}` + TXT(24, CREAM), '睇夢圖鑑', 'l6c-sum-dexbtn'); b1.className = 'btn'; b1.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); finish(); openDex('sum'); }); row.appendChild(b1);
       const b2 = mk('div', `flex:1 1 0;${bi('btn_pri')}` + TXT(24, CREAM), '好', 'l6c-sum-ok'); b2.className = 'btn'; b2.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); finish(); }); row.appendChild(b2);
     }
-    function finish() { if (!R.on) return false; R.on = false; R.phase = 'off'; unshell(); note('close'); railTick(); return true; }
+    function finish() { if (!R.on) return false; R.on = false; R.phase = 'off'; R.trT = null; if (G.v3) G.v3.dream = false; if (R.raf) cancelAnimationFrame(R.raf); R.raf = 0; unshell(); note('close'); railTick(); return true; }
 
     // ── 夢圖鑑（4 主題 × 5 張） ──
     function closeDex(quiet) { if (!R.dexEl) return false; R.dexEl.remove(); R.dexEl = null; if (!R.el) document.body.classList.remove('l6c-on'); if (!quiet) note('dexClose'); return true; }
@@ -233,12 +344,29 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
         const hd = p.appendChild(mk('div', 'position:relative;margin:8px 0 4px;' + TXT(24, GOLD), DR.TH[th].zh + ' ' + n + '／5' + (n >= 5 ? (sm.furn[th] && sm.furn[th] !== 'none' ? '・送咗家具' : '・齊晒') : '・再 ' + f + ' 片'), 'l6c-dex-th-' + th)); hd.className = 'ttl';
         const row = mk('div', 'position:relative;display:flex;gap:12px;padding:0 4px'); p.appendChild(row);
         for (const c of DR.CARDS.filter(c => c.th === th)) { const have = !!DR.st(s).cards[c.id], e = mk('div', '', null, 'l6c-card-' + c.id); e.className = 'card6'; e.dataset.ph = '6c:card_' + c.id; e.dataset.have = have ? '1' : '0';
-          const cv = mk('canvas'); cv.width = 28; cv.height = 36; drawCard(cv, c, have); e.appendChild(cv);
+          const cv = mk('canvas'); cv.width = 28; cv.height = 36; drawCard(cv, c, have); e.appendChild(cv); e._c = c;
           e.addEventListener('click', (ev) => { ev.stopPropagation(); UIS('tap'); det.textContent = have ? '「' + c.zh + '」（' + DR.TH[th].zh + '）' : '未砌到（' + DR.TH[th].zh + '）'; }); row.appendChild(e); }
       }
       p.appendChild(det);
       p.appendChild(mk(V62() ? 'small' : 'div', 'position:relative;margin:8px 0 0;' + TXT(24, MINT), '每 5 片夢碎片砌 1 張；砌齊一個主題送家具 1 件。', 'l6c-dex-note'));
-      host().appendChild(el); document.body.classList.add('l6c-on'); note('dex', { why }); return el;
+      host().appendChild(el); document.body.classList.add('l6c-on'); dexArt(); note('dex', { why }); return el;
+    }
+
+    function dexArt() {   // 夢卡：V3 84×108 @3x／1x 28×36 → 56×72 CSS；未砌到 → card_back；標題由 code 寫（撳睇名）
+      if (!R.dexEl || !A.j) return; const v3 = isV3();
+      R.dexEl.querySelectorAll('.card6').forEach((e) => { const c = e._c, have = e.dataset.have === '1', f = ART.card(c.id, have), im = aimg(f); if (!im || e.dataset.f === f) return;
+        const cv = e.querySelector('canvas'), w = v3 ? 84 : 28, h = v3 ? 108 : 36; cv.width = w; cv.height = h; const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, w, h); g.drawImage(im, 0, 0, w, h);
+        e.dataset.f = f; delete e.dataset.ph; e.dataset.art = '6c:card_' + (have ? c.id : 'back') + (v3 ? '_v3' : ''); });
+    }
+    function railIcon() {   // rail：ic_dream（入夢）／ic_dreambook（夢簿），16 art ×2＝32 CSS 置中
+      const el = RB.el; if (!el || !A.j) return; const n = RB.mode === 'enter' ? 'ic_dream' : 'ic_dreambook', f = ART.icon(n); if (el.dataset.art === n || !aimg(f)) return;
+      const box = el.querySelector('i.i'); box.innerHTML = ''; box.appendChild(img(B6C + f, 'left:2px;top:2px;width:32px;height:32px')); el.dataset.art = n;
+    }
+    function preload() {   // 入夢前預載而家模式要用嘅圖（第一次入夢唔使等）
+      if (!A.j) return; aimg(ART.bg()); for (const th of DR.THEMES) { aimg(ART.tile(th)[0]); aimg(ART.frag(th)); if (isV3()) aimg(ART.glow(th)); } aimg(ART.fog()[0]);
+      if (isV3()) { aimg(ART.cau); aimg(ART.fogRev); aimg(ART.rg); for (let k = 0; k < 10; k++) aimg(ART.tr(k)); } else aimg(ART.tr(0));
+      const fk = fkNow(), pj = fk && A.j.pets[fk]; if (pj) { aimg(pj['1x']); const ck = pj.nightcap && A.j.keys[pj.nightcap.key]; if (ck) aimg(ck['1x']); }
+      aimg(ART.icon('ic_dream')); aimg(ART.icon('ic_dreambook'));
     }
 
     // ── 花園 rail「入夢」／「夢簿」 ──
@@ -251,7 +379,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
         el.innerHTML = '<i class="m"></i><i class="i"></i><i class="l"></i><i class="rd"></i>'; el.querySelector('i.i').appendChild(img(LB5 + 'icon_rest@3x.png', 'left:0;top:0;width:36px;height:36px'));
         el.addEventListener('click', (e) => { e.stopPropagation(); if (busy()) return; UIS('tap'); if (RB.mode === 'enter') start('rail'); else openDex('rail'); }); hst.appendChild(el); }
       el.style.display = show ? '' : 'none'; if (!show) return;
-      RB.mode = c.ok ? 'enter' : 'dex'; const lb = el.querySelector('i.l'); const t = c.ok ? '入夢' : '夢簿'; if (lb.textContent !== t) lb.textContent = t; el.title = t; el.dataset.mode = RB.mode;
+      RB.mode = c.ok ? 'enter' : 'dex'; railIcon(); if (c.ok && !RB.pre && A.j) { RB.pre = 1; preload(); } const lb = el.querySelector('i.l'); const t = c.ok ? '入夢' : '夢簿'; if (lb.textContent !== t) lb.textContent = t; el.title = t; el.dataset.mode = RB.mode;
       const rd = el.querySelector('i.rd'); if (rd) rd.style.display = c.ok ? '' : 'none';
       const vis = (id) => { const e = document.getElementById(id); return !!(e && e.style.display !== 'none' && e.offsetParent !== null); };
       el.setAttribute('aria-label', t);
@@ -277,6 +405,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
         } else if (R.phase === 'sum' && elapsed() > DR.CFG.maxSec + 600) finish();
         if (R.phase !== 'sum' && R.phase !== 'off' && elapsed() >= DR.CFG.maxSec - DR.CFG.fadeSec) end('time');
       }
+      if (A.dirty && !R.raf) { A.dirty = 0; try { artAll(); } catch (e) { } }
       if (t - T.last >= 1000) { T.last = t; T.n++; try { railTick(); } catch (e) { } }
     }
     { const loop = () => { try { tick(); } catch (e) { } setTimeout(loop, 100); }; setTimeout(loop, 400); }
@@ -307,8 +436,8 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
     window.__qa = window.__qa || {};
     window.__qa.l6c = {
       st: () => Object.assign(DR.summary(S(), now(), hour()), { on: R.on, phase: R.phase, pos: R.pos, path: R.path.slice(), got: Object.keys(R.got).length, elapsed: elapsed(), left: left(), endWhy: R.endWhy, sec: R.sec,
-        rev: Object.keys(R.rev).length, dex: !!R.dexEl, rail: !!(RB.el && RB.el.style.display !== 'none'), railMode: RB.mode, seen: Object.keys(R.seen) }),
-      plan: () => (R.plan ? JSON.parse(JSON.stringify(R.plan)) : null), raw: () => JSON.parse(JSON.stringify(DR.st(S()))), log: () => log.slice(), toasts: () => toasts.slice(), dev: () => DEV,
+        rev: Object.keys(R.rev).length, dex: !!R.dexEl, v3: isV3(), art: !!A.j, artErr: A.err.slice(0, 5), rail: !!(RB.el && RB.el.style.display !== 'none'), railMode: RB.mode, seen: Object.keys(R.seen) }),
+      plan: () => (R.plan ? JSON.parse(JSON.stringify(R.plan)) : null), artLoad: () => A6c.then(() => { preload(); return !!A.j; }), artN: () => Object.keys(A.img).length, raw: () => JSON.parse(JSON.stringify(DR.st(S()))), log: () => log.slice(), toasts: () => toasts.slice(), dev: () => DEV,
       start, end, finish, tap, openDex, closeDex, skip: (sec) => { R.off += +sec || 0; render(); return elapsed(); }, railTick,
       walkTo: (i) => { tap(i); while (R.path.length) step(); return R.pos; },
     };
