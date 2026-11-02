@@ -1,0 +1,639 @@
+# MANIFEST_SEASONSV3 — 第 5 批：H3 四季 16 款轉 V3＋細佬 series2 有光源形態 petglow（瞓覺關光）＋屋仔已知問題修正
+# 疊喺 art/house-v3（第 4 批 /workspace/house-v3-staging.zip）之上；淨係今批新／改檔。[M]＝改第 4 批檔。
+# 格式：sha1[:12]  size  path
+# 新檔 551，改檔 [M] 84，共 635
+71ba7fffa842  1858  art-pet/scenes/hd2d_v3/seasons/SEASONS_V3.md
+e94fd071f6dc  557  art-pet/scenes/hd2d_v3/seasons/autumn/H1/emissive.png
+c149b8b6a86e  3375  art-pet/scenes/hd2d_v3/seasons/autumn/H1/emissive_blur.png
+0a3e2578df46  13865  art-pet/scenes/hd2d_v3/seasons/autumn/H1/far.png
+e778ebd6a4d4  23734  art-pet/scenes/hd2d_v3/seasons/autumn/H1/fore.png
+b2990ce1a31d  7519  art-pet/scenes/hd2d_v3/seasons/autumn/H1/grade.json
+da08e02483ce  31055  art-pet/scenes/hd2d_v3/seasons/autumn/H1/light_add.png
+5b136a026aed  15202  art-pet/scenes/hd2d_v3/seasons/autumn/H1/lightmap.png
+c5009e6020e7  1756  art-pet/scenes/hd2d_v3/seasons/autumn/H1/lut.png
+d7f704c9e423  84824  art-pet/scenes/hd2d_v3/seasons/autumn/H1/mid.png
+0fa76fd12daf  1017  art-pet/scenes/hd2d_v3/seasons/autumn/H1/palette.json
+95f2d0679697  3880  art-pet/scenes/hd2d_v3/seasons/autumn/H1/raw/far.png
+f615bc5975f4  3297  art-pet/scenes/hd2d_v3/seasons/autumn/H1/raw/fore.png
+6449d6eb13eb  40241  art-pet/scenes/hd2d_v3/seasons/autumn/H1/raw/mid.png
+a1d42987ae32  2630  art-pet/scenes/hd2d_v3/seasons/autumn/H1/raw/sky.png
+2997152a4758  2593  art-pet/scenes/hd2d_v3/seasons/autumn/H1/sky.png
+7f2adfebbfae  10591  art-pet/scenes/hd2d_v3/seasons/autumn/H1/vignette.png
+d2bdd7799f9e  109675  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/bloom@3x.png
+8ae3bab74b63  3726  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/emissive@3x.png
+5ddfa9572e25  75585  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/far@3x.png
+1660916303fb  124983  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/fore@3x.png
+6294c09ae3a6  5606  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/haze_far@3x.png
+80c1695c6612  176154  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/light_add@3x.png
+cc8648137cf9  326391  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/lightmap@3x.png
+b29bcce02bd8  379556  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/mid@3x.png
+17e8074b1527  26607  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/mist@3x.png
+d76d65dca75e  8403  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/sky@3x.png
+9eb77f8bba9c  57652  art-pet/scenes/hd2d_v3/seasons/autumn/H1/x3/vignette@3x.png
+525af7f82656  866  art-pet/scenes/hd2d_v3/seasons/autumn/H2/emissive.png
+cd710fe2718d  6254  art-pet/scenes/hd2d_v3/seasons/autumn/H2/emissive_blur.png
+94d3e5d70679  12348  art-pet/scenes/hd2d_v3/seasons/autumn/H2/far.png
+bd494cdecf46  20793  art-pet/scenes/hd2d_v3/seasons/autumn/H2/fore.png
+3ce30d00523c  10907  art-pet/scenes/hd2d_v3/seasons/autumn/H2/grade.json
+026da93b3eab  29762  art-pet/scenes/hd2d_v3/seasons/autumn/H2/light_add.png
+45ef7a779f2e  13739  art-pet/scenes/hd2d_v3/seasons/autumn/H2/lightmap.png
+42adbd72eed1  1785  art-pet/scenes/hd2d_v3/seasons/autumn/H2/lut.png
+fdc1c7723c0d  76899  art-pet/scenes/hd2d_v3/seasons/autumn/H2/mid.png
+178284db49d1  1105  art-pet/scenes/hd2d_v3/seasons/autumn/H2/palette.json
+17193874d2df  3857  art-pet/scenes/hd2d_v3/seasons/autumn/H2/raw/far.png
+a23ee5124c86  3249  art-pet/scenes/hd2d_v3/seasons/autumn/H2/raw/fore.png
+54cf37d22329  40159  art-pet/scenes/hd2d_v3/seasons/autumn/H2/raw/mid.png
+a06107461536  2716  art-pet/scenes/hd2d_v3/seasons/autumn/H2/raw/sky.png
+7e7ffa72d948  2725  art-pet/scenes/hd2d_v3/seasons/autumn/H2/sky.png
+2a21763226ba  12427  art-pet/scenes/hd2d_v3/seasons/autumn/H2/vignette.png
+fda203767345  56959  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/bloom@3x.png
+c47ea427d840  4417  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/emissive@3x.png
+3a17e288d09c  54932  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/far@3x.png
+e0e630a32f65  103805  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/fore@3x.png
+ea1521173a59  5586  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/haze_far@3x.png
+622e856e79d4  202935  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/light_add@3x.png
+7f571411f75f  286139  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/lightmap@3x.png
+d6c4beb6e413  312735  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/mid@3x.png
+1f486eecd05b  23150  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/mist@3x.png
+21f58d8e5965  8603  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/sky@3x.png
+4a7309f23563  68383  art-pet/scenes/hd2d_v3/seasons/autumn/H2/x3/vignette@3x.png
+76aab986dadd  466  art-pet/scenes/hd2d_v3/seasons/autumn/H3/emissive.png
+9d9e157a1064  976  art-pet/scenes/hd2d_v3/seasons/autumn/H3/emissive_blur.png
+7203ca3ee990  14243  art-pet/scenes/hd2d_v3/seasons/autumn/H3/far.png
+4a5b7e8d3a85  25096  art-pet/scenes/hd2d_v3/seasons/autumn/H3/fore.png
+2c1e0d4855bf  6860  art-pet/scenes/hd2d_v3/seasons/autumn/H3/grade.json
+c6933901ffed  6944  art-pet/scenes/hd2d_v3/seasons/autumn/H3/light_add.png
+3aca99a9bd87  11853  art-pet/scenes/hd2d_v3/seasons/autumn/H3/lightmap.png
+acb9e6225859  1121  art-pet/scenes/hd2d_v3/seasons/autumn/H3/lut.png
+6468f3b27d03  77422  art-pet/scenes/hd2d_v3/seasons/autumn/H3/mid.png
+73ec1ef28f42  1116  art-pet/scenes/hd2d_v3/seasons/autumn/H3/palette.json
+c2f56d84668c  3884  art-pet/scenes/hd2d_v3/seasons/autumn/H3/raw/far.png
+0fc3f341b178  3328  art-pet/scenes/hd2d_v3/seasons/autumn/H3/raw/fore.png
+ef729f5b8e13  40796  art-pet/scenes/hd2d_v3/seasons/autumn/H3/raw/mid.png
+cc6a333fd202  2618  art-pet/scenes/hd2d_v3/seasons/autumn/H3/raw/sky.png
+d5d6c8a8d2a5  2632  art-pet/scenes/hd2d_v3/seasons/autumn/H3/sky.png
+792ddbaf0760  9096  art-pet/scenes/hd2d_v3/seasons/autumn/H3/vignette.png
+a145abad2257  88407  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/bloom@3x.png
+96cf97bea4e9  3550  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/emissive@3x.png
+1ac0b75c1520  81387  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/far@3x.png
+4bc0d5cb556d  135849  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/fore@3x.png
+82fc481d751c  5601  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/haze_far@3x.png
+766c1930cda8  73921  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/light_add@3x.png
+7542868ff1f5  280432  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/lightmap@3x.png
+0990e8f430a3  392305  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/mid@3x.png
+ea4624c2dace  18735  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/mist@3x.png
+4a6b281e4a32  8402  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/sky@3x.png
+613cb880fdd8  44916  art-pet/scenes/hd2d_v3/seasons/autumn/H3/x3/vignette@3x.png
+7c99d218e05b  1883  art-pet/scenes/hd2d_v3/seasons/autumn/H4/emissive.png
+8d2ca5f22fdb  17598  art-pet/scenes/hd2d_v3/seasons/autumn/H4/emissive_blur.png
+3d6d9c882c8b  12116  art-pet/scenes/hd2d_v3/seasons/autumn/H4/far.png
+c7aa00b996c2  19106  art-pet/scenes/hd2d_v3/seasons/autumn/H4/fore.png
+e9ba5df6849b  10425  art-pet/scenes/hd2d_v3/seasons/autumn/H4/grade.json
+03b62eb0e534  16171  art-pet/scenes/hd2d_v3/seasons/autumn/H4/light_add.png
+170afcf97201  25518  art-pet/scenes/hd2d_v3/seasons/autumn/H4/lightmap.png
+ddf0ee0ba19c  1378  art-pet/scenes/hd2d_v3/seasons/autumn/H4/lut.png
+33ef18ea2aa5  72010  art-pet/scenes/hd2d_v3/seasons/autumn/H4/mid.png
+a551e277e168  1127  art-pet/scenes/hd2d_v3/seasons/autumn/H4/palette.json
+fbb3b7ccaf9f  3726  art-pet/scenes/hd2d_v3/seasons/autumn/H4/raw/far.png
+10f42fb1bf54  3261  art-pet/scenes/hd2d_v3/seasons/autumn/H4/raw/fore.png
+a06a95d5ddcf  39104  art-pet/scenes/hd2d_v3/seasons/autumn/H4/raw/mid.png
+379d5c2ec943  4924  art-pet/scenes/hd2d_v3/seasons/autumn/H4/raw/sky.png
+65d865e16334  4944  art-pet/scenes/hd2d_v3/seasons/autumn/H4/sky.png
+3e6b55253045  12120  art-pet/scenes/hd2d_v3/seasons/autumn/H4/vignette.png
+e1e9184ac4fb  111791  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/bloom@3x.png
+97c260c7d907  6728  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/emissive@3x.png
+e9150d3b08d2  66233  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/far@3x.png
+d1bbddb7eabc  93496  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/fore@3x.png
+e64c78016a2c  5598  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/haze_far@3x.png
+5f04d4f126ed  121912  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/light_add@3x.png
+c77f868358f2  63722  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/lightmap@3x.png
+5460837d207b  287306  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/mid@3x.png
+25a78ed17eaf  25835  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/mist@3x.png
+482838df61dd  10060  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/sky@3x.png
+478a6483175c  66534  art-pet/scenes/hd2d_v3/seasons/autumn/H4/x3/vignette@3x.png
+6fdd5afce89e  10301  art-pet/scenes/hd2d_v3/seasons/fx/particles_seasons_v3@3x.json
+dc5032db2c10  1607  art-pet/scenes/hd2d_v3/seasons/fx/particles_seasons_v3@3x.png
+67af788f8d22  915676  art-pet/scenes/hd2d_v3/seasons/preview/compare_autumn.png
+65af5a72279e  945143  art-pet/scenes/hd2d_v3/seasons/preview/compare_spring.png
+b1c754c18fa2  894944  art-pet/scenes/hd2d_v3/seasons/preview/compare_summer.png
+662ec26bd7ec  919475  art-pet/scenes/hd2d_v3/seasons/preview/compare_winter.png
+8f660a09c6f8  468932  art-pet/scenes/hd2d_v3/seasons/preview/house_fix_before_after.png
+f700ceee38be  230781  art-pet/scenes/hd2d_v3/seasons/preview/kid_in_scene.png
+44a083cf9fe3  731472  art-pet/scenes/hd2d_v3/seasons/preview/kid_petglow_grid.png
+635d88f50f35  1673571  art-pet/scenes/hd2d_v3/seasons/preview/overview_16.png
+7e812ee954e0  705025  art-pet/scenes/hd2d_v3/seasons/preview/ui_v3_seasons.png
+ceb8c806c093  3140  art-pet/scenes/hd2d_v3/seasons/seasons_v3.json
+1b545101a5e0  566  art-pet/scenes/hd2d_v3/seasons/spring/H1/emissive.png
+78fbd2f51de8  3327  art-pet/scenes/hd2d_v3/seasons/spring/H1/emissive_blur.png
+af26b4c1fd2d  14232  art-pet/scenes/hd2d_v3/seasons/spring/H1/far.png
+d40c9d4c7def  24406  art-pet/scenes/hd2d_v3/seasons/spring/H1/fore.png
+f700123dd25c  7528  art-pet/scenes/hd2d_v3/seasons/spring/H1/grade.json
+81dd5b1541d4  31150  art-pet/scenes/hd2d_v3/seasons/spring/H1/light_add.png
+f70d3cca4ee3  14941  art-pet/scenes/hd2d_v3/seasons/spring/H1/lightmap.png
+08a07351ccf7  1871  art-pet/scenes/hd2d_v3/seasons/spring/H1/lut.png
+158ce1cf70e2  88364  art-pet/scenes/hd2d_v3/seasons/spring/H1/mid.png
+ac622a18cfb1  1006  art-pet/scenes/hd2d_v3/seasons/spring/H1/palette.json
+df6666ec90fa  3955  art-pet/scenes/hd2d_v3/seasons/spring/H1/raw/far.png
+0766f033b464  3299  art-pet/scenes/hd2d_v3/seasons/spring/H1/raw/fore.png
+9018ed5fe4d3  34611  art-pet/scenes/hd2d_v3/seasons/spring/H1/raw/mid.png
+a1d42987ae32  2630  art-pet/scenes/hd2d_v3/seasons/spring/H1/raw/sky.png
+04f59a6b8cd8  2584  art-pet/scenes/hd2d_v3/seasons/spring/H1/sky.png
+7f2adfebbfae  10591  art-pet/scenes/hd2d_v3/seasons/spring/H1/vignette.png
+703693edec97  218694  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/bloom@3x.png
+e1299b10531b  3738  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/emissive@3x.png
+8cf4c573a3de  77556  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/far@3x.png
+ebceec4bd376  133186  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/fore@3x.png
+6294c09ae3a6  5606  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/haze_far@3x.png
+749c23e015d5  185444  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/light_add@3x.png
+06162d949d81  178093  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/lightmap@3x.png
+52156716600f  402205  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/mid@3x.png
+17e8074b1527  26607  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/mist@3x.png
+478ca9f54f00  8381  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/sky@3x.png
+9eb77f8bba9c  57652  art-pet/scenes/hd2d_v3/seasons/spring/H1/x3/vignette@3x.png
+525af7f82656  866  art-pet/scenes/hd2d_v3/seasons/spring/H2/emissive.png
+88333cb429f6  6271  art-pet/scenes/hd2d_v3/seasons/spring/H2/emissive_blur.png
+d7286aeebb69  12979  art-pet/scenes/hd2d_v3/seasons/spring/H2/far.png
+8e9979ca6de0  23024  art-pet/scenes/hd2d_v3/seasons/spring/H2/fore.png
+ce966ce01609  10916  art-pet/scenes/hd2d_v3/seasons/spring/H2/grade.json
+2dce0a3499b4  29964  art-pet/scenes/hd2d_v3/seasons/spring/H2/light_add.png
+c64ef74f648c  13207  art-pet/scenes/hd2d_v3/seasons/spring/H2/lightmap.png
+94cf4a5c24ff  1970  art-pet/scenes/hd2d_v3/seasons/spring/H2/lut.png
+726625d9c6ef  83339  art-pet/scenes/hd2d_v3/seasons/spring/H2/mid.png
+18641215faec  1006  art-pet/scenes/hd2d_v3/seasons/spring/H2/palette.json
+c3f7ba170caa  3944  art-pet/scenes/hd2d_v3/seasons/spring/H2/raw/far.png
+bc7d74e0bd1a  3271  art-pet/scenes/hd2d_v3/seasons/spring/H2/raw/fore.png
+acc58134f290  34532  art-pet/scenes/hd2d_v3/seasons/spring/H2/raw/mid.png
+a06107461536  2716  art-pet/scenes/hd2d_v3/seasons/spring/H2/raw/sky.png
+7bd4917b9264  2728  art-pet/scenes/hd2d_v3/seasons/spring/H2/sky.png
+2a21763226ba  12427  art-pet/scenes/hd2d_v3/seasons/spring/H2/vignette.png
+6902d3c4688a  92639  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/bloom@3x.png
+c47ea427d840  4417  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/emissive@3x.png
+413add5d9bdb  57146  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/far@3x.png
+da05db028a64  116981  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/fore@3x.png
+ea1521173a59  5586  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/haze_far@3x.png
+4546669c47b4  216005  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/light_add@3x.png
+8cfb334385d1  171805  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/lightmap@3x.png
+f2bd7545bd8a  362464  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/mid@3x.png
+1f486eecd05b  23150  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/mist@3x.png
+f77c7a4a5e73  8595  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/sky@3x.png
+4a7309f23563  68383  art-pet/scenes/hd2d_v3/seasons/spring/H2/x3/vignette@3x.png
+76aab986dadd  466  art-pet/scenes/hd2d_v3/seasons/spring/H3/emissive.png
+9d9e157a1064  976  art-pet/scenes/hd2d_v3/seasons/spring/H3/emissive_blur.png
+1aba467e285d  14249  art-pet/scenes/hd2d_v3/seasons/spring/H3/far.png
+0853b4d9d207  25153  art-pet/scenes/hd2d_v3/seasons/spring/H3/fore.png
+599999a28ee0  7405  art-pet/scenes/hd2d_v3/seasons/spring/H3/grade.json
+ad1a88ffdef0  7021  art-pet/scenes/hd2d_v3/seasons/spring/H3/light_add.png
+fd18c79b0fac  11571  art-pet/scenes/hd2d_v3/seasons/spring/H3/lightmap.png
+0242d963fcaf  1068  art-pet/scenes/hd2d_v3/seasons/spring/H3/lut.png
+4d0824bf0007  75988  art-pet/scenes/hd2d_v3/seasons/spring/H3/mid.png
+fe69545d3391  1006  art-pet/scenes/hd2d_v3/seasons/spring/H3/palette.json
+4e4eccb1956d  3913  art-pet/scenes/hd2d_v3/seasons/spring/H3/raw/far.png
+8984332e861d  3326  art-pet/scenes/hd2d_v3/seasons/spring/H3/raw/fore.png
+f3a1740b8bc9  34780  art-pet/scenes/hd2d_v3/seasons/spring/H3/raw/mid.png
+cc6a333fd202  2618  art-pet/scenes/hd2d_v3/seasons/spring/H3/raw/sky.png
+774533effb6f  2605  art-pet/scenes/hd2d_v3/seasons/spring/H3/sky.png
+792ddbaf0760  9096  art-pet/scenes/hd2d_v3/seasons/spring/H3/vignette.png
+e57ed90fba11  205977  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/bloom@3x.png
+96cf97bea4e9  3550  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/emissive@3x.png
+08534001880d  81005  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/far@3x.png
+fa81f8c9dee0  136157  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/fore@3x.png
+82fc481d751c  5601  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/haze_far@3x.png
+978ffd19edeb  82411  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/light_add@3x.png
+92ae8152a740  111824  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/lightmap@3x.png
+797ffcd95873  402151  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/mid@3x.png
+ea4624c2dace  18735  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/mist@3x.png
+405280339cfc  8379  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/sky@3x.png
+613cb880fdd8  44916  art-pet/scenes/hd2d_v3/seasons/spring/H3/x3/vignette@3x.png
+93815fb4a025  1875  art-pet/scenes/hd2d_v3/seasons/spring/H4/emissive.png
+e39da2640ea8  17621  art-pet/scenes/hd2d_v3/seasons/spring/H4/emissive_blur.png
+c022bbcb7547  13434  art-pet/scenes/hd2d_v3/seasons/spring/H4/far.png
+5059654844f3  21604  art-pet/scenes/hd2d_v3/seasons/spring/H4/fore.png
+818313877817  10449  art-pet/scenes/hd2d_v3/seasons/spring/H4/grade.json
+8693c95b4bfc  16630  art-pet/scenes/hd2d_v3/seasons/spring/H4/light_add.png
+79946d72f814  24311  art-pet/scenes/hd2d_v3/seasons/spring/H4/lightmap.png
+672efe3bac13  1552  art-pet/scenes/hd2d_v3/seasons/spring/H4/lut.png
+11b6bf113c46  79117  art-pet/scenes/hd2d_v3/seasons/spring/H4/mid.png
+fea5c6cc001a  1006  art-pet/scenes/hd2d_v3/seasons/spring/H4/palette.json
+1888e0cfa9aa  3806  art-pet/scenes/hd2d_v3/seasons/spring/H4/raw/far.png
+bb3aa5761bfd  3233  art-pet/scenes/hd2d_v3/seasons/spring/H4/raw/fore.png
+25562432ef1a  36129  art-pet/scenes/hd2d_v3/seasons/spring/H4/raw/mid.png
+379d5c2ec943  4924  art-pet/scenes/hd2d_v3/seasons/spring/H4/raw/sky.png
+6a55c56c17e6  4953  art-pet/scenes/hd2d_v3/seasons/spring/H4/sky.png
+3e6b55253045  12120  art-pet/scenes/hd2d_v3/seasons/spring/H4/vignette.png
+b71af604bcd3  115119  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/bloom@3x.png
+b1dfcaef7683  6728  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/emissive@3x.png
+85be6ac79327  75512  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/far@3x.png
+69769f4d026b  112354  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/fore@3x.png
+e64c78016a2c  5598  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/haze_far@3x.png
+ecbe3f59a6bd  132926  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/light_add@3x.png
+7b21ce3d967f  61757  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/lightmap@3x.png
+66308fba14b1  328788  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/mid@3x.png
+25a78ed17eaf  25835  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/mist@3x.png
+4585dc1ac6e3  10059  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/sky@3x.png
+478a6483175c  66534  art-pet/scenes/hd2d_v3/seasons/spring/H4/x3/vignette@3x.png
+e94fd071f6dc  557  art-pet/scenes/hd2d_v3/seasons/summer/H1/emissive.png
+8086facf0d43  2113  art-pet/scenes/hd2d_v3/seasons/summer/H1/emissive_blur.png
+70377b91af54  12248  art-pet/scenes/hd2d_v3/seasons/summer/H1/far.png
+1dbf53dd3920  22372  art-pet/scenes/hd2d_v3/seasons/summer/H1/fore.png
+6a6924185d6d  8287  art-pet/scenes/hd2d_v3/seasons/summer/H1/grade.json
+7063215d37f3  31329  art-pet/scenes/hd2d_v3/seasons/summer/H1/light_add.png
+54f300ef6bd7  16217  art-pet/scenes/hd2d_v3/seasons/summer/H1/lightmap.png
+ff5b3bd2d8d5  1879  art-pet/scenes/hd2d_v3/seasons/summer/H1/lut.png
+1086b3a8da76  76481  art-pet/scenes/hd2d_v3/seasons/summer/H1/mid.png
+f73dc8948f7c  1061  art-pet/scenes/hd2d_v3/seasons/summer/H1/palette.json
+abfbcef42628  3230  art-pet/scenes/hd2d_v3/seasons/summer/H1/raw/far.png
+4b92a6710feb  2949  art-pet/scenes/hd2d_v3/seasons/summer/H1/raw/fore.png
+abd15751b740  28818  art-pet/scenes/hd2d_v3/seasons/summer/H1/raw/mid.png
+d945e4be3667  3258  art-pet/scenes/hd2d_v3/seasons/summer/H1/raw/sky.png
+a12888d7988a  3269  art-pet/scenes/hd2d_v3/seasons/summer/H1/sky.png
+7f2adfebbfae  10591  art-pet/scenes/hd2d_v3/seasons/summer/H1/vignette.png
+82c9a20287de  147682  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/bloom@3x.png
+8ae3bab74b63  3726  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/emissive@3x.png
+abac6869a802  65647  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/far@3x.png
+acaa7a8a30eb  119003  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/fore@3x.png
+6294c09ae3a6  5606  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/haze_far@3x.png
+3d15f311948e  189162  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/light_add@3x.png
+a94c95731b8c  262259  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/lightmap@3x.png
+e431dd912a57  336693  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/mid@3x.png
+17e8074b1527  26607  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/mist@3x.png
+829efd701874  9251  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/sky@3x.png
+9eb77f8bba9c  57652  art-pet/scenes/hd2d_v3/seasons/summer/H1/x3/vignette@3x.png
+0be01f6ba421  857  art-pet/scenes/hd2d_v3/seasons/summer/H2/emissive.png
+518e6c76f9ae  6195  art-pet/scenes/hd2d_v3/seasons/summer/H2/emissive_blur.png
+4456a71393a3  11629  art-pet/scenes/hd2d_v3/seasons/summer/H2/far.png
+a99c870c3376  19757  art-pet/scenes/hd2d_v3/seasons/summer/H2/fore.png
+83169d92c8fe  11675  art-pet/scenes/hd2d_v3/seasons/summer/H2/grade.json
+0acaa16b52bf  30096  art-pet/scenes/hd2d_v3/seasons/summer/H2/light_add.png
+b412ac437a0e  14512  art-pet/scenes/hd2d_v3/seasons/summer/H2/lightmap.png
+c5ba0070d512  1922  art-pet/scenes/hd2d_v3/seasons/summer/H2/lut.png
+18a310cd3cee  69514  art-pet/scenes/hd2d_v3/seasons/summer/H2/mid.png
+11c4e7721667  1006  art-pet/scenes/hd2d_v3/seasons/summer/H2/palette.json
+9ae6e08405b0  3219  art-pet/scenes/hd2d_v3/seasons/summer/H2/raw/far.png
+db86e79846c3  2941  art-pet/scenes/hd2d_v3/seasons/summer/H2/raw/fore.png
+8e99b602e975  28391  art-pet/scenes/hd2d_v3/seasons/summer/H2/raw/mid.png
+a06107461536  2716  art-pet/scenes/hd2d_v3/seasons/summer/H2/raw/sky.png
+5d0194eb3c0c  2732  art-pet/scenes/hd2d_v3/seasons/summer/H2/sky.png
+2a21763226ba  12427  art-pet/scenes/hd2d_v3/seasons/summer/H2/vignette.png
+c5dfb9c7cc11  75037  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/bloom@3x.png
+e11b37279878  4399  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/emissive@3x.png
+fa4cb7019d39  51760  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/far@3x.png
+a39254e8349d  97222  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/fore@3x.png
+ea1521173a59  5586  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/haze_far@3x.png
+e06ae7df3810  221334  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/light_add@3x.png
+f5c1cb139027  278679  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/lightmap@3x.png
+6018b81e9f61  297382  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/mid@3x.png
+1f486eecd05b  23150  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/mist@3x.png
+a3bfed0e6772  8613  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/sky@3x.png
+4a7309f23563  68383  art-pet/scenes/hd2d_v3/seasons/summer/H2/x3/vignette@3x.png
+76aab986dadd  466  art-pet/scenes/hd2d_v3/seasons/summer/H3/emissive.png
+9d9e157a1064  976  art-pet/scenes/hd2d_v3/seasons/summer/H3/emissive_blur.png
+ae97b21c2b2e  12314  art-pet/scenes/hd2d_v3/seasons/summer/H3/far.png
+50e484cdf1ea  23984  art-pet/scenes/hd2d_v3/seasons/summer/H3/fore.png
+3ed1dd3c9cbf  7628  art-pet/scenes/hd2d_v3/seasons/summer/H3/grade.json
+b84bc2595567  7004  art-pet/scenes/hd2d_v3/seasons/summer/H3/light_add.png
+baee630fc449  12595  art-pet/scenes/hd2d_v3/seasons/summer/H3/lightmap.png
+c1890cd1c541  1151  art-pet/scenes/hd2d_v3/seasons/summer/H3/lut.png
+974e6fbd0d56  64306  art-pet/scenes/hd2d_v3/seasons/summer/H3/mid.png
+cbf34d5b54bc  1050  art-pet/scenes/hd2d_v3/seasons/summer/H3/palette.json
+85ea54d11d31  3255  art-pet/scenes/hd2d_v3/seasons/summer/H3/raw/far.png
+501c28e91fde  2965  art-pet/scenes/hd2d_v3/seasons/summer/H3/raw/fore.png
+14a0c3b5f141  28929  art-pet/scenes/hd2d_v3/seasons/summer/H3/raw/mid.png
+89bada9a5de0  3309  art-pet/scenes/hd2d_v3/seasons/summer/H3/raw/sky.png
+8f125fc40707  3307  art-pet/scenes/hd2d_v3/seasons/summer/H3/sky.png
+792ddbaf0760  9096  art-pet/scenes/hd2d_v3/seasons/summer/H3/vignette.png
+9e8ed0bfddc3  144422  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/bloom@3x.png
+96cf97bea4e9  3550  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/emissive@3x.png
+701336613758  69551  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/far@3x.png
+f75b0d5978e6  130957  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/fore@3x.png
+82fc481d751c  5601  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/haze_far@3x.png
+3fca7684f389  84235  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/light_add@3x.png
+077f809a17cb  197917  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/lightmap@3x.png
+3d65849cc588  337507  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/mid@3x.png
+ea4624c2dace  18735  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/mist@3x.png
+21d931b91182  9256  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/sky@3x.png
+613cb880fdd8  44916  art-pet/scenes/hd2d_v3/seasons/summer/H3/x3/vignette@3x.png
+bef58c520335  1871  art-pet/scenes/hd2d_v3/seasons/summer/H4/emissive.png
+e0f36101c3c7  17498  art-pet/scenes/hd2d_v3/seasons/summer/H4/emissive_blur.png
+087d24839f30  10143  art-pet/scenes/hd2d_v3/seasons/summer/H4/far.png
+99d4053095ed  18620  art-pet/scenes/hd2d_v3/seasons/summer/H4/fore.png
+dcb8e4fbcff8  11194  art-pet/scenes/hd2d_v3/seasons/summer/H4/grade.json
+93ea49864324  16524  art-pet/scenes/hd2d_v3/seasons/summer/H4/light_add.png
+5259038d52a9  28637  art-pet/scenes/hd2d_v3/seasons/summer/H4/lightmap.png
+831bcb91e086  1526  art-pet/scenes/hd2d_v3/seasons/summer/H4/lut.png
+ce6a9985fb94  62999  art-pet/scenes/hd2d_v3/seasons/summer/H4/mid.png
+ef82fa490aad  1017  art-pet/scenes/hd2d_v3/seasons/summer/H4/palette.json
+59751e1b88e8  3101  art-pet/scenes/hd2d_v3/seasons/summer/H4/raw/far.png
+b3a8ff453e3d  2940  art-pet/scenes/hd2d_v3/seasons/summer/H4/raw/fore.png
+2ad13e7eb341  28162  art-pet/scenes/hd2d_v3/seasons/summer/H4/raw/mid.png
+379d5c2ec943  4924  art-pet/scenes/hd2d_v3/seasons/summer/H4/raw/sky.png
+b4552109b8e7  4943  art-pet/scenes/hd2d_v3/seasons/summer/H4/sky.png
+3e6b55253045  12120  art-pet/scenes/hd2d_v3/seasons/summer/H4/vignette.png
+a63f63c26eed  112028  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/bloom@3x.png
+aea63cdde62a  6710  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/emissive@3x.png
+f0d6a0169bfc  52199  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/far@3x.png
+e541f8277edf  90979  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/fore@3x.png
+e64c78016a2c  5598  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/haze_far@3x.png
+44a7d422f7c5  135288  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/light_add@3x.png
+f3f3fc2141fa  76665  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/lightmap@3x.png
+0d6d1f65e4b0  263722  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/mid@3x.png
+25a78ed17eaf  25835  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/mist@3x.png
+616b488b60fb  10055  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/sky@3x.png
+478a6483175c  66534  art-pet/scenes/hd2d_v3/seasons/summer/H4/x3/vignette@3x.png
+e14b51c7f460  115  art-pet/scenes/hd2d_v3/seasons/validation.json
+e94fd071f6dc  557  art-pet/scenes/hd2d_v3/seasons/winter/H1/emissive.png
+70927921438f  1998  art-pet/scenes/hd2d_v3/seasons/winter/H1/emissive_blur.png
+21fc959045e0  13851  art-pet/scenes/hd2d_v3/seasons/winter/H1/far.png
+b6ca37d12d9a  24596  art-pet/scenes/hd2d_v3/seasons/winter/H1/fore.png
+c3dce1785762  7845  art-pet/scenes/hd2d_v3/seasons/winter/H1/grade.json
+441b10304c04  31175  art-pet/scenes/hd2d_v3/seasons/winter/H1/light_add.png
+1b80be737064  15940  art-pet/scenes/hd2d_v3/seasons/winter/H1/lightmap.png
+cbf836fc25b4  1876  art-pet/scenes/hd2d_v3/seasons/winter/H1/lut.png
+cd29053628cc  85339  art-pet/scenes/hd2d_v3/seasons/winter/H1/mid.png
+7372b1c67eb5  874  art-pet/scenes/hd2d_v3/seasons/winter/H1/palette.json
+de6873352b30  3531  art-pet/scenes/hd2d_v3/seasons/winter/H1/raw/far.png
+275dd5720b5e  3225  art-pet/scenes/hd2d_v3/seasons/winter/H1/raw/fore.png
+f607c05e0e31  28501  art-pet/scenes/hd2d_v3/seasons/winter/H1/raw/mid.png
+474a933a0fda  2592  art-pet/scenes/hd2d_v3/seasons/winter/H1/raw/sky.png
+44b19489ef47  2614  art-pet/scenes/hd2d_v3/seasons/winter/H1/sky.png
+7f2adfebbfae  10591  art-pet/scenes/hd2d_v3/seasons/winter/H1/vignette.png
+31e9d65a7d3c  123837  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/bloom@3x.png
+8ae3bab74b63  3726  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/emissive@3x.png
+d613bdfcc375  76628  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/far@3x.png
+04db9e3522a4  130950  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/fore@3x.png
+0f3c1438ce6e  5560  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/haze_far@3x.png
+56a808678985  152653  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/light_add@3x.png
+de0d3fea94f2  157860  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/lightmap@3x.png
+85c379339d0f  416486  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/mid@3x.png
+da90745e5293  28979  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/mist@3x.png
+9bfbd839cfcf  8385  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/sky@3x.png
+9eb77f8bba9c  57652  art-pet/scenes/hd2d_v3/seasons/winter/H1/x3/vignette@3x.png
+ffc5c8151f7e  856  art-pet/scenes/hd2d_v3/seasons/winter/H2/emissive.png
+e1d95cae9403  6477  art-pet/scenes/hd2d_v3/seasons/winter/H2/emissive_blur.png
+9be89e71d6f9  13295  art-pet/scenes/hd2d_v3/seasons/winter/H2/far.png
+772c8b878f93  23984  art-pet/scenes/hd2d_v3/seasons/winter/H2/fore.png
+94b6c3797799  11228  art-pet/scenes/hd2d_v3/seasons/winter/H2/grade.json
+4fe68e76dfbe  29908  art-pet/scenes/hd2d_v3/seasons/winter/H2/light_add.png
+4add2a99107b  14378  art-pet/scenes/hd2d_v3/seasons/winter/H2/lightmap.png
+54f2c573e8d2  1853  art-pet/scenes/hd2d_v3/seasons/winter/H2/lut.png
+8ddb72fa5d35  82738  art-pet/scenes/hd2d_v3/seasons/winter/H2/mid.png
+14e9727e3be1  973  art-pet/scenes/hd2d_v3/seasons/winter/H2/palette.json
+6c3fa7e5704b  3544  art-pet/scenes/hd2d_v3/seasons/winter/H2/raw/far.png
+315ff74d9a23  3290  art-pet/scenes/hd2d_v3/seasons/winter/H2/raw/fore.png
+176ce4873039  30716  art-pet/scenes/hd2d_v3/seasons/winter/H2/raw/mid.png
+a06107461536  2716  art-pet/scenes/hd2d_v3/seasons/winter/H2/raw/sky.png
+ce666acabb48  2752  art-pet/scenes/hd2d_v3/seasons/winter/H2/sky.png
+2a21763226ba  12427  art-pet/scenes/hd2d_v3/seasons/winter/H2/vignette.png
+b816c13d8f57  74738  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/bloom@3x.png
+b71bcb2d6eef  4389  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/emissive@3x.png
+b8ae6dd245af  60433  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/far@3x.png
+e262851a71f7  124769  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/fore@3x.png
+ea1521173a59  5586  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/haze_far@3x.png
+b083b3fcfd6c  199564  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/light_add@3x.png
+178582cbec64  120679  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/lightmap@3x.png
+ff3de9752e13  374239  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/mid@3x.png
+ee2903170688  25835  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/mist@3x.png
+5958e17c6248  8627  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/sky@3x.png
+4a7309f23563  68383  art-pet/scenes/hd2d_v3/seasons/winter/H2/x3/vignette@3x.png
+76aab986dadd  466  art-pet/scenes/hd2d_v3/seasons/winter/H3/emissive.png
+9d9e157a1064  976  art-pet/scenes/hd2d_v3/seasons/winter/H3/emissive_blur.png
+977d3f0f2105  13047  art-pet/scenes/hd2d_v3/seasons/winter/H3/far.png
+5dd33fd13333  24637  art-pet/scenes/hd2d_v3/seasons/winter/H3/fore.png
+300aaf0fae77  7182  art-pet/scenes/hd2d_v3/seasons/winter/H3/grade.json
+7ad1d7147636  6998  art-pet/scenes/hd2d_v3/seasons/winter/H3/light_add.png
+c50285d0ccf8  12128  art-pet/scenes/hd2d_v3/seasons/winter/H3/lightmap.png
+b8d46e205db7  1051  art-pet/scenes/hd2d_v3/seasons/winter/H3/lut.png
+fb59df3a9e15  68409  art-pet/scenes/hd2d_v3/seasons/winter/H3/mid.png
+16b0e5176345  962  art-pet/scenes/hd2d_v3/seasons/winter/H3/palette.json
+7f8b464ecfb8  3490  art-pet/scenes/hd2d_v3/seasons/winter/H3/raw/far.png
+b1572d265ca3  3244  art-pet/scenes/hd2d_v3/seasons/winter/H3/raw/fore.png
+de9ece7d2369  29277  art-pet/scenes/hd2d_v3/seasons/winter/H3/raw/mid.png
+264f86054f15  2570  art-pet/scenes/hd2d_v3/seasons/winter/H3/raw/sky.png
+b61fe8c68077  2584  art-pet/scenes/hd2d_v3/seasons/winter/H3/sky.png
+792ddbaf0760  9096  art-pet/scenes/hd2d_v3/seasons/winter/H3/vignette.png
+acd11bb6125f  31068  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/bloom@3x.png
+96cf97bea4e9  3550  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/emissive@3x.png
+84a49daee139  73817  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/far@3x.png
+741fd64d7490  132577  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/fore@3x.png
+82fc481d751c  5601  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/haze_far@3x.png
+15032380df3c  73552  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/light_add@3x.png
+67eecac62f7e  126699  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/lightmap@3x.png
+7f4498cdce2c  390814  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/mid@3x.png
+d5d312273f71  21565  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/mist@3x.png
+ea25e0421846  8402  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/sky@3x.png
+613cb880fdd8  44916  art-pet/scenes/hd2d_v3/seasons/winter/H3/x3/vignette@3x.png
+65e2e115a7c8  1849  art-pet/scenes/hd2d_v3/seasons/winter/H4/emissive.png
+88842f4b848e  17746  art-pet/scenes/hd2d_v3/seasons/winter/H4/emissive_blur.png
+3ec5a7168b3c  13057  art-pet/scenes/hd2d_v3/seasons/winter/H4/far.png
+16dabb492e94  22454  art-pet/scenes/hd2d_v3/seasons/winter/H4/fore.png
+28ecb3776b93  10436  art-pet/scenes/hd2d_v3/seasons/winter/H4/grade.json
+310c18d06670  16414  art-pet/scenes/hd2d_v3/seasons/winter/H4/light_add.png
+2e8067a461f0  27845  art-pet/scenes/hd2d_v3/seasons/winter/H4/lightmap.png
+65cc21eaa742  1334  art-pet/scenes/hd2d_v3/seasons/winter/H4/lut.png
+095f07e7d7cb  79214  art-pet/scenes/hd2d_v3/seasons/winter/H4/mid.png
+b43ecb597319  984  art-pet/scenes/hd2d_v3/seasons/winter/H4/palette.json
+02885d4eb7ea  3635  art-pet/scenes/hd2d_v3/seasons/winter/H4/raw/far.png
+4345ac04dd13  3340  art-pet/scenes/hd2d_v3/seasons/winter/H4/raw/fore.png
+645322f781d9  31557  art-pet/scenes/hd2d_v3/seasons/winter/H4/raw/mid.png
+379d5c2ec943  4924  art-pet/scenes/hd2d_v3/seasons/winter/H4/raw/sky.png
+b1906481fb13  4937  art-pet/scenes/hd2d_v3/seasons/winter/H4/sky.png
+3e6b55253045  12120  art-pet/scenes/hd2d_v3/seasons/winter/H4/vignette.png
+6a151d1e2445  114848  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/bloom@3x.png
+8f677956664f  6725  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/emissive@3x.png
+20c05d5ad4be  73086  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/far@3x.png
+83d9affb0dec  116846  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/fore@3x.png
+e64c78016a2c  5598  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/haze_far@3x.png
+54099df9c58b  121605  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/light_add@3x.png
+24f08b96b9bf  67542  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/lightmap@3x.png
+e871374ff22c  360421  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/mid@3x.png
+7ed9c160d6e2  27837  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/mist@3x.png
+d688055fd432  10054  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/sky@3x.png
+478a6483175c  66534  art-pet/scenes/hd2d_v3/seasons/winter/H4/x3/vignette@3x.png
+f125146e9c33  3067  art-pet/sprites/series2/petglow_v3/A1.json
+fa6e628ecca4  735  art-pet/sprites/series2/petglow_v3/A1_glow@3x.json
+11d9307a8384  8403  art-pet/sprites/series2/petglow_v3/A1_glow@3x.png
+564f53f69dcc  3068  art-pet/sprites/series2/petglow_v3/A2.json
+373baabd9245  735  art-pet/sprites/series2/petglow_v3/A2_glow@3x.json
+644e66a606d9  8481  art-pet/sprites/series2/petglow_v3/A2_glow@3x.png
+29150334d5ea  3085  art-pet/sprites/series2/petglow_v3/A3.json
+d8539fe95c10  735  art-pet/sprites/series2/petglow_v3/A3_glow@3x.json
+ebb4dca42470  8486  art-pet/sprites/series2/petglow_v3/A3_glow@3x.png
+9cce34f596d7  3069  art-pet/sprites/series2/petglow_v3/B1.json
+ae23e847e874  735  art-pet/sprites/series2/petglow_v3/B1_glow@3x.json
+e22c713afbf5  8318  art-pet/sprites/series2/petglow_v3/B1_glow@3x.png
+27dc3787c78e  3417  art-pet/sprites/series2/petglow_v3/B2.json
+a7e3f315dfa2  735  art-pet/sprites/series2/petglow_v3/B2_glow@3x.json
+c12ef82eae06  8383  art-pet/sprites/series2/petglow_v3/B2_glow@3x.png
+f7998753d2cf  3075  art-pet/sprites/series2/petglow_v3/B3.json
+96977185affd  735  art-pet/sprites/series2/petglow_v3/B3_glow@3x.json
+0d59d6a50ef3  8607  art-pet/sprites/series2/petglow_v3/B3_glow@3x.png
+6296b5301c12  3099  art-pet/sprites/series2/petglow_v3/C1.json
+9ba988127246  740  art-pet/sprites/series2/petglow_v3/C1_glow@3x.json
+7f33aee1b20a  9150  art-pet/sprites/series2/petglow_v3/C1_glow@3x.png
+0ef166ca6a4b  3071  art-pet/sprites/series2/petglow_v3/C2.json
+a866a4260e1d  740  art-pet/sprites/series2/petglow_v3/C2_glow@3x.json
+91ad8d37e0b9  9046  art-pet/sprites/series2/petglow_v3/C2_glow@3x.png
+574af6577561  3385  art-pet/sprites/series2/petglow_v3/C3.json
+07e75dc5e4f1  740  art-pet/sprites/series2/petglow_v3/C3_glow@3x.json
+e001a4070b5e  8961  art-pet/sprites/series2/petglow_v3/C3_glow@3x.png
+7cabfaf63490  3899  art-pet/sprites/series2/petglow_v3/D1.json
+5e351a6418da  740  art-pet/sprites/series2/petglow_v3/D1_glow@3x.json
+82fa0ce30523  8631  art-pet/sprites/series2/petglow_v3/D1_glow@3x.png
+9a97a41c3006  3976  art-pet/sprites/series2/petglow_v3/D2.json
+937f6b0e2458  740  art-pet/sprites/series2/petglow_v3/D2_glow@3x.json
+efee972133a4  8942  art-pet/sprites/series2/petglow_v3/D2_glow@3x.png
+fe16b15ab2a8  3086  art-pet/sprites/series2/petglow_v3/D3.json
+6224dc62f01f  740  art-pet/sprites/series2/petglow_v3/D3_glow@3x.json
+31c2d5d99a8b  9109  art-pet/sprites/series2/petglow_v3/D3_glow@3x.png
+541b580c8998  3073  art-pet/sprites/series2/petglow_v3/E1.json
+3aadf377387a  740  art-pet/sprites/series2/petglow_v3/E1_glow@3x.json
+3b7be1e87ed6  9052  art-pet/sprites/series2/petglow_v3/E1_glow@3x.png
+e864c82fd8a3  3071  art-pet/sprites/series2/petglow_v3/E2.json
+4108122ea28a  740  art-pet/sprites/series2/petglow_v3/E2_glow@3x.json
+5da5add51b47  8702  art-pet/sprites/series2/petglow_v3/E2_glow@3x.png
+bfadf80d3fbe  3988  art-pet/sprites/series2/petglow_v3/E3.json
+c9610362d9ef  740  art-pet/sprites/series2/petglow_v3/E3_glow@3x.json
+577b6c9a1ac4  8995  art-pet/sprites/series2/petglow_v3/E3_glow@3x.png
+fa4b48680b1c  3055  art-pet/sprites/series2/petglow_v3/F1.json
+03aa0e7da346  735  art-pet/sprites/series2/petglow_v3/F1_glow@3x.json
+20da7625af54  9073  art-pet/sprites/series2/petglow_v3/F1_glow@3x.png
+79bccc7bd2bd  3055  art-pet/sprites/series2/petglow_v3/F2.json
+9f70039a62a0  735  art-pet/sprites/series2/petglow_v3/F2_glow@3x.json
+1e5be1b59cff  9096  art-pet/sprites/series2/petglow_v3/F2_glow@3x.png
+94ec428fd472  3077  art-pet/sprites/series2/petglow_v3/F3.json
+f01ce0aead19  735  art-pet/sprites/series2/petglow_v3/F3_glow@3x.json
+080b07631b77  9152  art-pet/sprites/series2/petglow_v3/F3_glow@3x.png
+a792c6ea50fb  3065  art-pet/sprites/series2/petglow_v3/G1.json
+28eb70c222ef  735  art-pet/sprites/series2/petglow_v3/G1_glow@3x.json
+20da7625af54  9073  art-pet/sprites/series2/petglow_v3/G1_glow@3x.png
+c5bb597c26fd  3055  art-pet/sprites/series2/petglow_v3/G2.json
+cf3bda8c06f7  735  art-pet/sprites/series2/petglow_v3/G2_glow@3x.json
+28c6a1c939d0  9150  art-pet/sprites/series2/petglow_v3/G2_glow@3x.png
+d4f4abdbbec2  3400  art-pet/sprites/series2/petglow_v3/G3.json
+1b2f0da3855a  735  art-pet/sprites/series2/petglow_v3/G3_glow@3x.json
+41f724d28aca  9097  art-pet/sprites/series2/petglow_v3/G3_glow@3x.png
+777e5aab33a5  3054  art-pet/sprites/series2/petglow_v3/H1.json
+3bccbe1640da  735  art-pet/sprites/series2/petglow_v3/H1_glow@3x.json
+059d3b926b55  9114  art-pet/sprites/series2/petglow_v3/H1_glow@3x.png
+9e4672599df5  3073  art-pet/sprites/series2/petglow_v3/H2.json
+a701b5acec9a  735  art-pet/sprites/series2/petglow_v3/H2_glow@3x.json
+0daa15fbd716  9112  art-pet/sprites/series2/petglow_v3/H2_glow@3x.png
+1b4091a06dd7  3397  art-pet/sprites/series2/petglow_v3/H3.json
+824dd78bffb8  735  art-pet/sprites/series2/petglow_v3/H3_glow@3x.json
+799e4fb653f1  9040  art-pet/sprites/series2/petglow_v3/H3_glow@3x.png
+30675c4ab777  1114  art-pet/sprites/series2/petglow_v3/PETGLOW_KID_V3.md
+3229d070ec27  3053  art-pet/sprites/series2/petglow_v3/S2.json
+3cc9920a1721  735  art-pet/sprites/series2/petglow_v3/S2_glow@3x.json
+4439bb7eee3e  8855  art-pet/sprites/series2/petglow_v3/S2_glow@3x.png
+b05707aac583  3097  art-pet/sprites/series2/petglow_v3/S4A.json
+3adcc53cc12b  737  art-pet/sprites/series2/petglow_v3/S4A_glow@3x.json
+6c0a9e994ec0  8585  art-pet/sprites/series2/petglow_v3/S4A_glow@3x.png
+0984d29804d6  3068  art-pet/sprites/series2/petglow_v3/S4B.json
+ec522d7395f8  737  art-pet/sprites/series2/petglow_v3/S4B_glow@3x.json
+9e4c08fe72e3  8428  art-pet/sprites/series2/petglow_v3/S4B_glow@3x.png
+e658689ed953  3115  art-pet/sprites/series2/petglow_v3/S4C.json
+a60ce02caa6a  742  art-pet/sprites/series2/petglow_v3/S4C_glow@3x.json
+f8a63974f0da  8987  art-pet/sprites/series2/petglow_v3/S4C_glow@3x.png
+5db746965408  3566  art-pet/sprites/series2/petglow_v3/S4D.json
+73e8074dcc13  742  art-pet/sprites/series2/petglow_v3/S4D_glow@3x.json
+3f8b52ba755d  8989  art-pet/sprites/series2/petglow_v3/S4D_glow@3x.png
+1b7961862bce  3090  art-pet/sprites/series2/petglow_v3/S4E.json
+27f12725cbbb  742  art-pet/sprites/series2/petglow_v3/S4E_glow@3x.json
+be1de49765b4  9100  art-pet/sprites/series2/petglow_v3/S4E_glow@3x.png
+c0005afa722d  3093  art-pet/sprites/series2/petglow_v3/S4F.json
+76c72f5dc663  737  art-pet/sprites/series2/petglow_v3/S4F_glow@3x.json
+fdc0ef5774f0  9057  art-pet/sprites/series2/petglow_v3/S4F_glow@3x.png
+bdce3131b942  3109  art-pet/sprites/series2/petglow_v3/S4G.json
+42d400dff6ee  737  art-pet/sprites/series2/petglow_v3/S4G_glow@3x.json
+f312f1970a00  9028  art-pet/sprites/series2/petglow_v3/S4G_glow@3x.png
+a87831d79ffc  3109  art-pet/sprites/series2/petglow_v3/S4H.json
+7e29414becc7  737  art-pet/sprites/series2/petglow_v3/S4H_glow@3x.json
+b0767bb5b320  9066  art-pet/sprites/series2/petglow_v3/S4H_glow@3x.png
+9cda160e6633  11203  art-pet/sprites/series2/petglow_v3/index.json
+43b93927ee18  10775  art-pet/sprites/series2_house/v3/furniture/lamp_firefly_halo@3x.png  [M]
+366092c8c3f3  35130  art-pet/sprites/series2_house/v3/furniture/lamp_firefly_lift@3x.png  [M]
+693b46d4c8e7  5141  art-pet/sprites/series2_house/v3/furniture/lamp_firefly_pool@3x.png  [M]
+481e9fae1ea5  10775  art-pet/sprites/series2_house/v3/furniture/lamp_mushroom_halo@3x.png  [M]
+2abeacab7019  39987  art-pet/sprites/series2_house/v3/furniture/lamp_mushroom_lift@3x.png  [M]
+a81578224632  5823  art-pet/sprites/series2_house/v3/furniture/lamp_mushroom_pool@3x.png  [M]
+1b6f43c37475  6607  art-pet/sprites/series2_house/v3/furniture_v3.json  [M]
+1f1882ecf807  20813  art-pet/sprites/series2_house/v3/rooms/room1/day/emissive_blur.png  [M]
+7945bf0c1035  7114  art-pet/sprites/series2_house/v3/rooms/room1/day/far.png  [M]
+7f300f20d64b  2440  art-pet/sprites/series2_house/v3/rooms/room1/day/fore.png  [M]
+1d5237fb4a83  4383  art-pet/sprites/series2_house/v3/rooms/room1/day/grade.json  [M]
+54bc18b335c1  19167  art-pet/sprites/series2_house/v3/rooms/room1/day/light_add.png  [M]
+96e0870bcf5d  18605  art-pet/sprites/series2_house/v3/rooms/room1/day/lightmap.png  [M]
+d4bc716c8c71  1666  art-pet/sprites/series2_house/v3/rooms/room1/day/lut.png  [M]
+9ce463745f9e  7338  art-pet/sprites/series2_house/v3/rooms/room1/day/mid.png  [M]
+85b4e8d00406  2729  art-pet/sprites/series2_house/v3/rooms/room1/day/sky.png  [M]
+63d7da286834  27642  art-pet/sprites/series2_house/v3/rooms/room1/day/vignette.png  [M]
+29dbb43b5365  102308  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/bloom@3x.png  [M]
+6005e3330bdf  15848  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/far@3x.png  [M]
+0e733863ab08  134444  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/floor_reflect@3x.png  [M]
+41d402043a64  46835  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/fore@3x.png  [M]
+5ab9e33ef0bd  46968  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/light_add@3x.png  [M]
+d8419a44794f  78236  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/lightmap@3x.png  [M]
+939d08a68daf  13714  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/mid@3x.png  [M]
+7a62ea23a6e1  7673  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/sky@3x.png  [M]
+e9d732ec16f9  56215  art-pet/sprites/series2_house/v3/rooms/room1/day/x3/vignette@3x.png  [M]
+4584bf5911aa  4332  art-pet/sprites/series2_house/v3/rooms/room1/night/grade.json  [M]
+21373644a749  27459  art-pet/sprites/series2_house/v3/rooms/room2/day/emissive_blur.png  [M]
+005ab4a28def  8335  art-pet/sprites/series2_house/v3/rooms/room2/day/far.png  [M]
+0003a3d78124  2437  art-pet/sprites/series2_house/v3/rooms/room2/day/fore.png  [M]
+6d5e74ca911f  4389  art-pet/sprites/series2_house/v3/rooms/room2/day/grade.json  [M]
+1c6a7d110b17  19386  art-pet/sprites/series2_house/v3/rooms/room2/day/light_add.png  [M]
+24823e3ce57f  1756  art-pet/sprites/series2_house/v3/rooms/room2/day/lut.png  [M]
+60810312a11a  7345  art-pet/sprites/series2_house/v3/rooms/room2/day/mid.png  [M]
+3d094fd634b6  2719  art-pet/sprites/series2_house/v3/rooms/room2/day/sky.png  [M]
+63d7da286834  27642  art-pet/sprites/series2_house/v3/rooms/room2/day/vignette.png  [M]
+be153493221d  137724  art-pet/sprites/series2_house/v3/rooms/room2/day/x3/bloom@3x.png  [M]
+0cc0783e9228  16654  art-pet/sprites/series2_house/v3/rooms/room2/day/x3/far@3x.png  [M]
+2ac404d13c60  166284  art-pet/sprites/series2_house/v3/rooms/room2/day/x3/floor_reflect@3x.png  [M]
+b854724ed217  47257  art-pet/sprites/series2_house/v3/rooms/room2/day/x3/fore@3x.png  [M]
+0168ce3d7c76  47723  art-pet/sprites/series2_house/v3/rooms/room2/day/x3/light_add@3x.png  [M]
+b316ce0129b0  14038  art-pet/sprites/series2_house/v3/rooms/room2/day/x3/mid@3x.png  [M]
+b723424cfd8d  7670  art-pet/sprites/series2_house/v3/rooms/room2/day/x3/sky@3x.png  [M]
+e9d732ec16f9  56215  art-pet/sprites/series2_house/v3/rooms/room2/day/x3/vignette@3x.png  [M]
+1eb24939a8c7  4338  art-pet/sprites/series2_house/v3/rooms/room2/night/grade.json  [M]
+4c91ff134b38  20939  art-pet/sprites/series2_house/v3/rooms/room3/day/emissive_blur.png  [M]
+dc1ee43fc1a8  8674  art-pet/sprites/series2_house/v3/rooms/room3/day/far.png  [M]
+4af95a5a3086  2434  art-pet/sprites/series2_house/v3/rooms/room3/day/fore.png  [M]
+5fffbad1ca78  4388  art-pet/sprites/series2_house/v3/rooms/room3/day/grade.json  [M]
+35d6987b6c23  19182  art-pet/sprites/series2_house/v3/rooms/room3/day/light_add.png  [M]
+aebe57375623  1611  art-pet/sprites/series2_house/v3/rooms/room3/day/lut.png  [M]
+3ced025fb805  7359  art-pet/sprites/series2_house/v3/rooms/room3/day/mid.png  [M]
+50fa6e6624dc  2726  art-pet/sprites/series2_house/v3/rooms/room3/day/sky.png  [M]
+63d7da286834  27642  art-pet/sprites/series2_house/v3/rooms/room3/day/vignette.png  [M]
+a971d59bcb2a  101824  art-pet/sprites/series2_house/v3/rooms/room3/day/x3/bloom@3x.png  [M]
+3b76a9555e6f  17388  art-pet/sprites/series2_house/v3/rooms/room3/day/x3/far@3x.png  [M]
+77a3082118ff  165194  art-pet/sprites/series2_house/v3/rooms/room3/day/x3/floor_reflect@3x.png  [M]
+77d6491b91bd  47155  art-pet/sprites/series2_house/v3/rooms/room3/day/x3/fore@3x.png  [M]
+5ab9e33ef0bd  46968  art-pet/sprites/series2_house/v3/rooms/room3/day/x3/light_add@3x.png  [M]
+463e25782e49  14045  art-pet/sprites/series2_house/v3/rooms/room3/day/x3/mid@3x.png  [M]
+b78d95a98fe6  7672  art-pet/sprites/series2_house/v3/rooms/room3/day/x3/sky@3x.png  [M]
+e9d732ec16f9  56215  art-pet/sprites/series2_house/v3/rooms/room3/day/x3/vignette@3x.png  [M]
+ce7a01d28612  4338  art-pet/sprites/series2_house/v3/rooms/room3/night/grade.json  [M]
+e52e3190b116  39158  art-pet/sprites/series2_house/v3/rooms/room4/day/emissive_blur.png  [M]
+cb058f78e2e8  8083  art-pet/sprites/series2_house/v3/rooms/room4/day/far.png  [M]
+8d0808a8dcd8  2421  art-pet/sprites/series2_house/v3/rooms/room4/day/fore.png  [M]
+89202b8bafb6  4388  art-pet/sprites/series2_house/v3/rooms/room4/day/grade.json  [M]
+1ec1d92de067  19944  art-pet/sprites/series2_house/v3/rooms/room4/day/light_add.png  [M]
+4c018accaa37  1499  art-pet/sprites/series2_house/v3/rooms/room4/day/lut.png  [M]
+d8d2212c540f  7335  art-pet/sprites/series2_house/v3/rooms/room4/day/mid.png  [M]
+c0f676f1249d  2707  art-pet/sprites/series2_house/v3/rooms/room4/day/sky.png  [M]
+63d7da286834  27642  art-pet/sprites/series2_house/v3/rooms/room4/day/vignette.png  [M]
+6403d53b15b5  192844  art-pet/sprites/series2_house/v3/rooms/room4/day/x3/bloom@3x.png  [M]
+8380a0b803f5  17017  art-pet/sprites/series2_house/v3/rooms/room4/day/x3/far@3x.png  [M]
+cb4fd15c18d6  156254  art-pet/sprites/series2_house/v3/rooms/room4/day/x3/floor_reflect@3x.png  [M]
+83ec6ebec004  47187  art-pet/sprites/series2_house/v3/rooms/room4/day/x3/fore@3x.png  [M]
+199759270a98  50029  art-pet/sprites/series2_house/v3/rooms/room4/day/x3/light_add@3x.png  [M]
+9f4f228fb9e7  13714  art-pet/sprites/series2_house/v3/rooms/room4/day/x3/mid@3x.png  [M]
+73084e0c3698  7652  art-pet/sprites/series2_house/v3/rooms/room4/day/x3/sky@3x.png  [M]
+e9d732ec16f9  56215  art-pet/sprites/series2_house/v3/rooms/room4/day/x3/vignette@3x.png  [M]
+7665346495c6  4337  art-pet/sprites/series2_house/v3/rooms/room4/night/grade.json  [M]
+6024e305acfe  6583  art-pet/sprites/series2_house/v3/souvenir_v3.json  [M]
+7de80e3b08fa  42739  art-pet/tools/build_house_v3.py  [M]
+c9c64de829c9  9680  art-pet/tools/build_kid_petglow_v3.py
+fc42ea2557ee  14616  art-pet/tools/build_seasons_v3.py
+5bca0d26c9a8  6367  art-pet/tools/preview_house_v3.py  [M]
+0e7a0333a9d6  10659  art-pet/tools/preview_seasons_v3.py
+c135ef6574db  5305  art-pet/tools/validate_seasons_v3.py

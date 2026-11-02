@@ -1,0 +1,685 @@
+{
+ "image": "particles_seasons_v3@3x.png",
+ "cell": 24,
+ "pivot": [
+  11.5,
+  11.5
+ ],
+ "scale": 3,
+ "note": "季節粒子 V3：v2 季節粒子（8px）×3 nearest；核心 alpha 0/255 source-over，firefly／sunmote／snow 另加 fx_glow_v3 光暈（lighter）。畫喺 fore 之上、vignette 之下；H4 × 0.75。",
+ "frames": {
+  "spring_petal_0_00": {
+   "x": 0,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_0_01": {
+   "x": 24,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_0_02": {
+   "x": 48,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_0_03": {
+   "x": 72,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_0_04": {
+   "x": 96,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_0_05": {
+   "x": 120,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_1_00": {
+   "x": 144,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_1_01": {
+   "x": 168,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_1_02": {
+   "x": 192,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_1_03": {
+   "x": 216,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_1_04": {
+   "x": 240,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_1_05": {
+   "x": 264,
+   "y": 0,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_2_00": {
+   "x": 0,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_2_01": {
+   "x": 24,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_2_02": {
+   "x": 48,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_2_03": {
+   "x": 72,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_2_04": {
+   "x": 96,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "spring_petal_2_05": {
+   "x": 120,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "summer_firefly_0_00": {
+   "x": 144,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "summer_firefly_0_01": {
+   "x": 168,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "summer_firefly_0_02": {
+   "x": 192,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "summer_firefly_0_03": {
+   "x": 216,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "summer_firefly_0_04": {
+   "x": 240,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "summer_firefly_0_05": {
+   "x": 264,
+   "y": 24,
+   "w": 24,
+   "h": 24
+  },
+  "summer_sunmote_0_00": {
+   "x": 0,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "summer_sunmote_0_01": {
+   "x": 24,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "summer_sunmote_0_02": {
+   "x": 48,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "summer_sunmote_0_03": {
+   "x": 72,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_0_00": {
+   "x": 96,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_0_01": {
+   "x": 120,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_0_02": {
+   "x": 144,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_0_03": {
+   "x": 168,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_0_04": {
+   "x": 192,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_0_05": {
+   "x": 216,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_1_00": {
+   "x": 240,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_1_01": {
+   "x": 264,
+   "y": 48,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_1_02": {
+   "x": 0,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_1_03": {
+   "x": 24,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_1_04": {
+   "x": 48,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_1_05": {
+   "x": 72,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_2_00": {
+   "x": 96,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_2_01": {
+   "x": 120,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_2_02": {
+   "x": 144,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_2_03": {
+   "x": 168,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_2_04": {
+   "x": 192,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "autumn_leaf_2_05": {
+   "x": 216,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_0_00": {
+   "x": 240,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_0_01": {
+   "x": 264,
+   "y": 72,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_0_02": {
+   "x": 0,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_0_03": {
+   "x": 24,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_1_00": {
+   "x": 48,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_1_01": {
+   "x": 72,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_1_02": {
+   "x": 96,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_1_03": {
+   "x": 120,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_2_00": {
+   "x": 144,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_2_01": {
+   "x": 168,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_2_02": {
+   "x": 192,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_2_03": {
+   "x": 216,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_3_00": {
+   "x": 240,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_3_01": {
+   "x": 264,
+   "y": 96,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_3_02": {
+   "x": 0,
+   "y": 120,
+   "w": 24,
+   "h": 24
+  },
+  "winter_snow_3_03": {
+   "x": 24,
+   "y": 120,
+   "w": 24,
+   "h": 24
+  }
+ },
+ "types": {
+  "spring": [
+   {
+    "name": "petal",
+    "fps": 8,
+    "frames": 6,
+    "variants": [
+     "petal_0",
+     "petal_1",
+     "petal_2"
+    ],
+    "emitter": {
+     "spawn": "top+right",
+     "ratePerSec": 2.2,
+     "max": 14,
+     "vx": [
+      -14,
+      -5
+     ],
+     "vy": [
+      10,
+      20
+     ],
+     "sway": {
+      "amp": 6,
+      "periodSec": 2.4
+     },
+     "lifeSec": 14,
+     "perVariant": {
+      "H1": 1.0,
+      "H2": 0.8,
+      "H3": 1.0,
+      "H4": 0.4
+     }
+    },
+    "anims": {
+     "petal_0": [
+      "spring_petal_0_00",
+      "spring_petal_0_01",
+      "spring_petal_0_02",
+      "spring_petal_0_03",
+      "spring_petal_0_04",
+      "spring_petal_0_05"
+     ],
+     "petal_1": [
+      "spring_petal_1_00",
+      "spring_petal_1_01",
+      "spring_petal_1_02",
+      "spring_petal_1_03",
+      "spring_petal_1_04",
+      "spring_petal_1_05"
+     ],
+     "petal_2": [
+      "spring_petal_2_00",
+      "spring_petal_2_01",
+      "spring_petal_2_02",
+      "spring_petal_2_03",
+      "spring_petal_2_04",
+      "spring_petal_2_05"
+     ]
+    }
+   }
+  ],
+  "summer": [
+   {
+    "name": "firefly",
+    "fps": 6,
+    "frames": 6,
+    "variants": [
+     "firefly_0"
+    ],
+    "emitter": {
+     "spawn": "area:ground",
+     "ratePerSec": 0.8,
+     "max": 8,
+     "vx": [
+      -4,
+      4
+     ],
+     "vy": [
+      -3,
+      2
+     ],
+     "sway": {
+      "amp": 5,
+      "periodSec": 3.0
+     },
+     "lifeSec": 6,
+     "perVariant": {
+      "H1": 0.0,
+      "H2": 0.6,
+      "H3": 0.0,
+      "H4": 1.0
+     }
+    },
+    "anims": {
+     "firefly_0": [
+      "summer_firefly_0_00",
+      "summer_firefly_0_01",
+      "summer_firefly_0_02",
+      "summer_firefly_0_03",
+      "summer_firefly_0_04",
+      "summer_firefly_0_05"
+     ]
+    },
+    "glow": {
+     "sprite": "../../fx/fx_glow_v3@3x.json#glow_24",
+     "tint": "#d8ff90",
+     "add": 0.9,
+     "blend": "lighter",
+     "multiplyBy": "scene（唔跟 petGlow）"
+    }
+   },
+   {
+    "name": "sunmote",
+    "fps": 6,
+    "frames": 4,
+    "variants": [
+     "sunmote_0"
+    ],
+    "emitter": {
+     "spawn": "area:sky+light",
+     "ratePerSec": 1.2,
+     "max": 8,
+     "vx": [
+      -2,
+      2
+     ],
+     "vy": [
+      -3,
+      -1
+     ],
+     "sway": {
+      "amp": 2,
+      "periodSec": 4.0
+     },
+     "lifeSec": 4,
+     "note": "熱浪光點（日光下閃）",
+     "perVariant": {
+      "H1": 1.0,
+      "H2": 0.4,
+      "H3": 1.0,
+      "H4": 0.0
+     }
+    },
+    "anims": {
+     "sunmote_0": [
+      "summer_sunmote_0_00",
+      "summer_sunmote_0_01",
+      "summer_sunmote_0_02",
+      "summer_sunmote_0_03"
+     ]
+    },
+    "glow": {
+     "sprite": "../../fx/fx_glow_v3@3x.json#glow_12",
+     "tint": "#fff4c0",
+     "add": 0.5,
+     "blend": "lighter",
+     "multiplyBy": "scene（唔跟 petGlow）"
+    }
+   }
+  ],
+  "autumn": [
+   {
+    "name": "leaf",
+    "fps": 8,
+    "frames": 6,
+    "variants": [
+     "leaf_0",
+     "leaf_1",
+     "leaf_2"
+    ],
+    "emitter": {
+     "spawn": "top:tree",
+     "ratePerSec": 1.6,
+     "max": 12,
+     "vx": [
+      -6,
+      10
+     ],
+     "vy": [
+      14,
+      24
+     ],
+     "sway": {
+      "amp": 9,
+      "periodSec": 2.0
+     },
+     "lifeSec": 14,
+     "perVariant": {
+      "H1": 1.0,
+      "H2": 1.0,
+      "H3": 1.0,
+      "H4": 0.5
+     }
+    },
+    "anims": {
+     "leaf_0": [
+      "autumn_leaf_0_00",
+      "autumn_leaf_0_01",
+      "autumn_leaf_0_02",
+      "autumn_leaf_0_03",
+      "autumn_leaf_0_04",
+      "autumn_leaf_0_05"
+     ],
+     "leaf_1": [
+      "autumn_leaf_1_00",
+      "autumn_leaf_1_01",
+      "autumn_leaf_1_02",
+      "autumn_leaf_1_03",
+      "autumn_leaf_1_04",
+      "autumn_leaf_1_05"
+     ],
+     "leaf_2": [
+      "autumn_leaf_2_00",
+      "autumn_leaf_2_01",
+      "autumn_leaf_2_02",
+      "autumn_leaf_2_03",
+      "autumn_leaf_2_04",
+      "autumn_leaf_2_05"
+     ]
+    }
+   }
+  ],
+  "winter": [
+   {
+    "name": "snow",
+    "fps": 4,
+    "frames": 4,
+    "variants": [
+     "snow_0",
+     "snow_1",
+     "snow_2",
+     "snow_3"
+    ],
+    "emitter": {
+     "spawn": "top",
+     "ratePerSec": 6.0,
+     "max": 40,
+     "vx": [
+      -4,
+      2
+     ],
+     "vy": [
+      12,
+      26
+     ],
+     "sway": {
+      "amp": 3,
+      "periodSec": 3.2
+     },
+     "lifeSec": 20,
+     "weights": [
+      0.45,
+      0.3,
+      0.17,
+      0.08
+     ],
+     "perVariant": {
+      "H1": 1.0,
+      "H2": 1.0,
+      "H3": 1.0,
+      "H4": 1.0
+     }
+    },
+    "anims": {
+     "snow_0": [
+      "winter_snow_0_00",
+      "winter_snow_0_01",
+      "winter_snow_0_02",
+      "winter_snow_0_03"
+     ],
+     "snow_1": [
+      "winter_snow_1_00",
+      "winter_snow_1_01",
+      "winter_snow_1_02",
+      "winter_snow_1_03"
+     ],
+     "snow_2": [
+      "winter_snow_2_00",
+      "winter_snow_2_01",
+      "winter_snow_2_02",
+      "winter_snow_2_03"
+     ],
+     "snow_3": [
+      "winter_snow_3_00",
+      "winter_snow_3_01",
+      "winter_snow_3_02",
+      "winter_snow_3_03"
+     ]
+    },
+    "glow": {
+     "sprite": "../../fx/fx_glow_v3@3x.json#glow_12",
+     "tint": "#eef4ff",
+     "add": 0.25,
+     "blend": "lighter",
+     "multiplyBy": "scene（唔跟 petGlow）"
+    }
+   }
+  ]
+ }
+}

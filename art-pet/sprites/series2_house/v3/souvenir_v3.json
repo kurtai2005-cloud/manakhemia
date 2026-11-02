@@ -299,17 +299,6 @@
    }
   },
   {
-   "id": "shelf_0",
-   "pos": [
-    152,
-    92
-   ],
-   "requires": {
-    "wall": "wall_shelf"
-   },
-   "note": "層架右端空位"
-  },
-  {
    "id": "floor_0",
    "pos": [
     170,
@@ -325,6 +314,15 @@
     300
    ],
    "requires": {}
+  },
+  {
+   "id": "floor_2",
+   "pos": [
+    150,
+    346
+   ],
+   "requires": {},
+   "note": "右前地板（取代舊 shelf_0）"
   }
  ],
  "rules": {

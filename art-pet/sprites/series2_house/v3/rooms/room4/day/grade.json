@@ -2,26 +2,26 @@
  "variant": "day",
  "name": "海風小屋・日間（V3-A）",
  "hours": "06–19",
- "ambientTint": "#f6f8ff",
- "petTint": "#fff8f2",
+ "ambientTint": "#fbf0e2",
+ "petTint": "#fff4e8",
  "saturation": 1.06,
- "contrast": 1.07,
+ "contrast": 1.08,
  "bloom": {
-  "threshold": 0.8,
-  "intensity": 0.32
+  "threshold": 0.82,
+  "intensity": 0.3
  },
  "fog": {
-  "color": "#ffe6cc",
-  "density": 0.03
+  "color": "#ffd8b0",
+  "density": 0.035
  },
  "dof": {
   "far": 0,
   "mid": 0,
   "fore": 0.8
  },
- "vignette": 0.24,
+ "vignette": 0.26,
  "rim": {
-  "color": "#ffe2b0",
+  "color": "#ffd49a",
   "intensity": 0.5,
   "dir": [
    -0.7,
@@ -68,7 +68,9 @@
     "amp": 0.06,
     "note": "窗外雲影：intensity 慢慢 ±6%"
    },
-   "rule": "窗 slot 擺咩就揀邊張（none／win_curtain／win_star）；場景光，唔跟 petGlow"
+   "rule": "窗 slot 擺咩就揀邊張（none／win_curtain／win_star）；場景光，唔跟 petGlow",
+   "petAtten": 0.6,
+   "petAttenNote": "寵物 sprite 覆蓋位 beam/patch × (1-.7×petAlpha)，避免寵物喺光斑入面過曝"
   },
   "flares": [
    {

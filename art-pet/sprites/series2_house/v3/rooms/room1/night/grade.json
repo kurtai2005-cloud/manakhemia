@@ -65,7 +65,9 @@
     "amp": 0.06,
     "note": "窗外雲影：intensity 慢慢 ±6%"
    },
-   "rule": "窗 slot 擺咩就揀邊張（none／win_curtain／win_star）；場景光，唔跟 petGlow"
+   "rule": "窗 slot 擺咩就揀邊張（none／win_curtain／win_star）；場景光，唔跟 petGlow",
+   "petAtten": 0.6,
+   "petAttenNote": "寵物 sprite 覆蓋位 beam/patch × (1-.7×petAlpha)，避免寵物喺光斑入面過曝"
   },
   "flares": [
    {

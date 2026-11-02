@@ -29,17 +29,17 @@ ROOMS = {'room1': dict(zh='屋仔（4b）', src=f'{HS}/room', srcRel='sprites/se
          'room4': dict(zh='海風小屋（5a）', src=f'{S5}/5a/rooms/room4', srcRel='sprites/series2_long/5a/rooms/room4')}
 WIN = R.G['window']; WALL = R.G['wall']; BASE_Y = WALL[3]          # 窗洞 (30,98)–(76,150)；地腳線 y238
 # ================================================================ 調色（每房 × 日夜）
-P0 = {'day': dict(amb='#fff0e0', pet='#fff8f2', sat=1.08, con=1.07, split=('#6a58a0', '#ffd6a0', .09), bloom=(.80, .32), fog=('#ffe6cc', .03),
-                  vig=.24, vigc='#5a3028', rim=('#ffe2b0', .5), bulb='#ffe9a0', lm='#fff0de', lmK=1.0, winBoost=.16,
-                  beam='#ffe0a8', beamI=.24, patch='#ffe6b8', patchI=.34, bounce='#ffd8a8', bounceI=.10, refl=.17, petI=.32, dust=1.0, lampK=.35),
+P0 = {'day': dict(amb='#ffe4c2', pet='#fff4e8', sat=1.12, con=1.08, split=('#70509a', '#ffc884', .13), bloom=(.82, .30), fog=('#ffd8b0', .035),
+                  vig=.26, vigc='#5a2814', rim=('#ffd49a', .5), bulb='#ffe9a0', lm='#ffe6c6', lmK=1.0, winBoost=.16,
+                  beam='#ffd294', beamI=.24, patch='#ffdca4', patchI=.32, bounce='#ffc890', bounceI=.12, refl=.17, petI=.32, dust=1.0, lampK=.35),
       'night': dict(amb='#aab0e4', pet='#f2eaff', sat=.98, con=1.08, split=('#283070', '#ffd090', .11), bloom=(.66, .75), fog=('#2a2e5a', .05),
                     vig=.36, vigc='#140e30', rim=('#c8d4ff', .4), bulb='#ffe0a0', lm='#7a80b8', lmK=1.0, winBoost=.10,
                     beam='#a8c0ff', beamI=.22, patch='#b8ccff', patchI=.36, bounce='#8898e0', bounceI=.05, refl=.13, petI=.9, dust=.35, lampK=1.0)}
-PR = {'room1': {}, 'room2': {'day': dict(amb='#fbf4dc', split=('#4a6a70', '#f4e8a0', .09), beam='#fff0a8', patch='#fff2b8', bounce='#e8f0a8', lm='#f8f4dc'),
+PR = {'room1': {}, 'room2': {'day': dict(amb='#fcebc8', split=('#4a6a70', '#f4e8a0', .09), beam='#fff0a8', patch='#fff2b8', bounce='#e8f0a8', lm='#f8f4dc'),
                              'night': dict(lm='#6e84a8', beam='#b0d0e8', patch='#c0e0f0')},
-      'room3': {'day': dict(amb='#fbeee8', split=('#5a4aa0', '#ffd8c0', .10), beam='#ffe2c8', patch='#ffe8d0', lm='#f8ecec'),
+      'room3': {'day': dict(amb='#fde4d4', split=('#5a4aa0', '#ffd8c0', .10), beam='#ffe2c8', patch='#ffe8d0', lm='#f8ecec'),
                 'night': dict(amb='#b0a8e8', lm='#7c74c0', beam='#c8b8ff', beamI=.26, patch='#d0c4ff', patchI=.42, bloom=(.62, .85), split=('#302070', '#ffd890', .12))},
-      'room4': {'day': dict(amb='#f6f8ff', sat=1.06, split=('#3a6aa0', '#fff2d8', .08), beam='#fff8e0', beamI=.28, patch='#fffae8', patchI=.4, bounce='#d8f0ff', lm='#f4f8fc'),
+      'room4': {'day': dict(amb='#fbf0e2', sat=1.06, split=('#3a6aa0', '#fff2d8', .08), beam='#fff8e0', beamI=.28, patch='#fffae8', patchI=.4, bounce='#d8f0ff', lm='#f4f8fc'),
                 'night': dict(amb='#a4b8e8', lm='#6a84b8', beam='#98ccff', patch='#a8d8ff', split=('#1a3a70', '#ffe0a0', .10))}}
 def params(room, var):
     p = copy.deepcopy(P0[var]); p.update(PR[room].get(var, {})); return p
@@ -158,7 +158,8 @@ def grade_json(room, var, p, src_g):
         layerSize3x=[W3, H3], screenSize3x=[SW3, SH3], layerOffset3x=[MX * S, MY * S], stack='../../../house_v3.json#stack',
         windowBeam=dict(beam=f'light/<window item 或 none>_beam@3x.png', patch=f'light/<window item 或 none>_patch@3x.png', tint=p['beam'], intensity=p['beamI'],
                         patchTint=p['patch'], patchIntensity=p['patchI'], blend='lighter', shimmer=dict(hz=.15, amp=.06, note='窗外雲影：intensity 慢慢 ±6%'),
-                        rule='窗 slot 擺咩就揀邊張（none／win_curtain／win_star）；場景光，唔跟 petGlow'),
+                        rule='窗 slot 擺咩就揀邊張（none／win_curtain／win_star）；場景光，唔跟 petGlow',
+                        petAtten=.6, petAttenNote='寵物 sprite 覆蓋位 beam/patch × (1-.7×petAlpha)，避免寵物喺光斑入面過曝'),
         flares=[dict(pos=[x0 + 4, y0 + 6], size='m' if var == 'day' else 's', tint='#fff4d8' if var == 'day' else '#d8e4ff', fps=2, phase=0, intensity=.55 if var == 'day' else .35, note='窗角光芒'),
                 dict(pos=[x1 - 6, y1 - 4], size='s', tint='#fff8e8' if var == 'day' else '#e0e8ff', fps=3, phase=.5, intensity=.35 if var == 'day' else .2)],
         emitters=[dict(type='dust', glow='glow_12', tint='#fff2c8' if var == 'day' else '#d8e0ff', polygon=beam_polygon(), rate=1.4 * p['dust'], life=[5, 9], vy=[-2, 1], vx=[-1, 1], sway=3,
@@ -210,9 +211,9 @@ def build_room(room):
         print(room, var, 'ok')
     return out
 # ================================================================ ② 家具光（全房共用）
-LAMPS = {'lamp_mushroom': dict(tint='#ffc27a', halo='#ffd8a0', liftR=84, liftK=1.0, pool=(56, 13), flare='m', flicker=dict(type='breathe', hz=.25, amp=.05),
+LAMPS = {'lamp_mushroom': dict(tint='#ffc27a', halo='#ffd8a0', liftR=120, liftK=1.35, pool=(82, 19), flare='m', flicker=dict(type='breathe', hz=.25, amp=.05),
                                emitter=None),
-         'lamp_firefly': dict(tint='#d8f890', halo='#e8ff b0'.replace(' ', ''), liftR=76, liftK=.9, pool=(48, 11), flare='s', flicker=dict(type='firefly', hz=.9, amp=.18),
+         'lamp_firefly': dict(tint='#d8f890', halo='#e8ff b0'.replace(' ', ''), liftR=108, liftK=1.2, pool=(72, 17), flare='s', flicker=dict(type='firefly', hz=.9, amp=.18),
                               emitter=dict(type='firefly', glow='glow_12', tint='#d8ff90', around=[0, -2], radius=10, rate=.8, life=[2, 4], max=4, add=.8, note='瓶入面螢火蟲飄出少少再返入去'))}
 def radial(sz, p=1.6, sx=1.0, sy=1.0):
     yy, xx = np.mgrid[0:sz[1], 0:sz[0]].astype(float); r = np.hypot((xx - sz[0] / 2 + .5) / (sz[0] / 2 * sx), (yy - sz[1] / 2 + .5) / (sz[1] / 2 * sy))
@@ -234,15 +235,15 @@ def build_furniture():
         if f['slot'] in ('bed', 'table', 'lamp'): e['reflect'] = True
         if k in LAMPS:
             L = LAMPS[k]; gc = f['glowCenter']; px_, py_ = f['pivot']; e['lightCenter'] = [gc[0] - px_, gc[1] - py_]
-            r3 = L['liftR'] * S; lift = np.zeros((2 * r3, 2 * r3, 4)); lift[..., :3] = hx(L['tint']); lift[..., 3] = (radial((2 * r3, 2 * r3), 1.3) * .75 + radial((2 * r3, 2 * r3), 4) * .5) * L['liftK']
+            r3 = L['liftR'] * S; lift = np.zeros((2 * r3, 2 * r3, 4)); lift[..., :3] = hx(L['tint']); lift[..., 3] = (radial((2 * r3, 2 * r3), 1.0) * .95 + radial((2 * r3, 2 * r3), 3) * .6) * L['liftK']
             save(lift, f'{d}/{k}_lift@3x.png')
-            hs = 66 * S // 2 * 2; halo = np.zeros((hs, hs, 4)); halo[..., :3] = hx(L['halo']); halo[..., 3] = radial((hs, hs), 2.2) * .8 + radial((hs, hs), 6, .35, .35) * .6
+            hs = 96 * S // 2 * 2; halo = np.zeros((hs, hs, 4)); halo[..., :3] = hx(L['halo']); halo[..., 3] = radial((hs, hs), 2.2) * .8 + radial((hs, hs), 6, .35, .35) * .6
             save(np.clip(halo, 0, 1), f'{d}/{k}_halo@3x.png')
             pw, ph = L['pool'][0] * S * 2, L['pool'][1] * S * 2; pool = np.zeros((ph, pw, 4)); pool[..., :3] = hx(L['tint']); pool[..., 3] = radial((pw, ph), 1.2) * .9
             save(pool, f'{d}/{k}_pool@3x.png')
             e['light'] = dict(lift=dict(png=f'furniture/{k}_lift@3x.png', at='lightCenter', blend='lighter 落 lightmap（multiply 之前）', alpha='grade.v3.lamps.scale'),
                               halo=dict(png=f'furniture/{k}_halo@3x.png', at='lightCenter', blend='lighter（lightmap 之後）', alpha='0.4 × lamps.scale × flicker'),
-                              pool=dict(png=f'furniture/{k}_pool@3x.png', at='anchor＋(0,−1)', blend='lighter（lightmap 之後、ysort 之前）', alpha='0.6 × lamps.scale'),
+                              pool=dict(png=f'furniture/{k}_pool@3x.png', at='anchor＋(0,−1)', blend='lighter（lightmap 之後、ysort 之前）', alpha='0.85 × lamps.scale'),
                               flare=dict(size=L['flare'], tint=L['halo'], fps=3, intensity=.8, at='lightCenter'), bloom=dict(src=f'furniture/x3/{k}_emissive@3x.png', note='入 bloom pass'),
                               flicker=L['flicker'], emitter=L['emitter'], tint=L['tint'], petGlow=False, note='場景燈：唔跟 petGlow（Kurt 規則只熄寵物光）；取代 4b _glow.png')
         if f['slot'] == 'window':
@@ -270,8 +271,9 @@ def sv_spots():
     for i, x in enumerate((36, 48, 70)): sp.append(dict(id=f'sill_{i}', pos=[x, 151], requires=dict(window=None), note='窗台（窗 slot 空先用；窗簾／星星窗有花盆箱遮住）'))
     sp += [dict(id='table_0', pos=[32, 283], requires=dict(table='table_stump')), dict(id='table_1', pos=[57, 283], requires=dict(table='table_stump')),
            dict(id='table_0r', pos=[30, 281], requires=dict(table='table_round')), dict(id='table_1r', pos=[56, 281], requires=dict(table='table_round')),
-           dict(id='shelf_0', pos=[152, 92], requires=dict(wall='wall_shelf'), note='層架右端空位'),
-           dict(id='floor_0', pos=[170, 318], requires={}, note='右下牆角地板（永遠可用）'), dict(id='floor_1', pos=[176, 300], requires={})]
+           # 舊 shelf_0 (152,92) 同層架第 3 盆盆栽重疊：層架 3 盆已佔滿板面（板 x116–163，盆 119–160），冇位擺手信 → 取消，改加 floor_2
+
+           dict(id='floor_0', pos=[170, 318], requires={}, note='右下牆角地板（永遠可用）'), dict(id='floor_1', pos=[176, 300], requires={}), dict(id='floor_2', pos=[150, 346], requires={}, note='右前地板（取代舊 shelf_0）')]
     return sp
 def build_souvenir():
     d = f'{OUT}/souvenir'; L5 = json.load(open(f'{S5}/5b/long_5b.json'))['souvenirs']; js = {}
@@ -386,14 +388,18 @@ def compose(room, var, furn, pets=(), svs=(), seed=5):
         if k and 'ao' in FJ[k]: ax, ay = HJ['slots'][sl]['anchor']; a = C(f"{OUT}/{FJ[k]['ao']['png']}"); h, w = a.shape[:2]; cx, cy = L3(ax, ay + 1); oversp(img, a, cx - w / 2, cy - h / 2)
     lk = v3['lamps']['scale']; lamp = furn.get('lamp')
     if lamp:
-        ax, ay = HJ['slots']['lamp']['anchor']; cx, cy = L3(ax, ay - 1); addc(img, C(f'{OUT}/furniture/{lamp}_pool@3x.png'), cx, cy, .6 * lk)
-    posts = []
+        ax, ay = HJ['slots']['lamp']['anchor']; cx, cy = L3(ax, ay - 1); addc(img, C(f'{OUT}/furniture/{lamp}_pool@3x.png'), cx, cy, .85 * lk)
+    posts = []; petm = np.zeros(img.shape[:2])
     for sy, kind, pl in ys:
         if kind == 'furn':
             sl, k, part = pl; sp, pv = furn_sprite(k, part); ax, ay = HJ['slots'][sl]['anchor']; x, y = L3(ax - pv[0], ay - pv[1]); oversp(img, tinted(sp), x, y)
         elif kind == 'pet':
             foot = pl['foot']
             img, post = PG.draw_pet(img, 'house', g, (pl['form'], pl['frame']), pl['glow'], seed, foot=foot, ss=v3['petLight']['houseScale']); posts += post
+            if not pl.get('bed'):
+                psp, ppv = pet_sprite(pl['form'], pl['frame']); px0, py0 = L3(foot[0] - ppv[0], foot[1] - ppv[1]); px0, py0 = int(round(px0)), int(round(py0))
+                hh, ww = psp.shape[:2]; y0_, x0_ = max(py0, 0), max(px0, 0)
+                petm[y0_:py0 + hh, x0_:px0 + ww] = np.maximum(petm[y0_:py0 + hh, x0_:px0 + ww], psp[y0_ - py0:min(hh, petm.shape[0] - py0), x0_ - px0:min(ww, petm.shape[1] - px0), 3])
         else:
             sv, s = pl; sp = C(f'{OUT}/souvenir/x3/{sv}@3x.png'); pv = SVJ['souvenirs'][sv]['pivot']; x, y = L3(s['pos'][0], s['pos'][1])
             a = C(f'{OUT}/souvenir/sv_ao@3x.png'); oversp(img, a, x - a.shape[1] / 2, y - a.shape[0] / 2 + 1)
@@ -405,7 +411,8 @@ def compose(room, var, furn, pets=(), svs=(), seed=5):
         lc = FJ[lamp]['lightCenter']; ax, ay = HJ['slots']['lamp']['anchor']; lx, ly = L3(ax + lc[0], ay + lc[1]); addc(lm, C(f'{OUT}/furniture/{lamp}_lift@3x.png'), lx, ly, lk)
     img = img * lm + C(f'{d}/x3/light_add@3x.png')[..., :3]
     wi = furn.get('window') or 'none'; wb = v3['windowBeam']
-    img += C(f'{OUT}/light/{wi}_beam@3x.png')[..., 3:] * hx(wb['tint']) * wb['intensity'] + C(f'{OUT}/light/{wi}_patch@3x.png')[..., 3:] * hx(wb['patchTint']) * wb['patchIntensity']
+    pk = (1 - wb.get('petAtten', .6) * petm)[..., None]   # 寵物喺窗光光斑入面唔好過曝：寵物身上 beam/patch 只加 40%
+    img += (C(f'{OUT}/light/{wi}_beam@3x.png')[..., 3:] * hx(wb['tint']) * wb['intensity'] + C(f'{OUT}/light/{wi}_patch@3x.png')[..., 3:] * hx(wb['patchTint']) * wb['patchIntensity']) * pk
     img += C(f'{d}/x3/bloom@3x.png')[..., :3] * g['bloom']['intensity']
     rnd = np.random.RandomState(seed)
     if lamp:

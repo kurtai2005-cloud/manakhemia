@@ -59,7 +59,7 @@ def run():
     s.save(f'{GD}/furniture_lights.png', optimize=True)
     # 紀念品擺設
     f = dict(A, window=None, table='table_stump', wall='wall_shelf')
-    svs = [('sv_lantern', 'sill_0'), ('sv_shell', 'sill_1'), ('sv_starstone', 'sill_2'), ('sv_bottle', 'table_0'), ('sv_pinecone', 'table_1'), ('sv_rainbow', 'shelf_0'), ('sv_mushroom', 'floor_0'), ('sv_cloud', 'floor_1')]
+    svs = [('sv_lantern', 'sill_0'), ('sv_shell', 'sill_1'), ('sv_starstone', 'sill_2'), ('sv_bottle', 'table_0'), ('sv_pinecone', 'table_1'), ('sv_rainbow', 'floor_2'), ('sv_mushroom', 'floor_0'), ('sv_cloud', 'floor_1')]
     cols = [(H.compose('room1', v, f, [], svs), f"紀念品（5b 手信）擺設・{'日' if v == 'day' else '夜'}") for v in ('day', 'night')]
     s = sheet(cols, '紀念品擺設 V3：窗台／檯面／層架／地板（發光手信＝場景光）', scale=.8); s.save(f'{GD}/souvenirs_display.png', optimize=True)
     # 佈置 UI（組合 B）

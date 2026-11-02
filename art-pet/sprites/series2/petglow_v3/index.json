@@ -1,0 +1,616 @@
+{
+ "note": "第 5 批：細佬 series2 有光源形態 petglow v3（schema 同 sprites/tuanrong/petglow_v3）。",
+ "clips": [
+  "idle",
+  "walk",
+  "cry",
+  "eat",
+  "sleep"
+ ],
+ "clipGlow": {
+  "idle": {
+   "state": "awake",
+   "value": 1.0
+  },
+  "walk": {
+   "state": "awake",
+   "value": 1.0
+  },
+  "cry": {
+   "state": "awake",
+   "value": 1.0
+  },
+  "eat": {
+   "state": "awake",
+   "value": 1.0
+  },
+  "sleep": {
+   "state": "sleep",
+   "value": 0.0,
+   "fadeOut": {
+    "ms": 600,
+    "ease": "easeInQuad",
+    "at": "enter（sleep 第 1 幀前）"
+   },
+   "fadeIn": {
+    "ms": 400,
+    "ease": "easeOutQuad",
+    "at": "exit（離開 sleep）",
+    "pulse": {
+     "ms": 150,
+     "scale": [
+      1,
+      1.15,
+      1
+     ]
+    }
+   }
+  }
+ },
+ "forms": [
+  {
+   "form": "S2",
+   "name": "BB",
+   "series": "S",
+   "stage": "S2 BB",
+   "lightType": "bulb",
+   "file": "S2.json",
+   "sheet": "S2_glow@3x.json",
+   "tints": {
+    "core": "#fffbef",
+    "mid": "#fff4d0",
+    "outer": "#e5bd97"
+   },
+   "frames": 26,
+   "uniqueFrames": 8,
+   "trackMiss": 0
+  },
+  {
+   "form": "S4A",
+   "name": "滴滴少年",
+   "series": "A",
+   "stage": "S4 A 少年",
+   "lightType": "bulb",
+   "file": "S4A.json",
+   "sheet": "S4A_glow@3x.json",
+   "tints": {
+    "core": "#e0effc",
+    "mid": "#a5d2f5",
+    "outer": "#7cb2f5"
+   },
+   "frames": 26,
+   "uniqueFrames": 10,
+   "trackMiss": 0
+  },
+  {
+   "form": "S4B",
+   "name": "燈燈少年",
+   "series": "B",
+   "stage": "S4 B 少年",
+   "lightType": "own",
+   "file": "S4B.json",
+   "sheet": "S4B_glow@3x.json",
+   "tints": {
+    "core": "#e2f4f8",
+    "mid": "#addfeb",
+    "outer": "#82beeb"
+   },
+   "frames": 26,
+   "uniqueFrames": 8,
+   "trackMiss": 0
+  },
+  {
+   "form": "S4C",
+   "name": "火仔少年",
+   "series": "C",
+   "stage": "S4 C 少年",
+   "lightType": "bulb",
+   "file": "S4C.json",
+   "sheet": "S4C_glow@3x.json",
+   "tints": {
+    "core": "#feeac4",
+    "mid": "#fcc457",
+    "outer": "#e2973f"
+   },
+   "frames": 26,
+   "uniqueFrames": 10,
+   "trackMiss": 0
+  },
+  {
+   "form": "S4D",
+   "name": "熔石少年",
+   "series": "D",
+   "stage": "S4 D 少年",
+   "lightType": "bulb",
+   "file": "S4D.json",
+   "sheet": "S4D_glow@3x.json",
+   "tints": {
+    "core": "#feedc5",
+    "mid": "#fbcc5a",
+    "outer": "#e19e41"
+   },
+   "frames": 26,
+   "uniqueFrames": 14,
+   "trackMiss": 0
+  },
+  {
+   "form": "S4E",
+   "name": "火糰少年",
+   "series": "E",
+   "stage": "S4 E 少年",
+   "lightType": "bulb",
+   "file": "S4E.json",
+   "sheet": "S4E_glow@3x.json",
+   "tints": {
+    "core": "#fdebcd",
+    "mid": "#fac76f",
+    "outer": "#e09a50"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "S4F",
+   "name": "星彈少年",
+   "series": "F",
+   "stage": "S4 F 少年",
+   "lightType": "star",
+   "file": "S4F.json",
+   "sheet": "S4F_glow@3x.json",
+   "tints": {
+    "core": "#fdf3d4",
+    "mid": "#f9de85",
+    "outer": "#dfac60"
+   },
+   "frames": 26,
+   "uniqueFrames": 11,
+   "trackMiss": 2
+  },
+  {
+   "form": "S4G",
+   "name": "夜糰少年",
+   "series": "G",
+   "stage": "S4 G 少年",
+   "lightType": "star",
+   "file": "S4G.json",
+   "sheet": "S4G_glow@3x.json",
+   "tints": {
+    "core": "#fdf4d4",
+    "mid": "#fae085",
+    "outer": "#e0ad60"
+   },
+   "frames": 26,
+   "uniqueFrames": 11,
+   "trackMiss": 0
+  },
+  {
+   "form": "S4H",
+   "name": "月角少年",
+   "series": "H",
+   "stage": "S4 H 少年",
+   "lightType": "bulb",
+   "file": "S4H.json",
+   "sheet": "S4H_glow@3x.json",
+   "tints": {
+    "core": "#fef6dd",
+    "mid": "#fbe59d",
+    "outer": "#e1b172"
+   },
+   "frames": 26,
+   "uniqueFrames": 10,
+   "trackMiss": 0
+  },
+  {
+   "form": "A1",
+   "name": "滴滴",
+   "series": "A",
+   "stage": "S3 A",
+   "lightType": "bulb",
+   "file": "A1.json",
+   "sheet": "A1_glow@3x.json",
+   "tints": {
+    "core": "#def4fd",
+    "mid": "#a0dff8",
+    "outer": "#78bef8"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "A2",
+   "name": "泡泡鰭",
+   "series": "A",
+   "stage": "S5 A",
+   "lightType": "bulb",
+   "file": "A2.json",
+   "sheet": "A2_glow@3x.json",
+   "tints": {
+    "core": "#deeffc",
+    "mid": "#a2d1f5",
+    "outer": "#7ab2f5"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "A3",
+   "name": "紋紋鰭",
+   "series": "A",
+   "stage": "S6 A",
+   "lightType": "bulb",
+   "file": "A3.json",
+   "sheet": "A3_glow@3x.json",
+   "tints": {
+    "core": "#e2ebfb",
+    "mid": "#adc7f3",
+    "outer": "#82a9f3"
+   },
+   "frames": 26,
+   "uniqueFrames": 10,
+   "trackMiss": 0
+  },
+  {
+   "form": "B1",
+   "name": "燈燈滴",
+   "series": "B",
+   "stage": "S3 B",
+   "lightType": "own",
+   "file": "B1.json",
+   "sheet": "B1_glow@3x.json",
+   "tints": {
+    "core": "#e8f8ff",
+    "mid": "#beecff",
+    "outer": "#8ec9ff"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "B2",
+   "name": "水母咪",
+   "series": "B",
+   "stage": "S5 B",
+   "lightType": "bulb",
+   "file": "B2.json",
+   "sheet": "B2_glow@3x.json",
+   "tints": {
+    "core": "#ddf7f4",
+    "mid": "#9ee8df",
+    "outer": "#76c5df"
+   },
+   "frames": 26,
+   "uniqueFrames": 12,
+   "trackMiss": 0
+  },
+  {
+   "form": "B3",
+   "name": "珊瑚角鯨",
+   "series": "B",
+   "stage": "S6 B",
+   "lightType": "bulb",
+   "file": "B3.json",
+   "sheet": "B3_glow@3x.json",
+   "tints": {
+    "core": "#e1ecf5",
+    "mid": "#aacae2",
+    "outer": "#80ace2"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "C1",
+   "name": "火仔",
+   "series": "C",
+   "stage": "S3 C",
+   "lightType": "bulb",
+   "file": "C1.json",
+   "sheet": "C1_glow@3x.json",
+   "tints": {
+    "core": "#feeabe",
+    "mid": "#fdc345",
+    "outer": "#e39732"
+   },
+   "frames": 26,
+   "uniqueFrames": 10,
+   "trackMiss": 0
+  },
+  {
+   "form": "C2",
+   "name": "火角獸",
+   "series": "C",
+   "stage": "S5 C",
+   "lightType": "bulb",
+   "file": "C2.json",
+   "sheet": "C2_glow@3x.json",
+   "tints": {
+    "core": "#feeac9",
+    "mid": "#fcc366",
+    "outer": "#e2974a"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "C3",
+   "name": "焦焦獸",
+   "series": "C",
+   "stage": "S6 C",
+   "lightType": "bulb",
+   "file": "C3.json",
+   "sheet": "C3_glow@3x.json",
+   "tints": {
+    "core": "#feebc5",
+    "mid": "#fbc559",
+    "outer": "#e19840"
+   },
+   "frames": 26,
+   "uniqueFrames": 11,
+   "trackMiss": 0
+  },
+  {
+   "form": "D1",
+   "name": "熔熔石",
+   "series": "D",
+   "stage": "S3 D",
+   "lightType": "bulb",
+   "file": "D1.json",
+   "sheet": "D1_glow@3x.json",
+   "tints": {
+    "core": "#fdeec7",
+    "mid": "#face5e",
+    "outer": "#e09f44"
+   },
+   "frames": 26,
+   "uniqueFrames": 10,
+   "trackMiss": 0
+  },
+  {
+   "form": "D2",
+   "name": "尖尖岩",
+   "series": "D",
+   "stage": "S5 D",
+   "lightType": "bulb",
+   "file": "D2.json",
+   "sheet": "D2_glow@3x.json",
+   "tints": {
+    "core": "#fdf0c9",
+    "mid": "#fad566",
+    "outer": "#e0a54a"
+   },
+   "frames": 26,
+   "uniqueFrames": 11,
+   "trackMiss": 0
+  },
+  {
+   "form": "D3",
+   "name": "火翼仔",
+   "series": "D",
+   "stage": "S6 D",
+   "lightType": "bulb",
+   "file": "D3.json",
+   "sheet": "D3_glow@3x.json",
+   "tints": {
+    "core": "#fee9c0",
+    "mid": "#fcc04b",
+    "outer": "#e29436"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "E1",
+   "name": "紅火糰",
+   "series": "E",
+   "stage": "S3 E",
+   "lightType": "bulb",
+   "file": "E1.json",
+   "sheet": "E1_glow@3x.json",
+   "tints": {
+    "core": "#fdf0db",
+    "mid": "#f8d598",
+    "outer": "#dfa56e"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "E2",
+   "name": "火尾鬼",
+   "series": "E",
+   "stage": "S5 E",
+   "lightType": "bulb",
+   "file": "E2.json",
+   "sheet": "E2_glow@3x.json",
+   "tints": {
+    "core": "#fee6c7",
+    "mid": "#fbb85e",
+    "outer": "#e18e44"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "E3",
+   "name": "熔岩獸",
+   "series": "E",
+   "stage": "S6 E",
+   "lightType": "bulb",
+   "file": "E3.json",
+   "sheet": "E3_glow@3x.json",
+   "tints": {
+    "core": "#fdebc4",
+    "mid": "#fac756",
+    "outer": "#e09a3e"
+   },
+   "frames": 26,
+   "uniqueFrames": 11,
+   "trackMiss": 0
+  },
+  {
+   "form": "F1",
+   "name": "星星彈",
+   "series": "F",
+   "stage": "S3 F",
+   "lightType": "star",
+   "file": "F1.json",
+   "sheet": "F1_glow@3x.json",
+   "tints": {
+    "core": "#fff3cc",
+    "mid": "#ffde6e",
+    "outer": "#e5ac50"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "F2",
+   "name": "星耳咪",
+   "series": "F",
+   "stage": "S5 F",
+   "lightType": "bulb",
+   "file": "F2.json",
+   "sheet": "F2_glow@3x.json",
+   "tints": {
+    "core": "#faf3da",
+    "mid": "#f1dd94",
+    "outer": "#d8ab6b"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "F3",
+   "name": "月亮糰",
+   "series": "F",
+   "stage": "S6 F",
+   "lightType": "bulb",
+   "file": "F3.json",
+   "sheet": "F3_glow@3x.json",
+   "tints": {
+    "core": "#fef4d7",
+    "mid": "#fbdf8c",
+    "outer": "#e1ac65"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "G1",
+   "name": "夜夜糰",
+   "series": "G",
+   "stage": "S3 G",
+   "lightType": "star",
+   "file": "G1.json",
+   "sheet": "G1_glow@3x.json",
+   "tints": {
+    "core": "#fff3cc",
+    "mid": "#ffde6e",
+    "outer": "#e5ac50"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "G2",
+   "name": "舉星咪",
+   "series": "G",
+   "stage": "S5 G",
+   "lightType": "bulb",
+   "file": "G2.json",
+   "sheet": "G2_glow@3x.json",
+   "tints": {
+    "core": "#fdf4d7",
+    "mid": "#f9e18c",
+    "outer": "#dfae65"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "G3",
+   "name": "月角咪",
+   "series": "G",
+   "stage": "S6 G",
+   "lightType": "bulb",
+   "file": "G3.json",
+   "sheet": "G3_glow@3x.json",
+   "tints": {
+    "core": "#fcf4da",
+    "mid": "#f5e195",
+    "outer": "#dcae6c"
+   },
+   "frames": 26,
+   "uniqueFrames": 11,
+   "trackMiss": 0
+  },
+  {
+   "form": "H1",
+   "name": "月角仔",
+   "series": "H",
+   "stage": "S3 H",
+   "lightType": "bulb",
+   "file": "H1.json",
+   "sheet": "H1_glow@3x.json",
+   "tints": {
+    "core": "#fbf0da",
+    "mid": "#f3d396",
+    "outer": "#daa36d"
+   },
+   "frames": 26,
+   "uniqueFrames": 8,
+   "trackMiss": 0
+  },
+  {
+   "form": "H2",
+   "name": "環月精",
+   "series": "H",
+   "stage": "S5 H",
+   "lightType": "bulb",
+   "file": "H2.json",
+   "sheet": "H2_glow@3x.json",
+   "tints": {
+    "core": "#fff8da",
+    "mid": "#ffec96",
+    "outer": "#e5b66d"
+   },
+   "frames": 26,
+   "uniqueFrames": 9,
+   "trackMiss": 0
+  },
+  {
+   "form": "H3",
+   "name": "銀河靈",
+   "series": "H",
+   "stage": "S6 H",
+   "lightType": "own",
+   "file": "H3.json",
+   "sheet": "H3_glow@3x.json",
+   "tints": {
+    "core": "#fffae1",
+    "mid": "#fff0aa",
+    "outer": "#e5b97b"
+   },
+   "frames": 26,
+   "uniqueFrames": 11,
+   "trackMiss": 0
+  }
+ ],
+ "notLight": {
+  "S1": "冇光源（蛋殼仔）→ 只用場景通用 petLight 光池"
+ }
+}

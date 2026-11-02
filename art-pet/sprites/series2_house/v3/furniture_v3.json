@@ -133,7 +133,7 @@
      "png": "furniture/lamp_mushroom_pool@3x.png",
      "at": "anchor＋(0,−1)",
      "blend": "lighter（lightmap 之後、ysort 之前）",
-     "alpha": "0.6 × lamps.scale"
+     "alpha": "0.85 × lamps.scale"
     },
     "flare": {
      "size": "m",
@@ -189,7 +189,7 @@
      "png": "furniture/lamp_firefly_pool@3x.png",
      "at": "anchor＋(0,−1)",
      "blend": "lighter（lightmap 之後、ysort 之前）",
-     "alpha": "0.6 × lamps.scale"
+     "alpha": "0.85 × lamps.scale"
     },
     "flare": {
      "size": "s",
