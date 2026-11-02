@@ -182,7 +182,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     // ── ④ 重疊檢查（e2e＋🛠 用）：可見 UI 框兩兩相交 ──
     const CHROME = ['#ui .ibtn', '#ui .abtn', '#ui .hdTab', '#stagename', '#substage', '#prog', '#grains', '#s12chip', '[data-testid="s12-qprog"]', '#toast', '#s12gain', '#s12voice', '#bubble', '#devBtn',
       '[data-testid="uiv2-portrait"]', '#u62tip', '#u62tip .k', '[data-testid="house-back"]', '[data-testid="house-title"]', '[data-testid="house-decorate"]', '[data-testid="house-hint"]', '[data-testid="u62-sub"]',
-      '#mbox > h2', '#mbox .btn', '[data-testid$="-close"]', '[data-testid$="-title"]', '[role="button"]', '[data-testid^="u62w-back"]', '[data-testid="u62w-sum"]', '[data-testid^="u62w-st-"]', '[data-testid="u62w-rest"]', '[data-testid="u62w-plan"]', '[data-testid="u62w-empty"]'];
+      '#mbox > h2', '#mbox .btn', '[data-testid$="-close"]', '[data-testid$="-title"]', '[role="button"]', '[data-testid^="u62w-back"]', '[data-testid="u62w-sum"]', '[data-testid^="u62w-st-"]', '[data-testid="u62w-rest"]', '[data-testid="u62w-plan"]', '[data-testid="u62w-empty"]', '#u63hide'];
     function visBox(e) {
       if (!e || !e.isConnected) return null; const r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return null;
       for (let p = e; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity < 0.15) return null; }
@@ -191,7 +191,11 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
       const md = $('#modal'); if (md && getComputedStyle(md).display !== 'none' && !e.closest('#modal') && !e.closest('#u62tip')) return null;   // 彈窗遮住後面嘅 HUD
       const ov = OVS.map(s => document.querySelector(s)).find(o => o && o.offsetWidth >= 380 && getComputedStyle(o).display !== 'none');
       if (ov && !ov.contains(e) && !e.closest('#modal') && !e.closest('#u62tip') && e.id !== 'toast' && e.id !== 's12gain' && e.id !== 'devBtn') return null;   // 全畫面層遮住
-      void top; return { x: r.left, y: r.top, w: r.width, h: r.height, r: r.right, b: r.bottom };
+      // 6b.3：俾捲動／overflow 容器裁咗嘅部分睇唔到，唔計（例：工作 grid 捲出底嘅卡）
+      let L = r.left, T = r.top, R = r.right, B = r.bottom;
+      for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.overflowX !== 'visible' || cs.overflowY !== 'visible') { const q = p.getBoundingClientRect(); L = Math.max(L, q.left); T = Math.max(T, q.top); R = Math.min(R, q.right); B = Math.min(B, q.bottom); } }
+      if (R - L < 2 || B - T < 2) return null;
+      void top; return { x: L, y: T, w: R - L, h: B - T, r: R, b: B };
     }
     function overlap(opt) {
       opt = opt || {}; const tol = opt.tol == null ? 1 : opt.tol, list = [];

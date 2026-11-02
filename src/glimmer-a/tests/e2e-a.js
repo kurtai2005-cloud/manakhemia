@@ -289,7 +289,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
     const c = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.dpr });
     const p = await c.newPage();
     await p.goto(BASE + '?debug=1&q=off&hour=13&ev=0'); await p.waitForTimeout(500);
-    const box = await p.evaluate(() => [...document.querySelectorAll('.ibtn')].map(el => { const r = el.getBoundingClientRect(); return { id: el.id, w: r.width, h: r.height }; }));
+    await p.waitForTimeout(600); const box = await p.evaluate(() => [...document.querySelectorAll('.ibtn')].map(el => { const rs = [el.getBoundingClientRect(), ...[...el.querySelectorAll(':scope > i.u63hit')].map(h => h.getBoundingClientRect())];   // 6b.3：連透明 hit area
+      return { id: el.id, w: Math.max(...rs.map(r => r.right)) - Math.min(...rs.map(r => r.left)), h: Math.max(...rs.map(r => r.bottom)) - Math.min(...rs.map(r => r.top)) }; }));
     ok(box.length >= 2 && box.every(b => b.w >= 48 && b.h >= 48), '360×' + vp.height + ' dpr' + vp.dpr + ' .ibtn ≥48 CSS px', JSON.stringify(box));
     await c.close();
   }

@@ -54,7 +54,9 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   await toKid(); const evo0 = await evoSnap(); await E(() => { window.__toasts = []; const U = Glimmer.ui, t = U.toast; U.toast = function (m) { window.__toasts.push(String(m)); return t.apply(this, arguments); }; }); await E(() => __qa.house.rail()); await W(300); s = await h();
   ok(s.rail && s.rail.shown && s.rail.locked === '1' && !s.rail.dot, '有細佬未家人 → 屋仔掣上鎖', s.rail);
   { const b = await page.locator('[data-testid=s2-rail-house]').boundingBox(); const X = await E(() => (window.__qa && __qa.uiv2 && __qa.uiv2.st().on) ? __qa.uiv2.st().rail.house : { x: 360, y: 336 }); const dy = await E(() => document.getElementById('ui').classList.contains('u62') ? 6 : 0);   // 6b.2：屋仔掣下移 6px 讓「信件」字
-    ok(b && Math.abs(b.x + b.width / 2 - X.x) < 3 && Math.abs(b.y + b.height / 2 - X.y - dy) < 3, '入口喺 rail（v1 360／336；v2 跟 layout rail）', b, X); }
+    const S3 = await E(() => document.getElementById('ui').classList.contains('u63') ? __glimmer.ui2.u63 : 0);   // 6b.3：rail 以 (390,160) 為錨縮 ×0.833
+    const ex = S3 ? 390 + (X.x - 390) * S3 : X.x, ey = S3 ? 160 + (X.y + dy - 160) * S3 : X.y + dy;
+    ok(b && Math.abs(b.x + b.width / 2 - ex) < 3 && Math.abs(b.y + b.height / 2 - ey) < 3, '入口喺 rail（v1 360／336；v2 跟 layout rail；6b.3 縮細跟錨點）', { b, X, ex, ey }); }
   await page.locator('[data-testid=s2-rail-house]').click(); await W(300);
   ok((await toast()).includes('同細佬做咗家人就可以一齊住'), '撳上鎖掣 → 「同細佬做咗家人就可以一齊住」'); s = await h(); ok(!s.open, '上鎖入唔到');
   await shot('01-entry-locked');

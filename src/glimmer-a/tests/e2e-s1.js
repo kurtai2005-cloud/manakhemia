@@ -31,7 +31,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   console.log('# P1-1 ⚙️／📖 熱區 ≥44 CSS px');
   for (const vp of [{ width: 390, height: 844 }, { width: 360, height: 780 }, { width: 360, height: 640 }, { width: 320, height: 568 }]) {
     const { ctx, E } = await open(vp, 'seed=3&ev=0');
-    const r = await E(() => ['gear', 'diary'].map(id => { const b = document.getElementById(id).getBoundingClientRect(); return { id, w: +b.width.toFixed(1), h: +b.height.toFixed(1) }; }));
+    const r = await E(() => ['gear', 'diary'].map(id => { const e = document.getElementById(id), rs = [e.getBoundingClientRect(), ...[...e.querySelectorAll(':scope > i.u63hit')].map(h => h.getBoundingClientRect())];   // 6b.3：連透明 hit area 一齊計
+      const w = Math.max(...rs.map(b => b.right)) - Math.min(...rs.map(b => b.left)), h = Math.max(...rs.map(b => b.bottom)) - Math.min(...rs.map(b => b.top)); return { id, w: +w.toFixed(1), h: +h.toFixed(1) }; }));
     ok(r.every(x => x.w >= 44 && x.h >= 44), `${vp.width}×${vp.height}：⚙️ ${r[0].w}×${r[0].h}、📖 ${r[1].w}×${r[1].h} CSS px（≥44）`, JSON.stringify(r));
     if (vp.width === 360 && vp.height === 780) {   // 實點：熱區邊緣（距中心 21px）點落都打開
       const hit = await E(() => { const b = document.getElementById('gear').getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2; return [[cx - 21, cy], [cx + 21, cy], [cx, cy - 21], [cx, cy + 21]].map(([x, y]) => { const el = document.elementFromPoint(x, y); return !!(el && el.closest('#gear')); }); });

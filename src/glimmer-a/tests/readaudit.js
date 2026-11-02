@@ -14,7 +14,7 @@ async function collect(page, rootSel) {
         if (rr.bottom < 0 || rr.top > innerHeight || rr.right < 0 || rr.left > innerWidth) continue;
         let a = el, op = 1; while (a && a !== document.documentElement) { const c = getComputedStyle(a); op *= +c.opacity; if (c.display === 'none' || c.visibility === 'hidden') { op = 0; break; } a = a.parentElement; } if (op < 0.05) continue;
         // 只計最上面嗰層（俾蓋住嘅唔計）
-        const cx = Math.min(innerWidth - 1, Math.max(0, rr.left + rr.width / 2)), cy = Math.min(innerHeight - 1, Math.max(0, rr.top + rr.height / 2)), top = document.elementFromPoint(cx, cy); if (top && !(el === top || el.contains(top) || top.contains(el))) continue;
+        const cx = Math.min(innerWidth - 1, Math.max(0, rr.left + rr.width / 2)), cy = Math.min(innerHeight - 1, Math.max(0, rr.top + rr.height / 2)), top0 = document.elementFromPoint(cx, cy), top = top0 && top0.classList && top0.classList.contains('u63hit') ? top0.parentElement : top0; /* 6b.3 透明 hit area 唔算遮 */ if (top && !(el === top || el.contains(top) || top.contains(el))) continue;
         const fs = parseFloat(cs.fontSize), eb = el.getBoundingClientRect(), sc = eb.width && el.offsetWidth ? eb.width / el.offsetWidth : k;
         out.push({ t: t.slice(0, 24), tid: el.dataset.testid || el.id || el.className && String(el.className).slice(0, 30) || el.tagName, fs, eff: +(fs * sc).toFixed(2), sc: +sc.toFixed(3), fam: cs.fontFamily.split(',')[0].replace(/"/g, ''), col: rgb(cs.color), ol: shadowCol(cs.textShadow), smooth: cs.webkitFontSmoothing || '', op: +op.toFixed(2), r: [rr.left, rr.top, rr.width, rr.height].map(v => Math.round(v)), sys: el.closest('.sysf') ? 1 : 0, fbk: el.dataset.fbk || '' });
       } }

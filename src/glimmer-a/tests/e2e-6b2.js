@@ -14,7 +14,8 @@ const SHOTS = process.env.SHOTS || process.env.OUT || path.join(__dirname, '..',
 require('fs').mkdirSync(SHOTS, { recursive: true });
 let pass = 0, fail = 0;
 const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else { fail++; console.log('  ✗ ' + n + (info !== undefined ? ' → ' + JSON.stringify(info) : '')); } };
-const QS = 'q=high&seed=21&ev=0&hour=13';
+// 6b.3 起預設開 ui63（縮細一級＋收埋掣）；呢份測 6b.2 嗰層（字 24／18／16），所以關 ui63 跑；縮細後嘅等價檢查喺 e2e-6b3.js
+const QS = 'q=high&seed=21&ev=0&hour=13&ui63=0';
 
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });

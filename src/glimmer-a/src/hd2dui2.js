@@ -477,11 +477,16 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
     const Z62 = '#mbox, #l5bov, #l6bov, #l5ov, #u62work, #u62tip, #s12voice, #bubble, #toast, #s12gain', T62 = 'h2, h3, .ttl, .t, [data-testid$="-title"], #stagename, #substage, .plaque';
     const B62 = '.btn, .k, .hdTg, .seg, .ibtn, .abtn, [data-testid*="-btn"], [data-testid$="-close"], [data-testid*="-tab"], [data-btn], [role="button"]';
     function read62(el, cs, fs, txt) {
-      if (el.dataset.r62) return true; if (!el.closest(Z62) || el.closest(T62) || el.closest(B62)) return false;
+      // 6b.3（ui63）：縮細一級 → 內文 16／輔助 14（喺 .u63s 縮放組入面再除返個倍數，有效字號啱數）
+      const f63 = ui.classList.contains('u63') ? Math.min(1, Math.round((ui.getBoundingClientRect().width / (ui.offsetWidth || 390) || 1) * 100) / 100) : 1;   // 細機（360）成個 #ui 再縮：輔助字保住實際 ≥14
+      const k63 = ui.classList.contains('u63') ? (el.closest('.u63s') ? 's' : 'u') + f63 : '';
+      if (el.dataset.r62 && el.dataset.r62k === k63) return true; if (!el.closest(Z62) || el.closest(T62) || el.closest(B62)) return false;
       if (cs.cursor === 'pointer' && el.offsetHeight >= 40 && !el.closest('#s12voice, #bubble, #toast, #s12gain, #u62tip')) return false;   // 撳得嘅卡／掣：照 FP12
-      const aux = el.classList.contains('u62sub') || el.tagName === 'SMALL' || (fs > 0 && fs < 14);
-      el.dataset.r62 = aux ? 'a' : 'b'; el.style.setProperty('font-family', '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif', 'important');
-      el.style.setProperty('font-size', aux ? '16px' : '18px', 'important'); el.style.setProperty('line-height', aux ? '22px' : '26px', 'important'); el.style.setProperty('letter-spacing', aux ? '.5px' : '.3px', 'important');
+      const aux = el.dataset.r62 ? el.dataset.r62 === 'a' : (el.classList.contains('u62sub') || el.tagName === 'SMALL' || (fs > 0 && fs < 14));
+      const S63 = k63[0] === 's' ? (U.u63 || 1) : 1, px = (v) => (v / S63).toFixed(1).replace(/\.0$/, '') + 'px';
+      const fb = k63 ? Math.max(16, Math.ceil(14 / f63 * 10) / 10) : 18, fa = k63 ? Math.max(14, Math.ceil(14 / f63 * 10) / 10) : 16, lb = k63 ? Math.round(fb * 1.5) : 26, la = k63 ? Math.round(fa * 10 / 7) : 22;
+      el.dataset.r62 = aux ? 'a' : 'b'; el.dataset.r62k = k63; el.style.setProperty('font-family', '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif', 'important');
+      el.style.setProperty('font-size', px(aux ? fa : fb), 'important'); el.style.setProperty('line-height', px(aux ? la : lb), 'important'); el.style.setProperty('letter-spacing', aux ? '.5px' : '.3px', 'important');
       if (!aux && !/[6-9]00|bold/.test(cs.fontWeight)) el.style.setProperty('font-weight', '500', 'important');
       if (cs.position === 'absolute' && txt.length <= 8) el.style.setProperty('white-space', 'nowrap');
       return true;
@@ -493,6 +498,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       delete el.dataset.tall; const tops = new Set(); for (const n of el.childNodes) if (n.nodeType === 3 && n.nodeValue.trim()) { const rg = document.createRange(); rg.selectNodeContents(n); for (const r of rg.getClientRects()) if (r.width > 1) tops.add(Math.round(r.top)); } const over = tops.size > 1;   // 自然換咗行 ＝ 太長
       if (over) { el.dataset.tall = '1'; el._tk = el.textContent + '|' + el.clientWidth; }
     }
+    U.readAll = () => readPass(true);
     U.tallPass = () => { if (U.on) document.querySelectorAll('#mbox .btn').forEach(tallBtn); };
     function readPass(all) {
       if (!U.on) return;
