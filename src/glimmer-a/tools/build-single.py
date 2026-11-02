@@ -15,6 +15,10 @@ SKIP_REL = set([_B5 + n + '@3x.png' for n in ('diary_page_example', 'job_card_ex
 # 5c.1：遊美 5c 示意圖／未用 UI（~268KB；runtime 只用 chip_trick_*／icon_fast／icon_inherit／swatch_*；檔留喺 repo 畀 long5c.test 對數）
 _C5 = 'art/series2_long/5c/ui/'
 SKIP_REL |= set([_C5 + n + '@3x.png' for n in ('parent_card_A3', 'parent_card_evo_still_moon', 'inherit_preview_bar', 'icon_trick', 'icon_pattern', 'pill_fast_on', 'pill_fast_tr', 'pill_fast_locked')] + [_C5 + 'layout.json'])
+# 6a.1：遊美 6a 表情 runtime 只用 1x（per_pet／faces6a.json）；@3x 同預設 face_*（只啱 evo_still_radiant）唔入單檔
+_F6 = 'art/breakthrough/6a/'
+SKIP_REL |= set([_F6 + n for n in ('face_smug.png', 'face_pout.png', 'face_smug@3x.png', 'face_pout@3x.png')])
+SKIP_RX = re.compile(r'^art/breakthrough/6a/per_pet/[^/]+/face_(smug|pout)@3x\.png$')
 assets = {}; skipped = [0, 0]
 for d in ('art', 'audio'):
     for dp, dns, fs in os.walk(os.path.join(ROOT, d)):
@@ -27,7 +31,7 @@ for d in ('art', 'audio'):
             ext = os.path.splitext(f)[1]
             if ext not in MIME: continue
             p = os.path.join(dp, f); rel = os.path.relpath(p, ROOT).replace(os.sep, '/')
-            if f in SKIP_FILES or rel in SKIP_REL: skipped[0] += 1; skipped[1] += os.path.getsize(p); continue
+            if f in SKIP_FILES or rel in SKIP_REL or SKIP_RX.match(rel): skipped[0] += 1; skipped[1] += os.path.getsize(p); continue
             assets[rel] = [MIME[ext], base64.b64encode(open(p, 'rb').read()).decode()]
 shim = r"""<script>/* 單檔 build：內嵌資產解析器（fetch／Image） */
 (function () {

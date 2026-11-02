@@ -950,6 +950,8 @@
       const gm0 = b.gest || null, RC = (typeof self !== 'undefined' && self.Glimmer && self.Glimmer.reactclip) || null, TA = (P.touch && P.touch.art) || {};
       const RXA = (gm0 && gm0.clip && RC && TA.enabled !== false && !so && !(TA.yieldTo || []).includes(sc.clip) && this.rxForm(fk) && this.rx.clips[gm0.clip]) ? { clip: this.rx.clips[gm0.clip], a: this.rx.anchors[fk], drawn: [] } : null;
       if (RXA) { dclip = 'idle'; dframe = 0; RXA.ev = RC.evalClip(RXA.clip, gm0.ms || 0, { rotStep: TA.rotStep, frameInfo: (id) => this.rxInfo(id, RXA.a) }); }
+      const F6 = (!so && this.face6a && this.face6a.get) ? this.face6a.get(fk) : null;   // 6a.1 遊美表情 smug6a／pout6a（per_pet 全幀 patch）：同 3a 一樣 base＝idle 幀 0
+      if (F6) { dclip = 'idle'; dframe = 0; }
       let src = null, ph = null, live = null;
       this.faceStat.draws++;
       // F1：生命感 noface 身體（有就用；顯示 clip 可以係 turn_back）
@@ -1005,7 +1007,7 @@
           if (kind === 'eye') tx.fillRect(o0x + at[0] - (sm >> 1), o0y + at[1] - sm, sm, sm + 1); else { tx.fillRect(o0x + at[0] - sm, o0y + at[1], sm * 2, 1); }
           return false;
         };
-        if (vis && !(RXA && RXA.okSz && RXA.ev.face)) {   // 反應 face patch 蓋面 → 唔畫 kit 五官
+        if (vis && !(RXA && RXA.okSz && RXA.ev.face) && !(F6 && src && src.sw === F6.fw && src.sh === F6.fh)) {   // 反應／6a face patch 蓋面 → 唔畫 kit 五官
           const moving = FCP.closedEyes.indexOf(f.eyes) < 0, g = moving ? (f.gaze || 'C') : 'C';
           let nl = 'eyes_' + f.eyes + '_' + g + '_l', nr = 'eyes_' + f.eyes + '_' + g + '_r';
           if (f.eyes === 'wink') { const gg = f.gaze || 'C'; nl = 'eyes_neutral_' + gg + '_l'; nr = 'eyes_wink_C_r'; }
@@ -1024,11 +1026,13 @@
         for (let k = 0; k < 7; k++) { const dx = Math.round((hash(k * 3.1) - 0.5) * fs * 0.6), dy = -Math.round(fs * (0.12 + hash(k * 5.3) * 0.38)); tx.fillStyle = k % 3 ? '#5a4632' : '#3e3024'; tx.fillRect(PX + dx, PY + dy, 2, 2); tx.fillStyle = '#7a6444'; tx.fillRect(PX + dx, PY + dy, 1, 1); }
         tx.globalCompositeOperation = 'source-over';
       }
-      if (RXA && RXA.okSz) {                           // face patch（clip.face 軌）＋ wear patch（眼鏡／四方帽），全幀，transform 之前蓋（同身一齊 tint）
-        const tx = (live || draw !== src) ? this.tmpPet.getContext('2d') : comp(), A = RXA.a, fw = A.frameSize[0], fh = A.frameSize[1], o0x = PX - src.px, o0y = PY - src.py, ev = RXA.ev;
-        if (ev.face) { const i = A.faces.order.indexOf(ev.face), im = this.rx.img[A.faces.file]; if (i >= 0 && im) tx.drawImage(im, i * fw, 0, fw, fh, o0x, o0y, fw, fh); }
-        for (const w of ev.wear) { const im = this.rx.img[A.wear[w.id]]; if (im) tx.drawImage(im, (w.f | 0) * fw, 0, fw, fh, o0x, o0y, fw, fh); }
-      }
+      const F6ok = !!(F6 && src && src.sw === F6.fw && src.sh === F6.fh);   // 大細要同該形態 idle 幀 0 一樣先蓋（唔啱 → 唔畫，照舊五官）
+      if ((RXA && RXA.okSz) || F6ok) {                 // face patch（clip.face 軌／6a）＋ wear patch（眼鏡／四方帽），全幀左上對齊，transform 之前蓋（同身一齊 tint）；次序 base→表情→wear
+        const tx = (live || draw !== src) ? this.tmpPet.getContext('2d') : comp(), o0x = PX - src.px, o0y = PY - src.py;
+        if (F6ok) { tx.drawImage(F6.img, 0, 0, F6.fw, F6.fh, o0x, o0y, F6.fw, F6.fh); fst.face6a = F6.key; this.faceStat.face6a = (this.faceStat.face6a || 0) + 1; }
+        else if (RXA.ev.face) { const A = RXA.a, fw = A.frameSize[0], fh = A.frameSize[1], i = A.faces.order.indexOf(RXA.ev.face), im = this.rx.img[A.faces.file]; if (i >= 0 && im) tx.drawImage(im, i * fw, 0, fw, fh, o0x, o0y, fw, fh); }
+        if (RXA && RXA.okSz) { const A = RXA.a, fw = A.frameSize[0], fh = A.frameSize[1]; for (const w of RXA.ev.wear) { const im = this.rx.img[A.wear[w.id]]; if (im) tx.drawImage(im, (w.f | 0) * fw, 0, fw, fh, o0x, o0y, fw, fh); } }
+      } else if (F6) fst.face6aSkip = F6.key + ':' + (src ? src.sw + 'x' + src.sh : 'nosrc');
       const mir = b.dir < 0 ? -1 : 1, prm = art.playRootMotion;
       // 時段 tint：五官已喺上面合成入 tmpPet → 呢度成個合成只 tint 一次（HD-2D 取代 daylight tint，唔加多一次）
       if (c.hd) { this.faceStat.tints++; draw = this.hd.tintPet(draw, { mir, form: fk, rimKey: live ? fk + '_live' : fk, frame: draw.name, quality: c.q, lumi: s.form === 'lumi' && !EVO }); }   // evo 螢絨有自己色 → 唔再螢綠 tint   // petTint×ambientTint＋rim（唔過 LUT）

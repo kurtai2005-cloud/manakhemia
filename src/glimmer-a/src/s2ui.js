@@ -405,10 +405,12 @@
       const b = view && view.beh, bc = (b && b.clip) || '', now = pnow(), dt = KM.t ? Math.min(200, now - KM.t) : 0; KM.t = now;
       const clip = s.sleeping ? 'sleep' : (cc && cc.anim === 'eat') ? 'eat' : /walk|run|hop/.test(bc) ? 'walk' : (cc && cc.anim === 'unwell') ? 'cry' : 'idle';
       if (clip !== KM.clip) { KM.clip = clip; KM.ct = 0; } else KM.ct += dt; if (b && b.dir) KM.dir = b.dir < 0 ? -1 : 1;
-      const sp = strip(fk, clip); if (!sp) return null; const f = kidFrame(fk, clip, KM.ct, true), X = Math.round(gx);
+      const F6 = (R.face6a && R.face6a.get && clip !== 'sleep') ? R.face6a.get(fk) : null, c6 = F6 && F6.fw === 48 && F6.fh === 48 && strip(fk, 'idle') ? 'idle' : null;   // 6a.1：遊美表情 patch → base＝idle 幀 0
+      const sp = strip(fk, c6 || clip); if (!sp) return null; const f = c6 ? 0 : kidFrame(fk, clip, KM.ct, true), X = Math.round(gx);
       x.fillStyle = 'rgba(10,20,20,0.35)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(10 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(X) - w, oy(base - 1 + dy), w * 2, 1); }
       x.save(); x.imageSmoothingEnabled = false; const X0 = ox(X), Y0 = oy(base); if (KM.dir < 0) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
-      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'km', fk, A.act.forms[fk][clip] ? clip : 'idle', f, -24, -45); x.restore(); RST.km = (RST.km || 0) + 1;
+      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'km', fk, c6 || (A.act.forms[fk][clip] ? clip : 'idle'), f, -24, -45);
+      if (c6) { x.drawImage(F6.img, 0, 0, 48, 48, -24, -45, 48, 48); RST.face6a = (RST.face6a || 0) + 1; RST.face6aLast = F6.key + ':' + fk; } x.restore(); RST.km = (RST.km || 0) + 1;
       const ka = (A.ka && (A.ka.forms[fk] || A.ka.forms.S2)) || { headTop: [24, 14] }, hy = base + ka.headTop[1] - 45, hx = X + (ka.headTop[0] - 24) * KM.dir;
       const cr = im('../series2_long/5a/ui/icon_crown@3x.png'); if (cr) { const bob = Math.round(Math.sin(now / 600)); x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, ox(hx) - 7, oy(hy - 14 + bob), 14, 14); x.restore(); RST.crown = (RST.crown || 0) + 1; }
       if (clip === 'sleep') { const z = fxInfo('fx_zzz'); if (z && z.img) { const fr = Math.floor(now / 300) % z.n; x.drawImage(z.img, fr * z.w, 0, z.w, z.h, ox(hx + 6) - z.pv[0], oy(hy - 1) - z.pv[1], z.w, z.h); } }

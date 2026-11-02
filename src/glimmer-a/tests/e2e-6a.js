@@ -1,6 +1,6 @@
 /* 《微光小圃》 e2e-6a — 第 6 批 6a「團絨記得你」（遊策 breakthrough-6a6d-spec §6a）：
    本機 30 日記錄（嚟嘅時間、照顧、食咗乜、小遊戲最好、訪客）、每日第一次開 game 招呼 1 句（真重開 app）、一日只講一次、
-   冇嚟 1 日／3 日以上句、返嚟第一下撳特別開心（真撳寵物）、日記自動加 1 句（日記頁）、記憶心聲（每日最多 2）、得意／委屈表情疊層（placeholder）、
+   冇嚟 1 日／3 日以上句、返嚟第一下撳特別開心（真撳寵物）、日記自動加 1 句（日記頁）、記憶心聲（每日最多 2）、得意／委屈表情（6a.1 遊美 per_pet patch smug6a／pout6a；冇圖形態 placeholder）、
    30 日記錄 ≤200KB＋存檔來回、字清晰度（FP12 24px、對比 ≥4.5）、熱區 ≥48、🛠「6a」、?l6a=0。
    截圖 360×780 DPR3 → SHOTS（6a-*.png）。node tests/e2e-6a.js */
 const path = require('path');
@@ -37,6 +37,8 @@ const DAY = 86400e3;
     const st = s.stage; __glimmer.save(); window.__noSaveOnHide = true; return { pk, st }; }, gap);
   const voice = () => E(() => { const v = document.getElementById('s12voice'); return { src: v.dataset.src || '', txt: v.textContent.trim(), op: +v.style.opacity, fs: getComputedStyle(v).fontSize, ff: getComputedStyle(v).fontFamily }; });
   const waitVoice = async (ms) => { for (let i = 0; i < (ms || 6000) / 200; i++) { const v = await voice(); if (v.src === 'mem6' && v.op > 0) return v; await W(200); } return voice(); };
+  // 6a.1：遊美表情（per_pet patch）→ log 有 face（key＝kind6a、唔係 placeholder）＋ renderer 真係蓋咗（faceStat.face6a 有數）
+  const faceSeen = (kind, why) => E(([kind, why]) => { const L = __qa.l6a.log().filter(x => x.k === 'face' && !x.ph && /^(smug|pout)6a$/.test(x.key || '') && (!kind || x.kind === kind) && (!why || x.why === why)); return L.length > 0 && (__glimmer.renderer.faceStat.face6a | 0) > 0 && !document.querySelector('#l6aface[data-ph]:not([style*="display: none"])'); }, [kind, why]);
   const readOk = async (name, sel) => { const a = await audit(page, sel); ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam])); };
   const petXY = () => E(() => { const r = document.getElementById('gl').getBoundingClientRect(), k = r.width / 195, h = Glimmer.ui.petHitBox(); return { x: r.left + (h.x + h.w / 2) * k, y: r.top + (h.y + h.h / 2) * k }; });
   const hit = (sel) => E((sel) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth;
@@ -76,7 +78,7 @@ const DAY = 86400e3;
   ok(!/\{\w+\}/.test(v.txt), '空位全部填好', v.txt);
   ok(v.fs === '24px' && /GlimmerFP12/.test(v.ff), '記憶句泡泡 FP12 24px', v);
   await E(() => { document.getElementById('s12voice').style.pointerEvents = 'auto'; }); await readOk('招呼泡泡', '#s12voice'); await E(() => { document.getElementById('s12voice').style.pointerEvents = ''; });
-  ok(await E(() => { const f = document.getElementById('l6aface'); return f && f.style.display === 'block' && /^6a:face_(smug|pout)$/.test(f.dataset.ph || ''); }), '講嘢時頭頂出表情疊層（placeholder 有標記）');
+  ok(await faceSeen(null, 'bubble'), '講嘢時團絨換 6a 表情（遊美 per_pet patch，smug6a／pout6a）', await E(() => __qa.l6a.log().filter(x => x.k === 'face').slice(-3)));
   await shot('01-greet');
   await W(6500); await reload(); await W(3500); q = await Q(); ok(q.n.greet === 1, '同一日再開 → 唔再講招呼', q.n);
   ok(q.today.n >= 1, '今日嚟咗 ' + q.today.n + ' 次（20 分鐘內返嚟唔當新一次）');
@@ -103,7 +105,7 @@ const DAY = 86400e3;
   const k1 = await cnt(); ok(k0.shared === 0 && k1.shared === 0 && k1.grants === k0.grants && k1.quest === k0.quest && k1.pat === 0 && !k1.press, '第一下撳純視覺（唔跑 sysPress）：心情共用額 0、摸頭委託冇加、mem6 摸頭 0', { k0, k1 });
   ok(await E(() => document.querySelectorAll('[data-testid=l6a-heart]').length >= 3), '心心飄出嚟');
   ok(await E(() => __qa.touch && __qa.touch.st().act && __qa.touch.st().act.key === 'g_tickle'), '團絨笑到震（g_tickle）', await E(() => __qa.touch && __qa.touch.st().act));
-  ok(await E(() => { const f = document.getElementById('l6aface'); return f.style.display === 'block' && f.dataset.kind === 'smug' && f.dataset.ph === '6a:face_smug'; }), '得意表情（placeholder）');
+  ok(await faceSeen('smug'), '得意表情 smug6a（' + (await E(() => __qa.l6a.st().faceFk)) + ' per_pet；冇 placeholder）', await E(() => __qa.l6a.log().filter(x => x.k === 'face').slice(-3)));
   await shot('02-happy');
   await W(1800); await E(() => { __glimmer.lastPetPress = null; }); { const c2 = await petXY(); await page.mouse.click(c2.x, c2.y); } await W(250); q = await Q(); ok(q.n.happy === 1, '第二下撳 → 正常（唔再特別開心）', q.n);
   { const k2 = await cnt(); ok(!!k2.press && k2.grants >= k1.grants, '第二下撳 → 照舊行觸摸／sysPress', { k1, k2 }); }
@@ -113,7 +115,7 @@ const DAY = 86400e3;
   const a3 = q.log.filter(x => x[2] === 'greet').pop();
   ok(a3 && /^a3_/.test(a3[1]) && q.gap === 4, '冇嚟 4 日 → 3 日以上句：「' + v.txt + '」', { a3, gap: q.gap });
   ok(await E(() => Glimmer.long6a.LINES.absent3.some(L => L[1] === '我以為你搬咗屋。')), 'spec 句「我以為你搬咗屋。」喺 3 日以上句庫');
-  ok(await E(() => { const f = document.getElementById('l6aface'); return f.style.display === 'block' && f.dataset.kind === 'pout' && f.dataset.ph === '6a:face_pout'; }), '委屈表情（placeholder）');
+  ok(await faceSeen('pout'), '委屈表情 pout6a（per_pet；冇 placeholder）', await E(() => __qa.l6a.log().filter(x => x.k === 'face').slice(-3)));
   await W(500); await shot('03-absent3');
 
   console.log('# 日記每日自動寫 1 句');
@@ -164,12 +166,33 @@ const DAY = 86400e3;
   const L6 = await hit('[data-testid^=dev-l6a-]'); ok(L6.length >= 10 && L6.every(x => x.n === 8), '6a 掣熱區 ≥48（' + L6.length + ' 個）', L6.filter(x => x.n < 8).slice(0, 3));
   await page.locator('[data-testid=dev-sec-l6a]').scrollIntoViewIfNeeded(); await readOk('開發者「6a」', '[data-testid=dev-sec-l6a]');
   await page.locator('[data-testid=dev-l6a-pout]').click(); await W(300);
-  ok(await E(() => document.getElementById('l6aface').dataset.ph === '6a:face_pout'), '撳「委屈」→ 表情疊層');
+  ok(await E(() => __qa.l6a.st().faceKey === 'pout6a' && __qa.l6a.st().faceMode === 'art'), '撳「委屈」→ pout6a 表情');
   ok(!(await E(() => [...document.querySelectorAll('[data-testid^=s2-set],[data-testid^=toggle-]')].some(e => /6a/.test(e.textContent)))), '試玩掣唔喺設定');
   await closeModals();
 
   console.log('# 浮動團絨唔受影響');
   ok(await E(() => { const o = __glimmer.evo.sys12Overlay ? __glimmer.evo.sys12Overlay() : {}; return !JSON.stringify(o).includes('mem6'); }), '懸浮 snapshot 冇 6a 記憶句');
+
+  console.log('# 6a.1 遊美表情：49 隻形態 per_pet（smug6a／pout6a），疊法同 3a（idle 幀 0 大細、左上對齊）');
+  await closeModals();
+  const fa = await E(() => __qa.l6a.st().faceArt); ok(fa.json && fa.pets === 49 && !fa.err.length, 'faces6a.json 49 隻形態', fa);
+  ok(await E(() => { const r = __glimmer.renderer.rx; return !r || !r.anchors || Object.values(r.anchors).every(a => !a.faces || !a.faces.order.some(k => /6a$/.test(k))); }), '3a reactions 嘅 smug 冇被改（6a 用 smug6a／pout6a key）');
+  const strip3 = [];
+  for (const [st, fm] of [['elder', 'bright'], ['adult', 'moon'], ['juvenile', 'dust']]) {
+    for (const kind of ['smug', 'pout']) {
+      await E(([st, fm]) => { const s = __glimmer.state; s.stage = st; s.form = fm; s.sleeping = false; Object.assign(s.needs, { mood: 80, energy: 100, hunger: 80, clean: 100 }); s.poops = 0; }, [st, fm]); await W(300);
+      await E(k => __qa.l6a.face(k, 4000, 'e2e'), kind); await W(500); await E(k => __qa.l6a.face(k, 4000, 'e2e'), kind); await W(350);
+      const r = await E(() => { const l = __glimmer.renderer.faceStat.last || {}, q = __qa.l6a.st(), F = Glimmer.data.FORMS[l.form]; return { form: l.form, f6: l.face6a || null, clip: l.clip, frame: l.frame, mode: q.faceMode, fsz: F && F.frameSize, dom: !!document.querySelector('#l6aface[data-ph]:not([style*="display: none"])') }; });
+      ok(r.f6 === kind + '6a' && r.mode === 'art' && r.clip === 'idle' && r.frame === 0 && !r.dom, st + '／' + fm + ' → ' + r.form + '（' + r.fsz + 'px）蓋 ' + kind + '6a（base＝idle 幀 0）', r);
+      if (kind === 'smug') strip3.push(r.form);
+      if (st === 'elder' || st === 'adult') await shot('05-face-' + r.form + '-' + kind);
+    }
+  }
+  await E(() => __qa.l6a.hideFace()); await W(300);
+  ok(await E(() => !(__glimmer.renderer.faceStat.last || {}).face6a), '表情時間過咗 → 返原本五官');
+  await E(() => { const s = __glimmer.state; s.stage = 'egg'; }); await W(200); await E(() => __qa.l6a.face('smug', 1500, 'e2e')); await W(150);
+  ok(await E(() => __qa.l6a.st().faceMode === 'ph' && __qa.l6a.st().facePh === '6a:face_smug'), '冇 per_pet 圖嘅形態（蛋）→ 照舊 placeholder 疊層');
+  await E(() => { __qa.l6a.hideFace(); const s = __glimmer.state; s.stage = 'adult'; s.form = 'dust'; }); await W(200);
 
   console.log('# ?l6a=0');
   await fresh('q=high&seed=21&l6a=0'); await W(1500);

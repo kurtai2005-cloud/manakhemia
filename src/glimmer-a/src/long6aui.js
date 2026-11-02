@@ -94,10 +94,21 @@
 @keyframes l6ah{0%{transform:translateY(0) scale(.6);opacity:0}20%{opacity:1}100%{transform:translateY(-70px) scale(1.1);opacity:0}}`;
     document.head.appendChild(css);
     const host = () => document.getElementById('ui') || document.body;
-    const FACE = { el: null, kind: null, until: 0, art: {}, ph: {} };
-    // 遊美出圖後：喺 ART 填路徑（例如 art/breakthrough/6a/face_smug@3x.png，48×48）就會用圖；未有 → placeholder（唔預先 fetch，免 404）
-    const ART = { smug: null, pout: null };
-    for (const k of Object.keys(ART)) if (ART[k]) { const i = new Image(); i.onload = () => { if (i.naturalWidth) FACE.art[k] = i; }; i.src = ART[k]; }
+    const FACE = { el: null, kind: null, until: 0, mode: null, why: '', fk: null, bub: null, ph: {} };
+    // 6a.1 遊美表情（art/breakthrough/6a，FACES_6A.md）：49 隻形態逐隻 per_pet/<pet>/face_{smug,pout}.png，全幀 patch（同該形態 idle 幀 0 一樣大、左上對齊）。
+    // 引擎 key：smug6a／pout6a（3a reactions 已經有 smug＝扮醒，唔撞）。由 renderer（團絨）／s2ui（細佬做主養）喺 body transform 之前蓋：base→表情→眼鏡／帽。
+    // 預設 face_*.png 只啱 evo_still_radiant → 唔用嚟頂其他形態；形態冇圖（例如蛋、S1／S2）→ 照舊 placeholder 疊層。
+    const F6 = { base: 'art/breakthrough/6a/', json: null, img: {}, want: {}, err: [] };
+    function f6fk() { const s = S(); if (s.stage === 'egg') return null; if (s.fam && s.fam.km && s.fam.km.fk) return s.fam.km.fk; try { return G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; } catch (e) { return null; } }
+    function f6img(fk, kind) {            // 有圖就 {img,fw,fh,key}；未載 → lazy 載入、回 null
+      const p = F6.json && F6.json.pets[fk], f = p && p.files[kind] && p.files[kind]['1x']; if (!f) return null; const id = fk + ':' + kind;
+      if (F6.img[id]) return { img: F6.img[id], fw: p.frameSize[0], fh: p.frameSize[1], key: kind + '6a', fk };
+      if (!F6.want[id]) { F6.want[id] = 1; const i = new Image(); i.onload = () => { if (i.naturalWidth) F6.img[id] = i; }; i.onerror = () => F6.err.push(f); i.src = F6.base + f; }
+      return null;
+    }
+    const f6has = (fk) => !!(fk && F6.json && F6.json.pets[fk]);
+    const F6load = fetch(F6.base + 'faces6a.json').then(r => r.ok ? r.json() : null).then(j => { if (j && j.pets) { F6.json = j; const fk = f6fk(); if (fk) { f6img(fk, 'smug'); f6img(fk, 'pout'); } } }).catch(e => F6.err.push(String(e && e.message || e)));
+    if (G.renderer) G.renderer.face6a = { get: (fk) => (FACE.kind && FACE.mode === 'art' && pnow() <= FACE.until) ? f6img(fk, FACE.kind) : null };
     // placeholder（16×16 art px → 48 CSS px）：奶油圓面＋墨色五官；得意＝瞇眼＋歪嘴笑＋閃星；委屈＝八字眉＋淚眼＋波浪嘴＋水滴
     function phCanvas(kind) {
       if (FACE.ph[kind]) return FACE.ph[kind];
@@ -126,14 +137,15 @@
       const x = Math.max(4, Math.min(390 - 52, (body.x + body.w) * 2 - 14)), y = Math.max(96, body.y * 2 - 30); e.style.left = x + 'px'; e.style.top = y + 'px';
     }
     function showFace(kind, ms, why) {
-      if (kind !== 'smug' && kind !== 'pout') return null; const e = faceEl(); e.innerHTML = ''; const a = FACE.art[kind];
-      if (a) { const i = a.cloneNode(); i.alt = ''; e.appendChild(i); delete e.dataset.ph; } else { const c = document.createElement('canvas'); c.width = 16; c.height = 16; c.getContext('2d').drawImage(phCanvas(kind), 0, 0); e.appendChild(c); e.dataset.ph = '6a:face_' + kind; }
-      e.dataset.kind = kind; e.dataset.why = why || ''; e.style.display = 'block'; e.style.opacity = 1; FACE.kind = kind; FACE.until = pnow() + (ms || 2400); placeFace(); note('face', { kind, why }); return kind;
+      if (kind !== 'smug' && kind !== 'pout') return null; const fk = f6fk(); FACE.kind = kind; FACE.until = pnow() + (ms || 1600); FACE.why = why || ''; FACE.fk = fk;
+      if (f6has(fk)) { FACE.mode = 'art'; f6img(fk, kind); if (FACE.el) FACE.el.style.display = 'none'; note('face', { kind, why, key: kind + '6a', fk }); return kind; }
+      FACE.mode = 'ph'; const e = faceEl(); e.innerHTML = ''; const c = document.createElement('canvas'); c.width = 16; c.height = 16; c.getContext('2d').drawImage(phCanvas(kind), 0, 0); e.appendChild(c); e.dataset.ph = '6a:face_' + kind;
+      e.dataset.kind = kind; e.dataset.why = why || ''; e.style.display = 'block'; e.style.opacity = 1; placeFace(); note('face', { kind, why, ph: true }); return kind;
     }
-    function hideFace() { if (FACE.el) { FACE.el.style.display = 'none'; } FACE.kind = null; FACE.until = 0; }
+    function hideFace() { if (FACE.el) { FACE.el.style.display = 'none'; } FACE.kind = null; FACE.until = 0; FACE.mode = null; }
     function faceTick() {
       const vb = document.getElementById('s12voice'); const memOn = vb && vb.dataset.src === 'mem6' && +vb.style.opacity > 0;
-      if (memOn) { const t = (vb.querySelector('span') || vb).textContent, mo = MOOD.get(t); const k = mo === 'p' ? 'pout' : 'smug'; if (FACE.kind !== k || FACE.until < pnow() + 300) { if (FACE.kind !== k) showFace(k, 600, 'bubble'); else FACE.until = pnow() + 600; } }
+      if (memOn) { const t = (vb.querySelector('span') || vb).textContent, mo = MOOD.get(t); const k = mo === 'p' ? 'pout' : 'smug'; if (FACE.bub !== t) { FACE.bub = t; showFace(k, 1800, 'bubble'); } } else FACE.bub = null;   // 每句講一次、1.8 秒後返 idle（FACES_6A：1200–1800ms）
       if (FACE.kind && pnow() > FACE.until) hideFace(); else placeFace();
     }
     { const loop = () => { try { faceTick(); } catch (e) { } requestAnimationFrame(loop); }; requestAnimationFrame(loop); }
@@ -159,7 +171,7 @@
     // ── 冇嚟返嚟：第一下撳特別開心（純視覺） ──
     function happy(why) {
       try { if (G.touchPlay) setTimeout(() => G.touchPlay('g_tickle'), 60); } catch (e) { }
-      showFace('smug', 2600, why || 'happy'); UIS('medal');
+      showFace('smug', 1600, why || 'happy'); UIS('medal');
       const b = petBox(); if (b) { const body = b.body || b, cx = (body.x + body.w / 2) * 2, cy = body.y * 2;
         for (let i = 0; i < 4; i++) { const h = new Image(); h.className = 'l6aheart'; h.alt = ''; h.dataset.testid = 'l6a-heart'; h.src = 'art/systems12/sticker_heart.png'; h.style.left = (cx - 16 + (i - 1.5) * 26) + 'px'; h.style.top = (cy + 10 - (i % 2) * 14) + 'px'; h.style.animationDelay = (i * 90) + 'ms'; host().appendChild(h); setTimeout(() => h.remove(), 1400 + i * 90); } }
       S().ev.push({ type: 'l6a', what: 'happy' }); note('happy', { why }); return true;
@@ -189,8 +201,8 @@
         ['voice', '心聲（記憶句）', () => { const s = S(), td = M.today(s, now()); if (!Object.keys(td.c).length && !Object.keys(td.f).length) { td.c.feed = 2; td.c.pat = 2; td.f.soup = 1; } const m = M.st(s); if (m.vday === M.dayKey(now())) m.vn = 0; const r = G.sysVoice ? G.sysVoice({ force: true, src: 'dev', mem6: 'force' }) : null; return r && r.ok && r.src === 'mem6' ? { ok: true, msg: r.line } : { ok: false, msg: r && r.ok ? '冇記憶句（7 日內講晒）→ 普通心聲' : '講唔到（' + (r && r.why) + '）' }; }],
         ['diary', '寫日記句（琴日一篇）', () => { const s = S(), k = M.dayKey(now() - DAY), L = dia0(s, now()).list, e = L.find(x => x.d === k); if (!e) { const tr = X.diaryTrack(s, now(), s.ev); tr.day = k; tr.done = false; tr.n = Math.max(tr.n || 0, 2); X.diaryTrack(s, now(), s.ev); }
           if (!M.rec(s, k)) fillDay(k); const n = annotate(); const e2 = dia0(s, now()).list.find(x => x.d === k); return e2 && e2.m6 ? { ok: true, msg: (n ? '寫咗：' : '已有：') + (M.BYID[e2.m6] ? e2.lines[e2.lines.length - 2] : '—') } : { ok: false, msg: '寫唔到' }; }],
-        ['smug', '表情疊層：得意（預覽 3 秒）', () => ({ ok: true, msg: showFace('smug', 3000, 'dev') + (FACE.art.smug ? '' : '（placeholder）') })],
-        ['pout', '表情疊層：委屈（預覽 3 秒）', () => ({ ok: true, msg: showFace('pout', 3000, 'dev') + (FACE.art.pout ? '' : '（placeholder）') })],
+        ['smug', '表情疊層：得意（預覽 3 秒）', () => ({ ok: true, msg: showFace('smug', 3000, 'dev') + (FACE.mode === 'art' ? '（smug6a・' + FACE.fk + '）' : '（placeholder）') })],
+        ['pout', '表情疊層：委屈（預覽 3 秒）', () => ({ ok: true, msg: showFace('pout', 3000, 'dev') + (FACE.mode === 'art' ? '（pout6a・' + FACE.fk + '）' : '（placeholder）') })],
         ['happy', '特別開心（第一下撳）預覽', () => ({ ok: happy('dev'), msg: '開心反應' })],
         ['fill30', '填滿 30 日記錄（測大細）', () => { const s = S(), t = now(); for (let i = 0; i < 30; i++) fillDay(M.dayKey(t - i * DAY), { n: 9 }); M.prune(s, t); save(); return { ok: true, msg: Object.keys(M.st(s).d).length + ' 日・' + (M.sizeBytes(s) / 1024).toFixed(1) + 'KB' }; }],
         ['auto', '自動招呼／記憶心聲 開／閂', () => { AUTO.on = !AUTO.on; return { ok: true, msg: AUTO.on ? '開' : '閂' }; }],
@@ -201,7 +213,7 @@
     G.l6a = { greet: greetNow, happy, face: showFace, annotate };
     window.__qa = window.__qa || {};
     window.__qa.l6a = {
-      st: () => Object.assign(M.summary(S(), now()), { auto: AUTO.on, quiet: QUIET, face: FACE.kind, facePh: FACE.el ? FACE.el.dataset.ph || null : null, ticks: TK.n, bytes: M.sizeBytes(S()), boot: v0, bootFrom: BOOT.from }),
+      st: () => Object.assign(M.summary(S(), now()), { auto: AUTO.on, quiet: QUIET, face: FACE.kind, faceMode: FACE.mode, faceKey: FACE.kind ? FACE.kind + '6a' : null, faceFk: FACE.fk, faceArt: { json: !!F6.json, pets: F6.json ? Object.keys(F6.json.pets).length : 0, loaded: Object.keys(F6.img).length, err: F6.err.slice(0, 3) }, facePh: (FACE.mode === 'ph' && FACE.el) ? FACE.el.dataset.ph || null : null, ticks: TK.n, bytes: M.sizeBytes(S()), boot: v0, bootFrom: BOOT.from }),
       raw: () => JSON.parse(JSON.stringify(M.st(S()))), log: () => log.slice(), dev: () => DEV, tick, greet: greetNow, happy, face: showFace, hideFace, annotate, auto: (v) => { AUTO.on = !!v; return AUTO.on; },
       setupYday, fillDay, mood: (t) => MOOD.get(t) || null, lines: () => M.ALL.map(L => L.t), visit: (o) => M.visit(S(), now(), o || {}),
     };
