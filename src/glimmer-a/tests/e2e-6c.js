@@ -11,6 +11,7 @@ const BASE = process.env.BASE || 'http://localhost:8240/index.html';
 const SHOTS = process.env.SHOTS || process.env.OUT || path.join(__dirname, '..', '..', '..', 'screens') + '/';
 require('fs').mkdirSync(SHOTS, { recursive: true });
 let pass = 0, fail = 0;
+const NR = (a, b) => typeof a === 'number' && Math.abs(a - b) < 0.3;
 const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else { fail++; console.log('  ✗ ' + n + (info !== undefined ? ' → ' + JSON.stringify(info) : '')); } };
 
 
@@ -117,7 +118,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   console.log('# 蛋／細佬主養');
   await E(() => { __glimmer.state.stage = 'egg'; __qa.l6c.railTick(); }); q = await Q(); ok(q.why === 'egg' && !q.rail, '蛋 → 冇夢');
-  await E(() => { const s = __glimmer.state; s.stage = 'adult'; s.fam = s.fam || {}; s.fam.km = true; Glimmer.long6c.resetNight(s); __qa.l6c.railTick(); }); q = await Q(); ok(q.why === 'km', '細佬主養 → 冇夢', q.why);
+  await E(() => { const s = __glimmer.state; s.stage = 'adult'; s.fam = s.fam || {}; s.fam.km = true; Glimmer.long6c.resetNight(s); __qa.l6c.railTick(); }); q = await Q(); ok(q.why === 'km', '細佬主養 → 冇夢', [q.why, await E(() => [__glimmer.state.stage, JSON.stringify(__glimmer.state.fam && __glimmer.state.fam.km), __glimmer.state.sleeping])]);
   await E(() => { __glimmer.state.fam.km = false; });
 
   console.log('# 🛠 開發者模式「6c」');
@@ -141,16 +142,16 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   console.log('# 6b.2 風格：面板／字級／用途句／一次性提示');
   await fresh(); await E(() => __qa.l6c.start('qa')); await W(1400);
-  const sty = await E(() => { const fs = (tid) => { const e = document.querySelector('[data-testid=' + tid + ']'); if (!e) return null; const c = getComputedStyle(e); return [parseFloat(c.fontSize), /GlimmerFP12/.test(c.fontFamily) ? 'fp' : 'sans']; };
-    return { t: fs('l6c-title'), time: fs('l6c-time'), hint: fs('l6c-hint'), wake: fs('l6c-wake'), sub: [...document.querySelectorAll('#l6cov > [data-testid=u62-sub]')].map(e => e.textContent), u62: document.getElementById('ui').classList.contains('u62') }; });
-  ok(sty.u62 && sty.t[0] === 24 && sty.t[1] === 'fp' && sty.wake[0] === 24 && sty.time[0] === 18 && sty.time[1] === 'sans' && sty.hint[0] === 16, '字級：標題／掣 FP12 24、內文 18、輔助 16', sty);
+  const sty = await E(() => { const TY = () => { const ui = document.getElementById('ui'), u63 = ui.classList.contains('u63'), v3 = ui.classList.contains('v3'); const f = u63 ? Math.min(1, Math.round((ui.getBoundingClientRect().width / (ui.offsetWidth || 390) || 1) * 100) / 100) : 1; const B = u63 ? Math.max(16, Math.ceil(14 / f * 10) / 10) : 18, A = u63 ? Math.max(14, Math.ceil(14 / f * 10) / 10) : 16; return { u63, v3, T: u63 ? 20 : 24, TF: v3 ? 'v3' : 'fp', B: +B.toFixed(1), A: +A.toFixed(1) }; }; const EF = (e) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth, r = e.getBoundingClientRect(); return +(parseFloat(getComputedStyle(e).fontSize) * (r.width / (e.offsetWidth || 1)) / k).toFixed(1); }; const fs = (tid) => { const e = document.querySelector('[data-testid=' + tid + ']'); if (!e) return null; const c = getComputedStyle(e); return [EF(e), /GlimmerFP12/.test(c.fontFamily) ? 'fp' : /GlimmerV3/.test(c.fontFamily) ? 'v3' : 'sans']; };
+    return { t: fs('l6c-title'), time: fs('l6c-time'), hint: fs('l6c-hint'), wake: fs('l6c-wake'), sub: [...document.querySelectorAll('#l6cov > [data-testid=u62-sub]')].map(e => e.textContent), u62: document.getElementById('ui').classList.contains('u62'), ...TY() }; });
+  ok(sty.u62 && NR(sty.t[0], sty.T) && sty.t[1] === sty.TF && NR(sty.wake[0], sty.T) && NR(sty.time[0], sty.B) && sty.time[1] !== 'fp' && NR(sty.hint[0], sty.A), '字級：標題／掣 ' + (sty.u63 ? '有效 20' : 'FP12 24') + '、內文 ' + sty.B + '、輔助 ' + sty.A + '（6b.3 縮細／V3 字）', sty);
   ok(sty.sub.length === 1 && sty.sub[0] === (await E(() => Glimmer.ui62.SUB['夢境'])), '夢境有一句用途（＝ui62 SUB）', sty.sub);
   await E(() => __qa.l6c.end('wake')); await W(1600);
-  const sm = await E(() => { const b = document.querySelector('[data-testid=l6c-sum]'), c = getComputedStyle(b); return { pan: b.classList.contains('u62pan'), bc: c.borderTopColor, bw: c.borderTopWidth, sub: !!b.querySelector(':scope > [data-testid=u62-sub]'), line: parseFloat(getComputedStyle(document.querySelector('[data-testid=l6c-sum-got]')).fontSize), note: parseFloat(getComputedStyle(document.querySelector('[data-testid=l6c-sum-note]')).fontSize) }; });
-  ok(sm.pan && sm.bw === '1px' && /rgba\(232, 194, 122/.test(sm.bc) && sm.sub && sm.line === 18 && sm.note === 16, '小結：金邊半透明面板＋用途句＋內文 18／輔助 16', sm);
+  const sm = await E(() => { const EF = (e) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth, r = e.getBoundingClientRect(); return +(parseFloat(getComputedStyle(e).fontSize) * (r.width / (e.offsetWidth || 1)) / k).toFixed(1); }, TY = () => { const ui = document.getElementById('ui'), u63 = ui.classList.contains('u63'), v3 = ui.classList.contains('v3'); const f = u63 ? Math.min(1, Math.round((ui.getBoundingClientRect().width / (ui.offsetWidth || 390) || 1) * 100) / 100) : 1; const B = u63 ? Math.max(16, Math.ceil(14 / f * 10) / 10) : 18, A = u63 ? Math.max(14, Math.ceil(14 / f * 10) / 10) : 16; return { u63, v3, T: u63 ? 20 : 24, TF: v3 ? 'v3' : 'fp', B: +B.toFixed(1), A: +A.toFixed(1) }; }; const b = document.querySelector('[data-testid=l6c-sum]'), c = getComputedStyle(b); return { pan: b.classList.contains('u62pan'), bc: c.borderTopColor, bw: c.borderTopWidth, sub: !!b.querySelector(':scope > [data-testid=u62-sub]'), line: EF(document.querySelector('[data-testid=l6c-sum-got]')), note: EF(document.querySelector('[data-testid=l6c-sum-note]')), ...TY() }; });
+  ok(sm.pan && sm.bw === '1px' && /rgba\(232, 194, 122/.test(sm.bc) && sm.sub && NR(sm.line, sm.B) && NR(sm.note, sm.A), '小結：金邊半透明面板＋用途句＋內文 ' + sm.B + '／輔助 ' + sm.A, sm);
   await click('l6c-sum-dexbtn'); await W(500);
-  const dx = await E(() => { const p = document.querySelector('[data-testid=l6c-dex-panel]'); return { pan: p.classList.contains('u62pan'), sub: !!p.querySelector(':scope > [data-testid=u62-sub]'), th: parseFloat(getComputedStyle(document.querySelector('[data-testid=l6c-dex-th-forest]')).fontSize), det: parseFloat(getComputedStyle(document.querySelector('[data-testid=l6c-dex-detail]')).fontSize) }; });
-  ok(dx.pan && dx.sub && dx.th === 24 && dx.det === 18, '夢圖鑑：金邊面板＋用途句＋分組標題 24／內文 18', dx);
+  const dx = await E(() => { const EF = (e) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth, r = e.getBoundingClientRect(); return +(parseFloat(getComputedStyle(e).fontSize) * (r.width / (e.offsetWidth || 1)) / k).toFixed(1); }, TY = () => { const ui = document.getElementById('ui'), u63 = ui.classList.contains('u63'), v3 = ui.classList.contains('v3'); const f = u63 ? Math.min(1, Math.round((ui.getBoundingClientRect().width / (ui.offsetWidth || 390) || 1) * 100) / 100) : 1; const B = u63 ? Math.max(16, Math.ceil(14 / f * 10) / 10) : 18, A = u63 ? Math.max(14, Math.ceil(14 / f * 10) / 10) : 16; return { u63, v3, T: u63 ? 20 : 24, TF: v3 ? 'v3' : 'fp', B: +B.toFixed(1), A: +A.toFixed(1) }; }; const p = document.querySelector('[data-testid=l6c-dex-panel]'); return { pan: p.classList.contains('u62pan'), sub: !!p.querySelector(':scope > [data-testid=u62-sub]'), th: EF(document.querySelector('[data-testid=l6c-dex-th-forest]')), det: EF(document.querySelector('[data-testid=l6c-dex-detail]')), ...TY() }; });
+  ok(dx.pan && dx.sub && NR(dx.th, dx.T) && NR(dx.det, dx.B), '夢圖鑑：金邊面板＋用途句＋分組標題 ' + dx.T + '／內文 ' + dx.B, dx);
   await click('l6c-dex-close'); await W(300);
   // 一次性提示（?tips62=1）：第一次入夢先出；開住時夢嘅時間停
   await fresh(QS + '&tips62=1'); await E(() => { document.getElementById('u62tip') && document.getElementById('u62tip').remove(); }); await click('l6c-rail'); await W(2600);

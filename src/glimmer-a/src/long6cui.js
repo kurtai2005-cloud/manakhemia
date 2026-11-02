@@ -138,8 +138,8 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
       // 頂：標題＋時間＋碎片
       el.appendChild(mk('div', `position:absolute;left:50%;top:16px;transform:translateX(-50%);min-width:160px;height:48px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:0 14px;white-space:nowrap;${bi('plaque_pri')}` + TXT(24, CREAM), '夢境', 'l6c-title'));
       el.appendChild(subEl(SUBT.dream, 'position:absolute;left:16px;right:16px;top:72px;text-align:center;'));
-      const tTime = mk('div', `position:absolute;left:16px;top:104px;height:40px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;white-space:nowrap;${INSET()}` + TXT(24, CREAM), '', 'l6c-time');
-      const tFrag = mk('div', `position:absolute;right:16px;top:104px;height:40px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;white-space:nowrap;${INSET()}` + TXT(24, GOLD), '', 'l6c-frags');
+      const tTime = mk('div', `position:absolute;left:16px;top:132px;height:40px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;white-space:nowrap;${INSET()}` + TXT(24, CREAM), '', 'l6c-time');
+      const tFrag = mk('div', `position:absolute;right:16px;top:132px;height:40px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;white-space:nowrap;${INSET()}` + TXT(24, GOLD), '', 'l6c-frags');
       el.appendChild(tTime); el.appendChild(tFrag);
       // 地圖 3×5
       const tiles = [];
