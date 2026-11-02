@@ -333,7 +333,7 @@ def flare_list(key):
     if key == 'H2': L.append(dict(pos=list(VAR['H2']['feats']['sun'][:2]), size='l', tint='#fff0b0', fps=2, phase=0, intensity=.9))
     if key == 'H1': L.append(dict(pos=list(VAR['H1']['feats']['sun'][:2]), size='l', tint='#fff4d0', fps=2, phase=0, intensity=.6))
     return L
-PETLIGHT = {'H1': .35, 'H3': .2, 'H2': .55, 'H4': .9}
+PETLIGHT = {'H1': .35, 'H3': .2, 'H2': 1.0, 'H4': .9}   # H2 第 3 批加強（.55→1.0）；重建後要再跑 build_petglow_v3.py garden 補 formLight／H2 size3x／bounce
 def build_variant(key):
     d = f'{OUT}/{key}'; g = grade_v3(key); lut = make_lut3(g)
     idx = build_index_v3(key); raws, pal = raw_layers(key, idx)

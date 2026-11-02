@@ -1,0 +1,55 @@
+{
+ "image": "evo_still_ember_glow@3x.png",
+ "scale": 3,
+ "note": "evo_still_ember 光源 sprite @3x：halo_* 光暈＋core_12（真 alpha，已上色，lighter）；ember_01..04 光點粒子（alpha 0/255，source-over＋可 lighter 疊 halo_s）",
+ "frames": {
+  "core_12": {
+   "x": 290,
+   "y": 0,
+   "w": 12,
+   "h": 12
+  },
+  "ember_01": {
+   "x": 198,
+   "y": 0,
+   "w": 21,
+   "h": 21
+  },
+  "ember_02": {
+   "x": 221,
+   "y": 0,
+   "w": 21,
+   "h": 21
+  },
+  "ember_03": {
+   "x": 244,
+   "y": 0,
+   "w": 21,
+   "h": 21
+  },
+  "ember_04": {
+   "x": 267,
+   "y": 0,
+   "w": 21,
+   "h": 21
+  },
+  "halo_l": {
+   "x": 0,
+   "y": 0,
+   "w": 96,
+   "h": 96
+  },
+  "halo_m": {
+   "x": 98,
+   "y": 0,
+   "w": 60,
+   "h": 60
+  },
+  "halo_s": {
+   "x": 160,
+   "y": 0,
+   "w": 36,
+   "h": 36
+  }
+ }
+}

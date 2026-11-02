@@ -7,10 +7,10 @@
 |---|---|---|
 | H1 晨光暖調 | 06–10 | 低角度暖陽體積光、葉隙光斑、地平線暖霧、塵埃 |
 | H3 清新冷調 | 10–16 | 頂光冷調體積光（弱）、葉隙光斑、花粉 |
-| H2 黃昏電影感 | 16–19 | 夕陽星芒放射光、燈泡串初亮、bloom 強 |
+| H2 黃昏電影感 | 16–19 | 夕陽星芒放射光、燈泡串初亮、bloom 強；寵物光池 1.0（第 3 批加強，postLightmap .5）|
 | H4 夜燈 | 19–06 | 燈泡串＋街燈＋窗光＋螢火瓶，光池、螢火、星空大星 |
 
-H3 嘅天氣／季節變體（rain/overcast/fog、四季）**未轉 V3**，仍用 `scenes/hd2d/H3_*`。
+H3 天氣（rain/overcast/fog）第 3 批已轉 V3（見下面 §天氣）；四季仍用 `scenes/hd2d/seasons`，第 4 批轉。
 
 ## 兼容
 * 1x 層名／尺寸同 v2 一樣：`sky far mid fore lightmap light_add emissive emissive_blur`（223×446）、`vignette`（195×422）、`lut.png`（256×16）、`palette.json`、`grade.json`（v2 所有 key 保留）。舊 runtime 直接換目錄就用得。
@@ -31,7 +31,7 @@ H3 嘅天氣／季節變體（rain/overcast/fog、四季）**未轉 V3**，仍�
 
 ## 即時層（唔烘，runtime 做）
 * **pet**：sprite × petTint × ambientTint ＋ rim ＋ contact shadow。
-* **petLight**：`fx/fx_glow_v3@3x.json#pet_pool`（240×96 @3x），anchor 腳底，`offset3x [0,6]`，blend lighter，intensity H1 .35／H3 .2／H2 .55／H4 .9，**× petGlow**。
+* **petLight**：`fx/fx_glow_v3@3x.json#pet_pool`（240×96 @3x），anchor 腳底，`offset3x [0,6]`，blend lighter，intensity H1 .35／H3 .2／H2 1.0（第 3 批由 .55 加強，另加 postLightmap .5＋bounce）／H4 .9，**× petGlow**。
 * **flares**：`grade.v3.flares[]` — 燈泡串／燈籠／街燈／螢火瓶／太陽星芒，`flare_{s21,m39,l63}_01..06` 6 幀閃爍，fps／phase 逐粒錯開。
 * **particles**：`grade.v3.emitters[]` — dust／pollen／petal／firefly；核心像素用 `fx/particles_v3@3x.png`（alpha 0/255），柔光用 `glow_*`／`bokeh_*`（true alpha，lighter）。
 * **emissive flicker**：H2/H4 對 emissive 做 ±6% 慢呼吸（可選）。
@@ -47,3 +47,12 @@ H3 嘅天氣／季節變體（rain/overcast/fog、四季）**未轉 V3**，仍�
 
 ## 預覽
 `preview/compare_H*.png`（前 v2 ×3｜後 v3｜後＋UI v3）、`preview/H*_v3_3x.png`、`preview/H*_v3_ui_3x.png`、`preview/overview.png`、`preview/detail_ground_zoom.png`。預覽入面嘅寵物（團絨 evo_still_tide＋蝴蝶結、細佬）只係示意，唔係資產。
+
+## 天氣（H3，V3，第 3 批）
+`H3/grade_{rain,overcast,fog}.json`（v2 欄位＋`v3` block，`stack` 路徑相對 `H3/`；`scenes/hd2d/…` 開頭＝沿用 v2 共用素材）＋ `H3/<wx>/{sky,far,mid,fore}.png`（1x 相容）＋ `lut_<wx>.png` ＋ `H3/<wx>/x3/{sky,far,mid,fore,lightmap,light_add,bloom,haze_far,mist,vignette}@3x.png`。
+* 雨：降飽和＋藍灰 tint，lightmap ×.85、體積光 ×.25；雨絲 `scenes/hd2d/rain/rain_tile.png` ×3 平鋪＋ripple。
+* 陰：天空灰白化，lightmap ×.75、體積光 ×.15；疊 v2 `weather/overcast_clouds.png` ×3。
+* 霧：遠景淡出 50%、高度霧加厚，lightmap ×.5；疊 v2 `weather/fog_bank.png` 遠／近兩帶 ×3。
+* 寵物光池：雨／陰 .3、霧 .35（仍 × petGlow）。
+* 四季（16 款）**未轉**，下批（第 4 批）做。
+預覽：`preview/H3_weather_v3.png`、`preview/H3_weather_compare.png`。

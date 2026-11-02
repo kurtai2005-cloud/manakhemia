@@ -481,7 +481,9 @@
    "intensity": 0.9,
    "blend": "lighter",
    "multiplyBy": "petGlow",
-   "rule": "layout_hd2d_v3.json → petGlow：瞓覺／sleepClip／入夢前＝0；淡出 600ms easeInQuad、醒返淡入 400ms＋pulse。場景燈唔受影響。逐形態光暈／光點 anchor 喺第 3 批。"
+   "rule": "layout_hd2d_v3.json → petGlow：瞓覺／sleepClip／入夢前＝0；淡出 600ms easeInQuad、醒返淡入 400ms＋pulse。場景燈唔受影響。逐形態光暈／光點 anchor 見 petglow_v3（第 3 批）。",
+   "formLight": "sprites/tuanrong/petglow_v3/<form>.json（有光源形態先有；冇就用呢個通用光池）",
+   "tintMode": "mix(scene tint, form pool.tint, form pool.mixWithScene)"
   },
   "petPop": {
    "contactShadow": {
