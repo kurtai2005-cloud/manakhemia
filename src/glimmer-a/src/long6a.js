@@ -197,9 +197,10 @@
     if (!pk && m.prev && dn(key) - dn(m.prev) === 1) pk = choose(s, factsOf(rec(s, m.prev), o.names), { nowMs, rng: r, d: '琴日' });
     if (!pk) return null; m.vn++; return commit(s, pk, 'voice', nowMs);
   }
+  function happyDue(s, nowMs) { const m = st(s); return !!(m.happy && m.happy === dayKey(nowMs) && can(s)); }   // 6a.1：只睇唔用（ui.js 撳落先問）
   function takeHappy(s, nowMs) { const m = st(s); if (m.happy && m.happy === dayKey(nowMs) && can(s)) { m.happy = null; m.n.happy++; return true; } return false; }
   function sizeBytes(s) { const j = JSON.stringify(st(s)); let n = 0; for (let i = 0; i < j.length; i++) { const c = j.charCodeAt(i); n += c < 0x80 ? 1 : c < 0x800 ? 2 : (c >= 0xd800 && c < 0xdc00) ? (i++, 4) : 3; } return n; }
   function summary(s, nowMs) { const m = st(s), key = dayKey(nowMs), tdn = dn(key); return { days: Object.keys(m.d).length, last: m.last, prev: m.prev, greet: m.greet, happy: m.happy, today: m.d[key] || null, gap: m.d[key] ? m.d[key].gap : 0, said7: Object.keys(m.said).filter(k => tdn - m.said[k] < CFG.noRepeatDays).length, vn: m.vday === key ? m.vn : 0, bytes: sizeBytes(s), n: Object.assign({}, m.n), log: m.log.slice(-10) }; }
   function reset(s) { delete s.mem6; return st(s); }
-  return { CFG, LINES, ALL, BYID, W, MOOD_ZH, KID_EV, CARE_K, dayKey, dn, dayKeyOfDn, st, prune, rec, visit, today, note, scanKid, factsOf, fill, choose, commit, greetDue, greetPick, greet, diaryPick, voicePick, takeHappy, streakTo, sizeBytes, summary, reset };
+  return { CFG, LINES, ALL, BYID, W, MOOD_ZH, KID_EV, CARE_K, dayKey, dn, dayKeyOfDn, st, prune, rec, visit, today, note, scanKid, factsOf, fill, choose, commit, greetDue, greetPick, greet, diaryPick, voicePick, happyDue, takeHappy, streakTo, sizeBytes, summary, reset };
 });

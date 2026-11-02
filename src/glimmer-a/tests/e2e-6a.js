@@ -92,14 +92,21 @@ const DAY = 86400e3;
   ok(bond1 >= bond0 - 2.0001, '6a 冇加懲罰（親密度只有系統 6 原本嘅冇照顧扣分）', { bond0, bond1 });
   await W(6300);
   await E(() => { const p = document.getElementById('devp'); if (p) p.classList.add('fold'); });
+  // 6a.1（遊測 P1）：第一下撳純視覺 → 心情共用額、摸頭委託、mem6 摸頭三個計數唔郁
+  const cnt = () => E(() => { const s = __glimmer.state, M = Glimmer.long6a, d = M.st(s).d[M.dayKey(__glimmer.now())] || {}, Q12 = s.sys12 && s.sys12.quests;
+    return { press: __glimmer.lastPetPress || null, shared: __qa.touch.st().mood.shared, grants: __qa.touch.st().grants.filter(g => g.ok).length, quest: Q12 ? Q12.list.reduce((a, x) => a + (x.n || 0), 0) : 0, pat: (d.c && d.c.pat) || 0 }; });
+  await E(() => { localStorage.removeItem('fpet_daily_v1'); const M = Glimmer.long6a, d = M.st(__glimmer.state).d[M.dayKey(__glimmer.now())]; if (d && d.c) d.c.pat = 0; __glimmer.lastPetPress = null; });
+  const k0 = await cnt();
   const c = await petXY(); await page.mouse.click(c.x, c.y); await W(250);
   q = await Q();
   ok(!q.happy && q.n.happy === 1, '返嚟第一下撳 → 特別開心（用咗）', q.n);
+  const k1 = await cnt(); ok(k0.shared === 0 && k1.shared === 0 && k1.grants === k0.grants && k1.quest === k0.quest && k1.pat === 0 && !k1.press, '第一下撳純視覺（唔跑 sysPress）：心情共用額 0、摸頭委託冇加、mem6 摸頭 0', { k0, k1 });
   ok(await E(() => document.querySelectorAll('[data-testid=l6a-heart]').length >= 3), '心心飄出嚟');
   ok(await E(() => __qa.touch && __qa.touch.st().act && __qa.touch.st().act.key === 'g_tickle'), '團絨笑到震（g_tickle）', await E(() => __qa.touch && __qa.touch.st().act));
   ok(await E(() => { const f = document.getElementById('l6aface'); return f.style.display === 'block' && f.dataset.kind === 'smug' && f.dataset.ph === '6a:face_smug'; }), '得意表情（placeholder）');
   await shot('02-happy');
-  await W(1800); await page.mouse.click(c.x, c.y); await W(250); q = await Q(); ok(q.n.happy === 1, '第二下撳 → 正常（唔再特別開心）', q.n);
+  await W(1800); await E(() => { __glimmer.lastPetPress = null; }); { const c2 = await petXY(); await page.mouse.click(c2.x, c2.y); } await W(250); q = await Q(); ok(q.n.happy === 1, '第二下撳 → 正常（唔再特別開心）', q.n);
+  { const k2 = await cnt(); ok(!!k2.press && k2.grants >= k1.grants, '第二下撳 → 照舊行觸摸／sysPress', { k1, k2 }); }
 
   console.log('# 冇嚟 3 日以上 →「我以為你搬咗屋。」類');
   await plant(4); await reload(); await prep(); v = await waitVoice(7000); q = await Q();

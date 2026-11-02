@@ -349,7 +349,7 @@
       const b = petHitBox();
       if (inBox(a, b)) {
         if (s.stage === 'egg') { SIM.tapEgg(s); processEvents(); G.save(); }
-        else if (!s.sleeping) { if (G.beh) { const p = press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y, mx: a.x - R.CX, my: a.y - R.GROUND_Y, nuzzle: false }; if (G.tch) G.tch.down(e.clientX, e.clientY); p.timer = setTimeout(() => { if (press === p && down && G.beh && !G.state.sleeping && G.mode !== 'minigame') { p.nuzzle = true; NS_BEH.nuzzle(G.beh, p.mx, p.my, (performance.now() - p.t0) / 1000); } }, NUZZLE_MS); } else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
+        else if (!s.sleeping) { if (G.petTapGate && G.petTapGate()) return;   /* 6a.1：返嚟第一下撳＝純視覺（成個手勢唔計觸摸／摸頭；press＝null → 鬆手都唔跑） */ if (G.beh) { const p = press = { id: e.pointerId, t0: performance.now(), x: a.x - R.CX, y: a.y - R.GROUND_Y, mx: a.x - R.CX, my: a.y - R.GROUND_Y, nuzzle: false }; if (G.tch) G.tch.down(e.clientX, e.clientY); p.timer = setTimeout(() => { if (press === p && down && G.beh && !G.state.sleeping && G.mode !== 'minigame') { p.nuzzle = true; NS_BEH.nuzzle(G.beh, p.mx, p.my, (performance.now() - p.t0) / 1000); } }, NUZZLE_MS); } else { rd.act('happy', 0.9); rd.burst('heart', R.CX, R.GROUND_Y - 55, 2, 30); } }   // P2：放手先判短 tap／長按
         else if (G.lightWake && G.lightWake()) { toast('團絨揉揉眼醒咗…仲有啲睏睏'); SND('sleep', { on: false }); if (G.tch) G.tch.sleepTouch(); }   // 3a：瞓覺中摸 → 揉眼翻身（唔加心情）
       } else if (s.stage !== 'egg' && !s.sleeping && G.beh && a.y > R.GROUND_Y - 50 && a.y < R.GROUND_Y + 40) {
         NS_BEH.tap(G.beh, 'ground', clamp(a.x - R.CX, -70, 70), a.y - R.GROUND_Y);

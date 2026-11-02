@@ -164,7 +164,9 @@
         for (let i = 0; i < 4; i++) { const h = new Image(); h.className = 'l6aheart'; h.alt = ''; h.dataset.testid = 'l6a-heart'; h.src = 'art/systems12/sticker_heart.png'; h.style.left = (cx - 16 + (i - 1.5) * 26) + 'px'; h.style.top = (cy + 10 - (i % 2) * 14) + 'px'; h.style.animationDelay = (i * 90) + 'ms'; host().appendChild(h); setTimeout(() => h.remove(), 1400 + i * 90); } }
       S().ev.push({ type: 'l6a', what: 'happy' }); note('happy', { why }); return true;
     }
-    { const f0 = G.sysPress; G.sysPress = function (p) { const r = f0 ? f0.apply(this, arguments) : null; try { if (p && M.takeHappy(S(), now())) { happy('tap'); save(); } } catch (e) { } return r; }; }
+    // 6a.1（遊測 P1）：返嚟第一下撳＝純視覺。ui.js 撳落團絨時先問 G.petTapGate：特別開心等緊 → 成個手勢（按落＋鬆手）唔跑觸摸手勢（mood grant）、
+    // 唔跑 G.sysPress（摸頭委託／親密／心聲）、唔記 mem6 摸頭；只播 g_tickle＋心心＋得意臉，播完先 takeHappy。
+    G.petTapGate = function () { try { const s = S(), t = now(); if (!M.happyDue(s, t)) return false; happy('tap'); M.takeHappy(s, t); save(); return true; } catch (e) { return false; } };
 
     // ── 🛠 開發者模式「6a」 ──
     const DAY = 864e5;
