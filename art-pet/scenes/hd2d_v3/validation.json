@@ -1,0 +1,77 @@
+{
+ "ok": true,
+ "passed": 14,
+ "total": 14,
+ "checks": [
+  {
+   "check": "files_exist_H1-H4",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "sizes_1x_223x446_3x_669x1338_vignette",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "layer_names_compat_v2",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "raw_sprite_alpha_0_255",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "raw_colors_le_96",
+   "ok": true,
+   "info": "{'H1': 73, 'H2': 72, 'H3': 72, 'H4': 72}"
+  },
+  {
+   "check": "grade_keys_v2_plus_v3",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "stack_files_and_baked_vs_realtime",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "petLight_multiplyBy_petGlow",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "lut_256x16_matches_sky",
+   "ok": true,
+   "info": "{'H1': 2.69, 'H2': 4.64, 'H3': 2.06, 'H4': 4.6}"
+  },
+  {
+   "check": "clearBox_new_detail_le_8pct",
+   "ok": true,
+   "info": "{'H1': 0.042, 'H2': 0.042, 'H3': 0.042, 'H4': 0.041}"
+  },
+  {
+   "check": "fx_frames_in_bounds_particles_alpha",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "fx_refs_resolve",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "previews_and_doc_exist",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "no_backups_pycache",
+   "ok": true,
+   "info": "[]"
+  }
+ ]
+}
