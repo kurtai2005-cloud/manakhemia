@@ -28,7 +28,8 @@
     const fonts = {}, errs = [];
     const font = (file, fam, w) => fetch(B + 'fonts/' + file).then(r => r.arrayBuffer()).then(b => new FontFace(fam, b, { weight: w, ascentOverride: '88%', descentOverride: '12%', lineGapOverride: '0%' })   /* Noto CJK 字框 1em（subset hhea 偏大 → 文字框高過掣） */.load()).then(f => { document.fonts.add(f); fonts[fam + ':' + w] = true; }).catch(e => { errs.push('font ' + file + ': ' + (e && e.message)); });
     return Promise.all([js(B + 'atlas/ui_hd2d_v3@3x.json'), img(B + 'atlas/ui_hd2d_v3@3x.png'), js(B + 'atlas/icons_hd2d_v3@3x.json'), img(B + 'atlas/icons_hd2d_v3@3x.png'), js(B + 'atlas/v2_to_v3_map.json'), js(B + 'layout_hd2d_v3.json'),
-      font('NotoSansCJKtc-Regular.subset.otf', 'GlimmerV3Sans', '400'), font('NotoSansCJKtc-Bold.subset.otf', 'GlimmerV3Sans', '700'), font('NotoSerifCJKtc-Bold.subset.otf', 'GlimmerV3Serif', '700')])
+      /* 6c：V3 字轉源雲明體 GenWanMin2 TC v2.100（OFL 1.1）R／SB；family 名照舊（GlimmerV3Sans＝內文／掣，GlimmerV3Serif＝標題） */
+      font('GenWanMin2TC-R.subset.otf', 'GlimmerV3Sans', '400'), font('GenWanMin2TC-SB.subset.otf', 'GlimmerV3Sans', '700'), font('GenWanMin2TC-SB.subset.otf', 'GlimmerV3Serif', '700')])
       .then(([aj, ai, ij, ii, mp, lay]) => ({ aj, ai, ij, ii, map: mp.map || {}, layout: lay, fonts, errs }))
       .catch(e => { errs.push(String(e && e.message || e)); return null; });
   }
@@ -63,7 +64,7 @@
         if (f.nine) { const [l, t, r, b] = f.nine; return `background:none !important; border-style:solid !important; border-width:0 !important; border-image:url(${u}) ${t} ${r} ${b} ${l} fill / ${(t * K).toFixed(2)}px ${(r * K).toFixed(2)}px ${(b * K).toFixed(2)}px ${(l * K).toFixed(2)}px / 0 stretch !important; image-rendering:auto;`; }
         return `background:url(${u}) 0 0 / ${Math.round(f.w * K)}px ${Math.round(f.h * K)}px repeat !important; image-rendering:auto;`; },
       css(H) {
-        const S = '#ui.hd.v2.v3', A = S + ' ', SANS = '"GlimmerV3Sans","Noto Sans CJK TC","Noto Sans HK","PingFang HK",sans-serif', SERIF = '"GlimmerV3Serif","Noto Serif CJK TC",' + SANS;
+        const S = '#ui.hd.v2.v3', A = S + ' ', SANS = '"GlimmerV3Sans","Noto Sans HK","Noto Sans CJK TC","PingFang HK",sans-serif', SERIF = '"GlimmerV3Serif",' + SANS;
         const SH = `0 1px 2px ${rgb(C.navy, 0.95)}, 0 0 5px ${rgb(C.navy, 0.75)}`;
         return `
 /* ── #83 UI kit V3（uiv3.js）── */

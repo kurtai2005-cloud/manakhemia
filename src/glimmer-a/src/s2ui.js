@@ -147,7 +147,7 @@
       if (F.tr) { const fk = R.fkOf(S()), a = atlasSrc(fk, F.tr.clip, F.tr.ct, false); if (a && a.src) { const s0 = a.src; blit(ctx, s0.img, s0.sx, s0.sy, s0.sw, s0.sh, F.tr.x, AY, s0.px, s0.py, 2); } }
       if (F.heart) { const h = fxInfo('fx_heart'); if (h && h.img) blit(ctx, h.img, F.heart.f * h.w, 0, h.w, h.h, 67, 202 + F.heart.dy, h.pv[0], h.pv[1], 2); }
       if (F.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,' + clamp(F.flash, 0, 1).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
-      if (c.t < 2000 && c.t > 300) { ctx.globalAlpha = 0.5 + 0.3 * Math.sin(c.t / 200); ctx.fillStyle = '#fff6dc'; ctx.font = '7px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('撳一下跳過', W / 2, H - 30); ctx.globalAlpha = 1; }
+      if (c.t < 2000 && c.t > 300) { ctx.globalAlpha = 0.5 + 0.3 * Math.sin(c.t / 200); ctx.fillStyle = '#fff6dc'; ctx.font = '7px ' + (G.v3 && G.v3.on && G.v3.on() ? '"GlimmerV3Sans",' : '') + 'sans-serif'; ctx.textAlign = 'center'; ctx.fillText('撳一下跳過', W / 2, H - 30); ctx.globalAlpha = 1; }
       c.last = { t: Math.round(c.t), egg: !!F.egg, kid: !!F.kid, tr: !!F.tr, rays: !!F.rays, heart: !!F.heart, shell: F.shell.length };
       ctx.restore();
     };
@@ -385,7 +385,7 @@
       const c = SC.cur; if (!c || !c.F) return;
       for (const v of c.F.overlays) { const I = fxInfo(v.id); if (!I || !I.img) continue; const X0 = ox(Math.round(CX + c.ox + v.x)), Y0 = oy(Math.round(base + v.y)), fr = clamp(v.frame | 0, 0, I.n - 1);
         x.drawImage(I.img, fr * I.w, 0, I.w, I.h, X0 - I.pv[0], Y0 - I.pv[1], I.w, I.h); RST.fx++;
-        if (v.id === 'ov_ribbon' && c.rel) { x.save(); x.fillStyle = '#4a2e1a'; x.font = 'bold 6px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(c.rel === 'friend' ? '朋友' : c.rel === 'family' ? '家人' : '跟班', X0, Y0); x.restore(); } }
+        if (v.id === 'ov_ribbon' && c.rel) { x.save(); x.fillStyle = '#4a2e1a'; x.font = 'bold 6px ' + (G.v3 && G.v3.on && G.v3.on() ? '"GlimmerV3Sans",' : '') + 'sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(c.rel === 'friend' ? '朋友' : c.rel === 'family' ? '家人' : '跟班', X0, Y0); x.restore(); } }
     }
     function drawHearts(x, base) {
       const h = fxInfo('fx_heart'); if (!h || !h.img) return; const fk = formNow(), ka = A.ka && (A.ka.forms[fk] || A.ka.forms.S2); if (!ka) return;

@@ -29,4 +29,4 @@ V3 開時夢入面寵物光＝0（v3 petGlow state `dreaming`）。
 
 ## 冇缺圖
 
-家具獎勵用 5a 現有擺設（`sv_mushroom`、`sv_shell`、`sv_rainbow`、`sv_starstone`）。字：V3 開用 GlimmerV3（已打包），V3 關照 6b.3 規則（標題 FP12）。
+家具獎勵用 5a 現有擺設（`sv_mushroom`、`sv_shell`、`sv_rainbow`、`sv_starstone`）。字：V3 開用源雲明體 GenWanMin2 TC R／SB（OFL 1.1，已打包，`tools/font_v3_subset.py` 出子集），V3 關照 6b.3 規則（標題 FP12）。

@@ -45,7 +45,7 @@ ok(UI.textOn(UI.C.gold, 'btn_primary') === 'ink' && UI.textOn(UI.C.navy, 'panel'
   const bad = Object.keys(M).filter(n => M[n].v3 && UI.v3name(M, FR, IC, n) == null && UI.v3name(M, FR, IC, n, true) == null);
   ok(!bad.length, 'v2→v3 對照表每個目標都喺 atlas（' + Object.keys(M).length + '）', bad.slice(0, 5)); }
 ok(!fs.readdirSync(path.join(ART, 'ui/atlas')).some(f => /@2x/.test(f)), 'icon 冇 @2x');
-for (const f of ['NotoSansCJKtc-Regular.subset.otf', 'NotoSansCJKtc-Bold.subset.otf', 'NotoSerifCJKtc-Bold.subset.otf']) ok(fs.existsSync(path.join(ART, 'ui/fonts', f)), 'OFL 字型 ' + f);
+for (const f of ['GenWanMin2TC-R.subset.otf', 'GenWanMin2TC-SB.subset.otf', 'OFL_GenWanMin2.txt']) ok(fs.existsSync(path.join(ART, 'ui/fonts', f)), 'OFL 字型 ' + f);
 console.log('⑧ 花園 V3：H1–H4＋四季 16 款');
 for (const h of ['H1', 'H2', 'H3', 'H4']) ok(fs.existsSync(path.join(ART, 'garden', h)), '花園 ' + h);
 { const miss = []; for (const s of ['spring', 'summer', 'autumn', 'winter']) for (const h of ['H1', 'H2', 'H3', 'H4']) if (!fs.existsSync(path.join(ART, 'garden/seasons', s, h))) miss.push(s + h); ok(!miss.length, '四季 × H1–H4 ＝ 16 款', miss); }

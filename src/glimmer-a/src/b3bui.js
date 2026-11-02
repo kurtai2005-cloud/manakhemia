@@ -369,9 +369,9 @@
       const ns = srcOf(c.pr.to, 'idle', 0), pp = J.portrait.petPivot;
       if (ns) { g.save(); g.scale(K, K); g.drawImage(ns.img, ns.sx, ns.sy, ns.sw, ns.sh, pp[0] - ns.px, pp[1] - ns.py, ns.sw, ns.sh); g.restore(); }
       const name = (J.formName[c.pr.to] || '').slice(0, fr.nameN), line = (V.CARD_LINE[c.pr.to] || '').slice(0, fr.lineN), nb = J.textBoxes.name, lb = J.textBoxes.line;
-      g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.font = 'bold ' + (11 * K) + 'px "Noto Sans HK","PingFang HK","Microsoft JhengHei",sans-serif';
+      g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.font = 'bold ' + (11 * K) + 'px ' + (G.v3 && G.v3.on && G.v3.on() ? '"GlimmerV3Sans",' : '') + '"Noto Sans HK","PingFang HK","Microsoft JhengHei",sans-serif';
       g.fillText(name, nb[0] * K, (nb[1] + nb[3]) / 2 * K, (nb[2] - nb[0]) * K);
-      g.fillStyle = '#5a3a22'; g.font = (7.5 * K) + 'px "Noto Sans HK","PingFang HK","Microsoft JhengHei",sans-serif'; g.textBaseline = 'top';
+      g.fillStyle = '#5a3a22'; g.font = (7.5 * K) + 'px ' + (G.v3 && G.v3.on && G.v3.on() ? '"GlimmerV3Sans",' : '') + '"Noto Sans HK","PingFang HK","Microsoft JhengHei",sans-serif'; g.textBaseline = 'top';
       const maxW = (lb[2] - lb[0]) * K; let ln = '', y = lb[1] * K + 1 * K; for (const ch of line) { if (g.measureText(ln + ch).width > maxW && !/[。，、！？」…）]/.test(ch)) {   // 標點唔好孤零零落第二行
          g.fillText(ln, lb[0] * K, y); ln = ch; y += 10 * K; } else ln += ch; } if (ln) g.fillText(ln, lb[0] * K, y);
       c.card = { name, line, nameN: fr.nameN, lineN: fr.lineN }; return cardC;

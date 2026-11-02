@@ -205,7 +205,7 @@
       for (let i = 0; i < 3; i++) { const on = i < r.stars, pop = on ? Math.min(1, Math.max(0, (H0.rt - i * 0.25) * 4)) : 1; star(50 + i * 40, 92 - (i === 1 ? 8 : 0), (on ? 14 * (0.6 + 0.4 * pop) : 12), on && pop > 0); }
       digits(r.value, 90 + String(r.value).length * 6 - 4, 124, 4, '#fff6dc', true);
       const sh = img('shard', 'systems12/icon_star_shard_16.png'), n = r.rewarded ? r.shards : 0;
-      if (r.duo) { ctx.fillStyle = '#ff9ab8'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('♥ 細佬親密 +' + (r.duoN | 0), 90, 170); ctx.textAlign = 'left'; }
+      if (r.duo) { ctx.fillStyle = '#ff9ab8'; ctx.font = 'bold 12px ' + (G.v3 && G.v3.on && G.v3.on() ? '"GlimmerV3Sans",' : '') + 'sans-serif'; ctx.textAlign = 'center'; ctx.fillText('♥ 細佬親密 +' + (r.duoN | 0), 90, 170); ctx.textAlign = 'left'; }
       else if (r.rewarded) { for (let i = 0; i < Math.max(1, n); i++) { const x = 90 - (Math.max(1, n) - 1) * 10 + i * 20; ctx.globalAlpha = n ? 1 : 0.3; if (sh) ctx.drawImage(sh, x - 8, 156, 16, 16); else { ctx.fillStyle = '#9fe0ff'; ctx.fillRect(x - 5, 159, 10, 10); } ctx.globalAlpha = 1; } }
       else { ctx.globalAlpha = 0.35; if (sh) ctx.drawImage(sh, 82, 156, 16, 16); ctx.globalAlpha = 1; ctx.strokeStyle = '#ff8a8a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(80, 174); ctx.lineTo(100, 154); ctx.stroke(); }
       drawPet(90, 262, g.clip, 0, 1); petEmote(g, 90, 262);

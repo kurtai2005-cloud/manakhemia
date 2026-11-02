@@ -537,7 +537,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       ].map(([k, label, run]) => ({ k, label, run })) };
     if (NS.devmode) NS.devmode.register(DEV); else (NS.devSections = NS.devSections || []).push(DEV);
     // 設定：字體授權行（UI_KIT_V2 settings mockup）— v2 先顯示
-    const s2s = G.s2Settings; G.s2Settings = function (node) { const r = s2s ? s2s.apply(this, arguments) : undefined; try { const d = document.createElement('div'); d.className = 'uiv2Font'; d.dataset.testid = 'uiv2-font-credit'; d.textContent = '字型：Fusion Pixel（OFL 1.1）'; node.appendChild(d); } catch (e) { } return r; };
+    const s2s = G.s2Settings; G.s2Settings = function (node) { const r = s2s ? s2s.apply(this, arguments) : undefined; try { const d = document.createElement('div'); d.className = 'uiv2Font'; d.dataset.testid = 'uiv2-font-credit'; d.textContent = (G.v3 && G.v3.on && G.v3.on()) ? '字型：源雲明體 GenWanMin2 TC（OFL 1.1）' : '字型：Fusion Pixel（OFL 1.1）';   /* 6c：V3 用源雲明體 */ node.appendChild(d); } catch (e) { } return r; };
 
     window.__qa = window.__qa || {};
     window.__qa.uiv2 = {

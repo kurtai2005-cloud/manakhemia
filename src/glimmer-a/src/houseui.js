@@ -270,7 +270,7 @@
       for (const h of Z.hearts) { const u = (now - h.t0) / 900; x.globalAlpha = u > 0.7 ? 1 - (u - 0.7) / 0.3 : 1; fx2('fx_heart', u < 0.25 ? 0 : 1, h.x, h.y - u * 10); x.globalAlpha = 1; }
       { const fr = Math.floor(now / 300); for (const p of RS.values()) if (p.mode === 'sleep' && fx2('fx_zzz', (fr + (p.kind === 'kid' ? 2 : 1)) % 4, p.x + 6, p.y - (p.kind === 'kid' ? 30 : 26))) V.stats.zzz++; }
       if (Z.mode === 'sleep') { const fr = Math.floor(now / 300); for (const k of ['tr', 'kid']) { const p = PET[k]; if (vis(k) && p.mode === 'sleep' && fx2('fx_zzz', (fr + (k === 'kid' ? 2 : 0)) % 4, p.x + 6, p.y - (k === 'kid' ? 30 : 26))) V.stats.zzz++; } }
-      if (Z.wah && now - Z.wah < 700 && Z.prank) { const v = PET[Z.prank.v]; x.save(); x.font = '900 16px sans-serif'; x.textAlign = 'center'; x.lineWidth = 4; x.strokeStyle = '#3a2440'; x.fillStyle = '#ffe9a8'; const yy = (v.y - 40) * KP + oy - (now - Z.wah) / 30; x.strokeText(HS.LINES.prank, v.x * KP, yy); x.fillText(HS.LINES.prank, v.x * KP, yy); x.restore(); }
+      if (Z.wah && now - Z.wah < 700 && Z.prank) { const v = PET[Z.prank.v]; x.save(); x.font = '900 16px ' + (G.v3 && G.v3.on && G.v3.on() ? '"GlimmerV3Sans",' : '') + 'sans-serif';   /* 6c：V3 字 */ x.textAlign = 'center'; x.lineWidth = 4; x.strokeStyle = '#3a2440'; x.fillStyle = '#ffe9a8'; const yy = (v.y - 40) * KP + oy - (now - Z.wah) / 30; x.strokeText(HS.LINES.prank, v.x * KP, yy); x.fillText(HS.LINES.prank, v.x * KP, yy); x.restore(); }
       V.stats.frames++;
     }
     function loop() {

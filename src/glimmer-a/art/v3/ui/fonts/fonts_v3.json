@@ -1,5 +1,5 @@
 {
- "note": "v3 字：Noto Sans CJK TC Regular／Bold＋Noto Serif CJK TC Bold（只標題）。子集＝遊戲 src 字＋mockup 字＋ASCII＋常用標點。冇 brotli → 出 .otf；上線建議轉 woff2（見 UI_KIT_V3.md）",
+ "note": "v3 字（6c 起）：源雲明體 GenWanMin2 TC v2.100 R／SB（OFL 1.1，https://github.com/ButTaiwan/genwan-font，授權 OFL_GenWanMin2.txt）；serif＝SB。子集＝charset_v3.txt（舊 charset＋src/*.js＋index.html＋art/**.json 全部非 ASCII 字＋ASCII）。冇子集到嘅只有 emoji／幾個符號（◂▾☾⚙✕✗✦‿），照系統字補。",
  "type": {
   "title": {
    "font": "serif",
@@ -33,28 +33,25 @@
  "minPx3x": 18,
  "charset": {
   "file": "charset_v3.txt",
-  "count": 1073,
+  "count": 1750,
   "fromGame": 872,
   "fromMockups": 338
  },
  "fonts": {
   "sans": {
-   "file": "NotoSansCJKtc-Regular.subset.otf",
-   "bytes": 509848,
-   "source": "NotoSansCJK-Regular.ttc",
-   "ttcIndex": 3
+   "file": "GenWanMin2TC-R.subset.otf",
+   "bytes": 990096,
+   "source": "GenWanMin2TC-R.otf (v2.100)"
   },
   "sansb": {
-   "file": "NotoSansCJKtc-Bold.subset.otf",
-   "bytes": 511584,
-   "source": "NotoSansCJK-Bold.ttc",
-   "ttcIndex": 3
+   "file": "GenWanMin2TC-SB.subset.otf",
+   "bytes": 983280,
+   "source": "GenWanMin2TC-SB.otf (v2.100)"
   },
   "serif": {
-   "file": "NotoSerifCJKtc-Bold.subset.otf",
-   "bytes": 751280,
-   "source": "NotoSerifCJK-Bold.ttc",
-   "ttcIndex": 3
+   "file": "GenWanMin2TC-SB.subset.otf",
+   "bytes": 983280,
+   "source": "GenWanMin2TC-SB.otf (v2.100)"
   }
  }
 }
