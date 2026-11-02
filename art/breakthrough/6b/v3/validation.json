@@ -1,0 +1,13 @@
+{
+ "batch": "第 6 批 6b＋6c V3-A",
+ "ok": true,
+ "checks": 384,
+ "errors": [],
+ "warnings": [
+  "6b 呢啲形態冇自身光源（設計如此，只用通用光池）：['sprout', 'evo_dot', 'evo_sprout']"
+ ],
+ "files": {
+  "b6": 82,
+  "c6": 74
+ }
+}

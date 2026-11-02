@@ -14,7 +14,7 @@ def cols(a): m = a[..., 3] == 255; return {tuple(c) for c in a[m][:, :3]}
 def up3(a1, a3): return a3.shape[0] == a1.shape[0] * 3 and np.array_equal(np.repeat(np.repeat(a1, 3, 0), 3, 1), a3)
 
 J = json.load(open(os.path.join(D, "walk6b.json")))
-pngs = [os.path.relpath(os.path.join(dp, f), D) for dp, _, fs in os.walk(D) for f in fs if f.endswith(".png")]
+pngs = [os.path.relpath(os.path.join(dp, f), D) for dp, _, fs in os.walk(D) for f in fs if f.endswith(".png") and not os.path.relpath(dp, D).split(os.sep)[0] == "v3"]   # v3/＝第 6 批 V3-A 疊層（真 alpha 光層），由 validate_walkdream_v3.py 驗
 chk("1 alpha 只得 0／255（全部 PNG）", all(set(np.unique(rgba(p)[..., 3])) <= {0, 255} for p in pngs), f"{len(pngs)} png")
 missing = [v[k] for v in list(J["keys"].values()) + list(J["pets"].values()) for k in ("1x", "3x") if not os.path.exists(os.path.join(D, v[k]))]
 chk("2 json 列嘅檔全部存在", not missing, str(missing[:3]))

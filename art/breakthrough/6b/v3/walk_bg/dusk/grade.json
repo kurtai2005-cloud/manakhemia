@@ -1,0 +1,154 @@
+{
+ "variant": "dusk",
+ "name": "散步路・黃昏（V3-A）",
+ "hours": [
+  17,
+  19
+ ],
+ "ambientTint": "#ffd8b8",
+ "petTint": "#fff0e0",
+ "saturation": 1.12,
+ "contrast": 1.08,
+ "bloom": {
+  "threshold": 0.72,
+  "intensity": 0.45
+ },
+ "fog": {
+  "color": "#ffc8a0",
+  "density": 0.05
+ },
+ "vignette": 0.3,
+ "rim": {
+  "color": "#ffb878",
+  "intensity": 0.7,
+  "dir": [
+   -0.7,
+   -0.7
+  ]
+ },
+ "splitTone": {
+  "shadow": "#5a3a80",
+  "highlight": "#ffb070",
+  "amount": 0.14
+ },
+ "v3": {
+  "note": "6b walk_bg V3：@3x 層 300×360（＝原 walk_bg@3x 尺寸，可直接頂替喺同一個 300×360 框）；1x 層 100×120 係 fallback。原 walk_bg.png／@3x 唔郁。",
+  "layerSize3x": [
+   300,
+   360
+  ],
+  "layerSize1x": [
+   100,
+   120
+  ],
+  "stack": "../../walk6b_v3.json#stack",
+  "sun": {
+   "pos": [
+    31,
+    7
+   ],
+   "kind": "sun"
+  },
+  "flares": [
+   {
+    "pos": [
+     31,
+     7
+    ],
+    "size": "m",
+    "tint": "#ffb070",
+    "intensity": 0.6,
+    "fps": 2
+   }
+  ],
+  "emitters": [
+   {
+    "type": "gold",
+    "sprite": "scenes/hd2d_v3/fx/particles_v3@3x.json#gold_01..06",
+    "glow": "glow_12",
+    "tint": "#ffd890",
+    "rect": [
+     0,
+     10,
+     100,
+     90
+    ],
+    "max": 12,
+    "rate": 1.0,
+    "life": [
+     3,
+     6
+    ],
+    "vy": [
+     -3,
+     -1
+    ],
+    "add": 0.6,
+    "note": "黃昏金塵"
+   }
+  ],
+  "lantern": null,
+  "stoneGlow": {
+   "sprite": "stone_glow@3x.png",
+   "stones": [
+    [
+     54,
+     44
+    ],
+    [
+     56,
+     54
+    ],
+    [
+     57,
+     66
+    ],
+    [
+     55,
+     80
+    ],
+    [
+     50,
+     96
+    ],
+    [
+     42,
+     112
+    ]
+   ],
+   "tint": "#fff0c0",
+   "blend": "lighter",
+   "alpha": 0.7,
+   "pulse": {
+    "hz": 0.6,
+    "amp": 0.25
+   },
+   "note": "而家行到嗰格（第 n 粒踏腳石）底下發光；已行過嘅格 alpha .3"
+  },
+  "petLight": {
+   "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#pet_pool",
+   "anchor": "foot",
+   "size3x": [
+    150,
+    60
+   ],
+   "tint": "#ffe2a8",
+   "intensity": 0.56,
+   "multiplyBy": "petGlow",
+   "walkScale": 0.8,
+   "formLight": "walk6b_v3.json#pets.<pid>.petglow（逐形態光暈 anchor；walk clip 用 idle_01 anchor＋bob dy）",
+   "rule": "散步＝醒（petGlow 1）；layout_hd2d_v3.json#petGlow：瞓覺／sleepClip／入夢＝0。場景光（日、月、燈籠）唔受影響。"
+  },
+  "petPop": {
+   "contactShadow": {
+    "alpha": 0.32,
+    "rx": 0.3,
+    "ry": 0.07
+   },
+   "rim": {
+    "color": "#ffb878",
+    "intensity": 0.7
+   }
+  }
+ }
+}

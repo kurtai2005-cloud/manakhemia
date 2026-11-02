@@ -6,7 +6,8 @@ from PIL import Image, ImageDraw, ImageFont
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import build_seasons_v3 as SS
 G = SS.G; B = G.B; hx = B.hx; S = 3; SW3, SH3, MX, MY = G.SW3, G.SH3, G.MX, G.MY
-GD = '/workspace/game-design/seasons_v3'; PV = f'{SS.OUTS}/preview'
+REPO = os.path.normpath(os.path.join(HERE, '..', '..')); GD = os.environ.get('GD_SEASONS_V3') or os.path.join(REPO, 'seasons_v3'); PV = f'{SS.OUTS}/preview'
+TMP = os.environ.get('PV_TMP') or os.path.join(REPO, '.pv_tmp')   # 屋仔修正前後圖（hb_*／ha_*）暫存；冇就跳過嗰兩張
 def font(sz, b=True):
     import ui_hd2d_v3_lib as UL
     return ImageFont.truetype(UL.FONT_SRC['sansb' if b else 'sans'], sz, index=UL.FONT_TTC_INDEX)
@@ -99,7 +100,8 @@ def kid_in(final, g, k, clip, i, foot, glow, ss):
     post = draw_kid(a, g, k, clip, i, foot, glow, ss); post(a)
     return Image.fromarray(G.to8(np.clip(a[MY * S:MY * S + SH3, MX * S:MX * S + SW3], 0, 1)), 'RGB')
 SZH = {'spring': '春', 'summer': '夏', 'autumn': '秋', 'winter': '冬'}; HZH = {'H1': 'H1 晨光暖調', 'H2': 'H2 黃昏電影感', 'H3': 'H3 清新冷調', 'H4': 'H4 夜燈'}
-def main(tmp='/tmp/icv3/pv'):
+def main(tmp=None):
+    tmp = tmp or os.path.join(TMP, 'pv')
     os.makedirs(GD, exist_ok=True); os.makedirs(PV, exist_ok=True); os.makedirs(tmp, exist_ok=True)
     out = []
     def save(im, n, key=False):
@@ -132,7 +134,8 @@ def main(tmp='/tmp/icv3/pv'):
         cols += [(kid_in(hn, gn, k, 'idle', 0, (100, 300), 1.0, 1.0), f'屋仔夜 {k} 醒'), (kid_in(hn, gn, k, 'sleep', 0, (100, 300), 0.0, 1.0), f'{k} 瞓')]
     save(sheet(cols, '細佬喺場景：醒＝光、瞓＝熄（場景燈照開）', .3), 'kid_in_scene.png', True)
     # 屋仔修正前後
-    T = '/tmp/icv3'
+    T = TMP
+    if not os.path.exists(f'{T}/hb_day.png'): return out
     cols = [(Image.open(f'{T}/hb_day.png'), '日間 前'), (Image.open(f'{T}/ha_day.png'), '日間 後（暖啲＋寵物唔過曝）'),
             (Image.open(f'{T}/hb_night.png'), '夜晚 前'), (Image.open(f'{T}/ha_night.png'), '夜晚 後（燈光圈加大）'),
             (Image.open(f'{T}/hb_sv.png'), '手信 前（彩虹疊盆栽）'), (Image.open(f'{T}/ha_sv.png'), '手信 後（改 floor_2）')]

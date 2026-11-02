@@ -27,7 +27,7 @@ def outlined(a):
     return np.all(a[edge][:, :3] == LINE, -1).all()
 
 J = json.load(open(os.path.join(D, "dream6c.json"))); K = J["keys"]
-pngs = [os.path.relpath(os.path.join(dp, f), D) for dp, _, fs in os.walk(D) for f in fs if f.endswith(".png")]
+pngs = [os.path.relpath(os.path.join(dp, f), D) for dp, _, fs in os.walk(D) for f in fs if f.endswith(".png") and not os.path.relpath(dp, D).split(os.sep)[0] == "v3"]   # v3/＝第 6 批 V3-A 疊層（真 alpha 光層），由 validate_walkdream_v3.py 驗
 chk("1 alpha 只得 0／255（全部 PNG）", all(set(np.unique(rgba(p)[..., 3])) <= {0, 255} for p in pngs), f"{len(pngs)} png")
 ents = [v for v in K.values() if "1x" in v] + list(J["pets"].values())
 missing = [v[k] for v in ents for k in ("1x", "3x") if not os.path.exists(os.path.join(D, v[k]))]

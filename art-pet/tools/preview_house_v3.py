@@ -6,7 +6,9 @@ from PIL import Image, ImageDraw, ImageFont
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import build_house_v3 as H
 SW3, SH3 = H.SW3, H.SH3
-PV = f'{H.OUT}/preview'; GD = '/workspace/game-design/house_v3'
+PV = f'{H.OUT}/preview'
+# 預覽輸出：預設＝repo 根目錄／house_v3（相對 art-pet/..，即 game-design checkout 入面嘅 house_v3/）；可用 env GD_HOUSE_V3 改
+REPO = os.path.normpath(os.path.join(HERE, '..', '..')); GD = os.environ.get('GD_HOUSE_V3') or os.path.join(REPO, 'house_v3')
 def font(sz, b=True):
     import ui_hd2d_v3_lib as UL
     return ImageFont.truetype(UL.FONT_SRC['sansb' if b else 'sans'], sz, index=UL.FONT_TTC_INDEX)

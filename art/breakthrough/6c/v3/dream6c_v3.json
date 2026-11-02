@@ -1,0 +1,1824 @@
+{
+ "version": 3,
+ "batch": "第 6 批 6c 夢遊 V3-A",
+ "source": {
+  "dir": "art/breakthrough/6c",
+  "commit": "af5b4821",
+  "note": "原 1x／@3x key、尺寸、dream6c.json 冇郁；V3 喺 v3/"
+ },
+ "screen3x": [
+  585,
+  1266
+ ],
+ "grid": {
+  "cols": 3,
+  "rows": 5,
+  "x0": 11,
+  "y0": 64,
+  "gap": 2,
+  "tile": 56,
+  "tile3x": 168,
+  "note": "art 座標同 dream6c.json#grid 一致；@3x＝×3"
+ },
+ "dreamBg": {
+  "size3x": [
+   585,
+   1266
+  ],
+  "size1x": [
+   195,
+   422
+  ],
+  "baked": {
+   "x3": "dream_bg/dream_bg_v3@3x.png",
+   "x1": "dream_bg/dream_bg_v3.png",
+   "note": "全部層預先合成（唔做即時合成時用）"
+  },
+  "stack": [
+   {
+    "layer": "sky",
+    "file": "dream_bg/sky@3x.png",
+    "parallax": 0.1
+   },
+   {
+    "layer": "light_add",
+    "file": "dream_bg/light_add@3x.png",
+    "blend": "lighter",
+    "note": "星雲＋銀河帶＋月暈＋月光柱",
+    "drift3x": [
+     3,
+     0
+    ],
+    "driftSec": 40
+   },
+   {
+    "layer": "stars",
+    "file": "dream_bg/emissive@3x.png",
+    "blend": "lighter",
+    "twinkle": "twinkle"
+   },
+   {
+    "layer": "mist",
+    "file": "dream_bg/mist@3x.png",
+    "drift3x": [
+     6,
+     0
+    ],
+    "driftSec": 12
+   },
+   {
+    "layer": "clouds",
+    "file": "dream_bg/clouds@3x.png",
+    "parallax": 1.2,
+    "bob3x": 2,
+    "bobSec": 6
+   },
+   {
+    "layer": "lightmap",
+    "file": "dream_bg/lightmap@3x.png",
+    "blend": "multiply"
+   },
+   {
+    "layer": "vignette",
+    "file": "dream_bg/vignette@3x.png"
+   },
+   {
+    "layer": "moon",
+    "file": "dream_bg/moon@3x.png",
+    "note": "月 sprite（0/255）＋rim；喺 vignette 上面保持亮"
+   },
+   {
+    "layer": "bloom",
+    "file": "dream_bg/bloom@3x.png",
+    "blend": "lighter",
+    "alpha": 0.8,
+    "pulse": {
+     "hz": 0.15,
+     "amp": 0.1
+    }
+   },
+   {
+    "layer": "grid",
+    "realtime": true,
+    "note": "tiles＋glow＋fog＋pet（見 tiles／fog）"
+   },
+   {
+    "layer": "particles",
+    "realtime": true
+   }
+  ],
+  "twinkle": [
+   {
+    "x": 172,
+    "y": 2,
+    "hz": 0.74,
+    "phase": 0.71,
+    "flare": "s"
+   },
+   {
+    "x": 122,
+    "y": 13,
+    "hz": 0.53,
+    "phase": 0.51,
+    "flare": "s"
+   },
+   {
+    "x": 121,
+    "y": 14,
+    "hz": 1.01,
+    "phase": 0.9,
+    "flare": "s"
+   },
+   {
+    "x": 122,
+    "y": 14,
+    "hz": 0.4,
+    "phase": 0.21,
+    "flare": "s"
+   },
+   {
+    "x": 123,
+    "y": 14,
+    "hz": 0.34,
+    "phase": 0.44,
+    "flare": "s"
+   },
+   {
+    "x": 122,
+    "y": 15,
+    "hz": 0.32,
+    "phase": 0.46,
+    "flare": "s"
+   },
+   {
+    "x": 184,
+    "y": 24,
+    "hz": 0.82,
+    "phase": 0.28,
+    "flare": "s"
+   },
+   {
+    "x": 133,
+    "y": 30,
+    "hz": 0.84,
+    "phase": 0.59,
+    "flare": "s"
+   },
+   {
+    "x": 132,
+    "y": 31,
+    "hz": 0.32,
+    "phase": 0.56,
+    "flare": "s"
+   },
+   {
+    "x": 133,
+    "y": 31,
+    "hz": 0.51,
+    "phase": 0.42,
+    "flare": "s"
+   },
+   {
+    "x": 134,
+    "y": 31,
+    "hz": 0.53,
+    "phase": 0.69,
+    "flare": "s"
+   },
+   {
+    "x": 133,
+    "y": 32,
+    "hz": 0.65,
+    "phase": 0.16,
+    "flare": "s"
+   },
+   {
+    "x": 138,
+    "y": 34,
+    "hz": 0.74,
+    "phase": 0.78,
+    "flare": "s"
+   },
+   {
+    "x": 137,
+    "y": 35,
+    "hz": 0.55,
+    "phase": 0.22,
+    "flare": "s"
+   },
+   {
+    "x": 138,
+    "y": 35,
+    "hz": 0.61,
+    "phase": 0.94,
+    "flare": "s"
+   },
+   {
+    "x": 139,
+    "y": 35,
+    "hz": 1.08,
+    "phase": 0.67,
+    "flare": "s"
+   },
+   {
+    "x": 138,
+    "y": 36,
+    "hz": 1.02,
+    "phase": 0.85,
+    "flare": "s"
+   },
+   {
+    "x": 94,
+    "y": 37,
+    "hz": 0.6,
+    "phase": 0.09,
+    "flare": "s"
+   },
+   {
+    "x": 184,
+    "y": 65,
+    "hz": 0.82,
+    "phase": 0.56,
+    "flare": "s"
+   },
+   {
+    "x": 20,
+    "y": 86,
+    "hz": 0.59,
+    "phase": 0.23,
+    "flare": "s"
+   },
+   {
+    "x": 170,
+    "y": 95,
+    "hz": 0.63,
+    "phase": 0.47,
+    "flare": "s"
+   },
+   {
+    "x": 58,
+    "y": 114,
+    "hz": 0.52,
+    "phase": 0.29,
+    "flare": "s"
+   },
+   {
+    "x": 186,
+    "y": 130,
+    "hz": 0.67,
+    "phase": 0.86,
+    "flare": "s"
+   },
+   {
+    "x": 185,
+    "y": 131,
+    "hz": 0.77,
+    "phase": 0.28,
+    "flare": "s"
+   },
+   {
+    "x": 186,
+    "y": 131,
+    "hz": 0.52,
+    "phase": 0.45,
+    "flare": "s"
+   },
+   {
+    "x": 187,
+    "y": 131,
+    "hz": 0.46,
+    "phase": 0.2,
+    "flare": "s"
+   },
+   {
+    "x": 186,
+    "y": 132,
+    "hz": 0.71,
+    "phase": 0.09,
+    "flare": "s"
+   },
+   {
+    "x": 53,
+    "y": 143,
+    "hz": 0.69,
+    "phase": 0.36,
+    "flare": "s"
+   },
+   {
+    "x": 52,
+    "y": 144,
+    "hz": 0.87,
+    "phase": 0.75,
+    "flare": "s"
+   },
+   {
+    "x": 53,
+    "y": 144,
+    "hz": 0.85,
+    "phase": 0.69,
+    "flare": "s"
+   },
+   {
+    "x": 54,
+    "y": 144,
+    "hz": 0.6,
+    "phase": 0.67,
+    "flare": "s"
+   },
+   {
+    "x": 79,
+    "y": 144,
+    "hz": 0.57,
+    "phase": 0.57,
+    "flare": "s"
+   },
+   {
+    "x": 53,
+    "y": 145,
+    "hz": 0.56,
+    "phase": 0.45,
+    "flare": "s"
+   },
+   {
+    "x": 186,
+    "y": 146,
+    "hz": 0.35,
+    "phase": 0.24,
+    "flare": "s"
+   },
+   {
+    "x": 87,
+    "y": 160,
+    "hz": 1.08,
+    "phase": 0.23,
+    "flare": "s"
+   },
+   {
+    "x": 154,
+    "y": 181,
+    "hz": 0.85,
+    "phase": 0.65,
+    "flare": "s"
+   },
+   {
+    "x": 54,
+    "y": 188,
+    "hz": 0.88,
+    "phase": 0.48,
+    "flare": "s"
+   },
+   {
+    "x": 113,
+    "y": 188,
+    "hz": 0.78,
+    "phase": 0.07,
+    "flare": "s"
+   },
+   {
+    "x": 51,
+    "y": 199,
+    "hz": 0.36,
+    "phase": 0.2,
+    "flare": "s"
+   },
+   {
+    "x": 142,
+    "y": 199,
+    "hz": 0.42,
+    "phase": 0.1,
+    "flare": "s"
+   },
+   {
+    "x": 50,
+    "y": 200,
+    "hz": 0.4,
+    "phase": 0.55,
+    "flare": "s"
+   },
+   {
+    "x": 51,
+    "y": 200,
+    "hz": 0.45,
+    "phase": 0.95,
+    "flare": "s"
+   },
+   {
+    "x": 52,
+    "y": 200,
+    "hz": 0.85,
+    "phase": 0.54,
+    "flare": "s"
+   },
+   {
+    "x": 141,
+    "y": 200,
+    "hz": 0.87,
+    "phase": 0.26,
+    "flare": "s"
+   },
+   {
+    "x": 142,
+    "y": 200,
+    "hz": 1.04,
+    "phase": 0.84,
+    "flare": "s"
+   },
+   {
+    "x": 143,
+    "y": 200,
+    "hz": 0.88,
+    "phase": 0.48,
+    "flare": "s"
+   },
+   {
+    "x": 51,
+    "y": 201,
+    "hz": 0.97,
+    "phase": 0.74,
+    "flare": "s"
+   },
+   {
+    "x": 102,
+    "y": 201,
+    "hz": 0.83,
+    "phase": 0.91,
+    "flare": "s"
+   },
+   {
+    "x": 142,
+    "y": 201,
+    "hz": 0.81,
+    "phase": 0.37,
+    "flare": "s"
+   },
+   {
+    "x": 139,
+    "y": 209,
+    "hz": 0.74,
+    "phase": 0.2,
+    "flare": "s"
+   },
+   {
+    "x": 138,
+    "y": 210,
+    "hz": 0.45,
+    "phase": 0.73,
+    "flare": "s"
+   },
+   {
+    "x": 139,
+    "y": 210,
+    "hz": 0.93,
+    "phase": 0.97,
+    "flare": "s"
+   },
+   {
+    "x": 140,
+    "y": 210,
+    "hz": 0.98,
+    "phase": 0.54,
+    "flare": "s"
+   },
+   {
+    "x": 139,
+    "y": 211,
+    "hz": 0.37,
+    "phase": 0.49,
+    "flare": "s"
+   },
+   {
+    "x": 30,
+    "y": 214,
+    "hz": 1.04,
+    "phase": 0.79,
+    "flare": "s"
+   },
+   {
+    "x": 29,
+    "y": 215,
+    "hz": 0.69,
+    "phase": 0.46,
+    "flare": "s"
+   },
+   {
+    "x": 30,
+    "y": 215,
+    "hz": 0.47,
+    "phase": 0.18,
+    "flare": "s"
+   },
+   {
+    "x": 31,
+    "y": 215,
+    "hz": 0.36,
+    "phase": 0.89,
+    "flare": "s"
+   },
+   {
+    "x": 30,
+    "y": 216,
+    "hz": 0.81,
+    "phase": 0.14,
+    "flare": "s"
+   },
+   {
+    "x": 32,
+    "y": 224,
+    "hz": 0.63,
+    "phase": 0.05,
+    "flare": "s"
+   },
+   {
+    "x": 47,
+    "y": 224,
+    "hz": 0.47,
+    "phase": 0.73,
+    "flare": "s"
+   },
+   {
+    "x": 130,
+    "y": 240,
+    "hz": 0.82,
+    "phase": 0.48,
+    "flare": "s"
+   },
+   {
+    "x": 9,
+    "y": 243,
+    "hz": 0.52,
+    "phase": 0.65,
+    "flare": "s"
+   },
+   {
+    "x": 98,
+    "y": 255,
+    "hz": 1.07,
+    "phase": 0.44,
+    "flare": "s"
+   },
+   {
+    "x": 51,
+    "y": 265,
+    "hz": 0.36,
+    "phase": 0.06,
+    "flare": "s"
+   },
+   {
+    "x": 141,
+    "y": 277,
+    "hz": 0.37,
+    "phase": 0.96,
+    "flare": "s"
+   },
+   {
+    "x": 24,
+    "y": 287,
+    "hz": 0.73,
+    "phase": 0.84,
+    "flare": "s"
+   },
+   {
+    "x": 93,
+    "y": 317,
+    "hz": 0.44,
+    "phase": 0.26,
+    "flare": "s"
+   },
+   {
+    "x": 133,
+    "y": 321,
+    "hz": 0.85,
+    "phase": 0.9,
+    "flare": "s"
+   },
+   {
+    "x": 179,
+    "y": 322,
+    "hz": 0.57,
+    "phase": 0.06,
+    "flare": "s"
+   },
+   {
+    "x": 159,
+    "y": 349,
+    "hz": 0.99,
+    "phase": 0.29,
+    "flare": "s"
+   }
+  ],
+  "moon": {
+   "center": [
+    27.5,
+    24.5
+   ],
+   "flare": {
+    "size": "m",
+    "tint": "#fff0c8",
+    "intensity": 0.55,
+    "fps": 1.5
+   }
+  },
+  "emitters": [
+   {
+    "type": "dreamMote",
+    "sprite": "scenes/hd2d_v3/fx/particles_v3@3x.json#mote_01..06",
+    "glow": "glow_12",
+    "tints": [
+     "#c8b8ff",
+     "#ffc8e8",
+     "#b8e8ff"
+    ],
+    "rect": [
+     0,
+     40,
+     195,
+     400
+    ],
+    "max": 16,
+    "rate": 0.8,
+    "life": [
+     4,
+     9
+    ],
+    "vy": [
+     -2,
+     -0.5
+    ],
+    "sway": 5,
+    "add": 0.6
+   },
+   {
+    "type": "shootingStar",
+    "every": [
+     6,
+     14
+    ],
+    "rect": [
+     20,
+     10,
+     190,
+     140
+    ],
+    "len": 26,
+    "angleDeg": [
+     200,
+     230
+    ],
+    "durMs": 650,
+    "tint": "#fff6dc",
+    "width3x": 3,
+    "note": "程序畫：頭亮尾漸淡（lighter）"
+   }
+  ],
+  "grade": {
+   "amb": "#e8e4ff",
+   "sat": 1.06,
+   "con": 1.06,
+   "split": [
+    "#1c1650",
+    "#ffe6b0",
+    0.12
+   ]
+  }
+ },
+ "tiles": {
+  "6c:tile_forest_v3": {
+   "v3": "tiles/tile_forest_v3@3x.png",
+   "glow": "tiles/tile_forest_glow@3x.png",
+   "emissive": "tiles/tile_forest_emissive@3x.png",
+   "size3x": [
+    672,
+    168
+   ],
+   "variants": 4,
+   "tile3x": [
+    168,
+    168
+   ],
+   "zh": "夢森林",
+   "light": "#d8ffd0",
+   "glowTint": "#a8ff9a",
+   "flicker": {
+    "type": "breathe",
+    "hz": 0.35,
+    "amp": 0.18
+   },
+   "note": "菇菇、螢光葉微光；key light 左上、邊 AO、中心月光池、rim 已烘（alpha 0/255）",
+   "accentPx": 522
+  },
+  "6c:tile_lake_v3": {
+   "v3": "tiles/tile_lake_v3@3x.png",
+   "glow": "tiles/tile_lake_glow@3x.png",
+   "emissive": "tiles/tile_lake_emissive@3x.png",
+   "size3x": [
+    672,
+    168
+   ],
+   "variants": 4,
+   "tile3x": [
+    168,
+    168
+   ],
+   "zh": "星湖",
+   "light": "#d0e8ff",
+   "glowTint": "#9ad8ff",
+   "flicker": {
+    "type": "shimmer",
+    "hz": 0.8,
+    "amp": 0.15
+   },
+   "note": "水面 caustic 4 幀；key light 左上、邊 AO、中心月光池、rim 已烘（alpha 0/255）",
+   "accentPx": 1066,
+   "caustic": {
+    "file": "tiles/tile_lake_caustic@3x.png",
+    "frames": 4,
+    "layout": "直條（每幀 672×168）",
+    "fps": 4,
+    "blend": "lighter"
+   }
+  },
+  "6c:tile_toy_v3": {
+   "v3": "tiles/tile_toy_v3@3x.png",
+   "glow": "tiles/tile_toy_glow@3x.png",
+   "emissive": "tiles/tile_toy_emissive@3x.png",
+   "size3x": [
+    672,
+    168
+   ],
+   "variants": 4,
+   "tile3x": [
+    168,
+    168
+   ],
+   "zh": "玩具屋",
+   "light": "#ffe8d0",
+   "glowTint": "#ffc890",
+   "flicker": {
+    "type": "breathe",
+    "hz": 0.25,
+    "amp": 0.1
+   },
+   "note": "暖燈；key light 左上、邊 AO、中心月光池、rim 已烘（alpha 0/255）",
+   "accentPx": 1102
+  },
+  "6c:tile_star_v3": {
+   "v3": "tiles/tile_star_v3@3x.png",
+   "glow": "tiles/tile_star_glow@3x.png",
+   "emissive": "tiles/tile_star_emissive@3x.png",
+   "size3x": [
+    672,
+    168
+   ],
+   "variants": 4,
+   "tile3x": [
+    168,
+    168
+   ],
+   "zh": "星空頂",
+   "light": "#fff4d0",
+   "glowTint": "#ffe890",
+   "flicker": {
+    "type": "twinkle",
+    "hz": 1.2,
+    "amp": 0.35
+   },
+   "note": "星星閃；key light 左上、邊 AO、中心月光池、rim 已烘（alpha 0/255）",
+   "accentPx": 765
+  },
+  "6c:tile_reveal_glow": {
+   "file": "tiles/tile_reveal_glow@3x.png",
+   "size3x": [
+    216,
+    216
+   ],
+   "blend": "lighter",
+   "anim": "揭開時 0→1→.25（600ms）",
+   "note": "已揭格邊微光"
+  }
+ },
+ "fog": {
+  "6c:fog_v3": {
+   "file": "tiles/fog_v3@3x.png",
+   "x1": "tiles/fog_v3.png",
+   "frames": 8,
+   "frame3x": [
+    168,
+    168
+   ],
+   "fps": 4,
+   "loop": true,
+   "alpha": "真 alpha（霧＝光／霧層）",
+   "note": "原 fog 外形＋細節（雲紋）保留；霧緩慢流動；入面零星微光"
+  },
+  "6c:fog_reveal": {
+   "file": "tiles/fog_reveal@3x.png",
+   "frames": 8,
+   "frame3x": [
+    168,
+    168
+   ],
+   "fps": 16,
+   "loop": false,
+   "durationMs": 500,
+   "note": "揭開：noise 溶解＋淡紫光邊；播完換 tile＋tile_reveal_glow"
+  }
+ },
+ "transition": {
+  "6c:transition_v3": {
+   "files": "transition/transition_in_v3_{00..09}@3x.png",
+   "frames": 10,
+   "fps": 8,
+   "durationMs": 1250,
+   "frame3x": [
+    585,
+    1266
+   ],
+   "alpha": "真 alpha（過場層）",
+   "note": "原 10 幀外形；夜幕邊羽化＋淡紫光邊；最後幀全黑夜＋月。enter 0→9、exit 9→0；最後 3 幀加月 flare（json flare）",
+   "flare": {
+    "frames": [
+     7,
+     8,
+     9
+    ],
+    "pos": [
+     27.5,
+     24.5
+    ],
+    "size": "m",
+    "tint": "#fff0c8",
+    "intensity": [
+     0.3,
+     0.5,
+     0.6
+    ]
+   },
+   "petGlowSync": "入夢第 0 幀開始 petGlow → 0（fadeOut 600ms easeInQuad）；出夢最後一幀 → 1（fadeIn 400ms＋pulse）"
+  }
+ },
+ "cards": {
+  "6c:card_f1_v3": {
+   "v3": "cards/card_f1_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "forest",
+   "glow": "cards/card_glow_forest@3x.png"
+  },
+  "6c:card_f2_v3": {
+   "v3": "cards/card_f2_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "forest",
+   "glow": "cards/card_glow_forest@3x.png"
+  },
+  "6c:card_f3_v3": {
+   "v3": "cards/card_f3_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "forest",
+   "glow": "cards/card_glow_forest@3x.png"
+  },
+  "6c:card_f4_v3": {
+   "v3": "cards/card_f4_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "forest",
+   "glow": "cards/card_glow_forest@3x.png"
+  },
+  "6c:card_f5_v3": {
+   "v3": "cards/card_f5_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "forest",
+   "glow": "cards/card_glow_forest@3x.png"
+  },
+  "6c:card_l1_v3": {
+   "v3": "cards/card_l1_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "lake",
+   "glow": "cards/card_glow_lake@3x.png"
+  },
+  "6c:card_l2_v3": {
+   "v3": "cards/card_l2_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "lake",
+   "glow": "cards/card_glow_lake@3x.png"
+  },
+  "6c:card_l3_v3": {
+   "v3": "cards/card_l3_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "lake",
+   "glow": "cards/card_glow_lake@3x.png"
+  },
+  "6c:card_l4_v3": {
+   "v3": "cards/card_l4_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "lake",
+   "glow": "cards/card_glow_lake@3x.png"
+  },
+  "6c:card_l5_v3": {
+   "v3": "cards/card_l5_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "lake",
+   "glow": "cards/card_glow_lake@3x.png"
+  },
+  "6c:card_t1_v3": {
+   "v3": "cards/card_t1_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "toy",
+   "glow": "cards/card_glow_toy@3x.png"
+  },
+  "6c:card_t2_v3": {
+   "v3": "cards/card_t2_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "toy",
+   "glow": "cards/card_glow_toy@3x.png"
+  },
+  "6c:card_t3_v3": {
+   "v3": "cards/card_t3_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "toy",
+   "glow": "cards/card_glow_toy@3x.png"
+  },
+  "6c:card_t4_v3": {
+   "v3": "cards/card_t4_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "toy",
+   "glow": "cards/card_glow_toy@3x.png"
+  },
+  "6c:card_t5_v3": {
+   "v3": "cards/card_t5_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "toy",
+   "glow": "cards/card_glow_toy@3x.png"
+  },
+  "6c:card_s1_v3": {
+   "v3": "cards/card_s1_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "star",
+   "glow": "cards/card_glow_star@3x.png"
+  },
+  "6c:card_s2_v3": {
+   "v3": "cards/card_s2_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "star",
+   "glow": "cards/card_glow_star@3x.png"
+  },
+  "6c:card_s3_v3": {
+   "v3": "cards/card_s3_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "star",
+   "glow": "cards/card_glow_star@3x.png"
+  },
+  "6c:card_s4_v3": {
+   "v3": "cards/card_s4_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "star",
+   "glow": "cards/card_glow_star@3x.png"
+  },
+  "6c:card_s5_v3": {
+   "v3": "cards/card_s5_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": "star",
+   "glow": "cards/card_glow_star@3x.png"
+  },
+  "6c:card_back_v3": {
+   "v3": "cards/card_back_v3@3x.png",
+   "size3x": [
+    84,
+    108
+   ],
+   "theme": null,
+   "glow": "cards/card_glow_back@3x.png"
+  },
+  "6c:card_shine": {
+   "file": "cards/card_shine@3x.png",
+   "frames": 8,
+   "frame3x": [
+    84,
+    108
+   ],
+   "fps": 16,
+   "blend": "lighter",
+   "note": "新卡／翻卡時掃一次光；mask 已跟卡外形"
+  },
+  "6c:card_glow": {
+   "files": "cards/card_glow_<forest|lake|toy|star|back>@3x.png",
+   "size3x": [
+    144,
+    168
+   ],
+   "offset3x": [
+    -30,
+    -30
+   ],
+   "blend": "lighter",
+   "note": "卡外圍光暈（卡中心對中）"
+  }
+ },
+ "petGlow": {
+  "source": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow",
+  "dreamEnter": 0.0,
+  "dreaming": 0.0,
+  "rule": "夢遊中寵物光＝0（呢度所有 pets.petLight＝0）；月、星、菇燈等場景光照開；出夢先 fadeIn 400ms＋pulse"
+ },
+ "pets": {
+  "sprout": {
+   "petglow": null,
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "radiant": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_radiant.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "soft": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_soft.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "lumi": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_lumi.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_dot": {
+   "petglow": null,
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_sprout": {
+   "petglow": null,
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_hop": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_hop.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_tide": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_tide.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_moon": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_moon.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_shroom": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_shroom.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_crystal": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_crystal.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_ember": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_ember.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_radiant": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_radiant.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_soft": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_soft.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_dust": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_dust.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_guard_lumi": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_lumi.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_tide": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_tide.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_moon": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_moon.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_shroom": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_shroom.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_crystal": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_crystal.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_ember": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_ember.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_radiant": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_radiant.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_soft": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_soft.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_dust": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_dust.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "evo_still_lumi": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_lumi.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "A1": {
+   "petglow": "sprites/series2/petglow_v3/A1.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "A2": {
+   "petglow": "sprites/series2/petglow_v3/A2.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "A3": {
+   "petglow": "sprites/series2/petglow_v3/A3.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "B1": {
+   "petglow": "sprites/series2/petglow_v3/B1.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "B2": {
+   "petglow": "sprites/series2/petglow_v3/B2.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "B3": {
+   "petglow": "sprites/series2/petglow_v3/B3.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "C1": {
+   "petglow": "sprites/series2/petglow_v3/C1.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "C2": {
+   "petglow": "sprites/series2/petglow_v3/C2.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "C3": {
+   "petglow": "sprites/series2/petglow_v3/C3.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "D1": {
+   "petglow": "sprites/series2/petglow_v3/D1.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "D2": {
+   "petglow": "sprites/series2/petglow_v3/D2.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "D3": {
+   "petglow": "sprites/series2/petglow_v3/D3.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "E1": {
+   "petglow": "sprites/series2/petglow_v3/E1.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "E2": {
+   "petglow": "sprites/series2/petglow_v3/E2.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "E3": {
+   "petglow": "sprites/series2/petglow_v3/E3.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "F1": {
+   "petglow": "sprites/series2/petglow_v3/F1.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "F2": {
+   "petglow": "sprites/series2/petglow_v3/F2.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "F3": {
+   "petglow": "sprites/series2/petglow_v3/F3.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "G1": {
+   "petglow": "sprites/series2/petglow_v3/G1.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "G2": {
+   "petglow": "sprites/series2/petglow_v3/G2.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "G3": {
+   "petglow": "sprites/series2/petglow_v3/G3.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "H1": {
+   "petglow": "sprites/series2/petglow_v3/H1.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "H2": {
+   "petglow": "sprites/series2/petglow_v3/H2.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  },
+  "H3": {
+   "petglow": "sprites/series2/petglow_v3/H3.json",
+   "petLight": 0,
+   "glow": "off",
+   "moonRim": {
+    "color": "#c8c0ff",
+    "intensity": 0.5,
+    "note": "場景月光 rim（唔係寵物光）"
+   },
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   }
+  }
+ },
+ "petStack": [
+  "contactShadow",
+  "dream_walk（×DREAM.amb）",
+  "moonRim",
+  "nightcap（json xy）"
+ ],
+ "keep": "dream_walk／nightcap／frag／icon 原樣用（V3 只加光）"
+}
