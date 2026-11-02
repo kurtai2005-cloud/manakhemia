@@ -1,6 +1,6 @@
 {
- "passed": 402,
- "total": 402,
+ "passed": 403,
+ "total": 403,
  "results": [
   {
    "check": "json 讀得",
@@ -1901,6 +1901,11 @@
    "check": "sun color／ambient",
    "ok": true,
    "info": ""
+  },
+  {
+   "check": "sun shadowIntensity 0–1",
+   "ok": true,
+   "info": "0.3"
   },
   {
    "check": "camera 欄位",

@@ -141,6 +141,7 @@ if J:
         chk(f"light {l['id']} 欄位／範圍", ok, l)
     s = LJ['sun']; dv = np.array(s['dir'])
     chk('sun dir 正規化、向下', abs(np.linalg.norm(dv)-1) < 1e-3 and dv[1] < 0, s['dir']); chk('sun color／ambient', HEX.match(s['color']) and HEX.match(s['ambient']['color']))
+    chk('sun shadowIntensity 0–1', isinstance(s.get('shadowIntensity'), (int, float)) and 0 <= s['shadowIntensity'] <= 1, s.get('shadowIntensity'))
     chk('camera 欄位', all(k in CJ for k in ('target', 'pitchDeg', 'dist', 'orbitMinDeg', 'orbitMaxDeg')) and 25 <= CJ['pitchDeg'] <= 35 and CJ['orbitMinDeg'] < CJ['orbitMaxDeg'] and CJ['dist'] > 0, CJ)
     big = [x for x in used if os.path.exists(f'{D}/{x}') and os.path.getsize(f'{D}/{x}') >= 20*2**20]
     chk('每個檔 <20MB', not big, big); chk('FORMAT.md 存在', os.path.exists(f'{D}/FORMAT.md'))

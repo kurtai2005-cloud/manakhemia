@@ -105,6 +105,7 @@
 - `sun`：
   - `dir`＝光行進方向（由太陽射向場景，已正規化；左後上方 → [0.42,−0.72,0.55]）。
   - `color`、`intensity`、`ambient{color,intensity}`。
+  - `shadowIntensity`（patch1 新）：影濃度 0–1，對應 three.js `light.shadow.intensity`（Godot `shadow_opacity`）。H1＝**0.3**（原本預覽等效 0.42），大樹長影淡啲；只改光參數，貼圖／mesh 冇郁。
 - `fill`（新）：補光方向光 `{dir, color, intensity, intensityNight}`，**唔投影**。dir＝[0.2,−0.12,−0.97]（由鏡頭方向略低照入去），#ffe2c4，日 0.38、夜 0。
   - 用途：補返全部 mesh 背光嘅正面，令 0° 構圖光暗接近平面版。全場景 lit 物件都受。
 - 另有 `fog{color,near,far}`、`night{...}`（只係預覽參考）。
@@ -147,5 +148,5 @@ PYTHONDONTWRITEBYTECODE=1 python3 tools/validate_garden3d.py [--src 場景目錄
 PYTHONDONTWRITEBYTECODE=1 python3 tools/preview_garden3d.py [--src 場景目錄] [--out 輸出目錄] [--cmp billboard 版場景] [--only …]
 ```
 - env：`GARDEN3D_SRC`、`GARDEN3D_OUT`、`GARDEN3D_CMP`；預設 src＝本目錄，out＝`/workspace/game-design/pilot3d_h1_mesh`。
-- preview 出：`pet_walk_loop.gif`（寵物行一圈、按方向換幀）＋`_strip.png`、`assembled_3d.png`（−10°／0°／+10°／夜）、`occlusion_pet_tree.png`（行到樹後被遮）、`compare_billboard_vs_mesh.png`（要 `--cmp`）、`closeup_cottage.png`／`closeup_tree.png`、`meshes_sheet.png`、`backfill_check.png`、`ground_top.png`（footprint＋行路）、`pet_dir4_sheet.png`、`normals_pets.png`。
+- preview 出：`pet_walk_loop.gif`（寵物行一圈、按方向換幀）＋`_strip.png`、`assembled_3d.png`（−10°／0°／+10°／夜）、`occlusion_pet_tree.png`（行到樹後被遮）、`compare_billboard_vs_mesh.png`（要 `--cmp`）、`closeup_cottage.png`／`closeup_tree.png`、`meshes_sheet.png`、`backfill_check.png`、`ground_top.png`（footprint＋行路）、`pet_dir4_sheet.png`、`normals_pets.png`、`day_cam_sway.gif`（`--only daysway`：鏡頭 −10°→+10°→−10° 慢擺＋寵物來回 ROUTE2，dir4 轉身、被樹幹／籬笆遮，57 幀×70ms≈4s）、`night_lamps.gif`（`--only nightlamps`：同一路線、夜間燈亮＋螢火蟲（只預覽，未入 lights）、petGlow 1，480 闊、50 幀×80ms≈4s）。兩段 GIF 鏡頭 target 跟寵物（日間跟得緊、夜間跟得鬆令燈柱／燈籠／窗／螢火瓶同框），寵物行速約 1.9× 正常 walk（4 秒內行完 304 單位來回）。
 - 其他工具可以 `import preview_garden3d as P; P.load(src); P.render(yaw, night, W, H, pet=dict(x, z, frame, flip)); P.blocked(x, z)`（唔好複製渲染）。預覽只係驗格式同擺位，**唔係引擎畫面**。

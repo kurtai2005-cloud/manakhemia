@@ -344,8 +344,8 @@ def lights_json(objs):
     L.append(dict(id='window', zh='小屋窗', x=(a+c)/2-FOOT[0], y=GROUND_LINE-(b+d)/2, z=GH.ZF+2, color='#ffc870', radius=48, intensity=0.0, intensityNight=0.8, flicker=0.02))
     L.append(dict(GH.LIGHT_SIDE))
     j = o['jar']; L.append(dict(id='jar', zh='螢火瓶', x=j['x'], y=5, z=j['z']+1, color='#c8ffb0', radius=22, intensity=0.0, intensityNight=0.6, flicker=0.25))
-    sun = dict(dir=[0.42, -0.72, 0.55], color='#ffe6b8', intensity=1.0, ambient=dict(color='#cfe0f0', intensity=0.55),
-               note='dir＝光行進方向（由太陽射向場景），已正規化；H1 太陽喺左後上方。')
+    sun = dict(dir=[0.42, -0.72, 0.55], color='#ffe6b8', intensity=1.0, ambient=dict(color='#cfe0f0', intensity=0.55), shadowIntensity=0.3,
+               note='dir＝光行進方向（由太陽射向場景），已正規化；H1 太陽喺左後上方。shadowIntensity＝影濃度 0–1（three.js light.shadow.intensity；0.3＝大樹長影淡啲，唔烘入貼圖）')
     v = np.array(sun['dir']); sun['dir'] = [round(float(t), 4) for t in v/np.linalg.norm(v)]
     fd = np.array([0.2, -0.12, -0.97]); fill = dict(dir=[round(float(t), 4) for t in fd/np.linalg.norm(fd)], color='#ffe2c4', intensity=0.38, intensityNight=0.0,
         note='補光（方向光，唔投影）：由鏡頭方向略低照入去，補返背光嘅前牆（太陽喺左後上）；全場景 lit 物件都受，唔烘入貼圖')

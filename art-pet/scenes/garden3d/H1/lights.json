@@ -123,7 +123,8 @@
    "color": "#cfe0f0",
    "intensity": 0.55
   },
-  "note": "dir＝光行進方向（由太陽射向場景），已正規化；H1 太陽喺左後上方。"
+  "shadowIntensity": 0.3,
+  "note": "dir＝光行進方向（由太陽射向場景），已正規化；H1 太陽喺左後上方。shadowIntensity＝影濃度 0–1（three.js light.shadow.intensity；0.3＝大樹長影淡啲，唔烘入貼圖）"
  },
  "fill": {
   "dir": [

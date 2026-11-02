@@ -98,7 +98,7 @@ def pet_dir4(name):
     f = DIR4['J']['frames'][name]['frame']; x, y, w, h = f['x'], f['y'], f['w'], f['h']; pv = DIR4['J']['meta']['pivotPx']
     return tuple(DIR4[k][y:y+h, x:x+w] for k in 'cne') + ((pv[0]/w, pv[1]/h),)
 def render(yaw, night=False, W=390, H=844, exclude=(), cam=None, want_depth=False, pet='default'):
-    """pet＝'default'（idle 喺原點）／None（冇寵物）／dict(x, z, frame=(c,n,e,pivot), flip)。"""
+    """pet＝'default'（idle 喺原點）／None（冇寵物）／dict(x, z, frame=(c,n,e,pivot), flip, glow＝petGlow 0–1)。"""
     CJ_ = dict(CJ, **(cam or {}))
     tg = np.array(CJ_['target'], float); p = math.radians(CJ_['pitchDeg']); yw = math.radians(yaw)
     C = tg + CJ_['dist']*np.array([math.sin(yw)*math.cos(p), math.sin(p), math.cos(yw)*math.cos(p)])
@@ -108,7 +108,7 @@ def render(yaw, night=False, W=390, H=844, exclude=(), cam=None, want_depth=Fals
     jj, ii = np.mgrid[0:H, 0:W].astype(float)
     D = fw + ((2*(ii+.5)/W-1)*th)[..., None]*rt - ((2*(jj+.5)/H-1)*tv)[..., None]*up
     D /= np.linalg.norm(D, axis=-1, keepdims=True)
-    sun = LJ['sun']; sd = np.array(sun['dir']); sI = (LJ['night']['sun'] if night else sun['intensity']); sc = hx(sun['color'])
+    sun = LJ['sun']; sd = np.array(sun['dir']); SI = sun.get('shadowIntensity', .42); sI = (LJ['night']['sun'] if night else sun['intensity']); sc = hx(sun['color'])
     amb = hx(LJ['night']['ambient'])*LJ['night']['ambientIntensity'] if night else hx(sun['ambient']['color'])*sun['ambient']['intensity']
     fl = LJ.get('fill'); fd = np.array(fl['dir']) if fl else np.zeros(3); fI = (fl['intensityNight'] if night else fl['intensity']) if fl else 0; fc = hx(fl['color']) if fl else 0
     lights = [(np.array([l['x'], l['y'], l['z']], float), hx(l['color']), l['radius'], l['intensityNight'] if night else l['intensity']) for l in LJ['lights']]
@@ -144,7 +144,7 @@ def render(yaw, night=False, W=390, H=844, exclude=(), cam=None, want_depth=Fals
             x0 = o['x'] - o['w']*o['pivot'][0]; k = (X > x0) & (X < x0+o['w'])
             sh *= 1 - .3*k*np.exp(-(((Z-o['z']-6)/7)**2))
     if any(o.get('type') == 'mesh' for o in objs):
-        gi = np.where(hit & (np.abs(X) < 700) & (Z > -600) & (Z < 400)); sg = in_shadow(P[gi]); sh[gi[0][sg], gi[1][sg]] *= .58
+        gi = np.where(hit & (np.abs(X) < 700) & (Z > -600) & (Z < 400)); sg = in_shadow(P[gi]); sh[gi[0][sg], gi[1][sg]] *= 1 - SI
     nG = np.zeros(P.shape); nG[..., 1] = 1
     litg = amb + (sI*max(0, -sd[1])*sh)[..., None]*sc + fI*max(0, -fd[1])*fc
     gcol = alb*aoo[..., None]*litg + alb*points(P, nG)
@@ -184,7 +184,7 @@ def render(yaw, night=False, W=390, H=844, exclude=(), cam=None, want_depth=Fals
             lam = np.clip(nw @ -sd, 0, 1)*.8 + .2
             out = c[:, :3]*(amb + (sI*lam)[:, None]*sc) + c[:, :3]*points(Pb[sel], nw, .5)
             if o['id'] == 'pet':
-                out = out + e[a][:, :3]*(e[a][:, 3:4])*.6
+                out = out + e[a][:, :3]*(e[a][:, 3:4])*.6*pet.get('glow', 1.)          # petGlow（awake 1）
             elif e is not None:
                 out = out + e[a][:, :3]*e[a][:, 3:4]*LI.get(o.get('emissiveLight'), 0)
         col[sel] = out; depth[sel] = tt[sel]
@@ -208,7 +208,7 @@ def render(yaw, night=False, W=390, H=844, exclude=(), cam=None, want_depth=Fals
             if not a.any(): continue
             lj, li, c = lj[a], li[a], c[a]; sel = (lj + j0, li + i0); Pq = C + D[sel]*tt[ins][a][:, None]; n = M['ns'][k]
             shk = (~in_shadow(Pq + M['g'][k]*.3)).astype(float) if (sI > 0) else np.ones(len(Pq))
-            lam = np.clip(n @ -sd, 0, 1)*shk; lf = max(0., float(n @ -fd))
+            lam = np.clip(n @ -sd, 0, 1)*(1 - min(1., SI/.42)*(1 - shk)); lf = max(0., float(n @ -fd))
             sky = .75 + .25*n[1]; nb = np.broadcast_to(n, Pq.shape)
             out = c[:, :3]*(amb*sky + (sI*lam)[:, None]*sc + fI*lf*fc) + c[:, :3]*points(Pq, nb)
             if M['E'] is not None and Ei > 0:
@@ -423,13 +423,66 @@ def normals_pets():
     sh.save(f'{PV}/normals_pets.png', optimize=True)
 
 
+# ---------------------------------------------------------------- 動態 GIF（鏡頭跟寵物＋慢擺；夜間燈＋螢火蟲）
+ROUTE2 = [(-104, -14), (-132, -14), (-132, -76), (-70, -76)]   # 樹前 → 繞籬笆尾 → 行到樹幹＋籬笆後（被遮）→ 原路返
+def route_pts(route, n):
+    """來回路線平均切 n 點 → [(x, z, dx, dz, 已行距離)]。"""
+    R = route + route[-2::-1]; seg = [(a, b, math.dist(a, b)) for a, b in zip(R, R[1:])]; tot = sum(s_[2] for s_ in seg); out = []
+    for i in range(n):
+        d = tot*i/n; acc = 0
+        for a, b, L_ in seg:
+            if d <= acc + L_ or (a, b, L_) == seg[-1]:
+                t = (d - acc)/L_; out.append((a[0] + (b[0]-a[0])*t, a[1] + (b[1]-a[1])*t, b[0]-a[0], b[1]-a[1], d)); break
+            acc += L_
+    return out, tot
+FLIES = np.random.default_rng(7).uniform([-165, 10, -110], [95, 70, 40], (26, 3)); FPH = np.random.default_rng(8).uniform(0, 2*math.pi, (26, 3))
+def fireflies(im, cam, t):
+    """螢火蟲：世界座標飄（sin 漂移），投影＋深度測試；1px 亮芯＋十字微光（只預覽，未入 lights）。"""
+    P = FLIES + np.stack([9*np.sin(t*1.3 + FPH[:, 0]), 5*np.sin(t*1.9 + FPH[:, 1]), 7*np.sin(t*1.1 + FPH[:, 2])], 1)
+    i, j, dist = project(cam, P); out = im.astype(float); blink = .55 + .45*np.sin(t*5 + FPH[:, 0]*3)
+    for k in range(len(P)):
+        ii, jj = int(round(i[k])), int(round(j[k]))
+        if not (1 <= ii < cam['W']-1 and 1 <= jj < cam['H']-1) or dist[k] > cam['depth'][jj, ii]: continue
+        b = blink[k]; c = np.array([255, 246, 150.])
+        for dj in range(-2, 3):
+            for di in range(-2, 3):
+                r2 = di*di + dj*dj; w = 1. if r2 == 0 else (.6 if r2 == 1 else (.25 if r2 <= 2 else (.1 if r2 <= 4 else 0)))
+                if w and 0 <= jj+dj < cam['H'] and 0 <= ii+di < cam['W']:
+                    out[jj+dj, ii+di] = out[jj+dj, ii+di]*(1 - w*b) + c*w*b
+    return out.astype(np.uint8)
+def route_gif(fn, night=False, flies=False, secs=4.0, ms=70, crop=(0, 250, 390, 690), colors=96, W=390, follow=(.8, 0., .45)):
+    """寵物來回 ROUTE2（dir4 轉身、樹幹／籬笆遮）＋鏡頭 −10°→+10°→−10° 慢擺；鏡頭 target 跟寵物（Octopath 式跟拍，pitch 固定）。"""
+    n = int(round(secs*1000/ms)); pts, tot = route_pts(ROUTE2, n); a0, a1 = CJ['orbitMinDeg'], CJ['orbitMaxDeg']
+    for x, z, _, _, _ in pts:
+        hit = blocked(x, z); assert not hit, (x, z, hit)
+    frames = []; tg0 = np.array(CJ['target'], float); fx = fz = None
+    for k, (x, z, dx, dz, d) in enumerate(pts):
+        tt = k/n; yw = (a0 + a1)/2 - (a1 - a0)/2*math.cos(2*math.pi*tt)
+        dk, fl = dir_of(dx, dz); fn_ = f'{dk}_walk_0{int(d/2) % 6 + 1}'
+        tx, tz = follow[0]*x + follow[1], follow[2]*z      # 跟拍（緩和）
+        fx = tx if fx is None else fx + (tx - fx)*.35; fz = tz if fz is None else fz + (tz - fz)*.35
+        cam = dict(target=[tg0[0] + fx, tg0[1], tg0[2] + fz])
+        c, nn, e, pv = pet_dir4(fn_)
+        im, cm = render(yw, night, W=W, cam=cam, want_depth=True, pet=dict(x=x, z=z, frame=(c, nn, e, pv), flip=fl, glow=1.))
+        if flies: im = fireflies(im, cm, tt*secs)
+        pil = Image.fromarray(im).crop(crop); dd = ImageDraw.Draw(pil)
+        label(dd, (8, 8), f"{'夜間' if night else '日間'} 擺鏡 {yw:+.0f}°｜{dk}{'（鏡像）' if fl else ''}", 18); frames.append(pil)
+    big = Image.new('RGB', (frames[0].width, frames[0].height*len(frames[::4])))
+    for i_, f in enumerate(frames[::4]): big.paste(f, (0, i_*f.height))
+    palimg = big.quantize(colors, method=Image.Quantize.MEDIANCUT)
+    pal = [f.quantize(palette=palimg, dither=Image.Dither.NONE) for f in frames]
+    pal[0].save(f'{PV}/{fn}', save_all=True, append_images=pal[1:], duration=ms, loop=0, optimize=True)
+    return dict(file=fn, frames=n, secs=n*ms/1000, bytes=os.path.getsize(f'{PV}/{fn}'), route_units=round(tot, 1))
+def day_sway(): return route_gif('day_cam_sway.gif')
+def night_lamps(): return route_gif('night_lamps.gif', night=True, flies=True, ms=80, W=480, crop=(0, 250, 480, 690), follow=(.25, -10., .3))   # 闊啲、跟拍弱啲：燈柱＋燈籠＋螢火瓶＋小屋窗同框
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[1]); ap.add_argument('--src', default=DEF_SRC); ap.add_argument('--out', default=DEF_OUT)
     ap.add_argument('--cmp', default=os.environ.get('GARDEN3D_CMP'), help='billboard 版場景目錄（對比圖用；冇就跳過 compare）')
-    ap.add_argument('--only', default='gif,assembled,occlusion,compare,closeups,meshes,backfill,ground,dir4,normals'); a = ap.parse_args(argv)
+    ap.add_argument('--only', default='gif,daysway,nightlamps,assembled,occlusion,compare,closeups,meshes,backfill,ground,dir4,normals'); a = ap.parse_args(argv)
     load(a.src, a.out); os.makedirs(PV, exist_ok=True); r = {}
     fn = {'gif': walk_gif, 'assembled': assembled, 'occlusion': occlusion, 'compare': lambda: compare(a.cmp) if a.cmp else 'skip（冇 --cmp）',
-          'closeups': closeups, 'meshes': meshes_sheet, 'backfill': backfill, 'ground': ground_top, 'dir4': dir4_sheet, 'normals': normals_pets}
+          'closeups': closeups, 'daysway': day_sway, 'nightlamps': night_lamps, 'meshes': meshes_sheet, 'backfill': backfill, 'ground': ground_top, 'dir4': dir4_sheet, 'normals': normals_pets}
     for k in a.only.split(','): r[k] = fn[k]()
     print('ok', PV, sorted(os.listdir(PV)), {k: v for k, v in r.items() if v is not None})
 
