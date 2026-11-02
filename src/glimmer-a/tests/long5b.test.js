@@ -97,4 +97,8 @@ console.log('⑥ sanitize／停用');
   B.setOn(false); ok(B.choose(s, 'kidA', 'job', 'post', NOW).reason === 'off' && !B.scan(s, NOW).length && !F.LIVE.job_cap_plus1, '?l5b=0：停用（Lv6 解鎖返做「5b」）'); B.setOn(true);
   F.st(s).km = { id: 'kidB', kind: 'kid', fk: 'B3', name: '棉棉', snap: {} }; ok(!B.plan(s, NOW).rows.some(r => r.id === 'kidB') && B.choose(s, 'kidB', 'rest', null, NOW).reason === 'main', '細佬做主養：唔出現喺每日安排');
 }
+console.log('⑦ 時鐘倒退');
+{ const s = fam(), w0 = W(s); B.choose(s, 'kidA', 'job', 'post', at(2, 12)); const w1 = W(s); ok(w1 > w0, '第 2 日返工出糧');
+  B.scan(s, at(0, 12)); B.scan(s, at(2, 13)); ok(W(s) === w1, '撥鐘返去再撥返嚟：唔會重收糧', [w1, W(s)]);
+  B.scan(s, at(3, 12)); ok(W(s) > w1, '真係第 3 日先出糧'); }
 console.log(`\n${pass} 過 / ${fail} 唔過`); process.exit(fail ? 1 : 0);

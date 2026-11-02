@@ -69,7 +69,7 @@
   /* 換日（舊日未出糧嘅守夜：補出返嗰晚，計舊日上限） */
   function today(s, now, ev) {
     const o = st(s), k = dayKey(now);
-    if (o.day.k !== k) {
+    if (!o.day.k || o.day.k < k) {   // 時鐘倒退唔當新一日（唔可以撥鐘重收糧）
       const old = o.day;
       if (old.k && old.k < k) for (const r of residents(s)) { const p = o.plan[r.id]; if (p && p.a === 'job' && p.job === 'watch' && !old.paid[r.id] && !o.away[r.id]) payJob(s, r, now, ev, old); }
       o.day = { k, sh: 0, ex: 0, done: {}, paid: {} };

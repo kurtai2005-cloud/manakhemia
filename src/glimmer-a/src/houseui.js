@@ -147,7 +147,7 @@
     // ── 5a 長住（住客 actor）＋打招呼 ──
     const RS = new Map(); let rsKey = '';
     function syncRes(force) {
-      if (!FAM) return; const K = kmNow(), list = FAM.st(S()).res.filter(r => r.room === V.room).concat(K && V.room === 'room1' ? [{ id: K.id, kind: 'kid', fk: K.fk, km: 1 }] : []), key = V.room + '|' + list.map(r => r.id + ':' + r.fk).join(',');
+      if (!FAM) return; const K = kmNow(), HX = G.h5x, list = FAM.st(S()).res.filter(r => r.room === V.room && !(HX && HX.hide && HX.hide(r.id))).concat(K && V.room === 'room1' ? [{ id: K.id, kind: 'kid', fk: K.fk, km: 1 }] : []), key = V.room + '|' + list.map(r => r.id + ':' + r.fk).join(',');
       if (!force && key === rsKey) return; rsKey = key; const keep = new Map(RS); RS.clear();
       list.forEach((r, i) => { let p = keep.get(r.id); if (!p || p.fk !== r.fk) { const s = A.ready ? HS.pickSpot(walkRect(), bl()) : [60 + i * 24, 300];
         p = Object.assign(ACT('res'), { id: r.id, kind: r.kind, fk: r.fk, x: s[0], y: s[1], dir: Math.random() < 0.5 ? 1 : -1 }); idle(p, rnd(0.5, 4)); } p.km = !!r.km; RS.set(r.id, p); });
@@ -213,7 +213,7 @@
       let ox = 0, oy = 0, sx = 1, sy = 1; const g = p.who === 'tr' && G.beh && G.beh.gest; if (g) { ox = g.dx || 0; oy = g.dy || 0; sx = g.sx || 1; sy = g.sy || 1; }
       if (p.hop > 0) oy -= Math.round(Math.sin((1 - p.hop / 400) * Math.PI) * 5);
       const X0 = Math.round(p.x + p.dx + ox), Y0 = Math.round(p.y + oy), flip = p.dir < 0;
-      x.save(); x.translate(X0, Y0); x.scale((flip ? -1 : 1) * sx, sy); x.drawImage(tinted(src.img, tint), src.sx, src.sy, src.sw, src.sh, -src.px, -src.py, src.sw, src.sh); x.restore();
+      p.at = [X0, Y0, flip ? -1 : 1, src.frame != null ? src.frame : 0, src.px, src.py]; x.save(); x.translate(X0, Y0); x.scale((flip ? -1 : 1) * sx, sy); x.drawImage(tinted(src.img, tint), src.sx, src.sy, src.sw, src.sh, -src.px, -src.py, src.sw, src.sh); x.restore();
       p.box = [X0 - Math.min(src.px, 20), Y0 - Math.min(src.py, 34), X0 + Math.min(src.sw - src.px, 20), Y0 + 3]; p.last = { clip: p.clip, frame: src.frame != null ? src.frame : src.name, w: src.sw }; V.stats.pets++;
     }
     function composeRoom(v, x) {
@@ -231,7 +231,7 @@
       const ys = []; for (const k of ['lamp', 'bed', 'table']) { const f = furnOf(k); if (f) { const a = slotAnchor(k); ys.push({ y: a[1], d: () => drawFurn(x, f, a, amb) }); if (k === 'bed' && f.front) ys.push({ y: a[1] + 0.1, d: () => drawFurn(x, f, a, amb, 'front') }); } }
       const bedY = furnOf('bed') ? slotAnchor('bed')[1] : 0;
       for (const k of ['tr', 'kid']) { const p = PET[k]; if (vis(k)) ys.push({ y: p.mode === 'sleep' && Z.bed ? bedY + (k === 'tr' ? 0.01 : 0.02) : p.y, d: () => drawPet(x, p, pt) }); }
-      for (const p of RS.values()) ys.push({ y: p.y, d: () => { drawPet(x, p, pt); V.stats.res++; if (p.km && p.box) { const cr = im('L:5a/ui/icon_crown@3x.png'); if (cr) { x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, Math.round((p.box[0] + p.box[2]) / 2) - 7, p.box[1] - 13 + Math.round(Math.sin(pnow() / 600)), 14, 14); x.restore(); V.stats.crown = (V.stats.crown | 0) + 1; } } } });   // 5a.1：主養細佬頭頂細皇冠
+      for (const p of RS.values()) ys.push({ y: p.y, d: () => { const HX = G.h5x; if (!(HX && HX.draw && HX.draw(x, p, pt, tinted))) drawPet(x, p, pt); if (HX && HX.post) HX.post(x, p, pt, tinted); V.stats.res++; if (p.km && p.box) { const cr = im('L:5a/ui/icon_crown@3x.png'); if (cr) { x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, Math.round((p.box[0] + p.box[2]) / 2) - 7, p.box[1] - 13 + Math.round(Math.sin(pnow() / 600)), 14, 14); x.restore(); V.stats.crown = (V.stats.crown | 0) + 1; } } } });   // 5a.1：主養細佬頭頂細皇冠
       if (dvI) { const S0 = FAM.SV[dv], a = FAM.DECO_ANCHOR; ys.push({ y: a[1], d: () => { x.drawImage(tinted(dvI, amb), Math.round(a[0] - S0.pv[0]), Math.round(a[1] - S0.pv[1])); V.stats.deco++; } }); }
       ys.sort((a, b) => a.y - b.y); for (const e of ys) e.d();
       if (Z.mode === 'sleep' && !Z.bed) { const I = SA.fxInfo('ov_blanket'); if (I && I.img) { const m = (PET.tr.x + PET.kid.x) / 2; x.drawImage(I.img, 0, 0, I.w, I.h, Math.round(m) - I.pv[0], Math.round(PET.tr.y + 1) - I.pv[1], I.w, I.h); } }
@@ -351,6 +351,7 @@
     }
     function hud5() {
       if (!FAM || !H5.fam || !V.open) return; const s = S(), info = FAM.lvInfo(s), rooms = FAM.ROOMS, i = rooms.indexOf(V.room);
+      if (G.l5bHud) try { G.l5bHud(V.hud, V.room); } catch (e) { }   /* 5b：「今日安排」掣 */
       V.title.textContent = FAM.ROOM[V.room].zh; H5.famLv.textContent = 'Lv' + info.lv + (info.max ? ' MAX' : ''); H5.famFill.style.width = Math.round(info.pct * 100) + '%'; H5.fam.dataset.lv = String(info.lv); H5.fam.dataset.max = info.max ? '1' : '0';
       const n = FAM.count(s, V.room); H5.capT.textContent = n + '/' + FAM.CAP + ' 隻'; H5.cap.dataset.n = String(n);
       const dk = rooms.map(k => (k === V.room ? 'cur' : FAM.roomOpen(s, k) ? 'open' : 'locked')).join(); if (H5.dots._k !== dk) { H5.dots._k = dk; H5.dots.innerHTML = '';
