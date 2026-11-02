@@ -227,7 +227,7 @@ ${H}#hdDock .hdTab.on > i.l { color:${GOLD}; }
 ${H}#bubble { height:auto; min-height:36px; max-width:320px; padding:8px 12px; box-sizing:border-box; font:16px/20px ${F8} !important; color:${INK}; ${NOL} white-space:normal; ${bi('bubble')} }
 ${H}#bubble::after { bottom:-10px !important; margin-left:-5px !important; ${sp('bubble_tail')} }
 ${H}#toast { left:${a2(TO.x + TO.w / 2)}px; top:${a2(TO.y)}px; min-width:${a2(TO.w)}px; max-width:340px; height:${a2(TO.h)}px; padding:0 22px 0 30px; font:20px/${a2(TO.h)}px ${F10} !important; color:${CREAM}; ${OL} ${bi('toast')} }
-${H}#toast.sm2 { font:16px/${a2(TO.h)}px ${F8} !important; ${OL8} }
+${H}#toast.sm2 { height:auto !important; min-height:${a2(TO.h)}px; width:max-content; max-width:300px; padding:3px 14px 3px 30px; white-space:normal !important; font:24px/28px ${F12} !important; text-align:left; ${OL8} ${bi('panel_navy_flat')} }   /* 5a.1：太長唔縮字 → 換行，轉 9-slice */
 ${H}#toast::before { left:4px; top:4px; ${sp('med13_pri')} }
 ${H}#toast::after { left:9px; top:9px; ${ic('mini_heart')} }
 ${H}#toast.cur::after { ${icBg('mini_light')} } ${H}#toast.star::after { ${icBg('mini_star')} } ${H}#toast.night::after { ${icBg('mini_sleep')} }
