@@ -1,0 +1,62 @@
+# MANIFEST_PILOT3DH1 — 《微光小圃》3D 花園試點 H1（方案 C，Three.js；遊美 2026-11-03）
+# 疊喺 art/workscenes-v3 @ a5373ee6 上面；只含新檔（冇 [M]）。說明 art-pet/scenes/garden3d/H1/FORMAT.md（照遊程格式要求）；validator tools/validate_garden3d.py（207/207）。
+# 入口：scenes/garden3d/H1/objects.json、lights.json、camera.json、pets_normals.json；團絨 _n 放喺色圖隔籬（sprites/tuanrong/motion、evo6）。
+# 預覽（唔入 zip）：/workspace/game-design/pilot3d_h1/{parts_sheet,assembled_3d,ground_top,normals_pets}.png
+# 格式：sha1[:12]  bytes  path
+# 檔案數：55（全新）＋本 MANIFEST
+
+4de6d7235bcc       7027  art-pet/scenes/garden3d/H1/FORMAT.md
+fe0bb44c4788       5286  art-pet/scenes/garden3d/H1/backdrop/bg_hills.png
+324fc32192e3       9624  art-pet/scenes/garden3d/H1/backdrop/bg_hills@3x.png
+d805a618ec23       5120  art-pet/scenes/garden3d/H1/backdrop/bg_sky.png
+ce75acefc802      20481  art-pet/scenes/garden3d/H1/backdrop/bg_sky@3x.png
+9bddd99fe574        414  art-pet/scenes/garden3d/H1/camera.json
+9dd901891add      17115  art-pet/scenes/garden3d/H1/ground/ground.png
+8ee0e29a410e      21408  art-pet/scenes/garden3d/H1/ground/ground@3x.png
+c392da27ff94       4578  art-pet/scenes/garden3d/H1/ground/ground_ao.png
+63dc8524d949      22519  art-pet/scenes/garden3d/H1/ground/ground_ao@3x.png
+ac10f8776263       1733  art-pet/scenes/garden3d/H1/ground/ground_tile.png
+de6312c4ad76       1870  art-pet/scenes/garden3d/H1/ground/ground_tile@3x.png
+28b7479fe68b       2172  art-pet/scenes/garden3d/H1/lights.json
+0204f5a1d5c9       6325  art-pet/scenes/garden3d/H1/objects.json
+a14d0bbae87b        409  art-pet/scenes/garden3d/H1/objects/bed.png
+f457b0715056        709  art-pet/scenes/garden3d/H1/objects/bed@3x.png
+f8e67e0f3281        241  art-pet/scenes/garden3d/H1/objects/can.png
+a35fb8b1bbd2        337  art-pet/scenes/garden3d/H1/objects/can@3x.png
+478e56ee4028       1269  art-pet/scenes/garden3d/H1/objects/cottage.png
+2185fcfb37aa       2386  art-pet/scenes/garden3d/H1/objects/cottage@3x.png
+5d84891b0793        172  art-pet/scenes/garden3d/H1/objects/cottage_emissive.png
+541d7099ca97        572  art-pet/scenes/garden3d/H1/objects/cottage_emissive@3x.png
+2d64d3c7c88a       1299  art-pet/scenes/garden3d/H1/objects/fence.png
+ca5a33b6d602       1817  art-pet/scenes/garden3d/H1/objects/fence@3x.png
+ef69d77bf50e        119  art-pet/scenes/garden3d/H1/objects/jar.png
+482d772cfb63        138  art-pet/scenes/garden3d/H1/objects/jar@3x.png
+3ef086fa68d5         82  art-pet/scenes/garden3d/H1/objects/jar_emissive.png
+cf6a084f98c0         99  art-pet/scenes/garden3d/H1/objects/jar_emissive@3x.png
+13cb9d09ce61        219  art-pet/scenes/garden3d/H1/objects/lamp.png
+4291bec32870        396  art-pet/scenes/garden3d/H1/objects/lamp@3x.png
+8bc6e43b4dc5        114  art-pet/scenes/garden3d/H1/objects/lamp_emissive.png
+c233783b3bc4        161  art-pet/scenes/garden3d/H1/objects/lamp_emissive@3x.png
+356fbe2e81b7        631  art-pet/scenes/garden3d/H1/objects/lanterns.png
+cc325b432c47       1298  art-pet/scenes/garden3d/H1/objects/lanterns@3x.png
+168e78d45d23        312  art-pet/scenes/garden3d/H1/objects/lanterns_emissive.png
+5f4c57d42938        757  art-pet/scenes/garden3d/H1/objects/lanterns_emissive@3x.png
+24c7f9a468f3        223  art-pet/scenes/garden3d/H1/objects/mushrooms.png
+96099d268a2b        316  art-pet/scenes/garden3d/H1/objects/mushrooms@3x.png
+6e6459d016ec        352  art-pet/scenes/garden3d/H1/objects/pot_L.png
+4f3e50b26316        471  art-pet/scenes/garden3d/H1/objects/pot_L@3x.png
+a3db7e2abe60        360  art-pet/scenes/garden3d/H1/objects/pot_R.png
+51ccd713827f        466  art-pet/scenes/garden3d/H1/objects/pot_R@3x.png
+e252bbd82af9        318  art-pet/scenes/garden3d/H1/objects/pot_S.png
+57792d935517        380  art-pet/scenes/garden3d/H1/objects/pot_S@3x.png
+d1d260b6f806       2568  art-pet/scenes/garden3d/H1/objects/tree.png
+296f38cc517c       4420  art-pet/scenes/garden3d/H1/objects/tree@3x.png
+a28ce983a66b       1385  art-pet/scenes/garden3d/H1/pets_normals.json
+d6bdac86c7e7      19413  art-pet/scenes/garden3d/H1/validation.json
+c225c5e2c5eb     792264  art-pet/sprites/tuanrong/evo6/atlas_evo_still_radiant_n.png
+8dde3bd09182      11602  art-pet/sprites/tuanrong/motion/atlas_radiant_emissive.png
+b7cba423e9d8     279891  art-pet/sprites/tuanrong/motion/atlas_radiant_n.png
+2854a4345be9      91273  art-pet/sprites/tuanrong/motion/atlas_sprout_n.png
+56e8977a15e0      25261  art-pet/tools/build_garden3d.py
+6351bbd99cf5      13522  art-pet/tools/preview_garden3d.py
+c5b1b13d5bdc       7420  art-pet/tools/validate_garden3d.py

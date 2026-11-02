@@ -1,0 +1,1041 @@
+{
+ "passed": 207,
+ "total": 207,
+ "results": [
+  {
+   "check": "json 讀得",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "地面 file 尺寸 256",
+   "ok": true,
+   "info": "(256, 256)"
+  },
+  {
+   "check": "地面 file 色彩模式 RGB",
+   "ok": true,
+   "info": "RGB"
+  },
+  {
+   "check": "地面 file3x 尺寸 768",
+   "ok": true,
+   "info": "(768, 768)"
+  },
+  {
+   "check": "地面 file3x 色彩模式 RGB",
+   "ok": true,
+   "info": "RGB"
+  },
+  {
+   "check": "地面 ao 尺寸 256",
+   "ok": true,
+   "info": "(256, 256)"
+  },
+  {
+   "check": "地面 ao 色彩模式 L",
+   "ok": true,
+   "info": "L"
+  },
+  {
+   "check": "地面 ao3x 尺寸 768",
+   "ok": true,
+   "info": "(768, 768)"
+  },
+  {
+   "check": "地面 ao3x 色彩模式 L",
+   "ok": true,
+   "info": "L"
+  },
+  {
+   "check": "地面 @3x＝1x 最近鄰 ×3",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "AO 範圍合理（min≥60、中位≥250）",
+   "ok": true,
+   "info": "(np.int64(143), np.float64(255.0))"
+  },
+  {
+   "check": "外圍 tile 64×64、@3x 192",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "256 片邊 4px 同 tile 一致（無縫）",
+   "ok": true,
+   "info": "1.0"
+  },
+  {
+   "check": "tree id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "tree face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree pivot 0–1",
+   "ok": true,
+   "info": "[0.2755, 0.9959]"
+  },
+  {
+   "check": "tree RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "tree w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(98, 242, (242, 98))"
+  },
+  {
+   "check": "tree 喺 256 地面內",
+   "ok": true,
+   "info": "(-88, -44)"
+  },
+  {
+   "check": "tree 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "fence face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 0.8333]"
+  },
+  {
+   "check": "fence RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "fence w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(176, 36, (36, 176))"
+  },
+  {
+   "check": "fence 喺 256 地面內",
+   "ok": true,
+   "info": "(-29.0, -52)"
+  },
+  {
+   "check": "fence 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "cottage face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage pivot 0–1",
+   "ok": true,
+   "info": "[0.4464, 1.0]"
+  },
+  {
+   "check": "cottage RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "cottage w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(84, 130, (130, 84))"
+  },
+  {
+   "check": "cottage 喺 256 地面內",
+   "ok": true,
+   "info": "(82.5, -50)"
+  },
+  {
+   "check": "cottage 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage emissive 同尺寸",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage emissive ⊂ 本體 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage emissiveLight 指向 lights",
+   "ok": true,
+   "info": "window"
+  },
+  {
+   "check": "lanterns id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "lanterns face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 1.0]"
+  },
+  {
+   "check": "lanterns RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "lanterns w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(121, 59, (59, 121))"
+  },
+  {
+   "check": "lanterns 喺 256 地面內",
+   "ok": true,
+   "info": "(-0.5, -46)"
+  },
+  {
+   "check": "lanterns 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns emissive 同尺寸",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns emissive ⊂ 本體 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns emissiveLight 指向 lights",
+   "ok": true,
+   "info": "lantern_1"
+  },
+  {
+   "check": "bed id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bed face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 1.0]"
+  },
+  {
+   "check": "bed RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "bed w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(68, 29, (29, 68))"
+  },
+  {
+   "check": "bed 喺 256 地面內",
+   "ok": true,
+   "info": "(-47, -22)"
+  },
+  {
+   "check": "bed 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "lamp face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp pivot 0–1",
+   "ok": true,
+   "info": "[0.4643, 1.0]"
+  },
+  {
+   "check": "lamp RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "lamp w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(14, 69, (69, 14))"
+  },
+  {
+   "check": "lamp 喺 256 地面內",
+   "ok": true,
+   "info": "(-72.5, 22)"
+  },
+  {
+   "check": "lamp 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp emissive 同尺寸",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp emissive ⊂ 本體 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp emissiveLight 指向 lights",
+   "ok": true,
+   "info": "lamp"
+  },
+  {
+   "check": "pot_L id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "pot_L face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 0.963]"
+  },
+  {
+   "check": "pot_L RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "pot_L w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(20, 27, (27, 20))"
+  },
+  {
+   "check": "pot_L 喺 256 地面內",
+   "ok": true,
+   "info": "(-81, 70)"
+  },
+  {
+   "check": "pot_L 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "pot_R face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 0.963]"
+  },
+  {
+   "check": "pot_R RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "pot_R w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(20, 27, (27, 20))"
+  },
+  {
+   "check": "pot_R 喺 256 地面內",
+   "ok": true,
+   "info": "(81, 54)"
+  },
+  {
+   "check": "pot_R 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "pot_S face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 0.95]"
+  },
+  {
+   "check": "pot_S RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "pot_S w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(14, 20, (20, 14))"
+  },
+  {
+   "check": "pot_S 喺 256 地面內",
+   "ok": true,
+   "info": "(49, 22)"
+  },
+  {
+   "check": "pot_S 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "mushrooms face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms pivot 0–1",
+   "ok": true,
+   "info": "[0.4815, 1.0]"
+  },
+  {
+   "check": "mushrooms RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "mushrooms w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(27, 14, (14, 27))"
+  },
+  {
+   "check": "mushrooms 喺 256 地面內",
+   "ok": true,
+   "info": "(71, 24)"
+  },
+  {
+   "check": "mushrooms 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "can face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can pivot 0–1",
+   "ok": true,
+   "info": "[0.2917, 1.0]"
+  },
+  {
+   "check": "can RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "can w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(24, 15, (15, 24))"
+  },
+  {
+   "check": "can 喺 256 地面內",
+   "ok": true,
+   "info": "(-39, 42)"
+  },
+  {
+   "check": "can 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "jar face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 1.0]"
+  },
+  {
+   "check": "jar RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar alpha 只有 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "jar w/h＝1x px（1 unit＝1 px）",
+   "ok": true,
+   "info": "(6, 11, (11, 6))"
+  },
+  {
+   "check": "jar 喺 256 地面內",
+   "ok": true,
+   "info": "(35, 22)"
+  },
+  {
+   "check": "jar 底行有像素（貼地）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar 透明處 RGB=0（無邊色滲）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar emissive 同尺寸",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar emissive ⊂ 本體 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar emissiveLight 指向 lights",
+   "ok": true,
+   "info": "jar"
+  },
+  {
+   "check": "bg_sky id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_sky 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bg_sky face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_sky pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 1.0]"
+  },
+  {
+   "check": "bg_sky RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_sky @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_sky 背景板 z 大負數（≤ −300）",
+   "ok": true,
+   "info": "-470"
+  },
+  {
+   "check": "bg_sky alpha 0/255",
+   "ok": true,
+   "info": "{255}"
+  },
+  {
+   "check": "bg_sky 尺寸＝px×unitsPerPx",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_hills id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_hills 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bg_hills face／layer／shadow 合法",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_hills pivot 0–1",
+   "ok": true,
+   "info": "[0.5, 1.0]"
+  },
+  {
+   "check": "bg_hills RGBA",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_hills @3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_hills 背景板 z 大負數（≤ −300）",
+   "ok": true,
+   "info": "-380"
+  },
+  {
+   "check": "bg_hills alpha 0/255",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "bg_hills 尺寸＝px×unitsPerPx",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "light lamp 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lamp', 'zh': '燈柱燈頭', 'x': -72.5, 'y': 60, 'z': 23, 'color': '#ffd890', 'radius': 70, 'intensity': 0.0, 'intensityNight': 1.2, 'flicker': 0.04}"
+  },
+  {
+   "check": "light lantern_1 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_1', 'zh': '旗串燈籠 1', 'x': -49, 'y': 142, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light lantern_2 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_2', 'zh': '旗串燈籠 2', 'x': -25, 'y': 121, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light lantern_3 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_3', 'zh': '旗串燈籠 3', 'x': -1, 'y': 108, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light lantern_4 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_4', 'zh': '旗串燈籠 4', 'x': 23, 'y': 103, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light lantern_5 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_5', 'zh': '旗串燈籠 5', 'x': 47, 'y': 105, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light window 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'window', 'zh': '小屋窗', 'x': 69.0, 'y': 62.0, 'z': -48, 'color': '#ffc870', 'radius': 48, 'intensity': 0.0, 'intensityNight': 0.8, 'flicker': 0.02}"
+  },
+  {
+   "check": "light jar 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'jar', 'zh': '螢火瓶', 'x': 35, 'y': 5, 'z': 23, 'color': '#c8ffb0', 'radius': 22, 'intensity': 0.0, 'intensityNight': 0.6, 'flicker': 0.25}"
+  },
+  {
+   "check": "sun dir 正規化、向下",
+   "ok": true,
+   "info": "[0.4206, -0.721, 0.5507]"
+  },
+  {
+   "check": "sun color／ambient",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "camera 欄位",
+   "ok": true,
+   "info": "{'target': [0, 30, -72], 'pitchDeg': 30, 'dist': 580, 'fovDeg': 40, 'yawDeg': 0, 'orbitMinDeg': -30, 'orbitMaxDeg': 30, 'near': 10, 'far': 4000, 'note': 'target＝鏡頭望住嘅點（寵物略前方，令寵物落喺畫面下半）；pitchDeg 向下俯角；dist＝target→鏡頭距離；fovDeg＝垂直 FOV（40° 時 target 處畫面高≈422 units＝2D 美術格高）；orbit 繞 Y 軸'}"
+  },
+  {
+   "check": "每個檔 <20MB",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "FORMAT.md 存在",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "radiant _n 尺寸＝色圖",
+   "ok": true,
+   "info": "((512, 1024, 4), (512, 1024, 4))"
+  },
+  {
+   "check": "radiant _n alpha＝色圖 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "radiant 法線單位長（±0.03）",
+   "ok": true,
+   "info": "0.006514726879262689"
+  },
+  {
+   "check": "radiant 法線向外（B≥128）",
+   "ok": true,
+   "info": "159"
+  },
+  {
+   "check": "radiant OpenGL 綠＝上（idle/walk 每幀頂部 G＞底部 G）",
+   "ok": true,
+   "info": "10/10"
+  },
+  {
+   "check": "radiant emissive 同尺寸、⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "sprout _n 尺寸＝色圖",
+   "ok": true,
+   "info": "((256, 1024, 4), (256, 1024, 4))"
+  },
+  {
+   "check": "sprout _n alpha＝色圖 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "sprout 法線單位長（±0.03）",
+   "ok": true,
+   "info": "0.006270230608479643"
+  },
+  {
+   "check": "sprout 法線向外（B≥128）",
+   "ok": true,
+   "info": "168"
+  },
+  {
+   "check": "sprout OpenGL 綠＝上（idle/walk 每幀頂部 G＞底部 G）",
+   "ok": true,
+   "info": "10/10"
+  },
+  {
+   "check": "evo_still_radiant _n 尺寸＝色圖",
+   "ok": true,
+   "info": "((1024, 1024, 4), (1024, 1024, 4))"
+  },
+  {
+   "check": "evo_still_radiant _n alpha＝色圖 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "evo_still_radiant 法線單位長（±0.03）",
+   "ok": true,
+   "info": "0.006464570847540818"
+  },
+  {
+   "check": "evo_still_radiant 法線向外（B≥128）",
+   "ok": true,
+   "info": "163"
+  },
+  {
+   "check": "evo_still_radiant OpenGL 綠＝上（idle/walk 每幀頂部 G＞底部 G）",
+   "ok": true,
+   "info": "44/44"
+  },
+  {
+   "check": "evo_still_radiant emissive 同尺寸、⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "冇雜檔（全部檔案都有被 json 引用）",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "tools 冇 __pycache__",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

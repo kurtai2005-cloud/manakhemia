@@ -1,0 +1,360 @@
+{
+ "variant": "H1",
+ "units": "1 unit = 1 個 1x 美術 px；Y 上；地面 XZ；原點＝寵物預設企位；+X 右；+Z 向鏡頭",
+ "ground": {
+  "file": "ground/ground.png",
+  "file3x": "ground/ground@3x.png",
+  "ao": "ground/ground_ao.png",
+  "ao3x": "ground/ground_ao@3x.png",
+  "size": [
+   256,
+   256
+  ],
+  "center": [
+   0,
+   0
+  ],
+  "uv": "u=(x+128)/256，v=(z+128)/256（圖頂＝z −128，遠）",
+  "lit": true,
+  "outerTile": {
+   "file": "ground/ground_tile.png",
+   "file3x": "ground/ground_tile@3x.png",
+   "size": [
+    64,
+    64
+   ],
+   "note": "256 片外圍用：以 (−128,−128) 對齊每 64 units 平鋪，同 256 片無縫（256 片底色就係呢個 tile ×4）；建議外圍平面 ≥ x ±640、z −480…+320"
+  }
+ },
+ "pet": {
+  "x": 0,
+  "z": 0,
+  "face": "cyl",
+  "shadow": true,
+  "layer": "mid",
+  "note": "團絨用 atlas pivotPx 對準 (0,0,0)；1 px＝1 unit"
+ },
+ "objects": [
+  {
+   "id": "tree",
+   "zh": "大樹（連鳥屋、垂藤）",
+   "file": "objects/tree.png",
+   "file3x": "objects/tree@3x.png",
+   "x": -88,
+   "z": -44,
+   "w": 98,
+   "h": 242,
+   "pivot": [
+    0.2755,
+    0.9959
+   ],
+   "face": "cyl",
+   "shadow": true,
+   "layer": "mid",
+   "srcArt": {
+    "x0": -18,
+    "y0": 21,
+    "groundY": 262
+   }
+  },
+  {
+   "id": "fence",
+   "zh": "籬笆＋灌木＋長春藤",
+   "file": "objects/fence.png",
+   "file3x": "objects/fence@3x.png",
+   "x": -29.0,
+   "z": -52,
+   "w": 176,
+   "h": 36,
+   "pivot": [
+    0.5,
+    0.8333
+   ],
+   "face": "fixed",
+   "shadow": true,
+   "layer": "mid",
+   "yawDeg": 0,
+   "srcArt": {
+    "x0": -20,
+    "y0": 232,
+    "groundY": 262
+   }
+  },
+  {
+   "id": "cottage",
+   "zh": "小屋（連窗台花箱）",
+   "file": "objects/cottage.png",
+   "file3x": "objects/cottage@3x.png",
+   "x": 82.5,
+   "z": -50,
+   "w": 84,
+   "h": 130,
+   "pivot": [
+    0.4464,
+    1.0
+   ],
+   "face": "fixed",
+   "shadow": true,
+   "layer": "mid",
+   "yawDeg": 0,
+   "emissive": "objects/cottage_emissive.png",
+   "emissive3x": "objects/cottage_emissive@3x.png",
+   "emissiveLight": "window",
+   "srcArt": {
+    "x0": 142,
+    "y0": 132,
+    "groundY": 262
+   }
+  },
+  {
+   "id": "lanterns",
+   "zh": "旗串燈籠＋小燈泡",
+   "file": "objects/lanterns.png",
+   "file3x": "objects/lanterns@3x.png",
+   "x": -0.5,
+   "z": -46,
+   "w": 121,
+   "h": 59,
+   "pivot": [
+    0.5,
+    1.0
+   ],
+   "face": "fixed",
+   "shadow": false,
+   "layer": "mid",
+   "yawDeg": 0,
+   "y": 99,
+   "emissive": "objects/lanterns_emissive.png",
+   "emissive3x": "objects/lanterns_emissive@3x.png",
+   "emissiveLight": "lantern_1",
+   "srcArt": {
+    "x0": 36,
+    "y0": 104,
+    "groundY": null
+   }
+  },
+  {
+   "id": "bed",
+   "zh": "菜畦（木框＋苗）",
+   "file": "objects/bed.png",
+   "file3x": "objects/bed@3x.png",
+   "x": -47,
+   "z": -22,
+   "w": 68,
+   "h": 29,
+   "pivot": [
+    0.5,
+    1.0
+   ],
+   "face": "fixed",
+   "shadow": true,
+   "layer": "mid",
+   "yawDeg": 0,
+   "srcArt": {
+    "x0": 16,
+    "y0": 249,
+    "groundY": 278
+   }
+  },
+  {
+   "id": "lamp",
+   "zh": "燈柱",
+   "file": "objects/lamp.png",
+   "file3x": "objects/lamp@3x.png",
+   "x": -72.5,
+   "z": 22,
+   "w": 14,
+   "h": 69,
+   "pivot": [
+    0.4643,
+    1.0
+   ],
+   "face": "cyl",
+   "shadow": true,
+   "layer": "mid",
+   "emissive": "objects/lamp_emissive.png",
+   "emissive3x": "objects/lamp_emissive@3x.png",
+   "emissiveLight": "lamp",
+   "srcArt": {
+    "x0": 18,
+    "y0": 237,
+    "groundY": 306
+   }
+  },
+  {
+   "id": "pot_L",
+   "zh": "花盆 L",
+   "file": "objects/pot_L.png",
+   "file3x": "objects/pot_L@3x.png",
+   "x": -81,
+   "z": 70,
+   "w": 20,
+   "h": 27,
+   "pivot": [
+    0.5,
+    0.963
+   ],
+   "face": "cyl",
+   "shadow": true,
+   "layer": "near",
+   "srcArt": {
+    "x0": 6,
+    "y0": 310,
+    "groundY": 336
+   }
+  },
+  {
+   "id": "pot_R",
+   "zh": "花盆 R",
+   "file": "objects/pot_R.png",
+   "file3x": "objects/pot_R@3x.png",
+   "x": 81,
+   "z": 54,
+   "w": 20,
+   "h": 27,
+   "pivot": [
+    0.5,
+    0.963
+   ],
+   "face": "cyl",
+   "shadow": true,
+   "layer": "near",
+   "srcArt": {
+    "x0": 168,
+    "y0": 300,
+    "groundY": 326
+   }
+  },
+  {
+   "id": "pot_S",
+   "zh": "花盆 S",
+   "file": "objects/pot_S.png",
+   "file3x": "objects/pot_S@3x.png",
+   "x": 49,
+   "z": 22,
+   "w": 14,
+   "h": 20,
+   "pivot": [
+    0.5,
+    0.95
+   ],
+   "face": "cyl",
+   "shadow": true,
+   "layer": "mid",
+   "srcArt": {
+    "x0": 139,
+    "y0": 287,
+    "groundY": 306
+   }
+  },
+  {
+   "id": "mushrooms",
+   "zh": "蘑菇叢",
+   "file": "objects/mushrooms.png",
+   "file3x": "objects/mushrooms@3x.png",
+   "x": 71,
+   "z": 24,
+   "w": 27,
+   "h": 14,
+   "pivot": [
+    0.4815,
+    1.0
+   ],
+   "face": "cyl",
+   "shadow": true,
+   "layer": "mid",
+   "srcArt": {
+    "x0": 155,
+    "y0": 293,
+    "groundY": 307
+   }
+  },
+  {
+   "id": "can",
+   "zh": "花灑",
+   "file": "objects/can.png",
+   "file3x": "objects/can@3x.png",
+   "x": -39,
+   "z": 42,
+   "w": 24,
+   "h": 15,
+   "pivot": [
+    0.2917,
+    1.0
+   ],
+   "face": "cyl",
+   "shadow": true,
+   "layer": "near",
+   "srcArt": {
+    "x0": 51,
+    "y0": 303,
+    "groundY": 318
+   }
+  },
+  {
+   "id": "jar",
+   "zh": "螢火瓶",
+   "file": "objects/jar.png",
+   "file3x": "objects/jar@3x.png",
+   "x": 35,
+   "z": 22,
+   "w": 6,
+   "h": 11,
+   "pivot": [
+    0.5,
+    1.0
+   ],
+   "face": "cyl",
+   "shadow": true,
+   "layer": "mid",
+   "emissive": "objects/jar_emissive.png",
+   "emissive3x": "objects/jar_emissive@3x.png",
+   "emissiveLight": "jar",
+   "srcArt": {
+    "x0": 129,
+    "y0": 295,
+    "groundY": 306
+   }
+  },
+  {
+   "id": "bg_sky",
+   "zh": "天空背景板（左右鏡像延伸，旁邊兩格冇太陽）",
+   "file": "backdrop/bg_sky.png",
+   "file3x": "backdrop/bg_sky@3x.png",
+   "x": 0,
+   "z": -470,
+   "w": 1634.3,
+   "h": 425.2,
+   "pivot": [
+    0.5,
+    1.0
+   ],
+   "face": "fixed",
+   "yawDeg": 0,
+   "shadow": false,
+   "layer": "far",
+   "unitsPerPx": 1.552,
+   "unlit": true
+  },
+  {
+   "id": "bg_hills",
+   "zh": "遠山＋遠樹＋遠屋背景板",
+   "file": "backdrop/bg_hills.png",
+   "file3x": "backdrop/bg_hills@3x.png",
+   "x": 0,
+   "z": -380,
+   "w": 1471.0,
+   "h": 79.6,
+   "pivot": [
+    0.5,
+    1.0
+   ],
+   "face": "fixed",
+   "yawDeg": 0,
+   "shadow": false,
+   "layer": "far",
+   "unitsPerPx": 1.397,
+   "unlit": true
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "convention": "tangent space，OpenGL（綠＝上，Y+），RGB＝n×0.5+0.5；alpha＝色圖 alpha；alpha 0 處 RGB=(128,128,255)",
+ "pets": [
+  {
+   "form": "radiant",
+   "color": "sprites/tuanrong/motion/atlas_radiant.png",
+   "normal": "sprites/tuanrong/motion/atlas_radiant_n.png",
+   "atlasJson": "sprites/tuanrong/motion/atlas_radiant.json",
+   "size": [
+    1024,
+    512
+   ],
+   "frameSize": 64,
+   "frames": 96,
+   "emissive": "sprites/tuanrong/motion/atlas_radiant_emissive.png"
+  },
+  {
+   "form": "sprout",
+   "color": "sprites/tuanrong/motion/atlas_sprout.png",
+   "normal": "sprites/tuanrong/motion/atlas_sprout_n.png",
+   "atlasJson": "sprites/tuanrong/motion/atlas_sprout.json",
+   "size": [
+    1024,
+    256
+   ],
+   "frameSize": 32,
+   "frames": 96
+  },
+  {
+   "form": "evo_still_radiant",
+   "color": "sprites/tuanrong/evo6/atlas_evo_still_radiant.png",
+   "normal": "sprites/tuanrong/evo6/atlas_evo_still_radiant_n.png",
+   "atlasJson": "sprites/tuanrong/evo6/atlas_evo_still_radiant.json",
+   "size": [
+    1024,
+    1024
+   ],
+   "frameSize": 48,
+   "frames": 464,
+   "emissive": "sprites/tuanrong/evo6/atlas_evo_still_radiant_emissive.png"
+  }
+ ],
+ "petGlow": "emissive × petGlow：awake 1／sleepy .6／sleep・sleepClip・dreamEnter・dreaming 0；淡出 600ms easeInQuad，淡入 400ms easeOutQuad＋150ms pulse 1→1.15→1；場景燈唔受影響"
+}
