@@ -19,7 +19,11 @@ ART = os.path.abspath(f'{HERE}/..'); OUT = f'{ART}/scenes/garden3d/H1'
 KEY = 'H1'; S = 3; PADX = 64            # 加闊畫布（4 嘅倍數 → Bayer 抖動同原圖一致）
 FOOT = B.FOOT; GROUND_LINE = 262         # 後排物件（籬笆／屋／樹）接地 art y
 ZK = 1.6                                 # 前排 art y → 世界 z：z = (y − 292) × 1.6
-CAM = dict(target=[0, 30, -72], pitchDeg=30, dist=580, fovDeg=40, yawDeg=0, orbitMinDeg=-10, orbitMaxDeg=10, near=10, far=4000)
+CAM = dict(target=[0, 30, -72], pitchDeg=30, dist=580, fovDeg=40, yawDeg=0, orbitMinDeg=-10, orbitMaxDeg=10, near=10, far=4000,
+           swayAmplitudeDeg=5, swayHalfPeriodSec=6.0, swayEasing='easeInOutSine', followDamping=2.0, followWeight=[0.25, 0.3], followOffset=[-20, 0], followOrigin=[-110, -40])
+CAM_RUNTIME_NOTE = ('自動擺鏡＋跟拍（patch2）：yaw＝−A·cos(π·t/T)（A＝swayAmplitudeDeg，T＝swayHalfPeriodSec，單程 −A→+A 緩入緩出，之後 pingpong；玩家拖鏡仍受 orbitMin/Max 限）；'
+                    '跟拍：desired＝target＋[followOffset[0]＋followWeight[0]·(pet.x−followOrigin[0])，0，followOffset[1]＋followWeight[1]·(pet.z−followOrigin[1])]，'
+                    '每幀 cam += (desired−cam)·(1−exp(−followDamping·dt))（時間常數 1/followDamping 秒，唔逐格貼住）')
 
 def save(a, p):
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -428,7 +432,7 @@ def build_all():
                       dir4='sprites/tuanrong/motion/dir4/atlas_radiant_dir4.json',
                       note='團絨係唯一 billboard（面向鏡頭）；用 atlas pivotPx 對準 (x,0,z)；1 px＝1 unit；可喺 XZ 自由行，唔可以入任何 footprint（外擴 pad＋radius）；4 方向幀見 dir4（按移動方向揀 front／back／side，向左 scaleX −1）'),
              objects=objs + bents)
-    for p, d in (('objects.json', J), ('lights.json', lights_json(objs)), ('camera.json', dict(CAM, note='target＝鏡頭望住嘅點（寵物略前方，令寵物落喺畫面下半）；pitchDeg 向下俯角；dist＝target→鏡頭距離；fovDeg＝垂直 FOV（40° 時 target 處畫面高≈422 units＝2D 美術格高）；orbit 繞 Y 軸'))):
+    for p, d in (('objects.json', J), ('lights.json', lights_json(objs)), ('camera.json', dict(CAM, note='target＝鏡頭望住嘅點（寵物略前方，令寵物落喺畫面下半）；pitchDeg 向下俯角；dist＝target→鏡頭距離；fovDeg＝垂直 FOV（40° 時 target 處畫面高≈422 units＝2D 美術格高）；orbit 繞 Y 軸', runtimeNote=CAM_RUNTIME_NOTE))):
         with open(f'{OUT}/{p}', 'w') as f: json.dump(d, f, ensure_ascii=False, indent=1)
     with open(f'{OUT}/pets_normals.json', 'w') as f: json.dump(dict(convention='tangent space，OpenGL（綠＝上，Y+），RGB＝n×0.5+0.5；alpha＝色圖 alpha；alpha 0 處 RGB=(128,128,255)', pets=pets,
                                                                   petGlow='emissive × petGlow：awake 1／sleepy .6／sleep・sleepClip・dreamEnter・dreaming 0；淡出 600ms easeInQuad，淡入 400ms easeOutQuad＋150ms pulse 1→1.15→1；場景燈唔受影響'),

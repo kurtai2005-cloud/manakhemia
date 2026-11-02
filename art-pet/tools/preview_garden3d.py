@@ -473,16 +473,47 @@ def route_gif(fn, night=False, flies=False, secs=4.0, ms=70, crop=(0, 250, 390, 
     pal = [f.quantize(palette=palimg, dither=Image.Dither.NONE) for f in frames]
     pal[0].save(f'{PV}/{fn}', save_all=True, append_images=pal[1:], duration=ms, loop=0, optimize=True)
     return dict(file=fn, frames=n, secs=n*ms/1000, bytes=os.path.getsize(f'{PV}/{fn}'), route_units=round(tot, 1))
+ROUTE3 = [(-132, -6), (-132, -74), (-96, -74)]   # 單程：籬笆尾外 → 向後行（back）→ 轉右行到樹幹＋籬笆後（side，被遮）
+def steady_gif(fn='day_cam_steady.gif', W=600, crop=(0, 190, 600, 590), colors=96, idle=(4, 4)):
+    """穩定版：camera.json 嘅 sway（±A、easeInOutSine、單程一次）＋阻尼跟拍（followDamping）；寵物用正常 walk（10fps、每格 2 units）。"""
+    A = CJ.get('swayAmplitudeDeg', 5); dmp = CJ.get('followDamping', 2.); wx, wz = CJ.get('followWeight', [.25, .3])
+    ox, oz = CJ.get('followOffset', [0, 0]); gx, gz = CJ.get('followOrigin', [0, 0]); dt = .1
+    seq = []; R = ROUTE3; d = 0.
+    for i in range(idle[0]): seq.append((*R[0], 'front', False, f'idle_0{i % 4 + 1}'))
+    for a, b in zip(R, R[1:]):
+        L_ = math.dist(a, b); n = int(round(L_/2)); k, fl = dir_of(b[0]-a[0], b[1]-a[1])
+        for i in range(n):
+            x, z = a[0] + (b[0]-a[0])*i/n, a[1] + (b[1]-a[1])*i/n; seq.append((x, z, k, fl, f'walk_0{int(d/2) % 6 + 1}')); d += L_/n
+    for i in range(idle[1]): seq.append((*R[-1], k, fl, f'idle_0{i % 4 + 1}'))
+    N = len(seq); T = N*dt; tg0 = np.array(CJ['target'], float); cx = cz = None; frames = []; log = []
+    for f_, (x, z, k, fl, fr) in enumerate(seq):
+        hit = blocked(x, z); assert not hit, (x, z, hit)
+        yw = -A*math.cos(math.pi*f_/(N - 1))                              # easeInOutSine 單程 −A→+A
+        dx_, dz_ = ox + wx*(x - gx), oz + wz*(z - gz)
+        if cx is None: cx, cz = dx_, dz_
+        else: al = 1 - math.exp(-dmp*dt); cx += (dx_ - cx)*al; cz += (dz_ - cz)*al
+        c, nn, e, pv = pet_dir4(f'{k}_{fr}')
+        im = render(yw, W=W, cam=dict(target=[tg0[0] + cx, tg0[1], tg0[2] + cz]), pet=dict(x=x, z=z, frame=(c, nn, e, pv), flip=fl))
+        pil = Image.fromarray(im).crop(crop); dd = ImageDraw.Draw(pil)
+        label(dd, (8, 8), f"日間 穩定鏡 {yw:+.1f}°｜{k}{'（鏡像）' if fl else ''} {fr}", 18); frames.append(pil); log.append((round(yw, 2), round(cx, 1), round(cz, 1)))
+    big = Image.new('RGB', (frames[0].width, frames[0].height*len(frames[::4])))
+    for i_, f in enumerate(frames[::4]): big.paste(f, (0, i_*f.height))
+    palimg = big.quantize(colors, method=Image.Quantize.MEDIANCUT)
+    pal = [f.quantize(palette=palimg, dither=Image.Dither.NONE) for f in frames]
+    pal[0].save(f'{PV}/{fn}', save_all=True, append_images=pal[1:], duration=int(dt*1000), loop=0, optimize=True)
+    dyaw = max(abs(b[0]-a[0]) for a, b in zip(log, log[1:])); dcam = max(math.hypot(b[1]-a[1], b[2]-a[2]) for a, b in zip(log, log[1:]))
+    return dict(file=fn, frames=N, secs=round(T, 2), bytes=os.path.getsize(f'{PV}/{fn}'), walk_units=round(d, 1), walk_speed_u_s=20.0,
+                size=frames[0].size, max_dyaw_per_frame=round(dyaw, 3), max_dcam_per_frame=round(dcam, 2))
 def day_sway(): return route_gif('day_cam_sway.gif')
 def night_lamps(): return route_gif('night_lamps.gif', night=True, flies=True, ms=80, W=480, crop=(0, 250, 480, 690), follow=(.25, -10., .3))   # 闊啲、跟拍弱啲：燈柱＋燈籠＋螢火瓶＋小屋窗同框
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[1]); ap.add_argument('--src', default=DEF_SRC); ap.add_argument('--out', default=DEF_OUT)
     ap.add_argument('--cmp', default=os.environ.get('GARDEN3D_CMP'), help='billboard 版場景目錄（對比圖用；冇就跳過 compare）')
-    ap.add_argument('--only', default='gif,daysway,nightlamps,assembled,occlusion,compare,closeups,meshes,backfill,ground,dir4,normals'); a = ap.parse_args(argv)
+    ap.add_argument('--only', default='gif,daysway,daysteady,nightlamps,assembled,occlusion,compare,closeups,meshes,backfill,ground,dir4,normals'); a = ap.parse_args(argv)
     load(a.src, a.out); os.makedirs(PV, exist_ok=True); r = {}
     fn = {'gif': walk_gif, 'assembled': assembled, 'occlusion': occlusion, 'compare': lambda: compare(a.cmp) if a.cmp else 'skip（冇 --cmp）',
-          'closeups': closeups, 'daysway': day_sway, 'nightlamps': night_lamps, 'meshes': meshes_sheet, 'backfill': backfill, 'ground': ground_top, 'dir4': dir4_sheet, 'normals': normals_pets}
+          'closeups': closeups, 'daysway': day_sway, 'daysteady': steady_gif, 'nightlamps': night_lamps, 'meshes': meshes_sheet, 'backfill': backfill, 'ground': ground_top, 'dir4': dir4_sheet, 'normals': normals_pets}
     for k in a.only.split(','): r[k] = fn[k]()
     print('ok', PV, sorted(os.listdir(PV)), {k: v for k, v in r.items() if v is not None})
 

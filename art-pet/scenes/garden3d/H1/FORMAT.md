@@ -114,6 +114,10 @@
 - `target [0,30,−72]`（令寵物落喺畫面下半）、`pitchDeg 30`、`dist 580`、`fovDeg 40`（垂直）。
 - `orbitMinDeg −10` / `orbitMaxDeg 10`（繞 Y 軸，以 target 為心；Octopath 式：pitch 固定 30°，只係輕輕擺）。
 - 40° 時，target 處畫面高 ≈422 units，即 2D 美術格高（直版 195×422 嘅比例）。
+- **自動擺鏡＋阻尼跟拍（patch2 新，引擎 runtime 參數）**：
+  - `swayAmplitudeDeg 5`、`swayHalfPeriodSec 6`、`swayEasing "easeInOutSine"`：yaw＝−A·cos(π·t/T)，單程 −5°→+5° 用 6 秒緩入緩出，之後 pingpong（唔再 ±10° 快擺；玩家手拖仍受 orbitMin/Max ±10° 限）。
+  - `followDamping 2.0`（1/秒）、`followWeight [0.25,0.3]`、`followOffset [−20,0]`、`followOrigin [−110,−40]`：desired target＝target＋(offset.x＋w.x·(pet.x−origin.x), 0, offset.z＋w.z·(pet.z−origin.z))；每幀 `cam += (desired−cam)·(1−exp(−followDamping·dt))`（時間常數 0.5 秒，慢跟、唔逐格貼住；weight＜1 即寵物行 1 unit 鏡頭只郁 ¼）。
+  - 預覽 `day_cam_steady.gif` 就係用呢組參數（600×400 闊畫面，見到樹＋屋）。
 
 ## 團絨法線 `_n`（放喺色圖隔籬，`pets_normals.json` 有清單）
 | 形態 | 色圖 | 法線 |
@@ -148,5 +152,5 @@ PYTHONDONTWRITEBYTECODE=1 python3 tools/validate_garden3d.py [--src 場景目錄
 PYTHONDONTWRITEBYTECODE=1 python3 tools/preview_garden3d.py [--src 場景目錄] [--out 輸出目錄] [--cmp billboard 版場景] [--only …]
 ```
 - env：`GARDEN3D_SRC`、`GARDEN3D_OUT`、`GARDEN3D_CMP`；預設 src＝本目錄，out＝`/workspace/game-design/pilot3d_h1_mesh`。
-- preview 出：`pet_walk_loop.gif`（寵物行一圈、按方向換幀）＋`_strip.png`、`assembled_3d.png`（−10°／0°／+10°／夜）、`occlusion_pet_tree.png`（行到樹後被遮）、`compare_billboard_vs_mesh.png`（要 `--cmp`）、`closeup_cottage.png`／`closeup_tree.png`、`meshes_sheet.png`、`backfill_check.png`、`ground_top.png`（footprint＋行路）、`pet_dir4_sheet.png`、`normals_pets.png`、`day_cam_sway.gif`（`--only daysway`：鏡頭 −10°→+10°→−10° 慢擺＋寵物來回 ROUTE2，dir4 轉身、被樹幹／籬笆遮，57 幀×70ms≈4s）、`night_lamps.gif`（`--only nightlamps`：同一路線、夜間燈亮＋螢火蟲（只預覽，未入 lights）、petGlow 1，480 闊、50 幀×80ms≈4s）。兩段 GIF 鏡頭 target 跟寵物（日間跟得緊、夜間跟得鬆令燈柱／燈籠／窗／螢火瓶同框），寵物行速約 1.9× 正常 walk（4 秒內行完 304 單位來回）。
+- preview 出：`pet_walk_loop.gif`（寵物行一圈、按方向換幀）＋`_strip.png`、`assembled_3d.png`（−10°／0°／+10°／夜）、`occlusion_pet_tree.png`（行到樹後被遮）、`compare_billboard_vs_mesh.png`（要 `--cmp`）、`closeup_cottage.png`／`closeup_tree.png`、`meshes_sheet.png`、`backfill_check.png`、`ground_top.png`（footprint＋行路）、`pet_dir4_sheet.png`、`normals_pets.png`、`day_cam_sway.gif`（`--only daysway`：鏡頭 −10°→+10°→−10° 慢擺＋寵物來回 ROUTE2，dir4 轉身、被樹幹／籬笆遮，57 幀×70ms≈4s）、`night_lamps.gif`（`--only nightlamps`：同一路線、夜間燈亮＋螢火蟲（只預覽，未入 lights）、petGlow 1，480 闊、50 幀×80ms≈4s）。`day_cam_steady.gif`（`--only daysteady`，patch2：用 camera.json 嘅 sway／follow 參數，±5° 單程緩入緩出、阻尼慢跟，600×400 見到樹＋屋，寵物正常 walk 20 u/s（10fps×2 units），ROUTE3 單程 104 units：front idle → back 行 → 轉 side 行到樹幹＋籬笆後，60 幀×100ms＝6s）。前兩段 GIF 鏡頭 target 跟寵物（日間跟得緊、夜間跟得鬆令燈柱／燈籠／窗／螢火瓶同框），寵物行速約 3.8× 正常 walk（4 秒內行完 304 units 來回；正常 walk＝20 u/s）。
 - 其他工具可以 `import preview_garden3d as P; P.load(src); P.render(yaw, night, W, H, pet=dict(x, z, frame, flip)); P.blocked(x, z)`（唔好複製渲染）。預覽只係驗格式同擺位，**唔係引擎畫面**。

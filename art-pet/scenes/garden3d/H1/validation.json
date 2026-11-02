@@ -1,6 +1,6 @@
 {
- "passed": 403,
- "total": 403,
+ "passed": 404,
+ "total": 404,
  "results": [
   {
    "check": "json 讀得",
@@ -1908,9 +1908,14 @@
    "info": "0.3"
   },
   {
+   "check": "camera 自動擺鏡／阻尼跟拍（patch2）",
+   "ok": true,
+   "info": "{'swayAmplitudeDeg': 5, 'swayHalfPeriodSec': 6.0, 'followDamping': 2.0, 'followWeight': [0.25, 0.3]}"
+  },
+  {
    "check": "camera 欄位",
    "ok": true,
-   "info": "{'target': [0, 30, -72], 'pitchDeg': 30, 'dist': 580, 'fovDeg': 40, 'yawDeg': 0, 'orbitMinDeg': -10, 'orbitMaxDeg': 10, 'near': 10, 'far': 4000, 'note': 'target＝鏡頭望住嘅點（寵物略前方，令寵物落喺畫面下半）；pitchDeg 向下俯角；dist＝target→鏡頭距離；fovDeg＝垂直 FOV（40° 時 target 處畫面高≈422 units＝2D 美術格高）；orbit 繞 Y 軸'}"
+   "info": "{'target': [0, 30, -72], 'pitchDeg': 30, 'dist': 580, 'fovDeg': 40, 'yawDeg': 0, 'orbitMinDeg': -10, 'orbitMaxDeg': 10, 'near': 10, 'far': 4000, 'swayAmplitudeDeg': 5, 'swayHalfPeriodSec': 6.0, 'swayEasing': 'easeInOutSine', 'followDamping': 2.0, 'followWeight': [0.25, 0.3], 'followOffset': [-20, 0]"
   },
   {
    "check": "每個檔 <20MB",
