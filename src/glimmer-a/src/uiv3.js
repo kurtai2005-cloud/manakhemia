@@ -50,7 +50,7 @@
       url: (n) => { const v = nm(n); return v ? src(v) : ''; }, iurl: (n) => { const v = nm(n, true); return v ? src(v) : ''; },
       bi(n) {
         const v = nm(n); if (!v) return ''; const f = frame(v), u = src(v);
-        if (RULE(v)) return `border-image:none !important; background:url(${u}) center bottom / 100% ${Math.round(f.h * K)}px no-repeat !important;`;
+        if (RULE(v)) return `border-image:none !important; background:url(${u}) center bottom / 100% ${Math.round(f.h * K)}px no-repeat, linear-gradient(90deg, ${rgb(C.navy, 0)} 0, ${rgb(C.navy, 0.86)} 10%, ${rgb(C.navy, 0.86)} 90%, ${rgb(C.navy, 0)} 100%) !important; border-radius:6px;`;   /* 金線＋底板：標題跨面板邊都有 ≥4.5 */
         if (!f.nine) return `border-image:none !important; background:url(${u}) center / 100% 100% no-repeat !important; image-rendering:auto;`;
         const [l, t, r, b] = f.nine, w = (x) => +(x * K).toFixed(2);
         const tc = X.textOn(n), col = tc === 'ink' ? ` color:${rgb(C.ink)} !important; text-shadow:none !important;` : '';
@@ -76,7 +76,8 @@ ${A}#mbox h2, ${A}.u62title { color:${rgb(C.goldhi)} !important; }
 ${A}#mbox, ${A}#mbox p, ${A}#mbox li, ${A}#mbox div { color:${rgb(C.cream)}; }
 ${A}.u62sub, ${A}[data-r62="a"] { color:${rgb(C.mute)} !important; }
 ${A}#modal.v3frost::before { content:''; position:absolute; inset:0; background:var(--v3frost) center / cover no-repeat; opacity:.9; pointer-events:none; z-index:-1; }
-${A}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn { height:auto !important; min-height:52px !important; display:flex !important; align-items:center; justify-content:center; }   /* V3：掣 ≥48（360 寬面板縮 .92 都夠）*/
+${A}#mbox[data-kind="devmode"] [data-testid^="dev-sec-"] .btn { height:auto !important; min-height:52px !important; display:flex !important; align-items:center; justify-content:center; white-space:normal !important; overflow-wrap:anywhere; text-align:center !important; line-height:1.25 !important; padding:6px 20px !important; text-overflow:clip !important; overflow:visible !important; }   /* V3：掣 ≥48（360 寬面板縮 .92 都夠）；長字換行唔出界 */
+${A}.hdTg { color:${rgb(C.cream)} !important; text-shadow:${SH} !important; }   /* 開／關 字喺掣外（text-indent），唔跟彩色軌用 ink */
 ${A}.v3ink, ${A}.v3ink * { color:${rgb(C.ink)} !important; text-shadow:none !important; }
 `;
       },

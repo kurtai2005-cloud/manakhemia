@@ -27,7 +27,7 @@ let pass = 0, fail = 0; const ok = (c, m) => { if (c) { pass++; console.log('  �
   const browser = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const ctx = await browser.newContext({ viewport: { width: 360, height: 780 }, deviceScaleFactor: 3 }); const page = await ctx.newPage();
   const errs = []; page.on('pageerror', e => errs.push(e.message));
-  await page.goto(BASE + '?q=low&ev=0'); await page.evaluate(() => localStorage.clear()); await page.goto(BASE + '?q=low&ev=0');
+  await page.goto(BASE + '?q=low&ev=0&v3=0'); await page.evaluate(() => localStorage.clear()); await page.goto(BASE + '?q=low&ev=0&v3=0');
   await page.waitForFunction(() => window.__qa && __qa.uiv2 && __qa.uiv2.st().ready && __qa.uiv2.st().on, null, { timeout: 15000 });
   await page.waitForTimeout(400);
   const r0 = await page.evaluate(() => __qa.uiv2.read()); ok(r0.cov > 1500, 'FP12 子集 cmap 讀到 ' + r0.cov + ' 字');
