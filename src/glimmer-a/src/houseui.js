@@ -206,7 +206,9 @@
       const clip = p.clip === 'walk' ? 'walk' : p.clip === 'sleep' ? 'sleep' : 'idle', sp = SA.strip(fk, clip); if (!sp) return null; const f = SA.kidFrame(fk, clip, p.ct);
       return { img: sp, sx: f * 48, sy: 0, sw: 48, sh: 48, px: 24, py: 45, frame: f };
     }
-    function drawFurn(x, f, a, tint, part) { const i = im(part === 'front' ? f.front : f.png); if (!i) return; x.drawImage(tinted(i, tint), Math.round(a[0] - f.pivot[0]), Math.round(a[1] - f.pivot[1])); V.stats.furn++; }
+    /* 6b.1：未有圖嘅家具（house.json png:null＋placeholder）→ 洋紅虛線框（size art 單位） */
+    function phFurn(x, f, a) { if (!f.size) return; const l = Math.round(a[0] - f.pivot[0]), t = Math.round(a[1] - f.pivot[1]); x.save(); x.fillStyle = 'rgba(255,0,255,0.14)'; x.fillRect(l, t, f.size[0], f.size[1]); x.strokeStyle = '#ff00ff'; x.lineWidth = 1; x.setLineDash([3, 2]); x.strokeRect(l + 0.5, t + 0.5, f.size[0] - 1, f.size[1] - 1); x.restore(); V.stats.furn++; V.stats.ph = (V.stats.ph | 0) + 1; }
+    function drawFurn(x, f, a, tint, part) { if (!f.png && part !== 'front') return phFurn(x, f, a); const i = im(part === 'front' ? f.front : f.png); if (!i) return; x.drawImage(tinted(i, tint), Math.round(a[0] - f.pivot[0]), Math.round(a[1] - f.pivot[1])); V.stats.furn++; }
     function shadowAt(x, cx, cy, w, h) { if (!(w > 0)) return; x.save(); x.fillStyle = 'rgba(60,36,40,0.27)'; x.beginPath(); x.ellipse(Math.round(cx), Math.round(cy), w / 2, Math.max(1, h / 2), 0, 0, Math.PI * 2); x.fill(); x.restore(); }
     function drawPet(x, p, tint) {
       const src = isTrA(p) ? trSrc(p) : kidSrc(p); if (!src) { p.box = null; return; }
@@ -379,13 +381,17 @@
     }
     function selTab(k) { V.sel = k; for (const t in V.tabs) { const e = V.tabs[t], s = t === k; if (e._i !== e._s) { e._i.style.display = s ? 'none' : ''; e._s.style.display = s ? '' : 'none'; } e.dataset.sel = s ? '1' : '0'; } fillCards(); placePins(); note('tab', { k }); }
     function thumb(id) { const f = Hj().furniture[id], i = A.img[f.png], c = document.createElement('canvas'); c.width = 92; c.height = 60; c.style.cssText = 'position:absolute;left:8px;top:10px;width:92px;height:60px;image-rendering:pixelated';
+      if (!f.png) { c.dataset.ph = f.placeholder || ('house:' + id); c.style.outline = '2px dashed #ff00ff'; c.style.outlineOffset = '-2px'; const g = c.getContext('2d'); g.fillStyle = 'rgba(255,0,255,0.14)'; g.fillRect(0, 0, 92, 60); g.fillStyle = '#c000c0'; g.font = '12px sans-serif'; g.textAlign = 'center'; g.fillText((f.size || []).join('×'), 46, 34); return c; }
       if (i) { const g = c.getContext('2d'); g.imageSmoothingEnabled = false; const s = Math.max(1, Math.floor(Math.min(92 / i.width, 60 / i.height))) * (i.width * 2 <= 92 && i.height * 2 <= 60 ? 1 : 1); const sc = Math.min(s, Math.max(0.5, Math.min(92 / i.width, 60 / i.height)));
         const w = Math.round(i.width * sc), h = Math.round(i.height * sc); g.drawImage(i, Math.round((92 - w) / 2), Math.round((60 - h) / 2), w, h); if (f.front && A.img[f.front]) g.drawImage(A.img[f.front], Math.round((92 - w) / 2), Math.round((60 - h) / 2), w, h); }
       return c; }
     function fillCards() {
       const box = V.cards; if (!box) return; box.innerHTML = ''; if (V.sel === 'deco') return fillDeco(box); const DL = Hj().ui.decorate, k = V.sel, ids = HS.IDS.filter(i => HS.FURN[i].slot === k), o = HS.st(S()), wl = wallet();
       V.tabT.textContent = HS.SLOT_ZH[k] + '・' + ids.length + ' 件';
-      ids.concat(['__clear']).forEach((id, i) => { const e = document.createElement('div'); e.className = 'card'; e.style.left = AP(DL.cards.x[i]) + 'px'; e.style.top = AP(DL.cards.y) + 'px'; e.style.pointerEvents = 'auto';
+      /* 6b.1：一個擺位多過 2 件（牆＋散步鞋架）→ 同擺設 tab 一樣用橫向捲動行（唔縮細卡） */
+      const many = ids.length + 1 > DL.cards.x.length; let row = null;
+      if (many) { row = document.createElement('div'); row.className = 'svrow'; row.dataset.testid = 'house-slotrow'; row.style.left = AP(DL.cards.x[0]) + 'px'; row.style.top = AP(DL.cards.y) + 'px'; row.style.width = (AP(DL.cards.x[2]) - AP(DL.cards.x[0]) + 108 + 8) + 'px'; row.style.height = '140px'; box.appendChild(row); }
+      ids.concat(['__clear']).forEach((id, i) => { const e = document.createElement('div'); e.className = many ? 'card svc' : 'card'; if (!many) { e.style.left = AP(DL.cards.x[i]) + 'px'; e.style.top = AP(DL.cards.y) + 'px'; } e.style.pointerEvents = 'auto';
         const nm = document.createElement('div'), pill = document.createElement('div'); nm.className = 'nm'; pill.className = 'pill';
         if (id === '__clear') { e.dataset.testid = 'house-card-clear'; e.dataset.clear = '1'; e.appendChild(mkImg('ui/icon_clear@3x.png', 'left:24px;top:10px;width:60px;height:60px')); nm.textContent = '收起'; pill.textContent = '清空'; pill.dataset.testid = 'house-pill-clear'; }
         else { const f = HS.FURN[id], stt = cstate(id); e.dataset.testid = 'house-card-' + id; e.dataset.state = stt; const th = thumb(id); if (stt === 'locked') th.style.filter = 'brightness(0) opacity(.35)'; e.appendChild(th); nm.textContent = f.zh; pill.dataset.testid = 'house-pill-' + id;
@@ -394,7 +400,7 @@
           else if (stt === 'elsewhere') { const w = FAM.whereIs(S(), id); pill.textContent = '喺' + (w ? FAM.ROOM[w].zh : '第二間'); e.dataset.where = w || ''; }
           else if (stt === 'buy') { pill.textContent = '★ ' + f.price; if (wl < f.price) pill.classList.add('poor'); }
           else { pill.textContent = f.src === 'commission' ? '委託獎' : '訪客禮'; e.appendChild(mkImg('ui/icon_lock@3x.png', 'left:36px;top:18px;width:36px;height:36px')); } }
-        e.appendChild(nm); e.appendChild(pill); e.addEventListener('click', (ev) => { ev.stopPropagation(); cardTap(id); }); box.appendChild(e); });
+        e.appendChild(nm); e.appendChild(pill); e.addEventListener('click', (ev) => { ev.stopPropagation(); cardTap(id); }); (row || box).appendChild(e); });
     }
     const cstate = (id) => (FAM ? FAM.cardState(S(), V.room, id) : HS.cardState(S(), id));
     function svThumb(sv) { const i = A.img['L:' + sv.px], c = document.createElement('canvas'); c.width = 92; c.height = 60; c.style.cssText = 'position:absolute;left:8px;top:10px;width:92px;height:60px;image-rendering:pixelated';

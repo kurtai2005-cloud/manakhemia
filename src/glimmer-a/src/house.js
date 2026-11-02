@@ -1,7 +1,7 @@
 /* 《微光小圃》 house.js — 第 4 批 4b（docs-gdd/series2-4a4b-spec.md v1.1 §4b＋「4b 家具定案 2026-11-01」）：屋仔。原創代碼。
    DOM-free、Node 可 require（純邏輯）：存檔 s.pet2.house（sanitize；唔郁團絨成長／路線）。
-   入口：細佬做咗家人先開；入屋預設送葉仔床（唔收碎、計新家具心情 +1）；6 擺位（床／檯／牆／地氈／窗／燈）各 2 件＝12 件：
-   碎商店 7 件（15–40 碎，共 165）、委託獎 2 件（家人後完成委託 3／9 張）、訪客友誼 5 獎 2 件（蘑菇婆婆蘑菇燈、螢火小販螢火瓶燈；舊裝飾獎照送，唔拎走）。
+   入口：細佬做咗家人先開；入屋預設送葉仔床（唔收碎、計新家具心情 +1）；6 擺位（床／檯／牆／地氈／窗／燈）各 2 件＋牆多 1 件散步鞋架＝13 件：
+   碎商店 8 件（15–40 碎，共 190；6b.1 遊測 P1 加「散步鞋架」25 碎，舊 7 件價錢不變）、委託獎 2 件（家人後完成委託 3／9 張）、訪客友誼 5 獎 2 件（蘑菇婆婆蘑菇燈、螢火小販螢火瓶燈；舊裝飾獎照送，唔拎走）。
    隨時換擺唔使碎；每件第一次擺：心情 +1（同觸摸／浮動團絨共用每日上限 5）；整蠱每日最多 3 次、唔加親密；21:00–03:00 同床瞓；冇路線分、唔出碎。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory(require('./series2.js'));
@@ -19,6 +19,7 @@
     table_round: { slot: 'table', zh: '格仔布圓檯', price: 25, src: 'shop' },
     wall_shelf: { slot: 'wall', zh: '小盆栽層架', price: 18, src: 'shop' },
     wall_frame: { slot: 'wall', zh: '團絨相框', price: null, src: 'commission' },
+    wall_shoes: { slot: 'wall', zh: '散步鞋架', price: 25, src: 'shop' },   /* 6b.1：未有圖 → 洋紅虛線 placeholder 40×32 art（house.json placeholder） */
     rug_round: { slot: 'rug', zh: '粉粉圓地氈', price: 22, src: 'shop' },
     rug_leaf: { slot: 'rug', zh: '葉仔地氈', price: 15, src: 'shop' },
     win_curtain: { slot: 'window', zh: '蕾絲窗簾', price: 25, src: 'shop' },

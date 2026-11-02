@@ -4,7 +4,9 @@
    ・權限全部可以唔開（預設閂）：計步＝Android ACTIVITY_RECOGNITION（原生 RealWorld plugin，TYPE_STEP_COUNTER）；真天氣＝大概位置（ACCESS_COARSE_LOCATION；
      瀏覽器用 navigator.geolocation 低精度）→ Open-Meteo（免 key）。唔畀／冇感應器／冇網 → 遊戲同而家一樣（每日擲天氣、原本晝夜）。
    ・真天氣只改畫面：G.visWeather／G.visHour 只俾 renderer（G.view）同撐葉；計分（SIM 天氣、菇傘雨天分）照用 G.weather；月眠／水珠時段用真鐘唔變。
-   ・美術未有 → placeholder（洋紅虛線＋data-ph）：6b:walk_bg（散步路背景，直向）、6b:walk_clip（團絨散步縮圖 clip；暫用 idle 幀 0）、6b:deco_*（散步路小物）。
+   ・6b.1 遊美散步美術（art/breakthrough/6b，WALK_6B.md／walk6b.json）：walk_bg 100×120（×2 顯示）、12 格＝6 粒踏腳石＋石與石之間中點（由近到遠）；
+     團絨 per_pet/<形態>/walk.png 6 幀 10fps loop（幀大細／pivot 跟 idle；1 art px＝1 CSS px，pivot 企喺格位；向左 flipX，pivot x＝W−1−px；地影引擎畫橢圓）；
+     執到嘅小物 deco_*.png 16×16 擺喺格位；rail icon＝ic_walk。圖未載到／形態冇圖 → 照舊 placeholder（洋紅虛線＋data-ph）。
    ・🛠 開發者模式「6b」；?l6b=0 全停；webdriver 下自動讀計步器／攞天氣預設閂（?l6b=1 開）。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -23,7 +25,13 @@
     const log = [], note = (k, x) => { log.push(Object.assign({ k, t: Math.round(pnow()) }, x || {})); if (log.length > 80) log.shift(); };
     const toasts = []; const toast = (m, ms) => { toasts.push(m); if (toasts.length > 30) toasts.shift(); UI.toast(m, ms || 2200); };
     const U = () => (G.ui2 && G.ui2.on && G.ui2.bi ? G.ui2 : null);
-    const LB5 = 'art/series2_long/5b/ui/';
+    const LB5 = 'art/series2_long/5b/ui/', B6 = 'art/breakthrough/6b/';
+    // 6b.1 美術：walk6b.json（pets／keys）＋圖 lazy 載入
+    const A6 = { json: null, img: {}, want: {}, err: [] };
+    const a6img = (f) => { if (A6.img[f]) return A6.img[f]; if (!A6.want[f]) { A6.want[f] = 1; const i = new Image(); i.onload = () => { if (i.naturalWidth) { A6.img[f] = i; if (OV.el) refresh(); } }; i.onerror = () => A6.err.push(f); i.src = B6 + f; } return null; };
+    const DECO_F = { pebble: 'pebble', leaf: 'maple_leaf', acorn: 'acorn', feather: 'feather', shell: 'snail_shell', clover: 'clover4', button: 'button', ribbon: 'ribbon' };
+    const fkNow = () => { const s = S(); if (!s || s.stage === 'egg') return null; if (s.fam && s.fam.km && s.fam.km.fk) return s.fam.km.fk; try { return G.renderer && G.renderer.fkOf ? G.renderer.fkOf(s) : null; } catch (e) { return null; } };
+    const A6load = fetch(B6 + 'walk6b.json').then(r => r.ok ? r.json() : null).then(j => { if (j && j.pets && j.keys) { A6.json = j; PATH = mkPath(); a6img('walk_bg.png'); const fk = fkNow(); if (fk && j.pets[fk]) a6img(j.pets[fk]['1x']); if (OV.el) refresh(); } }).catch(e => A6.err.push(String(e && e.message || e)));
     const FALL = '"Noto Sans HK","Noto Sans CJK TC","Noto Sans TC","PingFang HK","Microsoft JhengHei",sans-serif';
     const F8 = () => (U() ? '"GlimmerFP8",' : '') + FALL, F12 = () => (U() ? '"GlimmerFP12",' : '') + FALL;
     const CREAM = '#FFF5DC', GOLD = '#FFE08A', MINT = '#B8F0C8';
@@ -112,19 +120,51 @@ body.l6b-on #toast{z-index:72 !important}
     document.head.appendChild(css);
 
     // ── 散步路（placeholder：直向背景＋12 格路＋團絨縮圖） ──
-    const PATH = (() => { const pts = []; for (let i = 0; i < RW.CFG.pathTiles; i++) { const r = Math.floor(i / 3), c = i % 3, cc = r % 2 ? 2 - c : c; pts.push([22 + cc * 28, 104 - r * 26]); } return pts; })();   // 蛇形（art px 100×120）
+    const PATH0 = (() => { const pts = []; for (let i = 0; i < RW.CFG.pathTiles; i++) { const r = Math.floor(i / 3), c = i % 3, cc = r % 2 ? 2 - c : c; pts.push([22 + cc * 28, 104 - r * 26]); } return pts; })();   // 蛇形（art px 100×120；未有美術）
+    // 6b.1：12 格＝6 粒踏腳石（json 由遠到近 → 反轉做由近到遠）＋每粒石同下一粒之間中點；最遠嗰粒之後嘅中點向地平線（pathCenter 最頂）
+    function mkPath() { const k = A6.json && A6.json.keys['6b:walk_bg']; if (!k || !Array.isArray(k.stones) || k.stones.length < 2) return PATH0;
+      const st = k.stones.slice().reverse(), pc = k.pathCenter || {}, ys = Object.keys(pc).map(Number).sort((a, b) => a - b), top = ys.length ? [pc[ys[0]], ys[0]] : st[st.length - 1], pts = [];
+      for (let i = 0; i < st.length && pts.length < RW.CFG.pathTiles; i++) { const a = st[i], b = st[i + 1] || top; pts.push([a[0], a[1]]); pts.push([Math.round((a[0] + b[0]) / 2), Math.round((a[1] + b[1]) / 2)]); }
+      while (pts.length < RW.CFG.pathTiles) pts.push(pts[pts.length - 1]); return pts.slice(0, RW.CFG.pathTiles); }
+    let PATH = PATH0;
     function drawPath(cv) {
       const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; const W = 100, H = 120; g.clearRect(0, 0, W, H);
+      const bg = A6.json && a6img('walk_bg.png');
+      if (bg) { g.drawImage(bg, 0, 0, W, H); delete cv.dataset.ph; cv.dataset.art = '6b:walk_bg'; return; }
+      cv.dataset.ph = '6b:walk_bg'; delete cv.dataset.art;
       const grd = g.createLinearGradient(0, 0, 0, H); grd.addColorStop(0, '#7FB6D8'); grd.addColorStop(0.35, '#BFE3C0'); grd.addColorStop(1, '#6FA86A'); g.fillStyle = grd; g.fillRect(0, 0, W, H);
       g.fillStyle = '#5E9A5A'; for (let i = 0; i < 26; i++) { const x = (i * 37) % W, y = 40 + (i * 53) % 78; g.fillRect(x, y, 2, 1); }
       g.strokeStyle = '#E8D3A0'; g.lineWidth = 6; g.lineJoin = 'round'; g.beginPath(); PATH.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke();
       g.strokeStyle = '#C9AE74'; g.lineWidth = 1; g.stroke();
       const s = S(), o = RW.st(s), today = RW.dayKey(now());
       PATH.forEach(([x, y], i) => { g.fillStyle = '#A88A55'; g.fillRect(x - 1, y - 1, 3, 3); });
-      for (const e of o.log) if (RW.dayKey(e.t) === today) { const p = PATH[e.tile % PATH.length]; g.fillStyle = '#FF2BD6'; g.fillRect(p[0] + 3, p[1] - 6, 4, 4); }   // 今日執到：洋紅 placeholder 小物
+      for (const e of o.log) if (RW.dayKey(e.t) === today && !(A6.json && a6img('deco/deco_' + DECO_F[e.k] + '.png'))) { const p = PATH[e.tile % PATH.length]; g.fillStyle = '#FF2BD6'; g.fillRect(p[0] + 3, p[1] - 6, 4, 4); }   // 今日執到：未有圖 → 洋紅 placeholder 小物
       g.fillStyle = '#FFE08A'; const fl = PATH[PATH.length - 1]; g.fillRect(fl[0] - 1, fl[1] - 10, 2, 9); g.fillRect(fl[0] + 1, fl[1] - 10, 5, 3);   // 終點旗
     }
     function petAt() { const p = RW.pos(S()), a = PATH[p.tile], b = PATH[(p.tile + 1) % PATH.length]; return [a[0] + (b[0] - a[0]) * p.frac, a[1] + (b[1] - a[1]) * p.frac]; }
+    // 6b.1：walk clip（6 幀 10fps loop、向右；向左 flipX）；pivot 企喺格位（CSS px＝art px×2 嘅格位座標；團絨 1 art px＝1 CSS px）
+    const WK = { t0: pnow(), fk: null, dir: 1 };
+    function walkClip(P) {
+      const fk = fkNow(), p = fk && A6.json && A6.json.pets[fk], im = p && a6img(p['1x']);
+      const [x, y] = petAt(), pp = RW.pos(S()), a = PATH[pp.tile], b = PATH[(pp.tile + 1) % PATH.length], dx = b[0] - a[0];
+      if (dx) WK.dir = dx < 0 ? -1 : 1;
+      if (!im) { P.pc.dataset.ph = '6b:walk_clip'; delete P.pc.dataset.art; P.pc.width = 48; P.pc.height = 48; P.pc.style.width = '48px'; P.pc.style.height = '48px'; P.pc.style.transform = ''; P.pc.style.animation = 'l6bbob 900ms steps(2) infinite';
+        P.pc.style.left = Math.round(x * 2 - 24) + 'px'; P.pc.style.top = Math.round(y * 2 - 44) + 'px'; P.sh.style.display = 'none'; petThumb(P.pc); return false; }
+      const [fw, fh] = p.frameSize, [px, py] = p.pivot, n = p.frames || 6, fps = p.fps || 10, f = Math.floor((pnow() - WK.t0) / (1000 / fps)) % n;
+      if (P.pc.width !== fw || P.pc.height !== fh) { P.pc.width = fw; P.pc.height = fh; P.pc.style.width = fw + 'px'; P.pc.style.height = fh + 'px'; }
+      const g = P.pc.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, fw, fh); g.drawImage(im, f * fw, 0, fw, fh, 0, 0, fw, fh);
+      const X = Math.round(x * 2), Y = Math.round(y * 2), pvx = WK.dir < 0 ? fw - 1 - px : px;
+      P.pc.style.left = (X - pvx) + 'px'; P.pc.style.top = (Y - py) + 'px'; P.pc.style.transform = WK.dir < 0 ? 'scaleX(-1)' : ''; P.pc.style.animation = 'none';
+      delete P.pc.dataset.ph; P.pc.dataset.art = '6b:walk_clip'; P.pc.dataset.fk = fk; P.pc.dataset.frame = f; P.pc.dataset.dir = WK.dir < 0 ? 'L' : 'R';
+      const sw = Math.max(10, Math.round(fw * 0.55)); P.sh.style.display = ''; P.sh.style.width = sw + 'px'; P.sh.style.left = (X - sw / 2) + 'px'; P.sh.style.top = (Y - 3) + 'px';   // 地影：引擎畫橢圓
+      WK.fk = fk; return true;
+    }
+    function decoArt(P) {   // 今日執到嘅小物：16×16（1 art px＝1 CSS px），擺喺格位隔籬
+      const o = RW.st(S()), today = RW.dayKey(now()), want = o.log.filter(e => RW.dayKey(e.t) === today && DECO_F[e.k]).slice(-8), key = want.map(e => e.k + e.tile).join();
+      if (P.dk === key && P.dl.childElementCount === want.length) return; P.dk = key; P.dl.textContent = '';
+      want.forEach(e => { const f = 'deco/deco_' + DECO_F[e.k] + '.png', im = A6.json && a6img(f); if (!im) { P.dk = null; return; } const pt = PATH[e.tile % PATH.length];
+        const d = img(B6 + f, `left:${Math.round(pt[0] * 2 + 10)}px;top:${Math.round(pt[1] * 2 - 14)}px;width:16px;height:16px`); d.dataset.art = '6b:deco_' + DECO_F[e.k]; d.dataset.testid = 'l6b-deco-' + e.k; P.dl.appendChild(d); });
+    }
     function petThumb(c) {   // 團絨散步縮圖（未有 walk clip → idle 幀 0）
       const g = c.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, c.width, c.height); const SA = G.s2Art, s = S(); let src = null;
       try { if (SA && SA.atlasSrc && G.renderer) { const a = SA.atlasSrc(G.renderer.fkOf(s), 'idle', 0, true); if (a && a.src && a.src.img && a.src.img.width) src = a.src; } } catch (e) { }
@@ -149,6 +189,8 @@ body.l6b-on #toast{z-index:72 !important}
       // 散步路（placeholder 背景 200×240＝100×120 art px ×2）
       const box = mk('div', 'position:relative;width:200px;height:240px;margin:0 auto 6px;', null, 'l6b-path'); p.appendChild(box);
       const cv = mk('canvas', 'position:absolute;left:0;top:0;width:200px;height:240px;image-rendering:pixelated;', null, 'l6b-walkbg'); cv.width = 100; cv.height = 120; cv.dataset.ph = '6b:walk_bg'; box.appendChild(cv);
+      const dl = mk('div', 'position:absolute;inset:0;pointer-events:none', null, 'l6b-decos'); box.appendChild(dl);
+      const sh = mk('div', 'position:absolute;height:6px;border-radius:50%;background:rgba(36,23,44,.32);pointer-events:none;display:none', null, 'l6b-walkshadow'); box.appendChild(sh);
       const pc = mk('canvas', 'position:absolute;width:48px;height:48px;image-rendering:pixelated;animation:l6bbob 900ms steps(2) infinite;pointer-events:none;', null, 'l6b-walkpet'); pc.width = 48; pc.height = 48; pc.dataset.ph = '6b:walk_clip'; box.appendChild(pc);
       const info = mk('div', `position:relative;${bi('panel_inset')}padding:4px 0;`, null, 'l6b-info'); p.appendChild(info);
       const row = (tid, icn) => { const r = mk('div', '', null, tid); r.className = 'row'; if (icn) r.appendChild(img(icn, 'position:relative;width:32px;height:32px;flex:0 0 32px')); const t = mk('span', 'position:relative;' + TXT(24, CREAM), '', tid + '-t'); r.appendChild(t); info.appendChild(r); return t; };
@@ -159,13 +201,13 @@ body.l6b-on #toast{z-index:72 !important}
         r.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); toggle(what); }); p.appendChild(r); return { sub, pill, r }; };
       const gS = tg('steps', '計步', 'l6b-tg-steps'), gW = tg('wx', '真天氣＋日照', 'l6b-tg-wx');
       p.appendChild(mk('div', 'position:relative;margin:8px 4px 0;' + TXT(24, MINT), '步數只存喺部機・唔開照舊玩', 'l6b-note'));
-      OV.parts = { cv, pc, tSteps, tTile, tSh, tDeco, gS, gW };
+      OV.parts = { cv, pc, sh, dl, dk: null, tSteps, tTile, tSh, tDeco, gS, gW };
       host.appendChild(el); document.body.classList.add('l6b-on'); RB.dot = false; note('ov', { why }); refresh(); return el;
     }
     const hm = (h) => { const H = Math.floor(h), M = Math.round((h - H) * 60); return H + ':' + String(M === 60 ? 59 : M).padStart(2, '0'); };
     function refresh() {
       const P = OV.parts; if (!P) return; const s = S(), m = RW.summary(s, now()), o = RW.st(s);
-      drawPath(P.cv); const [x, y] = petAt(); P.pc.style.left = Math.round(x * 2 - 24) + 'px'; P.pc.style.top = Math.round(y * 2 - 44) + 'px'; petThumb(P.pc);
+      drawPath(P.cv); walkClip(P); decoArt(P);
       P.tSteps.textContent = '今日 ' + m.today + ' 步'; P.tTile.textContent = '第 ' + (m.tile + 1) + '／' + m.pathTiles + ' 格・差 ' + m.toTile + ' 步';
       P.tSh.textContent = '星星碎 ' + m.shards + '／' + m.cap + (m.shards >= m.cap ? '・今日夠晒' : '・再 ' + m.toShard + ' 步');
       const td = o.log.filter(e => RW.dayKey(e.t) === RW.dayKey(now())).map(e => RW.DK[e.k].zh); P.tDeco.textContent = '執到：' + (td.length ? td.join('、') : '未有') + '・收藏 ' + m.got + '／' + RW.DECO.length;
@@ -180,7 +222,7 @@ body.l6b-on #toast{z-index:72 !important}
       const s = S(), show = s && s.stage !== 'egg' && !document.body.classList.contains('s2-scene'); let el = RB.el;
       if (!el) { if (!show) return; const rail = document.getElementById('hdRail'), host = rail || document.getElementById('top-r'); if (!host) return;
         el = RB.el = mk('div', '', null, 'l6b-rail'); el.id = 'l6bbtn'; el.className = 'ibtn panel'; el.title = '散步';
-        el.innerHTML = '<i class="m"></i><i class="i"></i><i class="l">散步</i><i class="rd"></i>'; el.querySelector('i.i').appendChild(img(LB5 + 'icon_expedition@3x.png', 'left:0;top:0;width:36px;height:36px'));
+        el.innerHTML = '<i class="m"></i><i class="i"></i><i class="l">散步</i><i class="rd"></i>'; el.querySelector('i.i').appendChild(img(B6 + 'ic_walk@3x.png', 'left:0;top:0;width:36px;height:36px'));
         el.addEventListener('click', (e) => { e.stopPropagation(); if (busy()) return; UIS('tap'); openOv('rail'); }); host.appendChild(el); }
       el.style.display = show ? '' : 'none'; if (!show) return; const rd = el.querySelector('i.rd'); if (rd) rd.style.display = RB.dot ? '' : 'none';
       const vis = (id) => { const e = document.getElementById(id); return !!(e && e.style.display !== 'none' && e.offsetParent !== null); };
@@ -195,6 +237,7 @@ body.l6b-on #toast{z-index:72 !important}
       if (AUTO.on && document.visibilityState !== 'hidden' && (force || t - T.poll > 60000)) { T.poll = t; const o = RW.st(S()); if (o.on.steps) readSteps('poll'); if (o.on.wx && !RW.fresh(S(), now())) refreshWx(false); }
     }
     { const loop = () => { try { tick(); } catch (e) { } setTimeout(loop, 500); }; setTimeout(loop, 400); }
+    { const anim = () => { try { if (OV.el && OV.parts) walkClip(OV.parts); } catch (e) { } setTimeout(anim, 100); }; setTimeout(anim, 400); }   // walk clip 10fps
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { T.poll = 0; try { tick(true); } catch (e) { } } });
     if (AUTO.on) setTimeout(() => { natStatus(); tick(true); }, 1500);
 
@@ -224,6 +267,7 @@ body.l6b-on #toast{z-index:72 !important}
     G.l6b = { open: openOv, close: closeOv, toggle, readSteps, refreshWx };
     window.__qa = window.__qa || {};
     window.__qa.l6b = {
+      art: () => ({ json: !!A6.json, err: A6.err.slice(), loaded: Object.keys(A6.img), fk: fkNow(), has: !!(A6.json && A6.json.pets[fkNow()]), path: PATH.map(p => p.slice()), dir: WK.dir }), artLoad: () => A6load,
       st: () => Object.assign(RW.summary(S(), now()), { auto: AUTO.on, native: !!NAT(), perm: Object.assign({}, PERM), ov: !!OV.el, rail: !!(RB.el && RB.el.style.display !== 'none'), dot: RB.dot, wxs: Object.assign({}, WXS),
         visWx: G.visWeather(G.weather), gameWx: G.weather || 'clear', hour: G.hour ? G.hour() : null, visHour: G.hour ? G.visHour(G.hour()) : null }),
       raw: () => JSON.parse(JSON.stringify(RW.st(S()))), log: () => log.slice(), toasts: () => toasts.slice(), dev: () => DEV, tick, open: openOv, close: closeOv, toggle, readSteps, refreshWx, refresh,

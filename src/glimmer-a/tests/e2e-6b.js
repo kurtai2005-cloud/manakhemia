@@ -1,7 +1,7 @@
 /* 《微光小圃》 e2e-6b — 第 6 批 6b「真世界連動」（遊策 breakthrough-6a6d-spec §6b）：
    冇權限／冇原生 → 遊戲完全照舊；計步（模擬原生 RealWorld plugin：拒絕／批准、基線、重開機）→ 每 1000 步 1 格、每 2000 步 1 碎、每日 ≤5；
    真天氣（大概位置 0.1° → Open-Meteo，攔截做假回應）只改畫面（G.view），計分天氣（SIM.weatherNow）唔變；日出日落 → 晝夜色調重映；冇網 → 返遊戲天氣；
-   字清晰度（FP12 24px、對比 ≥4.5）、熱區 ≥48、🛠「6b」、?l6b=0、浮動團絨唔受影響。截圖 360×780 DPR3 → SHOTS（6b-*.png）。node tests/e2e-6b.js */
+   字清晰度（FP12 24px、對比 ≥4.5）、熱區 ≥48、🛠「6b」、?l6b=0、浮動團絨唔受影響；6b.1 散步美術（walk_bg 踏腳石、walk clip 幀／pivot、flipX、deco、ic_walk）。截圖 360×780 DPR3 → SHOTS（6b-*.png）。node tests/e2e-6b.js */
 const path = require('path');
 let chromium;
 for (const p of [process.env.PW, 'playwright-core', '/workspace/qa-live-s1/node_modules/playwright-core']) { try { if (p) { chromium = require(p).chromium; break; } } catch (e) { } }
@@ -71,7 +71,15 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   ok(await vis('l6b-rail'), '花園 rail「散步」掣');
   await hitOk('rail「散步」', '[data-testid=l6b-rail]');
   await click('l6b-rail'); await W(500); ok((await Q()).ov, '撳「散步」→ 散步路面板');
-  ok(await E(() => ['6b:walk_bg', '6b:walk_clip'].every(k => document.querySelector('#l6bov [data-ph="' + k + '"]'))), 'placeholder：6b:walk_bg、6b:walk_clip（洋紅虛線）');
+  await E(() => __qa.l6b.artLoad()); await W(400);
+  ok(await E(() => ['6b:walk_bg', '6b:walk_clip'].every(k => document.querySelector('#l6bov [data-art="' + k + '"]')) && !document.querySelector('#l6bov [data-ph]')), '6b.1 美術：walk_bg＋walk_clip 取代 placeholder');
+  { const A = await E(() => __qa.l6b.art()); const J = await E(() => fetch('art/breakthrough/6b/walk6b.json').then(r => r.json()));
+    const st = J.keys['6b:walk_bg'].stones.slice().reverse(); ok(A.json && A.err.length === 0 && A.path.length === 12 && st.every((p, i) => A.path[i * 2][0] === p[0] && A.path[i * 2][1] === p[1]), '12 格＝6 粒踏腳石（json 座標，由近到遠）＋中點', A.path);
+    const pet = await E(() => { const c = document.querySelector('[data-testid=l6b-walkpet]'); return { fk: c.dataset.fk, w: c.width, h: c.height, cw: c.offsetWidth }; }); const pj = J.pets[pet.fk];
+    ok(pj && pet.w === pj.frameSize[0] && pet.h === pj.frameSize[1] && pet.cw === pj.frameSize[0], 'walk clip 幀大細跟該形態 idle（' + pet.fk + ' ' + pet.w + '×' + pet.h + '）', { pet, pj: pj && pj.frameSize });
+    const fr = new Set(); for (let i = 0; i < 8; i++) { fr.add(await E(() => document.querySelector('[data-testid=l6b-walkpet]').dataset.frame)); await W(70); } ok(fr.size >= 3, '6 幀 10fps loop（見到 ' + fr.size + ' 幀）');
+    ok(await E(() => document.querySelector('[data-testid=l6b-walkshadow]').style.display !== 'none'), '地影由引擎畫（橢圓）');
+    ok(await E(() => /ic_walk@3x\.png$/.test(document.querySelector('#l6bbtn i.i img').src)), 'rail icon＝ic_walk'); }
   await readOk('散步路面板', '#l6bov');
   await hitOk('開關／✕', '[data-testid=l6b-tg-steps],[data-testid=l6b-tg-wx],[data-testid=l6b-close]', 3);
   await shot('01-panel-off');
@@ -145,6 +153,15 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await dclick('rain'); await W(400); lk = await look(); ok(lk.view === 'rain' && lk.score === lk.game, '撳「模擬落雨」→ 只改畫面', lk);
   ok(!(await E(() => [...document.querySelectorAll('[data-testid^=s2-set],[data-testid^=toggle-]')].some(e => /6b|散步/.test(e.textContent)))), '試玩掣唔喺設定');
   await closeModals(); await W(400); await shot('05-dev-rain');
+
+  console.log('# 6b.1 散步美術：向左 flipX、小物');
+  await closeModals(); await E(() => { const RW = Glimmer.long6b, s = __glimmer.state; delete s.rw6; RW.setOn(s, 'steps', true); RW.credit(s, 8300, __glimmer.now()); const o = RW.st(s), t = __glimmer.now(); o.log.push({ t, k: 'leaf', tile: 3 }, { t, k: 'acorn', tile: 6 }, { t, k: 'clover', tile: 10 }); });
+  await click('l6b-rail'); await W(600);
+  { const P = await E(() => { const c = document.querySelector('[data-testid=l6b-walkpet]'); return { dir: c.dataset.dir, tf: c.style.transform, tile: Glimmer.long6b.pos(__glimmer.state).tile }; });
+    ok(P.dir === 'L' && /scaleX\(-1\)/.test(P.tf), '下一格喺左 → flipX（第 ' + (P.tile + 1) + ' 格）', P);
+    const D = await E(() => [...document.querySelectorAll('img[data-testid^=l6b-deco-]')].map(e => e.dataset.art)); ok(['6b:deco_maple_leaf', '6b:deco_acorn', '6b:deco_clover4'].every(k => D.includes(k)), '今日執到小物用 deco 圖（16×16）', D);
+    await W(300); { const L = await E(() => [...document.querySelectorAll('img[data-testid^=l6b-deco-]')].map(e => [e.dataset.art, e.offsetWidth, e.complete, e.naturalWidth])); ok(L.length >= 3 && L.every(x => x[1] === 16 && x[2] && x[3] === 16), 'deco 16×16 載到', L); } }
+  await readOk('散步路（新美術）', '#l6bov'); await shot('06-walk-art'); await click('l6b-close'); await W(200);
 
   console.log('# ?l6b=0');
   await fresh('q=high&seed=21&ev=0&l6b=0&nat=1'); await W(800);

@@ -1,0 +1,1188 @@
+{
+ "version": 1,
+ "batch": "breakthrough 6b 散步（現實世界連動）",
+ "keys": {
+  "6b:walk_bg": {
+   "1x": "walk_bg.png",
+   "3x": "walk_bg@3x.png",
+   "size": [
+    100,
+    120
+   ],
+   "colors": 12,
+   "horizonY": 30,
+   "pathCenter": {
+    "36": 52.7,
+    "40": 53.4,
+    "44": 54.1,
+    "48": 54.7,
+    "52": 55.3,
+    "56": 55.9,
+    "60": 56.2,
+    "64": 56.5,
+    "68": 56.5,
+    "72": 56.3,
+    "76": 55.9,
+    "80": 55.3,
+    "84": 54.3,
+    "88": 53.2,
+    "92": 51.8,
+    "96": 50.2,
+    "100": 48.3,
+    "104": 46.3,
+    "108": 44.1,
+    "112": 41.9,
+    "116": 39.6
+   },
+   "stones": [
+    [
+     54,
+     44
+    ],
+    [
+     56,
+     54
+    ],
+    [
+     57,
+     66
+    ],
+    [
+     55,
+     80
+    ],
+    [
+     50,
+     96
+    ],
+    [
+     42,
+     112
+    ]
+   ]
+  },
+  "6b:deco_pebble": {
+   "1x": "deco/deco_pebble.png",
+   "3x": "deco/deco_pebble@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7
+  },
+  "6b:deco_maple_leaf": {
+   "1x": "deco/deco_maple_leaf.png",
+   "3x": "deco/deco_maple_leaf@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7
+  },
+  "6b:deco_acorn": {
+   "1x": "deco/deco_acorn.png",
+   "3x": "deco/deco_acorn@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 9
+  },
+  "6b:deco_feather": {
+   "1x": "deco/deco_feather.png",
+   "3x": "deco/deco_feather@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 7
+  },
+  "6b:deco_snail_shell": {
+   "1x": "deco/deco_snail_shell.png",
+   "3x": "deco/deco_snail_shell@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 5
+  },
+  "6b:deco_clover4": {
+   "1x": "deco/deco_clover4.png",
+   "3x": "deco/deco_clover4@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 6
+  },
+  "6b:deco_button": {
+   "1x": "deco/deco_button.png",
+   "3x": "deco/deco_button@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 5
+  },
+  "6b:deco_ribbon": {
+   "1x": "deco/deco_ribbon.png",
+   "3x": "deco/deco_ribbon@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 8
+  },
+  "icon_walk": {
+   "1x": "ic_walk@1x.png",
+   "3x": "ic_walk@3x.png",
+   "size": [
+    16,
+    16
+   ],
+   "colors": 9,
+   "note": "rail「散步」icon，同 kit_hd2d_v2 icons/ic_*@{1x,3x} 同規格；可放入 icons atlas"
+  }
+ },
+ "pets": {
+  "sprout": {
+   "frameSize": [
+    32,
+    32
+   ],
+   "pivot": [
+    16,
+    29
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/sprout/walk.png",
+   "3x": "per_pet/sprout/walk@3x.png",
+   "idleColors": 12,
+   "walkColors": 12
+  },
+  "radiant": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/radiant/walk.png",
+   "3x": "per_pet/radiant/walk@3x.png",
+   "idleColors": 12,
+   "walkColors": 12
+  },
+  "soft": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/soft/walk.png",
+   "3x": "per_pet/soft/walk@3x.png",
+   "idleColors": 12,
+   "walkColors": 12
+  },
+  "lumi": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/lumi/walk.png",
+   "3x": "per_pet/lumi/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_dot": {
+   "frameSize": [
+    28,
+    28
+   ],
+   "pivot": [
+    14,
+    25
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "old",
+   "1x": "per_pet/evo_dot/walk.png",
+   "3x": "per_pet/evo_dot/walk@3x.png",
+   "idleColors": 11,
+   "walkColors": 11
+  },
+  "evo_sprout": {
+   "frameSize": [
+    32,
+    32
+   ],
+   "pivot": [
+    16,
+    29
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_sprout/walk.png",
+   "3x": "per_pet/evo_sprout/walk@3x.png",
+   "idleColors": 11,
+   "walkColors": 11
+  },
+  "evo_hop": {
+   "frameSize": [
+    38,
+    38
+   ],
+   "pivot": [
+    19,
+    35
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_hop/walk.png",
+   "3x": "per_pet/evo_hop/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_guard_tide": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_tide/walk.png",
+   "3x": "per_pet/evo_guard_tide/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_guard_moon": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_moon/walk.png",
+   "3x": "per_pet/evo_guard_moon/walk@3x.png",
+   "idleColors": 15,
+   "walkColors": 15
+  },
+  "evo_guard_shroom": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_shroom/walk.png",
+   "3x": "per_pet/evo_guard_shroom/walk@3x.png",
+   "idleColors": 18,
+   "walkColors": 18
+  },
+  "evo_guard_crystal": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_crystal/walk.png",
+   "3x": "per_pet/evo_guard_crystal/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_guard_ember": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_ember/walk.png",
+   "3x": "per_pet/evo_guard_ember/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_guard_radiant": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_radiant/walk.png",
+   "3x": "per_pet/evo_guard_radiant/walk@3x.png",
+   "idleColors": 12,
+   "walkColors": 12
+  },
+  "evo_guard_soft": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_soft/walk.png",
+   "3x": "per_pet/evo_guard_soft/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_guard_dust": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_dust/walk.png",
+   "3x": "per_pet/evo_guard_dust/walk@3x.png",
+   "idleColors": 13,
+   "walkColors": 13
+  },
+  "evo_guard_lumi": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_guard_lumi/walk.png",
+   "3x": "per_pet/evo_guard_lumi/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_still_tide": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_tide/walk.png",
+   "3x": "per_pet/evo_still_tide/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_still_moon": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_moon/walk.png",
+   "3x": "per_pet/evo_still_moon/walk@3x.png",
+   "idleColors": 16,
+   "walkColors": 16
+  },
+  "evo_still_shroom": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_shroom/walk.png",
+   "3x": "per_pet/evo_still_shroom/walk@3x.png",
+   "idleColors": 18,
+   "walkColors": 18
+  },
+  "evo_still_crystal": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_crystal/walk.png",
+   "3x": "per_pet/evo_still_crystal/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_still_ember": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_ember/walk.png",
+   "3x": "per_pet/evo_still_ember/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_still_radiant": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_radiant/walk.png",
+   "3x": "per_pet/evo_still_radiant/walk@3x.png",
+   "idleColors": 12,
+   "walkColors": 12
+  },
+  "evo_still_soft": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_soft/walk.png",
+   "3x": "per_pet/evo_still_soft/walk@3x.png",
+   "idleColors": 15,
+   "walkColors": 15
+  },
+  "evo_still_dust": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_dust/walk.png",
+   "3x": "per_pet/evo_still_dust/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "evo_still_lumi": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "old",
+   "1x": "per_pet/evo_still_lumi/walk.png",
+   "3x": "per_pet/evo_still_lumi/walk@3x.png",
+   "idleColors": 14,
+   "walkColors": 14
+  },
+  "A1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/A1/walk.png",
+   "3x": "per_pet/A1/walk@3x.png",
+   "idleColors": 36,
+   "walkColors": 36
+  },
+  "A2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "new",
+   "1x": "per_pet/A2/walk.png",
+   "3x": "per_pet/A2/walk@3x.png",
+   "idleColors": 34,
+   "walkColors": 34
+  },
+  "A3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "new",
+   "1x": "per_pet/A3/walk.png",
+   "3x": "per_pet/A3/walk@3x.png",
+   "idleColors": 34,
+   "walkColors": 34
+  },
+  "B1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/B1/walk.png",
+   "3x": "per_pet/B1/walk@3x.png",
+   "idleColors": 29,
+   "walkColors": 29
+  },
+  "B2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/B2/walk.png",
+   "3x": "per_pet/B2/walk@3x.png",
+   "idleColors": 36,
+   "walkColors": 36
+  },
+  "B3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/B3/walk.png",
+   "3x": "per_pet/B3/walk@3x.png",
+   "idleColors": 42,
+   "walkColors": 42
+  },
+  "C1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/C1/walk.png",
+   "3x": "per_pet/C1/walk@3x.png",
+   "idleColors": 27,
+   "walkColors": 27
+  },
+  "C2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/C2/walk.png",
+   "3x": "per_pet/C2/walk@3x.png",
+   "idleColors": 34,
+   "walkColors": 34
+  },
+  "C3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/C3/walk.png",
+   "3x": "per_pet/C3/walk@3x.png",
+   "idleColors": 32,
+   "walkColors": 32
+  },
+  "D1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/D1/walk.png",
+   "3x": "per_pet/D1/walk@3x.png",
+   "idleColors": 25,
+   "walkColors": 25
+  },
+  "D2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/D2/walk.png",
+   "3x": "per_pet/D2/walk@3x.png",
+   "idleColors": 30,
+   "walkColors": 30
+  },
+  "D3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "new",
+   "1x": "per_pet/D3/walk.png",
+   "3x": "per_pet/D3/walk@3x.png",
+   "idleColors": 31,
+   "walkColors": 31
+  },
+  "E1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/E1/walk.png",
+   "3x": "per_pet/E1/walk@3x.png",
+   "idleColors": 25,
+   "walkColors": 25
+  },
+  "E2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/E2/walk.png",
+   "3x": "per_pet/E2/walk@3x.png",
+   "idleColors": 30,
+   "walkColors": 30
+  },
+  "E3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "new",
+   "1x": "per_pet/E3/walk.png",
+   "3x": "per_pet/E3/walk@3x.png",
+   "idleColors": 26,
+   "walkColors": 26
+  },
+  "F1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/F1/walk.png",
+   "3x": "per_pet/F1/walk@3x.png",
+   "idleColors": 22,
+   "walkColors": 22
+  },
+  "F2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/F2/walk.png",
+   "3x": "per_pet/F2/walk@3x.png",
+   "idleColors": 25,
+   "walkColors": 25
+  },
+  "F3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "new",
+   "1x": "per_pet/F3/walk.png",
+   "3x": "per_pet/F3/walk@3x.png",
+   "idleColors": 29,
+   "walkColors": 29
+  },
+  "G1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/G1/walk.png",
+   "3x": "per_pet/G1/walk@3x.png",
+   "idleColors": 20,
+   "walkColors": 20
+  },
+  "G2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/G2/walk.png",
+   "3x": "per_pet/G2/walk@3x.png",
+   "idleColors": 28,
+   "walkColors": 28
+  },
+  "G3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "new",
+   "1x": "per_pet/G3/walk.png",
+   "3x": "per_pet/G3/walk@3x.png",
+   "idleColors": 28,
+   "walkColors": 28
+  },
+  "H1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "new",
+   "1x": "per_pet/H1/walk.png",
+   "3x": "per_pet/H1/walk@3x.png",
+   "idleColors": 35,
+   "walkColors": 35
+  },
+  "H2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "hop",
+   "line": "new",
+   "1x": "per_pet/H2/walk.png",
+   "3x": "per_pet/H2/walk@3x.png",
+   "idleColors": 29,
+   "walkColors": 29
+  },
+  "H3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "mode": "feet",
+   "line": "new",
+   "1x": "per_pet/H3/walk.png",
+   "3x": "per_pet/H3/walk@3x.png",
+   "idleColors": 30,
+   "walkColors": 30
+  }
+ },
+ "clip": {
+  "key": "6b:walk_clip",
+  "frames": 6,
+  "fps": 10,
+  "durationMs": 600,
+  "facing": "right（向左 flipX，pivot x 鏡像：W−1−px）",
+  "layout": "橫條 strip，幀 i 喺 x＝i×frameW；幀大小＝該形態 idle 幀大小，pivot 同 idle 一樣",
+  "feetSeq": [
+   [
+    0,
+    0,
+    [
+     -1,
+     0
+    ],
+    [
+     1,
+     0
+    ]
+   ],
+   [
+    -1,
+    1,
+    [
+     0,
+     -2
+    ],
+    [
+     0,
+     0
+    ]
+   ],
+   [
+    -1,
+    0,
+    [
+     1,
+     -1
+    ],
+    [
+     -1,
+     0
+    ]
+   ],
+   [
+    0,
+    0,
+    [
+     1,
+     0
+    ],
+    [
+     -1,
+     0
+    ]
+   ],
+   [
+    -1,
+    1,
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     -2
+    ]
+   ],
+   [
+    -1,
+    0,
+    [
+     -1,
+     0
+    ],
+    [
+     1,
+     -1
+    ]
+   ]
+  ],
+  "hopSeq": [
+   [
+    0,
+    0
+   ],
+   [
+    -1,
+    1
+   ],
+   [
+    -2,
+    1
+   ],
+   [
+    -2,
+    0
+   ],
+   [
+    -1,
+    0
+   ],
+   [
+    0,
+    0
+   ]
+  ]
+ }
+}

@@ -105,6 +105,8 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   ok((await E(() => window.__toasts.join('|'))).includes('碎唔夠') && !(await E(() => Glimmer.ui.isModalOpen())), '碎唔夠 → 提示（唔彈買）', await toast());
   await page.locator('[data-testid=house-tab-wall]').click(); await W(300);
   ok((await page.locator('[data-testid=house-card-wall_frame]').getAttribute('data-state')) === 'locked', '團絨相框：上鎖（委託獎）');
+  ok(await page.locator('[data-testid=house-slotrow] .card').count() === 4 && (await page.locator('[data-testid=house-pill-wall_shoes]').innerText()).includes('25'), '6b.1：牆 3 件（＋收起）用捲動行；散步鞋架 ★25');
+  ok(await E(() => { const c = document.querySelector('[data-testid=house-card-wall_shoes] canvas'); const r = c && c.getBoundingClientRect(); return !!(c && c.dataset.ph === '6b1:wall_shoes' && r.width >= 48 && r.height >= 48); }), '散步鞋架：洋紅虛線 placeholder（40×32 art）');
   await page.locator('[data-testid=house-card-wall_frame]').click(); await W(300); ok((await toast()).includes('委託'), '撳上鎖 → 講點攞（仲差幾張委託）', await toast());
   await page.locator('[data-testid=house-tab-lamp]').click(); await W(300);
   ok((await page.locator('[data-testid=house-card-lamp_mushroom]').getAttribute('data-state')) === 'locked', '蘑菇燈：上鎖（訪客獎）');
@@ -142,6 +144,8 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   ok(s.save.owned.includes('lamp_mushroom') && !s.save.owned.includes('lamp_firefly'), '蘑菇婆婆友誼滿 → 蘑菇燈', s.save.owned);
   ok(await E(() => { const v = __glimmer.state.b3b.vis.mushroom_granny; return !!v; }), '訪客原有資料保留');
   await dev('rewards'); s = await h(); ok(['wall_frame', 'win_star', 'lamp_mushroom', 'lamp_firefly'].every(i => s.save.owned.includes(i)), '開發者「攞獎」→ 4 件齊');
+  await E(() => { __qa.house.give(['wall_shoes']); __qa.house.place('wall', 'wall_shoes'); }); await W(500); s = await h();
+  ok(s.save.slots.wall === 'wall_shoes' && s.stats.ph > 0, '6b.1：散步鞋架擺上牆 → 房入面畫洋紅 placeholder', { w: s.save.slots.wall, ph: s.stats.ph }); await shot('08b-wall-shoes-ph');
 
   console.log('# 組合／坐埋一齊');
   await dev('setA'); await W(600); s = await h(); ok(s.save.slots.lamp && s.save.slots.rug && s.save.slots.wall && s.save.slots.window, '森林組（A）擺好', s.save.slots); await shot('09-set-A');

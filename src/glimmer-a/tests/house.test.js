@@ -10,11 +10,13 @@ const routeSnap = (s) => JSON.stringify({ evo: s.evo, evs: s.evs, stage: s.stage
 
 console.log('⓪ 美術／資料');
 { const miss = []; const chk = (f) => { if (!f || !fs.existsSync(path.join(ART, f))) miss.push(f); };
-  ok(HS.IDS.length === 12 && Object.keys(H.furniture).length === 12, '家具 12 件');
-  for (const id of HS.IDS) { const a = H.furniture[id], b = HS.FURN[id]; ok(a && a.slot === b.slot && a.zh === b.zh, id + ' slot／名對 house.json'); chk(a.png); if (a.front) chk(a.front); if (a.glow) chk(a.glow);
+  ok(HS.IDS.length === 13 && Object.keys(H.furniture).length === 13, '家具 13 件（6b.1 加散步鞋架）');
+  for (const id of HS.IDS) { const a = H.furniture[id], b = HS.FURN[id]; ok(a && a.slot === b.slot && a.zh === b.zh, id + ' slot／名對 house.json'); if (a.png) chk(a.png); else ok(id === 'wall_shoes' && a.placeholder && a.size && a.size[0] === 40 && a.size[1] === 32, id + '：未有圖 → 洋紅 placeholder 40×32', a); if (a.front) chk(a.front); if (a.glow) chk(a.glow);
     if (b.src === 'shop') ok(a.price === b.price && b.price >= 15 && b.price <= 40, id + ' 價 ' + b.price + '（15–40）'); }
-  for (const k of HS.SLOTS) ok(HS.IDS.filter(i => HS.FURN[i].slot === k).length === 2, k + ' 2 件');
-  const shop = HS.IDS.filter(i => HS.FURN[i].src === 'shop'); ok(shop.length === 7 && shop.reduce((a, i) => a + HS.FURN[i].price, 0) === 165, '商店 7 件共 165 碎');
+  for (const k of HS.SLOTS) { const n = k === 'wall' ? 3 : 2; ok(HS.IDS.filter(i => HS.FURN[i].slot === k).length === n && H.slots[k].items.length === n, k + ' ' + n + ' 件'); }
+  const shop = HS.IDS.filter(i => HS.FURN[i].src === 'shop'); ok(shop.length === 8 && shop.reduce((a, i) => a + HS.FURN[i].price, 0) === 190 && H.economy.shopTotal === 190 && H.economy.shopItems.length === 8 && shop.every(i => H.economy.shopItems.includes(i)), '商店 8 件共 190 碎（house.json economy 一致）');
+  ok(HS.FURN.wall_shoes && HS.FURN.wall_shoes.zh === '散步鞋架' && HS.FURN.wall_shoes.price === 25 && HS.FURN.wall_shoes.slot === 'wall', '6b.1：散步鞋架 25 碎（牆）');
+  ok(JSON.stringify(['bed_cloud', 'table_stump', 'table_round', 'wall_shelf', 'rug_round', 'rug_leaf', 'win_curtain'].map(i => HS.FURN[i].price)) === '[40,20,25,18,22,15,25]', '舊 7 件價錢不變');
   ok(HS.FURN.wall_frame.src === 'commission' && HS.FURN.win_star.src === 'commission', '委託獎＝團絨相框、星星窗');
   ok(HS.FURN.lamp_mushroom.src === 'visitor:mushroom_granny' && HS.FURN.lamp_firefly.src === 'visitor:firefly_vendor', '訪客友誼 5＝蘑菇燈、螢火瓶燈');
   for (const v of ['day', 'night']) for (const f of ['sky', 'far', 'mid', 'fore', 'lightmap', 'light_add', 'emissive_blur', 'vignette']) chk('room/' + v + '/' + f + '.png');
@@ -79,7 +81,7 @@ console.log('⑥ 唔郁團絨');
 { const s = fam(), r0 = routeSnap(s), st = T.memStore(); X.st(s).wallet.total = 200; HS.enter(s, at(0, 12), st);
   for (const id of HS.IDS.filter(i => HS.FURN[i].src === 'shop')) { HS.buy(s, id, X.spend, at(0, 12)); HS.place(s, HS.FURN[id].slot, id, at(0, 12), st); }
   HS.notePrank(s, at(0, 12)); ok(routeSnap(s) === r0, '路線分／進化資料冇郁');
-  ok(X.st(s).wallet.total === 200 - 165, '商店 7 件買晒用 165 碎');
+  ok(X.st(s).wallet.total === 200 - 190 && HS.st(s).owned.wall_shoes, '商店 8 件買晒用 190 碎', X.st(s).wallet.total);
   const raw = JSON.parse(JSON.stringify(s)); raw.pet2.house.slots.bed = 'nope'; raw.pet2.house.owned.zzz = 1; const o = HS.st(raw); ok(o.slots.bed === null && !o.owned.zzz, 'sanitize 壞存檔');
 }
 console.log('\n' + (fail ? '✗ ' : '✓ ') + pass + ' passed, ' + fail + ' failed'); process.exit(fail ? 1 : 0);

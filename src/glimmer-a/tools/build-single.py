@@ -18,7 +18,10 @@ SKIP_REL |= set([_C5 + n + '@3x.png' for n in ('parent_card_A3', 'parent_card_ev
 # 6a.1：遊美 6a 表情 runtime 只用 1x（per_pet／faces6a.json）；@3x 同預設 face_*（只啱 evo_still_radiant）唔入單檔
 _F6 = 'art/breakthrough/6a/'
 SKIP_REL |= set([_F6 + n for n in ('face_smug.png', 'face_pout.png', 'face_smug@3x.png', 'face_pout@3x.png')])
-SKIP_RX = re.compile(r'^art/breakthrough/6a/per_pet/[^/]+/face_(smug|pout)@3x\.png$')
+# 6b.1：遊美散步美術 runtime 用 1x（walk_bg、per_pet walk、deco）＋ rail ic_walk@3x；其餘 @3x／預覽唔入單檔
+_W6 = 'art/breakthrough/6b/'
+SKIP_REL |= set([_W6 + n for n in ('walk_bg@3x.png', 'ic_walk@1x.png', 'preview_6b_3x.png')])
+SKIP_RX = re.compile(r'^art/breakthrough/6a/per_pet/[^/]+/face_(smug|pout)@3x\.png$|^art/breakthrough/6b/(per_pet/[^/]+/walk|deco/deco_[a-z0-9_]+)@3x\.png$')
 assets = {}; skipped = [0, 0]
 for d in ('art', 'audio'):
     for dp, dns, fs in os.walk(os.path.join(ROOT, d)):

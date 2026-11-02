@@ -132,7 +132,8 @@
    "note": "掛牆；sprite pivot＝中心",
    "items": [
     "wall_shelf",
-    "wall_frame"
+    "wall_frame",
+    "wall_shoes"
    ]
   },
   "rug": {
@@ -474,6 +475,25 @@
     16,
     4
    ]
+  },
+  "wall_shoes": {
+   "slot": "wall",
+   "zh": "散步鞋架",
+   "price": 25,
+   "source": "shop",
+   "sourceZh": "碎商店",
+   "png": null,
+   "placeholder": "6b1:wall_shoes",
+   "pivot": [
+    20,
+    16
+   ],
+   "size": [
+    40,
+    32
+   ],
+   "colors": 0,
+   "note": "6b.1 遊測 P1：未有美術 → 引擎畫洋紅虛線 placeholder（40×32 art，掛牆 pivot＝中心）"
   }
  },
  "economy": {
@@ -484,14 +504,15 @@
    "wall_shelf",
    "rug_round",
    "rug_leaf",
-   "win_curtain"
+   "win_curtain",
+   "wall_shoes"
   ],
-  "shopTotal": 165,
+  "shopTotal": 190,
   "range": [
    15,
    40
   ],
-  "note": "遊策 2026-11-01 確認價錢同來源；葉仔床改入屋預設擺好、唔收碎，當新家具照加心情 +1（共用每日上限 5）；商店剩 7 件；換擺唔使碎"
+  "note": "遊策 2026-11-01 確認價錢同來源；葉仔床改入屋預設擺好、唔收碎，當新家具照加心情 +1（共用每日上限 5）；商店剩 7 件；換擺唔使碎；6b.1 遊測 P1：加「散步鞋架」25 碎（牆），舊 7 件價錢不變 → 商店 8 件共 190（每日上限 47 → 最快都要 5 日買齊）"
  },
  "defaultState": {
   "slots": {
