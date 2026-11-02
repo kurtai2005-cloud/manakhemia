@@ -32,7 +32,7 @@
     const rd = G.renderer, SP = rd.sysPet = rd.sysPet || { umbrella: false, one: null };
     G.sysPlay = function (clip, o) { const Cd = D.SYS_CLIPS[clip]; if (!Cd) return false; o = o || {}; SP.one = { clip, start: rd.t || 0, dur: o.dur || Cd.frames / Cd.fps * (Cd.repeat || 1), tell: !!Cd.tell || !!o.any }; return true; };
     function petTick(dt) {
-      const s = G.state, W = C.weather, rain = (G.weather || 'clear') === 'rain' && s.stage !== 'egg' && !s.sleeping;
+      const s = G.state, W = C.weather, rain = ((G.visWeather ? G.visWeather(G.weather) : G.weather) || 'clear') === 'rain' && s.stage !== 'egg' && !s.sleeping;   // 6b：撐葉跟畫面天氣（純畫面）
       SP.umbrella = rain;
       if (s.stage === 'egg' || s.sleeping) return;
       const t = rd.t || 0; if (wx.shiverAt == null) wx.shiverAt = t + W.shiverEverySec[0] + Math.random() * (W.shiverEverySec[1] - W.shiverEverySec[0]);

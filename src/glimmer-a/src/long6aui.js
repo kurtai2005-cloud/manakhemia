@@ -5,7 +5,7 @@
    ・講出口：每日第一次開 game → 招呼 1 句（等冇彈窗／小遊戲／重逢先講）；系統 3 日記每日自動加 1 句（擺喺收尾句前面；今日草稿預覽）；
      心聲泡泡：心聲成功出泡時 50% 換成記憶句（每日最多 2 句）。三處共用「7 日內唔重複」。浮動團絨唔改。
    ・冇嚟：1 日／2 日／3 日以上句；冇懲罰；返嚟第一下撳 → 特別開心（g_tickle＋心心＋得意表情；純視覺，唔郁數值／路線分）
-   ・表情疊層：得意／委屈（遊美未出圖 → 程序畫 placeholder，洋紅虛線框＋data-ph，有圖就自動用 art/breakthrough/6a/face_*@3x.png）
+   ・表情疊層：得意／委屈 → 6a.1 遊美 per_pet 圖（art/breakthrough/6a/faces6a.json，49 隻形態，key smug6a／pout6a；renderer 疊喺 idle 幀 0 上、眼鏡／帽之下）；冇圖嘅形態（蛋、細佬 S 線）→ 程序畫 placeholder（洋紅虛線框＋data-ph）
    ・🛠 開發者模式「6a」；?l6a=0 全停（唔記錄、唔講）；webdriver 下自動招呼／記憶心聲預設閂（?l6a=1 開），?ev=0 唔自動講。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();

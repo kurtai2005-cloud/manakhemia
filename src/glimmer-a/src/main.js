@@ -125,6 +125,7 @@
   if (NS.long5bui && NS.long5b) NS.long5bui.install(G, NS);   // 第 5 批 5b：遠足＋小職業（long5b.js＋long5bui.js：今日安排、揀工作、返屋 toast、團絨日記、工作帽；?l5b=0 全停）
   if (NS.long5cui && NS.long5c) NS.long5cui.install(G, NS);   // 第 5 批 5c：承傳（long5c.js＋long5cui.js：揀上一代、遺傳花紋／招式、Lv3 細佬成長快 20%；?l5c=0 全停）
   if (NS.long6aui && NS.long6a) NS.long6aui.install(G, NS);   // 第 6 批 6a：團絨記得你（long6a.js＋long6aui.js：30 日記錄、每日第一次招呼、日記句、記憶心聲、冇嚟句、得意／委屈表情；?l6a=0 停用）
+  if (NS.long6bui && NS.long6b) NS.long6bui.install(G, NS);   // 第 6 批 6b：真世界連動（long6b.js＋long6bui.js：步數散步路＋碎 ≤5／日、真天氣（只改畫面）、日出日落色調；權限全部可以唔開；?l6b=0 停用）
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
   { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事 2 日後作廢，記得領'), 1500); }
@@ -199,6 +200,9 @@
   G.tickWorld = function (dt) {
     const s = G.state, hr = G.hour();
     G.light = LIGHT.compute(hr, G.weather ? { weather: G.weather } : null);
+    // 6b：畫面用天氣／鐘（真天氣、日出日落 remap）—— 只俾 renderer（G.view）；行為／計分／音效時段照用 G.light／G.weather／真鐘
+    const vWx = G.visWeather ? G.visWeather(G.weather) : G.weather, vHr = G.visHour ? G.visHour(hr) : hr;
+    G.visLight = (vWx === G.weather && vHr === hr) ? G.light : LIGHT.compute(vHr, vWx ? { weather: vWx } : null);
     const rd = G.renderer, mg = G.mode === 'minigame' || !!G.mg2Busy;   // mg2Busy：小遊戲 v2 全螢幕玩緊（主世界行為／事件暫停）
     // 事件：取出 pending → active（畫面提示卡＋視覺）
     if (!mg && !UI.isModalOpen() && !G.ev) { const a = EV.takePending(s); if (a) { G.ev = a; UI.showEventCard(a.rec); if (a.rec.id === 'flash') rd.flash = 0.8; } }
@@ -212,7 +216,7 @@
     if (G.beh && G.beh.tantrumReq) { G.beh.tantrumReq = 0; EV.tapTantrum(s, { now: G.now(), hour: hr }); }   // 10 秒連點 5 下 → 獨立事件 grumpy_tap（唔共用需求鬧脾氣冷卻）
     if (!mg) G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: G.ev ? { id: G.ev.rec.id, t: G.ev.t, dur: G.ev.dur } : null, mode: G.mode, rain: !!(G.hd && G.hd.on() && G.hd.st && G.hd.st.cur === 'H3rain') };
     else G.audioWorld = { beh: G.beh, s, period: G.light.period, ev: null, mode: G.mode };
-    G.view = { state: s, quality: s.settings.quality, hour: hr, mode: G.mode, mg: UI.mgState() && UI.mgState().mg, light: G.light, beh: mg ? null : G.beh, event: evView };
+    G.view = { state: s, quality: s.settings.quality, hour: vHr, mode: G.mode, mg: UI.mgState() && UI.mgState().mg, light: G.visLight, beh: mg ? null : G.beh, event: evView };
     return G.view;
   };
   G.forceBeh = function (name) { BEH.force(G.beh, name, G.behCtx); };

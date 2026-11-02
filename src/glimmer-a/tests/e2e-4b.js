@@ -47,7 +47,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   await load('q=high&hour=13&seed=21&ev=0');
   let s = await h(); ok(s.ready && !s.errors.length, '4b 屋仔圖全部載入', s.errors);
   ok(await E(() => Glimmer.data.PARAMS.house && Glimmer.data.PARAMS.house.enabled === true), 'PARAMS.house 開');
-  ok(await E(() => /^(5[abc]|6a)/.test(Glimmer.data.PARAMS.series2.version)), '版本 5a');
+  ok(await E(() => /^(5[abc]|6[ab])/.test(Glimmer.data.PARAMS.series2.version)), '版本 5a');
   ok(!s.open && (!s.rail || !s.rail.shown), '未有細佬 → 冇屋仔掣', s.rail);
 
   console.log('# 入口：上鎖（細佬未係家人）');
@@ -63,7 +63,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
 
   console.log('# 🛠 開發者「家 4b」');
   await openDev();
-  ok((await page.locator('[data-testid=dev-version]').innerText()).match(/版本 (5[abc]|6a)/), '開發者模式顯示「版本 5a」');
+  ok((await page.locator('[data-testid=dev-version]').innerText()).match(/版本 (5[abc]|6[ab])/), '開發者模式顯示「版本 5a」');
   ok((await page.locator('[data-testid=dev-sec-house]').innerText()).includes('家 4b'), '分組「家 4b（屋仔）」');
   const KEYS = ['prep', 'entry', 'locked', 'open', 'deco', 'shards', 'rewards', 'setA', 'setB', 'sit', 'prank', 'sleep', 'night', 'touch', 'auto', 'close'];
   { let n = 0; for (const k of KEYS) if (await page.locator('[data-testid=dev-house-' + k + ']').count()) n++; ok(n === KEYS.length, '16 個掣齊', n); }
