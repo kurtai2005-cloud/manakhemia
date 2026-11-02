@@ -13,7 +13,7 @@ EXACT_ALPHA = '--webp-all' not in ARGS   # V3.1 預設：半透明（0<α<255）
 ARGS = [a for a in ARGS if a != '--webp-all']
 if '--ext' in ARGS: j = ARGS.index('--ext'); EXT = ARGS[j + 1]; del ARGS[j:j + 2]
 OUT = ARGS[0] if ARGS else os.path.join(ROOT, 'dist', 'glimmer-live-s1.html')   # 合併版：python3 tools/build-single.py dist/glimmer-combo.html
-MIME = {'.webp': 'image/webp', '.png': 'image/png', '.json': 'application/json', '.ogg': 'audio/ogg', '.ttf': 'font/ttf'}
+MIME = {'.webp': 'image/webp', '.png': 'image/png', '.json': 'application/json', '.ogg': 'audio/ogg', '.ttf': 'font/ttf', '.otf': 'font/otf'}   # V3.1b：V3 Noto CJK subset otf（OFL）
 # 5a.2：唔打包運行時冇用嘅資產（檔仍然留喺 repo 畀測試）：成個 reskin_4b/（src 冇路徑）、FP8／FP10（v2 只用 FP12）
 SKIP_DIRS = ('reskin_4b',); SKIP_FILES = ('fp8-subset.ttf', 'fp10-subset.ttf')
 # 5b.1：遊美 5b 示意圖／排版稿（runtime 冇載入；檔留喺 repo 畀 long5b.test 對數）
@@ -30,7 +30,7 @@ SKIP_REL |= set([_F6 + n for n in ('face_smug.png', 'face_pout.png', 'face_smug@
 _W6 = 'art/breakthrough/6b/'
 SKIP_REL |= set([_W6 + n for n in ('walk_bg@3x.png', 'ic_walk@1x.png', 'preview_6b_3x.png')])
 SKIP_RX = re.compile(r'^art/breakthrough/6a/per_pet/[^/]+/face_(smug|pout)@3x\.png$|^art/breakthrough/6b/(per_pet/[^/]+/walk|deco/deco_[a-z0-9_]+)@3x\.png$')
-assets = {}; skipped = [0, 0]; v3png = []
+assets = {}; skipped = [0, 0]; v3png = []; extfont = []
 for d in ('art', 'audio'):
     for dp, dns, fs in os.walk(os.path.join(ROOT, d)):
         for s in [x for x in dns if x in SKIP_DIRS]:
@@ -44,6 +44,11 @@ for d in ('art', 'audio'):
             p = os.path.join(dp, f); rel = os.path.relpath(p, ROOT).replace(os.sep, '/')
             if f in SKIP_FILES or rel in SKIP_REL or SKIP_RX.match(rel): skipped[0] += 1; skipped[1] += os.path.getsize(p); continue
             if rel.startswith('art/v3/') and ext == '.png': v3png.append((rel, p)); continue
+            if EXT and ext == '.otf':   # V3.1b：APK 外置字體（原路徑；shim 唔攔 → Capacitor 供檔）＋ OFL 授權檔
+                import shutil; fp = os.path.join(EXT, rel); os.makedirs(os.path.dirname(fp), exist_ok=True); shutil.copyfile(p, fp); extfont.append(rel)
+                lic = os.path.join(dp, 'OFL_noto-cjk.txt')
+                if os.path.exists(lic): shutil.copyfile(lic, os.path.join(os.path.dirname(fp), 'OFL_noto-cjk.txt'))
+                continue
             assets[rel] = [MIME[ext], base64.b64encode(open(p, 'rb').read()).decode()]
 # V3.1：V3 png → 無損 webp（exact＝透明位 RGB 都保留）；按 PNG sha1 快取
 CACHE = os.environ.get('GLIMMER_WEBP_CACHE', '/workspace/hdbuild/webp3')
@@ -109,4 +114,4 @@ html = re.sub(r'<script src="([^"]+\.js)"></script>', inline, html)
 assert '<script src=' not in html
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 open(OUT, 'w', encoding='utf-8').write(html)
-print('wrote', OUT, os.path.getsize(OUT), 'bytes,', len(assets), 'assets', '| skipped', skipped[0], 'files', skipped[1], 'raw bytes', '| v3 png', len(v3png), v3st[0], '→', v3st[1], 'bytes, dedup', v3st[2], ('| ext ' + EXT + ' ' + str(len(EXTMAP))) if EXT else '| inline')
+print('wrote', OUT, os.path.getsize(OUT), 'bytes,', len(assets), 'assets', '| skipped', skipped[0], 'files', skipped[1], 'raw bytes', '| v3 png', len(v3png), v3st[0], '→', v3st[1], 'bytes, dedup', v3st[2], ('| ext ' + EXT + ' ' + str(len(EXTMAP)) + ' img + ' + str(len(extfont)) + ' font') if EXT else '| inline')
