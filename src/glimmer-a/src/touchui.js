@@ -86,6 +86,7 @@
     };
     G.touchDex = () => T.dumbDex(S());
     G.touchClipOf = clipOf;
+    G.touchPlay = (key, x) => (T.MOTIONS && T.MOTIONS[key] ? setAct(key, x) : null);   // 6a：特別開心（第一下撳）等外部模組播動作
     window.__qa = window.__qa || {};
     window.__qa.touch = {
       st: () => ({ act: TS.act ? { key: TS.act.key, dumb: TS.act.dumb || null } : null, grants: TS.grants.slice(), log: TS.log.slice(), mood: T.moodToday(S(), G.now(), store), dumb: Object.assign({}, T.st(S()).dumb), seen: Object.keys(T.st(S()).seen), rolls: TS.rolls, autoDumb: TS.autoDumb, queue: G.nq ? { cur: G.nq.cur ? G.nq.cur.line : null, n: G.nq.size(), log: G.nq.log.slice() } : null, gest: G.beh && G.beh.gest ? { key: G.beh.gest.key, art: G.beh.gest.art, clip: G.beh.gest.clip, rx: G.beh.gest.rx, ms: G.beh.gest.ms, sx: G.beh.gest.sx, sy: G.beh.gest.sy, dx: G.beh.gest.dx, rot: G.beh.gest.rot, fx: G.beh.gest.fx } : null, face: G.beh ? Object.assign({}, G.beh.face) : null }),

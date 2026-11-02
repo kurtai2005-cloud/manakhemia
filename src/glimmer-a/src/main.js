@@ -124,6 +124,7 @@
   if (NS.long5aui && NS.long5a) NS.long5aui.install(G, NS);   // 第 5 批 5a：家族長線（long5a.js＋long5aui.js：家族等級、房 2–4、新蛋二揀一、寵物卡、族譜；?l5=0 全停）
   if (NS.long5bui && NS.long5b) NS.long5bui.install(G, NS);   // 第 5 批 5b：遠足＋小職業（long5b.js＋long5bui.js：今日安排、揀工作、返屋 toast、團絨日記、工作帽；?l5b=0 全停）
   if (NS.long5cui && NS.long5c) NS.long5cui.install(G, NS);   // 第 5 批 5c：承傳（long5c.js＋long5cui.js：揀上一代、遺傳花紋／招式、Lv3 細佬成長快 20%；?l5c=0 全停）
+  if (NS.long6aui && NS.long6a) NS.long6aui.install(G, NS);   // 第 6 批 6a：團絨記得你（long6a.js＋long6aui.js：30 日記錄、每日第一次招呼、日記句、記憶心聲、冇嚟句、得意／委屈表情；?l6a=0 停用）
   AUD.init(G);
   EV.noteOpen(G.state, { hour: G.hour(), now: G.now() });          // 當日第 2 次開 app 仍冇事件 → 保底
   { const w = EV.diaryWarn(G.state, G.now()); if (w) setTimeout(() => UI.toast('日記有 ' + w + ' 件小事 2 日後作廢，記得領'), 1500); }

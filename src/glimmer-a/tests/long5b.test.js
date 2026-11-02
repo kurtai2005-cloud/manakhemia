@@ -29,7 +29,7 @@ console.log('⓪ 美術／資料對數');
   for (const st of [{ kind: 'tr', fk: 'evo_still_lumi' }, { kind: 'kid', fk: 'H3' }]) ok(B.canHike(st), '可以遠足：' + st.fk);
   ok(!B.canHike({ kind: 'tr', fk: 'tide' }), '非靜光團絨唔可以遠足');
   ok(F.LIVE.job_cap_plus1 === 1 && !F.LATER.job_cap_plus1, '家族 Lv7「工作上限 +1」而家生效');
-  ok(D.PARAMS.series2.version === '5c', '版本 5b', D.PARAMS.series2.version);
+  ok(D.PARAMS.series2.version === '6a', '版本 5b', D.PARAMS.series2.version);
 }
 console.log('① 遠足');
 { const s = fam(), r0 = route(s), w0 = W(s), xp0 = F.st(s).xp;
