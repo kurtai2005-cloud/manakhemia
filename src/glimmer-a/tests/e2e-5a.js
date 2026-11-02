@@ -46,7 +46,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3;
   console.log('# 載入');
   await load('q=high&hour=13&seed=21&ev=0');
   let l = await L(); ok(await E(() => !!(window.__glimmer.l5 && Glimmer.long5a && __glimmer.house5)), 'long5a＋long5aui 裝咗');
-  ok(await E(() => /^5[ab]/.test(Glimmer.data.PARAMS.series2.version)), '版本 5a');
+  ok(await E(() => /^5[abc]/.test(Glimmer.data.PARAMS.series2.version)), '版本 5a');
   ok(l.lv === 1 && l.xp === 0 && l.res.length === 0 && !l.offer, '新存檔：家族 Lv1・0 XP・冇住客', { lv: l.lv, xp: l.xp });
   ok(l.quiet === true, '?ev=0 → 唔自動彈窗');
 

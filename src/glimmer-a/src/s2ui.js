@@ -367,7 +367,7 @@
       if (c && (c.kind === 'lesson' || c.kind === 'trick') && c.t >= 3000 && drawCopy(x, c, base)) return;
       const sp = strip(fk, K.clip); if (!sp) return; const loop = !(c && c.F && c.F.actors.kid && c.F.actors.kid.loop === false), f = kidFrame(fk, K.clip, K.ct, loop);
       const mir = K.dir < 0; x.save(); x.imageSmoothingEnabled = false; const X0 = ox(Math.round(CX + K.x)), Y0 = oy(base); if (mir) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
-      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'pet2', fk, sp, f * 48, 0, 48, 48, -24, -45); x.restore(); RST.kid++;
+      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'pet2', fk, A.act.forms[fk] && A.act.forms[fk][K.clip] ? K.clip : 'idle', f, -24, -45); x.restore(); RST.kid++;
       if (K.clip === 'sleep') { const z = fxInfo('fx_zzz'); if (z && z.img) { const fr = Math.floor(pnow() / 300) % z.n, ka = A.ka.forms[fk] || A.ka.forms.S2; x.drawImage(z.img, fr * z.w, 0, z.w, z.h, ox(Math.round(CX + K.x + (ka.headTop[0] - 24) + 6) - z.pv[0]), oy(base + ka.headTop[1] - 45 - 1) - z.pv[1], z.w, z.h); } }
     }
     function drawEgg(x, base) {
@@ -408,7 +408,7 @@
       const sp = strip(fk, clip); if (!sp) return null; const f = kidFrame(fk, clip, KM.ct, true), X = Math.round(gx);
       x.fillStyle = 'rgba(10,20,20,0.35)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(10 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(X) - w, oy(base - 1 + dy), w * 2, 1); }
       x.save(); x.imageSmoothingEnabled = false; const X0 = ox(X), Y0 = oy(base); if (KM.dir < 0) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
-      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'km', fk, sp, f * 48, 0, 48, 48, -24, -45); x.restore(); RST.km = (RST.km || 0) + 1;
+      x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'km', fk, A.act.forms[fk][clip] ? clip : 'idle', f, -24, -45); x.restore(); RST.km = (RST.km || 0) + 1;
       const ka = (A.ka && (A.ka.forms[fk] || A.ka.forms.S2)) || { headTop: [24, 14] }, hy = base + ka.headTop[1] - 45, hx = X + (ka.headTop[0] - 24) * KM.dir;
       const cr = im('../series2_long/5a/ui/icon_crown@3x.png'); if (cr) { const bob = Math.round(Math.sin(now / 600)); x.save(); x.imageSmoothingEnabled = true; x.drawImage(cr, ox(hx) - 7, oy(hy - 14 + bob), 14, 14); x.restore(); RST.crown = (RST.crown || 0) + 1; }
       if (clip === 'sleep') { const z = fxInfo('fx_zzz'); if (z && z.img) { const fr = Math.floor(now / 300) % z.n; x.drawImage(z.img, fr * z.w, 0, z.w, z.h, ox(hx + 6) - z.pv[0], oy(hy - 1) - z.pv[1], z.w, z.h); } }
