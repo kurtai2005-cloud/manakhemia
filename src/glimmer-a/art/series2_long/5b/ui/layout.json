@@ -1,0 +1,212 @@
+{
+ "style": "HD-2D（ui/style_ref/hd2d）；零件 3x",
+ "assets": {
+  "icon_job_post": "ui/icon_job_post@3x.png",
+  "icon_job_garden": "ui/icon_job_garden@3x.png",
+  "icon_job_watch": "ui/icon_job_watch@3x.png",
+  "icon_job_chef": "ui/icon_job_chef@3x.png",
+  "icon_expedition": "ui/icon_expedition@3x.png",
+  "icon_rest": "ui/icon_rest@3x.png",
+  "icon_shards": "ui/icon_shards@3x.png",
+  "icon_job_lv": "ui/icon_job_lv@3x.png",
+  "badge_job_lv1": "ui/badge_job_lv1@3x.png",
+  "badge_job_lv2": "ui/badge_job_lv2@3x.png",
+  "badge_job_lv3": "ui/badge_job_lv3@3x.png",
+  "badge_job_lv4": "ui/badge_job_lv4@3x.png",
+  "badge_job_lv5": "ui/badge_job_lv5@3x.png",
+  "badge_job_lv6": "ui/badge_job_lv6@3x.png",
+  "seg_expedition_on": "ui/seg_expedition_on@3x.png",
+  "seg_expedition_off": "ui/seg_expedition_off@3x.png",
+  "seg_expedition_locked": "ui/seg_expedition_locked@3x.png",
+  "seg_job_on": "ui/seg_job_on@3x.png",
+  "seg_job_off": "ui/seg_job_off@3x.png",
+  "seg_job_locked": "ui/seg_job_locked@3x.png",
+  "seg_rest_on": "ui/seg_rest_on@3x.png",
+  "seg_rest_off": "ui/seg_rest_off@3x.png",
+  "seg_rest_locked": "ui/seg_rest_locked@3x.png",
+  "job_card_example": "ui/job_card_example@3x.png",
+  "job_card_capped": "ui/job_card_capped@3x.png",
+  "toast_return": "ui/toast_return@3x.png",
+  "diary_page_example": "ui/diary_page_example@3x.png"
+ },
+ "dailyPlan": {
+  "open": "屋內 HUD 加「今日安排」掣（cx 172, cy 352, d 30, icon expedition）；每日 05:00 重置",
+  "panel": {
+   "x": 10,
+   "y": 74,
+   "w": 175,
+   "h": 262
+  },
+  "plaque": {
+   "y": 66,
+   "w": 104,
+   "label": "今日安排"
+  },
+  "chips": {
+   "y": 92,
+   "expedition": {
+    "x": 20,
+    "w": 72,
+    "fmt": "遠足 {n}/2"
+   },
+   "shards": {
+    "x": 103,
+    "w": 72,
+    "fmt": "今日 {n}/12 碎"
+   }
+  },
+  "rows": {
+   "x": 18,
+   "y0": 110,
+   "dy": 49,
+   "w": 159,
+   "h": 45,
+   "portrait": {
+    "dx": 22,
+    "dy": 22.5,
+    "d": 34
+   },
+   "name": {
+    "dx": 46,
+    "dy": 10
+   },
+   "seg": {
+    "dx": 44,
+    "dy": 17,
+    "w": 36,
+    "h": 15,
+    "gap": 2,
+    "note": "3 粒 segment：遠足／工作／休息；揀咗＝亮＋金光；冇得揀＝dis＋鎖（遠足 2/2 用晒）"
+   },
+   "status": {
+    "dx": 46,
+    "dy": 38,
+    "note": "細字：遠足中 hh:mm／郵差助手 Lv3（再做 2 日升級）／休息緊 zZ"
+   }
+  },
+  "rule": "主養唔會出現（佢喺花園）；每隻每日揀 1 樣；遠足中嘅成年要等返屋先再揀",
+  "confirm": {
+   "x": 57,
+   "y": 312,
+   "w": 81,
+   "h": 18,
+   "label": "好！"
+  }
+ },
+ "jobPicker": {
+  "panel": {
+   "x": 14,
+   "y": 96,
+   "w": 167,
+   "h": 226
+  },
+  "plaque": {
+   "y": 88,
+   "w": 96,
+   "label": "揀工作"
+  },
+  "cards": {
+   "x": [
+    22,
+    101
+   ],
+   "y": [
+    116,
+    214
+   ],
+   "w": 72,
+   "h": 92,
+   "medal": {
+    "dy": 26,
+    "d": 34
+   },
+   "name": {
+    "dy": 52
+   },
+   "lv": {
+    "dy": 63
+   },
+   "bar": {
+    "dy": 72,
+    "w": 56,
+    "h": 4
+   },
+   "out": {
+    "dy": 82
+   }
+  },
+  "badge": "Lv 章（hex 寶石，1–6）喺 medal 右上",
+  "lv6": "家族 Lv7 前：Lv5 滿咗 bar 變金＋「家族 Lv7 開 Lv6」",
+  "note": "每隻寵物每款工作各自計日數（5 日升 1 級）"
+ },
+ "awayCard": {
+  "note": "遠足中：屋內佢個位冇人；每日安排嗰行 portrait 變剪影＋背囊 icon＋倒數"
+ },
+ "returnToast": {
+  "x": 14,
+  "y": 46,
+  "w": 167,
+  "h": 40,
+  "medal": {
+   "dx": 20,
+   "d": 30
+  },
+  "title": {
+   "dx": 40,
+   "dy": 13
+  },
+  "body": {
+   "dx": 40,
+   "dy": 27
+  },
+  "anim": "由上滑落 260ms easeOutBack，停 2.6s，撳＝開日記",
+  "shardChip": {
+   "dx": 132,
+   "dy": 20
+  }
+ },
+ "diary": {
+  "panel": {
+   "x": 12,
+   "y": 70,
+   "w": 171,
+   "h": 250
+  },
+  "plaque": {
+   "y": 62,
+   "w": 104,
+   "label": "團絨日記"
+  },
+  "date": {
+   "y": 86
+  },
+  "pic": {
+   "x": 22,
+   "y": 96,
+   "w": 151,
+   "h": 112,
+   "note": "一格故事：遠足地點 scene crop（scenes/hd2d H1–H4 輪）＋寵物返屋格＋手信 1x ×2"
+  },
+  "text": {
+   "y": [
+    218,
+    230,
+    242
+   ]
+  },
+  "loot": {
+   "y": 266,
+   "note": "手信 medal ＋ 碎 chip ＋（30%）家具 chip"
+  },
+  "nav": {
+   "l": {
+    "cx": 26,
+    "cy": 302
+   },
+   "r": {
+    "cx": 169,
+    "cy": 302
+   }
+  }
+ }
+}
