@@ -44,7 +44,7 @@ const LINES = require('../src/touch.js').LINES;
   await W(400); await page.mouse.click(c.x, c.y); await W(100); s = await st(); ok(s.grants.filter(g => g.kind === 'poke').slice(-1)[0].reason === 'repeat' && s.mood.shared === 1, '同日再戳唔再加');
   await W(700); c = await center(); await E(() => { window.__patN = 0; }); await page.mouse.move(c.x, c.y); await page.mouse.down();
   await W(900); s = await st(); ok(s.act && s.act.key === 'g_hold' && okGrant(s, 'hold'), '長按 ≥0.6s：瞇眼舒服 g_hold＋心情', s.act);
-  const fh = await E(() => __glimmer.beh.face); ok(fh.eyes === 'happy', '長按表情：合眼笑', fh);
+  let fh = await E(() => __glimmer.beh.face); for (let i = 0; i < 10 && fh.eyes !== 'happy'; i++) { await W(60); fh = await E(() => __glimmer.beh.face); } ok(fh.eyes === 'happy', '長按表情：合眼笑', fh);   /* #83：nuzzle clip 有幾格 squint（v3=0 一樣）→ 撳住期間 600ms 內見到合眼笑就算 */
   await shot('hold');
   await W(2400); ok(await E(() => window.__patN) === 1, '持續 3s ＝ 一次摸頭（未鬆手已計）');
   await page.mouse.up(); await W(200); ok(await E(() => window.__patN) === 1, '鬆手唔再重覆計摸頭');

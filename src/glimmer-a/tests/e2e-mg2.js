@@ -67,7 +67,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await shot('bounce-charge');
   await page.waitForTimeout(500); await mup(); s = await S(); ok(s.phase === 'air' && s.jumps === 1, '放手 → 彈起', s.phase);
   await mdown(40, 200); await mmove(30, 200); await page.waitForTimeout(250); s = await S(); ok(s.pet.x < 88, '半空拖手指 → 團絨向左', s.pet); await shot('bounce-air'); await mup();
-  const seen = await E(() => { const cl = new Set(); __qa.mg2.step(4, g => { if (g.phase === 'air') g.move(175, 0); else cl.add(g.clip); }); return [...cl]; });
+  const seen = await E(() => { const cl = new Set(); __qa.mg2.step(4, g => { if (g.phase === 'air') g.move(g.pet.x < g.M.leaf.x ? 0 : 180, 0); else cl.add(g.clip);   /* #83：向離片葉嗰邊拖（原本一律拖去右，團絨喺左邊時會橫過片葉；截圖慢少少就落返葉上 → flaky） */ }); return [...cl]; });
   s = await S(); ok(s.falls >= 1, '跌出葉外', s);
   ok(seen.includes('getup') || seen.includes('act_cool') || seen.includes('walk'), '跌低 → 起身／扮冇事 → 行返', seen);
   const w0 = await shards(), g0 = await E(() => __qa.sys12b.games().plays);

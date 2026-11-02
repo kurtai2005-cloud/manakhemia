@@ -243,6 +243,8 @@
         this.need3(cur); if (s.prev && s.mix < 1) this.need3(s.prev);
         if (!this.ready3(cur)) { this.s3.fallback++; return super.draw(ctx, k, c); }
         this.stat.draws++; this.s3.draws++;
+        // 小遊戲 v2 全螢幕玩緊（mg2Busy）：花園俾遮住 → 重用上一格 @3x 合成，每 30 格先重砌一次（慳主線程，觸控／路徑唔再延遲）
+        if (this.G && this.G.mg2Busy && this.lastOut3 && ((this.s3.mgHold = (this.s3.mgHold || 0) + 1) % 30)) { const r0 = W * k / W3; ctx.imageSmoothingEnabled = Math.abs(r0 - Math.round(r0)) > 0.01; ctx.drawImage(this.lastOut3, 0, 0, W * k, H * k); ctx.imageSmoothingEnabled = false; return; }
         this.stepParticles(dt, this.grade(cur), c.quality); this.stepSeasonParts(dt, cur, c.quality); this.stepRain(dt, cur === 'H3rain' || s.prev === 'H3rain');
         const g3 = this.v3v[cur].g.v3; this.stepEmit(dt, g3, cur);
         const pi = this.petInfo(), ki = this.kidInfo(), P2 = [Math.round(-MX + c.offs[2][0]) * K3, Math.round(-MY + c.offs[2][1]) * K3];
@@ -255,7 +257,7 @@
           B.setTransform(1, 0, 0, 1, 0, 0); B.globalCompositeOperation = 'source-over'; B.globalAlpha = s.mix; B.drawImage(this.buf3, 0, 0); B.globalAlpha = 1; out = this.bufB3;
         }
         const r = W * k / W3; ctx.imageSmoothingEnabled = Math.abs(r - Math.round(r)) > 0.01; if (ctx.imageSmoothingEnabled) ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(out, 0, 0, W * k, H * k); ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(out, 0, 0, W * k, H * k); ctx.imageSmoothingEnabled = false; this.lastOut3 = out;
       }
       v3stat() { return Object.assign({}, this.s3, { loaded: Object.keys(this.v3v).filter(k => this.v3v[k].ready), forms: Object.keys(this.forms).filter(k => this.forms[k].ready), kids: Object.keys(this.kids).filter(k => this.kids[k].ready), parts: this.ems.length, petParts: this.fps3.length }); }
     };

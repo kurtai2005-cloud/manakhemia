@@ -91,7 +91,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   console.log('# D5 真流程：存檔 lastSeen 離線 8h → 開 app → 摘要 → 關咗即衝埋嚟；同日唔再；<8h 唔衝');
   const reopen = async (h) => {
-    await E((h) => { window.__noSaveOnHide = true; const k = 'glimmer_save_v1', o = JSON.parse(localStorage.getItem(k)); o.lastSeen = Date.now() - h * 3600e3; o.sleeping = false; localStorage.setItem(k, JSON.stringify(o)); }, h);
+    await E((h) => { window.__noSaveOnHide = true; if (window.__glimmer) __glimmer.save = () => { };   /* #83：防 autosave 喺 setItem 同 goto 之間覆寫 lastSeen（偶發 skip:'short'） */ const k = 'glimmer_save_v1', o = JSON.parse(localStorage.getItem(k)); o.lastSeen = Date.now() - h * 3600e3; o.sleeping = false; localStorage.setItem(k, JSON.stringify(o)); }, h);
     await page.goto(BASE + '?q=high&hour=13&seed=11&ev=0&dev=1'); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad); await E(() => __glimmer.liveLoad); await page.waitForTimeout(250);
     return E(() => ({ r: __qa.pet.reunion(), modal: getComputedStyle(document.getElementById('modal')).display !== 'none', st: __qa.pet.state() }));
   };
