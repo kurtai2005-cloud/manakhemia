@@ -1,0 +1,335 @@
+{
+ "note": "第 3 批 寵物光源 v3：有光源／特效嘅形態一覽。冇喺呢度嘅形態（絨點、絨芽）只用花園通用 petLight 光池。",
+ "forms": [
+  {
+   "form": "evo_egg",
+   "name": "光卵",
+   "branch": "base",
+   "file": "evo_egg.json",
+   "sheet": "evo_egg_glow@3x.json",
+   "tints": {
+    "core": "#FFFBD0",
+    "mid": "#FFE98A",
+    "outer": "#FFD45E"
+   },
+   "frames": 20,
+   "uniqueFrames": 19
+  },
+  {
+   "form": "evo_hop",
+   "name": "絨跳",
+   "branch": "base",
+   "file": "evo_hop.json",
+   "sheet": "evo_hop_glow@3x.json",
+   "tints": {
+    "core": "#FFFBD0",
+    "mid": "#FFE98A",
+    "outer": "#FFD45E"
+   },
+   "frames": 474,
+   "uniqueFrames": 111
+  },
+  {
+   "form": "evo_guard_radiant",
+   "name": "守夜者・燦光",
+   "branch": "radiant",
+   "file": "evo_guard_radiant.json",
+   "sheet": "evo_guard_radiant_glow@3x.json",
+   "tints": {
+    "core": "#FFFBD0",
+    "mid": "#FFE98A",
+    "outer": "#FFD45E"
+   },
+   "frames": 362,
+   "uniqueFrames": 121
+  },
+  {
+   "form": "evo_guard_soft",
+   "name": "守夜者・柔光",
+   "branch": "soft",
+   "file": "evo_guard_soft.json",
+   "sheet": "evo_guard_soft_glow@3x.json",
+   "tints": {
+    "core": "#FFFBD0",
+    "mid": "#FFE98A",
+    "outer": "#FF8A3D"
+   },
+   "frames": 362,
+   "uniqueFrames": 105
+  },
+  {
+   "form": "evo_guard_dust",
+   "name": "守夜者・微塵",
+   "branch": "dust",
+   "file": "evo_guard_dust.json",
+   "sheet": "evo_guard_dust_glow@3x.json",
+   "tints": {
+    "core": "#FFFBD0",
+    "mid": "#FFE98A",
+    "outer": "#FFD45E"
+   },
+   "frames": 380,
+   "uniqueFrames": 117
+  },
+  {
+   "form": "evo_guard_ember",
+   "name": "守夜者・火苗",
+   "branch": "ember",
+   "file": "evo_guard_ember.json",
+   "sheet": "evo_guard_ember_glow@3x.json",
+   "tints": {
+    "core": "#FFF0A0",
+    "mid": "#FFB04A",
+    "outer": "#FF6E36"
+   },
+   "frames": 380,
+   "uniqueFrames": 186
+  },
+  {
+   "form": "evo_guard_lumi",
+   "name": "守夜者・螢絨",
+   "branch": "lumi",
+   "file": "evo_guard_lumi.json",
+   "sheet": "evo_guard_lumi_glow@3x.json",
+   "tints": {
+    "core": "#F2FFB8",
+    "mid": "#CFF26A",
+    "outer": "#8FCB4E"
+   },
+   "frames": 362,
+   "uniqueFrames": 254
+  },
+  {
+   "form": "evo_guard_moon",
+   "name": "守夜者・月眠",
+   "branch": "moon",
+   "file": "evo_guard_moon.json",
+   "sheet": "evo_guard_moon_glow@3x.json",
+   "tints": {
+    "core": "#FFFFF0",
+    "mid": "#FFF2C4",
+    "outer": "#EFE09A"
+   },
+   "frames": 380,
+   "uniqueFrames": 186
+  },
+  {
+   "form": "evo_guard_crystal",
+   "name": "守夜者・晶角",
+   "branch": "crystal",
+   "file": "evo_guard_crystal.json",
+   "sheet": "evo_guard_crystal_glow@3x.json",
+   "tints": {
+    "core": "#FFF6FF",
+    "mid": "#F0D4FF",
+    "outer": "#D8A8FF"
+   },
+   "frames": 380,
+   "uniqueFrames": 199
+  },
+  {
+   "form": "evo_guard_shroom",
+   "name": "守夜者・菇傘",
+   "branch": "shroom",
+   "file": "evo_guard_shroom.json",
+   "sheet": "evo_guard_shroom_glow@3x.json",
+   "tints": {
+    "core": "#F2FFDA",
+    "mid": "#C4F2A2",
+    "outer": "#8ED87A"
+   },
+   "frames": 380,
+   "uniqueFrames": 168
+  },
+  {
+   "form": "evo_guard_tide",
+   "name": "守夜者・水珠",
+   "branch": "tide",
+   "file": "evo_guard_tide.json",
+   "sheet": "evo_guard_tide_glow@3x.json",
+   "tints": {
+    "core": "#EAFFFF",
+    "mid": "#A6EEFA",
+    "outer": "#62CFEF"
+   },
+   "frames": 380,
+   "uniqueFrames": 110
+  },
+  {
+   "form": "evo_still_radiant",
+   "name": "靜光・燦光",
+   "branch": "radiant",
+   "file": "evo_still_radiant.json",
+   "sheet": "evo_still_radiant_glow@3x.json",
+   "tints": {
+    "core": "#FFFBD0",
+    "mid": "#FFE98A",
+    "outer": "#FFD45E"
+   },
+   "frames": 380,
+   "uniqueFrames": 231
+  },
+  {
+   "form": "evo_still_soft",
+   "name": "靜光・柔光",
+   "branch": "soft",
+   "file": "evo_still_soft.json",
+   "sheet": "evo_still_soft_glow@3x.json",
+   "tints": {
+    "core": "#FFFBD0",
+    "mid": "#FFE98A",
+    "outer": "#FF8A3D"
+   },
+   "frames": 380,
+   "uniqueFrames": 105
+  },
+  {
+   "form": "evo_still_dust",
+   "name": "靜光・微塵",
+   "branch": "dust",
+   "file": "evo_still_dust.json",
+   "sheet": "evo_still_dust_glow@3x.json",
+   "tints": {
+    "core": "#FFFBD0",
+    "mid": "#FFE98A",
+    "outer": "#FFD45E"
+   },
+   "frames": 380,
+   "uniqueFrames": 170
+  },
+  {
+   "form": "evo_still_ember",
+   "name": "靜光・火苗",
+   "branch": "ember",
+   "file": "evo_still_ember.json",
+   "sheet": "evo_still_ember_glow@3x.json",
+   "tints": {
+    "core": "#FFF0A0",
+    "mid": "#FFB04A",
+    "outer": "#FF6E36"
+   },
+   "frames": 380,
+   "uniqueFrames": 192
+  },
+  {
+   "form": "evo_still_lumi",
+   "name": "靜光・螢絨",
+   "branch": "lumi",
+   "file": "evo_still_lumi.json",
+   "sheet": "evo_still_lumi_glow@3x.json",
+   "tints": {
+    "core": "#F2FFB8",
+    "mid": "#CFF26A",
+    "outer": "#8FCB4E"
+   },
+   "frames": 380,
+   "uniqueFrames": 274
+  },
+  {
+   "form": "evo_still_moon",
+   "name": "靜光・月眠",
+   "branch": "moon",
+   "file": "evo_still_moon.json",
+   "sheet": "evo_still_moon_glow@3x.json",
+   "tints": {
+    "core": "#FFFFF0",
+    "mid": "#FFF2C4",
+    "outer": "#EFE09A"
+   },
+   "frames": 380,
+   "uniqueFrames": 189
+  },
+  {
+   "form": "evo_still_crystal",
+   "name": "靜光・晶角",
+   "branch": "crystal",
+   "file": "evo_still_crystal.json",
+   "sheet": "evo_still_crystal_glow@3x.json",
+   "tints": {
+    "core": "#FFF6FF",
+    "mid": "#F0D4FF",
+    "outer": "#D8A8FF"
+   },
+   "frames": 380,
+   "uniqueFrames": 204
+  },
+  {
+   "form": "evo_still_shroom",
+   "name": "靜光・菇傘",
+   "branch": "shroom",
+   "file": "evo_still_shroom.json",
+   "sheet": "evo_still_shroom_glow@3x.json",
+   "tints": {
+    "core": "#F2FFDA",
+    "mid": "#C4F2A2",
+    "outer": "#8ED87A"
+   },
+   "frames": 380,
+   "uniqueFrames": 193
+  },
+  {
+   "form": "evo_still_tide",
+   "name": "靜光・水珠",
+   "branch": "tide",
+   "file": "evo_still_tide.json",
+   "sheet": "evo_still_tide_glow@3x.json",
+   "tints": {
+    "core": "#EAFFFF",
+    "mid": "#A6EEFA",
+    "outer": "#62CFEF"
+   },
+   "frames": 380,
+   "uniqueFrames": 157
+  }
+ ],
+ "notLight": {
+  "evo_dot": "只有 1px 眼高光，唔係光源",
+  "evo_sprout": "冇 emissive"
+ },
+ "sceneScale": {
+  "H1": 0.55,
+  "H3": 0.45,
+  "H2": 0.9,
+  "H4": 1.0
+ },
+ "clipGlowDefault": {
+  "fall_asleep": {
+   "state": "sleepClip",
+   "fadeOut": {
+    "ms": 600,
+    "ease": "easeInQuad",
+    "at": "frame1"
+   },
+   "value": 0.0
+  },
+  "sleep_loop": {
+   "state": "sleep",
+   "value": 0.0
+  },
+  "wake": {
+   "state": "sleep",
+   "value": 0.0,
+   "fadeIn": {
+    "ms": 400,
+    "ease": "easeOutQuad",
+    "at": "lastFrame",
+    "pulse": {
+     "ms": 150,
+     "scale": [
+      1,
+      1.15,
+      1
+     ]
+    }
+   }
+  },
+  "yawn": {
+   "state": "sleepy",
+   "value": 0.6
+  },
+  "emo_sleepy": {
+   "state": "sleepy",
+   "value": 0.6
+  }
+ }
+}

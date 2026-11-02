@@ -1,0 +1,1185 @@
+{
+ "note": "v2 每個 UI 零件 → v3 名（icon: 前綴＝喺 icons atlas）",
+ "map": {
+  "acc_thumb_acorn": {
+   "v3": "icon:acc_thumb_acorn",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_beanie": {
+   "v3": "icon:acc_thumb_beanie",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_bell": {
+   "v3": "icon:acc_thumb_bell",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_bow": {
+   "v3": "icon:acc_thumb_bow",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_cherry": {
+   "v3": "icon:acc_thumb_cherry",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_crown": {
+   "v3": "icon:acc_thumb_crown",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_glasses": {
+   "v3": "icon:acc_thumb_glasses",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_halo": {
+   "v3": "icon:acc_thumb_halo",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_hat_chef": {
+   "v3": "icon:acc_thumb_hat_chef",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_hat_garden": {
+   "v3": "icon:acc_thumb_hat_garden",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_hat_post": {
+   "v3": "icon:acc_thumb_hat_post",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_hat_watch": {
+   "v3": "icon:acc_thumb_hat_watch",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_leafcollar": {
+   "v3": "icon:acc_thumb_leafcollar",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_nightcap": {
+   "v3": "icon:acc_thumb_nightcap",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_sakura": {
+   "v3": "icon:acc_thumb_sakura",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_scarf": {
+   "v3": "icon:acc_thumb_scarf",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_starclip": {
+   "v3": "icon:acc_thumb_starclip",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_straw": {
+   "v3": "icon:acc_thumb_straw",
+   "ok": true,
+   "note": ""
+  },
+  "acc_thumb_wear_hat": {
+   "v3": "icon:acc_thumb_wear_hat",
+   "ok": true,
+   "note": ""
+  },
+  "banner_top": {
+   "v3": "scrim_top",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_gold_h5": {
+   "v3": "bar_fill_gold_h5",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_gold_h6": {
+   "v3": "bar_fill_gold_h6",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_gold_h7": {
+   "v3": "bar_fill_gold_h8",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_green_h5": {
+   "v3": "bar_fill_mint_h5",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_green_h6": {
+   "v3": "bar_fill_mint_h6",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_green_h7": {
+   "v3": "bar_fill_mint_h8",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_pri_h5": {
+   "v3": "bar_fill_amber_h5",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_pri_h6": {
+   "v3": "bar_fill_amber_h6",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_pri_h7": {
+   "v3": "bar_fill_amber_h8",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_rose_h5": {
+   "v3": "bar_fill_rose_h5",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_rose_h6": {
+   "v3": "bar_fill_rose_h6",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_rose_h7": {
+   "v3": "bar_fill_rose_h8",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_sec_h5": {
+   "v3": "bar_fill_sky_h5",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_sec_h6": {
+   "v3": "bar_fill_sky_h6",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_sec_h7": {
+   "v3": "bar_fill_sky_h8",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_violet_h5": {
+   "v3": "bar_fill_violet_h5",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_violet_h6": {
+   "v3": "bar_fill_violet_h6",
+   "ok": true,
+   "note": ""
+  },
+  "bar_fill_violet_h7": {
+   "v3": "bar_fill_violet_h8",
+   "ok": true,
+   "note": ""
+  },
+  "bar_tip_h5": {
+   "v3": "bar_tip_amber",
+   "ok": true,
+   "note": "每色一粒光點"
+  },
+  "bar_tip_h6": {
+   "v3": "bar_tip_amber",
+   "ok": true,
+   "note": "每色一粒光點"
+  },
+  "bar_tip_h7": {
+   "v3": "bar_tip_amber",
+   "ok": true,
+   "note": "每色一粒光點"
+  },
+  "bar_trough_h5": {
+   "v3": "bar_track_h5",
+   "ok": true,
+   "note": ""
+  },
+  "bar_trough_h6": {
+   "v3": "bar_track_h6",
+   "ok": true,
+   "note": ""
+  },
+  "bar_trough_h7": {
+   "v3": "bar_track_h8",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_dis": {
+   "v3": "btn_s_dis",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_dis_p": {
+   "v3": "btn_s_dis_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_pri": {
+   "v3": "btn_s_pri",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_pri_p": {
+   "v3": "btn_s_pri_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_rose": {
+   "v3": "btn_s_rose",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_rose_p": {
+   "v3": "btn_s_rose_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_sec": {
+   "v3": "btn_s_sec",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_sec_p": {
+   "v3": "btn_s_sec_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_violet": {
+   "v3": "btn_s_violet",
+   "ok": true,
+   "note": ""
+  },
+  "btn16_violet_p": {
+   "v3": "btn_s_violet_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn_dis": {
+   "v3": "btn_dis",
+   "ok": true,
+   "note": ""
+  },
+  "btn_dis_p": {
+   "v3": "btn_dis_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn_pri": {
+   "v3": "btn_pri",
+   "ok": true,
+   "note": ""
+  },
+  "btn_pri_p": {
+   "v3": "btn_pri_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn_rose": {
+   "v3": "btn_rose",
+   "ok": true,
+   "note": ""
+  },
+  "btn_rose_p": {
+   "v3": "btn_rose_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn_sec": {
+   "v3": "btn_sec",
+   "ok": true,
+   "note": ""
+  },
+  "btn_sec_p": {
+   "v3": "btn_sec_p",
+   "ok": true,
+   "note": ""
+  },
+  "btn_violet": {
+   "v3": "btn_violet",
+   "ok": true,
+   "note": ""
+  },
+  "btn_violet_p": {
+   "v3": "btn_violet_p",
+   "ok": true,
+   "note": ""
+  },
+  "bubble": {
+   "v3": "bubble",
+   "ok": true,
+   "note": ""
+  },
+  "bubble_tail": {
+   "v3": "bubble_tail",
+   "ok": true,
+   "note": ""
+  },
+  "card": {
+   "v3": "card",
+   "ok": true,
+   "note": ""
+  },
+  "card_locked": {
+   "v3": "card_locked",
+   "ok": true,
+   "note": ""
+  },
+  "card_paper": {
+   "v3": "card_paper",
+   "ok": true,
+   "note": ""
+  },
+  "card_sel": {
+   "v3": "card_sel",
+   "ok": true,
+   "note": ""
+  },
+  "check_off": {
+   "v3": "check_off",
+   "ok": true,
+   "note": ""
+  },
+  "check_on": {
+   "v3": "check_on",
+   "ok": true,
+   "note": ""
+  },
+  "chip": {
+   "v3": "chip",
+   "ok": true,
+   "note": ""
+  },
+  "chip_plus": {
+   "v3": "chip_plus",
+   "ok": true,
+   "note": ""
+  },
+  "chip_plus_p": {
+   "v3": "chip_plus_p",
+   "ok": true,
+   "note": ""
+  },
+  "close": {
+   "v3": "close",
+   "ok": true,
+   "note": ""
+  },
+  "close_p": {
+   "v3": "close_p",
+   "ok": true,
+   "note": ""
+  },
+  "divider": {
+   "v3": "divider",
+   "ok": true,
+   "note": ""
+  },
+  "dock_bar": {
+   "v3": "dock",
+   "ok": true,
+   "note": ""
+  },
+  "dock_pillar": {
+   "v3": "dock_on",
+   "ok": true,
+   "note": ""
+  },
+  "egg_card": {
+   "v3": "egg_card",
+   "ok": true,
+   "note": ""
+  },
+  "exp_gem_off": {
+   "v3": "exp_gem_off",
+   "ok": true,
+   "note": ""
+  },
+  "exp_gem_on": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "family_crest": {
+   "v3": "family_crest",
+   "ok": true,
+   "note": ""
+  },
+  "fx_mote": {
+   "v3": "fx_mote",
+   "ok": true,
+   "note": ""
+  },
+  "fx_ripple": {
+   "v3": "fx_ripple",
+   "ok": true,
+   "note": ""
+  },
+  "fx_sweep": {
+   "v3": "fx_sweep",
+   "ok": true,
+   "note": ""
+  },
+  "fx_veil25_tile": {
+   "v3": "veil_light",
+   "ok": true,
+   "note": ""
+  },
+  "fx_veil_tile": {
+   "v3": "veil",
+   "ok": true,
+   "note": ""
+  },
+  "gem_green_5": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_green_7": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_pri_5": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_pri_7": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_rose_5": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_rose_7": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_sec_5": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_sec_7": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_violet_5": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "gem_violet_7": {
+   "v3": "exp_gem_on",
+   "ok": true,
+   "note": ""
+  },
+  "hint_arrow": {
+   "v3": "hint_arrow",
+   "ok": true,
+   "note": ""
+  },
+  "job_lv_badge": {
+   "v3": "job_lv_badge",
+   "ok": true,
+   "note": ""
+  },
+  "med11_navy": {
+   "v3": "med36_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med11_paper": {
+   "v3": "med36_gold",
+   "ok": true,
+   "note": ""
+  },
+  "med11_rose": {
+   "v3": "med36_rose",
+   "ok": true,
+   "note": ""
+  },
+  "med13_green": {
+   "v3": "med36_sec",
+   "ok": true,
+   "note": ""
+  },
+  "med13_navy": {
+   "v3": "med36_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med13_paper": {
+   "v3": "med36_gold",
+   "ok": true,
+   "note": ""
+  },
+  "med13_pri": {
+   "v3": "med36_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med13_rose": {
+   "v3": "med36_rose",
+   "ok": true,
+   "note": ""
+  },
+  "med13_sec": {
+   "v3": "med36_sec",
+   "ok": true,
+   "note": ""
+  },
+  "med13_violet": {
+   "v3": "med36_violet",
+   "ok": true,
+   "note": ""
+  },
+  "med15_pri": {
+   "v3": "med36_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med15_rose": {
+   "v3": "med36_rose",
+   "ok": true,
+   "note": ""
+  },
+  "med16_navy": {
+   "v3": "med36_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med16_paper": {
+   "v3": "med36_gold",
+   "ok": true,
+   "note": ""
+  },
+  "med16_pri": {
+   "v3": "med36_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med17_green": {
+   "v3": "med36_sec",
+   "ok": true,
+   "note": ""
+  },
+  "med17_navy": {
+   "v3": "med36_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med17_pri": {
+   "v3": "med36_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med17_rose": {
+   "v3": "med36_rose",
+   "ok": true,
+   "note": ""
+  },
+  "med17_sec": {
+   "v3": "med36_sec",
+   "ok": true,
+   "note": ""
+  },
+  "med17_violet": {
+   "v3": "med36_violet",
+   "ok": true,
+   "note": ""
+  },
+  "med18_navy": {
+   "v3": "med48_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med20_navy": {
+   "v3": "med48_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med20_paper": {
+   "v3": "med48_gold",
+   "ok": true,
+   "note": ""
+  },
+  "med20_pri": {
+   "v3": "med48_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med22_navy": {
+   "v3": "med48_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med22_navy_p": {
+   "v3": "med48_navy",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med22_pri": {
+   "v3": "med48_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med22_pri_p": {
+   "v3": "med48_pri",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med22_violet": {
+   "v3": "med48_violet",
+   "ok": true,
+   "note": ""
+  },
+  "med24_dis": {
+   "v3": "med60_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med24_gold": {
+   "v3": "med60_gold",
+   "ok": true,
+   "note": ""
+  },
+  "med24_navy": {
+   "v3": "med60_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med24_navy_p": {
+   "v3": "med60_navy",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med24_paper": {
+   "v3": "med60_gold",
+   "ok": true,
+   "note": ""
+  },
+  "med24_pri": {
+   "v3": "med60_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med25_pri": {
+   "v3": "med60_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med28_dis": {
+   "v3": "med60_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med28_navy": {
+   "v3": "med60_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med28_pri": {
+   "v3": "med60_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med28_pri_p": {
+   "v3": "med60_pri",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med28_rose": {
+   "v3": "med60_rose",
+   "ok": true,
+   "note": ""
+  },
+  "med28_rose_p": {
+   "v3": "med60_rose",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med28_sec": {
+   "v3": "med60_sec",
+   "ok": true,
+   "note": ""
+  },
+  "med28_sec_p": {
+   "v3": "med60_sec",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med28_violet": {
+   "v3": "med60_violet",
+   "ok": true,
+   "note": ""
+  },
+  "med28_violet_p": {
+   "v3": "med60_violet",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med30_dis": {
+   "v3": "med60_navy",
+   "ok": true,
+   "note": ""
+  },
+  "med30_pri": {
+   "v3": "med60_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med30_pri_p": {
+   "v3": "med60_pri",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med30_rose": {
+   "v3": "med60_rose",
+   "ok": true,
+   "note": ""
+  },
+  "med30_rose_p": {
+   "v3": "med60_rose",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med30_sec": {
+   "v3": "med60_sec",
+   "ok": true,
+   "note": ""
+  },
+  "med30_sec_p": {
+   "v3": "med60_sec",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med30_violet": {
+   "v3": "med60_violet",
+   "ok": true,
+   "note": ""
+  },
+  "med30_violet_p": {
+   "v3": "med60_violet",
+   "ok": true,
+   "note": "按下＝runtime 縮 0.94"
+  },
+  "med34_pri": {
+   "v3": "med60_pri",
+   "ok": true,
+   "note": ""
+  },
+  "med34_sec": {
+   "v3": "med60_sec",
+   "ok": true,
+   "note": ""
+  },
+  "med40_gold": {
+   "v3": "med60_gold",
+   "ok": true,
+   "note": ""
+  },
+  "med9_rose": {
+   "v3": "med36_rose",
+   "ok": true,
+   "note": ""
+  },
+  "med9_sec": {
+   "v3": "med36_sec",
+   "ok": true,
+   "note": ""
+  },
+  "mood_badge_happy": {
+   "v3": "mood_badge_happy",
+   "ok": true,
+   "note": ""
+  },
+  "mood_badge_hungry": {
+   "v3": "mood_badge_hungry",
+   "ok": true,
+   "note": ""
+  },
+  "mood_badge_sick": {
+   "v3": "mood_badge_sick",
+   "ok": true,
+   "note": ""
+  },
+  "mood_badge_sleep": {
+   "v3": "mood_badge_sleep",
+   "ok": true,
+   "note": ""
+  },
+  "mood_badge_sleepy": {
+   "v3": "mood_badge_sleepy",
+   "ok": true,
+   "note": ""
+  },
+  "panel_inset": {
+   "v3": "panel_inset",
+   "ok": true,
+   "note": ""
+  },
+  "panel_inset_sel": {
+   "v3": "panel_inset_sel",
+   "ok": true,
+   "note": ""
+  },
+  "panel_navy": {
+   "v3": "panel",
+   "ok": true,
+   "note": ""
+  },
+  "panel_navy_flat": {
+   "v3": "panel_flat",
+   "ok": true,
+   "note": ""
+  },
+  "panel_paper": {
+   "v3": "panel_paper",
+   "ok": true,
+   "note": ""
+  },
+  "pill_dis": {
+   "v3": "pill_dis",
+   "ok": true,
+   "note": ""
+  },
+  "pill_fast_locked": {
+   "v3": "pill_fast_locked",
+   "ok": true,
+   "note": ""
+  },
+  "pill_fast_on": {
+   "v3": "pill_fast_on",
+   "ok": true,
+   "note": ""
+  },
+  "pill_navy": {
+   "v3": "pill_navy",
+   "ok": true,
+   "note": ""
+  },
+  "pill_pri": {
+   "v3": "pill_pri",
+   "ok": true,
+   "note": ""
+  },
+  "pill_rose": {
+   "v3": "pill_rose",
+   "ok": true,
+   "note": ""
+  },
+  "pill_sec": {
+   "v3": "pill_sec",
+   "ok": true,
+   "note": ""
+  },
+  "pill_violet": {
+   "v3": "pill_violet",
+   "ok": true,
+   "note": ""
+  },
+  "plaque": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "plaque_pri": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "plaque_tail_l": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "plaque_tail_r": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "portrait_bg_happy": {
+   "v3": "portrait_bg_happy",
+   "ok": true,
+   "note": ""
+  },
+  "portrait_bg_hungry": {
+   "v3": "portrait_bg_hungry",
+   "ok": true,
+   "note": ""
+  },
+  "portrait_bg_normal": {
+   "v3": "portrait_bg_normal",
+   "ok": true,
+   "note": ""
+  },
+  "portrait_bg_sick": {
+   "v3": "portrait_bg_sick",
+   "ok": true,
+   "note": ""
+  },
+  "portrait_bg_sleep": {
+   "v3": "portrait_bg_sleep",
+   "ok": true,
+   "note": ""
+  },
+  "portrait_bg_sleepy": {
+   "v3": "portrait_bg_sleepy",
+   "ok": true,
+   "note": ""
+  },
+  "portrait_frame": {
+   "v3": "portrait_frame",
+   "ok": true,
+   "note": ""
+  },
+  "portrait_mask": {
+   "v3": "portrait_mask",
+   "ok": true,
+   "note": ""
+  },
+  "red_dot": {
+   "v3": "red_dot",
+   "ok": true,
+   "note": ""
+  },
+  "red_dot_num": {
+   "v3": "red_dot_num",
+   "ok": true,
+   "note": ""
+  },
+  "ribbon_navy": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "ribbon_pri": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "ribbon_rose": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "ribbon_sec": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "ribbon_violet": {
+   "v3": "title_rule",
+   "ok": true,
+   "note": "v3 唔用絲帶／牌匾，改金線＋菱形"
+  },
+  "rivet": {
+   "v3": "diamond",
+   "ok": true,
+   "note": ""
+  },
+  "room_dot_cur": {
+   "v3": "room_dot_cur",
+   "ok": true,
+   "note": ""
+  },
+  "room_dot_locked": {
+   "v3": "room_dot_locked",
+   "ok": true,
+   "note": ""
+  },
+  "room_dot_open": {
+   "v3": "room_dot_open",
+   "ok": true,
+   "note": ""
+  },
+  "scroll_fade_bot": {
+   "v3": "scroll_fade_bot",
+   "ok": true,
+   "note": ""
+  },
+  "scroll_fade_top": {
+   "v3": "scroll_fade_top",
+   "ok": true,
+   "note": ""
+  },
+  "scroll_thumb": {
+   "v3": "scroll_thumb",
+   "ok": true,
+   "note": ""
+  },
+  "scroll_track": {
+   "v3": "scroll_track",
+   "ok": true,
+   "note": ""
+  },
+  "seg_bg": {
+   "v3": "seg_bg",
+   "ok": true,
+   "note": ""
+  },
+  "seg_locked": {
+   "v3": "seg_locked",
+   "ok": true,
+   "note": ""
+  },
+  "seg_on": {
+   "v3": "seg_on",
+   "ok": true,
+   "note": ""
+  },
+  "sheet_handle": {
+   "v3": "sheet_handle",
+   "ok": true,
+   "note": ""
+  },
+  "slider_knob": {
+   "v3": "slider_knob",
+   "ok": true,
+   "note": ""
+  },
+  "slider_track": {
+   "v3": "slider_track",
+   "ok": true,
+   "note": ""
+  },
+  "sparkle_3": {
+   "v3": "flare_12",
+   "ok": true,
+   "note": ""
+  },
+  "sparkle_5": {
+   "v3": "flare_20",
+   "ok": true,
+   "note": ""
+  },
+  "sparkle_7": {
+   "v3": "flare_34",
+   "ok": true,
+   "note": ""
+  },
+  "stage_tag": {
+   "v3": "stage_tag",
+   "ok": true,
+   "note": ""
+  },
+  "stamp_done": {
+   "v3": "stamp_done",
+   "ok": true,
+   "note": ""
+  },
+  "star_off": {
+   "v3": "star_off",
+   "ok": true,
+   "note": ""
+  },
+  "star_on": {
+   "v3": "star_on",
+   "ok": true,
+   "note": ""
+  },
+  "subtab": {
+   "v3": "subtab",
+   "ok": true,
+   "note": ""
+  },
+  "subtab_on": {
+   "v3": "subtab_on",
+   "ok": true,
+   "note": ""
+  },
+  "swatch_frame": {
+   "v3": "swatch_frame",
+   "ok": true,
+   "note": ""
+  },
+  "timeline_dot": {
+   "v3": "timeline_dot",
+   "ok": true,
+   "note": ""
+  },
+  "timeline_line": {
+   "v3": "timeline_line",
+   "ok": true,
+   "note": ""
+  },
+  "toast": {
+   "v3": "toast",
+   "ok": true,
+   "note": ""
+  },
+  "toggle_knob_off": {
+   "v3": "toggle_knob",
+   "ok": true,
+   "note": ""
+  },
+  "toggle_knob_on": {
+   "v3": "toggle_knob",
+   "ok": true,
+   "note": ""
+  },
+  "toggle_track_off": {
+   "v3": "toggle_track_off",
+   "ok": true,
+   "note": ""
+  },
+  "toggle_track_on": {
+   "v3": "toggle_track_on",
+   "ok": true,
+   "note": ""
+  },
+  "tree_joint": {
+   "v3": "tree_joint",
+   "ok": true,
+   "note": ""
+  },
+  "tree_line_h": {
+   "v3": "tree_line_h",
+   "ok": true,
+   "note": ""
+  },
+  "tree_line_v": {
+   "v3": "tree_line_v",
+   "ok": true,
+   "note": ""
+  },
+  "tree_node": {
+   "v3": "tree_node",
+   "ok": true,
+   "note": ""
+  },
+  "tree_node_gold": {
+   "v3": "tree_node_gold",
+   "ok": true,
+   "note": ""
+  },
+  "tree_node_sel": {
+   "v3": "tree_node_sel",
+   "ok": true,
+   "note": ""
+  }
+ }
+}

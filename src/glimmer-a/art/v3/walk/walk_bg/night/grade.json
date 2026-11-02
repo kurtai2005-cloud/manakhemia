@@ -1,0 +1,175 @@
+{
+ "variant": "night",
+ "name": "散步路・夜晚（V3-A）",
+ "hours": [
+  19,
+  6
+ ],
+ "ambientTint": "#a8b0e8",
+ "petTint": "#fff0e4",
+ "saturation": 0.98,
+ "contrast": 1.08,
+ "bloom": {
+  "threshold": 0.62,
+  "intensity": 0.8
+ },
+ "fog": {
+  "color": "#283060",
+  "density": 0.05
+ },
+ "vignette": 0.4,
+ "rim": {
+  "color": "#c0d0ff",
+  "intensity": 0.45,
+  "dir": [
+   -0.7,
+   -0.7
+  ]
+ },
+ "splitTone": {
+  "shadow": "#202868",
+  "highlight": "#ffd890",
+  "amount": 0.12
+ },
+ "v3": {
+  "note": "6b walk_bg V3：@3x 層 300×360（＝原 walk_bg@3x 尺寸，可直接頂替喺同一個 300×360 框）；1x 層 100×120 係 fallback。原 walk_bg.png／@3x 唔郁。",
+  "layerSize3x": [
+   300,
+   360
+  ],
+  "layerSize1x": [
+   100,
+   120
+  ],
+  "stack": "../../walk6b_v3.json#stack",
+  "sun": {
+   "pos": [
+    31,
+    7
+   ],
+   "kind": "moon"
+  },
+  "flares": [
+   {
+    "pos": [
+     31,
+     7
+    ],
+    "size": "m",
+    "tint": "#d8e4ff",
+    "intensity": 0.3,
+    "fps": 2
+   },
+   {
+    "pos": [
+     88,
+     84
+    ],
+    "size": "s",
+    "tint": "#ffd890",
+    "intensity": 0.5,
+    "fps": 3
+   }
+  ],
+  "emitters": [
+   {
+    "type": "firefly",
+    "sprite": "scenes/hd2d_v3/fx/particles_v3@3x.json#firefly_01..06",
+    "glow": "glow_12",
+    "tint": "#d8ff90",
+    "rect": [
+     4,
+     40,
+     96,
+     112
+    ],
+    "max": 10,
+    "rate": 0.6,
+    "life": [
+     3,
+     6
+    ],
+    "vy": [
+     -1,
+     1
+    ],
+    "sway": 4,
+    "add": 0.9,
+    "note": "夜晚螢火蟲（草地；避開路中）"
+   }
+  ],
+  "lantern": {
+   "pos": [
+    88,
+    86
+   ],
+   "flicker": {
+    "type": "breathe",
+    "hz": 0.3,
+    "amp": 0.08
+   }
+  },
+  "stoneGlow": {
+   "sprite": "stone_glow@3x.png",
+   "stones": [
+    [
+     54,
+     44
+    ],
+    [
+     56,
+     54
+    ],
+    [
+     57,
+     66
+    ],
+    [
+     55,
+     80
+    ],
+    [
+     50,
+     96
+    ],
+    [
+     42,
+     112
+    ]
+   ],
+   "tint": "#c8d8ff",
+   "blend": "lighter",
+   "alpha": 0.9,
+   "pulse": {
+    "hz": 0.6,
+    "amp": 0.25
+   },
+   "note": "而家行到嗰格（第 n 粒踏腳石）底下發光；已行過嘅格 alpha .3"
+  },
+  "petLight": {
+   "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#pet_pool",
+   "anchor": "foot",
+   "size3x": [
+    150,
+    60
+   ],
+   "tint": "#ffe2a8",
+   "intensity": 0.7,
+   "multiplyBy": "petGlow",
+   "walkScale": 1.0,
+   "formLight": "walk6b_v3.json#pets.<pid>.petglow（逐形態光暈 anchor；walk clip 用 idle_01 anchor＋bob dy）",
+   "rule": "散步＝醒（petGlow 1）；layout_hd2d_v3.json#petGlow：瞓覺／sleepClip／入夢＝0。場景光（日、月、燈籠）唔受影響。"
+  },
+  "petPop": {
+   "contactShadow": {
+    "alpha": 0.4,
+    "rx": 0.3,
+    "ry": 0.07
+   },
+   "rim": {
+    "color": "#c0d0ff",
+    "intensity": 0.45
+   }
+  }
+ }
+}

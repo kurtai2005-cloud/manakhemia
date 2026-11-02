@@ -1,0 +1,931 @@
+{
+ "version": 3,
+ "batch": "第 6 批 6b 散步 V3-A",
+ "source": {
+  "dir": "art/breakthrough/6b",
+  "commit": "a1a6e9a2",
+  "note": "原 1x／@3x key、尺寸、walk6b.json 冇郁；V3 喺 v3/"
+ },
+ "keys": {
+  "6b:walk_bg_v3": {
+   "dir": "walk_bg/<variant>",
+   "variants": {
+    "day": {
+     "zh": "日間",
+     "hours": [
+      6,
+      17
+     ],
+     "grade": "walk_bg/day/grade.json"
+    },
+    "dusk": {
+     "zh": "黃昏",
+     "hours": [
+      17,
+      19
+     ],
+     "grade": "walk_bg/dusk/grade.json"
+    },
+    "night": {
+     "zh": "夜晚",
+     "hours": [
+      19,
+      6
+     ],
+     "grade": "walk_bg/night/grade.json"
+    }
+   },
+   "size3x": [
+    300,
+    360
+   ],
+   "size1x": [
+    100,
+    120
+   ],
+   "replaces": "6b:walk_bg（同尺寸；揀 variant 跟現實時間）",
+   "stoneGlow": "walk_bg/stone_glow@3x.png"
+  }
+ },
+ "deco": {
+  "6b:deco_pebble": {
+   "v3": "deco/deco_pebble_v3@3x.png",
+   "glow": "deco/deco_pebble_glow@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "glowSize3x": [
+    72,
+    72
+   ],
+   "glowTint": "#dfe1ec",
+   "note": "rim（左上光）已烘入 sprite（alpha 0/255）；撿到時 glow lighter＋sparkle"
+  },
+  "6b:deco_maple_leaf": {
+   "v3": "deco/deco_maple_leaf_v3@3x.png",
+   "glow": "deco/deco_maple_leaf_glow@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "glowSize3x": [
+    72,
+    72
+   ],
+   "glowTint": "#dd9b8c",
+   "note": "rim（左上光）已烘入 sprite（alpha 0/255）；撿到時 glow lighter＋sparkle"
+  },
+  "6b:deco_acorn": {
+   "v3": "deco/deco_acorn_v3@3x.png",
+   "glow": "deco/deco_acorn_glow@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "glowSize3x": [
+    72,
+    72
+   ],
+   "glowTint": "#c1a48f",
+   "note": "rim（左上光）已烘入 sprite（alpha 0/255）；撿到時 glow lighter＋sparkle"
+  },
+  "6b:deco_feather": {
+   "v3": "deco/deco_feather_v3@3x.png",
+   "glow": "deco/deco_feather_glow@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "glowSize3x": [
+    72,
+    72
+   ],
+   "glowTint": "#f1e5ce",
+   "note": "rim（左上光）已烘入 sprite（alpha 0/255）；撿到時 glow lighter＋sparkle"
+  },
+  "6b:deco_snail_shell": {
+   "v3": "deco/deco_snail_shell_v3@3x.png",
+   "glow": "deco/deco_snail_shell_glow@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "glowSize3x": [
+    72,
+    72
+   ],
+   "glowTint": "#f1b8cc",
+   "note": "rim（左上光）已烘入 sprite（alpha 0/255）；撿到時 glow lighter＋sparkle"
+  },
+  "6b:deco_clover4": {
+   "v3": "deco/deco_clover4_v3@3x.png",
+   "glow": "deco/deco_clover4_glow@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "glowSize3x": [
+    72,
+    72
+   ],
+   "glowTint": "#bce5ac",
+   "note": "rim（左上光）已烘入 sprite（alpha 0/255）；撿到時 glow lighter＋sparkle"
+  },
+  "6b:deco_button": {
+   "v3": "deco/deco_button_v3@3x.png",
+   "glow": "deco/deco_button_glow@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "glowSize3x": [
+    72,
+    72
+   ],
+   "glowTint": "#e59bb1",
+   "note": "rim（左上光）已烘入 sprite（alpha 0/255）；撿到時 glow lighter＋sparkle"
+  },
+  "6b:deco_ribbon": {
+   "v3": "deco/deco_ribbon_v3@3x.png",
+   "glow": "deco/deco_ribbon_glow@3x.png",
+   "size3x": [
+    48,
+    48
+   ],
+   "glowSize3x": [
+    72,
+    72
+   ],
+   "glowTint": "#f1b8cc",
+   "note": "rim（左上光）已烘入 sprite（alpha 0/255）；撿到時 glow lighter＋sparkle"
+  }
+ },
+ "decoShared": {
+  "ao": "deco/deco_ao@3x.png",
+  "sparkle": {
+   "file": "deco/sparkle@3x.png",
+   "frames": 6,
+   "frame": [
+    24,
+    24
+   ],
+   "fps": 12
+  }
+ },
+ "stack": [
+  {
+   "layer": "sky",
+   "file": "x3/sky@3x.png",
+   "fallback1x": "sky.png",
+   "parallax": 0.1
+  },
+  {
+   "layer": "far",
+   "file": "x3/far@3x.png",
+   "fallback1x": "far.png",
+   "parallax": 0.3,
+   "note": "DoF 已烘"
+  },
+  {
+   "layer": "haze_far",
+   "file": "x3/haze_far@3x.png",
+   "parallax": 0.3
+  },
+  {
+   "layer": "mid",
+   "file": "x3/mid@3x.png",
+   "fallback1x": "mid.png",
+   "parallax": 1.0,
+   "note": "路、石、木牌（夜晚含燈籠）"
+  },
+  {
+   "layer": "stone_glow",
+   "realtime": true,
+   "blend": "lighter",
+   "note": "grade.v3.stoneGlow"
+  },
+  {
+   "layer": "mist",
+   "file": "x3/mist@3x.png",
+   "parallax": 1.0,
+   "drift3x": 2
+  },
+  {
+   "layer": "pet",
+   "realtime": true,
+   "note": "walk clip × petTint × ambientTint＋rim；contact shadow；petLight（× petGlow）"
+  },
+  {
+   "layer": "deco",
+   "realtime": true,
+   "note": "撿到嘅 deco：deco/<n>_v3@3x＋deco_ao＋glow（lighter）＋sparkle"
+  },
+  {
+   "layer": "fore",
+   "file": "x3/fore@3x.png",
+   "fallback1x": "fore.png",
+   "parallax": 1.5,
+   "note": "大樹＋前景草，DoF 已烘"
+  },
+  {
+   "layer": "lightmap",
+   "file": "x3/lightmap@3x.png",
+   "fallback1x": "lightmap.png",
+   "blend": "multiply"
+  },
+  {
+   "layer": "light_add",
+   "file": "x3/light_add@3x.png",
+   "fallback1x": "light_add.png",
+   "blend": "lighter",
+   "note": "god rays＋日月暈"
+  },
+  {
+   "layer": "bloom",
+   "file": "x3/bloom@3x.png",
+   "blend": "lighter",
+   "alpha": "grade.bloom.intensity"
+  },
+  {
+   "layer": "emissive_flicker",
+   "file": "x3/emissive@3x.png",
+   "blend": "lighter",
+   "realtime": true
+  },
+  {
+   "layer": "flares",
+   "realtime": true,
+   "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#flare_*"
+  },
+  {
+   "layer": "particles",
+   "realtime": true,
+   "note": "grade.v3.emitters"
+  },
+  {
+   "layer": "fog",
+   "realtime": true,
+   "note": "fillRect grade.fog"
+  },
+  {
+   "layer": "vignette",
+   "file": "x3/vignette@3x.png",
+   "note": "300×360 框內 vignette"
+  }
+ ],
+ "pets": {
+  "sprout": {
+   "petglow": null,
+   "formLightNote": "呢個形態冇自身光源（petglow_v3 index notLight）→ 只用通用 pet_pool 光池",
+   "walkClip": "per_pet/sprout/walk@3x.png",
+   "frameSize": [
+    32,
+    32
+   ],
+   "pivot": [
+    16,
+    29
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "radiant": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_radiant.json",
+   "walkClip": "per_pet/radiant/walk@3x.png",
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "soft": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_soft.json",
+   "walkClip": "per_pet/soft/walk@3x.png",
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "lumi": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_lumi.json",
+   "walkClip": "per_pet/lumi/walk@3x.png",
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_dot": {
+   "petglow": null,
+   "formLightNote": "呢個形態冇自身光源（petglow_v3 index notLight）→ 只用通用 pet_pool 光池",
+   "walkClip": "per_pet/evo_dot/walk@3x.png",
+   "frameSize": [
+    28,
+    28
+   ],
+   "pivot": [
+    14,
+    25
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_sprout": {
+   "petglow": null,
+   "formLightNote": "呢個形態冇自身光源（petglow_v3 index notLight）→ 只用通用 pet_pool 光池",
+   "walkClip": "per_pet/evo_sprout/walk@3x.png",
+   "frameSize": [
+    32,
+    32
+   ],
+   "pivot": [
+    16,
+    29
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_hop": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_hop.json",
+   "walkClip": "per_pet/evo_hop/walk@3x.png",
+   "frameSize": [
+    38,
+    38
+   ],
+   "pivot": [
+    19,
+    35
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_tide": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_tide.json",
+   "walkClip": "per_pet/evo_guard_tide/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_moon": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_moon.json",
+   "walkClip": "per_pet/evo_guard_moon/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_shroom": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_shroom.json",
+   "walkClip": "per_pet/evo_guard_shroom/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_crystal": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_crystal.json",
+   "walkClip": "per_pet/evo_guard_crystal/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_ember": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_ember.json",
+   "walkClip": "per_pet/evo_guard_ember/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_radiant": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_radiant.json",
+   "walkClip": "per_pet/evo_guard_radiant/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_soft": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_soft.json",
+   "walkClip": "per_pet/evo_guard_soft/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_dust": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_dust.json",
+   "walkClip": "per_pet/evo_guard_dust/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_guard_lumi": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_guard_lumi.json",
+   "walkClip": "per_pet/evo_guard_lumi/walk@3x.png",
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_tide": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_tide.json",
+   "walkClip": "per_pet/evo_still_tide/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_moon": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_moon.json",
+   "walkClip": "per_pet/evo_still_moon/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_shroom": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_shroom.json",
+   "walkClip": "per_pet/evo_still_shroom/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_crystal": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_crystal.json",
+   "walkClip": "per_pet/evo_still_crystal/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_ember": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_ember.json",
+   "walkClip": "per_pet/evo_still_ember/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_radiant": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_radiant.json",
+   "walkClip": "per_pet/evo_still_radiant/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_soft": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_soft.json",
+   "walkClip": "per_pet/evo_still_soft/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_dust": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_dust.json",
+   "walkClip": "per_pet/evo_still_dust/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "evo_still_lumi": {
+   "petglow": "sprites/tuanrong/petglow_v3/evo_still_lumi.json",
+   "walkClip": "per_pet/evo_still_lumi/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "A1": {
+   "petglow": "sprites/series2/petglow_v3/A1.json",
+   "walkClip": "per_pet/A1/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "A2": {
+   "petglow": "sprites/series2/petglow_v3/A2.json",
+   "walkClip": "per_pet/A2/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "A3": {
+   "petglow": "sprites/series2/petglow_v3/A3.json",
+   "walkClip": "per_pet/A3/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "B1": {
+   "petglow": "sprites/series2/petglow_v3/B1.json",
+   "walkClip": "per_pet/B1/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "B2": {
+   "petglow": "sprites/series2/petglow_v3/B2.json",
+   "walkClip": "per_pet/B2/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "B3": {
+   "petglow": "sprites/series2/petglow_v3/B3.json",
+   "walkClip": "per_pet/B3/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "C1": {
+   "petglow": "sprites/series2/petglow_v3/C1.json",
+   "walkClip": "per_pet/C1/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "C2": {
+   "petglow": "sprites/series2/petglow_v3/C2.json",
+   "walkClip": "per_pet/C2/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "C3": {
+   "petglow": "sprites/series2/petglow_v3/C3.json",
+   "walkClip": "per_pet/C3/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "D1": {
+   "petglow": "sprites/series2/petglow_v3/D1.json",
+   "walkClip": "per_pet/D1/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "D2": {
+   "petglow": "sprites/series2/petglow_v3/D2.json",
+   "walkClip": "per_pet/D2/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "D3": {
+   "petglow": "sprites/series2/petglow_v3/D3.json",
+   "walkClip": "per_pet/D3/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "E1": {
+   "petglow": "sprites/series2/petglow_v3/E1.json",
+   "walkClip": "per_pet/E1/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "E2": {
+   "petglow": "sprites/series2/petglow_v3/E2.json",
+   "walkClip": "per_pet/E2/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "E3": {
+   "petglow": "sprites/series2/petglow_v3/E3.json",
+   "walkClip": "per_pet/E3/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "F1": {
+   "petglow": "sprites/series2/petglow_v3/F1.json",
+   "walkClip": "per_pet/F1/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "F2": {
+   "petglow": "sprites/series2/petglow_v3/F2.json",
+   "walkClip": "per_pet/F2/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "F3": {
+   "petglow": "sprites/series2/petglow_v3/F3.json",
+   "walkClip": "per_pet/F3/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "G1": {
+   "petglow": "sprites/series2/petglow_v3/G1.json",
+   "walkClip": "per_pet/G1/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "G2": {
+   "petglow": "sprites/series2/petglow_v3/G2.json",
+   "walkClip": "per_pet/G2/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "G3": {
+   "petglow": "sprites/series2/petglow_v3/G3.json",
+   "walkClip": "per_pet/G3/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "H1": {
+   "petglow": "sprites/series2/petglow_v3/H1.json",
+   "walkClip": "per_pet/H1/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "H2": {
+   "petglow": "sprites/series2/petglow_v3/H2.json",
+   "walkClip": "per_pet/H2/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  },
+  "H3": {
+   "petglow": "sprites/series2/petglow_v3/H3.json",
+   "walkClip": "per_pet/H3/walk@3x.png",
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "note": "walk clip 本身唔郁；光暈用 petglow idle_01 anchor＋bob（feet 0/−1；hop 0/−1/−2/−2/−1/0）"
+  }
+ },
+ "petGlow": {
+  "source": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow",
+  "walk": "awake＝1",
+  "states": {
+   "awake": 1.0,
+   "sleepy": 0.6,
+   "sleep": 0.0,
+   "sleepClip": 0.0,
+   "dreamEnter": 0.0,
+   "dreaming": 0.0
+  }
+ }
+}

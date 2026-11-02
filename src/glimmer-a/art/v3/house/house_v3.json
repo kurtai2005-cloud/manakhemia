@@ -1,0 +1,225 @@
+{
+ "version": "house-v3-1.0",
+ "by": "遊美 2026-11-02（第 4 批）",
+ "concept": "ui/style_ref/hd2d_v3/house_v3A_3x.png（V3-A）",
+ "note": "屋仔 4b room1＋5a room2–4 全部房（日／夜）轉 V3-A。幾何、slot、行走區、家具 pivot 全部同 4b house.json；只換光影。",
+ "rooms": {
+  "room1": {
+   "zh": "屋仔（4b）",
+   "variants": {
+    "day": "rooms/room1/day",
+    "night": "rooms/room1/night",
+    "src": "sprites/series2_house/room"
+   }
+  },
+  "room2": {
+   "zh": "森林閣樓（5a）",
+   "variants": {
+    "day": "rooms/room2/day",
+    "night": "rooms/room2/night",
+    "src": "sprites/series2_long/5a/rooms/room2"
+   }
+  },
+  "room3": {
+   "zh": "星夜書房（5a）",
+   "variants": {
+    "day": "rooms/room3/day",
+    "night": "rooms/room3/night",
+    "src": "sprites/series2_long/5a/rooms/room3"
+   }
+  },
+  "room4": {
+   "zh": "海風小屋（5a）",
+   "variants": {
+    "day": "rooms/room4/day",
+    "night": "rooms/room4/night",
+    "src": "sprites/series2_long/5a/rooms/room4"
+   }
+  }
+ },
+ "layers3x": [
+  "sky",
+  "far",
+  "mid",
+  "fore",
+  "lightmap",
+  "light_add",
+  "floor_reflect",
+  "bloom",
+  "emissive",
+  "vignette"
+ ],
+ "layers1x": [
+  "sky",
+  "far",
+  "mid",
+  "fore",
+  "lightmap",
+  "light_add",
+  "emissive",
+  "emissive_blur",
+  "vignette",
+  "lut",
+  "grade.json"
+ ],
+ "stack": [
+  {
+   "layer": "sky",
+   "file": "x3/sky@3x.png",
+   "fallback1x": "sky.png",
+   "blend": "source-over",
+   "parallax": 0.5,
+   "baked": true,
+   "note": "窗外景"
+  },
+  {
+   "layer": "far",
+   "file": "x3/far@3x.png",
+   "fallback1x": "far.png",
+   "blend": "source-over",
+   "parallax": 1.0,
+   "baked": true
+  },
+  {
+   "layer": "wall_items",
+   "realtime": true,
+   "note": "window／wall slot 家具 x3（× ambientTint）"
+  },
+  {
+   "layer": "mid",
+   "file": "x3/mid@3x.png",
+   "fallback1x": "mid.png",
+   "blend": "source-over",
+   "parallax": 1.0,
+   "baked": true
+  },
+  {
+   "layer": "floor_reflect",
+   "file": "x3/floor_reflect@3x.png",
+   "blend": "source-over",
+   "parallax": 1.0,
+   "baked": true,
+   "note": "地板反射（牆＋窗）"
+  },
+  {
+   "layer": "reflections",
+   "realtime": true,
+   "note": "ysort 家具／寵物／紀念品倒影（grade.v3.reflection.realtime）"
+  },
+  {
+   "layer": "rug",
+   "realtime": true,
+   "note": "rug slot（地氈唔反光，蓋住倒影）"
+  },
+  {
+   "layer": "ao",
+   "realtime": true,
+   "note": "furniture_v3 *_ao@3x ＋ 寵物 contact shadow ＋ 紀念品 sv_ao"
+  },
+  {
+   "layer": "lamp_pool",
+   "realtime": true,
+   "blend": "lighter",
+   "note": "燈地面光池（× lamps.scale）"
+  },
+  {
+   "layer": "ysort",
+   "realtime": true,
+   "note": "燈、床 back、檯、寵物（sprite × petTint × ambientTint＋rim；寵物光池 × petGlow 喺寵物前畫）、紀念品；床 front sortY＝床 y＋0.1"
+  },
+  {
+   "layer": "fore",
+   "file": "x3/fore@3x.png",
+   "fallback1x": "fore.png",
+   "blend": "source-over",
+   "parallax": 1.3,
+   "baked": true
+  },
+  {
+   "layer": "lightmap",
+   "file": "x3/lightmap@3x.png",
+   "fallback1x": "lightmap.png",
+   "blend": "multiply",
+   "baked": true,
+   "note": "燈 lift（*_lift@3x）先 lighter 疊落 lightmap 再 multiply"
+  },
+  {
+   "layer": "light_add",
+   "file": "x3/light_add@3x.png",
+   "fallback1x": "light_add.png",
+   "blend": "lighter",
+   "baked": true,
+   "note": "窗邊反光、地板受光、窗台高光（1x fallback 已含淨窗光）"
+  },
+  {
+   "layer": "window_light",
+   "realtime": true,
+   "file": "../../../light/<item>_{beam,patch}@3x.png",
+   "blend": "lighter",
+   "note": "grade.v3.windowBeam（tint × intensity）；窗 slot 換家具就換張"
+  },
+  {
+   "layer": "bloom",
+   "file": "x3/bloom@3x.png",
+   "fallback1x": "emissive_blur.png",
+   "blend": "lighter",
+   "baked": true,
+   "alpha": "grade.bloom.intensity"
+  },
+  {
+   "layer": "lamp_halo",
+   "realtime": true,
+   "blend": "lighter",
+   "note": "燈光暈＋星芒＋燈 emissive bloom；紀念品光"
+  },
+  {
+   "layer": "pet_glow",
+   "realtime": true,
+   "blend": "lighter",
+   "note": "petglow_v3 逐幀 halo／core／粒子 × petGlow × houseScale"
+  },
+  {
+   "layer": "flares",
+   "realtime": true,
+   "blend": "lighter",
+   "sprite": "scenes/hd2d_v3/fx/fx_glow_v3@3x.json#flare_*",
+   "note": "grade.v3.flares"
+  },
+  {
+   "layer": "particles",
+   "realtime": true,
+   "sprite": "scenes/hd2d_v3/fx/particles_v3@3x.json＋fx_glow_v3@3x.json",
+   "note": "grade.v3.emitters（浮塵 polygon＝窗光柱）"
+  },
+  {
+   "layer": "fog",
+   "realtime": true,
+   "blend": "source-over",
+   "note": "fillRect grade.fog"
+  },
+  {
+   "layer": "vignette",
+   "file": "x3/vignette@3x.png",
+   "fallback1x": "vignette.png",
+   "blend": "source-over",
+   "screen": true,
+   "baked": true
+  }
+ ],
+ "furniture": "furniture_v3.json",
+ "souvenirs": "souvenir_v3.json",
+ "fx": "scenes/hd2d_v3/fx（flare／glow／dust／pet_pool 共用花園 v3）",
+ "petGlow": {
+  "source": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow",
+  "house": {
+   "awake": 1.0,
+   "sleepy": 0.6,
+   "sleep_bed": 0.0,
+   "sleep_together": 0.0,
+   "sit": 1.0,
+   "prank": 1.0
+  },
+  "rule": "Kurt：「除左佢訓就會關」— 寵物自己嘅光（光池、halo、core、粒子、emissive）瞓覺即熄（600ms easeInQuad），醒返 400ms easeOutQuad＋pulse；燈／窗光／紀念品光唔熄"
+ },
+ "crossfade": "同 4b：19:00／06:00 日夜 crossfade 2–4 秒（所有 x3 層＋grade 數值一齊 lerp）"
+}

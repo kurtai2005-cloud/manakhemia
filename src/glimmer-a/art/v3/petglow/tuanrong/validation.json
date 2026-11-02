@@ -1,0 +1,72 @@
+{
+ "ok": true,
+ "passed": 13,
+ "total": 13,
+ "checks": [
+  {
+   "check": "light_forms_cover_emissive_forms",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "form_files_exist",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "every_anim_frame_has_anchor_entry",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "same_refs_resolve",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "anchor_ranges_ok",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "anchors_match_emissive_mask",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "clipGlow_sleep_off_rule",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "form_sheets_alpha_and_bounds",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "garden_petLight_formLight_and_H2_boost",
+   "ok": true,
+   "info": "([], 1.0)"
+  },
+  {
+   "check": "weather_files_sizes",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "weather_grade_keys_stack_resolve",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "previews_and_docs_exist",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "no_backups_pycache",
+   "ok": true,
+   "info": "[]"
+  }
+ ]
+}

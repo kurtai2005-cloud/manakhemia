@@ -1,0 +1,4954 @@
+{
+ "version": 2,
+ "note": "頭像裁位（B ×2 近鏡，放喺 A 頂旗 52×52 框）。座標＝sprite px，已含 PAD 8（合成 canvas＝frame＋16）。rect＝[x0,y0,n]（無飾品）；acc.<item>＝{shift,pop,cut,vis,h,badge}：有嗰件飾品時 y0−＝shift，框頂外加畫 pop 行（×2）；badge＝飾品大部分出咗框 → 頭像右上角加飾品細章",
+ "params": {
+  "n": 22,
+  "scale": 2,
+  "eyefrac": 0.5,
+  "frame": 4,
+  "chamfer": 5,
+  "maxShift": 4,
+  "maxPop": 3
+ },
+ "pad": 8,
+ "forms": {
+  "sprout": {
+   "line": "old",
+   "frame": 32,
+   "eyes": [
+    23.5,
+    28.25
+   ],
+   "rect": [
+    12,
+    17,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "bell": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "bow": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "crown": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 2,
+     "h": 5,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 5,
+     "badge": false
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 14,
+     "h": 15,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 9,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    }
+   }
+  },
+  "radiant": {
+   "line": "old",
+   "frame": 64,
+   "eyes": [
+    39.5,
+    53.5
+   ],
+   "rect": [
+    28,
+    42,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 9,
+     "h": 18,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 14,
+     "vis": 11,
+     "h": 25,
+     "badge": true
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 12,
+     "h": 17,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 17,
+     "h": 19,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 3,
+     "h": 3,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 6,
+     "h": 13,
+     "badge": true
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 21,
+     "vis": 0,
+     "h": 10,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 4,
+     "h": 8,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 12,
+     "vis": 11,
+     "h": 23,
+     "badge": true
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 4,
+     "h": 7,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 0,
+     "h": 3,
+     "badge": true
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 9,
+     "h": 18,
+     "badge": false
+    }
+   }
+  },
+  "soft": {
+   "line": "old",
+   "frame": 64,
+   "eyes": [
+    39.5,
+    51.25
+   ],
+   "rect": [
+    28,
+    40,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 6,
+     "h": 14,
+     "badge": true
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 13,
+     "vis": 7,
+     "h": 20,
+     "badge": true
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 9,
+     "h": 17,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 0,
+     "badge": false,
+     "note": "飾品唔喺頭像欄位內"
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 3,
+     "h": 10,
+     "badge": true
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 18,
+     "vis": 0,
+     "h": 8,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 3,
+     "h": 8,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 12,
+     "vis": 6,
+     "h": 18,
+     "badge": true
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 3,
+     "h": 6,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 0,
+     "badge": false,
+     "note": "飾品唔喺頭像欄位內"
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 5,
+     "h": 13,
+     "badge": true
+    }
+   }
+  },
+  "lumi": {
+   "line": "old",
+   "frame": 64,
+   "eyes": [
+    41.5,
+    53.0
+   ],
+   "rect": [
+    30,
+    42,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 8,
+     "h": 17,
+     "badge": true
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 12,
+     "vis": 9,
+     "h": 21,
+     "badge": true
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 4,
+     "h": 4,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 5,
+     "h": 14,
+     "badge": true
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 19,
+     "vis": 0,
+     "h": 10,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 4,
+     "h": 8,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 9,
+     "h": 20,
+     "badge": true
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 4,
+     "h": 6,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 10,
+     "h": 12,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 7,
+     "h": 17,
+     "badge": true
+    }
+   }
+  },
+  "evo_dot": {
+   "line": "old",
+   "frame": 28,
+   "eyes": [
+    22.5,
+    22.0
+   ],
+   "rect": [
+    12,
+    11,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bell": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "bow": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "crown": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 5,
+     "badge": false
+    },
+    "nightcap": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 9,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "straw": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    }
+   }
+  },
+  "evo_sprout": {
+   "line": "old",
+   "frame": 32,
+   "eyes": [
+    24.5,
+    28.0
+   ],
+   "rect": [
+    14,
+    17,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "bell": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "bow": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 2,
+     "h": 7,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 13,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    }
+   }
+  },
+  "evo_hop": {
+   "line": "old",
+   "frame": 38,
+   "eyes": [
+    27.5,
+    32.0
+   ],
+   "rect": [
+    16,
+    21,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 14,
+     "h": 17,
+     "badge": false
+    },
+    "bell": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 0,
+     "h": 7,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 6,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 14,
+     "h": 16,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 12,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_tide": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 14,
+     "h": 16,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 15,
+     "h": 21,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 11,
+     "h": 12,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 0,
+     "h": 8,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 7,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 14,
+     "h": 20,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 13,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 13,
+     "h": 18,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_moon": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 9,
+     "h": 13,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 9,
+     "h": 12,
+     "badge": false
+    },
+    "bell": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "bow": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 8,
+     "h": 12,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 14,
+     "vis": 0,
+     "h": 7,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 13,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 7,
+     "h": 17,
+     "badge": true
+    },
+    "sakura": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 16,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 9,
+     "h": 12,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_shroom": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "bell": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "bow": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 3,
+     "h": 6,
+     "badge": false
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 9,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 15,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_crystal": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 15,
+     "h": 18,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 16,
+     "h": 22,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 17,
+     "h": 17,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 12,
+     "h": 15,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 0,
+     "h": 7,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 6,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 16,
+     "h": 21,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 12,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 14,
+     "h": 19,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_ember": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 16,
+     "h": 20,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 1,
+     "h": 7,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 6,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 16,
+     "h": 19,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 12,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 14,
+     "h": 17,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_radiant": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 16,
+     "h": 20,
+     "badge": false
+    },
+    "bell": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 0,
+     "h": 9,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 6,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 16,
+     "h": 19,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 12,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 14,
+     "h": 15,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_soft": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 11,
+     "h": 12,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 13,
+     "h": 17,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 17,
+     "h": 17,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 0,
+     "h": 7,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 7,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 12,
+     "h": 15,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 13,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 11,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 11,
+     "h": 14,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_dust": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 13,
+     "h": 16,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 14,
+     "h": 20,
+     "badge": false
+    },
+    "bell": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 10,
+     "h": 12,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 2,
+     "h": 9,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 6,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 14,
+     "h": 18,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 11,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 12,
+     "h": 17,
+     "badge": false
+    }
+   }
+  },
+  "evo_guard_lumi": {
+   "line": "old",
+   "frame": 44,
+   "eyes": [
+    30.5,
+    37.0
+   ],
+   "rect": [
+    20,
+    26,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 13,
+     "h": 18,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 15,
+     "h": 22,
+     "badge": false
+    },
+    "bell": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "bow": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 10,
+     "h": 13,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 0,
+     "h": 9,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 6,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 14,
+     "h": 21,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 15,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 13,
+     "h": 18,
+     "badge": false
+    }
+   }
+  },
+  "evo_still_tide": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    41.0
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 12,
+     "h": 15,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 13,
+     "h": 20,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 18,
+     "h": 19,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 9,
+     "h": 11,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 12,
+     "vis": 0,
+     "h": 10,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 8,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 12,
+     "h": 19,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 14,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 11,
+     "h": 14,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 11,
+     "h": 17,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 9,
+     "h": 15,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 9,
+     "h": 12,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 10,
+     "h": 11,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 9,
+     "h": 17,
+     "badge": false
+    }
+   }
+  },
+  "evo_still_moon": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    41.0
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 7,
+     "h": 14,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 7,
+     "h": 14,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 6,
+     "h": 12,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 20,
+     "vis": 0,
+     "h": 9,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 15,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 5,
+     "h": 13,
+     "badge": true
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 21,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 12,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 7,
+     "h": 12,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 21,
+     "vis": 0,
+     "h": 17,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 17,
+     "vis": 0,
+     "h": 13,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 15,
+     "vis": 0,
+     "h": 12,
+     "badge": true
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 23,
+     "vis": 0,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "evo_still_shroom": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    41.0
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 8,
+     "h": 9,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 8,
+     "h": 9,
+     "badge": false
+    },
+    "bell": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 19,
+     "h": 19,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 9,
+     "h": 10,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 0,
+     "h": 6,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 8,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 8,
+     "h": 9,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 14,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 11,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 9,
+     "h": 10,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 10,
+     "h": 17,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 10,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 11,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 10,
+     "h": 19,
+     "badge": false
+    }
+   }
+  },
+  "evo_still_crystal": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    41.0
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 14,
+     "h": 19,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 15,
+     "h": 22,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 11,
+     "h": 14,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 0,
+     "h": 7,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 7,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 15,
+     "h": 22,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 13,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 11,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 13,
+     "h": 19,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 8,
+     "h": 17,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 8,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 9,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 8,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "evo_still_ember": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    41.0
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 13,
+     "h": 16,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 14,
+     "h": 20,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 18,
+     "h": 18,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 9,
+     "h": 13,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 0,
+     "h": 7,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 7,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 14,
+     "h": 19,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 16,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 11,
+     "h": 13,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 12,
+     "h": 16,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 10,
+     "h": 17,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 10,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 11,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 10,
+     "h": 19,
+     "badge": false
+    }
+   }
+  },
+  "evo_still_radiant": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    41.0
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 17,
+     "h": 22,
+     "badge": false
+    },
+    "bell": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 17,
+     "h": 17,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 13,
+     "vis": 0,
+     "h": 9,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 7,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 17,
+     "h": 20,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 18,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 16,
+     "vis": 1,
+     "h": 17,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 12,
+     "vis": 1,
+     "h": 13,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 2,
+     "h": 12,
+     "badge": true
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 18,
+     "vis": 1,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "evo_still_soft": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    40.0
+   ],
+   "rect": [
+    22,
+    29,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 11,
+     "h": 15,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 13,
+     "h": 20,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 14,
+     "h": 14,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 16,
+     "h": 16,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 8,
+     "h": 12,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 0,
+     "h": 9,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 7,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 12,
+     "h": 18,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 16,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 10,
+     "h": 12,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 11,
+     "h": 16,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 9,
+     "h": 17,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 9,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 10,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 9,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "evo_still_dust": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    41.0
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 11,
+     "h": 16,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 13,
+     "h": 20,
+     "badge": false
+    },
+    "bell": {
+     "shift": 3,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "bow": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 17,
+     "h": 17,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 8,
+     "h": 12,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 13,
+     "vis": 0,
+     "h": 9,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 7,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 12,
+     "h": 18,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 15,
+     "h": 15,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 16,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 10,
+     "h": 16,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 12,
+     "vis": 5,
+     "h": 17,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 5,
+     "h": 13,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 6,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 14,
+     "vis": 5,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "evo_still_lumi": {
+   "line": "old",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    41.0
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "acorn": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 11,
+     "h": 13,
+     "badge": false
+    },
+    "beanie": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 12,
+     "h": 13,
+     "badge": false
+    },
+    "bell": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "bow": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "cherry": {
+     "shift": 1,
+     "pop": 0,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "crown": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 9,
+     "h": 10,
+     "badge": false
+    },
+    "glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "halo": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 13,
+     "vis": 0,
+     "h": 9,
+     "badge": true
+    },
+    "leafcollar": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "nightcap": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 11,
+     "h": 14,
+     "badge": false
+    },
+    "sakura": {
+     "shift": 2,
+     "pop": 0,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "scarf": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 10,
+     "badge": false,
+     "note": "頸飾喺框底以下：頭像唔加處理"
+    },
+    "starclip": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 10,
+     "h": 10,
+     "badge": false
+    },
+    "straw": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 10,
+     "h": 13,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 3,
+     "h": 13,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 3,
+     "h": 10,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 4,
+     "h": 9,
+     "badge": true
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 3,
+     "h": 14,
+     "badge": true
+    }
+   }
+  },
+  "A1": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    43.5
+   ],
+   "rect": [
+    22,
+    32,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 3,
+     "h": 8,
+     "badge": true
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    }
+   }
+  },
+  "A2": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    40.0,
+    41.5
+   ],
+   "rect": [
+    29,
+    30,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 9,
+     "h": 15,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 9,
+     "h": 12,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 10,
+     "h": 11,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 9,
+     "h": 17,
+     "badge": false
+    }
+   }
+  },
+  "A3": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    40.5,
+    39.5
+   ],
+   "rect": [
+    30,
+    28,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 5,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 5,
+     "h": 5,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 6,
+     "h": 17,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 6,
+     "h": 13,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 7,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 13,
+     "vis": 6,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "B1": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    30.5,
+    36.0
+   ],
+   "rect": [
+    20,
+    25,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    }
+   }
+  },
+  "B2": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    33.5,
+    31.0
+   ],
+   "rect": [
+    22,
+    20,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 7,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 9,
+     "h": 13,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 9,
+     "h": 10,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 9,
+     "h": 9,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 9,
+     "h": 14,
+     "badge": false
+    }
+   }
+  },
+  "B3": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    37.0,
+    42.0
+   ],
+   "rect": [
+    26,
+    31,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 6,
+     "h": 17,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 6,
+     "h": 13,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 7,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 13,
+     "vis": 6,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "C1": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    33.0,
+    43.0
+   ],
+   "rect": [
+    22,
+    32,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 7,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    }
+   }
+  },
+  "C2": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    35.5,
+    39.5
+   ],
+   "rect": [
+    24,
+    28,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 13,
+     "h": 17,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 13,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 13,
+     "h": 19,
+     "badge": false
+    }
+   }
+  },
+  "C3": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    38.0,
+    39.0
+   ],
+   "rect": [
+    27,
+    28,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 10,
+     "h": 17,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 10,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 11,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 10,
+     "h": 19,
+     "badge": false
+    }
+   }
+  },
+  "D1": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    34.0,
+    42.5
+   ],
+   "rect": [
+    23,
+    32,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    }
+   }
+  },
+  "D2": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    35.5,
+    39.5
+   ],
+   "rect": [
+    24,
+    28,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 11,
+     "h": 15,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 11,
+     "h": 12,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 11,
+     "h": 11,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 11,
+     "h": 17,
+     "badge": false
+    }
+   }
+  },
+  "D3": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    36.0,
+    42.0
+   ],
+   "rect": [
+    25,
+    31,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 1,
+     "h": 8,
+     "badge": true
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 12,
+     "vis": 0,
+     "h": 11,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 0,
+     "h": 9,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 0,
+     "h": 8,
+     "badge": true
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 13,
+     "vis": 0,
+     "h": 12,
+     "badge": true
+    }
+   }
+  },
+  "E1": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    33.0,
+    41.5
+   ],
+   "rect": [
+    22,
+    30,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    }
+   }
+  },
+  "E2": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    38.0,
+    41.0
+   ],
+   "rect": [
+    27,
+    30,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 1,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 11,
+     "h": 17,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 11,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 12,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 11,
+     "h": 19,
+     "badge": false
+    }
+   }
+  },
+  "E3": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    36.0,
+    40.5
+   ],
+   "rect": [
+    25,
+    30,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 3,
+     "h": 8,
+     "badge": true
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 3,
+     "h": 13,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 7,
+     "vis": 3,
+     "h": 10,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 4,
+     "h": 9,
+     "badge": true
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 3,
+     "h": 14,
+     "badge": true
+    }
+   }
+  },
+  "F1": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    43.0
+   ],
+   "rect": [
+    22,
+    32,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 5,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    }
+   }
+  },
+  "F2": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    35.5,
+    42.5
+   ],
+   "rect": [
+    24,
+    32,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 7,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 9,
+     "h": 17,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 9,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 2,
+     "vis": 10,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 9,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "F3": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    38.5,
+    40.0
+   ],
+   "rect": [
+    28,
+    29,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 7,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 15,
+     "vis": 0,
+     "h": 15,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 12,
+     "vis": 0,
+     "h": 12,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 1,
+     "h": 11,
+     "badge": true
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 17,
+     "vis": 0,
+     "h": 17,
+     "badge": true
+    }
+   }
+  },
+  "G1": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    32.5,
+    42.0
+   ],
+   "rect": [
+    22,
+    31,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    }
+   }
+  },
+  "G2": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    36.0,
+    41.0
+   ],
+   "rect": [
+    25,
+    30,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 6,
+     "vis": 9,
+     "h": 15,
+     "badge": false
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 9,
+     "h": 12,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 1,
+     "vis": 10,
+     "h": 11,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 9,
+     "h": 17,
+     "badge": false
+    }
+   }
+  },
+  "G3": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    36.0,
+    39.0
+   ],
+   "rect": [
+    25,
+    28,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 5,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 13,
+     "vis": 1,
+     "h": 14,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 10,
+     "vis": 1,
+     "h": 11,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 8,
+     "vis": 2,
+     "h": 10,
+     "badge": true
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 15,
+     "vis": 1,
+     "h": 16,
+     "badge": true
+    }
+   }
+  },
+  "H1": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    34.5,
+    42.5
+   ],
+   "rect": [
+    24,
+    32,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 2,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 7,
+     "h": 7,
+     "badge": false
+    }
+   }
+  },
+  "H2": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    33.0,
+    43.0
+   ],
+   "rect": [
+    22,
+    32,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 0,
+     "vis": 8,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 8,
+     "h": 17,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 5,
+     "vis": 8,
+     "h": 13,
+     "badge": false
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 3,
+     "vis": 9,
+     "h": 12,
+     "badge": false
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 8,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "H3": {
+   "line": "from_ref",
+   "frame": 48,
+   "eyes": [
+    35.5,
+    41.0
+   ],
+   "rect": [
+    24,
+    30,
+    22
+   ],
+   "acc": {
+    "wear_hat": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 4,
+     "vis": 4,
+     "h": 8,
+     "badge": false
+    },
+    "wear_glasses": {
+     "shift": 0,
+     "pop": 0,
+     "cut": 0,
+     "vis": 6,
+     "h": 6,
+     "badge": false
+    },
+    "hat_chef": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 15,
+     "vis": 2,
+     "h": 17,
+     "badge": true
+    },
+    "hat_garden": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 11,
+     "vis": 2,
+     "h": 13,
+     "badge": true
+    },
+    "hat_post": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 9,
+     "vis": 3,
+     "h": 12,
+     "badge": true
+    },
+    "hat_watch": {
+     "shift": 4,
+     "pop": 3,
+     "cut": 17,
+     "vis": 2,
+     "h": 19,
+     "badge": true
+    }
+   }
+  },
+  "S1": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    30.5,
+    41.5
+   ],
+   "rect": [
+    20,
+    30,
+    22
+   ],
+   "acc": {}
+  },
+  "S2": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    30.5,
+    39.5
+   ],
+   "rect": [
+    20,
+    28,
+    22
+   ],
+   "acc": {}
+  },
+  "S4A": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    31.5,
+    40.5
+   ],
+   "rect": [
+    20,
+    30,
+    22
+   ],
+   "acc": {}
+  },
+  "S4B": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    29.5,
+    33.0
+   ],
+   "rect": [
+    18,
+    22,
+    22
+   ],
+   "acc": {}
+  },
+  "S4C": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    32.0,
+    40.0
+   ],
+   "rect": [
+    21,
+    29,
+    22
+   ],
+   "acc": {}
+  },
+  "S4D": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    33.0,
+    39.0
+   ],
+   "rect": [
+    22,
+    28,
+    22
+   ],
+   "acc": {}
+  },
+  "S4E": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    32.0,
+    38.5
+   ],
+   "rect": [
+    21,
+    28,
+    22
+   ],
+   "acc": {}
+  },
+  "S4F": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    31.5,
+    39.5
+   ],
+   "rect": [
+    20,
+    28,
+    22
+   ],
+   "acc": {}
+  },
+  "S4G": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    31.5,
+    38.5
+   ],
+   "rect": [
+    20,
+    28,
+    22
+   ],
+   "acc": {}
+  },
+  "S4H": {
+   "line": "series2",
+   "frame": 48,
+   "eyes": [
+    33.5,
+    39.5
+   ],
+   "rect": [
+    22,
+    28,
+    22
+   ],
+   "acc": {}
+  }
+ },
+ "aliases": {
+  "S3A": "A1",
+  "S5A": "A2",
+  "S6A": "A3",
+  "S3B": "B1",
+  "S5B": "B2",
+  "S6B": "B3",
+  "S3C": "C1",
+  "S5C": "C2",
+  "S6C": "C3",
+  "S3D": "D1",
+  "S5D": "D2",
+  "S6D": "D3",
+  "S3E": "E1",
+  "S5E": "E2",
+  "S6E": "E3",
+  "S3F": "F1",
+  "S5F": "F2",
+  "S6F": "F3",
+  "S3G": "G1",
+  "S5G": "G2",
+  "S6G": "G3",
+  "S3H": "H1",
+  "S5H": "H2",
+  "S6H": "H3"
+ },
+ "aliasNote": "細佬 S3／S5／S6 用返 from_ref 1／2／3 階 sprite（S3A＝A1 …）→ 用 alias 指去嗰個 form 嘅裁位；S5／S6 有 5b 工作帽",
+ "v3": {
+  "window": 110,
+  "k": 5,
+  "rule": "window = n·k（n=22 → k=5 → 110px @3x）；飾品 pop 位喺框之上畫；放大一律 nearest 整數倍",
+  "frame": "portrait_frame（窗口 @6,6）"
+ }
+}

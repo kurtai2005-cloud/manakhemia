@@ -1,0 +1,272 @@
+{
+ "note": "家具 V3：sprite 唔改（alpha 0/255），x3/ 係 nearest ×3；AO／燈光／窗光係真 alpha 光影層。座標同 4b house.json（slot anchor − pivot）。",
+ "furniture": {
+  "bed_leaf": {
+   "slot": "bed",
+   "x3": "furniture/x3/bed_leaf@3x.png",
+   "x3Front": "furniture/x3/bed_leaf_front@3x.png",
+   "ao": {
+    "png": "furniture/bed_leaf_ao@3x.png",
+    "center": "anchor（底中）＋(0,+1) art",
+    "blend": "source-over",
+    "alpha": 1,
+    "note": "取代 4b shadow 橢圓；× lightmap"
+   },
+   "reflect": true
+  },
+  "bed_cloud": {
+   "slot": "bed",
+   "x3": "furniture/x3/bed_cloud@3x.png",
+   "x3Front": "furniture/x3/bed_cloud_front@3x.png",
+   "ao": {
+    "png": "furniture/bed_cloud_ao@3x.png",
+    "center": "anchor（底中）＋(0,+1) art",
+    "blend": "source-over",
+    "alpha": 1,
+    "note": "取代 4b shadow 橢圓；× lightmap"
+   },
+   "reflect": true
+  },
+  "table_stump": {
+   "slot": "table",
+   "x3": "furniture/x3/table_stump@3x.png",
+   "ao": {
+    "png": "furniture/table_stump_ao@3x.png",
+    "center": "anchor（底中）＋(0,+1) art",
+    "blend": "source-over",
+    "alpha": 1,
+    "note": "取代 4b shadow 橢圓；× lightmap"
+   },
+   "reflect": true
+  },
+  "table_round": {
+   "slot": "table",
+   "x3": "furniture/x3/table_round@3x.png",
+   "ao": {
+    "png": "furniture/table_round_ao@3x.png",
+    "center": "anchor（底中）＋(0,+1) art",
+    "blend": "source-over",
+    "alpha": 1,
+    "note": "取代 4b shadow 橢圓；× lightmap"
+   },
+   "reflect": true
+  },
+  "wall_shelf": {
+   "slot": "wall",
+   "x3": "furniture/x3/wall_shelf@3x.png"
+  },
+  "wall_frame": {
+   "slot": "wall",
+   "x3": "furniture/x3/wall_frame@3x.png"
+  },
+  "rug_round": {
+   "slot": "rug",
+   "x3": "furniture/x3/rug_round@3x.png",
+   "ao": {
+    "png": "furniture/rug_round_ao@3x.png",
+    "center": "anchor（底中）＋(0,+1) art",
+    "blend": "source-over",
+    "alpha": 1,
+    "note": "取代 4b shadow 橢圓；× lightmap"
+   }
+  },
+  "rug_leaf": {
+   "slot": "rug",
+   "x3": "furniture/x3/rug_leaf@3x.png",
+   "ao": {
+    "png": "furniture/rug_leaf_ao@3x.png",
+    "center": "anchor（底中）＋(0,+1) art",
+    "blend": "source-over",
+    "alpha": 1,
+    "note": "取代 4b shadow 橢圓；× lightmap"
+   }
+  },
+  "win_curtain": {
+   "slot": "window",
+   "x3": "furniture/x3/win_curtain@3x.png",
+   "windowLight": {
+    "beam": "light/win_curtain_beam@3x.png",
+    "patch": "light/win_curtain_patch@3x.png",
+    "transmission": 0.62,
+    "note": "蕾絲窗簾：窗光經過家具 gobo"
+   }
+  },
+  "win_star": {
+   "slot": "window",
+   "x3": "furniture/x3/win_star@3x.png",
+   "windowLight": {
+    "beam": "light/win_star_beam@3x.png",
+    "patch": "light/win_star_patch@3x.png",
+    "transmission": 0.92,
+    "note": "星星窗：窗光經過家具 gobo"
+   }
+  },
+  "lamp_mushroom": {
+   "slot": "lamp",
+   "x3": "furniture/x3/lamp_mushroom@3x.png",
+   "ao": {
+    "png": "furniture/lamp_mushroom_ao@3x.png",
+    "center": "anchor（底中）＋(0,+1) art",
+    "blend": "source-over",
+    "alpha": 1,
+    "note": "取代 4b shadow 橢圓；× lightmap"
+   },
+   "reflect": true,
+   "lightCenter": [
+    -1,
+    -38
+   ],
+   "light": {
+    "lift": {
+     "png": "furniture/lamp_mushroom_lift@3x.png",
+     "at": "lightCenter",
+     "blend": "lighter 落 lightmap（multiply 之前）",
+     "alpha": "grade.v3.lamps.scale"
+    },
+    "halo": {
+     "png": "furniture/lamp_mushroom_halo@3x.png",
+     "at": "lightCenter",
+     "blend": "lighter（lightmap 之後）",
+     "alpha": "0.4 × lamps.scale × flicker"
+    },
+    "pool": {
+     "png": "furniture/lamp_mushroom_pool@3x.png",
+     "at": "anchor＋(0,−1)",
+     "blend": "lighter（lightmap 之後、ysort 之前）",
+     "alpha": "0.85 × lamps.scale"
+    },
+    "flare": {
+     "size": "m",
+     "tint": "#ffd8a0",
+     "fps": 3,
+     "intensity": 0.8,
+     "at": "lightCenter"
+    },
+    "bloom": {
+     "src": "furniture/x3/lamp_mushroom_emissive@3x.png",
+     "note": "入 bloom pass"
+    },
+    "flicker": {
+     "type": "breathe",
+     "hz": 0.25,
+     "amp": 0.05
+    },
+    "emitter": null,
+    "tint": "#ffc27a",
+    "petGlow": false,
+    "note": "場景燈：唔跟 petGlow（Kurt 規則只熄寵物光）；取代 4b _glow.png"
+   }
+  },
+  "lamp_firefly": {
+   "slot": "lamp",
+   "x3": "furniture/x3/lamp_firefly@3x.png",
+   "ao": {
+    "png": "furniture/lamp_firefly_ao@3x.png",
+    "center": "anchor（底中）＋(0,+1) art",
+    "blend": "source-over",
+    "alpha": 1,
+    "note": "取代 4b shadow 橢圓；× lightmap"
+   },
+   "reflect": true,
+   "lightCenter": [
+    6,
+    -38
+   ],
+   "light": {
+    "lift": {
+     "png": "furniture/lamp_firefly_lift@3x.png",
+     "at": "lightCenter",
+     "blend": "lighter 落 lightmap（multiply 之前）",
+     "alpha": "grade.v3.lamps.scale"
+    },
+    "halo": {
+     "png": "furniture/lamp_firefly_halo@3x.png",
+     "at": "lightCenter",
+     "blend": "lighter（lightmap 之後）",
+     "alpha": "0.4 × lamps.scale × flicker"
+    },
+    "pool": {
+     "png": "furniture/lamp_firefly_pool@3x.png",
+     "at": "anchor＋(0,−1)",
+     "blend": "lighter（lightmap 之後、ysort 之前）",
+     "alpha": "0.85 × lamps.scale"
+    },
+    "flare": {
+     "size": "s",
+     "tint": "#e8ffb0",
+     "fps": 3,
+     "intensity": 0.8,
+     "at": "lightCenter"
+    },
+    "bloom": {
+     "src": "furniture/x3/lamp_firefly_emissive@3x.png",
+     "note": "入 bloom pass"
+    },
+    "flicker": {
+     "type": "firefly",
+     "hz": 0.9,
+     "amp": 0.18
+    },
+    "emitter": {
+     "type": "firefly",
+     "glow": "glow_12",
+     "tint": "#d8ff90",
+     "around": [
+      0,
+      -2
+     ],
+     "radius": 10,
+     "rate": 0.8,
+     "life": [
+      2,
+      4
+     ],
+     "max": 4,
+     "add": 0.8,
+     "note": "瓶入面螢火蟲飄出少少再返入去"
+    },
+    "tint": "#d8f890",
+    "petGlow": false,
+    "note": "場景燈：唔跟 petGlow（Kurt 規則只熄寵物光）；取代 4b _glow.png"
+   }
+  }
+ },
+ "windowNone": {
+  "beam": "light/none_beam@3x.png",
+  "patch": "light/none_patch@3x.png",
+  "note": "窗 slot 空：淨窗（只有中間直窗框）"
+ },
+ "patchMapping": {
+  "dx": 30,
+  "skew": 40,
+  "yFar": 312,
+  "yNear": 250,
+  "note": "窗洞 (u,v)（u 左→右、v 上→下）→ 地板 (x＝60＋46u＋40(1−v)，y＝312−62v)：窗頂投到地板前面（近鏡頭），窗底近牆腳（光由左上高角度射入）"
+ },
+ "beamPolygon": [
+  [
+   30,
+   98
+  ],
+  [
+   76,
+   98
+  ],
+  [
+   116,
+   250
+  ],
+  [
+   146,
+   312
+  ],
+  [
+   100,
+   312
+  ],
+  [
+   30,
+   150
+  ]
+ ]
+}
