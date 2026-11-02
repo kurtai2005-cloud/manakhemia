@@ -1,0 +1,260 @@
+{
+ "note": "demo（GDD §1.6 欄位；兄弟／祖輩由 parentId 推，同屋由主寵視角推）",
+ "main": "bobo",
+ "nodes": [
+  {
+   "id": "guangguang",
+   "line": "tuanrong",
+   "parentId": null,
+   "gen": 0,
+   "bornDay": 1,
+   "adultDay": 9,
+   "pattern": "月紋",
+   "move": "月光波",
+   "story": [
+    "第 1 日喺光圃出世",
+    "第 9 日成年，走靜光月路",
+    "教識全屋人瞓覺前望月",
+    "而家喺月光山谷退休"
+   ],
+   "frozen": true,
+   "route": "still_moon",
+   "name": "光光",
+   "form": "evo_still_moon",
+   "state": "awake",
+   "alive": false,
+   "main": false,
+   "egg": false
+  },
+  {
+   "id": "tuanrong",
+   "line": "tuanrong",
+   "parentId": "guangguang",
+   "gen": 1,
+   "bornDay": 12,
+   "adultDay": 20,
+   "pattern": "月紋",
+   "move": "月光波",
+   "story": [
+    "喺光光身邊孵出",
+    "第 20 日成年，走靜光潮路",
+    "帶大咗波波同火仔",
+    "最鍾意幫手淋花"
+   ],
+   "frozen": false,
+   "route": "still_tide",
+   "name": "團絨",
+   "form": "evo_still_tide",
+   "state": "awake",
+   "alive": true,
+   "main": false,
+   "egg": false
+  },
+  {
+   "id": "yueyue",
+   "line": "tuanrong",
+   "parentId": "guangguang",
+   "gen": 1,
+   "bornDay": 13,
+   "adultDay": 22,
+   "pattern": "菇點",
+   "move": "守護圈",
+   "story": [
+    "同團絨一齊孵出",
+    "第 22 日成年，走守護菇路",
+    "成日守住花圃門口",
+    "第 40 日去咗森林小屋"
+   ],
+   "frozen": true,
+   "route": "guard_shroom",
+   "name": "月月",
+   "form": "evo_guard_shroom",
+   "state": "awake",
+   "alive": false,
+   "main": false,
+   "egg": false
+  },
+  {
+   "id": "huozai",
+   "line": "pet2",
+   "parentId": "tuanrong",
+   "gen": 2,
+   "bornDay": 30,
+   "adultDay": null,
+   "pattern": "火紋",
+   "move": "小火花",
+   "story": [
+    "比波波遲兩日出世",
+    "少年期，走 C 系",
+    "最鍾意追螢火蟲",
+    "未成年，仲喺度學嘢"
+   ],
+   "frozen": false,
+   "series": "C",
+   "name": "火仔",
+   "form": "S4C",
+   "state": "awake",
+   "alive": true,
+   "main": false,
+   "egg": false
+  },
+  {
+   "id": "bobo",
+   "line": "pet2",
+   "parentId": "tuanrong",
+   "gen": 2,
+   "bornDay": 28,
+   "adultDay": 36,
+   "pattern": "月紋",
+   "move": "月光波",
+   "story": [
+    "團絨嘅第一隻細佬",
+    "第 36 日成年，走 A 系",
+    "學識咗祖傳月光波",
+    "而家係屋企主寵"
+   ],
+   "frozen": false,
+   "series": "A",
+   "name": "波波",
+   "form": "A3",
+   "state": "awake",
+   "alive": true,
+   "main": true,
+   "egg": false
+  },
+  {
+   "id": "axing",
+   "line": "tuanrong",
+   "parentId": null,
+   "gen": 2,
+   "bornDay": 31,
+   "adultDay": 38,
+   "pattern": "星點",
+   "move": "彈彈跳",
+   "story": [
+    "喺花圃執返嚟嘅蛋",
+    "同波波一齊住咗好耐",
+    "第 38 日成年，走跳跳路",
+    "成日同火仔玩捉迷藏"
+   ],
+   "frozen": false,
+   "route": "hop",
+   "name": "阿星",
+   "form": "evo_hop",
+   "state": "awake",
+   "alive": true,
+   "main": false,
+   "egg": false
+  },
+  {
+   "id": "doudou",
+   "line": "pet2",
+   "parentId": "bobo",
+   "gen": 3,
+   "bornDay": 50,
+   "adultDay": null,
+   "pattern": "月紋",
+   "move": "月光波",
+   "story": [
+    "波波嘅第一隻細佬",
+    "童年期，瞓覺時間最長",
+    "已經識少少月光波",
+    "今晚喺屋企瞓緊"
+   ],
+   "frozen": false,
+   "series": "A",
+   "name": "豆豆",
+   "form": "S2",
+   "state": "sleep",
+   "alive": true,
+   "main": false,
+   "egg": false
+  },
+  {
+   "id": "egg_mie",
+   "line": "pet2",
+   "parentId": null,
+   "gen": 3,
+   "bornDay": null,
+   "adultDay": null,
+   "pattern": null,
+   "move": null,
+   "story": [
+    "未孵",
+    "等你揀上一代",
+    "",
+    ""
+   ],
+   "frozen": false,
+   "series": null,
+   "name": "咩咩",
+   "form": "egg",
+   "state": "egg",
+   "alive": false,
+   "main": false,
+   "egg": true
+  }
+ ],
+ "derived": {
+  "parent": [
+   [
+    "guangguang",
+    "tuanrong"
+   ],
+   [
+    "guangguang",
+    "yueyue"
+   ],
+   [
+    "tuanrong",
+    "huozai"
+   ],
+   [
+    "tuanrong",
+    "bobo"
+   ],
+   [
+    "bobo",
+    "doudou"
+   ]
+  ],
+  "sibling": [
+   [
+    "tuanrong",
+    "yueyue"
+   ],
+   [
+    "bobo",
+    "huozai"
+   ]
+  ],
+  "ancestor": [
+   [
+    "guangguang",
+    "huozai",
+    2
+   ],
+   [
+    "guangguang",
+    "bobo",
+    2
+   ],
+   [
+    "tuanrong",
+    "doudou",
+    2
+   ],
+   [
+    "guangguang",
+    "doudou",
+    3
+   ]
+  ],
+  "house": [
+   [
+    "bobo",
+    "axing"
+   ]
+  ]
+ }
+}

@@ -1,0 +1,1290 @@
+[
+{
+"screen": "ft_full",
+"text": "族譜",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.34
+},
+{
+"screen": "ft_full",
+"text": "全家",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.55
+},
+{
+"screen": "ft_full",
+"text": "只睇直系",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 15.37
+},
+{
+"screen": "ft_full",
+"text": "光光・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 5.28
+},
+{
+"screen": "ft_full",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.83
+},
+{
+"screen": "ft_full",
+"text": "月月・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.02
+},
+{
+"screen": "ft_full",
+"text": "火仔",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.85
+},
+{
+"screen": "ft_full",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.1
+},
+{
+"screen": "ft_full",
+"text": "阿星",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.31
+},
+{
+"screen": "ft_full",
+"text": "豆豆・瞓緊",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.29
+},
+{
+"screen": "ft_full",
+"text": "咩咩・未孵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.09
+},
+{
+"screen": "ft_full",
+"text": "族譜成就 3／6",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.0
+},
+{
+"screen": "ft_full",
+"text": "截圖",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.32
+},
+{
+"screen": "ft_full",
+"text": "叫佢出嚟",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.79
+},
+{
+"screen": "ft_full",
+"text": "成就",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 4.92
+},
+{
+"screen": "ft_direct",
+"text": "族譜",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.34
+},
+{
+"screen": "ft_direct",
+"text": "全家",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 14.01
+},
+{
+"screen": "ft_direct",
+"text": "只睇直系",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.63
+},
+{
+"screen": "ft_direct",
+"text": "光光・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 5.62
+},
+{
+"screen": "ft_direct",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.28
+},
+{
+"screen": "ft_direct",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.15
+},
+{
+"screen": "ft_direct",
+"text": "豆豆・瞓緊",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.5
+},
+{
+"screen": "ft_direct",
+"text": "族譜成就 3／6",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.0
+},
+{
+"screen": "ft_direct",
+"text": "截圖",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.32
+},
+{
+"screen": "ft_direct",
+"text": "叫佢出嚟",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.79
+},
+{
+"screen": "ft_direct",
+"text": "成就",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 4.92
+},
+{
+"screen": "ft_focus",
+"text": "族譜",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.34
+},
+{
+"screen": "ft_focus",
+"text": "全家",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.55
+},
+{
+"screen": "ft_focus",
+"text": "只睇直系",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 15.37
+},
+{
+"screen": "ft_focus",
+"text": "光光・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 5.28
+},
+{
+"screen": "ft_focus",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.83
+},
+{
+"screen": "ft_focus",
+"text": "月月・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.02
+},
+{
+"screen": "ft_focus",
+"text": "火仔",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.85
+},
+{
+"screen": "ft_focus",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.1
+},
+{
+"screen": "ft_focus",
+"text": "豆豆・瞓緊",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.29
+},
+{
+"screen": "ft_focus",
+"text": "團絨",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 11.09
+},
+{
+"screen": "ft_focus",
+"text": "第 1 代・靜光潮路・仲喺屋企",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 10.02
+},
+{
+"screen": "ft_focus",
+"text": "上一代：光光　下一代：波波、火仔",
+"role": "body",
+"px": 21,
+"font": "sans",
+"contrast": 15.11
+},
+{
+"screen": "ft_focus",
+"text": "兄弟姊妹：月月",
+"role": "body",
+"px": 21,
+"font": "sans",
+"contrast": 15.49
+},
+{
+"screen": "ft_focus",
+"text": "睇佢一生",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.79
+},
+{
+"screen": "ft_card",
+"text": "族譜",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.34
+},
+{
+"screen": "ft_card",
+"text": "全家",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.55
+},
+{
+"screen": "ft_card",
+"text": "只睇直系",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 15.37
+},
+{
+"screen": "ft_card",
+"text": "光光・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 5.28
+},
+{
+"screen": "ft_card",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.83
+},
+{
+"screen": "ft_card",
+"text": "月月・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.02
+},
+{
+"screen": "ft_card",
+"text": "火仔",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.85
+},
+{
+"screen": "ft_card",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.1
+},
+{
+"screen": "ft_card",
+"text": "阿星",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.31
+},
+{
+"screen": "ft_card",
+"text": "豆豆・瞓緊",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.29
+},
+{
+"screen": "ft_card",
+"text": "咩咩・未孵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.09
+},
+{
+"screen": "ft_card",
+"text": "波波",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 9.84
+},
+{
+"screen": "ft_card",
+"text": "第 2 代・A 系・主寵",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 8.16
+},
+{
+"screen": "ft_card",
+"text": "遺傳自：團絨",
+"role": "value",
+"px": 21,
+"font": "sansb",
+"contrast": 11.47
+},
+{
+"screen": "ft_card",
+"text": "花紋",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.25
+},
+{
+"screen": "ft_card",
+"text": "月紋",
+"role": "value",
+"px": 21,
+"font": "sansb",
+"contrast": 11.84
+},
+{
+"screen": "ft_card",
+"text": "出自 團絨",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.43
+},
+{
+"screen": "ft_card",
+"text": "招式",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.64
+},
+{
+"screen": "ft_card",
+"text": "月光波",
+"role": "value",
+"px": 21,
+"font": "sansb",
+"contrast": 12.06
+},
+{
+"screen": "ft_card",
+"text": "出自 光光",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.89
+},
+{
+"screen": "ft_card",
+"text": "佢嘅故事",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 12.89
+},
+{
+"screen": "ft_card",
+"text": "團絨嘅第一隻細佬",
+"role": "body",
+"px": 21,
+"font": "sans",
+"contrast": 14.06
+},
+{
+"screen": "ft_card",
+"text": "第 36 日成年，走 A 系",
+"role": "body",
+"px": 21,
+"font": "sans",
+"contrast": 14.24
+},
+{
+"screen": "ft_card",
+"text": "學識咗祖傳月光波",
+"role": "body",
+"px": 21,
+"font": "sans",
+"contrast": 14.08
+},
+{
+"screen": "ft_card",
+"text": "而家係屋企主寵",
+"role": "body",
+"px": 21,
+"font": "sans",
+"contrast": 14.11
+},
+{
+"screen": "ft_card",
+"text": "睇佢一生",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 14.02
+},
+{
+"screen": "ft_card",
+"text": "蛋",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.58
+},
+{
+"screen": "ft_card",
+"text": "幼年",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.58
+},
+{
+"screen": "ft_card",
+"text": "童年",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.21
+},
+{
+"screen": "ft_card",
+"text": "少年",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 10.96
+},
+{
+"screen": "ft_card",
+"text": "成年",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.46
+},
+{
+"screen": "ft_card",
+"text": "而家",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.25
+},
+{
+"screen": "ft_card",
+"text": "叫佢出嚟",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.99
+},
+{
+"screen": "ft_card",
+"text": "玩招式",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.47
+},
+{
+"screen": "ft_achievements",
+"text": "族譜",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.34
+},
+{
+"screen": "ft_achievements",
+"text": "全家",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.55
+},
+{
+"screen": "ft_achievements",
+"text": "只睇直系",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 15.37
+},
+{
+"screen": "ft_achievements",
+"text": "光光・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 5.28
+},
+{
+"screen": "ft_achievements",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.83
+},
+{
+"screen": "ft_achievements",
+"text": "月月・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.02
+},
+{
+"screen": "ft_achievements",
+"text": "火仔",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.85
+},
+{
+"screen": "ft_achievements",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.1
+},
+{
+"screen": "ft_achievements",
+"text": "阿星",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.31
+},
+{
+"screen": "ft_achievements",
+"text": "豆豆・瞓緊",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.29
+},
+{
+"screen": "ft_achievements",
+"text": "咩咩・未孵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.09
+},
+{
+"screen": "ft_achievements",
+"text": "族譜成就",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 10.81
+},
+{
+"screen": "ft_achievements",
+"text": "第一個家",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 10.91
+},
+{
+"screen": "ft_achievements",
+"text": "第 1 隻成家人",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 8.73
+},
+{
+"screen": "ft_achievements",
+"text": "獎勵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.45
+},
+{
+"screen": "ft_achievements",
+"text": "族譜金框",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 13.12
+},
+{
+"screen": "ft_achievements",
+"text": "三代同堂",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 11.17
+},
+{
+"screen": "ft_achievements",
+"text": "族譜有 3 代",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 9.06
+},
+{
+"screen": "ft_achievements",
+"text": "獎勵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.58
+},
+{
+"screen": "ft_achievements",
+"text": "「三代」徽章＋族",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 13.29
+},
+{
+"screen": "ft_achievements",
+"text": "譜背景變暖色",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 13.63
+},
+{
+"screen": "ft_achievements",
+"text": "兄弟情",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 12.45
+},
+{
+"screen": "ft_achievements",
+"text": "同一上一代有 2 隻",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 10.12
+},
+{
+"screen": "ft_achievements",
+"text": "獎勵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.64
+},
+{
+"screen": "ft_achievements",
+"text": "兄弟合照框",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 14.52
+},
+{
+"screen": "ft_achievements",
+"text": "九光齊",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 16.14
+},
+{
+"screen": "ft_achievements",
+"text": "團絨 9 條路線都出過",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.98
+},
+{
+"screen": "ft_achievements",
+"text": "獎勵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.97
+},
+{
+"screen": "ft_achievements",
+"text": "族譜頂部光環",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 15.81
+},
+{
+"screen": "ft_achievements",
+"text": "八系齊",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 16.64
+},
+{
+"screen": "ft_achievements",
+"text": "細佬 A–H 都出過",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 12.31
+},
+{
+"screen": "ft_achievements",
+"text": "獎勵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.28
+},
+{
+"screen": "ft_achievements",
+"text": "族譜葉形邊",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 16.62
+},
+{
+"screen": "ft_achievements",
+"text": "招式傳人",
+"role": "h2",
+"px": 24,
+"font": "sansb",
+"contrast": 16.62
+},
+{
+"screen": "ft_achievements",
+"text": "同一招式連傳 3 代",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 12.31
+},
+{
+"screen": "ft_achievements",
+"text": "獎勵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.28
+},
+{
+"screen": "ft_achievements",
+"text": "招式名加「祖傳」",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 16.62
+},
+{
+"screen": "ft_full_all",
+"text": "族譜",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.34
+},
+{
+"screen": "ft_full_all",
+"text": "全家",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.55
+},
+{
+"screen": "ft_full_all",
+"text": "只睇直系",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 15.37
+},
+{
+"screen": "ft_full_all",
+"text": "光光・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 5.28
+},
+{
+"screen": "ft_full_all",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.83
+},
+{
+"screen": "ft_full_all",
+"text": "月月・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.02
+},
+{
+"screen": "ft_full_all",
+"text": "火仔",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.85
+},
+{
+"screen": "ft_full_all",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.1
+},
+{
+"screen": "ft_full_all",
+"text": "阿星",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.31
+},
+{
+"screen": "ft_full_all",
+"text": "豆豆・瞓緊",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.29
+},
+{
+"screen": "ft_full_all",
+"text": "咩咩・未孵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.09
+},
+{
+"screen": "ft_full_all",
+"text": "族譜成就 6／6",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.0
+},
+{
+"screen": "ft_full_all",
+"text": "截圖",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.32
+},
+{
+"screen": "ft_full_all",
+"text": "叫佢出嚟",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.79
+},
+{
+"screen": "ft_full_all",
+"text": "成就",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 4.92
+},
+{
+"screen": "ft_normal",
+"text": "族譜",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 13.27
+},
+{
+"screen": "ft_normal",
+"text": "全家",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.55
+},
+{
+"screen": "ft_normal",
+"text": "只睇直系",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 16.47
+},
+{
+"screen": "ft_normal",
+"text": "光光・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 7.01
+},
+{
+"screen": "ft_normal",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.44
+},
+{
+"screen": "ft_normal",
+"text": "月月・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.4
+},
+{
+"screen": "ft_normal",
+"text": "火仔",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.95
+},
+{
+"screen": "ft_normal",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.39
+},
+{
+"screen": "ft_normal",
+"text": "阿星",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 11.59
+},
+{
+"screen": "ft_normal",
+"text": "豆豆・瞓緊",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.72
+},
+{
+"screen": "ft_normal",
+"text": "咩咩・未孵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 17.17
+},
+{
+"screen": "ft_normal",
+"text": "族譜成就 1／6",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.47
+},
+{
+"screen": "ft_normal",
+"text": "截圖",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.32
+},
+{
+"screen": "ft_normal",
+"text": "叫佢出嚟",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.79
+},
+{
+"screen": "ft_normal",
+"text": "成就",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 4.92
+},
+{
+"screen": "ft_egg_pick",
+"text": "族譜",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.34
+},
+{
+"screen": "ft_egg_pick",
+"text": "全家",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.55
+},
+{
+"screen": "ft_egg_pick",
+"text": "只睇直系",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 15.37
+},
+{
+"screen": "ft_egg_pick",
+"text": "光光・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 5.28
+},
+{
+"screen": "ft_egg_pick",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 9.83
+},
+{
+"screen": "ft_egg_pick",
+"text": "月月・退休",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 13.02
+},
+{
+"screen": "ft_egg_pick",
+"text": "火仔",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 8.85
+},
+{
+"screen": "ft_egg_pick",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.1
+},
+{
+"screen": "ft_egg_pick",
+"text": "阿星",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 10.31
+},
+{
+"screen": "ft_egg_pick",
+"text": "豆豆・瞓緊",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.29
+},
+{
+"screen": "ft_egg_pick",
+"text": "咩咩・未孵",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 16.09
+},
+{
+"screen": "ft_egg_pick",
+"text": "揀咩咩嘅上一代",
+"role": "title",
+"px": 30,
+"font": "serif",
+"contrast": 11.11
+},
+{
+"screen": "ft_egg_pick",
+"text": "波波",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 14.16
+},
+{
+"screen": "ft_egg_pick",
+"text": "月紋・月光波",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.19
+},
+{
+"screen": "ft_egg_pick",
+"text": "團絨",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.09
+},
+{
+"screen": "ft_egg_pick",
+"text": "月紋・月光波",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.18
+},
+{
+"screen": "ft_egg_pick",
+"text": "阿星",
+"role": "label",
+"px": 18,
+"font": "sansb",
+"contrast": 15.09
+},
+{
+"screen": "ft_egg_pick",
+"text": "星點・彈彈跳",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.18
+},
+{
+"screen": "ft_egg_pick",
+"text": "揀咗之後唔可以改，佢會遺傳花紋同招式。",
+"role": "caption",
+"px": 18,
+"font": "sans",
+"contrast": 11.44
+},
+{
+"screen": "ft_egg_pick",
+"text": "就揀波波",
+"role": "button",
+"px": 20,
+"font": "sansb",
+"contrast": 7.99
+}
+]

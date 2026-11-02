@@ -1,0 +1,122 @@
+{
+ "ok": true,
+ "n": 23,
+ "passed": 23,
+ "checks": [
+  {
+   "check": "json_keys",
+   "ok": true,
+   "note": "25 keys"
+  },
+  {
+   "check": "canvas_bands",
+   "ok": true,
+   "note": "split [0, 42, 348, 422]×3 → 0/126/1044/1266"
+  },
+  {
+   "check": "gdd_2_1_list",
+   "ok": true,
+   "note": "{'frames': 2, 'stamps': 3, 'lines': 4, 'ach': 6, 'warm': 1}"
+  },
+  {
+   "check": "gdd_rewards_6",
+   "ok": true,
+   "note": "first_home, three_gen, brothers, nine_light, eight_series, move_heir"
+  },
+  {
+   "check": "parts_exist_size",
+   "ok": true,
+   "note": "48 parts"
+  },
+  {
+   "check": "sprite_alpha_0_255",
+   "ok": true,
+   "note": "sprite parts ['node_crown', 'egg_unhatched']；UI／光影層真 alpha 46 個（容許）"
+  },
+  {
+   "check": "particles_alpha_0_255",
+   "ok": true,
+   "note": "(144, 72) 4 emitters"
+  },
+  {
+   "check": "backgrounds",
+   "ok": true,
+   "note": "bg_normal／bg_warm 585×1266 RGB＋light_add"
+  },
+  {
+   "check": "avatars_pet_sprites_0_255",
+   "ok": true,
+   "note": "8 頭像（evo_still_moon, evo_still_tide, evo_guard_shroom, S4C, A3, evo_hop, S2, egg）"
+  },
+  {
+   "check": "relations_derive",
+   "ok": true,
+   "note": "傳 5／兄弟 2／祖 4／同屋 1；4 代"
+  },
+  {
+   "check": "family_fields_gdd_1_6",
+   "ok": true,
+   "note": "8 nodes；欄位 10＋route|series；story×4"
+  },
+  {
+   "check": "petglow_rule_sync",
+   "ok": true,
+   "note": "awake 1／sleepy .6／sleep・sleepClip・dreamEnter・dreaming 0；fadeOut 600 easeInQuad／fadeIn 400 easeOutQuad＋pulse 150"
+  },
+  {
+   "check": "petglow_nodes",
+   "ok": true,
+   "note": "瞓緊 ['doudou']＝0；退休／蛋＝0；其他＝states 值"
+  },
+  {
+   "check": "petglow_render_sleep_off",
+   "ok": true,
+   "note": "aura 能量：豆豆瞓 0（醒時 8322）／波波醒 8322／波波眼瞓 4958（×0.60）／光光退休 0／蛋 0；draw_node 只經 node_aura_layer"
+  },
+  {
+   "check": "mockups_585x1266",
+   "ok": true,
+   "note": "8 張：ft_full, ft_direct, ft_focus, ft_card, ft_achievements, ft_full_all, ft_normal, ft_egg_pick"
+  },
+  {
+   "check": "text_min_18",
+   "ok": true,
+   "note": "161 段字，最細 18px"
+  },
+  {
+   "check": "text_contrast_4_5",
+   "ok": true,
+   "note": "最低 4.92"
+  },
+  {
+   "check": "in_part_text",
+   "ok": true,
+   "note": "[('stamp_chuan', 5.13), ('stamp_zu', 6.28), ('stamp_wu', 5.2), ('ach_three_gen', 6.18), ('ach_move_heir', 7.31), ('reward_ancestral_tag', 8.29), ('reward_sibling_frame', 6.01)]"
+  },
+  {
+   "check": "font_noto_only",
+   "ok": true,
+   "note": "fonts ['sans', 'sansb', 'serif']（Noto CJK TC）；Fusion Pixel 冇用"
+  },
+  {
+   "check": "text_screens",
+   "ok": true,
+   "note": "8 screens"
+  },
+  {
+   "check": "no_pycache_backups",
+   "ok": true,
+   "note": "0 junk"
+  },
+  {
+   "check": "files_lt_20MB",
+   "ok": true,
+   "note": "最大 1.03MB"
+  },
+  {
+   "check": "readme",
+   "ok": true,
+   "note": "FAMILYTREE_V3.md"
+  }
+ ]
+}

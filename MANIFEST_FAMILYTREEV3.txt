@@ -1,0 +1,81 @@
+# MANIFEST_FAMILYTREEV3 — 《微光小圃》第 7 批：族譜 V3-A（遊美 2026-11-02）
+# 疊喺 art/walkdream-v3 上面（基礎＝art/seasons-v3 @ b6560a67＋第 6 批 /workspace/walkdream-v3-staging.zip 內容）；只含今批新檔。base worktree HEAD 6030ff79。
+# 依 docs-gdd/family-work-scenes-v1.md §1、§2.1（族譜）；工作場景（§2 其餘）未做。
+# [M]＝改檔：冇（今批全部新檔；舊 validator 重跑寫返嘅 validation.json 唔入 zip）
+# 格式：sha1[:12]  bytes  path
+# 檔案數：74（新 74，[M] 0）＋本 MANIFEST
+
+883b941dacc9      54839  art-pet/tools/build_familytree_v3.py
+cadc7fcdf664       7612  art-pet/tools/preview_familytree_v3.py
+49033bf52c81       9971  art-pet/tools/validate_familytree_v3.py
+cd1adfdb8d78       4163  art-pet/ui/familytree_v3/FAMILYTREE_V3.md
+de2fac3a13b6     138121  art-pet/ui/familytree_v3/bg/bg_normal@3x.png
+7340aa8e65e0      31219  art-pet/ui/familytree_v3/bg/bg_normal_light_add@3x.png
+6ed487a41a5f     163835  art-pet/ui/familytree_v3/bg/bg_warm@3x.png
+a0b284bd173b      31219  art-pet/ui/familytree_v3/bg/bg_warm_light_add@3x.png
+357099a41ead       4514  art-pet/ui/familytree_v3/family_demo.json
+13a2d9c5daea      33440  art-pet/ui/familytree_v3/familytree_v3.json
+ea21a2dc90ae       1104  art-pet/ui/familytree_v3/fx/emitters.json
+98d76e5e3e5a        599  art-pet/ui/familytree_v3/fx/particles@3x.png
+b551332d2f37     239716  art-pet/ui/familytree_v3/mockups/ft_achievements_3x.png
+a8e4cf542d33     193423  art-pet/ui/familytree_v3/mockups/ft_card_3x.png
+ac02af985c57     348337  art-pet/ui/familytree_v3/mockups/ft_direct_3x.png
+d5f1720eff51     283938  art-pet/ui/familytree_v3/mockups/ft_egg_pick_3x.png
+44d619491e5f     362749  art-pet/ui/familytree_v3/mockups/ft_focus_3x.png
+b19f56b8e83f     418634  art-pet/ui/familytree_v3/mockups/ft_full_3x.png
+9b77ff06922e     470650  art-pet/ui/familytree_v3/mockups/ft_full_all_3x.png
+848ecfbc942e     381191  art-pet/ui/familytree_v3/mockups/ft_normal_3x.png
+645098f2efed      18461  art-pet/ui/familytree_v3/mockups/texts.json
+4c549983f37f      15849  art-pet/ui/familytree_v3/parts/ach_brothers@3x.png
+6eb10c463201      13514  art-pet/ui/familytree_v3/parts/ach_brothers_locked@3x.png
+13f098673d0a      18656  art-pet/ui/familytree_v3/parts/ach_eight_series@3x.png
+394e789f6631      16231  art-pet/ui/familytree_v3/parts/ach_eight_series_locked@3x.png
+11a1ac31ff05      15057  art-pet/ui/familytree_v3/parts/ach_first_home@3x.png
+5ef593142f38      12967  art-pet/ui/familytree_v3/parts/ach_first_home_locked@3x.png
+df37d73c0b18      16200  art-pet/ui/familytree_v3/parts/ach_move_heir@3x.png
+392df51ca839      14077  art-pet/ui/familytree_v3/parts/ach_move_heir_locked@3x.png
+fd256c4da7df      18042  art-pet/ui/familytree_v3/parts/ach_nine_light@3x.png
+1ab57472ffe1      15588  art-pet/ui/familytree_v3/parts/ach_nine_light_locked@3x.png
+be34f875dd69      14419  art-pet/ui/familytree_v3/parts/ach_three_gen@3x.png
+ea0d50660a7e      12228  art-pet/ui/familytree_v3/parts/ach_three_gen_locked@3x.png
+811d826806be        226  art-pet/ui/familytree_v3/parts/egg_unhatched@3x.png
+5d4f2251ff9f       1030  art-pet/ui/familytree_v3/parts/icon_house@3x.png
+b8317bb11428        748  art-pet/ui/familytree_v3/parts/inherit_arrow@3x.png
+1e19344bc724        349  art-pet/ui/familytree_v3/parts/line_anc_h@3x.png
+9d3dd8e74c8c        354  art-pet/ui/familytree_v3/parts/line_anc_v@3x.png
+edafc30429dd        643  art-pet/ui/familytree_v3/parts/line_arrow@3x.png
+89dc75abcd40        131  art-pet/ui/familytree_v3/parts/line_gen_h@3x.png
+9cec8f8295b1        127  art-pet/ui/familytree_v3/parts/line_gen_v@3x.png
+c9f8959092c4        250  art-pet/ui/familytree_v3/parts/line_house_h@3x.png
+497df73f62df        240  art-pet/ui/familytree_v3/parts/line_house_v@3x.png
+c82871820ac7        654  art-pet/ui/familytree_v3/parts/line_joint@3x.png
+b9e6e32cabb0        174  art-pet/ui/familytree_v3/parts/line_sib_h@3x.png
+0fb12fc8e061        139  art-pet/ui/familytree_v3/parts/line_sib_v@3x.png
+d29198bb9b05       8577  art-pet/ui/familytree_v3/parts/node_aura@3x.png
+bfee93ceb968        228  art-pet/ui/familytree_v3/parts/node_crown@3x.png
+5183ea02ed50       8447  art-pet/ui/familytree_v3/parts/node_leaf_gray@3x.png
+a771b7ce44c2       8829  art-pet/ui/familytree_v3/parts/node_leaf_live@3x.png
+5033a72ff0f0       1631  art-pet/ui/familytree_v3/parts/node_leaf_mask@3x.png
+e3f9bd9b4d6b      12864  art-pet/ui/familytree_v3/parts/node_leaf_sel@3x.png
+0ac394ccd34c      10729  art-pet/ui/familytree_v3/parts/node_round_gray@3x.png
+54a1ff528fe4      11442  art-pet/ui/familytree_v3/parts/node_round_live@3x.png
+01e8a79b57e8       1954  art-pet/ui/familytree_v3/parts/node_round_mask@3x.png
+d3de4feb538a      17275  art-pet/ui/familytree_v3/parts/node_round_sel@3x.png
+e1f4128662b8       3118  art-pet/ui/familytree_v3/parts/reward_ancestral_tag@3x.png
+6f5b3f3a17d3      20829  art-pet/ui/familytree_v3/parts/reward_gold_frame@3x.png
+82fed0a378ae      60780  art-pet/ui/familytree_v3/parts/reward_halo_top@3x.png
+cdc8f7721693       3057  art-pet/ui/familytree_v3/parts/reward_leaf_border@3x.png
+cf47859070a8      12352  art-pet/ui/familytree_v3/parts/reward_sibling_frame@3x.png
+64067d9c7d49        896  art-pet/ui/familytree_v3/parts/sib_dot_amber@3x.png
+cf37429c8b37        934  art-pet/ui/familytree_v3/parts/sib_dot_mint@3x.png
+442d7612a082        898  art-pet/ui/familytree_v3/parts/sib_dot_rose@3x.png
+fb3652025de3        906  art-pet/ui/familytree_v3/parts/sib_dot_sky@3x.png
+97822ab127b2        915  art-pet/ui/familytree_v3/parts/sib_dot_violet@3x.png
+e074414994c9       9029  art-pet/ui/familytree_v3/parts/stamp_chuan@3x.png
+6475b5064839       9352  art-pet/ui/familytree_v3/parts/stamp_wu@3x.png
+ae6a51368565       8934  art-pet/ui/familytree_v3/parts/stamp_zu@3x.png
+3fd3d0985208     803247  art-pet/ui/familytree_v3/preview/01_before_after.png
+c6b1d3def162    1026323  art-pet/ui/familytree_v3/preview/02_mockups.png
+552332bcad05     406985  art-pet/ui/familytree_v3/preview/03_parts.png
+762feeea4cb5     114553  art-pet/ui/familytree_v3/preview/05_petglow_rule.png
+daf7654743c2       2929  art-pet/ui/familytree_v3/validation.json

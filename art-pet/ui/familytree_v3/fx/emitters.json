@@ -1,0 +1,80 @@
+{
+ "sheet": "fx/particles@3x.png",
+ "cell": [
+  24,
+  24
+ ],
+ "rows": {
+  "mote": 0,
+  "twinkle": 1,
+  "heart": 2
+ },
+ "emitters": [
+  {
+   "name": "bg_mote",
+   "row": "mote",
+   "rate": 0.8,
+   "life": [
+    4,
+    7
+   ],
+   "area": [
+    0,
+    126,
+    585,
+    918
+   ],
+   "vy": [
+    -10,
+    -4
+   ],
+   "fps": 6,
+   "alpha": 0.8,
+   "petGlow": false,
+   "note": "場景粒子，唔受 petGlow"
+  },
+  {
+   "name": "line_flow",
+   "row": "twinkle",
+   "rate": 1.2,
+   "life": [
+    1.2,
+    1.6
+   ],
+   "along": "line_gen",
+   "speed": 60,
+   "fps": 8,
+   "note": "直系線上金光流動（撳節點時只喺高亮線）"
+  },
+  {
+   "name": "node_aura_mote",
+   "row": "mote",
+   "rate": 0.5,
+   "life": [
+    2,
+    3
+   ],
+   "around": "node",
+   "radius": 74,
+   "petGlow": true,
+   "note": "寵物光點 × petGlow（瞓覺 0）"
+  },
+  {
+   "name": "portrait_heart",
+   "row": "heart",
+   "burst": 5,
+   "life": [
+    0.8,
+    1.1
+   ],
+   "vy": [
+    -60,
+    -30
+   ],
+   "fps": 8,
+   "trigger": "touch_portrait",
+   "petGlow": false,
+   "note": "摸肖像：眨眼＋心心"
+  }
+ ]
+}

@@ -1,0 +1,2511 @@
+{
+ "name": "familytree_v3",
+ "batch": 7,
+ "spec": "V3-A：金光深藍磨砂＋1.5px 金幼線；Noto CJK TC（最細 18@3x）；對比 ≥4.5；@3x 烘焙光影＋粒子；sprite 0/255，UI／光影層真 alpha；唔用 Fusion Pixel",
+ "gdd": "docs-gdd/family-work-scenes-v1.md §1、§2.1（族譜）",
+ "canvas": [
+  585,
+  1266
+ ],
+ "scale": 3,
+ "bands": {
+  "top": [
+   0,
+   126
+  ],
+  "garden": [
+   126,
+   1044
+  ],
+  "bottom": [
+   1044,
+   1266
+  ]
+ },
+ "split": [
+  0,
+  42,
+  348,
+  422
+ ],
+ "layers": [
+  "bg",
+  "bg_light_add(lighter)",
+  "line(light)",
+  "node_aura(light×petGlow)",
+  "node frame(ui)",
+  "window bg＋avatar sprite",
+  "crown／stamp／dot",
+  "labels",
+  "ui top/bottom",
+  "fx"
+ ],
+ "inPartText": [
+  {
+   "part": "stamp_chuan",
+   "text": "傳",
+   "fg": [
+    255,
+    246,
+    232
+   ],
+   "bg": [
+    196,
+    48,
+    52
+   ],
+   "px": 34
+  },
+  {
+   "part": "stamp_zu",
+   "text": "祖",
+   "fg": [
+    255,
+    240,
+    206
+   ],
+   "bg": [
+    120,
+    80,
+    30
+   ],
+   "px": 34
+  },
+  {
+   "part": "stamp_wu",
+   "text": "屋",
+   "fg": [
+    240,
+    250,
+    255
+   ],
+   "bg": [
+    40,
+    108,
+    170
+   ],
+   "px": 34
+  },
+  {
+   "part": "ach_three_gen",
+   "text": "三代",
+   "fg": [
+    255,
+    246,
+    232
+   ],
+   "bg": [
+    176,
+    38,
+    50
+   ],
+   "px": 22
+  },
+  {
+   "part": "ach_move_heir",
+   "text": "傳",
+   "fg": [
+    120,
+    60,
+    20
+   ],
+   "bg": [
+    255,
+    236,
+    184
+   ],
+   "px": 26
+  },
+  {
+   "part": "reward_ancestral_tag",
+   "text": "祖傳",
+   "fg": [
+    36,
+    34,
+    52
+   ],
+   "bg": [
+    246,
+    176,
+    72
+   ],
+   "px": 18
+  },
+  {
+   "part": "reward_sibling_frame",
+   "text": "兄弟",
+   "fg": [
+    36,
+    34,
+    52
+   ],
+   "bg": [
+    240,
+    126,
+    150
+   ],
+   "px": 18
+  }
+ ],
+ "parts": {
+  "node_round_live": {
+   "file": "parts/node_round_live@3x.png",
+   "size": [
+    132,
+    132
+   ],
+   "layer": "ui",
+   "desc": "團絨圓框・仲喺屋企（亮）；頭像窗中心 96×96"
+  },
+  "node_round_gray": {
+   "file": "parts/node_round_gray@3x.png",
+   "size": [
+    132,
+    132
+   ],
+   "layer": "ui",
+   "desc": "團絨圓框・退休／未出（灰）；頭像窗中心 96×96"
+  },
+  "node_round_sel": {
+   "file": "parts/node_round_sel@3x.png",
+   "size": [
+    132,
+    132
+   ],
+   "layer": "ui",
+   "desc": "團絨圓框・撳中（金光）；頭像窗中心 96×96"
+  },
+  "node_round_mask": {
+   "file": "parts/node_round_mask@3x.png",
+   "size": [
+    96,
+    96
+   ],
+   "layer": "ui",
+   "desc": "團絨圓框頭像窗遮罩（窗底＋頭像用）"
+  },
+  "node_leaf_live": {
+   "file": "parts/node_leaf_live@3x.png",
+   "size": [
+    132,
+    132
+   ],
+   "layer": "ui",
+   "desc": "細佬葉框・仲喺屋企（亮）；頭像窗中心 96×96"
+  },
+  "node_leaf_gray": {
+   "file": "parts/node_leaf_gray@3x.png",
+   "size": [
+    132,
+    132
+   ],
+   "layer": "ui",
+   "desc": "細佬葉框・退休／未出（灰）；頭像窗中心 96×96"
+  },
+  "node_leaf_sel": {
+   "file": "parts/node_leaf_sel@3x.png",
+   "size": [
+    132,
+    132
+   ],
+   "layer": "ui",
+   "desc": "細佬葉框・撳中（金光）；頭像窗中心 96×96"
+  },
+  "node_leaf_mask": {
+   "file": "parts/node_leaf_mask@3x.png",
+   "size": [
+    96,
+    96
+   ],
+   "layer": "ui",
+   "desc": "細佬葉框頭像窗遮罩（窗底＋頭像用）"
+  },
+  "node_crown": {
+   "file": "parts/node_crown@3x.png",
+   "size": [
+    63,
+    27
+   ],
+   "layer": "sprite",
+   "desc": "主寵皇冠（像素 ×3，0/255）"
+  },
+  "node_aura": {
+   "file": "parts/node_aura@3x.png",
+   "size": [
+    242,
+    242
+   ],
+   "layer": "light",
+   "desc": "寵物光 aura（白；runtime tint＝petglow outer × petGlow）"
+  },
+  "stamp_chuan": {
+   "file": "parts/stamp_chuan@3x.png",
+   "size": [
+    60,
+    60
+   ],
+   "layer": "ui",
+   "desc": "關係章「傳」"
+  },
+  "stamp_zu": {
+   "file": "parts/stamp_zu@3x.png",
+   "size": [
+    60,
+    60
+   ],
+   "layer": "ui",
+   "desc": "關係章「祖」"
+  },
+  "stamp_wu": {
+   "file": "parts/stamp_wu@3x.png",
+   "size": [
+    60,
+    60
+   ],
+   "layer": "ui",
+   "desc": "關係章「屋」"
+  },
+  "sib_dot_rose": {
+   "file": "parts/sib_dot_rose@3x.png",
+   "size": [
+    22,
+    22
+   ],
+   "layer": "ui",
+   "desc": "兄弟同色圓點（rose）"
+  },
+  "sib_dot_mint": {
+   "file": "parts/sib_dot_mint@3x.png",
+   "size": [
+    22,
+    22
+   ],
+   "layer": "ui",
+   "desc": "兄弟同色圓點（mint）"
+  },
+  "sib_dot_sky": {
+   "file": "parts/sib_dot_sky@3x.png",
+   "size": [
+    22,
+    22
+   ],
+   "layer": "ui",
+   "desc": "兄弟同色圓點（sky）"
+  },
+  "sib_dot_amber": {
+   "file": "parts/sib_dot_amber@3x.png",
+   "size": [
+    22,
+    22
+   ],
+   "layer": "ui",
+   "desc": "兄弟同色圓點（amber）"
+  },
+  "sib_dot_violet": {
+   "file": "parts/sib_dot_violet@3x.png",
+   "size": [
+    22,
+    22
+   ],
+   "layer": "ui",
+   "desc": "兄弟同色圓點（violet）"
+  },
+  "icon_house": {
+   "file": "parts/icon_house@3x.png",
+   "size": [
+    30,
+    30
+   ],
+   "layer": "ui",
+   "desc": "同屋細屋 icon（線中間）"
+  },
+  "inherit_arrow": {
+   "file": "parts/inherit_arrow@3x.png",
+   "size": [
+    26,
+    26
+   ],
+   "layer": "ui",
+   "desc": "遺傳自：細箭咀（指返出處）"
+  },
+  "line_gen_h": {
+   "file": "parts/line_gen_h@3x.png",
+   "size": [
+    48,
+    12
+   ],
+   "layer": "light",
+   "desc": "上一代／下一代線 tile（橫，repeat）",
+   "tile": "h"
+  },
+  "line_gen_v": {
+   "file": "parts/line_gen_v@3x.png",
+   "size": [
+    12,
+    48
+   ],
+   "layer": "light",
+   "desc": "上一代／下一代線 tile（直，repeat）",
+   "tile": "v"
+  },
+  "line_sib_h": {
+   "file": "parts/line_sib_h@3x.png",
+   "size": [
+    48,
+    12
+   ],
+   "layer": "light",
+   "desc": "兄弟姊妹線 tile（橫，repeat）",
+   "tile": "h"
+  },
+  "line_sib_v": {
+   "file": "parts/line_sib_v@3x.png",
+   "size": [
+    12,
+    48
+   ],
+   "layer": "light",
+   "desc": "兄弟姊妹線 tile（直，repeat）",
+   "tile": "v"
+  },
+  "line_house_h": {
+   "file": "parts/line_house_h@3x.png",
+   "size": [
+    48,
+    12
+   ],
+   "layer": "light",
+   "desc": "同屋（冇血緣）線 tile（橫，repeat）",
+   "tile": "h"
+  },
+  "line_house_v": {
+   "file": "parts/line_house_v@3x.png",
+   "size": [
+    12,
+    48
+   ],
+   "layer": "light",
+   "desc": "同屋（冇血緣）線 tile（直，repeat）",
+   "tile": "v"
+  },
+  "line_anc_h": {
+   "file": "parts/line_anc_h@3x.png",
+   "size": [
+    48,
+    12
+   ],
+   "layer": "light",
+   "desc": "祖輩（隔 2 代或以上）線 tile（橫，repeat）",
+   "tile": "h"
+  },
+  "line_anc_v": {
+   "file": "parts/line_anc_v@3x.png",
+   "size": [
+    12,
+    48
+   ],
+   "layer": "light",
+   "desc": "祖輩（隔 2 代或以上）線 tile（直，repeat）",
+   "tile": "v"
+  },
+  "line_arrow": {
+   "file": "parts/line_arrow@3x.png",
+   "size": [
+    22,
+    22
+   ],
+   "layer": "ui",
+   "desc": "直系線箭咀（向下）"
+  },
+  "line_joint": {
+   "file": "parts/line_joint@3x.png",
+   "size": [
+    18,
+    18
+   ],
+   "layer": "ui",
+   "desc": "直系線分叉菱形"
+  },
+  "ach_first_home": {
+   "file": "parts/ach_first_home@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「第一個家」"
+  },
+  "ach_first_home_locked": {
+   "file": "parts/ach_first_home_locked@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「第一個家」未解鎖"
+  },
+  "ach_three_gen": {
+   "file": "parts/ach_three_gen@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「三代同堂」"
+  },
+  "ach_three_gen_locked": {
+   "file": "parts/ach_three_gen_locked@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「三代同堂」未解鎖"
+  },
+  "ach_brothers": {
+   "file": "parts/ach_brothers@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「兄弟情」"
+  },
+  "ach_brothers_locked": {
+   "file": "parts/ach_brothers_locked@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「兄弟情」未解鎖"
+  },
+  "ach_nine_light": {
+   "file": "parts/ach_nine_light@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「九光齊」"
+  },
+  "ach_nine_light_locked": {
+   "file": "parts/ach_nine_light_locked@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「九光齊」未解鎖"
+  },
+  "ach_eight_series": {
+   "file": "parts/ach_eight_series@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「八系齊」"
+  },
+  "ach_eight_series_locked": {
+   "file": "parts/ach_eight_series_locked@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「八系齊」未解鎖"
+  },
+  "ach_move_heir": {
+   "file": "parts/ach_move_heir@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「招式傳人」"
+  },
+  "ach_move_heir_locked": {
+   "file": "parts/ach_move_heir_locked@3x.png",
+   "size": [
+    120,
+    120
+   ],
+   "layer": "ui",
+   "desc": "成就徽章「招式傳人」未解鎖"
+  },
+  "reward_gold_frame": {
+   "file": "parts/reward_gold_frame@3x.png",
+   "size": [
+    585,
+    918
+   ],
+   "layer": "ui",
+   "desc": "第一個家：族譜金框（9-slice，蓋族譜區 126–1044）",
+   "nineSlice": [
+    40,
+    40,
+    40,
+    40
+   ]
+  },
+  "reward_sibling_frame": {
+   "file": "parts/reward_sibling_frame@3x.png",
+   "size": [
+    300,
+    190
+   ],
+   "layer": "ui",
+   "desc": "兄弟情：兄弟合照框（兩個窗 d96，中心 (90,87)／(210,87)）"
+  },
+  "reward_halo_top": {
+   "file": "parts/reward_halo_top@3x.png",
+   "size": [
+    585,
+    240
+   ],
+   "layer": "light",
+   "desc": "九光齊：族譜頂光環（九路線色）"
+  },
+  "reward_leaf_border": {
+   "file": "parts/reward_leaf_border@3x.png",
+   "size": [
+    40,
+    120
+   ],
+   "layer": "ui",
+   "desc": "八系齊：葉形邊 tile（左；右邊 flipX）",
+   "tile": "v"
+  },
+  "reward_ancestral_tag": {
+   "file": "parts/reward_ancestral_tag@3x.png",
+   "size": [
+    96,
+    32
+   ],
+   "layer": "ui",
+   "desc": "招式傳人：招式名後「祖傳」牌"
+  },
+  "egg_unhatched": {
+   "file": "parts/egg_unhatched@3x.png",
+   "size": [
+    48,
+    44
+   ],
+   "layer": "sprite",
+   "desc": "未孵蛋頭像（像素 ×4，0/255）"
+  }
+ },
+ "backgrounds": {
+  "bg_normal": {
+   "file": "bg/bg_normal@3x.png",
+   "light": "bg/bg_normal_light_add@3x.png",
+   "lightBlend": "lighter",
+   "lightSway": {
+    "px": 6,
+    "sec": 9
+   }
+  },
+  "bg_warm": {
+   "file": "bg/bg_warm@3x.png",
+   "light": "bg/bg_warm_light_add@3x.png",
+   "lightBlend": "lighter",
+   "lightSway": {
+    "px": 6,
+    "sec": 9
+   },
+   "unlock": "three_gen"
+  }
+ },
+ "fx": "fx/emitters.json",
+ "stamps": {
+  "chuan": {
+   "char": "傳",
+   "bg": [
+    196,
+    48,
+    52
+   ],
+   "fg": [
+    255,
+    246,
+    232
+   ],
+   "contrast": 5.13
+  },
+  "zu": {
+   "char": "祖",
+   "bg": [
+    120,
+    80,
+    30
+   ],
+   "fg": [
+    255,
+    240,
+    206
+   ],
+   "contrast": 6.28
+  },
+  "wu": {
+   "char": "屋",
+   "bg": [
+    40,
+    108,
+    170
+   ],
+   "fg": [
+    240,
+    250,
+    255
+   ],
+   "contrast": 5.2
+  }
+ },
+ "relations": {
+  "gen": {
+   "zh": "上一代／下一代",
+   "line": "line_gen",
+   "mark": "stamp_chuan"
+  },
+  "sib": {
+   "zh": "兄弟姊妹",
+   "line": "line_sib",
+   "mark": "sib_dot"
+  },
+  "house": {
+   "zh": "同屋（冇血緣）",
+   "line": "line_house",
+   "mark": "stamp_wu"
+  },
+  "anc": {
+   "zh": "祖輩（隔 2 代或以上）",
+   "line": "line_anc",
+   "mark": "stamp_zu"
+  }
+ },
+ "nodeRules": {
+  "sizePx": 132,
+  "windowPx": 96,
+  "avatar": "現有寵物 sprite（build_ui_hd2d_v3_mockups.face k=4，跟實際形態＋狀態；瞓覺用 sleep 幀）",
+  "frame": {
+   "tuanrong": "node_round_*",
+   "pet2": "node_leaf_*"
+  },
+  "state": {
+   "live": "alive 且已孵",
+   "gray": "退休（frozen 或 alive=false）或未孵蛋：框灰＋窗去飽和",
+   "sel": "撳中"
+  },
+  "crown": "main=true",
+  "dimOthers": {
+   "alpha": 0.55,
+   "rgbMul": 0.38,
+   "lineAlpha": 0.22,
+   "note": "撳節點：佢嘅關係線同節點保持，其他變暗"
+  },
+  "stamp": {
+   "chuan": "有上一代（傳）—由主寵視角：上一代／自己",
+   "zu": "祖輩（隔 ≥2 代）",
+   "wu": "同屋（冇血緣）"
+  },
+  "siblingDot": "同上一代＝同色圓點"
+ },
+ "petGlow": {
+  "source": "ui/kit_hd2d_v3/layout_hd2d_v3.json#petGlow",
+  "states": {
+   "awake": 1.0,
+   "sleepy": 0.6,
+   "sleep": 0.0,
+   "sleepClip": 0.0,
+   "dreamEnter": 0.0,
+   "dreaming": 0.0
+  },
+  "fadeOut": {
+   "ms": 600,
+   "ease": "easeInQuad",
+   "from": "current",
+   "to": 0,
+   "trigger": "sleep clip 第 1 幀／夢遊入夢 transition_in 開始前"
+  },
+  "fadeIn": {
+   "ms": 400,
+   "ease": "easeOutQuad",
+   "from": 0,
+   "to": 1,
+   "trigger": "醒（wake clip 最後一幀）",
+   "pulse": {
+    "ms": 150,
+    "scale": [
+     1,
+     1.15,
+     1
+    ]
+   }
+  },
+  "appliesTo": [
+   "node_aura",
+   "node_aura_mote"
+  ],
+  "grayNodes": 0.0,
+  "note": "族譜節點 aura＝寵物光；瞓覺／入夢 0，退休／蛋 0；背景、線光、成就光環屬場景光，唔受影響",
+  "nodes": {
+   "guangguang": {
+    "state": "awake",
+    "petGlow": 0.0,
+    "tint": "#EFE09A",
+    "tintSrc": "sprites/tuanrong/petglow_v3/evo_still_moon.json"
+   },
+   "tuanrong": {
+    "state": "awake",
+    "petGlow": 1.0,
+    "tint": "#62CFEF",
+    "tintSrc": "sprites/tuanrong/petglow_v3/evo_still_tide.json"
+   },
+   "yueyue": {
+    "state": "awake",
+    "petGlow": 0.0,
+    "tint": "#8ED87A",
+    "tintSrc": "sprites/tuanrong/petglow_v3/evo_guard_shroom.json"
+   },
+   "huozai": {
+    "state": "awake",
+    "petGlow": 1.0,
+    "tint": "#e2973f",
+    "tintSrc": "sprites/series2/petglow_v3/S4C.json"
+   },
+   "bobo": {
+    "state": "awake",
+    "petGlow": 1.0,
+    "tint": "#82a9f3",
+    "tintSrc": "sprites/series2/petglow_v3/A3.json"
+   },
+   "axing": {
+    "state": "awake",
+    "petGlow": 1.0,
+    "tint": "#FFD45E",
+    "tintSrc": "sprites/tuanrong/petglow_v3/evo_hop.json"
+   },
+   "doudou": {
+    "state": "sleep",
+    "petGlow": 0.0,
+    "tint": "#e5bd97",
+    "tintSrc": "sprites/series2/petglow_v3/S2.json"
+   },
+   "egg_mie": {
+    "state": "egg",
+    "petGlow": 0.0,
+    "tint": null,
+    "tintSrc": null
+   }
+  }
+ },
+ "toggle": {
+  "options": [
+   "全家",
+   "只睇直系"
+  ],
+  "direct": "主寵＋上一代鏈＋下一代"
+ },
+ "achievements": [
+  {
+   "id": "first_home",
+   "zh": "第一個家",
+   "cond": "第 1 隻成家人",
+   "reward": "族譜金框",
+   "badge": "ach_first_home",
+   "locked": "ach_first_home_locked"
+  },
+  {
+   "id": "three_gen",
+   "zh": "三代同堂",
+   "cond": "族譜有 3 代",
+   "reward": "「三代」徽章＋族譜背景變暖色",
+   "badge": "ach_three_gen",
+   "locked": "ach_three_gen_locked"
+  },
+  {
+   "id": "brothers",
+   "zh": "兄弟情",
+   "cond": "同一上一代有 2 隻",
+   "reward": "兄弟合照框",
+   "badge": "ach_brothers",
+   "locked": "ach_brothers_locked"
+  },
+  {
+   "id": "nine_light",
+   "zh": "九光齊",
+   "cond": "團絨 9 條路線都出過",
+   "reward": "族譜頂部光環",
+   "badge": "ach_nine_light",
+   "locked": "ach_nine_light_locked"
+  },
+  {
+   "id": "eight_series",
+   "zh": "八系齊",
+   "cond": "細佬 A–H 都出過",
+   "reward": "族譜葉形邊",
+   "badge": "ach_eight_series",
+   "locked": "ach_eight_series_locked"
+  },
+  {
+   "id": "move_heir",
+   "zh": "招式傳人",
+   "cond": "同一招式連傳 3 代",
+   "reward": "招式名加「祖傳」",
+   "badge": "ach_move_heir",
+   "locked": "ach_move_heir_locked"
+  }
+ ],
+ "rewards": {
+  "first_home": "reward_gold_frame",
+  "three_gen": [
+   "ach_three_gen",
+   "bg_warm"
+  ],
+  "brothers": "reward_sibling_frame",
+  "nine_light": "reward_halo_top",
+  "eight_series": "reward_leaf_border",
+  "move_heir": "reward_ancestral_tag"
+ },
+ "actions": [
+  "撳節點（高亮關係）",
+  "摸肖像（眨眼＋心心 portrait_heart）",
+  "玩遺傳招式",
+  "叫佢出嚟",
+  "未孵蛋揀上一代",
+  "截圖"
+ ],
+ "forbidden": [
+  "刪節點",
+  "改名",
+  "改關係"
+ ],
+ "demo": "family_demo.json",
+ "mockups": {
+  "ft_full": {
+   "file": "mockups/ft_full_3x.png",
+   "bg": "bg_warm",
+   "desc": "全家（暖色背景，三代同堂已解鎖；金框）"
+  },
+  "ft_direct": {
+   "file": "mockups/ft_direct_3x.png",
+   "bg": "bg_warm",
+   "desc": "只睇直系"
+  },
+  "ft_focus": {
+   "file": "mockups/ft_focus_3x.png",
+   "bg": "bg_warm",
+   "desc": "撳節點：關係線高亮、其他變暗＋底部資料"
+  },
+  "ft_card": {
+   "file": "mockups/ft_card_3x.png",
+   "bg": "bg_warm",
+   "desc": "寵物卡：遺傳自＋箭咀、祖傳、4 行故事、睇佢一生 6 剪影"
+  },
+  "ft_achievements": {
+   "file": "mockups/ft_achievements_3x.png",
+   "bg": "bg_warm",
+   "desc": "6 成就（3 解鎖／3 未解鎖）"
+  },
+  "ft_full_all": {
+   "file": "mockups/ft_full_all_3x.png",
+   "bg": "bg_warm",
+   "desc": "6 成就全開：光環＋葉形邊＋金框"
+  },
+  "ft_normal": {
+   "file": "mockups/ft_normal_3x.png",
+   "bg": "bg_normal",
+   "desc": "未三代同堂：普通深藍背景"
+  },
+  "ft_egg_pick": {
+   "file": "mockups/ft_egg_pick_3x.png",
+   "bg": "bg_warm",
+   "desc": "未孵蛋揀上一代"
+  }
+ },
+ "layout": {
+  "ft_full": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "toggle": [
+    300,
+    34,
+    266,
+    48
+   ],
+   "node:guangguang": [
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   "node:tuanrong": [
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:yueyue": [
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:huozai": [
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:bobo": [
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:axing": [
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:doudou": [
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   "node:egg_mie": [
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   "ach:first_home": [
+    16,
+    1090,
+    72,
+    72
+   ],
+   "ach:three_gen": [
+    112,
+    1090,
+    72,
+    72
+   ],
+   "ach:brothers": [
+    208,
+    1090,
+    72,
+    72
+   ],
+   "ach:nine_light": [
+    304,
+    1090,
+    72,
+    72
+   ],
+   "ach:eight_series": [
+    400,
+    1090,
+    72,
+    72
+   ],
+   "ach:move_heir": [
+    496,
+    1090,
+    72,
+    72
+   ],
+   "btn:截圖": [
+    26,
+    1186,
+    160,
+    48
+   ],
+   "btn:叫佢出嚟": [
+    206,
+    1186,
+    200,
+    48
+   ],
+   "btn:成就": [
+    426,
+    1186,
+    134,
+    48
+   ]
+  },
+  "ft_direct": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "toggle": [
+    300,
+    34,
+    266,
+    48
+   ],
+   "node:guangguang": [
+    226.0,
+    170.0,
+    132,
+    132
+   ],
+   "node:tuanrong": [
+    226.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:bobo": [
+    226.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:doudou": [
+    226.0,
+    800.0,
+    132,
+    132
+   ],
+   "ach:first_home": [
+    16,
+    1090,
+    72,
+    72
+   ],
+   "ach:three_gen": [
+    112,
+    1090,
+    72,
+    72
+   ],
+   "ach:brothers": [
+    208,
+    1090,
+    72,
+    72
+   ],
+   "ach:nine_light": [
+    304,
+    1090,
+    72,
+    72
+   ],
+   "ach:eight_series": [
+    400,
+    1090,
+    72,
+    72
+   ],
+   "ach:move_heir": [
+    496,
+    1090,
+    72,
+    72
+   ],
+   "btn:截圖": [
+    26,
+    1186,
+    160,
+    48
+   ],
+   "btn:叫佢出嚟": [
+    206,
+    1186,
+    200,
+    48
+   ],
+   "btn:成就": [
+    426,
+    1186,
+    134,
+    48
+   ]
+  },
+  "ft_focus": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "toggle": [
+    300,
+    34,
+    266,
+    48
+   ],
+   "node:guangguang": [
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   "node:tuanrong": [
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:yueyue": [
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:huozai": [
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:bobo": [
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:axing": [
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:doudou": [
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   "node:egg_mie": [
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   "btn:睇佢一生": [
+    371,
+    1032,
+    176,
+    48
+   ]
+  },
+  "ft_card": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "toggle": [
+    300,
+    34,
+    266,
+    48
+   ],
+   "node:guangguang": [
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   "node:tuanrong": [
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:yueyue": [
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:huozai": [
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:bobo": [
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:axing": [
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:doudou": [
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   "node:egg_mie": [
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   "close": [
+    511,
+    162,
+    44,
+    44
+   ],
+   "btn:叫佢出嚟": [
+    44,
+    998,
+    240,
+    60
+   ],
+   "btn:玩招式": [
+    304,
+    998,
+    237,
+    60
+   ]
+  },
+  "ft_achievements": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "toggle": [
+    300,
+    34,
+    266,
+    48
+   ],
+   "node:guangguang": [
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   "node:tuanrong": [
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:yueyue": [
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:huozai": [
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:bobo": [
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:axing": [
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:doudou": [
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   "node:egg_mie": [
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   "close": [
+    511,
+    148,
+    44,
+    44
+   ]
+  },
+  "ft_full_all": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "toggle": [
+    300,
+    34,
+    266,
+    48
+   ],
+   "node:guangguang": [
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   "node:tuanrong": [
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:yueyue": [
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:huozai": [
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:bobo": [
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:axing": [
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:doudou": [
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   "node:egg_mie": [
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   "ach:first_home": [
+    16,
+    1090,
+    72,
+    72
+   ],
+   "ach:three_gen": [
+    112,
+    1090,
+    72,
+    72
+   ],
+   "ach:brothers": [
+    208,
+    1090,
+    72,
+    72
+   ],
+   "ach:nine_light": [
+    304,
+    1090,
+    72,
+    72
+   ],
+   "ach:eight_series": [
+    400,
+    1090,
+    72,
+    72
+   ],
+   "ach:move_heir": [
+    496,
+    1090,
+    72,
+    72
+   ],
+   "btn:截圖": [
+    26,
+    1186,
+    160,
+    48
+   ],
+   "btn:叫佢出嚟": [
+    206,
+    1186,
+    200,
+    48
+   ],
+   "btn:成就": [
+    426,
+    1186,
+    134,
+    48
+   ]
+  },
+  "ft_normal": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "toggle": [
+    300,
+    34,
+    266,
+    48
+   ],
+   "node:guangguang": [
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   "node:tuanrong": [
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:yueyue": [
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:huozai": [
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:bobo": [
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:axing": [
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:doudou": [
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   "node:egg_mie": [
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   "ach:first_home": [
+    16,
+    1090,
+    72,
+    72
+   ],
+   "ach:three_gen": [
+    112,
+    1090,
+    72,
+    72
+   ],
+   "ach:brothers": [
+    208,
+    1090,
+    72,
+    72
+   ],
+   "ach:nine_light": [
+    304,
+    1090,
+    72,
+    72
+   ],
+   "ach:eight_series": [
+    400,
+    1090,
+    72,
+    72
+   ],
+   "ach:move_heir": [
+    496,
+    1090,
+    72,
+    72
+   ],
+   "btn:截圖": [
+    26,
+    1186,
+    160,
+    48
+   ],
+   "btn:叫佢出嚟": [
+    206,
+    1186,
+    200,
+    48
+   ],
+   "btn:成就": [
+    426,
+    1186,
+    134,
+    48
+   ]
+  },
+  "ft_egg_pick": {
+   "back": [
+    18,
+    30,
+    56,
+    56
+   ],
+   "toggle": [
+    300,
+    34,
+    266,
+    48
+   ],
+   "node:guangguang": [
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   "node:tuanrong": [
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:yueyue": [
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   "node:huozai": [
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:bobo": [
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:axing": [
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   "node:doudou": [
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   "node:egg_mie": [
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   "close": [
+    511,
+    712,
+    44,
+    44
+   ],
+   "btn:就揀波波": [
+    142,
+    1130,
+    300,
+    60
+   ]
+  }
+ },
+ "hits": {
+  "ft_full": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ],
+   [
+    "toggle",
+    300.0,
+    25.0,
+    266,
+    66
+   ],
+   [
+    "node:guangguang",
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   [
+    "node:tuanrong",
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:yueyue",
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:huozai",
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:bobo",
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:axing",
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:doudou",
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "node:egg_mie",
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "ach:first_home",
+    16.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:three_gen",
+    112.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:brothers",
+    208.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:nine_light",
+    304.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:eight_series",
+    400.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:move_heir",
+    496.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "btn:截圖",
+    26.0,
+    1177.0,
+    160,
+    66
+   ],
+   [
+    "btn:叫佢出嚟",
+    206.0,
+    1177.0,
+    200,
+    66
+   ],
+   [
+    "btn:成就",
+    426.0,
+    1177.0,
+    134,
+    66
+   ]
+  ],
+  "ft_direct": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ],
+   [
+    "toggle",
+    300.0,
+    25.0,
+    266,
+    66
+   ],
+   [
+    "node:guangguang",
+    226.0,
+    170.0,
+    132,
+    132
+   ],
+   [
+    "node:tuanrong",
+    226.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:bobo",
+    226.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:doudou",
+    226.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "ach:first_home",
+    16.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:three_gen",
+    112.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:brothers",
+    208.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:nine_light",
+    304.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:eight_series",
+    400.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:move_heir",
+    496.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "btn:截圖",
+    26.0,
+    1177.0,
+    160,
+    66
+   ],
+   [
+    "btn:叫佢出嚟",
+    206.0,
+    1177.0,
+    200,
+    66
+   ],
+   [
+    "btn:成就",
+    426.0,
+    1177.0,
+    134,
+    66
+   ]
+  ],
+  "ft_focus": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ],
+   [
+    "toggle",
+    300.0,
+    25.0,
+    266,
+    66
+   ],
+   [
+    "node:guangguang",
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   [
+    "node:tuanrong",
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:yueyue",
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:huozai",
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:bobo",
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:axing",
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:doudou",
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "node:egg_mie",
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "btn:睇佢一生",
+    371.0,
+    1023.0,
+    176,
+    66
+   ]
+  ],
+  "ft_card": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ],
+   [
+    "toggle",
+    300.0,
+    25.0,
+    266,
+    66
+   ],
+   [
+    "node:guangguang",
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   [
+    "node:tuanrong",
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:yueyue",
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:huozai",
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:bobo",
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:axing",
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:doudou",
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "node:egg_mie",
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "close",
+    500.0,
+    151.0,
+    66,
+    66
+   ],
+   [
+    "btn:叫佢出嚟",
+    44.0,
+    995.0,
+    240,
+    66
+   ],
+   [
+    "btn:玩招式",
+    304.0,
+    995.0,
+    237,
+    66
+   ]
+  ],
+  "ft_achievements": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ],
+   [
+    "toggle",
+    300.0,
+    25.0,
+    266,
+    66
+   ],
+   [
+    "node:guangguang",
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   [
+    "node:tuanrong",
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:yueyue",
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:huozai",
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:bobo",
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:axing",
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:doudou",
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "node:egg_mie",
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "close",
+    500.0,
+    137.0,
+    66,
+    66
+   ]
+  ],
+  "ft_full_all": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ],
+   [
+    "toggle",
+    300.0,
+    25.0,
+    266,
+    66
+   ],
+   [
+    "node:guangguang",
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   [
+    "node:tuanrong",
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:yueyue",
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:huozai",
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:bobo",
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:axing",
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:doudou",
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "node:egg_mie",
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "ach:first_home",
+    16.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:three_gen",
+    112.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:brothers",
+    208.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:nine_light",
+    304.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:eight_series",
+    400.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:move_heir",
+    496.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "btn:截圖",
+    26.0,
+    1177.0,
+    160,
+    66
+   ],
+   [
+    "btn:叫佢出嚟",
+    206.0,
+    1177.0,
+    200,
+    66
+   ],
+   [
+    "btn:成就",
+    426.0,
+    1177.0,
+    134,
+    66
+   ]
+  ],
+  "ft_normal": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ],
+   [
+    "toggle",
+    300.0,
+    25.0,
+    266,
+    66
+   ],
+   [
+    "node:guangguang",
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   [
+    "node:tuanrong",
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:yueyue",
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:huozai",
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:bobo",
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:axing",
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:doudou",
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "node:egg_mie",
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "ach:first_home",
+    16.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:three_gen",
+    112.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:brothers",
+    208.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:nine_light",
+    304.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:eight_series",
+    400.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "ach:move_heir",
+    496.0,
+    1090.0,
+    72,
+    72
+   ],
+   [
+    "btn:截圖",
+    26.0,
+    1177.0,
+    160,
+    66
+   ],
+   [
+    "btn:叫佢出嚟",
+    206.0,
+    1177.0,
+    200,
+    66
+   ],
+   [
+    "btn:成就",
+    426.0,
+    1177.0,
+    134,
+    66
+   ]
+  ],
+  "ft_egg_pick": [
+   [
+    "back",
+    13.0,
+    25.0,
+    66,
+    66
+   ],
+   [
+    "toggle",
+    300.0,
+    25.0,
+    266,
+    66
+   ],
+   [
+    "node:guangguang",
+    234.0,
+    170.0,
+    132,
+    132
+   ],
+   [
+    "node:tuanrong",
+    139.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:yueyue",
+    374.0,
+    380.0,
+    132,
+    132
+   ],
+   [
+    "node:huozai",
+    39.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:bobo",
+    234.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:axing",
+    414.0,
+    590.0,
+    132,
+    132
+   ],
+   [
+    "node:doudou",
+    234.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "node:egg_mie",
+    414.0,
+    800.0,
+    132,
+    132
+   ],
+   [
+    "close",
+    500.0,
+    701.0,
+    66,
+    66
+   ],
+   [
+    "btn:就揀波波",
+    142.0,
+    1127.0,
+    300,
+    66
+   ]
+  ]
+ },
+ "texts": "mockups/texts.json"
+}
