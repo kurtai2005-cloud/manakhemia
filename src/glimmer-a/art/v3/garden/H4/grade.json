@@ -1,0 +1,499 @@
+{
+ "variant": "H4",
+ "name": "夜燈",
+ "hours": "19–06",
+ "ambientTint": "#c8ccf0",
+ "petTint": "#fff2e4",
+ "saturation": 1.1,
+ "contrast": 1.08,
+ "bloom": {
+  "threshold": 0.56,
+  "intensity": 1.25
+ },
+ "fog": {
+  "color": "#1a2050",
+  "density": 0.06
+ },
+ "dof": {
+  "far": 2.0,
+  "mid": 1.2,
+  "fore": 3.5
+ },
+ "vignette": 0.44,
+ "rim": {
+  "color": "#ffd890",
+  "intensity": 0.8,
+  "dir": [
+   -0.85,
+   -0.5
+  ]
+ },
+ "bulbGlowTint": "#ffd070",
+ "particles": {
+  "type": "firefly",
+  "rate": 0.7,
+  "color": "#e4ff8c"
+ },
+ "rain": {
+  "saturation": 0.75,
+  "contrast": 0.95,
+  "tint": "#8890c0"
+ },
+ "splitTone": {
+  "shadow": "#20307a",
+  "highlight": "#ffd890",
+  "amount": 0.12
+ },
+ "v3": {
+  "note": "V3-A 花園：@3x 烘焙層喺 x3/（669×1338＝層 223×446 ×3；對齊 mid，同 mid 一齊位移 ×3）；vignette@3x 係螢幕 585×1266。即時層唔烘焙。",
+  "layerSize3x": [
+   669,
+   1338
+  ],
+  "screenSize3x": [
+   585,
+   1266
+  ],
+  "layerOffset3x": [
+   42,
+   36
+  ],
+  "pivot": "同 v2：腳底 art (97,292)＝@3x 層 (333,912)；pivot (w/2, h−3)",
+  "stack": [
+   {
+    "layer": "sky",
+    "file": "x3/sky@3x.png",
+    "fallback1x": "sky.png",
+    "blend": "source-over",
+    "parallax": 0.15,
+    "baked": true
+   },
+   {
+    "layer": "far",
+    "file": "x3/far@3x.png",
+    "fallback1x": "far.png",
+    "blend": "source-over",
+    "parallax": 0.35,
+    "baked": true,
+    "note": "已烘 DoF"
+   },
+   {
+    "layer": "haze_far",
+    "file": "x3/haze_far@3x.png",
+    "blend": "source-over",
+    "parallax": 0.35,
+    "baked": true,
+    "note": "地平線高度霧"
+   },
+   {
+    "layer": "mid",
+    "file": "x3/mid@3x.png",
+    "fallback1x": "mid.png",
+    "blend": "source-over",
+    "parallax": 1.0,
+    "baked": true,
+    "note": "移軸 DoF：art y 262–340 清"
+   },
+   {
+    "layer": "mist",
+    "file": "x3/mist@3x.png",
+    "blend": "source-over",
+    "parallax": 1.0,
+    "baked": true,
+    "note": "地面薄霧；可橫向慢飄 2px@3x/s",
+    "drift3x": 2
+   },
+   {
+    "layer": "pet",
+    "realtime": true,
+    "note": "團絨＋細佬：sprite × petTint × ambientTint ＋ rim；contact shadow；petLight pool（× petGlow）"
+   },
+   {
+    "layer": "fore",
+    "file": "x3/fore@3x.png",
+    "fallback1x": "fore.png",
+    "blend": "source-over",
+    "parallax": 1.6,
+    "baked": true
+   },
+   {
+    "layer": "lightmap",
+    "file": "x3/lightmap@3x.png",
+    "fallback1x": "lightmap.png",
+    "blend": "multiply",
+    "parallax": 1.0,
+    "baked": true,
+    "note": "含葉隙光斑"
+   },
+   {
+    "layer": "light_add",
+    "file": "x3/light_add@3x.png",
+    "fallback1x": "light_add.png",
+    "blend": "lighter",
+    "parallax": 1.0,
+    "baked": true,
+    "note": "含體積光（god rays）"
+   },
+   {
+    "layer": "bloom",
+    "file": "x3/bloom@3x.png",
+    "fallback1x": "emissive_blur.png",
+    "blend": "lighter",
+    "parallax": 1.0,
+    "baked": true,
+    "alpha": "grade.bloom.intensity"
+   },
+   {
+    "layer": "emissive_flicker",
+    "file": "x3/emissive@3x.png",
+    "blend": "lighter",
+    "parallax": 1.0,
+    "realtime": true,
+    "note": "mask：燈泡／燈籠／窗閃爍時 globalAlpha 0–0.25 加多次"
+   },
+   {
+    "layer": "flares",
+    "realtime": true,
+    "blend": "lighter",
+    "sprite": "fx/fx_glow_v3@3x.json#flare_{s,m,l}_01..06",
+    "note": "grade.v3.flares：pos（art）、size、tint、fps、phase"
+   },
+   {
+    "layer": "particles",
+    "realtime": true,
+    "sprite": "fx/particles_v3@3x.json ＋ fx/fx_glow_v3@3x.json",
+    "note": "grade.v3.emitters；核心 source-over，glow lighter"
+   },
+   {
+    "layer": "fog",
+    "realtime": true,
+    "blend": "source-over",
+    "note": "fillRect grade.fog（同 v2）"
+   },
+   {
+    "layer": "vignette",
+    "file": "x3/vignette@3x.png",
+    "fallback1x": "vignette.png",
+    "blend": "source-over",
+    "screen": true,
+    "baked": true
+   }
+  ],
+  "bloom3x": {
+   "intensity": 1.25
+  },
+  "flares": [
+   {
+    "pos": [
+     38,
+     108
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.0,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     53,
+     122
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.37,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     60,
+     128
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.74,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     66,
+     133
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.11,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     77,
+     141
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.48,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     84,
+     145
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.85,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     90,
+     149
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.22,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     101,
+     153
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.59,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     108,
+     154
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.96,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     114,
+     156
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.33,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     125,
+     156
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.7,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     132,
+     156
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.07,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     138,
+     155
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.44,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     149,
+     153
+    ],
+    "size": "s",
+    "tint": "#ffe6b0",
+    "fps": 6,
+    "phase": 0.81,
+    "intensity": 0.9
+   },
+   {
+    "pos": [
+     48,
+     119
+    ],
+    "size": "m",
+    "tint": "#ffb070",
+    "fps": 5,
+    "phase": 0.0,
+    "intensity": 0.8
+   },
+   {
+    "pos": [
+     72,
+     140
+    ],
+    "size": "m",
+    "tint": "#ffb070",
+    "fps": 5,
+    "phase": 0.23,
+    "intensity": 0.8
+   },
+   {
+    "pos": [
+     96,
+     153
+    ],
+    "size": "m",
+    "tint": "#ffb070",
+    "fps": 5,
+    "phase": 0.46,
+    "intensity": 0.8
+   },
+   {
+    "pos": [
+     120,
+     158
+    ],
+    "size": "m",
+    "tint": "#ffb070",
+    "fps": 5,
+    "phase": 0.69,
+    "intensity": 0.8
+   },
+   {
+    "pos": [
+     144,
+     156
+    ],
+    "size": "m",
+    "tint": "#ffb070",
+    "fps": 5,
+    "phase": 0.92,
+    "intensity": 0.8
+   },
+   {
+    "pos": [
+     24,
+     246
+    ],
+    "size": "l",
+    "tint": "#ffe2a0",
+    "fps": 4,
+    "phase": 0,
+    "intensity": 1.0
+   },
+   {
+    "pos": [
+     132,
+     302
+    ],
+    "size": "m",
+    "tint": "#d8ff90",
+    "fps": 3,
+    "phase": 0.5,
+    "intensity": 0.7
+   }
+  ],
+  "emitters": [
+   {
+    "type": "firefly",
+    "glow": "glow_24",
+    "tint": "#d8ff90",
+    "rect": [
+     0,
+     180,
+     195,
+     380
+    ],
+    "rate": 1.0,
+    "life": [
+     6,
+     10
+    ],
+    "vx": [
+     -4,
+     4
+    ],
+    "vy": [
+     -3,
+     3
+    ],
+    "breathe": 1.6,
+    "max": 16,
+    "add": 0.9
+   },
+   {
+    "type": "bokeh",
+    "sprite": "bokeh_24",
+    "tint": "#ffd890",
+    "rect": [
+     0,
+     100,
+     195,
+     200
+    ],
+    "rate": 0.3,
+    "life": [
+     6,
+     9
+    ],
+    "vy": [
+     -1,
+     0
+    ],
+    "max": 6,
+    "alpha": 0.2
+   }
+  ],
+  "petLight": {
+   "sprite": "fx/fx_glow_v3@3x.json#pet_pool",
+   "anchor": "foot",
+   "offset3x": [
+    0,
+    6
+   ],
+   "size3x": [
+    240,
+    96
+   ],
+   "tint": "#ffd070",
+   "intensity": 0.9,
+   "blend": "lighter",
+   "multiplyBy": "petGlow",
+   "rule": "layout_hd2d_v3.json → petGlow：瞓覺／sleepClip／入夢前＝0；淡出 600ms easeInQuad、醒返淡入 400ms＋pulse。場景燈唔受影響。逐形態光暈／光點 anchor 見 petglow_v3（第 3 批）。",
+   "formLight": "sprites/tuanrong/petglow_v3/<form>.json（有光源形態先有；冇就用呢個通用光池）",
+   "tintMode": "mix(scene tint, form pool.tint, form pool.mixWithScene)"
+  },
+  "petPop": {
+   "contactShadow": {
+    "alpha": 0.32,
+    "rx": 0.38,
+    "ry": 0.08
+   },
+   "rim": "用 sprites/tuanrong/rim（同 v2 FORMAT §5），rim.intensity ×1.15",
+   "focusBand": "mid DoF 喺 art y 262–340 = 0 → 團絨永遠最清"
+  },
+  "rawColors": 72
+ }
+}
