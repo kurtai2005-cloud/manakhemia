@@ -52,7 +52,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3;
 
   console.log('# 🛠 開發者「5a」');
   await openDev();
-  ok((await page.locator('[data-testid=dev-version]').innerText()).match(/版本 5(a\.1|b)/), '開發者模式「版本 5a.1」');
+  ok((await page.locator('[data-testid=dev-version]').innerText()).match(/版本 5(a\.1|b|c)/), '開發者模式「版本 5a.1」');
   ok((await page.locator('[data-testid=dev-sec-l5]').innerText()).includes('5a'), '分組「5a（家族長線）」');
   const KEYS = ['prep', 'offer', 'offerKidOff', 'offerFull', 'pickTr', 'pickKid', 'xp', 'lv5', 'lv10', 'lvup', 'room2', 'room3', 'room4', 'resTr', 'resKid', 'fill', 'card', 'greet', 'tree', 'treeGold', 'sv', 'reset', 'kidMain', 'trMain'];
   { let n = 0; for (const k of KEYS) if (await page.locator('[data-testid=dev-l5-' + k + ']').count()) n++; ok(n === KEYS.length, KEYS.length + ' 個掣齊', n); }
