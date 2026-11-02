@@ -21,6 +21,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
   const errs = [];
   page.on('console', m => { if (m.type() === 'error') errs.push(m.type() + ': ' + m.text()); });
   page.on('pageerror', e => errs.push('pageerror: ' + e.message));
+  const req5c = new Set(); page.on('request', r => { const m = decodeURIComponent(r.url()).match(/series2_long\/5c\/ui\/([^?#]+)/); if (m) req5c.add(m[1]); });   // 5c.1：runtime 載咗邊啲 5c UI
   const E = (fn, arg) => page.evaluate(fn, arg);
   const W = (ms) => page.waitForTimeout(ms);
   const shot = (n) => page.screenshot({ path: SHOTS + '5c-' + n + '.png' });
@@ -163,6 +164,10 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
   ok(await E(() => !!(window.__qa && __qa.l5 && __qa.l5b)), '?l5c=0：5a／5b 照用');
 
   ok(errs.length === 0, '冇 console error', errs.slice(0, 5));
+  console.log('# 5c.1 未用 UI 冇載入');
+  { const SKIP = ['parent_card_A3', 'parent_card_evo_still_moon', 'inherit_preview_bar', 'icon_trick', 'icon_pattern', 'pill_fast_on', 'pill_fast_tr', 'pill_fast_locked'].map(n => n + '@3x.png').concat('layout.json'), got = [...req5c];
+    ok(got.some(n => /^chip_trick_/.test(n)) && got.includes('icon_fast@3x.png'), 'runtime 有載 5c UI（' + got.length + ' 個：' + got.slice(0, 4).join('、') + '…）');
+    const bad = got.filter(n => SKIP.includes(n)); ok(!bad.length, 'runtime 冇載 build-single 跳過嘅 9 個 5c 檔', bad); }
   console.log(`\n結果：${pass} 通過，${fail} 失敗`);
   await browser.close(); process.exit(fail ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(1); });

@@ -79,6 +79,12 @@ let pass = 0, fail = 0; const ok = (c, m) => { if (c) { pass++; console.log('  �
     ok(['icon_expedition', 'icon_shards', 'icon_rest', 'icon_job_post', 'badge_job_lv1', 'badge_job_lv6'].every(n => keys.includes(B5 + n + '@3x.png')), '5b 用緊嘅 UI 照打包');
     const src = fs.readdirSync(path.join(ROOT, 'src')).filter(f => f.endsWith('.js')).map(f => fs.readFileSync(path.join(ROOT, 'src', f), 'utf8')).join('\n');
     ok(!/diary_page_example|job_card_example|job_card_capped|toast_return|icon_job_lv['@]|seg_(expedition|job|rest)_|5b\/ui\/layout/.test(src), 'src 冇載入 5b 示意圖'); }
+  { const C5 = 'art/series2_long/5c/ui/', mock = ['parent_card_A3', 'parent_card_evo_still_moon', 'inherit_preview_bar', 'icon_trick', 'icon_pattern', 'pill_fast_on', 'pill_fast_tr', 'pill_fast_locked'].map(n => C5 + n + '@3x.png').concat(C5 + 'layout.json');
+    const left = mock.filter(k => keys.includes(k)), sz = mock.reduce((a, k) => a + fs.statSync(path.join(ROOT, k)).size, 0); ok(mock.length === 9 && !left.length, '5c.1 單檔冇 5c 未用 UI（' + mock.length + ' 個，' + Math.round(sz / 1024) + 'KB）', left);
+    ok(mock.every(k => fs.existsSync(path.join(ROOT, k))), '5c 未用 UI 仍然留喺 repo');
+    ok(['icon_fast', 'icon_inherit', 'chip_trick_A', 'chip_trick_H', 'swatch_wave_A3', 'swatch_crescent_H3'].every(n => keys.includes(C5 + n + '@3x.png')), '5c 用緊嘅 UI 照打包');
+    const src = fs.readdirSync(path.join(ROOT, 'src')).filter(f => f.endsWith('.js')).map(f => fs.readFileSync(path.join(ROOT, 'src', f), 'utf8')).join('\n');
+    ok(!/parent_card_|inherit_preview_bar|icon_trick|icon_pattern|pill_fast_|5c\/ui\/layout/.test(src), 'src 冇載入 5c 未用 UI'); }
   ok(/skipped \d+ files/.test(log), 'build log 報跳過 ' + (log.match(/skipped \d+ files \d+ raw bytes/) || [''])[0]);
   ok(fs.existsSync(path.join(ROOT, 'art/ui_hd2d_v2/fonts/fp8-subset.ttf')), 'FP8／FP10 檔仍然留喺 repo');
   fs.unlinkSync(out);

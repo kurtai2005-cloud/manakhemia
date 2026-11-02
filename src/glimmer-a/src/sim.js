@@ -231,10 +231,11 @@
   }
   // v3：判定用嘅隨機數（seed 決定，同一隻寵物同一個 tag 永遠一樣 → 測試／重開一致；測試可 setBranchRoll 注入）
   let rollFn = null;
+  const BRANCH_GEN_SALT = 1;   // 5c.1：舊版用 (s.gen || 1)；固定做 1 → 每代同一套判定（seed 決定）
   function setBranchRoll(fn) { rollFn = typeof fn === 'function' ? fn : null; }
   function branchRoll(s, tag) {
     if (rollFn) { const v = rollFn(tag, s); if (v != null) return v; }   // 注入嘅回 null → 用返 seed
-    let h = 2166136261; const k = tag + ':' + (s.seed >>> 0) + ':' + (s.gen || 1); for (let i = 0; i < k.length; i++) h = Math.imul(h ^ k.charCodeAt(i), 16777619);
+    let h = 2166136261; const k = tag + ':' + (s.seed >>> 0) + ':' + BRANCH_GEN_SALT; for (let i = 0; i < k.length; i++) h = Math.imul(h ^ k.charCodeAt(i), 16777619);   // 5c.1：唔再混 s.gen（第 2 代蛋結局分佈飄）；常數＝舊第 1 代值 → 第 1 代結果一模一樣
     return makeRng(h >>> 0)();
   }
   function lumiCheck(s) {                                // v3 螢絨：機率（firefly_walk 資格；夜晚佔比 30→50% ⇒ 0→25%；CQ < 40 冇）

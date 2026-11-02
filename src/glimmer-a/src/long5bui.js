@@ -174,7 +174,9 @@ body.l5b-on #toast{z-index:72 !important}
       const o = B.st(S()), N = o.trips.length; ix = N ? Math.max(0, Math.min(N - 1, ix == null ? N - 1 : ix)) : 0;
       const el = ov('diary', { ix }), pn = mk('div', `position:absolute;left:24px;top:206px;width:342px;box-sizing:border-box;padding:30px 16px 12px;background:#FFF3DA;border:4px solid #8A5A34;border-radius:12px;box-shadow:0 6px 0 #24172C`, null, 'l5b-diary'); el.appendChild(pn);
       const pl = mk('div', `position:absolute;left:50%;top:-22px;transform:translateX(-50%);min-width:200px;height:44px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:0 14px;${bi('plaque_pri')}` + TXT(24, CREAM), '團絨日記', 'l5b-diary-title'); pn.appendChild(pl);
-      const x0 = mk('div', `position:absolute;right:-12px;top:-14px;width:44px;height:44px;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:center;${sp('close') || bi('close')}` + TXT(24, CREAM), sp('close') ? '' : '✕', 'l5b-diary-close'); x0.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); closeOv(); }); pn.appendChild(x0);
+      // 5c.1：日記 ✕ 熱區 52×52（透明，同 5b.1 其他 ✕ 一樣），圖仍然 sp('close') 原大、中心同舊位一樣
+      const x0 = mk('div', `position:absolute;right:-23px;top:-25px;z-index:5;width:52px;height:52px;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:center` + TXT(24, CREAM), null, 'l5b-diary-close');
+      x0.appendChild(mk('div', `position:relative;flex:0 0 auto;width:30px;height:30px;pointer-events:none;display:flex;align-items:center;justify-content:center;${sp('close') || bi('close')}`, sp('close') ? '' : '✕')); x0.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); closeOv(); }); pn.appendChild(x0);
       const tx = (t, c, tid, ex) => mk('div', 'position:relative;text-align:center;' + TXT(24, c || INK, ex), t, tid);
       if (!N) { pn.appendChild(tx('仲未有遠足日記。', INK, 'l5b-diary-empty')); pn.appendChild(tx('喺「今日安排」揀一隻靜光團絨或者 S6 細佬去遠足啦！', '#5A3E5C')); }
       else {

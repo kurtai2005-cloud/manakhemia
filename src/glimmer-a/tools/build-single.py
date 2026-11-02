@@ -12,6 +12,9 @@ SKIP_DIRS = ('reskin_4b',); SKIP_FILES = ('fp8-subset.ttf', 'fp10-subset.ttf')
 _B5 = 'art/series2_long/5b/ui/'
 SKIP_REL = set([_B5 + n + '@3x.png' for n in ('diary_page_example', 'job_card_example', 'job_card_capped', 'toast_return', 'icon_job_lv')]
                + [_B5 + 'seg_%s_%s@3x.png' % (a, b) for a in ('expedition', 'job', 'rest') for b in ('on', 'off', 'locked')] + [_B5 + 'layout.json'])
+# 5c.1：遊美 5c 示意圖／未用 UI（~268KB；runtime 只用 chip_trick_*／icon_fast／icon_inherit／swatch_*；檔留喺 repo 畀 long5c.test 對數）
+_C5 = 'art/series2_long/5c/ui/'
+SKIP_REL |= set([_C5 + n + '@3x.png' for n in ('parent_card_A3', 'parent_card_evo_still_moon', 'inherit_preview_bar', 'icon_trick', 'icon_pattern', 'pill_fast_on', 'pill_fast_tr', 'pill_fast_locked')] + [_C5 + 'layout.json'])
 assets = {}; skipped = [0, 0]
 for d in ('art', 'audio'):
     for dp, dns, fs in os.walk(os.path.join(ROOT, d)):

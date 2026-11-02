@@ -113,7 +113,9 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
   await readOk('團絨日記', '#l5bov');
   await shot('diary');
   await hitOk('5b.1 日記揭頁', '[data-testid=l5b-diary-prev],[data-testid=l5b-diary-next]', 2);
+  await hitOk('5c.1 日記 ✕', '[data-testid=l5b-diary-close]', 1);
   await click('l5b-diary-prev'); await W(300); ok((await Q()).ovData.ix === 0, '◀ 上一篇');
+  await click('l5b-diary-close'); await W(300); ok(!(await Q()).ov, '5c.1 撳日記 ✕ → 閂咗');
   await E(() => __qa.l5b.close());
 
   console.log('# 返屋動畫＋手信');

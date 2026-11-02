@@ -82,13 +82,14 @@ function run(name, seed, o) {
   const sc = SCHED[name], rng = S.makeRng(seed * 7919 + 13), rngMg = S.makeRng(seed * 7919 + 97), rngPat = S.makeRng(seed * 7919 + 211), T0 = new Date(2026, 10, 2, 0, 0, 0).getTime();
   let now = T0 + 8 * 3600e3, wx = 'clear';
   S.setHourFn(() => new Date(now).getHours() + new Date(now).getMinutes() / 60); S.setNowFn(() => now); S.setWeatherFn(() => wx);
-  const s = S.newState(now, seed); s.stage = 'sprout'; s.growthSec = 0; s.cq = P.cqStart; s.needs = Object.assign({}, P.startNeedsSprout || s.needs); s.evo.day0 = S.dayKey(now);
+  const s = S.newState(now, seed); if (o.gen > 1) s.gen = o.gen | 0;   /* 5c.1：第 N 代（團絨蛋 gen+1） */
+  if (o.egg) { s.stage = 'egg'; s.growthSec = 0; } else { s.stage = 'sprout'; s.growthSec = 0; s.cq = P.cqStart; s.needs = Object.assign({}, P.startNeedsSprout || s.needs); } s.evo.day0 = S.dayKey(now);
   const sess = [];
-  for (let d = 0; d < 9; d++) { if (sc.everyOtherDay && (d + (seed & 1)) % 2) continue; for (const h of sc.hours) { if (rng() < MISS) continue; sess.push({ t: T0 + d * 864e5 + (h * 60 + Math.round((rng() * 2 - 1) * JIT)) * 60e3, h }); } }
+  for (let d = 0; d < (o.egg ? 15 : 9); d++) { if (sc.everyOtherDay && (d + (seed & 1)) % 2) continue; for (const h of sc.hours) { if (rng() < MISS) continue; sess.push({ t: T0 + d * 864e5 + (h * 60 + Math.round((rng() * 2 - 1) * JIT)) * 60e3, h }); } }
   sess.sort((a, b) => a.t - b.t); let k = 0, mgs = 0, lulls = 0;
   const played = {}, dropped = {}, fpatted = {}, shards = {};
-  while (o.days ? now - T0 < o.days * 864e5 : (s.stage === 'sprout' || s.stage === 'juvenile')) {
-    if (!o.days && now - T0 > 10 * 864e5) break;
+  while (o.days ? now - T0 < o.days * 864e5 : (s.stage === 'sprout' || s.stage === 'juvenile' || (o.egg && (s.stage === 'egg' || s.stage === 'newborn')))) {
+    if (!o.days && now - T0 > (o.egg ? 16 : 10) * 864e5) break;
     if (X && o.days) { const wl = X.wallet(s, now); shards[S.dayKey(now - 1)] = Math.max(shards[S.dayKey(now - 1)] || 0, X.wallet(s, now - 1).today); shards[S.dayKey(now)] = wl.today; }
     if (X && o.drops) { const dk = S.dayKey(now); if (!dropped[dk] && new Date(now).getHours() >= 12) { dropped[dk] = 1; for (let i = 0; i < o.drops; i++) X.grant(s, P.systems12.surprise.drop.amt, 'drop', now); } }
     if (X && o.fpats) { const dk = S.dayKey(now); if (!fpatted[dk] && new Date(now).getHours() >= 12 && s.stage !== 'egg') { fpatted[dk] = 1; const it = []; for (let i = 0; i < o.fpats; i++) it.push({ t: now - (o.fpats - i) * 60e3, k: 'pat' }); X.applyOverlay(s, it, now, s.ev); } }
