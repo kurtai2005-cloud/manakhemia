@@ -1,0 +1,3491 @@
+{
+ "version": 1,
+ "batch": "breakthrough 6a 團絨記得你",
+ "faces": {
+  "smug": "得意：半眼（外眼角翹）＋歪咀笑＋腮紅＋✦。用喺『幾日唔見之後第一下撚』",
+  "pout": "委屈：淚光眼＋擔心眉＋︵扁嘴＋右邊鼓腮＋眼角淚珠＋汗滴。用喺『3 日（或以上）唔見』"
+ },
+ "mode": "全幀 patch（同該形態 idle 幀 0 一樣大、同 pivot），喺 body transform 之前蓋落 base；同 3a faces 一樣嘅疊法",
+ "default": "evo_still_radiant",
+ "pets": {
+  "sprout": {
+   "frameSize": [
+    32,
+    32
+   ],
+   "pivot": [
+    16,
+    29
+   ],
+   "anchors": {
+    "headTop": [
+     15.9,
+     10.6
+    ],
+    "side_r": [
+     25.0,
+     16.0
+    ],
+    "side_l": [
+     7.0,
+     16.0
+    ],
+    "bulb": [
+     16,
+     6
+    ],
+    "face": [
+     15.5,
+     20.2
+    ],
+    "eyeL": [
+     11.0,
+     20.5
+    ],
+    "eyeR": [
+     20.0,
+     20.0
+    ],
+    "center": [
+     15.5,
+     17.5
+    ],
+    "chest": [
+     15.5,
+     26
+    ],
+    "pivot": [
+     16,
+     29
+    ],
+    "mouth": [
+     15,
+     23
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/sprout/face_smug.png",
+     "3x": "per_pet/sprout/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/sprout/face_pout.png",
+     "3x": "per_pet/sprout/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 35
+    }
+   }
+  },
+  "radiant": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "anchors": {
+    "headTop": [
+     31.6,
+     28.0
+    ],
+    "side_r": [
+     48.0,
+     34.0
+    ],
+    "side_l": [
+     16.0,
+     34.0
+    ],
+    "bulb": [
+     32,
+     20
+    ],
+    "face": [
+     31.5,
+     45.5
+    ],
+    "eyeL": [
+     23.0,
+     45.5
+    ],
+    "eyeR": [
+     40.0,
+     45.5
+    ],
+    "center": [
+     31.5,
+     34.5
+    ],
+    "chest": [
+     31.5,
+     54
+    ],
+    "pivot": [
+     32,
+     61
+    ],
+    "mouth": [
+     32,
+     50
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/radiant/face_smug.png",
+     "3x": "per_pet/radiant/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 33
+    },
+    "pout": {
+     "1x": "per_pet/radiant/face_pout.png",
+     "3x": "per_pet/radiant/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "soft": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "anchors": {
+    "headTop": [
+     32.8,
+     23.4
+    ],
+    "side_r": [
+     50.0,
+     32.0
+    ],
+    "side_l": [
+     14.0,
+     32.0
+    ],
+    "bulb": [
+     32,
+     17
+    ],
+    "face": [
+     31.5,
+     43.2
+    ],
+    "eyeL": [
+     23.0,
+     43.5
+    ],
+    "eyeR": [
+     40.0,
+     43.0
+    ],
+    "center": [
+     31.5,
+     38.0
+    ],
+    "chest": [
+     31.5,
+     53
+    ],
+    "pivot": [
+     32,
+     61
+    ],
+    "mouth": [
+     32,
+     49
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/soft/face_smug.png",
+     "3x": "per_pet/soft/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 29
+    },
+    "pout": {
+     "1x": "per_pet/soft/face_pout.png",
+     "3x": "per_pet/soft/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "lumi": {
+   "frameSize": [
+    64,
+    64
+   ],
+   "pivot": [
+    32,
+    61
+   ],
+   "anchors": {
+    "headTop": [
+     32.0,
+     28.0
+    ],
+    "side_r": [
+     48.0,
+     34.0
+    ],
+    "side_l": [
+     20.0,
+     34.0
+    ],
+    "bulb": [
+     47,
+     21
+    ],
+    "face": [
+     33.5,
+     45.0
+    ],
+    "eyeL": [
+     25.5,
+     45.0
+    ],
+    "eyeR": [
+     41.5,
+     45.0
+    ],
+    "center": [
+     28.5,
+     40.0
+    ],
+    "chest": [
+     33.5,
+     54
+    ],
+    "pivot": [
+     32,
+     61
+    ],
+    "mouth": [
+     34,
+     50
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/lumi/face_smug.png",
+     "3x": "per_pet/lumi/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 27
+    },
+    "pout": {
+     "1x": "per_pet/lumi/face_pout.png",
+     "3x": "per_pet/lumi/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_dot": {
+   "frameSize": [
+    28,
+    28
+   ],
+   "pivot": [
+    14,
+    25
+   ],
+   "anchors": {
+    "headTop": [
+     13.8,
+     7.3
+    ],
+    "side_r": [
+     22.0,
+     9.0
+    ],
+    "side_l": [
+     8.0,
+     9.0
+    ],
+    "bulb": [
+     13.75,
+     3.33
+    ],
+    "face": [
+     14.5,
+     14.0
+    ],
+    "eyeL": [
+     11.0,
+     14.0
+    ],
+    "eyeR": [
+     18.0,
+     14.0
+    ],
+    "center": [
+     13.5,
+     14.5
+    ],
+    "chest": [
+     14.5,
+     20
+    ],
+    "pivot": [
+     14,
+     25
+    ],
+    "mouth": [
+     15,
+     16
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_dot/face_smug.png",
+     "3x": "per_pet/evo_dot/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 23
+    },
+    "pout": {
+     "1x": "per_pet/evo_dot/face_pout.png",
+     "3x": "per_pet/evo_dot/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 32
+    }
+   }
+  },
+  "evo_sprout": {
+   "frameSize": [
+    32,
+    32
+   ],
+   "pivot": [
+    16,
+    29
+   ],
+   "anchors": {
+    "headTop": [
+     16.0,
+     11.0
+    ],
+    "side_r": [
+     25.0,
+     15.0
+    ],
+    "side_l": [
+     9.0,
+     15.0
+    ],
+    "bulb": [
+     16.0,
+     7.0
+    ],
+    "face": [
+     16.5,
+     20.0
+    ],
+    "eyeL": [
+     13.0,
+     20.0
+    ],
+    "eyeR": [
+     20.0,
+     20.0
+    ],
+    "center": [
+     15.5,
+     17.0
+    ],
+    "chest": [
+     16.5,
+     26
+    ],
+    "pivot": [
+     16,
+     29
+    ],
+    "mouth": [
+     17,
+     22
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_sprout/face_smug.png",
+     "3x": "per_pet/evo_sprout/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 23
+    },
+    "pout": {
+     "1x": "per_pet/evo_sprout/face_pout.png",
+     "3x": "per_pet/evo_sprout/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 33
+    }
+   }
+  },
+  "evo_hop": {
+   "frameSize": [
+    38,
+    38
+   ],
+   "pivot": [
+    19,
+    35
+   ],
+   "anchors": {
+    "headTop": [
+     18.8,
+     13.6
+    ],
+    "side_r": [
+     31.0,
+     17.0
+    ],
+    "side_l": [
+     9.0,
+     17.0
+    ],
+    "bulb": [
+     20,
+     8
+    ],
+    "face": [
+     19.5,
+     24.0
+    ],
+    "eyeL": [
+     14.5,
+     24.0
+    ],
+    "eyeR": [
+     24.5,
+     24.0
+    ],
+    "center": [
+     17.0,
+     20.5
+    ],
+    "chest": [
+     19.5,
+     32
+    ],
+    "pivot": [
+     19,
+     35
+    ],
+    "mouth": [
+     20,
+     28
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_hop/face_smug.png",
+     "3x": "per_pet/evo_hop/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 27
+    },
+    "pout": {
+     "1x": "per_pet/evo_hop/face_pout.png",
+     "3x": "per_pet/evo_hop/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_guard_tide": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     21.8,
+     18.0
+    ],
+    "side_r": [
+     35.0,
+     21.0
+    ],
+    "side_l": [
+     11.0,
+     21.0
+    ],
+    "bulb": [
+     23,
+     13
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     21.5,
+     26.0
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_tide/face_smug.png",
+     "3x": "per_pet/evo_guard_tide/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_tide/face_pout.png",
+     "3x": "per_pet/evo_guard_tide/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_guard_moon": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     20.1,
+     14.3
+    ],
+    "side_r": [
+     35.0,
+     21.0
+    ],
+    "side_l": [
+     11.0,
+     21.0
+    ],
+    "bulb": [
+     9,
+     14
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     21.0,
+     23.0
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_moon/face_smug.png",
+     "3x": "per_pet/evo_guard_moon/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_moon/face_pout.png",
+     "3x": "per_pet/evo_guard_moon/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_guard_shroom": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     23.4,
+     18.0
+    ],
+    "side_r": [
+     35.0,
+     21.0
+    ],
+    "side_l": [
+     11.0,
+     21.0
+    ],
+    "bulb": [
+     24,
+     16
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     22.0,
+     27.5
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_shroom/face_smug.png",
+     "3x": "per_pet/evo_guard_shroom/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_shroom/face_pout.png",
+     "3x": "per_pet/evo_guard_shroom/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_guard_crystal": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     21.0,
+     18.4
+    ],
+    "side_r": [
+     35.0,
+     21.0
+    ],
+    "side_l": [
+     11.0,
+     21.0
+    ],
+    "bulb": [
+     22,
+     12
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     21.0,
+     25.5
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_crystal/face_smug.png",
+     "3x": "per_pet/evo_guard_crystal/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_crystal/face_pout.png",
+     "3x": "per_pet/evo_guard_crystal/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_guard_ember": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     21.1,
+     18.1
+    ],
+    "side_r": [
+     35.0,
+     21.0
+    ],
+    "side_l": [
+     11.0,
+     21.0
+    ],
+    "bulb": [
+     22,
+     13
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     21.5,
+     25.5
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_ember/face_smug.png",
+     "3x": "per_pet/evo_guard_ember/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_ember/face_pout.png",
+     "3x": "per_pet/evo_guard_ember/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_guard_radiant": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     21.2,
+     18.1
+    ],
+    "side_r": [
+     35.0,
+     21.0
+    ],
+    "side_l": [
+     11.0,
+     21.0
+    ],
+    "bulb": [
+     22,
+     12
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     20.0,
+     23.0
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_radiant/face_smug.png",
+     "3x": "per_pet/evo_guard_radiant/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_radiant/face_pout.png",
+     "3x": "per_pet/evo_guard_radiant/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_guard_soft": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     21.2,
+     16.4
+    ],
+    "side_r": [
+     36.0,
+     20.0
+    ],
+    "side_l": [
+     10.0,
+     20.0
+    ],
+    "bulb": [
+     22,
+     12
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     20.0,
+     25.0
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_soft/face_smug.png",
+     "3x": "per_pet/evo_guard_soft/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_soft/face_pout.png",
+     "3x": "per_pet/evo_guard_soft/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_guard_dust": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     21.4,
+     18.3
+    ],
+    "side_r": [
+     35.0,
+     21.0
+    ],
+    "side_l": [
+     11.0,
+     21.0
+    ],
+    "bulb": [
+     35,
+     35
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     20.5,
+     27.5
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_dust/face_smug.png",
+     "3x": "per_pet/evo_guard_dust/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_dust/face_pout.png",
+     "3x": "per_pet/evo_guard_dust/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 35
+    }
+   }
+  },
+  "evo_guard_lumi": {
+   "frameSize": [
+    44,
+    44
+   ],
+   "pivot": [
+    22,
+    41
+   ],
+   "anchors": {
+    "headTop": [
+     21.0,
+     18.3
+    ],
+    "side_r": [
+     35.0,
+     21.0
+    ],
+    "side_l": [
+     11.0,
+     21.0
+    ],
+    "bulb": [
+     28,
+     13
+    ],
+    "face": [
+     22.5,
+     29.0
+    ],
+    "eyeL": [
+     17.5,
+     29.0
+    ],
+    "eyeR": [
+     27.5,
+     29.0
+    ],
+    "center": [
+     19.5,
+     26.5
+    ],
+    "chest": [
+     22.5,
+     37
+    ],
+    "pivot": [
+     22,
+     41
+    ],
+    "mouth": [
+     22,
+     33
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_guard_lumi/face_smug.png",
+     "3x": "per_pet/evo_guard_lumi/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_guard_lumi/face_pout.png",
+     "3x": "per_pet/evo_guard_lumi/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_still_tide": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     23.3,
+     20.3
+    ],
+    "side_r": [
+     38.0,
+     24.0
+    ],
+    "side_l": [
+     12.0,
+     24.0
+    ],
+    "bulb": [
+     25,
+     15
+    ],
+    "face": [
+     24.5,
+     33.0
+    ],
+    "eyeL": [
+     18.5,
+     33.0
+    ],
+    "eyeR": [
+     30.5,
+     33.0
+    ],
+    "center": [
+     22.5,
+     27.5
+    ],
+    "chest": [
+     24.5,
+     41
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_tide/face_smug.png",
+     "3x": "per_pet/evo_still_tide/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_tide/face_pout.png",
+     "3x": "per_pet/evo_still_tide/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_still_moon": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     16.8,
+     21.0
+    ],
+    "side_r": [
+     38.0,
+     24.0
+    ],
+    "side_l": [
+     12.0,
+     24.0
+    ],
+    "bulb": [
+     10,
+     15
+    ],
+    "face": [
+     24.5,
+     33.0
+    ],
+    "eyeL": [
+     18.5,
+     33.0
+    ],
+    "eyeR": [
+     30.5,
+     33.0
+    ],
+    "center": [
+     22.5,
+     24.0
+    ],
+    "chest": [
+     24.5,
+     41
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_moon/face_smug.png",
+     "3x": "per_pet/evo_still_moon/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_moon/face_pout.png",
+     "3x": "per_pet/evo_still_moon/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_still_shroom": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     25.9,
+     19.3
+    ],
+    "side_r": [
+     38.0,
+     24.0
+    ],
+    "side_l": [
+     12.0,
+     24.0
+    ],
+    "bulb": [
+     26,
+     18
+    ],
+    "face": [
+     24.5,
+     33.0
+    ],
+    "eyeL": [
+     18.5,
+     33.0
+    ],
+    "eyeR": [
+     30.5,
+     33.0
+    ],
+    "center": [
+     23.5,
+     26.5
+    ],
+    "chest": [
+     24.5,
+     41
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_shroom/face_smug.png",
+     "3x": "per_pet/evo_still_shroom/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_shroom/face_pout.png",
+     "3x": "per_pet/evo_still_shroom/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_still_crystal": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     22.4,
+     20.1
+    ],
+    "side_r": [
+     38.0,
+     24.0
+    ],
+    "side_l": [
+     12.0,
+     24.0
+    ],
+    "bulb": [
+     24,
+     15
+    ],
+    "face": [
+     24.5,
+     33.0
+    ],
+    "eyeL": [
+     18.5,
+     33.0
+    ],
+    "eyeR": [
+     30.5,
+     33.0
+    ],
+    "center": [
+     23.0,
+     25.5
+    ],
+    "chest": [
+     24.5,
+     41
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_crystal/face_smug.png",
+     "3x": "per_pet/evo_still_crystal/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_crystal/face_pout.png",
+     "3x": "per_pet/evo_still_crystal/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_still_ember": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     22.3,
+     19.7
+    ],
+    "side_r": [
+     38.0,
+     24.0
+    ],
+    "side_l": [
+     12.0,
+     24.0
+    ],
+    "bulb": [
+     24,
+     16
+    ],
+    "face": [
+     24.5,
+     33.0
+    ],
+    "eyeL": [
+     18.5,
+     33.0
+    ],
+    "eyeR": [
+     30.5,
+     33.0
+    ],
+    "center": [
+     22.0,
+     24.0
+    ],
+    "chest": [
+     24.5,
+     41
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_ember/face_smug.png",
+     "3x": "per_pet/evo_still_ember/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_ember/face_pout.png",
+     "3x": "per_pet/evo_still_ember/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_still_radiant": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     22.4,
+     20.7
+    ],
+    "side_r": [
+     38.0,
+     24.0
+    ],
+    "side_l": [
+     12.0,
+     24.0
+    ],
+    "bulb": [
+     24,
+     15
+    ],
+    "face": [
+     24.5,
+     33.0
+    ],
+    "eyeL": [
+     18.5,
+     33.0
+    ],
+    "eyeR": [
+     30.5,
+     33.0
+    ],
+    "center": [
+     23.0,
+     24.0
+    ],
+    "chest": [
+     24.5,
+     41
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_radiant/face_smug.png",
+     "3x": "per_pet/evo_still_radiant/face_smug@3x.png",
+     "patchColors": 7,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_radiant/face_pout.png",
+     "3x": "per_pet/evo_still_radiant/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_still_soft": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     22.3,
+     18.7
+    ],
+    "side_r": [
+     38.0,
+     22.0
+    ],
+    "side_l": [
+     12.0,
+     22.0
+    ],
+    "bulb": [
+     24,
+     15
+    ],
+    "face": [
+     24.5,
+     32.0
+    ],
+    "eyeL": [
+     18.5,
+     32.0
+    ],
+    "eyeR": [
+     30.5,
+     32.0
+    ],
+    "center": [
+     23.0,
+     26.0
+    ],
+    "chest": [
+     24.5,
+     40
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     36
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_soft/face_smug.png",
+     "3x": "per_pet/evo_still_soft/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 27
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_soft/face_pout.png",
+     "3x": "per_pet/evo_still_soft/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "evo_still_dust": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     23.1,
+     19.0
+    ],
+    "side_r": [
+     38.0,
+     24.0
+    ],
+    "side_l": [
+     12.0,
+     24.0
+    ],
+    "bulb": [
+     38,
+     38
+    ],
+    "face": [
+     24.5,
+     33.0
+    ],
+    "eyeL": [
+     18.5,
+     33.0
+    ],
+    "eyeR": [
+     30.5,
+     33.0
+    ],
+    "center": [
+     22.5,
+     27.5
+    ],
+    "chest": [
+     24.5,
+     41
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_dust/face_smug.png",
+     "3x": "per_pet/evo_still_dust/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_dust/face_pout.png",
+     "3x": "per_pet/evo_still_dust/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 37
+    }
+   }
+  },
+  "evo_still_lumi": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "headTop": [
+     23.6,
+     19.0
+    ],
+    "side_r": [
+     38.0,
+     24.0
+    ],
+    "side_l": [
+     12.0,
+     24.0
+    ],
+    "bulb": [
+     30,
+     15
+    ],
+    "face": [
+     24.5,
+     33.0
+    ],
+    "eyeL": [
+     19.5,
+     33.0
+    ],
+    "eyeR": [
+     29.5,
+     33.0
+    ],
+    "center": [
+     23.5,
+     25.5
+    ],
+    "chest": [
+     24.5,
+     41
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   },
+   "line": "old",
+   "files": {
+    "smug": {
+     "1x": "per_pet/evo_still_lumi/face_smug.png",
+     "3x": "per_pet/evo_still_lumi/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 25
+    },
+    "pout": {
+     "1x": "per_pet/evo_still_lumi/face_pout.png",
+     "3x": "per_pet/evo_still_lumi/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "A1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     24,
+     9
+    ],
+    "headTop": [
+     24,
+     17
+    ],
+    "face": [
+     24.5,
+     35.5
+    ],
+    "eyeL": [
+     18.5,
+     35.5
+    ],
+    "eyeR": [
+     30.5,
+     35.5
+    ],
+    "center": [
+     23.5,
+     26.5
+    ],
+    "chest": [
+     24.5,
+     42
+    ],
+    "side_r": [
+     36,
+     40
+    ],
+    "side_l": [
+     11,
+     40
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     23.5,
+     39.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/A1/face_smug.png",
+     "3x": "per_pet/A1/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 30
+    },
+    "pout": {
+     "1x": "per_pet/A1/face_pout.png",
+     "3x": "per_pet/A1/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 36
+    }
+   }
+  },
+  "A2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     26,
+     11
+    ],
+    "headTop": [
+     32,
+     21
+    ],
+    "face": [
+     32.0,
+     33.5
+    ],
+    "eyeL": [
+     26.5,
+     33.5
+    ],
+    "eyeR": [
+     37.5,
+     33.5
+    ],
+    "center": [
+     25.0,
+     27.5
+    ],
+    "chest": [
+     32.0,
+     41.5
+    ],
+    "side_r": [
+     41,
+     38
+    ],
+    "side_l": [
+     15,
+     38
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     31.5,
+     37.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/A2/face_smug.png",
+     "3x": "per_pet/A2/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 30
+    },
+    "pout": {
+     "1x": "per_pet/A2/face_pout.png",
+     "3x": "per_pet/A2/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 36
+    }
+   }
+  },
+  "A3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     26,
+     6
+    ],
+    "headTop": [
+     32,
+     15
+    ],
+    "face": [
+     32.5,
+     31.5
+    ],
+    "eyeL": [
+     25.5,
+     31.5
+    ],
+    "eyeR": [
+     39.5,
+     31.5
+    ],
+    "center": [
+     25.0,
+     25.0
+    ],
+    "chest": [
+     32.5,
+     38.5
+    ],
+    "side_r": [
+     42,
+     36
+    ],
+    "side_l": [
+     15,
+     36
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     31.5,
+     34.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/A3/face_smug.png",
+     "3x": "per_pet/A3/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 29
+    },
+    "pout": {
+     "1x": "per_pet/A3/face_pout.png",
+     "3x": "per_pet/A3/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 37
+    }
+   }
+  },
+  "B1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     25,
+     18
+    ],
+    "headTop": [
+     22,
+     17
+    ],
+    "face": [
+     22.5,
+     28.0
+    ],
+    "eyeL": [
+     17.5,
+     28.5
+    ],
+    "eyeR": [
+     27.5,
+     27.5
+    ],
+    "center": [
+     23.5,
+     28.0
+    ],
+    "chest": [
+     22.5,
+     36.5
+    ],
+    "side_r": [
+     32,
+     32
+    ],
+    "side_l": [
+     11,
+     32
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     21.5,
+     32.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/B1/face_smug.png",
+     "3x": "per_pet/B1/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 30
+    },
+    "pout": {
+     "1x": "per_pet/B1/face_pout.png",
+     "3x": "per_pet/B1/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 40
+    }
+   }
+  },
+  "B2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     24,
+     4
+    ],
+    "headTop": [
+     26,
+     9
+    ],
+    "face": [
+     25.5,
+     23.0
+    ],
+    "eyeL": [
+     19.5,
+     23.0
+    ],
+    "eyeR": [
+     31.5,
+     23.0
+    ],
+    "center": [
+     23.5,
+     24.0
+    ],
+    "chest": [
+     25.5,
+     30.5
+    ],
+    "side_r": [
+     34,
+     27
+    ],
+    "side_l": [
+     13,
+     27
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     25.5,
+     26.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/B2/face_smug.png",
+     "3x": "per_pet/B2/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 28
+    },
+    "pout": {
+     "1x": "per_pet/B2/face_pout.png",
+     "3x": "per_pet/B2/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 33
+    }
+   }
+  },
+  "B3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     26,
+     13
+    ],
+    "headTop": [
+     29,
+     21
+    ],
+    "face": [
+     29.0,
+     34.0
+    ],
+    "eyeL": [
+     23.5,
+     33.5
+    ],
+    "eyeR": [
+     34.5,
+     34.5
+    ],
+    "center": [
+     23.5,
+     28.5
+    ],
+    "chest": [
+     29.0,
+     42
+    ],
+    "side_r": [
+     38,
+     38
+    ],
+    "side_l": [
+     12,
+     38
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     28.5,
+     38.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/B3/face_smug.png",
+     "3x": "per_pet/B3/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 26
+    },
+    "pout": {
+     "1x": "per_pet/B3/face_pout.png",
+     "3x": "per_pet/B3/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 40
+    }
+   }
+  },
+  "C1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     13,
+     19
+    ],
+    "headTop": [
+     25,
+     21
+    ],
+    "face": [
+     25.0,
+     35.0
+    ],
+    "eyeL": [
+     18.5,
+     34.5
+    ],
+    "eyeR": [
+     31.5,
+     35.5
+    ],
+    "center": [
+     24.0,
+     30.0
+    ],
+    "chest": [
+     25.0,
+     42
+    ],
+    "side_r": [
+     36,
+     39
+    ],
+    "side_l": [
+     12,
+     39
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24.5,
+     39.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/C1/face_smug.png",
+     "3x": "per_pet/C1/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 26
+    },
+    "pout": {
+     "1x": "per_pet/C1/face_pout.png",
+     "3x": "per_pet/C1/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 36
+    }
+   }
+  },
+  "C2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     25,
+     16
+    ],
+    "headTop": [
+     28,
+     21
+    ],
+    "face": [
+     27.5,
+     31.5
+    ],
+    "eyeL": [
+     22.5,
+     31.5
+    ],
+    "eyeR": [
+     32.5,
+     31.5
+    ],
+    "center": [
+     24.5,
+     29.5
+    ],
+    "chest": [
+     27.5,
+     39.5
+    ],
+    "side_r": [
+     37,
+     36
+    ],
+    "side_l": [
+     11,
+     36
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     27.5,
+     35.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/C2/face_smug.png",
+     "3x": "per_pet/C2/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 30
+    },
+    "pout": {
+     "1x": "per_pet/C2/face_pout.png",
+     "3x": "per_pet/C2/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 36
+    }
+   }
+  },
+  "C3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     26,
+     13
+    ],
+    "headTop": [
+     30,
+     18
+    ],
+    "face": [
+     30.0,
+     31.0
+    ],
+    "eyeL": [
+     24.5,
+     31.0
+    ],
+    "eyeR": [
+     35.5,
+     31.0
+    ],
+    "center": [
+     25.5,
+     27.5
+    ],
+    "chest": [
+     30.0,
+     38.5
+    ],
+    "side_r": [
+     41,
+     35
+    ],
+    "side_l": [
+     7,
+     35
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     30.0,
+     34.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/C3/face_smug.png",
+     "3x": "per_pet/C3/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 30
+    },
+    "pout": {
+     "1x": "per_pet/C3/face_pout.png",
+     "3x": "per_pet/C3/face_pout@3x.png",
+     "patchColors": 7,
+     "patchPx": 30
+    }
+   }
+  },
+  "D1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     18,
+     17
+    ],
+    "headTop": [
+     26,
+     22
+    ],
+    "face": [
+     26.0,
+     34.5
+    ],
+    "eyeL": [
+     20.5,
+     35.0
+    ],
+    "eyeR": [
+     31.5,
+     34.0
+    ],
+    "center": [
+     23.5,
+     29.5
+    ],
+    "chest": [
+     26.0,
+     42
+    ],
+    "side_r": [
+     35,
+     38
+    ],
+    "side_l": [
+     12,
+     38
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     26.0,
+     38.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/D1/face_smug.png",
+     "3x": "per_pet/D1/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 24
+    },
+    "pout": {
+     "1x": "per_pet/D1/face_pout.png",
+     "3x": "per_pet/D1/face_pout@3x.png",
+     "patchColors": 8,
+     "patchPx": 30
+    }
+   }
+  },
+  "D2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     19,
+     14
+    ],
+    "headTop": [
+     28,
+     20
+    ],
+    "face": [
+     27.5,
+     31.5
+    ],
+    "eyeL": [
+     22.5,
+     32.0
+    ],
+    "eyeR": [
+     32.5,
+     31.0
+    ],
+    "center": [
+     23.5,
+     29.0
+    ],
+    "chest": [
+     27.5,
+     39.5
+    ],
+    "side_r": [
+     37,
+     36
+    ],
+    "side_l": [
+     11,
+     36
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     27.5,
+     35.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/D2/face_smug.png",
+     "3x": "per_pet/D2/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 24
+    },
+    "pout": {
+     "1x": "per_pet/D2/face_pout.png",
+     "3x": "per_pet/D2/face_pout@3x.png",
+     "patchColors": 8,
+     "patchPx": 30
+    }
+   }
+  },
+  "D3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     24,
+     4
+    ],
+    "headTop": [
+     28,
+     14
+    ],
+    "face": [
+     28.0,
+     34.0
+    ],
+    "eyeL": [
+     23.5,
+     33.5
+    ],
+    "eyeR": [
+     32.5,
+     34.5
+    ],
+    "center": [
+     23.5,
+     24.0
+    ],
+    "chest": [
+     28.0,
+     42
+    ],
+    "side_r": [
+     37,
+     38
+    ],
+    "side_l": [
+     7,
+     38
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     27.5,
+     38.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/D3/face_smug.png",
+     "3x": "per_pet/D3/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 28
+    },
+    "pout": {
+     "1x": "per_pet/D3/face_pout.png",
+     "3x": "per_pet/D3/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 38
+    }
+   }
+  },
+  "E1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     24,
+     12
+    ],
+    "headTop": [
+     25,
+     20
+    ],
+    "face": [
+     25.0,
+     33.5
+    ],
+    "eyeL": [
+     19.5,
+     33.5
+    ],
+    "eyeR": [
+     30.5,
+     33.5
+    ],
+    "center": [
+     23.5,
+     28.0
+    ],
+    "chest": [
+     25.0,
+     41.5
+    ],
+    "side_r": [
+     36,
+     38
+    ],
+    "side_l": [
+     11,
+     38
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24.5,
+     37.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/E1/face_smug.png",
+     "3x": "per_pet/E1/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 26
+    },
+    "pout": {
+     "1x": "per_pet/E1/face_pout.png",
+     "3x": "per_pet/E1/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 36
+    }
+   }
+  },
+  "E2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     25,
+     16
+    ],
+    "headTop": [
+     30,
+     22
+    ],
+    "face": [
+     30.0,
+     33.0
+    ],
+    "eyeL": [
+     24.5,
+     33.5
+    ],
+    "eyeR": [
+     35.5,
+     32.5
+    ],
+    "center": [
+     25.0,
+     30.0
+    ],
+    "chest": [
+     30.0,
+     41.5
+    ],
+    "side_r": [
+     39,
+     37
+    ],
+    "side_l": [
+     11,
+     37
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     29.5,
+     37.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/E2/face_smug.png",
+     "3x": "per_pet/E2/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 30
+    },
+    "pout": {
+     "1x": "per_pet/E2/face_pout.png",
+     "3x": "per_pet/E2/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 36
+    }
+   }
+  },
+  "E3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     15,
+     12
+    ],
+    "headTop": [
+     28,
+     15
+    ],
+    "face": [
+     28.0,
+     32.5
+    ],
+    "eyeL": [
+     21.5,
+     32.0
+    ],
+    "eyeR": [
+     34.5,
+     33.0
+    ],
+    "center": [
+     23.5,
+     26.5
+    ],
+    "chest": [
+     28.0,
+     40.5
+    ],
+    "side_r": [
+     41,
+     36
+    ],
+    "side_l": [
+     8,
+     36
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     28.0,
+     36.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/E3/face_smug.png",
+     "3x": "per_pet/E3/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 24
+    },
+    "pout": {
+     "1x": "per_pet/E3/face_pout.png",
+     "3x": "per_pet/E3/face_pout@3x.png",
+     "patchColors": 8,
+     "patchPx": 30
+    }
+   }
+  },
+  "F1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     24,
+     14
+    ],
+    "headTop": [
+     24,
+     19
+    ],
+    "face": [
+     24.5,
+     35.0
+    ],
+    "eyeL": [
+     19.5,
+     35.0
+    ],
+    "eyeR": [
+     29.5,
+     35.0
+    ],
+    "center": [
+     23.5,
+     28.5
+    ],
+    "chest": [
+     24.5,
+     42
+    ],
+    "side_r": [
+     35,
+     39
+    ],
+    "side_l": [
+     12,
+     39
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     23.5,
+     38.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/F1/face_smug.png",
+     "3x": "per_pet/F1/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 32
+    },
+    "pout": {
+     "1x": "per_pet/F1/face_pout.png",
+     "3x": "per_pet/F1/face_pout@3x.png",
+     "patchColors": 10,
+     "patchPx": 40
+    }
+   }
+  },
+  "F2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     25,
+     16
+    ],
+    "headTop": [
+     28,
+     21
+    ],
+    "face": [
+     27.5,
+     34.5
+    ],
+    "eyeL": [
+     21.5,
+     35.0
+    ],
+    "eyeR": [
+     33.5,
+     34.0
+    ],
+    "center": [
+     25.0,
+     30.0
+    ],
+    "chest": [
+     27.5,
+     42
+    ],
+    "side_r": [
+     38,
+     38
+    ],
+    "side_l": [
+     10,
+     38
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     27.5,
+     38.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/F2/face_smug.png",
+     "3x": "per_pet/F2/face_smug@3x.png",
+     "patchColors": 7,
+     "patchPx": 32
+    },
+    "pout": {
+     "1x": "per_pet/F2/face_pout.png",
+     "3x": "per_pet/F2/face_pout@3x.png",
+     "patchColors": 10,
+     "patchPx": 40
+    }
+   }
+  },
+  "F3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     14,
+     11
+    ],
+    "headTop": [
+     30,
+     18
+    ],
+    "face": [
+     30.5,
+     32.0
+    ],
+    "eyeL": [
+     24.5,
+     31.5
+    ],
+    "eyeR": [
+     36.5,
+     32.5
+    ],
+    "center": [
+     23.5,
+     27.0
+    ],
+    "chest": [
+     30.5,
+     39.5
+    ],
+    "side_r": [
+     41,
+     36
+    ],
+    "side_l": [
+     5,
+     36
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     29.5,
+     35.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/F3/face_smug.png",
+     "3x": "per_pet/F3/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 30
+    },
+    "pout": {
+     "1x": "per_pet/F3/face_pout.png",
+     "3x": "per_pet/F3/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 36
+    }
+   }
+  },
+  "G1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     21,
+     13
+    ],
+    "headTop": [
+     24,
+     21
+    ],
+    "face": [
+     24.5,
+     34.0
+    ],
+    "eyeL": [
+     19.5,
+     34.0
+    ],
+    "eyeR": [
+     29.5,
+     34.0
+    ],
+    "center": [
+     23.5,
+     28.0
+    ],
+    "chest": [
+     24.5,
+     41.5
+    ],
+    "side_r": [
+     36,
+     38
+    ],
+    "side_l": [
+     11,
+     38
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     23.5,
+     37.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/G1/face_smug.png",
+     "3x": "per_pet/G1/face_smug@3x.png",
+     "patchColors": 7,
+     "patchPx": 32
+    },
+    "pout": {
+     "1x": "per_pet/G1/face_pout.png",
+     "3x": "per_pet/G1/face_pout@3x.png",
+     "patchColors": 10,
+     "patchPx": 38
+    }
+   }
+  },
+  "G2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     25,
+     16
+    ],
+    "headTop": [
+     28,
+     21
+    ],
+    "face": [
+     28.0,
+     33.0
+    ],
+    "eyeL": [
+     22.5,
+     33.5
+    ],
+    "eyeR": [
+     33.5,
+     32.5
+    ],
+    "center": [
+     25.5,
+     30.0
+    ],
+    "chest": [
+     28.0,
+     41.5
+    ],
+    "side_r": [
+     38,
+     37
+    ],
+    "side_l": [
+     12,
+     37
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     27.5,
+     37.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/G2/face_smug.png",
+     "3x": "per_pet/G2/face_smug@3x.png",
+     "patchColors": 7,
+     "patchPx": 28
+    },
+    "pout": {
+     "1x": "per_pet/G2/face_pout.png",
+     "3x": "per_pet/G2/face_pout@3x.png",
+     "patchColors": 10,
+     "patchPx": 38
+    }
+   }
+  },
+  "G3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     19,
+     12
+    ],
+    "headTop": [
+     28,
+     15
+    ],
+    "face": [
+     28.0,
+     31.0
+    ],
+    "eyeL": [
+     21.5,
+     31.0
+    ],
+    "eyeR": [
+     34.5,
+     31.0
+    ],
+    "center": [
+     23.5,
+     27.0
+    ],
+    "chest": [
+     28.0,
+     38.5
+    ],
+    "side_r": [
+     41,
+     35
+    ],
+    "side_l": [
+     5,
+     35
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     27.5,
+     34.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/G3/face_smug.png",
+     "3x": "per_pet/G3/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 34
+    },
+    "pout": {
+     "1x": "per_pet/G3/face_pout.png",
+     "3x": "per_pet/G3/face_pout@3x.png",
+     "patchColors": 8,
+     "patchPx": 34
+    }
+   }
+  },
+  "H1": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     24,
+     18
+    ],
+    "headTop": [
+     26,
+     23
+    ],
+    "face": [
+     26.5,
+     34.5
+    ],
+    "eyeL": [
+     21.5,
+     34.5
+    ],
+    "eyeR": [
+     31.5,
+     34.5
+    ],
+    "center": [
+     23.5,
+     31.0
+    ],
+    "chest": [
+     26.5,
+     42
+    ],
+    "side_r": [
+     36,
+     38
+    ],
+    "side_l": [
+     9,
+     38
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     25.5,
+     38.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/H1/face_smug.png",
+     "3x": "per_pet/H1/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 30
+    },
+    "pout": {
+     "1x": "per_pet/H1/face_pout.png",
+     "3x": "per_pet/H1/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 40
+    }
+   }
+  },
+  "H2": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     24,
+     10
+    ],
+    "headTop": [
+     25,
+     22
+    ],
+    "face": [
+     25.0,
+     35.0
+    ],
+    "eyeL": [
+     19.5,
+     35.0
+    ],
+    "eyeR": [
+     30.5,
+     35.0
+    ],
+    "center": [
+     23.5,
+     27.0
+    ],
+    "chest": [
+     25.0,
+     42
+    ],
+    "side_r": [
+     33,
+     39
+    ],
+    "side_l": [
+     6,
+     39
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     24.5,
+     38.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/H2/face_smug.png",
+     "3x": "per_pet/H2/face_smug@3x.png",
+     "patchColors": 6,
+     "patchPx": 28
+    },
+    "pout": {
+     "1x": "per_pet/H2/face_pout.png",
+     "3x": "per_pet/H2/face_pout@3x.png",
+     "patchColors": 9,
+     "patchPx": 39
+    }
+   }
+  },
+  "H3": {
+   "frameSize": [
+    48,
+    48
+   ],
+   "pivot": [
+    24,
+    45
+   ],
+   "anchors": {
+    "bulb": [
+     25,
+     14
+    ],
+    "headTop": [
+     28,
+     16
+    ],
+    "face": [
+     27.5,
+     33.0
+    ],
+    "eyeL": [
+     22.0,
+     33.0
+    ],
+    "eyeR": [
+     33.0,
+     33.0
+    ],
+    "center": [
+     23.5,
+     28.0
+    ],
+    "chest": [
+     27.5,
+     40.5
+    ],
+    "side_r": [
+     36,
+     37
+    ],
+    "side_l": [
+     5,
+     37
+    ],
+    "pivot": [
+     24,
+     45
+    ],
+    "mouth": [
+     26.5,
+     36.5
+    ]
+   },
+   "line": "new",
+   "files": {
+    "smug": {
+     "1x": "per_pet/H3/face_smug.png",
+     "3x": "per_pet/H3/face_smug@3x.png",
+     "patchColors": 5,
+     "patchPx": 26
+    },
+    "pout": {
+     "1x": "per_pet/H3/face_pout.png",
+     "3x": "per_pet/H3/face_pout@3x.png",
+     "patchColors": 8,
+     "patchPx": 32
+    }
+   }
+  }
+ }
+}
