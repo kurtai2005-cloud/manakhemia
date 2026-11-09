@@ -1,8 +1,8 @@
 /* 《微光小圃》 long6cui.js — 第 6 批 6c「夢境探險」介面（遊策 breakthrough-6a6d-spec §6c）。原創代碼。
    邏輯全部喺 long6c.js（s.dream6）；呢度只做：
-   ・花園 rail「入夢」掣：團絨瞓緊＋21:00–03:00＋今晚未入過先出（有紅點）；其他時間有夢碎片之後變「夢簿」（睇夢圖鑑）。
+   ・花園 rail「入夢」掣：團絨瞓緊＋19:00–03:00（6d：19:00 後上線都計）＋今晚未入過先出（有紅點）；錯過咗嘅一晚（存 1 個）白天瞓緊都出「入夢」補做；其他時間有夢碎片之後變「夢簿」（睇夢圖鑑）。
    ・夢境疊層（全螢幕直向）：入夢過場 → 3×5 小地圖（當晚 6a 記錄砌）→ 撳格陪團絨行（逐格行，霧散開）→ 拾夢碎片（頭 2 片即有，之後每 25 秒浮 1 片）
-     → 150 秒到／6 片拾晒／撳「醒返」→ 出夢過場 → 今晚小結（新夢圖鑑、送家具）。硬上限 180 秒。
+     → 150 秒到／當晚 1–2 片拾晒／撳「醒返」→ 出夢過場 → 今晚小結（新夢圖鑑、送家具）。硬上限 180 秒。
    ・唔加月眠／路線分、唔出碎、唔郁需求、唔郁系統 6 親密度；團絨夢完照瞓。
    ・美術（art/breakthrough/6c：af5b4821 dream6c.json；V3-A ba0d4345 v3/dream6c_v3.json）：格 56 art＝112 CSS（x0 22、間 4）、tileset 4 款、
      V3 開：dream_bg_v3（預合成）、tile_v3＋glow（lighter 呼吸）＋湖 caustic、fog_v3 流霧 8 幀＋fog_reveal 揭開、tile_reveal_glow、過場 v3 10 幀、卡 v3；
@@ -419,7 +419,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
     { const loop = () => { try { tick(); } catch (e) { } setTimeout(loop, 100); }; setTimeout(loop, 400); }
 
     // ── 🛠 開發者模式「6c」 ──
-    const WHY = { ok: '可以', egg: '蛋', km: '細佬主養', awake: '未瞓', hours: '唔係夜晚', done: '今晚入過' };
+    const WHY = { ok: '可以', egg: '蛋', km: '細佬主養', awake: '未瞓', hours: '唔係夜晚', done: '今晚入過', bank: '補做錯過嗰晚' };
     const fakeLog = () => { const M6 = NS.long6a, s = S(), t = now(); if (!M6) return { ok: false, msg: '冇 6a' }; for (let i = 0; i < 3; i++) M6.note(s, 'food', 'meal', 0, 0, 0, t); for (let i = 0; i < 2; i++) M6.note(s, 'care', 'rinse', 0, 0, 0, t); for (let i = 0; i < 3; i++) M6.note(s, 'care', 'play', 0, 0, 0, t); save(); return { ok: true, msg: '今日：暖菇飯 3、淋水 2、玩 3' }; };
     const addFr = (th, n) => { const s = S(); let r = null, cards = 0, furn = null; for (let i = 0; i < n; i++) { r = DR.pick(s, th, now()); if (r.card) cards++; if (r.furn) furn = r.furn; } save(); railTick(); return { ok: true, msg: DR.TH[th].zh + ' +' + n + ' 片 → 新卡 ' + cards + (furn ? '、家具「' + FAM.SV[furn].zh + '」' : '') }; };
     const DEV = { id: 'l6c', title: '6c（夢境探險）', order: 47,

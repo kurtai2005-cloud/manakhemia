@@ -1,12 +1,13 @@
 /* 《微光小圃》 long6c.js — 第 6 批 6c「夢境探險」（遊策 breakthrough-6a6d-spec §6c）。原創代碼。
    DOM-free、Node 可 require（純邏輯）：存檔 s.dream6（sanitize）。唔加月眠／任何路線分、唔出碎、唔郁需求數值、唔郁系統 6 親密度。
-   ・入夢：團絨瞓緊（s.sleeping）＋遊戲鐘 21:00–03:00＋唔係蛋／唔係細佬做主養 → 每晚 1 次（「一晚」＝21:00 嗰日；00:00–03:00 計返前一日）。
+   ・入夢：團絨瞓緊（s.sleeping）＋遊戲鐘 21:00–03:00（6d A：19:00 後上線都計 → 19:00–03:00）＋唔係蛋／唔係細佬做主養 → 每晚 1 次（「一晚」＝21:00 嗰日；00:00–03:00 計返前一日）。
+     6d B：錯過咗嘅一晚存 1 個，下次（夜晚窗口外、瞓緊）補做。
      入夢嗰刻已經用咗今晚（中途閂 app 都唔可以再入；已拾嘅碎片即時入帳，唔會冇咗）。
    ・夢長：150 秒（＋入／出夢過場各 1.2 秒），硬上限 180 秒（每晚 ≤3 分鐘）。
    ・直向小地圖 3×5 格（i＝行×3＋列，行 0＝頂），由當晚 6a 記錄（s.mem6；21:00 嗰日＋過咗午夜嗰日加埋）砌：
-       餵菇（暖菇飯 meal）→ 蘑菇森林 forest；淋水（沖身 rinse）→ 水珠湖 lake；玩得多（玩耍＋小遊戲 ≥2 次）→ 玩具房 toy；夜晚嚟 → 星空 star（入得夢一定係夜晚嚟，永遠有）。
+       餵菇（暖菇飯 meal）→ 蘑菇森林 forest；6d C：餵食／淋水／執便便／小遊戲 各 +1 → 水珠湖 lake；玩耍＋小遊戲 → 玩具房 toy（修2b 冇門檻、最少 1）；夜晚嚟 → 星空 star（入得夢一定係夜晚嚟，永遠有）。
      每個主題最少 2 格，其餘按次數（每項最多計 4）比例分；由底（起點＝底行中間）蛇形排上去，星空喺最頂。
-   ・夢碎片：每晚 6 片，每個有嘅主題最少 1 片，其餘按格數分；頭 2 片一入夢就有，之後每 25 秒浮多 1 片（最後一片 100 秒）。
+   ・夢碎片（6d）：每晚 1 片、20% 多 1 片（第 2 片 40 秒浮出）；按主題權重抽，齊 5 張嘅主題唔再抽（修1）；四主題齊 → 冇片。
      夢碎片唔係貨幣：每個主題每 5 片砌 1 張夢圖鑑（每主題 5 張，首批 20 張）；砌齊一個主題 5 張 → 送家具 1 件（5a「擺設」池）。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory(require('./long6a.js'), require('./long5a.js'));
@@ -16,8 +17,14 @@
   const obj = (o) => o && typeof o === 'object' && !Array.isArray(o);
   const int = (v, d) => Number.isFinite(+v) ? Math.floor(+v) : d;
   const hash = (str) => { let h = 2166136261 >>> 0; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
-  const CFG = { hours: [21, 3], cols: 3, rows: 5, start: 13, durSec: 150, fadeSec: 1.2, maxSec: 180, frags: 6, spawnAt: [0, 0, 25, 50, 75, 100], perCard: 5, cardsPerTheme: 5,
-    minTiles: 2, wMax: 4, playMany: 2, keepLog: 14 };
+  /* 6d（遊策 6c 夢境平衡 A／B／C＋修1＋修2b）：
+     A 窗口 21:00–03:00；當晚最後一次上線喺 19:00 後開始都計（lateFrom 19 → 19:00–03:00 瞓緊入得），每晚最多 1 次。
+     B 錯過咗嘅一晚存 1 個（bankCap 1），下次上線（夜晚窗口以外、瞓緊）補做；補做唔佔當晚。
+     C 水珠湖權重＝餵食／淋水／執便便／小遊戲 各 +1。
+     片數：每晚 1 片，20% 再多 1 片（湖片都喺同一個額度）；修1 主題 5 張齊 → 權重 0（唔再出嗰主題嘅片）；修2b 玩具房冇門檻、最低權重 1。
+     夢碎片唔入錢包／唔計 47 碎上限。 */
+  const CFG = { hours: [21, 3], lateFrom: 19, bankCap: 1, cols: 3, rows: 5, start: 13, durSec: 150, fadeSec: 1.2, maxSec: 180, frags: 2, frag2: 0.2, spawnAt: [0, 40], perCard: 5, cardsPerTheme: 5,
+    minTiles: 2, wMax: 4, keepLog: 14 };
   const THEMES = ['forest', 'lake', 'toy', 'star'];
   const TH = {
     forest: { zh: '蘑菇森林', why: '餵咗暖菇飯', furn: 'sv_mushroom' },
@@ -37,6 +44,7 @@
   const dayKey = (t) => M6.dayKey(t);
   const hourOf = (t) => { const d = new Date(t); return d.getHours() + d.getMinutes() / 60; };
   const inHours = (h) => h >= CFG.hours[0] || h < CFG.hours[1];
+  const inLate = (h) => h >= CFG.lateFrom || h < CFG.hours[1];   // A：19:00 後開始嘅上線都計
   /* 「今晚」：21:00 嗰日（鐘數 < 12 → 前一日） */
   function nightKey(now, h) { if (h == null) h = hourOf(now); const k = dayKey(now); return h < 12 ? M6.dayKeyOfDn(M6.dn(k) - 1) : k; }
 
@@ -48,30 +56,44 @@
     if (!obj(o.cards)) o.cards = {}; for (const k of Object.keys(o.cards)) if (!CK[k]) delete o.cards[k]; else o.cards[k] = int(o.cards[k], 1) || 1;
     if (!obj(o.furn)) o.furn = {}; for (const k of Object.keys(o.furn)) if (!TH[k] || typeof o.furn[k] !== 'string') delete o.furn[k];
     if (!Array.isArray(o.log)) o.log = []; o.log = o.log.filter(e => obj(e) && /^\d{4}-\d\d-\d\d$/.test(e.d)).slice(-CFG.keepLog).map(e => ({ d: e.d, got: Math.max(0, Math.min(CFG.frags, int(e.got, 0))), sec: Math.max(0, Math.min(CFG.maxSec, int(e.sec, 0))), th: Array.isArray(e.th) ? e.th.filter(k => TH[k]).slice(0, 4) : [] }));
-    if (!obj(o.n)) o.n = {}; for (const k of ['dreams', 'frags', 'cards', 'furn']) o.n[k] = Math.max(0, int(o.n[k], 0));
-    for (const k of Object.keys(o)) if (!['v', 'night', 'frag', 'cards', 'furn', 'log', 'n'].includes(k)) delete o[k];
+    if (!obj(o.n)) o.n = {}; for (const k of ['dreams', 'frags', 'cards', 'furn', 'bank']) o.n[k] = Math.max(0, int(o.n[k], 0));
+    const DK = (v) => (typeof v === 'string' && /^\d{4}-\d\d-\d\d$/.test(v) ? v : null);
+    o.bank = Math.max(0, Math.min(CFG.bankCap, int(o.bank, 0))); o.bankNight = DK(o.bankNight); o.bankDone = DK(o.bankDone); o.since = DK(o.since); if (!o.bankNight) o.bank = 0;
+    for (const k of Object.keys(o)) if (!['v', 'night', 'frag', 'cards', 'furn', 'log', 'n', 'bank', 'bankNight', 'bankDone', 'since'].includes(k)) delete o[k];
     return o;
   }
   const kidMain = (s) => !!(s && s.fam && s.fam.km);
-  /* 入唔入到夢：{ ok, why }（why：egg／km／awake／hours／done） */
+  /* B：最近一晚（窗口已完）冇入過夢 → 存 1 個（上限 bankCap；第一次見嗰晚之前唔計） */
+  function lastEnded(now, h) { if (h == null) h = hourOf(now); return M6.dayKeyOfDn(M6.dn(dayKey(now)) - (h < CFG.hours[1] ? 2 : 1)); }
+  function accrue(s, now, h) {
+    const o = st(s); if (!s || s.stage === 'egg' || kidMain(s)) return o; const L = lastEnded(now, h);
+    if (!o.since) { o.since = L; return o; } if (L <= o.since) return o;
+    if (o.night !== L && o.bankDone !== L && o.bankNight !== L && o.bank < CFG.bankCap) { o.bank++; o.bankNight = L; }
+    return o;
+  }
+  /* 入唔入到夢：{ ok, why }（why：egg／km／awake／hours／done；ok／bank） */
   function canEnter(s, now, h) {
     if (h == null) h = hourOf(now);
     if (!s || s.stage === 'egg') return { ok: false, why: 'egg' }; if (kidMain(s)) return { ok: false, why: 'km' };
-    if (!s.sleeping) return { ok: false, why: 'awake' }; if (!inHours(h)) return { ok: false, why: 'hours' };
-    if (st(s).night === nightKey(now, h)) return { ok: false, why: 'done' };
+    if (!s.sleeping) return { ok: false, why: 'awake' };
+    const o = accrue(s, now, h);
+    if (!inLate(h)) return o.bank > 0 ? { ok: true, why: 'bank', night: o.bankNight } : { ok: false, why: 'hours' };
+    if (o.night === nightKey(now, h)) return { ok: false, why: 'done' };
     return { ok: true, why: 'ok', night: nightKey(now, h) };
   }
   /* 當晚記錄（6a）：21:00 嗰日＋（過咗午夜）今日，加埋 */
   function nightFacts(s, now, h) {
     if (h == null) h = hourOf(now); const nk = nightKey(now, h), keys = [nk]; const tk = dayKey(now); if (tk !== nk) keys.push(tk);
-    const out = { meal: 0, rinse: 0, play: 0, night: 1, keys };
+    const out = { meal: 0, rinse: 0, play: 0, feed: 0, poop: 0, mg: 0, night: 1, keys };
     const m = s.mem6 && obj(s.mem6.d) ? s.mem6.d : {};
     for (const k of keys) { const r = m[k]; if (!obj(r)) continue; const f = obj(r.f) ? r.f : {}, c = obj(r.c) ? r.c : {};
-      out.meal += f.meal | 0; out.rinse += c.rinse | 0; out.play += (c.play | 0) + (c.mg | 0); }
+      out.meal += f.meal | 0; out.rinse += c.rinse | 0; out.play += (c.play | 0) + (c.mg | 0);
+      out.feed += (c.feed | 0) + Object.keys(f).reduce((a, x) => a + (f[x] | 0), 0); out.poop += (c.poop | 0) + (c.poopQuick | 0); out.mg += c.mg | 0; }
     return out;
   }
   function weights(F) {
-    const w = { forest: Math.min(CFG.wMax, F.meal), lake: Math.min(CFG.wMax, F.rinse), toy: F.play >= CFG.playMany ? Math.min(CFG.wMax, F.play) : 0, star: 1 };
+    const lake = (F.feed ? 1 : 0) + (F.rinse ? 1 : 0) + (F.poop ? 1 : 0) + (F.mg ? 1 : 0);   // C
+    const w = { forest: Math.min(CFG.wMax, F.meal | 0), lake: Math.min(CFG.wMax, lake), toy: Math.max(1, Math.min(CFG.wMax, F.play | 0)), star: 1 };   // 修2b：玩具房冇門檻、最低 1
     for (const k of THEMES) if (!(w[k] > 0)) delete w[k]; return w;
   }
   /* 格數：每主題最少 minTiles，其餘按權重（最大餘數法；同分按 THEMES 次序） */
@@ -86,25 +108,29 @@
   const SNAKE = (() => { const o = []; for (let r = CFG.rows - 1, j = 0; r >= 0; r--, j++) for (let c = 0; c < CFG.cols; c++) o.push(r * CFG.cols + (j % 2 ? CFG.cols - 1 - c : c)); return o; })();
   const adj = (a, b) => { const ra = Math.floor(a / CFG.cols), ca = a % CFG.cols, rb = Math.floor(b / CFG.cols), cb = b % CFG.cols; return Math.abs(ra - rb) + Math.abs(ca - cb) === 1; };
   /* 今晚張地圖：grid[15]＝主題；frags[6]＝{ tile, th, at（秒） } */
-  function plan(s, now, h) {
+  function rngOf(str) { let x = hash(str) || 1; return () => { x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; }; }
+  function drawTheme(w, u) { const ks = THEMES.filter(k => w[k] > 0); let tot = 0; for (const k of ks) tot += w[k]; let x = u * tot; for (const k of ks) { x -= w[k]; if (x < 0) return k; } return ks[ks.length - 1]; }
+  function plan(s, now, h, opt) {
     if (h == null) h = hourOf(now); const F = nightFacts(s, now, h), w = weights(F), n = alloc(w), nk = nightKey(now, h);
     const order = THEMES.filter(k => k !== 'star' && n[k]).sort((a, b) => w[b] - w[a] || THEMES.indexOf(a) - THEMES.indexOf(b)).concat(['star']);
     const grid = new Array(CFG.cols * CFG.rows); let p = 0; for (const k of order) for (let i = 0; i < n[k]; i++) grid[SNAKE[p++]] = k;
-    // 碎片主題：每個主題 1 片，其餘按格數
-    const ks = order.slice(), fr = {}; let left = CFG.frags - ks.length; for (const k of ks) fr[k] = 1;
-    const tot = ks.reduce((a, k) => a + n[k], 0), rem = [];
-    for (const k of ks) { const x = left * n[k] / tot; fr[k] += Math.floor(x); rem.push([k, x - Math.floor(x)]); }
-    let used = ks.reduce((a, k) => a + fr[k], 0); rem.sort((a, b) => b[1] - a[1] || THEMES.indexOf(a[0]) - THEMES.indexOf(b[0]));
-    for (let i = 0; used < CFG.frags; i = (i + 1) % rem.length) { fr[rem[i][0]]++; used++; }
-    const seed = ((s.seed >>> 0) || 1) + ':6c:' + nk, frags = [], taken = { [CFG.start]: 1 };
-    for (const k of ks) { const tiles = grid.map((t, i) => (t === k ? i : -1)).filter(i => i >= 0 && !taken[i]);
-      for (let j = 0; j < fr[k] && tiles.length; j++) { const i = tiles.splice(hash(seed + ':' + k + ':' + j) % tiles.length, 1)[0]; taken[i] = 1; frags.push({ tile: i, th: k }); } }
-    // 出場次序（洗牌）→ at
-    frags.sort((a, b) => hash(seed + ':o' + a.tile) - hash(seed + ':o' + b.tile)); frags.forEach((f, i) => { f.at = CFG.spawnAt[i] || 0; f.id = i; });
+    // 碎片：每晚 1 片，frag2 機會多 1 片；每片按權重抽主題，已齊 5 張（連今晚前面嗰片）嘅主題剔走（修1）；四主題都齊 → 0 片
+    const seed = ((s.seed >>> 0) || 1) + ':6c:' + (opt && opt.bank ? 'b' + opt.bank : nk), rng = rngOf(seed), frags = [], taken = { [CFG.start]: 1 };
+    const o = st(s), vf = Object.assign({}, o.frag), vc = Object.fromEntries(THEMES.map(k => [k, themeCards(s, k).length]));
+    const openW = () => { const x = {}; for (const k of THEMES) if (w[k] > 0 && vc[k] < CFG.cardsPerTheme) x[k] = w[k]; return x; };
+    const nF = Object.keys(openW()).length ? 1 + (rng() < CFG.frag2 ? 1 : 0) : 0;
+    for (let j = 0; j < nF; j++) { const ow = openW(), ks = THEMES.filter(k => ow[k] > 0); if (!ks.length) break;
+      const th = drawTheme(ow, rng()), tiles = grid.map((t, i) => (t === th ? i : -1)).filter(i => i >= 0 && !taken[i]); if (!tiles.length) break;
+      const i = tiles[Math.floor(rng() * tiles.length)]; taken[i] = 1; frags.push({ tile: i, th });
+      vf[th]++; if (Math.min(CFG.cardsPerTheme, Math.floor(vf[th] / CFG.perCard)) > vc[th]) vc[th]++; }
+    frags.forEach((f, i) => { f.at = CFG.spawnAt[i] || 0; f.id = i; });
     return { night: nk, facts: F, w, n, grid, frags, start: CFG.start, dur: CFG.durSec };
   }
   /* 入夢：用咗今晚 */
-  function enter(s, now, h) { const c = canEnter(s, now, h); if (!c.ok) return c; const o = st(s); o.night = c.night; o.n.dreams++; return Object.assign({ ok: true }, plan(s, now, h)); }
+  function enter(s, now, h) { const c = canEnter(s, now, h); if (!c.ok) return c; const o = st(s);
+    if (c.why === 'bank') { o.bank = Math.max(0, o.bank - 1); o.bankDone = lastEnded(now, h);   // 補做＝清埋截至而家錯過嘅晚（唔會同日再補）
+      o.n.bank++; o.n.dreams++; return Object.assign({ ok: true, bank: c.night }, plan(s, now, h, { bank: c.night })); }   // B：補做（唔佔當晚）
+    o.night = c.night; o.n.dreams++; return Object.assign({ ok: true }, plan(s, now, h)); }
   function themeCards(s, th) { const o = st(s); return CARDS.filter(c => c.th === th && o.cards[c.id]); }
   /* 家具：主題首選（5a 擺設池）；有咗 → 擺設池第一件未有；全部有 → null */
   function furnFor(s, th) {
@@ -127,10 +153,10 @@
   const toNext = (s, th) => { const o = st(s); if (themeCards(s, th).length >= CFG.cardsPerTheme) return 0; return CFG.perCard - (o.frag[th] % CFG.perCard); };
   function summary(s, now, h) {
     const o = st(s), c = canEnter(s, now, h);
-    return { can: c.ok, why: c.why, night: o.night, tonight: o.night === nightKey(now, h), frag: Object.assign({}, o.frag), cards: Object.keys(o.cards).length, total: CARDS.length,
+    return { can: c.ok, why: c.why, bank: o.bank, bankNight: o.bankNight, night: o.night, tonight: o.night === nightKey(now, h), frag: Object.assign({}, o.frag), cards: Object.keys(o.cards).length, total: CARDS.length,
       byTh: Object.fromEntries(THEMES.map(k => [k, themeCards(s, k).length])), furn: Object.assign({}, o.furn), n: Object.assign({}, o.n), log: o.log.slice(-5) };
   }
   function resetNight(s) { st(s).night = null; return st(s); }
   function reset(s) { delete s.dream6; return st(s); }
-  return { CFG, THEMES, TH, CARDS, CK, SNAKE, dayKey, hourOf, inHours, nightKey, st, canEnter, nightFacts, weights, alloc, adj, plan, enter, themeCards, furnFor, pick, endLog, toNext, summary, resetNight, reset };
+  return { CFG, THEMES, TH, CARDS, CK, SNAKE, dayKey, hourOf, inHours, inLate, nightKey, lastEnded, accrue, rngOf, drawTheme, st, canEnter, nightFacts, weights, alloc, adj, plan, enter, themeCards, furnFor, pick, endLog, toNext, summary, resetNight, reset };
 });

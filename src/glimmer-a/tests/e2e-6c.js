@@ -64,7 +64,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   const w0 = await E(() => ({ w: __glimmer.state.sys12 && __glimmer.state.sys12.wallet.total, b: JSON.stringify(__glimmer.state.sys12 && __glimmer.state.sys12.bond), b5: JSON.stringify(__glimmer.state.b5 || null) }));
   await click('l6c-rail'); await W(300); q = await Q(); ok(q.on && q.tonight && !q.can && q.why === 'done', '撳「入夢」→ 入咗夢、今晚用咗', { on: q.on, why: q.why });
   const plan = await E(() => __qa.l6c.plan()); const c = cnt(plan.grid);
-  ok(plan.grid.length === 15 && c.forest === 7 && c.lake === 4 && c.star === 4 && !c.toy, '暖菇飯 3、淋水 1、冇玩 → 森林 7／湖 4／星 4（冇玩具房）', c);
+  ok(plan.grid.length === 15 && c.forest === 5 && c.lake === 4 && c.toy === 3 && c.star === 3, '暖菇飯 3、淋水 1、冇玩 → 森林 5／湖 4（餵食＋淋水）／玩具房 3（最少 1）／星 3', c);
+  ok(plan.w.forest === 3 && plan.w.lake === 2 && plan.w.toy === 1 && plan.w.star === 1 && plan.frags.length >= 1 && plan.frags.length <= 2, '6d 平衡：湖＝餵食＋淋水、玩具房最低 1、每晚 1–2 片', { w: plan.w, n: plan.frags.length });
   ok(plan.facts && plan.facts.meal === 3 && plan.facts.rinse === 1, '地圖用嘅記錄＝當日 6a 記錄', plan.facts);
   ok(await E((g) => JSON.stringify(Glimmer.long6c.plan(__glimmer.state, __glimmer.now(), __glimmer.hour()).grid) === JSON.stringify(g), plan.grid), '畫面地圖＝邏輯重算（同一晚同記錄）');
   ok(await E(() => [...document.querySelectorAll('#l6cov .tile')].map(t => t.dataset.th).join()) === plan.grid.join(), '15 格主題同地圖一致');
@@ -83,22 +84,22 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await shot('02-dream-map');
 
   console.log('# 行路＋拾碎片');
-  const f0 = plan.frags.filter(f => f.at === 0); ok(f0.length === 2 && (await E(() => document.querySelectorAll('#l6cov .frag[data-on="1"]').length)) === 2, '一開始有 2 片');
+  const f0 = plan.frags.filter(f => f.at === 0); ok(f0.length === 1 && (await E(() => document.querySelectorAll('#l6cov .frag[data-on="1"]').length)) === 1, '一開始有 1 片');
   ok(await tileCenterWalk(10), '撳格 → 團絨逐格行過去'); q = await Q(); ok(q.rev >= 6, '行過嘅格霧散開', q.rev);
   for (const f of f0) await tileCenterWalk(f.tile);
-  q = await Q(); ok(q.got === 2 && q.frag[f0[0].th] >= 1, '行到碎片格 → 拾到（即刻入帳）', { got: q.got, frag: q.frag });
+  q = await Q(); ok(q.got === 1 && q.frag[f0[0].th] >= 1, '行到碎片格 → 拾到（即刻入帳）', { got: q.got, frag: q.frag });
   ok((await E(() => __qa.l6c.toasts().join('|'))).includes('夢碎片'), '拾到有提示');
   const w1 = await E(() => ({ w: __glimmer.state.sys12 && __glimmer.state.sys12.wallet.total, b: JSON.stringify(__glimmer.state.sys12 && __glimmer.state.sys12.bond), b5: JSON.stringify(__glimmer.state.b5 || null) }));
   ok(w1.w === w0.w && w1.b5 === w0.b5, '唔出碎、唔加月眠分', { w0: w0.w, w1: w1.w });
   ok(await E(() => __glimmer.state.sleeping === true), '夢入面團絨照瞓');
-  await E(() => __qa.l6c.skip(26)); await W(400); ok((await E(() => document.querySelectorAll('#l6cov .frag[data-on="1"]').length)) === 1, '25 秒 → 第 3 片浮出');
+  await E(() => __qa.l6c.skip(41)); await W(400); ok((await E(() => document.querySelectorAll('#l6cov .frag[data-on="1"]').length)) === plan.frags.length - 1, plan.frags.length === 2 ? '40 秒 → 第 2 片浮出' : '今晚得 1 片 → 40 秒都冇第 2 片');
 
   console.log('# 時間到 → 小結（≤3 分鐘）');
-  await E(() => __qa.l6c.skip(130)); await W(600); q = await Q(); ok(q.endWhy === 'time' && q.sec <= 180, '150 秒到 → 自動醒（' + Math.round(q.sec) + ' 秒）', { why: q.endWhy, sec: q.sec });
+  await E(() => __qa.l6c.skip(115)); await W(600); q = await Q(); ok(q.endWhy === 'time' && q.sec <= 180, '150 秒到 → 自動醒（' + Math.round(q.sec) + ' 秒）', { why: q.endWhy, sec: q.sec });
   await W(1400); ok(await vis('l6c-sum'), '出夢過場後 → 今晚小結');
-  ok((await E(() => document.querySelector('[data-testid=l6c-sum-got]').textContent)).includes('2／6'), '小結：拾到 2／6');
+  ok((await E(() => document.querySelector('[data-testid=l6c-sum-got]').textContent)).includes('1／' + plan.frags.length), '小結：拾到 1／' + plan.frags.length);
   await readOk('今晚小結', '[data-testid=l6c-sum]'); await hitOk('小結掣', '[data-testid=l6c-sum-dexbtn],[data-testid=l6c-sum-ok]', 2);
-  const lg = (await Q()).log.slice(-1)[0]; ok(lg && lg.sec <= 180 && lg.got === 2, '記錄：' + (lg && lg.sec) + ' 秒 ≤180', lg);
+  const lg = (await Q()).log.slice(-1)[0]; ok(lg && lg.sec <= 180 && lg.got === 1, '記錄：' + (lg && lg.sec) + ' 秒 ≤180', lg);
   await shot('03-summary');
   await click('l6c-sum-dexbtn'); await W(400); q = await Q(); ok(!q.on && q.dex, '「睇夢圖鑑」→ 夢圖鑑');
   await W(400); ok(await E(() => document.querySelectorAll('#l6cdex .card6[data-art^="6c:card_back"]').length === 20 && !document.querySelector('#l6cdex [data-ph]')), '夢圖鑑 20 張（未砌到 → card_back 美術）');
@@ -107,13 +108,13 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await click('l6c-dex-close'); await W(300); q = await Q(); ok(!q.dex && q.rail && q.railMode === 'dex', '今晚用咗 → rail 變「夢簿」', { rail: q.rail, m: q.railMode });
   ok(!(await E(() => __qa.l6c.start('qa').ok)), '同一晚再入 → 唔得');
 
-  console.log('# 拾晒 6 片 → 提早醒；砌夢圖鑑');
-  await E(() => { const o = Glimmer.long6c.resetNight(__glimmer.state); o.frag.forest = 4; }); await sleep(); await E(() => __qa.l6c.start('qa')); await W(1400);
-  const p2 = await E(() => __qa.l6c.plan()); await E(() => __qa.l6c.skip(101));
+  console.log('# 拾晒當晚嘅片 → 提早醒；砌夢圖鑑');
+  await E(() => { const o = Glimmer.long6c.resetNight(__glimmer.state); for (const k of Glimmer.long6c.THEMES) o.frag[k] = 4; }); await sleep(); await E(() => __qa.l6c.start('qa')); await W(1400);
+  const p2 = await E(() => __qa.l6c.plan()); await E(() => __qa.l6c.skip(41));
   for (const f of p2.frags) await E((i) => __qa.l6c.walkTo(i), f.tile);
-  await W(500); q = await Q(); ok(q.endWhy === 'all' && q.got === 6, '6 片拾晒 → 自動醒（all）', { why: q.endWhy, got: q.got });
-  await W(1500); ok((await E(() => document.querySelector('[data-testid=l6c-sum-got]').textContent)).includes('6／6'), '小結 6／6');
-  q = await Q(); ok(q.cards >= 1 && q.byTh.forest >= 1 && (await E(() => !!Glimmer.long6c.st(__glimmer.state).cards.f1)), '森林碎片（4＋今晚）夠 5 片 → 第 1 張夢圖鑑「會唱歌嘅菇」', { cards: q.cards, frag: q.frag });
+  await W(500); q = await Q(); ok(q.endWhy === 'all' && q.got === p2.frags.length, p2.frags.length + ' 片拾晒 → 自動醒（all）', { why: q.endWhy, got: q.got });
+  await W(1500); ok((await E(() => document.querySelector('[data-testid=l6c-sum-got]').textContent)).includes(p2.frags.length + '／' + p2.frags.length), '小結 ' + p2.frags.length + '／' + p2.frags.length);
+  { const th = p2.frags[0].th, first = { forest: 'f1', lake: 'l1', toy: 't1', star: 's1' }[th]; q = await Q(); ok(q.cards >= 1 && q.byTh[th] >= 1 && (await E((id) => !!Glimmer.long6c.st(__glimmer.state).cards[id], first)), '碎片（4＋今晚）夠 5 片 → 第 1 張夢圖鑑（' + th + '）', { cards: q.cards, frag: q.frag }); }
   ok(await vis('l6c-sum-card'), '小結列出新夢圖鑑');
   await click('l6c-sum-ok'); await W(300); ok(!(await Q()).on && !(await E(() => !!document.getElementById('l6cov'))), '「好」→ 返花園');
 
@@ -122,6 +123,13 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await W(300); ok(await E(() => !!document.querySelector('#l6cov [data-art^="6c:tile_toy"]')), '美術：6c:tile_toy');
   await W(1400); await click('l6c-wake'); await W(1600); q = await Q(); ok(q.endWhy === 'wake' && (await vis('l6c-sum')), '撳「醒返」→ 小結');
   await click('l6c-sum-ok'); await W(300);
+
+  console.log('# 錯過一晚 → 白天補做（6d B）');
+  await E(() => { const o = Glimmer.long6c.st(__glimmer.state), k = Glimmer.long6a.dayKeyOfDn(Glimmer.long6a.dn(Glimmer.long6a.dayKey(__glimmer.now())) - 3); o.since = k; o.night = k; o.bank = 0; o.bankNight = null; o.bankDone = null; __glimmer.hourOverride = 14; __glimmer.state.sleeping = true; __qa.l6c.railTick(); });
+  q = await Q(); ok(q.can && q.why === 'bank' && q.rail && q.railMode === 'enter', '琴晚冇入夢 → 下晝瞓緊都有「入夢」（補做）', { why: q.why, rail: q.rail, m: q.railMode });
+  { const r = await E(() => __qa.l6c.start('qa')); ok(r && r.ok, '補做入到'); await W(1400); await E(() => __qa.l6c.finish()); await W(300);
+    await E(() => { __glimmer.state.sleeping = true; __qa.l6c.railTick(); }); q = await Q(); ok(!q.can && q.why === 'hours', '補完 → 下晝冇得再入（每次最多存 1 晚）', q.why); }
+  await E(() => { __glimmer.hourOverride = 22; });
 
   console.log('# 蛋／細佬主養');
   await E(() => { __glimmer.state.stage = 'egg'; __qa.l6c.railTick(); }); q = await Q(); ok(q.why === 'egg' && !q.rail, '蛋 → 冇夢');
