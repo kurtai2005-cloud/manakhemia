@@ -109,12 +109,15 @@
   const fastOk = (s) => FAM.has(s, 'inherit_fast');
   function fastState(s, kind) { return kind === 'tr' ? 'tr' : fastOk(s) ? 'on' : 'locked'; }
 
+  /* 6d：揀完上一代之後嘅 hook（long6d 用嚟套朋友蛋碼花紋；5c 本身唔理） */
+  const HOOKS = []; const onChoose = (fn) => { if (typeof fn === 'function' && !HOOKS.includes(fn)) HOOKS.push(fn); };
   /* 揀（孵之前可以改） */
   function choose(s, child, pid, now, ctx, auto) {
     const o = st(s), pd = o.pend[child], prev = o.inh[child]; if (!pd && !(prev && !prev.hatched)) return { ok: false, reason: 'notPending' };
     const kind = pd ? pd.kind : prev.kind, c = candidates(s, now, ctx, child).find(x => x.id === pid); if (!c) return { ok: false, reason: 'notCand' };
     o.inh[child] = { parent: c.id, pkind: c.kind, pfk: c.fk || null, pname: c.name, pline: c.kind === 'kid' ? c.line || null : routeOf(c.fk, c.form), pattern: c.pattern, trick: c.trick, tsrc: c.tsrc, kind, at: now || 1, auto: !!auto };
     delete o.pend[child]; o.seen[child] = 'done'; o.n[auto ? 'auto' : 'picks']++;
+    for (const f of HOOKS) { try { f(s, o.inh[child], child, now); } catch (e) { } }   // 6d：朋友蛋碼（下一隻細佬蛋帶朋友嘅花紋）
     return { ok: true, child, inh: Object.assign({}, o.inh[child]), fast: fastState(s, kind) };
   }
 
@@ -160,5 +163,5 @@
   }
   function summary(s) { const o = st(s); return { pend: pendOf(s), inh: JSON.parse(JSON.stringify(o.inh)), demo: JSON.parse(JSON.stringify(o.demo)), seen: Object.assign({}, o.seen), n: Object.assign({}, o.n), fastOk: fastOk(s), fast: SR.st(s).fast || 0 }; }
 
-  return { PATTERNS, PAT, BY_SERIES, BY_ROUTE, TRICK, FAST, LINES, st, routeOf, patternOf, teachers, noteDemo, syncDemo, demoOf, trickOf, candidates, eggs, fastOk, fastState, choose, scan, inhOf, pendOf, reset, hx, toHex, dist, tintPair, summary };
+  return { PATTERNS, PAT, BY_SERIES, BY_ROUTE, TRICK, FAST, LINES, st, routeOf, patternOf, teachers, noteDemo, syncDemo, demoOf, trickOf, candidates, eggs, fastOk, fastState, choose, scan, inhOf, pendOf, reset, hx, toHex, dist, tintPair, summary, onChoose };
 });
