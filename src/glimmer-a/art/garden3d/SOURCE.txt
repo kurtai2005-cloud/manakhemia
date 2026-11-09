@@ -1,0 +1,1 @@
+3D 花園 H1 美術來源：art/garden3d-h1-mesh @ 620509fc268a26b444540b8da5120e69d3935ac4（tools/import_garden3d.py；引擎用 json mesh，唔打包 glb）

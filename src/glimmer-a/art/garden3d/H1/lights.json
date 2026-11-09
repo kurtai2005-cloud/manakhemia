@@ -1,0 +1,151 @@
+{
+ "variant": "H1",
+ "name": "晨光暖調",
+ "lights": [
+  {
+   "id": "lamp",
+   "zh": "燈柱燈頭",
+   "x": -72.5,
+   "y": 60,
+   "z": 23,
+   "color": "#ffd890",
+   "radius": 70,
+   "intensity": 0.0,
+   "intensityNight": 1.2,
+   "flicker": 0.04
+  },
+  {
+   "id": "lantern_1",
+   "zh": "旗串燈籠 1",
+   "x": -49,
+   "y": 142,
+   "z": -45,
+   "color": "#ff9a50",
+   "radius": 28,
+   "intensity": 0.0,
+   "intensityNight": 0.7,
+   "flicker": 0.12
+  },
+  {
+   "id": "lantern_2",
+   "zh": "旗串燈籠 2",
+   "x": -25,
+   "y": 121,
+   "z": -45,
+   "color": "#ff9a50",
+   "radius": 28,
+   "intensity": 0.0,
+   "intensityNight": 0.7,
+   "flicker": 0.12
+  },
+  {
+   "id": "lantern_3",
+   "zh": "旗串燈籠 3",
+   "x": -1,
+   "y": 108,
+   "z": -45,
+   "color": "#ff9a50",
+   "radius": 28,
+   "intensity": 0.0,
+   "intensityNight": 0.7,
+   "flicker": 0.12
+  },
+  {
+   "id": "lantern_4",
+   "zh": "旗串燈籠 4",
+   "x": 23,
+   "y": 103,
+   "z": -45,
+   "color": "#ff9a50",
+   "radius": 28,
+   "intensity": 0.0,
+   "intensityNight": 0.7,
+   "flicker": 0.12
+  },
+  {
+   "id": "lantern_5",
+   "zh": "旗串燈籠 5",
+   "x": 47,
+   "y": 105,
+   "z": -45,
+   "color": "#ff9a50",
+   "radius": 28,
+   "intensity": 0.0,
+   "intensityNight": 0.7,
+   "flicker": 0.12
+  },
+  {
+   "id": "window",
+   "zh": "小屋窗",
+   "x": 69.0,
+   "y": 62.0,
+   "z": -48.0,
+   "color": "#ffc870",
+   "radius": 48,
+   "intensity": 0.0,
+   "intensityNight": 0.8,
+   "flicker": 0.02
+  },
+  {
+   "id": "window_side",
+   "zh": "小屋側窗",
+   "x": 114.0,
+   "y": 57.0,
+   "z": -72.0,
+   "color": "#ffc870",
+   "radius": 40,
+   "intensity": 0.0,
+   "intensityNight": 0.7,
+   "flicker": 0.02
+  },
+  {
+   "id": "jar",
+   "zh": "螢火瓶",
+   "x": 35,
+   "y": 5,
+   "z": 23,
+   "color": "#c8ffb0",
+   "radius": 22,
+   "intensity": 0.0,
+   "intensityNight": 0.6,
+   "flicker": 0.25
+  }
+ ],
+ "sun": {
+  "dir": [
+   0.4206,
+   -0.721,
+   0.5507
+  ],
+  "color": "#ffe6b8",
+  "intensity": 1.0,
+  "ambient": {
+   "color": "#cfe0f0",
+   "intensity": 0.55
+  },
+  "shadowIntensity": 0.3,
+  "note": "dir＝光行進方向（由太陽射向場景），已正規化；H1 太陽喺左後上方。shadowIntensity＝影濃度 0–1（three.js light.shadow.intensity；0.3＝大樹長影淡啲，唔烘入貼圖）"
+ },
+ "fill": {
+  "dir": [
+   0.2005,
+   -0.1203,
+   -0.9723
+  ],
+  "color": "#ffe2c4",
+  "intensity": 0.38,
+  "intensityNight": 0.0,
+  "note": "補光（方向光，唔投影）：由鏡頭方向略低照入去，補返背光嘅前牆（太陽喺左後上）；全場景 lit 物件都受，唔烘入貼圖"
+ },
+ "night": {
+  "note": "夜間測試用：sun.intensity 0.12、ambient #4a5a90 0.35、燈用 intensityNight",
+  "sun": 0.12,
+  "ambient": "#4a5a90",
+  "ambientIntensity": 0.35
+ },
+ "fog": {
+  "color": "#ffe8c8",
+  "near": 420,
+  "far": 1400
+ }
+}
