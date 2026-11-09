@@ -1,7 +1,7 @@
 /* 《微光小圃》 long6c.js — 第 6 批 6c「夢境探險」（遊策 breakthrough-6a6d-spec §6c）。原創代碼。
    DOM-free、Node 可 require（純邏輯）：存檔 s.dream6（sanitize）。唔加月眠／任何路線分、唔出碎、唔郁需求數值、唔郁系統 6 親密度。
    ・入夢：團絨瞓緊（s.sleeping）＋遊戲鐘 21:00–03:00（6d A：19:00 後上線都計 → 19:00–03:00）＋唔係蛋／唔係細佬做主養 → 每晚 1 次（「一晚」＝21:00 嗰日；00:00–03:00 計返前一日）。
-     6d B：錯過咗嘅一晚存 1 個，下次（夜晚窗口外、瞓緊）補做。
+     6d B：錯過咗嘅一晚存 1 個，下次上線（瞓緊；6d.1 夜晚都得，先補後入當晚）補做。
      入夢嗰刻已經用咗今晚（中途閂 app 都唔可以再入；已拾嘅碎片即時入帳，唔會冇咗）。
    ・夢長：150 秒（＋入／出夢過場各 1.2 秒），硬上限 180 秒（每晚 ≤3 分鐘）。
    ・直向小地圖 3×5 格（i＝行×3＋列，行 0＝頂），由當晚 6a 記錄（s.mem6；21:00 嗰日＋過咗午夜嗰日加埋）砌：
@@ -19,7 +19,7 @@
   const hash = (str) => { let h = 2166136261 >>> 0; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; };
   /* 6d（遊策 6c 夢境平衡 A／B／C＋修1＋修2b）：
      A 窗口 21:00–03:00；當晚最後一次上線喺 19:00 後開始都計（lateFrom 19 → 19:00–03:00 瞓緊入得），每晚最多 1 次。
-     B 錯過咗嘅一晚存 1 個（bankCap 1），下次上線（夜晚窗口以外、瞓緊）補做；補做唔佔當晚。
+     B 錯過咗嘅一晚存 1 個（bankCap 1），下次上線（瞓緊；6d.1：夜晚窗口內外都得，有存先補）補做；補做唔佔當晚，補完同一次上線仍可入當晚。
      C 水珠湖權重＝餵食／淋水／執便便／小遊戲 各 +1。
      片數：每晚 1 片，20% 再多 1 片（湖片都喺同一個額度）；修1 主題 5 張齊 → 權重 0（唔再出嗰主題嘅片）；修2b 玩具房冇門檻、最低權重 1。
      夢碎片唔入錢包／唔計 47 碎上限。 */
@@ -63,12 +63,16 @@
     return o;
   }
   const kidMain = (s) => !!(s && s.fam && s.fam.km);
-  /* B：最近一晚（窗口已完）冇入過夢 → 存 1 個（上限 bankCap；第一次見嗰晚之前唔計） */
+  /* B：最近一晚（窗口已完）冇入過夢 → 存 1 個（上限 bankCap；第一次見嗰晚之前唔計；o.since＝已判到邊晚） */
   function lastEnded(now, h) { if (h == null) h = hourOf(now); return M6.dayKeyOfDn(M6.dn(dayKey(now)) - (h < CFG.hours[1] ? 2 : 1)); }
   function accrue(s, now, h) {
     const o = st(s); if (!s || s.stage === 'egg' || kidMain(s)) return o; const L = lastEnded(now, h);
     if (!o.since) { o.since = L; return o; } if (L <= o.since) return o;
-    if (o.night !== L && o.bankDone !== L && o.bankNight !== L && o.bank < CFG.bankCap) { o.bank++; o.bankNight = L; }
+    /* 6d.1：由上次判到嗰晚之後逐晚判（最多 30 晚），存最早嗰個冇入過嘅一晚 —— 中間嘅空日唔會蓋過真正錯過嗰晚；
+       每晚只判一次（o.night 只記最近一晚；入咗今晚之後再 accrue 唔會當琴晚錯過） */
+    for (let dn = Math.max(M6.dn(o.since) + 1, M6.dn(L) - 29); dn <= M6.dn(L) && o.bank < CFG.bankCap; dn++) { const k = M6.dayKeyOfDn(dn);
+      if (o.night !== k && o.bankDone !== k && o.bankNight !== k) { o.bank++; o.bankNight = k; } }
+    o.since = L;
     return o;
   }
   /* 入唔入到夢：{ ok, why }（why：egg／km／awake／hours／done；ok／bank） */
@@ -77,13 +81,14 @@
     if (!s || s.stage === 'egg') return { ok: false, why: 'egg' }; if (kidMain(s)) return { ok: false, why: 'km' };
     if (!s.sleeping) return { ok: false, why: 'awake' };
     const o = accrue(s, now, h);
-    if (!inLate(h)) return o.bank > 0 ? { ok: true, why: 'bank', night: o.bankNight } : { ok: false, why: 'hours' };
+    if (o.bank > 0) return { ok: true, why: 'bank', night: o.bankNight };   // 6d.1 B：有存低嘅一晚 → 先補做（夜晚窗口內都係；補做唔寫 o.night，同一次上線之後仍可再入當晚）
+    if (!inLate(h)) return { ok: false, why: 'hours' };
     if (o.night === nightKey(now, h)) return { ok: false, why: 'done' };
     return { ok: true, why: 'ok', night: nightKey(now, h) };
   }
-  /* 當晚記錄（6a）：21:00 嗰日＋（過咗午夜）今日，加埋 */
-  function nightFacts(s, now, h) {
-    if (h == null) h = hourOf(now); const nk = nightKey(now, h), keys = [nk]; const tk = dayKey(now); if (tk !== nk) keys.push(tk);
+  /* 當晚記錄（6a）：21:00 嗰日＋（過咗午夜）今日，加埋；補做（bankNight）＝淨係存低嗰晚嗰日 */
+  function nightFacts(s, now, h, bankNight) {
+    if (h == null) h = hourOf(now); const nk = bankNight || nightKey(now, h), keys = [nk]; const tk = dayKey(now); if (!bankNight && tk !== nk) keys.push(tk);   // 6d.1：補做用存低嗰晚（21:00 嗰日）嘅記錄
     const out = { meal: 0, rinse: 0, play: 0, feed: 0, poop: 0, mg: 0, night: 1, keys };
     const m = s.mem6 && obj(s.mem6.d) ? s.mem6.d : {};
     for (const k of keys) { const r = m[k]; if (!obj(r)) continue; const f = obj(r.f) ? r.f : {}, c = obj(r.c) ? r.c : {};
@@ -111,7 +116,7 @@
   function rngOf(str) { let x = hash(str) || 1; return () => { x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; }; }
   function drawTheme(w, u) { const ks = THEMES.filter(k => w[k] > 0); let tot = 0; for (const k of ks) tot += w[k]; let x = u * tot; for (const k of ks) { x -= w[k]; if (x < 0) return k; } return ks[ks.length - 1]; }
   function plan(s, now, h, opt) {
-    if (h == null) h = hourOf(now); const F = nightFacts(s, now, h), w = weights(F), n = alloc(w), nk = nightKey(now, h);
+    if (h == null) h = hourOf(now); const bk = opt && typeof opt.bank === 'string' ? opt.bank : null, F = nightFacts(s, now, h, bk), w = weights(F), n = alloc(w), nk = bk || nightKey(now, h);
     const order = THEMES.filter(k => k !== 'star' && n[k]).sort((a, b) => w[b] - w[a] || THEMES.indexOf(a) - THEMES.indexOf(b)).concat(['star']);
     const grid = new Array(CFG.cols * CFG.rows); let p = 0; for (const k of order) for (let i = 0; i < n[k]; i++) grid[SNAKE[p++]] = k;
     // 碎片：每晚 1 片，frag2 機會多 1 片；每片按權重抽主題，已齊 5 張（連今晚前面嗰片）嘅主題剔走（修1）；四主題都齊 → 0 片

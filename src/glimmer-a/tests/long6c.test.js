@@ -38,6 +38,20 @@ console.log('①b 錯過嘅一晚存 1 個（B）');
   const e = mk(); e.stage = 'egg'; DR.canEnter(e, at(0, 14), 14); ok(DR.canEnter(e, at(2, 14), 14).why === 'egg' && DR.st(e).bank === 0, '蛋期唔存');
   const n = mk(); DR.canEnter(n, at(0, 14), 14); n.sleeping = false; ok(DR.canEnter(n, at(2, 14), 14).why === 'awake', '醒咗 → 唔入得（補做都要瞓緊）'); }
 
+console.log('①c 6d.1 存晚：夜晚窗口內都先補、補完同一次上線再入當晚、空日唔蓋過');
+{ const s = mk(); DR.canEnter(s, at(0, 20), 20); DR.enter(s, at(0, 20), 20);   // 11-02 入咗
+  ok(DR.canEnter(s, at(2, 20), 20).why === 'bank' && DR.st(s).bankNight === '2026-11-03', '11-03 冇入 → 11-04 20:00（夜晚窗口內）先補做');
+  const b = DR.enter(s, at(2, 20), 20); ok(b.ok && b.bank === '2026-11-03' && b.night === '2026-11-03' && DR.st(s).night === '2026-11-02', '補做唔寫 o.night（plan.night＝存低嗰晚）', DR.st(s));
+  ok(DR.canEnter(s, at(2, 20, 5), 20.08).why === 'ok', '補完同一次上線 → 仍可入當晚'); const r = DR.enter(s, at(2, 20, 5), 20.08); ok(r.ok && !r.bank && r.night === '2026-11-04', '入當晚 11-04');
+  ok(DR.canEnter(s, at(2, 20, 10), 20.16).why === 'done' && DR.st(s).bank === 0, '入完當晚再撳 → done（唔會當琴晚錯過再存）');
+  ok(DR.canEnter(s, at(3, 21), 21).why === 'ok' && DR.st(s).bank === 0, '琴晚入咗 → 冇補做、今晚照入');
+  const n = DR.st(s).n; ok(n.dreams === 3 && n.bank === 1, '計數：3 次夢、1 次補做', n); }
+{ const s = mk(); DR.canEnter(s, at(0, 20), 20); DR.enter(s, at(0, 20), 20);   // 11-02 入咗；11-03 錯過；11-04 空日
+  rec(s, at(1, 9), 3, 0, 0); rec(s, at(3, 9), 0, 0, 4);
+  ok(DR.canEnter(s, at(3, 20), 20).why === 'bank' && DR.st(s).bankNight === '2026-11-03', '空日（11-04）唔蓋過真正錯過嗰晚（11-03）', DR.st(s));
+  const b = DR.enter(s, at(3, 20), 20); ok(b.facts.meal === 3 && b.facts.play === 0 && b.w.forest === 3, '補做張地圖用存低嗰晚（11-03）嘅記錄，唔係今日', b.facts);
+  const r = DR.enter(s, at(3, 20, 5), 20.08); ok(r.ok && r.facts.play === 4 && r.facts.meal === 0, '當晚用今日記錄', r.facts); }
+
 console.log('② 地圖跟當日記錄');
 { const s = mk(), t = at(0, 22); rec(s, at(0, 9), 3, 1, 0); const p = DR.plan(s, t, 22), c = cnt(p.grid);
   ok(p.grid.length === 15 && p.grid.every(Boolean), '3×5＝15 格全部有主題');
@@ -96,26 +110,14 @@ console.log('⑦ 存檔淨化');
   ok(o.log.length === 1 && o.log[0].got === 2 && o.log[0].sec === 0 && o.log[0].th.join() === 'lake', '壞 log 淨化', o.log); ok(o.n.dreams === 0 && !('junk' in o), '計數 ≥0、多餘 key 刪');
   DR.reset(s); ok(!s.dream6 || DR.st(s).n.frags === 0, 'reset 清晒'); }
 
-console.log('⑧ 模擬（seeded）：天天玩／疏玩 → 集齊 4 主題 20 張要幾多日');
-{ /* 玩家模型（遊策 6c 夢境平衡目標）：
-     天天玩：每日夜晚 20–22 點上線 1 次（入夢）；疏玩：每日 55% 機會上線，一半 19–22 點（當晚入夢）、一半 9–17 點（有錯過嘅一晚就補做）。
-     每次上線：暖菇飯 1–3、淋水 70%、執便便 60%、玩耍 60%、小遊戲 40%；入夢就拾晒當晚嘅片。上限 180 日。 */
-  const at0 = (d, h, m) => new Date(2026, 0, 1 + d, h, m || 0, 0).getTime();
-  const R0 = (seed) => { let x = seed >>> 0 || 1; return () => { x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; }; };
-  const run = (kind, seed, p, Hz) => { const r = R0(seed * 7919 + 13), s = SIM.newState(at0(0, 9), seed); s.stage = 'adult'; s.form = 'tide'; const w0 = X.st(s).wallet.total; let fr = 0;
-    for (let d = 0; d < Hz; d++) { if (kind !== 'daily' && !(r() < p)) continue;
-      const hr = kind === 'daily' ? 20 + Math.floor(r() * 3) : (r() < 0.5 ? 19 + Math.floor(r() * 4) : 9 + Math.floor(r() * 9)), t = at0(d, hr, 10);
-      const n = 1 + Math.floor(r() * 3); for (let i = 0; i < n; i++) M6.note(s, 'food', 'meal', 0, 0, 0, t);
-      if (r() < .7) M6.note(s, 'care', 'rinse', 0, 0, 0, t); if (r() < .6) M6.note(s, 'care', 'poop', 0, 0, 0, t); if (r() < .6) M6.note(s, 'care', 'play', 0, 0, 0, t); if (r() < .4) M6.note(s, 'care', 'mg', 0, 0, 0, t);
-      s.sleeping = true; const e = DR.enter(s, t + 60e3, hr + 0.2); s.sleeping = false; if (e.ok) for (const f of e.frags) { DR.pick(s, f.th, t); fr++; }
-      if (Object.keys(DR.st(s).cards).length >= 20) return { d: d + 1, fr, w: X.st(s).wallet.total - w0 }; }
-    return { d: null, fr, w: X.st(s).wallet.total - w0 }; };
-  const stat = (kind, p) => { const all = []; for (let i = 1; i <= 400; i++) all.push(run(kind, i, p, 180)); const ds = all.filter(x => x.d != null).map(x => x.d).sort((a, b) => a - b), q = (f) => ds[Math.floor(f * (ds.length - 1))];
-    return { done: ds.length / all.length * 100, med: q(0.5), p10: q(0.1), waste: all.filter(x => x.d != null && x.fr !== 100).length, wallet: all.some(x => x.w !== 0) }; };
-  const D = stat('daily', 1), L = stat('light', 0.55);
-  ok(D.done === 100 && Math.abs(D.med - 84) <= 3 && Math.abs(D.p10 - 80) <= 3, '天天玩：100% 集齊、中位 ' + D.med + ' 日（目標 84）、P10 ' + D.p10 + '（目標 80）', D);
-  ok(Math.abs(L.done - 98.5) <= 2 && Math.abs(L.med - 151) <= 6, '疏玩：' + L.done.toFixed(1) + '% 集齊（目標 98.5）、中位 ' + L.med + ' 日（目標 151）', L);
-  ok(D.waste === 0 && L.waste === 0, '修1：集齊嘅人啱啱好用 100 片（冇嘥片）');
-  ok(!D.wallet && !L.wallet, '夢碎片冇入錢包'); }
+console.log('⑧ 模擬（seeded，6d.1 改用遊測六表上線模型 × 真 long6c）：集齊 4 主題 20 張要幾多日');
+{ /* tools/sim-6c-dream-real.js：route-sweep 六表、漏 15%、±90 分、跳動作 20%、加動作 30%、N 200、180 日。
+     當晚最後一節（≥19:00／<03:00）連續入夢（有存低先補、再入當晚）；03:00–19:00 第一節有存就補做。
+     目標（遊測第三輪 p20-f1b）：五表中位 ~84、P10 ~80；疏玩 ~98.5% 集齊、中位 ~151。 */
+  const SIMR = require('../tools/sim-6c-dream-real.js'), R = SIMR.run().table, F = ['勤力', '普通', '夜貓', '早起', '餵食狂'];
+  for (const k of F) { const r = R[k]; ok(r.done === r.n && Math.abs(r.med - 84) <= 2 && Math.abs(r.p10 - 80) <= 2, k + '：100% 集齊、中位 ' + r.med + ' 日（目標 84）、P10 ' + r.p10 + '（目標 80）', r); }
+  const L = R['疏玩']; ok(L.rate >= 0.965 && Math.abs(L.med - 151) <= 6, '疏玩：' + (L.rate * 100).toFixed(1) + '% 集齊（目標 98.5）、中位 ' + L.med + ' 日（目標 151）、P10 ' + L.p10, L);
+  ok(Object.values(R).every(r => r.waste === 0), '修1：齊咗嘅主題冇再出片（冇嘥片）');
+  ok(Object.values(R).every(r => r.wallet === 0), '夢碎片冇入錢包'); }
 
 console.log(`\n${pass} pass, ${fail} fail`); if (fail) process.exit(1);
