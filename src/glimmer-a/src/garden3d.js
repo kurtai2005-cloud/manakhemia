@@ -598,7 +598,7 @@
     this.stat.draws++; this.stat.lastMs = ms; this.stat.ms += ms;
     this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
     this.perf.acc += ms; this.perf.fn++;
-    if (this.perf.fn >= 30) { this.perf.fps = this.perf.acc > 0 ? 1000 / (this.perf.acc / this.perf.fn) : 0; this.stat.fps = this.perf.fps; this.perf.acc = 0; this.perf.fn = 0; }
+    if (this.perf.fn >= 30) { this.perf.drawMs = this.perf.acc / this.perf.fn; this.perf.acc = 0; this.perf.fn = 0; }
     return true;
   };
 
@@ -672,9 +672,9 @@
   function tickPerf(S) {
     if (!S.perfEl || !S.showPerf) return;
     const fps = S.stat.fps ? S.stat.fps.toFixed(0) : '—';
-    const ms = S.perf.last ? S.perf.last.toFixed(1) : '—';
+    const ms = (S.stat.lastFrameMs != null) ? S.stat.lastFrameMs.toFixed(1) : (S.perf.last ? S.perf.last.toFixed(1) : '—');
     const on = S.on() ? ('3D ' + S.quality) : '2D 後備';
-    S.perfEl.textContent = on + '  ' + fps + ' fps  ' + ms + ' ms\n耗電：' + (S.quality === 'high' ? '高（影圖＋@3x）' : S.quality === 'mid' ? '中（1x＋較細影）' : '低（2D）');
+    S.perfEl.textContent = on + '  ' + fps + ' fps  ' + ms + ' ms/幀\n耗電：' + (S.quality === 'high' ? '高（影圖＋@3x）' : S.quality === 'mid' ? '中（1x＋較細影）' : '低（2D）');
   }
 
   function install(G, NS) {
@@ -711,6 +711,10 @@
     // 自動降畫質（自己嘅窗口，唔改現有 2D quality auto）
     const qm = { sum: 0, n: 0, slow: 0, grace: 90 };
     S.noteFrame = function (frameMs) {
+      // 用整幀 wall-clock（render.js frame()）計 fps，唔好用 WebGL 單獨耗時
+      S.stat.lastFrameMs = frameMs;
+      S.perf.fAcc = (S.perf.fAcc || 0) + frameMs; S.perf.fN = (S.perf.fN || 0) + 1;
+      if (S.perf.fN >= 30) { S.stat.fps = S.perf.fAcc > 0 ? 1000 / (S.perf.fAcc / S.perf.fN) : 0; S.perf.fAcc = 0; S.perf.fN = 0; }
       tickPerf(S);
       if (S.quality === 'low' || !S.on()) return;
       if (qm.grace > 0) { qm.grace--; return; }
@@ -774,6 +778,7 @@
       followOn: function () { return S.followOn; },
       fps: function () { return S.stat.fps; },
       lastMs: function () { return S.stat.lastMs; },
+      lastFrameMs: function () { return S.stat.lastFrameMs; },
       lit: function () { return S._lit && { sun: S._lit.sun, fill: S._lit.fill, night: S._lit.night, byId: S._lit.byId }; },
       blocked: function (x, z) { return blocked(S.objects, x, z, (S.objJ && S.objJ.pet && S.objJ.pet.radius) || 10); },
       showPerf: function (v) { S.showPerf = v !== false; lsSet('glimmer.g3d.perf', S.showPerf ? '1' : '0'); if (S.perfEl) S.perfEl.style.display = S.showPerf ? 'block' : 'none'; return S.showPerf; },
