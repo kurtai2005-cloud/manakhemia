@@ -64,7 +64,7 @@ body.l6d-on #toast{z-index:73 !important}
 #l6dlay .bub.on{opacity:1}
 body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l6dlay{display:none}
 #l6dbtn{cursor:pointer}
-body.u62tipon #l6dbtn{opacity:0 !important;pointer-events:none !important}
+body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none !important}
 #l6dbtn > i.i{position:absolute;left:50%;top:50%;width:36px;height:36px;margin:-18px 0 0 -18px;pointer-events:none;background:center/contain no-repeat}
 @keyframes l6dbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}`;
     document.head.appendChild(css);
@@ -366,10 +366,17 @@ body.u62tipon #l6dbtn{opacity:0 !important;pointer-events:none !important}
     }
 
     // ── 每 100ms：影子；每秒：rail、到時走、蛋碼套 5c ──
+    // 心聲泡泡（#s12voice）疊到「朋友」掣 → 掣暫時讓位（同心聲讓小提示一樣；泡泡走咗即刻返）
+    function yieldTick() {
+      const el = RB.el; if (!el) return; const v = document.getElementById('s12voice'); let y = false;
+      if (v && el.style.display !== 'none') { const cs = getComputedStyle(v); if (cs.display !== 'none' && cs.visibility !== 'hidden' && +cs.opacity >= 0.15) { const a = el.getBoundingClientRect(), b = v.getBoundingClientRect(); y = b.width > 1 && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; } }
+      if (el.classList.contains('l6d-yield') !== y) { el.classList.toggle('l6d-yield', y); note('yield', { on: y }); }
+    }
     const T = { last: 0 };
     function tick() {
       const t = pnow(), s = S(); if (!s) return;
       try { layTick(); } catch (e) { note('layErr', { e: String(e && e.message || e) }); }
+      try { yieldTick(); } catch (e) { }
       if (A.dirty) { A.dirty = 0; A.mask = null; SHC.clear(); for (const id of Object.keys(LAY.nodes)) { LAY.nodes[id].k = null; delete LAY.nodes[id].b.dataset.art; } if (OV.el && OV.tab !== 'enter') render(); }
       if (t - T.last >= 1000) { T.last = t; try { railTick(); } catch (e) { }
         const ev = D6.process(s, now()); for (const r of ev) afterLeave(r); const eg = D6.applyEgg(s, now()); if (eg) note('egg', eg); if (ev.length || eg) save(); }
