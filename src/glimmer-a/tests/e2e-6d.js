@@ -1,6 +1,6 @@
 /* 《微光小圃》 e2e-6d — 第 6 批 6d「朋友碼／影子探訪／交換蛋碼」（遊策 breakthrough-6a6d-spec §6d）：
    我嘅名片（分享圖 495×756＋QR，揀相解返）；入朋友碼（貼上／揀相 → 校驗 OK 預覽 → 請佢嚟玩）；重複／自己／每日 3 個／改壞碼；
-   花園影子（shadow_mask 剪影＋friend_badge、互動泡泡、撳開資料、早啲送走＋手信 ≤3）；24 粒鐘到時走；
+   花園影子（三階紫剪影＋整隻 globalAlpha 0.45 半透明，唔用棋盤；friend_badge、互動泡泡、撳開資料、早啲送走＋手信 ≤3）；24 粒鐘到時走；
    家族 Lv4 先出蛋碼、每 7 日 1 個；收蛋碼 → 5c 細佬蛋用朋友嘅色；🛠「6d」；?l6d=0；?l6dart=0 placeholder；
    字清晰度、熱區 ≥48、360／390／412 冇重疊。日子用 page.clock 定死。node tests/e2e-6d.js */
 const path = require('path'), fs = require('fs');
@@ -35,7 +35,8 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   const click = (tid) => page.locator('[data-testid=' + tid + ']').first().click();
   const vis = (tid) => page.locator('[data-testid=' + tid + ']').first().isVisible().catch(() => false);
   const D = (k) => E((k) => __qa.l6d.dev().items.find(i => i.k === k).run(), k);
-  const readOk = async (name, sel) => { const a = await audit(page, sel); ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px／V3、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam])); };
+  const fontsOk = () => page.waitForFunction(() => { try { const v3 = !!(window.__glimmer && __glimmer.v3 && __glimmer.v3.want); return document.fonts && document.fonts.check('24px ' + (v3 ? 'GlimmerV3Sans' : 'GlimmerFP12')); } catch (e) { return false; } }, { timeout: 5000 }).catch(() => false);
+  const readOk = async (name, sel) => { await fontsOk(); const a = await audit(page, sel); ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px／V3、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam])); };
   const hit = (sel) => E((sel) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth;
       return [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; }).map(e => {
         e.scrollIntoView({ block: 'center', inline: 'nearest' }); const r = e.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, h = 24 * k - 0.75; let n = 0;
@@ -98,8 +99,10 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   ok(await E(() => (__qa.l6d.toasts().slice(-1)[0] || '').includes('嘅影子嚟咗')), '提示「…嘅影子嚟咗！」', await E(() => __qa.l6d.toasts().slice(-2)));
   ok(q.visits[0] && q.visits[0].leftH === 24, '住 24 粒鐘', q.visits[0] && q.visits[0].leftH);
   await W(800); let nd = await E(() => __qa.l6d.nodes());
-  ok(nd.length === 1 && nd[0].art === '6d:shadow_mask' && !nd[0].ph && nd[0].badge && (await Q()).mask, '花園影子：shadow_mask 剪影＋friend_badge', nd);
-  ok(await E(() => { const c = document.querySelector('#l6dlay canvas'); const g = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; const cols = new Set(); let on = 0; for (let i = 0; i < g.length; i += 4) if (g[i + 3]) { on++; cols.add(g[i] + ',' + g[i + 1] + ',' + g[i + 2]); } return on > 20 && [...cols].every(c => ['238,226,255', '169,139,240', '92,63,176'].includes(c)); }), '影子只用 3 階紫（#EEE2FF／#A98BF0／#5C3FB0）');
+  ok(nd.length === 1 && nd[0].art === 'shadow:alpha' && !nd[0].ph && nd[0].badge && (await Q()).alpha === 0.45, '花園影子：半透明剪影（alpha 0.45）＋friend_badge', nd);
+  const pix = await E(() => { const c = document.querySelector('#l6dlay canvas'); const g = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; const cols = new Set(); let on = 0, adj = 0, aMin = 255, aMax = 0; const W = c.width;
+      for (let i = 0, n = 0; i < g.length; i += 4, n++) if (g[i + 3]) { on++; cols.add(g[i] + ',' + g[i + 1] + ',' + g[i + 2]); aMin = Math.min(aMin, g[i + 3]); aMax = Math.max(aMax, g[i + 3]); const x = n % W, y = (n / W) | 0; if (x + 1 < W && g[(y * W + x + 1) * 4 + 3]) adj++; }
+      return { on, adj, aMin, aMax, cols: [...cols], ok: on > 20 && adj > 0 && aMin >= 90 && aMax <= 140 && [...cols].every(c => ['238,226,255', '169,139,240', '92,63,176'].includes(c)) }; }); ok(pix.ok, '影子：3 階紫、相鄰像素齊（唔係格仔）、alpha ≈ 0.45', pix);
   await shot('05-garden-shadow');
 
   console.log('# 規則：重複／自己／每日 3 個');
@@ -108,7 +111,7 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   r = await E(() => Glimmer.long6d.enter(__glimmer.state, __qa.l6d.fakeCode('visit', { uid: 1111, form: 'tide' }), __glimmer.now(), {})); ok(!r.ok && (r.why === 'here' || r.why === 'friendToday'), '同一個朋友新碼 → 已經喺度', r.why);
   await D('visit'); await D('visit'); q = await Q(); ok(q.today === 3 && q.visits.length === 3, '再嚟 2 個 → 3／3');
   r = await E(() => Glimmer.long6d.enter(__glimmer.state, __qa.l6d.fakeCode('visit'), __glimmer.now(), {})); ok(!r.ok && r.why === 'max', '第 4 個 → 今日滿', r.why);
-  await W(1200); nd = await E(() => __qa.l6d.nodes()); ok(nd.length === 3 && nd.every(n => n.art === '6d:shadow_mask') && new Set(nd.map(n => n.x)).size === 3, '3 個影子分開企（避開團絨／rail）', nd.map(n => n.x));
+  await W(1200); nd = await E(() => __qa.l6d.nodes()); ok(nd.length === 3 && nd.every(n => n.art === 'shadow:alpha') && new Set(nd.map(n => n.x)).size === 3, '3 個影子分開企（避開團絨／rail）', nd.map(n => n.x));
   ok(await E((w) => JSON.stringify({ w: __glimmer.state.sys12 && __glimmer.state.sys12.wallet, b: __glimmer.state.sys12 && __glimmer.state.sys12.bond }) === w, w0), '探訪唔郁錢包／親密度');
   await hitOk('影子', '#l6dlay .ht', 3);
 
@@ -196,13 +199,13 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
 
   console.log('# ?l6dart=0 → placeholder；?v3=0');
   await fresh(QS + '&l6dart=0&v3=0'); await D('visit'); await W(1200);
-  { const n = await E(() => __qa.l6d.nodes()); ok(n.length === 1 && n[0].art === 'mask:checker' && !n[0].ph, '?l6dart=0：冇 shadow_mask → code 棋盤剪影（寵物 atlas 照用）', n); }
+  { const n = await E(() => __qa.l6d.nodes()); ok(n.length === 1 && n[0].art === 'shadow:alpha' && !n[0].ph, '?l6dart=0：影子照用半透明剪影（寵物 atlas 照用，唔靠 shadow_mask）', n); }
   await E(() => __qa.l6d.open('card')); await W(600);
   { const a = await E(() => { const c = document.querySelector('#l6dov canvas'), ph = [...document.querySelectorAll('#l6dov [data-ph]')].map(e => e.dataset.ph); return { ph, dash: !!c && getComputedStyle(c).outlineStyle === 'dashed' }; });
     ok(a.ph.includes('6d:share_card_bg') && a.ph.some(k => /^6d:icon_/.test(k)) && a.dash, '?l6dart=0：名片底／icon placeholder（洋紅虛線）', a); }
   ok((await E(() => __qa.l6d.drawCard(3))).qrN >= 21, '?l6dart=0：QR 照出（code 畫）'); await shot('12-noart-card'); await E(() => __qa.l6d.close());
   await fresh(QS + '&v3=0'); await E(() => __qa.l6d.artLoad()); await D('visit'); await W(1200);
-  { const n = await E(() => __qa.l6d.nodes()), v3 = await E(() => document.getElementById('ui').classList.contains('v3')); ok(n.length === 1 && n[0].art === '6d:shadow_mask' && !v3, 'v3=0：影子照用 shadow_mask', { n, v3 }); }
+  { const n = await E(() => __qa.l6d.nodes()), v3 = await E(() => document.getElementById('ui').classList.contains('v3')); ok(n.length === 1 && n[0].art === 'shadow:alpha' && !v3, 'v3=0：影子照用半透明剪影', { n, v3 }); }
   await E(() => __qa.l6d.open('main')); await W(400); await readOk('v3=0 主面板', '#l6dov'); await shot('11-v3off-main'); await E(() => __qa.l6d.close());
 
   console.log('# ?l6d=0');

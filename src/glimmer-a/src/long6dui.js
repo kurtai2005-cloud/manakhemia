@@ -2,7 +2,7 @@
    邏輯全部喺 long6d.js（s.share6）；QR 用 qrlib.js（npm qr 0.7.2，MIT）喺本機編／解，冇網絡。
    ・花園 rail「朋友」→ 朋友面板：我嘅名片（分享圖＋QR＋複製碼／存圖／分享）、入朋友碼（貼上／揀相解 QR → 校驗 → 請佢嚟玩／收蛋碼）、
      交換蛋碼（家族 Lv4、每 7 日 1 個）、朋友簿；面板頂有今日「請咗 n／3 個朋友・手信 n／3」同而家嚟緊嘅影子。
-   ・影子：朋友隻團絨 idle 幀 → 剪影（kit vi0／vi1／vi2 按亮度）∧ 6d:shadow_mask 4×4 棋盤（冇半透明），頭頂 6d:friend_badge；
+   ・影子：朋友隻團絨 idle 幀 → 剪影（kit vi0／vi1／vi2 按亮度），整隻 globalAlpha 半透明（6d.2：Kurt 揀跟規格，唔再用 4×4 棋盤；spec 冇寫數 → 0.45），輪廓完整（唔抽像素）；頭頂 6d:friend_badge（唔跟住淡）；
      喺花園地面行來行去，每 40–70 秒走埋去同你隻團絨互動（泡泡一句＋心心）；撳影子睇朋友資料／早啲送佢返屋企。24 小時後自己走，留 1 件手信（每日 ≤3）。
    ・分享圖：share_card_bg 165×252（存相 @3x 495×756）；字（名／家族／形態／3 句記憶／短碼）由 code 落（V3 開＝源雲明體）；QR 模組用整數 px 畫入白位。
    ・原生（APK）：Capacitor Share6d plugin（複製／貼上／存相去 Pictures／分享）；冇 plugin → 瀏覽器 clipboard／下載。
@@ -84,7 +84,8 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
       return '';
     }
     const setIc = (el, n) => { const u = icon(n); if (u) { el.style.backgroundImage = 'url("' + u + '")'; delete el.dataset.ph; el.dataset.art = (isV3() ? 'v3:' : '6d:') + n; } else { el.dataset.ph = '6d:icon_' + n; } };
-    function maskBits() {   // 6d:shadow_mask 4×4（白＝畫）；冇圖 → (x+y)%2
+    const SHADOW_A = 0.45;   // 6d.2：規格「code 做半透明」冇寫數 → 約 0.45
+    function maskBits() {   // 舊 4×4 棋盤（只用喺對比／備份；正式影子唔再 ∧ 棋盤）
       if (A.mask) return A.mask; const im = aimg('parts/shadow_mask.png'); if (!im) return null;
       try { const c = document.createElement('canvas'); c.width = 4; c.height = 4; const g = c.getContext('2d'); g.drawImage(im, 0, 0); const d = g.getImageData(0, 0, 4, 4).data, m = []; for (let i = 0; i < 16; i++) m.push(d[i * 4 + 3] > 127 && d[i * 4] > 127 ? 1 : 0); A.mask = m; } catch (e) { A.mask = null; }
       return A.mask;
@@ -132,20 +133,34 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
     function petSrc(fk, ms) { const SA = G.s2Art; try { if (SA && SA.atlasSrc && fk) { const a = SA.atlasSrc(fk, 'idle', ms || 0, true); if (a && a.src && a.src.img && a.src.img.width) return a; } } catch (e) { } return null; }
     const VI = [[0xEE, 0xE2, 0xFF], [0xA9, 0x8B, 0xF0], [0x5C, 0x3F, 0xB0]];
     const SHC = new Map();
-    function shadowCanvas(fk, ms) {   // 回 { cv, px, py, w, h, frame }；冇 atlas → null
-      const a = petSrc(fk, ms); if (!a) return null; const s0 = a.src, key = fk + ':' + a.clip + ':' + a.frame, m = maskBits();
-      let c = SHC.get(key); if (c && c._m === !!m) return { cv: c, px: s0.px, py: s0.py, w: s0.sw, h: s0.sh, frame: a.frame, key };
-      c = document.createElement('canvas'); c.width = s0.sw; c.height = s0.sh; c._m = !!m; const g = c.getContext('2d', { willReadFrequently: true }); g.imageSmoothingEnabled = false; g.drawImage(s0.img, s0.sx, s0.sy, s0.sw, s0.sh, 0, 0, s0.sw, s0.sh);
+    function shadowCanvas(fk, ms, opt) {   // 回 { cv, px, py, w, h, frame }；冇 atlas → null。opt.dither＝舊棋盤（淨係對比圖用）
+      const a = petSrc(fk, ms); if (!a) return null; const dither = !!(opt && opt.dither), m = dither ? (maskBits() || 'cb') : null;
+      const s0 = a.src, key = fk + ':' + a.clip + ':' + a.frame + (dither ? ':d' : ':a');
+      let c = SHC.get(key); if (c) return { cv: c, px: s0.px, py: s0.py, w: s0.sw, h: s0.sh, frame: a.frame, key };
+      c = document.createElement('canvas'); c.width = s0.sw; c.height = s0.sh; const g = c.getContext('2d', { willReadFrequently: true }); g.imageSmoothingEnabled = false; g.drawImage(s0.img, s0.sx, s0.sy, s0.sw, s0.sh, 0, 0, s0.sw, s0.sh);
       try { const d = g.getImageData(0, 0, s0.sw, s0.sh), p = d.data;
-        for (let y = 0; y < s0.sh; y++) for (let x = 0; x < s0.sw; x++) { const i = (y * s0.sw + x) * 4; const on = p[i + 3] >= 128 && (m ? m[(y % 4) * 4 + (x % 4)] : (x + y) % 2 === 0);
+        for (let y = 0; y < s0.sh; y++) for (let x = 0; x < s0.sw; x++) { const i = (y * s0.sw + x) * 4; const lit = p[i + 3] >= 128; const on = lit && (!dither || (m && m !== 'cb' ? m[(y % 4) * 4 + (x % 4)] : (x + y) % 2 === 0));
           if (!on) { p[i + 3] = 0; continue; } const L = p[i] * 0.299 + p[i + 1] * 0.587 + p[i + 2] * 0.114, col = L >= 120 ? VI[0] : L >= 60 ? VI[1] : VI[2]; p[i] = col[0]; p[i + 1] = col[1]; p[i + 2] = col[2]; p[i + 3] = 255; }
         g.putImageData(d, 0, 0); } catch (e) { }
       if (SHC.size > 120) SHC.clear(); SHC.set(key, c); return { cv: c, px: s0.px, py: s0.py, w: s0.sw, h: s0.sh, frame: a.frame, key };
     }
+    function paintShadow(cv, sh) {   // 整隻寵物 globalAlpha 半透明；只畫喺影子自己張 canvas，唔郁花園／發光／粒子／徽章
+      cv.width = sh.w; cv.height = sh.h; const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, sh.w, sh.h); g.globalAlpha = SHADOW_A; g.drawImage(sh.cv, 0, 0); g.globalAlpha = 1;
+      cv.style.width = sh.w * 2 + 'px'; cv.style.height = sh.h * 2 + 'px';
+    }
 
     // ── 分享圖（165×252 art；k＝每 art px 幾多 px：存相 3＝495×756、畫面 6） ──
     const FORMZ = (form) => (DATA && DATA.FORM_NAME && DATA.FORM_NAME[form]) || '團絨';
-    async function fontsReady() { try { if (document.fonts && document.fonts.load) await Promise.all([document.fonts.load('700 24px GlimmerV3Serif'), document.fonts.load('400 24px GlimmerV3Sans'), document.fonts.load('24px GlimmerFP12')]); } catch (e) { } }
+    async function fontsReady() {   // 6d.2：等 font 真係 check 到（光 load 喺 FontFace 未 add 時會用後備字提早完）
+      try { if (!document.fonts || !document.fonts.load) return; const names = ['GlimmerV3Serif', 'GlimmerV3Sans', 'GlimmerFP12'];
+        const need = () => (V3F() ? ['GlimmerV3Sans'] : ['GlimmerFP12']);
+        const t0 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+        while (((typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0) < 4000) {
+          await Promise.all(names.map(n => document.fonts.load((n.indexOf('Serif') >= 0 ? '700 ' : '400 ') + '24px ' + n).catch(() => {})));
+          if (need().every(n => document.fonts.check('24px ' + n))) return;
+          await new Promise(r => setTimeout(r, 50));
+        }
+      } catch (e) { } }
     function drawCard(cv, k, snap, code, kind) {
       const W = 165, H = 252; cv.width = W * k; cv.height = H * k; const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, cv.width, cv.height);
       const bg = A.j && aimg('parts/share_card_bg@3x.png'); let art = false;
@@ -183,7 +198,7 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
       if (OV.el) OV.el.remove(); OV.tab = tab || 'main'; const el = OV.el = mk('div', '', null, 'l6d-ov'); el.id = 'l6dov';
       el.addEventListener('pointerdown', (e) => e.stopPropagation()); el.addEventListener('click', (e) => e.stopPropagation());
       const bd = mk('div', 'position:absolute;inset:0;background:rgba(18,12,30,.74)'); bd.addEventListener('click', () => { UIS('tap'); close('bd'); }); el.appendChild(bd);
-      host().appendChild(el); document.body.classList.add('l6d-on'); render(); note('open', { tab: OV.tab, why }); return el;
+      host().appendChild(el); document.body.classList.add('l6d-on'); render(); fontsReady().then(() => { if (OV.el === el) render(); }); note('open', { tab: OV.tab, why }); return el;   // 6d.2：字型載完再畫一次，免 ?v3=0 主面板落系統字
     }
     function frame(title, sub, tid) {
       const p = mk('div', `position:absolute;left:16px;top:112px;width:358px;max-height:700px;box-sizing:border-box;padding:36px 16px 16px;display:flex;flex-direction:column;gap:12px;${PAN()}`, null, tid || 'l6d-panel'); if (V62()) p.className = 'u62pan';
@@ -268,7 +283,7 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
       if (!d.ok) { b.appendChild(tx(mk('div', 'position:relative;' + TXT(24, '#FFB4B4'), WHY[d.why] || D6.LINES.bad, 'l6d-pre-bad'))); return; }
       const sn = d.snap, r = tx(mk('div', `position:relative;display:flex;gap:12px;align-items:center;padding:8px 12px;box-sizing:border-box;${INSET()}`, null, 'l6d-pre-card'));
       const cv = mk('canvas', 'position:relative;flex:0 0 auto;image-rendering:pixelated', null, 'l6d-pre-shadow'); const sh = shadowCanvas(sn.fk, 0);
-      if (sh) { cv.width = sh.w; cv.height = sh.h; cv.style.width = sh.w * 2 + 'px'; cv.style.height = sh.h * 2 + 'px'; cv.getContext('2d').drawImage(sh.cv, 0, 0); cv.dataset.art = A.mask ? '6d:shadow_mask' : 'mask:checker'; } else { cv.width = 24; cv.height = 24; cv.style.width = '48px'; cv.style.height = '48px'; cv.dataset.ph = '6d:shadow'; }
+      if (sh) { paintShadow(cv, sh); cv.dataset.art = 'shadow:alpha'; } else { cv.width = 24; cv.height = 24; cv.style.width = '48px'; cv.style.height = '48px'; cv.dataset.ph = '6d:shadow'; }
       r.appendChild(cv); const c = mk('div', 'position:relative;flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px'); r.appendChild(c);
       c.appendChild(mk('div', 'position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' + TXT(24, GOLD), sn.name, 'l6d-pre-name'));
       c.appendChild(mk('div', 'position:relative;white-space:nowrap;' + TXT(24, CREAM), '家族 Lv' + sn.lv + '・' + (D6.PATZ[sn.pat] || sn.pat) + '紋', 'l6d-pre-lv'));
@@ -301,7 +316,7 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
         const home = SLOTX[v.slot] || 80, acting = LAY.actId === v.id && t - LAY.actT < 4200; N.tx = acting ? petX() + (home < 195 ? -64 : 64) : home + Math.sin((t + N.ph) / 3200) * 8;
         const dx = N.tx - N.x; if (Math.abs(dx) > 0.5) { N.dir = dx < 0 ? -1 : 1; N.x += Math.sign(dx) * Math.min(Math.abs(dx), acting ? 2.4 : 0.6); }
         const sh = shadowCanvas(v.fk, t + N.ph);
-        if (sh) { if (N.k !== sh.key) { N.k = sh.key; N.cv.width = sh.w; N.cv.height = sh.h; const g = N.cv.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, sh.w, sh.h); g.drawImage(sh.cv, 0, 0); N.cv.style.width = sh.w * 2 + 'px'; N.cv.style.height = sh.h * 2 + 'px'; delete N.el.dataset.ph; N.el.dataset.art = A.mask ? '6d:shadow_mask' : 'mask:checker'; N.el.dataset.frame = sh.frame; }
+        if (sh) { if (N.k !== sh.key) { N.k = sh.key; paintShadow(N.cv, sh); delete N.el.dataset.ph; N.el.dataset.art = 'shadow:alpha'; N.el.dataset.frame = sh.frame; }
           N.cv.style.left = (-sh.px * 2) + 'px'; N.cv.style.top = (-sh.py * 2) + 'px'; N.cv.style.transform = N.dir < 0 ? 'scaleX(-1)' : ''; N.cv.style.transformOrigin = (sh.px * 2) + 'px 0'; N.b.style.top = (-sh.py * 2 - 36) + 'px'; }
         else if (!N.el.dataset.ph) { N.el.dataset.ph = '6d:shadow'; N.cv.width = 24; N.cv.height = 24; N.cv.style.cssText = 'left:-24px;top:-48px;width:48px;height:48px;background:#A98BF0'; N.b.style.top = '-84px'; }
         if (!N.b.dataset.art) setIc(N.b, 'friend_badge'), N.b.style.background = N.b.style.backgroundImage ? N.b.style.backgroundImage + ' center/contain no-repeat' : '';
@@ -415,11 +430,11 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
     G.l6d = { open, close, info, closeInfo };
     window.__qa = window.__qa || {};
     window.__qa.l6d = {
-      st: () => Object.assign(D6.summary(S(), now()), { ov: !!OV.el, tab: OV.tab, info: !!INFO.el, rail: !!(RB.el && RB.el.style.display !== 'none'), art: !!A.j, artErr: A.err.slice(0, 5), mask: !!A.mask, shadows: Object.keys(LAY.nodes).length, v3: isV3(), native: !!NAT() }),
+      st: () => Object.assign(D6.summary(S(), now()), { ov: !!OV.el, tab: OV.tab, info: !!INFO.el, rail: !!(RB.el && RB.el.style.display !== 'none'), art: !!A.j, artErr: A.err.slice(0, 5), mask: !!A.mask, alpha: SHADOW_A, shadows: Object.keys(LAY.nodes).length, v3: isV3(), native: !!NAT() }),
       raw: () => JSON.parse(JSON.stringify(D6.st(S()))), log: () => log.slice(), toasts: () => toasts.slice(), dev: () => DEV, last: () => Object.assign({}, LAST, { enter: OV.last }),
       open, close, info, closeInfo, go, check, commit, railTick, layTick, fakeCode, setInput: (t) => { OV.inp = t; const ta = document.querySelector('[data-testid=l6d-input]'); if (ta) ta.value = t; },
       artLoad: () => A6d.then(() => fontsReady()).then(() => !!A.j), drawCard: (k, kind) => { const c = document.createElement('canvas'); const s = S(), me = kind === 'egg' ? null : D6.myCode(s, now(), { fk: fkNow() }); const r = drawCard(c, k || 3, me.snap, me.code, 'visit'); return Object.assign(r, { url: c.toDataURL('image/png'), code: me.code }); },
-      decodeFile, qrMatrix, nodes: () => Object.keys(LAY.nodes).map(id => ({ id, x: LAY.nodes[id].x, art: LAY.nodes[id].el.dataset.art || null, ph: LAY.nodes[id].el.dataset.ph || null, badge: LAY.nodes[id].b.dataset.art || null })),
+      decodeFile, qrMatrix, shadowCanvas, paintShadow, SHADOW_A, maskBits, nodes: () => Object.keys(LAY.nodes).map(id => ({ id, x: LAY.nodes[id].x, art: LAY.nodes[id].el.dataset.art || null, ph: LAY.nodes[id].el.dataset.ph || null, badge: LAY.nodes[id].b.dataset.art || null })),
     };
     note('install', {});
     return true;

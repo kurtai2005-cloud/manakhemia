@@ -8,4 +8,4 @@
 
 ## 缺
 - **V3-A 版分享卡底**（`share_card_bg` 係 kit v2 金邊海軍藍風）——V3 開咗都係用呢張；請遊美出 V3-A 版（495×756 @3x，slot 同 share6d.json 一樣）。
-- 影子：spec 寫「半透明」，美術出 `shadow_mask` 4×4 棋盤；跟 brief 用棋盤＋三階紫色（#EEE2FF／#A98BF0／#5C3FB0）。等 Kurt 拍板。
+- 影子：Kurt 2026-11-10 揀跟規格「半透明」。code 用三階紫剪影＋整隻 globalAlpha 0.45（唔再 ∧ `shadow_mask` 棋盤）。美術檔保留，引擎唔用。
