@@ -122,7 +122,8 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
     // ── 6c 美術（dream6c.json＋V3-A v3/dream6c_v3.json）：載唔到／?l6cart=0 → 上面 placeholder ──
     const B6C = 'art/breakthrough/6c/', NOART = qs.get('l6cart') === '0';
     const A = { j: null, v: null, img: {}, want: {}, err: [], dirty: 0 };
-    const aimg = (f) => { if (NOART) return null; if (A.img[f]) return A.img[f]; if (!A.want[f]) { A.want[f] = 1; const i = new Image(); i.onload = () => { if (i.naturalWidth) { A.img[f] = i; A.dirty = 1; } }; i.onerror = () => A.err.push(f); i.src = B6C + f; } return null; };
+    // QA P2：圖 decode 埋先當載好（第一次入夢唔會有 decode long task）
+    const aimg = (f) => { if (NOART) return null; if (A.img[f]) return A.img[f]; if (!A.want[f]) { A.want[f] = 1; const i = new Image(); i.onload = () => { const ok = () => { if (i.naturalWidth) { A.img[f] = i; A.dirty = 1; } }; if (i.decode) i.decode().then(ok, ok); else ok(); }; i.onerror = () => A.err.push(f); i.src = B6C + f; } return null; };
     const jget = (f) => fetch(B6C + f).then(r => (r.ok ? r.json() : null)).catch(() => { A.err.push(f); return null; });
     const A6c = NOART ? Promise.resolve() : Promise.all([jget('dream6c.json'), jget('v3/dream6c_v3.json')]).then(([j, v]) => { A.j = j && j.keys && j.pets ? j : null; A.v = v && v.tiles ? v : null; A.dirty = 1; });
     const isV3 = () => { const u = document.getElementById('ui'); return !!(A.v && u && u.classList.contains('v3') && G.v3 && G.v3.on && G.v3.on()); };
@@ -149,15 +150,19 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
         const ri = aimg(ART.rg), rg = t.querySelector('img.rg'); if (ri && !rg.src) { rg.src = B6C + ART.rg; rg.style.display = 'block'; } }
       return true;
     }
+    // QA P2：霧幀切好放 offscreen canvas（每張圖切一次）；anim 淨係幀數變／揭格先重畫
+    const FOGC = {};
+    function fogFrames(f, im, w, n) { const key = f + ':' + w; let a = FOGC[key]; if (a) return a; a = FOGC[key] = [];
+      for (let k = 0; k < n; k++) { const c = document.createElement('canvas'); c.width = w; c.height = w; const g = c.getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(im, k * w, 0, w, w, 0, 0, w, w); a.push(c); } return a; }
     function fogDraw(t, i, ms) {   // 未揭：流霧（V3 8 幀 4fps）；啱啱揭：fog_reveal 8 幀 16fps；之後清走
-      const fc = t.querySelector('.fog'), [f, w, n] = ART.fog(), im = aimg(f); if (!im || !A.j) return;
+      const fc = t._fc || (t._fc = t.querySelector('.fog')), [f, w, n] = ART.fog(), im = aimg(f); if (!im || !A.j) return;
       if (!fc.classList.contains('art')) { fc.classList.add('art'); fc.width = w; fc.height = w; fc.dataset.art = '6c:fog' + (isV3() ? '_v3' : ''); }
       if (fc.width !== w) { fc.width = w; fc.height = w; }
       const g = fc.getContext('2d'); g.imageSmoothingEnabled = false; let src = im, k = Math.floor(ms / 250) % n, key;
       if (R.rev[i]) { const dt = ms - (R.revT[i] || -1e9), ri = isV3() ? aimg(ART.fogRev) : null;
         if (ri && dt < 500) { src = ri; k = Math.min(7, Math.floor(dt / 62.5)); key = 'r' + k; } else { if (fc._k !== 'off') { g.clearRect(0, 0, w, w); fc._k = 'off'; fc.style.display = 'none'; const rg = t.querySelector('img.rg'); if (rg && isV3()) { rg.style.opacity = '1'; setTimeout(() => { rg.style.opacity = '0'; }, 400); } } return; } }
       else key = 'f' + k;
-      if (fc._k === key) return; fc._k = key; fc.style.display = ''; g.clearRect(0, 0, w, w); g.drawImage(src, k * w, 0, w, w, 0, 0, w, w);
+      if (fc._k === key) return; fc._k = key; fc.style.display = ''; g.clearRect(0, 0, w, w); const fr = fogFrames(src === im ? f : ART.fogRev, src, w, src === im ? n : 8); g.drawImage(fr[k], 0, 0);
     }
     function cauDraw(t, i, ms) { if (!isV3() || t.dataset.th !== 'lake') return; const im = aimg(ART.cau), c = t.querySelector('canvas.cau'); if (!im) return; const k = Math.floor(ms / 250) % 4; if (c._k === k) return; c._k = k; if (c.width !== 168) { c.width = 168; c.height = 168; } const g = c.getContext('2d'); g.clearRect(0, 0, 168, 168); g.drawImage(im, tvar(i) * 168, k * 168, 168, 168, 0, 0, 168, 168); }
     // 團絨 dream_walk（6 幀 6fps；1 art px＝2 CSS；pivot 企喺格中）＋睡帽另一層（json 逐幀 xy；向左成組 flipX）
@@ -195,8 +200,10 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
     // 每 frame（夢開住）：霧、caustic、團絨、過場
     function anim() {
       if (!R.el || !R.P) { R.raf = 0; return; } const ms = pnow();
-      if (A.dirty) { A.dirty = 0; artAll(); }
-      R.P.tiles.forEach((t, i) => { fogDraw(t, i, ms); cauDraw(t, i, ms); }); petArt(R.P, ms); trTick(ms);
+      if (A.dirty) { A.dirty = 0; artAll(); R.fogDirty = 1; }
+      { const fk = Math.floor(ms / 250) + ':' + ART.fog()[0], anim2 = Object.keys(R.revT).some(j => ms - R.revT[j] < 700);   // 霧：幀變／揭格動畫中／美術啱載 先行一轉
+        if (R.fogK !== fk || anim2 || R.fogDirty) { R.fogK = fk; R.fogDirty = 0; R.P.tiles.forEach((t, i) => fogDraw(t, i, ms)); } }
+      if (isV3()) R.P.tiles.forEach((t, i) => cauDraw(t, i, ms)); petArt(R.P, ms); trTick(ms);
       R.raf = requestAnimationFrame(anim);
     }
     function artAll() {
@@ -221,6 +228,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
       el.addEventListener('pointerdown', (e) => e.stopPropagation()); el.addEventListener('click', (e) => e.stopPropagation());
       host().appendChild(el); document.body.classList.add('l6c-on', 'l6c-dr'); return el;
     }
+    G.coverRender = () => !!(R.el && R.P && document.body.classList.contains('l6c-dr'));   // QA P2：夢境開住 main loop 唔使逐幀畫花園
     function unshell() { if (R.el) R.el.remove(); R.el = null; R.P = null; document.body.classList.remove('l6c-dr'); if (!R.dexEl) document.body.classList.remove('l6c-on'); }
 
     function start(why, force) {
@@ -238,7 +246,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
       setTimeout(() => { if (R.on && R.phase === 'in') R.phase = 'play'; }, DR.CFG.fadeSec * 1000);
       return { ok: true, plan: p };
     }
-    function reveal(i) { const t = pnow(), rv = (j) => { if (!R.rev[j]) { R.rev[j] = 1; R.revT[j] = t; } }; rv(i); for (let j = 0; j < 15; j++) if (DR.adj(i, j)) rv(j); }
+    function reveal(i) { R.fogDirty = 1; const t = pnow(), rv = (j) => { if (!R.rev[j]) { R.rev[j] = 1; R.revT[j] = t; } }; rv(i); for (let j = 0; j < 15; j++) if (DR.adj(i, j)) rv(j); }
     function build() {
       if (R.el) R.el.remove(); const el = R.el = shell('l6c-ov'); const p = R.plan;
       // 星星背景
@@ -268,7 +276,7 @@ body.l6c-dr #ui.hd.v2.u62 #u62tip{right:16px !important;bottom:120px !important}
       const wake = mk('div', `position:absolute;left:115px;top:776px;width:160px;${bi('btn_sec')}` + TXT(24, CREAM), '醒返', 'l6c-wake'); wake.className = 'btn';
       wake.addEventListener('click', (e) => { e.stopPropagation(); UIS('tap'); end('wake'); }); el.appendChild(wake);
       const tr = mk('canvas', '', null, 'l6c-tr'); tr.className = 'tr'; tr.width = 1; tr.height = 1; tr.dataset.ph = '6c:transition'; el.appendChild(tr);
-      R.P = { tiles, frs, pet, pf, pc, cap, sh, tTime, tFrag, hint, wake, tr, bg, bgi }; place(true); render(); artAll(); if (!R.raf) R.raf = requestAnimationFrame(anim);
+      R.P = { tiles, frs, pet, pf, pc, cap, sh, tTime, tFrag, hint, wake, tr, bg, bgi }; R.fogK = null; R.fogDirty = 1; place(true); render(); artAll(); if (!R.raf) R.raf = requestAnimationFrame(anim);
     }
     function place() { const P = R.P; if (!P) return; P.pet.style.left = (TX(R.pos) + 56) + 'px'; P.pet.style.top = (TY(R.pos) + 90) + 'px'; }
     function render() {

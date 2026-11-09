@@ -162,8 +162,9 @@
       UI.update(dtW);
       const view = G.tickWorld(dtW);
       AUD.update(dtW, G.audioWorld);
-      G.renderer.frame(dtReal, view);
-      if (bgfill && (++bgN % 6 === 0 || bgN < 3)) {   // P1-5：每 6 幀將畫面「cover」縮細入 24×52 → CSS 放大＝模糊延伸背景（極平）
+      const covered = !!(G.coverRender && G.coverRender());   // 6c QA P2：全畫面不透明面板（夢境）蓋住花園 → 唔畫花園（sim／世界照行；閂咗即刻畫返）
+      if (!covered) G.renderer.frame(dtReal, view);
+      if (bgfill && !covered && (++bgN % 6 === 0 || bgN < 3)) {   // P1-5：每 6 幀將畫面「cover」縮細入 24×52 → CSS 放大＝模糊延伸背景（極平）
         const want = Math.max(8, Math.round(52 * window.innerWidth / Math.max(1, window.innerHeight))); if (bgfill.width !== want) bgfill.width = want;
         const bw = bgfill.width, bh = bgfill.height, sc = Math.max(bw / canvas.width, bh / canvas.height), dw = canvas.width * sc, dh = canvas.height * sc;
         bgx.imageSmoothingEnabled = true; bgx.drawImage(canvas, (bw - dw) / 2, (bh - dh) / 2, dw, dh); G.bgfillN = bgN;
