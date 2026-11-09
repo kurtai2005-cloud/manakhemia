@@ -113,7 +113,9 @@ const LINES = require('../src/touch.js').LINES;
   await E(() => document.querySelector('.modal .btn, [data-testid=modal-btn-0]') && document.querySelector('.modal .btn, [data-testid=modal-btn-0]').click()); await W(200);
   console.log('# 自動抽（idle 20s／60s／25%；每日 8）');
   await load('q=high&hour=13&seed=14&ev=0');
-  const ar = await E(() => { const r0 = Math.random; Math.random = () => 0.1; __qa.touch.reset(); const r = __qa.touch.roll(); Math.random = r0; return r; });
+  await page.waitForFunction(() => __glimmer.beh && __glimmer.beh.state === 'stay' && !__glimmer.beh.variant, null, { timeout: 15000 }).catch(() => { });   // QA P2：dumbTick／roll 淨係團絨企定先抽（行緊 → null）；等佢企定先試
+  const ar = await E(async () => { const t0 = performance.now(); while (performance.now() - t0 < 15000) { const b = __glimmer.beh; if (b && b.state === 'stay' && !b.variant) break; await new Promise(r => setTimeout(r, 50)); }   // 同一個 evaluate 入面等企定即抽（唔會中間行開）
+    const r0 = Math.random; Math.random = () => 0.1; __qa.touch.reset(); const r = __qa.touch.roll(); Math.random = r0; return r; });
   ok(ar && ar.k && ar.n === 1, 'idle 夠 → 抽中 25% → 開始一款', ar);
   const ar2 = await E(() => { __qa.touch.reset(); const r0 = Math.random; Math.random = () => 0.1; const r = __qa.touch.roll(); Math.random = r0; return r; }); ok(!ar2, '隔唔夠 3 分鐘唔再抽');
   ok(await E(() => __qa.touch.st().autoDumb === false), 'Playwright 預設唔自動抽（?dumb=1 先開；唔擾其他 e2e）');
