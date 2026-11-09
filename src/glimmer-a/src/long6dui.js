@@ -369,7 +369,9 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
     // 心聲泡泡（#s12voice）疊到「朋友」掣 → 掣暫時讓位（同心聲讓小提示一樣；泡泡走咗即刻返）
     function yieldTick() {
       const el = RB.el; if (!el) return; const v = document.getElementById('s12voice'); let y = false;
-      if (v && el.style.display !== 'none') { const cs = getComputedStyle(v); if (cs.display !== 'none' && cs.visibility !== 'hidden' && +cs.opacity >= 0.15) { const a = el.getBoundingClientRect(), b = v.getBoundingClientRect(); y = b.width > 1 && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; } }
+      if (v && !v._l6dmo && typeof MutationObserver !== 'undefined') { try { v._l6dmo = new MutationObserver(() => { try { yieldTick(); } catch (e) { } }); v._l6dmo.observe(v, { attributes: true, attributeFilter: ['style', 'class'] }); } catch (e) { } }   // 6d.1 P2b：心聲一出／一郁即刻判（唔等 100ms 輪詢）
+      // 6d.1：淡入緊（inline opacity 已經 1、computed 仲係 0）都當出咗
+      if (v && el.style.display !== 'none') { const cs = getComputedStyle(v), op = Math.max(+cs.opacity || 0, v.style.opacity === '' ? 0 : +v.style.opacity || 0); if (cs.display !== 'none' && cs.visibility !== 'hidden' && op >= 0.15) { const a = el.getBoundingClientRect(), b = v.getBoundingClientRect(); y = b.width > 1 && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; } }
       if (el.classList.contains('l6d-yield') !== y) { el.classList.toggle('l6d-yield', y); note('yield', { on: y }); }
     }
     const T = { last: 0 };
@@ -378,8 +380,8 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
       try { layTick(); } catch (e) { note('layErr', { e: String(e && e.message || e) }); }
       try { yieldTick(); } catch (e) { }
       if (A.dirty) { A.dirty = 0; A.mask = null; SHC.clear(); for (const id of Object.keys(LAY.nodes)) { LAY.nodes[id].k = null; delete LAY.nodes[id].b.dataset.art; } if (OV.el && OV.tab !== 'enter') render(); }
-      if (t - T.last >= 1000) { T.last = t; try { railTick(); } catch (e) { }
-        const ev = D6.process(s, now()); for (const r of ev) afterLeave(r); const eg = D6.applyEgg(s, now()); if (eg) note('egg', eg); if (ev.length || eg) save(); }
+      if (t - T.last >= 1000) { T.last = t; try { railTick(); } catch (e) { } try { yieldTick(); } catch (e) { }   // 6d.1 P2b：rail 排完位即刻再判讓位（唔會疊住心聲一拍）
+        const ev = D6.process(s, now()); for (const r of ev) afterLeave(r); if (ev.length) { try { layTick(); } catch (e) { } }   /* 6d.1 P2a：影子到時走 → 即刻清花園節點 */ const eg = D6.applyEgg(s, now()); if (eg) note('egg', eg); if (ev.length || eg) save(); }
     }
     { const loop = () => { try { tick(); } catch (e) { } setTimeout(loop, 100); }; setTimeout(loop, 500); }
 
