@@ -1,10 +1,11 @@
 'use strict';
 /* QA 模型：6c 夢境 A/B/C。唔改 long6c.js。
  * 上線隨機同 route-sweep／上輪 qa-dream-days：漏 15%、±90 分鐘、跳動作 20%、加動作 30%。
- * 碎片主題分配抄 long6c.plan（6 片、每主題至少 1、其餘按格數）。卡用真 long6c.pick。
+ * 卡用真 long6c.pick。
  * A：21:00–03:00，另加當夜 19:00 後最後一次上線；每晚最多 1 夢。
  * B：冇上線入到嘅夜存入銀行，上限 bankCap，下次上線一次補做晒。
- * C：湖權重＝餵食、淋水、執屎、小遊戲，每樣每日最多 1；總片數仍係 6，分配公式同 6c。
+ * C：湖權重＝餵食、淋水、執屎、小遊戲，每樣每日最多 1。
+ * 第二輪：每晚 1 片，p2 機會再 1 片；主題按權重抽，湖同其他主題共用呢個額度。
  */
 const path = require('path');
 const ROOT = '/tmp/glimmer-6c/src/glimmer-a';
@@ -101,8 +102,17 @@ function summarize(name, rows) {
     liveMed: med(live),
     makeupMed: med(makeup),
     makeupShare: dreamSum ? +(makeupSum / dreamSum).toFixed(3) : 0,
+    lastCardMean: (() => { const g = rows.map(r => r.lastCard).filter(x => x != null); return g.length ? +(g.reduce((a, b) => a + b, 0) / g.length).toFixed(2) : null; })(),
+    lastWasteMean: (() => { const g = rows.filter(r => r.day != null).map(r => r.wasteLast); return g.length ? +(g.reduce((a, b) => a + b, 0) / g.length).toFixed(2) : null; })(),
+    wasteMean: (() => { const g = rows.map(r => r.waste); return +(g.reduce((a, b) => a + b, 0) / g.length).toFixed(2); })(),
     wallet: rows.reduce((a, r) => a + r.wallet, 0),
   };
+}
+function weightedTheme(w, rng) {
+  const ks = THEMES.filter(k => w[k] > 0);
+  let tot = ks.reduce((a, k) => a + w[k], 0), u = rng() * tot;
+  for (const k of ks) { u -= w[k]; if (u <= 0) return k; }
+  return ks[ks.length - 1];
 }
 
 function one(name, seed, opt) {
@@ -142,22 +152,38 @@ function one(name, seed, opt) {
   const fragsN = opt.frags == null ? CFG.frags : opt.frags;
   const bankCap = opt.bankCap || 0;
   const afterHour = opt.afterHour; // null = 關閉 A 的 19:00 規則
-  let dreams = 0, live = 0, makeup = 0, doneDay = null, cards = 0, snap = null;
+  const rngRoll = S.makeRng(seed * 7919 + 887);
+  let dreams = 0, live = 0, makeup = 0, doneDay = null, cards = 0, snap = null, day19 = null, waste = 0, wasteLast = 0;
   const bank = [];
   function grab(F, t, kind) {
-    let themes = fragThemes(weightsOf(F, opt.ruleC), fragsN);
-    if (opt.lakeCap != null) {
-      let n = 0; const cut = [];
-      for (const th of themes) { if (th === 'lake' && n >= opt.lakeCap) continue; if (th === 'lake') n++; cut.push(th); }
-      themes = cut;
+    let themes;
+    if (opt.roll) {
+      const w = weightsOf(F, opt.ruleC);
+      const n = 1 + (rngRoll() < opt.roll.p2 ? 1 : 0);
+      themes = [];
+      for (let i = 0; i < n; i++) themes.push(weightedTheme(w, rngRoll));
+    } else {
+      themes = fragThemes(weightsOf(F, opt.ruleC), fragsN);
+      if (opt.lakeCap != null) {
+        let n = 0; const cut = [];
+        for (const th of themes) { if (th === 'lake' && n >= opt.lakeCap) continue; if (th === 'lake') n++; cut.push(th); }
+        themes = cut;
+      }
     }
     const before = X.st(s).wallet.total;
-    for (const th of themes) DR.pick(s, th, t);
+    const dayNum = Math.floor((t - T0) / DAY) + 1;
+    for (const th of themes) {
+      const full = DR.themeCards(s, th).length >= CFG.cardsPerTheme;
+      const at19 = DR.summary(s, t, new Date(t).getHours()).cards === 19;
+      if (full) { waste++; if (at19) wasteLast++; }
+      DR.pick(s, th, t);
+    }
     if (X.st(s).wallet.total !== before) throw new Error('wallet changed');
     dreams++; if (kind === 'live') live++; else makeup++;
     cards = DR.summary(s, t, new Date(t).getHours()).cards;
+    if (day19 == null && cards >= 19) day19 = dayNum;
     if (doneDay == null && cards >= 20) {
-      doneDay = Math.floor((t - T0) / DAY) + 1;
+      doneDay = dayNum;
       snap = { dreams, live, makeup };
     }
   }
@@ -193,7 +219,7 @@ function one(name, seed, opt) {
     }
   }
   const till = snap || { dreams, live, makeup };
-  return { day: doneDay, cards, dreams: till.dreams, live: till.live, makeup: till.makeup, wallet: X.st(s).wallet.total - w0 };
+  return { day: doneDay, cards, dreams: till.dreams, live: till.live, makeup: till.makeup, lastCard: doneDay != null && day19 != null ? doneDay - day19 : null, waste, wasteLast, wallet: X.st(s).wallet.total - w0 };
 }
 
 function run(opt) {
@@ -207,12 +233,8 @@ function run(opt) {
 }
 
 const schemes = [
-  { id: 'baseline', label: '6c 原規則（只 21:00–03:00）', bankCap: 0, afterHour: null, frags: 6, ruleC: false },
-  { id: 'abc2', label: 'A+B 存 2 晚+C', bankCap: 2, afterHour: 19, frags: 6, ruleC: true },
-  { id: 'abc1', label: 'A+B 存 1 晚+C', bankCap: 1, afterHour: 19, frags: 6, ruleC: true },
-  { id: 'abc1-frags4', label: '存 1 晚，每晚 4 片', bankCap: 1, afterHour: 19, frags: 4, ruleC: true },
-  { id: 'abc1-lake1', label: '存 1 晚，湖碎片每晚最多 1', bankCap: 1, afterHour: 19, frags: 6, ruleC: true, lakeCap: 1 },
-  { id: 'abc1-h18', label: '存 1 晚，19:00 改 18:00', bankCap: 1, afterHour: 18, frags: 6, ruleC: true },
+  { id: 'roll30', label: 'A+B 存 1 晚+C，每晚 1 片、30% 再 1 片', bankCap: 1, afterHour: 19, ruleC: true, roll: { p2: 0.3 } },
+  { id: 'roll40', label: 'A+B 存 1 晚+C，每晚 1 片、40% 再 1 片', bankCap: 1, afterHour: 19, ruleC: true, roll: { p2: 0.4 } },
 ];
 
 const only = process.env.SCHEME;

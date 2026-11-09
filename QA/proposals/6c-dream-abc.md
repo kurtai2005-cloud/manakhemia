@@ -1,16 +1,16 @@
-# 6c 夢境 A+B(1)+C 草稿
+# 6c 夢境 A+B(1)+C 草稿（第二輪片數）
 
-對 `long6c.js` @ `4f66a834`。呢份只係 QA 建議，冇推進 code branch。
+對 `long6c.js` @ `4f66a834`。QA 建議，冇推進 code branch。
 
-模擬（`QA/qa-econ-6c-dream.md`）：存 2 晚同存 1 晚，夜貓中位都係 25、P10 24，低過目標 60／45。草稿用存 1 晚。日數目標仍然未達（勤力等中位約 25，目標 75–110）。每晚 4 片、湖每晚最多 1 片、19:00 改 18:00 三個單改都未入帶。未選定。
+第二輪（`QA/qa-econ-6c-dream.md`）：每晚 1 片，30% 同 40% 再加 1 片。兩個都未達標（疏玩 0／200；勤力等中位 124–159，目標 75–110）。**唔鎖定百分比。**
 
-`canEnter` 而家喺第 57 行：要瞓緊，而且鐘數要喺 21:00–03:00。
+`canEnter` 第 57 行：
 
 ```diff
    const inHours = (h) => h >= CFG.hours[0] || h < CFG.hours[1];
-+  const AFTER = 19; // A：19:00 後最後一次上線都當入夢
++  const AFTER = 19;
 +  const inLate = (h) => h >= AFTER || h < CFG.hours[1];
-+  const BANK_CAP = 1; // B：錯過存起。存 2 晚模擬過，夜貓唔再慢，改 1
++  const BANK_CAP = 1;
    function canEnter(s, now, h) {
      if (h == null) h = hourOf(now);
      if (!s || s.stage === 'egg') return { ok: false, why: 'egg' }; if (kidMain(s)) return { ok: false, why: 'km' };
@@ -26,18 +26,35 @@
    }
 ```
 
-銀行要喺「一晚完咗都冇入」時 +1，上限 `BANK_CAP`，補做成功 −1。`st()` 而家第 52 行只留 `night／frag／cards／furn／log／n`，要加 `bank`、`bankNight`，否則 sanitize 會刪走。UI 用當夜最後一個 ≥19:00 的上線叫 `enter`，唔好每個上線都入（每晚 1 夢）。
+`st()` 第 52 行要加 `bank`、`bankNight`。一晚完都冇入先 `bank = min(BANK_CAP, bank+1)`。補做成功先減。當夜只可以用最後一個 ≥19:00 的上線入一次。
 
-`weights` 而家喺第 73 行，湖只計淋水。
+`weights` 第 73 行：
 
 ```diff
    function weights(F) {
 -    const w = { forest: Math.min(CFG.wMax, F.meal), lake: Math.min(CFG.wMax, F.rinse), toy: F.play >= CFG.playMany ? Math.min(CFG.wMax, F.play) : 0, star: 1 };
-+    // C：餵食、淋水、執屎、小遊戲，每樣當日最多 +1。總片數仍然 CFG.frags（6），分配公式唔改。
 +    const lake = (F.feed ? 1 : 0) + (F.rinse ? 1 : 0) + (F.poop ? 1 : 0) + (F.mg ? 1 : 0);
 +    const w = { forest: Math.min(CFG.wMax, F.meal), lake: Math.min(CFG.wMax, lake), toy: F.play >= CFG.playMany ? Math.min(CFG.wMax, F.play) : 0, star: 1 };
      for (const k of THEMES) if (!(w[k] > 0)) delete w[k]; return w;
    }
 ```
 
-`nightFacts`（第 65 行）要多交 `feed／poop／mg` 旗，先至餵到上面個權重。而家只得 `meal／rinse／play`。`pick` 唔好加錢包；`SHARD_DAILY_TOTAL_CAP` 維持 47。
+`nightFacts` 要多交 `feed／poop／mg`。
+
+每晚片數唔再係 `CFG.frags`（6）。抽主題，湖只係權重其中一項：
+
+```diff
++  // 30% 同 40% 模擬都未達標，P2 未鎖定。
++  function fragCount(rng, p2) { return 1 + (rng() < p2 ? 1 : 0); }
++  function drawTheme(w, rng) {
++    const ks = THEMES.filter(k => w[k] > 0); let tot = 0; for (const k of ks) tot += w[k]; let u = rng() * tot;
++    for (const k of ks) { u -= w[k]; if (u <= 0) return k; } return ks[ks.length - 1];
++  }
++  function nightFrags(F, rng, p2) {
++    const w = weights(F), n = fragCount(rng, p2), out = [];
++    for (let i = 0; i < n; i++) out.push(drawTheme(w, rng));
++    return out; // 唔好喺呢度再加湖片
++  }
+```
+
+`pick` 唔入錢包。`SHARD_DAILY_TOTAL_CAP` 維持 47。
