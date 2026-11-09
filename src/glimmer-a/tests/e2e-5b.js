@@ -156,7 +156,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), H = 3600e3, DAY = 86400e3;
 
   console.log('# 存檔');
   const before = await E(() => JSON.stringify(Glimmer.long5b.summary(__glimmer.state, __glimmer.now())));
-  await E(() => __glimmer.save()); await load('q=high&hour=13&seed=21&ev=0', false); await setT(T0 + 4 * DAY);
+  await E(() => __glimmer.save()); await page.clock.install({ time: T0 + 4 * DAY }); await load('q=high&hour=13&seed=21&ev=0', false);   // 6c：重開前假 Date＝存檔嗰日（T0 定死 11/2，真日子行過咗會補發工資 → 日數唔同） await setT(T0 + 4 * DAY);
   const after = await E(() => JSON.stringify(Glimmer.long5b.summary(__glimmer.state, __glimmer.now()))); ok(JSON.parse(before).trips === JSON.parse(after).trips && JSON.stringify(JSON.parse(before).jobs) === JSON.stringify(JSON.parse(after).jobs), '重開：日記／工作日數保留', [before, after]);
 
   console.log('# 🛠 5b 分組');
