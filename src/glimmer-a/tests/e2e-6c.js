@@ -62,6 +62,9 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
 
   console.log('# 入夢：地圖跟當日記錄');
   const w0 = await E(() => ({ w: __glimmer.state.sys12 && __glimmer.state.sys12.wallet.total, b: JSON.stringify(__glimmer.state.sys12 && __glimmer.state.sys12.bond), b5: JSON.stringify(__glimmer.state.b5 || null) }));
+  // 碎片數／主題係 seeded（s.seed＋夜）：揀一個今晚 2 片、第 1 片森林嘅 seed，令下面「40 秒第 2 片」「時間到」路線固定（唔再隨機 flaky）
+  const sd = await E(() => { const s = __glimmer.state, L = Glimmer.long6c, s0 = s.seed; for (let k = 1; k < 5000; k++) { s.seed = k; const p = L.plan(s, __glimmer.now(), __glimmer.hour()); if (p.frags.length === 2 && p.frags[0].th === 'forest') return k; } s.seed = s0; return 0; });
+  ok(sd > 0, '揀到固定 seed（2 片、第 1 片森林）', sd);
   await click('l6c-rail'); await W(300); q = await Q(); ok(q.on && q.tonight && !q.can && q.why === 'done', '撳「入夢」→ 入咗夢、今晚用咗', { on: q.on, why: q.why });
   const plan = await E(() => __qa.l6c.plan()); const c = cnt(plan.grid);
   ok(plan.grid.length === 15 && c.forest === 5 && c.lake === 4 && c.toy === 3 && c.star === 3, '暖菇飯 3、淋水 1、冇玩 → 森林 5／湖 4（餵食＋淋水）／玩具房 3（最少 1）／星 3', c);
