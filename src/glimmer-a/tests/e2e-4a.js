@@ -29,7 +29,7 @@ const T0 = new Date(2026, 10, 2, 13, 0).getTime(), DAY = 86400e3, H = 3600e3;
   const setT = (t) => E((t) => { __glimmer.clock.fake = true; __glimmer.clock.t = t; }, t);
   const prep = (o) => E((o) => { window.__noSaveOnHide = true; const s = __glimmer.state; s.stage = o.stage || 'elder'; s.form = 'dust'; s.sleeping = false; Object.assign(s.needs, { mood: 80, energy: 100, hunger: 100, clean: 100 }); s.poops = 0; }, o || {});
   const load = async (qs, o) => {
-    await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; localStorage.clear(); });
+    await page.goto(BASE + '?' + qs); await E(() => { window.__noSaveOnHide = true; Storage.prototype.setItem = function () { }; localStorage.clear(); });   // 6d.1：清咗之後舊頁嘅計時 save 唔可以再寫返（4a.2 細佬殘留 flaky）
     await page.goto(BASE + '?' + qs); await page.waitForFunction(() => window.__glimmer && __glimmer.liveLoad).catch(() => { }); await E(() => __glimmer.liveLoad);
     if (o !== false) { await E(() => __glimmer.s2Load); await setT(T0); await prep(o); } await W(400);
   };
