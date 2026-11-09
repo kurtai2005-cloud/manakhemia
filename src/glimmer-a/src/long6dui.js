@@ -354,8 +354,12 @@ body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l
       // 排喺 rail 最底嗰粒（工作／散步／入夢）下面，70px 一格；落唔到（>620）→ 左邊一行
       const col = ['l6cbtn', 'u62workbtn', 'l6bbtn'].map(id => document.getElementById(id)).filter(e => e && vis(e.id) && e.style.top);
       const u = U(), rl = u && u.rail;
-      if (col.length) { const lo = col.reduce((a, b) => (parseFloat(b.style.top) > parseFloat(a.style.top) ? b : a)); const y = parseFloat(lo.style.top) + 70;
-        if (y <= 620) { el.style.left = lo.style.left; el.style.top = y + 'px'; } else { const top = col.reduce((a, b) => (parseFloat(b.style.top) < parseFloat(a.style.top) ? b : a)); el.style.left = (parseFloat(lo.style.left) - 76) + 'px'; el.style.top = top.style.top; } }
+      if (col.length) {   // 主列（最右）同左邊列（6c 落唔到會去 x−76）分開計
+        const L = (e) => parseFloat(e.style.left) || 0, Tp = (e) => parseFloat(e.style.top) || 0, mx = Math.max(...col.map(L)), main = col.filter(e => L(e) >= mx - 20), side = col.filter(e => L(e) < mx - 20);
+        const lo = main.reduce((a, b) => (Tp(b) > Tp(a) ? b : a)), y = Tp(lo) + 70;
+        if (y <= 620 && !side.length) { el.style.left = lo.style.left; el.style.top = y + 'px'; }
+        else if (side.length) { const sh = side.reduce((a, b) => (Tp(b) < Tp(a) ? b : a)); el.style.left = sh.style.left; el.style.top = (Tp(sh) - 70) + 'px'; }   // 左邊列再上一格
+        else { el.style.left = (mx - 76) + 'px'; el.style.top = (Tp(lo) - 70) + 'px'; } }   // 留最低嗰格俾 6c「入夢」
       else if (rl && rl.kid && rl.dex) { const st = 1 + (vis('l5egg') ? 1 : 0) + (vis('l5cbtn') ? 1 : 0) + (vis('l6bbtn') ? 1 : 0), dy = rl.kid.y - rl.dex.y; let x = rl.kid.x, y = rl.kid.y + st * dy; if (y > 620) { x = rl.kid.x - 76; y = rl.kid.y + (st - 1) * dy; } el.style.left = x + 'px'; el.style.top = y + 'px'; }
       else { el.style.left = '360px'; el.style.top = '520px'; }
     }
