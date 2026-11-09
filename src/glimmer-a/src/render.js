@@ -643,7 +643,7 @@
       const offs = [[-px * 3, -py * 2], [-px * 6, -py * 3], [-px * 1.5, 0], [px * 11, py * 5]];
       // 狀態光
       const sleeping = s.sleeping;
-      this.sleepMix += ((sleeping ? 1 : 0) - this.sleepMix) * Math.min(1, dt * 2.2);
+      this.sleepMix = clamp(this.sleepMix + ((sleeping ? 1 : 0) - this.sleepMix) * clamp(dt * 2.2, 0, 1), 0, 1);   // 6d.1：dt 負（測試鐘倒退）都唔會令 sleepMix 出界 → 月光 arc 半徑唔會負
       const sm = this.sleepMix;
       if (this.v3 && this.v3.want) this.v3.tick(s, view.beh, { sleepy: s.withdrawn && s.withdrawn.on && s.stage !== 'egg', dreaming: !!this.v3.dream });   // #83 petGlow（瞓 0／睏 .6／醒 1）
       const hunger = s.needs.hunger, hDim = s.stage === 'egg' ? 0 : clamp((50 - hunger) / 50, 0, 1);
