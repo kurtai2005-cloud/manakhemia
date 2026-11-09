@@ -37,6 +37,7 @@ APK 工程喺 repo 外（`/workspace/fpet-hd2d`，唔係 git）；呢度留一�
 - 唔使改 AndroidManifest：**冇新權限**；分享用現有 `${applicationId}.fileprovider`（`res/xml/file_paths.xml` 已有 `cache-path`）。
 - `app/build.gradle`：versionCode 4、versionName "1.3"（6d）。
 - 6d.1：versionCode 5、versionName "1.3.1"（同一張 release cert；keystore／密碼唔入 repo）。
+- 6d.2：versionCode 6、versionName "1.3.2"（同一張 release cert；keystore／密碼唔入 repo）。
 
 ## JS 介面（`Capacitor.Plugins.Share6d`，src/long6dui.js 用；冇 plugin → 瀏覽器 clipboard／下載／Web Share）
 | 方法 | 做咩 |
