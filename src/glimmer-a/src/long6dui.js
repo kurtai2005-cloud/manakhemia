@@ -79,7 +79,7 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
     /* icon URL：V3 開 → kit V3 atlas（share／copy／paste／photo／qr／friend／egg_code／friend_badge／gift）；否則 6d 美術；冇 → '' */
     function icon(n) {
       const u = U(), V = u && u.v3x; if (isV3() && V && V.has(n, true)) return V.iurl(n);
-      if (ICF[n] && A.j && !NOART) { const im = aimg(ICF[n]); return im ? B6D + ICF[n] : ''; }
+      if (ICF[n] && A.j && !NOART) { const im = aimg(ICF[n]); return im ? im.src : '';   /* im.src＝shim 已解析 URL（外置 _x webp／內嵌 data）；直接寫原路徑去 CSS 會喺 APK 404 */ }
       if (n === 'gift' && u && u.iurl) return u.iurl('gift') || '';
       return '';
     }
