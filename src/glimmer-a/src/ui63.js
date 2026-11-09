@@ -53,7 +53,7 @@ ${H}#u63hide .c { width:30px; height:30px; border-radius:15px; box-sizing:border
 ${H}#u63hide .c canvas { width:20px; height:14px; image-rendering:pixelated; }
 ${H}#u63hide .l { font:500 14px/18px ${FALL}; letter-spacing:.5px; color:#F7EEDB; text-shadow:0 0 2px #000,0 1px 0 #000,1px 0 0 #000,-1px 0 0 #000,0 -1px 0 #000; white-space:nowrap; font-style:normal; }
 body.u63hid ${H}#u63hide { opacity:.42; }
-body.u62ov ${H}#u63hide, body.u62w-on ${H}#u63hide, body.s2-house ${H}#u63hide, body.l6c-on ${H}#u63hide, body.u63tip ${H}#u63hide { display:none; }   /* 一次性小提示喺左下：讓位 */
+body.u62ov ${H}#u63hide, body.u62w-on ${H}#u63hide, body.s2-house ${H}#u63hide, body.l6c-on ${H}#u63hide, body.l6d-on ${H}#u63hide, body.u63tip ${H}#u63hide { display:none; }   /* 一次性小提示喺左下：讓位 */
 `;
     document.head.appendChild(css);
 
@@ -63,7 +63,7 @@ body.u62ov ${H}#u63hide, body.u62w-on ${H}#u63hide, body.s2-house ${H}#u63hide, 
       ['#hdRail', [390, 160]], ['#bar', [195, 844]], ['#hdDock', [195, 844]],
       ['#toast', 'self:50% 0'], ['#s12gain', 'self:0 0'], ['#s12voice', 'self:50% 100%'], ['#bubble', 'self:50% 100%'], ['#u62tip', 'self:0 100%'], ['#mbox', 'self:50% 50%'],
     ];
-    const OVS = ['#l5bov', '#l6bov', '#l5ov', '#u62work', '#s2houseV', '#l6cov', '#l6cdex'];
+    const OVS = ['#l5bov', '#l6bov', '#l5ov', '#u62work', '#s2houseV', '#l6cov', '#l6cdex', '#l6dov'];
     const SKIP = (e) => e.tagName === 'CANVAS' || e.tagName === 'STYLE' || (e.dataset.testid || '').indexOf('house-pin-') === 0 || e.classList.contains('hb') || e.classList.contains('u63hit') || e.classList.contains('u63no');   // u63no：遊戲內容（6c 夢地圖格／團絨／碎片）唔縮，保持 art 整數倍
     function posOf(e) { let L = 0, T = 0, p = e; while (p && p !== ui) { L += p.offsetLeft; T += p.offsetTop; p = p.offsetParent; } return p === ui ? [L, T] : null; }
     function unScale(e) { if (!e.classList.contains('u63s')) return; e.classList.remove('u63s'); e.querySelectorAll('i.u63hit').forEach(h => h.remove()); e.querySelectorAll('[data-u63m]').forEach(x => { for (const k of ['margin-top', 'margin-right', 'margin-bottom', 'margin-left']) x.style.removeProperty(k); delete x.dataset.u63m; }); e.querySelectorAll('[data-u63c]').forEach(x => { x.style.removeProperty('overflow'); x.style.removeProperty('overflow-clip-margin'); delete x.dataset.u63c; }); }

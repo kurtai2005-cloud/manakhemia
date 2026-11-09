@@ -96,7 +96,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     const say0 = G.say;
     if (say0 && !say0._u62) { G.say = function (o) { if (o && o.line && on()) o = Object.assign({}, o, { sec: (o.sec > 0 && o.sec < speechSec(o.line)) ? o.sec : speechSec(o.line) }); return say0.call(this, o); }; G.say._u62 = true; }
     // 心聲泡泡唔壓右邊 rail（重疊檢查）：paint 完如果撞 rail 掣 → 收窄／左移，底邊同尾巴位保持
-    const RAIL = '#diary, #dex, #s2kid, #s2house, #l6bbtn, #l5egg, #l5cbtn, #u62workbtn, #l6cbtn';
+    const RAIL = '#diary, #dex, #s2kid, #s2house, #l6bbtn, #l5egg, #l5cbtn, #u62workbtn, #l6cbtn, #l6dbtn';
     function fitVoice() { const vb = $('#s12voice'); if (!vb || !on() || vb.style.display === 'none') return; const ui = $('#ui'); if (!ui) return; const k = ui.getBoundingClientRect().width / 390 || 1, ur = ui.getBoundingClientRect();
       const rs = [...document.querySelectorAll(RAIL)].filter(e => e.offsetWidth && getComputedStyle(e).display !== 'none' && getComputedStyle(e).visibility !== 'hidden').map(e => { const r = e.getBoundingClientRect(); return { l: (r.left - ur.left) / k, t: (r.top - ur.top) / k, b: (r.bottom - ur.top) / k }; }).filter(r => r.l > 195);
       if (!rs.length) return; const x0 = vb.offsetLeft, y0 = vb.offsetTop, w0 = vb.offsetWidth, h0 = vb.offsetHeight; const hit = rs.filter(r => r.t < y0 + h0 && r.b > y0 && r.l < x0 + w0 + 4); if (!hit.length) return;
@@ -124,7 +124,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     function hintTick() { const h = document.querySelector('[data-testid="house-hint"]'); if (!h) return; const k = h.textContent; if (k !== HH.key) { HH.key = k; HH.at = pnow(); h.classList.remove('u62gone'); } else if (on() && k && pnow() - HH.at > 6000 && !h.classList.contains('u62gone')) { h.classList.add('u62gone'); STAT.hint++; } }
 
     // ── ⑦ rail 字標籤 ──
-    const LBL = { diary: '信件', dex: '圖鑑', s2kid: '細佬', s2house: '屋仔', l6bbtn: '散步', l5egg: '新蛋', l5cbtn: '承傳', u62workbtn: '工作' };
+    const LBL = { diary: '信件', dex: '圖鑑', s2kid: '細佬', s2house: '屋仔', l6bbtn: '散步', l5egg: '新蛋', l5cbtn: '承傳', u62workbtn: '工作', l6dbtn: '朋友' };
     function labelTick() {
       for (const id in LBL) { const e = document.getElementById(id); if (!e || !e.classList.contains('ibtn')) continue;
         const has = [...e.querySelectorAll('i.l, .l, span')].some(x => /[\u3400-\u9fff]/.test(x.textContent || '') && x.offsetWidth > 0);
@@ -132,7 +132,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
         if (!e.getAttribute('aria-label')) e.setAttribute('aria-label', LBL[id]); }
     }
     // ── ⑦ 面板用途說明＋③ 面板換膚 ──
-    const OVS = ['#l6cov', '#l6cdex', '#l5bov', '#l6bov', '#l5ov', '#u62work', '#s2houseView', '[data-testid="house-view"]'];
+    const OVS = ['#l6dov', '#l6cov', '#l6cdex', '#l5bov', '#l6bov', '#l5ov', '#u62work', '#s2houseView', '[data-testid="house-view"]'];
     function subFor(t) { t = (t || '').replace(/\s+/g, ''); if (SUB[t]) return SUB[t]; for (const k in SUB) if (k.length >= 2 && t.indexOf(k) === 0) return SUB[k]; return ''; }
     function subTick() {
       if (!on()) return;
@@ -186,7 +186,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     const CHROME = ['#ui .ibtn', '#ui .abtn', '#ui .hdTab', '#stagename', '#substage', '#prog', '#grains', '#s12chip', '[data-testid="s12-qprog"]', '#toast', '#s12gain', '#s12voice', '#bubble', '#devBtn',
       '[data-testid="uiv2-portrait"]', '#u62tip', '#u62tip .k', '[data-testid="house-back"]', '[data-testid="house-title"]', '[data-testid="house-decorate"]', '[data-testid="house-hint"]', '[data-testid="u62-sub"]',
       '#mbox > h2', '#mbox .btn', '[data-testid$="-close"]', '[data-testid$="-title"]', '[role="button"]', '[data-testid^="u62w-back"]', '[data-testid="u62w-sum"]', '[data-testid^="u62w-st-"]', '[data-testid="u62w-rest"]', '[data-testid="u62w-plan"]', '[data-testid="u62w-empty"]', '#u63hide',
-      '[data-testid="l6c-time"]', '[data-testid="l6c-frags"]', '[data-testid="l6c-hint"]', '[data-testid="l6c-wake"]', '[data-testid="l6c-sum"]', '[data-testid^="l6c-sum-"]', '[data-testid="l6c-dex-panel"]', '[data-testid^="l6c-dex-th-"]', '[data-testid^="l6c-card-"]', '[data-testid="l6c-dex-detail"]', '[data-testid="l6c-dex-note"]'];
+      '[data-testid="l6c-time"]', '[data-testid="l6c-frags"]', '[data-testid="l6c-hint"]', '[data-testid="l6c-wake"]', '[data-testid="l6c-sum"]', '[data-testid^="l6c-sum-"]', '[data-testid="l6c-dex-panel"]', '[data-testid^="l6c-dex-th-"]', '[data-testid^="l6c-card-"]', '[data-testid="l6c-dex-detail"]', '[data-testid="l6c-dex-note"]', '#ui .l6dx'];
     function visBox(e) {
       if (!e || !e.isConnected) return null; const r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return null;
       for (let p = e; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity < 0.15) return null; }
@@ -211,7 +211,7 @@ ${H}#hdRail .ibtn > i.l.u62l, ${H} .ibtn > i.l.u62l { position:absolute; left:50
     }
 
     // ── 主 loop ──
-    function ovTick() { const md = $('#modal'), o = (md && getComputedStyle(md).display !== 'none') || !!$('#l5bov') || !!$('#l6bov') || !!$('#l5ov') || !!$('#l6cov') || !!$('#l6cdex'); document.body.classList.toggle('u62ov', o); const t = $('#toast'); document.body.classList.toggle('u62tg', o && !!t && getComputedStyle(t).display !== 'none' && +getComputedStyle(t).opacity > 0.15); }
+    function ovTick() { const md = $('#modal'), o = (md && getComputedStyle(md).display !== 'none') || !!$('#l5bov') || !!$('#l6bov') || !!$('#l5ov') || !!$('#l6cov') || !!$('#l6cdex') || !!$('#l6dov'); document.body.classList.toggle('u62ov', o); const t = $('#toast'); document.body.classList.toggle('u62tg', o && !!t && getComputedStyle(t).display !== 'none' && +getComputedStyle(t).opacity > 0.15); }
     try { const mo = new MutationObserver(() => ovTick()); const md0 = $('#modal'); if (md0) mo.observe(md0, { attributes: true, attributeFilter: ['style', 'class'] }); mo.observe(document.body, { childList: true, subtree: false }); const ui0 = $('#ui'); if (ui0) mo.observe(ui0, { childList: true }); } catch (e) { }   // 開／閂面板即時更新（唔等 250ms tick）
     function tick() { try { ovTick(); bubbleTick(); hintTick(); labelTick(); subTick(); tipTick(); } catch (e) { note('err', { m: String(e && e.message || e) }); } }
     setInterval(tick, 250); setTimeout(tick, 300);

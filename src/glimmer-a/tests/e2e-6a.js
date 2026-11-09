@@ -51,7 +51,7 @@ const DAY = 86400e3;
   console.log('# 載入');
   await fresh();
   ok(await E(() => !!(Glimmer.long6a && Glimmer.long6aui && window.__qa && __qa.l6a && __glimmer.l6a)), 'long6a＋long6aui 裝咗');
-  ok(await E(() => /^6[abc]$/.test(Glimmer.data.PARAMS.series2.version)), '版本 6a');
+  ok(await E(() => /^6[a-d]$/.test(Glimmer.data.PARAMS.series2.version)), '版本 6a');
   ok(await E(() => Glimmer.long6a.ALL.length === 60 && new Set(Glimmer.long6a.ALL.map(L => L.t)).size === 60), '首批 60 句（冇重複）');
   ok(await E(() => Glimmer.devmode.sections().some(s => s.id === 'l6a' && s.title.includes('6a'))), '🛠 開發者模式有「6a」分組');
   let q = await Q(); ok(q.days === 1 && q.today && q.today.n === 1 && !q.prev, '第一次開：記低今日（第一日唔講招呼）', q);

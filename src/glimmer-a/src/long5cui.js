@@ -206,7 +206,7 @@ body.l5c-on #toast{z-index:72 !important}
       const gen = kind === 'tr' ? (s.gen || 1) : null; col.appendChild(mk('div', 'position:relative;' + TXT(24, GOLD), kind === 'tr' ? '新團絨（第 ' + gen + ' 代）' : 'BB 細佬', 'l5c-result-name'));
       const row = (icn, t1, t2, tid) => { const r = mk('div', bi('card'), null, tid); r.className = 'l5crow'; r.appendChild(img(icn, 'position:relative;width:40px;height:40px;flex:0 0 40px'));
         const c2 = mk('div', 'position:relative;flex:1 1 auto;min-width:0;display:flex;flex-direction:column'); c2.appendChild(mk('div', 'position:relative;' + TXT(24, GOLD), t1)); c2.appendChild(mk('div', 'position:relative;' + TXT(24, CREAM), t2, tid + '-sub')); r.appendChild(c2); col.appendChild(r); return r; };
-      const ra = row(swatch(h.pattern), patN(h.pattern), '上一代 ' + (h.pname || '') + ' 嘅色', 'l5c-result-pat'), rb = row(ui5c('chip_trick_' + h.trick), '家傳招式：' + lessonZh(h.trick), (String(TR(h.trick).title || '').match(/→.*$/) || [''])[0], 'l5c-result-trick');
+      const ra = row(swatch(h.pattern), patN(h.pattern), (h.f6d ? '朋友 ' + h.f6d + ' 嘅色（蛋碼）' : '上一代 ' + (h.pname || '') + ' 嘅色'), 'l5c-result-pat'), rb = row(ui5c('chip_trick_' + h.trick), '家傳招式：' + lessonZh(h.trick), (String(TR(h.trick).title || '').match(/→.*$/) || [''])[0], 'l5c-result-trick');
       setTimeout(() => ra.classList.add('in'), 360); setTimeout(() => rb.classList.add('in'), 480);
       const fs = kind === 'tr' ? 'tr' : h.hatched ? (h.fast ? 'on' : 'locked') : C.fastState(s, kind); col.appendChild(pill(fs, 'l5c-result-fast'));
       const okb = btn('好可愛！', 'btn_pri', 200, 52, 'l5c-result-ok', () => closeOv()); okb.style.position = 'relative'; col.appendChild(okb);

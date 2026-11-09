@@ -24,7 +24,7 @@ console.log('⓪ 美術／資料對數');
   ok(Object.keys(L.familyLevel.unlocks).every(k => JSON.stringify(L.familyLevel.unlocks[k].map(u => u.id + u.zh)) === JSON.stringify(F.UNLOCKS[k].map(u => u.id + u.zh))) && JSON.stringify(L.familyLevel.xp) === JSON.stringify(F.XP), '解鎖／經驗表對 long_5a.json');
   ok(['room2', 'room3', 'room4'].every(k => L.rooms[k].unlockLv === F.ROOM[k].lv && L.rooms[k].zh === F.ROOM[k].zh) && L.roomRules.capacity === F.CAP, '房名／開房等級對數');
   ok(F.UNLOCKS[2][0].id === 'room2' && F.UNLOCKS[5][0].id === 'room3' && F.UNLOCKS[8][0].id === 'room4' && F.UNLOCKS[10].map(x => x.id).join() === 'family_title,tree_gold', '解鎖表：Lv2/5/8 開房、Lv10 稱號＋金族譜');
-  ok(/^(5[abc]|6[abc])/.test(D.PARAMS.series2.version), '版本 5a', D.PARAMS.series2.version);
+  ok(/^(5[abc]|6[a-d])/.test(D.PARAMS.series2.version), '版本 5a', D.PARAMS.series2.version);
 }
 console.log('① 初始化＋追溯經驗');
 { const s = fam(); S2.st(s).hatchDay = S2.dayNum(NOW) - 5; const ev = F.scan(s, NOW, { kidFk: 'A2' }), o = F.st(s);

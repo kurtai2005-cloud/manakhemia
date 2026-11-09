@@ -50,7 +50,7 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   console.log('# 載入＋入夢條件');
   await fresh();
   ok(await E(() => !!(Glimmer.long6c && Glimmer.long6cui && window.__qa && __qa.l6c && __glimmer.l6c)), 'long6c＋long6cui 裝咗');
-  ok(await E(() => Glimmer.data.PARAMS.series2.version === '6c'), '版本 6c');
+  ok(await E(() => ['6c', '6d'].includes(Glimmer.data.PARAMS.series2.version)), '版本 6c 起');
   ok(await E(() => Glimmer.devmode.sections().some(s => s.id === 'l6c' && s.title.includes('6c'))), '🛠 開發者模式有「6c」分組');
   let q = await Q(); ok(q.can && q.rail && q.railMode === 'enter', '22:00＋瞓緊 → rail「入夢」', { can: q.can, why: q.why, rail: q.rail });
   ok(await E(() => document.querySelector('#l6cbtn i.l').textContent === '入夢'), '掣字「入夢」');

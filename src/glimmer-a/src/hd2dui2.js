@@ -483,7 +483,7 @@ ${H}#s2houseV [data-testid="house-hint"] { font:16px/20px ${F8} !important; ${OL
       if (lum(cs.color) > 0.35 && (!cs.textShadow || cs.textShadow === 'none')) el.dataset.rol = '1';
     }
     // 6b.2 字級（Kurt：「字要清楚，但唔好咁大粒」）：標題／掣照 FP12 24；面板入面嘅內文 → 系統中文字 18px/26，輔助字（原本 <14px 或 .u62sub）16px/22
-    const Z62 = '#mbox, #l5bov, #l6bov, #l5ov, #l6cov, #l6cdex, #u62work, #u62tip, #s12voice, #bubble, #toast, #s12gain', T62 = 'h2, h3, .ttl, .t, [data-testid$="-title"], #stagename, #substage, .plaque';
+    const Z62 = '#mbox, #l5bov, #l6bov, #l5ov, #l6cov, #l6cdex, #l6dov, #u62work, #u62tip, #s12voice, #bubble, #toast, #s12gain', T62 = 'h2, h3, .ttl, .t, [data-testid$="-title"], #stagename, #substage, .plaque';
     const B62 = '.btn, .k, .hdTg, .seg, .ibtn, .abtn, [data-testid*="-btn"], [data-testid$="-close"], [data-testid*="-tab"], [data-btn], [role="button"]';
     function read62(el, cs, fs, txt) {
       // 6b.3（ui63）：縮細一級 → 內文 16／輔助 14（喺 .u63s 縮放組入面再除返個倍數，有效字號啱數）
