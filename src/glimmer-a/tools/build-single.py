@@ -3,17 +3,22 @@
    inline 所有 src/*.js；art/**（png/json）＋audio/**（ogg）base64 內嵌；
    前置 shim 攔截 fetch()／Image.src 相對路徑 → 內嵌資產（雙擊 file:// 即開，手機可用）。唔改 src。
    V3.1：art/v3/**.png → 無損 webp（exact，像素一樣；快取 /workspace/hdbuild/webp3 或 $GLIMMER_WEBP_CACHE）＋同內容去重；
-   --ext DIR（APK 用）：art/v3 圖唔內嵌，寫去 DIR/art/v3/_x/<sha1>.webp，shim 將原路徑改指嗰個相對 URL（Capacitor 由 assets/public 供檔）。
+   6d QA P1：**預設外置**（＝--ext <輸出 html 所在資料夾>）：art/v3（＋6c／6d）圖唔內嵌，寫去 DIR/art/v3/_x/<sha1>.webp，shim 將原路徑改指嗰個相對 URL
+   （APK：Capacitor 由 assets/public 供檔；網頁：同 html 放埋一齊用 http 開）。--ext DIR 指定第二個資料夾。
+   --inline：舊式全內嵌單檔（file:// 雙擊即開；檔大好多）。
    6c：art/breakthrough/6c/**.png 同 art/v3 一樣處理（webp／去重／--ext 外置）。6d：art/breakthrough/6d/**.png 一樣。
-   唔加 --ext＝單檔版照全內嵌（file:// 照開）。預設半透明圖照用 PNG（瀏覽器解碼逐 bit 一樣）；--webp-all 全轉 webp（細啲但半透明差 ≤3/255）。"""
+   預設半透明圖照用 PNG（瀏覽器解碼逐 bit 一樣）；--webp-all 全轉 webp（細啲但半透明差 ≤3/255）。"""
 import base64, hashlib, json, os, re, sys
 from multiprocessing import Pool
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARGS = sys.argv[1:]; EXT = None
 EXACT_ALPHA = '--webp-all' not in ARGS   # V3.1 預設：半透明（0<α<255）圖保留 PNG（Chrome webp 預乘取整同 PNG 會差 1–3/255）；--webp-all＝全部 webp（細 ~5.6MB，但唔係逐 bit 一樣）
 ARGS = [a for a in ARGS if a != '--webp-all']
+INLINE = '--inline' in ARGS; ARGS = [a for a in ARGS if a != '--inline']
 if '--ext' in ARGS: j = ARGS.index('--ext'); EXT = ARGS[j + 1]; del ARGS[j:j + 2]
+if INLINE and EXT: sys.exit('--inline 同 --ext 唔可以一齊用')
 OUT = ARGS[0] if ARGS else os.path.join(ROOT, 'dist', 'glimmer-live-s1.html')   # 合併版：python3 tools/build-single.py dist/glimmer-combo.html
+if not INLINE and not EXT: EXT = os.path.dirname(os.path.abspath(OUT))   # 6d QA P1：預設外置（同 html 同一個資料夾）；全內嵌要明講 --inline
 MIME = {'.webp': 'image/webp', '.png': 'image/png', '.json': 'application/json', '.ogg': 'audio/ogg', '.ttf': 'font/ttf', '.otf': 'font/otf'}   # V3.1b：V3 字 subset otf（6c：GenWanMin2 TC，OFL）
 # 5a.2：唔打包運行時冇用嘅資產（檔仍然留喺 repo 畀測試）：成個 reskin_4b/（src 冇路徑）、FP8／FP10（v2 只用 FP12）
 SKIP_DIRS = ('reskin_4b',); SKIP_FILES = ('fp8-subset.ttf', 'fp10-subset.ttf')

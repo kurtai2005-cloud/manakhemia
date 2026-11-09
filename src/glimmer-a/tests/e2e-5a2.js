@@ -69,7 +69,7 @@ let pass = 0, fail = 0; const ok = (c, m) => { if (c) { pass++; console.log('  �
   }
   await browser.close();
   console.log('# 單檔');
-  const out = path.join(os.tmpdir(), 'e2e5a2-single.html'), log = cp.execFileSync('python3', [path.join(ROOT, 'tools', 'build-single.py'), out], { encoding: 'utf8' });
+  const out = path.join(os.tmpdir(), 'e2e5a2-single.html'), log = cp.execFileSync('python3', [path.join(ROOT, 'tools', 'build-single.py'), '--inline', out], { encoding: 'utf8' });
   const html = fs.readFileSync(out, 'utf8'), keys = Object.keys(JSON.parse(html.match(/__GLIMMER_ASSETS = (\{.*?\});/s)[1]));
   ok(!keys.some(k => /\/reskin_4b\//.test(k)), '單檔冇 reskin_4b（' + keys.length + ' 個資產）');
   ok(!keys.some(k => /fp(8|10)-subset\.ttf$/.test(k)) && keys.some(k => /fp12-subset\.ttf$/.test(k)), '單檔冇 FP8／FP10，有 FP12');

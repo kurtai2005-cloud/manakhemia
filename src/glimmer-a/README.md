@@ -2,7 +2,7 @@
 
 > 以 `code/glimmer-liveliness` @ 497404f（2700494 之上再加 R4：`rainbowPityLeadH` 30、行為測試唔再中途 `process.exit`）為底對齊：彩虹 240h 冷卻、drawChance 0.33、grumpy_tap 獨立事件（自己 48h 冷卻、守全域 20 分鐘間隔、唔改 lastAt）、.ibtn ≥44px（layout() 按縮放寫 inline 尺寸）、日記「2 日後作廢」全部沿用 repo 實作，冇重複一套。
 
-- 單檔：`dist/glimmer-combo.html`（base64 內嵌全部 art／audio，雙擊 file:// 即玩）；重 build：`python3 tools/build-single.py dist/glimmer-combo.html`
+- 單檔：`dist/glimmer-combo.html`（base64 內嵌全部 art／audio，雙擊 file:// 即玩）；重 build：`python3 tools/build-single.py --inline dist/glimmer-combo.html`（6d 起 build-single **預設外置**：V3／6c／6d 圖寫去 html 隔籬 `art/v3/_x/`，要用 http 開；全內嵌單檔一定要加 `--inline`）
 - HD-2D：H1 晨／H2 黃昏／H3 日／H3rain 雨／H4 夜，2 秒 crossfade；`?hd2d=0` 回舊程序化背景；`?scene=H3rain` 指定；`?hdcache=0` 關靜態層 cache（對照用）
 - 開發者模式：`?dev=1`，或 **1.5 秒內連點 5 下左上角**：名牌 chip（「守夜者／柔光形態」嗰格）或者畫面左上 72×72 CSS px 範圍
 - 遊測 s1：⚙️／📖 熱區 ≥44 CSS px（360 闊都得）；觸控橫向顯示「請轉直向」（`?orient=landscape` 桌面強制）；按短邊 fit＋模糊延伸背景（冇黑邊）；HD-2D 靜態層 cache；拖動手指眼神跟；短 tap <300ms 先回頭；寵物熱區貼身但 ≥44px；開心閉眼頭部微轉
@@ -14,7 +14,7 @@
 > 呢個資料夾由 PR #17 修好版 glimmer-a 複製（10:57 HKT 版），之後只喺度加「生命感」。第一段改動集中喺 **寵物繪製（render.js `drawPetBeh`＋新 `loadLive`／`liveFrame`／`liveAnchors`／`bulb*`）／behavior／main（`__qa.pet`）／ui（debug 面板）**，背景／場景繪製未郁（方便之後合併 glimmer-hd2d 嘅 HD-2D 場景模組）。
 
 ## 生命感第一段（F1＋F2＋A1＋D2）
-- **玩法**：本機 `python3 -m http.server 8138` → `http://localhost:8138/index.html?debug=1`；或者雙擊 **`dist/glimmer-live-s1.html`**（單檔，資產＋音效 base64 內嵌，file:// 可開，手機可用）。重 build：`python3 tools/build-single.py`。
+- **玩法**：本機 `python3 -m http.server 8138` → `http://localhost:8138/index.html?debug=1`；或者雙擊 **`dist/glimmer-live-s1.html`**（單檔，資產＋音效 base64 內嵌，file:// 可開，手機可用）。重 build：`python3 tools/build-single.py --inline`（唔加 `--inline`＝外置圖版，同 html 放埋一齊）。
 - **F1 表情 overlay**：遊美 `art/liveliness/atlas_<form>_live`（`<clip>_noface` 身體）喺 `tmpPet` 先合成身體＋eyeL／eyeR／mouth（逐幀 `face_anchors.json` 錨點，位置＝anchor − piece.pivotPx），之後先 **tint 一次**；朝左成個合成 scaleX −1。閉眼款（happy／sleepy／wink）只用 `_C_`；wink＝左 `eyes_neutral_<g>_l`＋右 `eyes_wink_C_r`。`faceVisible=false`（turn_back 第 0 幀背面）唔畫臉。容錯：缺 piece → 色塊 placeholder；缺 anchors → 由 `FORMS.headR` 推算；未有 noface 嘅 clip → idle_noface＋程序化變形；整套載唔到 → 返回 PR #17 原 atlas。
 - **燈泡**：`bulb_base` 喺 tint 前（跟時段光），`bulb_glow` 喺 tint 後按情緒（happy／neutral／sleepy／hungry／grumpy，CLIPS.json bulb 表）上色＋呼吸，0.4 秒漸變；sick 唔顯示。頂部道具（attach props）改用逐幀 `head_r` 錨點。
 - **F2 gaze／A1 邊行邊望**：目標＝行路方向／觸點／花盆／螢火／鏡頭，平滑後量化 L/CL/C/CR/R/U/D，換格最少停 0.25 秒；walk 時跟方向，偶爾望鏡頭。
