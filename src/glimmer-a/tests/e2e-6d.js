@@ -100,9 +100,9 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   ok(q.visits[0] && q.visits[0].leftH === 24, '住 24 粒鐘', q.visits[0] && q.visits[0].leftH);
   await W(800); let nd = await E(() => __qa.l6d.nodes());
   ok(nd.length === 1 && nd[0].art === 'shadow:alpha' && !nd[0].ph && nd[0].badge && (await Q()).alpha === 0.45, '花園影子：半透明剪影（alpha 0.45）＋friend_badge', nd);
-  const pix = await E(() => { const c = document.querySelector('#l6dlay canvas'); const g = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; const cols = new Set(); let on = 0, adj = 0, aMin = 255, aMax = 0; const W = c.width;
-      for (let i = 0, n = 0; i < g.length; i += 4, n++) if (g[i + 3]) { on++; cols.add(g[i] + ',' + g[i + 1] + ',' + g[i + 2]); aMin = Math.min(aMin, g[i + 3]); aMax = Math.max(aMax, g[i + 3]); const x = n % W, y = (n / W) | 0; if (x + 1 < W && g[(y * W + x + 1) * 4 + 3]) adj++; }
-      return { on, adj, aMin, aMax, cols: [...cols], ok: on > 20 && adj > 0 && aMin >= 90 && aMax <= 140 && [...cols].every(c => ['238,226,255', '169,139,240', '92,63,176'].includes(c)) }; }); ok(pix.ok, '影子：3 階紫、相鄰像素齊（唔係格仔）、alpha ≈ 0.45', pix);
+  const pix = await E(() => { const c = document.querySelector('#l6dlay canvas'); const g = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; const cols = new Set(); let on = 0, adj = 0; const W = c.width, op = +getComputedStyle(c).opacity;
+      for (let i = 0, n = 0; i < g.length; i += 4, n++) if (g[i + 3] >= 128) { on++; cols.add(g[i] + ',' + g[i + 1] + ',' + g[i + 2]); const x = n % W, y = (n / W) | 0; if (x + 1 < W && g[(y * W + x + 1) * 4 + 3] >= 128) adj++; }
+      return { on, adj, op, cols: [...cols], ok: on > 20 && adj > 0 && Math.abs(op - 0.45) < 0.011 && [...cols].every(c => ['238,226,255', '169,139,240', '92,63,176'].includes(c)) }; }); ok(pix.ok, '影子：3 階紫、相鄰像素齊（唔係格仔）、canvas opacity 0.45', pix);
   await shot('05-garden-shadow');
 
   console.log('# 規則：重複／自己／每日 3 個');

@@ -144,10 +144,9 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
         g.putImageData(d, 0, 0); } catch (e) { }
       if (SHC.size > 120) SHC.clear(); SHC.set(key, c); return { cv: c, px: s0.px, py: s0.py, w: s0.sw, h: s0.sh, frame: a.frame, key };
     }
-    function paintShadow(cv, sh) {   // 整隻寵物半透明（alpha 0.45）；只改影子自己張 canvas 嘅 alpha，RGB 保持三階紫（唔用 ctx.globalAlpha 疊透明底，免預乘取整偏色）；唔郁花園／發光／粒子／徽章
-      cv.width = sh.w; cv.height = sh.h; const g = cv.getContext('2d', { willReadFrequently: true }); g.imageSmoothingEnabled = false; g.clearRect(0, 0, sh.w, sh.h); g.drawImage(sh.cv, 0, 0);
-      try { const d = g.getImageData(0, 0, sh.w, sh.h), p = d.data, a = Math.round(255 * SHADOW_A); for (let i = 3; i < p.length; i += 4) if (p[i]) p[i] = a; g.putImageData(d, 0, 0); } catch (e) { }
-      cv.style.width = sh.w * 2 + 'px'; cv.style.height = sh.h * 2 + 'px';
+    function paintShadow(cv, sh) {   // 整隻寵物半透明：CSS opacity 0.45 淨係加喺影子 canvas（徽章係兄弟、花園發光／粒子喺第二層，都唔受影響）。唔改像素 alpha，免 canvas 預乘取整令三階紫偏 1。
+      cv.width = sh.w; cv.height = sh.h; const g = cv.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, sh.w, sh.h); g.drawImage(sh.cv, 0, 0);
+      cv.style.width = sh.w * 2 + 'px'; cv.style.height = sh.h * 2 + 'px'; cv.style.opacity = String(SHADOW_A);
     }
 
     // ── 分享圖（165×252 art；k＝每 art px 幾多 px：存相 3＝495×756、畫面 6） ──
