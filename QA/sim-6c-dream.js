@@ -56,9 +56,13 @@ function fragThemes(w, frags) {
   for (const k of ks) for (let i = 0; i < fr[k]; i++) out.push(k);
   return out;
 }
-function weightsOf(F, ruleC) {
-  const lake = ruleC ? ((F.feed ? 1 : 0) + (F.rinse ? 1 : 0) + (F.poop ? 1 : 0) + (F.mg ? 1 : 0)) : F.rinse;
-  const w = { forest: Math.min(CFG.wMax, F.meal), lake: Math.min(CFG.wMax, lake), toy: F.play >= CFG.playMany ? Math.min(CFG.wMax, F.play) : 0, star: 1 };
+function weightsOf(F, opt) {
+  const lake = opt.ruleC ? ((F.feed ? 1 : 0) + (F.rinse ? 1 : 0) + (F.poop ? 1 : 0) + (F.mg ? 1 : 0)) : F.rinse;
+  let toy = 0;
+  if (opt.toy === 'ge1') toy = (F.play >= 1 || F.mg >= 1) ? Math.min(CFG.wMax, Math.max(1, F.play)) : 0;
+  else if (opt.toy === 'min1') toy = Math.max(1, Math.min(CFG.wMax, F.play));
+  else if (F.play >= CFG.playMany) toy = Math.min(CFG.wMax, F.play);
+  const w = { forest: Math.min(CFG.wMax, F.meal), lake: Math.min(CFG.wMax, lake), toy, star: 1 };
   for (const k of THEMES) if (!(w[k] > 0)) delete w[k];
   return w;
 }
@@ -71,7 +75,7 @@ function verifyCopy() {
   M6.note(s, 'care', 'rinse', 0, 0, 0, atHour(0, 9));
   const p = DR.plan(s, atHour(0, 22), 22);
   const F = { meal: 3, rinse: 1, play: 0, mg: 0, feed: 1, poop: 0 };
-  const mine = fragThemes(weightsOf(F, false), 6).slice().sort();
+  const mine = fragThemes(weightsOf(F, { ruleC: false }), 6).slice().sort();
   const real = p.frags.map(f => f.th).slice().sort();
   if (JSON.stringify(mine) !== JSON.stringify(real)) {
     console.error('FRAG_COPY_MISMATCH', mine, real);
@@ -158,12 +162,23 @@ function one(name, seed, opt) {
   function grab(F, t, kind) {
     let themes;
     if (opt.roll) {
-      const w = weightsOf(F, opt.ruleC);
-      const n = 1 + (rngRoll() < opt.roll.p2 ? 1 : 0);
+      const open = () => {
+        const w = weightsOf(F, opt);
+        if (opt.skipFull) for (const k of THEMES) if (DR.themeCards(s, k).length >= CFG.cardsPerTheme) delete w[k];
+        return w;
+      };
+      const w0 = open();
       themes = [];
-      for (let i = 0; i < n; i++) themes.push(weightedTheme(w, rngRoll));
+      if (Object.keys(w0).length) {
+        const n = 1 + (rngRoll() < opt.roll.p2 ? 1 : 0);
+        for (let i = 0; i < n; i++) {
+          const w = open();
+          if (!Object.keys(w).length) break;
+          themes.push(weightedTheme(w, rngRoll));
+        }
+      }
     } else {
-      themes = fragThemes(weightsOf(F, opt.ruleC), fragsN);
+      themes = fragThemes(weightsOf(F, opt), fragsN);
       if (opt.lakeCap != null) {
         let n = 0; const cut = [];
         for (const th of themes) { if (th === 'lake' && n >= opt.lakeCap) continue; if (th === 'lake') n++; cut.push(th); }
@@ -179,6 +194,7 @@ function one(name, seed, opt) {
       DR.pick(s, th, t);
     }
     if (X.st(s).wallet.total !== before) throw new Error('wallet changed');
+    if (!themes.length) return;
     dreams++; if (kind === 'live') live++; else makeup++;
     cards = DR.summary(s, t, new Date(t).getHours()).cards;
     if (day19 == null && cards >= 19) day19 = dayNum;
@@ -219,7 +235,9 @@ function one(name, seed, opt) {
     }
   }
   const till = snap || { dreams, live, makeup };
-  return { day: doneDay, cards, dreams: till.dreams, live: till.live, makeup: till.makeup, lastCard: doneDay != null && day19 != null ? doneDay - day19 : null, waste, wasteLast, wallet: X.st(s).wallet.total - w0 };
+  const themesLeft = {};
+  for (const k of THEMES) themesLeft[k] = DR.themeCards(s, k).length;
+  return { day: doneDay, cards, dreams: till.dreams, live: till.live, makeup: till.makeup, lastCard: doneDay != null && day19 != null ? doneDay - day19 : null, waste, wasteLast, themes: themesLeft, wallet: X.st(s).wallet.total - w0 };
 }
 
 function run(opt) {
@@ -227,15 +245,43 @@ function run(opt) {
   for (const name of Object.keys(SCHED)) {
     const rows = [];
     for (let i = 1; i <= N; i++) rows.push(one(name, i, opt));
-    table[name] = summarize(name, rows);
+    const row = summarize(name, rows);
+    if (name === '疏玩') {
+      const freq = {}, avg = {};
+      for (const k of THEMES) avg[k] = 0;
+      let unfinished = 0;
+      for (const r of rows) {
+        for (const k of THEMES) avg[k] += r.themes[k];
+        if (r.cards >= 20) continue;
+        unfinished++;
+        let min = 99, ks = [];
+        for (const k of THEMES) {
+          if (r.themes[k] < min) { min = r.themes[k]; ks = [k]; }
+          else if (r.themes[k] === min) ks.push(k);
+        }
+        const label = ks.join('+');
+        freq[label] = (freq[label] || 0) + 1;
+      }
+      const top = Object.entries(freq).sort((a, b) => b[1] - a[1])[0] || [null, 0];
+      for (const k of THEMES) avg[k] = +(avg[k] / rows.length).toFixed(2);
+      row.stuck = { unfinished, top: top[0], topN: top[1], avg };
+    }
+    table[name] = row;
   }
   return table;
 }
 
-const schemes = [
-  { id: 'roll30', label: 'A+B 存 1 晚+C，每晚 1 片、30% 再 1 片', bankCap: 1, afterHour: 19, ruleC: true, roll: { p2: 0.3 } },
-  { id: 'roll40', label: 'A+B 存 1 晚+C，每晚 1 片、40% 再 1 片', bankCap: 1, afterHour: 19, ruleC: true, roll: { p2: 0.4 } },
-];
+const schemes = [];
+for (const p2 of [0.2, 0.3, 0.4]) {
+  const tag = Math.round(p2 * 100);
+  for (const fx of [
+    { id: 'f1', toy: null, label: '修1' },
+    { id: 'f1a', toy: 'ge1', label: '修1+修2a 玩或小遊戲≥1' },
+    { id: 'f1b', toy: 'min1', label: '修1+修2b 玩具房最低 1' },
+  ]) {
+    schemes.push({ id: 'p' + tag + '-' + fx.id, label: 'p=' + tag + '% ' + fx.label, bankCap: 1, afterHour: 19, ruleC: true, skipFull: true, toy: fx.toy, roll: { p2 } });
+  }
+}
 
 const only = process.env.SCHEME;
 const list = only ? schemes.filter(s => s.id === only) : schemes;
