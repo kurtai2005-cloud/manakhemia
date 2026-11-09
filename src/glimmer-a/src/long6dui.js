@@ -57,7 +57,8 @@ body.l6d-on #toast{z-index:73 !important}
 #l6dov .scr{overflow-y:auto;overscroll-behavior:contain}
 #l6dlay{position:absolute;left:0;top:0;width:390px;height:844px;pointer-events:none;z-index:1}
 #l6dlay .sh6{position:absolute;width:0;height:0;pointer-events:none}
-#l6dlay .sh6 canvas{position:absolute;image-rendering:pixelated;pointer-events:auto;cursor:pointer}
+#l6dlay .sh6 canvas{position:absolute;image-rendering:pixelated;pointer-events:none}
+#l6dlay .sh6 .ht{position:absolute;left:-28px;top:-76px;width:56px;height:76px;pointer-events:auto;cursor:pointer}
 #l6dlay .sh6 .bdg{position:absolute;width:32px;height:32px;left:-16px;image-rendering:pixelated;pointer-events:none;animation:l6dbob 1.6s steps(2) infinite}
 #l6dlay .bub{position:absolute;transform:translate(-50%,-100%);white-space:nowrap;padding:6px 12px;pointer-events:none;opacity:0;transition:opacity .3s}
 #l6dlay .bub.on{opacity:1}
@@ -184,7 +185,7 @@ body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l
       host().appendChild(el); document.body.classList.add('l6d-on'); render(); note('open', { tab: OV.tab, why }); return el;
     }
     function frame(title, sub, tid) {
-      const p = mk('div', `position:absolute;left:16px;top:64px;width:358px;max-height:760px;box-sizing:border-box;padding:36px 16px 16px;display:flex;flex-direction:column;gap:12px;${PAN()}`, null, tid || 'l6d-panel'); if (V62()) p.className = 'u62pan';
+      const p = mk('div', `position:absolute;left:16px;top:112px;width:358px;max-height:700px;box-sizing:border-box;padding:36px 16px 16px;display:flex;flex-direction:column;gap:12px;${PAN()}`, null, tid || 'l6d-panel'); if (V62()) p.className = 'u62pan';
       p.appendChild(tx(mk('div', `position:absolute;left:50%;top:-22px;transform:translateX(-50%);min-width:180px;height:44px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:0 14px;white-space:nowrap;${bi('plaque_pri')}` + TXT(24, CREAM), title, 'l6d-title')));
       if (sub) p.appendChild(tx(subEl(sub, 'position:relative;margin:0 !important;text-align:center;')));
       const x0 = mk('div', `position:absolute;right:-23px;top:-25px;z-index:5;width:52px;height:52px;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:center`, null, 'l6d-close'); x0.setAttribute('role', 'button');
@@ -221,13 +222,13 @@ body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l
       fontsReady().then(() => { if (cv.isConnected) drawCard(cv, 6, snap, code, kind); });
       const row = mk('div', 'position:relative;display:flex;gap:8px'); p.appendChild(row);
       const fname = (kind === 'egg' ? '微光小圃-蛋碼-' : '微光小圃-朋友名片-') + code.slice(-4) + '.png';
-      row.appendChild(btn('複製', 'btn_sec', 'copy', tidp + '-copy', async () => { const ok = await copyText(code); LAST.copied = ok ? code : null; toast(ok ? '複製咗個碼，貼俾朋友就得' : '複製唔到，長撳個碼自己複製'); note('copy', { ok, kind }); }, 'flex:1 1 0;min-width:0;padding:4px 6px;gap:4px'));
-      row.appendChild(btn('存圖', 'btn_sec', 'photo', tidp + '-save', async () => { const c2 = mk('canvas'); await fontsReady(); drawCard(c2, 3, snap, code, kind); const r2 = await saveImage(c2, fname); toast(r2.ok ? '存咗分享圖（495×756）' : '存唔到圖'); note('save', { ok: r2.ok, kind, w: c2.width, h: c2.height }); }, 'flex:1 1 0;min-width:0;padding:4px 6px;gap:4px'));
+      row.appendChild(btn('複製', 'btn_sec', 'copy', tidp + '-copy', async () => { const ok = await copyText(code); LAST.copied = ok ? code : null; toast(ok ? '複製咗，貼俾朋友' : '複製唔到，請長撳'); note('copy', { ok, kind }); }, 'flex:1 1 0;min-width:0;padding:4px 6px;gap:4px'));
+      row.appendChild(btn('存圖', 'btn_sec', 'photo', tidp + '-save', async () => { const c2 = mk('canvas'); await fontsReady(); drawCard(c2, 3, snap, code, kind); const r2 = await saveImage(c2, fname); toast(r2.ok ? '存咗分享圖' : '存唔到圖'); note('save', { ok: r2.ok, kind, w: c2.width, h: c2.height }); }, 'flex:1 1 0;min-width:0;padding:4px 6px;gap:4px'));
       row.appendChild(btn('分享', 'btn_pri', 'share', tidp + '-share', async () => { const c2 = mk('canvas'); await fontsReady(); drawCard(c2, 3, snap, code, kind); const r2 = await shareImage(c2, fname, code); note('share', { ok: r2.ok, kind }); if (!r2.ok) toast('分享唔到'); }, 'flex:1 1 0;min-width:0;padding:4px 6px;gap:4px'));
       return cv;
     }
     function cardView() {
-      const s = S(); const p = frame('我嘅名片', null, 'l6d-card'); p.style.top = '48px'; p.style.gap = '8px';
+      const s = S(); const p = frame('我嘅名片', null, 'l6d-card'); p.style.top = '112px'; p.style.gap = '8px';
       if (s.stage === 'egg') { line(p, '孵咗先有名片。', LAV, 'l6d-card-egg'); return; }
       const me = D6.myCode(s, now(), { fk: fkNow() }); OV.code = me.code; cardBlock(p, me.code, me.snap, 'visit', 'l6d-card');
     }
@@ -235,7 +236,7 @@ body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l
       const s = S(), e = D6.eggState(s, now()); const p = frame('交換蛋碼', e.ok && e.why !== 'new' ? null : SUBT.egg, 'l6d-eggp');
       if (!e.ok) { line(p, '家族 Lv' + D6.CFG.eggLv + ' 先可以出蛋碼（而家 Lv' + e.lv + '）', LAV, 'l6d-egg-lock'); line(p, '每 7 日可以出 1 個。', CREAM, 'l6d-egg-rule', V62() ? 'small' : 'div'); return; }
       if (e.why === 'new') { line(p, '每 7 日可以出 1 個蛋碼。', CREAM, 'l6d-egg-rule'); p.appendChild(btn('出蛋碼', 'btn_pri', 'egg_code', 'l6d-egg-make', () => { const r = D6.eggCode(S(), now(), { fk: fkNow() }); save(); note('eggMake', { why: r.why }); render(); })); return; }
-      p.style.top = '48px'; p.style.gap = '8px'; const snap = D6.decode(e.code).snap; OV.egg = e.code; cardBlock(p, e.code, snap, 'egg', 'l6d-egg');
+      p.style.top = '112px'; p.style.gap = '8px'; const snap = D6.decode(e.code).snap; OV.egg = e.code; cardBlock(p, e.code, snap, 'egg', 'l6d-egg');
       line(p, '再過 ' + e.left + ' 日可以出新蛋碼', MINT, 'l6d-egg-left');
     }
     function bookView() {
@@ -252,9 +253,9 @@ body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l
       const fld = mk('div', `position:relative;box-sizing:border-box;min-height:116px;${INSET()}`, null, 'l6d-field'); const ta = mk('textarea', TXT(24, CREAM) + 'height:112px;', null, 'l6d-input'); ta.rows = 3; ta.placeholder = '貼上朋友碼（GL6D…）'; ta.value = OV.inp || ''; ta.spellcheck = false; ta.autocomplete = 'off'; fld.appendChild(ta); p.appendChild(fld);
       ta.addEventListener('input', () => { OV.inp = ta.value; OV.pre = null; showPre(); }); ta.addEventListener('pointerdown', (e) => e.stopPropagation());
       const row = mk('div', 'position:relative;display:flex;gap:8px'); p.appendChild(row);
-      row.appendChild(btn('貼上', 'btn_sec', 'paste', 'l6d-paste', async () => { const t = await pasteText(); if (t == null) { toast('讀唔到剪貼簿，長撳個格貼上'); return; } OV.inp = t; ta.value = t; check(); }, 'flex:1 1 0;min-width:0;padding:4px 6px;gap:4px'));
+      row.appendChild(btn('貼上', 'btn_sec', 'paste', 'l6d-paste', async () => { const t = await pasteText(); if (t == null) { toast('讀唔到剪貼簿'); return; } OV.inp = t; ta.value = t; check(); }, 'flex:1 1 0;min-width:0;padding:4px 6px;gap:4px'));
       const file = mk('input', 'display:none', null, 'l6d-file'); file.type = 'file'; file.accept = 'image/*'; p.appendChild(file);
-      file.addEventListener('change', async () => { const f = file.files && file.files[0]; file.value = ''; if (!f) return; const t = await decodeFile(f); note('photo', { ok: !!t }); if (!t) { toast('張相搵唔到 QR'); return; } OV.inp = D6.extract(t) || t; ta.value = OV.inp; check(); });
+      file.addEventListener('change', async () => { const f = file.files && file.files[0]; file.value = ''; if (!f) return; const t = await decodeFile(f); note('photo', { ok: !!t }); if (!t) { toast('相入面搵唔到 QR'); return; } OV.inp = D6.extract(t) || t; ta.value = OV.inp; check(); });
       row.appendChild(btn('揀相', 'btn_sec', 'photo', 'l6d-photo', () => file.click(), 'flex:1 1 0;min-width:0'));
       row.appendChild(btn('睇吓', 'btn_pri', 'qr', 'l6d-check', () => check(), 'flex:1 1 0;min-width:0'));
       OV.preBox = mk('div', 'position:relative;display:flex;flex-direction:column;gap:8px', null, 'l6d-pre'); p.appendChild(OV.preBox); showPre();
@@ -277,13 +278,15 @@ body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l
     }
     function commit() {
       const s = S(), r = D6.enter(s, OV.inp, now(), {}); OV.last = r; note('enter', { ok: r.ok, why: r.why, kind: r.kind });
-      if (!r.ok) { UIS('error'); toast(D6.fill(WHY[r.why] || D6.LINES.bad, { name: r.name || '' })); OV.pre = Object.assign({}, OV.pre, { ok: false, why: r.why }); showPre(); return r; }
+      if (!r.ok) { UIS('error'); toast(D6.fill(D6.SHORT[r.why] || D6.SHORT.bad, { name: r.name || '' })); OV.pre = Object.assign({}, OV.pre, { ok: false, why: r.why }); showPre(); return r; }
       save(); UIS('reward'); toast(r.line, 3000); OV.inp = ''; OV.pre = null; close('enter'); if (r.kind === 'visit') { layTick(true); } return r;
     }
 
     // ── 花園影子 ──
     const LAY = { el: null, nodes: {}, bub: null, nextAct: 0, actId: null, actT: 0 };
-    const SLOTX = [60, 330, 122, 268, 30, 360], GROUND = 584;
+    // 6 個位：前排（地面）避開團絨（x 156–230）同右邊 rail（x≥334）；後排高 80（團絨頭頂之上）；撳位 56×76 唔撞
+    const SLOTS = [[36, 0], [290, 0], [100, 0], [70, 1], [195, 1], [280, 1]], GROUND = 584, ROWY = [0, -80];
+    const SLOTX = SLOTS.map(a => a[0]);
     function layer() { if (LAY.el && LAY.el.isConnected) return LAY.el; const ui = document.getElementById('ui'); if (!ui) return null; const el = LAY.el = mk('div', '', null, 'l6d-layer'); el.id = 'l6dlay'; const hit = document.getElementById('hit'); if (hit && hit.parentNode === ui) hit.after(el); else ui.prepend(el); LAY.nodes = {}; return el; }
     function petX() { try { const R = G.renderer; if (R && R.petRect && R.petRect.w > 0) return (R.petRect.x + R.petRect.w / 2) * 2; } catch (e) { } return 195; }
     function layTick(force) {
@@ -291,17 +294,17 @@ body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l
       for (const id of Object.keys(LAY.nodes)) if (!vs.some(v => v.id === id)) { LAY.nodes[id].el.remove(); delete LAY.nodes[id]; }
       for (const v of vs) {
         let N = LAY.nodes[v.id]; if (!N) { const d = mk('div', '', null, 'l6d-shadow-' + v.id); d.className = 'sh6 u63no'; const cv = mk('canvas', '', null, 'l6d-shadow-cv-' + v.id); cv.width = 1; cv.height = 1; d.appendChild(cv);
-          const b = mk('i', '', null, 'l6d-badge-' + v.id); b.className = 'bdg'; d.appendChild(b); el.appendChild(d); cv.addEventListener('click', (e) => { e.stopPropagation(); if (busy()) return; UIS('tap'); info(v.id); });
+          const ht = mk('i', '', null, 'l6d-shadow-hit-' + v.id); ht.className = 'ht'; d.appendChild(ht); const b = mk('i', '', null, 'l6d-badge-' + v.id); b.className = 'bdg'; d.appendChild(b); el.appendChild(d); ht.addEventListener('click', (e) => { e.stopPropagation(); if (busy()) return; UIS('tap'); info(v.id); });
           N = LAY.nodes[v.id] = { el: d, cv, b, x: SLOTX[v.slot] || 80, tx: SLOTX[v.slot] || 80, dir: 1, ph: (v.slot * 977) % 4000, k: null }; }
         // 行：平時喺自己位 ±24 晃；互動緊 → 行去團絨隔籬
-        const home = SLOTX[v.slot] || 80, acting = LAY.actId === v.id && t - LAY.actT < 4200; N.tx = acting ? petX() + (home < 195 ? -64 : 64) : home + Math.sin((t + N.ph) / 3200) * 24;
+        const home = SLOTX[v.slot] || 80, acting = LAY.actId === v.id && t - LAY.actT < 4200; N.tx = acting ? petX() + (home < 195 ? -64 : 64) : home + Math.sin((t + N.ph) / 3200) * 8;
         const dx = N.tx - N.x; if (Math.abs(dx) > 0.5) { N.dir = dx < 0 ? -1 : 1; N.x += Math.sign(dx) * Math.min(Math.abs(dx), acting ? 2.4 : 0.6); }
         const sh = shadowCanvas(v.fk, t + N.ph);
         if (sh) { if (N.k !== sh.key) { N.k = sh.key; N.cv.width = sh.w; N.cv.height = sh.h; const g = N.cv.getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, sh.w, sh.h); g.drawImage(sh.cv, 0, 0); N.cv.style.width = sh.w * 2 + 'px'; N.cv.style.height = sh.h * 2 + 'px'; delete N.el.dataset.ph; N.el.dataset.art = A.mask ? '6d:shadow_mask' : 'mask:checker'; N.el.dataset.frame = sh.frame; }
           N.cv.style.left = (-sh.px * 2) + 'px'; N.cv.style.top = (-sh.py * 2) + 'px'; N.cv.style.transform = N.dir < 0 ? 'scaleX(-1)' : ''; N.cv.style.transformOrigin = (sh.px * 2) + 'px 0'; N.b.style.top = (-sh.py * 2 - 36) + 'px'; }
         else if (!N.el.dataset.ph) { N.el.dataset.ph = '6d:shadow'; N.cv.width = 24; N.cv.height = 24; N.cv.style.cssText = 'left:-24px;top:-48px;width:48px;height:48px;background:#A98BF0'; N.b.style.top = '-84px'; }
         if (!N.b.dataset.art) setIc(N.b, 'friend_badge'), N.b.style.background = N.b.style.backgroundImage ? N.b.style.backgroundImage + ' center/contain no-repeat' : '';
-        N.el.style.left = Math.round(N.x) + 'px'; N.el.style.top = GROUND + 'px'; N.el.dataset.x = Math.round(N.x);
+        N.el.style.left = Math.round(N.x) + 'px'; N.el.style.top = (GROUND + ROWY[(SLOTS[v.slot] || [0, 0])[1]]) + 'px'; N.el.dataset.x = Math.round(N.x);
       }
       // 互動：每 40–70 秒揀一個影子走埋去（泡泡＋計數）
       if (vs.length && !s.sleeping && (force === 'act' || t >= LAY.nextAct)) {
@@ -343,6 +346,7 @@ body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l
         el = RB.el = mk('div', '', null, 'l6d-rail'); el.id = 'l6dbtn'; el.className = 'ibtn panel'; el.title = '朋友';
         el.innerHTML = '<i class="m"></i><i class="i"></i><i class="l">朋友</i><i class="rd"></i>';
         el.addEventListener('click', (e) => { e.stopPropagation(); if (busy()) return; UIS('tap'); open('main', 'rail'); }); hst.appendChild(el); }
+      { const rail = document.getElementById('hdRail'); if (rail && el.parentNode !== rail) rail.appendChild(el); }   // 早過 hdRail 起咗 → 搬入去
       el.style.display = show ? '' : 'none'; if (!show) return; el.setAttribute('aria-label', '朋友');
       const ic = el.querySelector('i.i'); if (ic.dataset.v3 !== String(isV3()) || !ic.dataset.art) { setIc(ic, 'friend'); ic.dataset.v3 = String(isV3()); }
       const rd = el.querySelector('i.rd'); if (rd) rd.style.display = 'none';

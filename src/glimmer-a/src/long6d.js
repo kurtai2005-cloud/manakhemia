@@ -31,9 +31,11 @@
   const LINES = {
     bad: '呢個唔係朋友碼', sum: '個碼唔啱（可能抄錯咗）', ver: '個碼版本太新，要更新遊戲', self: '呢個係你自己嘅碼', dup: '呢個碼 24 小時內入過喇',
     friendToday: '{name}今日嚟過喇，聽日再請佢', max: '今日已經請咗 3 個朋友，聽日再嚟', here: '{name}嘅影子仲喺度',
-    arrive: '{name}嘅影子嚟咗！住 24 粒鐘', leave: '{name}嘅影子返屋企喇，留低咗手信「{gift}」', leaveNo: '{name}嘅影子返屋企喇（今日手信滿咗）',
-    eggIn: '收到{name}嘅蛋碼！下一隻細佬蛋會帶「{pat}」花紋', eggLock: '家族 Lv4 先可以出蛋碼', eggWait: '再過 {d} 日可以出新蛋碼',
+    arrive: '{name}嘅影子嚟咗！', leave: '收到手信「{gift}」', leaveNo: '{name}返咗屋企',
+    eggIn: '收到{name}嘅蛋碼！', eggLock: '家族 Lv4 先可以出蛋碼', eggWait: '再過 {d} 日可以出新蛋碼',
   };
+  // toast 用短句（360 寬 toast 一行 ≤10 字）；預覽框用上面長句
+  const SHORT = { bad: '唔係朋友碼', sum: '碼唔啱，可能抄錯', ver: '版本太新，要更新', self: '呢個係你自己嘅碼', dup: '呢個碼啱啱入過', friendToday: '{name}今日嚟過喇', max: '今日請滿 3 個喇', here: '{name}仲喺度' };
   const fill = (t, v) => String(t).replace(/\{(\w+)\}/g, (m, k) => (v && v[k] != null ? v[k] : ''));
   const dayKey = (t) => M6.dayKey(t), dnOf = (t) => M6.dn(M6.dayKey(t));
   const DN0 = M6.dn('2020-01-01');
@@ -203,5 +205,5 @@
       egg: o.egg ? Object.assign({}, o.egg) : null, eggOut: e, n: Object.assign({}, o.n), log: o.log.slice(-6) };
   }
   function reset(s) { delete s.share6; return st(s); }
-  return { CFG, KIND, PATS, PATZ, MEMS, MEM, LINES, SHADOW_LINES, fill, b64, unb64, sumOf, encode, extract, decode, codeHash, nameOf, st, uidOf, dayRoll, memsOf, patOf, mySnap, myCode, shortOf, eggState, eggCode, enter, applyEgg, giftPick, leave, process, act, leftH, summary, reset };
+  return { CFG, KIND, PATS, PATZ, MEMS, MEM, LINES, SHORT, SHADOW_LINES, fill, b64, unb64, sumOf, encode, extract, decode, codeHash, nameOf, st, uidOf, dayRoll, memsOf, patOf, mySnap, myCode, shortOf, eggState, eggCode, enter, applyEgg, giftPick, leave, process, act, leftH, summary, reset };
 });

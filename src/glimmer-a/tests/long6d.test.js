@@ -52,7 +52,7 @@ console.log('③ 手信每日 ≤3');
   for (const u of [11, 12, 13]) D6.enter(s, friend(u), t0); for (const u of [14, 15, 16]) D6.enter(s, friend(u), at(1, 8));
   ok(D6.st(s).visits.length === 6, '跨日 6 個影子（每日 3 個）');
   const ev = D6.process(s, at(2, 12)); const g = ev.filter(e => e.gift).length; ok(ev.length === 6 && g === 3, '同日走 6 個 → 只有 3 件手信', [ev.length, g]);
-  ok(ev.filter(e => !e.gift).every(e => /手信滿咗/.test(e.line)), '冇手信嗰啲講「今日手信滿咗」');
+  ok(ev.filter(e => !e.gift).every(e => e.line === D6.fill(D6.LINES.leaveNo, { name: e.name })) && ev.filter(e => e.gift).every(e => e.line.includes(e.giftZh)), '有手信講手信名；手信滿咗淨係講返咗屋企');
   const s2 = mk(); D6.uidOf(s2, rnd); D6.enter(s2, friend(21), t0); const id = D6.st(s2).visits[0].id; const r = D6.leave(s2, id, t0 + HOUR, true); ok(r && r.early && r.gift, '早啲送佢返屋企 → 照留手信');
   const s3 = mk(); D6.uidOf(s3, rnd); const sv = FAM.st(s3).sv; for (const x of FAM.SOUV) sv[x.id] = 1; D6.enter(s3, friend(31), t0); const r3 = D6.process(s3, at(1, 12))[0]; ok(r3.gift && !r3.isNew, '全部有晒 → 照送（重複，唔加新）'); }
 
