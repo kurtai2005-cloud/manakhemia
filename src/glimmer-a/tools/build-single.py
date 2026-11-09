@@ -6,7 +6,7 @@
    6d QA P1：**預設外置**（＝--ext <輸出 html 所在資料夾>）：art/v3（＋6c／6d）圖唔內嵌，寫去 DIR/art/v3/_x/<sha1>.webp，shim 將原路徑改指嗰個相對 URL
    （APK：Capacitor 由 assets/public 供檔；網頁：同 html 放埋一齊用 http 開）。--ext DIR 指定第二個資料夾。
    --inline：舊式全內嵌單檔（file:// 雙擊即開；檔大好多）。
-   6c：art/breakthrough/6c/**.png 同 art/v3 一樣處理（webp／去重／--ext 外置）。6d：art/breakthrough/6d/**.png 一樣。
+   6c：art/breakthrough/6c/**.png 同 art/v3 一樣處理（webp／去重／--ext 外置）。6d：art/breakthrough/6d/**.png 一樣。#89：art/garden3d/**.png 一樣（3D 花園 H1）。
    預設半透明圖照用 PNG（瀏覽器解碼逐 bit 一樣）；--webp-all 全轉 webp（細啲但半透明差 ≤3/255）。"""
 import base64, hashlib, json, os, re, sys
 from multiprocessing import Pool
@@ -54,7 +54,7 @@ for d in ('art', 'audio'):
             if ext not in MIME: continue
             p = os.path.join(dp, f); rel = os.path.relpath(p, ROOT).replace(os.sep, '/')
             if f in SKIP_FILES or rel in SKIP_REL or SKIP_RX.match(rel): skipped[0] += 1; skipped[1] += os.path.getsize(p); continue
-            if (rel.startswith('art/v3/') or rel.startswith('art/breakthrough/6c/') or rel.startswith('art/breakthrough/6d/')) and ext == '.png': v3png.append((rel, p)); continue
+            if (rel.startswith('art/v3/') or rel.startswith('art/breakthrough/6c/') or rel.startswith('art/breakthrough/6d/') or rel.startswith('art/garden3d/')) and ext == '.png': v3png.append((rel, p)); continue
             if EXT and ext == '.otf':   # V3.1b：APK 外置字體（原路徑；shim 唔攔 → Capacitor 供檔）＋ OFL 授權檔
                 import shutil; fp = os.path.join(EXT, rel); os.makedirs(os.path.dirname(fp), exist_ok=True); shutil.copyfile(p, fp); extfont.append(rel)
                 continue

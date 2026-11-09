@@ -112,6 +112,7 @@
   // HD-2D 場景（src/hd2d.js；?hd2d=0 → 舊程序化背景）：經 lighting addModifier（weather hook）＋ renderer.hd
   if (NS.v3) NS.v3.install(G, NS);   // #83 HD-2D V3：開關＋petGlow（?v3=0 → 6b.3 樣）
   if (NS.hd2d) NS.hd2d.install(G, NS);
+  if (NS.garden3d) NS.garden3d.install(G, NS);   // #89 3D 花園 H1（?3d=0 返 2D；低端機自動 2D）
   if (NS.sys12ui && NS.sys12) NS.sys12ui.install(G, NS);   // systems12 第 1 批（天氣／季節、委託、親密度、小驚喜、日記）
   UI.init(G);
   if (NS.sys12ui2 && NS.sys12b) NS.sys12ui2.install(G, NS);   // systems12 第 2 批（小遊戲、小圃種花、散步收集＋收藏櫃、成就徽章）

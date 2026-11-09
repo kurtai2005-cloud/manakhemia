@@ -631,8 +631,19 @@
       this.curDL = (lt && lt.daylight && P.art.daylight !== false) ? lt.daylight : null;
       const dlv = this.curDL, room = !!(dlv && P.art.daylightBg && this.dlReady);
       this.sunMix += (((view.beh && view.beh.state === 'sunbathe' && view.beh.phase === 'lie') ? 1 : 0) - this.sunMix) * Math.min(1, dt * 2);
-      const hd = (this.hd && this.hd.on() && !room) ? this.hd : null;   // HD-2D 場景（src/hd2d.js）；off／未載入／?hd2d=0 → 舊程序化背景 fallback
-      this.hdOn = !!hd;
+      const g3 = (this.g3d && this.g3d.on() && !room && view.mode !== 'minigame') ? this.g3d : null;   // #89 3D 花園 H1；?3d=0／低畫質／未 ready → 2D
+      const hd = (!g3 && this.hd && this.hd.on() && !room) ? this.hd : null;   // HD-2D 場景（src/hd2d.js）；off／未載入／?hd2d=0 → 舊程序化背景 fallback
+      this.hdOn = !!hd; this.g3On = !!g3;
+      if (g3) {
+        const beh = view.beh, useBeh = !!(beh && s.stage !== 'egg');
+        const hidden = !!(s.stage === 'egg' || (s.fam && s.fam.km) || (useBeh && beh.puppet && beh.puppet.hidden));
+        const moving = !!(useBeh && (beh.clip === 'walk' || (beh.show && beh.show.clip === 'walk')));
+        g3.update(dt, { hour, weather: lt && lt.hd2d ? lt.hd2d.weather : view.weather, pet: {
+          x: useBeh ? beh.x : 0, z: useBeh && beh.depth ? beh.depth * 1.6 : 0,
+          dx: useBeh ? (beh.dir || 0) : 0, dz: 0, moving: moving, hidden: hidden,
+          glow: (this.v3 && this.v3.want) ? this.v3.petGlow() : 1, form: s.form, fk: this.fkOf(s)
+        } });
+      }
       if (hd) hd.update(dt, { hour, weather: lt && lt.hd2d ? lt.hd2d.weather : view.weather });
       this.ensureLayers(look, Math.round(hour * 4) + '');
       // 視差
@@ -696,7 +707,19 @@
         }
       }
       // L2：舞台 + 寵物
-      this.drawL2(L[2].getContext('2d'), view, { anim, frame, face, lift, lanternA, lcol, lights, em, offs, look, unwell, wd, hDim, sm, t, hd: !!hd, q });
+      this.drawL2(L[2].getContext('2d'), view, { anim, frame, face, lift, lanternA, lcol, lights, em, offs, look, unwell, wd, hDim, sm, t, hd: !!hd, g3d: !!g3, q });
+      if (g3) {                                            // #89 3D 花園：WebGL 場景（含寵物 billboard）＋ L2 細佬／朋友／道具疊上面
+        g3.draw(this.ctx, k, { offs, quality: q, dt, t });
+        const ctx = this.ctx; ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(L[2], Math.round((-MX + offs[2][0]) * k), Math.round((-MY + offs[2][1]) * k), LW * k, LH * k);
+        const pd = g3.petDraw(); if (pd) { this.petDraw = pd; this.petRect = { x: pd.x, y: pd.y, w: pd.w, h: pd.h, opaque: false }; }
+        if (this.flash > 0) { ctx.globalAlpha = Math.min(1, this.flash); ctx.fillStyle = '#fff6d0'; ctx.fillRect(0, 0, W * k, H * k); ctx.globalAlpha = 1; }
+        if (this.b3bOverlay) this.b3bOverlay(ctx, k, dt);
+        if (this.s2Overlay) this.s2Overlay(ctx, k, dt);
+        const ms = performance.now() - t0; this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
+        if (g3.noteFrame) g3.noteFrame(ms);
+        return;
+      }
       if (hd) {                                             // HD-2D 合成（sky→far→mid→寵物→fore→×lightmap→lighter→雨→霧→暈影）
         hd.draw(this.ctx, k, { pet: L[2], offs, lights, quality: q, dt, t, dim: 0.34 * sm + 0.2 * hDim + (unwell ? 0.08 : 0) });
         const ctx = this.ctx;
@@ -768,7 +791,7 @@
       const s = view.state, t = c.t, offs = c.offs;
       x.clearRect(0, 0, LW, LH);
       const ox = (px) => px + MX, oy = (py) => py + MY;
-      if (!c.hd) {                                          // HD-2D：舞台／燈柱／蘑菇光／螢火已畫喺場景層（透明底 L2）
+      if (!c.hd && !c.g3d) {                                // HD-2D／3D：舞台／燈柱／蘑菇光已喺場景層，2D 唔再疊
       x.drawImage(this.layers[2], 0, 0);
       // 燈柱燈籠
       const lx = 24, ly = 306 - 58;
@@ -804,8 +827,8 @@
       if (this.s2Layer) this.s2Layer(x, 'back', c, base);    // 4a 細佬／蛋（團絨後面）
       if (this.b3bLayer) this.b3bLayer(x, 'back', c, base);   // 3b 訪客／擺設／道具（y ≤ 寵物腳底）
       const kmOn = !!(this.s2Main && s.fam && s.fam.km && s.stage !== 'egg');   // 5a.1：細佬做主養 → 主位畫細佬（s2ui），團絨唔畫
-      // 影子
-      x.fillStyle = hidePet || kmOn ? 'rgba(0,0,0,0)' : 'rgba(10,20,20,0.35)';
+      // 影子（3D 場景自己有軟 blob，2D 唔畫）
+      x.fillStyle = hidePet || kmOn || c.g3d ? 'rgba(0,0,0,0)' : 'rgba(10,20,20,0.35)';
       const efk = this.fkOf(s), efs = D.FORMS[efk] && D.FORMS[efk].evo ? D.FORMS[efk].frameSize : 0;
       const shw = efs ? Math.round(efs * 0.36) : D.isBig(s.stage) ? 24 : s.stage === 'sprout' ? 13 : 12, shl = 1 - Math.min(1, Math.abs(lift) / 18) * 0.35;
       for (let dy = -3; dy <= 3; dy++) { const w = Math.round(shw * shl * Math.sqrt(1 - dy * dy / 16)); x.fillRect(ox(gx - w), oy(base - 1 + dy), w * 2, 1); }
@@ -1043,9 +1066,10 @@
       { const sx = ph ? ph.sx : 1, sy = ph ? ph.sy : 1, w = draw.sw * Math.abs(sx), h = draw.sh * sy, l = px + (ph ? ph.dx * mir : 0) - (mir > 0 ? draw.px : draw.sw - draw.px) * Math.abs(sx); const ob = this.opaqueBox(src); if (ob) { const ax = Math.abs(sx); const l0 = mir > 0 ? ob.l : draw.sw - ob.r; this.petRect = { x: l + l0 * ax, y: py - draw.py * sy + ob.t * sy, w: (ob.r - ob.l) * ax, h: (ob.b - ob.t) * sy, opaque: true }; } else this.petRect = { x: l, y: py - draw.py * sy, w, h, opaque: false }; }   // P2：觸控用真身框（art 座標，未加視差）
       const pyB = Math.round(base + b.lift);
       if (RXA) this.drawRxFx(x, RXA, 'back', px, pyB, mir, src);
+      if (c.g3d && this.g3d && this.g3d.setPetSprite) this.g3d.setPetSprite(draw, { mir: mir });   // #89：非 radiant 用呢張合成圖做 3D billboard 後備
       x.save(); x.imageSmoothingEnabled = false;
       x.translate(ox(px + (ph ? ph.dx * mir : 0)), oy(py)); x.scale(mir * (ph ? ph.sx : 1), ph ? ph.sy : 1); if (ph && ph.rot) x.rotate(-ph.rot);   // 以腳底 pivot 向後仰
-      x.drawImage(draw.img, draw.sx, draw.sy, draw.sw, draw.sh, -draw.px, -draw.py, draw.sw, draw.sh); if (this.pat5c) this.pat5c(x, draw, fk, s);   // 5c 遺傳花紋（團絨主養；剪影內）
+      if (!c.g3d) { x.drawImage(draw.img, draw.sx, draw.sy, draw.sw, draw.sh, -draw.px, -draw.py, draw.sw, draw.sh); if (this.pat5c) this.pat5c(x, draw, fk, s); }   // 5c 遺傳花紋（團絨主養；剪影內）；3D 由 WebGL 畫寵物
       this.petBlit = { img: draw.img, sx: draw.sx, sy: draw.sy, sw: draw.sw, sh: draw.sh, px: draw.px, py: draw.py, X: ox(px + (ph ? ph.dx * mir : 0)), Y: oy(py), scx: mir * (ph ? ph.sx : 1), scy: ph ? ph.sy : 1, rot: ph && ph.rot ? ph.rot : 0, clip: clip, fi: b.frame, fk, nm: draw.name || (clip + '_0' + ((b.frame | 0) + 1)), fn: this.frameNo };   // 3b 預兆閃剪影
       if (live && anc && anc.bulb && FCP.bulb && FCP.bulb.enabled && live.clip !== 'sick') {     // 燈泡 glow：情緒 tint（0.4s 漸變）× intensity（呼吸／閃）
         const BM = FCP.bulb.moods, mood = this.bulbMood(b), m = BM[mood] || BM.neutral, hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -1103,8 +1127,9 @@
         else for (let j = -4; j <= 4; j++) { const w = Math.round(24 * Math.sqrt(1 - j * j / 25)); x.fillStyle = `rgba(255,224,150,${(0.30 * a * (1 - Math.abs(j) / 7)).toFixed(3)})`; x.fillRect(ox(cx0 - w), oy(GROUND_Y + j + 1), w * 2, 1); }
         c.lights.push({ x: cx0 + c.offs[2][0], y: GROUND_Y - 4, r: 38, col: [255, 214, 140], a: 0.32 * a });
       }
-      // 花盆
+      // 花盆（3D 場景已有 pot_L／R／S mesh，2D 唔再疊）
       const pxx = Math.round(CX + P.beh.potX), pyy = GROUND_Y + 1;
+      if (c.g3d) { /* 3D：花盆已喺 mesh */ } else {
       const usePot = art.usePending && this.atlasReady && this.atlas.atlas_props && this.atlas.atlas_props.json.animations.flowerpot_idle;
       if (usePot) {
         const bumping = beh.state === 'bump' && beh.phase === 'hit' && beh.clipT >= P.beh.bumpImpactFrame / D.CLIPS.pot_bump.fps;
@@ -1122,6 +1147,7 @@
         x.fillStyle = '#ffd36a'; x.fillRect(ox(pxx - 1 + off2), oy(pyy - 21), 3, 3); x.fillStyle = '#fff4b0'; x.fillRect(ox(pxx + off2), oy(pyy - 20), 1, 1);
       }
       c.lights.push({ x: pxx + c.offs[2][0], y: pyy - 20, r: 14, col: [255, 214, 110], a: 0.28 });
+      }
       // 被碰落嘅花瓣／小花／石仔
       for (const p of beh.props) {
         const a = Math.min(1, (p.life - p.age) / 3); if (a <= 0) continue;
