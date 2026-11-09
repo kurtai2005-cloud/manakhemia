@@ -64,6 +64,7 @@ body.l6d-on #toast{z-index:73 !important}
 #l6dlay .bub.on{opacity:1}
 body.s2-scene #l6dlay,body.s2-house #l6dlay,body.l6c-on #l6dlay,body.l6d-hide #l6dlay{display:none}
 #l6dbtn{cursor:pointer}
+body.u62tipon #l6dbtn{opacity:0 !important;pointer-events:none !important}
 #l6dbtn > i.i{position:absolute;left:50%;top:50%;width:36px;height:36px;margin:-18px 0 0 -18px;pointer-events:none;background:center/contain no-repeat}
 @keyframes l6dbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}`;
     document.head.appendChild(css);
