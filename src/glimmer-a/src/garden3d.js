@@ -1,15 +1,22 @@
-/* 《微光小圃》 garden3d.js — #89 3D 花園 H1 試點（八方旅人式 HD-2D；遊美 art/garden3d-h1-mesh @ 620509fc）。原創代碼。
-   純邏輯（Node 可 require，唔使 three.js）：座標、鏡頭 sway／follow、碰撞、4 方向、日夜光、畫質自動。
+/* 《微光小圃》 garden3d.js — #89 3D 花園 H1／H1.2（八方旅人式 HD-2D；遊美 art/garden3d-h1-mesh @ 620509fc）。原創代碼。
+   純邏輯（Node 可 require，唔使 three.js）：座標、鏡頭 sway／follow、可見區構圖、碰撞、4 方向、日夜光、畫質自動。
    瀏覽器 Scene：Three.js 載 17 件 mesh＋地面＋背景板＋寵物 billboard（radiant 用 dir4；其他形態用 2D sprite 後備）。
    Kurt：三級畫質＋自動偵測＋fps／耗電面板（開發者模式）；?3d=0 返 2D；低畫質／低端機＝2D 後備；
-   鏡頭自動擺／跟拍（開發者模式有開關，預設開）。H1.1：寵物 flipY 修正；XZ 走位＋碰撞接入 moveTo；地面網格。 */
+   鏡頭自動擺／跟拍（開發者模式有開關，預設開）。H1.1：寵物 flipY 修正；XZ 走位＋碰撞接入 moveTo；地面網格。
+   H1.2：直版可見區構圖（樹／籬笆／燈柱／屋唔被 UI 遮）＋跟拍保建立鏡頭；日影／夜空對齊參考；網格預設關；3D 行速 20 u/s。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.garden3d = factory(); }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   const W = 195, H = 422, CX = 97, GROUND_Y = 292, ZSCALE = 1.6;
-  const KEY_Q = 'glimmer.g3d.quality', KEY_SWAY = 'glimmer.g3d.sway', KEY_FOLLOW = 'glimmer.g3d.follow';
+  const KEY_Q = 'glimmer.g3d.quality', KEY_SWAY = 'glimmer.g3d.sway', KEY_FOLLOW = 'glimmer.g3d.follow', KEY_GRID = 'glimmer.g3d.grid';
+  /* 可見花園區：layout_hd2d_v2.json bands.garden 42–348，向下讓過頂欄／頭像／開發者掣，向右讓過 rail，向上讓過 action。 */
+  const VIS = { x: 2, y: 64, w: 152, h: 278 };
+  const VIS_HFOV_DEG = 29;           /* 參考 day_cam_steady crop 有效橫向 FOV ≈29°；landmark 方位跨度 ≈25° */
+  const WALK_SPEED_2D = 15, WALK_SPEED_3D = 20;  /* data.js beh.walkSpeed 維持 15；3D 只喺 g3dWalk 放大 */
+  const NIGHT_SRGB = [0.22, 0.26, 0.42];         /* preview_garden3d.py 夜景 unlit 乘色 */
+  const FOG_NIGHT = [0.16, 0.2, 0.36];
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const lerp = (a, b, t) => a + (b - a) * t;
   const hex = (c) => { const n = parseInt(String(c || '#ffffff').replace('#', ''), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
@@ -63,13 +70,30 @@
     if (!(T > 0) || A === 0) return cam.yawDeg || 0;
     return -A * Math.cos(Math.PI * t / T);
   }
+  function followOriginOf(cam) {
+    const w = cam.followWeight || [0.25, 0.3];
+    const o = cam.followOffset || [-20, 0];
+    const home = cam.followHome || [0, 0];
+    /* H1.2 預設：寵物喺家（原點）時 look＝camera.json target，建立鏡頭見齊樹／屋。舊 origin 用 followEstablish:false 還原。 */
+    if (cam.followEstablish === false) return cam.followOrigin || [-110, -40];
+    const wx = w[0] || 0.25, wz = w[1] || 0.3;
+    return [home[0] + (o[0] || 0) / wx, (home[1] || 0) + (o[1] || 0) / wz];
+  }
   function followDesired(cam, pet) {
     const tg = cam.target || [0, 30, -72];
     const w = cam.followWeight || [0.25, 0.3];
     const o = cam.followOffset || [-20, 0];
-    const or = cam.followOrigin || [-110, -40];
+    const or = followOriginOf(cam);
     const px = pet && pet.x != null ? pet.x : 0, pz = pet && pet.z != null ? pet.z : 0;
-    return [tg[0] + o[0] + w[0] * (px - or[0]), tg[1], tg[2] + (o[1] || 0) + w[1] * (pz - or[1])];
+    const des = [tg[0] + o[0] + w[0] * (px - or[0]), tg[1], tg[2] + (o[1] || 0) + w[1] * (pz - or[1])];
+    return followClamp(des, cam);
+  }
+  function followClamp(des, cam) {
+    const tg = cam.target || [0, 30, -72];
+    if (cam.followClamp === false) return des;
+    const mx = cam.followClampX == null ? 18 : cam.followClampX;
+    const mz = cam.followClampZ == null ? 12 : cam.followClampZ;
+    return [clamp(des[0], tg[0] - mx, tg[0] + mx), des[1], clamp(des[2], tg[2] - mz, tg[2] + mz)];
   }
   function followStep(cur, desired, dt, damping) {
     const k = 1 - Math.exp(-(damping == null ? 2 : damping) * Math.max(0, dt));
@@ -85,6 +109,49 @@
     const mn = cam.orbitMinDeg == null ? -10 : cam.orbitMinDeg;
     const mx = cam.orbitMaxDeg == null ? 10 : cam.orbitMaxDeg;
     return clamp((yaw || 0) + (user || 0), mn, mx);
+  }
+  /* ── 直版可見區：讓 VIS 矩形（唔計 HUD／rail／底欄）擁有參考 GIF 嘅橫向 FOV ── */
+  function visibleRect(cam) {
+    const v = (cam && cam.vis) || VIS;
+    return { x: v.x, y: v.y, w: v.w, h: v.h };
+  }
+  function visFov(vis, cam) {
+    vis = vis || visibleRect(cam);
+    const hf = (cam && cam.visHfovDeg != null) ? cam.visHfovDeg : VIS_HFOV_DEG;
+    const vf = 2 * Math.atan(Math.tan(hf * Math.PI / 360) * vis.h / vis.w) * 180 / Math.PI;
+    return { hfovDeg: hf, vfovDeg: vf, vis: vis };
+  }
+  function viewOffset(vis, width, height) {
+    vis = vis || VIS;
+    width = width == null ? W : width; height = height == null ? H : height;
+    return { fullWidth: vis.w, fullHeight: vis.h, x: -vis.x, y: -vis.y, width: width, height: height };
+  }
+  function srgbToLinear(k) {
+    k = clamp(k, 0, 1);
+    return k <= 0.04045 ? k / 12.92 : Math.pow((k + 0.055) / 1.055, 2.4);
+  }
+  function nightBackdropFactor(night) {
+    night = clamp(night, 0, 1);
+    return NIGHT_SRGB.map(function (k) { return srgbToLinear(lerp(1, k, night)); });
+  }
+  function shadowIntensityLin(si) {
+    /* preview 喺 sRGB 用 sh*=(1−SI)；three.js shadow.intensity 喺 linear mix。轉成等效濃度。 */
+    si = si == null ? 0.3 : si;
+    return 1 - srgbToLinear(1 - clamp(si, 0, 1));
+  }
+  function walkStep3d(st) {
+    return (st || 0) * (WALK_SPEED_3D / WALK_SPEED_2D);
+  }
+  function emissiveScale(id) {
+    if (!id) return 1;
+    if (id === 'jar') return 0.7;
+    if (id === 'lamp') return 1.7;
+    if (id.indexOf('lantern') === 0) return 1.65;
+    if (id.indexOf('window') === 0) return 1.3;
+    return 1;
+  }
+  function pointScale(id) {
+    return id === 'jar' ? 1.05 : 2.2;
   }
 
   /* ── 4 方向：|dx|≥|dz| → side（dx<0 鏡像）；dz>0 front；dz<0 back。fps idle 4／walk 10 ── */
@@ -156,6 +223,39 @@
     const rx = range.x || range, rz = range.z || range;
     return x >= rx[0] && x <= rx[1] && z >= rz[0] && z <= rz[1];
   }
+  const NEAR_FREE_R = 12;          /* 小屋中心距可企格 >4 格（32u），用 12 格（96u） */
+  const ARRIVE_DIST = 2;           /* 到達距離下限（同 step 取大） */
+  const STALL_STEPS = 16;          /* 冇進展 N 步＝卡住，停止喺圍欄／花盆前打轉 */
+  function snapDest(objects, tx, tz, radius, rangeX, rangeZ) {
+    radius = radius == null ? 10 : radius;
+    const rx = rangeX || RANGE3.x, rz = rangeZ || RANGE3.z;
+    tx = clamp(tx == null ? 0 : tx, rx[0], rx[1]);
+    tz = clamp(tz == null ? 0 : tz, rz[0], rz[1]);
+    if (!blocked(objects, tx, tz, radius).length) return { x: tx, z: tz, snapped: false };
+    const cell = 8, x0 = rx[0], z0 = rz[0];
+    const nx = Math.round((rx[1] - rx[0]) / cell), nz = Math.round((rz[1] - rz[0]) / cell);
+    const toW = function (ix, iz) { return { x: x0 + ix * cell, z: z0 + iz * cell }; };
+    const toC = function (wx, wz) {
+      return [Math.max(0, Math.min(nx, Math.round((wx - x0) / cell))), Math.max(0, Math.min(nz, Math.round((wz - z0) / cell)))];
+    };
+    const walkable = function (ix, iz) {
+      if (ix < 0 || iz < 0 || ix > nx || iz > nz) return false;
+      const w = toW(ix, iz);
+      return !blocked(objects, w.x, w.z, radius).length;
+    };
+    const c = toC(tx, tz);
+    if (walkable(c[0], c[1])) return { x: tx, z: tz, snapped: false };
+    for (let r = 1; r <= NEAR_FREE_R; r++) {
+      for (let dx = -r; dx <= r; dx++) for (let dz = -r; dz <= r; dz++) {
+        if (Math.max(Math.abs(dx), Math.abs(dz)) !== r) continue;
+        if (walkable(c[0] + dx, c[1] + dz)) {
+          const w = toW(c[0] + dx, c[1] + dz);
+          return { x: w.x, z: w.z, snapped: true };
+        }
+      }
+    }
+    return { x: tx, z: tz, snapped: false };
+  }
   function stepXZ(objects, x, z, tx, tz, step, radius, rangeX, rangeZ) {
     step = Math.max(0, step || 0);
     radius = radius == null ? 10 : radius;
@@ -164,8 +264,12 @@
       if (nx < rx[0] || nx > rx[1] || nz < rz[0] || nz > rz[1]) return false;
       return !blocked(objects, nx, nz, radius).length;
     };
+    if (!free(tx, tz)) {
+      const sn = snapDest(objects, tx, tz, radius, rx, rz);
+      tx = sn.x; tz = sn.z;
+    }
     const dist = Math.hypot(tx - x, tz - z);
-    const eps = Math.max(step, 0.5);
+    const eps = Math.max(step, ARRIVE_DIST);
     if (dist <= eps) {
       if (free(tx, tz)) return { x: tx, z: tz, arrived: true, dx: tx - x, dz: tz - z };
       return { x: x, z: z, arrived: false, dx: 0, dz: 0, stuck: true };
@@ -197,7 +301,7 @@
     };
     const nearFree = function (ix, iz) {
       if (walkable(ix, iz)) return [ix, iz];
-      for (let r = 1; r <= 4; r++) {
+      for (let r = 1; r <= NEAR_FREE_R; r++) {
         for (let dx = -r; dx <= r; dx++) for (let dz = -r; dz <= r; dz++) {
           if (Math.max(Math.abs(dx), Math.abs(dz)) !== r) continue;
           if (walkable(ix + dx, iz + dz)) return [ix + dx, iz + dz];
@@ -205,6 +309,8 @@
       }
       return null;
     };
+    const snapped = snapDest(objects, tx, tz, radius, rx, rz);
+    tx = snapped.x; tz = snapped.z;
     let sc = nearFree.apply(null, toC(x, z)), gc = nearFree.apply(null, toC(tx, tz));
     if (!sc || !gc) return [{ x: tx, z: tz }];
     const sk = sc[0] + ',' + sc[1], gk = gc[0] + ',' + gc[1];
@@ -235,16 +341,25 @@
     if (!blocked(objects, tx, tz, radius).length) path.push({ x: tx, z: tz });
     return path;
   }
-  function followPath(objects, x, z, path, dest, step, radius, rangeX, rangeZ, pi) {
+  function followPath(objects, x, z, path, dest, step, radius, rangeX, rangeZ, pi, stall) {
     pi = pi || 0;
+    stall = stall || 0;
     const goal = dest || (path && path.length ? path[path.length - 1] : null);
-    if (!path || !path.length) return { step: stepXZ(objects, x, z, dest.x, dest.z, step, radius, rangeX, rangeZ), pi: 0 };
+    const g = goal ? snapDest(objects, goal.x, goal.z, radius, rangeX, rangeZ) : null;
+    if (!path || !path.length) {
+      const r0 = stepXZ(objects, x, z, g ? g.x : dest.x, g ? g.z : dest.z, step, radius, rangeX, rangeZ);
+      return { step: r0, pi: 0, stall: stall };
+    }
     while (pi < path.length && Math.hypot(path[pi].x - x, path[pi].z - z) <= Math.max(step, 4)) pi++;
-    const wp = pi >= path.length ? (goal || path[path.length - 1]) : path[pi];
+    const wp = pi >= path.length ? (g || path[path.length - 1]) : path[pi];
     const r = stepXZ(objects, x, z, wp.x, wp.z, step, radius, rangeX, rangeZ);
-    const atGoal = goal && Math.hypot(goal.x - r.x, goal.z - r.z) <= Math.max(step, 0.5) && !blocked(objects, r.x, r.z, radius).length;
+    const eps = Math.max(step, ARRIVE_DIST);
+    const atGoal = g && Math.hypot(g.x - r.x, g.z - r.z) <= eps && !blocked(objects, r.x, r.z, radius).length;
     if (atGoal) r.arrived = true;
-    return { step: r, pi: pi };
+    const moved = Math.hypot(r.dx || 0, r.dz || 0);
+    if (r.stuck || moved < Math.max(0.05, step * 0.1)) stall++; else stall = 0;
+    if (r.stuck || stall >= STALL_STEPS) { r.stuck = true; r.arrived = true; }
+    return { step: r, pi: pi, stall: stall };
   }
   function pickWalk(objects, rng, from, radius, range) {
     range = range || RANGE3;
@@ -304,6 +419,7 @@
     this.quality = opts.quality || 'high';
     this.swayOn = opts.swayOn !== false;
     this.followOn = opts.followOn !== false;
+    this.gridOn = !!opts.gridOn;
     this.ready = false; this.error = null; this.loaded = false;
     this.t = 0; this.userYaw = 0; this.look = null; this.yaw = 0;
     this.pet = { x: 0, z: 0, dx: 0, dz: 0, moving: false, glow: 1, form: 'radiant', facing: { dir: 'front', flip: false, clip: 'idle' } };
@@ -311,8 +427,9 @@
     this.perf = { n: 0, sum: 0, max: 0, last: 0, fps: 0, acc: 0, fn: 0 };
     this.objects = []; this.lightsJ = null; this.camJ = null; this.objJ = null;
     this._drag = null; this._fbSprite = null; this._night = 0;
+    this.lost = false;
   }
-  Scene.prototype.on = function () { return !!(this.enabled && this.ready && this.quality !== 'low'); };
+  Scene.prototype.on = function () { return !!(this.enabled && this.ready && this.quality !== 'low' && !this.lost); };
   Scene.prototype.ownsPet = function () { return this.on(); };
   Scene.prototype.qs = function () { return QSET[this.quality] || QSET.high; };
 
@@ -398,6 +515,16 @@
     renderer.setSize(W * 2, H * 2, false);
     renderer.setClearColor(0xffe8c8, 1);
     this.canvas = canvas; this.renderer = renderer;
+    this.lost = false;
+    const selfLost = this;
+    canvas.addEventListener('webglcontextlost', function (e) {
+      try { e.preventDefault(); } catch (err) { }
+      selfLost.lost = true;
+    });
+    canvas.addEventListener('webglcontextrestored', function () {
+      selfLost.lost = false;
+      try { selfLost._build(window.THREE); selfLost.ready = true; } catch (err) { selfLost.error = String(err && err.message || err); selfLost.ready = false; }
+    });
     const scene = new THREE.Scene();
     this.scene = scene;
     const cam = new THREE.PerspectiveCamera(40, W / H, 10, 4000);
@@ -411,12 +538,13 @@
     // lights
     this.ambL = new THREE.AmbientLight(0xcfe0f0, 0.55); scene.add(this.ambL);
     this.sunL = new THREE.DirectionalLight(0xffe6b8, 1); this.sunL.castShadow = !!Q.shadows;
-    this.sunL.shadow.intensity = (this.lightsJ.sun && this.lightsJ.sun.shadowIntensity) || 0.3;
+    this.sunL.shadow.intensity = shadowIntensityLin((this.lightsJ.sun && this.lightsJ.sun.shadowIntensity) || 0.3);
     this.sunL.shadow.mapSize.set(Q.shadow || 1024, Q.shadow || 1024);
     const sc = this.sunL.shadow.camera; sc.left = -280; sc.right = 280; sc.top = 280; sc.bottom = -160; sc.near = 10; sc.far = 1800;
     this.sunL.shadow.bias = -0.0008;
     scene.add(this.sunL); scene.add(this.sunL.target);
     this.fillL = new THREE.DirectionalLight(0xffe2c4, 0.38); this.fillL.castShadow = false; scene.add(this.fillL);
+    this.hemiL = new THREE.HemisphereLight(0xcfe0f0, 0x3a2818, 0.22); scene.add(this.hemiL);
     this.pointL = [];
     (this.lightsJ.lights || []).forEach(function (l) {
       const pl = new THREE.PointLight(l.color, 0, l.radius || 40, 2);
@@ -475,6 +603,7 @@
     const ogMesh = new THREE.Mesh(ogGeo, ogMat);
     ogMesh.rotation.x = -Math.PI / 2; ogMesh.position.set(0, 0.06, -80); ogMesh.renderOrder = 0;
     scene.add(ogMesh); this.outerGridMesh = ogMesh;
+    this._syncGrid();
 
     // meshes + backdrops
     this.meshObj = {}; this.emissiveMat = []; this.backdropMat = [];
@@ -565,38 +694,43 @@
     const sd = M.sunDir;
     this.sunL.position.set(-sd[0], -sd[1], -sd[2]).multiplyScalar(900);
     this.sunL.target.position.set(0, 40, -20);
-    this.sunL.shadow.intensity = M.shadowIntensity;
+    this.sunL.shadow.intensity = shadowIntensityLin(M.shadowIntensity);
     this.fillL.color.set(M.fillColor);
     this.fillL.intensity = M.fill;
     const fd = M.fillDir;
     this.fillL.position.set(-fd[0], -fd[1], -fd[2]).multiplyScalar(700);
+    if (this.hemiL) this.hemiL.intensity = lerp(0.22, 0.06, night);
     const self = this;
     this.pointL.forEach(function (p) {
       const src = M.points.filter(function (q) { return q.id === p.src.id; })[0];
       let I = src ? src.intensity : 0;
       if (src && src.flicker && t != null) I *= 1 + src.flicker * Math.sin(t * 8 + (p.src.x || 0));
-      p.light.intensity = I * 2.2;
+      p.light.intensity = I * pointScale(p.src && p.src.id);
     });
     this.emissiveMat.forEach(function (e) {
       // glb emissiveFactor＝1，呢度乘返 emissiveLight 強度。小屋側窗改跟 window_side（同 window 一張 emissive 圖就用較大嗰個）。
       let ids = (e.lights || (e.light ? [e.light] : [])).slice();
       if (e.light === 'window' && ids.indexOf('window_side') < 0) ids.push('window_side');
-      let I = 0;
-      ids.forEach(function (id) { if (M.byId[id] != null) I = Math.max(I, M.byId[id]); });
-      e.mat.emissiveIntensity = I;
+      let I = 0, sid = e.light;
+      ids.forEach(function (id) { if (M.byId[id] != null && M.byId[id] >= I) { I = M.byId[id]; sid = id; } });
+      e.mat.emissiveIntensity = I * emissiveScale(sid);
     });
+    function mixHex(dayHex, nightSrgb, t) {
+      const THREE = window.THREE;
+      const c = new THREE.Color(dayHex);
+      const n = new THREE.Color().setRGB(srgbToLinear(nightSrgb[0]), srgbToLinear(nightSrgb[1]), srgbToLinear(nightSrgb[2]));
+      return c.lerp(n, clamp(t, 0, 1));
+    }
     if (this.scene && this.scene.fog && M.fog) {
-      const fc = night > 0.5 ? 0x4a5a90 : M.fog.color;
-      this.scene.fog.color.set(fc);
+      this.scene.fog.color.copy(mixHex(M.fog.color || '#ffe8c8', FOG_NIGHT, night));
     }
     if (this.renderer) {
-      const cc = night > 0.5 ? 0x2a3358 : 0xffe8c8;
-      this.renderer.setClearColor(cc, 1);
+      this.renderer.setClearColor(mixHex(0xffe8c8, NIGHT_SRGB, night), 1);
     }
-    // 背景板未有夜景圖：夜晚將 unlit 板乘暗藍，唔好停喺日頭色
+    // 背景板未有夜景圖：sRGB 正確乘法（preview 用 [.22,.26,.42]），linear 寫入 color
     if (this.backdropMat) {
-      const r = 1 - night * 0.72, g = 1 - night * 0.68, b = 1 - night * 0.45;
-      this.backdropMat.forEach(function (m) { m.color.setRGB(r, g, b); });
+      const f = nightBackdropFactor(night);
+      this.backdropMat.forEach(function (m) { m.color.setRGB(f[0], f[1], f[2]); });
     }
     this._lit = M;
   };
@@ -610,14 +744,33 @@
     const auto = this.swayOn ? swayYaw(this.t, cam) : 0;
     this.yaw = clampYaw(auto, cam, this.userYaw);
     const P = camPos(this.look, this.yaw, cam);
-    this.camera.fov = cam.fovDeg || 40;
+    this.camera.position.set(P[0], P[1], P[2]);
+    this.camera.lookAt(this.look[0], this.look[1], this.look[2]);
+    this._applyView();
+    this.camera.updateMatrixWorld();
+  };
+  Scene.prototype._applyView = function () {
+    if (!this.camera) return;
+    const cam = this.camJ || {};
+    const vis = visibleRect(cam);
+    const vf = visFov(vis, cam);
+    this.camera.fov = vf.vfovDeg;
     this.camera.near = cam.near || 10;
     this.camera.far = cam.far || 4000;
     this.camera.aspect = W / H;
-    this.camera.position.set(P[0], P[1], P[2]);
-    this.camera.lookAt(this.look[0], this.look[1], this.look[2]);
-    this.camera.updateProjectionMatrix();
-    this.camera.updateMatrixWorld();
+    const vo = viewOffset(vis, W, H);
+    this.camera.setViewOffset(vo.fullWidth, vo.fullHeight, vo.x, vo.y, vo.width, vo.height);
+  };
+  Scene.prototype._syncGrid = function () {
+    const on = !!this.gridOn;
+    if (this.gridMesh) this.gridMesh.visible = on;
+    if (this.outerGridMesh) this.outerGridMesh.visible = on;
+  };
+  Scene.prototype.setGrid = function (on) {
+    this.gridOn = !!on;
+    lsSet(KEY_GRID, this.gridOn ? '1' : '0');
+    this._syncGrid();
+    return this.gridOn;
   };
 
   Scene.prototype._dir4Frame = function (name, flip) {
@@ -743,7 +896,7 @@
   Scene.prototype.resize = function (k) {
     k = k || 2; if (!this.renderer) return;
     this.renderer.setSize(W * k, H * k, false);
-    if (this.camera) { this.camera.aspect = W / H; this.camera.updateProjectionMatrix(); }
+    this._applyView();
     this.k = k;
   };
 
@@ -778,19 +931,41 @@
     const box = this.petDraw();
     return ax >= box.x && ax <= box.x + box.w && ay >= box.y && ay <= box.y + box.h;
   };
-  Scene.prototype.occluded = function (x, z) {
+  Scene.prototype.occluded = function (x, z, y) {
     if (!this.camera || !window.THREE) return false;
+    const ys = y != null ? [y] : [8, 16, 24];  /* 花盆 pot_S 高 19：單用 y=20 永遠穿過盆頂 */
+    for (let i = 0; i < ys.length; i++) if (this._occludedAt(x, ys[i], z)) return true;
+    return false;
+  };
+  Scene.prototype._occludedAt = function (x, y, z) {
     const THREE = window.THREE;
     const origin = this.camera.position.clone();
-    const target = new THREE.Vector3(x, 20, z);
-    const dir = target.clone().sub(origin).normalize();
+    const target = new THREE.Vector3(x, y, z);
+    const dir = target.clone().sub(origin);
+    const dist = dir.length();
+    if (dist < 1e-6) return false;
+    dir.multiplyScalar(1 / dist);
     const ray = new THREE.Raycaster(origin, dir);
     const meshes = [];
     this.scene.traverse(function (o) { if (o.isMesh && o.userData && o.userData.id && o.userData.id !== 'pet') meshes.push(o); });
     const hits = ray.intersectObjects(meshes, false);
     if (!hits.length) return false;
-    const petDist = origin.distanceTo(target);
-    return hits[0].distance + 1 < petDist;
+    return hits[0].distance + 1 < dist;
+  };
+  Scene.prototype.artToGround = function (ax, ay) {
+    if (!this.camera || typeof window === 'undefined' || !window.THREE) return artToWorld(ax, ay);
+    const THREE = window.THREE;
+    const origin = this.camera.position.clone();
+    const ndcX = (ax / W) * 2 - 1, ndcY = -(ay / H) * 2 + 1;
+    const aim = new THREE.Vector3(ndcX, ndcY, 0.5).unproject(this.camera);
+    const dir = aim.sub(origin);
+    if (Math.abs(dir.y) < 1e-6) return artToWorld(ax, ay);
+    const t = -origin.y / dir.y;
+    if (t < 0) return artToWorld(ax, ay);
+    return {
+      x: clamp(origin.x + dir.x * t, RANGE3.x[0], RANGE3.x[1]),
+      z: clamp(origin.z + dir.z * t, RANGE3.z[0], RANGE3.z[1])
+    };
   };
   Scene.prototype.setQuality = function (q) {
     if (q !== 'high' && q !== 'mid' && q !== 'low') return this.quality;
@@ -856,7 +1031,8 @@
       enabled: det.want || quality !== 'low',
       quality: quality,
       swayOn: lsGet(KEY_SWAY, '1') !== '0',
-      followOn: lsGet(KEY_FOLLOW, '1') !== '0'
+      followOn: lsGet(KEY_FOLLOW, '1') !== '0',
+      gridOn: lsGet(KEY_GRID, '0') === '1'
     });
     if (qs.get('3d') === '0') { S.enabled = false; S.quality = 'low'; }
     G.g3d = S; if (G.renderer) G.renderer.g3d = S;
@@ -930,12 +1106,22 @@
       project: function (x, y, z) { return S.project(x, y, z); },
       petDraw: function () { return S.petDraw(); },
       petHit: function (x, y) { return S.petHit(x, y); },
-      occluded: function (x, z) { return S.occluded(x == null ? S.pet.x : x, z == null ? S.pet.z : z); },
+      occluded: function (x, z, y) { return S.occluded(x == null ? S.pet.x : x, z == null ? S.pet.z : z, y); },
+      artToGround: function (ax, ay) { return S.artToGround(ax, ay); },
+      lost: function () { return !!S.lost; },
+      hooksOnBeh: function () { return !!(S && window.Glimmer && Glimmer.data && Glimmer.data.PARAMS && Glimmer.data.PARAMS.beh && typeof Glimmer.data.PARAMS.beh.g3dWalk === 'function'); },
       orbit: function (d) { return S.orbit(d); },
       setSway: function (v) { return S.setSway(v); },
       setFollow: function (v) { return S.setFollow(v); },
+      setGrid: function (v) { return S.setGrid(v); },
       swayOn: function () { return S.swayOn; },
       followOn: function () { return S.followOn; },
+      gridOn: function () { return !!S.gridOn; },
+      vis: function () { return visibleRect(S.camJ); },
+      visFov: function () { return visFov(null, S.camJ); },
+      lookTarget: function () { return followDesired(S.camJ || {}, S.pet); },
+      walkStep3d: walkStep3d,
+      shadowIntensityLin: shadowIntensityLin,
       fps: function () { return S.stat.fps; },
       lastMs: function () { return S.stat.lastMs; },
       lastFrameMs: function () { return S.stat.lastFrameMs; },
@@ -949,59 +1135,81 @@
     };
 
     const DEV = {
-      id: 'g3d', title: '3D 花園 H1', order: 13,
-      status: function () { return (S.on() ? ('3D ' + S.quality) : (qs.get('3d') === '0' ? '?3d=0 2D' : '2D 後備')) + '・擺鏡 ' + (S.swayOn ? '開' : '關') + '・跟拍 ' + (S.followOn ? '開' : '關'); },
+      id: 'g3d', title: '3D 花園 H1.2', order: 13,
+      status: function () { return (S.on() ? ('3D ' + S.quality) : (qs.get('3d') === '0' ? '?3d=0 2D' : '2D 後備')) + '・擺鏡 ' + (S.swayOn ? '開' : '關') + '・跟拍 ' + (S.followOn ? '開' : '關') + '・網格 ' + (S.gridOn ? '開' : '關'); },
       items: [
         { k: 'high', label: '畫質：高（3D）', run: function () { S.setQuality('high'); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 高' }; } },
         { k: 'mid', label: '畫質：中（3D）', run: function () { S.setQuality('mid'); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 中' }; } },
         { k: 'low', label: '畫質：低（2D 後備）', run: function () { S.setQuality('low'); return { ok: true, msg: '已轉返 2D 花園' }; } },
         { k: 'sway', label: '鏡頭自動擺（預設開）', run: function () { const v = S.setSway(!S.swayOn); return { ok: true, msg: v ? '自動擺鏡開' : '自動擺鏡關' }; } },
         { k: 'follow', label: '鏡頭跟拍（預設開）', run: function () { const v = S.setFollow(!S.followOn); return { ok: true, msg: v ? '跟拍開' : '跟拍關' }; } },
+        { k: 'grid', label: '地面網格（預設關）', run: function () { const v = S.setGrid(!S.gridOn); return { ok: true, msg: v ? '地面網格開' : '地面網格關' }; } },
         { k: 'perf', label: 'fps／耗電面板', run: function () { const v = !S.showPerf; window.__qa.g3d.showPerf(v); return { ok: true, msg: v ? '面板開' : '面板關' }; } },
         { k: 'off', label: '轉返 2D（?3d=0）', run: function () { const q = new URLSearchParams(location.search); q.set('3d', '0'); setTimeout(function () { location.search = q.toString(); }, 50); return { ok: true, msg: '重新載入 2D…' }; } }
       ]
     };
     if (NS) { if (NS.devmode) NS.devmode.register(DEV); else (NS.devSections = NS.devSections || []).push(DEV); }
 
-    // H1.1：3D 開時行為用 XZ 走位＋碰撞；?3d=0／2D 後備 hook 回 null，moveTo 維持舊 1D（e2e 不變）
+    // H1.1／H1.2：3D 開時行為用 XZ 走位＋碰撞。hook 要掛喺 PARAMS.beh（behavior.js 讀 D.PARAMS.beh），唔好掛親 PARAMS。
+    bindBehHooks(P.beh, S);
+    return S;
+  }
+
+  function bindBehHooks(beh, S) {
+    if (!beh) return null;
     const radOf = function () { return (S.objJ && S.objJ.pet && S.objJ.pet.radius) || 10; };
-    P.g3dOn = function () { return S.on(); };
-    P.g3dWalk = function (b, tx, st) {
+    beh.g3dOn = function () { return S.on(); };
+    beh.g3dWalk = function (b, tx, st) {
       if (!S.on() || !S.objects || !S.objects.length) return null;
       if (b.z == null) b.z = 0;
-      const tz = b.tz != null ? b.tz : b.z;
-      if (!b._g3dPath || b._g3dTx !== tx || b._g3dTz !== tz) {
-        b._g3dPath = buildPath(S.objects, b.x, b.z, tx, tz, radOf(), RANGE3.x, RANGE3.z);
-        b._g3dTx = tx; b._g3dTz = tz; b._g3dPi = 0;
+      const rawZ = b.tz != null ? b.tz : b.z;
+      const dest = snapDest(S.objects, tx, rawZ, radOf(), RANGE3.x, RANGE3.z);
+      if (!b._g3dPath || b._g3dTx !== dest.x || b._g3dTz !== dest.z) {
+        b._g3dPath = buildPath(S.objects, b.x, b.z, dest.x, dest.z, radOf(), RANGE3.x, RANGE3.z);
+        b._g3dTx = dest.x; b._g3dTz = dest.z; b._g3dPi = 0; b._g3dStall = 0; b._g3dBest = null;
       }
-      const fol = followPath(S.objects, b.x, b.z, b._g3dPath, { x: tx, z: tz }, st, radOf(), RANGE3.x, RANGE3.z, b._g3dPi || 0);
+      const fol = followPath(S.objects, b.x, b.z, b._g3dPath, { x: dest.x, z: dest.z }, walkStep3d(st), radOf(), RANGE3.x, RANGE3.z, b._g3dPi || 0, b._g3dStall || 0);
       b._g3dPi = fol.pi;
-      return fol.step;
+      const r = fol.step;
+      const dist = Math.hypot(dest.x - r.x, dest.z - r.z);
+      if (b._g3dBest == null || dist < b._g3dBest - 0.05) { b._g3dBest = dist; b._g3dStall = 0; }
+      else b._g3dStall = (fol.stall != null ? fol.stall : (b._g3dStall || 0) + 1);
+      if (r.stuck || b._g3dStall >= STALL_STEPS) { r.stuck = true; r.arrived = true; }
+      return r;
     };
-    P.g3dPickWalk = function (b) {
+    beh.g3dPickWalk = function (b) {
       if (!S.on() || !S.objects || !S.objects.length) return null;
       return pickWalk(S.objects, b && b.rng, { x: b && b.x || 0, z: (b && b.z) || 0 }, radOf(), RANGE3);
     };
-    P.g3dSpot = function (kind) {
+    beh.g3dSpot = function (kind) {
       if (!S.on()) return null;
       if (kind === 'sun') return { x: 20, z: 36 };
       if (kind === 'bump') return { x: 49, z: 5 };
       return null;
     };
-    P.g3dClampX = function (x) {
-      if (!S.on()) return clamp(x, P.rangeX[0], P.rangeX[1]);
+    beh.g3dClampX = function (x) {
+      if (!S.on()) {
+        const rx = beh.rangeX || RANGE3.x;
+        return clamp(x, rx[0], rx[1]);
+      }
       return clamp(x, RANGE3.x[0], RANGE3.x[1]);
     };
-    return S;
+    return beh;
   }
 
   return {
     W: W, H: H, CX: CX, GROUND_Y: GROUND_Y, ZSCALE: ZSCALE, QSET: QSET,
+    VIS: VIS, VIS_HFOV_DEG: VIS_HFOV_DEG, WALK_SPEED_2D: WALK_SPEED_2D, WALK_SPEED_3D: WALK_SPEED_3D,
+    NIGHT_SRGB: NIGHT_SRGB, FOG_NIGHT: FOG_NIGHT,
     artToWorld: artToWorld, worldToArtFlat: worldToArtFlat, petWorld: petWorld,
     nightMix: nightMix, mixLights: mixLights,
-    swayYaw: swayYaw, followDesired: followDesired, followStep: followStep, camPos: camPos, clampYaw: clampYaw,
+    swayYaw: swayYaw, followDesired: followDesired, followOriginOf: followOriginOf, followClamp: followClamp, followStep: followStep, camPos: camPos, clampYaw: clampYaw,
+    visibleRect: visibleRect, visFov: visFov, viewOffset: viewOffset,
+    srgbToLinear: srgbToLinear, nightBackdropFactor: nightBackdropFactor, shadowIntensityLin: shadowIntensityLin,
+    walkStep3d: walkStep3d, emissiveScale: emissiveScale, pointScale: pointScale,
     dirOf: dirOf, frameName: frameName,
     fpDist: fpDist, blocked: blocked, stepXZ: stepXZ, buildPath: buildPath, followPath: followPath, pickWalk: pickWalk, RANGE3: RANGE3,
+    snapDest: snapDest, NEAR_FREE_R: NEAR_FREE_R, ARRIVE_DIST: ARRIVE_DIST, STALL_STEPS: STALL_STEPS, bindBehHooks: bindBehHooks,
     detectQuality: detectQuality, hasWebGL: hasWebGL,
     Scene: Scene, install: install
   };

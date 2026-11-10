@@ -228,7 +228,7 @@
   }
 
   // ── 觸摸 ──
-  function tap(b, kind, x, y, opt) { b.taps.push({ kind, x: x || 0, y: y == null ? null : y, hold: !!(opt && opt.hold) }); if (b.taps.length > 12) b.taps.shift(); }
+  function tap(b, kind, x, y, opt) { b.taps.push({ kind, x: x || 0, y: y == null ? null : y, z: opt && opt.z != null ? opt.z : null, hold: !!(opt && opt.hold) }); if (b.taps.length > 12) b.taps.shift(); }
   // P2：拖動手指 → 眼神跟手指（每次 move 續期 dragHold 秒；放手後好快回復）
   function drag(b, x, y) { const L = b.look; L.dragX = x; L.dragY = y; L.dragUntil = b.t + (LK.dragHoldSec || 0.4); L.snap = true; b.log.enters.drag = (b.log.enters.drag || 0) + 1; }
   function dragEnd(b) { b.look.dragUntil = -1; }
@@ -298,7 +298,7 @@
         const p = clamp(T.followBase + P.persMul.stickyFollow * b.pers.sticky - P.persMul.timidFollowPenalty * b.pers.timid, 0, 1);
         b.dir = tp.x >= b.x ? 1 : -1;
         if (b.state === 'nap') { goWake(b, null); continue; }
-        if (b.rng() < p) { b.tx = tp.x; b.speed = P.followSpeed; enter(b, 'follow'); if (b.variant) endVariant(b); }
+        if (b.rng() < p) { b.tx = tp.x; if (tp.z != null) b.tz = tp.z; b.speed = P.followSpeed; enter(b, 'follow'); if (b.variant) endVariant(b); }
         else if (b.state === 'stay' && !b.variant && b.base === 'idle') { b.variant = 'blink'; b.variantT = 0; b.clipT = 0; b.clip = 'blink'; b.log.variants.push({ name: 'blink', start: b.t, end: null }); }
       }
     }

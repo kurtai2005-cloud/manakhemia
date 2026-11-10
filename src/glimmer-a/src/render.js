@@ -623,7 +623,7 @@
     // ───────── 主繪製 ─────────
     frame(dt, view) {
       const t0 = performance.now();
-      dt = Math.max(0, Math.min(dt, 0.1)); this.t += dt;   // 6d.2：dt 下限 0（測試鐘倒退唔好令 sunMix／視差倒走） this.frameNo++;
+      dt = Math.max(0, Math.min(dt, 0.1)); this.t += dt; this.frameNo++;   // 6d.2：dt 下限 0（測試鐘倒退唔好令 sunMix／視差倒走）
       const t = this.t, s = view.state, q = view.quality || 'high', k = this.k;
       const hour = view.hour;
       const look = lookAt(hour);
