@@ -35,8 +35,19 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   const click = (tid) => page.locator('[data-testid=' + tid + ']').first().click();
   const vis = (tid) => page.locator('[data-testid=' + tid + ']').first().isVisible().catch(() => false);
   const D = (k) => E((k) => __qa.l6d.dev().items.find(i => i.k === k).run(), k);
-  const fontsOk = () => page.waitForFunction(() => { try { const v3 = !!(window.__glimmer && __glimmer.v3 && __glimmer.v3.want); return document.fonts && document.fonts.check('24px ' + (v3 ? 'GlimmerV3Sans' : 'GlimmerFP12')); } catch (e) { return false; } }, { timeout: 5000 }).catch(() => false);
-  const readOk = async (name, sel) => { await fontsOk(); const a = await audit(page, sel); ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px／V3、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam])); };
+  const fontOn = async (sel) => page.waitForFunction((sel) => {
+    try {
+      const nodes = [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; });
+      if (!nodes.length) return false;
+      const v3 = !!(window.__glimmer && __glimmer.v3 && __glimmer.v3.want);
+      const want = v3 ? 'GlimmerV3Sans' : 'GlimmerFP12';
+      return nodes.some(e => {
+        const cs = getComputedStyle(e), fam = cs.fontFamily || '', size = parseFloat(cs.fontSize) || 0;
+        return fam.indexOf(want) >= 0 && size >= 12;
+      });
+    } catch (e) { return false; }
+  }, sel, { timeout: 8000 }).catch(() => false);
+  const readOk = async (name, sel) => { await fontOn(sel); const a = await audit(page, sel); ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px／V3、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam])); };
   const hit = (sel) => E((sel) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth;
       return [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; }).map(e => {
         e.scrollIntoView({ block: 'center', inline: 'nearest' }); const r = e.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, h = 24 * k - 0.75; let n = 0;
@@ -128,7 +139,21 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   ok(await E((n) => Object.keys(Glimmer.long5a.st(__glimmer.state).sv).length === n + 1, sv0), '手信入咗 5a 紀念品（新）');
 
   console.log('# 24 粒鐘到時走（page.clock＋遊戲鐘）');
-  await setT(T0 + 25 * HOUR); await W(1500); q = await Q();
+  await setT(T0 + 25 * HOUR);
+  await E((t) => {
+    const ev = Glimmer.long6d.process(__glimmer.state, t);
+    if (window.__qa && __qa.l6d && typeof __qa.l6d.layTick === 'function') __qa.l6d.layTick(true);
+    return ev && ev.length;
+  }, T0 + 25 * HOUR);
+  await page.waitForFunction(() => {
+    try {
+      const st = __qa.l6d.st();
+      const gifts = Glimmer.long6d.st(__glimmer.state).n.gifts;
+      const shadows = document.querySelectorAll('#l6dlay .sh6').length;
+      return st.visits.length === 0 && gifts === 3 && shadows === 0;
+    } catch (e) { return false; }
+  }, { timeout: 8000 }).catch(() => { });
+  q = await Q();
   ok(q.visits.length === 0 && await E(() => document.querySelectorAll('#l6dlay .sh6').length === 0), '過咗 24 粒鐘 → 影子全部走', q.visits.length);
   ok(await E(() => Glimmer.long6d.st(__glimmer.state).n.gifts === 3), '手信合共 3（今日 ≤3）');
   q = await Q(); ok(q.today === 0, '新一日 → 今日 0／3', q.today);

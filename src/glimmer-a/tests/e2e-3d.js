@@ -1,4 +1,4 @@
-/* 《微光小圃》 e2e-3d — #89 3D 花園 H1 試點：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0。
+/* 《微光小圃》 e2e-3d — #89 3D 花園 H1／H1.2：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0、可見區、網格、behavior.step 行速。
    截圖 → SHOTS；3d-h1-*.png 同 3d-h11-*.png（H11SHOTS／APK 目錄）。fps 用 CDP 4× CPU。node tests/e2e-3d.js */
 const path = require('path');
 const fs = require('fs');
@@ -178,7 +178,8 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
     fpsReport = { throttle: '4x', first: mid, second: mid2 };
     ok(mid2.on, '4× CPU 之下 3D 仍然開（未自動跌去 2D，窗口 2×120 幀）', mid2);
     console.log('  fps 4× CPU: ' + JSON.stringify(fpsReport));
-    fs.writeFileSync('/home/box/keep/3d-h1/fps-4x.json', JSON.stringify(fpsReport, null, 2));
+    const fpsPath = process.env.FPS4X || path.join('/tmp', 'g3d-fps-4x.json');
+    fs.writeFileSync(fpsPath, JSON.stringify(fpsReport, null, 2));
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 }).catch(() => { });
     await ctx.close(); }
 
@@ -259,6 +260,69 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
     });
     ok(pathOk.arr && !pathOk.hit, '執行期 A* 可由原點行到樹後', pathOk);
     await E(() => __qa.g3d.forcePet(null));
+    await ctx.close(); }
+
+  // ───────── J. H1.2 構圖／網格／行速／hook／花盆遮擋 ─────────
+  console.log('J. H1.2 可見區、網格預設關、behavior.step 行 3D、花盆遮擋');
+  { const { ctx, page, E, W } = await boot([390, 844]); await adultR(E); await waitG3(E, W); await W(400);
+    await E(() => { __glimmer.hourOverride = 13; __qa.g3d.setSway(false); __qa.g3d.setFollow(true); if (__glimmer.beh) { __glimmer.beh.x = 0; __glimmer.beh.z = 0; } });
+    const hooks = await E(() => ({
+      onBeh: !!(Glimmer.data.PARAMS.beh && typeof Glimmer.data.PARAMS.beh.g3dWalk === 'function'),
+      onParent: typeof Glimmer.data.PARAMS.g3dWalk === 'function',
+      grid: __qa.g3d.gridOn(),
+      look: __qa.g3d.look && __qa.g3d.look(),
+      vis: __qa.g3d.vis && __qa.g3d.vis()
+    }));
+    ok(hooks.onBeh && !hooks.onParent, 'g3dWalk 等 hook 掛喺 PARAMS.beh', hooks);
+    ok(hooks.grid === false, '地面網格預設關', hooks);
+    ok(hooks.look && Math.abs(hooks.look[0]) < 2 && Math.abs(hooks.look[2] + 72) < 2, '跟拍建立鏡頭 look≈[0,30,-72]', hooks.look);
+    const visLand = await E(() => {
+      const ids = ['tree', 'fence', 'lamp', 'cottage'];
+      const vis = __qa.g3d.vis();
+      const g = __glimmer.g3d;
+      const out = {};
+      ids.forEach(id => {
+        const m = g.meshObj && g.meshObj[id];
+        if (!m) { out[id] = { missing: true }; return; }
+        const p = g.project(m.position.x, (m.position.y || 0) + 8, m.position.z);
+        out[id] = { x: p.x, y: p.y, in: p.x >= vis.x - 8 && p.x <= vis.x + vis.w + 8 && p.y >= vis.y - 12 && p.y <= vis.y + vis.h + 24 };
+      });
+      return out;
+    });
+    ok(visLand.tree && visLand.tree.in && visLand.fence && visLand.fence.in && visLand.lamp && visLand.lamp.in && visLand.cottage && visLand.cottage.in, '樹／籬笆／燈柱／屋都喺可見區', visLand);
+    const gridToggle = await E(() => { const a = __qa.g3d.gridOn(); const b = __qa.g3d.setGrid(true); const c = __qa.g3d.gridOn(); __qa.g3d.setGrid(false); return { a: a, b: b, c: c, off: __qa.g3d.gridOn() }; });
+    ok(gridToggle.a === false && gridToggle.c === true && gridToggle.off === false, '開發者模式可開關地面網格', gridToggle);
+
+    const walked = await E(() => {
+      const BEH = Glimmer.behavior, b = __glimmer.beh;
+      b.x = 0; b.z = 0; b.tx = 20; b.tz = 36; b.speed = Glimmer.data.PARAMS.beh.walkSpeed; b.state = 'walk'; b.phase = '';
+      const ctx = { s: __glimmer.state, pw: {}, sun: 1, override: null, event: null };
+      const t0 = b.t;
+      for (let i = 0; i < 90; i++) BEH.step(b, ctx);
+      return { x: b.x, z: b.z, dt: b.t - t0, state: b.state };
+    });
+    ok(walked.z > 4, 'e2e 經 behavior.step 行 3D（z 改變）', walked);
+
+    const pot = await E(() => {
+      __qa.g3d.forcePet({ x: 49, z: 8, moving: false });
+      const behind = __qa.g3d.occluded(49, 8);
+      const front = (function () { __qa.g3d.forcePet({ x: 49, z: 50, moving: false }); return __qa.g3d.occluded(49, 50); }());
+      __qa.g3d.forcePet(null);
+      return { behind: behind, front: front };
+    });
+    await W(200);
+    ok(pot.behind && !pot.front, '花盆後遮擋（y 取 8／16／24，唔再永遠 false）', pot);
+
+    const lostFn = await E(() => typeof __qa.g3d.lost === 'function' && __qa.g3d.lost() === false);
+    ok(lostFn, 'webglcontextlost 之後 on() 會關（hook 存在、初始未 lost）');
+
+    const frameNo = await E(() => {
+      const R = __glimmer.renderer; const a = R.frameNo;
+      if (R.frame) R.frame(0.016, { state: __glimmer.state, beh: __glimmer.beh, hour: 13, quality: 'high', mode: 'garden', light: null });
+      return { a: a, b: R.frameNo, blit: !!(R.petBlit && R.petBlit.fn === R.frameNo) };
+    });
+    ok(frameNo.b === frameNo.a + 1, 'render.frame 會 this.frameNo++（唔再吞入註解）', frameNo);
+
     await ctx.close(); }
 
   const fatal = errs.filter(e => !/open-meteo|ResizeObserver|favicon/.test(e));

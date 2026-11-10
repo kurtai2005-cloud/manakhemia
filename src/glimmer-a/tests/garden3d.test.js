@@ -1,5 +1,7 @@
-/* garden3d.test — #89 3D 花園 H1 純邏輯（座標、鏡頭、碰撞、方向、日夜、畫質）。node tests/garden3d.test.js */
+/* garden3d.test — #89 3D 花園 H1／H1.2 純邏輯（座標、鏡頭、可見區、碰撞、方向、日夜、畫質、行速）。node tests/garden3d.test.js */
 const G3 = require('../src/garden3d.js');
+const D = require('../src/data.js');
+const BEH = require('../src/behavior.js');
 let pass = 0, fail = 0;
 const ok = (c, m, x) => { if (c) { pass++; console.log('  ✓ ' + m); } else { fail++; console.log('  ✗ ' + m + (x !== undefined ? '  → ' + JSON.stringify(x) : '')); } };
 const near = (a, b, e) => Math.abs(a - b) <= (e == null ? 1e-6 : e);
@@ -34,8 +36,9 @@ console.log('③ 鏡頭 sway／follow');
   const cam = { target: [0, 30, -72], pitchDeg: 30, dist: 580, fovDeg: 40, orbitMinDeg: -10, orbitMaxDeg: 10,
     swayAmplitudeDeg: 5, swayHalfPeriodSec: 6, followDamping: 2, followWeight: [0.25, 0.3], followOffset: [-20, 0], followOrigin: [-110, -40] };
   ok(near(G3.swayYaw(0, cam), -5) && near(G3.swayYaw(3, cam), 0) && near(G3.swayYaw(6, cam), 5) && near(G3.swayYaw(12, cam), -5), 'yaw＝−A·cos(πt/T) 0→−5、3s→0、6s→+5、12s→−5', [G3.swayYaw(0, cam), G3.swayYaw(3, cam), G3.swayYaw(6, cam), G3.swayYaw(12, cam)]);
-  const des0 = G3.followDesired(cam, { x: 0, z: 0 });
-  ok(near(des0[0], 7.5) && des0[1] === 30 && near(des0[2], -60), '原點 desired＝target＋offset＋weight·(0−origin)', des0);
+  const camOld = Object.assign({}, cam, { followEstablish: false });
+  const des0 = G3.followDesired(camOld, { x: 0, z: 0 });
+  ok(near(des0[0], 7.5) && des0[1] === 30 && near(des0[2], -60), 'followEstablish:false 原點 desired＝target＋offset＋weight·(0−origin)', des0);
   const step = G3.followStep([0, 30, -72], [10, 30, -60], 0.5, 2);
   const k = 1 - Math.exp(-2 * 0.5);
   ok(near(step[0], 0 + 10 * k) && near(step[2], -72 + 12 * k), '跟拍 cam+=(desired−cam)·(1−exp(−2dt))', step);
@@ -119,6 +122,95 @@ console.log('⑥ 畫質自動');
   ok(hi.want === true && hi.quality === 'high', '中高階自動 3D high', hi);
   ok(G3.detectQuality({ qs: { '3d': 'mid' }, webgl: true, hardwareConcurrency: 2 }).quality === 'mid', '?3d=mid 覆蓋低端');
   ok(G3.QSET.high.tex3x && !G3.QSET.mid.tex3x && G3.QSET.high.shadow > G3.QSET.mid.shadow, 'high＝@3x＋大影圖、mid＝1x＋細影');
+}
+
+console.log('⑦ H1.2 可見區構圖／跟拍建立鏡頭');
+{
+  const cam = { target: [0, 30, -72], pitchDeg: 30, dist: 580, fovDeg: 40, orbitMinDeg: -10, orbitMaxDeg: 10,
+    swayAmplitudeDeg: 5, swayHalfPeriodSec: 6, followDamping: 2, followWeight: [0.25, 0.3], followOffset: [-20, 0], followOrigin: [-110, -40] };
+  const or = G3.followOriginOf(cam);
+  ok(near(or[0], -80) && near(or[1], 0), '預設 origin＝home＋offset/weight → (−80, 0)', or);
+  const des = G3.followDesired(cam, { x: 0, z: 0 });
+  ok(near(des[0], 0) && des[1] === 30 && near(des[2], -72), '寵物喺家時 look＝建立鏡頭 target', des);
+  const far = G3.followDesired(cam, { x: 200, z: -200 });
+  ok(near(far[0], 18) && near(far[2], -84), '跟拍鉗制 ±18x／±12z', far);
+  const noc = G3.followDesired(Object.assign({}, cam, { followClamp: false }), { x: 200, z: -200 });
+  ok(noc[0] > 18 && noc[2] < -84, 'followClamp:false 唔鉗', noc);
+  ok(G3.VIS.x === 2 && G3.VIS.y === 64 && G3.VIS.w === 152 && G3.VIS.h === 278, 'VIS 讓過頂欄／頭像／rail／底欄', G3.VIS);
+  const vf = G3.visFov();
+  ok(near(vf.hfovDeg, 29) && vf.vfovDeg > 49 && vf.vfovDeg < 52, '可見區 hFOV 29° → vFOV ~50.6°', vf);
+  const vo = G3.viewOffset();
+  ok(vo.fullWidth === 152 && vo.fullHeight === 278 && vo.x === -2 && vo.y === -64 && vo.width === 195 && vo.height === 422, 'setViewOffset 參數：optical center 喺 VIS 中心', vo);
+}
+
+console.log('⑧ H1.2 光影／行速／網格常數');
+{
+  ok(near(G3.srgbToLinear(1), 1) && G3.srgbToLinear(0) === 0 && G3.srgbToLinear(0.5) > 0.2 && G3.srgbToLinear(0.5) < 0.25, 'sRGB→linear 轉折');
+  const si = G3.shadowIntensityLin(0.3);
+  ok(si > 0.54 && si < 0.56, 'shadowIntensity 0.3 → linear ~0.552', si);
+  const n1 = G3.nightBackdropFactor(1);
+  ok(near(n1[0], G3.srgbToLinear(0.22)) && near(n1[1], G3.srgbToLinear(0.26)) && near(n1[2], G3.srgbToLinear(0.42)), '夜空 sRGB 乘 [.22,.26,.42] 再轉 linear', n1);
+  const n0 = G3.nightBackdropFactor(0);
+  ok(near(n0[0], 1) && near(n0[1], 1) && near(n0[2], 1), '日間背景乘數＝1', n0);
+  ok(G3.WALK_SPEED_2D === 15 && G3.WALK_SPEED_3D === 20 && near(G3.walkStep3d(15), 20) && near(G3.walkStep3d(1), 20/15), '3D 行速 20；g3dWalk 將 2D 步長 ×20/15');
+  ok(G3.pointScale('jar') < G3.pointScale('lamp') && G3.emissiveScale('jar') < 1 && G3.emissiveScale('lamp') > 1 && G3.emissiveScale('lantern_1') > 1.5, '夜燈：燈籠／燈柱加強、螢火瓶減弱');
+}
+
+console.log('⑨ H1.2／QA：擋住目標吸位、hook 掛 beh、behavior.step 行 3D');
+{
+  const oj = require('../art/garden3d/H1/objects.json');
+  const objs = oj.objects, RX = G3.RANGE3.x, RZ = G3.RANGE3.z;
+  const snH = G3.snapDest(objs, 82.5, -72, 10, RX, RZ);
+  ok(snH.snapped && !G3.blocked(objs, snH.x, snH.z, 10).length, '小屋中心吸到可企位', snH);
+  ok(Math.hypot(snH.x - 82.5, snH.z + 72) <= G3.NEAR_FREE_R * 8 + 1, '吸位喺 12 格內', snH);
+  const pathH = G3.buildPath(objs, 0, 0, 82.5, -72, 10, RX, RZ);
+  const endH = pathH[pathH.length - 1];
+  ok(pathH.length >= 2 && !G3.blocked(objs, endH.x, endH.z, 10).length, '小屋路徑唔退化、終點可企', { n: pathH.length, end: endH });
+  let x = 0, z = 0, pi = 0, arr = false, hit = false, stall = 0;
+  for (let i = 0; i < 2500; i++) {
+    const fol = G3.followPath(objs, x, z, pathH, { x: 82.5, z: -72 }, 2, 10, RX, RZ, pi, stall);
+    pi = fol.pi; stall = fol.stall || 0; x = fol.step.x; z = fol.step.z;
+    if (G3.blocked(objs, x, z, 10).length) { hit = true; break; }
+    if (fol.step.arrived) { arr = true; break; }
+  }
+  ok(arr && !hit, '行到小屋附近可企位（唔喺圍欄前打轉）', { arr: arr, hit: hit, x: x, z: z, d: Math.hypot(x - snH.x, z - snH.z) });
+
+  const snP = G3.snapDest(objs, 49, 22, 10, RX, RZ);
+  ok(snP.snapped && !G3.blocked(objs, snP.x, snP.z, 10).length, '花盆中心吸到可企位', snP);
+
+  const behP = D.PARAMS.beh;
+  const prev = { g3dOn: behP.g3dOn, g3dWalk: behP.g3dWalk, g3dPickWalk: behP.g3dPickWalk, g3dSpot: behP.g3dSpot, g3dClampX: behP.g3dClampX };
+  const parent = D.PARAMS;
+  const prevP = { g3dOn: parent.g3dOn, g3dWalk: parent.g3dWalk, g3dPickWalk: parent.g3dPickWalk, g3dSpot: parent.g3dSpot, g3dClampX: parent.g3dClampX };
+  const S = { on: function () { return true; }, objects: objs, objJ: oj };
+  G3.bindBehHooks(behP, S);
+  ok(typeof behP.g3dWalk === 'function' && typeof parent.g3dWalk !== 'function', '五個 hook 掛喺 PARAMS.beh，唔喺 PARAMS');
+  const b = BEH.create(11);
+  const s = require('../src/sim.js').newState(1e12, 5);
+  s.stage = 'adult'; s.form = 'radiant'; s.sleeping = false;
+  Object.assign(s.needs, { mood: 90, energy: 90, hunger: 90, clean: 90 });
+  const ctx = { s: s, pw: {}, sun: 1, override: null, event: null };
+  b.x = 0; b.z = 0; b.tx = 20; b.tz = 36; b.speed = behP.walkSpeed; b.state = 'walk'; b.phase = '';
+  const z0 = b.z;
+  for (let i = 0; i < 90; i++) BEH.step(b, ctx);
+  ok(b.z > z0 + 4 && Math.abs(b.x - 20) < 18, 'behavior.step 經 g3dWalk 用 XZ 走位（z 會變）', { x: b.x, z: b.z, state: b.state });
+  const spd = Math.hypot(b.x, b.z - z0) / (90 * BEH.FIX);
+  ok(spd > 16 && spd < 24, '3D 行速約 20 u/s（經 behavior.step）', spd);
+
+  const b2 = BEH.create(3, { personality: { sticky: 1, sleepy: 0, timid: 0 } });
+  b2.x = 0; b2.z = 0; b2.rng = function () { return 0; };
+  BEH.tap(b2, 'ground', 20, 0, { z: 36 });
+  BEH.step(b2, ctx);
+  ok(b2.tx === 20 && b2.tz === 36 && b2.state === 'follow', '點地寫 tz（唔淨係 tx）', { tx: b2.tx, tz: b2.tz, state: b2.state });
+
+  S.on = function () { return false; };
+  const clamped = behP.g3dClampX(999);
+  ok(Number.isFinite(clamped) && clamped === behP.rangeX[1], 'g3dClampX 2D 分支用 beh.rangeX（唔係 NaN）', clamped);
+
+  ['g3dOn', 'g3dWalk', 'g3dPickWalk', 'g3dSpot', 'g3dClampX'].forEach(function (k) {
+    if (prev[k] === undefined) delete behP[k]; else behP[k] = prev[k];
+    if (prevP[k] === undefined) delete parent[k]; else parent[k] = prevP[k];
+  });
 }
 
 console.log('—' + (fail ? ' 失敗 ' + fail : ' 通過') + '／' + (pass + fail) + '—');
