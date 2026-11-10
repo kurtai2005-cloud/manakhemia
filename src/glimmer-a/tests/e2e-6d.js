@@ -35,19 +35,29 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   const click = (tid) => page.locator('[data-testid=' + tid + ']').first().click();
   const vis = (tid) => page.locator('[data-testid=' + tid + ']').first().isVisible().catch(() => false);
   const D = (k) => E((k) => __qa.l6d.dev().items.find(i => i.k === k).run(), k);
-  const fontOn = async (sel) => page.waitForFunction((sel) => {
-    try {
-      const nodes = [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; });
-      if (!nodes.length) return false;
-      const v3 = !!(window.__glimmer && __glimmer.v3 && __glimmer.v3.want);
-      const want = v3 ? 'GlimmerV3Sans' : 'GlimmerFP12';
-      return nodes.some(e => {
-        const cs = getComputedStyle(e), fam = cs.fontFamily || '', size = parseFloat(cs.fontSize) || 0;
-        return fam.indexOf(want) >= 0 && size >= 12;
-      });
-    } catch (e) { return false; }
-  }, sel, { timeout: 8000 }).catch(() => false);
-  const readOk = async (name, sel) => { await fontOn(sel); const a = await audit(page, sel); ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px／V3、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam])); };
+  const fontOn = async (sel) => {
+    try { await page.evaluate(() => (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve()); } catch (e) { }
+    const r = await page.waitForFunction((sel) => {
+      try {
+        if (document.fonts && document.fonts.status && document.fonts.status !== 'loaded') return false;
+        const nodes = [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; });
+        if (!nodes.length) return false;
+        const v3 = !!(window.__glimmer && __glimmer.v3 && __glimmer.v3.want);
+        const want = v3 ? 'GlimmerV3Sans' : 'GlimmerFP12';
+        return nodes.some(e => {
+          const cs = getComputedStyle(e), fam = cs.fontFamily || '', size = parseFloat(cs.fontSize) || 0;
+          return fam.indexOf(want) >= 0 && size >= 12;
+        });
+      } catch (e) { return false; }
+    }, sel, { timeout: 8000 }).then(() => true).catch(() => false);
+    return r;
+  };
+  const readOk = async (name, sel) => {
+    const on = await fontOn(sel);
+    if (!on) { ok(false, name + '：等 document.fonts.ready 後仍未見到目標字型', sel); return; }
+    const a = await audit(page, sel);
+    ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px／V3、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam]));
+  };
   const hit = (sel) => E((sel) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth;
       return [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; }).map(e => {
         e.scrollIntoView({ block: 'center', inline: 'nearest' }); const r = e.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, h = 24 * k - 0.75; let n = 0;

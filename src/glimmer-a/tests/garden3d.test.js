@@ -1,7 +1,9 @@
-/* garden3d.test — #89 3D 花園 H1／H1.2 純邏輯（座標、鏡頭、可見區、碰撞、方向、日夜、畫質、行速）。node tests/garden3d.test.js */
+/* garden3d.test — #89 3D 花園 H1／H1.2／H1.3 純邏輯（座標、鏡頭、可見區、碰撞、方向、日夜、畫質、行速、自主行、世界物件）。node tests/garden3d.test.js */
 const G3 = require('../src/garden3d.js');
 const D = require('../src/data.js');
 const BEH = require('../src/behavior.js');
+const fs = require('fs');
+const path = require('path');
 let pass = 0, fail = 0;
 const ok = (c, m, x) => { if (c) { pass++; console.log('  ✓ ' + m); } else { fail++; console.log('  ✗ ' + m + (x !== undefined ? '  → ' + JSON.stringify(x) : '')); } };
 const near = (a, b, e) => Math.abs(a - b) <= (e == null ? 1e-6 : e);
@@ -211,6 +213,30 @@ console.log('⑨ H1.2／QA：擋住目標吸位、hook 掛 beh、behavior.step �
     if (prev[k] === undefined) delete behP[k]; else behP[k] = prev[k];
     if (prevP[k] === undefined) delete parent[k]; else parent[k] = prevP[k];
   });
+}
+
+console.log('⑩ H1.3 自主行／世界物件／影圖／LICENSE');
+{
+  ok(G3.QSET.mid.shadow === 512 && G3.QSET.mid.shadowEvery === 1, 'mid 影圖 512、每幀更新', G3.QSET.mid);
+  ok(G3.QSET.high.shadow === 2048 && G3.QSET.high.shadowEvery === 3, 'high 影圖 2048、每 3 幀更新', G3.QSET.high);
+  ok(G3.WORLD_ITEMS.length >= 20, 'WORLD_ITEMS 盤點齊', G3.WORLD_ITEMS.length);
+  const garden = G3.worldInGarden();
+  const ids = garden.map(x => x.id);
+  ['pet', 'kid', 'poop', 'visitor', 'shadow', 'weather', 'decor', 'ball', 'food', 'event'].forEach(function (id) {
+    ok(ids.indexOf(id) >= 0, '花園清單有 ' + id);
+  });
+  ok(G3.worldItem('souvenir') && G3.worldItem('souvenir').inGarden === false, '手信唔落地（屋仔家具）');
+  ok(G3.worldItem('foodBowl') && G3.worldItem('foodBowl').inGarden === false, '2D 冇常駐食碗');
+  const pw = G3.poopWorld(0);
+  ok(pw && near(pw.x, 50 - 97) && near(pw.z, (304 - 292) * 1.6), 'poopWorld(0) 對應槽位', pw);
+  ok(!G3.shouldForceWalk({ state: 'stay', lastWalkAt: 0, stateT: 2 }, 2), '企未夠 3.2s 唔強制行');
+  ok(G3.shouldForceWalk({ state: 'stay', lastWalkAt: 0, stateT: 2 }, 4), '企超過 3.2s 強制行');
+  ok(!G3.shouldForceWalk({ state: 'stay', variant: 'sniff', lastWalkAt: 0, stateT: 5 }, 10), 'variant 中唔打斷');
+  ok(!G3.shouldForceWalk({ state: 'sleep', lastWalkAt: 0, stateT: 5 }, 10), '非 stay 唔強制行');
+  const ww = G3.wanderWeights({ walk: 15, stay: 40, sniff: 10 });
+  ok(near(ww.walk, 15 * 2.6) && near(ww.stay, 40 * 0.4) && ww.sniff === 10, '3D wander 權重：walk×2.6 stay×0.4', ww);
+  const lic = path.join(__dirname, '../src/vendor/LICENSE.three.txt');
+  ok(fs.existsSync(lic) && fs.statSync(lic).size > 200, 'repo 有 three.js LICENSE', lic);
 }
 
 console.log('—' + (fail ? ' 失敗 ' + fail : ' 通過') + '／' + (pass + fail) + '—');

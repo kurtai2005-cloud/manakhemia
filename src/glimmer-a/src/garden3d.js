@@ -3,7 +3,8 @@
    瀏覽器 Scene：Three.js 載 17 件 mesh＋地面＋背景板＋寵物 billboard（radiant 用 dir4；其他形態用 2D sprite 後備）。
    Kurt：三級畫質＋自動偵測＋fps／耗電面板（開發者模式）；?3d=0 返 2D；低畫質／低端機＝2D 後備；
    鏡頭自動擺／跟拍（開發者模式有開關，預設開）。H1.1：寵物 flipY 修正；XZ 走位＋碰撞接入 moveTo；地面網格。
-   H1.2：直版可見區構圖（樹／籬笆／燈柱／屋唔被 UI 遮）＋跟拍保建立鏡頭；日影／夜空對齊參考；網格預設關；3D 行速 20 u/s。 */
+   H1.2：直版可見區構圖（樹／籬笆／燈柱／屋唔被 UI 遮）＋跟拍保建立鏡頭；日影／夜空對齊參考；網格預設關；3D 行速 20 u/s。
+   H1.3：寵物自主四圍行（唔使撳）；2D 地面物件全部做 billboard（寫 depth、被擋、影子、坐 XZ、跟光）；細佬自主 nav；遊測 P2／P3（mid 縮影圖、high 減 shadow 更新、LICENSE 入包）。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.garden3d = factory(); }
@@ -381,11 +382,63 @@
     return { x: 0, z: 20, tag: 'front_near' };
   }
 
+  /* ── H1.3：2D 花園地面／世界物件清單（會喺地面或花園空間出現嘅嘢）── */
+  const POOP_SLOTS = [[50, 304], [146, 302], [118, 318]];  /* 同 render.js 一致 */
+  function poopWorld(i) {
+    const p = POOP_SLOTS[i];
+    return p ? artToWorld(p[0], p[1]) : null;
+  }
+  const WORLD_ITEMS = [
+    { id: 'pet', zh: '寵物', how: '既有 billboard（dir4／2D 後備）', inGarden: true, wantArt: '其他形態 dir4' },
+    { id: 'kid', zh: '細佬', how: 'billboard＋自主 XZ nav', inGarden: true, wantArt: '細佬 dir4＋法線' },
+    { id: 'kidEgg', zh: '細佬蛋', how: 'billboard', inGarden: true, wantArt: null },
+    { id: 'dreamBubble', zh: '孵夢／怪夢泡泡', how: 'billboard（浮喺寵物或蛋上）', inGarden: true, wantArt: null },
+    { id: 'poop', zh: '便便', how: 'billboard＋raycast 清理', inGarden: true, wantArt: '便便 3D／法線' },
+    { id: 'pot', zh: '花盆', how: '已有 3D mesh（pot_L／R／S）', inGarden: true, wantArt: null },
+    { id: 'potProp', zh: '撞盆掉落小物', how: 'billboard', inGarden: true, wantArt: null },
+    { id: 'ball', zh: '玩具波', how: 'billboard', inGarden: true, wantArt: '3D 小球' },
+    { id: 'food', zh: '食物', how: '餵食時暫時 billboard', inGarden: true, wantArt: '常駐食碗（遊戲而家冇）' },
+    { id: 'foodBowl', zh: '食物碗', how: '2D 花園冇常駐食碗（只列）', inGarden: false, wantArt: '常駐食碗美術' },
+    { id: 'wash', zh: '沖洗水泡', how: 'billboard 粒子', inGarden: true, wantArt: null },
+    { id: 'fx', zh: 'FX（心心／火花／汗／蒸氣／塵／字／zzz）', how: 'billboard', inGarden: true, wantArt: null },
+    { id: 'event', zh: '事件特效（蝴蝶／禮物／寶藏／icon；流星／彩虹 overlay）', how: '地面件 billboard；天空件 overlay', inGarden: true, wantArt: null },
+    { id: 'visitor', zh: '訪客', how: 'billboard（跟 2D 行位 artic 轉 XZ）', inGarden: true, wantArt: '訪客 dir4' },
+    { id: 'visitProp', zh: '訪客信／種子／心心', how: 'billboard', inGarden: true, wantArt: null },
+    { id: 'decor', zh: '友誼擺設（郵筒／蘑菇燈／螢火瓶）', how: 'billboard（場景已有 jar／mushroom mesh 就唔再疊）', inGarden: true, wantArt: '郵筒 3D mesh' },
+    { id: 'shadow', zh: '6d 朋友影子', how: 'billboard＋XZ 行', inGarden: true, wantArt: '影子 3D 造型' },
+    { id: 'weather', zh: '天氣粒子（雨）', how: '3D 雨點', inGarden: true, wantArt: '季節／霧疊 3D' },
+    { id: 'omen', zh: '3b 預兆閃剪影／怪夢', how: 'billboard', inGarden: true, wantArt: null },
+    { id: 'souvenir', zh: '手信 souvenir', how: '入屋仔家具庫，花園唔落地', inGarden: false, wantArt: '花園手信位（若 Kurt 要擺出嚟）' },
+    { id: 'sunPatch', zh: '日光斑', how: '地面 decal／略過（地面已有光）', inGarden: true, wantArt: null }
+  ];
+  function worldItem(id) { return WORLD_ITEMS.filter(function (x) { return x.id === id; })[0] || null; }
+  function worldInGarden() { return WORLD_ITEMS.filter(function (x) { return x.inGarden; }); }
+  function worldWantArt() { return WORLD_ITEMS.filter(function (x) { return !!x.wantArt; }); }
+
+  /* 自主行：3D 企咗超過 idleSec 就強制行（唔打斷 variant／瞓／事件） */
+  const G3D_IDLE_WALK_SEC = 3.2;
+  const G3D_WALK_MUL = 2.6;
+  const G3D_STAY_MUL = 0.4;
+  const G3D_DECIDE_EVERY = [1.8, 3.6];
+  function shouldForceWalk(b, t, idleSec) {
+    if (!b || b.variant || (b.hushUntil > t)) return false;
+    if (b.state && b.state !== 'stay') return false;
+    const last = b.lastWalkAt || 0;
+    return (t - last) >= (idleSec == null ? G3D_IDLE_WALK_SEC : idleSec) && (b.stateT || 0) >= 1.15;
+  }
+  function wanderWeights(w) {
+    const o = {};
+    for (const k in w) o[k] = w[k];
+    if (o.walk != null) o.walk *= G3D_WALK_MUL;
+    if (o.stay != null) o.stay *= G3D_STAY_MUL;
+    return o;
+  }
+
   /* ── 畫質：high／mid＝3D；low＝2D 後備。?3d=0 永遠 2D；低端機自動 low。── */
   const QSET = {
-    high: { dpr: 2, shadow: 2048, tex3x: true, shadows: true },
-    mid: { dpr: 1, shadow: 1024, tex3x: false, shadows: true },
-    low: { dpr: 1, shadow: 0, tex3x: false, shadows: false }
+    high: { dpr: 2, shadow: 2048, tex3x: true, shadows: true, shadowEvery: 3 },  /* H1.3：減少 shadow map 更新 */
+    mid: { dpr: 1, shadow: 512, tex3x: false, shadows: true, shadowEvery: 1 },   /* H1.3：縮影圖 1024→512 */
+    low: { dpr: 1, shadow: 0, tex3x: false, shadows: false, shadowEvery: 0 }
   };
   function detectQuality(o) {
     o = o || {};
@@ -678,6 +731,17 @@
     this.shadowMesh.rotation.x = -Math.PI / 2; this.shadowMesh.position.set(0, 0.15, 0);
     scene.add(this.shadowMesh);
 
+    // H1.3：世界 billboard 池（細佬／屎／訪客／影子／道具…）
+    this._actorMap = {}; this._actors = []; this._actorGroup = new THREE.Group(); scene.add(this._actorGroup);
+
+    // H1.3：雨點（天氣＝rain 先顯示）
+    const nRain = 140, rpos = new Float32Array(nRain * 3);
+    for (let i = 0; i < nRain; i++) { rpos[i * 3] = (Math.random() - 0.5) * 360; rpos[i * 3 + 1] = Math.random() * 220 + 10; rpos[i * 3 + 2] = (Math.random() - 0.5) * 280; }
+    const rainGeo = new THREE.BufferGeometry(); rainGeo.setAttribute('position', new THREE.BufferAttribute(rpos, 3));
+    const rainMat = new THREE.PointsMaterial({ color: 0xb8d4ff, size: 1.6, transparent: true, opacity: 0.75, depthWrite: false });
+    this.rainMesh = new THREE.Points(rainGeo, rainMat); this.rainMesh.visible = false; this.rainMesh.frustumCulled = false;
+    scene.add(this.rainMesh); this._rainPos = rpos; this._weather = 'clear';
+
     this._applyLights(0, 0);
     this._placeCamera(0);
   };
@@ -890,6 +954,8 @@
     this._applyLights(night, this.t);
     this._placeCamera(dt);
     this._updatePet();
+    this._updateRain(dt, ctx.weather);
+    this._faceActors();
     return this;
   };
 
@@ -904,6 +970,14 @@
     if (!this.on() || !this.renderer) return false;
     const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : 0;
     this.resize(k || this.k || 2);
+    const ev = (this.qs() && this.qs().shadowEvery) || 1;
+    if (this.renderer.shadowMap && this.renderer.shadowMap.enabled && ev > 1) {
+      this.renderer.shadowMap.autoUpdate = false;
+      this._shN = (this._shN || 0) + 1;
+      this.renderer.shadowMap.needsUpdate = (this._shN % ev === 1);
+    } else if (this.renderer.shadowMap) {
+      this.renderer.shadowMap.autoUpdate = true;
+    }
     this.renderer.render(this.scene, this.camera);
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(this.canvas, 0, 0);
@@ -947,7 +1021,7 @@
     dir.multiplyScalar(1 / dist);
     const ray = new THREE.Raycaster(origin, dir);
     const meshes = [];
-    this.scene.traverse(function (o) { if (o.isMesh && o.userData && o.userData.id && o.userData.id !== 'pet') meshes.push(o); });
+    this.scene.traverse(function (o) { if (o.isMesh && o.userData && o.userData.id && o.userData.id !== 'pet' && o.userData.kind !== 'actor') meshes.push(o); });
     const hits = ray.intersectObjects(meshes, false);
     if (!hits.length) return false;
     return hits[0].distance + 1 < dist;
@@ -967,6 +1041,134 @@
       z: clamp(origin.z + dir.z * t, RANGE3.z[0], RANGE3.z[1])
     };
   };
+  Scene.prototype._updateRain = function (dt, weather) {
+    weather = weather || 'clear';
+    this._weather = weather;
+    if (!this.rainMesh || !this._rainPos) return;
+    const on = weather === 'rain';
+    this.rainMesh.visible = on;
+    if (!on) return;
+    const pos = this._rainPos, n = pos.length / 3, fall = 180 * Math.max(0, dt);
+    for (let i = 0; i < n; i++) {
+      pos[i * 3 + 1] -= fall * (0.7 + (i % 5) * 0.12);
+      if (pos[i * 3 + 1] < 0) { pos[i * 3] = (Math.random() - 0.5) * 360; pos[i * 3 + 1] = 160 + Math.random() * 80; pos[i * 3 + 2] = (Math.random() - 0.5) * 280; }
+    }
+    this.rainMesh.geometry.attributes.position.needsUpdate = true;
+  };
+  Scene.prototype._actorSize = function (src) {
+    const sw = (src && (src.sw || (src.img && src.img.width))) || 16;
+    const sh = (src && (src.sh || (src.img && src.img.height))) || 16;
+    return (sw > 64 || sh > 64) ? 128 : 64;
+  };
+  Scene.prototype._paintActor = function (rec, a) {
+    const src = a.src, C = rec.canvas.width, x = rec.canvas.getContext('2d');
+    x.imageSmoothingEnabled = false; x.clearRect(0, 0, C, C);
+    if (!src || !src.img) return;
+    const sw = src.sw != null ? src.sw : src.img.width, sh = src.sh != null ? src.sh : src.img.height;
+    const sx = src.sx || 0, sy = src.sy || 0;
+    const px = src.px != null ? src.px : sw / 2, py = src.py != null ? src.py : sh;
+    const ox = C / 2 - px, oy = (C - 3) - py, flip = !!a.flip;
+    if (flip) { x.save(); x.translate(C, 0); x.scale(-1, 1); x.drawImage(src.img, sx, sy, sw, sh, C - (ox + sw), oy, sw, sh); x.restore(); }
+    else x.drawImage(src.img, sx, sy, sw, sh, ox, oy, sw, sh);
+    if (a.alpha != null && a.alpha < 1) {
+      x.globalCompositeOperation = 'destination-in';
+      x.fillStyle = 'rgba(0,0,0,' + clamp(a.alpha, 0, 1) + ')';
+      x.fillRect(0, 0, C, C);
+      x.globalCompositeOperation = 'source-over';
+    }
+    rec.tex.needsUpdate = true;
+  };
+  Scene.prototype._makeActor = function (a) {
+    const THREE = window.THREE, C = this._actorSize(a.src);
+    const canvas = document.createElement('canvas'); canvas.width = C; canvas.height = C;
+    const tex = this._tex(THREE, canvas, { srgb: true, flipY: true });
+    const mat = new THREE.MeshLambertMaterial({ map: tex, alphaTest: a.alphaTest != null ? a.alphaTest : 0.5, transparent: false, side: THREE.DoubleSide });
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(C, C), mat);
+    const yOff = C / 2 - 3;
+    mesh.userData.id = 'actor:' + a.id; mesh.userData.kind = 'actor'; mesh.userData.actorId = a.id;
+    mesh.castShadow = false; mesh.receiveShadow = false;
+    const rec = { id: a.id, canvas: canvas, tex: tex, mat: mat, mesh: mesh, yOff: yOff, size: C, key: '', shadow: null };
+    if (a.shadow !== false) {
+      const sh = this.shadowMesh ? this.shadowMesh.clone() : null;
+      if (sh) { sh.material = this.shadowMesh.material; rec.shadow = sh; this._actorGroup.add(sh); }
+    }
+    this._actorGroup.add(mesh);
+    this._actorMap[a.id] = rec;
+    return rec;
+  };
+  Scene.prototype._disposeActor = function (rec) {
+    if (!rec) return;
+    if (rec.mesh && rec.mesh.parent) rec.mesh.parent.remove(rec.mesh);
+    if (rec.shadow && rec.shadow.parent) rec.shadow.parent.remove(rec.shadow);
+    try { if (rec.tex && rec.tex.dispose) rec.tex.dispose(); if (rec.mat && rec.mat.dispose) rec.mat.dispose(); } catch (e) { }
+  };
+  Scene.prototype.syncActors = function (list) {
+    list = list || [];
+    this._actors = list;
+    if (!this.scene || typeof window === 'undefined' || !window.THREE || !this._actorGroup) return list;
+    const self = this, seen = {};
+    list.forEach(function (a) {
+      if (!a || !a.id) return;
+      seen[a.id] = true;
+      let rec = self._actorMap[a.id];
+      const sz = self._actorSize(a.src);
+      if (rec && rec.size !== sz) { self._disposeActor(rec); delete self._actorMap[a.id]; rec = null; }
+      if (!rec) rec = self._makeActor(a);
+      rec.idle = 0;
+      const key = [a.kind, a.src && (a.src.name || a.src.sx), a.src && a.src.sy, a.src && a.src.sw, !!a.flip, a.alpha, a.src && a.src.frame].join('|');
+      if (key !== rec.key) { self._paintActor(rec, a); rec.key = key; }
+      const yLift = a.yLift || 0;
+      rec.mesh.position.set(a.x, rec.yOff + yLift, a.z);
+      rec.mesh.visible = a.hidden ? false : true;
+      rec.mesh.renderOrder = a.order || 2;
+      if (a.lit === false) rec.mat.emissive = rec.mat.emissive || rec.mat.color;
+      if (rec.shadow) { rec.shadow.position.set(a.x, 0.16, a.z); rec.shadow.visible = !a.hidden && a.shadow !== false; const sc = a.shadowScale || 1; rec.shadow.scale.set(sc, sc, sc); }
+      rec.a = a;
+    });
+    Object.keys(this._actorMap).forEach(function (id) {
+      if (seen[id]) return;
+      const rec = self._actorMap[id];
+      rec.mesh.visible = false; if (rec.shadow) rec.shadow.visible = false;
+      rec.idle = (rec.idle || 0) + 1;
+      if (rec.idle > 120) { self._disposeActor(rec); delete self._actorMap[id]; }
+    });
+    this._faceActors();
+    return list;
+  };
+  Scene.prototype._faceActors = function () {
+    if (!this.camera || !this._actorMap) return;
+    const cx = this.camera.position.x, cz = this.camera.position.z;
+    const map = this._actorMap;
+    Object.keys(map).forEach(function (id) {
+      const rec = map[id]; if (!rec.mesh || !rec.mesh.visible) return;
+      const p = rec.mesh.position;
+      rec.mesh.rotation.set(0, Math.atan2(cx - p.x, cz - p.z), 0);
+    });
+  };
+  Scene.prototype.actors = function () { return (this._actors || []).slice(); };
+  Scene.prototype.actorBox = function (a) {
+    if (!a) return null;
+    const h = a.h != null ? a.h : (a.src && a.src.sh) || 24;
+    const w = a.w != null ? a.w : Math.max(14, ((a.src && a.src.sw) || 16) * 0.65);
+    const foot = this.project(a.x, a.yLift || 0, a.z);
+    const head = this.project(a.x, (a.yLift || 0) + h, a.z);
+    const y0 = Math.min(foot.y, head.y), y1 = Math.max(foot.y, head.y);
+    return { x: foot.x - w / 2, y: y0, w: w, h: Math.max(10, y1 - y0 + 4), foot: foot, id: a.id, kind: a.kind };
+  };
+  Scene.prototype.hitActor = function (ax, ay) {
+    const list = this._actors || [];
+    let best = null, bestZ = 2;
+    for (let i = 0; i < list.length; i++) {
+      const a = list[i]; if (!a || a.hit === false || a.hidden) continue;
+      const box = this.actorBox(a); if (!box) continue;
+      if (ax >= box.x && ax <= box.x + box.w && ay >= box.y && ay <= box.y + box.h) {
+        const z = box.foot.ndc ? box.foot.ndc[2] : 1;
+        if (z < bestZ) { bestZ = z; best = a; }
+      }
+    }
+    return best;
+  };
+
   Scene.prototype.setQuality = function (q) {
     if (q !== 'high' && q !== 'mid' && q !== 'low') return this.quality;
     const prev = this.quality; this.quality = q; lsSet(KEY_Q, q);
@@ -1110,6 +1312,16 @@
       artToGround: function (ax, ay) { return S.artToGround(ax, ay); },
       lost: function () { return !!S.lost; },
       hooksOnBeh: function () { return !!(S && window.Glimmer && Glimmer.data && Glimmer.data.PARAMS && Glimmer.data.PARAMS.beh && typeof Glimmer.data.PARAMS.beh.g3dWalk === 'function'); },
+      actors: function () { return S.actors(); },
+      syncActors: function (list) { return S.syncActors(list); },
+      hitActor: function (ax, ay) { return S.hitActor(ax, ay); },
+      actorBox: function (a) { return S.actorBox(a); },
+      poopWorld: poopWorld,
+      poopSlots: function () { return POOP_SLOTS.map(function (p) { return p.slice(); }); },
+      worldItems: function () { return WORLD_ITEMS.slice(); },
+      weather: function () { return S._weather; },
+      shadowEvery: function () { return (S.qs() && S.qs().shadowEvery) || 0; },
+      shadowSize: function () { return (S.qs() && S.qs().shadow) || 0; },
       orbit: function (d) { return S.orbit(d); },
       setSway: function (v) { return S.setSway(v); },
       setFollow: function (v) { return S.setFollow(v); },
@@ -1135,7 +1347,7 @@
     };
 
     const DEV = {
-      id: 'g3d', title: '3D 花園 H1.2', order: 13,
+      id: 'g3d', title: '3D 花園 H1.3', order: 13,
       status: function () { return (S.on() ? ('3D ' + S.quality) : (qs.get('3d') === '0' ? '?3d=0 2D' : '2D 後備')) + '・擺鏡 ' + (S.swayOn ? '開' : '關') + '・跟拍 ' + (S.followOn ? '開' : '關') + '・網格 ' + (S.gridOn ? '開' : '關'); },
       items: [
         { k: 'high', label: '畫質：高（3D）', run: function () { S.setQuality('high'); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 高' }; } },
@@ -1200,6 +1412,9 @@
   return {
     W: W, H: H, CX: CX, GROUND_Y: GROUND_Y, ZSCALE: ZSCALE, QSET: QSET,
     VIS: VIS, VIS_HFOV_DEG: VIS_HFOV_DEG, WALK_SPEED_2D: WALK_SPEED_2D, WALK_SPEED_3D: WALK_SPEED_3D,
+    POOP_SLOTS: POOP_SLOTS, poopWorld: poopWorld, WORLD_ITEMS: WORLD_ITEMS, worldItem: worldItem, worldInGarden: worldInGarden, worldWantArt: worldWantArt,
+    G3D_IDLE_WALK_SEC: G3D_IDLE_WALK_SEC, G3D_WALK_MUL: G3D_WALK_MUL, G3D_STAY_MUL: G3D_STAY_MUL, G3D_DECIDE_EVERY: G3D_DECIDE_EVERY,
+    shouldForceWalk: shouldForceWalk, wanderWeights: wanderWeights,
     NIGHT_SRGB: NIGHT_SRGB, FOG_NIGHT: FOG_NIGHT,
     artToWorld: artToWorld, worldToArtFlat: worldToArtFlat, petWorld: petWorld,
     nightMix: nightMix, mixLights: mixLights,

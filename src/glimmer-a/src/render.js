@@ -578,6 +578,13 @@
       }
     }
     poopPos(i) { return { x: POOP_SLOTS[i][0], y: POOP_SLOTS[i][1] }; }
+    worldPush(a) { if (!a || !a.id) return; (this.worldActors = this.worldActors || []).push(a); }
+    worldCanvas(id, w, h, paint) {
+      this._wc = this._wc || {};
+      let c = this._wc[id]; if (!c || c.width !== w || c.height !== h) { c = document.createElement('canvas'); c.width = w; c.height = h; this._wc[id] = c; }
+      const x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.clearRect(0, 0, w, h); paint(x, w, h);
+      return { img: c, sx: 0, sy: 0, sw: w, sh: h, px: w / 2, py: h - 1 };
+    }
     act(name, dur) { this.pet.act = name; this.pet.until = this.t + dur; }
     spawn(type, x, y, o) {
       o = o || {};
@@ -709,12 +716,22 @@
         }
       }
       // L2：舞台 + 寵物
+      this.worldActors = [];
       this.drawL2(L[2].getContext('2d'), view, { anim, frame, face, lift, lanternA, lcol, lights, em, offs, look, unwell, wd, hDim, sm, t, hd: !!hd, g3d: !!g3, q });
-      if (g3) {                                            // #89 3D 花園：WebGL 場景（含寵物 billboard）＋ L2 細佬／朋友／道具疊上面
+      if (g3) {                                            // #89／H1.3：WebGL 場景＋世界 billboard；L2 地面件改入 3D，唔再平面疊
+        const host = (typeof window !== 'undefined') && (window.__glimmer || window.Glimmer);
+        if (host && typeof host.l6dActors === 'function') { const extra = host.l6dActors() || []; for (let i = 0; i < extra.length; i++) this.worldPush(extra[i]); }
+        if (g3.syncActors) g3.syncActors(this.worldActors || []);
         g3.draw(this.ctx, k, { offs, quality: q, dt, t });
         const ctx = this.ctx; ctx.imageSmoothingEnabled = false;
+        // L2 只剩天空事件／未遷嘅 overlay（地面件已入 billboard）
         ctx.drawImage(L[2], Math.round((-MX + offs[2][0]) * k), Math.round((-MY + offs[2][1]) * k), LW * k, LH * k);
-        const pd = g3.petDraw(); if (pd) { this.petDraw = pd; this.petRect = { x: pd.x, y: pd.y, w: pd.w, h: pd.h, opaque: false }; }
+        const pd = g3.petDraw();
+        if (s.stage === 'egg') {
+          const eg = (this.worldActors || []).filter(function (a) { return a.id === 'egg' || a.kind === 'kidEgg'; })[0];
+          if (eg && g3.actorBox) { const box = g3.actorBox(eg); if (box) { this.petDraw = Object.assign({ bud: { x: box.x + box.w / 2, y: box.y + 8 }, footY: box.y + box.h, g3d: true }, box); this.petRect = { x: box.x, y: box.y, w: box.w, h: box.h, opaque: false }; } }
+          else if (pd) { this.petDraw = pd; this.petRect = { x: pd.x, y: pd.y, w: pd.w, h: pd.h, opaque: false }; }
+        } else if (pd) { this.petDraw = pd; this.petRect = { x: pd.x, y: pd.y, w: pd.w, h: pd.h, opaque: false }; }
         if (this.flash > 0) { ctx.globalAlpha = Math.min(1, this.flash); ctx.fillStyle = '#fff6d0'; ctx.fillRect(0, 0, W * k, H * k); ctx.globalAlpha = 1; }
         if (this.b3bOverlay) this.b3bOverlay(ctx, k, dt);
         if (this.s2Overlay) this.s2Overlay(ctx, k, dt);
@@ -845,7 +862,8 @@
         let es = this.atlasSrc('atlas_evo_egg', clip, Math.floor(t * (an2.fps || 6)));
         if (c.hd) { es = this.hd.tintPet(es, { mir: 1, form: null, quality: c.q }); this.faceStat.tints++; }
         const ex = Math.round(gx - es.px), ey = Math.round(base - es.py + c.lift);
-        x.imageSmoothingEnabled = false; x.drawImage(es.img, es.sx, es.sy, es.sw, es.sh, ox(ex), oy(ey), es.sw, es.sh);
+        if (c.g3d) this.worldPush({ id: 'egg', kind: 'kidEgg', x: gx - CX, z: 0, src: es, shadow: true, hit: true, w: es.sw, h: es.sh });
+        else { x.imageSmoothingEnabled = false; x.drawImage(es.img, es.sx, es.sy, es.sw, es.sh, ox(ex), oy(ey), es.sw, es.sh); }
         this.petDraw = { x: ex, y: ey, w: es.sw, h: es.sh, bud: { x: ex + es.sw / 2, y: ey + es.sh * 0.4 }, footY: base + c.lift, evo: 'evo_egg', clip };
       }
       else if (s.stage === 'egg' && this.atlasReady && this.atlas.atlas_egg && P.art.useAtlas !== false) {
@@ -854,7 +872,8 @@
         let es = this.atlasSrc('atlas_egg', clip, Math.floor(t * an2.fps));
         if (c.hd) { es = this.hd.tintPet(es, { mir: 1, form: null, quality: c.q }); this.faceStat.tints++; }
         const ex = Math.round(gx - es.px), ey = Math.round(base - es.py + c.lift + (this.eggPulse > 0.05 ? -Math.round(this.eggPulse * 2) : 0));
-        x.imageSmoothingEnabled = false; x.drawImage(es.img, es.sx, es.sy, es.sw, es.sh, ox(ex), oy(ey), es.sw, es.sh);
+        if (c.g3d) this.worldPush({ id: 'egg', kind: 'kidEgg', x: gx - CX, z: 0, src: es, shadow: true, hit: true, w: es.sw, h: es.sh });
+        else { x.imageSmoothingEnabled = false; x.drawImage(es.img, es.sx, es.sy, es.sw, es.sh, ox(ex), oy(ey), es.sw, es.sh); }
         this.petDraw = { x: ex, y: ey, w: es.sw, h: es.sh, bud: { x: ex + es.sw / 2, y: ey + es.sh * 0.4 }, footY: base + c.lift };
       }
       else {
@@ -880,7 +899,16 @@
       if (!kmOn) c.em.fillRect(bx - 2, by - 2, 5, 5);
       if (s.form === 'bright' && D.isBig(s.stage)) { c.em.fillRect(bx - 5, by, 11, 1); c.em.fillRect(bx, by - 5, 1, 11); }
       // 便便
-      for (let i = 0; i < s.poops; i++) { const p = POOP_SLOTS[i]; x.drawImage(SPR.poop, ox(p[0] - 5), oy(p[1] - 8)); const w = Math.floor(t * 6 + i) % 3; x.fillStyle = '#a8d890'; x.fillRect(ox(p[0] - 3 + w), oy(p[1] - 12 - (w & 1)), 1, 3); x.fillRect(ox(p[0] + 3 - w), oy(p[1] - 11), 1, 3); }
+      for (let i = 0; i < s.poops; i++) {
+        const p = POOP_SLOTS[i];
+        if (c.g3d) {
+          const Z = (Glimmer.garden3d && Glimmer.garden3d.ZSCALE) || 1.6;
+          const src = { img: SPR.poop, sx: 0, sy: 0, sw: SPR.poop.width, sh: SPR.poop.height, px: SPR.poop.width / 2, py: SPR.poop.height - 1 };
+          this.worldPush({ id: 'poop-' + i, kind: 'poop', x: p[0] - CX, z: (p[1] - GROUND_Y) * Z, src: src, shadow: true, hit: true, w: 16, h: 14 });
+          continue;
+        }
+        x.drawImage(SPR.poop, ox(p[0] - 5), oy(p[1] - 8)); const w = Math.floor(t * 6 + i) % 3; x.fillStyle = '#a8d890'; x.fillRect(ox(p[0] - 3 + w), oy(p[1] - 12 - (w & 1)), 1, 3); x.fillRect(ox(p[0] + 3 - w), oy(p[1] - 11), 1, 3);
+      }
       // 圖集未載入時退回舊 zZz／汗滴
       if (!this.atlasReady) {
         if (c.anim === 'sleep' && !kmOn) { for (let i = 0; i < 3; i++) { const u = ((t * 0.5 + i / 3) % 1); const zx = gx + 14 + u * 16, zy = base - (D.isBig(s.stage) ? 52 : 34) - u * 24; x.globalAlpha = Math.sin(u * Math.PI); x.drawImage(SPR.zz, ox(Math.round(zx)), oy(Math.round(zy)), 4 + i, 4 + i); } x.globalAlpha = 1; }
@@ -888,17 +916,36 @@
       }
       if (view.event) this.drawEventFx(x, view, c, gx);
       // 食物
-      if (this.food && t < this.food.until) { const f = this.food; const u = 1 - (f.until - t) / f.dur; const spr = SPR[f.id]; const fx = gx + 22 - u * 12, fy = base - 10 - Math.sin(u * 3.14) * 6; if (u < 0.75) x.drawImage(spr, ox(Math.round(fx)), oy(Math.round(fy - spr.height))); }
+      if (this.food && t < this.food.until) { const f = this.food; const u = 1 - (f.until - t) / f.dur; const spr = SPR[f.id]; const fx = gx + 22 - u * 12, fy = base - 10 - Math.sin(u * 3.14) * 6; if (u < 0.75) {
+        if (c.g3d && spr) this.worldPush({ id: 'food', kind: 'food', x: (fx - CX), z: (useBeh && beh.z) || 0, yLift: Math.max(0, GROUND_Y - fy), src: { img: spr, sx: 0, sy: 0, sw: spr.width, sh: spr.height, px: spr.width / 2, py: spr.height }, shadow: false, hit: false });
+        else if (spr) x.drawImage(spr, ox(Math.round(fx)), oy(Math.round(fy - spr.height)));
+      } }
       // 玩耍小球
-      if (this.ball && t < this.ball.until) { const b = this.ball, u = 1 - (b.until - t) / b.dur; const bx2 = gx + Math.sin(u * 12) * 34, by2 = base - 10 - Math.abs(Math.sin(u * 9)) * 26; x.drawImage(SPR.ball, ox(Math.round(bx2) - 2), oy(Math.round(by2) - 2)); c.lights.push({ x: bx2 + offs[2][0], y: by2, r: 12, col: [255, 200, 120], a: 0.6 }); }
+      if (this.ball && t < this.ball.until) { const b = this.ball, u = 1 - (b.until - t) / b.dur; const bx2 = gx + Math.sin(u * 12) * 34, by2 = base - 10 - Math.abs(Math.sin(u * 9)) * 26;
+        if (c.g3d) this.worldPush({ id: 'ball-toss', kind: 'ball', x: bx2 - CX, z: (useBeh && beh.z) || 0, yLift: Math.max(0, GROUND_Y - by2), src: { img: SPR.ball, sx: 0, sy: 0, sw: SPR.ball.width, sh: SPR.ball.height, px: 2, py: 4 }, shadow: true, hit: false });
+        else { x.drawImage(SPR.ball, ox(Math.round(bx2) - 2), oy(Math.round(by2) - 2)); c.lights.push({ x: bx2 + offs[2][0], y: by2, r: 12, col: [255, 200, 120], a: 0.6 }); }
+      }
       // 沖洗水泡
-      if (this.wash && t < this.wash.until) { const w = this.wash, u = 1 - (w.until - t) / w.dur; for (let i = 0; i < 9; i++) { const bx2 = gx - 26 + hash(i * 5.1) * 52, by2 = base - 8 - ((u * 1.3 + hash(i)) % 1) * 56; x.globalAlpha = 0.85; x.drawImage(SPR.drop, ox(Math.round(bx2)), oy(Math.round(by2))); } x.globalAlpha = 1; }
+      if (this.wash && t < this.wash.until) { const w = this.wash, u = 1 - (w.until - t) / w.dur; for (let i = 0; i < 9; i++) { const bx2 = gx - 26 + hash(i * 5.1) * 52, by2 = base - 8 - ((u * 1.3 + hash(i)) % 1) * 56;
+        if (c.g3d) this.worldPush({ id: 'wash-' + i, kind: 'wash', x: bx2 - CX, z: (useBeh && beh.z) || 0, yLift: Math.max(0, GROUND_Y - by2), src: { img: SPR.drop, sx: 0, sy: 0, sw: SPR.drop.width, sh: SPR.drop.height, px: SPR.drop.width / 2, py: SPR.drop.height }, shadow: false, hit: false });
+        else { x.globalAlpha = 0.85; x.drawImage(SPR.drop, ox(Math.round(bx2)), oy(Math.round(by2))); }
+      } x.globalAlpha = 1; }
       // 粒子
-      for (const f of this.fx) {
+      for (let fi = 0; fi < this.fx.length; fi++) {
+        const f = this.fx[fi];
         f.life += 1 / 60; f.x += f.vx / 60; f.y += f.vy / 60; f.vy += 4 / 60;
         const a = 1 - f.life / f.max; if (a <= 0) continue;
-        x.globalAlpha = Math.min(1, a * 1.5);
         const spr = f.type === 'heart' ? SPR.heart : f.type === 'spark' ? SPR.spark : f.type === 'drop' ? SPR.drop : null;
+        if (c.g3d) {
+          let src = spr ? { img: spr, sx: 0, sy: 0, sw: spr.width, sh: spr.height, px: spr.width / 2, py: spr.height } : null;
+          if (!src) src = this.worldCanvas('fx-' + f.type, 8, 8, (g) => {
+            if (f.type === 'steam') { g.fillStyle = 'rgba(245,245,255,0.8)'; const r = 2; g.fillRect(4 - r, 4 - r, r * 2 + 1, r * 2); }
+            else if (f.type === 'dust') { g.fillStyle = '#a08a68'; g.fillRect(3, 3, 2, 2); }
+          });
+          this.worldPush({ id: 'fx-' + fi, kind: 'fx', x: f.x - CX, z: (useBeh && beh.z) || 0, yLift: Math.max(0, GROUND_Y - f.y), src: src, shadow: false, hit: false, alpha: Math.min(1, a * 1.5) });
+          continue;
+        }
+        x.globalAlpha = Math.min(1, a * 1.5);
         if (spr) x.drawImage(spr, ox(Math.round(f.x - spr.width / 2)), oy(Math.round(f.y)));
         else if (f.type === 'steam') { x.fillStyle = 'rgba(245,245,255,0.8)'; const r = 1 + Math.floor(f.life * 2.5); x.fillRect(ox(Math.round(f.x)) - r, oy(Math.round(f.y)) - r, r * 2 + 1, r * 2); }
         else if (f.type === 'dust') { x.fillStyle = '#a08a68'; x.fillRect(ox(Math.round(f.x)), oy(Math.round(f.y)), 2, 2); }
@@ -1151,9 +1198,20 @@
       c.lights.push({ x: pxx + c.offs[2][0], y: pyy - 20, r: 14, col: [255, 214, 110], a: 0.28 });
       }
       // 被碰落嘅花瓣／小花／石仔
-      for (const p of beh.props) {
+      for (let pi = 0; pi < beh.props.length; pi++) {
+        const p = beh.props[pi];
         const a = Math.min(1, (p.life - p.age) / 3); if (a <= 0) continue;
         const qx = Math.round(CX + p.x), qy = Math.round(GROUND_Y + p.y);
+        if (c.g3d) {
+          const src = this.worldCanvas('prop-' + p.kind, 8, 8, (g) => {
+            g.globalAlpha = a;
+            if (p.kind === 'petal') { g.fillStyle = '#f8a8c0'; g.fillRect(2, 4, 3, 2); g.fillStyle = '#ffd0dc'; g.fillRect(2, 4, 1, 1); }
+            else if (p.kind === 'flower') { g.fillStyle = '#ffe27a'; g.fillRect(4, 1, 1, 5); g.fillRect(2, 3, 5, 1); g.fillStyle = '#fff'; g.fillRect(4, 3, 1, 1); }
+            else { g.fillStyle = '#8a8a94'; g.fillRect(2, 5, 3, 2); g.fillStyle = '#b4b4be'; g.fillRect(2, 5, 2, 1); }
+          });
+          this.worldPush({ id: 'prop-' + pi, kind: 'potProp', x: p.x, z: (beh.z || 0) + (p.y || 0) * 0.2, yLift: Math.max(0, -p.y), src: src, shadow: false, hit: false, alpha: a });
+          continue;
+        }
         x.globalAlpha = a;
         if (p.kind === 'petal') { x.fillStyle = '#f8a8c0'; x.fillRect(ox(qx), oy(qy), 3, 2); x.fillStyle = '#ffd0dc'; x.fillRect(ox(qx), oy(qy), 1, 1); }
         else if (p.kind === 'flower') { x.fillStyle = '#ffe27a'; x.fillRect(ox(qx), oy(qy - 2), 1, 5); x.fillRect(ox(qx - 2), oy(qy), 5, 1); x.fillStyle = '#fff'; x.fillRect(ox(qx), oy(qy), 1, 1); }
@@ -1161,13 +1219,48 @@
         x.globalAlpha = 1;
       }
       // 玩耍小球（behavior play 狀態）
-      if (beh.item && beh.item.kind === 'ball') { const bx2 = Math.round(CX + beh.x + beh.item.x), by2 = Math.round(GROUND_Y - 10 + beh.item.y); x.drawImage(SPR.ball, ox(bx2 - 2), oy(by2 - 2)); c.lights.push({ x: bx2 + c.offs[2][0], y: by2, r: 12, col: [255, 200, 120], a: 0.6 }); }
+      if (beh.item && beh.item.kind === 'ball') {
+        const bx2 = Math.round(CX + beh.x + beh.item.x), by2 = Math.round(GROUND_Y - 10 + beh.item.y);
+        if (c.g3d) {
+          this.worldPush({ id: 'ball-play', kind: 'ball', x: beh.x + beh.item.x, z: beh.z || 0, yLift: Math.max(0, 10 - beh.item.y), src: { img: SPR.ball, sx: 0, sy: 0, sw: SPR.ball.width, sh: SPR.ball.height, px: 2, py: 4 }, shadow: true, hit: false });
+        } else {
+          x.drawImage(SPR.ball, ox(bx2 - 2), oy(by2 - 2)); c.lights.push({ x: bx2 + c.offs[2][0], y: by2, r: 12, col: [255, 200, 120], a: 0.6 });
+        }
+      }
     }
     // 事件視覺（EV.visual 嘅純函數結果）
     drawEventFx(x, view, c, gx) {
       const ev = view.event, v = ev.vis || {}, t = c.t, ox = (px) => px + MX, oy = (py) => py + MY, offs = c.offs;
+      const ZS = (Glimmer.garden3d && Glimmer.garden3d.ZSCALE) || 1.6;
       // 遊美事件 icon：事件頭 cardSec 秒喺寵物頭頂（整數像素、Nearest）；淡入淡出
-      { const is = this.eventIconSrc(ev.id, ev.t || 0), cs = P.events.cardSec; if (is && (ev.t || 0) < cs) { const fa = Math.min(1, (ev.t || 0) / 0.3, (cs - (ev.t || 0)) / 0.4); const hy = (this.petDraw ? this.petDraw.y : GROUND_Y - 70) - 26 + Math.round(Math.sin(t * 3) * 1.5); x.globalAlpha = Math.max(0, fa); x.drawImage(is.img, is.sx, is.sy, is.sw, is.sh, ox(Math.round(gx + 22 - is.px)), oy(Math.round(hy - is.py)), is.sw, is.sh); x.globalAlpha = 1; } }
+      { const is = this.eventIconSrc(ev.id, ev.t || 0), cs = P.events.cardSec; if (is && (ev.t || 0) < cs) { const fa = Math.min(1, (ev.t || 0) / 0.3, (cs - (ev.t || 0)) / 0.4); const hy = (this.petDraw ? this.petDraw.y : GROUND_Y - 70) - 26 + Math.round(Math.sin(t * 3) * 1.5);
+        if (c.g3d) this.worldPush({ id: 'event-icon', kind: 'event', x: gx + 22 - CX, z: 0, yLift: Math.max(8, GROUND_Y - hy), src: is, shadow: false, hit: false, alpha: Math.max(0, fa) });
+        else { x.globalAlpha = Math.max(0, fa); x.drawImage(is.img, is.sx, is.sy, is.sw, is.sh, ox(Math.round(gx + 22 - is.px)), oy(Math.round(hy - is.py)), is.sw, is.sh); x.globalAlpha = 1; }
+      } }
+      if (c.g3d && ev.id === 'butterfly') {
+        const bx = Math.round(v.bx), by = Math.round(v.by), f = v.flap;
+        const src = this.worldCanvas('ev-butterfly', 8, 8, (g) => { g.fillStyle = '#5a3a6a'; g.fillRect(3, 2, 1, 3); g.fillStyle = '#8ad8ff'; g.fillRect(1, f ? 1 : 2, 2, f ? 3 : 2); g.fillRect(4, f ? 1 : 2, 2, f ? 3 : 2); g.fillStyle = '#e8f8ff'; g.fillRect(1, f ? 1 : 2, 1, 1); g.fillRect(5, f ? 1 : 2, 1, 1); });
+        this.worldPush({ id: 'event-butterfly', kind: 'event', x: bx - CX, z: (by - GROUND_Y) * ZS, yLift: Math.max(0, GROUND_Y - by), src: src, shadow: false, hit: false });
+        return;
+      }
+      if (c.g3d && ev.id === 'gift' && v.show > 0.02) {
+        const src = this.worldCanvas('ev-gift', 12, 16, (g) => { const h = Math.max(1, Math.round(7 * v.show)); g.fillStyle = '#e8607a'; g.fillRect(1, 16 - h, 9, h); g.fillStyle = '#ffd36a'; g.fillRect(5, 16 - h, 1, h); g.fillRect(1, 16 - (h >> 1), 9, 1); g.fillRect(3, 14 - h, 2, 2); g.fillRect(6, 14 - h, 2, 2); });
+        this.worldPush({ id: 'event-gift', kind: 'event', x: v.x, z: 0, yLift: Math.max(0, 7 * v.show + (v.bounce || 0) * 8), src: src, shadow: true, hit: false });
+        return;
+      }
+      if (c.g3d && ev.id === 'treasure') {
+        const src = this.worldCanvas('ev-treasure', 16, 16, (g) => { g.fillStyle = '#3e2c20'; g.fillRect(2, 12, 12, 4); if (v.found) { g.fillStyle = '#7ae0ff'; g.fillRect(7, 3, 3, 7); g.fillRect(5, 5, 7, 3); g.fillStyle = '#e8fbff'; g.fillRect(7, 5, 2, 2); } });
+        this.worldPush({ id: 'event-treasure', kind: 'event', x: (v.digX || 0) + 11, z: 0, yLift: v.found ? (8 + (v.pop || 0) * 14) : 2, src: src, shadow: true, hit: false });
+        return;
+      }
+      if (c.g3d && ev.id === 'firefly_walk') {
+        const fade = 1 - (v.away || 0);
+        (v.flies || []).forEach((f, i) => {
+          const src = this.worldCanvas('ev-ff', 4, 4, (g) => { g.fillStyle = 'rgb(214,255,120)'; g.fillRect(1, 1, 2, 2); g.fillStyle = 'rgb(255,255,200)'; g.fillRect(1, 1, 1, 1); });
+          this.worldPush({ id: 'event-ff-' + i, kind: 'event', x: f.x - CX, z: (f.y - GROUND_Y) * ZS, yLift: Math.max(0, GROUND_Y - f.y), src: src, shadow: false, hit: false, alpha: (0.45 + 0.55 * f.tw) * fade });
+        });
+        return;
+      }
       if (ev.id === 'butterfly') {
         const bx = Math.round(v.bx), by = Math.round(v.by), f = v.flap;
         x.fillStyle = '#5a3a6a'; x.fillRect(ox(bx), oy(by - 1), 1, 3);

@@ -338,6 +338,16 @@
     hit.addEventListener('pointerdown', (e) => {
       const a = toArt(e);
       if (G.mode === 'minigame') { if (mgs) mgs.target = a.x; return; }
+      // H1.3：3D 世界物件用 raycast／投影盒（屎、細佬、訪客、6d 影子）
+      if (G.g3d && typeof G.g3d.on === 'function' && G.g3d.on() && typeof G.g3d.hitActor === 'function') {
+        const hitA = G.g3d.hitActor(a.x, a.y);
+        if (hitA) {
+          if (hitA.kind === 'poop') { SIM.clearPoop(G.state); processEvents(); G.save(); return; }
+          if (hitA.kind === 'kid' || hitA.kind === 'kidEgg') { if (G.s2Tap && G.s2Tap(a, e)) return; }
+          if (hitA.kind === 'visitor' || hitA.kind === 'visitProp') { if (G.b3bTap && G.b3bTap(a, e)) return; }
+          if (hitA.kind === 'shadow' && G.l6d && typeof G.l6d.info === 'function') { const id = String(hitA.id || '').replace(/^shadow-/, ''); G.l6d.info(id); return; }
+        }
+      }
       if (G.b3bTap && G.b3bTap(a, e)) return;   // 3b：撳訪客／信／擺設
       if (G.s2Tap && G.s2Tap(a, e)) return;     // 4a：撳細佬／蛋、拖團絨去哄喊
       if (e.isPrimary !== false && ptrs.size) { ptrs.clear(); endNuzzle(press); press = null; }   // 新手勢嘅第一隻手指／滑鼠：清走漏咗 up 嘅舊 pointer（保險）

@@ -223,8 +223,8 @@ const ok = (c, n, info) => { if (c) { pass++; console.log('  ✓ ' + n); } else 
   await ctx3.addInitScript(() => { Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 }); });
   const p3 = await ctx3.newPage(); await p3.goto(BASE + '?q=high'); await p3.evaluate(() => localStorage.clear()); await p3.goto(BASE + '?q=high'); await p3.waitForTimeout(500);
   await p3.evaluate(() => { const Q = Glimmer.data.PARAMS.quality; Q.slowMs = 0.01; Q.windowFrames = 10; Q.graceFrames = 0; Q.slowWindows = 2; });
-  await p3.waitForTimeout(1800);
-  const dq = await p3.evaluate(() => ({ q: __glimmer.state.settings.quality, drops: __glimmer.qm.drops, auto: __glimmer.autoDowngrade }));
+  await p3.waitForFunction(() => window.__glimmer && __glimmer.state && __glimmer.state.settings.quality !== 'high' && __glimmer.qm && __glimmer.qm.drops >= 1, { timeout: 8000 }).catch(() => null);
+  const dq = await p3.evaluate(() => ({ q: __glimmer.state.settings.quality, drops: __glimmer.qm && __glimmer.qm.drops, auto: __glimmer.autoDowngrade }));
   ok(dq.auto && dq.drops >= 1 && dq.q !== 'high', 'rAF 幀間隔（窗口平均 > slowMs，連續 2 窗）→ 自動降一級（' + JSON.stringify(dq) + '）');
   await ctx3.close();
 

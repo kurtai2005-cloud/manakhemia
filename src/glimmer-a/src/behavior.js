@@ -58,7 +58,7 @@
       rng, pers: Object.assign({}, P.personality, opts.personality || {}), stateWeights: Object.assign({}, P.stateWeights, opts.stateWeights || {}),
       t: 0, acc: 0, state: 'stay', stateT: 0, phase: '', clip: 'idle', clipT: 0, frame: 0,
       x: 0, z: 0, lift: 0, dir: 1, gaze: 0, expr: 'neutral', base: 'idle', stage: 'sprout', fkey: 'sprout',
-      variant: null, variantT: 0, nextVariant: 0, nextDecide: 0,
+      variant: null, variantT: 0, nextVariant: 0, nextDecide: 0, lastWalkAt: 0,
       tx: 0, tz: 0, _dx: 0, _dz: 0, speed: P.walkSpeed, dur: 0, hopsLeft: 0, hopT: 0, hopDx: 0,
       item: null, props: [], fx: [], attach: NOATT, taps: [], petTaps: [], lastTouch: -99, grumpyCool: -1, cuddlyUntil: 0, afterWake: null, holdUntil: 0, stir: 0, awaySign: 0,
       potWobble: 0, steamT: 0, cool: {}, lastOverride: null, hitDone: false,
@@ -84,7 +84,7 @@
   function setClip(b, name) { if (b.clip !== name) { b.clip = name; b.clipT = 0; note(b, 'clip', name); } }
   function setPhase(b, ph) { b.phase = ph; b.stateT = 0; note(b, 'phase', b.state, ph); }
   function loopClip(b, name) { setClip(b, name); const d = clipDur(name); if (b.clipT >= d) b.clipT -= d; }
-  function enter(b, name, phase) { if (b.state === 'micro' && b.seq) endMicro(b); if (name !== 'walk') b.stopAt = null; b.gaitForce = null; b.state = name; b.phase = phase || ''; b.stateT = 0; b.log.enters[name] = (b.log.enters[name] || 0) + 1; note(b, 'state', name, b.phase); }
+  function enter(b, name, phase) { if (b.state === 'micro' && b.seq) endMicro(b); if (name !== 'walk') b.stopAt = null; b.gaitForce = null; b.state = name; b.phase = phase || ''; b.stateT = 0; if (name === 'walk' || name === 'follow') b.lastWalkAt = b.t; b.log.enters[name] = (b.log.enters[name] || 0) + 1; note(b, 'state', name, b.phase); }
   function fx(b, type, x, y) { b.fx.push({ type, x, y }); if (b.fx.length > P.fxMax) b.fx.shift(); }
   function applyStep(b, r) {
     b.x = r.x; b.z = r.z;
@@ -124,6 +124,11 @@
     if (b.expr === 'hungry' || b.expr === 'dirty') w.play *= 0.4;
     if (s.withdrawn && s.withdrawn.on) { const m = P.withdrawnMul; w.walk *= m.walk; w.jump *= m.jump; w.play *= m.play; w.nap *= m.nap; }
     for (const k in COOL_CLIP) if (b.t < (b.cool[k] || 0)) w[k] = 0;
+    if (typeof P.g3dOn === 'function' && P.g3dOn()) {
+      const G3 = (typeof Glimmer !== 'undefined' && Glimmer.garden3d) ? Glimmer.garden3d : (typeof require === 'function' ? require('./garden3d.js') : null);
+      const wm = (G3 && G3.G3D_WALK_MUL) || 2.6, sm = (G3 && G3.G3D_STAY_MUL) || 0.4;
+      if (w.walk != null) w.walk *= wm; if (w.stay != null) w.stay *= sm;
+    }
     return w;
   }
   function pickW(r, w) {
@@ -165,6 +170,14 @@
     b.variant = null; b.nextVariant = rf(b.rng, P.variantEvery);
   }
 
+  function g3dLive() { return typeof P.g3dOn === 'function' && P.g3dOn(); }
+  function decideEveryOf() {
+    if (g3dLive()) {
+      const G3 = (typeof Glimmer !== 'undefined' && Glimmer.garden3d) ? Glimmer.garden3d : (typeof require === 'function' ? require('./garden3d.js') : null);
+      return (G3 && G3.G3D_DECIDE_EVERY) || [1.8, 3.6];
+    }
+    return P.decideEvery;
+  }
   function startState(b, name, ctx) {
     const r = b.rng, pe = b.pers, pm = P.persMul;
     switch (name) {
@@ -199,10 +212,10 @@
         if (typeof P.g3dSpot === 'function') { const sp = P.g3dSpot('bump', b); if (sp) { b.tx = sp.x; b.tz = sp.z; } }
         enter(b, 'bump', 'go'); break;
       }
-      default: enter(b, 'stay'); b.nextDecide = rf(r, P.decideEvery);
+      default: enter(b, 'stay'); b.nextDecide = rf(r, decideEveryOf());
     }
   }
-  function backToStay(b) { b.item = null; b.lift = 0; enter(b, 'stay'); b.nextDecide = rf(b.rng, P.decideEvery); if (b.variant) endVariant(b); }
+  function backToStay(b) { b.item = null; b.lift = 0; enter(b, 'stay'); b.nextDecide = rf(b.rng, decideEveryOf()); if (b.variant) endVariant(b); }
   function goWake(b, after) { b.item = null; b.afterWake = after || null; enter(b, 'wake'); b.clipT = 0; if (b.variant) endVariant(b); }
   function goReact(b) { enter(b, 'react'); b.dur = clipDur('emo_happy'); b.clipT = 0; b.happyUntil = b.t + b.dur + (LV.happyAfterSec || 0); }   // A3：emo_happy 後 10s 內蓬跳
   function goStartle(b, tapX) {
@@ -403,7 +416,13 @@
           }
           if (b.expr === 'tired' && b.stateT >= 10) { startState(b, 'nap', ctx); break; }   // 精力<30 且閒置>10s 必定入睡（art weightMods）
           if (!(b.hushUntil > b.t)) b.nextDecide -= FIX;   // 3a：扮醒呆／暈緊 → 企定
-          if (b.nextDecide <= 0) { const n = pickW(r, weights(b, ctx)); if (n === 'stay') b.nextDecide = rf(r, P.decideEvery); else startState(b, n, ctx); }
+          if (b.nextDecide <= 0) { const n = pickW(r, weights(b, ctx)); if (n === 'stay') b.nextDecide = rf(r, decideEveryOf()); else startState(b, n, ctx); }
+          else if (g3dLive() && !b.variant) {
+            const G3 = (typeof Glimmer !== 'undefined' && Glimmer.garden3d) ? Glimmer.garden3d : (typeof require === 'function' ? require('./garden3d.js') : null);
+            const idle = (G3 && G3.G3D_IDLE_WALK_SEC) || 3.2;
+            const force = G3 && G3.shouldForceWalk ? G3.shouldForceWalk(b, b.t, idle) : ((b.t - (b.lastWalkAt || 0)) >= idle && b.stateT >= 1.15);
+            if (force) startState(b, 'walk', ctx);
+          }
         }
         break;
       }

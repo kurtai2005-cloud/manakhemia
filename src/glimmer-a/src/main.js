@@ -182,6 +182,8 @@
             if (qm.slow >= P.quality.slowWindows) {
               const order = ['high', 'mid', 'low', 'off']; const nq = order[Math.min(3, order.indexOf(s.settings.quality) + 1)];
               G.setQuality(nq); UI.toast('效能較低，已自動降低畫質'); qm.slow = 0; qm.drops++; qm.grace = P.quality.graceFrames;
+              G.qualityEvent = { q: nq, drops: qm.drops, t: performance.now() };
+              try { window.dispatchEvent(new CustomEvent('glimmer-quality', { detail: G.qualityEvent })); } catch (e) { }
             }
           }
         }

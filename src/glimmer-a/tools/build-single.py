@@ -59,6 +59,18 @@ for d in ('art', 'audio'):
                 import shutil; fp = os.path.join(EXT, rel); os.makedirs(os.path.dirname(fp), exist_ok=True); shutil.copyfile(p, fp); extfont.append(rel)
                 continue
             assets[rel] = [MIME[ext], base64.b64encode(open(p, 'rb').read()).decode()]
+# H1.3：three.js LICENSE 跟 APK／單檔一齊走（vendor/LICENSE.three.txt）
+lic_src = os.path.join(ROOT, 'src', 'vendor', 'LICENSE.three.txt')
+if os.path.isfile(lic_src):
+    rel = 'vendor/LICENSE.three.txt'
+    if EXT:
+        import shutil
+        fp = os.path.join(EXT, rel)
+        os.makedirs(os.path.dirname(fp), exist_ok=True)
+        shutil.copyfile(lic_src, fp)
+        extlic.append(rel)
+    else:
+        assets[rel] = ['text/plain', base64.b64encode(open(lic_src, 'rb').read()).decode()]
 # V3.1：V3 png → 無損 webp（exact＝透明位 RGB 都保留）；按 PNG sha1 快取
 CACHE = os.environ.get('GLIMMER_WEBP_CACHE', '/workspace/hdbuild/webp3')
 def to_webp(p):

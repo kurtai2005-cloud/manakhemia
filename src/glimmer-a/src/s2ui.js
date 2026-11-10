@@ -227,17 +227,59 @@
       say('細佬進化喇！→ ' + SR.STAGE_ZH[sk], { sec: 3.5 }); SND('reward'); UIS('badge', {}); K.hearts.push({ t: 0 }); EVO.last = { sk, at: pnow() };
     }
     const EVO = { last: null };
+    function g3dOn() { return !!(G.g3d && typeof G.g3d.on === 'function' && G.g3d.on()); }
+    function kidWalk3(tx, tz, step) {
+      const beh = Glimmer.data && Glimmer.data.PARAMS && Glimmer.data.PARAMS.beh;
+      if (beh && typeof beh.g3dWalk === 'function') {
+        K.tz = tz;
+        const r = beh.g3dWalk(K, tx, step);
+        if (r) { K.x = r.x; K.z = r.z; K._dx = r.dx || 0; K._dz = r.dz || 0; if (r.dx || r.dz) { if (Math.abs(r.dx) >= Math.abs(r.dz)) K.dir = Math.sign(r.dx) || K.dir; } return !!r.arrived; }
+      }
+      const dx = tx - K.x, dz = tz - (K.z || 0), d = Math.hypot(dx, dz);
+      if (d <= Math.max(step, 1.5)) { K.x = tx; K.z = tz; return true; }
+      K.x += dx / d * step; K.z = (K.z || 0) + dz / d * step; K.dir = dx > 0 ? 1 : -1; return false;
+    }
     function kidTick(dt) {
       const s = S(), o = st(), ms = dt * 1000, now = G.now(); K.ct += ms; K.hearts = K.hearts.filter(h => (h.t += ms) < 900);
-      if (o.phase === 'egg') { const tx = s.sleeping ? clamp(trX() + 18, -70, 70) : 30; EGG.x += clamp(tx - EGG.x, -20 * dt, 20 * dt); return; }
+      if (K.z == null) K.z = 8;
+      if (o.phase === 'egg') { const tx = s.sleeping ? clamp(trX() + 18, -70, 70) : 30; EGG.x += clamp(tx - EGG.x, -20 * dt, 20 * dt); if (EGG.z == null) EGG.z = 8; return; }
       if (o.phase !== 'kid' || (SC.cur && SC.cur.kind !== 'eat')) return;
       const sk = SR.stageOf(s, now); if (sk !== lastStage) { if (lastStage && sk !== lastStage) { note('stage', { sk }); evoFx(sk); if (o.stageSeen !== sk) { o.stageSeen = sk; if (SR.stageIdx(sk) >= 3 && !o.line) { const r = SR.settle(s, now); say(fmt(L_.reveal, { zh: SR.LINE_ZH[o.line] }), { sec: 4 }); note('reveal', { line: o.line, how: r && r.how }); } SR.checkLevel(s, now); if (G.save) G.save(); } } lastStage = sk; }
       if (SR.stageIdx(sk) >= 3 && !o.line) { SR.settle(s, now); if (G.save) G.save(); }
-      const bx = trX(), fr = o.rel === 'friend' || o.rel === 'family', walkSp = fr ? 26 : 22;
+      const bx = trX(), bz = (G.beh && G.beh.z != null) ? G.beh.z : 0, fr = o.rel === 'friend' || o.rel === 'family', walkSp = fr ? 26 : 22;
       const go = (tx, sp) => { const d = tx - K.x; if (Math.abs(d) <= 1.5) return true; K.x += clamp(d, -sp * dt, sp * dt); K.dir = d > 0 ? 1 : -1; return false; };
       if (K.cry) { K.clip = 'cry'; return; }
       if (K.mode === 'eat' && pnow() < K.eatUntil) { K.clip = 'eat'; return; }
-      if (s.sleeping) { const tx = clamp(bx + trHalf() + 4, -70, 70); if (go(tx, walkSp)) { K.clip = 'sleep'; K.dir = -1; } else K.clip = 'walk'; K.mode = 'sleep'; return; }
+      if (s.sleeping) {
+        if (g3dOn()) { const arrived = kidWalk3(bx + 14, bz, walkSp * (20 / 15) * dt); K.clip = arrived ? 'sleep' : 'walk'; K.mode = 'sleep'; if (arrived) K.dir = -1; }
+        else { const tx = clamp(bx + trHalf() + 4, -70, 70); if (go(tx, walkSp)) { K.clip = 'sleep'; K.dir = -1; } else K.clip = 'walk'; K.mode = 'sleep'; }
+        return;
+      }
+      if (g3dOn()) {
+        // H1.3：細佬自己揀位行（有時跟主寵隔籬，有時四圍行），用同一套 nav
+        K.mode = 'wander';
+        const step = walkSp * (20 / 15) * dt;
+        const arrived = (K.tx3 == null) || (Math.hypot((K.tx3 - K.x), (K.tz3 != null ? K.tz3 : 0) - (K.z || 0)) <= 3);
+        if (arrived || (K._g3dStall && K._g3dStall > 12)) {
+          const beh = Glimmer.data && Glimmer.data.PARAMS && Glimmer.data.PARAMS.beh;
+          const near = (K._wanderN = (K._wanderN || 0) + 1) % 3 === 0;
+          let dest = null;
+          if (near) dest = { x: bx + (K.x >= bx ? 16 : -16), z: bz };
+          else if (beh && typeof beh.g3dPickWalk === 'function') dest = beh.g3dPickWalk(K);
+          if (!dest && Glimmer.garden3d && Glimmer.garden3d.pickWalk && G.g3d && G.g3d.range3) {
+            const rng = function () { K._rng = ((K._rng || 1) * 1103515245 + 12345) & 0x7fffffff; return (K._rng % 1000) / 1000; };
+            dest = Glimmer.garden3d.pickWalk(null, rng, { x: K.x, z: K.z || 0 }, 8, Glimmer.garden3d.RANGE3);
+          }
+          if (dest) { K.tx3 = dest.x; K.tz3 = dest.z; K._g3dPath = null; }
+        }
+        if (K.tx3 != null) {
+          const done = kidWalk3(K.tx3, K.tz3, step);
+          const moving = Math.hypot(K._dx || 0, K._dz || 0) > 0.05 && !done;
+          K.clip = moving ? 'walk' : 'idle';
+          if (!moving && done) K.dir = bx >= K.x ? 1 : -1;
+        } else { K.clip = 'idle'; }
+        return;
+      }
       K.mode = 'follow'; const bd = G.beh ? G.beh.dir || 1 : 1, gap = trHalf() + (fr ? 12 : 20), tx = clamp(bx - bd * gap, -70, 70);
       if (Math.abs(tx - K.x) > (fr ? 3 : 6)) { K.lag += ms; if (K.lag >= 300) { go(tx, walkSp); K.clip = 'walk'; } else K.clip = 'idle'; } else { K.lag = 0; K.clip = 'idle'; K.dir = bx >= K.x ? 1 : -1; }
     }
@@ -333,13 +375,24 @@
     };
 
     // ── 撳（ui.js pointerdown；b3bTap 之後）──
-    function kidRect() { const o = st(), pv = R.par ? R.par.x * -1.5 : 0; if (o.phase === 'egg') return { x: CX + EGG.x - 12 + pv, y: GY - 30, w: 24, h: 32 };
+    function kidRect() {
+      if (g3dOn() && G.g3d && typeof G.g3d.project === 'function') {
+        const o = st();
+        if (o.phase === 'egg') { const f = G.g3d.project(EGG.x, 0, EGG.z || 8), h = G.g3d.project(EGG.x, 36, EGG.z || 8); const y0 = Math.min(f.y, h.y); return { x: f.x - 14, y: y0, w: 28, h: Math.max(20, Math.abs(h.y - f.y) + 6) }; }
+        const f = G.g3d.project(K.x, 0, K.z || 0), h = G.g3d.project(K.x, 45, K.z || 0); const y0 = Math.min(f.y, h.y);
+        return { x: f.x - 16, y: y0, w: 32, h: Math.max(22, Math.abs(h.y - f.y) + 6) };
+      }
+      const o = st(), pv = R.par ? R.par.x * -1.5 : 0; if (o.phase === 'egg') return { x: CX + EGG.x - 12 + pv, y: GY - 30, w: 24, h: 32 };
       const ka = A.ka && A.ka.forms[formNow()], bx = ka ? ka.box : [12, 18, 36, 46]; return { x: CX + K.x + (bx[0] - 24) - 4 + pv, y: GY + (bx[1] - 45) - 4, w: bx[2] - bx[0] + 8, h: bx[3] - bx[1] + 8 }; }
     G.s2Tap = function (a, e) {
       if (SC.cur && SC.cur.kind === 'hatch') { sceneTap(); return true; }
       const o = st(); if (o.phase !== 'egg' && o.phase !== 'kid') return false;
       if (SC.cur) return SC.cur.kind === 'lesson' || SC.cur.kind === 'comfort';
       if (K.cry && !S().sleeping && inBox(a, UI.petHitBox())) { dragStart(a, e); return true; }
+      if (G.g3d && typeof G.g3d.on === 'function' && G.g3d.on() && typeof G.g3d.hitActor === 'function') {
+        const h = G.g3d.hitActor(a.x, a.y);
+        if (h && (h.kind === 'kid' || h.kind === 'kidEgg') && !K.hidden) return kidTap();
+      }
       if (!K.hidden && inBox(a, kidRect())) return kidTap();
       return false;
     };
@@ -363,22 +416,30 @@
     }
     function drawKid(x, base) {
       const fk = formNow(); if (!fk || fk === 'egg' || !A.act) return; const c = SC.cur;
-      x.fillStyle = 'rgba(10,20,20,0.3)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(9 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(Math.round(CX + K.x) - w), oy(base - 1 + dy), w * 2, 1); }
+      if (!(off && off._cc && off._cc.g3d)) { x.fillStyle = 'rgba(10,20,20,0.3)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(9 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(Math.round(CX + K.x) - w), oy(base - 1 + dy), w * 2, 1); } }
       if (c && (c.kind === 'lesson' || c.kind === 'trick') && c.t >= 3000 && drawCopy(x, c, base)) return;
       const sp = strip(fk, K.clip); if (!sp) return; const loop = !(c && c.F && c.F.actors.kid && c.F.actors.kid.loop === false), f = kidFrame(fk, K.clip, K.ct, loop);
-      const mir = K.dir < 0; x.save(); x.imageSmoothingEnabled = false; const X0 = ox(Math.round(CX + K.x)), Y0 = oy(base); if (mir) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
+      const mir = K.dir < 0; const X0 = ox(Math.round(CX + K.x)), Y0 = oy(base);
       R.kidBlit = { X: X0, Y: Y0, fk, clip: K.clip, f, mir: mir ? -1 : 1, fn: R.frameNo }; if (G.v3) G.v3.kidTick(K.clip, false);   // #83 細佬 petglow v3
+      if (off && off._cc && off._cc.g3d) {
+        R.worldPush({ id: 'kid', kind: 'kid', x: K.x, z: K.z || 0, src: { img: sp, sx: f * 48, sy: 0, sw: 48, sh: 48, px: 24, py: 45 }, flip: mir, shadow: true, hit: true, w: 28, h: 45 });
+        if (K.clip === 'sleep') { const z = fxInfo('fx_zzz'); if (z && z.img) { const fr = Math.floor(pnow() / 300) % z.n; R.worldPush({ id: 'kid-zzz', kind: 'fx', x: K.x + 8, z: K.z || 0, yLift: 36, src: { img: z.img, sx: fr * z.w, sy: 0, sw: z.w, sh: z.h, px: z.pv[0], py: z.pv[1] }, shadow: false, hit: false }); } }
+        RST.kid++; return;
+      }
+      x.save(); x.imageSmoothingEnabled = false; if (mir) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
       x.drawImage(sp, f * 48, 0, 48, 48, -24, -45, 48, 48); if (G.pat5c) G.pat5c.strip(x, 'pet2', fk, A.act.forms[fk] && A.act.forms[fk][K.clip] ? K.clip : 'idle', f, -24, -45); x.restore(); RST.kid++;
       if (K.clip === 'sleep') { const z = fxInfo('fx_zzz'); if (z && z.img) { const fr = Math.floor(pnow() / 300) % z.n, ka = A.ka.forms[fk] || A.ka.forms.S2; x.drawImage(z.img, fr * z.w, 0, z.w, z.h, ox(Math.round(CX + K.x + (ka.headTop[0] - 24) + 6) - z.pv[0]), oy(base + ka.headTop[1] - 45 - 1) - z.pv[1], z.w, z.h); } }
     }
     function drawEgg(x, base) {
       const e = A.img['egg/egg_48.png']; if (!e) return; const t = pnow() % 2000, bob = t > 1000 && t < 1150 ? -1 : 0, X0 = ox(Math.round(CX + EGG.x)), Y0 = oy(base + bob);
+      if (off && off._cc && off._cc.g3d) { R.worldPush({ id: 'kidEgg', kind: 'kidEgg', x: EGG.x, z: EGG.z || 8, yLift: -bob, src: { img: e, sx: 0, sy: 0, sw: 48, sh: 48, px: 24, py: 45 }, shadow: true, hit: true, w: 28, h: 45 }); RST.egg++; return; }
       x.fillStyle = 'rgba(10,20,20,0.3)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(8 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(X0 - w, oy(base - 1 + dy), w * 2, 1); }
       x.drawImage(e, 0, 0, 48, 48, X0 - 24, Y0 - 45, 48, 48); if (G.pat5c) G.pat5c.egg(x, 'pet2', X0 - 24, Y0 - 45); RST.egg++;
     }
     function drawDream(x) {
       const L = dreamLine(); if (!L || !A.ui) return; const d = A.img[A.ui.dreams[L].png], pr = R.petRect; if (!d || !pr) return;
       const hx = Math.round(pr.x + pr.w / 2) + 10, hy = Math.round(pr.y) - 8, sz = 44, pop = clamp((pnow() - DR.t0) / 300, 0, 1), s = DR.t0 > pnow() - 300 ? 0.6 + 0.4 * pop : 1, bob = Math.round(Math.sin(pnow() / 700) * 1.5);
+      if (off && off._cc && off._cc.g3d) { R.worldPush({ id: 'dreamBubble', kind: 'dreamBubble', x: EGG.x || 0, z: (EGG.z || 8), yLift: 48 + bob, src: { img: d, sx: 0, sy: 0, sw: d.width || 44, sh: d.height || 44, px: (d.width || 44) / 2, py: d.height || 44 }, shadow: false, hit: false }); RST.dream++; DR.show = L; return; }
       x.save(); x.imageSmoothingEnabled = false; x.drawImage(d, ox(hx), oy(hy - sz * s + bob), Math.round(sz * s), Math.round(sz * s)); x.restore(); RST.dream++; DR.show = L;
     }
     function drawOverlays(x, base) {
@@ -389,11 +450,15 @@
     }
     function drawHearts(x, base) {
       const h = fxInfo('fx_heart'); if (!h || !h.img) return; const fk = formNow(), ka = A.ka && (A.ka.forms[fk] || A.ka.forms.S2); if (!ka) return;
-      for (const q of K.hearts) { const u = q.t / 900, X0 = ox(Math.round(CX + K.x)), Y0 = oy(Math.round(base + ka.headTop[1] - 45 - 4 - u * 14)); x.globalAlpha = u > 0.7 ? 1 - (u - 0.7) / 0.3 : 1; x.drawImage(h.img, (u < 0.25 ? 0 : 1) * h.w, 0, h.w, h.h, X0 - h.pv[0], Y0 - h.pv[1], h.w, h.h); x.globalAlpha = 1; }
+      for (let i = 0; i < K.hearts.length; i++) { const q = K.hearts[i], u = q.t / 900;
+        if (off && off._cc && off._cc.g3d) { R.worldPush({ id: 'kid-heart-' + i, kind: 'fx', x: K.x, z: K.z || 0, yLift: 40 + u * 14, src: { img: h.img, sx: (u < 0.25 ? 0 : 1) * h.w, sy: 0, sw: h.w, sh: h.h, px: h.pv[0], py: h.pv[1] }, shadow: false, hit: false, alpha: u > 0.7 ? 1 - (u - 0.7) / 0.3 : 1 }); continue; }
+        const X0 = ox(Math.round(CX + K.x)), Y0 = oy(Math.round(base + ka.headTop[1] - 45 - 4 - u * 14)); x.globalAlpha = u > 0.7 ? 1 - (u - 0.7) / 0.3 : 1; x.drawImage(h.img, (u < 0.25 ? 0 : 1) * h.w, 0, h.w, h.h, X0 - h.pv[0], Y0 - h.pv[1], h.w, h.h); x.globalAlpha = 1; }
     }
     function drawBlanket(x, base) {
       const o = st(); if (!(o.rel === 'friend' || o.rel === 'family') || K.clip !== 'sleep' || !S().sleeping) return; const I = fxInfo('ov_blanket'); if (!I || !I.img) return;
-      const mid = (trX() + K.x) / 2; x.drawImage(I.img, 0, 0, I.w, I.h, ox(Math.round(CX + mid)) - I.pv[0], oy(base + 1) - I.pv[1], I.w, I.h); RST.blanket = (RST.blanket || 0) + 1;
+      const mid = (trX() + K.x) / 2;
+      if (off && off._cc && off._cc.g3d) { R.worldPush({ id: 'blanket', kind: 'fx', x: mid, z: ((K.z || 0) + ((G.beh && G.beh.z) || 0)) / 2, src: { img: I.img, sx: 0, sy: 0, sw: I.w, sh: I.h, px: I.pv[0], py: I.pv[1] }, shadow: false, hit: false }); RST.blanket = (RST.blanket || 0) + 1; return; }
+      x.drawImage(I.img, 0, 0, I.w, I.h, ox(Math.round(CX + mid)) - I.pv[0], oy(base + 1) - I.pv[1], I.w, I.h); RST.blanket = (RST.blanket || 0) + 1;
     }
     function drawPropFallback(x) {               // 團絨冇 3a 反應錨點（舊形態）→ 道具喺頭頂搖
       const c = SC.cur; if (!c || c.kind !== 'lesson' || c.rxOk || c.t >= 3000) return; const p = A.les.propsBySeries[c.L], I = p && A.img[p.png], pr = R.petRect; if (!I || !pr) return;
@@ -408,6 +473,13 @@
       if (clip !== KM.clip) { KM.clip = clip; KM.ct = 0; } else KM.ct += dt; if (b && b.dir) KM.dir = b.dir < 0 ? -1 : 1;
       const F6 = (R.face6a && R.face6a.get && clip !== 'sleep') ? R.face6a.get(fk) : null, c6 = F6 && F6.fw === 48 && F6.fh === 48 && strip(fk, 'idle') ? 'idle' : null;   // 6a.1：遊美表情 patch → base＝idle 幀 0
       const sp = strip(fk, c6 || clip); if (!sp) return null; const f = c6 ? 0 : kidFrame(fk, clip, KM.ct, true), X = Math.round(gx);
+      if (cc && cc.g3d) {
+        R.worldPush({ id: 'kid-main', kind: 'kid', x: gx - CX, z: (b && b.z) || 0, src: { img: sp, sx: f * 48, sy: 0, sw: 48, sh: 48, px: 24, py: 45 }, flip: KM.dir < 0, shadow: true, hit: true, w: 28, h: 45 });
+        R.kidBlit = { X: ox(X), Y: oy(base), fk, clip, f, mir: KM.dir < 0 ? -1 : 1, fn: R.frameNo }; if (G.v3) G.v3.kidTick(clip, s.sleeping);
+        RST.km = (RST.km || 0) + 1;
+        const ka = (A.ka && (A.ka.forms[fk] || A.ka.forms.S2)) || { headTop: [24, 14] }, hy = base + ka.headTop[1] - 45;
+        return { x: X - 14, y: hy - 2, w: 28, h: base - hy + 2, bud: { x: X, y: hy + 12 }, footY: base, km: km.id, clip };
+      }
       x.fillStyle = 'rgba(10,20,20,0.35)'; for (let dy = -2; dy <= 2; dy++) { const w = Math.round(10 * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(X) - w, oy(base - 1 + dy), w * 2, 1); }
       x.save(); x.imageSmoothingEnabled = false; const X0 = ox(X), Y0 = oy(base); if (KM.dir < 0) { x.translate(X0 + 1, Y0); x.scale(-1, 1); } else x.translate(X0, Y0);
       R.kidBlit = { X: X0, Y: Y0, fk, clip, f, mir: KM.dir < 0 ? -1 : 1, fn: R.frameNo }; if (G.v3) G.v3.kidTick(clip, s.sleeping);
@@ -423,6 +495,7 @@
       const ka = (A.ka && (A.ka.forms[fk] || A.ka.forms.S2)) || { headTop: [24, 14] }; return { img: sp, sx: 0, sy: 0, sw: 48, sh: 48, km: km.id, fk, headY: ka.headTop[1] };
     };
     R.s2Layer = function (x, z, cc, base) {
+      off._cc = cc;
       if (!A.ready || (SC.cur && SC.cur.kind === 'hatch')) return; const o = st(); base = GY;
       if (o.phase === 'egg') { if (z === 'front') { drawEgg(x, base); drawDream(x); } return; }
       if (o.phase !== 'kid' || K.hidden) return;
@@ -521,7 +594,7 @@
     window.__qa = window.__qa || {};
     window.__qa.s2 = {
       st: () => ({ ready: A.ready, errors: A.errors.slice(), auto: Object.assign({}, AUTO), save: JSON.parse(JSON.stringify(st())), stage: SR.stageOf(S(), G.now()), form: formNow(),
-        kid: { x: +K.x.toFixed(1), dir: K.dir, clip: K.clip, mode: K.mode, cry: !!K.cry, hearts: K.hearts.length }, egg: { x: +EGG.x.toFixed(1) }, scene: SC.cur ? { kind: SC.cur.kind, t: Math.round(SC.cur.t), skip: !!SC.cur.skip, last: SC.cur.last || null, rel: SC.cur.rel || null, rxOk: SC.cur.rxOk, copy: SC.cur.copyEv || null } : null,
+        kid: { x: +K.x.toFixed(1), z: +(K.z || 0).toFixed(1), dir: K.dir, clip: K.clip, mode: K.mode, cry: !!K.cry, hearts: K.hearts.length }, egg: { x: +EGG.x.toFixed(1) }, scene: SC.cur ? { kind: SC.cur.kind, t: Math.round(SC.cur.t), skip: !!SC.cur.skip, last: SC.cur.last || null, rel: SC.cur.rel || null, rxOk: SC.cur.rxOk, copy: SC.cur.copyEv || null } : null,
         tray: trayOn, render: Object.assign({}, RST), dream: DR.show, rxOk: !!A.rxOk, puppet: G.beh && G.beh.puppet ? Object.assign({}, G.beh.puppet) : null, gest: G.beh && G.beh.gest ? { key: G.beh.gest.key, clip: G.beh.gest.clip } : null, drag: DRAG.on, log: log.slice() }),
       elder: () => SR.noteElder(S(), G.now()), deliver: () => deliverEgg('qa'), arrive: () => G.s2Arrived('snail_postman'),
       set: (o) => { Object.assign(st(), o || {}); SR.st(S()); if (G.save) G.save(); return JSON.parse(JSON.stringify(st())); },
@@ -531,7 +604,7 @@
       kidCss: () => { const r = kidRect(), b = R.canvas.getBoundingClientRect(); return { x: b.left + (r.x + r.w / 2) / 195 * b.width, y: b.top + (r.y + r.h / 2) / 422 * b.height }; },
       petCss: () => { const r = UI.petHitBox(), b = R.canvas.getBoundingClientRect(); return { x: b.left + (r.x + r.w / 2) / 195 * b.width, y: b.top + (r.y + r.h / 2) / 422 * b.height }; },
       css: (x, y) => { const r = R.canvas.getBoundingClientRect(); return { x: r.left + x / 195 * r.width, y: r.top + y / 422 * r.height }; },
-      auto: (k, v) => { AUTO[k] = !!v; return Object.assign({}, AUTO); }, test: (k) => TEST[k](), version: VERSION, native, nextCry: (ms) => { sess.nextCry = pnow() + (ms || 0); }, kidX: (x) => { K.x = x; },
+      auto: (k, v) => { AUTO[k] = !!v; return Object.assign({}, AUTO); }, test: (k) => TEST[k](), version: VERSION, native, nextCry: (ms) => { sess.nextCry = pnow() + (ms || 0); }, kidX: (x) => { K.x = x; }, kidZ: (z) => { K.z = z; },
     };
     note('install'); return true;
   }

@@ -211,6 +211,11 @@
     G.b3bTap = function (a) {
       if (SC.cur) { sceneTap(); return true; }
       const c = VS.cur; if (!c || c.phase === 'leave') return false;
+      if (G.g3d && typeof G.g3d.on === 'function' && G.g3d.on() && typeof G.g3d.hitActor === 'function') {
+        const h = G.g3d.hitActor(a.x, a.y);
+        if (h && (h.kind === 'visitProp' || (h.id && String(h.id).indexOf('letter') >= 0)) && c.letter && c.letter.st === 'wait') { readLetter(c); return true; }
+        if (h && h.kind === 'visitor') { visitorCard(c); return true; }
+      }
       if (inR(a, letterRect(c))) { readLetter(c); return true; }
       if (inR(a, hitRect(c))) { visitorCard(c); return true; }
       return false;
@@ -240,6 +245,12 @@
       const fms = cl.ms * (c.phase === 'lead' && c.clip === 'walk' ? C.lead.walkMul : 1);
       const f = c.clip === 'happy' ? Math.min(cl.frames - 1, Math.floor(Math.max(0, c.happyT) / cl.ms)) : Math.floor(c.ct / fms) % cl.frames;
       const sp = strip(cl.file, f, fw, fh); const vx = Math.round(c.x), vy = Math.round(c.y);
+      if (cc && cc.g3d) {
+        if (!sp) return;
+        const ZS = (Glimmer.garden3d && Glimmer.garden3d.ZSCALE) || 1.6, GY = (Glimmer.garden3d && Glimmer.garden3d.GROUND_Y) || 292, CX = (Glimmer.garden3d && Glimmer.garden3d.CX) || 97;
+        R.worldPush({ id: 'visitor', kind: 'visitor', x: vx - CX, z: (vy - GY) * ZS, src: { img: sp.img, sx: sp.sx, sy: sp.sy, sw: fw, sh: fh, px: v.pivot[0], py: v.pivot[1] }, flip: c.dir < 0, shadow: true, hit: true, w: fw * 0.7, h: fh });
+        return;
+      }
       x.fillStyle = 'rgba(10,20,20,0.3)'; const sw = Math.round(fw * (v.hover ? 0.22 : 0.3));
       for (let dy = -2; dy <= 2; dy++) { const w = Math.round(sw * Math.sqrt(1 - dy * dy / 9)); x.fillRect(ox(vx - w), oy(vy - 1 + dy), w * 2, 1); }
       if (!sp) return;
@@ -250,25 +261,35 @@
       if (v.glow) { const g = v.glow, ax = vx + (c.dir < 0 ? v.pivot[0] - g.anchor[0] : g.anchor[0] - v.pivot[0]), ay = vy + g.anchor[1] - v.pivot[1], pu = 0.5 + 0.5 * Math.sin(pnow() / g.pulseMs * Math.PI * 2);
         cc.lights.push({ x: ax + cc.offs[2][0], y: ay, r: g.radius + pu * 3, col: [255, 230, 138], a: 0.45 + 0.35 * pu }); }
     }
+    function wzOf(ax, ay) { const ZS = (Glimmer.garden3d && Glimmer.garden3d.ZSCALE) || 1.6, GY = (Glimmer.garden3d && Glimmer.garden3d.GROUND_Y) || 292, CX = (Glimmer.garden3d && Glimmer.garden3d.CX) || 97; return { x: ax - CX, z: (ay - GY) * ZS }; }
     function drawProps(x, c, cc) {
       const PJ = A.json.visitorProps;
+      const g3 = cc && cc.g3d;
       if (c.letter) { const L = PJ.letter, im = A.img[L.file], b0 = anchor(c, 'bag'), h = anchor(c, 'head'); let lx, ly;
         if (c.letter.st === 'fly') { const u = clamp(c.letter.t / 400, 0, 1), e = V.E.oCubic(u); lx = b0.x + (h.x - b0.x) * e; ly = b0.y + (h.y - 8 - b0.y) * e - Math.sin(u * Math.PI) * 6; } else { lx = h.x; ly = h.y - 8 + (Math.floor(pnow() / 400) % 2 ? -1 : 0); }
-        if (im) x.drawImage(im, ox(Math.round(lx) - L.pivot[0]), oy(Math.round(ly) - L.pivot[1])); }
+        if (im) { if (g3) { const w = wzOf(lx, c.y); R.worldPush({ id: 'letter', kind: 'visitProp', x: w.x, z: w.z, yLift: Math.max(0, (c.y - ly)), src: { img: im, sx: 0, sy: 0, sw: im.width, sh: im.height, px: L.pivot[0], py: L.pivot[1] }, shadow: false, hit: c.letter.st === 'wait' }); } else x.drawImage(im, ox(Math.round(lx) - L.pivot[0]), oy(Math.round(ly) - L.pivot[1])); } }
       if (c.seed) { const L = PJ.seed, im = A.img[L.file], b0 = anchor(c, 'bag'), h = anchor(c, 'head'), t = c.seed.t; let lx, ly, al = 1;
         if (t < 400) { const e = V.E.oCubic(t / 400); lx = b0.x + (h.x - b0.x) * e; ly = b0.y + (h.y - 8 - b0.y) * e; } else if (t < 1000) { lx = h.x; ly = h.y - 8; } else { const u = (t - 1000) / 600; lx = h.x + (175 - h.x) * u; ly = h.y - 8 + (20 - (h.y - 8)) * u - Math.sin(u * Math.PI) * 20; al = 1 - u * 0.6; }   // 彈去背包（右上星星碎）
-        if (im) { x.globalAlpha = al; x.drawImage(im, ox(Math.round(lx) - L.pivot[0]), oy(Math.round(ly) - L.pivot[1])); x.globalAlpha = 1; } }
+        if (im) { if (g3) { const w = wzOf(lx, c.y); R.worldPush({ id: 'seed', kind: 'visitProp', x: w.x, z: w.z, yLift: Math.max(0, (c.y - ly)), src: { img: im, sx: 0, sy: 0, sw: im.width, sh: im.height, px: L.pivot[0], py: L.pivot[1] }, alpha: al, shadow: false, hit: false }); } else { x.globalAlpha = al; x.drawImage(im, ox(Math.round(lx) - L.pivot[0]), oy(Math.round(ly) - L.pivot[1])); x.globalAlpha = 1; } } }
       const rx = R.rx, fh = rx && rx.fx && rx.fx.fx_heart, him = fh && rx.img[fh.file], h = anchor(c, 'head');
       for (const hh of c.hearts) { const u = hh.t / 900, hy = h.y - 4 - u * 16, fr = u < 0.25 ? 0 : 1;
-        if (him) { x.globalAlpha = u > 0.7 ? 1 - (u - 0.7) / 0.3 : 1; x.drawImage(him, fr * fh.frameW, 0, fh.frameW, fh.frameH, ox(Math.round(h.x) - fh.pivot[0]), oy(Math.round(hy) - fh.pivot[1]), fh.frameW, fh.frameH); x.globalAlpha = 1; } }
+        if (him) { if (g3) { const w = wzOf(h.x, c.y); R.worldPush({ id: 'vheart-' + Math.round(hh.t), kind: 'visitProp', x: w.x, z: w.z, yLift: Math.max(0, (c.y - hy)), src: { img: him, sx: fr * fh.frameW, sy: 0, sw: fh.frameW, sh: fh.frameH, px: fh.pivot[0], py: fh.pivot[1] }, alpha: u > 0.7 ? 1 - (u - 0.7) / 0.3 : 1, shadow: false, hit: false }); } else { x.globalAlpha = u > 0.7 ? 1 - (u - 0.7) / 0.3 : 1; x.drawImage(him, fr * fh.frameW, 0, fh.frameW, fh.frameH, ox(Math.round(h.x) - fh.pivot[0]), oy(Math.round(hy) - fh.pivot[1]), fh.frameW, fh.frameH); x.globalAlpha = 1; } } }
       if (c.meter > 0) { const F = PJ.friend_heart, im = A.img[F.file], fr = st().vis[c.who].fr, x0 = Math.round(h.x) - 24, y0 = Math.round(h.y) - 22;
-        if (im) for (let i = 0; i < 5; i++) x.drawImage(im, (i < fr ? 1 : 0) * F.frameW, 0, F.frameW, F.frameH, ox(x0 + i * 10), oy(y0), F.frameW, F.frameH); }
+        if (im) { if (g3) { const w = wzOf(h.x, c.y); for (let i = 0; i < 5; i++) R.worldPush({ id: 'fmeter-' + i, kind: 'visitProp', x: w.x + (i - 2) * 4, z: w.z, yLift: Math.max(8, (c.y - y0)), src: { img: im, sx: (i < fr ? 1 : 0) * F.frameW, sy: 0, sw: F.frameW, sh: F.frameH, px: F.frameW / 2, py: F.frameH }, shadow: false, hit: false }); } else { for (let i = 0; i < 5; i++) x.drawImage(im, (i < fr ? 1 : 0) * F.frameW, 0, F.frameW, F.frameH, ox(x0 + i * 10), oy(y0), F.frameW, F.frameH); } } }
     }
     function drawDecor(x, cc, z, base) {
       const o = st(); const night = G.light && G.light.sun != null ? 1 - G.light.sun : 0.5;
       for (const id of Object.keys(o.decor)) {
         const at = C.decorAt[id], who = Object.keys(C.decor).find(k => C.decor[k] === id), dj = who && VJ(who) && VJ(who).decor; if (!at || !dj) continue;
         if ((z === 'back') !== (at[1] <= base)) continue; const im = A.img[dj.file]; if (!im) continue;
+        if (cc && cc.g3d) {
+          const meshes = G.g3d && G.g3d.meshObj; const skip = (id === 'deco_firefly_jar' && meshes && (meshes.jar || meshes.can)) || (id === 'deco_mushroom_lamp' && meshes && (meshes.mushroom || meshes.mushrooms));
+          if (!skip) {
+            const ZS = (Glimmer.garden3d && Glimmer.garden3d.ZSCALE) || 1.6, GY = (Glimmer.garden3d && Glimmer.garden3d.GROUND_Y) || 292, CX = (Glimmer.garden3d && Glimmer.garden3d.CX) || 97;
+            R.worldPush({ id: 'decor-' + id, kind: 'decor', x: at[0] - CX, z: (at[1] - GY) * ZS, src: { img: im, sx: 0, sy: 0, sw: im.width, sh: im.height, px: dj.pivot[0], py: dj.pivot[1] }, shadow: true, hit: false });
+          }
+          continue;
+        }
         x.drawImage(im, ox(at[0] - dj.pivot[0]), oy(at[1] - dj.pivot[1]));
         if (dj.emissive) { const em = A.img[dj.emissive]; if (em && cc.em) { cc.em.globalAlpha = 0.8; cc.em.drawImage(em, at[0] - dj.pivot[0] + cc.offs[2][0], at[1] - dj.pivot[1]); cc.em.globalAlpha = 1; }
           cc.lights.push({ x: at[0] + cc.offs[2][0], y: at[1] - dj.pivot[1] * 0.55, r: id === 'deco_firefly_jar' ? 12 : 15, col: id === 'deco_firefly_jar' ? [255, 230, 138] : [255, 190, 130], a: 0.25 + 0.5 * clamp(night, 0, 1) }); }
@@ -279,18 +300,23 @@
       const pb = R.petBlit; if (!pb || !V.flickerOn(pnow() - OM.flick0)) return false;
       if (!silC) silC = document.createElement('canvas'); silC.width = pb.sw; silC.height = pb.sh; const g = silC.getContext('2d'); g.clearRect(0, 0, pb.sw, pb.sh);
       g.globalCompositeOperation = 'source-over'; g.drawImage(pb.img, pb.sx, pb.sy, pb.sw, pb.sh, 0, 0, pb.sw, pb.sh); g.globalCompositeOperation = 'source-in'; g.fillStyle = V.FLICK.color; g.fillRect(0, 0, pb.sw, pb.sh); g.globalCompositeOperation = 'source-over';
+      if (R._b3bCc && R._b3bCc.g3d) { const beh = G.beh || {}; R.worldPush({ id: 'omen-flicker', kind: 'omen', x: beh.x || 0, z: beh.z || 0, yLift: 4, src: { img: silC, sx: 0, sy: 0, sw: silC.width, sh: silC.height, px: pb.px, py: pb.py }, alpha: V.FLICK.alpha, shadow: false, hit: false }); return true; }
       x.save(); x.imageSmoothingEnabled = false; x.globalAlpha = V.FLICK.alpha; x.translate(pb.X, pb.Y); x.scale(pb.scx, pb.scy); if (pb.rot) x.rotate(-pb.rot); x.drawImage(silC, -pb.px, -pb.py); x.restore(); return true;
     }
     function drawDream(x) {
       const d = V.dreamAt(pnow() - OM.dream0); if (!d || !S().sleeping) return false; const pr = R.petRect; if (!pr) return false;
       const B = asset('omen_dream_bubble', d.f), hx = Math.round(pr.x + pr.w / 2) + V.DREAM.dx, hy = Math.round(pr.y) + V.DREAM.dy;
       if (d.puff != null) { const rx = R.rx, fp = rx && rx.fx && rx.fx.fx_puff, im = fp && rx.img[fp.file]; if (im) x.drawImage(im, Math.min(2, d.puff) * fp.frameW, 0, fp.frameW, fp.frameH, ox(hx + 16 - fp.pivot[0]), oy(hy - 12 - fp.pivot[1]), fp.frameW, fp.frameH); return true; }
-      if (B) x.drawImage(B.img, B.sx, 0, B.sw, B.sh, ox(hx - B.px), oy(hy - B.py), B.sw, B.sh);
+      if (B) {
+        if (R._b3bCc && R._b3bCc.g3d) { R.worldPush({ id: 'omen-dream', kind: 'omen', x: 0, z: 0, yLift: 52, src: { img: B.img, sx: B.sx, sy: 0, sw: B.sw, sh: B.sh, px: B.px, py: B.py }, shadow: false, hit: false }); return true; }
+        x.drawImage(B.img, B.sx, 0, B.sw, B.sh, ox(hx - B.px), oy(hy - B.py), B.sw, B.sh);
+      }
       if (d.icon) { const I = asset('omen_dream_icons', OM.icon), c0 = V.DREAM.center; if (I) x.drawImage(I.img, I.sx, 0, I.sw, I.sh, ox(hx - B.px + c0[0] - I.px), oy(hy - B.py + c0[1] - I.py + d.bob), I.sw, I.sh); }
       return true;
     }
     const RST = { flick: 0, dream: 0, visitor: 0 };
     R.b3bLayer = function (x, z, cc, base) {
+      R._b3bCc = cc;
       if (!A.ready) return; const c = VS.cur;
       drawDecor(x, cc, z, base);
       if (c) { const front = c.y > base; if ((z === 'front') === front) { drawVisitor(x, c, cc); RST.visitor++; } if (z === 'front') drawProps(x, c, cc); }

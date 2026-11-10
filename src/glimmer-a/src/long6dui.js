@@ -312,15 +312,46 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
         let N = LAY.nodes[v.id]; if (!N) { const d = mk('div', '', null, 'l6d-shadow-' + v.id); d.className = 'sh6 u63no'; const cv = mk('canvas', '', null, 'l6d-shadow-cv-' + v.id); cv.width = 1; cv.height = 1; d.appendChild(cv);
           const ht = mk('i', '', null, 'l6d-shadow-hit-' + v.id); ht.className = 'ht'; d.appendChild(ht); const b = mk('i', '', null, 'l6d-badge-' + v.id); b.className = 'bdg'; d.appendChild(b); el.appendChild(d); ht.addEventListener('click', (e) => { e.stopPropagation(); if (busy()) return; UIS('tap'); info(v.id); });
           N = LAY.nodes[v.id] = { el: d, cv, b, x: SLOTX[v.slot] || 80, tx: SLOTX[v.slot] || 80, dir: 1, ph: (v.slot * 977) % 4000, k: null }; }
-        // 行：平時喺自己位 ±24 晃；互動緊 → 行去團絨隔籬
-        const home = SLOTX[v.slot] || 80, acting = LAY.actId === v.id && t - LAY.actT < 4200; N.tx = acting ? petX() + (home < 195 ? -64 : 64) : home + Math.sin((t + N.ph) / 3200) * 8;
-        const dx = N.tx - N.x; if (Math.abs(dx) > 0.5) { N.dir = dx < 0 ? -1 : 1; N.x += Math.sign(dx) * Math.min(Math.abs(dx), acting ? 2.4 : 0.6); }
+        // 行：平時喺自己位 ±24 晃；互動緊 → 行去團絨隔籬。H1.3 3D：XZ nav／billboard。
+        const home = SLOTX[v.slot] || 80, acting = LAY.actId === v.id && t - LAY.actT < 4200, row = (SLOTS[v.slot] || [0, 0])[1];
+        const g3on = G.g3d && typeof G.g3d.on === 'function' && G.g3d.on();
+        if (g3on && Glimmer.garden3d) {
+          if (N.wx == null) { const w = Glimmer.garden3d.artToWorld(home / 2, (GROUND + ROWY[row]) / 2); N.wx = w.x; N.wz = w.z; }
+          const petW = G.beh ? { x: G.beh.x, z: G.beh.z || 0 } : { x: 0, z: 0 };
+          if (acting) { N.tx3 = petW.x + (N.wx < petW.x ? -18 : 18); N.tz3 = petW.z; }
+          else if (!N.tx3 || Math.hypot((N.tx3 - N.wx), (N.tz3 - N.wz)) < 3) {
+            const rng = function () { N._rng = ((N._rng || (v.slot + 1) * 97) * 1103515245 + 12345) & 0x7fffffff; return (N._rng % 1000) / 1000; };
+            const dest = Glimmer.garden3d.pickWalk(null, rng, { x: N.wx, z: N.wz }, 8, Glimmer.garden3d.RANGE3);
+            if (dest) { N.tx3 = dest.x; N.tz3 = dest.z; N._g3dPath = null; }
+          }
+          const beh = Glimmer.data && Glimmer.data.PARAMS && Glimmer.data.PARAMS.beh;
+          if (beh && beh.g3dWalk && N.tx3 != null) {
+            const ent = { x: N.wx, z: N.wz, tz: N.tz3, _g3dPath: N._g3dPath, _g3dTx: N._g3dTx, _g3dTz: N._g3dTz, _g3dPi: N._g3dPi, _g3dStall: N._g3dStall, _g3dBest: N._g3dBest };
+            const r = beh.g3dWalk(ent, N.tx3, acting ? 0.7 : 0.35);
+            if (r) { N.wx = r.x; N.wz = r.z; if (r.dx || r.dz) N.dir = (Math.abs(r.dx) >= Math.abs(r.dz) ? Math.sign(r.dx) : N.dir) || N.dir; }
+            N._g3dPath = ent._g3dPath; N._g3dTx = ent._g3dTx; N._g3dTz = ent._g3dTz; N._g3dPi = ent._g3dPi; N._g3dStall = ent._g3dStall; N._g3dBest = ent._g3dBest;
+          }
+          const art = Glimmer.garden3d.worldToArtFlat(N.wx, N.wz);
+          N.x = art.x * 2;
+        } else {
+          N.tx = acting ? petX() + (home < 195 ? -64 : 64) : home + Math.sin((t + N.ph) / 3200) * 8;
+          const dx = N.tx - N.x; if (Math.abs(dx) > 0.5) { N.dir = dx < 0 ? -1 : 1; N.x += Math.sign(dx) * Math.min(Math.abs(dx), acting ? 2.4 : 0.6); }
+        }
         const sh = shadowCanvas(v.fk, t + N.ph);
         if (sh) { if (N.k !== sh.key) { N.k = sh.key; paintShadow(N.cv, sh); delete N.el.dataset.ph; N.el.dataset.art = 'shadow:alpha'; N.el.dataset.frame = sh.frame; }
+          N.sh = sh;
           N.cv.style.left = (-sh.px * 2) + 'px'; N.cv.style.top = (-sh.py * 2) + 'px'; N.cv.style.transform = N.dir < 0 ? 'scaleX(-1)' : ''; N.cv.style.transformOrigin = (sh.px * 2) + 'px 0'; N.b.style.top = (-sh.py * 2 - 36) + 'px'; }
-        else if (!N.el.dataset.ph) { N.el.dataset.ph = '6d:shadow'; N.cv.width = 24; N.cv.height = 24; N.cv.style.cssText = 'left:-24px;top:-48px;width:48px;height:48px;background:#A98BF0'; N.b.style.top = '-84px'; }
+        else if (!N.el.dataset.ph) { N.el.dataset.ph = '6d:shadow'; N.cv.width = 24; N.cv.height = 24; N.cv.style.cssText = 'left:-24px;top:-48px;width:48px;height:48px;background:#A98BF0'; N.b.style.top = '-84px'; N.sh = null; }
         if (!N.b.dataset.art) setIc(N.b, 'friend_badge'), N.b.style.background = N.b.style.backgroundImage ? N.b.style.backgroundImage + ' center/contain no-repeat' : '';
-        N.el.style.left = Math.round(N.x) + 'px'; N.el.style.top = (GROUND + ROWY[(SLOTS[v.slot] || [0, 0])[1]]) + 'px'; N.el.dataset.x = Math.round(N.x);
+        if (g3on && G.g3d && G.g3d.project && N.wx != null) {
+          const p2 = G.g3d.project(N.wx, 0, N.wz);
+          N.el.style.left = Math.round(p2.x * 2) + 'px'; N.el.style.top = Math.round(p2.y * 2) + 'px';
+          N.cv.style.visibility = 'hidden';
+        } else {
+          N.cv.style.visibility = '';
+          N.el.style.left = Math.round(N.x) + 'px'; N.el.style.top = (GROUND + ROWY[row]) + 'px';
+        }
+        N.el.dataset.x = Math.round(N.x);
       }
       // 互動：每 40–70 秒揀一個影子走埋去（泡泡＋計數）
       if (vs.length && !s.sleeping && (force === 'act' || t >= LAY.nextAct)) {
@@ -330,7 +361,18 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
       if (LAY.bub && t - LAY.bubT > 3200) { LAY.bub.classList.remove('on'); if (t - LAY.bubT > 3600) { LAY.bub.remove(); LAY.bub = null; } }
       else if (LAY.bub && LAY.nodes[LAY.bubId]) LAY.bub.style.left = Math.max(110, Math.min(280, LAY.nodes[LAY.bubId].x)) + 'px';
     }
+    G.l6dActors = function () {
+      const out = [];
+      Object.keys(LAY.nodes).forEach(function (id) {
+        const N = LAY.nodes[id]; if (N.wx == null) return;
+        const sh = N.sh;
+        const src = sh ? { img: N.cv, sx: 0, sy: 0, sw: N.cv.width, sh: N.cv.height, px: sh.px || N.cv.width / 2, py: sh.py || N.cv.height } : { img: N.cv, sx: 0, sy: 0, sw: N.cv.width, sh: N.cv.height, px: N.cv.width / 2, py: N.cv.height };
+        out.push({ id: 'shadow-' + id, kind: 'shadow', x: N.wx, z: N.wz, src: src, flip: N.dir < 0, alpha: SHADOW_A, shadow: true, hit: true, w: 28, h: 40 });
+      });
+      return out;
+    };
     const petName = () => { const s = S(); return s && s.stage !== 'egg' && FAM ? FAM.trName(s.form) : '團絨'; };
+
     function bubble(v, text) {
       const el = layer(); if (!el) return; if (LAY.bub) LAY.bub.remove(); const b = LAY.bub = mk('div', `left:${Math.max(110, Math.min(280, (LAY.nodes[v.id] || {}).x || 195))}px;top:${GROUND - 120}px;${bi('panel_inset')}` + TXT(24, CREAM), '♥ ' + text, 'l6d-bubble'); b.className = 'bub';
       el.appendChild(b); LAY.bubT = pnow(); LAY.bubId = v.id; requestAnimationFrame(() => b.classList.add('on'));
@@ -434,7 +476,7 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
       raw: () => JSON.parse(JSON.stringify(D6.st(S()))), log: () => log.slice(), toasts: () => toasts.slice(), dev: () => DEV, last: () => Object.assign({}, LAST, { enter: OV.last }),
       open, close, info, closeInfo, go, check, commit, railTick, layTick, fakeCode, setInput: (t) => { OV.inp = t; const ta = document.querySelector('[data-testid=l6d-input]'); if (ta) ta.value = t; },
       artLoad: () => A6d.then(() => fontsReady()).then(() => !!A.j), drawCard: (k, kind) => { const c = document.createElement('canvas'); const s = S(), me = kind === 'egg' ? null : D6.myCode(s, now(), { fk: fkNow() }); const r = drawCard(c, k || 3, me.snap, me.code, 'visit'); return Object.assign(r, { url: c.toDataURL('image/png'), code: me.code }); },
-      decodeFile, qrMatrix, shadowCanvas, paintShadow, SHADOW_A, maskBits, nodes: () => Object.keys(LAY.nodes).map(id => ({ id, x: LAY.nodes[id].x, art: LAY.nodes[id].el.dataset.art || null, ph: LAY.nodes[id].el.dataset.ph || null, badge: LAY.nodes[id].b.dataset.art || null })),
+      decodeFile, qrMatrix, shadowCanvas, paintShadow, SHADOW_A, maskBits, nodes: () => Object.keys(LAY.nodes).map(id => ({ id, x: LAY.nodes[id].x, z: LAY.nodes[id].wz, wx: LAY.nodes[id].wx, wz: LAY.nodes[id].wz, art: LAY.nodes[id].el.dataset.art || null, ph: LAY.nodes[id].el.dataset.ph || null, badge: LAY.nodes[id].b.dataset.art || null })),
     };
     note('install', {});
     return true;

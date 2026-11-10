@@ -1,4 +1,4 @@
-/* 《微光小圃》 e2e-3d — #89 3D 花園 H1／H1.2：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0、可見區、網格、behavior.step 行速。
+/* 《微光小圃》 e2e-3d — #89 3D 花園 H1／H1.2／H1.3：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0、可見區、網格、behavior.step 行速。
    截圖 → SHOTS；3d-h1-*.png 同 3d-h11-*.png（H11SHOTS／APK 目錄）。fps 用 CDP 4× CPU。node tests/e2e-3d.js */
 const path = require('path');
 const fs = require('fs');
@@ -323,6 +323,87 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
     });
     ok(frameNo.b === frameNo.a + 1, 'render.frame 會 this.frameNo++（唔再吞入註解）', frameNo);
 
+    await ctx.close(); }
+
+  // ───────── K. H1.3 自主行、屎、細佬、2D 清單、影圖 ─────────
+  console.log('K. H1.3 自主行／屎／細佬／世界物件／影圖');
+  { const { ctx, page, E, W } = await boot([390, 844]); await adultR(E); await waitG3(E, W); await W(500);
+    const qset = await E(() => ({ mid: Glimmer.garden3d.QSET.mid, high: Glimmer.garden3d.QSET.high, midLive: (__qa.g3d.setQuality('mid'), { ev: __qa.g3d.shadowEvery(), sz: __qa.g3d.shadowSize() }), highLive: (__qa.g3d.setQuality('high'), { ev: __qa.g3d.shadowEvery(), sz: __qa.g3d.shadowSize() }) }));
+    ok(qset.mid.shadow === 512 && qset.high.shadowEvery === 3, 'QSET mid 512／high 每 3 幀', qset);
+    ok(qset.midLive.sz === 512 && qset.highLive.ev === 3, '執行期 mid 影圖／high shadowEvery', qset);
+
+    const inv = await E(() => {
+      const items = __qa.g3d.worldItems();
+      const garden = items.filter(x => x.inGarden);
+      const cv = document.createElement('canvas'); cv.width = 8; cv.height = 8;
+      const src = { img: cv, sx: 0, sy: 0, sw: 8, sh: 8, px: 4, py: 8 };
+      const list = garden.filter(x => x.id !== 'pet' && x.id !== 'pot' && x.id !== 'sunPatch' && x.id !== 'weather').map((x, i) => ({ id: 'inv-' + x.id, kind: x.id, x: (i - 5) * 8, z: 20, src: src, shadow: false, hit: false }));
+      __qa.g3d.syncActors(list);
+      const got = __qa.g3d.actors().map(a => a.kind);
+      return { n: items.length, garden: garden.map(x => x.id), got: got, pet: !!__qa.g3d.pet(), meshes: __qa.g3d.meshes() };
+    });
+    const missing = inv.garden.filter(id => id !== 'pet' && id !== 'pot' && id !== 'sunPatch' && id !== 'weather' && inv.got.indexOf(id) < 0);
+    ok(inv.n >= 20 && inv.pet && inv.meshes === 17 && missing.length === 0, '清單逐樣可入 3D actors（pet／pot／天氣另證）', { missing, garden: inv.garden, got: inv.got });
+
+    const auto = await E(() => {
+      const BEH = Glimmer.behavior, b = __glimmer.beh, FIX = 1 / 60;
+      if (__qa.s2 && __qa.s2.test) __qa.s2.test('_kid');
+      b.state = 'stay'; b.phase = ''; b.variant = null; b.sleeping = false; b.hushUntil = 0;
+      b.lastWalkAt = (b.t || 0) - 10; b.stateT = 2; b.x = 0; b.z = 0; b.tx = 0; b.tz = 0;
+      if (__qa.s2 && __qa.s2.kidX) { __qa.s2.kidX(12); __qa.s2.kidZ(8); }
+      const p0 = { x: b.x, z: b.z || 0 };
+      const k0 = (__qa.s2 && __qa.s2.st && __qa.s2.st().kid) || { x: 12, z: 8 };
+      const ctx = { s: __glimmer.state, pw: {}, sun: 1, override: null, event: null };
+      for (let i = 0; i < 30 * 60; i++) {
+        BEH.step(b, ctx);
+        if (__glimmer.s2Tick) __glimmer.s2Tick(FIX);
+      }
+      const k1 = (__qa.s2 && __qa.s2.st && __qa.s2.st().kid) || { x: 0, z: 0 };
+      return { p0, p1: { x: b.x, z: b.z || 0, state: b.state }, k0, k1, kidPhase: __qa.s2 && __qa.s2.st && __qa.s2.st().save && __qa.s2.st().save.phase };
+    });
+    const pMove = Math.hypot(auto.p1.x - auto.p0.x, auto.p1.z - auto.p0.z);
+    const kMove = Math.hypot((auto.k1.x || 0) - (auto.k0.x || 0), (auto.k1.z || 0) - (auto.k0.z || 0));
+    ok(pMove > 8, '無 input 30 秒內寵物自主位移', { pMove, p0: auto.p0, p1: auto.p1 });
+    ok(kMove > 8, '無 input 30 秒內細佬自主位移', { kMove, k0: auto.k0, k1: auto.k1, phase: auto.kidPhase });
+
+    const poop = await E(() => {
+      const s = __glimmer.state; s.poops = 2;
+      const R = __glimmer.renderer;
+      if (R.frame) R.frame(0.016, { state: s, beh: __glimmer.beh, hour: 13, quality: 'high', mode: 'garden', light: __glimmer.light, event: null });
+      const acts = (__qa.g3d.actors() || []).filter(a => a.kind === 'poop');
+      const box = acts[0] && __qa.g3d.actorBox(acts[0]);
+      const hit = box && __qa.g3d.hitActor(box.x + box.w / 2, box.y + box.h * 0.6);
+      return { n: acts.length, hit: hit && hit.kind, box, before: s.poops };
+    });
+    ok(poop.n >= 1 && poop.hit === 'poop', '屎喺 3D 出現、hitActor 命中', poop);
+    if (poop.box) {
+      const css = await E((box) => {
+        const r = __glimmer.renderer.canvas.getBoundingClientRect();
+        return { x: r.left + (box.x + box.w / 2) / 195 * r.width, y: r.top + (box.y + box.h * 0.6) / 422 * r.height };
+      }, poop.box);
+      await page.mouse.click(css.x, css.y);
+      await W(300);
+    }
+    const after = await E(() => __glimmer.state.poops);
+    ok(after === poop.before - 1 || after < 2, '3D 撳屎可清理', { before: poop.before, after });
+
+    await E(() => { __glimmer.hourOverride = 13; __qa.g3d.forcePet({ x: 0, z: 20 }); if (__qa.s2 && __qa.s2.kidX) { __qa.s2.kidX(-20); __qa.s2.kidZ(16); } __glimmer.state.poops = 1; });
+    await W(400);
+    await page.screenshot({ path: SHOTS + '3d-h13-day.png' });
+    fs.copyFileSync(SHOTS + '3d-h13-day.png', APKSHOTS + '3d-h13-day.png');
+    await E(() => { __glimmer.hourOverride = 22; }); await W(500);
+    await page.screenshot({ path: SHOTS + '3d-h13-night.png' });
+    fs.copyFileSync(SHOTS + '3d-h13-night.png', APKSHOTS + '3d-h13-night.png');
+    await E(() => { __glimmer.hourOverride = 13; __qa.g3d.forcePet({ x: 10, z: 30 }); }); await W(400);
+    await page.screenshot({ path: SHOTS + '3d-h13-kid-poop.png' });
+    fs.copyFileSync(SHOTS + '3d-h13-kid-poop.png', APKSHOTS + '3d-h13-kid-poop.png');
+    await E(() => __qa.g3d.forcePet({ x: -88, z: -80 })); await W(400);
+    const occ = await E(() => __qa.g3d.occluded(-88, -80));
+    ok(occ, '寵物行到樹後被擋', occ);
+    await page.screenshot({ path: SHOTS + '3d-h13-occluded.png' });
+    fs.copyFileSync(SHOTS + '3d-h13-occluded.png', APKSHOTS + '3d-h13-occluded.png');
+    ok(fs.existsSync(APKSHOTS + '3d-h13-day.png') && fs.existsSync(APKSHOTS + '3d-h13-night.png') && fs.existsSync(APKSHOTS + '3d-h13-kid-poop.png') && fs.existsSync(APKSHOTS + '3d-h13-occluded.png'), 'H1.3 截圖已寫');
+    await E(() => __qa.g3d.forcePet(null));
     await ctx.close(); }
 
   const fatal = errs.filter(e => !/open-meteo|ResizeObserver|favicon/.test(e));
