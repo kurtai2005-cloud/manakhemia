@@ -70,6 +70,45 @@ console.log('⑤ 碰撞 footprint');
   ok(G3.blocked(objs, 5, 5, 10).indexOf('bush_bR') < 0 && G3.blocked(objs, 0, -46, 10).indexOf('lanterns') < 0, '補位件／吊燈冇 footprint');
 }
 
+console.log('⑤b XZ 走位／繞障／揀目標');
+{
+  const oj = require('../art/garden3d/H1/objects.json');
+  const objs = oj.objects;
+  const RX = G3.RANGE3.x, RZ = G3.RANGE3.z;
+  const s0 = G3.stepXZ(objs, 0, 0, 10, 0, 2, 10, RX, RZ);
+  ok(s0.x > 0 && Math.abs(s0.z) < 0.01 && !s0.arrived, '沿 +X 行一步', s0);
+  const sZ = G3.stepXZ(objs, 0, 0, 0, 20, 2, 10, RX, RZ);
+  ok(sZ.z > 0 && Math.abs(sZ.x) < 0.01, '沿 +Z（向鏡頭）行一步', sZ);
+  const sB = G3.stepXZ(objs, 0, 10, 0, 0, 2, 10, RX, RZ);
+  ok(sB.z < 10 && sB.dz < 0, '沿 −Z（向屋）行', sB);
+  // 唔可以踏入樹幹（由樹前方一步步行近）
+  const into = G3.stepXZ(objs, -88, -10, -88, -44, 2, 10, RX, RZ);
+  ok(G3.blocked(objs, into.x, into.z, 10).indexOf('tree') < 0, '一步唔會踏入樹 footprint', into);
+  // 由原點繞去小屋後／樹後（A* 路徑）
+  function followTo(tx, tz) {
+    const path = G3.buildPath(objs, 0, 0, tx, tz, 10, RX, RZ);
+    let x = 0, z = 0, pi = 0, arr = false, hit = false;
+    for (let i = 0; i < 2500; i++) {
+      const fol = G3.followPath(objs, x, z, path, { x: tx, z: tz }, 2, 10, RX, RZ, pi);
+      pi = fol.pi; x = fol.step.x; z = fol.step.z;
+      if (G3.blocked(objs, x, z, 10).length) { hit = true; break; }
+      if (fol.step.arrived) { arr = true; break; }
+    }
+    return { x: x, z: z, arr: arr, hit: hit, n: path && path.length };
+  }
+  const c = followTo(82, -110);
+  ok(c.arr && !c.hit && Math.hypot(c.x - 82, c.z + 110) < 3, '繞過圍欄／小屋到達 (82,−110)', c);
+  const tr = followTo(-88, -80);
+  ok(tr.arr && !tr.hit && Math.hypot(tr.x + 88, tr.z + 80) < 3, '繞到樹後 (−88,−80)', tr);
+  const pw = G3.petWorld({ x: 10, z: -40 });
+  ok(pw.x === 10 && pw.z === -40, 'petWorld 用 3D z（唔使 depth×1.6）', pw);
+  const pw2 = G3.petWorld({ x: 4, depth: 5 });
+  ok(pw2.z === 5 * G3.ZSCALE, '冇 z 時仍用 depth×ZSCALE', pw2);
+  const rng = (function () { let i = 0; return function () { i = (i * 1103515245 + 12345) & 0x7fffffff; return (i >>> 0) / 0x7fffffff; }; }());
+  const pick = G3.pickWalk(objs, rng, { x: 0, z: 0 }, 10, G3.RANGE3);
+  ok(pick && G3.blocked(objs, pick.x, pick.z, 10).length === 0, 'pickWalk 落喺可企位', pick);
+}
+
 console.log('⑥ 畫質自動');
 {
   ok(G3.detectQuality({ qs: { '3d': '0' }, webgl: true }).want === false && G3.detectQuality({ qs: { '3d': '0' } }).reason === 'off', '?3d=0 → 2D');

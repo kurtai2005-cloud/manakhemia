@@ -639,8 +639,10 @@
         const hidden = !!(s.stage === 'egg' || (s.fam && s.fam.km) || (useBeh && beh.puppet && beh.puppet.hidden));
         const moving = !!(useBeh && (beh.clip === 'walk' || (beh.show && beh.show.clip === 'walk')));
         g3.update(dt, { hour, weather: lt && lt.hd2d ? lt.hd2d.weather : view.weather, pet: {
-          x: useBeh ? beh.x : 0, z: useBeh && beh.depth ? beh.depth * 1.6 : 0,
-          dx: useBeh ? (beh.dir || 0) : 0, dz: 0, moving: moving, hidden: hidden,
+          x: useBeh ? beh.x : 0,
+          z: useBeh && beh.z != null ? beh.z : (useBeh && beh.depth ? beh.depth * 1.6 : 0),
+          dx: useBeh ? (beh._dx != null && (beh._dx || beh._dz) ? beh._dx : (beh.dir || 0)) : 0,
+          dz: useBeh && beh._dz != null ? beh._dz : 0, moving: moving, hidden: hidden,
           glow: (this.v3 && this.v3.want) ? this.v3.petGlow() : 1, form: s.form, fk: this.fkOf(s)
         } });
       }

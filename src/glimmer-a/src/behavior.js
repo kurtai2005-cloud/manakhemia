@@ -57,9 +57,9 @@
     const b = {
       rng, pers: Object.assign({}, P.personality, opts.personality || {}), stateWeights: Object.assign({}, P.stateWeights, opts.stateWeights || {}),
       t: 0, acc: 0, state: 'stay', stateT: 0, phase: '', clip: 'idle', clipT: 0, frame: 0,
-      x: 0, lift: 0, dir: 1, gaze: 0, expr: 'neutral', base: 'idle', stage: 'sprout', fkey: 'sprout',
+      x: 0, z: 0, lift: 0, dir: 1, gaze: 0, expr: 'neutral', base: 'idle', stage: 'sprout', fkey: 'sprout',
       variant: null, variantT: 0, nextVariant: 0, nextDecide: 0,
-      tx: 0, speed: P.walkSpeed, dur: 0, hopsLeft: 0, hopT: 0, hopDx: 0,
+      tx: 0, tz: 0, _dx: 0, _dz: 0, speed: P.walkSpeed, dur: 0, hopsLeft: 0, hopT: 0, hopDx: 0,
       item: null, props: [], fx: [], attach: NOATT, taps: [], petTaps: [], lastTouch: -99, grumpyCool: -1, cuddlyUntil: 0, afterWake: null, holdUntil: 0, stir: 0, awaySign: 0,
       potWobble: 0, steamT: 0, cool: {}, lastOverride: null, hitDone: false,
       log: { variants: [], enters: {}, time: {}, ticks: 0, micro: [] },
@@ -86,11 +86,24 @@
   function loopClip(b, name) { setClip(b, name); const d = clipDur(name); if (b.clipT >= d) b.clipT -= d; }
   function enter(b, name, phase) { if (b.state === 'micro' && b.seq) endMicro(b); if (name !== 'walk') b.stopAt = null; b.gaitForce = null; b.state = name; b.phase = phase || ''; b.stateT = 0; b.log.enters[name] = (b.log.enters[name] || 0) + 1; note(b, 'state', name, b.phase); }
   function fx(b, type, x, y) { b.fx.push({ type, x, y }); if (b.fx.length > P.fxMax) b.fx.shift(); }
+  function applyStep(b, r) {
+    b.x = r.x; b.z = r.z;
+    b._dx = r.dx || 0; b._dz = r.dz || 0;
+    if (r.dx || r.dz) {
+      if (Math.abs(r.dx) >= Math.abs(r.dz)) b.dir = Math.sign(r.dx) || b.dir;
+    }
+    return !!r.arrived;
+  }
   function moveTo(b, tx, speed) {
+    const st = speed * FIX;
+    if (typeof P.g3dWalk === 'function') {
+      const r = P.g3dWalk(b, tx, st);
+      if (r) return applyStep(b, r);
+    }
     tx = clamp(tx, P.rangeX[0], P.rangeX[1]);
-    const dx = tx - b.x, st = speed * FIX;
-    if (Math.abs(dx) <= Math.max(st, P.arriveEps)) { b.x = tx; return true; }
-    b.x += Math.sign(dx) * st; b.dir = Math.sign(dx); return false;
+    const dx = tx - b.x;
+    if (Math.abs(dx) <= Math.max(st, P.arriveEps)) { b.x = tx; b._dx = 0; b._dz = 0; return true; }
+    b.x += Math.sign(dx) * st; b.dir = Math.sign(dx); b._dx = Math.sign(dx) * st; b._dz = 0; return false;
   }
   function hopLift(b, H, dur) { const u = clamp(b.hopT / dur, 0, 1); b.lift = -H * 4 * u * (1 - u); return u; }
   const H_OF = (b) => P.jumpHeight[b.stage] != null ? P.jumpHeight[b.stage] : P.jumpHeight[D.isBig(b.stage) ? 'adult' : 'sprout'];   // evo6：每階段跳高
@@ -156,6 +169,14 @@
     const r = b.rng, pe = b.pers, pm = P.persMul;
     switch (name) {
       case 'walk': {
+        if (typeof P.g3dPickWalk === 'function') {
+          const t3 = P.g3dPickWalk(b);
+          if (t3) {
+            b.tx = t3.x; b.tz = t3.z; b.speed = P.walkSpeed * (1 - pm.timidSpeed * pe.timid);
+            enter(b, 'walk');
+            break;
+          }
+        }
         const dist = rf(r, P.walkDist) * (1 - pm.stickyRange * pe.sticky);
         let sign = r() < 0.5 ? -1 : 1;
         if (b.x + sign * dist < P.rangeX[0] || b.x + sign * dist > P.rangeX[1]) sign = -sign;
@@ -167,10 +188,16 @@
       case 'jump': b.hopsLeft = ri(r, P.jumpHops); b.hopT = 0; b.hopDx = (r() < 0.5 ? -1 : 1) * P.hopDx; enter(b, 'jump'); break;
       case 'play': b.dur = rf(r, P.playDur); b.item = { kind: 'ball', x: 0, y: 0 }; enter(b, 'play'); b.clipT = 0; break;
       case 'nap': b.dur = rf(r, P.napDur); enter(b, 'nap', 'fall'); b.clipT = 0; break;
-      case 'sunbathe': b.tx = P.sunSpotX; b.speed = P.walkSpeed * (1 - pm.timidSpeed * pe.timid); b.dur = rf(r, P.sunDur); enter(b, 'sunbathe', 'go'); break;
+      case 'sunbathe': {
+        b.tx = P.sunSpotX; b.speed = P.walkSpeed * (1 - pm.timidSpeed * pe.timid); b.dur = rf(r, P.sunDur);
+        if (typeof P.g3dSpot === 'function') { const sp = P.g3dSpot('sun', b); if (sp) { b.tx = sp.x; b.tz = sp.z; } }
+        enter(b, 'sunbathe', 'go'); break;
+      }
       case 'bump': {
         const fk = b.fkey === 'dust' ? 'soft' : b.fkey;
-        b.tx = P.potX + D.FORMS[fk].pot[0]; b.speed = P.walkSpeed * (1 - pm.timidSpeed * pe.timid); enter(b, 'bump', 'go'); break;
+        b.tx = P.potX + D.FORMS[fk].pot[0]; b.speed = P.walkSpeed * (1 - pm.timidSpeed * pe.timid);
+        if (typeof P.g3dSpot === 'function') { const sp = P.g3dSpot('bump', b); if (sp) { b.tx = sp.x; b.tz = sp.z; } }
+        enter(b, 'bump', 'go'); break;
       }
       default: enter(b, 'stay'); b.nextDecide = rf(r, P.decideEvery);
     }
@@ -384,7 +411,14 @@
         loopClip(b, 'walk'); b.gaze = b.dir;
         if (b.gaitForce && b.state === 'walk') {                                              // 即刻觸發步姿：行夠 4–6s 就停；行到盡頭時間未夠就掉頭
           if (b.t >= b.gaitForce.until - 1e-9) { b.gaitForce = null; backToStay(b); setClip(b, b.base); break; }
-          if (Math.abs(b.tx - b.x) <= P.arriveEps + 0.5) { const rem = (b.gaitForce.until - b.t) * b.speed * gaitMul(b, s) + 2, d = b.tx >= b.x ? -1 : 1; b.tx = clamp(b.x + d * rem, P.rangeX[0], P.rangeX[1]); }
+          const arrived3 = (b.tz != null && typeof P.g3dPickWalk === 'function') ? Math.hypot(b.tx - b.x, b.tz - (b.z || 0)) <= P.arriveEps + 0.5 : Math.abs(b.tx - b.x) <= P.arriveEps + 0.5;
+          if (arrived3) {
+            if (typeof P.g3dPickWalk === 'function') {
+              const t3 = P.g3dPickWalk(b); if (t3) { b.tx = t3.x; b.tz = t3.z; }
+            } else {
+              const rem = (b.gaitForce.until - b.t) * b.speed * gaitMul(b, s) + 2, d = b.tx >= b.x ? -1 : 1; b.tx = clamp(b.x + d * rem, P.rangeX[0], P.rangeX[1]);
+            }
+          }
         }
         if (moveTo(b, b.tx, b.speed * gaitMul(b, s))) { if (b.state === 'follow') goReact(b); else backToStay(b); break; }
         if (b.state === 'walk' && b.stopAt != null && (b.x - b.stopAt) * b.stopDir >= 0) {         // A2 中途停低
@@ -397,7 +431,7 @@
       case 'nuzzle': stepNuzzle(b, ctx); break;
       case 'jump': {
         b.hopT += FIX; const u = hopLift(b, H_OF(b), P.hopDur); setClip(b, 'jump'); b.clipT = u * clipDur('jump');
-        b.x = clamp(b.x + b.hopDx * FIX / P.hopDur, P.rangeX[0], P.rangeX[1]);
+        b.x = (typeof P.g3dClampX === 'function') ? P.g3dClampX(b.x + b.hopDx * FIX / P.hopDur) : clamp(b.x + b.hopDx * FIX / P.hopDur, P.rangeX[0], P.rangeX[1]);
         if (b.hopT >= P.hopDur) { b.hopT = 0; b.hopsLeft--; b.lift = 0; if (b.hopsLeft <= 0) backToStay(b); }
         break;
       }
@@ -448,7 +482,10 @@
         setClip(b, 'emo_surprised');
         if (b.stateT >= b.dur) {
           if (b.awaySign && b.pers.timid >= 0.5 && r() < P.tap.timidAwayChance) {     // 膽小：60% 走開
-            b.tx = clamp(b.x + b.awaySign * rf(r, P.walkDist), P.rangeX[0], P.rangeX[1]); b.speed = P.followSpeed * 0.7; enter(b, 'walk');
+            if (typeof P.g3dPickWalk === 'function') {
+              const t3 = P.g3dPickWalk(b); if (t3) { b.tx = t3.x; b.tz = t3.z; } else { b.tx = clamp(b.x + b.awaySign * rf(r, P.walkDist), P.rangeX[0], P.rangeX[1]); }
+            } else b.tx = clamp(b.x + b.awaySign * rf(r, P.walkDist), P.rangeX[0], P.rangeX[1]);
+            b.speed = P.followSpeed * 0.7; enter(b, 'walk');
           } else backToStay(b);
         }
         break;
@@ -781,7 +818,7 @@
   /* 3b puppet：{x, dir, clip, frame, face:{eyes,mouth}|null, depth, hidden}；只寫顯示欄位，唔郁 state／seq（放手由 b3bui force stay） */
   function puppet(b, dt) {
     const p = b.puppet; b.t += Math.min(dt, 0.25); b.acc = 0;
-    if (typeof p.x === 'number') b.x = p.x; if (p.dir) b.dir = p.dir < 0 ? -1 : 1;
+    if (typeof p.x === 'number') b.x = p.x; if (typeof p.z === 'number') b.z = p.z; if (p.dir) b.dir = p.dir < 0 ? -1 : 1;
     const clip = p.clip || 'idle'; b.clip = clip; b.frame = p.frame | 0; b.show = { clip, frame: b.frame }; b.lift = 0; b.pose = null; b.depth = p.depth || 0;
     b.faceAct = p.face || null; b.face = faceFor(b);
   }
@@ -792,8 +829,13 @@
     if (k === 'happy' || k === 'drag') {
       const g = k === 'happy' ? 'walk_happy' : 'walk_drag', dur = rf(b.mrng, LV.nowWalkSec), sp = P.walkSpeed;
       if (b.state === 'micro' && b.seq) endMicro(b);
-      const room = [b.x - P.rangeX[0], P.rangeX[1] - b.x], d = room[1] >= room[0] ? 1 : -1;
-      b.tx = clamp(b.x + d * sp * LV.speedMul[g] * dur, P.rangeX[0], P.rangeX[1]); b.speed = sp;
+      if (typeof P.g3dPickWalk === 'function') {
+        const t3 = P.g3dPickWalk(b); if (t3) { b.tx = t3.x; b.tz = t3.z; } else { const room = [b.x - P.rangeX[0], P.rangeX[1] - b.x], d = room[1] >= room[0] ? 1 : -1; b.tx = clamp(b.x + d * sp * LV.speedMul[g] * dur, P.rangeX[0], P.rangeX[1]); }
+      } else {
+        const room = [b.x - P.rangeX[0], P.rangeX[1] - b.x], d = room[1] >= room[0] ? 1 : -1;
+        b.tx = clamp(b.x + d * sp * LV.speedMul[g] * dur, P.rangeX[0], P.rangeX[1]);
+      }
+      b.speed = sp;
       enter(b, 'walk', 'now'); b.stopAt = null; b.gaitForce = { g, until: b.t + dur, start: b.t };
       note(b, 'micro', 'now_' + k, g); return;
     }

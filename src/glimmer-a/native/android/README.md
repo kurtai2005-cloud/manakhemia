@@ -39,6 +39,7 @@ APK 工程喺 repo 外（`/workspace/fpet-hd2d`，唔係 git）；呢度留一�
 - 6d.1：versionCode 5、versionName "1.3.1"（同一張 release cert；keystore／密碼唔入 repo）。
 - 6d.2：versionCode 6、versionName "1.3.2"（同一張 release cert；keystore／密碼唔入 repo）。
 - 3d-h1（#89 3D 花園 H1 試點）：versionCode 7、versionName "1.4.0-3d"（同一張 release cert；keystore／密碼唔入 repo；唔 merge）。
+- 3d-h1.1：versionCode 8、versionName "1.4.1-3d"（同一張 release cert；keystore／密碼唔入 repo；唔 merge）。
 
 ## JS 介面（`Capacitor.Plugins.Share6d`，src/long6dui.js 用；冇 plugin → 瀏覽器 clipboard／下載／Web Share）
 | 方法 | 做咩 |

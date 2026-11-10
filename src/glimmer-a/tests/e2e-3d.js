@@ -1,5 +1,5 @@
 /* 《微光小圃》 e2e-3d — #89 3D 花園 H1 試點：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0。
-   截圖 → SHOTS 同 /workspace/apk/3d-h1-*.png。fps 用 CDP 4× CPU。node tests/e2e-3d.js */
+   截圖 → SHOTS；3d-h1-*.png 同 3d-h11-*.png（H11SHOTS／APK 目錄）。fps 用 CDP 4× CPU。node tests/e2e-3d.js */
 const path = require('path');
 const fs = require('fs');
 let chromium;
@@ -180,6 +180,85 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
     console.log('  fps 4× CPU: ' + JSON.stringify(fpsReport));
     fs.writeFileSync('/home/box/keep/3d-h1/fps-4x.json', JSON.stringify(fpsReport, null, 2));
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 }).catch(() => { });
+    await ctx.close(); }
+
+  // ───────── I. H1.1 寵物直立、XZ 方向、遮擋截圖 ─────────
+  console.log('I. H1.1 寵物直立／四方向／行到物件後');
+  const H11 = process.env.H11SHOTS || '/workspace/apk/';
+  fs.mkdirSync(H11, { recursive: true });
+  { const { ctx, page, E, W } = await boot([390, 844]); await adultR(E); await waitG3(E, W); await W(400);
+    await E(() => { __glimmer.hourOverride = 13; __qa.g3d.setSway(false); __qa.g3d.setFollow(true); if (__glimmer.beh) { __glimmer.beh.x = 0; __glimmer.beh.z = 0; } });
+    ok(await E(() => __qa.g3d.petFlipY()) === true, 'pet 貼圖 flipY＝true（唔倒轉）');
+    await E(() => __qa.g3d.forcePet({ x: 0, z: 20, facing: { dir: 'front', flip: false, clip: 'idle' }, moving: false })); await W(500);
+    const up = await E(() => {
+      const pd = __qa.g3d.petDraw();
+      const k = __glimmer.renderer.k || 2;
+      const ctx2 = __glimmer.renderer.ctx;
+      const avg = (y0, y1) => {
+        let n = 0, sat = 0, lum = 0;
+        for (let y = y0; y < y1; y += 2) for (let x = pd.x + 6; x < pd.x + pd.w - 6; x += 2) {
+          const d = ctx2.getImageData(Math.round(x * k), Math.round(y * k), 1, 1).data;
+          const mx = Math.max(d[0], d[1], d[2]), mn = Math.min(d[0], d[1], d[2]);
+          sat += mx - mn; lum += (d[0] + d[1] + d[2]) / 3; n++;
+        }
+        return n ? { sat: sat / n, lum: lum / n } : { sat: 0, lum: 0 };
+      };
+      const top = avg(pd.y + 2, pd.y + pd.h * 0.42);
+      const bot = avg(pd.y + pd.h * 0.62, pd.y + pd.h - 2);
+      return { pd, top, bot, flip: __qa.g3d.petFlipY() };
+    });
+    // 直立：上半（頭／身）飽和度或亮度結構同下半（腳）唔應該倒轉成「面喺腳位」——頭比較亮／較有色。
+    ok(up.pd && up.pd.h > 16 && up.top.sat + up.top.lum > 0, '投影 AABB 可採樣', up);
+    ok(up.top.sat >= up.bot.sat * 0.7, '上半身唔似倒轉（頭／身喺上）', up);
+    await page.screenshot({ path: SHOTS + '3d-h11-day.png' });
+    fs.copyFileSync(SHOTS + '3d-h11-day.png', H11 + '3d-h11-day.png');
+
+    await E(() => __qa.g3d.forcePet({ x: 0, z: 55, facing: { dir: 'front', flip: false, clip: 'walk' }, dx: 0, dz: 8, moving: true })); await W(400);
+    const fr = await E(() => __qa.g3d.pet());
+    ok(fr.frame && /front_/.test(fr.frame), '向鏡頭行＝front 幀', fr);
+    await page.screenshot({ path: SHOTS + '3d-h11-walk-front.png' });
+    fs.copyFileSync(SHOTS + '3d-h11-walk-front.png', H11 + '3d-h11-walk-front.png');
+
+    await E(() => __qa.g3d.forcePet({ x: 40, z: 20, facing: { dir: 'side', flip: false, clip: 'walk' }, dx: 8, dz: 0, moving: true })); await W(400);
+    const sd = await E(() => __qa.g3d.pet());
+    ok(sd.frame && /side_/.test(sd.frame) && !(sd.facing && sd.facing.flip), '向右行＝side', sd);
+    await page.screenshot({ path: SHOTS + '3d-h11-walk-side.png' });
+    fs.copyFileSync(SHOTS + '3d-h11-walk-side.png', H11 + '3d-h11-walk-side.png');
+
+    await E(() => __qa.g3d.forcePet({ x: -40, z: 20, facing: { dir: 'side', flip: true, clip: 'walk' }, dx: -8, dz: 0, moving: true })); await W(400);
+    const sl = await E(() => __qa.g3d.pet());
+    ok(sl.frame && /side_/.test(sl.frame) && sl.facing && sl.facing.flip, '向左行＝side 鏡像', sl);
+    await page.screenshot({ path: SHOTS + '3d-h11-walk-side-left.png' });
+    fs.copyFileSync(SHOTS + '3d-h11-walk-side-left.png', H11 + '3d-h11-walk-side-left.png');
+
+    await E(() => __qa.g3d.forcePet({ x: 0, z: -20, facing: { dir: 'back', flip: false, clip: 'walk' }, dx: 0, dz: -8, moving: true })); await W(400);
+    const bk = await E(() => __qa.g3d.pet());
+    ok(bk.frame && /back_/.test(bk.frame), '向屋行＝back 幀', bk);
+    await page.screenshot({ path: SHOTS + '3d-h11-walk-back.png' });
+    fs.copyFileSync(SHOTS + '3d-h11-walk-back.png', H11 + '3d-h11-walk-back.png');
+
+    await E(() => __qa.g3d.forcePet({ x: 82.5, z: -110, facing: { dir: 'back', flip: false, clip: 'idle' }, moving: false })); await W(500);
+    const oc = await E(() => ({ occ: __qa.g3d.occluded(82.5, -110), pet: __qa.g3d.pet() }));
+    ok(oc.occ, '行到小屋後被遮擋', oc);
+    await page.screenshot({ path: SHOTS + '3d-h11-occluded.png' });
+    fs.copyFileSync(SHOTS + '3d-h11-occluded.png', H11 + '3d-h11-occluded.png');
+    ok(fs.existsSync(H11 + '3d-h11-day.png') && fs.existsSync(H11 + '3d-h11-occluded.png') && fs.existsSync(H11 + '3d-h11-walk-front.png') && fs.existsSync(H11 + '3d-h11-walk-side.png') && fs.existsSync(H11 + '3d-h11-walk-back.png'), 'H1.1 截圖已寫');
+
+    // 實際 XZ hook：從原點 step 去樹後唔入 footprint
+    const pathOk = await E(() => {
+      let x = 0, z = 0, pi = 0, hit = false, arr = false;
+      const objs = __glimmer.g3d.objects, G = Glimmer.garden3d;
+      const path = G.buildPath(objs, 0, 0, -88, -80, 10, G.RANGE3.x, G.RANGE3.z);
+      for (let i = 0; i < 2000; i++) {
+        const fol = G.followPath(objs, x, z, path, { x: -88, z: -80 }, 2, 10, G.RANGE3.x, G.RANGE3.z, pi);
+        pi = fol.pi; x = fol.step.x; z = fol.step.z;
+        if (G.blocked(objs, x, z, 10).length) { hit = true; break; }
+        if (fol.step.arrived) { arr = true; break; }
+      }
+      return { arr, hit, x, z };
+    });
+    ok(pathOk.arr && !pathOk.hit, '執行期 A* 可由原點行到樹後', pathOk);
+    await E(() => __qa.g3d.forcePet(null));
     await ctx.close(); }
 
   const fatal = errs.filter(e => !/open-meteo|ResizeObserver|favicon/.test(e));

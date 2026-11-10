@@ -2,7 +2,7 @@
    純邏輯（Node 可 require，唔使 three.js）：座標、鏡頭 sway／follow、碰撞、4 方向、日夜光、畫質自動。
    瀏覽器 Scene：Three.js 載 17 件 mesh＋地面＋背景板＋寵物 billboard（radiant 用 dir4；其他形態用 2D sprite 後備）。
    Kurt：三級畫質＋自動偵測＋fps／耗電面板（開發者模式）；?3d=0 返 2D；低畫質／低端機＝2D 後備；
-   鏡頭自動擺／跟拍（patch2，Kurt 未批定）做埋，開發者模式有開關（預設開）。 */
+   鏡頭自動擺／跟拍（開發者模式有開關，預設開）。H1.1：寵物 flipY 修正；XZ 走位＋碰撞接入 moveTo；地面網格。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.garden3d = factory(); }
@@ -20,7 +20,7 @@
   function worldToArtFlat(x, z) { return { x: x + CX, y: GROUND_Y + z / ZSCALE }; }
   function petWorld(beh) {
     const x = beh && beh.x != null ? +beh.x : 0;
-    const z = beh && beh.depth ? (+beh.depth) * ZSCALE : 0;
+    const z = beh && beh.z != null ? +beh.z : (beh && beh.depth ? (+beh.depth) * ZSCALE : 0);
     return { x: x, z: z };
   }
 
@@ -134,6 +134,136 @@
       if (d < pad + radius) hit.push(o.id);
     });
     return hit;
+  }
+
+  /* ── XZ 走位：喺地面真正前後左右行；撞到 footprint 就沿邊滑／繞。?3d=0 唔用。── */
+  const RANGE3 = { x: [-140, 140], z: [-125, 100] };
+  const WALK_LANDMARKS = [
+    { x: 82, z: -110, tag: 'behind_cottage' },
+    { x: -88, z: -80, tag: 'behind_tree' },
+    { x: -110, z: -70, tag: 'tree_side' },
+    { x: -81, z: 40, tag: 'behind_pot_L' },
+    { x: 0, z: 60, tag: 'front' },
+    { x: 40, z: 50, tag: 'front_R' },
+    { x: 90, z: 0, tag: 'right' },
+    { x: -90, z: 0, tag: 'left' },
+    { x: 20, z: -70, tag: 'yard_back' },
+    { x: 0, z: 20, tag: 'front_near' },
+    { x: 49, z: 5, tag: 'near_pot_S' }
+  ];
+  function inRange3(x, z, range) {
+    range = range || RANGE3;
+    const rx = range.x || range, rz = range.z || range;
+    return x >= rx[0] && x <= rx[1] && z >= rz[0] && z <= rz[1];
+  }
+  function stepXZ(objects, x, z, tx, tz, step, radius, rangeX, rangeZ) {
+    step = Math.max(0, step || 0);
+    radius = radius == null ? 10 : radius;
+    const rx = rangeX || RANGE3.x, rz = rangeZ || RANGE3.z;
+    const free = function (nx, nz) {
+      if (nx < rx[0] || nx > rx[1] || nz < rz[0] || nz > rz[1]) return false;
+      return !blocked(objects, nx, nz, radius).length;
+    };
+    const dist = Math.hypot(tx - x, tz - z);
+    const eps = Math.max(step, 0.5);
+    if (dist <= eps) {
+      if (free(tx, tz)) return { x: tx, z: tz, arrived: true, dx: tx - x, dz: tz - z };
+      return { x: x, z: z, arrived: false, dx: 0, dz: 0, stuck: true };
+    }
+    const ang = Math.atan2(tz - z, tx - x);
+    const tryA = [0, 1, -1, 2, -2, 3, -3, 4];
+    for (let i = 0; i < tryA.length; i++) {
+      const a = ang + tryA[i] * Math.PI / 4;
+      const nx = x + Math.cos(a) * step, nz = z + Math.sin(a) * step;
+      if (free(nx, nz)) return { x: nx, z: nz, arrived: false, dx: nx - x, dz: nz - z };
+    }
+    return { x: x, z: z, arrived: false, dx: 0, dz: 0, stuck: true };
+  }
+  /* 粗格 A*（8 向，8 unit 一格）：去物件後面要繞圍欄／小屋，單靠貪心會卡牆 */
+  function buildPath(objects, x, z, tx, tz, radius, rangeX, rangeZ) {
+    radius = radius == null ? 10 : radius;
+    const rx = rangeX || RANGE3.x, rz = rangeZ || RANGE3.z;
+    const cell = 8;
+    const x0 = rx[0], z0 = rz[0];
+    const nx = Math.round((rx[1] - rx[0]) / cell), nz = Math.round((rz[1] - rz[0]) / cell);
+    const toW = function (ix, iz) { return { x: x0 + ix * cell, z: z0 + iz * cell }; };
+    const toC = function (wx, wz) {
+      return [Math.max(0, Math.min(nx, Math.round((wx - x0) / cell))), Math.max(0, Math.min(nz, Math.round((wz - z0) / cell)))];
+    };
+    const walkable = function (ix, iz) {
+      if (ix < 0 || iz < 0 || ix > nx || iz > nz) return false;
+      const w = toW(ix, iz);
+      return !blocked(objects, w.x, w.z, radius).length;
+    };
+    const nearFree = function (ix, iz) {
+      if (walkable(ix, iz)) return [ix, iz];
+      for (let r = 1; r <= 4; r++) {
+        for (let dx = -r; dx <= r; dx++) for (let dz = -r; dz <= r; dz++) {
+          if (Math.max(Math.abs(dx), Math.abs(dz)) !== r) continue;
+          if (walkable(ix + dx, iz + dz)) return [ix + dx, iz + dz];
+        }
+      }
+      return null;
+    };
+    let sc = nearFree.apply(null, toC(x, z)), gc = nearFree.apply(null, toC(tx, tz));
+    if (!sc || !gc) return [{ x: tx, z: tz }];
+    const sk = sc[0] + ',' + sc[1], gk = gc[0] + ',' + gc[1];
+    if (sk === gk) return [{ x: tx, z: tz }];
+    const open = [{ ix: sc[0], iz: sc[1], g: 0, f: Math.hypot(gc[0] - sc[0], gc[1] - sc[1]), from: null }];
+    const seen = {}; seen[sk] = 0;
+    const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+    let found = null, guard = 0;
+    while (open.length && guard++ < 4000) {
+      let bi = 0; for (let i = 1; i < open.length; i++) if (open[i].f < open[bi].f) bi = i;
+      const cur = open.splice(bi, 1)[0];
+      if (cur.ix === gc[0] && cur.iz === gc[1]) { found = cur; break; }
+      for (let d = 0; d < dirs.length; d++) {
+        const ix = cur.ix + dirs[d][0], iz = cur.iz + dirs[d][1];
+        if (!walkable(ix, iz)) continue;
+        const g = cur.g + Math.hypot(dirs[d][0], dirs[d][1]);
+        const k = ix + ',' + iz;
+        if (seen[k] != null && seen[k] <= g + 1e-9) continue;
+        seen[k] = g;
+        open.push({ ix: ix, iz: iz, g: g, f: g + Math.hypot(gc[0] - ix, gc[1] - iz), from: cur });
+      }
+    }
+    if (!found) return [{ x: tx, z: tz }];
+    const cells = [];
+    for (let n = found; n; n = n.from) cells.push(n);
+    cells.reverse();
+    const path = cells.map(function (c) { return toW(c.ix, c.iz); });
+    if (!blocked(objects, tx, tz, radius).length) path.push({ x: tx, z: tz });
+    return path;
+  }
+  function followPath(objects, x, z, path, dest, step, radius, rangeX, rangeZ, pi) {
+    pi = pi || 0;
+    const goal = dest || (path && path.length ? path[path.length - 1] : null);
+    if (!path || !path.length) return { step: stepXZ(objects, x, z, dest.x, dest.z, step, radius, rangeX, rangeZ), pi: 0 };
+    while (pi < path.length && Math.hypot(path[pi].x - x, path[pi].z - z) <= Math.max(step, 4)) pi++;
+    const wp = pi >= path.length ? (goal || path[path.length - 1]) : path[pi];
+    const r = stepXZ(objects, x, z, wp.x, wp.z, step, radius, rangeX, rangeZ);
+    const atGoal = goal && Math.hypot(goal.x - r.x, goal.z - r.z) <= Math.max(step, 0.5) && !blocked(objects, r.x, r.z, radius).length;
+    if (atGoal) r.arrived = true;
+    return { step: r, pi: pi };
+  }
+  function pickWalk(objects, rng, from, radius, range) {
+    range = range || RANGE3;
+    radius = radius == null ? 10 : radius;
+    const r = (typeof rng === 'function') ? rng : Math.random;
+    const fx = from && from.x != null ? from.x : 0, fz = from && from.z != null ? from.z : 0;
+    const far = function (x, z) { return Math.hypot(x - fx, z - fz) > 16; };
+    const okp = function (x, z) { return inRange3(x, z, range) && !blocked(objects, x, z, radius).length && far(x, z); };
+    if (r() < 0.4) {
+      const L = WALK_LANDMARKS.slice();
+      for (let i = L.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const tmp = L[i]; L[i] = L[j]; L[j] = tmp; }
+      for (let i = 0; i < L.length; i++) { if (okp(L[i].x, L[i].z)) return { x: L[i].x, z: L[i].z, tag: L[i].tag }; }
+    }
+    for (let i = 0; i < 24; i++) {
+      const x = range.x[0] + r() * (range.x[1] - range.x[0]);
+      const z = range.z[0] + r() * (range.z[1] - range.z[0]);
+      if (okp(x, z)) return { x: x, z: z, tag: 'rand' };
+    }
+    return { x: 0, z: 20, tag: 'front_near' };
   }
 
   /* ── 畫質：high／mid＝3D；low＝2D 後備。?3d=0 永遠 2D；低端機自動 low。── */
@@ -317,6 +447,35 @@
     gMesh.rotation.x = -Math.PI / 2; gMesh.position.set(0, 0, 0); gMesh.receiveShadow = !!Q.shadows;
     scene.add(gMesh); this.groundMesh = gMesh;
 
+    // 地面網格：令地面讀成有深度嘅平面（每 16／64 units 一條線），唔好似貼平 backdrop
+    const gridC = document.createElement('canvas'); gridC.width = 256; gridC.height = 256;
+    const gx = gridC.getContext('2d'); gx.clearRect(0, 0, 256, 256);
+    gx.fillStyle = 'rgba(48, 30, 18, 0.20)';
+    for (let i = 0; i <= 256; i += 16) { gx.fillRect(i, 0, 1, 256); gx.fillRect(0, i, 256, 1); }
+    gx.fillStyle = 'rgba(48, 30, 18, 0.38)';
+    for (let i = 0; i <= 256; i += 64) { gx.fillRect(i, 0, 1, 256); gx.fillRect(0, i, 256, 1); }
+    const gridTex = this._tex(THREE, gridC, { srgb: false, flipY: true });
+    const gridMat = new THREE.MeshBasicMaterial({ map: gridTex, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
+    const gridGeo = new THREE.PlaneGeometry(256, 256);
+    this._flipUVV(gridGeo);
+    const gridMesh = new THREE.Mesh(gridGeo, gridMat);
+    gridMesh.rotation.x = -Math.PI / 2; gridMesh.position.set(0, 0.08, 0); gridMesh.renderOrder = 1;
+    gridMesh.receiveShadow = false; gridMesh.castShadow = false;
+    scene.add(gridMesh); this.gridMesh = gridMesh;
+    // 外圍 64-unit 疏格，透視延伸到花園外
+    const ogC = document.createElement('canvas'); ogC.width = 64; ogC.height = 64;
+    const ogx = ogC.getContext('2d'); ogx.clearRect(0, 0, 64, 64);
+    ogx.fillStyle = 'rgba(48, 30, 18, 0.16)';
+    ogx.fillRect(0, 0, 1, 64); ogx.fillRect(0, 0, 64, 1);
+    const ogTex = this._tex(THREE, ogC, { srgb: false, repeat: [1280 / 64, 800 / 64], flipY: true });
+    ogTex.offset.set(-8, -5.5);
+    const ogMat = new THREE.MeshBasicMaterial({ map: ogTex, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
+    const ogGeo = new THREE.PlaneGeometry(1280, 800);
+    this._flipUVV(ogGeo);
+    const ogMesh = new THREE.Mesh(ogGeo, ogMat);
+    ogMesh.rotation.x = -Math.PI / 2; ogMesh.position.set(0, 0.06, -80); ogMesh.renderOrder = 0;
+    scene.add(ogMesh); this.outerGridMesh = ogMesh;
+
     // meshes + backdrops
     this.meshObj = {}; this.emissiveMat = []; this.backdropMat = [];
     this.objects.forEach(function (o) {
@@ -366,18 +525,15 @@
     // pet billboard（圓柱面向）＋軟影
     const petGeo = new THREE.PlaneGeometry(64, 64);
     this.petCanvas = document.createElement('canvas'); this.petCanvas.width = 64; this.petCanvas.height = 64;
-    this.petTex = this._tex(THREE, this.petCanvas, { srgb: true, flipY: false });
-    this.petEmTex = this._tex(THREE, this.petCanvas, { srgb: true, flipY: false }); // replaced per frame
+    this.petTex = this._tex(THREE, this.petCanvas, { srgb: true, flipY: true });
+    this.petEmTex = this._tex(THREE, this.petCanvas, { srgb: true, flipY: true }); // replaced per frame
     this.petMat = new THREE.MeshLambertMaterial({ map: this.petTex, alphaTest: 0.5, transparent: false, side: THREE.DoubleSide });
     this.petMat.emissive = new THREE.Color(0xffffff);
     this.petMesh = new THREE.Mesh(petGeo, this.petMat);
     this.petMesh.castShadow = false; this.petMesh.receiveShadow = false;
     this.petMesh.userData.id = 'pet';
-    // pivot (32,61)：腳底大約 y=0 → 平面中心要喺 y = 64-61 = 3 之上再加一半？平面高 64，中心喺幾何中心。
-    // 腳底喺局部 (0, −(64-61), 0) 相對中心＝中心喺腳底上方 61。所以 mesh.position.y = 61（當腳底 y=0）。
-    // 但 PlaneGeometry 中心係幾何中心，pivot 係 (32,61) 由頂向下。圖 v 向上（flipY false）時，
-    // 圖底喺 y=-32，圖頂 y=+32。pivot y=61 由頂向下 → 離底 64-61=3 px，即腳底喺幾何 y = -32+3 = -29。
-    // 所以要 position.y = 29 令腳底喺 y=0。更清楚：offset = (py - h/2) 若 v 上從底計 pivot 離底 = h-py = 3，中心離腳底 = h/2 - 3 = 29。
+    // pivot (32,61)＝距圖頂 61px，即距圖底 3px。Three.js 預設 flipY true：圖底 → v=0 → Plane 底（局部 y=−32）。
+    // 腳底喺局部 y = −32+3 = −29，所以 position.y = 29 令腳底喺世界 y=0。（H1 誤用 flipY false 會令頭腳倒轉。）
     this.petYOffset = 64 / 2 - (64 - 61); // 29
     this.petMesh.position.set(0, this.petYOffset, 0);
     scene.add(this.petMesh);
@@ -480,7 +636,7 @@
     if (flip) e.restore();
     if (!this.petEmTex2) {
       const THREE = window.THREE;
-      this.petEmTex2 = this._tex(THREE, this.petEmCanvas, { srgb: true, flipY: false });
+      this.petEmTex2 = this._tex(THREE, this.petEmCanvas, { srgb: true, flipY: true });
       this.petMat.emissiveMap = this.petEmTex2;
     } else this.petEmTex2.needsUpdate = true;
     // normal map：左方向鏡像之後要反 R channel（R → 255−R）
@@ -498,7 +654,7 @@
       }
       if (!this.petNTex) {
         const THREE = window.THREE;
-        this.petNTex = this._tex(THREE, this.petNCanvas, { srgb: false, flipY: false });
+        this.petNTex = this._tex(THREE, this.petNCanvas, { srgb: false, flipY: true });
         this.petMat.normalMap = this.petNTex;
       } else this.petNTex.needsUpdate = true;
     }
@@ -570,6 +726,10 @@
       if (this._forcePet.x != null) this.pet.x = this._forcePet.x;
       if (this._forcePet.z != null) this.pet.z = this._forcePet.z;
       if (this._forcePet.hidden != null) this.pet.hidden = !!this._forcePet.hidden;
+      if (this._forcePet.dx != null) this.pet.dx = this._forcePet.dx;
+      if (this._forcePet.dz != null) this.pet.dz = this._forcePet.dz;
+      if (this._forcePet.moving != null) this.pet.moving = !!this._forcePet.moving;
+      if (this._forcePet.facing) this.pet.facing = this._forcePet.facing;
     }
     const hour = ctx.hour != null ? ctx.hour : 8;
     const forced = ctx.night; // 0/1 override
@@ -781,6 +941,9 @@
       lastFrameMs: function () { return S.stat.lastFrameMs; },
       lit: function () { return S._lit && { sun: S._lit.sun, fill: S._lit.fill, night: S._lit.night, byId: S._lit.byId }; },
       blocked: function (x, z) { return blocked(S.objects, x, z, (S.objJ && S.objJ.pet && S.objJ.pet.radius) || 10); },
+      petFlipY: function () { return !!(S.petTex && S.petTex.flipY); },
+      range3: function () { return { x: RANGE3.x.slice(), z: RANGE3.z.slice() }; },
+      stepXZ: function (x, z, tx, tz, step) { return stepXZ(S.objects, x, z, tx, tz, step, (S.objJ && S.objJ.pet && S.objJ.pet.radius) || 10, RANGE3.x, RANGE3.z); },
       showPerf: function (v) { S.showPerf = v !== false; lsSet('glimmer.g3d.perf', S.showPerf ? '1' : '0'); if (S.perfEl) S.perfEl.style.display = S.showPerf ? 'block' : 'none'; return S.showPerf; },
       reload: function () { return S.load(); }
     };
@@ -799,6 +962,35 @@
       ]
     };
     if (NS) { if (NS.devmode) NS.devmode.register(DEV); else (NS.devSections = NS.devSections || []).push(DEV); }
+
+    // H1.1：3D 開時行為用 XZ 走位＋碰撞；?3d=0／2D 後備 hook 回 null，moveTo 維持舊 1D（e2e 不變）
+    const radOf = function () { return (S.objJ && S.objJ.pet && S.objJ.pet.radius) || 10; };
+    P.g3dWalk = function (b, tx, st) {
+      if (!S.on() || !S.objects || !S.objects.length) return null;
+      if (b.z == null) b.z = 0;
+      const tz = b.tz != null ? b.tz : b.z;
+      if (!b._g3dPath || b._g3dTx !== tx || b._g3dTz !== tz) {
+        b._g3dPath = buildPath(S.objects, b.x, b.z, tx, tz, radOf(), RANGE3.x, RANGE3.z);
+        b._g3dTx = tx; b._g3dTz = tz; b._g3dPi = 0;
+      }
+      const fol = followPath(S.objects, b.x, b.z, b._g3dPath, { x: tx, z: tz }, st, radOf(), RANGE3.x, RANGE3.z, b._g3dPi || 0);
+      b._g3dPi = fol.pi;
+      return fol.step;
+    };
+    P.g3dPickWalk = function (b) {
+      if (!S.on() || !S.objects || !S.objects.length) return null;
+      return pickWalk(S.objects, b && b.rng, { x: b && b.x || 0, z: (b && b.z) || 0 }, radOf(), RANGE3);
+    };
+    P.g3dSpot = function (kind) {
+      if (!S.on()) return null;
+      if (kind === 'sun') return { x: 20, z: 36 };
+      if (kind === 'bump') return { x: 49, z: 5 };
+      return null;
+    };
+    P.g3dClampX = function (x) {
+      if (!S.on()) return clamp(x, P.rangeX[0], P.rangeX[1]);
+      return clamp(x, RANGE3.x[0], RANGE3.x[1]);
+    };
     return S;
   }
 
@@ -808,7 +1000,7 @@
     nightMix: nightMix, mixLights: mixLights,
     swayYaw: swayYaw, followDesired: followDesired, followStep: followStep, camPos: camPos, clampYaw: clampYaw,
     dirOf: dirOf, frameName: frameName,
-    fpDist: fpDist, blocked: blocked,
+    fpDist: fpDist, blocked: blocked, stepXZ: stepXZ, buildPath: buildPath, followPath: followPath, pickWalk: pickWalk, RANGE3: RANGE3,
     detectQuality: detectQuality, hasWebGL: hasWebGL,
     Scene: Scene, install: install
   };
