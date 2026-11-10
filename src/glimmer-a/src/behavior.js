@@ -411,11 +411,12 @@
         loopClip(b, 'walk'); b.gaze = b.dir;
         if (b.gaitForce && b.state === 'walk') {                                              // 即刻觸發步姿：行夠 4–6s 就停；行到盡頭時間未夠就掉頭
           if (b.t >= b.gaitForce.until - 1e-9) { b.gaitForce = null; backToStay(b); setClip(b, b.base); break; }
-          const arrived3 = (b.tz != null && typeof P.g3dPickWalk === 'function') ? Math.hypot(b.tx - b.x, b.tz - (b.z || 0)) <= P.arriveEps + 0.5 : Math.abs(b.tx - b.x) <= P.arriveEps + 0.5;
+          const use3d = typeof P.g3dOn === 'function' && P.g3dOn();
+          const arrived3 = use3d ? Math.hypot(b.tx - b.x, (b.tz != null ? b.tz : 0) - (b.z || 0)) <= P.arriveEps + 0.5 : Math.abs(b.tx - b.x) <= P.arriveEps + 0.5;
           if (arrived3) {
-            if (typeof P.g3dPickWalk === 'function') {
-              const t3 = P.g3dPickWalk(b); if (t3) { b.tx = t3.x; b.tz = t3.z; }
-            } else {
+            const t3 = use3d && typeof P.g3dPickWalk === 'function' ? P.g3dPickWalk(b) : null;
+            if (t3) { b.tx = t3.x; b.tz = t3.z; }
+            else {
               const rem = (b.gaitForce.until - b.t) * b.speed * gaitMul(b, s) + 2, d = b.tx >= b.x ? -1 : 1; b.tx = clamp(b.x + d * rem, P.rangeX[0], P.rangeX[1]);
             }
           }

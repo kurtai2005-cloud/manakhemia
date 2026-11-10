@@ -965,6 +965,7 @@
 
     // H1.1：3D 開時行為用 XZ 走位＋碰撞；?3d=0／2D 後備 hook 回 null，moveTo 維持舊 1D（e2e 不變）
     const radOf = function () { return (S.objJ && S.objJ.pet && S.objJ.pet.radius) || 10; };
+    P.g3dOn = function () { return S.on(); };
     P.g3dWalk = function (b, tx, st) {
       if (!S.on() || !S.objects || !S.objects.length) return null;
       if (b.z == null) b.z = 0;
