@@ -41,6 +41,7 @@ APK 工程喺 repo 外（`/workspace/fpet-hd2d`，唔係 git）；呢度留一�
 - 3d-h1（#89 3D 花園 H1 試點）：versionCode 7、versionName "1.4.0-3d"（同一張 release cert；keystore／密碼唔入 repo；唔 merge）。
 - 3d-h1.1：versionCode 8、versionName "1.4.1-3d"（同一張 release cert；keystore／密碼唔入 repo；唔 merge）。
 - 3d-h1.2：versionCode 9、versionName "1.4.2-3d"（同一張 release cert；keystore／密碼唔入 repo；唔 merge）。可見區構圖、跟拍建立鏡頭、日影／夜空、網格預設關、3D 行速 20；行為 hook 掛 PARAMS.beh。
+- 3d-h1.3：versionCode 10、versionName "1.4.3-3d"（同一張 release cert；keystore／密碼唔入 repo；唔 merge）。寵物／細佬自主行、2D 地面物件入 3D billboard、three.js LICENSE 入 APK assets、mid 影圖 512／high 影圖每 3 幀更新。
 
 ## JS 介面（`Capacitor.Plugins.Share6d`，src/long6dui.js 用；冇 plugin → 瀏覽器 clipboard／下載／Web Share）
 | 方法 | 做咩 |
