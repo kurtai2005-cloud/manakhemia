@@ -1,7 +1,7 @@
 {
-  "doc": "3d-h1 回歸。真參數。對 scan-v10-21 鎖定 16 項。權限閂。",
-  "sim": "9e598b3e332b6bf7d9fcaf69b716d2e05c902179",
-  "tree": "b4024cc86deb1c13c4143d8553fa998061f00ecb",
+  "doc": "3d-h1.1 回歸。真參數。對 scan-v10-21 鎖定 16 項。權限閂。",
+  "sim": "f5985c88d91eb677fc0bdca94df3d71b927798b1",
+  "tree": "c9b8a64f893aedead85788c66dce27d78232b09c",
   "N": 1000,
   "ECON_N": 200,
   "fpats": 2,
@@ -305,5 +305,5 @@
     "cap": 4,
     "kinds": 2
   },
-  "ms": 69458
+  "ms": 67365
 }

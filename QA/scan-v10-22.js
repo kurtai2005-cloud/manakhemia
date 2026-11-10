@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-/* 3d-h1 回歸掃描（真參數，唔覆寫）。唔改遊戲檔。
- * 真模組 9e598b3e（tree b4024cc8，基 6d.2 ecb2c3a3）。
+/* 3d-h1.1 回歸掃描（真參數，唔覆寫）。唔改遊戲檔。
+ * 真模組 f5985c88（tree c9b8a64f，基 6d.2 ecb2c3a3；9e598b3e 已取代，舊報告留對比）。
  * 路線同 economy-v102：route-sweep main({ fpats:2, mg2:true })。經濟＝mg2Hook＋每日掉 5 粒。
  */
 'use strict';
 const fs = require('fs');
 const path = require('path');
-const ROOT = process.env.ROOT || '/tmp/glimmer-3d/src/glimmer-a';
+const ROOT = process.env.ROOT || '/tmp/glimmer-3d11/src/glimmer-a';
 const S = require(path.join(ROOT, 'src/sim.js'));
 const D = require(path.join(ROOT, 'src/data.js'));
 require(path.join(ROOT, 'src/systems.js'));
@@ -160,9 +160,9 @@ function main() {
     if (Math.abs(d) > 3) routeDiff[id] = near[id];
   }
   const out = {
-    doc: '3d-h1 回歸。真參數。對 scan-v10-21 鎖定 16 項。權限閂。',
-    sim: '9e598b3e332b6bf7d9fcaf69b716d2e05c902179',
-    tree: 'b4024cc86deb1c13c4143d8553fa998061f00ecb',
+    doc: '3d-h1.1 回歸。真參數。對 scan-v10-21 鎖定 16 項。權限閂。',
+    sim: 'f5985c88d91eb677fc0bdca94df3d71b927798b1',
+    tree: 'c9b8a64f893aedead85788c66dce27d78232b09c',
     N, ECON_N, fpats: FP, drops: DROPS,
     proof, checks, passN: checks.filter(c => c[1] === '✅').length,
     fail: checks.filter(c => c[1] === '❌').map(c => c[0]),
