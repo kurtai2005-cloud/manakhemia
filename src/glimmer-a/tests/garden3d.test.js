@@ -217,8 +217,15 @@ console.log('⑨ H1.2／QA：擋住目標吸位、hook 掛 beh、behavior.step �
 
 console.log('⑩ H1.3／H1.4 自主行／世界物件／影圖／LICENSE／雨');
 {
-  ok(G3.QSET.mid.shadow === 256 && G3.QSET.mid.shadowEvery === 1 && G3.QSET.mid.softShadow === false, 'mid 影圖 256、每幀、PCF', G3.QSET.mid);
-  ok(G3.QSET.high.shadow === 2048 && G3.QSET.high.shadowEvery === 3 && G3.QSET.high.softShadow === false, 'high 影圖 2048、每 3 幀、關 soft shadow', G3.QSET.high);
+  ok(G3.QSET.mid.shadow === 256 && G3.QSET.mid.shadowEvery === 2 && G3.QSET.mid.softShadow === false, 'mid 影圖 256、每 2 幀、PCF', G3.QSET.mid);
+  ok(G3.QSET.high.shadow === 1024 && G3.QSET.high.shadowEvery === 3 && G3.QSET.high.softShadow === false, 'high 影圖 1024、每 3 幀、關 soft shadow', G3.QSET.high);
+  ok(G3.QSET.high.dpr === 1.5 && G3.QSET.mid.dpr === 1.25, 'H1.5 high／mid dpr 上限 1.5／1.25', { high: G3.QSET.high.dpr, mid: G3.QSET.mid.dpr });
+  const vsH = G3.viewScale(2, G3.QSET.high.dpr), vsM = G3.viewScale(2, G3.QSET.mid.dpr), vsSame = G3.viewScale(2, 2);
+  ok(vsH.w === Math.round(195 * 1.5) && vsH.h === Math.round(422 * 1.5) && vsH.gk === 1.5, 'high k=2 → WebGL 1.5x', vsH);
+  ok(vsM.w === Math.round(195 * 1.25) && vsM.h === Math.round(422 * 1.25) && vsM.gk === 1.25, 'mid k=2 → WebGL 1.25x', vsM);
+  ok(vsSame.w === 390 && vsSame.h === 844 && G3.viewScale(1, 1.5).gk === 1, 'cap 唔大於 k；k 細過 cap 就用 k', vsSame);
+  const a = G3.viewScale(2, 1.5), b = G3.viewScale(2, 1.5);
+  ok(a.w === b.w && a.h === b.h, '同一 k／dpr 計出同一尺寸（setSize 可跳過）', { a, b });
   ok(G3.ACTOR_ALPHA_SOFT === 0.1, '半透明 actor alphaTest 0.1', G3.ACTOR_ALPHA_SOFT);
   const soft = G3.actorMatOpts({ alpha: 0.45 }), hard = G3.actorMatOpts({ kind: 'poop' });
   ok(soft.alphaTest === 0.1 && soft.transparent && !soft.depthWrite, '影子 material：alphaTest 0.1＋transparent', soft);

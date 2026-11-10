@@ -5,7 +5,8 @@
    鏡頭自動擺／跟拍（開發者模式有開關，預設開）。H1.1：寵物 flipY 修正；XZ 走位＋碰撞接入 moveTo；地面網格。
    H1.2：直版可見區構圖（樹／籬笆／燈柱／屋唔被 UI 遮）＋跟拍保建立鏡頭；日影／夜空對齊參考；網格預設關；3D 行速 20 u/s。
    H1.3：寵物自主四圍行（唔使撳）；2D 地面物件全部做 billboard（寫 depth、被擋、影子、坐 XZ、跟光）；細佬自主 nav；遊測 P2／P3（mid 縮影圖、high 減 shadow 更新、LICENSE 入包）。
-   H1.4：遊測 H1.3 QA — 屎盒優先命中、半透明 actor alphaTest 0.1、mid 影圖 256、high 關 soft shadow、雨點加大加深。 */
+   H1.4：遊測 H1.3 QA — 屎盒優先命中、半透明 actor alphaTest 0.1、mid 影圖 256、high 關 soft shadow、雨點加大加深。
+   H1.5：遊測 H1.4 P2 效能 — 尺寸／dpr 冇變就唔好每幀 setSize；high／mid dpr 上限 1.5／1.25；3D 開時 renderer.frame 唔再畫 L0／L1。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.garden3d = factory(); }
@@ -437,10 +438,16 @@
 
   /* ── 畫質：high／mid＝3D；low＝2D 後備。?3d=0 永遠 2D；低端機自動 low。── */
   const QSET = {
-    high: { dpr: 2, shadow: 2048, tex3x: true, shadows: true, shadowEvery: 3, softShadow: false },  /* H1.4：關 soft shadow／用 PCF */
-    mid: { dpr: 1, shadow: 256, tex3x: false, shadows: true, shadowEvery: 1, softShadow: false },   /* H1.4：影圖 512→256、PCF */
+    high: { dpr: 1.5, shadow: 1024, tex3x: true, shadows: true, shadowEvery: 3, softShadow: false },  /* H1.5：dpr 上限 1.5；影圖 2048→1024、PCF */
+    mid: { dpr: 1.25, shadow: 256, tex3x: false, shadows: true, shadowEvery: 2, softShadow: false },  /* H1.5：dpr 上限 1.25；影圖 256、每 2 幀、PCF */
     low: { dpr: 1, shadow: 0, tex3x: false, shadows: false, shadowEvery: 0, softShadow: false }
   };
+  /* k＝2D 顯示倍數；dprCap＝3D 幀緩衝上限。回傳 WebGL 實際像素。 */
+  function viewScale(k, dprCap) {
+    k = k || 2;
+    const gk = Math.min(k, dprCap == null ? k : dprCap);
+    return { gk: gk, w: Math.max(1, Math.round(W * gk)), h: Math.max(1, Math.round(H * gk)) };
+  }
   const ACTOR_ALPHA_SOFT = 0.1;  /* 低過 6d 影子 alpha 0.45，半透明片元唔好被切走 */
   const RAIN = { n: 200, size: 6, color: 0x4a6a96, opacity: 0.9, sizeAttenuation: false };
   function detectQuality(o) {
@@ -571,6 +578,7 @@
     renderer.setSize(W * 2, H * 2, false);
     renderer.setClearColor(0xffe8c8, 1);
     this.canvas = canvas; this.renderer = renderer;
+    this._fb = null;  /* 新 renderer 要再 setSize 去 dpr 上限 */
     this.lost = false;
     const selfLost = this;
     canvas.addEventListener('webglcontextlost', function (e) {
@@ -782,17 +790,19 @@
       ids.forEach(function (id) { if (M.byId[id] != null && M.byId[id] >= I) { I = M.byId[id]; sid = id; } });
       e.mat.emissiveIntensity = I * emissiveScale(sid);
     });
-    function mixHex(dayHex, nightSrgb, t) {
+    function mixHex(dayHex, nightSrgb, t, into) {
       const THREE = window.THREE;
-      const c = new THREE.Color(dayHex);
-      const n = new THREE.Color().setRGB(srgbToLinear(nightSrgb[0]), srgbToLinear(nightSrgb[1]), srgbToLinear(nightSrgb[2]));
-      return c.lerp(n, clamp(t, 0, 1));
+      if (!self._colA) { self._colA = new THREE.Color(); self._colB = new THREE.Color(); }
+      const c = (into || self._colA).set(dayHex);
+      self._colB.setRGB(srgbToLinear(nightSrgb[0]), srgbToLinear(nightSrgb[1]), srgbToLinear(nightSrgb[2]));
+      return c.lerp(self._colB, clamp(t, 0, 1));
     }
     if (this.scene && this.scene.fog && M.fog) {
-      this.scene.fog.color.copy(mixHex(M.fog.color || '#ffe8c8', FOG_NIGHT, night));
+      this.scene.fog.color.copy(mixHex(M.fog.color || '#ffe8c8', FOG_NIGHT, night, self._colA));
     }
     if (this.renderer) {
-      this.renderer.setClearColor(mixHex(0xffe8c8, NIGHT_SRGB, night), 1);
+      if (!self._colClear) self._colClear = new (window.THREE).Color();
+      this.renderer.setClearColor(mixHex(0xffe8c8, NIGHT_SRGB, night, self._colClear), 1);
     }
     // 背景板未有夜景圖：sRGB 正確乘法（preview 用 [.22,.26,.42]），linear 寫入 color
     if (this.backdropMat) {
@@ -821,12 +831,18 @@
     const cam = this.camJ || {};
     const vis = visibleRect(cam);
     const vf = visFov(vis, cam);
-    this.camera.fov = vf.vfovDeg;
-    this.camera.near = cam.near || 10;
-    this.camera.far = cam.far || 4000;
-    this.camera.aspect = W / H;
     const vo = viewOffset(vis, W, H);
+    const near = cam.near || 10, far = cam.far || 4000;
+    const prev = this._vo;
+    if (prev && prev.fov === vf.vfovDeg && prev.near === near && prev.far === far
+      && prev.fw === vo.fullWidth && prev.fh === vo.fullHeight && prev.x === vo.x && prev.y === vo.y
+      && prev.w === vo.width && prev.h === vo.height && prev.aspect === W / H) return;
+    this.camera.fov = vf.vfovDeg;
+    this.camera.near = near;
+    this.camera.far = far;
+    this.camera.aspect = W / H;
     this.camera.setViewOffset(vo.fullWidth, vo.fullHeight, vo.x, vo.y, vo.width, vo.height);
+    this._vo = { fov: vf.vfovDeg, near: near, far: far, fw: vo.fullWidth, fh: vo.fullHeight, x: vo.x, y: vo.y, w: vo.width, h: vo.height, aspect: W / H };
   };
   Scene.prototype._syncGrid = function () {
     const on = !!this.gridOn;
@@ -963,16 +979,23 @@
   };
 
   Scene.prototype.resize = function (k) {
-    k = k || 2; if (!this.renderer) return;
-    this.renderer.setSize(W * k, H * k, false);
-    this._applyView();
-    this.k = k;
+    k = k || 2; if (!this.renderer) return this;
+    const vs = viewScale(k, this.qs().dpr);
+    if (!this._fb || this._fb.w !== vs.w || this._fb.h !== vs.h) {
+      this.renderer.setSize(vs.w, vs.h, false);
+      this._setSizeN = (this._setSizeN || 0) + 1;
+      this._fb = { w: vs.w, h: vs.h };
+      this._applyView();
+    }
+    this.k = k; this.gk = vs.gk;
+    return this;
   };
 
   Scene.prototype.draw = function (ctx, k, _opt) {
     if (!this.on() || !this.renderer) return false;
     const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : 0;
-    this.resize(k || this.k || 2);
+    k = k || this.k || 2;
+    this.resize(k);
     const ev = (this.qs() && this.qs().shadowEvery) || 1;
     if (this.renderer.shadowMap && this.renderer.shadowMap.enabled && ev > 1) {
       this.renderer.shadowMap.autoUpdate = false;
@@ -982,8 +1005,9 @@
       this.renderer.shadowMap.autoUpdate = true;
     }
     this.renderer.render(this.scene, this.camera);
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(this.canvas, 0, 0);
+    const dw = W * k, dh = H * k;
+    ctx.imageSmoothingEnabled = !(this.canvas.width === dw && this.canvas.height === dh);
+    ctx.drawImage(this.canvas, 0, 0, dw, dh);
     const ms = ((typeof performance !== 'undefined' && performance.now) ? performance.now() : 0) - t0;
     this.stat.draws++; this.stat.lastMs = ms; this.stat.ms += ms;
     this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
@@ -1345,6 +1369,9 @@
       shadowEvery: function () { return (S.qs() && S.qs().shadowEvery) || 0; },
       shadowSize: function () { return (S.qs() && S.qs().shadow) || 0; },
       shadowSoft: function () { return !!(S.qs() && S.qs().softShadow); },
+      setSizeN: function () { return S._setSizeN || 0; },
+      gk: function () { return S.gk; },
+      viewSize: function () { return S.canvas ? { w: S.canvas.width, h: S.canvas.height, k: S.k, gk: S.gk, dpr: S.qs() && S.qs().dpr } : null; },
       actorMat: function (id) {
         const rec = S._actorMap && S._actorMap[id]; if (!rec || !rec.mat) return null;
         let maxA = 0, n = 0;
@@ -1377,7 +1404,7 @@
     };
 
     const DEV = {
-      id: 'g3d', title: '3D 花園 H1.4', order: 13,
+      id: 'g3d', title: '3D 花園 H1.5', order: 13,
       status: function () { return (S.on() ? ('3D ' + S.quality) : (qs.get('3d') === '0' ? '?3d=0 2D' : '2D 後備')) + '・擺鏡 ' + (S.swayOn ? '開' : '關') + '・跟拍 ' + (S.followOn ? '開' : '關') + '・網格 ' + (S.gridOn ? '開' : '關'); },
       items: [
         { k: 'high', label: '畫質：高（3D）', run: function () { S.setQuality('high'); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 高' }; } },
@@ -1440,7 +1467,7 @@
   }
 
   return {
-    W: W, H: H, CX: CX, GROUND_Y: GROUND_Y, ZSCALE: ZSCALE, QSET: QSET, ACTOR_ALPHA_SOFT: ACTOR_ALPHA_SOFT, RAIN: RAIN, actorMatOpts: actorMatOpts,
+    W: W, H: H, CX: CX, GROUND_Y: GROUND_Y, ZSCALE: ZSCALE, QSET: QSET, ACTOR_ALPHA_SOFT: ACTOR_ALPHA_SOFT, RAIN: RAIN, actorMatOpts: actorMatOpts, viewScale: viewScale,
     VIS: VIS, VIS_HFOV_DEG: VIS_HFOV_DEG, WALK_SPEED_2D: WALK_SPEED_2D, WALK_SPEED_3D: WALK_SPEED_3D,
     POOP_SLOTS: POOP_SLOTS, poopWorld: poopWorld, WORLD_ITEMS: WORLD_ITEMS, worldItem: worldItem, worldInGarden: worldInGarden, worldWantArt: worldWantArt,
     G3D_IDLE_WALK_SEC: G3D_IDLE_WALK_SEC, G3D_WALK_MUL: G3D_WALK_MUL, G3D_STAY_MUL: G3D_STAY_MUL, G3D_DECIDE_EVERY: G3D_DECIDE_EVERY,

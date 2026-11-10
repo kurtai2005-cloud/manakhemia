@@ -1,5 +1,5 @@
-/* 《微光小圃》 e2e-3d — #89 3D 花園 H1／H1.2／H1.3／H1.4：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0、可見區、網格、behavior.step 行速。
-   截圖 → SHOTS；3d-h1-*.png、3d-h11-*.png、3d-h13-*.png、3d-h14-*.png。fps／p95 用 CDP 4× CPU。node tests/e2e-3d.js */
+/* 《微光小圃》 e2e-3d — #89 3D 花園 H1／H1.2／H1.3／H1.4／H1.5：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0、可見區、網格、behavior.step 行速。
+   截圖 → SHOTS；3d-h1-*.png、3d-h11-*.png、3d-h13-*.png、3d-h14-*.png、3d-h15-*.png。fps／p95 用 CDP 4× CPU。node tests/e2e-3d.js */
 const path = require('path');
 const fs = require('fs');
 let chromium;
@@ -364,8 +364,21 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
   console.log('K. H1.3／H1.4 自主行／屎優先／影子／雨／影圖');
   { const { ctx, page, E, W } = await boot([390, 844]); await adultR(E); await waitG3(E, W); await W(500);
     const qset = await E(() => ({ mid: Glimmer.garden3d.QSET.mid, high: Glimmer.garden3d.QSET.high, midLive: (__qa.g3d.setQuality('mid'), { ev: __qa.g3d.shadowEvery(), sz: __qa.g3d.shadowSize(), soft: __qa.g3d.shadowSoft() }), highLive: (__qa.g3d.setQuality('high'), { ev: __qa.g3d.shadowEvery(), sz: __qa.g3d.shadowSize(), soft: __qa.g3d.shadowSoft() }) }));
-    ok(qset.mid.shadow === 256 && qset.high.shadowEvery === 3 && qset.high.softShadow === false, 'QSET mid 256／high 每 3 幀／關 soft', qset);
-    ok(qset.midLive.sz === 256 && qset.highLive.ev === 3 && qset.highLive.soft === false && qset.midLive.soft === false, '執行期 mid 影圖／high shadowEvery／PCF', qset);
+    ok(qset.mid.shadow === 256 && qset.mid.shadowEvery === 2 && qset.high.shadow === 1024 && qset.high.shadowEvery === 3 && qset.high.softShadow === false, 'QSET mid 256／每 2 幀、high 1024／每 3 幀／關 soft', qset);
+    ok(qset.midLive.sz === 256 && qset.midLive.ev === 2 && qset.highLive.sz === 1024 && qset.highLive.ev === 3 && qset.highLive.soft === false && qset.midLive.soft === false, '執行期 mid 影圖／shadowEvery／high 1024／PCF', qset);
+    ok(qset.high.dpr === 1.5 && qset.mid.dpr === 1.25, 'QSET dpr 上限 high 1.5／mid 1.25', qset);
+    await E(() => __qa.g3d.setQuality('high')); await W(400);
+    const sz0 = await E(() => ({ n: __qa.g3d.setSizeN(), vs: __qa.g3d.viewSize() }));
+    await W(800);
+    const sz1 = await E(() => ({ n: __qa.g3d.setSizeN(), vs: __qa.g3d.viewSize() }));
+    ok(sz1.vs && sz1.vs.w === Math.round(195 * 1.5) && sz1.vs.h === Math.round(422 * 1.5), 'high WebGL 尺寸受 dpr 1.5 上限', sz1);
+    ok(sz1.n === sz0.n, '尺寸／dpr 冇變就唔再 setSize', { sz0, sz1 });
+    await E(() => { __qa.g3d.setQuality('mid'); if (!__qa.g3d.ready()) return __qa.g3d.reload(); });
+    await waitG3(E, W, 8000); await W(400);
+    const midVs = await E(() => __qa.g3d.viewSize());
+    ok(midVs && midVs.w === Math.round(195 * 1.25) && midVs.h === Math.round(422 * 1.25), 'mid WebGL 尺寸受 dpr 1.25 上限', midVs);
+    await E(() => { __qa.g3d.setQuality('high'); if (!__qa.g3d.ready()) return __qa.g3d.reload(); });
+    await waitG3(E, W, 8000); await W(200);
 
     const inv = await E(() => {
       const items = __qa.g3d.worldItems();

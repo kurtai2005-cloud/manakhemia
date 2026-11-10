@@ -688,7 +688,7 @@
       em.clearRect(0, 0, W, H);
       const lights = []; // {x,y,r,col,a,layer}
       // L0
-      if (!hd) { this.ovStat.moonStars++; const x = L[0].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[0], 0, 0);   // HD-2D：引擎月 (150,76)／星唔畫（H4 場景已畫）
+      if (!hd && !g3) { this.ovStat.moonStars++; const x = L[0].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[0], 0, 0);   // HD-2D／3D：引擎月 (150,76)／星唔畫（場景已畫）
         const sa = clamp(1 - look.day * 1.3, 0, 1);
         if (sa > 0.02) for (const st of this.stars) { const tw = 0.55 + 0.45 * Math.sin(t * (1 + st.b * 2) + st.ph); const a = sa * (0.35 + 0.65 * tw) * (0.5 + st.b * 0.5); x.fillStyle = `rgba(255,248,220,${a.toFixed(2)})`; x.fillRect(st.x + MX, st.y + MY, 1, 1); if (st.b > 0.85 && tw > 0.8) { x.fillRect(st.x + MX - 1, st.y + MY, 3, 1); x.fillRect(st.x + MX, st.y + MY - 1, 1, 3); } if (st.b > 0.6) { em.fillStyle = `rgba(255,240,200,${(a * 0.7).toFixed(2)})`; em.fillRect(Math.round(st.x + offs[0][0]), Math.round(st.y + offs[0][1]), 1, 1); } }
         // 月亮（彎月／滿月兩張預製圖，睡眠時漸變滿月）
@@ -702,7 +702,7 @@
       // L1：燈籠串
       const lanternA = (1 - sm * 0.62) * (1 - hDim * 0.25) * (lt ? lt.lanternMul : 1);
       const lcol = mixc(lt ? mixc(look.lantern, lt.lantern, lt.lanternMix) : look.lantern, [255, 140, 60], sm * 0.5);
-      if (!hd) { this.ovStat.lanterns++; const x = L[1].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[1], 0, 0);   // HD-2D：引擎燈籠串唔畫
+      if (!hd && !g3) { this.ovStat.lanterns++; const x = L[1].getContext('2d'); x.clearRect(0, 0, LW, LH); x.drawImage(this.layers[1], 0, 0);   // HD-2D／3D：引擎燈籠串唔畫
         for (let i = 0; i < 6; i++) {
           const u = (i + 0.5) / 6, lx0 = 30 + u * 138, ly0 = 92 + Math.sin(u * Math.PI) * 28;
           const sw = Math.sin(t * 1.3 + i * 1.7) * 1.4, lx = Math.round(lx0 + sw), ly = Math.round(ly0 + 4);
