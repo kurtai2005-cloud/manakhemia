@@ -1,4 +1,4 @@
-/* garden3d.test — #89 3D 花園 H1／H1.2／H1.3 純邏輯（座標、鏡頭、可見區、碰撞、方向、日夜、畫質、行速、自主行、世界物件）。node tests/garden3d.test.js */
+/* garden3d.test — #89 3D 花園 H1／H1.2／H1.3／H1.4 純邏輯（座標、鏡頭、可見區、碰撞、方向、日夜、畫質、行速、自主行、世界物件）。node tests/garden3d.test.js */
 const G3 = require('../src/garden3d.js');
 const D = require('../src/data.js');
 const BEH = require('../src/behavior.js');
@@ -215,10 +215,15 @@ console.log('⑨ H1.2／QA：擋住目標吸位、hook 掛 beh、behavior.step �
   });
 }
 
-console.log('⑩ H1.3 自主行／世界物件／影圖／LICENSE');
+console.log('⑩ H1.3／H1.4 自主行／世界物件／影圖／LICENSE／雨');
 {
-  ok(G3.QSET.mid.shadow === 512 && G3.QSET.mid.shadowEvery === 1, 'mid 影圖 512、每幀更新', G3.QSET.mid);
-  ok(G3.QSET.high.shadow === 2048 && G3.QSET.high.shadowEvery === 3, 'high 影圖 2048、每 3 幀更新', G3.QSET.high);
+  ok(G3.QSET.mid.shadow === 256 && G3.QSET.mid.shadowEvery === 1 && G3.QSET.mid.softShadow === false, 'mid 影圖 256、每幀、PCF', G3.QSET.mid);
+  ok(G3.QSET.high.shadow === 2048 && G3.QSET.high.shadowEvery === 3 && G3.QSET.high.softShadow === false, 'high 影圖 2048、每 3 幀、關 soft shadow', G3.QSET.high);
+  ok(G3.ACTOR_ALPHA_SOFT === 0.1, '半透明 actor alphaTest 0.1', G3.ACTOR_ALPHA_SOFT);
+  const soft = G3.actorMatOpts({ alpha: 0.45 }), hard = G3.actorMatOpts({ kind: 'poop' });
+  ok(soft.alphaTest === 0.1 && soft.transparent && !soft.depthWrite, '影子 material：alphaTest 0.1＋transparent', soft);
+  ok(hard.alphaTest === 0.5 && !hard.transparent && hard.depthWrite, '實心 actor 仍 alphaTest 0.5', hard);
+  ok(G3.RAIN && G3.RAIN.size >= 4 && G3.RAIN.sizeAttenuation === false && G3.RAIN.n >= 180, '雨點加大、螢幕像素、數量 ≥180', G3.RAIN);
   ok(G3.WORLD_ITEMS.length >= 20, 'WORLD_ITEMS 盤點齊', G3.WORLD_ITEMS.length);
   const garden = G3.worldInGarden();
   const ids = garden.map(x => x.id);

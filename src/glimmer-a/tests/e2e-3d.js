@@ -1,5 +1,5 @@
-/* 《微光小圃》 e2e-3d — #89 3D 花園 H1／H1.2／H1.3：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0、可見區、網格、behavior.step 行速。
-   截圖 → SHOTS；3d-h1-*.png 同 3d-h11-*.png（H11SHOTS／APK 目錄）。fps 用 CDP 4× CPU。node tests/e2e-3d.js */
+/* 《微光小圃》 e2e-3d — #89 3D 花園 H1／H1.2／H1.3／H1.4：場景載入、遮擋、觸摸、日夜光、畫質切換、?3d=0、可見區、網格、behavior.step 行速。
+   截圖 → SHOTS；3d-h1-*.png、3d-h11-*.png、3d-h13-*.png、3d-h14-*.png。fps／p95 用 CDP 4× CPU。node tests/e2e-3d.js */
 const path = require('path');
 const fs = require('fs');
 let chromium;
@@ -40,6 +40,13 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
     Object.assign(s.needs, { mood: 80, energy: 100, hunger: 100, clean: 100 }); s.poops = 0;
     if (__qa.pet && __qa.pet.force) __qa.pet.force('stay');
     if (__glimmer.beh) __glimmer.beh.x = 0;
+  });
+  const clearTips = (E) => E(() => {
+    ['toast', 'u62tip', 'bubble', 's12voice'].forEach(function (id) {
+      const e = document.getElementById(id); if (!e) return;
+      e.style.display = 'none'; if (id === 'toast' || id === 'u62tip') e.textContent = '';
+    });
+    document.querySelectorAll('#l6dlay .bub, .bub.on').forEach(function (e) { e.remove(); });
   });
   const waitG3 = async (E, W, ms) => {
     const t0 = Date.now();
@@ -164,20 +171,48 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
     ok(fs.existsSync(APKSHOTS + '3d-h1-narrow.png'), '窄屏截圖已寫');
     await ctx.close(); }
 
-  // ───────── H. 4× CPU fps ─────────
-  console.log('H. 中端機 4× CPU 慢 fps');
+  // ───────── H. 4× CPU fps／rAF p95 ─────────
+  console.log('H. 中端機 4× CPU 慢 fps／callback p95');
   let fpsReport = null;
   { const { ctx, page, E, W } = await boot([390, 844]); await adultR(E); await waitG3(E, W); await W(400);
     const cdp = await ctx.newCDPSession(page);
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
     await E(() => { __qa.g3d.showPerf(true); __glimmer.hourOverride = 13; });
-    await W(2500);
-    const mid = await E(() => ({ q: __qa.g3d.quality(), on: __qa.g3d.on(), fps: __qa.g3d.fps(), ms: __qa.g3d.lastMs() }));
-    await W(2500);
-    const mid2 = await E(() => ({ q: __qa.g3d.quality(), on: __qa.g3d.on(), fps: __qa.g3d.fps(), ms: __qa.g3d.lastMs(), draws: __glimmer.g3d && __glimmer.g3d.stat && __glimmer.g3d.stat.draws }));
-    fpsReport = { throttle: '4x', first: mid, second: mid2 };
-    ok(mid2.on, '4× CPU 之下 3D 仍然開（未自動跌去 2D，窗口 2×120 幀）', mid2);
-    console.log('  fps 4× CPU: ' + JSON.stringify(fpsReport));
+    const p95of = (arr) => { const a = arr.slice().sort((x, y) => x - y); if (!a.length) return 0; const i = Math.min(a.length - 1, Math.max(0, Math.ceil(a.length * 0.95) - 1)); return +a[i].toFixed(2); };
+    const measure = async (q) => {
+      await E((q) => { if (q === 'low') { __qa.g3d.setQuality('low'); } else { __qa.g3d.setQuality(q); if (!__qa.g3d.ready()) return __qa.g3d.reload(); } }, q);
+      if (q !== 'low') await waitG3(E, W, 8000);
+      await W(400);
+      await E(() => {
+        window.__cbMs = [];
+        if (!window.__cbWrap) {
+          const orig = window.requestAnimationFrame.bind(window);
+          window.__cbWrap = true;
+          window.requestAnimationFrame = function (cb) {
+            return orig(function (t) { const t0 = performance.now(); try { cb(t); } finally { if (window.__cbMs) window.__cbMs.push(performance.now() - t0); } });
+          };
+        }
+        window.__cbMs = [];
+      });
+      await W(2800);
+      const raw = await E(() => (window.__cbMs || []).slice(8));  // 丟開頭幾幀
+      const samples = raw.filter(n => typeof n === 'number' && n >= 0 && n < 80);
+      const sorted = samples.slice().sort((x, y) => x - y);
+      const p50v = sorted.length ? +sorted[Math.floor(sorted.length * 0.5)].toFixed(2) : 0;
+      const p95v = p95of(samples);
+      const max = samples.length ? +Math.max(...samples).toFixed(2) : 0;
+      const over = samples.filter(n => n > 4.5).length;
+      const live = await E(() => ({ q: __qa.g3d.quality(), on: __qa.g3d.on(), fps: __qa.g3d.fps(), ms: __qa.g3d.lastMs(), soft: __qa.g3d.shadowSoft && __qa.g3d.shadowSoft(), sz: __qa.g3d.shadowSize && __qa.g3d.shadowSize() }));
+      return { q: live.q, on: live.on, n: samples.length, p50: p50v, p95: p95v, max, over, fps: live.fps, ms: live.ms, soft: live.soft, sz: live.sz };
+    };
+    const high = await measure('high');
+    const mid = await measure('mid');
+    const low = await measure('low');
+    await E(() => { __qa.g3d.setQuality('high'); if (!__qa.g3d.ready()) return __qa.g3d.reload(); });
+    await waitG3(E, W, 8000);
+    fpsReport = { throttle: '4x', high, mid, low };
+    ok(high.on && mid.on && !low.on, '4× CPU：high／mid 仍然 3D，low＝2D', fpsReport);
+    console.log('  fps 4× CPU p95: ' + JSON.stringify(fpsReport));
     const fpsPath = process.env.FPS4X || path.join('/tmp', 'g3d-fps-4x.json');
     fs.writeFileSync(fpsPath, JSON.stringify(fpsReport, null, 2));
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 }).catch(() => { });
@@ -326,11 +361,11 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
     await ctx.close(); }
 
   // ───────── K. H1.3 自主行、屎、細佬、2D 清單、影圖 ─────────
-  console.log('K. H1.3 自主行／屎／細佬／世界物件／影圖');
+  console.log('K. H1.3／H1.4 自主行／屎優先／影子／雨／影圖');
   { const { ctx, page, E, W } = await boot([390, 844]); await adultR(E); await waitG3(E, W); await W(500);
-    const qset = await E(() => ({ mid: Glimmer.garden3d.QSET.mid, high: Glimmer.garden3d.QSET.high, midLive: (__qa.g3d.setQuality('mid'), { ev: __qa.g3d.shadowEvery(), sz: __qa.g3d.shadowSize() }), highLive: (__qa.g3d.setQuality('high'), { ev: __qa.g3d.shadowEvery(), sz: __qa.g3d.shadowSize() }) }));
-    ok(qset.mid.shadow === 512 && qset.high.shadowEvery === 3, 'QSET mid 512／high 每 3 幀', qset);
-    ok(qset.midLive.sz === 512 && qset.highLive.ev === 3, '執行期 mid 影圖／high shadowEvery', qset);
+    const qset = await E(() => ({ mid: Glimmer.garden3d.QSET.mid, high: Glimmer.garden3d.QSET.high, midLive: (__qa.g3d.setQuality('mid'), { ev: __qa.g3d.shadowEvery(), sz: __qa.g3d.shadowSize(), soft: __qa.g3d.shadowSoft() }), highLive: (__qa.g3d.setQuality('high'), { ev: __qa.g3d.shadowEvery(), sz: __qa.g3d.shadowSize(), soft: __qa.g3d.shadowSoft() }) }));
+    ok(qset.mid.shadow === 256 && qset.high.shadowEvery === 3 && qset.high.softShadow === false, 'QSET mid 256／high 每 3 幀／關 soft', qset);
+    ok(qset.midLive.sz === 256 && qset.highLive.ev === 3 && qset.highLive.soft === false && qset.midLive.soft === false, '執行期 mid 影圖／high shadowEvery／PCF', qset);
 
     const inv = await E(() => {
       const items = __qa.g3d.worldItems();
@@ -368,24 +403,88 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
 
     const poop = await E(() => {
       const s = __glimmer.state; s.poops = 2;
+      const pw = __qa.g3d.poopWorld(0);
+      if (__qa.s2 && __qa.s2.kidX && pw) { __qa.s2.kidX(pw.x); __qa.s2.kidZ(pw.z); }  // 細佬企喺屎上面，盒會包住
       const R = __glimmer.renderer;
       if (R.frame) R.frame(0.016, { state: s, beh: __glimmer.beh, hour: 13, quality: 'high', mode: 'garden', light: __glimmer.light, event: null });
       const acts = (__qa.g3d.actors() || []).filter(a => a.kind === 'poop');
       const box = acts[0] && __qa.g3d.actorBox(acts[0]);
       const hit = box && __qa.g3d.hitActor(box.x + box.w / 2, box.y + box.h * 0.6);
-      return { n: acts.length, hit: hit && hit.kind, box, before: s.poops };
+      const kinds = (__qa.g3d.actors() || []).map(a => a.kind);
+      return { n: acts.length, hit: hit && hit.kind, box, before: s.poops, kinds, kid: !!(__qa.s2 && __qa.s2.st && __qa.s2.st().kid) };
     });
-    ok(poop.n >= 1 && poop.hit === 'poop', '屎喺 3D 出現、hitActor 命中', poop);
-    if (poop.box) {
-      const css = await E((box) => {
+    ok(poop.n >= 1 && poop.hit === 'poop', '屎喺 3D 出現、hitActor 命中（細佬疊住都優先回屎）', poop);
+    await E(() => { __glimmer.hourOverride = 13; });
+    await clearTips(E); await W(200);
+    await page.screenshot({ path: SHOTS + '3d-h14-poop-before.png' });
+    fs.copyFileSync(SHOTS + '3d-h14-poop-before.png', APKSHOTS + '3d-h14-poop-before.png');
+    // 逐舊清晒
+    let left = poop.before;
+    for (let n = 0; n < 4 && left > 0; n++) {
+      const box = await E(() => {
+        const R = __glimmer.renderer;
+        if (R.frame) R.frame(0.016, { state: __glimmer.state, beh: __glimmer.beh, hour: 13, quality: 'high', mode: 'garden', light: __glimmer.light, event: null });
+        const acts = (__qa.g3d.actors() || []).filter(a => a.kind === 'poop');
+        const b = acts[0] && __qa.g3d.actorBox(acts[0]);
+        if (!b) return null;
         const r = __glimmer.renderer.canvas.getBoundingClientRect();
-        return { x: r.left + (box.x + box.w / 2) / 195 * r.width, y: r.top + (box.y + box.h * 0.6) / 422 * r.height };
-      }, poop.box);
-      await page.mouse.click(css.x, css.y);
-      await W(300);
+        return { x: r.left + (b.x + b.w / 2) / 195 * r.width, y: r.top + (b.y + b.h * 0.6) / 422 * r.height, hit: (__qa.g3d.hitActor(b.x + b.w / 2, b.y + b.h * 0.6) || {}).kind };
+      });
+      if (!box) break;
+      ok(box.hit === 'poop', '清屎第 ' + (n + 1) + ' 下 hitActor＝poop', box);
+      await page.mouse.click(box.x, box.y);
+      await W(350);
+      left = await E(() => __glimmer.state.poops);
     }
     const after = await E(() => __glimmer.state.poops);
-    ok(after === poop.before - 1 || after < 2, '3D 撳屎可清理', { before: poop.before, after });
+    ok(after === 0, '3D 撳屎清到 0', { before: poop.before, after });
+    await clearTips(E); await W(150);
+    await page.screenshot({ path: SHOTS + '3d-h14-poop-after.png' });
+    fs.copyFileSync(SHOTS + '3d-h14-poop-after.png', APKSHOTS + '3d-h14-poop-after.png');
+
+    // 6d 朋友影子：alphaTest 0.1、texture 半透明、3D 睇到
+    const sh = await E(() => {
+      const cv = document.createElement('canvas'); cv.width = 32; cv.height = 48;
+      const g = cv.getContext('2d'); g.fillStyle = 'rgba(90,60,140,1)'; g.fillRect(8, 4, 16, 40);
+      const src = { img: cv, sx: 0, sy: 0, sw: 32, sh: 48, px: 16, py: 48 };
+      const list = [{ id: 'shadow-e2e', kind: 'shadow', x: 10, z: 36, src: src, alpha: 0.45, shadow: true, hit: true, w: 28, h: 40 }];
+      __qa.g3d.syncActors(list);
+      const R = __glimmer.renderer;
+      if (R.frame) R.frame(0.016, { state: __glimmer.state, beh: __glimmer.beh, hour: 13, quality: 'high', mode: 'garden', light: __glimmer.light, event: null });
+      const mat = __qa.g3d.actorMat('shadow-e2e');
+      return mat;
+    });
+    ok(sh && sh.alphaTest <= 0.1 + 1e-6 && sh.transparent && sh.maxA > 0.2 && sh.maxA < 0.7, '6d 影子 material 半透明（alphaTest≤0.1、tex alpha≈0.45）', sh);
+    await E(() => {
+      if (__qa.l6d && __qa.l6d.dev) { const it = __qa.l6d.dev().items.find(i => i.k === 'visit'); if (it) it.run(); }
+      if (__qa.l6d && __qa.l6d.layTick) __qa.l6d.layTick(true);
+    });
+    await clearTips(E); await W(700);
+    const shLive = await E(() => {
+      const acts = (__qa.g3d.actors() || []).filter(a => a.kind === 'shadow');
+      const mats = acts.map(a => Object.assign({ id: a.id }, __qa.g3d.actorMat(a.id) || {}));
+      return { n: acts.length, mats };
+    });
+    ok(shLive.n >= 1 && shLive.mats.every(m => m.transparent && m.alphaTest <= 0.1 + 1e-6), '花園朋友影子 3D 半透明畫到', shLive);
+    await page.screenshot({ path: SHOTS + '3d-h14-friend-shadow.png' });
+    fs.copyFileSync(SHOTS + '3d-h14-friend-shadow.png', APKSHOTS + '3d-h14-friend-shadow.png');
+
+    // 雨
+    const rain = await E(() => {
+      if (__qa.g3d.setWeather) __qa.g3d.setWeather('rain');
+      if (__qa.hd2d && __qa.hd2d.weather) __qa.hd2d.weather('rain');
+      else { __glimmer.weather = 'rain'; if (__glimmer.wx) __glimmer.wx.manual = true; }
+      const R = __glimmer.renderer;
+      for (let i = 0; i < 12; i++) if (R.frame) R.frame(0.05, { state: __glimmer.state, beh: __glimmer.beh, hour: 13, quality: 'high', mode: 'garden', light: __glimmer.light, event: null });
+      return __qa.g3d.rainInfo();
+    });
+    await W(500);
+    await clearTips(E); await W(200);
+    const rain2 = await E(() => __qa.g3d.rainInfo());
+    ok(rain2 && rain2.visible && rain2.n >= 180 && rain2.size >= 4 && rain2.atten === false, '雨點可見、加大、螢幕像素', rain2);
+    await page.screenshot({ path: SHOTS + '3d-h14-rain.png' });
+    fs.copyFileSync(SHOTS + '3d-h14-rain.png', APKSHOTS + '3d-h14-rain.png');
+    await E(() => { if (__qa.g3d.setWeather) __qa.g3d.setWeather(null); if (__qa.hd2d && __qa.hd2d.weather) __qa.hd2d.weather('clear'); else { __glimmer.weather = null; } });
 
     await E(() => { __glimmer.hourOverride = 13; __qa.g3d.forcePet({ x: 0, z: 20 }); if (__qa.s2 && __qa.s2.kidX) { __qa.s2.kidX(-20); __qa.s2.kidZ(16); } __glimmer.state.poops = 1; });
     await W(400);
@@ -402,9 +501,36 @@ const QS3 = '3d=high&q=high&seed=21&ev=0&hour=13';
     ok(occ, '寵物行到樹後被擋', occ);
     await page.screenshot({ path: SHOTS + '3d-h13-occluded.png' });
     fs.copyFileSync(SHOTS + '3d-h13-occluded.png', APKSHOTS + '3d-h13-occluded.png');
-    ok(fs.existsSync(APKSHOTS + '3d-h13-day.png') && fs.existsSync(APKSHOTS + '3d-h13-night.png') && fs.existsSync(APKSHOTS + '3d-h13-kid-poop.png') && fs.existsSync(APKSHOTS + '3d-h13-occluded.png'), 'H1.3 截圖已寫');
+    ok(fs.existsSync(APKSHOTS + '3d-h13-day.png') && fs.existsSync(APKSHOTS + '3d-h13-night.png') && fs.existsSync(APKSHOTS + '3d-h13-kid-poop.png') && fs.existsSync(APKSHOTS + '3d-h13-occluded.png') && fs.existsSync(APKSHOTS + '3d-h14-poop-before.png') && fs.existsSync(APKSHOTS + '3d-h14-poop-after.png') && fs.existsSync(APKSHOTS + '3d-h14-friend-shadow.png') && fs.existsSync(APKSHOTS + '3d-h14-rain.png'), 'H1.3／H1.4 截圖已寫');
     await E(() => __qa.g3d.forcePet(null));
     await ctx.close(); }
+
+  // ───────── L. H1.4 多 viewport 散步／朋友掣唔重疊 ─────────
+  console.log('L. H1.4 360／390／412／768 散步掣同朋友掣唔重疊');
+  for (const vp of [[360, 640], [390, 844], [412, 915], [768, 1024]]) {
+    const { ctx, page, E, W } = await boot(vp); await adultR(E); await waitG3(E, W); await W(800);
+    await E(() => { __glimmer.hourOverride = 13; if (__qa.l6d && __qa.l6d.railTick) __qa.l6d.railTick(); });
+    await clearTips(E); await W(400);
+    const o = await E(() => {
+      const a = document.getElementById('l6dbtn'), b = document.getElementById('l6bbtn');
+      if (__qa.l6d && __qa.l6d.railTick) __qa.l6d.railTick();
+      const ov = (__qa.ui62 && __qa.ui62.overlap) ? __qa.ui62.overlap() : { n: 0, hits: [] };
+      const hit = [];
+      if (a && b) {
+        const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        const inter = ra.left < rb.right && rb.left < ra.right && ra.top < rb.bottom && rb.top < ra.bottom;
+        if (inter) hit.push({ ids: ['#l6dbtn', '#l6bbtn'], a: [ra.x, ra.y, ra.w || ra.width, ra.h || ra.height], b: [rb.x, rb.y, rb.width, rb.height] });
+      }
+      return { ids: { l6d: !!(a && a.style.display !== 'none'), l6b: !!(b && b.style.display !== 'none') }, hit, ovHits: (ov.hits || []).filter(h => /l6dbtn|l6bbtn/.test(JSON.stringify(h))) };
+    });
+    ok(o.ids.l6d && o.ids.l6b && o.hit.length === 0 && o.ovHits.length === 0, vp.join('×') + ' 散步掣同朋友掣冇重疊', o);
+    if (vp[0] === 360 && vp[1] === 640) {
+      await page.screenshot({ path: SHOTS + '3d-h14-360-btns.png' });
+      fs.copyFileSync(SHOTS + '3d-h14-360-btns.png', APKSHOTS + '3d-h14-360-btns.png');
+      ok(fs.existsSync(APKSHOTS + '3d-h14-360-btns.png'), '360×640 掣排版截圖已寫');
+    }
+    await ctx.close();
+  }
 
   const fatal = errs.filter(e => !/open-meteo|ResizeObserver|favicon/.test(e));
   ok(fatal.length === 0, '冇 pageerror／console error', fatal.slice(0, 8));

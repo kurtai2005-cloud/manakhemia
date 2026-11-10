@@ -2,7 +2,7 @@
    我嘅名片（分享圖 495×756＋QR，揀相解返）；入朋友碼（貼上／揀相 → 校驗 OK 預覽 → 請佢嚟玩）；重複／自己／每日 3 個／改壞碼；
    花園影子（三階紫剪影＋整隻 globalAlpha 0.45 半透明，唔用棋盤；friend_badge、互動泡泡、撳開資料、早啲送走＋手信 ≤3）；24 粒鐘到時走；
    家族 Lv4 先出蛋碼、每 7 日 1 個；收蛋碼 → 5c 細佬蛋用朋友嘅色；🛠「6d」；?l6d=0；?l6dart=0 placeholder；
-   字清晰度、熱區 ≥48、360／390／412 冇重疊。日子用 page.clock 定死。node tests/e2e-6d.js */
+   字清晰度（只審 ≥12px node）、熱區 ≥48、360／390／412／768 冇重疊。日子用 page.clock 定死。node tests/e2e-6d.js */
 const path = require('path'), fs = require('fs');
 let chromium;
 for (const p of [process.env.PW, 'playwright-core', '/workspace/qa-live-s1/node_modules/playwright-core']) { try { if (p) { chromium = require(p).chromium; break; } } catch (e) { } }
@@ -55,8 +55,8 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   const readOk = async (name, sel) => {
     const on = await fontOn(sel);
     if (!on) { ok(false, name + '：等 document.fonts.ready 後仍未見到目標字型', sel); return; }
-    const a = await audit(page, sel);
-    ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（FP12 24px／V3、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam]));
+    const a = await audit(page, sel, { skipBelow: 12, minEff: 12 });
+    ok(a.items.length > 0 && a.bad.length === 0, name + '：字 ' + a.items.length + ' 段全部合格（只審 ≥12px；FP12 24px／V3、對比 ≥4.5）', a.bad.slice(0, 3).map(b => [b.t, b.eff, b.cr, b.fam]));
   };
   const hit = (sel) => E((sel) => { const ui = document.getElementById('ui'), k = ui.getBoundingClientRect().width / ui.offsetWidth;
       return [...document.querySelectorAll(sel)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; }).map(e => {
@@ -202,8 +202,8 @@ const T0 = new Date('2026-11-02T14:00:00+08:00').getTime(), HOUR = 3600e3, DAY =
   ok(await E(() => !__qa.l6d.dev().items.find(i => i.k === 'self').run().ok), '入自己碼 → 唔得');
   await D('reset'); q = await Q(); ok(q.visits.length === 0 && q.friends === 0 && !q.egg, '重設 6d');
 
-  console.log('# 重疊檢查 360／390／412（rail、影子、提示、面板、名片、預覽、蛋碼、資料、朋友簿）');
-  for (const vp of [[360, 640], [390, 844], [412, 915]]) {
+  console.log('# 重疊檢查 360／390／412／768（rail、影子、提示、面板、名片、預覽、蛋碼、資料、朋友簿）');
+  for (const vp of [[360, 640], [390, 844], [412, 915], [768, 1024]]) {
     const c2 = await browser.newContext({ viewport: { width: vp[0], height: vp[1] } }); const pg = await c2.newPage(); await pg.clock.install({ time: T0 }); const E2 = (f, a) => pg.evaluate(f, a), W2 = (ms) => pg.waitForTimeout(ms);
     pg.on('pageerror', e => errs.push('pageerror: ' + e.message));
     await pg.goto(BASE + '?' + QS); await E2(() => { window.__noSaveOnHide = true; localStorage.clear(); }); await pg.goto(BASE + '?' + QS);

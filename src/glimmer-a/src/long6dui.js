@@ -409,16 +409,27 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
       const ic = el.querySelector('i.i'); if (ic.dataset.v3 !== String(isV3()) || !ic.dataset.art) { setIc(ic, 'friend'); ic.dataset.v3 = String(isV3()); }
       const rd = el.querySelector('i.rd'); if (rd) rd.style.display = 'none';
       const vis = (id) => { const e = document.getElementById(id); return !!(e && e.style.display !== 'none' && e.offsetParent !== null); };
-      // 排喺 rail 最底嗰粒（工作／散步／入夢）下面，70px 一格；落唔到（>620）→ 左邊一行
+      // 排喺 rail 最底嗰粒（工作／散步／入夢）下面；間距＝實際掣高＋空隙（style.top 係中心，因為 translate(-50%,-50%)）
       const col = ['l6cbtn', 'u62workbtn', 'l6bbtn'].map(id => document.getElementById(id)).filter(e => e && vis(e.id) && e.style.top);
       const u = U(), rl = u && u.rail;
+      const uiEl = document.getElementById('ui');
+      const kUi = uiEl && uiEl.offsetWidth ? ((uiEl.getBoundingClientRect().width || uiEl.offsetWidth) / uiEl.offsetWidth) : 1;
+      const hOf = (e) => { if (!e) return 66; const r = e.getBoundingClientRect(); const h = r.height && kUi ? r.height / kUi : (e.offsetHeight || 0); return Math.max(h, e.offsetHeight || 0, 48); };
+      const GAP = 8, pitch = (e) => hOf(e) + GAP;
+      const railBtns = () => [...document.querySelectorAll('#hdRail .ibtn')].filter(e => e && e !== el && vis(e.id));
+      const overlapsRail = () => { const a = el.getBoundingClientRect(); if (a.width < 2 || a.height < 2) return false; return railBtns().some(b => { const c = b.getBoundingClientRect(); return a.left < c.right && c.left < a.right && a.top < c.bottom && c.top < a.bottom; }); };
       if (col.length) {   // 主列（最右）同左邊列（6c 落唔到會去 x−76）分開計
         const L = (e) => parseFloat(e.style.left) || 0, Tp = (e) => parseFloat(e.style.top) || 0, mx = Math.max(...col.map(L)), main = col.filter(e => L(e) >= mx - 20), side = col.filter(e => L(e) < mx - 20);
-        const lo = main.reduce((a, b) => (Tp(b) > Tp(a) ? b : a)), y = Tp(lo) + 70;
-        if (y <= 620 && !side.length) { el.style.left = lo.style.left; el.style.top = y + 'px'; }
-        else if (side.length) { const sh = side.reduce((a, b) => (Tp(b) < Tp(a) ? b : a)); el.style.left = sh.style.left; el.style.top = (Tp(sh) - 70) + 'px'; }   // 左邊列再上一格
-        else { el.style.left = (mx - 76) + 'px'; el.style.top = (Tp(lo) - 70) + 'px'; } }   // 留最低嗰格俾 6c「入夢」
-      else if (rl && rl.kid && rl.dex) { const st = 1 + (vis('l5egg') ? 1 : 0) + (vis('l5cbtn') ? 1 : 0) + (vis('l6bbtn') ? 1 : 0), dy = rl.kid.y - rl.dex.y; let x = rl.kid.x, y = rl.kid.y + st * dy; if (y > 620) { x = rl.kid.x - 76; y = rl.kid.y + (st - 1) * dy; } el.style.left = x + 'px'; el.style.top = y + 'px'; }
+        const lo = main.reduce((a, b) => (Tp(b) > Tp(a) ? b : a)), y = Tp(lo) + pitch(lo);
+        const bottom = y + hOf(el) / 2;
+        if (bottom <= 620 && !side.length) { el.style.left = lo.style.left; el.style.top = y + 'px'; }
+        if (side.length || bottom > 620 || overlapsRail()) {
+          if (side.length) { const sh = side.reduce((a, b) => (Tp(b) < Tp(a) ? b : a)); el.style.left = sh.style.left; el.style.top = (Tp(sh) - pitch(el)) + 'px'; }
+          else { el.style.left = (mx - 76) + 'px'; el.style.top = Tp(lo) + 'px'; }   // 左邊同行，唔好減一格疊住上一粒
+          let guard = 0; while (overlapsRail() && guard++ < 8) el.style.top = (Tp(el) - pitch(el)) + 'px';
+        }
+      }
+      else if (rl && rl.kid && rl.dex) { const st = 1 + (vis('l5egg') ? 1 : 0) + (vis('l5cbtn') ? 1 : 0) + (vis('l6bbtn') ? 1 : 0), dy = Math.max(Math.abs(rl.kid.y - rl.dex.y), pitch(el)); let x = rl.kid.x, y = rl.kid.y + st * dy; if (y + hOf(el) / 2 > 620) { x = rl.kid.x - 76; y = rl.kid.y + (st - 1) * dy; } el.style.left = x + 'px'; el.style.top = y + 'px'; }
       else { el.style.left = '360px'; el.style.top = '520px'; }
     }
 

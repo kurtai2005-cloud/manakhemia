@@ -4,7 +4,8 @@
    Kurt：三級畫質＋自動偵測＋fps／耗電面板（開發者模式）；?3d=0 返 2D；低畫質／低端機＝2D 後備；
    鏡頭自動擺／跟拍（開發者模式有開關，預設開）。H1.1：寵物 flipY 修正；XZ 走位＋碰撞接入 moveTo；地面網格。
    H1.2：直版可見區構圖（樹／籬笆／燈柱／屋唔被 UI 遮）＋跟拍保建立鏡頭；日影／夜空對齊參考；網格預設關；3D 行速 20 u/s。
-   H1.3：寵物自主四圍行（唔使撳）；2D 地面物件全部做 billboard（寫 depth、被擋、影子、坐 XZ、跟光）；細佬自主 nav；遊測 P2／P3（mid 縮影圖、high 減 shadow 更新、LICENSE 入包）。 */
+   H1.3：寵物自主四圍行（唔使撳）；2D 地面物件全部做 billboard（寫 depth、被擋、影子、坐 XZ、跟光）；細佬自主 nav；遊測 P2／P3（mid 縮影圖、high 減 shadow 更新、LICENSE 入包）。
+   H1.4：遊測 H1.3 QA — 屎盒優先命中、半透明 actor alphaTest 0.1、mid 影圖 256、high 關 soft shadow、雨點加大加深。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.garden3d = factory(); }
@@ -436,10 +437,12 @@
 
   /* ── 畫質：high／mid＝3D；low＝2D 後備。?3d=0 永遠 2D；低端機自動 low。── */
   const QSET = {
-    high: { dpr: 2, shadow: 2048, tex3x: true, shadows: true, shadowEvery: 3 },  /* H1.3：減少 shadow map 更新 */
-    mid: { dpr: 1, shadow: 512, tex3x: false, shadows: true, shadowEvery: 1 },   /* H1.3：縮影圖 1024→512 */
-    low: { dpr: 1, shadow: 0, tex3x: false, shadows: false, shadowEvery: 0 }
+    high: { dpr: 2, shadow: 2048, tex3x: true, shadows: true, shadowEvery: 3, softShadow: false },  /* H1.4：關 soft shadow／用 PCF */
+    mid: { dpr: 1, shadow: 256, tex3x: false, shadows: true, shadowEvery: 1, softShadow: false },   /* H1.4：影圖 512→256、PCF */
+    low: { dpr: 1, shadow: 0, tex3x: false, shadows: false, shadowEvery: 0, softShadow: false }
   };
+  const ACTOR_ALPHA_SOFT = 0.1;  /* 低過 6d 影子 alpha 0.45，半透明片元唔好被切走 */
+  const RAIN = { n: 200, size: 6, color: 0x4a6a96, opacity: 0.9, sizeAttenuation: false };
   function detectQuality(o) {
     o = o || {};
     const qs = o.qs || {};
@@ -563,7 +566,7 @@
     renderer.outputColorSpace = THREE.SRGBColorSpace || renderer.outputColorSpace;
     if ('useLegacyLights' in renderer) renderer.useLegacyLights = true;
     renderer.shadowMap.enabled = !!Q.shadows;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = (Q.softShadow === false) ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
     renderer.setPixelRatio(1);
     renderer.setSize(W * 2, H * 2, false);
     renderer.setClearColor(0xffe8c8, 1);
@@ -734,11 +737,11 @@
     // H1.3：世界 billboard 池（細佬／屎／訪客／影子／道具…）
     this._actorMap = {}; this._actors = []; this._actorGroup = new THREE.Group(); scene.add(this._actorGroup);
 
-    // H1.3：雨點（天氣＝rain 先顯示）
-    const nRain = 140, rpos = new Float32Array(nRain * 3);
+    // H1.4：雨點加大／加深（sizeAttenuation 關，用螢幕像素）等截圖睇到
+    const nRain = RAIN.n, rpos = new Float32Array(nRain * 3);
     for (let i = 0; i < nRain; i++) { rpos[i * 3] = (Math.random() - 0.5) * 360; rpos[i * 3 + 1] = Math.random() * 220 + 10; rpos[i * 3 + 2] = (Math.random() - 0.5) * 280; }
     const rainGeo = new THREE.BufferGeometry(); rainGeo.setAttribute('position', new THREE.BufferAttribute(rpos, 3));
-    const rainMat = new THREE.PointsMaterial({ color: 0xb8d4ff, size: 1.6, transparent: true, opacity: 0.75, depthWrite: false });
+    const rainMat = new THREE.PointsMaterial({ color: RAIN.color, size: RAIN.size, sizeAttenuation: RAIN.sizeAttenuation, transparent: true, opacity: RAIN.opacity, depthWrite: false });
     this.rainMesh = new THREE.Points(rainGeo, rainMat); this.rainMesh.visible = false; this.rainMesh.frustumCulled = false;
     scene.add(this.rainMesh); this._rainPos = rpos; this._weather = 'clear';
 
@@ -954,7 +957,7 @@
     this._applyLights(night, this.t);
     this._placeCamera(dt);
     this._updatePet();
-    this._updateRain(dt, ctx.weather);
+    this._updateRain(dt, this._forceWeather || ctx.weather);
     this._faceActors();
     return this;
   };
@@ -1055,6 +1058,21 @@
     }
     this.rainMesh.geometry.attributes.position.needsUpdate = true;
   };
+  function actorMatOpts(a) {
+    const soft = !!(a && a.alpha != null && a.alpha < 1);
+    const at = (a && a.alphaTest != null) ? a.alphaTest : (soft ? ACTOR_ALPHA_SOFT : 0.5);
+    return { alphaTest: at, transparent: soft, depthWrite: !soft };
+  }
+  function applyActorMat(rec, a) {
+    if (!rec || !rec.mat) return;
+    const opt = actorMatOpts(a);
+    if (rec.mat.alphaTest !== opt.alphaTest || rec.mat.transparent !== opt.transparent || rec.mat.depthWrite !== opt.depthWrite) {
+      rec.mat.alphaTest = opt.alphaTest;
+      rec.mat.transparent = opt.transparent;
+      rec.mat.depthWrite = opt.depthWrite;
+      rec.mat.needsUpdate = true;
+    }
+  }
   Scene.prototype._actorSize = function (src) {
     const sw = (src && (src.sw || (src.img && src.img.width))) || 16;
     const sh = (src && (src.sh || (src.img && src.img.height))) || 16;
@@ -1082,7 +1100,8 @@
     const THREE = window.THREE, C = this._actorSize(a.src);
     const canvas = document.createElement('canvas'); canvas.width = C; canvas.height = C;
     const tex = this._tex(THREE, canvas, { srgb: true, flipY: true });
-    const mat = new THREE.MeshLambertMaterial({ map: tex, alphaTest: a.alphaTest != null ? a.alphaTest : 0.5, transparent: false, side: THREE.DoubleSide });
+    const opt = actorMatOpts(a);
+    const mat = new THREE.MeshLambertMaterial({ map: tex, alphaTest: opt.alphaTest, transparent: opt.transparent, depthWrite: opt.depthWrite, side: THREE.DoubleSide });
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(C, C), mat);
     const yOff = C / 2 - 3;
     mesh.userData.id = 'actor:' + a.id; mesh.userData.kind = 'actor'; mesh.userData.actorId = a.id;
@@ -1115,6 +1134,7 @@
       if (rec && rec.size !== sz) { self._disposeActor(rec); delete self._actorMap[a.id]; rec = null; }
       if (!rec) rec = self._makeActor(a);
       rec.idle = 0;
+      applyActorMat(rec, a);
       const key = [a.kind, a.src && (a.src.name || a.src.sx), a.src && a.src.sy, a.src && a.src.sw, !!a.flip, a.alpha, a.src && a.src.frame].join('|');
       if (key !== rec.key) { self._paintActor(rec, a); rec.key = key; }
       const yLift = a.yLift || 0;
@@ -1157,16 +1177,17 @@
   };
   Scene.prototype.hitActor = function (ax, ay) {
     const list = this._actors || [];
-    let best = null, bestZ = 2;
+    let best = null, bestZ = 2, poop = null, poopZ = 2;
     for (let i = 0; i < list.length; i++) {
       const a = list[i]; if (!a || a.hit === false || a.hidden) continue;
       const box = this.actorBox(a); if (!box) continue;
       if (ax >= box.x && ax <= box.x + box.w && ay >= box.y && ay <= box.y + box.h) {
         const z = box.foot.ndc ? box.foot.ndc[2] : 1;
+        if (a.kind === 'poop' && z < poopZ) { poopZ = z; poop = a; }
         if (z < bestZ) { bestZ = z; best = a; }
       }
     }
-    return best;
+    return poop || best;  /* 撳中點喺屎盒入面就優先回屎（細佬／訪客高盒唔好搶） */
   };
 
   Scene.prototype.setQuality = function (q) {
@@ -1320,8 +1341,17 @@
       poopSlots: function () { return POOP_SLOTS.map(function (p) { return p.slice(); }); },
       worldItems: function () { return WORLD_ITEMS.slice(); },
       weather: function () { return S._weather; },
+      setWeather: function (w) { S._forceWeather = w || null; if (S._updateRain) S._updateRain(0, w || 'clear'); return S._weather; },
       shadowEvery: function () { return (S.qs() && S.qs().shadowEvery) || 0; },
       shadowSize: function () { return (S.qs() && S.qs().shadow) || 0; },
+      shadowSoft: function () { return !!(S.qs() && S.qs().softShadow); },
+      actorMat: function (id) {
+        const rec = S._actorMap && S._actorMap[id]; if (!rec || !rec.mat) return null;
+        let maxA = 0, n = 0;
+        try { const g = rec.canvas && rec.canvas.getContext('2d'); if (g) { const d = g.getImageData(0, 0, rec.canvas.width, rec.canvas.height).data; for (let i = 3; i < d.length; i += 4) { if (d[i] > 0) { n++; if (d[i] > maxA) maxA = d[i]; } } } } catch (e) { }
+        return { alphaTest: rec.mat.alphaTest, transparent: !!rec.mat.transparent, depthWrite: !!rec.mat.depthWrite, maxA: maxA / 255, typed: n };
+      },
+      rainInfo: function () { return { visible: !!(S.rainMesh && S.rainMesh.visible), n: S._rainPos ? S._rainPos.length / 3 : 0, size: (S.rainMesh && S.rainMesh.material && S.rainMesh.material.size) || 0, atten: !!(S.rainMesh && S.rainMesh.material && S.rainMesh.material.sizeAttenuation), color: S.rainMesh && S.rainMesh.material && S.rainMesh.material.color && S.rainMesh.material.color.getHex() }; },
       orbit: function (d) { return S.orbit(d); },
       setSway: function (v) { return S.setSway(v); },
       setFollow: function (v) { return S.setFollow(v); },
@@ -1347,7 +1377,7 @@
     };
 
     const DEV = {
-      id: 'g3d', title: '3D 花園 H1.3', order: 13,
+      id: 'g3d', title: '3D 花園 H1.4', order: 13,
       status: function () { return (S.on() ? ('3D ' + S.quality) : (qs.get('3d') === '0' ? '?3d=0 2D' : '2D 後備')) + '・擺鏡 ' + (S.swayOn ? '開' : '關') + '・跟拍 ' + (S.followOn ? '開' : '關') + '・網格 ' + (S.gridOn ? '開' : '關'); },
       items: [
         { k: 'high', label: '畫質：高（3D）', run: function () { S.setQuality('high'); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 高' }; } },
@@ -1410,7 +1440,7 @@
   }
 
   return {
-    W: W, H: H, CX: CX, GROUND_Y: GROUND_Y, ZSCALE: ZSCALE, QSET: QSET,
+    W: W, H: H, CX: CX, GROUND_Y: GROUND_Y, ZSCALE: ZSCALE, QSET: QSET, ACTOR_ALPHA_SOFT: ACTOR_ALPHA_SOFT, RAIN: RAIN, actorMatOpts: actorMatOpts,
     VIS: VIS, VIS_HFOV_DEG: VIS_HFOV_DEG, WALK_SPEED_2D: WALK_SPEED_2D, WALK_SPEED_3D: WALK_SPEED_3D,
     POOP_SLOTS: POOP_SLOTS, poopWorld: poopWorld, WORLD_ITEMS: WORLD_ITEMS, worldItem: worldItem, worldInGarden: worldInGarden, worldWantArt: worldWantArt,
     G3D_IDLE_WALK_SEC: G3D_IDLE_WALK_SEC, G3D_WALK_MUL: G3D_WALK_MUL, G3D_STAY_MUL: G3D_STAY_MUL, G3D_DECIDE_EVERY: G3D_DECIDE_EVERY,

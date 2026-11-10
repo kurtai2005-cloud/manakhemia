@@ -28,20 +28,26 @@ async function bgSample(page, items) {
   await page.evaluate(() => document.querySelectorAll('body [data-ra-hide]').forEach(e => { if (e.dataset.raHide) e.setAttribute('style', e.dataset.raHide); else e.removeAttribute('style'); delete e.dataset.raHide; }));
   return page.evaluate(async ([b64, items]) => {
     const im = new Image(); await new Promise(r => { im.onload = r; im.src = 'data:image/png;base64,' + b64; }); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const g = c.getContext('2d'); g.drawImage(im, 0, 0);
-    const d = devicePixelRatio; return items.map(it => { const [x, y, w, h] = it.r, X = Math.max(0, Math.round(x * d)), Y = Math.max(0, Math.round(y * d)), W = Math.max(1, Math.min(c.width - X, Math.round(w * d))), H = Math.max(1, Math.min(c.height - Y, Math.round(h * d)));
-      const px = g.getImageData(X, Y, W, H).data; const L = []; const s = [0, 0, 0]; let n = 0; const step = Math.max(1, Math.floor(Math.sqrt(W * H / 900)));
+    const d = devicePixelRatio; return items.map(it => { const [x, y, w, h] = it.r;
+      let X = Math.max(0, Math.round(x * d)), Y = Math.max(0, Math.round(y * d)), W = Math.max(1, Math.min(c.width - X, Math.round(w * d))), H = Math.max(1, Math.min(c.height - Y, Math.round(h * d)));
+      const pad = Math.max(1, Math.floor(Math.min(W, H) * 0.15));  /* 內縮避開描邊／抗鋸齒邊，抽樣先穩定 */
+      if (W > pad * 2 + 1 && H > pad * 2 + 1) { X += pad; Y += pad; W -= pad * 2; H -= pad * 2; }
+      const px = g.getImageData(X, Y, W, H).data; const L = []; const s = [0, 0, 0]; let n = 0;
+      const area = W * H, step = area <= 20000 ? 1 : Math.ceil(Math.sqrt(area / 20000));  /* H1.4：細區全量、大區用固定格子 */
       for (let j = 0; j < H; j += step) for (let i = 0; i < W; i += step) { const o = (j * W + i) * 4; L.push([px[o], px[o + 1], px[o + 2]]); s[0] += px[o]; s[1] += px[o + 1]; s[2] += px[o + 2]; n++; }
       return { mean: s.map(v => Math.round(v / n)), px: L }; });
   }, [buf.toString('base64'), items]);
 }
 async function audit(page, rootSel, opt) {
-  opt = opt || {}; const minEff = opt.minEff || 14, minCr = opt.minCr || 4.5;
-  const items = await collect(page, rootSel); if (!items.length) return { items, bad: [] }; const bg = await bgSample(page, items);
+  opt = opt || {}; const minEff = opt.minEff || 14, minCr = opt.minCr || 4.5, skipBelow = opt.skipBelow;
+  let items = await collect(page, rootSel);
+  if (skipBelow != null) items = items.filter(it => it.eff + 1e-6 >= skipBelow);
+  if (!items.length) return { items, bad: [] }; const bg = await bgSample(page, items);
   items.forEach((it, i) => { const b = bg[i], col = it.col || [0, 0, 0];
     // 背景：取同文字色最接近嘅 10% 像素（最差情況）＋平均
     const ds = b.px.map(p => cr(p, col)).sort((x, y) => x - y), worst = ds[Math.floor(ds.length * 0.1)] || ds[0], mean = cr(b.mean, col);
     const olc = it.ol && it.ol[3] > 0.5 ? cr(it.ol, col) : 0; it.bg = b.mean; it.crMean = +mean.toFixed(2); it.crWorst = +worst.toFixed(2); it.crOl = +olc.toFixed(2);
-    it.cr = +Math.max(olc >= minCr ? olc : 0, Math.min(mean, worst * 1.4)).toFixed(2);   // 有深色描邊（≥4.5）就以描邊計
+    it.cr = +Math.max(olc >= minCr ? olc : 0, mean).toFixed(2);   // H1.4：全量平均穩定；有深色描邊（≥4.5）仍以描邊計。唔再用 worst×1.4（全量時描邊／紋理會令「開」誤判）
   });
   const bad = items.filter(it => it.eff < minEff - 0.01 || it.cr < minCr || /GlimmerFP8|GlimmerFP10/.test(it.fam) || (/GlimmerFP12/.test(it.fam) && it.fs % 12 !== 0));
   return { items, bad };
