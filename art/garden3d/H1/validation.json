@@ -1,0 +1,2026 @@
+{
+ "passed": 404,
+ "total": 404,
+ "results": [
+  {
+   "check": "json 讀得",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "地面 file 尺寸 256",
+   "ok": true,
+   "info": "(256, 256)"
+  },
+  {
+   "check": "地面 file 色彩模式 RGB",
+   "ok": true,
+   "info": "RGB"
+  },
+  {
+   "check": "地面 file3x 尺寸 768",
+   "ok": true,
+   "info": "(768, 768)"
+  },
+  {
+   "check": "地面 file3x 色彩模式 RGB",
+   "ok": true,
+   "info": "RGB"
+  },
+  {
+   "check": "地面 ao 尺寸 256",
+   "ok": true,
+   "info": "(256, 256)"
+  },
+  {
+   "check": "地面 ao 色彩模式 L",
+   "ok": true,
+   "info": "L"
+  },
+  {
+   "check": "地面 ao3x 尺寸 768",
+   "ok": true,
+   "info": "(768, 768)"
+  },
+  {
+   "check": "地面 ao3x 色彩模式 L",
+   "ok": true,
+   "info": "L"
+  },
+  {
+   "check": "地面 @3x＝1x 最近鄰 ×3",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "AO 範圍合理（min≥60、中位≥250）",
+   "ok": true,
+   "info": "(np.int64(128), np.float64(255.0))"
+  },
+  {
+   "check": "外圍 tile 64×64、@3x 192",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "256 片邊 4px 同 tile 一致（無縫）",
+   "ok": true,
+   "info": "1.0"
+  },
+  {
+   "check": "tree id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "fence id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "cottage id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "lanterns id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "bed id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "lamp id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "mushrooms id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "can id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "jar id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "pot_L id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "pot_R id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "pot_S id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "bush_bR id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bR type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "trees_bR id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bR type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "bush_bL id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "bush_bL2 id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL2 type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "trees_bL id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bL type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "mesh"
+  },
+  {
+   "check": "bg_sky id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_sky type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "backdrop"
+  },
+  {
+   "check": "bg_sky 背景板欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bg_sky RGBA、@3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_sky 背景板 layer far、z ≤ −300、alpha 0/255",
+   "ok": true,
+   "info": "(-470, {255})"
+  },
+  {
+   "check": "bg_sky 尺寸＝px×unitsPerPx",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_hills id 唯一",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_hills type 合法（mesh／backdrop；寵物係唯一 billboard、唔喺 objects）",
+   "ok": true,
+   "info": "backdrop"
+  },
+  {
+   "check": "bg_hills 背景板欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bg_hills RGBA、@3x＝1x×3 最近鄰",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bg_hills 背景板 layer far、z ≤ −300、alpha 0/255",
+   "ok": true,
+   "info": "(-380, {0, 255})"
+  },
+  {
+   "check": "bg_hills 尺寸＝px×unitsPerPx",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "全部場景件係 mesh（≥15 件，有 cottage／tree／fence）",
+   "ok": true,
+   "info": "17"
+  },
+  {
+   "check": "tree objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "tree format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'tree')"
+  },
+  {
+   "check": "tree 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(64, 32)"
+  },
+  {
+   "check": "tree 三角 ≤ 300",
+   "ok": true,
+   "info": "32"
+  },
+  {
+   "check": "tree normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.003906), np.float64(0.996094))"
+  },
+  {
+   "check": "tree 冇退化三角",
+   "ok": true,
+   "info": "15.999999999999996"
+  },
+  {
+   "check": "tree 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.8"
+  },
+  {
+   "check": "tree bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-27.,   0., -12.]), array([ 71.  , 241.01,  15.  ]))"
+  },
+  {
+   "check": "tree 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(256, 256, 4)"
+  },
+  {
+   "check": "tree 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "tree 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "tree alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'rect', 'x': [-98.0, -78.0], 'z': [-53, -35], 'pad': 3}"
+  },
+  {
+   "check": "tree 喺 256 地面內",
+   "ok": true,
+   "info": "(-88, -44)"
+  },
+  {
+   "check": "tree .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "tree .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "fence objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "fence format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'fence')"
+  },
+  {
+   "check": "fence 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(412, 206)"
+  },
+  {
+   "check": "fence 三角 ≤ 300",
+   "ok": true,
+   "info": "206"
+  },
+  {
+   "check": "fence normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.003906), np.float64(0.996094))"
+  },
+  {
+   "check": "fence 冇退化三角",
+   "ok": true,
+   "info": "9.0"
+  },
+  {
+   "check": "fence 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.8"
+  },
+  {
+   "check": "fence bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-91.,  -0.,  -4.]), array([88., 30.,  3.]))"
+  },
+  {
+   "check": "fence 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(128, 256, 4)"
+  },
+  {
+   "check": "fence 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "fence 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "fence alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'rect', 'x': [-117.0, 59.0], 'z': [-57, -48], 'pad': 2}"
+  },
+  {
+   "check": "fence 喺 256 地面內",
+   "ok": true,
+   "info": "(-29.0, -52)"
+  },
+  {
+   "check": "fence .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "fence .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "cottage objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "cottage format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'cottage')"
+  },
+  {
+   "check": "cottage 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(170, 84)"
+  },
+  {
+   "check": "cottage 三角 ≤ 300",
+   "ok": true,
+   "info": "84"
+  },
+  {
+   "check": "cottage normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.003906), np.float64(0.996094))"
+  },
+  {
+   "check": "cottage 冇退化三角",
+   "ok": true,
+   "info": "12.0"
+  },
+  {
+   "check": "cottage 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "1.0"
+  },
+  {
+   "check": "cottage bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-35.5,   0. , -26. ]), array([ 35.5, 142. ,  26. ]))"
+  },
+  {
+   "check": "cottage 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(256, 256, 4)"
+  },
+  {
+   "check": "cottage 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "cottage 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "cottage alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage emissive 同尺寸、@3x、⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage emissiveLight 指向 lights",
+   "ok": true,
+   "info": "window"
+  },
+  {
+   "check": "cottage footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'rect', 'x': [53.0, 112.0], 'z': [-94.0, -50.0], 'pad': 4}"
+  },
+  {
+   "check": "cottage 喺 256 地面內",
+   "ok": true,
+   "info": "(82.5, -72.0)"
+  },
+  {
+   "check": "cottage .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "cottage .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "lanterns objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "lanterns format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'lanterns')"
+  },
+  {
+   "check": "lanterns 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(580, 290)"
+  },
+  {
+   "check": "lanterns 三角 ≤ 300",
+   "ok": true,
+   "info": "290"
+  },
+  {
+   "check": "lanterns normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.007812), np.float64(0.992188))"
+  },
+  {
+   "check": "lanterns 冇退化三角",
+   "ok": true,
+   "info": "2.0"
+  },
+  {
+   "check": "lanterns 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "1.0"
+  },
+  {
+   "check": "lanterns bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-60.5,   0. ,  -2.5]), array([60.5, 59. ,  2.5]))"
+  },
+  {
+   "check": "lanterns 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(128, 128, 4)"
+  },
+  {
+   "check": "lanterns 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "lanterns 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "lanterns alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns emissive 同尺寸、@3x、⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns emissiveLight 指向 lights",
+   "ok": true,
+   "info": "lantern_1"
+  },
+  {
+   "check": "lanterns 補位／吊件冇 footprint（唔阻寵物）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lanterns .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "bed objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bed format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'bed')"
+  },
+  {
+   "check": "bed 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(36, 18)"
+  },
+  {
+   "check": "bed 三角 ≤ 300",
+   "ok": true,
+   "info": "18"
+  },
+  {
+   "check": "bed normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.007812), np.float64(0.992188))"
+  },
+  {
+   "check": "bed 冇退化三角",
+   "ok": true,
+   "info": "108.0"
+  },
+  {
+   "check": "bed 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.834"
+  },
+  {
+   "check": "bed bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-34.,   0.,  -9.]), array([38., 29.,  9.]))"
+  },
+  {
+   "check": "bed 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(128, 128, 4)"
+  },
+  {
+   "check": "bed 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "bed 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "bed alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'rect', 'x': [-81.0, -13.0], 'z': [-40.0, -22.0], 'pad': 2}"
+  },
+  {
+   "check": "bed 喺 256 地面內",
+   "ok": true,
+   "info": "(-47, -31.0)"
+  },
+  {
+   "check": "bed .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bed .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "lamp objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "lamp format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'lamp')"
+  },
+  {
+   "check": "lamp 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(160, 80)"
+  },
+  {
+   "check": "lamp 三角 ≤ 300",
+   "ok": true,
+   "info": "80"
+  },
+  {
+   "check": "lamp normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.015625), np.float64(0.992188))"
+  },
+  {
+   "check": "lamp 冇退化三角",
+   "ok": true,
+   "info": "6.0"
+  },
+  {
+   "check": "lamp 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "1.0"
+  },
+  {
+   "check": "lamp bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-6.5,  0. , -5. ]), array([ 7.5, 69. ,  5. ]))"
+  },
+  {
+   "check": "lamp 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(128, 64, 4)"
+  },
+  {
+   "check": "lamp 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "lamp 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "lamp alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp emissive 同尺寸、@3x、⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp emissiveLight 指向 lights",
+   "ok": true,
+   "info": "lamp"
+  },
+  {
+   "check": "lamp footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'rect', 'x': [-77.0, -68.0], 'z': [19, 25], 'pad': 2}"
+  },
+  {
+   "check": "lamp 喺 256 地面內",
+   "ok": true,
+   "info": "(-72.5, 22)"
+  },
+  {
+   "check": "lamp .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "lamp .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "mushrooms objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "mushrooms format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'mushrooms')"
+  },
+  {
+   "check": "mushrooms 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(184, 92)"
+  },
+  {
+   "check": "mushrooms 三角 ≤ 300",
+   "ok": true,
+   "info": "92"
+  },
+  {
+   "check": "mushrooms normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.03125), np.float64(0.984375))"
+  },
+  {
+   "check": "mushrooms 冇退化三角",
+   "ok": true,
+   "info": "2.0"
+  },
+  {
+   "check": "mushrooms 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "1.0"
+  },
+  {
+   "check": "mushrooms bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-13.,   0.,  -3.]), array([14., 14.,  3.]))"
+  },
+  {
+   "check": "mushrooms 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(64, 32, 4)"
+  },
+  {
+   "check": "mushrooms 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "mushrooms 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "mushrooms alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'rect', 'x': [62.0, 82.0], 'z': [20, 28], 'pad': 2}"
+  },
+  {
+   "check": "mushrooms 喺 256 地面內",
+   "ok": true,
+   "info": "(71, 24)"
+  },
+  {
+   "check": "mushrooms .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "mushrooms .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "can objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "can format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'can')"
+  },
+  {
+   "check": "can 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(248, 124)"
+  },
+  {
+   "check": "can 三角 ≤ 300",
+   "ok": true,
+   "info": "124"
+  },
+  {
+   "check": "can normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.015625), np.float64(0.984375))"
+  },
+  {
+   "check": "can 冇退化三角",
+   "ok": true,
+   "info": "6.0"
+  },
+  {
+   "check": "can 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "1.0"
+  },
+  {
+   "check": "can bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-7.,  0., -4.]), array([17., 15.,  4.]))"
+  },
+  {
+   "check": "can 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(64, 64, 4)"
+  },
+  {
+   "check": "can 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "can 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "can alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'rect', 'x': [-46.0, -30.0], 'z': [37, 47], 'pad': 2}"
+  },
+  {
+   "check": "can 喺 256 地面內",
+   "ok": true,
+   "info": "(-39, 42)"
+  },
+  {
+   "check": "can .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "can .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "jar objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "jar format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'jar')"
+  },
+  {
+   "check": "jar 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(40, 20)"
+  },
+  {
+   "check": "jar 三角 ≤ 300",
+   "ok": true,
+   "info": "20"
+  },
+  {
+   "check": "jar normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.03125), np.float64(0.96875))"
+  },
+  {
+   "check": "jar 冇退化三角",
+   "ok": true,
+   "info": "2.0"
+  },
+  {
+   "check": "jar 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "1.0"
+  },
+  {
+   "check": "jar bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-3. ,  0. , -2.5]), array([ 3. , 11. ,  2.5]))"
+  },
+  {
+   "check": "jar 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(32, 32, 4)"
+  },
+  {
+   "check": "jar 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "jar 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "jar alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar emissive 同尺寸、@3x、⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar emissiveLight 指向 lights",
+   "ok": true,
+   "info": "jar"
+  },
+  {
+   "check": "jar footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'rect', 'x': [32.0, 38.0], 'z': [19, 25], 'pad': 2}"
+  },
+  {
+   "check": "jar 喺 256 地面內",
+   "ok": true,
+   "info": "(35, 22)"
+  },
+  {
+   "check": "jar .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "jar .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "pot_L objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "pot_L format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'pot_L')"
+  },
+  {
+   "check": "pot_L 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(88, 32)"
+  },
+  {
+   "check": "pot_L 三角 ≤ 300",
+   "ok": true,
+   "info": "32"
+  },
+  {
+   "check": "pot_L normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.03125), np.float64(0.984375))"
+  },
+  {
+   "check": "pot_L 冇退化三角",
+   "ok": true,
+   "info": "62.48180000000001"
+  },
+  {
+   "check": "pot_L 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.45"
+  },
+  {
+   "check": "pot_L bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-10.,   0., -10.]), array([10., 26., 10.]))"
+  },
+  {
+   "check": "pot_L 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(64, 32, 4)"
+  },
+  {
+   "check": "pot_L 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "pot_L 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "pot_L alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'poly', 'points': [[-81.0, 77.5], [-75.7, 75.3], [-73.5, 70.0], [-75.7, 64.7], [-81.0, 62.5], [-86.3, 64.7], [-88.5, 70.0], [-86.3, 75.3]], 'pad': 2}"
+  },
+  {
+   "check": "pot_L 喺 256 地面內",
+   "ok": true,
+   "info": "(-81, 70)"
+  },
+  {
+   "check": "pot_L .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_L .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "pot_R objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "pot_R format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'pot_R')"
+  },
+  {
+   "check": "pot_R 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(88, 32)"
+  },
+  {
+   "check": "pot_R 三角 ≤ 300",
+   "ok": true,
+   "info": "32"
+  },
+  {
+   "check": "pot_R normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.03125), np.float64(0.984375))"
+  },
+  {
+   "check": "pot_R 冇退化三角",
+   "ok": true,
+   "info": "62.48180000000001"
+  },
+  {
+   "check": "pot_R 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.45"
+  },
+  {
+   "check": "pot_R bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-10.,   0., -10.]), array([10., 26., 10.]))"
+  },
+  {
+   "check": "pot_R 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(64, 32, 4)"
+  },
+  {
+   "check": "pot_R 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "pot_R 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "pot_R alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'poly', 'points': [[81.0, 61.5], [86.3, 59.3], [88.5, 54.0], [86.3, 48.7], [81.0, 46.5], [75.7, 48.7], [73.5, 54.0], [75.7, 59.3]], 'pad': 2}"
+  },
+  {
+   "check": "pot_R 喺 256 地面內",
+   "ok": true,
+   "info": "(81, 54)"
+  },
+  {
+   "check": "pot_R .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_R .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "pot_S objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "pot_S format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'pot_S')"
+  },
+  {
+   "check": "pot_S 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(88, 32)"
+  },
+  {
+   "check": "pot_S 三角 ≤ 300",
+   "ok": true,
+   "info": "32"
+  },
+  {
+   "check": "pot_S normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.03125), np.float64(0.96875))"
+  },
+  {
+   "check": "pot_S 冇退化三角",
+   "ok": true,
+   "info": "28.960000000000004"
+  },
+  {
+   "check": "pot_S 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.45"
+  },
+  {
+   "check": "pot_S bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-7.,  0., -7.]), array([ 7., 19.,  7.]))"
+  },
+  {
+   "check": "pot_S 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(32, 32, 4)"
+  },
+  {
+   "check": "pot_S 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "pot_S 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "pot_S alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S footprint（世界）合法、同 mesh 局部一致",
+   "ok": true,
+   "info": "{'type': 'poly', 'points': [[49.0, 27.0], [52.54, 25.54], [54.0, 22.0], [52.54, 18.46], [49.0, 17.0], [45.46, 18.46], [44.0, 22.0], [45.46, 25.54]], 'pad': 2}"
+  },
+  {
+   "check": "pot_S 喺 256 地面內",
+   "ok": true,
+   "info": "(49, 22)"
+  },
+  {
+   "check": "pot_S .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "pot_S .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "bush_bR objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bush_bR format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'bush_bR')"
+  },
+  {
+   "check": "bush_bR 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(16, 8)"
+  },
+  {
+   "check": "bush_bR 三角 ≤ 300",
+   "ok": true,
+   "info": "8"
+  },
+  {
+   "check": "bush_bR normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bR uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.015625), np.float64(0.96875))"
+  },
+  {
+   "check": "bush_bR 冇退化三角",
+   "ok": true,
+   "info": "425.59999999999997"
+  },
+  {
+   "check": "bush_bR 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.45"
+  },
+  {
+   "check": "bush_bR bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-16. ,   0. , -11.2]), array([16. , 19. , 11.2]))"
+  },
+  {
+   "check": "bush_bR 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(32, 64, 4)"
+  },
+  {
+   "check": "bush_bR 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "bush_bR 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "bush_bR alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bR 補位／吊件冇 footprint（唔阻寵物）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bR 補位件喺外圍草地（|x|≤640、z −480…−95）、唔投影",
+   "ok": true,
+   "info": "(82, -198)"
+  },
+  {
+   "check": "bush_bR .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bR .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "trees_bR objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "trees_bR format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'trees_bR')"
+  },
+  {
+   "check": "trees_bR 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(16, 8)"
+  },
+  {
+   "check": "trees_bR 三角 ≤ 300",
+   "ok": true,
+   "info": "8"
+  },
+  {
+   "check": "trees_bR normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bR uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.015625), np.float64(0.984375))"
+  },
+  {
+   "check": "trees_bR 冇退化三角",
+   "ok": true,
+   "info": "1288.0"
+  },
+  {
+   "check": "trees_bR 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.45"
+  },
+  {
+   "check": "trees_bR bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-23. ,   0. , -16.1]), array([23. , 40. , 16.1]))"
+  },
+  {
+   "check": "trees_bR 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(64, 64, 4)"
+  },
+  {
+   "check": "trees_bR 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "trees_bR 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "trees_bR alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bR 補位／吊件冇 footprint（唔阻寵物）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bR 補位件喺外圍草地（|x|≤640、z −480…−95）、唔投影",
+   "ok": true,
+   "info": "(95, -228)"
+  },
+  {
+   "check": "trees_bR .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bR .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "bush_bL objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bush_bL format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'bush_bL')"
+  },
+  {
+   "check": "bush_bL 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(16, 8)"
+  },
+  {
+   "check": "bush_bL 三角 ≤ 300",
+   "ok": true,
+   "info": "8"
+  },
+  {
+   "check": "bush_bL normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.03125), np.float64(0.96875))"
+  },
+  {
+   "check": "bush_bL 冇退化三角",
+   "ok": true,
+   "info": "333.20000000000005"
+  },
+  {
+   "check": "bush_bL 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.45"
+  },
+  {
+   "check": "bush_bL bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-14. ,   0. ,  -9.8]), array([14. , 17. ,  9.8]))"
+  },
+  {
+   "check": "bush_bL 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(32, 32, 4)"
+  },
+  {
+   "check": "bush_bL 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "bush_bL 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "bush_bL alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL 補位／吊件冇 footprint（唔阻寵物）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL 補位件喺外圍草地（|x|≤640、z −480…−95）、唔投影",
+   "ok": true,
+   "info": "(-132, -206)"
+  },
+  {
+   "check": "bush_bL .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "bush_bL2 objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "bush_bL2 format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'bush_bL2')"
+  },
+  {
+   "check": "bush_bL2 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(16, 8)"
+  },
+  {
+   "check": "bush_bL2 三角 ≤ 300",
+   "ok": true,
+   "info": "8"
+  },
+  {
+   "check": "bush_bL2 normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL2 uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.03125), np.float64(0.96875))"
+  },
+  {
+   "check": "bush_bL2 冇退化三角",
+   "ok": true,
+   "info": "252.0"
+  },
+  {
+   "check": "bush_bL2 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.45"
+  },
+  {
+   "check": "bush_bL2 bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-12. ,   0. ,  -8.4]), array([12. , 15. ,  8.4]))"
+  },
+  {
+   "check": "bush_bL2 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(32, 32, 4)"
+  },
+  {
+   "check": "bush_bL2 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "bush_bL2 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "bush_bL2 alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL2 補位／吊件冇 footprint（唔阻寵物）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL2 補位件喺外圍草地（|x|≤640、z −480…−95）、唔投影",
+   "ok": true,
+   "info": "(-126, -176)"
+  },
+  {
+   "check": "bush_bL2 .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "bush_bL2 .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "trees_bL objects entry 欄位齊",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "trees_bL format garden3d.mesh/2、id",
+   "ok": true,
+   "info": "('garden3d.mesh/2', 'trees_bL')"
+  },
+  {
+   "check": "trees_bL 陣列長度／index 範圍",
+   "ok": true,
+   "info": "(16, 8)"
+  },
+  {
+   "check": "trees_bL 三角 ≤ 300",
+   "ok": true,
+   "info": "8"
+  },
+  {
+   "check": "trees_bL normals 單位長",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bL uv 0..1（V 上）",
+   "ok": true,
+   "info": "(np.float64(0.015625), np.float64(0.984375))"
+  },
+  {
+   "check": "trees_bL 冇退化三角",
+   "ok": true,
+   "info": "2016.0"
+  },
+  {
+   "check": "trees_bL 逆時針＝正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": "0.45"
+  },
+  {
+   "check": "trees_bL bounds 啱、底 y≈0（原點＝底中）",
+   "ok": true,
+   "info": "(array([-30.,   0., -21.]), array([30., 48., 21.]))"
+  },
+  {
+   "check": "trees_bL 貼圖 RGBA、2 次方、size 啱、@3x＝1x×3",
+   "ok": true,
+   "info": "(64, 64, 4)"
+  },
+  {
+   "check": "trees_bL 貼圖 alpha 只有 0/255、透明處 RGB=0",
+   "ok": true,
+   "info": "{0, 255}"
+  },
+  {
+   "check": "trees_bL 每個三角 uv 範圍都有像素（冇空三角）",
+   "ok": true,
+   "info": "0"
+  },
+  {
+   "check": "trees_bL alphaTest／doubleSided／material",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bL 補位／吊件冇 footprint（唔阻寵物）",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bL 補位件喺外圍草地（|x|≤640、z −480…−95）、唔投影",
+   "ok": true,
+   "info": "(-150, -262)"
+  },
+  {
+   "check": "trees_bL .glb（glTF 2.0）幾何／uv（V 翻）／index 同 json 一致",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "trees_bL .glb 材質 MASK＋NEAREST＋內嵌貼圖（＋emissive）",
+   "ok": true,
+   "info": "('MASK', {'magFilter': 9728, 'minFilter': 9728, 'wrapS': 33071, 'wrapT': 33071})"
+  },
+  {
+   "check": "寵物 billboard 欄位（billboard、radius、dir4）",
+   "ok": true,
+   "info": "{'x': 0, 'z': 0, 'face': 'cyl', 'shadow': True, 'layer': 'mid', 'billboard': True, 'radius': 10, 'dir4': 'sprites/tuanrong/motion/dir4/atlas_radiant_dir4.json', 'note': '團絨係唯一 billboard（面向鏡頭）；用 atlas pivotPx 對準 (x,0,z)；1 px＝1 unit；可喺 XZ 自由行，唔可以入任何 footprint（外擴 pad＋radius）；4 方向幀見 dir4（按移動方向揀 front／ba"
+  },
+  {
+   "check": "寵物原點／GIF 行路／遮擋格都唔撞 footprint（含 pad＋radius）",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "碰撞自測：企入樹幹／屋會被擋",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "dir4 atlas 色圖／_n／emissive 同尺寸",
+   "ok": true,
+   "info": "(512, 1024, 4)"
+  },
+  {
+   "check": "dir4 alpha 只有 0/255、_n alpha＝色圖 alpha、emissive ⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "dir4 有 front／back／side × idle 4＋walk 6（30 幀）",
+   "ok": true,
+   "info": "30"
+  },
+  {
+   "check": "dir4 幀尺寸／pivot 同現有 atlas_radiant 一致",
+   "ok": true,
+   "info": "({(64, 64)}, [32, 61])"
+  },
+  {
+   "check": "dir4 _n：每幀有像素、法線單位長、向外（B≥128）",
+   "ok": true,
+   "info": "30/30"
+  },
+  {
+   "check": "dir4 _n OpenGL 綠＝上（每幀頂部 G＞底部 G）",
+   "ok": true,
+   "info": "30/30"
+  },
+  {
+   "check": "dir4 back 幀同 front 唔同（新畫）、side＝現有 walk 原樣",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "側窗燈 window_side：intensity 0、intensityNight＞0",
+   "ok": true,
+   "info": "{'id': 'window_side', 'zh': '小屋側窗', 'x': 114.0, 'y': 57.0, 'z': -72.0, 'color': '#ffc870', 'radius': 40, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.02}"
+  },
+  {
+   "check": "補光 fill：dir 正規化、color、intensity／intensityNight",
+   "ok": true,
+   "info": "{'dir': [0.2005, -0.1203, -0.9723], 'color': '#ffe2c4', 'intensity': 0.38, 'intensityNight': 0.0, 'note': '補光（方向光，唔投影）：由鏡頭方向略低照入去，補返背光嘅前牆（太陽喺左後上）；全場景 lit 物件都受，唔烘入貼圖'}"
+  },
+  {
+   "check": "camera 擺鏡 ±10°（Octopath 式固定 pitch）",
+   "ok": true,
+   "info": "(-10, 10)"
+  },
+  {
+   "check": "light lamp 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lamp', 'zh': '燈柱燈頭', 'x': -72.5, 'y': 60, 'z': 23, 'color': '#ffd890', 'radius': 70, 'intensity': 0.0, 'intensityNight': 1.2, 'flicker': 0.04}"
+  },
+  {
+   "check": "light lantern_1 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_1', 'zh': '旗串燈籠 1', 'x': -49, 'y': 142, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light lantern_2 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_2', 'zh': '旗串燈籠 2', 'x': -25, 'y': 121, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light lantern_3 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_3', 'zh': '旗串燈籠 3', 'x': -1, 'y': 108, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light lantern_4 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_4', 'zh': '旗串燈籠 4', 'x': 23, 'y': 103, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light lantern_5 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'lantern_5', 'zh': '旗串燈籠 5', 'x': 47, 'y': 105, 'z': -45, 'color': '#ff9a50', 'radius': 28, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.12}"
+  },
+  {
+   "check": "light window 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'window', 'zh': '小屋窗', 'x': 69.0, 'y': 62.0, 'z': -48.0, 'color': '#ffc870', 'radius': 48, 'intensity': 0.0, 'intensityNight': 0.8, 'flicker': 0.02}"
+  },
+  {
+   "check": "light window_side 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'window_side', 'zh': '小屋側窗', 'x': 114.0, 'y': 57.0, 'z': -72.0, 'color': '#ffc870', 'radius': 40, 'intensity': 0.0, 'intensityNight': 0.7, 'flicker': 0.02}"
+  },
+  {
+   "check": "light jar 欄位／範圍",
+   "ok": true,
+   "info": "{'id': 'jar', 'zh': '螢火瓶', 'x': 35, 'y': 5, 'z': 23, 'color': '#c8ffb0', 'radius': 22, 'intensity': 0.0, 'intensityNight': 0.6, 'flicker': 0.25}"
+  },
+  {
+   "check": "sun dir 正規化、向下",
+   "ok": true,
+   "info": "[0.4206, -0.721, 0.5507]"
+  },
+  {
+   "check": "sun color／ambient",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "sun shadowIntensity 0–1",
+   "ok": true,
+   "info": "0.3"
+  },
+  {
+   "check": "camera 自動擺鏡／阻尼跟拍（patch2）",
+   "ok": true,
+   "info": "{'swayAmplitudeDeg': 5, 'swayHalfPeriodSec': 6.0, 'followDamping': 2.0, 'followWeight': [0.25, 0.3]}"
+  },
+  {
+   "check": "camera 欄位",
+   "ok": true,
+   "info": "{'target': [0, 30, -72], 'pitchDeg': 30, 'dist': 580, 'fovDeg': 40, 'yawDeg': 0, 'orbitMinDeg': -10, 'orbitMaxDeg': 10, 'near': 10, 'far': 4000, 'swayAmplitudeDeg': 5, 'swayHalfPeriodSec': 6.0, 'swayEasing': 'easeInOutSine', 'followDamping': 2.0, 'followWeight': [0.25, 0.3], 'followOffset': [-20, 0]"
+  },
+  {
+   "check": "每個檔 <20MB",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "FORMAT.md 存在",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "radiant _n 尺寸＝色圖",
+   "ok": true,
+   "info": "((512, 1024, 4), (512, 1024, 4))"
+  },
+  {
+   "check": "radiant _n alpha＝色圖 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "radiant 法線單位長（±0.03）",
+   "ok": true,
+   "info": "0.006514726879262689"
+  },
+  {
+   "check": "radiant 法線向外（B≥128）",
+   "ok": true,
+   "info": "159"
+  },
+  {
+   "check": "radiant OpenGL 綠＝上（idle/walk 每幀頂部 G＞底部 G）",
+   "ok": true,
+   "info": "10/10"
+  },
+  {
+   "check": "radiant emissive 同尺寸、⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "sprout _n 尺寸＝色圖",
+   "ok": true,
+   "info": "((256, 1024, 4), (256, 1024, 4))"
+  },
+  {
+   "check": "sprout _n alpha＝色圖 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "sprout 法線單位長（±0.03）",
+   "ok": true,
+   "info": "0.006270230608479643"
+  },
+  {
+   "check": "sprout 法線向外（B≥128）",
+   "ok": true,
+   "info": "168"
+  },
+  {
+   "check": "sprout OpenGL 綠＝上（idle/walk 每幀頂部 G＞底部 G）",
+   "ok": true,
+   "info": "10/10"
+  },
+  {
+   "check": "evo_still_radiant _n 尺寸＝色圖",
+   "ok": true,
+   "info": "((1024, 1024, 4), (1024, 1024, 4))"
+  },
+  {
+   "check": "evo_still_radiant _n alpha＝色圖 alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "evo_still_radiant 法線單位長（±0.03）",
+   "ok": true,
+   "info": "0.006464570847540818"
+  },
+  {
+   "check": "evo_still_radiant 法線向外（B≥128）",
+   "ok": true,
+   "info": "163"
+  },
+  {
+   "check": "evo_still_radiant OpenGL 綠＝上（idle/walk 每幀頂部 G＞底部 G）",
+   "ok": true,
+   "info": "44/44"
+  },
+  {
+   "check": "evo_still_radiant emissive 同尺寸、⊂ alpha",
+   "ok": true,
+   "info": ""
+  },
+  {
+   "check": "冇雜檔（全部檔案都有被 json 引用）",
+   "ok": true,
+   "info": "[]"
+  },
+  {
+   "check": "tools 冇 __pycache__",
+   "ok": true,
+   "info": ""
+  }
+ ]
+}

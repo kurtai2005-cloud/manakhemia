@@ -1,0 +1,195 @@
+{
+  "_file": "hunting.json",
+  "_title": "《微光小圃》野外狩獵資料表（Godot M1／M2）",
+  "_note": "只借氛圍，角色／名／造型全部原創。尚未入現行 JS；數字全部取自 core-loop-3d-v1.md §6／§6.1。",
+  "_missing": [
+    "areas.m2.monsters／fruits：M2 先命名",
+    "team.m2_max：等遊測模擬"
+  ],
+  "_src": "core-loop-3d-v1.md:§6,§6.1",
+  "team": {
+    "m1_max_adults": 3,
+    "m2_max_adults": null,
+    "m2_max_note": "規格提議 5，要遊測再模擬先定",
+    "one_tap_depart": true,
+    "one_tap_return_merges_into_harvest": true
+  },
+  "hunt": {
+    "duration_hours": 2,
+    "shards_min": 1,
+    "shards_max": 3,
+    "fruit_min": 2,
+    "fruit_max": 4,
+    "big_monster_chance": 0.2,
+    "big_monster_extra_fruit": 1,
+    "max_hunts_per_pet_per_day": 4,
+    "work_or_hunt_per_pet_per_day": true,
+    "counts_toward": "jobs_and_trips_max",
+    "jobs_and_trips_daily_cap": 12,
+    "stardust_total_daily_cap_unchanged": 47,
+    "no_injury": true,
+    "no_fail_penalty": true,
+    "offline_counts": true
+  },
+  "long_trip_unchanged": {
+    "_src": "long5b.js:20; core-loop-3d-v1.md:§6",
+    "duration_hours": 24,
+    "shards_min": 5,
+    "shards_max": 10,
+    "furniture_chance": 0.3,
+    "family_xp": 3
+  },
+  "badges": {
+    "unit": "討伐證（每種小怪一套）",
+    "bronze_at_hunts": 1,
+    "silver_at_hunts": 5,
+    "gold_at_hunts": 20,
+    "display": "掛喺家族牆"
+  },
+  "hunt_level": {
+    "max": 5,
+    "unlocks": "新區域同更大隻小怪；唔使錢",
+    "thresholds": [
+      {
+        "level": 1,
+        "requirement": {
+          "start": true,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+        },
+        "note": "起始；規格只列 Lv2–5"
+      },
+      {
+        "level": 2,
+        "bronze_badges": 4
+      },
+      {
+        "level": 3,
+        "silver_badges": 4
+      },
+      {
+        "level": 4,
+        "bronze_badges": 12
+      },
+      {
+        "level": 5,
+        "gold_badges": 4
+      }
+    ]
+  },
+  "areas": {
+    "m1": {
+      "id": "grassland",
+      "zh": "草原",
+      "monster_count": 4,
+      "big_monster_kinds": 1,
+      "fruit_kinds": 6,
+      "badges": [
+        "bronze"
+      ],
+      "monsters": [
+        {
+          "id": "puff_shroom",
+          "zh": "噗噗菇",
+          "big": false
+        },
+        {
+          "id": "burr_ball",
+          "zh": "刺刺球",
+          "big": false
+        },
+        {
+          "id": "dew_slime",
+          "zh": "露露",
+          "big": false
+        },
+        {
+          "id": "rumble_root",
+          "zh": "大根根",
+          "big": true
+        },
+        {
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）；原創名，造型由遊美定"
+        }
+      ],
+      "fruits": [
+        {
+          "id": "glow_berry",
+          "zh": "微光莓"
+        },
+        {
+          "id": "dew_plum",
+          "zh": "露水李"
+        },
+        {
+          "id": "star_nut",
+          "zh": "星星果仁"
+        },
+        {
+          "id": "puff_peach",
+          "zh": "棉花桃"
+        },
+        {
+          "id": "moon_grape",
+          "zh": "月提子"
+        },
+        {
+          "id": "leaf_pear",
+          "zh": "葉仔梨"
+        },
+        {
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）；原創名"
+        }
+      ]
+    },
+    "m2": {
+      "extra_areas": [
+        {
+          "id": "woods_edge",
+          "zh": "林邊"
+        },
+        {
+          "id": "streamside",
+          "zh": "溪邊"
+        },
+        {
+          "id": "flower_sea",
+          "zh": "花海"
+        },
+        {
+          "id": "hill",
+          "zh": "山丘"
+        }
+      ],
+      "monster_count_total": 12,
+      "extra_monsters": 8,
+      "extra_fruit_kinds": 6,
+      "badges": [
+        "silver",
+        "gold"
+      ],
+      "monsters": null,
+      "fruits": null
+    }
+  },
+  "team_carry": {
+    "_src": "core-loop-3d-v1.md:§6.1",
+    "m1": [
+      "line_follow_leader",
+      "split_roles",
+      "carry_fruit_home",
+      "post_office_parcels"
+    ],
+    "m2_new_clips": [
+      "lift_big_together",
+      "lazy_rides_on_top",
+      "leader_wave_recall"
+    ],
+    "personality_in_team": {
+      "勤力": "抱多啲、行快啲",
+      "懶散": "行喺最尾；M2 抬大件時會坐上去",
+      "黐人": "貼住隊長",
+      "獨立": "會走開少少再追返"
+    },
+    "no_extra_economy": true
+  }
+}

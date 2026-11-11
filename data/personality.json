@@ -1,0 +1,449 @@
+{
+  "_file": "personality.json",
+  "_title": "《微光小圃》性格／自主生活／觀察動作資料表（Godot M1）",
+  "_note": "三軸性格同自主生活尚未入現行 JS；M1 動作參數取自 core-loop-3d-v1.md §0.5。現行 code 只有舊 personality sticky/sleepy/timid，唔好同呢份表混用。",
+  "_missing": [],
+  "axes": {
+    "_src": "personality-dialogue-v1.md:§1.1",
+    "min": -10,
+    "max": 10,
+    "list": [
+      {
+        "id": "motion",
+        "zh": "動",
+        "minus_zh": "文靜",
+        "plus_zh": "活潑"
+      },
+      {
+        "id": "work",
+        "zh": "做",
+        "minus_zh": "懶散",
+        "plus_zh": "勤力"
+      },
+      {
+        "id": "social",
+        "zh": "人",
+        "minus_zh": "獨立",
+        "plus_zh": "黐人"
+      }
+    ]
+  },
+  "types": {
+    "_src": "personality-dialogue-v1.md:§1.1",
+    "primary": "絕對值最大嘅軸嘅嗰端",
+    "six": [
+      "活潑",
+      "文靜",
+      "勤力",
+      "懶散",
+      "黐人",
+      "獨立"
+    ],
+    "secondary_min_abs": 5,
+    "easygoing_when_all_abs_lte": 3,
+    "easygoing_zh": "隨和",
+    "base_tone": "蠢蠢地但覺得自己好醒"
+  },
+  "birth": {
+    "_src": "personality-dialogue-v1.md:§1.1",
+    "each_axis_random": [
+      -3,
+      3
+    ]
+  },
+  "daily_shift": {
+    "_src": "personality-dialogue-v1.md:§1.2",
+    "per_axis_max": 2,
+    "per_axis_min": -2,
+    "no_natural_decay": true,
+    "actions": [
+      {
+        "acts": [
+          "play",
+          "minigame",
+          "duo_bounce"
+        ],
+        "axis": "motion",
+        "delta": 1
+      },
+      {
+        "acts": [
+          "lull",
+          "sleep_together",
+          "stay_in_on_rain"
+        ],
+        "axis": "motion",
+        "delta": -1
+      },
+      {
+        "acts": [
+          "job",
+          "complete_quest"
+        ],
+        "axis": "work",
+        "delta": 1
+      },
+      {
+        "acts": [
+          "no_tap_over_6h"
+        ],
+        "axis": "work",
+        "delta": -1
+      },
+      {
+        "acts": [
+          "pat",
+          "eat_together",
+          "comfort_cry"
+        ],
+        "axis": "social",
+        "delta": 1
+      },
+      {
+        "acts": [
+          "expedition",
+          "low_care_day"
+        ],
+        "axis": "social",
+        "delta": -1
+      }
+    ]
+  },
+  "inheritance": {
+    "_src": "personality-dialogue-v1.md:§1.3",
+    "parent_mul": 0.3,
+    "parent_mul_round": "四捨五入",
+    "plus_random": [
+      -3,
+      3
+    ],
+    "clamp": [
+      -10,
+      10
+    ]
+  },
+  "idle_weight": {
+    "_src": "personality-dialogue-v1.md:§1.4; core-loop-3d-v1.md:§3 M2 招牌 idle",
+    "adjust_pct": 20,
+    "note": "活潑多跳、文靜多坐、懶散多瞓、勤力多執嘢、黐人多跟手指、獨立多自己望天；±20%",
+    "m2_signature_idle_weight_bonus_pct": 20
+  },
+  "m1_motion": {
+    "_src": "core-loop-3d-v1.md:§0.5 C",
+    "no_new_clips": true,
+    "walk_speed_mul": {
+      "energetic_zh": "活潑",
+      "mul": 1.2,
+      "quiet_zh": "文靜",
+      "quiet_mul": 0.85
+    },
+    "motion_axis": {
+      "energetic": {
+        "walk_speed_mul": 1.2,
+        "prefer": [
+          "play",
+          "chase"
+        ]
+      },
+      "quiet": {
+        "walk_speed_mul": 0.85,
+        "prefer": [
+          "sit",
+          "look_sky"
+        ]
+      }
+    },
+    "work_axis": {
+      "diligent": {
+        "go_to_building_earlier": {
+          "sec": 10,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+        },
+        "work_longer": {
+          "mul": 1.2,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+        },
+        "_note": "規格有描述、冇倍率"
+      },
+      "lazy": {
+        "idle_and_sleep_more": true,
+        "late_to_work": {
+          "sec": 15,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+        },
+        "_note": "規格有描述、冇倍率"
+      }
+    },
+    "social_axis": {
+      "clingy": {
+        "follow_family": true,
+        "follow_camera": true,
+        "follow_distance": {
+          "m": 1.0,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+        }
+      },
+      "independent": {
+        "wander_far": true,
+        "fewer_interactions": true,
+        "wander_distance": {
+          "m": 6.0,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+        }
+      }
+    }
+  },
+  "needs": {
+    "_src": "autonomous-life-v1.md:§1.1-1.2",
+    "range": [
+      0,
+      100
+    ],
+    "separate_from_care_stats": true,
+    "rechoose_sec": [
+      8,
+      15
+    ],
+    "score_random_pct": 10,
+    "same_act_cooldown_sec": 30,
+    "player_interrupt_priority": true,
+    "player_interrupt_latency_sec": 0.3,
+    "list": [
+      {
+        "id": "hunger",
+        "zh": "餓",
+        "rise": "讀現有肚餓值",
+        "fall": "玩家餵",
+        "reads_existing_hunger": true
+      },
+      {
+        "id": "tired",
+        "zh": "攰",
+        "rise": [
+          {
+            "per_min_awake": 0.5
+          },
+          {
+            "after_play": 10
+          }
+        ],
+        "fall": [
+          "sleep",
+          "sit"
+        ]
+      },
+      {
+        "id": "bored",
+        "zh": "悶",
+        "rise": [
+          {
+            "per_min_no_interact": 0.8
+          }
+        ],
+        "fall": [
+          "play",
+          "explore",
+          "toy"
+        ]
+      },
+      {
+        "id": "clingy",
+        "zh": "黐人",
+        "rise": [
+          {
+            "per_min_player_away": 0.5
+          }
+        ],
+        "fall": [
+          "pat",
+          "eat_together",
+          "follow_finger"
+        ]
+      },
+      {
+        "id": "curious",
+        "zh": "好奇",
+        "rise": [
+          {
+            "on_new_thing": 30,
+            "examples": [
+              "furniture",
+              "visitor",
+              "weather_change"
+            ]
+          }
+        ],
+        "fall": [
+          "look",
+          "explore"
+        ]
+      },
+      {
+        "id": "comfort",
+        "zh": "舒服",
+        "rise": [
+          {
+            "weather_bad_or_late": {
+              "delta": 20,
+              "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+            }
+          }
+        ],
+        "fall": [
+          {
+            "at_fav_place": {
+              "delta": -30,
+              "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+            }
+          },
+          "sleep_bed"
+        ]
+      }
+    ],
+    "personality_act_mul": {
+      "活潑": {
+        "play": 1.3,
+        "explore": 1.3
+      },
+      "文靜": {
+        "sit": 1.3,
+        "look_sky": 1.3
+      },
+      "勤力": {
+        "tidy": 1.3,
+        "water_plants": 1.3
+      },
+      "懶散": {
+        "sleep": 1.3
+      },
+      "黐人": {
+        "seek_player": 1.4
+      },
+      "獨立": {
+        "play_alone": 1.3
+      }
+    },
+    "never_self_feed_or_clean_poop": true
+  },
+  "spontaneous": {
+    "_src": "autonomous-life-v1.md:§4",
+    "max_per_hour": 3,
+    "max_per_day": 12,
+    "no_trigger_while_player_busy": true,
+    "kinds": [
+      {
+        "id": "seek_player",
+        "zh": "主動搵你",
+        "cond": "clingy_need >= 70",
+        "cap": "每 2 小時 1 次"
+      },
+      {
+        "id": "fuss",
+        "zh": "扭計",
+        "cond": "tired >= 80 而且夜晚",
+        "cap_per_day": 2,
+        "no_penalty": true
+      },
+      {
+        "id": "gift",
+        "zh": "送禮物",
+        "cond": "親密度高＋心情開心",
+        "cap_per_day": 1
+      },
+      {
+        "id": "sleep_together",
+        "zh": "一齊瞓",
+        "cond": "兩隻 tired >= 60",
+        "cap_per_day": 1,
+        "no_extra_closeness": true
+      },
+      {
+        "id": "toy_tug",
+        "zh": "爭玩具",
+        "cond": "兩隻 bored >= 60、同一最愛玩具",
+        "cap_per_day": 1
+      },
+      {
+        "id": "follow_walk",
+        "zh": "互相跟住行",
+        "cond": "最好朋友",
+        "cap_per_day": 3
+      },
+      {
+        "id": "teach_wrong",
+        "zh": "教細佬（教錯嘢）",
+        "cond": "有細佬 S1–S2",
+        "cap_per_day": 1,
+        "not_count_as_lesson": true
+      }
+    ]
+  },
+  "family_interactions": {
+    "_src": "core-loop-3d-v1.md:§0.5 B",
+    "min_pets_on_screen": 2,
+    "interval_min": 1,
+    "interval_max": 3,
+    "interval_unit": "分鐘",
+    "no_repeat_within_min": 10,
+    "m1_uses_existing_clips": true,
+    "kinds": [
+      {
+        "id": "walk_together",
+        "zh": "一齊行",
+        "trigger": "黐人值高，或者最好朋友喺附近",
+        "clingy_threshold": {
+          "axis_min": 5,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+        }
+      },
+      {
+        "id": "leaf_shelter",
+        "zh": "撐葉",
+        "trigger": "一隻凍到打冷震；落雨、夜晚、驚"
+      },
+      {
+        "id": "share_food",
+        "zh": "分食",
+        "trigger": "一隻食緊、另一隻餓值 ≥50%"
+      },
+      {
+        "id": "sleep_side_by_side",
+        "zh": "一齊瞓",
+        "trigger": "夜晚，親密度高",
+        "closeness_threshold": {
+          "min": 80,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）；用現有親密度 80 門檻"
+        }
+      },
+      {
+        "id": "chase",
+        "zh": "追逐",
+        "trigger": "兩隻都悶，活潑值高",
+        "bored_threshold": {
+          "min": 60,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）；對齊自發爭玩具 悶≥60"
+        },
+        "energetic_threshold": {
+          "axis_min": 5,
+          "_src": "遊策 2026-11-11 設計 v1（新定，待遊測觀察驗收調）"
+        }
+      },
+      {
+        "id": "welcome_home",
+        "zh": "歡迎返屋",
+        "trigger": "家人打工、狩獵或遠足返"
+      }
+    ],
+    "observe_pass": {
+      "hidden_ui_minutes": 3,
+      "min_distinct_interactions": 3
+    }
+  },
+  "does_not_affect": [
+    "route_pts",
+    "evolution",
+    "stardust",
+    "closeness",
+    "quests"
+  ]
+}

@@ -1,0 +1,670 @@
+{
+  "_file": "economy.json",
+  "_title": "《微光小圃》經濟資料表（Godot M1）",
+  "_unit_default": "星星碎",
+  "_code_root": "/workspace/glimmer-3d-h1/src/glimmer-a/src/",
+  "_missing": [],
+  "_doc_vs_code": [
+    {
+      "id": "day_change",
+      "doc": "core-loop-3d-v1.md §5 同 4a4b／任務寫「05:00 換日」。",
+      "code": "只有 long5b 工作／遠足用 RESET_H=5（05:00）。舊來源錢包、委託、天氣、6b 步數、小遊戲每日局數用 sim.dayKey＝本機 00:00。",
+      "used": "code",
+      "_src": [
+        "long5b.js:18,47",
+        "systems.js:89-94",
+        "sim.js:565-568",
+        "long6b.js:27,46",
+        "core-loop-3d-v1.md:§5"
+      ]
+    },
+    {
+      "id": "vendor_price_range",
+      "doc": "batch3-fun-spec.md 同 visit.js 註解寫螢火小販擺設 10–20 碎。",
+      "code": "visit.js CFG.shop 實際價 12／16／20，合計 48；加家具商店 190＝238。",
+      "used": "code",
+      "_src": [
+        "visit.js:25",
+        "batch3-fun-spec.md:34",
+        "core-loop-3d-v1.md:§0"
+      ]
+    },
+    {
+      "id": "furniture_total_200_vs_190",
+      "doc": "series2-4a4b-spec.md 早期寫家具 8 件總價約 200 碎。",
+      "code": "6b 經濟補丁同 house.js：舊 7 件唔改價＋散步鞋架 25，商店 8 件共 190。",
+      "used": "code",
+      "_src": [
+        "house.js:3-22",
+        "breakthrough-6a6d-spec.md:6b經濟補丁",
+        "series2-4a4b-spec.md:66"
+      ]
+    }
+  ],
+  "stardust_daily_caps": {
+    "_src": "data.js:86,258,830-832; long5b.js:20; long6b.js:4,18; breakthrough-6a6d-spec.md:6b經濟補丁",
+    "unit": "星星碎",
+    "old_sources_max": 30,
+    "old_sources_split": {
+      "_src": "data.js:258-259; systems.js:89-94",
+      "quest_cap": 15,
+      "other_cap": 15,
+      "day_boundary_hour": 0,
+      "day_boundary_note": "本機 00:00；徽章碎一次性、唔計呢個上限"
+    },
+    "jobs_and_trips_max": 12,
+    "steps_6b_max": 5,
+    "total_max": 47,
+    "badge_shards_outside_cap": true,
+    "dream_shards_outside_cap": true
+  },
+  "day_change": {
+    "_src": "long5b.js:3,18,47; systems.js:89; sim.js:565-568; long6b.js:27; series2.js:16; core-loop-3d-v1.md:§5",
+    "unit": "本機鐘點",
+    "jobs_and_trips_hour": 5,
+    "old_sources_and_steps_hour": 0,
+    "minigame_route_games_hour": 0,
+    "note": "工作／遠足日界 05:00；舊來源錢包、委託、6b 步數、小遊戲每日火苗局數日界 00:00。"
+  },
+  "jobs": {
+    "_src": "long5b.js:6-7,20-26,83-85,105-109; series2-4a4b-spec.md:§5b",
+    "day_change_hour": 5,
+    "days_per_level": 5,
+    "max_level": 5,
+    "max_level_if_family_lv": {
+      "family_level": 7,
+      "max_level": 6
+    },
+    "pay_shards_per_day": "level + 1",
+    "pay_by_level": [
+      {
+        "level": 1,
+        "shards": 2
+      },
+      {
+        "level": 2,
+        "shards": 3
+      },
+      {
+        "level": 3,
+        "shards": 4
+      },
+      {
+        "level": 4,
+        "shards": 5
+      },
+      {
+        "level": 5,
+        "shards": 6
+      },
+      {
+        "level": 6,
+        "shards": 7
+      }
+    ],
+    "list": [
+      {
+        "id": "post",
+        "zh": "郵差助手",
+        "perk_chance": 0.25,
+        "perk": "委託家具進度 +1",
+        "perk_note": "只喺仲有委託獎家具（wall_frame／win_star）未攞完時生效"
+      },
+      {
+        "id": "garden",
+        "zh": "園丁",
+        "perk_chance": 0.15,
+        "perk": "送 1 件未有嘅花圃擺設"
+      },
+      {
+        "id": "watch",
+        "zh": "守夜",
+        "pay_hours": [
+          21,
+          5
+        ],
+        "pay_hours_note": "21:00–05:00 先出糧；半開區間用 hour>=21 或 hour<5",
+        "sticker_unique_cap": 8,
+        "stickers": [
+          {
+            "id": "dream_A_can",
+            "zh": "水壺夢"
+          },
+          {
+            "id": "dream_B_wand",
+            "zh": "魔法棒夢"
+          },
+          {
+            "id": "dream_C_match",
+            "zh": "火柴夢"
+          },
+          {
+            "id": "dream_D_pebble",
+            "zh": "石仔夢"
+          },
+          {
+            "id": "dream_E_chili",
+            "zh": "辣椒夢"
+          },
+          {
+            "id": "dream_F_scope",
+            "zh": "望遠鏡夢"
+          },
+          {
+            "id": "dream_G_book",
+            "zh": "書仔夢"
+          },
+          {
+            "id": "dream_H_moonlamp",
+            "zh": "月亮燈夢"
+          }
+        ]
+      },
+      {
+        "id": "chef",
+        "zh": "廚師",
+        "closeness_bonus": 1,
+        "closeness_daily_cap": 10,
+        "closeness_note": "細佬一齊食飯時 +1，計入 series2 每日親密上限 10"
+      }
+    ],
+    "choice_per_adult_per_day": 1,
+    "acts": [
+      "expedition",
+      "job",
+      "rest"
+    ]
+  },
+  "trips": {
+    "_src": "long5b.js:5-8,20,120-145; series2-4a4b-spec.md:§5b; long5a.js:20",
+    "zh": "遠足（長途）",
+    "duration_hours": 24,
+    "shards_min": 5,
+    "shards_max": 10,
+    "furniture_chance": 0.3,
+    "family_xp": 3,
+    "max_departures_per_day": 2,
+    "eligible": "團絨靜光（evo_still_*）同細佬 S6",
+    "counts_toward": "jobs_and_trips_max",
+    "or_return": "翌日第一次開遊戲都會返"
+  },
+  "steps_6b": {
+    "_src": "long6b.js:3-4,18; breakthrough-6a6d-spec.md:§6b",
+    "steps_per_tile": 1000,
+    "steps_per_shard": 2000,
+    "shard_cap_per_day": 5,
+    "day_boundary_hour": 0,
+    "path_tiles": 12,
+    "deco_chance": 0.08,
+    "deco_per_day": 1,
+    "counts_toward": "steps_6b_max"
+  },
+  "furniture": {
+    "_src": "house.js:3-34",
+    "shop_count": 8,
+    "shop_price_min": 15,
+    "shop_price_max": 40,
+    "shop_total": 190,
+    "default_item": "bed_leaf",
+    "commission_after_family": {
+      "wall_frame": 3,
+      "win_star": 9
+    },
+    "first_place_mood": 1,
+    "first_place_mood_daily_cap_shared": 5,
+    "items": [
+      {
+        "id": "bed_leaf",
+        "zh": "葉仔床",
+        "slot": "bed",
+        "slot_zh": "床",
+        "price": 0,
+        "src": "default"
+      },
+      {
+        "id": "bed_cloud",
+        "zh": "雲朵床",
+        "slot": "bed",
+        "slot_zh": "床",
+        "price": 40,
+        "src": "shop"
+      },
+      {
+        "id": "table_stump",
+        "zh": "樹樁檯",
+        "slot": "table",
+        "slot_zh": "檯",
+        "price": 20,
+        "src": "shop"
+      },
+      {
+        "id": "table_round",
+        "zh": "格仔布圓檯",
+        "slot": "table",
+        "slot_zh": "檯",
+        "price": 25,
+        "src": "shop"
+      },
+      {
+        "id": "wall_shelf",
+        "zh": "小盆栽層架",
+        "slot": "wall",
+        "slot_zh": "牆",
+        "price": 18,
+        "src": "shop"
+      },
+      {
+        "id": "wall_frame",
+        "zh": "團絨相框",
+        "slot": "wall",
+        "slot_zh": "牆",
+        "price": null,
+        "src": "commission",
+        "commission_quests": 3
+      },
+      {
+        "id": "wall_shoes",
+        "zh": "散步鞋架",
+        "slot": "wall",
+        "slot_zh": "牆",
+        "price": 25,
+        "src": "shop",
+        "note": "6b.1 加；舊 7 件價錢不變"
+      },
+      {
+        "id": "rug_round",
+        "zh": "粉粉圓地氈",
+        "slot": "rug",
+        "slot_zh": "地氈",
+        "price": 22,
+        "src": "shop"
+      },
+      {
+        "id": "rug_leaf",
+        "zh": "葉仔地氈",
+        "slot": "rug",
+        "slot_zh": "地氈",
+        "price": 15,
+        "src": "shop"
+      },
+      {
+        "id": "win_curtain",
+        "zh": "蕾絲窗簾",
+        "slot": "window",
+        "slot_zh": "窗",
+        "price": 25,
+        "src": "shop"
+      },
+      {
+        "id": "win_star",
+        "zh": "星星窗",
+        "slot": "window",
+        "slot_zh": "窗",
+        "price": null,
+        "src": "commission",
+        "commission_quests": 9
+      },
+      {
+        "id": "lamp_mushroom",
+        "zh": "蘑菇燈",
+        "slot": "lamp",
+        "slot_zh": "燈",
+        "price": null,
+        "src": "visitor:mushroom_granny"
+      },
+      {
+        "id": "lamp_firefly",
+        "zh": "螢火瓶燈",
+        "slot": "lamp",
+        "slot_zh": "燈",
+        "price": null,
+        "src": "visitor:firefly_vendor"
+      }
+    ]
+  },
+  "vendor_decorations": {
+    "_src": "visit.js:23-29; core-loop-3d-v1.md:§0",
+    "vendor_id": "firefly_vendor",
+    "vendor_zh": "螢火小販",
+    "vendor_hours": [
+      17,
+      7
+    ],
+    "items": [
+      {
+        "id": "deco_mailbox",
+        "zh": "郵筒仔",
+        "price": 12
+      },
+      {
+        "id": "deco_mushroom_lamp",
+        "zh": "蘑菇燈",
+        "price": 16
+      },
+      {
+        "id": "deco_firefly_jar",
+        "zh": "螢火瓶燈",
+        "price": 20
+      }
+    ],
+    "decor_total": 48,
+    "furniture_shop_plus_decor_total": 238,
+    "friend_max_for_gift": 5
+  },
+  "family_level": {
+    "_src": "long5a.js:7,20-30,86-87; series2-4a4b-spec.md:§5a.3",
+    "unit_xp": "家族 XP",
+    "levels": 10,
+    "xp_thresholds": [
+      0,
+      60,
+      150,
+      270,
+      420,
+      600,
+      810,
+      1050,
+      1320,
+      1620
+    ],
+    "xp_thresholds_note": "THRESH[i]＝升到 Lv(i+1) 所需累計 XP；lvOf：xp>=THRESH[i] → lv=i+1",
+    "xp_sources": {
+      "raise_one": 50,
+      "dex_new_form": 10,
+      "furniture_new": 5,
+      "expedition_return": 3
+    },
+    "unlocks": {
+      "2": [
+        {
+          "id": "room2",
+          "zh": "第 2 間房（森林閣樓）",
+          "live": true
+        }
+      ],
+      "3": [
+        {
+          "id": "visitor_new",
+          "zh": "新訪客",
+          "live": false,
+          "later": "下批"
+        },
+        {
+          "id": "inherit_fast",
+          "zh": "遺傳加速（細佬頭 2 階段快 20%）",
+          "live": false,
+          "later": "5c"
+        }
+      ],
+      "4": [
+        {
+          "id": "furniture_pack1",
+          "zh": "6 件新家具",
+          "live": false,
+          "later": "下批"
+        }
+      ],
+      "5": [
+        {
+          "id": "room3",
+          "zh": "第 3 間房（星夜書房）",
+          "live": true
+        }
+      ],
+      "6": [
+        {
+          "id": "kid_series_E",
+          "zh": "細佬 E 系",
+          "live": false,
+          "later": "4a 已有"
+        }
+      ],
+      "7": [
+        {
+          "id": "job_cap_plus1",
+          "zh": "工作等級上限 +1（Lv6）",
+          "live": true,
+          "later": "5b"
+        }
+      ],
+      "8": [
+        {
+          "id": "room4",
+          "zh": "第 4 間房（海風小屋）",
+          "live": true
+        }
+      ],
+      "9": [
+        {
+          "id": "furniture_pack2",
+          "zh": "6 件新家具",
+          "live": false,
+          "later": "下批"
+        }
+      ],
+      "10": [
+        {
+          "id": "family_title",
+          "zh": "家族稱號"
+        },
+        {
+          "id": "tree_gold",
+          "zh": "金色族譜"
+        }
+      ]
+    },
+    "rooms_cap_per_room": 4,
+    "locked_sim_days_to_lv5": {
+      "_src": "core-loop-3d-v1.md:§0; series2-4a4b-spec.md:171",
+      "approx_days": 71,
+      "spec_range_days": [
+        60,
+        80
+      ],
+      "note": "模擬結果，唔係 XP 門檻；XP 門檻 Lv5＝420"
+    }
+  },
+  "dream_6c": {
+    "_src": "long6c.js:3-13,22-49,86-90,110-120",
+    "unit_shards": "夢碎片（唔係星星碎，唔入 cap 47）",
+    "enter_hours": [
+      21,
+      3
+    ],
+    "late_from_hour": 19,
+    "late_window_note": "A：21:00–03:00 照入；19:00 後開始嘅上線、瞓緊都入得；每晚最多 1 次。00:00–03:00 計返前一晚（nightKey）。",
+    "bank_missed_nights": 1,
+    "shards_per_night_base": 1,
+    "extra_shard_chance": 0.2,
+    "extra_shard_max": 1,
+    "second_shard_spawn_sec": 40,
+    "skip_completed_themes": true,
+    "toy_room_min_weight": 1,
+    "toy_room_no_threshold": true,
+    "weight_cap_per_theme": 4,
+    "lake_weight_sources": [
+      "feed",
+      "rinse",
+      "poop",
+      "mg"
+    ],
+    "lake_weight_note": "餵食／淋水／執便便／小遊戲各做過就 +1，封頂 4",
+    "forest_weight": "meal count, cap 4",
+    "star_weight": 1,
+    "themes": [
+      {
+        "id": "forest",
+        "zh": "蘑菇森林",
+        "why": "餵咗暖菇飯",
+        "furn_pref": "sv_mushroom"
+      },
+      {
+        "id": "lake",
+        "zh": "水珠湖",
+        "why": "幫佢淋咗水",
+        "furn_pref": "sv_shell"
+      },
+      {
+        "id": "toy",
+        "zh": "玩具房",
+        "why": "陪佢玩得多",
+        "furn_pref": "sv_rainbow"
+      },
+      {
+        "id": "star",
+        "zh": "星空",
+        "why": "夜晚嚟咗",
+        "furn_pref": "sv_starstone"
+      }
+    ],
+    "map_cols": 3,
+    "map_rows": 5,
+    "min_tiles_per_theme": 2,
+    "start_tile": 13,
+    "duration_sec": 150,
+    "fade_sec": 1.2,
+    "max_sec": 180,
+    "shards_per_card": 5,
+    "cards_per_theme": 5,
+    "total_cards": 20,
+    "theme_complete_furniture": 1,
+    "cards": [
+      {
+        "id": "f1",
+        "theme": "forest",
+        "zh": "會唱歌嘅菇"
+      },
+      {
+        "id": "f2",
+        "theme": "forest",
+        "zh": "菇傘下避雨"
+      },
+      {
+        "id": "f3",
+        "theme": "forest",
+        "zh": "森林博士上堂"
+      },
+      {
+        "id": "f4",
+        "theme": "forest",
+        "zh": "巨型暖菇飯"
+      },
+      {
+        "id": "f5",
+        "theme": "forest",
+        "zh": "菇菇捉迷藏"
+      },
+      {
+        "id": "l1",
+        "theme": "lake",
+        "zh": "水珠浮浮"
+      },
+      {
+        "id": "l2",
+        "theme": "lake",
+        "zh": "湖底月光"
+      },
+      {
+        "id": "l3",
+        "theme": "lake",
+        "zh": "游水冠軍"
+      },
+      {
+        "id": "l4",
+        "theme": "lake",
+        "zh": "雨點合唱團"
+      },
+      {
+        "id": "l5",
+        "theme": "lake",
+        "zh": "倒影另一隻我"
+      },
+      {
+        "id": "t1",
+        "theme": "toy",
+        "zh": "積木城堡"
+      },
+      {
+        "id": "t2",
+        "theme": "toy",
+        "zh": "發條團絨"
+      },
+      {
+        "id": "t3",
+        "theme": "toy",
+        "zh": "波波池"
+      },
+      {
+        "id": "t4",
+        "theme": "toy",
+        "zh": "玩具火車"
+      },
+      {
+        "id": "t5",
+        "theme": "toy",
+        "zh": "拼圖少一塊"
+      },
+      {
+        "id": "s1",
+        "theme": "star",
+        "zh": "數星星"
+      },
+      {
+        "id": "s2",
+        "theme": "star",
+        "zh": "流星許願"
+      },
+      {
+        "id": "s3",
+        "theme": "star",
+        "zh": "月亮韆鞦"
+      },
+      {
+        "id": "s4",
+        "theme": "star",
+        "zh": "團絨星座"
+      },
+      {
+        "id": "s5",
+        "theme": "star",
+        "zh": "銀河散步"
+      }
+    ],
+    "locked_sim_collect_all_20": {
+      "_src": "core-loop-3d-v1.md:§0",
+      "daily_player_median_days": 84,
+      "infrequent_player_median_days": 147,
+      "note": "遊測鎖定模擬結果，唔係規則參數"
+    }
+  },
+  "minigame_ember": {
+    "_src": "data.js:111-112,146-152; sim.js:157,633-651",
+    "unit": "火苗路線分（唔係星星碎）",
+    "route_pts_per_game": 1,
+    "route_games_per_day": 4,
+    "shared_with": [
+      "minigames_v2",
+      "floating_double_tap",
+      "legacy_catch_stars"
+    ],
+    "window_game_does_not_consume_quota": true,
+    "window_game_pts": 0,
+    "kinds_mg_w_unused_when_route_pts_set": 2,
+    "stardust_by_stars": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "stardust_rewarded_games_per_day": 5,
+    "stardust_counts_toward": "old_sources other_cap",
+    "day_boundary_hour": 0
+  },
+  "locked_sim_furniture_days": {
+    "_src": "core-loop-3d-v1.md:§5",
+    "diligent_days": 5,
+    "normal_days": 6,
+    "sparse_days": 10,
+    "note": "用現有 190 碎總價嘅模擬約數；狩獵碎片入 12 額後要遊測再確認"
+  }
+}
