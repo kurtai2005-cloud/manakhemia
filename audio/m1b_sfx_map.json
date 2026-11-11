@@ -245,7 +245,7 @@
         "sfx_ui8_badge_wiggle.ogg"
       ],
       "delay_ms": 0,
-      "bus": "SFX",
+      "bus": "UI",
       "lufs20": -14,
       "accent_offset_ms": 0,
       "source": "new",
@@ -698,7 +698,7 @@
       "lufs20": -14,
       "lufs": -14,
       "source": "new",
-      "bus": "SFX",
+      "bus": "UI",
       "delay_ms": 0,
       "notes": "HuntSystem.collect 同埋開局 _setup_m1b unlock 都會觸發——開局建議唔播。"
     },
