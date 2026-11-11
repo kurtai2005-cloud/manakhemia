@@ -1,0 +1,59 @@
+{
+ "format": "m2.godot_import/1",
+ "engine": "Godot 4",
+ "units": {
+  "art": "1 unit = 1 art px, Y up, +Z toward camera",
+  "recommended_import_scale": 1.0,
+  "metric_alternative_scale": 0.01,
+  "metric_note": "scale 0.01 → 1 px = 1 cm, 64px pet ≈ 0.64 m; multiply camera.dist/target, lights, fog, footprints by 0.01"
+ },
+ "gltf": {
+  "y_up": true,
+  "axis_conversion": "none",
+  "alphaMode": "MASK",
+  "alphaCutoff": 0.5,
+  "sampler": {
+   "magFilter": 9728,
+   "minFilter": 9728,
+   "note": "NEAREST, no mips"
+  },
+  "animations": "none in this batch; future 3D clips use same names as 2D clip ids"
+ },
+ "textures": {
+  "albedo": {
+   "filter": "Nearest",
+   "mipmaps": false,
+   "srgb": true,
+   "transparency": "AlphaScissor",
+   "alpha_scissor_threshold": 0.5
+  },
+  "ao": {
+   "filter": "Nearest",
+   "mipmaps": false,
+   "srgb": false,
+   "hint": "Non-Color, multiply onto ground albedo"
+  },
+  "normal": {
+   "filter": "Nearest",
+   "mipmaps": false,
+   "srgb": false,
+   "type": "NormalMap",
+   "convention": "OpenGL Y+ (green=up)",
+   "invert_y": false,
+   "flip_r_when_scale_x_negative": true
+  },
+  "emissive": {
+   "filter": "Nearest",
+   "mipmaps": false,
+   "srgb": true,
+   "multiply_by_light_intensity": true
+  }
+ },
+ "sprites3d": {
+  "texture_filter": "TEXTURE_FILTER_NEAREST",
+  "alpha_cut": "ENABLED",
+  "billboard": "Y",
+  "pivot": "pivotPx on ground contact (x,0,z)",
+  "note": "寵物 clip、訪客、道具 billboard 都用呢組設定。朝左 scale.x＝-1 時法線 R→255−R。"
+ }
+}

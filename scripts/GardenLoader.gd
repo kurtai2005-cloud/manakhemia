@@ -132,3 +132,43 @@ static func backdrop_mesh(w: float, h: float) -> ArrayMesh:
 	var am := ArrayMesh.new()
 	am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	return am
+
+
+## 可靠 XZ 地平面（SurfaceTool，法線向上）。uv_origin／uv_unit：u=(x-ox)/unit，v=(z-oz)/unit。
+static func xz_plane(x0: float, x1: float, z0: float, z1: float, uv_origin: Vector2, uv_unit: float) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var pts := [
+		Vector3(x0, 0, z0), Vector3(x1, 0, z0),
+		Vector3(x1, 0, z1), Vector3(x0, 0, z1)
+	]
+	var uvs: Array = []
+	for p in pts:
+		uvs.append(Vector2((p.x - uv_origin.x) / uv_unit, (p.z - uv_origin.y) / uv_unit))
+	# 由 +Y 睇 CCW：0-3-1、1-3-2
+	var order := PackedInt32Array([0, 3, 1, 1, 3, 2])
+	for i in order:
+		st.set_normal(Vector3.UP)
+		st.set_uv(uvs[i])
+		st.add_vertex(pts[i])
+	st.generate_normals()
+	return st.commit()
+
+
+static func opaque_tex_mat(tex: Texture2D, unlit: bool, repeat: bool, aniso_mip: bool = false) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.albedo_texture = tex
+	m.albedo_color = Color(1, 1, 1, 1)
+	# 遠景 repeat 草地：nearest + mip + 各向異性，收斂摩爾紋，近處仍偏像素風
+	if aniso_mip:
+		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC
+	else:
+		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	m.texture_repeat = repeat
+	m.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	m.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED if unlit else BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	if not unlit:
+		m.diffuse_mode = BaseMaterial3D.DIFFUSE_LAMBERT
+	return m

@@ -2,38 +2,38 @@ extends Node
 ## 核心需求／成長模擬（由 JS sim.js 移植；G0 保留 §7 階段＋離線規則）。
 ## 五路線照顧分要等互動系統，G0 入成體只按 CQ 判燦光／柔光／微塵。
 
-const KEYS: PackedStringArray = ["hunger", "mood", "clean", "energy"]
-const STAGES: PackedStringArray = ["egg", "newborn", "sprout", "juvenile", "adult", "elder"]
-const DECAY := {"hunger": 6.0, "mood": 4.0, "clean": 3.0, "energy": 5.0}
-const STAGE_DECAY := {"egg": 0.0, "newborn": 1.2, "sprout": 1.2, "juvenile": 1.1, "adult": 1.0, "elder": 1.0}
-const STAGE_SEC := {"egg": 600.0, "newborn": 21600.0, "sprout": 64800.0, "juvenile": 259200.0, "adult": 604800.0, "elder": 345600.0}
-const START_NEEDS_HATCH := {"hunger": 70.0, "mood": 70.0, "clean": 90.0, "energy": 100.0}
-
-const SLEEP_REGEN := 12.0
-const SLEEP_DECAY_MUL := 0.3
-const SLEEP_WAKE_AT := 100.0
-const SLEEP_MIN_ENERGY := 90.0
-const TRAIT_SLEEP_REGEN := 1.2
-const TRAIT_CLEAN_DECAY := 1.3
-const POOP_INTERVAL_H := 3.0
-const POOP_PENALTY_H := 1.0
-const POOP_MAX := 3
-const SICK := 15.0
-const OFF_FULL_H := 8.0
-const OFF_CAP_H := 24.0
-const OFF_DISC := 0.25
-const OFF_FLOOR := 20.0
-const OFF_GROW_CAP_H := 24.0
-const OFF_MIN_AWAY := 300.0
-const OFF_STALL := 2.0
-const OFF_GIFT_PER_H := 1.0
-const OFF_GIFT_MAX := 10
-const CQ_START := 50.0
-const CQ_MIN := 0.0
-const CQ_MAX := 100.0
-const BRIGHT_CQ := 30.0
-const SOFT_CQ := 20.0  # G0 簡化：CQ 夠就柔光，否則微塵；完整 §7 五路線待互動
-const AHEAD_H := 24.0
+# 玩法數值只由 data/*.json 讀（data/sim.json＋evolution.json），呢度只係容器。
+var KEYS: PackedStringArray = ["hunger", "mood", "clean", "energy"]
+var STAGES: PackedStringArray = ["egg", "newborn", "sprout", "juvenile", "adult", "elder"]
+var DECAY := {}
+var STAGE_DECAY := {}
+var STAGE_SEC := {}
+var START_NEEDS_HATCH := {}
+var SLEEP_REGEN := 12.0
+var SLEEP_DECAY_MUL := 0.3
+var SLEEP_WAKE_AT := 100.0
+var SLEEP_MIN_ENERGY := 90.0
+var TRAIT_SLEEP_REGEN := 1.2
+var TRAIT_CLEAN_DECAY := 1.3
+var POOP_INTERVAL_H := 3.0
+var POOP_PENALTY_H := 1.0
+var POOP_MAX := 3
+var SICK := 15.0
+var OFF_FULL_H := 8.0
+var OFF_CAP_H := 24.0
+var OFF_DISC := 0.25
+var OFF_FLOOR := 20.0
+var OFF_GROW_CAP_H := 24.0
+var OFF_MIN_AWAY := 300.0
+var OFF_STALL := 2.0
+var OFF_GIFT_PER_H := 1.0
+var OFF_GIFT_MAX := 10
+var CQ_START := 50.0
+var CQ_MIN := 0.0
+var CQ_MAX := 100.0
+var BRIGHT_CQ := 30.0
+var SOFT_CQ := 20.0
+var AHEAD_H := 24.0
 
 signal state_changed()
 signal poops_changed(count: int)
@@ -42,10 +42,10 @@ signal cleaned()
 
 var state: Dictionary = {}
 var _dirty := false
-var _save_acc := 0.0
 var paused := false
 
 func _ready() -> void:
+	_boot_params()
 	var loaded := SaveSystem.load_state()
 	if loaded.is_empty():
 		state = new_state(TimeService.now_ms())
@@ -56,6 +56,62 @@ func _ready() -> void:
 	TimeService.mark_sim()
 	_dirty = true
 	state_changed.emit()
+
+
+func _boot_params() -> void:
+	# 遊策單一來源：data/sim.json（衰減／離線／睡眠）＋ data/evolution.json（階段時長）
+	var p: Dictionary = GameData.sim if GameData else {}
+	var keys_v: Variant = p.get("need_keys", ["hunger", "mood", "clean", "energy"])
+	if keys_v is Array or keys_v is PackedStringArray:
+		var ks := PackedStringArray()
+		for k in keys_v:
+			ks.append(str(k))
+		if ks.size():
+			KEYS = ks
+	var dec: Dictionary = p.get("decay_per_hour", {})
+	DECAY = {}
+	for k in KEYS:
+		DECAY[k] = float(dec.get(k, 0.0))
+	var sdm: Dictionary = p.get("stage_decay_mul", {})
+	STAGE_DECAY = {}
+	for k in sdm.keys():
+		if str(k).begins_with("_"):
+			continue
+		STAGE_DECAY[str(k)] = float(sdm[k])
+	STAGE_SEC = {}
+	for s in GameData.stage_list():
+		if s is Dictionary:
+			STAGE_SEC[str(s.get("id", ""))] = float(s.get("duration_sec", 0))
+	var hatch: Dictionary = p.get("start_needs_hatch", {})
+	START_NEEDS_HATCH = {}
+	for k in KEYS:
+		START_NEEDS_HATCH[k] = float(hatch.get(k, 100.0))
+	SLEEP_REGEN = float(p.get("sleep_regen_per_hour", SLEEP_REGEN))
+	SLEEP_DECAY_MUL = float(p.get("sleep_decay_mul", SLEEP_DECAY_MUL))
+	SLEEP_WAKE_AT = float(p.get("sleep_wake_at", SLEEP_WAKE_AT))
+	SLEEP_MIN_ENERGY = float(p.get("sleep_min_energy_to_sleep", SLEEP_MIN_ENERGY))
+	TRAIT_SLEEP_REGEN = float(p.get("trait_sleep_regen_mul", TRAIT_SLEEP_REGEN))
+	TRAIT_CLEAN_DECAY = float(p.get("trait_clean_decay_mul", TRAIT_CLEAN_DECAY))
+	POOP_INTERVAL_H = float(p.get("poop_interval_h", POOP_INTERVAL_H))
+	POOP_PENALTY_H = float(p.get("poop_clean_penalty_per_h", POOP_PENALTY_H))
+	POOP_MAX = int(p.get("poop_max", POOP_MAX))
+	SICK = float(p.get("sick_threshold", SICK))
+	OFF_FULL_H = float(p.get("offline_full_h", OFF_FULL_H))
+	OFF_CAP_H = float(p.get("offline_cap_h", OFF_CAP_H))
+	OFF_DISC = float(p.get("offline_discount_rate", OFF_DISC))
+	OFF_FLOOR = float(p.get("offline_need_floor", OFF_FLOOR))
+	OFF_GROW_CAP_H = float(p.get("offline_grow_cap_h", OFF_GROW_CAP_H))
+	OFF_MIN_AWAY = float(p.get("offline_min_away_sec", OFF_MIN_AWAY))
+	OFF_STALL = float(p.get("offline_stall_sec", OFF_STALL))
+	OFF_GIFT_PER_H = float(p.get("offline_gift_per_h", OFF_GIFT_PER_H))
+	OFF_GIFT_MAX = int(p.get("offline_gift_max", OFF_GIFT_MAX))
+	CQ_START = float(p.get("cq_start", CQ_START))
+	CQ_MIN = float(p.get("cq_min", CQ_MIN))
+	CQ_MAX = float(p.get("cq_max", CQ_MAX))
+	AHEAD_H = float(p.get("last_save_max_ahead_h", AHEAD_H))
+	var br: Dictionary = p.get("branch_g0", {})
+	BRIGHT_CQ = float(br.get("bright_cq", BRIGHT_CQ))
+	SOFT_CQ = float(br.get("soft_cq", SOFT_CQ))
 
 
 func new_state(now_ms: int, seed: int = 0) -> Dictionary:
@@ -284,13 +340,17 @@ func tick(dt: float) -> void:
 		elif (not moon) and bool(state.get("sleeping", false)):
 			# 出月眠窗自動醒（開發者手動瞓仍然跟精力醒）
 			pass
+	var before_stage := str(state.get("stage", ""))
+	var before_poops := int(state.get("poops", 0))
+	var before_sleep := bool(state.get("sleeping", false))
+	var before_fade := bool(state.get("fade_ready", false))
 	step(state, dt, {})
 	TimeService.mark_sim()
 	state["last_seen"] = TimeService.now_ms()
-	_dirty = true
-	_save_acc += dt
-	if _save_acc >= 15.0:
-		_save_acc = 0.0
+	# 連續衰減唔做定期全量序列化；只喺階段／便便／睡眠／化光等狀態變咗先寫盤
+	if (str(state.get("stage", "")) != before_stage or int(state.get("poops", 0)) != before_poops
+			or bool(state.get("sleeping", false)) != before_sleep or bool(state.get("fade_ready", false)) != before_fade):
+		_dirty = true
 		_save_now()
 
 
@@ -300,8 +360,10 @@ func _process(dt: float) -> void:
 	tick(minf(dt, 0.25))
 
 
-func _save_now() -> void:
+func _save_now(force: bool = false) -> void:
 	if state.is_empty():
+		return
+	if not force and not _dirty:
 		return
 	state["last_save_time"] = TimeService.now_ms()
 	SaveSystem.save_state(state)
@@ -310,7 +372,9 @@ func _save_now() -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST:
-		_save_now()
+		# 暫停／離開一定寫盤（包括 last_seen），等離線補時對得準
+		_dirty = true
+		_save_now(true)
 
 
 func _next_stage(st: String) -> String:

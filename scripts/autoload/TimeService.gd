@@ -13,6 +13,7 @@ var _fake_ms: int = 0
 var _last_sim_ms: int = 0
 var _last_jobs_day: String = ""
 var _last_other_day: String = ""
+var _in_catch_up := false
 
 func _ready() -> void:
 	_last_sim_ms = now_ms()
@@ -75,6 +76,28 @@ func is_moon_sleep(ms: int = -1) -> bool:
 	return h >= 20.0 or h < 3.0
 
 
+func local_wall_ms(hour: float, minute: float = 0.0, year: int = 2026, month: int = 11, day: int = 11) -> int:
+	# 造一個「本地牆鐘」毫秒，俾 QA 截圖把 HUD 時鐘同日夜段對齊。
+	var bias := tz_bias_min() * 60
+	var midnight := Time.get_unix_time_from_datetime_dict({
+		"year": year, "month": month, "day": day, "hour": 0, "minute": 0, "second": 0,
+	})
+	var sec := int(midnight + hour * 3600.0 + minute * 60.0) - bias
+	return sec * 1000
+
+
+func hour_band(ms: int = -1) -> String:
+	# 時段 BGM／燈光：05–11 早、11–17 午、17–22 晚、22–05 夜。唔好用 is_moon_sleep（20–03）。
+	var h := hour_of(ms)
+	if h >= 5.0 and h < 11.0:
+		return "morning"
+	if h >= 11.0 and h < 17.0:
+		return "noon"
+	if h >= 17.0 and h < 22.0:
+		return "evening"
+	return "night"
+
+
 func mark_sim() -> void:
 	_last_sim_ms = now_ms()
 
@@ -83,6 +106,16 @@ func catch_up(state: Dictionary, sim_at_ms: int = -1) -> Dictionary:
 	if state.is_empty():
 		return {"skipped": true, "T": 0.0}
 	var now := now_ms()
+	# resume + focus 可能叠住入嚟：重入直接跳過；同一 last_seen 補完後第二次 gap < stall（sim.js catchUp）
+	if _in_catch_up:
+		return {"skipped": true, "T": 0.0, "show": false, "duplicate": true}
+	_in_catch_up = true
+	var rep := _catch_up_body(state, sim_at_ms, now)
+	_in_catch_up = false
+	return rep
+
+
+func _catch_up_body(state: Dictionary, sim_at_ms: int, now: int) -> Dictionary:
 	if sim_at_ms < 0:
 		sim_at_ms = _last_sim_ms if _last_sim_ms > 0 else int(state.get("last_seen", now))
 	var last := int(state.get("last_seen", now))
@@ -107,6 +140,8 @@ func catch_up(state: Dictionary, sim_at_ms: int = -1) -> Dictionary:
 	var rep: Dictionary = Sim.apply_offline(state, now)
 	_check_rollover(state, last, now)
 	_last_sim_ms = now
+	if int(rep.get("gift", 0)) > 0 and AudioManager:
+		AudioManager.play("sfx_event_gift_return")
 	return rep
 
 

@@ -5,6 +5,7 @@ var economy: Dictionary = {}
 var evolution: Dictionary = {}
 var personality: Dictionary = {}
 var hunting: Dictionary = {}
+var sim: Dictionary = {}
 
 const NEED_KEYS: PackedStringArray = ["hunger", "mood", "clean", "energy"]
 
@@ -13,6 +14,7 @@ func _ready() -> void:
 	evolution = _load_json("res://data/evolution.json")
 	personality = _load_json("res://data/personality.json")
 	hunting = _load_json("res://data/hunting.json")
+	sim = _load_json("res://data/sim.json")
 
 
 func _load_json(path: String) -> Dictionary:

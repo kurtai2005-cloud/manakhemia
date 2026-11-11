@@ -1,0 +1,110 @@
+{
+  "format": "art-pet.anim_timing/1",
+  "_status": "draft",
+  "_derived_from": "art/liveliness/CLIPS.json",
+  "clips": {
+    "walk_happy": {
+      "frames": 6,
+      "fps": 10.0,
+      "loop": true,
+      "frame_durations_ms": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "sfx": []
+    },
+    "walk_drag": {
+      "frames": 6,
+      "fps": 6.0,
+      "loop": true,
+      "frame_durations_ms": [
+        167,
+        167,
+        167,
+        167,
+        167,
+        167
+      ],
+      "sfx": []
+    },
+    "sniff": {
+      "frames": 4,
+      "fps": 6.0,
+      "loop": false,
+      "frame_durations_ms": [
+        167,
+        167,
+        167,
+        167
+      ],
+      "sfx": []
+    },
+    "scratch": {
+      "frames": 6,
+      "fps": 8.0,
+      "loop": false,
+      "frame_durations_ms": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "sfx": []
+    },
+    "sneeze": {
+      "frames": 5,
+      "fps": 8.0,
+      "loop": false,
+      "frame_durations_ms": [
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "sfx": [
+        {
+          "id": "sneeze",
+          "frame": 3,
+          "time_ms": 250,
+          "_src": "CLIPS.json sneeze notes: 第 3 幀乞嗤"
+        }
+      ]
+    },
+    "nuzzle": {
+      "frames": 6,
+      "fps": 6.0,
+      "loop": true,
+      "frame_durations_ms": [
+        167,
+        167,
+        167,
+        167,
+        167,
+        167
+      ],
+      "sfx": []
+    },
+    "rush": {
+      "frames": 6,
+      "fps": 12.0,
+      "loop": false,
+      "frame_durations_ms": [
+        83,
+        83,
+        83,
+        83,
+        83,
+        83
+      ],
+      "sfx": []
+    }
+  },
+  "_note": "遊美將發布 art-pet/anim_timing.json 作單一來源（每 clip 幀數、逐幀時長、SFX cue：land/tap/sneeze）。呢份係由 CLIPS.json 嘅 frames/fps 推咗均勻逐幀時長，等引擎路徑行通；正式檔到手就整份覆寫，唔好改引擎寫死時長。"
+}

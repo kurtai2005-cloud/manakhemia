@@ -44,7 +44,11 @@ func _ready() -> void:
 	hide_btn.anchor_top = 1
 	hide_btn.anchor_right = 0
 	hide_btn.anchor_bottom = 1
-	hide_btn.pressed.connect(_toggle_hide)
+	hide_btn.pressed.connect(func():
+		if AudioManager:
+			AudioManager.play("sfx_ui8_btn_press_a")
+		_toggle_hide()
+	)
 	root.add_child(hide_btn)
 
 	dev_btn = _btn("開發者")
@@ -56,7 +60,11 @@ func _ready() -> void:
 	dev_btn.offset_top = -72
 	dev_btn.offset_right = -16
 	dev_btn.offset_bottom = -24
-	dev_btn.pressed.connect(_toggle_dev)
+	dev_btn.pressed.connect(func():
+		if AudioManager:
+			AudioManager.play("sfx_ui8_btn_press_a")
+		_toggle_dev()
+	)
 	root.add_child(dev_btn)
 
 	_build_dev()
@@ -103,18 +111,43 @@ func _build_dev() -> void:
 	for item in [["低畫質（基線）", QualitySettings.Tier.LOW], ["中畫質", QualitySettings.Tier.MID], ["高畫質", QualitySettings.Tier.HIGH]]:
 		var b := _btn(str(item[0]))
 		var tier: int = item[1]
-		b.pressed.connect(func(): QualitySettings.set_tier(tier))
+		b.pressed.connect(func():
+			if AudioManager:
+				AudioManager.play("sfx_ui8_btn_press_a")
+			QualitySettings.set_tier(tier)
+		)
 		vb.add_child(b)
 	var b_poop := _btn("加一粒便便")
-	b_poop.pressed.connect(func(): Sim.add_poop())
+	b_poop.pressed.connect(func():
+		if AudioManager:
+			AudioManager.play("sfx_ui8_btn_press_a")
+		Sim.add_poop()
+	)
 	vb.add_child(b_poop)
 	var b_slp := _btn("切換睡眠")
-	b_slp.pressed.connect(func(): Sim.set_sleeping(not bool(Sim.state.get("sleeping", false))))
+	b_slp.pressed.connect(_toggle_sleep)
 	vb.add_child(b_slp)
 	var b_h := _btn("快轉 +1 小時")
-	b_h.pressed.connect(_ff_hour)
+	b_h.pressed.connect(func():
+		if AudioManager:
+			AudioManager.play("sfx_ui8_btn_press_a")
+		_ff_hour()
+	)
 	vb.add_child(b_h)
 	root.add_child(dev_panel)
+
+
+func _toggle_sleep() -> void:
+	if AudioManager:
+		AudioManager.play("sfx_ui8_btn_press_a")
+	var on := not bool(Sim.state.get("sleeping", false))
+	Sim.set_sleeping(on)
+	if AudioManager:
+		if on:
+			AudioManager.play("sfx_sleep_on")
+			AudioManager.start_loop("sfx_pet_sleep_breath_loop")
+		else:
+			AudioManager.stop_loop("sfx_pet_sleep_breath_loop")
 
 
 func _ff_hour() -> void:

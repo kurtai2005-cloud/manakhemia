@@ -1,0 +1,81 @@
+{
+ "format": "godot_fx1.lut/1",
+ "width": 1089,
+ "height": 33,
+ "cube": 33,
+ "layout": "horizontal strip, Godot official 33³ (Y-down G increases)",
+ "items": [
+  {
+   "id": "identity",
+   "zh": "中性（匯入驗證，畫面應不變）",
+   "file": "luts/lut_identity.png",
+   "size": [
+    1089,
+    33
+   ]
+  },
+  {
+   "id": "day",
+   "zh": "日／晨光暖調",
+   "file": "luts/lut_day.png",
+   "size": [
+    1089,
+    33
+   ]
+  },
+  {
+   "id": "dusk",
+   "zh": "黃昏",
+   "file": "luts/lut_dusk.png",
+   "size": [
+    1089,
+    33
+   ]
+  },
+  {
+   "id": "night",
+   "zh": "夜",
+   "file": "luts/lut_night.png",
+   "size": [
+    1089,
+    33
+   ]
+  },
+  {
+   "id": "spring",
+   "zh": "春",
+   "file": "luts/lut_spring.png",
+   "size": [
+    1089,
+    33
+   ]
+  },
+  {
+   "id": "summer",
+   "zh": "夏",
+   "file": "luts/lut_summer.png",
+   "size": [
+    1089,
+    33
+   ]
+  },
+  {
+   "id": "autumn",
+   "zh": "秋",
+   "file": "luts/lut_autumn.png",
+   "size": [
+    1089,
+    33
+   ]
+  },
+  {
+   "id": "winter",
+   "zh": "冬",
+   "file": "luts/lut_winter.png",
+   "size": [
+    1089,
+    33
+   ]
+  }
+ ]
+}

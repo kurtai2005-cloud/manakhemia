@@ -1,0 +1,1616 @@
+{
+ "passed": 322,
+ "total": 322,
+ "results": [
+  {
+   "check": "clips.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "format m2.petclip/1、有 S/M/L × 12 clip",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "寫明 OpenGL Y+ 法線",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S mail_post json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S mail_post 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S mail_post 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S mail_post alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S mail_post 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S mail_post _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S mail_post _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lively json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lively 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lively 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lively alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lively 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lively _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lively _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_quiet json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_quiet 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_quiet 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_quiet alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_quiet 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_quiet _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_quiet _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_diligent json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_diligent 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_diligent 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_diligent alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_diligent 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_diligent _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_diligent _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lazy json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lazy 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lazy 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lazy alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lazy 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lazy _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_lazy _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_clingy json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_clingy 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_clingy 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_clingy alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_clingy 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_clingy _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_clingy _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_indep json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_indep 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_indep 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_indep alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_indep 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_indep _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S idle_indep _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S scratch_head json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S scratch_head 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S scratch_head 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S scratch_head alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S scratch_head 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S scratch_head _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S scratch_head _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S stretch json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S stretch 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S stretch 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S stretch alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S stretch 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S stretch _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S stretch _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S look_sky json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S look_sky 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S look_sky 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S look_sky alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S look_sky 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S look_sky _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S look_sky _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S proud_hips json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S proud_hips 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S proud_hips 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S proud_hips alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S proud_hips 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S proud_hips _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S proud_hips _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S point_frame json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S point_frame 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S point_frame 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S point_frame alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S point_frame 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S point_frame _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S point_frame _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M mail_post json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M mail_post 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M mail_post 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M mail_post alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M mail_post 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M mail_post _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M mail_post _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lively json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lively 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lively 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lively alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lively 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lively _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lively _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_quiet json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_quiet 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_quiet 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_quiet alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_quiet 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_quiet _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_quiet _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_diligent json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_diligent 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_diligent 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_diligent alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_diligent 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_diligent _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_diligent _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lazy json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lazy 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lazy 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lazy alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lazy 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lazy _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_lazy _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_clingy json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_clingy 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_clingy 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_clingy alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_clingy 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_clingy _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_clingy _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_indep json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_indep 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_indep 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_indep alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_indep 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_indep _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M idle_indep _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M scratch_head json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M scratch_head 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M scratch_head 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M scratch_head alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M scratch_head 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M scratch_head _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M scratch_head _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M stretch json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M stretch 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M stretch 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M stretch alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M stretch 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M stretch _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M stretch _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M look_sky json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M look_sky 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M look_sky 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M look_sky alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M look_sky 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M look_sky _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M look_sky _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M proud_hips json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M proud_hips 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M proud_hips 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M proud_hips alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M proud_hips 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M proud_hips _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M proud_hips _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M point_frame json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M point_frame 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M point_frame 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M point_frame alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M point_frame 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M point_frame _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M point_frame _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L mail_post json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L mail_post 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L mail_post 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L mail_post alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L mail_post 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L mail_post _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L mail_post _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lively json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lively 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lively 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lively alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lively 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lively _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lively _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_quiet json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_quiet 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_quiet 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_quiet alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_quiet 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_quiet _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_quiet _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_diligent json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_diligent 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_diligent 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_diligent alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_diligent 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_diligent _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_diligent _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lazy json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lazy 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lazy 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lazy alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lazy 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lazy _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_lazy _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_clingy json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_clingy 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_clingy 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_clingy alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_clingy 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_clingy _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_clingy _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_indep json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_indep 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_indep 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_indep alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_indep 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_indep _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L idle_indep _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L scratch_head json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L scratch_head 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L scratch_head 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L scratch_head alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L scratch_head 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L scratch_head _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L scratch_head _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L stretch json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L stretch 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L stretch 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L stretch alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L stretch 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L stretch _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L stretch _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L look_sky json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L look_sky 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L look_sky 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L look_sky alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L look_sky 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L look_sky _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L look_sky _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L proud_hips json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L proud_hips 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L proud_hips 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L proud_hips alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L proud_hips 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L proud_hips _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L proud_hips _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L point_frame json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L point_frame 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L point_frame 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L point_frame alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L point_frame 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L point_frame _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L point_frame _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "props.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "三件道具（信封／明信片／手信）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "腳印貼地一併交付",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope png／_n 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope 色／_n 同尺寸、alpha 0/255、透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope _n 單位長／向外／alpha 一致／綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope 有 glb／mesh",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard png／_n 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard 色／_n 同尺寸、alpha 0/255、透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard _n 單位長／向外／alpha 一致／綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard 有 glb／mesh",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter png／_n 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter 色／_n 同尺寸、alpha 0/255、透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter _n 單位長／向外／alpha 一致／綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter 有 glb／mesh",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "decal_footprints png／_n 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "decal_footprints 色／_n 同尺寸、alpha 0/255、透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "decal_footprints _n 單位長／向外／alpha 一致／綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope mesh json／glb 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope 法線單位長、uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope nearest、alphaTest 0.5",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope .glb 幾何／uv V 翻／index",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_envelope .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard mesh json／glb 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard 法線單位長、uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard nearest、alphaTest 0.5",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard .glb 幾何／uv V 翻／index",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_postcard .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter mesh json／glb 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter 法線單位長、uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter nearest、alphaTest 0.5",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter .glb 幾何／uv V 翻／index",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "prop_letter .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "visitors.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "三位訪客各 1 個招牌動作",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snail_postman atlas json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snail_postman 6 幀／loop／色 _n emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snail_postman alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snail_postman 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snail_postman _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snail_postman _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mushroom_granny atlas json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mushroom_granny 6 幀／loop／色 _n emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mushroom_granny alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mushroom_granny 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mushroom_granny _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mushroom_granny _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "firefly_vendor atlas json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "firefly_vendor 6 幀／loop／色 _n emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "firefly_vendor alpha 0/255、透明 RGB=0、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "firefly_vendor 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "firefly_vendor _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "firefly_vendor _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "FORMAT.md 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "FORMAT 有 Godot 4 匯入注意一節",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "FORMAT 寫明 OpenGL（Y+／綠＝上）法線",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "FORMAT 寫明單位／import scale",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "godot_import.json 存在",
+   "ok": true,
+   "info": null
+  }
+ ]
+}

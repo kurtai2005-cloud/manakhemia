@@ -24,10 +24,25 @@ var use_nav := true
 var pixel_size := 1.0
 var pivot := Vector2(32, 61)
 var frame_size := Vector2(64, 64)
+var live_clip := ""
+var live_frames: Array = []
+var live_i := 0
+var live_t := 0.0
+var _sfx_fired: Dictionary = {}
+var character := "tuanrong"
+var body_size := "L"  # S / M / L；clip 共用，各自用自己尺寸同 anchor
+var _step_cool := 0.0
+var _clip_elapsed := 0.0
+var _base_pixel_size := 1.0
+var _live_src_size := 64.0
+var _base_modulate := Color.WHITE
+var _tod_modulate := Color.WHITE
+var _low_unshaded := false
 
 func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) -> void:
 	frames = tex_frames
 	pixel_size = p_size
+	_base_pixel_size = p_size
 	pivot = pvt
 	frame_size = fsize
 	rng.randomize()
@@ -43,6 +58,7 @@ func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) 
 	# pivot：置中後把腳底對準 origin
 	sprite.offset = Vector2(frame_size.x * 0.5 - pivot.x, pivot.y - frame_size.y * 0.5)
 	add_child(sprite)
+	_base_modulate = sprite.modulate
 	_add_blob()
 	agent = NavigationAgent3D.new()
 	agent.path_desired_distance = 4.0
@@ -67,6 +83,7 @@ func _process(dt: float) -> void:
 		moving = false
 		_anim(dt)
 		if pause_t <= 0.0:
+			live_clip = ""
 			_pick_target()
 		return
 	var dest := agent.get_next_path_position() if use_nav else _fallback_dest
@@ -76,11 +93,13 @@ func _process(dt: float) -> void:
 	if use_nav and agent.is_navigation_finished():
 		moving = false
 		pause_t = rng.randf_range(pause_min, pause_max)
+		_maybe_liveliness()
 		_anim(dt)
 		return
 	if to.length() < 1.5:
 		moving = false
 		pause_t = rng.randf_range(pause_min, pause_max)
+		_maybe_liveliness()
 		_anim(dt)
 		return
 	var step := to.normalized() * speed * dt
@@ -129,12 +148,117 @@ func _update_dir(dx: float, dz: float) -> void:
 	sprite.flip_h = flip_x
 
 
+func _maybe_liveliness() -> void:
+	if live_clip != "" or not (ArtImporter and ArtImporter.has_method("liveliness_idle_pool")):
+		return
+	if rng.randf() > 0.5:
+		return
+	var pool: PackedStringArray = ArtImporter.liveliness_idle_pool()
+	if pool.is_empty():
+		return
+	var name := str(pool[rng.randi() % pool.size()])
+	var arr: Array = ArtImporter.frames_of(name, body_size)
+	if arr.is_empty():
+		return
+	live_clip = name
+	live_frames = arr
+	_live_src_size = 64.0
+	if arr[0] is AtlasTexture:
+		var rg: Rect2 = (arr[0] as AtlasTexture).region
+		if rg.size.x > 0.0:
+			_live_src_size = rg.size.x
+	elif ArtImporter and ArtImporter.has_method("size_px"):
+		# 無 region 就當來源係 L 64 fallback
+		_live_src_size = 64.0
+	live_i = 0
+	live_t = 0.0
+	_clip_elapsed = 0.0
+	_sfx_fired.clear()
+	_apply_live_display(true)
+	_fire_sfx(0)
+
+
+func _apply_live_display(on: bool) -> void:
+	if sprite == null:
+		return
+	if on and ArtImporter:
+		# 共用 clip：有對應體型圖集就用；冇 M 就 fallback L 紋理，但顯示尺吋／pivot 跟官方體型（M＝48、pivot 24,45）
+		var dest := ArtImporter.size_px(body_size)
+		var src := _live_src_size if _live_src_size > 0.0 else 64.0
+		sprite.pixel_size = dest / src * _base_pixel_size
+		var pv_dest: Vector2 = ArtImporter.liveliness_pivot(body_size)
+		var pv := Vector2(pv_dest.x * src / dest, pv_dest.y * src / dest)
+		sprite.offset = Vector2(src * 0.5 - pv.x, pv.y - src * 0.5)
+	else:
+		sprite.pixel_size = pixel_size
+		sprite.offset = Vector2(frame_size.x * 0.5 - pivot.x, pivot.y - frame_size.y * 0.5)
+
+
+func _fire_sfx(frame_index: int) -> void:
+	# 讀正式 t_ms／sfx_hook／frameIndex，同草稿 frame（1-based）
+	if live_clip == "" or ArtImporter == null:
+		return
+	for cue in ArtImporter.sfx_cues(live_clip):
+		if not (cue is Dictionary):
+			continue
+		var hook = cue.get("sfx_hook", cue.get("hook", null))
+		var id := str(cue.get("id", ""))
+		var key := str(hook) if hook != null else id
+		if key == "" or _sfx_fired.get(key, false):
+			continue
+		var fi := int(cue.get("frameIndex", -1))
+		var fr := int(cue.get("frame", 0))
+		var tms := int(cue.get("t_ms", cue.get("time_ms", -1)))
+		var hit := false
+		if fi >= 0 and fi == frame_index:
+			hit = true
+		elif fr > 0 and fr == frame_index + 1:
+			hit = true
+		elif tms >= 0 and _clip_elapsed * 1000.0 + 0.5 >= float(tms):
+			hit = true
+		if not hit:
+			continue
+		_sfx_fired[key] = true
+		# hook 係 null → 靜音（仍然 emit 方便測試）
+		var hook_s := "" if hook == null else str(hook)
+		ArtImporter.sfx_cue.emit(live_clip, hook_s, frame_index, self)
+		if hook_s != "" and AudioManager:
+			AudioManager.play(hook_s, self)
+
+
 func _anim(dt: float) -> void:
+	if live_clip != "" and live_frames.size():
+		if dt > 0.0:
+			live_t += dt
+			_clip_elapsed += dt
+			var step := ArtImporter.frame_duration_sec(live_clip, live_i)
+			while live_t >= step and live_clip != "":
+				live_t -= step
+				live_i += 1
+				if live_i >= live_frames.size():
+					var loop := bool(ArtImporter.clip_timing(live_clip).get("loop", false))
+					if loop:
+						live_i = 0
+						_clip_elapsed = 0.0
+						_sfx_fired.clear()
+					else:
+						live_clip = ""
+						live_i = 0
+						_apply_live_display(false)
+						break
+				if live_clip != "":
+					_fire_sfx(live_i)
+					step = ArtImporter.frame_duration_sec(live_clip, live_i)
+		if live_clip != "" and live_i < live_frames.size():
+			sprite.texture = live_frames[live_i]
+			return
 	var clip := dir + ("_walk" if moving else "_idle")
 	var arr: Array = frames.get(clip, frames.get("front_idle", []))
 	if arr.is_empty():
 		return
+	# 行路 fps 用呢隻 Walker 自己嘅 walk_fps／idle_fps（由 data 讀），唔好用團絨 walk_happy 蓋過
 	var fps := walk_fps if moving else idle_fps
+	var prev_i := frame_i
 	frame_t += dt
 	var step_t := 1.0 / maxf(fps, 0.1)
 	if frame_t >= step_t:
@@ -142,26 +266,115 @@ func _anim(dt: float) -> void:
 		frame_i = (frame_i + 1) % arr.size()
 	if sprite.texture != arr[frame_i]:
 		sprite.texture = arr[frame_i]
+	_step_cool = maxf(0.0, _step_cool - dt)
+	if moving and frame_i != prev_i:
+		_maybe_footstep(arr.size())
+
+
+func _maybe_footstep(nframes: int) -> void:
+	# 落地點：6 幀用 0／3，其他對半。心情揀 hop／drag／plod；步距 ≥0.45 s。
+	if _step_cool > 0.0:
+		return
+	var land2 := 3 if nframes >= 6 else maxi(1, nframes / 2)
+	if frame_i != 0 and frame_i != land2:
+		return
+	var hook := "sfx_pet_step_hop_a"
+	if Sim and Sim.state:
+		var needs: Dictionary = Sim.state.get("needs", {})
+		var mood := float(needs.get("mood", 70))
+		var energy := float(needs.get("energy", 70))
+		if mood < 40.0:
+			hook = "sfx_pet_step_drag_a"
+		elif energy < 55.0:
+			hook = "sfx_pet_step_plod_a"
+		else:
+			hook = "sfx_pet_step_hop_a"
+	_step_cool = 0.45
+	if AudioManager:
+		AudioManager.play(hook, self)
+	if ArtImporter:
+		ArtImporter.sfx_cue.emit("walk", hook, frame_i, self)
 
 
 func _apply_frame() -> void:
 	frame_i = 0
 	_anim(0.0)
 
+func current_anim_fps() -> float:
+	# 俾測試核對：行路用呢隻自己嘅 walk_fps，唔會被團絨 walk_happy 蓋過
+	return walk_fps if moving else idle_fps
+
+
+func park() -> void:
+	# 截圖用：停行、停生命感，企定喺而家位置
+	pause_t = 1.0e9
+	moving = false
+	live_clip = ""
+	live_frames = []
+	_apply_live_display(false)
+	use_nav = false
+	if agent:
+		agent.target_position = global_position
+	_anim(0.0)
+
+
+func set_base_modulate(c: Color) -> void:
+	_base_modulate = c
+	_refresh_modulate()
+
+
+func apply_tod_modulate(tint: Color) -> void:
+	_tod_modulate = tint
+	_refresh_modulate()
+
+
+func apply_billboard_quality(low: bool) -> void:
+	# 低檔 0.67 縮放＋受光 billboard 會把日間團絨洗白；低檔改 unshaded、保持 nearest 無 mip。
+	# unshaded 唔受夜光，要另乘時段 modulate，以免夜間仍然全日色。
+	if sprite == null:
+		return
+	_low_unshaded = low
+	sprite.shaded = not low
+	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	_refresh_modulate()
+
+
+func _refresh_modulate() -> void:
+	if sprite == null:
+		return
+	if _low_unshaded:
+		sprite.modulate = _base_modulate * _tod_modulate
+	else:
+		sprite.modulate = _base_modulate
+
+
 func _add_blob() -> void:
-	# 低成本腳底影（低畫質唔開 shadow map 都用呢個；唔替代 3D 遮擋）
+	# 低成本腳底圓影（唔用實心方塊；低檔唔開 shadow map 都靠呢個）
+	var img := Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	var c := Vector2(31.5, 31.5)
+	for y in range(64):
+		for x in range(64):
+			var nx := (float(x) - c.x) / 30.0
+			var ny := (float(y) - c.y) / 22.0
+			var d := sqrt(nx * nx + ny * ny)
+			var a := clampf(1.0 - d, 0.0, 1.0)
+			a = a * a * 0.5
+			img.set_pixel(x, y, Color(0, 0, 0, a))
+	var tex := ImageTexture.create_from_image(img)
 	var blob := MeshInstance3D.new()
 	blob.name = "BlobShadow"
 	var q := QuadMesh.new()
-	q.size = Vector2(radius * 1.8, radius * 1.1)
+	q.size = Vector2(radius * 2.4, radius * 1.5)
 	blob.mesh = q
 	blob.rotation_degrees.x = -90
-	blob.position = Vector3(0, 0.08, 0.4)
+	blob.position = Vector3(0, 0.08, 0.05)
 	var mat := StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.albedo_color = Color(0, 0, 0, 0.28)
+	mat.albedo_texture = tex
+	mat.albedo_color = Color(1, 1, 1, 1)
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
 	blob.material_override = mat
 	blob.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(blob)

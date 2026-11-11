@@ -1,0 +1,67 @@
+{
+  "_file": "sim",
+  "_title": "照顧需求／離線補時／睡眠（遊策單一來源）",
+  "_src": "data.js PARAMS; sim.js:55-60 effectiveOffline; sim.js:385-387,411 offlineNeedFloor; sim.js:410-421 offlineGrow cap 24h; sim.js:324-326 gift; sim.js:449 lastSeen 只向前",
+  "need_keys": [
+    "hunger",
+    "mood",
+    "clean",
+    "energy"
+  ],
+  "decay_per_hour": {
+    "hunger": 6,
+    "mood": 4,
+    "clean": 3,
+    "energy": 5,
+    "_src": "data.js:10"
+  },
+  "sleep_regen_per_hour": 12,
+  "sleep_decay_mul": 0.3,
+  "sleep_wake_at": 100,
+  "sleep_min_energy_to_sleep": 90,
+  "trait_sleep_regen_mul": 1.2,
+  "trait_clean_decay_mul": 1.3,
+  "stage_decay_mul": {
+    "egg": 0,
+    "newborn": 1.2,
+    "sprout": 1.2,
+    "juvenile": 1.1,
+    "adult": 1.0,
+    "elder": 1.0,
+    "_src": "data.js:18"
+  },
+  "poop_interval_h": 3,
+  "poop_clean_penalty_per_h": 1,
+  "poop_max": 3,
+  "sick_threshold": 15,
+  "cq_start": 50,
+  "cq_min": 0,
+  "cq_max": 100,
+  "offline_full_h": 8,
+  "offline_cap_h": 24,
+  "offline_discount_rate": 0.25,
+  "offline_need_floor": 20,
+  "offline_grow_cap_h": 24,
+  "offline_min_away_sec": 300,
+  "offline_stall_sec": 2,
+  "offline_gift_per_h": 1,
+  "offline_gift_max": 10,
+  "last_save_max_ahead_h": 24,
+  "moon_sleep": {
+    "from_hour": 20,
+    "to_hour": 3,
+    "_src": "GDD moon-sleep 20:00–03:00"
+  },
+  "branch_g0": {
+    "bright_cq": 30,
+    "soft_cq": 20,
+    "_note": "G0 未做五路線照顧分，入成體只按 CQ；正式門檻喺 evolution.json thresholds"
+  },
+  "start_needs_hatch": {
+    "hunger": 70,
+    "mood": 70,
+    "clean": 90,
+    "energy": 100,
+    "_src": "data.js startNeedsSprout"
+  }
+}

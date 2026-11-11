@@ -1,0 +1,25 @@
+{
+ "format": "godot_fx1.godot_import/1",
+ "engine": "Godot 4",
+ "lut": {
+  "files": "art-pet/fx/luts/lut_*.png",
+  "import_as": "Texture3D",
+  "slices_horizontal": 33,
+  "slices_vertical": 1,
+  "filter": "Linear",
+  "mipmaps": false,
+  "compress": "Lossless or VRAM Uncompressed",
+  "srgb": false,
+  "assign": "Environment.adjustment_color_correction（調整／Adjustments → Color Correction）",
+  "verify": "先用 lut_identity.png：畫面應同冇 LUT 一樣。若色偏／切片感，多半係 slices 或 Y 向設錯。"
+ },
+ "particle_sprites": {
+  "filter": "Nearest",
+  "mipmaps": false,
+  "srgb": true,
+  "transparency": "AlphaScissor 0.5（雨／雪／葉／花瓣／碎屑）；螢火蟲建議 blend_mode=add，RGB=0 即唔加。",
+  "billboard": "PARTICLE_BILLBOARD / Billboard Mode = Particle Billboard",
+  "particles_anim": "用 StandardMaterial3D particles_anim_h_frames／v_frames／loop，配合 ParticleProcessMaterial anim_speed"
+ },
+ "environment_tres": "將 environments.json 各 preset 轉 WorldEnvironment.environment 同 Camera3D.attributes（CameraAttributesPractical）。LUT 路徑按專案 res:// 改。"
+}
