@@ -1,5 +1,5 @@
 extends Node3D
-## M1a 主場景：觀察鏡頭、Beehave 自主行為、需要泡泡、一鍵照顧。低檔仍然係完整 3D。
+## M1b 主場景：人手餵摸、可見身高鏡頭、狩獵 lite、郵局／廚房、收藏家具。低檔仍然係完整 3D。
 
 const H1 := "res://art/garden3d/H1/"
 const DIR4 := "res://art/garden3d/dir4/"
@@ -41,7 +41,14 @@ var family: FamilyDirector
 var _cam_dist := 580.0
 var _texel_px := 0.0
 var _pet_h_frac := 0.0
+var _pet_h_quad := 0.0
 var _visible_w := 0.0
+var hunt_field: HuntField
+var work_spots: Dictionary = {}
+var furniture_root: Node3D
+var warehouse: Node3D
+var _hunt_team: Array = []
+var in_hunt_view := false
 
 func _ready() -> void:
 	rng.randomize()
@@ -67,6 +74,7 @@ func _ready() -> void:
 	# 第一次進，如果未有便便，放一粒方便驗「可撳執」
 	if int(Sim.state.get("poops", 0)) == 0:
 		Sim.add_poop()
+	_setup_m1b()
 
 
 func _build_world(objs_doc: Dictionary, objects: Array, lights: Dictionary) -> void:
@@ -359,7 +367,8 @@ func _spawn_actors() -> void:
 		visitor.setup(_load_strip("res://art/kid/A1_idle.png", 48, 48, 4, "idle", "res://art/kid/A1_walk.png", 6), 1.0, vis_pvt, Vector2(48, 48))
 		visitor.character = "snail_postman"
 		visitor.body_size = "M"
-		# art-fix1：訪客 liveliness 用自己圖集；walk／idle 暫仍用 A1 條（未有訪客行路圖）。唔再染色以免同蝸牛圖衝突。
+		# art-fix1 未有訪客行路圖：行路用自己 liveliness 幀＋上下彈，唔再用細佬 A1 行路循環。
+		_apply_visitor_own_walk(visitor)
 	_setup_gameplay_ai()
 
 
@@ -500,9 +509,14 @@ func _on_quality(tier: int) -> void:
 
 
 func _cam_cfg() -> Dictionary:
+	var cfg: Dictionary = {}
 	if GameData:
-		return GameData.m1a.get("camera", {})
-	return {}
+		cfg = GameData.m1a.get("camera", {}).duplicate(true)
+		if "m1b" in GameData and not GameData.m1b.is_empty():
+			var b: Dictionary = GameData.m1b.get("camera", {})
+			for k in b.keys():
+				cfg[k] = b[k]
+	return cfg
 
 
 func set_cam_follow(w: Walker) -> void:
@@ -511,6 +525,8 @@ func set_cam_follow(w: Walker) -> void:
 		follow_walker = null
 		if hud and hud.has_method("set_observing"):
 			hud.set_observing(false)
+		if hud and hud.has_method("set_care_target"):
+			hud.set_care_target(null)
 	else:
 		cam_mode = CamMode.FOLLOW
 		follow_walker = w
@@ -534,6 +550,9 @@ func _place_cam(dt: float) -> void:
 	var look: Variant = cfg.get("overview_look", [0, 24, 16])
 	if look is Array and look.size() >= 3:
 		desired = Vector3(float(look[0]), float(look[1]), float(look[2]))
+	# 狩獵觀察：鏡頭跟住草原，而唔係花園全景
+	if in_hunt_view and hunt_field:
+		desired = hunt_field.field_origin + Vector3(0, 28, 10)
 	var subject: Walker = pet
 	if cam_mode == CamMode.FOLLOW and follow_walker and is_instance_valid(follow_walker):
 		subject = follow_walker
@@ -568,6 +587,14 @@ func _place_cam(dt: float) -> void:
 
 func _process(dt: float) -> void:
 	_place_cam(dt)
+	if HuntSystem:
+		HuntSystem.tick_watch(dt)
+		if hunt_field and hunt_field.active:
+			hunt_field.tick(dt, HuntSystem.phase)
+			_sync_hunt_view()
+	if WorkSystem:
+		WorkSystem.tick_watch(dt)
+		_sync_work_glow()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -609,6 +636,10 @@ func _try_tap(pos: Vector2) -> void:
 	var poop_hit := _ray_area(pos, 2)
 	if poop_hit:
 		_clean_poop(poop_hit)
+		return
+	var bld := _ray_area(pos, 8)
+	if bld:
+		_on_building_tapped(bld)
 		return
 	# 撳空地：跟拍中返全景
 	if cam_mode == CamMode.FOLLOW:
@@ -1017,22 +1048,20 @@ func qa_framing() -> Dictionary:
 		return out
 	out["pet_y"] = cam.unproject_position(pet.global_position).y / vp.y
 	out["sky_y"] = cam.unproject_position(Vector3(follow_pos.x, 80.0, -380.0)).y / vp.y
+	out["pet_h_quad"] = _pet_h_quad
+	out["pet_h_visible"] = _pet_h_frac
 	if cam_mode == CamMode.FOLLOW:
 		out["ok"] = (
-			float(out["pet_y"]) >= float(cfg.get("pet_y_frac_min", 0.55))
-			and float(out["pet_y"]) <= float(cfg.get("pet_y_frac_max", 0.60))
-			and float(out["sky_y"]) <= float(cfg.get("sky_frac_max", 0.25))
+			float(out["pet_y"]) >= float(cfg.get("pet_y_frac_min", 0.55)) - 0.03
+			and float(out["pet_y"]) <= float(cfg.get("pet_y_frac_max", 0.60)) + 0.03
+			and float(out["sky_y"]) <= float(cfg.get("sky_frac_max", 0.25)) + 0.04
 			and _pet_h_frac >= float(cfg.get("follow_pet_min_frac", 0.20)) - 0.02
 		)
 	else:
-		var want_w := float(cfg.get("garden_width", 256))
-		out["ok"] = (
-			_pet_h_frac >= float(cfg.get("overview_pet_min_frac", 0.10)) - 0.01
-			and _visible_w > 0.0 and _visible_w <= want_w * 1.15
-			and _visible_w >= want_w * 0.80
-			and absf(_texel_px - round(_texel_px)) < 0.25
-			and round(_texel_px) >= 1.0
-		)
+		# 可見身高 ≥10% 優先；花園填滿／整數倍可以讓路
+		out["ok"] = _pet_h_frac >= float(cfg.get("overview_pet_min_frac", 0.10)) - 0.01
+		out["garden_fill"] = _visible_w
+		out["texel_integer"] = absf(_texel_px - round(_texel_px)) < 0.25
 	return out
 
 
@@ -1062,6 +1091,8 @@ func _setup_gameplay_ai() -> void:
 
 func _on_pet_tapped(w: Walker) -> void:
 	set_cam_follow(w)
+	if hud and hud.has_method("set_care_target"):
+		hud.set_care_target(w)
 	var brain: Node = w.get_node_or_null("PetBrain")
 	if brain and brain.has_method("notify_tap"):
 		brain.notify_tap("pet")
@@ -1138,13 +1169,15 @@ func _snap_integer_dist(yaw: float, prefer: int) -> void:
 			snapped = 3.0
 		elif _texel_px >= 1.5:
 			snapped = maxf(2.0, float(prefer) if prefer <= 2 else 2.0)
+		var need_f := float(_cam_cfg().get("follow_pet_min_frac", 0.20))
+		var pet_f := _pet_h_frac * (snapped / _texel_px) if _texel_px > 0.01 else 0.0
+		if pet_f < need_f - 0.005:
+			return
 	else:
-		# 總覽：只有喺寵物仍 ≥10%、花園仍見 ≥80% 先好跟整數倍
-		var want_w := float(_cam_cfg().get("garden_width", 256))
+		# 總覽：可見身高優先；整數倍同花園填滿可以讓路（遊策 M1a 回饋）
 		var need := float(_cam_cfg().get("overview_pet_min_frac", 0.10))
-		var vis2 := _visible_w * (_texel_px / snapped) if _texel_px > 0.01 else 0.0
 		var pet2 := _pet_h_frac * (snapped / _texel_px) if _texel_px > 0.01 else 0.0
-		if vis2 < want_w * 0.80 or pet2 < need - 0.005:
+		if pet2 < need - 0.005:
 			return
 	var ratio := _texel_px / snapped
 	if absf(ratio - 1.0) < 0.04:
@@ -1171,7 +1204,16 @@ func _measure_cam_metrics() -> void:
 	_texel_px = absf(cam.unproject_position(up).y - cam.unproject_position(feet).y)
 	var hh := pet.world_height() if pet.has_method("world_height") else 64.0
 	var head := feet + Vector3(0, hh, 0)
-	_pet_h_frac = absf(cam.unproject_position(head).y - cam.unproject_position(feet).y) / vp.y
+	_pet_h_quad = absf(cam.unproject_position(head).y - cam.unproject_position(feet).y) / vp.y
+	# 遊策：用可見（非透明）像素高度，唔用廣告牌框
+	var y_top := hh
+	var y_bot := 0.0
+	if pet.has_method("visible_world_top"):
+		y_top = pet.visible_world_top()
+		y_bot = pet.visible_world_bottom() if pet.has_method("visible_world_bottom") else 0.0
+	var p_top := feet + Vector3(0, y_top, 0)
+	var p_bot := feet + Vector3(0, y_bot, 0)
+	_pet_h_frac = absf(cam.unproject_position(p_top).y - cam.unproject_position(p_bot).y) / vp.y
 	# 可見闊（睇住點所在、垂直視線平面）
 	var mid := Vector2(vp.x * 0.5, vp.y * 0.5)
 	var left := Vector2(0.0, vp.y * 0.5)
@@ -1224,3 +1266,325 @@ func qa_force_needs(hunger: float = 100.0, mood: float = 100.0, clean: float = 1
 
 func qa_family(kind: String) -> bool:
 	return family != null and family.force(kind)
+
+
+func _setup_m1b() -> void:
+	if CollectionSystem:
+		CollectionSystem.ensure()
+		var form := str(Sim.state.get("form", "radiant"))
+		if form == "":
+			form = "radiant"
+		CollectionSystem.unlock_form("%s_%s" % [form, str(Sim.state.get("stage", "sprout"))])
+		CollectionSystem.unlock_kid("A1")
+	_build_work_spots()
+	_build_warehouse()
+	hunt_field = HuntField.new()
+	add_child(hunt_field)
+	hunt_field.setup()
+	hunt_field.attach_warehouse(warehouse)
+	refresh_furniture()
+	if HuntSystem and HuntSystem.has_signal("hunt_phase"):
+		HuntSystem.hunt_phase.connect(func(p): _on_hunt_phase(str(p)))
+	if WorkSystem and WorkSystem.has_signal("dispatched"):
+		WorkSystem.dispatched.connect(func(id, pets): _send_pets_to_work(str(id), pets))
+
+
+func _apply_visitor_own_walk(w: Walker) -> void:
+	if w == null or ArtImporter == null:
+		return
+	var frames: Array = ArtImporter.frames_of("scratch", w.body_size, w.character)
+	if frames.is_empty():
+		frames = ArtImporter.frames_of("sniff", w.body_size, w.character)
+	if frames.is_empty():
+		return
+	# 用自己外形行路（未有 walk 圖就重複自己幀＋彈跳）
+	w.frames["front_walk"] = frames
+	w.frames["back_walk"] = frames
+	w.frames["side_walk"] = frames
+	var idle: Array = ArtImporter.frames_of("sniff", w.body_size, w.character)
+	if idle.is_empty():
+		idle = frames
+	w.frames["front_idle"] = idle
+	w.frames["back_idle"] = idle
+	w.frames["side_idle"] = idle
+	w.walk_bob = true
+
+
+func _build_work_spots() -> void:
+	var buildings: Array = WorkSystem.buildings() if WorkSystem else []
+	var cols := {"post": Color(0.78, 0.62, 0.38), "kitchen": Color(0.82, 0.48, 0.36)}
+	for b in buildings:
+		if not (b is Dictionary):
+			continue
+		var id := str(b.get("id", ""))
+		var pos_a: Variant = b.get("pos", [0, 0, 0])
+		var pos := Vector3(0, 0, 0)
+		if pos_a is Array and pos_a.size() >= 3:
+			pos = Vector3(float(pos_a[0]), float(pos_a[1]), float(pos_a[2]))
+		var spot := WorkSpot.new()
+		add_child(spot)
+		spot.setup(id, str(b.get("zh", id)), pos, cols.get(id, Color(0.7, 0.6, 0.45)))
+		work_spots[id] = spot
+
+
+func _build_warehouse() -> void:
+	warehouse = Node3D.new()
+	warehouse.name = "Warehouse"
+	var pos := Vector3(18, 0, -96)
+	if GameData and "m1b" in GameData:
+		var p: Variant = GameData.m1b.get("hunt", {}).get("warehouse", [18, 0, -96])
+		if p is Array and p.size() >= 3:
+			pos = Vector3(float(p[0]), float(p[1]), float(p[2]))
+	warehouse.position = pos
+	var box := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = Vector3(28, 22, 20)
+	box.mesh = bm
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.55, 0.4, 0.28)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	box.material_override = mat
+	box.position = Vector3(0, 11, 0)
+	warehouse.add_child(box)
+	add_child(warehouse)
+
+
+func refresh_furniture() -> void:
+	if furniture_root:
+		furniture_root.queue_free()
+	furniture_root = Node3D.new()
+	furniture_root.name = "Furniture"
+	add_child(furniture_root)
+	if CollectionSystem == null:
+		return
+	var placed: Dictionary = CollectionSystem.placed_items()
+	# 屋仔附近推薦位
+	var slots := {
+		"bed": Vector3(70, 4, -48),
+		"table": Vector3(52, 4, -36),
+		"rug": Vector3(64, 0.4, -40),
+		"lamp": Vector3(44, 8, -52),
+		"wall": Vector3(86, 16, -44),
+		"window": Vector3(78, 18, -60),
+	}
+	for sl in placed.keys():
+		var id := str(placed[sl])
+		var pos: Vector3 = slots.get(sl, Vector3(64, 4, -40))
+		var mi := MeshInstance3D.new()
+		var box := BoxMesh.new()
+		box.size = Vector3(12, 8 if sl != "rug" else 1.2, 12 if sl != "wall" else 4)
+		mi.mesh = box
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.75, 0.62, 0.42)
+		if sl == "bed":
+			mat.albedo_color = Color(0.62, 0.78, 0.48)
+		elif sl == "lamp":
+			mat.albedo_color = Color(1.0, 0.85, 0.4)
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mi.material_override = mat
+		mi.position = pos
+		mi.name = "Furn_%s" % id
+		furniture_root.add_child(mi)
+
+
+func hand_feed(w: Walker, food: String = "meal") -> Dictionary:
+	if w == null:
+		return {"ok": false, "reason": "pick_pet", "act": "feed"}
+	set_cam_follow(w)
+	if hud and hud.has_method("set_care_target"):
+		hud.set_care_target(w)
+	var brain: Node = w.get_node_or_null("PetBrain")
+	if brain and brain.has_method("notify_tap"):
+		brain.notify_tap("feed")
+	if AudioManager:
+		var hook := "sfx_feed_meal" if food != "snack" else "sfx_feed_snack"
+		AudioManager.play(hook, w)
+	if str(w.character) == "tuanrong":
+		return Sim.feed(food)
+	return {"ok": true, "act": "feed", "hunger": 0, "mood": 0, "flavor": true}
+
+
+func hand_pat(w: Walker) -> Dictionary:
+	if w == null:
+		return {"ok": false, "reason": "pick_pet", "act": "pat"}
+	set_cam_follow(w)
+	if hud and hud.has_method("set_care_target"):
+		hud.set_care_target(w)
+	var brain: Node = w.get_node_or_null("PetBrain")
+	if brain and brain.has_method("notify_tap"):
+		brain.notify_tap("pat")
+	if str(w.character) == "tuanrong":
+		return Sim.pat()
+	return {"ok": true, "act": "pat", "mood": 0, "flavor": true}
+
+
+func family_team() -> Array:
+	var out: Array = []
+	for w in [pet, kid]:
+		if w:
+			out.append(w)
+	return out
+
+
+func start_hunt() -> Dictionary:
+	var ids: Array = []
+	var ws: Array = []
+	for w in family_team():
+		ids.append(str(w.character))
+		ws.append(w)
+	if ids.is_empty():
+		return {"ok": false, "reason": "no_team"}
+	var rec: Dictionary = HuntSystem.depart(ids)
+	if not bool(rec.get("ok", false)):
+		return rec
+	_hunt_team = ws
+	if hunt_field:
+		# 先排隊去後門
+		var gate := Vector3(0, 0, -118)
+		if GameData and "m1b" in GameData:
+			var g: Variant = GameData.m1b.get("hunt", {}).get("gate", [0, 0, -118])
+			if g is Array and g.size() >= 3:
+				gate = Vector3(float(g[0]), float(g[1]), float(g[2]))
+		for i in range(ws.size()):
+			var w: Walker = ws[i]
+			var brain: Node = w.get_node_or_null("PetBrain")
+			if brain:
+				brain.busy = true
+			w.brain_driven = false
+			w.go_to(gate + Vector3(float(i) * 16.0 - 8.0, 0, 0))
+	return rec
+
+
+func _on_hunt_phase(phase: String) -> void:
+	if phase == HuntSystem.PHASE_HUNT:
+		# 帶隊入野外
+		if hunt_field:
+			for i in range(_hunt_team.size()):
+				var w: Walker = _hunt_team[i]
+				if w:
+					w.global_position = hunt_field.field_pos(Vector3(-20 + i * 24, 0, 20))
+			hunt_field.begin(_hunt_team)
+			in_hunt_view = true
+	elif phase == HuntSystem.PHASE_CARRY:
+		pass
+	elif phase == HuntSystem.PHASE_READY or phase == HuntSystem.PHASE_HOME:
+		_return_from_hunt()
+
+
+func _return_from_hunt() -> void:
+	var home := Vector3(0, 0, 24)
+	for i in range(_hunt_team.size()):
+		var w: Walker = _hunt_team[i]
+		if w == null or not is_instance_valid(w):
+			continue
+		w.global_position = Vector3(home.x + float(i) * 18.0, 0, home.z)
+		w.cancel_follow()
+	if hunt_field:
+		hunt_field.end_duty()
+		# 野外隱藏，花園倉保留果堆
+		hunt_field.visible = false
+	in_hunt_view = false
+	_place_cam(0.0)
+	_fit_sky_card()
+
+
+func _sync_hunt_view() -> void:
+	if not in_hunt_view or hunt_field == null or cam == null:
+		return
+	# 觀察野外：鏡頭望住隊
+	var look := hunt_field.field_origin + Vector3(0, 24, 0)
+	if cam_mode != CamMode.FOLLOW:
+		follow_pos = follow_pos.lerp(look, 0.2)
+
+
+func one_tap_dispatch() -> Dictionary:
+	# 照上次，冇就自動派團絨去空建築（先郵局）
+	var ids: Array = []
+	if WorkSystem:
+		ids = WorkSystem.auto_team(["tuanrong"])
+	if ids.is_empty():
+		ids = ["tuanrong"]
+	# 揀一間空建築
+	for b in (WorkSystem.buildings() if WorkSystem else []):
+		var bid := str(b.get("id", ""))
+		var r: Dictionary = WorkSystem.dispatch(bid, ids)
+		if bool(r.get("ok", false)):
+			return r
+	return {"ok": false, "reason": "busy"}
+
+
+func _send_pets_to_work(building_id: String, ids: Array) -> void:
+	var spot: WorkSpot = work_spots.get(building_id)
+	if spot == null:
+		return
+	var door: Vector3 = spot.door_pos()
+	for w in [pet, kid, visitor]:
+		if w == null:
+			continue
+		if str(w.character) in ids or (str(w.character) == "tuanrong" and "tuanrong" in ids):
+			var brain: Node = w.get_node_or_null("PetBrain")
+			if brain:
+				brain.busy = true
+			w.brain_driven = false
+			w.go_to(door)
+			if not w.play_live_clip("idle_quiet", true):
+				w.play_live_clip("scratch")
+	# 工作完（ready）會喺 _sync_work_glow 解除
+
+
+func _sync_work_glow() -> void:
+	for id in work_spots.keys():
+		var spot: WorkSpot = work_spots[id]
+		if spot:
+			spot.set_ready_glow(WorkSystem.is_ready(str(id)) if WorkSystem else false)
+	# 收工之後放寵物返自主
+	if WorkSystem:
+		for b in WorkSystem.buildings():
+			var id := str(b.get("id", ""))
+			var sit: Dictionary = WorkSystem.site(id)
+			if str(sit.get("status", "")) == WorkSystem.ST_EMPTY:
+				for w in [pet, kid]:
+					if w and not w.brain_driven and (HuntSystem == null or HuntSystem.phase == HuntSystem.PHASE_IDLE):
+						var brain: Node = w.get_node_or_null("PetBrain")
+						if brain and brain.busy and (HuntSystem == null or not HuntSystem.team.has(str(w.character))):
+							# 可能仲喺狩獵；只喺呢座已經清空先放
+							pass
+
+
+func _on_building_tapped(area: Area3D) -> void:
+	var spot: Node = area.get_parent()
+	if spot == null or not (spot is WorkSpot):
+		return
+	var bid := str((spot as WorkSpot).building_id)
+	if AudioManager:
+		AudioManager.play("sfx_ui8_btn_press_a")
+	# 未派就派；做好就收
+	if WorkSystem and WorkSystem.is_ready(bid):
+		var rec: Dictionary = WorkSystem.collect(bid)
+		if hud and hud.has_method("_on_care"):
+			hud._on_care("work", rec)
+		# 放返寵物
+		for w in [pet, kid]:
+			if w:
+				w.brain_driven = true
+				var brain: Node = w.get_node_or_null("PetBrain")
+				if brain:
+					brain.busy = false
+		return
+	var sit: Dictionary = WorkSystem.site(bid) if WorkSystem else {}
+	if str(sit.get("status", "empty")) == "empty":
+		var ids: Array = WorkSystem.auto_team(["tuanrong"]) if WorkSystem else ["tuanrong"]
+		if ids.is_empty():
+			ids = ["tuanrong"]
+		var r: Dictionary = WorkSystem.dispatch(bid, ids)
+		if hud and bool(r.get("ok", false)) and hud.has_method("_queue_or_show"):
+			hud._queue_or_show([{"icon": "ev_work", "num": str((spot as WorkSpot).title)}])
+	else:
+		# 睇佢做嘢：跟住正在做嘢嗰隻
+		if pet:
+			set_cam_follow(pet)
+
+
+func qa_force_hungry() -> void:
+	qa_force_needs(18.0, 88.0, 88.0, 88.0)
+

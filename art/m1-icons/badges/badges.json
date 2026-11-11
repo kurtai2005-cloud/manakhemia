@@ -1,0 +1,113 @@
+{
+ "format": "hunt.badge/1",
+ "tier": "copper",
+ "count": 4,
+ "size": 32,
+ "scale": "@3x",
+ "style": "V3-A 銅章＋小怪剪影",
+ "alpha": "0/255",
+ "items": [
+  {
+   "id": "badge_copper_dewlet",
+   "zh": "銅證・露珠偶",
+   "size": 32,
+   "file": "badge_copper_dewlet@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "critter": "dewlet"
+  },
+  {
+   "id": "badge_copper_loambun",
+   "zh": "銅證・泥包包",
+   "size": 32,
+   "file": "badge_copper_loambun@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "critter": "loambun"
+  },
+  {
+   "id": "badge_copper_seedfluff",
+   "zh": "銅證・穗綿",
+   "size": 32,
+   "file": "badge_copper_seedfluff@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "critter": "seedfluff"
+  },
+  {
+   "id": "badge_copper_mossback",
+   "zh": "銅證・苔丘",
+   "size": 32,
+   "file": "badge_copper_mossback@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "critter": "mossback"
+  }
+ ],
+ "atlas": {
+  "image": "atlas_badges_copper@3x.png",
+  "size": {
+   "w": 256,
+   "h": 64
+  },
+  "padding": 2,
+  "frames": {
+   "badge_copper_dewlet": {
+    "frame": {
+     "x": 2,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "badge_copper_loambun": {
+    "frame": {
+     "x": 38,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "badge_copper_seedfluff": {
+    "frame": {
+     "x": 74,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "badge_copper_mossback": {
+    "frame": {
+     "x": 110,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   }
+  }
+ }
+}

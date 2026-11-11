@@ -1,26 +1,28 @@
 extends Node
-## M1a 玩法預覽：用 viewport 逐幀出圖，再交 ffmpeg 轉 GIF。
-## 環境：GODOT_M1A_GIF=family|follow|bubbles|care ；GODOT_M1A_FRAME_DIR=...
+## M1b 玩法預覽：viewport 逐幀出圖，再交 ffmpeg 轉 GIF。
+## GODOT_M1B_GIF=hunt|work|collect|care|bubbles ；GODOT_M1B_FRAME_DIR=...
 
 const FPS := 15
 const SECS := 8.0
 
-var _dir := "/tmp/m1a-gif-frames"
-var _feat := "family"
+var _dir := "/tmp/m1b-gif-frames"
+var _feat := "hunt"
 var _main: Node
 var _frame := 0
-var _followed := false
-var _fed := false
-var _cleaned := false
-var _patted := false
-var _fam2 := false
+var _did1 := false
+var _did2 := false
+var _did3 := false
 
 
 func _ready() -> void:
-	_feat = str(OS.get_environment("GODOT_M1A_GIF"))
+	_feat = str(OS.get_environment("GODOT_M1B_GIF"))
 	if _feat == "":
-		_feat = "family"
-	var d := str(OS.get_environment("GODOT_M1A_FRAME_DIR"))
+		_feat = str(OS.get_environment("GODOT_M1A_GIF"))
+	if _feat == "":
+		_feat = "hunt"
+	var d := str(OS.get_environment("GODOT_M1B_FRAME_DIR"))
+	if d == "":
+		d = str(OS.get_environment("GODOT_M1A_FRAME_DIR"))
 	if d != "":
 		_dir = d
 	DirAccess.make_dir_recursive_absolute(_dir)
@@ -33,7 +35,7 @@ func _ready() -> void:
 				da.remove(fn)
 			fn = da.get_next()
 		da.list_dir_end()
-	print("=== M1a gif ", _feat, " → ", _dir, " ===")
+	print("=== M1b gif ", _feat, " → ", _dir, " ===")
 	OS.set_environment("GODOT_M1A_DEMO", "1")
 	QualitySettings.set_tier(QualitySettings.Tier.LOW)
 	var packed: PackedScene = load("res://scenes/Main.tscn")
@@ -72,9 +74,6 @@ func _ready() -> void:
 
 func _setup_feat() -> void:
 	match _feat:
-		"follow":
-			if _main.has_method("qa_overview"):
-				_main.qa_overview()
 		"bubbles":
 			if _main.has_method("qa_overview"):
 				_main.qa_overview()
@@ -91,31 +90,78 @@ func _setup_feat() -> void:
 				Sim.state["poops"] = 2
 				Sim.state["poop_age"] = [1.0, 2.0]
 				Sim.state_changed.emit()
+		"work":
+			if _main.has_method("qa_overview"):
+				_main.qa_overview()
+		"collect":
+			if _main.has_method("qa_overview"):
+				_main.qa_overview()
+			if CollectionSystem:
+				CollectionSystem.add_shards(25, "old")
+				CollectionSystem.notify("collection", true)
+		"hunt":
+			if _main.has_method("qa_overview"):
+				_main.qa_overview()
 		_:
 			if _main.has_method("qa_overview"):
 				_main.qa_overview()
-			if _main.has_method("qa_family"):
-				_main.qa_family("play_together")
 
 
 func _tick_events(t: float) -> void:
-	if _feat == "follow" and t >= 2.0 and not _followed:
-		_followed = true
-		if _main.has_method("qa_follow_pet"):
-			_main.qa_follow_pet()
-	elif _feat == "care":
-		if t >= 1.2 and not _fed and Sim:
-			_fed = true
-			Sim.feed("meal")
-		elif t >= 3.2 and not _cleaned and Sim:
-			_cleaned = true
-			Sim.clean_all()
-		elif t >= 5.0 and not _patted and Sim:
-			_patted = true
-			Sim.pat()
-			if _main.has_method("pet_all_react"):
-				_main.pet_all_react()
-	elif _feat == "family":
-		if t >= 3.5 and not _fam2 and _main.has_method("qa_family"):
-			_fam2 = true
-			_main.qa_family("walk_together")
+	match _feat:
+		"hunt":
+			if t >= 0.4 and not _did1:
+				_did1 = true
+				if _main.has_method("start_hunt"):
+					_main.start_hunt()
+			if t >= 2.0 and HuntSystem:
+				# 壓縮觀看：跳去撥草／撲
+				HuntSystem.watch_elapsed = float(GameData.m1b.get("hunt", {}).get("watch_sec", 18)) * 0.2
+			if t >= 5.5 and HuntSystem:
+				HuntSystem.watch_elapsed = float(GameData.m1b.get("hunt", {}).get("watch_sec", 18)) * 0.7
+		"work":
+			if t >= 0.5 and not _did1:
+				_did1 = true
+				if _main.has_method("one_tap_dispatch"):
+					_main.one_tap_dispatch()
+			if t >= 2.0 and _main.has_method("qa_follow_pet"):
+				_main.qa_follow_pet()
+			if t >= 5.5 and WorkSystem and not _did2:
+				_did2 = true
+				for b in WorkSystem.buildings():
+					WorkSystem.site(str(b.get("id", "")))["status"] = WorkSystem.ST_READY
+					WorkSystem.site(str(b.get("id", "")))["watch"] = 99.0
+				if _main.has_method("_sync_work_glow"):
+					_main._sync_work_glow()
+		"collect":
+			if t >= 0.6 and not _did1:
+				_did1 = true
+				if CollectionSystem:
+					CollectionSystem.buy("rug_leaf")
+					CollectionSystem.place_recommended()
+				if _main.has_method("refresh_furniture"):
+					_main.refresh_furniture()
+			if t >= 2.5 and not _did2:
+				_did2 = true
+				var hud: Node = _main.get("hud")
+				if hud and hud.has_method("_toggle_book"):
+					hud._toggle_book()
+		"care":
+			if t >= 1.0 and not _did1:
+				_did1 = true
+				if _main.has_method("qa_follow_pet"):
+					_main.qa_follow_pet()
+				var w: Walker = _main.pet if _main.get("pet") else null
+				if _main.has_method("hand_feed"):
+					_main.hand_feed(w, "meal")
+			if t >= 3.5 and not _did2 and Sim:
+				_did2 = true
+				Sim.clean_all()
+			if t >= 5.5 and not _did3:
+				_did3 = true
+				var w2: Walker = _main.pet if _main.get("pet") else null
+				if _main.has_method("hand_pat"):
+					_main.hand_pat(w2)
+		"bubbles":
+			if t >= 2.0 and _main.has_method("qa_follow_pet"):
+				_main.qa_follow_pet()

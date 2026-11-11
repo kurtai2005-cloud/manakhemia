@@ -308,6 +308,10 @@ func apply_offline(s: Dictionary, now_ms: int) -> Dictionary:
 		var gift := clampi(int(floor(t / 3600.0 * OFF_GIFT_PER_H)), 1, OFF_GIFT_MAX)
 		s["grains"] = int(s.get("grains", 0)) + gift
 		rep["gift"] = gift
+	if HuntSystem and HuntSystem.has_method("offline_tick"):
+		HuntSystem.offline_tick(s, now_ms)
+	if WorkSystem and WorkSystem.has_method("offline_tick"):
+		WorkSystem.offline_tick(s, now_ms)
 	return rep
 
 

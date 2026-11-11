@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# M1a：gradle 出包，注入 PetOverlayService，簽 debug keystore（唔入 git）。
+# M1b：gradle 出包，注入 PetOverlayService，簽同一把 G0 debug keystore（唔入 git），v2+v3。
 set -euo pipefail
 GODOT="${GODOT:-/home/box/tools/godot/godot}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export JAVA_HOME="${JAVA_HOME:-/home/box/tools/jdk-17.0.21+9}"
 export ANDROID_HOME="${ANDROID_HOME:-/home/box/Android/Sdk}"
 export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"
-OUT="${OUT:-/workspace/apk/微光小圃-godot-m1a.apk}"
+OUT="${OUT:-/workspace/apk/微光小圃-godot-m1b.apk}"
 mkdir -p "$(dirname "$OUT")"
 
 CFG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/godot"
@@ -38,7 +38,10 @@ else:
 PY
 fi
 
-KS="${G0_DEBUG_KEYSTORE:-/home/box/keep/godot/g0-debug.keystore}"
+KS="${G0_DEBUG_KEYSTORE:-/home/box/keep/godot/keys/g0-debug.keystore}"
+if [[ ! -f "$KS" ]]; then
+  KS="/home/box/keep/godot/g0-debug.keystore"
+fi
 if [[ ! -f "$KS" ]]; then
   echo "missing keystore $KS" >&2
   exit 1
@@ -90,7 +93,7 @@ mkdir -p /workspace/apk
 # 出包前再注入一次，避免 export 重寫模板之後冇 service
 # Godot export 可能喺開始時覆寫 android/build；先 export 失敗就再注入＋gradle。
 set +e
-"$GODOT" --headless --path "$ROOT" --export-debug "Android" "$OUT" >/tmp/godot-m1a-export.log 2>&1
+"$GODOT" --headless --path "$ROOT" --export-debug "Android" "$OUT" >/tmp/godot-m1b-export.log 2>&1
 EX=$?
 set -e
 # 若 manifest 被覆寫，再注入並用 gradle 組 APK
@@ -101,29 +104,29 @@ if ! rg -q "PetOverlayService" "$ROOT/android/build/src/main/AndroidManifest.xml
 fi
 if [[ ! -f "$OUT" || "$EX" -ne 0 ]]; then
   echo "godot export exit=$EX, try gradle assemble"
-  tail -40 /tmp/godot-m1a-export.log
+  tail -40 /tmp/godot-m1b-export.log
   # 再跑一次 export（manifest 已注入）
   set +e
-  "$GODOT" --headless --path "$ROOT" --export-debug "Android" "$OUT" >>/tmp/godot-m1a-export.log 2>&1
+  "$GODOT" --headless --path "$ROOT" --export-debug "Android" "$OUT" >>/tmp/godot-m1b-export.log 2>&1
   EX=$?
   set -e
 fi
 # 最後一次注入之後一定要再 gradle，先至會將 GLES required=false / overlay 打入最終 APK。
 # Godot --export-debug 會寫 src/debug manifest（glEs required=true）再組包；只靠 export 出品會漏 P1-4。
-KS="${DEBUG_KEYSTORE:-/home/box/keep/godot/g0-debug.keystore}"
+KS="${DEBUG_KEYSTORE:-${G0_DEBUG_KEYSTORE:-/home/box/keep/godot/keys/g0-debug.keystore}}"
 if [[ ! -f "$KS" ]]; then
-  KS="/home/box/.local/share/godot/keystores/debug.keystore"
+  KS="/home/box/keep/godot/g0-debug.keystore"
 fi
 GRADLEW="$ROOT/android/build/gradlew"
 if [[ -x "$GRADLEW" ]]; then
   echo "gradle assemble after final inject (package/version/abi + GLES patch)"
   (cd "$ROOT/android/build" && ./gradlew assembleStandardDebug --stacktrace \
     -Pexport_package_name=hk.vizard.glimmer.fpet.godot \
-    -Pexport_version_code=3 \
-    -Pexport_version_name=2.0.0-m1a \
+    -Pexport_version_code=4 \
+    -Pexport_version_name=2.0.0-m1b \
     -Pexport_enabled_abis=arm64-v8a \
     -Pexport_path=/workspace/apk \
-    -Pexport_filename=微光小圃-godot-m1a.apk \
+    -Pexport_filename=微光小圃-godot-m1b.apk \
     -Pperform_zipalign=true \
     -Pperform_signing=true \
     -Pdebug_keystore_file="$KS" \
@@ -137,10 +140,21 @@ if [[ -x "$GRADLEW" ]]; then
 fi
 if [[ ! -f "$OUT" ]]; then
   echo "APK missing $OUT" >&2
-  tail -50 /tmp/godot-m1a-export.log
+  tail -50 /tmp/godot-m1b-export.log
   exit 3
 fi
 ls -la "$OUT"
+# 用同一把 G0 debug key 重簽 v2+v3（等 Kurt 可以覆蓋安裝 M1a）
+APKS="${ANDROID_HOME}/build-tools/36.1.0/apksigner"
+if [[ ! -x "$APKS" ]]; then
+  APKS="${ANDROID_HOME}/build-tools/34.0.0/apksigner"
+fi
+if [[ -x "$APKS" && -f "$KS" ]]; then
+  TMPAPK="${OUT}.signed.apk"
+  "$APKS" sign --ks "$KS" --ks-pass pass:android --ks-key-alias androiddebugkey --key-pass pass:android     --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true     --out "$TMPAPK" "$OUT"
+  mv -f "$TMPAPK" "$OUT"
+  "$APKS" verify --print-certs "$OUT" | tee /tmp/godot-m1b-apksigner.log
+fi
 # 保險：若 APK 冇 service，唔過
 AAPT="${ANDROID_HOME}/build-tools/34.0.0/aapt2"
 if [[ -x "$AAPT" ]]; then

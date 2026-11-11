@@ -58,4 +58,10 @@ class GlimmerOverlayPlugin(godot: Godot) : GodotPlugin(godot) {
         }
         return d
     }
+
+    @UsedByGodot
+    fun writeSnapshot(json: String) {
+        val act = activity ?: return
+        PetPrefs.cap(act).edit().putString(PetPrefs.KEY_SNAPSHOT, json).commit()
+    }
 }

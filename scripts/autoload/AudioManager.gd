@@ -26,6 +26,11 @@ const BGM_BY_BAND := {
 
 var last_play: Dictionary = {}  # 俾測試讀：hook, character, size, pitch, stream, silent, actor
 var muted := false
+var appreciate_muted := false  # 「欣賞」模式：需求警告唔出聲，泡泡照出
+var _need_warn_pet_at: Dictionary = {}
+var _need_warn_global_at := -999.0
+const NEED_WARN_PET_COOLDOWN := 8.0
+const NEED_WARN_SAME_MOMENT := 0.25
 var _streams: Dictionary = {}
 var _randomizers: Dictionary = {}
 var _last_ab: Dictionary = {}
@@ -154,6 +159,8 @@ func resolve_play(hook: Variant, actor: Object = null) -> Dictionary:
 
 func bus_for(hook: Variant) -> String:
 	var h := "" if hook == null else str(hook)
+	if h.find("sfx_need_warning") >= 0:
+		return "UI"
 	if h.begins_with("sfx_ui") or h.find("_btn_") >= 0 or h.find("sfx_ui8") >= 0:
 		return "UI"
 	if h.begins_with("bgm_"):
@@ -350,3 +357,42 @@ func _stream_for(path: String, root: String) -> AudioStream:
 			_randomizers[root] = r
 		return _randomizers[root]
 	return _load_stream(path if path != "" else _find_variant(root))
+
+
+func play_need_warning(pet_id: String = "") -> Dictionary:
+	# 泡泡出現時播一次；欣賞模式靜音；同一瞬間多個泡泡只播一次；每隻寵物冷卻 ≥8 秒。
+	# a/b 由 _stream_for Randomizer 處理，唔會連續兩次同一個。
+	var out := {"played": false, "reason": "", "hook": "sfx_need_warning", "silent": true}
+	if appreciate_muted:
+		out["reason"] = "appreciate"
+		last_play = out
+		return out
+	var now := Time.get_ticks_msec() / 1000.0
+	if now - _need_warn_global_at < NEED_WARN_SAME_MOMENT:
+		out["reason"] = "same_moment"
+		last_play = out
+		return out
+	if pet_id != "" and _need_warn_pet_at.has(pet_id):
+		if now - float(_need_warn_pet_at[pet_id]) < NEED_WARN_PET_COOLDOWN:
+			out["reason"] = "pet_cooldown"
+			last_play = out
+			return out
+	var rec := play("sfx_need_warning")
+	out["silent"] = bool(rec.get("silent", true))
+	out["stream"] = rec.get("stream", "")
+	if not out["silent"]:
+		out["played"] = true
+		out["reason"] = "ok"
+		_need_warn_global_at = now
+		if pet_id != "":
+			_need_warn_pet_at[pet_id] = now
+	else:
+		out["reason"] = "missing"
+	last_play = out
+	return out
+
+
+func reset_need_warning_cooldowns() -> void:
+	_need_warn_pet_at.clear()
+	_need_warn_global_at = -999.0
+

@@ -1,0 +1,228 @@
+{
+ "format": "hunt.critter/1",
+ "id": "seedfluff",
+ "zh": "穗綿",
+ "size": 32,
+ "pivotPx": [
+  16,
+  29
+ ],
+ "big": false,
+ "fruit": "goldgrain",
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "note": "奶油色綿子、兩片嫩翼；細隻",
+ "atlas": {
+  "image": "atlas_seedfluff.png",
+  "normal": "atlas_seedfluff_n.png",
+  "size": {
+   "w": 512,
+   "h": 128
+  },
+  "padding": 2,
+  "frames": {
+   "seedfluff_idle_01": {
+    "frame": {
+     "x": 2,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_idle_02": {
+    "frame": {
+     "x": 38,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_idle_03": {
+    "frame": {
+     "x": 74,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_idle_04": {
+    "frame": {
+     "x": 110,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_scared_01": {
+    "frame": {
+     "x": 146,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_scared_02": {
+    "frame": {
+     "x": 182,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_scared_03": {
+    "frame": {
+     "x": 218,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_scared_04": {
+    "frame": {
+     "x": 254,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_tofruit_01": {
+    "frame": {
+     "x": 2,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_tofruit_02": {
+    "frame": {
+     "x": 38,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_tofruit_03": {
+    "frame": {
+     "x": 74,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_tofruit_04": {
+    "frame": {
+     "x": 110,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_tofruit_05": {
+    "frame": {
+     "x": 146,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   },
+   "seedfluff_tofruit_06": {
+    "frame": {
+     "x": 182,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 29
+    }
+   }
+  }
+ },
+ "animations": {
+  "idle": {
+   "frames": [
+    "seedfluff_idle_01",
+    "seedfluff_idle_02",
+    "seedfluff_idle_03",
+    "seedfluff_idle_04"
+   ],
+   "fps": 4,
+   "loop": true
+  },
+  "scared": {
+   "frames": [
+    "seedfluff_scared_01",
+    "seedfluff_scared_02",
+    "seedfluff_scared_03",
+    "seedfluff_scared_04"
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "tofruit": {
+   "frames": [
+    "seedfluff_tofruit_01",
+    "seedfluff_tofruit_02",
+    "seedfluff_tofruit_03",
+    "seedfluff_tofruit_04",
+    "seedfluff_tofruit_05",
+    "seedfluff_tofruit_06"
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ }
+}

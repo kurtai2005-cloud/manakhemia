@@ -1,0 +1,31 @@
+{
+ "format": "hunt3d.camera/1",
+ "target": [
+  0,
+  30,
+  -72
+ ],
+ "pitchDeg": 30,
+ "dist": 580,
+ "fovDeg": 40,
+ "orbitMinDeg": -10,
+ "orbitMaxDeg": 10,
+ "swayAmplitudeDeg": 5,
+ "swayHalfPeriodSec": 6,
+ "swayEasing": "easeInOutSine",
+ "followDamping": 2.0,
+ "followWeight": [
+  0.25,
+  0.3
+ ],
+ "followOffset": [
+  -20,
+  0
+ ],
+ "followOrigin": [
+  0,
+  0
+ ],
+ "note": "同花園 H1 穩陣鏡頭：pitch 30°、dist 580、target [0,30,-72]（寵物落畫面下半）、±5° 緩入緩出、阻尼跟拍；玩家手拖仍 ±10°。預覽 600×844 再裁 (0,190,600,590)＝600×400。",
+ "godot": "pitch 30°、fov 40 垂直；如果 import_scale=0.01，將 dist／target／fog 全部 ×0.01。"
+}

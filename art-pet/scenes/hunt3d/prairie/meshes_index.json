@@ -1,0 +1,120 @@
+{
+ "meshCount": 16,
+ "instanceCount": 53,
+ "trianglesUnique": 414,
+ "trianglesInstanced": 762,
+ "meshes": {
+  "grass_0": {
+   "triangles": 8,
+   "textureSize": [
+    32,
+    64
+   ]
+  },
+  "grass_1": {
+   "triangles": 8,
+   "textureSize": [
+    32,
+    64
+   ]
+  },
+  "grass_2": {
+   "triangles": 8,
+   "textureSize": [
+    32,
+    64
+   ]
+  },
+  "grass_tall": {
+   "triangles": 8,
+   "textureSize": [
+    64,
+    64
+   ]
+  },
+  "reed": {
+   "triangles": 8,
+   "textureSize": [
+    32,
+    64
+   ]
+  },
+  "flower_rose": {
+   "triangles": 8,
+   "textureSize": [
+    32,
+    32
+   ]
+  },
+  "flower_gold": {
+   "triangles": 8,
+   "textureSize": [
+    32,
+    32
+   ]
+  },
+  "rock_0": {
+   "triangles": 76,
+   "textureSize": [
+    64,
+    64
+   ]
+  },
+  "rock_1": {
+   "triangles": 108,
+   "textureSize": [
+    64,
+    128
+   ]
+  },
+  "bush": {
+   "triangles": 8,
+   "textureSize": [
+    64,
+    32
+   ]
+  },
+  "knoll": {
+   "triangles": 14,
+   "textureSize": [
+    128,
+    64
+   ]
+  },
+  "arch": {
+   "triangles": 40,
+   "textureSize": [
+    64,
+    64
+   ]
+  },
+  "sign": {
+   "triangles": 20,
+   "textureSize": [
+    64,
+    128
+   ]
+  },
+  "log": {
+   "triangles": 84,
+   "textureSize": [
+    64,
+    64
+   ]
+  },
+  "tree_0": {
+   "triangles": 4,
+   "textureSize": [
+    128,
+    128
+   ]
+  },
+  "tree_1": {
+   "triangles": 4,
+   "textureSize": [
+    128,
+    128
+   ]
+  }
+ }
+}

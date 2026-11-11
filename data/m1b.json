@@ -1,0 +1,63 @@
+{
+  "_file": "m1b",
+  "_title": "M1b 玩法：人手餵／摸、可見身高鏡頭、狩獵 lite、郵局／廚房、收藏／家具、泡泡同 overlay",
+  "_src": "core-loop-3d-v1.md §0.5／§3／§5／§6；遊策 M1a 回饋：餵摸唔好一鍵、摘要卡唔好擋住欣賞／開發者、寵物可見身高 ≥10%／20%",
+  "camera": {
+    "measure": "visible_opaque_pixels",
+    "overview_pet_min_frac": 0.10,
+    "follow_pet_min_frac": 0.20,
+    "prefer_integer_texel": true,
+    "relax_integer_texel_if_needed": true,
+    "relax_garden_fill_if_needed": true,
+    "overview_texel_scale": 2,
+    "follow_texel_scale": 3
+  },
+  "care": {
+    "one_tap": ["clean", "harvest", "dispatch", "collect_work", "hunt_depart"],
+    "hand": ["feed", "pat"],
+    "pick_then_act": true,
+    "_note": "§1 餵／淋水保持手動；摸係互動。一鍵只得收成、派工、收工、執屎、狩獵出發／收隊（收隊併入收成）。"
+  },
+  "bubbles": {
+    "want_threshold": 70,
+    "pixel_size": 0.62,
+    "bob_amp": 6.0,
+    "bob_hz": 0.85,
+    "backdrop": true,
+    "sfx_hook": "sfx_need_warning",
+    "sfx_pet_cooldown_sec": 8.0,
+    "sfx_same_moment_sec": 0.25,
+    "sfx_appreciate_mute": true,
+    "sfx_bus": "UI"
+  },
+  "hunt": {
+    "watch_sec": 18.0,
+    "gate": [0, 0, -118],
+    "field_origin": [0, 0, 520],
+    "warehouse": [18, 0, -96],
+    "art_critter": {
+      "puff_shroom": "dewlet",
+      "burr_ball": "loambun",
+      "dew_slime": "seedfluff",
+      "rumble_root": "mossback"
+    },
+    "art_fruit": {
+      "glow_berry": "starberry",
+      "dew_plum": "dewpear",
+      "star_nut": "goldgrain",
+      "puff_peach": "sunkaki",
+      "moon_grape": "mistgrape",
+      "leaf_pear": "moonplum"
+    }
+  },
+  "work": {
+    "watch_sec": 12.0,
+    "offline_ready_sec": 3600.0,
+    "buildings": [
+      {"id": "post", "zh": "郵局", "job": "post", "pos": [96, 0, -36]},
+      {"id": "kitchen", "zh": "廚房", "job": "chef", "pos": [-96, 0, -16]}
+    ]
+  },
+  "summary_card_sec": 3.0,
+  "observe_ui_fade_sec": 3.0
+}

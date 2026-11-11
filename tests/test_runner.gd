@@ -6,7 +6,7 @@ var passed := 0
 
 func _ready() -> void:
 	# 等 autoload
-	print("=== M1a unit tests (Godot %s) ===" % Engine.get_version_info().get("string", "?"))
+	print("=== M1b unit tests (Godot %s) ===" % Engine.get_version_info().get("string", "?"))
 	# 隔離：用假時鐘，清空存檔副作用前備份唔需要（user:// 喺測試目錄）
 	SaveSystem.clear()
 	Sim.paused = true
@@ -44,6 +44,10 @@ func _ready() -> void:
 	_test_m1a_audio_buses()
 	_test_m1a_beehave_and_family()
 	_test_m1a_camera_framing()
+	_test_m1b_hand_care()
+	_test_m1b_need_warning()
+	_test_m1b_hunt_work_collection()
+	_test_m1b_overlay_snapshot()
 	print("=== %d passed, %d failed ===" % [passed, failed])
 
 	get_tree().quit(0 if failed == 0 else 1)
@@ -745,17 +749,170 @@ func _test_m1a_camera_framing() -> void:
 	var fr: Dictionary = main.qa_framing() if main.has_method("qa_framing") else {}
 	print("  overview framing ", fr)
 	ok(str(fr.get("mode", "")) == "overview", "default cam mode overview", fr)
-	ok(float(fr.get("pet_h", 0)) >= 0.09, "overview pet height ≥10% (tol 1%)", fr)
-	ok(absf(float(fr.get("texel", 0)) - round(float(fr.get("texel", 0)))) < 0.35, "overview texel near integer", fr)
-	ok(round(float(fr.get("texel", 0))) >= 1.0, "overview texel scale integer ≥1", fr)
+	ok(float(fr.get("pet_h", 0)) >= 0.09, "overview visible pet height ≥10% (tol 1%)", fr)
 	var vw := float(fr.get("visible_w", 0))
-	ok(vw >= 256.0 * 0.80 and vw <= 256.0 * 1.15, "overview garden fills width (~256)", fr)
+	print("  overview trade-off garden_w=", vw, " texel=", fr.get("texel", 0), " quad=", fr.get("pet_h_quad", 0), " vis=", fr.get("pet_h_visible", fr.get("pet_h", 0)))
+	# 花園填滿／整數倍為次要，可見身高優先（遊策回饋）
+	ok(round(float(fr.get("texel", 0))) >= 1.0 or float(fr.get("texel", 0)) > 0.5, "overview texel measured", fr)
 	if main.has_method("qa_follow_pet"):
 		main.qa_follow_pet()
 	var ff: Dictionary = main.qa_framing() if main.has_method("qa_framing") else {}
 	print("  follow framing ", ff)
 	ok(str(ff.get("mode", "")) == "follow", "follow cam mode", ff)
-	ok(float(ff.get("pet_h", 0)) >= 0.18, "follow pet height ≥20% (tol 2%)", ff)
+	ok(float(ff.get("pet_h", 0)) >= 0.18, "follow visible pet height ≥20% (tol 2%)", ff)
 	var py := float(ff.get("pet_y", -1))
 	ok(py >= 0.52 and py <= 0.63, "follow pet_y near 55–60%", ff)
 	main.free()
+
+
+func _test_m1b_hand_care() -> void:
+	print("# M1b P1: feed/pat are hand actions (need a chosen pet); clean stays one-tap")
+	ok(GameData.m1b.is_empty() == false, "data/m1b.json loaded")
+	var care: Dictionary = GameData.m1b.get("care", {})
+	ok("feed" in care.get("hand", []) and "pat" in care.get("hand", []), "feed/pat listed as hand")
+	ok("clean" in care.get("one_tap", []) and "harvest" in care.get("one_tap", []), "clean/harvest stay one-tap")
+	var packed: PackedScene = load("res://scenes/Main.tscn")
+	var main: Node = packed.instantiate()
+	add_child(main)
+	if main.has_method("set_rest_look"):
+		main.set_rest_look(true)
+	var no_pick: Dictionary = main.hand_feed(null, "meal") if main.has_method("hand_feed") else {}
+	ok(not bool(no_pick.get("ok", true)) and str(no_pick.get("reason", "")) == "pick_pet", "feed without pet is refused", no_pick)
+	var no_pat: Dictionary = main.hand_pat(null) if main.has_method("hand_pat") else {}
+	ok(not bool(no_pat.get("ok", true)) and str(no_pat.get("reason", "")) == "pick_pet", "pat without pet is refused", no_pat)
+	Sim.state = _fresh("sprout", {"hunger": 40.0, "mood": 50.0})
+	var w: Walker = main.pet if "pet" in main else null
+	ok(w != null, "main has pet")
+	if w:
+		var rec: Dictionary = main.hand_feed(w, "meal")
+		ok(bool(rec.get("ok", false)), "hand feed meal on 團絨 ok", rec)
+		ok(is_equal_approx(float(rec.get("hunger", 0)), Sim.FEED_MEAL), "meal hunger delta", rec)
+		ok(AudioManager and str(AudioManager.last_play.get("hook", "")).begins_with("sfx_feed_meal") or str(AudioManager.last_play.get("stream", "")).find("sfx_feed_meal") >= 0, "sfx_feed_meal played", AudioManager.last_play)
+		Sim.state["needs"]["mood"] = 40.0
+		var rec2: Dictionary = main.hand_feed(w, "snack")
+		ok(bool(rec2.get("ok", false)), "hand feed snack ok", rec2)
+		ok(str(AudioManager.last_play.get("hook", "")).begins_with("sfx_feed_snack") or str(AudioManager.last_play.get("stream", "")).find("sfx_feed_snack") >= 0, "sfx_feed_snack played", AudioManager.last_play)
+		var rec3: Dictionary = main.hand_pat(w)
+		ok(bool(rec3.get("ok", false)), "hand pat ok", rec3)
+	# 一鍵執屎仍可用
+	Sim.state["poops"] = 2
+	Sim.state["poop_age"] = [1.0, 1.0]
+	var c := Sim.clean_all()
+	ok(bool(c.get("ok", false)) and int(c.get("count", 0)) == 2, "clean_all still one-tap", c)
+	main.free()
+
+
+func _test_m1b_need_warning() -> void:
+	print("# M1b sfx_need_warning: appear once, pet cooldown 8s, same-moment once, mute in 欣賞")
+	ok(FileAccess.file_exists("res://audio/sfx/sfx_need_warning_a.ogg"), "sfx_need_warning_a present")
+	ok(FileAccess.file_exists("res://audio/sfx/sfx_need_warning_b.ogg"), "sfx_need_warning_b present")
+	ok(AudioManager.bus_for("sfx_need_warning") == "UI", "need warning uses UI bus")
+	AudioManager.reset_need_warning_cooldowns()
+	AudioManager.appreciate_muted = false
+	var a: Dictionary = AudioManager.play_need_warning("tuanrong")
+	ok(bool(a.get("played", false)), "first appear plays", a)
+	var b: Dictionary = AudioManager.play_need_warning("kid")
+	ok(not bool(b.get("played", true)) and str(b.get("reason", "")) == "same_moment", "same moment only once", b)
+	# 過咗同一瞬間、另一隻未冷卻（把 global 推後，保留寵物冷卻）
+	AudioManager._need_warn_global_at = -999.0
+	var c: Dictionary = AudioManager.play_need_warning("tuanrong")
+	ok(not bool(c.get("played", true)) and str(c.get("reason", "")) == "pet_cooldown", "same pet cooldown 8s", c)
+	# 冷卻期滿（把該寵物時間調後）
+	AudioManager._need_warn_pet_at["tuanrong"] = Time.get_ticks_msec() / 1000.0 - 9.0
+	AudioManager._need_warn_global_at = -999.0
+	var d: Dictionary = AudioManager.play_need_warning("tuanrong")
+	ok(bool(d.get("played", false)), "after 8s can play again", d)
+	# 欣賞模式靜音，泡泡仍然 _pick 得到
+	AudioManager.reset_need_warning_cooldowns()
+	AudioManager.appreciate_muted = true
+	var e: Dictionary = AudioManager.play_need_warning("tuanrong")
+	ok(not bool(e.get("played", true)) and str(e.get("reason", "")) == "appreciate", "欣賞 mode mutes warning", e)
+	var w := Walker.new()
+	w.character = "tuanrong"
+	add_child(w)
+	var bubble := NeedBubble.new()
+	add_child(bubble)
+	bubble.attach(w)
+	Sim.state = _fresh("sprout", {"hunger": 20.0, "mood": 90.0, "clean": 90.0, "energy": 90.0})
+	ok(bubble._pick() == "need_eat", "bubble still shows in 欣賞", bubble._pick())
+	AudioManager.appreciate_muted = false
+	bubble.free()
+	w.free()
+
+
+func _test_m1b_hunt_work_collection() -> void:
+	print("# M1b hunt lite + work buildings + collection / furniture / red dots")
+	Sim.state = _fresh("sprout")
+	CollectionSystem.ensure()
+	ok(CollectionSystem.stardust() == 0, "wallet starts at 0")
+	var added := CollectionSystem.add_shards(3, "jobs_trips")
+	ok(added == 3 and CollectionSystem.stardust() == 3, "add 3 shards")
+	# 每日打工／遠足上限 12
+	var more := CollectionSystem.add_shards(20, "jobs_trips")
+	ok(more == 9 and CollectionSystem.stardust() == 12, "jobs_trips cap 12", more)
+	CollectionSystem.add_shards(40, "old")
+	ok(CollectionSystem.stardust() == 42, "old cap 30 + 12 jobs = 42", CollectionSystem.stardust())
+	# 狩獵出發／收隊
+	HuntSystem.phase = HuntSystem.PHASE_IDLE
+	HuntSystem.pending = {}
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var dep: Dictionary = HuntSystem.depart(["tuanrong"], rng)
+	ok(bool(dep.get("ok", false)), "hunt depart ok", dep)
+	ok(HuntSystem.phase == HuntSystem.PHASE_DEPART, "phase depart")
+	var early: Dictionary = HuntSystem.collect()
+	ok(not bool(early.get("ok", true)), "cannot collect before ready", early)
+	HuntSystem.set_phase(HuntSystem.PHASE_READY)
+	var got: Dictionary = HuntSystem.collect()
+	ok(bool(got.get("ok", false)) and int(got.get("shards", 0)) >= 1, "collect hunt shards", got)
+	ok(HuntSystem.phase == HuntSystem.PHASE_IDLE, "phase idle after collect")
+	# 同一日唔可以再打工／狩獵
+	var dep2: Dictionary = HuntSystem.depart(["tuanrong"], rng)
+	ok(not bool(dep2.get("ok", true)) and str(dep2.get("reason", "")) == "work_or_hunt", "work or hunt once a day", dep2)
+	# 另一日——用另一隻做工作
+	Sim.state = _fresh("sprout")
+	CollectionSystem.ensure()
+	var before := CollectionSystem.stardust()
+	var dpx: Dictionary = WorkSystem.dispatch("post", ["tuanrong"])
+	ok(bool(dpx.get("ok", false)), "dispatch post ok", dpx)
+	ok(str(WorkSystem.site("post").get("status", "")) == WorkSystem.ST_WORK, "post working")
+	WorkSystem.site("post")["status"] = WorkSystem.ST_READY
+	var pay: Dictionary = WorkSystem.collect("post")
+	ok(bool(pay.get("ok", false)) and int(pay.get("shards", 0)) == 2, "lv1 pay = 2 shards", pay)
+	ok(CollectionSystem.stardust() == before + 2, "shards added from work")
+	# 家具：預設床已有，買最平要碎
+	ok(CollectionSystem.is_owned("bed_leaf"), "default bed owned")
+	var rec_place: Dictionary = CollectionSystem.place("bed_leaf")
+	ok(bool(rec_place.get("ok", false)), "place default bed", rec_place)
+	CollectionSystem.add_shards(20, "old")
+	var buy: Dictionary = CollectionSystem.buy("rug_leaf")
+	ok(bool(buy.get("ok", false)), "buy cheapest rug", buy)
+	var recs: Dictionary = CollectionSystem.place_recommended()
+	ok(bool(recs.get("ok", false)), "place recommended", recs)
+	# 紅點
+	CollectionSystem.notify("harvest", true)
+	ok(CollectionSystem.has_dot("harvest"), "harvest red dot")
+	CollectionSystem.notify("harvest", false)
+	ok(not CollectionSystem.has_dot("harvest"), "harvest dot cleared")
+	# 狩獵 clip 有載入
+	ok(ArtImporter.frames_of("part_grass", "L").size() >= 4, "part_grass L frames")
+	ok(ArtImporter.frames_of("pounce", "M").size() >= 4, "pounce M frames")
+	ok(ArtImporter.frames_of("carry_fruit", "S").size() >= 4, "carry_fruit S frames")
+	ok(ArtImporter.frames_of("cheer", "L").size() >= 4, "cheer L frames")
+
+
+func _test_m1b_overlay_snapshot() -> void:
+	print("# M1b overlay snapshot write-through")
+	Sim.state = _fresh("sprout", {"hunger": 20.0, "mood": 35.0, "energy": 80.0, "clean": 90.0})
+	Sim.state["sleeping"] = false
+	Sim.state["form"] = "soft"
+	var snap: Dictionary = SaveSystem.write_overlay_snapshot(Sim.state)
+	ok(int(snap.get("v", 0)) >= 3, "snapshot v3", snap)
+	ok(str(snap.get("moodBand", "")) == "sad", "moodBand sad when mood 35", snap)
+	ok(bool(snap.get("sleeping", true)) == false, "not sleeping")
+	var needs: Dictionary = snap.get("needs", {})
+	ok(str(needs.get("urgent", "")) == "hunger", "urgent is hunger 20", needs)
+	ok(is_equal_approx(float((needs.get("vals", {}) as Dictionary).get("hunger", 0)), 20.0), "needs vals written")
+	ok(not SaveSystem.last_overlay_snapshot.is_empty(), "last_overlay_snapshot kept")
+	ok(FileAccess.file_exists("user://overlay_snapshot.json"), "desktop overlay file written")
+

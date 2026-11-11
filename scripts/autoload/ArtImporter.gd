@@ -31,6 +31,7 @@ var _atlases: Array = []  # {json, texture, dir, frame_size}
 var _tex_cache: Dictionary = {}  # "scratch" or "scratch@M" -> Array[Texture2D]
 var _actor_atlases: Dictionary = {}  # character -> clip -> {doc, tex, frame_size, pivot}
 var _idle_quiet: Dictionary = {}  # size -> {doc, tex, frame_size, pivot}
+var _hunt: Dictionary = {}  # "clip@S" -> {doc, tex}
 
 
 func _ready() -> void:
@@ -68,6 +69,7 @@ func _load_all() -> void:
 		frames_of(name)
 	_load_actor_catalogs()
 	_load_idle_quiet()
+	_load_hunt_clips()
 
 
 func _json(path: String) -> Dictionary:
@@ -247,6 +249,17 @@ func frames_of(name: String, size: String = "", character: String = "") -> Array
 				arr_q = _frames_from_doc(rec.get("doc", {}), rec.get("tex"), name)
 			_tex_cache[key] = arr_q
 			return arr_q
+	# 狩獵 clip：part_grass／pounce／carry_fruit／cheer（S／M／L）
+	if name in ["part_grass", "pounce", "carry_fruit", "cheer"]:
+		var hsz := size if size != "" else "L"
+		var hkey := "%s@%s" % [name, hsz]
+		if not _hunt.has(hkey):
+			hkey = "%s@L" % name
+		if _hunt.has(hkey):
+			var rec_h: Dictionary = _hunt[hkey]
+			var arr_h: Array = _frames_from_doc(rec_h.get("doc", {}), rec_h.get("tex"), name)
+			_tex_cache[key] = arr_h
+			return arr_h
 	if character != "":
 		var who := character
 		if who == "visitor":
@@ -454,6 +467,28 @@ func _load_idle_quiet() -> void:
 			"fps": float(doc.get("fps", 6)),
 			"loop": true,
 		}
+
+
+
+func _load_hunt_clips() -> void:
+	_hunt.clear()
+	var cat := _json("res://art-pet/sprites/tuanrong/motion/hunt/clips.json")
+	if cat.is_empty():
+		return
+	var dir := "res://art-pet/sprites/tuanrong/motion/hunt/"
+	var atlases: Dictionary = cat.get("atlases", {})
+	for sz in atlases.keys():
+		var bag: Dictionary = atlases[sz]
+		for clip in bag.keys():
+			var jp := dir + str(bag[clip])
+			var doc := _json(jp)
+			if doc.is_empty():
+				continue
+			var img := str(doc.get("meta", {}).get("image", str(bag[clip]).replace(".json", ".png")))
+			var tex: Texture2D = load(dir + img) if img != "" else null
+			if tex == null:
+				continue
+			_hunt["%s@%s" % [str(clip), str(sz)]] = {"doc": doc, "tex": tex}
 
 
 func _frames_from_doc(doc: Dictionary, tex: Texture2D, clip: String) -> Array:

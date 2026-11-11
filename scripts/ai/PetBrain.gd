@@ -178,12 +178,15 @@ func _tick_tap(_a: Node, _b: Blackboard) -> int:
 		expr_t = 2.2
 		if walker:
 			var clip := "nuzzle"
-			if pending_tap == "poke":
+			if pending_tap == "feed":
+				clip = "eat"
+			elif pending_tap == "poke":
 				clip = "emo_surprised"
 			if not walker.play_live_clip(clip):
-				walker.play_live_clip("emo_happy")
-			if AudioManager:
-				AudioManager.play("sfx_pet_nuzzle_purr" if pending_tap == "pet" else "sfx_pet_curious", walker)
+				walker.play_live_clip("emo_happy" if pending_tap != "feed" else "nuzzle")
+			if AudioManager and pending_tap != "feed":
+				# 餵食聲由 Main.hand_feed 喺入口嗰下播 sfx_feed_meal／snack
+				AudioManager.play("sfx_pet_nuzzle_purr" if pending_tap == "pet" or pending_tap == "pat" else "sfx_pet_curious", walker)
 		pending_tap = "running"
 	if walker and walker.live_clip != "":
 		return R

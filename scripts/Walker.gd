@@ -43,6 +43,12 @@ var speed_mul := 1.0
 var follow_target: Node3D
 var follow_dist := 16.0
 var click_area: Area3D
+var walk_bob := false
+var _bob_t := 0.0
+var _vis_tex: Texture2D
+var _vis_top := 0.0
+var _vis_bot := 0.0
+var _vis_ok := false
 
 func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) -> void:
 	frames = tex_frames
@@ -288,6 +294,7 @@ func _anim(dt: float) -> void:
 	if moving and frame_i != prev_i:
 		_maybe_footstep(arr.size())
 
+	_apply_walk_bob(dt)
 
 func _maybe_footstep(nframes: int) -> void:
 	# 落地點：6 幀用 0／3，其他對半。心情揀 hop／drag／plod；步距 ≥0.45 s。
@@ -499,6 +506,92 @@ func try_liveliness() -> void:
 
 
 func world_height() -> float:
-	# 腳底到頭頂嘅世界高度（1 texel＝pixel_size 世界單位）
+	# 腳底到頭頂嘅世界高度（1 texel＝pixel_size 世界單位）——廣告牌框，唔係可見像素
 	return frame_size.y * maxf(pixel_size, 0.001)
+
+
+func _apply_walk_bob(dt: float) -> void:
+	if sprite == null:
+		return
+	if walk_bob and moving:
+		_bob_t += dt
+		sprite.offset.y = sin(_bob_t * TAU * 5.0) * 3.0
+	else:
+		_bob_t = 0.0
+		if absf(sprite.offset.y) > 0.01:
+			sprite.offset.y = 0.0
+
+
+func _scan_visible(tex: Texture2D) -> void:
+	# 非透明像素嘅頂／底（圖框座標，y 向下）
+	_vis_ok = false
+	_vis_tex = tex
+	_vis_top = 0.0
+	_vis_bot = frame_size.y if frame_size.y > 0.0 else 64.0
+	if tex == null:
+		return
+	var img: Image = null
+	var region := Rect2(0, 0, 0, 0)
+	if tex is AtlasTexture:
+		var at := tex as AtlasTexture
+		region = at.region
+		if at.atlas:
+			img = at.atlas.get_image()
+	else:
+		img = tex.get_image()
+		region = Rect2(0, 0, tex.get_width(), tex.get_height())
+	if img == null or region.size.x < 1.0 or region.size.y < 1.0:
+		# headless 或者壓縮紋理讀唔到時：用框高 60% 估算（遊策量到可見約六成）
+		_vis_top = _vis_bot * 0.08
+		_vis_bot = _vis_bot * 0.92
+		_vis_ok = true
+		return
+	var x0 := int(region.position.x)
+	var y0 := int(region.position.y)
+	var w := int(region.size.x)
+	var h := int(region.size.y)
+	var top := h
+	var bot := -1
+	for y in range(h):
+		var hit := false
+		for x in range(w):
+			var px := img.get_pixel(x0 + x, y0 + y)
+			if px.a > 0.12:
+				hit = true
+				break
+		if hit:
+			if y < top:
+				top = y
+			if y > bot:
+				bot = y
+	if bot < 0 or top > bot:
+		_vis_top = h * 0.08
+		_vis_bot = h * 0.92
+	else:
+		_vis_top = float(top)
+		_vis_bot = float(bot)
+	_vis_ok = true
+
+
+func visible_bounds_px() -> Vector2:
+	var tex: Texture2D = sprite.texture if sprite else null
+	if tex != _vis_tex or not _vis_ok:
+		_scan_visible(tex)
+	return Vector2(_vis_top, _vis_bot)
+
+
+func visible_world_top() -> float:
+	# 由腳錨（pivot.y）上到可見頂
+	var b := visible_bounds_px()
+	return maxf(4.0, (pivot.y - b.x) * maxf(pixel_size, 0.001))
+
+
+func visible_world_bottom() -> float:
+	# 可見底相對腳錨（可能略低於 0）
+	var b := visible_bounds_px()
+	return (pivot.y - b.y) * maxf(pixel_size, 0.001)
+
+
+func visible_world_height() -> float:
+	return maxf(4.0, visible_world_top() - visible_world_bottom())
 

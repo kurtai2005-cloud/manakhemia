@@ -1,0 +1,42 @@
+{
+ "format": "hunt3d.lights/1",
+ "lights": [],
+ "sun": {
+  "dir": [
+   0.4206,
+   -0.721,
+   0.5507
+  ],
+  "color": "#ffe6b8",
+  "intensity": 1.0,
+  "ambient": {
+   "color": "#cfe0f0",
+   "intensity": 0.55
+  },
+  "shadowIntensity": 0.3,
+  "note": "同花園 H1：太陽喺左後上方；shadowIntensity 0.3 即時光影，唔烘入貼圖"
+ },
+ "fill": {
+  "dir": [
+   0.2005,
+   -0.1203,
+   -0.9723
+  ],
+  "color": "#ffe2c4",
+  "intensity": 0.38,
+  "intensityNight": 0.0,
+  "note": "唔投影；由鏡頭方向略低補光"
+ },
+ "fog": {
+  "color": "#ffe8c8",
+  "near": 380,
+  "far": 1200
+ },
+ "night": {
+  "note": "M1 lite 以日間為主；夜值預留",
+  "ambient": {
+   "color": "#1a2438",
+   "intensity": 0.28
+  }
+ }
+}
