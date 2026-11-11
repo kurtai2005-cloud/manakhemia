@@ -1,0 +1,120 @@
+{
+  "doc": {
+    "found": false,
+    "latestBranch": "origin/code/glimmer-evo6",
+    "latestSha": "25e8c40c2ca96d1a514042f4d4a8d9074eaeb718",
+    "note": "已 fetch 全部分支。pet-template-v1.md 冇「§7 平衡修訂 v2」。v2 起始跟今次訊息：最高分門檻 45%。"
+  },
+  "sim": "code/glimmer-evo6 @ 25e8c40",
+  "assumptions": "N=500。唔用跑機時間。照顧用時間表鐘點。每日 20% 落雨、芽崽／跳跳期每日 34% 記一次螢火（池權重約數）。肚餓先餵、心情低先玩、清潔低先沖、有便便先清。",
+  "v2start": {
+    "params": {
+      "top": 0.45,
+      "gap": 0.05,
+      "b5CQ": 55,
+      "clean": 70,
+      "lumiCQ": 55,
+      "lumiNight": 0.4,
+      "bright": 70,
+      "soft": 40
+    },
+    "fail": [
+      "diligent 結局2<3",
+      "diligent bright 72%>60",
+      "normal 結局1<3",
+      "normal dust 100%>60",
+      "office 結局1<3",
+      "office dust 100%>60",
+      "light 結局1<3",
+      "light dust 100%>60",
+      "early 結局1<3",
+      "early dust 100%>60",
+      "eod 結局1<3",
+      "eod dust 100%>60",
+      "螢絨 0% 唔喺 3–10",
+      "普通微塵 100%>25"
+    ],
+    "lumiPct": 0,
+    "tables": {
+      "diligent": {
+        "tide": 28,
+        "bright": 72
+      },
+      "normal": {
+        "dust": 100
+      },
+      "office": {
+        "dust": 100
+      },
+      "light": {
+        "dust": 100
+      },
+      "early": {
+        "dust": 100
+      },
+      "eod": {
+        "dust": 100
+      }
+    }
+  },
+  "search": {
+    "tried": 10800,
+    "hits": 0,
+    "solved": false
+  },
+  "best": {
+    "params": {
+      "top": 0.35,
+      "gap": 0.02,
+      "b5CQ": 0,
+      "clean": 70,
+      "lumiNight": 0.4,
+      "lumiCQ": 55,
+      "bright": 70,
+      "soft": 40
+    },
+    "dist": 1.8222,
+    "fail": [
+      "normal 結局2<3",
+      "normal tide 86.8%>60",
+      "office moon 85.2%>60",
+      "light 結局1<3",
+      "light moon 99%>60",
+      "early 結局2<3",
+      "eod 結局2<3",
+      "eod tide 97.8%>60",
+      "螢絨 0% 唔喺 3–10"
+    ],
+    "lumiPct": 0,
+    "tables": {
+      "diligent": {
+        "tide": 28,
+        "crystal": 41.2,
+        "bright": 30.8
+      },
+      "normal": {
+        "tide": 86.8,
+        "dust": 13.2
+      },
+      "office": {
+        "tide": 2.6,
+        "moon": 85.2,
+        "dust": 12.2
+      },
+      "light": {
+        "moon": 99,
+        "dust": 1
+      },
+      "early": {
+        "tide": 48.8,
+        "dust": 51.2
+      },
+      "eod": {
+        "tide": 97.8,
+        "dust": 2.2
+      }
+    }
+  },
+  "lumiBand": null,
+  "ms": 7227
+}

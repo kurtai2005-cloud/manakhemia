@@ -1,0 +1,444 @@
+{
+  "doc": "附件 §7 平衡修訂 v6（2026-11-01 01:48）。",
+  "sim": "code/glimmer-evo6 @ 25e8c40c2ca96d1a514042f4d4a8d9074eaeb718",
+  "N": 1000,
+  "prompt": {
+    "diligent": {
+      "setPct": 90,
+      "whenPoop": 89.9,
+      "ofVisits": 75.1
+    },
+    "normal": {
+      "setPct": 70,
+      "whenPoop": 70.3,
+      "ofVisits": 69
+    },
+    "office": {
+      "setPct": 50,
+      "whenPoop": 49.8,
+      "ofVisits": 49.8
+    },
+    "light": {
+      "setPct": 35,
+      "whenPoop": 35.3,
+      "ofVisits": 35.3
+    },
+    "early": {
+      "setPct": 75,
+      "whenPoop": 74.8,
+      "ofVisits": 60.1
+    },
+    "eod": {
+      "setPct": 30,
+      "whenPoop": 30.3,
+      "ofVisits": 30.3
+    }
+  },
+  "coax": {
+    "diligent": 0.8,
+    "normal": 0.55,
+    "office": 0.45,
+    "light": 0.4,
+    "early": 0.15,
+    "eod": 0.1
+  },
+  "crystalRank": {
+    "diligent": {
+      "meanShare": 27.3,
+      "top1": 5.6
+    },
+    "normal": {
+      "meanShare": 17.6,
+      "top1": 0.1
+    },
+    "office": {
+      "meanShare": 5.3,
+      "top1": 0
+    },
+    "light": {
+      "meanShare": 0,
+      "top1": 0
+    },
+    "early": {
+      "meanShare": 0,
+      "top1": 0
+    },
+    "eod": {
+      "meanShare": 0,
+      "top1": 0
+    }
+  },
+  "locked": {
+    "lumiCq": 25,
+    "pMax": 0.2,
+    "softCq": 28,
+    "cleanMin": 60,
+    "shroomW": {
+      "cloud": 0.5,
+      "rain": 1
+    }
+  },
+  "v6start": {
+    "params": {
+      "gapPt": 5,
+      "nightLo": 0.3,
+      "nightHi": 0.5,
+      "pMax": 0.2,
+      "lumiCq": 25,
+      "brightCq": 30,
+      "brightMax": 0.45,
+      "brightDays": 5,
+      "specShare": 0.45,
+      "specCq": 0,
+      "softCq": 28,
+      "cleanMin": 60,
+      "gain": 1.5,
+      "decay": 0.05,
+      "floor": 8,
+      "cq0": 50
+    },
+    "fail": [
+      "早起 水珠 85.59%>85",
+      "隔日 火苗 93.34%>85",
+      "螢絨全體 1.95% 唔喺 3–10",
+      "晶角全體 0%<5",
+      "燦光 全體 0.62%<2",
+      "疏玩合計柔光 0.13%<2",
+      "隔日未有微塵＋火苗"
+    ],
+    "checks": [
+      [
+        "晶角全體≥5%",
+        "❌",
+        0
+      ],
+      [
+        "月眠全體≥5%",
+        "✅",
+        6.87
+      ],
+      [
+        "螢絨 3–10%",
+        "❌",
+        1.95
+      ],
+      [
+        "每表菇傘≤30%",
+        "✅",
+        13.85
+      ],
+      [
+        "9 條路出齊",
+        "❌",
+        null
+      ],
+      [
+        "每表≥2 結局",
+        "✅",
+        null
+      ],
+      [
+        "單一≤85%",
+        "❌",
+        null
+      ],
+      [
+        "疏玩柔光＋微塵",
+        "❌",
+        "0.13/26.11"
+      ],
+      [
+        "隔日微塵＋火苗",
+        "❌",
+        "0/93.34"
+      ],
+      [
+        "疏玩 CQ 15–35",
+        "✅",
+        "18.44/15.99"
+      ]
+    ],
+    "lumiPct": 1.95,
+    "cqMed": {
+      "diligent": 26.5,
+      "normal": 22.95,
+      "office": 20.8,
+      "light": 18.44,
+      "early": 16.82,
+      "eod": 15.99
+    },
+    "tables": {
+      "diligent": {
+        "lumi": 7.06,
+        "tide": 1.14,
+        "shroom": 13.85,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 3.46,
+        "soft": 14.77,
+        "dust": 59.72
+      },
+      "normal": {
+        "lumi": 2.48,
+        "tide": 10.53,
+        "shroom": 11.88,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0.17,
+        "soft": 2.39,
+        "dust": 72.55
+      },
+      "office": {
+        "lumi": 0.74,
+        "tide": 16.38,
+        "shroom": 9.03,
+        "crystal": 0,
+        "moon": 1.06,
+        "ember": 0,
+        "bright": 0.08,
+        "soft": 0.55,
+        "dust": 72.15
+      },
+      "light": {
+        "lumi": 0.93,
+        "tide": 3.05,
+        "shroom": 3.38,
+        "crystal": 0,
+        "moon": 40.16,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0.26,
+        "dust": 52.23
+      },
+      "early": {
+        "lumi": 0.48,
+        "tide": 85.59,
+        "shroom": 3.94,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0.1,
+        "bright": 0,
+        "soft": 0,
+        "dust": 9.9
+      },
+      "eod": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 5.56,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 93.34,
+        "bright": 0,
+        "soft": 0,
+        "dust": 0
+      }
+    },
+    "totalPct": {
+      "lumi": 1.95,
+      "tide": 19.45,
+      "shroom": 7.94,
+      "crystal": 0,
+      "moon": 6.87,
+      "ember": 15.57,
+      "bright": 0.62,
+      "soft": 2.99,
+      "dust": 44.43
+    },
+    "sparse": {
+      "soft": 0.13,
+      "dust": 26.11
+    }
+  },
+  "search": {
+    "tried": 201,
+    "solved": false,
+    "changed": 3
+  },
+  "best": {
+    "params": {
+      "gapPt": 18,
+      "nightLo": 0.3,
+      "nightHi": 0.5,
+      "pMax": 0.2,
+      "lumiCq": 25,
+      "brightCq": 30,
+      "brightMax": 0.45,
+      "brightDays": 5,
+      "specShare": 0.45,
+      "specCq": 15,
+      "softCq": 28,
+      "cleanMin": 60,
+      "gain": 1.5,
+      "decay": 0.03,
+      "floor": 8,
+      "cq0": 50
+    },
+    "dist": 18,
+    "fail": [
+      "晶角全體 0.03%<5"
+    ],
+    "checks": [
+      [
+        "晶角全體≥5%",
+        "❌",
+        0.03
+      ],
+      [
+        "月眠全體≥5%",
+        "✅",
+        5.58
+      ],
+      [
+        "螢絨 3–10%",
+        "✅",
+        8.72
+      ],
+      [
+        "每表菇傘≤30%",
+        "✅",
+        21.83
+      ],
+      [
+        "9 條路出齊",
+        "❌",
+        null
+      ],
+      [
+        "每表≥2 結局",
+        "✅",
+        null
+      ],
+      [
+        "單一≤85%",
+        "✅",
+        null
+      ],
+      [
+        "疏玩柔光＋微塵",
+        "✅",
+        "4.08/19.84"
+      ],
+      [
+        "隔日微塵＋火苗",
+        "✅",
+        "8/69.07"
+      ],
+      [
+        "疏玩 CQ 15–35",
+        "✅",
+        "26.73/19.74"
+      ]
+    ],
+    "lumiPct": 8.72,
+    "cqMed": {
+      "diligent": 40.22,
+      "normal": 34.87,
+      "office": 31.28,
+      "light": 26.73,
+      "early": 25.04,
+      "eod": 19.74
+    },
+    "tables": {
+      "diligent": {
+        "lumi": 10.01,
+        "tide": 2.92,
+        "shroom": 11.39,
+        "crystal": 0.17,
+        "moon": 0,
+        "ember": 0,
+        "bright": 64.94,
+        "soft": 10.57,
+        "dust": 0
+      },
+      "normal": {
+        "lumi": 10.99,
+        "tide": 10.75,
+        "shroom": 9.82,
+        "crystal": 0,
+        "moon": 0.03,
+        "ember": 0.18,
+        "bright": 64.83,
+        "soft": 3.15,
+        "dust": 0.25
+      },
+      "office": {
+        "lumi": 8.68,
+        "tide": 15.22,
+        "shroom": 7.93,
+        "crystal": 0,
+        "moon": 1.46,
+        "ember": 0.04,
+        "bright": 46.9,
+        "soft": 13.04,
+        "dust": 6.73
+      },
+      "light": {
+        "lumi": 12.54,
+        "tide": 3.75,
+        "shroom": 5.1,
+        "crystal": 0,
+        "moon": 31.97,
+        "ember": 0,
+        "bright": 6.79,
+        "soft": 8.16,
+        "dust": 31.68
+      },
+      "early": {
+        "lumi": 10.08,
+        "tide": 71.88,
+        "shroom": 8.27,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0.71,
+        "bright": 0.4,
+        "soft": 0,
+        "dust": 8.66
+      },
+      "eod": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 21.83,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 69.07,
+        "bright": 0,
+        "soft": 0,
+        "dust": 8
+      }
+    },
+    "totalPct": {
+      "lumi": 8.72,
+      "tide": 17.42,
+      "shroom": 10.72,
+      "crystal": 0.03,
+      "moon": 5.58,
+      "ember": 11.67,
+      "bright": 30.64,
+      "soft": 5.82,
+      "dust": 9.22
+    },
+    "sparse": {
+      "soft": 4.08,
+      "dust": 19.84
+    }
+  },
+  "stability": {
+    "halfN": 500,
+    "driftTotalPct": {
+      "lumi": 0.08,
+      "tide": -0.42,
+      "shroom": -0.29,
+      "crystal": -0.01,
+      "moon": 0.09,
+      "ember": 0.01,
+      "bright": -0.09,
+      "soft": 0.23,
+      "dust": 0.41
+    },
+    "halfFail": 1,
+    "fullFail": 1
+  },
+  "ms": 1776
+}

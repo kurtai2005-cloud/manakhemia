@@ -1,0 +1,363 @@
+{
+  "doc": "附件 §7 平衡修訂 v3（2026-11-01 01:20）。repo 未有呢段。",
+  "sim": "code/glimmer-evo6 @ 25e8c40c2ca96d1a514042f4d4a8d9074eaeb718",
+  "stars": "無。sim 冇星星碎欄位。",
+  "snap": {
+    "diligent": {
+      "n": 500,
+      "adult": true,
+      "ffPos": 450,
+      "night": 0.268,
+      "clean": 81.7,
+      "all": 97,
+      "share": {
+        "tide": 0.443,
+        "shroom": 0.103,
+        "crystal": 0.206,
+        "moon": 0.144,
+        "ember": 0.103
+      }
+    },
+    "normal": {
+      "n": 500,
+      "adult": true,
+      "ffPos": 400,
+      "night": 0.405,
+      "clean": 71.6,
+      "all": 84,
+      "share": {
+        "tide": 0.512,
+        "shroom": 0.071,
+        "crystal": 0.155,
+        "moon": 0.143,
+        "ember": 0.119
+      }
+    },
+    "office": {
+      "n": 500,
+      "adult": true,
+      "ffPos": 439,
+      "night": 0.311,
+      "clean": 72.5,
+      "all": 90,
+      "share": {
+        "tide": 0.467,
+        "shroom": 0.044,
+        "crystal": 0.111,
+        "moon": 0.311,
+        "ember": 0.067
+      }
+    },
+    "light": {
+      "n": 500,
+      "adult": true,
+      "ffPos": 423,
+      "night": 0.575,
+      "clean": 69.8,
+      "all": 87,
+      "share": {
+        "tide": 0.425,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0.575,
+        "ember": 0
+      }
+    },
+    "early": {
+      "n": 500,
+      "adult": true,
+      "ffPos": 483,
+      "night": 0.913,
+      "clean": 48.3,
+      "all": 92,
+      "share": {
+        "tide": 1,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0
+      }
+    },
+    "eod": {
+      "n": 500,
+      "adult": true,
+      "ffPos": 499,
+      "night": 0,
+      "clean": 25.5,
+      "all": 83,
+      "share": {
+        "tide": 0.169,
+        "shroom": 0.169,
+        "crystal": 0.253,
+        "moon": 0,
+        "ember": 0.41
+      }
+    }
+  },
+  "v2modelNote": "專線門檻 specCq/specTop/bright/soft/cleanMin 係 v2 殘留起始值，v3 正文冇寫。",
+  "v3start": {
+    "params": {
+      "gapPt": 5,
+      "nightLo": 0.3,
+      "nightHi": 0.5,
+      "pMax": 0.25,
+      "lumiCq": 40,
+      "specCq": 40,
+      "specTop": 0.3,
+      "brightCq": 60,
+      "brightMax": 0.45,
+      "softCq": 30,
+      "cleanMin": 60,
+      "gain": 1.5,
+      "decay": 0.05,
+      "floor": 8,
+      "cq0": 50
+    },
+    "fail": [
+      "勤力 結局1<2",
+      "勤力 柔光 100%>85",
+      "普通 結局1<2",
+      "普通 微塵 100%>85",
+      "返工 結局1<2",
+      "返工 柔光 100%>85",
+      "輕度 結局1<2",
+      "輕度 微塵 100%>85",
+      "早起 結局1<2",
+      "早起 微塵 100%>85",
+      "隔日 結局1<2",
+      "隔日 微塵 100%>85",
+      "螢絨 全體 0%<2",
+      "水珠 全體 0%<2",
+      "菇傘 全體 0%<2",
+      "晶角 全體 0%<2",
+      "月眠 全體 0%<2",
+      "火苗 全體 0%<2",
+      "燦光 全體 0%<2",
+      "螢絨全體 0% 唔喺 3–10",
+      "輕度 柔光 0%<2",
+      "隔日 柔光 0%<2"
+    ],
+    "lumiPct": 0,
+    "cqMed": {
+      "diligent": 32.23,
+      "normal": 27.02,
+      "office": 32.33,
+      "light": 24.39,
+      "early": 19.39,
+      "eod": 18.86
+    },
+    "tables": {
+      "diligent": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 100,
+        "dust": 0
+      },
+      "normal": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 100
+      },
+      "office": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 100,
+        "dust": 0
+      },
+      "light": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 100
+      },
+      "early": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 100
+      },
+      "eod": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 100
+      }
+    },
+    "totalPct": {
+      "lumi": 0,
+      "tide": 0,
+      "shroom": 0,
+      "crystal": 0,
+      "moon": 0,
+      "ember": 0,
+      "bright": 0,
+      "soft": 33.33,
+      "dust": 66.67
+    }
+  },
+  "search": {
+    "tried": 746496,
+    "hits": 0,
+    "solved": false,
+    "pathMax": {
+      "lumi": 25.85,
+      "tide": 73.75,
+      "shroom": 0,
+      "crystal": 9.16,
+      "moon": 23.98,
+      "ember": 16.67,
+      "bright": 49.35,
+      "soft": 100,
+      "dust": 100
+    }
+  },
+  "best": {
+    "params": {
+      "gapPt": 40,
+      "nightLo": 0.3,
+      "nightHi": 0.6,
+      "pMax": 0.25,
+      "lumiCq": 15,
+      "specCq": 30,
+      "specTop": 0.35,
+      "brightCq": 60,
+      "brightMax": 0.45,
+      "softCq": 20,
+      "cleanMin": 60,
+      "gain": 0.5,
+      "decay": 0.02,
+      "floor": 10,
+      "cq0": 50
+    },
+    "dist": 10.0917,
+    "fail": [
+      "隔日 結局1<2",
+      "隔日 微塵 100%>85",
+      "菇傘 全體 0%<2",
+      "火苗 全體 0%<2",
+      "燦光 全體 0%<2",
+      "輕度 微塵 0%<2",
+      "隔日 柔光 0%<2"
+    ],
+    "lumiPct": 8.55,
+    "cqMed": {
+      "diligent": 32.63,
+      "normal": 30.53,
+      "office": 31.9,
+      "light": 28.29,
+      "early": 22.5,
+      "eod": 17.74
+    },
+    "tables": {
+      "diligent": {
+        "lumi": 0,
+        "tide": 68.25,
+        "shroom": 0,
+        "crystal": 31.75,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 0
+      },
+      "normal": {
+        "lumi": 6.98,
+        "tide": 71.42,
+        "shroom": 0,
+        "crystal": 21.59,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 0
+      },
+      "office": {
+        "lumi": 0.81,
+        "tide": 59.51,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 39.67,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 0
+      },
+      "light": {
+        "lumi": 19.37,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 80.63,
+        "dust": 0
+      },
+      "early": {
+        "lumi": 24.15,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 75.85,
+        "dust": 0
+      },
+      "eod": {
+        "lumi": 0,
+        "tide": 0,
+        "shroom": 0,
+        "crystal": 0,
+        "moon": 0,
+        "ember": 0,
+        "bright": 0,
+        "soft": 0,
+        "dust": 100
+      }
+    },
+    "totalPct": {
+      "lumi": 8.55,
+      "tide": 33.2,
+      "shroom": 0,
+      "crystal": 8.89,
+      "moon": 6.61,
+      "ember": 0,
+      "bright": 0,
+      "soft": 26.08,
+      "dust": 16.67
+    }
+  },
+  "ms": 17345
+}

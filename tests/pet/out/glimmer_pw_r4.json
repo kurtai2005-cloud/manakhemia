@@ -1,0 +1,384 @@
+[
+ {
+  "id": "plan-a 360x640 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 226.2,
+   "y": 7.6,
+   "w": 44.7,
+   "h": 44.7,
+   "r": 271,
+   "b": 52.3
+  },
+  "gear": {
+   "x": 275.5,
+   "y": 7.6,
+   "w": 44.7,
+   "h": 44.7,
+   "r": 320.3,
+   "b": 52.3
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 295.7345971563981,
+   "cssH": 640,
+   "dpr": 1
+  },
+  "errors": []
+ },
+ {
+  "id": "plan-a 360x640-dpr3 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 210,
+   "y": 45.3,
+   "w": 44.7,
+   "h": 44.7,
+   "r": 254.7,
+   "b": 90
+  },
+  "gear": {
+   "x": 258.7,
+   "y": 45.3,
+   "w": 44.7,
+   "h": 44.7,
+   "r": 303.3,
+   "b": 90
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 260,
+   "cssH": 562.6666666666666,
+   "dpr": 3
+  },
+  "errors": []
+ },
+ {
+  "id": "plan-a 390x844 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 284,
+   "y": 10,
+   "w": 45,
+   "h": 45,
+   "r": 329,
+   "b": 55
+  },
+  "gear": {
+   "x": 335,
+   "y": 10,
+   "w": 45,
+   "h": 45,
+   "r": 380,
+   "b": 55
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 390,
+   "cssH": 844,
+   "dpr": 1
+  },
+  "errors": []
+ },
+ {
+  "id": "plan-a 390x844-dpr3 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 284,
+   "y": 10,
+   "w": 45,
+   "h": 45,
+   "r": 329,
+   "b": 55
+  },
+  "gear": {
+   "x": 335,
+   "y": 10,
+   "w": 45,
+   "h": 45,
+   "r": 380,
+   "b": 55
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 390,
+   "cssH": 844,
+   "dpr": 3
+  },
+  "errors": []
+ },
+ {
+  "id": "plan-a 412x915 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 295,
+   "y": 45.5,
+   "w": 45,
+   "h": 45,
+   "r": 340,
+   "b": 90.5
+  },
+  "gear": {
+   "x": 346,
+   "y": 45.5,
+   "w": 45,
+   "h": 45,
+   "r": 391,
+   "b": 90.5
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 390,
+   "cssH": 844,
+   "dpr": 1
+  },
+  "errors": []
+ },
+ {
+  "id": "plan-a 412x915-dpr3 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 295,
+   "y": 45.5,
+   "w": 45,
+   "h": 45,
+   "r": 340,
+   "b": 90.5
+  },
+  "gear": {
+   "x": 346,
+   "y": 45.5,
+   "w": 45,
+   "h": 45,
+   "r": 391,
+   "b": 90.5
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 390,
+   "cssH": 844,
+   "dpr": 3
+  },
+  "errors": []
+ },
+ {
+  "id": "plan-a tapPet(5) grumpy_tap",
+  "pass": false,
+  "state": "event",
+  "log": [
+   "grumpy_tap:tap"
+  ],
+  "cdTap": 47.99990277777778,
+  "cdNeed": 47.99988888888889,
+  "grains": 0,
+  "mood": -0.0004444444444970941,
+  "dayCount": 4,
+  "events": 0,
+  "day0": 4,
+  "ev0": 0,
+  "warnN": 1,
+  "warnText": "⚠ 有 1 件小事 2 日後作廢（日記只留 14 日），記得領。",
+  "htmlSoon": false,
+  "htmlVoid": true
+ },
+ {
+  "id": "plan-a diary copy",
+  "pass": true,
+  "warnN": 1,
+  "warnText": "⚠ 有 1 件小事 2 日後作廢（日記只留 14 日），記得領。",
+  "htmlSoon": false,
+  "htmlVoid": true,
+  "errors": []
+ },
+ {
+  "id": "live-s1 360x640 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 226.2,
+   "y": 7.6,
+   "w": 44.7,
+   "h": 44.7,
+   "r": 271,
+   "b": 52.3
+  },
+  "gear": {
+   "x": 275.5,
+   "y": 7.6,
+   "w": 44.7,
+   "h": 44.7,
+   "r": 320.3,
+   "b": 52.3
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 295.7345971563981,
+   "cssH": 640,
+   "dpr": 1
+  },
+  "errors": []
+ },
+ {
+  "id": "live-s1 360x640-dpr3 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 210,
+   "y": 45.3,
+   "w": 44.7,
+   "h": 44.7,
+   "r": 254.7,
+   "b": 90
+  },
+  "gear": {
+   "x": 258.7,
+   "y": 45.3,
+   "w": 44.7,
+   "h": 44.7,
+   "r": 303.3,
+   "b": 90
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 260,
+   "cssH": 562.6666666666666,
+   "dpr": 3
+  },
+  "errors": []
+ },
+ {
+  "id": "live-s1 390x844 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 284,
+   "y": 10,
+   "w": 45,
+   "h": 45,
+   "r": 329,
+   "b": 55
+  },
+  "gear": {
+   "x": 335,
+   "y": 10,
+   "w": 45,
+   "h": 45,
+   "r": 380,
+   "b": 55
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 390,
+   "cssH": 844,
+   "dpr": 1
+  },
+  "errors": []
+ },
+ {
+  "id": "live-s1 390x844-dpr3 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 284,
+   "y": 10,
+   "w": 45,
+   "h": 45,
+   "r": 329,
+   "b": 55
+  },
+  "gear": {
+   "x": 335,
+   "y": 10,
+   "w": 45,
+   "h": 45,
+   "r": 380,
+   "b": 55
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 390,
+   "cssH": 844,
+   "dpr": 3
+  },
+  "errors": []
+ },
+ {
+  "id": "live-s1 412x915 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 295,
+   "y": 45.5,
+   "w": 45,
+   "h": 45,
+   "r": 340,
+   "b": 90.5
+  },
+  "gear": {
+   "x": 346,
+   "y": 45.5,
+   "w": 45,
+   "h": 45,
+   "r": 391,
+   "b": 90.5
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 390,
+   "cssH": 844,
+   "dpr": 1
+  },
+  "errors": []
+ },
+ {
+  "id": "live-s1 412x915-dpr3 ibtn≥44",
+  "pass": true,
+  "diary": {
+   "x": 295,
+   "y": 45.5,
+   "w": 45,
+   "h": 45,
+   "r": 340,
+   "b": 90.5
+  },
+  "gear": {
+   "x": 346,
+   "y": 45.5,
+   "w": 45,
+   "h": 45,
+   "r": 391,
+   "b": 90.5
+  },
+  "pairs": [],
+  "scale": {
+   "cssW": 390,
+   "cssH": 844,
+   "dpr": 3
+  },
+  "errors": []
+ },
+ {
+  "id": "live-s1 tapPet(5) grumpy_tap",
+  "pass": false,
+  "state": "event",
+  "log": [
+   "grumpy_tap:tap"
+  ],
+  "cdTap": 47.99990277777778,
+  "cdNeed": 47.99988888888889,
+  "grains": 0,
+  "mood": -0.0004444444444970941,
+  "dayCount": 4,
+  "events": 0,
+  "day0": 4,
+  "ev0": 0,
+  "warnN": 1,
+  "warnText": "⚠ 有 1 件小事 2 日後作廢（日記只留 14 日），記得領。",
+  "htmlSoon": false,
+  "htmlVoid": true
+ },
+ {
+  "id": "live-s1 diary copy",
+  "pass": true,
+  "warnN": 1,
+  "warnText": "⚠ 有 1 件小事 2 日後作廢（日記只留 14 日），記得領。",
+  "htmlSoon": false,
+  "htmlVoid": true,
+  "errors": []
+ }
+]
