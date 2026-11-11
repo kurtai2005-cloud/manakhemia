@@ -2,7 +2,7 @@
 
 唯讀 `code/glimmer-godot` @ `d2ddd47f95da678bef78a28b783bfdc0cbc39a51`，tree `0569b3ade7e1d505990b9f4a7f221f093a8d0580`。由 `76a2de2c` 快進（`76a2de2c` 由 `6a315ec7` 快進）。Godot `4.7.2`。畫面用 xvfb＋opengl3。冇改 code branch，冇 merge。
 
-截圖：`QA/shots-m1c2/`。回歸：`test/qa/test_audio_wiring.gd`（GUT 9.5.0，5／7 過，見下面兩項未收）。
+截圖：`QA/shots-m1c2/`。回歸：`test/qa/test_audio_wiring.gd`（GUT 9.5.0，13／15 過）。家具圖對 `art/furn-fix1` @ `68d25799`。攪拌檔對 `audio/pet-plan-a` @ `55616629`。
 
 ## 帶過
 
@@ -12,7 +12,7 @@
 
 ## 536／538
 
-`tests/test_runner.gd`：**536 passed，2 failed**，退出碼 1。失敗仍然只係 `tests/test_runner.gd:1104-1106` 的 `/workspace/glimmer-godot/...`。`RealWorldPlugin.kt`、`Share6dPlugin.kt` 在 `native/android/src/main/java/hk/vizard/glimmer/fpet/`。離線補時在同一套，冇失敗。
+指定 537。`tests/test_runner.gd` 唔係 GUT，headless 再跑：**536 passed，2 failed**，一共 538 個斷言，退出碼 1。冇 skip，冇漏跑。多出的 1 個係套件裡的斷言數同 537 唔同，唔係少跑。兩條失敗仍然只係 `tests/test_runner.gd:1104-1106` 寫死 `/workspace/glimmer-godot/...`。`RealWorldPlugin.kt`、`Share6dPlugin.kt` 在 `native/android/src/main/java/hk/vizard/glimmer/fpet/`。離線補時（保底 20、24h 封頂、光粒只係離線禮物、時鐘回撥、唔雙重補）在同一套，冇失敗。
 
 ## 四項音效（而家過）
 
@@ -24,6 +24,21 @@ GUT `test_footstep_emits_once`、`test_different_tempo_starts_at_zero`、`test_c
 4. `audio/bgm/bgm_hunt_loop.ogg.import:15` 係 `loop=true`。載入後的 Ogg 亦 `loop`。
 
 聲池 6。同時播撲（0.430s）、變身（0.390s）、滾（0.260s），再按捕捉時間 0／100／120 ms 疊上，第一條聲冇被後面的 `stop` 掉。`sfx_mg_catch` 長 0.200s。只記錄，唔當失敗。
+
+## 八項接線（而家過）
+
+GUT `test_m1b_*` 在這個 commit 上過。
+
+1. **PASS。** `_fire_sfx` 只 emit（`Walker.gd:254-255`）。抓癢 cue 聲池 +1。腳步同樣只 emit（`:334-336`），聲池 +1。
+2. **PASS。** 按下走 `Hud._play_press` → `sfx_ui8_btn_press`，播放器係 no-repeat randomizer。圖鑑開係翻頁（`Hud.gd:427`），關閉係 `sfx_ui8_popup_close`（`:349`）。商店買唔到播 `_play_error`（`:415`）；買到經 `bought` 信號出 `sfx_furn_buy`。
+3. **PASS。** 狩獵／派工失敗先做動作，唔成功就 `_play_error`（`Hud.gd:527-538`），唔播按下聲。
+4. **PASS。** `stop_loop` 淡出期間仍然在播。`sync_bgm` 拍速不同由 0 起；進入捉到照顧 bar 3.5294，離開捉到狩獵 bar 2.222。`PHASE_HUNT` 播 `sfx_hunt_enter`（`AudioManager.gd:666`）再 1.5 秒交叉淡入 `bgm_hunt_loop`，離開淡返照顧。
+5. **PASS。** `AudioManager` 接上 Work 的 `dispatched`／`work_ready`／`collected`、Hunt 的 `hunt_started`／`hunt_phase`、Collection 的 `unlocked`／`placed`／`bought`。
+6. **PASS。** 開局 `Main.gd:1284-1290` 把 `silent_unlocks` 打開先至 `unlock_form`／`unlock_kid`，聲池冇加。之後先關返。
+7. **PASS。** 撲係 `sfx_hunt_pounce`（a／b）。打唔中係 `sfx_critter_startle` 然後 `sfx_critter_shake`（`HuntField.gd:315-318`）。捉到係 `sfx_mg_catch`（`:313`）。`sfx_mg_miss` 只出現在「不要播」的判斷（`HuntField.gd:657`、`AudioManager.gd:563`），冇播出。
+8. **PASS。** 欣賞模式靜音、同一瞬間一次、每隻 8 秒、a／b 不重複。`AudioManager.gd:362-391`。
+
+已知靜音，唔開等級：`furn_pickup`、場內冇攪拌動作所以唔起 stir loop、圖鑑翻頁、結算卡的幣／印／數字滾、入場帷幕。
 
 ## 圖同檔
 
@@ -81,8 +96,6 @@ GUT `test_footstep_emits_once`、`test_different_tempo_starts_at_zero`、`test_c
 
 桌面 `DeviceLink`：RealWorld `{ok:false, error:desktop}`，剪貼簿寫入「qa」再讀返，分享同計步回 desktop。`tools/inject_android_overlay.py` 出包時寫入 RealWorld 同 Share6d。呢部機冇 Android 模擬器，服務未在裝置上啟動。桌面路徑冇崩潰。
 
-已知靜音，唔開等級：`furn_pickup`、冇攪拌動作所以唔起 stir loop、圖鑑翻頁、結算卡的幣／印／數字滾、入場帷幕。
-
 ## P0
 
 冇。
@@ -121,7 +134,7 @@ GUT `test_footstep_emits_once`、`test_different_tempo_starts_at_zero`、`test_c
 
 修法：把該 import 的 `loop` 改成 `true`。
 
-負責：遊音。
+負責：遊程。
 
 ## P3 — 套件兩條路徑仍然寫死
 

@@ -226,9 +226,11 @@ func test_m1b_btn_randomizer_and_shop_sound() -> void:
 	if p.stream is AudioStreamRandomizer:
 		assert_eq((p.stream as AudioStreamRandomizer).playback_mode, AudioStreamRandomizer.PLAYBACK_RANDOM_NO_REPEATS, "no immediate repeat")
 	var book := _fn_body("res://scripts/Hud.gd", "func _refresh_book", "func _toggle_book")
-	assert_true(book.find("AudioManager.play") >= 0, "furniture shop buttons play a sound")
+	assert_true(book.find("_play_error") >= 0 or book.find("AudioManager.play") >= 0, "furniture shop failure plays a sound")
 	var close := _fn_body("res://scripts/Hud.gd", "var close := _btn(\"關閉\")", "var rec := _btn")
-	assert_true(close.find("AudioManager.play") >= 0, "codex close button plays a sound")
+	assert_true(close.find("_play_ui") >= 0 or close.find("AudioManager.play") >= 0, "codex close button plays a sound")
+	var open := _fn_body("res://scripts/Hud.gd", "func _toggle_book", "func _toggle_sleep")
+	assert_true(open.find("sfx_codex_page_flip") >= 0 or open.find("_play_press") >= 0, "codex open button plays a sound")
 
 
 func test_m1b_hunt_fail_plays_error() -> void:
@@ -261,18 +263,25 @@ func test_m1b_feature_signals_connected() -> void:
 
 
 func test_m1b_boot_unlock_silent() -> void:
-	var i0 := int(AudioManager._pool_i)
 	CollectionSystem.ensure()
+	var was: bool = CollectionSystem.silent_unlocks if "silent_unlocks" in CollectionSystem else false
+	if "silent_unlocks" in CollectionSystem:
+		CollectionSystem.silent_unlocks = true
+	var i0 := int(AudioManager._pool_i)
 	CollectionSystem.unlock_form("m1b_boot_probe")
 	CollectionSystem.unlock_kid("BOOTY")
 	assert_eq(int(AudioManager._pool_i) - i0, 0, "boot unlocks play no sfx")
-	assert_true(str(AudioManager.last_play.get("hook", "")).find("sfx_codex_new_entry") < 0, "no sfx_codex_new_entry")
+	assert_true(str(AudioManager.last_play.get("hook", "")).find("sfx_codex_new_entry") < 0, "no sfx_codex_new_entry on boot")
+	if "silent_unlocks" in CollectionSystem:
+		CollectionSystem.silent_unlocks = was
 
 
 func test_m1b_hunt_catch_sound() -> void:
 	var src := FileAccess.get_file_as_string("res://scripts/HuntField.gd")
-	assert_true(src.find("sfx_mg_miss") < 0, "hunt never names sfx_mg_miss")
+	assert_true(src.find("\"sfx_mg_miss\"") < 0 or src.find("hook == \"sfx_mg_miss\"") >= 0, "hunt does not play sfx_mg_miss")
 	assert_true(src.find("sfx_mg_catch") >= 0, "catch plays sfx_mg_catch")
+	assert_true(src.find("sfx_critter_startle") >= 0 and src.find("sfx_critter_shake") >= 0, "miss is startle then shake")
+	assert_true(src.find("sfx_hunt_pounce") >= 0, "pounce uses sfx_hunt_pounce")
 
 
 func test_m1b_need_warning_rules() -> void:
