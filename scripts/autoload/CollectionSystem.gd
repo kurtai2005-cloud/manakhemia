@@ -4,7 +4,9 @@ extends Node
 signal shards_changed(total: int)
 signal unlocked(kind: String, id: String)
 signal placed(item_id: String)
+signal bought(item_id: String)
 signal dots_changed()
+var silent_unlocks := false
 
 const JOBS_TRIPS_CAP := 12
 const OLD_CAP := 30
@@ -242,6 +244,7 @@ func buy(id: String) -> Dictionary:
 	notify("collection", true)
 	if Sim:
 		Sim._dirty = true
+	bought.emit(id)
 	return {"ok": true, "id": id, "price": p}
 
 

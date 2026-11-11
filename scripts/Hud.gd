@@ -63,8 +63,6 @@ func _ready() -> void:
 	btn_book.offset_right = -16
 	btn_book.offset_bottom = 56
 	btn_book.pressed.connect(func():
-		if AudioManager:
-			AudioManager.play("sfx_ui8_btn_press_a")
 		_toggle_book()
 	)
 	root.add_child(btn_book)
@@ -172,7 +170,7 @@ func _ready() -> void:
 	hide_btn.offset_bottom = -128
 	hide_btn.pressed.connect(func():
 		if AudioManager:
-			AudioManager.play("sfx_ui8_btn_press_a")
+			_play_press()  # was: hardcoded _a
 		_toggle_hide()
 	)
 	root.add_child(hide_btn)
@@ -188,7 +186,7 @@ func _ready() -> void:
 	dev_btn.offset_bottom = -128
 	dev_btn.pressed.connect(func():
 		if AudioManager:
-			AudioManager.play("sfx_ui8_btn_press_a")
+			_play_press()  # was: hardcoded _a
 		_toggle_dev()
 	)
 	root.add_child(dev_btn)
@@ -207,6 +205,19 @@ func _ready() -> void:
 		CollectionSystem.shards_changed.connect(func(_n): _refresh())
 	_refresh()
 	_apply_appreciate_mute()
+
+
+func _play_ui(hook: String) -> void:
+	if AudioManager:
+		AudioManager.play(hook)
+
+
+func _play_press() -> void:
+	_play_ui("sfx_ui8_btn_press")
+
+
+func _play_error() -> void:
+	_play_ui("sfx_ui8_error")
 
 
 func _icon_btn(icon_id: String, tip: String) -> Button:
@@ -279,14 +290,14 @@ func _build_dev() -> void:
 		var tier: int = item[1]
 		b.pressed.connect(func():
 			if AudioManager:
-				AudioManager.play("sfx_ui8_btn_press_a")
+				_play_press()  # was: hardcoded _a
 			QualitySettings.set_tier(tier)
 		)
 		vb.add_child(b)
 	var b_poop := _btn("加一粒便便")
 	b_poop.pressed.connect(func():
 		if AudioManager:
-			AudioManager.play("sfx_ui8_btn_press_a")
+			_play_press()  # was: hardcoded _a
 		Sim.add_poop()
 	)
 	vb.add_child(b_poop)
@@ -296,14 +307,14 @@ func _build_dev() -> void:
 	var b_h := _btn("快轉 +1 小時")
 	b_h.pressed.connect(func():
 		if AudioManager:
-			AudioManager.play("sfx_ui8_btn_press_a")
+			_play_press()  # was: hardcoded _a
 		_ff_hour()
 	)
 	vb.add_child(b_h)
 	var b_sh := _btn("加 20 碎")
 	b_sh.pressed.connect(func():
 		if AudioManager:
-			AudioManager.play("sfx_ui8_btn_press_a")
+			_play_press()  # was: hardcoded _a
 		if CollectionSystem:
 			CollectionSystem.add_shards(20, "old")
 	)
@@ -335,14 +346,13 @@ func _build_book() -> void:
 	var close := _btn("關閉")
 	close.pressed.connect(func():
 		book_panel.visible = false
+		_play_ui("sfx_ui8_popup_close")
 		if CollectionSystem:
 			CollectionSystem.clear_new()
 	)
 	vb.add_child(close)
 	var rec := _btn("一鍵擺家具")
 	rec.pressed.connect(func():
-		if AudioManager:
-			AudioManager.play("sfx_ui8_btn_press_a")
 		if CollectionSystem:
 			var r: Dictionary = CollectionSystem.place_recommended()
 			if bool(r.get("ok", false)):
@@ -401,6 +411,8 @@ func _refresh_book() -> void:
 					var main2 := get_tree().get_first_node_in_group("glimmer_main")
 					if main2 and main2.has_method("refresh_furniture"):
 						main2.refresh_furniture()
+				else:
+					_play_error()
 			_refresh_book()
 		)
 		shop.add_child(b)
@@ -411,12 +423,16 @@ func _toggle_book() -> void:
 		return
 	book_panel.visible = not book_panel.visible
 	if book_panel.visible:
+		# 開圖鑑：只播翻頁，唔疊 popup_open／btn_press
+		_play_ui("sfx_codex_page_flip")
 		_refresh_book()
+	else:
+		_play_ui("sfx_ui8_popup_close")
 
 
 func _toggle_sleep() -> void:
 	if AudioManager:
-		AudioManager.play("sfx_ui8_btn_press_a")
+		_play_press()  # was: hardcoded _a
 	var on := not bool(Sim.state.get("sleeping", false))
 	Sim.set_sleeping(on)
 	if AudioManager:
@@ -483,7 +499,7 @@ func set_care_target(w: Walker) -> void:
 
 func _hand(act: String, food: String) -> void:
 	if AudioManager:
-		AudioManager.play("sfx_ui8_btn_press_a")
+		_play_press()  # was: hardcoded _a
 	var main := get_tree().get_first_node_in_group("glimmer_main")
 	if main == null:
 		return
@@ -500,18 +516,26 @@ func _hand(act: String, food: String) -> void:
 
 
 func _one_tap(act: String) -> void:
-	if AudioManager:
-		AudioManager.play("sfx_ui8_btn_press_a")
 	var rec: Dictionary = {}
 	match act:
 		"clean":
+			_play_press()
 			rec = Sim.clean_all()
 		"harvest":
+			_play_press()
 			rec = _do_harvest()
 		"hunt":
 			rec = _do_hunt()
+			if bool(rec.get("ok", false)):
+				_play_press()
+			else:
+				_play_error()
 		"dispatch":
 			rec = _do_dispatch()
+			if bool(rec.get("ok", false)):
+				_play_press()
+			else:
+				_play_error()
 	if rec.is_empty():
 		return
 	_on_care(str(rec.get("act", act)), rec)

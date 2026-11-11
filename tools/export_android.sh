@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export JAVA_HOME="${JAVA_HOME:-/home/box/tools/jdk-17.0.21+9}"
 export ANDROID_HOME="${ANDROID_HOME:-/home/box/Android/Sdk}"
 export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"
-OUT="${OUT:-/workspace/apk/微光小圃-godot-m1c.apk}"
+OUT="${OUT:-/workspace/apk/微光小圃-godot-m1c1.apk}"
 mkdir -p "$(dirname "$OUT")"
 
 CFG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/godot"
@@ -122,11 +122,11 @@ if [[ -x "$GRADLEW" ]]; then
   echo "gradle assemble after final inject (package/version/abi + GLES patch)"
   (cd "$ROOT/android/build" && ./gradlew assembleStandardDebug --stacktrace \
     -Pexport_package_name=hk.vizard.glimmer.fpet.godot \
-    -Pexport_version_code=5 \
-    -Pexport_version_name=2.0.0-m1c \
+    -Pexport_version_code=6 \
+    -Pexport_version_name=2.0.0-m1c1 \
     -Pexport_enabled_abis=arm64-v8a \
     -Pexport_path=/workspace/apk \
-    -Pexport_filename=微光小圃-godot-m1c.apk \
+    -Pexport_filename=微光小圃-godot-m1c1.apk \
     -Pperform_zipalign=true \
     -Pperform_signing=true \
     -Pdebug_keystore_file="$KS" \

@@ -1,0 +1,842 @@
+{
+  "format": "m1b_sfx_map/1",
+  "title": "微光小圃 M1b 功能音對照",
+  "date": "2026-11-11",
+  "listened": false,
+  "listen_note": "未有人聽過，只做數值 QA（LUFS／peak／接縫／accent）。",
+  "rules": {
+    "accent": "hook 觸發即播；檔內 accent 預設 0 ms。",
+    "alternate_ab": true,
+    "buses": {
+      "feature": "SFX",
+      "ui_reuse": "UI",
+      "pet_reuse": "Pet",
+      "hunt_bgm": "BGM"
+    },
+    "appreciate_mute": "只有 sfx_need_warning 受「欣賞」模式靜音（§0.5）；呢批功能聲照播。",
+    "no_failure_hunt": "狩獵唔用 sfx_mg_miss／sfx_hit／sfx_lose。撲唔中用 sfx_critter_startle＋sfx_critter_shake。",
+    "reuse_ui8": "通用掣／popup／toast／stamp／coin／轉場全部複用 sfx_ui8_*，見 MOTION_HD2D.md。",
+    "volume_jitter": "功能一-shots 預設 pitch 1.0；家具／攪拌先考慮 0.95–1.05。"
+  },
+  "motion": {
+    "source": "/workspace/game-design/art-pet/ui/kit_hd2d/MOTION_HD2D.md",
+    "screen_change_ms": 900,
+    "screen_back_ms": 600,
+    "card_pop_ms": 240,
+    "card_stagger_ms": 40,
+    "popup_open_ms": 420,
+    "popup_close_ms": 200,
+    "button_down_ms": 60,
+    "button_up_ms": 120,
+    "toast_in_ms": 220,
+    "toast_hold_ms": 1800,
+    "toast_out_ms": 180,
+    "stamp_ms": 160,
+    "reward_roll_ms": 400,
+    "reward_tick_every": 4
+  },
+  "events": [
+    {
+      "event": "work.post.dispatch",
+      "zh": "郵局派工／寄信",
+      "code": "WorkSystem.dispatch('post') → signal dispatched(building, pets) @ WorkSystem.gd:106；Main._send_pets_to_work；Main._on_building_tapped 喺 empty 時 dispatch",
+      "files": [
+        "sfx_post_letter_send.ogg"
+      ],
+      "reuse": [],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "派工當刻 t=0。寵物行去門口期間唔再重播。MOTION 唔適用（3D 建築，冇專屬 UI 動畫）。",
+      "notes": "一封信甩入郵筒＋木篤。唔借用 sfx_pet_letter_drop／sfx_visitor_offer_letter（短遞出／放低）。失敗（busy／work_or_hunt）用現有 sfx_ui8_error。"
+    },
+    {
+      "event": "work.post.ready",
+      "zh": "郵局收工亮燈／信到",
+      "code": "WorkSystem.tick_watch／offline_tick → work_ready('post') @ WorkSystem.gd:120／136；Main._sync_work_glow 開門金光",
+      "files": [
+        "sfx_post_letter_receive.ogg"
+      ],
+      "reuse": [],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "status 轉 READY 即播，t=0。watch_sec 預設 12 s（data/m1b.json work.watch_sec）。",
+      "notes": "信落到枱＋細蠟印。欣賞模式唔靜音（只有 sfx_need_warning 受 §0.5 限）。"
+    },
+    {
+      "event": "work.post.collect",
+      "zh": "郵局收成／收工",
+      "code": "WorkSystem.collect('post') → collected @ WorkSystem.gd:194；Hud._do_harvest 一鍵收成；Main._on_building_tapped 喺 ready 時 collect",
+      "files": [],
+      "reuse": [
+        "sfx_ui8_confirm.ogg",
+        "sfx_ui8_toast_in.ogg",
+        "sfx_ui8_coin.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "t=0 sfx_ui8_confirm（MOTION §7 委託完成 stamp 160 ms）。摘要卡／toast：t=0 sfx_ui8_toast_in（MOTION §4 in 220 ms）；若有碎數滾動（MOTION §10.1 400 ms、每跳 4 一下）喺 t=140 起每 4 步播 sfx_ui8_coin。M1b Hud._show_card 而家係靜態數字，未做滾數——有滾先加 coin。",
+      "notes": "收工複用 UI 完成／toast，唔另做收工聲。"
+    },
+    {
+      "event": "work.kitchen.dispatch",
+      "zh": "廚房派工／開火",
+      "code": "WorkSystem.dispatch('kitchen') → dispatched；Main._send_pets_to_work；Main._on_building_tapped",
+      "files": [
+        "sfx_kitchen_cook_start.ogg"
+      ],
+      "reuse": [],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "派工當刻 t=0。",
+      "notes": "暖鍋沿＋蒸汽。唔借用 sfx_feed_meal／snack。"
+    },
+    {
+      "event": "work.kitchen.stir",
+      "zh": "廚房攪拌（工作期間）",
+      "code": "建議：WorkSystem.site('kitchen').status==work 期間 AudioManager.start_loop('sfx_kitchen_stir')，收工／離開 stop_loop。而家 WorkSpot／Main._send_pets_to_work 只播 idle_quiet／scratch，未有攪拌 hook。",
+      "files": [
+        "sfx_kitchen_stir.ogg"
+      ],
+      "reuse": [],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -18,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 0.85,
+      "randomize": "playbackRate 0.97–1.03（loop 時建議固定 1.0 以免接縫走音）",
+      "timing": "0.500 s 圓周無縫。watch_sec 12 s 期間可循環。",
+      "notes": "AudioManager._ensure_loop 只對檔名含 _loop 自動 ogg.loop=true。遊程接入時請改名 sfx_kitchen_stir_loop.ogg，或擴 _ensure_loop 認呢個 hook。"
+    },
+    {
+      "event": "work.kitchen.ready",
+      "zh": "廚房煮好",
+      "code": "WorkSystem.work_ready('kitchen') @ WorkSystem.gd:120／136",
+      "files": [
+        "sfx_kitchen_cook_done.ogg"
+      ],
+      "reuse": [],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "轉 READY 即播 t=0；同時 stop_loop 攪拌（建議淡出 0.3–0.5 s）。",
+      "notes": "鍋蓋叮，唔用 C7 鋼片琴簇，避免同 sfx_ui8_confirm／btn_sparkle 撞。"
+    },
+    {
+      "event": "work.kitchen.collect",
+      "zh": "廚房收成／收工",
+      "code": "WorkSystem.collect('kitchen')；Hud._do_harvest",
+      "files": [],
+      "reuse": [
+        "sfx_ui8_confirm.ogg",
+        "sfx_ui8_toast_in.ogg",
+        "sfx_ui8_coin.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "同 work.post.collect。",
+      "notes": "複用 UI 完成／toast。"
+    },
+    {
+      "event": "ui.book.open",
+      "zh": "打開圖鑑",
+      "code": "Hud.btn_book.pressed → _toggle_book @ Hud.gd:65／409（book_panel.visible=true）",
+      "files": [
+        "sfx_codex_page_flip_a.ogg",
+        "sfx_codex_page_flip_b.ogg"
+      ],
+      "reuse": [
+        "sfx_ui8_popup_open.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": -16,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": "a/b 交替，唔好連續兩次同一個（AudioManager Randomizer hook=sfx_codex_page_flip）",
+      "timing": "圖鑑係大面板（接近 popup，420 ms open）。建議 t=0 只播 page_flip（紙書，唔再疊 sfx_ui8_popup_open，以免兩聲一齊）。若堅持跟 MOTION §2，t=0 popup_open、t=40 page_flip。而家 code 只播咗 sfx_ui8_btn_press_a。",
+      "notes": "關掉用 sfx_ui8_popup_close（見 ui.book.close）。"
+    },
+    {
+      "event": "ui.book.close",
+      "zh": "關閉圖鑑",
+      "code": "Hud._build_book 關閉掣 @ Hud.gd:336；_toggle_book 再撳；欣賞模式會強制收埋 book_panel",
+      "files": [],
+      "reuse": [
+        "sfx_ui8_popup_close.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "MOTION §2 close 200 ms，t=0 sfx_ui8_popup_close。而家關閉掣冇聲。",
+      "notes": "CollectionSystem.clear_new() 唔好另外出聲。"
+    },
+    {
+      "event": "ui.book.page",
+      "zh": "圖鑑翻頁／切分類（尚未有）",
+      "code": "M1b book_panel 只有一頁簡表＋家具列，未有分頁。預留。",
+      "files": [
+        "sfx_codex_page_flip_a.ogg",
+        "sfx_codex_page_flip_b.ogg"
+      ],
+      "reuse": [],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": -16,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0.08,
+      "volume": 1.0,
+      "randomize": "a/b 交替",
+      "timing": "跟 MOTION §1 tab 240 ms 或列 pop 240 ms：t=0 翻頁。卡／列逐張彈出（每張 240 ms、遲 40 ms）唔另配聲；頭 3 張若要聲，用現有 sfx_ui8_tab_switch 太似 dock，建議靜音或極細聲。",
+      "notes": "未有分頁 UX，檔先做低備用。"
+    },
+    {
+      "event": "collection.unlocked",
+      "zh": "圖鑑新格",
+      "code": "CollectionSystem.unlock_form／unlock_kid／unlock_critter／unlock_badge → signal unlocked(kind, id) @ CollectionSystem.gd:135 等；_mark_new 同時 notify('collection')",
+      "files": [
+        "sfx_codex_new_entry.ogg"
+      ],
+      "reuse": [
+        "sfx_ui8_badge_wiggle.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0.4,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "t=0 new_entry。紅點出現本身 MOTION §5 唔播聲；若之後有 badge wiggle，冷卻 ≥5 s 先用 sfx_ui8_badge_wiggle。一次解鎖多個（例如狩獵收隊同時 unlock_critter＋badge）只播一次 new_entry。",
+      "notes": "HuntSystem.collect 同埋開局 _setup_m1b unlock 都會觸發——開局建議唔播。"
+    },
+    {
+      "event": "furniture.pickup",
+      "zh": "提起家具",
+      "code": "M1b 未有拖曳／提起 UX。CollectionSystem.place 係即時擺位。預留給之後擺放手勢。",
+      "files": [
+        "sfx_furn_pickup.ogg"
+      ],
+      "reuse": [],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -16,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": "playbackRate 0.95–1.05",
+      "timing": "pointerdown／提起 t=0。",
+      "notes": "而家冇事件，檔先做低。唔借用 sfx_pet_pickup（招牌）。"
+    },
+    {
+      "event": "furniture.place",
+      "zh": "擺家具",
+      "code": "CollectionSystem.place → signal placed @ CollectionSystem.gd:252；Hud 家具列已有就 place；buy 成功之後亦會 place；一鍵擺家具 place_recommended @ Hud.gd:347",
+      "files": [
+        "sfx_furn_place_a.ogg",
+        "sfx_furn_place_b.ogg"
+      ],
+      "reuse": [],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0.12,
+      "volume": 1.0,
+      "randomize": "a/b 交替，唔好連續同一個；playbackRate 0.95–1.05",
+      "timing": "place 成功 t=0。place_recommended 可能連續多件：每件遲 ≥120 ms，或只播一次（建議最多 3 下，跟 MOTION 卡 pop 頭 3 張）。而家家具掣冇聲。",
+      "notes": "唔借用 sfx_pet_place。"
+    },
+    {
+      "event": "furniture.buy",
+      "zh": "買家具",
+      "code": "CollectionSystem.buy @ CollectionSystem.gd:216；Hud._refresh_book 家具掣 @ Hud.gd:397。成功後即 place。",
+      "files": [
+        "sfx_furn_buy.ogg"
+      ],
+      "reuse": [
+        "sfx_ui8_toast_in.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "buy 成功 t=0 sfx_furn_buy；摘要「擺好／件名」用 sfx_ui8_toast_in。唔好再疊 sfx_ui8_coin（呢個係購買鐘，唔係數位跳）。碎唔夠用 sfx_ui8_error。而家買嘢掣冇聲。",
+      "notes": "買完隨即 place：建議 t=0 buy、t=120–160 place，兩聲錯開。"
+    },
+    {
+      "event": "ui.hunt.depart_button",
+      "zh": "一鍵出發掣",
+      "code": "Hud.btn_hunt → _one_tap('hunt') → _do_hunt → Main.start_hunt @ Hud.gd:100／546；Main.start_hunt @ Main.gd:1429",
+      "files": [],
+      "reuse": [
+        "sfx_ui8_btn_press_a.ogg",
+        "sfx_ui8_btn_press_b.ogg",
+        "sfx_ui8_error.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": "btn_press a/b 隨機（而家 code 寫死 _a）",
+      "timing": "MOTION §3 down 60 ms，t=0 press。can_depart 失敗（busy／daily_pet_cap／work_or_hunt）改播 sfx_ui8_error。而家無論成敗都播 press。",
+      "notes": "出發成功嘅功能聲見 hunt.depart／hunt.enter。"
+    },
+    {
+      "event": "hunt.depart",
+      "zh": "隊伍出發（PHASE_DEPART）",
+      "code": "HuntSystem.depart → hunt_started／hunt_phase('depart') @ HuntSystem.gd:149–150；Main.start_hunt 寵物行去後門 gate",
+      "files": [],
+      "reuse": [
+        "sfx_mg_start.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "depart 成功 t=0 播 sfx_mg_start（現成出發聲）。畫面轉去草原要等到 PHASE_HUNT（watch 約 12% × 18 s ≈ 2.2 s）。",
+      "notes": "唔用 sfx_event_treasure_hunt 做每次出發（2.5 s 事件級，會煩）。"
+    },
+    {
+      "event": "hunt.enter",
+      "zh": "進入草原（PHASE_HUNT）",
+      "code": "HuntSystem.set_phase('hunt') @ HuntSystem.gd:175；Main._on_hunt_phase @ Main.gd:1458 → hunt_field.begin、in_hunt_view=true",
+      "files": [
+        "sfx_hunt_enter.ogg"
+      ],
+      "reuse": [
+        "bgm_hunt_loop.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "t=0 sfx_hunt_enter。BGM：由照顧 loop equal-power crossfade 去 bgm_hunt_loop（建議 1.5 s）。注意 AudioManager.BAR_SEC 寫死 3.5294 s（68 BPM 照顧小節），狩獵係 108 BPM、小節 2.222… s——對位唔好重用 BAR_SEC。離開草原（PHASE_READY／HOME，Main._return_from_hunt）再 crossfade 返照顧 BGM。",
+      "notes": "AudioManager.BGM_BY_BAND 未有狩獵條目，要新接口（例如 play_scene_bgm）。"
+    },
+    {
+      "event": "hunt.pounce",
+      "zh": "寵物撲出",
+      "code": "HuntField._scatter → _pounce_critter @ HuntField.gd:249；walker.play_live_clip('pounce')",
+      "files": [
+        "sfx_hunt_pounce_a.ogg",
+        "sfx_hunt_pounce_b.ogg"
+      ],
+      "reuse": [
+        "sfx_pet_jump_a.ogg",
+        "sfx_pet_jump_b.ogg",
+        "sfx_pet_step_hop_a.ogg",
+        "sfx_pet_step_hop_b.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0.3,
+      "volume": 1.0,
+      "randomize": "a/b 交替，唔好連續同一個",
+      "timing": "t=0 hunt_pounce（體勢氣流）。pounce clip 已有 jump＠250 ms、land（step_hop）——呢兩件沿用 anim_sfx_map，唔好取消。若覺疊太密，pounce 可以遲 0–40 ms，或者 clip foley 調低。",
+      "notes": "大怪遭遇第二隻寵物而家播 scratch／sneeze／cheer，沿用現有寵物聲。"
+    },
+    {
+      "event": "hunt.catch",
+      "zh": "撲中：小怪變果碌走",
+      "code": "HuntField._pounce_critter 設 alive=false、換成果圖、c['roll']=…（而家每次撲都成功，冇 miss 分支）",
+      "files": [],
+      "reuse": [
+        "sfx_mg_catch.ogg",
+        "sfx_critter_transform_a.ogg",
+        "sfx_critter_transform_b.ogg",
+        "sfx_critter_roll_a.ogg",
+        "sfx_critter_roll_b.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": "transform／roll a/b 交替",
+      "timing": "遊策：撲中用 sfx_mg_catch，然後 critter_transform ＋ critter_roll。建議 t=0 catch，t≈80–120 transform，roll 跟位移開始。而家 _pounce_critter 未接呢三個 hook。",
+      "notes": "唔用 sfx_mg_miss。"
+    },
+    {
+      "event": "hunt.miss",
+      "zh": "撲唔中（規格有、code 未有）",
+      "code": "遊策 §6：冇失敗、冇傷害；撲唔中只係小怪驚一驚、震一震。HuntField._pounce_critter 而家永遠成功，冇 miss 路徑。",
+      "files": [],
+      "reuse": [
+        "sfx_critter_startle_a.ogg",
+        "sfx_critter_startle_b.ogg",
+        "sfx_critter_shake_a.ogg",
+        "sfx_critter_shake_b.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": "a/b 交替",
+      "timing": "t=0 startle，隨即 shake（狀態進入時各一次，唔好每圈重播——見 README §7.12）。",
+      "notes": "明確唔用 sfx_mg_miss／sfx_hit／sfx_lose。有 miss 分支先接入。"
+    },
+    {
+      "event": "hunt.carry",
+      "zh": "抱果排隊返",
+      "code": "HuntField._on_phase(PHASE_CARRY) → _pickup_and_line @ HuntField.gd:271",
+      "files": [],
+      "reuse": [
+        "sfx_pet_pickup_a.ogg",
+        "sfx_pet_pickup_b.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "Pet",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0.15,
+      "volume": 0.9,
+      "randomize": "a/b 交替；體型變速",
+      "timing": "每隻抱起一粒果 t=0 pickup。行路沿用現有 step hook。",
+      "notes": "未接 hook。"
+    },
+    {
+      "event": "hunt.deposit_ready",
+      "zh": "入倉／狩獵完成可收",
+      "code": "HuntField._deposit；HuntSystem.set_phase(PHASE_READY) → hunt_ready @ HuntSystem.gd:159；Main._return_from_hunt",
+      "files": [],
+      "reuse": [
+        "sfx_mg_win.ogg",
+        "sfx_ui8_confirm.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "SFX",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "入倉／READY t=0 用 sfx_mg_win（現成勝利，1.95 s）一次就够；唔好再疊 confirm。返花園 crossfade 返照顧 BGM。一鍵收成見 hunt.collect。",
+      "notes": "大怪額外果唔另做聲。"
+    },
+    {
+      "event": "hunt.collect",
+      "zh": "一鍵收成（狩獵）",
+      "code": "Hud._do_harvest → HuntSystem.collect → hunt_collected @ HuntSystem.gd:238（同時可能 CollectionSystem.unlock_critter／unlock_badge／add_shards／add_fruit）",
+      "files": [
+        "sfx_codex_new_entry.ogg"
+      ],
+      "reuse": [
+        "sfx_ui8_toast_in.ogg",
+        "sfx_ui8_coin.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": -14,
+      "accent_offset_ms": 0,
+      "source": "new",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": null,
+      "timing": "t=0 toast_in；有碎／果數字滾先加 coin（每 4 步）。若呢次有新圖鑑格，t≈200 播一次 new_entry（開局 unlock 唔播）。",
+      "notes": "new_entry 檔係新嘅；toast／coin 複用。"
+    },
+    {
+      "event": "ui.dispatch_button",
+      "zh": "一鍵派工掣",
+      "code": "Hud.btn_dispatch → _one_tap('dispatch') → Main.one_tap_dispatch @ Hud.gd:101／553／Main.gd:1500（先郵局）",
+      "files": [],
+      "reuse": [
+        "sfx_ui8_btn_press_a.ogg",
+        "sfx_ui8_btn_press_b.ogg",
+        "sfx_ui8_error.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": "btn_press a/b",
+      "timing": "t=0 press；成功後再跟建築播 letter_send 或 cook_start。全部建築都忙就 sfx_ui8_error。",
+      "notes": "而家寫死 press_a，成功與否都播。"
+    },
+    {
+      "event": "ui.generic_buttons",
+      "zh": "其他通用掣（欣賞、開發者、照顧列）",
+      "code": "Hud 多處 AudioManager.play('sfx_ui8_btn_press_a')",
+      "files": [],
+      "reuse": [
+        "sfx_ui8_btn_press_a.ogg",
+        "sfx_ui8_btn_press_b.ogg",
+        "sfx_ui8_confirm.ogg",
+        "sfx_ui8_cancel.ogg",
+        "sfx_ui8_error.ogg",
+        "sfx_ui8_tap_a.ogg",
+        "sfx_ui8_tap_b.ogg",
+        "sfx_ui8_btn_sparkle.ogg",
+        "sfx_ui8_toast_in.ogg",
+        "sfx_ui8_coin.ogg",
+        "sfx_ui8_popup_open.ogg",
+        "sfx_ui8_popup_close.ogg",
+        "sfx_ui8_tab_switch_a.ogg",
+        "sfx_ui8_tab_switch_b.ogg",
+        "sfx_ui8_transition_veil_close.ogg",
+        "sfx_ui8_transition_veil_open.ogg",
+        "sfx_ui8_badge_wiggle.ogg"
+      ],
+      "delay_ms": 0,
+      "bus": "UI",
+      "lufs20": null,
+      "accent_offset_ms": 0,
+      "source": "existing",
+      "cooldown_sec": 0,
+      "volume": 1.0,
+      "randomize": "見 MOTION_HD2D.md §1–8",
+      "timing": "跟 MOTION_HD2D：轉畫面 900 ms（t=0 veil_close，t=420 veil_open）；返回 600 ms 只播 veil_open；popup 420／200；掣 down 60／up 120（up 唔加聲）；toast in 220／停 1800／出 180；stamp 160；獎勵滾 400 ms 每 4 步 coin。",
+      "notes": "M1b 功能聲只喺上面各 event 列出嘅新檔；其餘全部複用 ui8。"
+    }
+  ],
+  "entries": [
+    {
+      "event": "work.post.dispatch",
+      "zh": "郵局派工／寄信",
+      "kind": "sfx",
+      "sfx_hook": "sfx_post_letter_send",
+      "files": [
+        "sfx_post_letter_send.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "一封信甩入郵筒＋木篤。唔借用 sfx_pet_letter_drop／sfx_visitor_offer_letter（短遞出／放低）。失敗（busy／work_or_hunt）用現有 sfx_ui8_error。"
+    },
+    {
+      "event": "work.post.ready",
+      "zh": "郵局收工亮燈／信到",
+      "kind": "sfx",
+      "sfx_hook": "sfx_post_letter_receive",
+      "files": [
+        "sfx_post_letter_receive.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "信落到枱＋細蠟印。欣賞模式唔靜音（只有 sfx_need_warning 受 §0.5 限）。"
+    },
+    {
+      "event": "work.kitchen.dispatch",
+      "zh": "廚房派工／開火",
+      "kind": "sfx",
+      "sfx_hook": "sfx_kitchen_cook_start",
+      "files": [
+        "sfx_kitchen_cook_start.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "暖鍋沿＋蒸汽。唔借用 sfx_feed_meal／snack。"
+    },
+    {
+      "event": "work.kitchen.stir",
+      "zh": "廚房攪拌（工作期間）",
+      "kind": "sfx",
+      "sfx_hook": "sfx_kitchen_stir",
+      "files": [
+        "sfx_kitchen_stir.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -18,
+      "lufs": -18,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "AudioManager._ensure_loop 只對檔名含 _loop 自動 ogg.loop=true。遊程接入時請改名 sfx_kitchen_stir_loop.ogg，或擴 _ensure_loop 認呢個 hook。"
+    },
+    {
+      "event": "work.kitchen.ready",
+      "zh": "廚房煮好",
+      "kind": "sfx",
+      "sfx_hook": "sfx_kitchen_cook_done",
+      "files": [
+        "sfx_kitchen_cook_done.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "鍋蓋叮，唔用 C7 鋼片琴簇，避免同 sfx_ui8_confirm／btn_sparkle 撞。"
+    },
+    {
+      "event": "ui.book.open",
+      "zh": "打開圖鑑",
+      "kind": "sfx",
+      "sfx_hook": "sfx_codex_page_flip",
+      "files": [
+        "sfx_codex_page_flip_a.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -16,
+      "lufs": -16,
+      "source": "new",
+      "bus": "UI",
+      "delay_ms": 0,
+      "notes": "關掉用 sfx_ui8_popup_close（見 ui.book.close）。"
+    },
+    {
+      "event": "ui.book.open",
+      "zh": "打開圖鑑",
+      "kind": "sfx",
+      "sfx_hook": "sfx_codex_page_flip",
+      "files": [
+        "sfx_codex_page_flip_b.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -16,
+      "lufs": -16,
+      "source": "new",
+      "bus": "UI",
+      "delay_ms": 0,
+      "notes": "關掉用 sfx_ui8_popup_close（見 ui.book.close）。"
+    },
+    {
+      "event": "collection.unlocked",
+      "zh": "圖鑑新格",
+      "kind": "sfx",
+      "sfx_hook": "sfx_codex_new_entry",
+      "files": [
+        "sfx_codex_new_entry.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "HuntSystem.collect 同埋開局 _setup_m1b unlock 都會觸發——開局建議唔播。"
+    },
+    {
+      "event": "furniture.pickup",
+      "zh": "提起家具",
+      "kind": "sfx",
+      "sfx_hook": "sfx_furn_pickup",
+      "files": [
+        "sfx_furn_pickup.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -16,
+      "lufs": -16,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "而家冇事件，檔先做低。唔借用 sfx_pet_pickup（招牌）。"
+    },
+    {
+      "event": "furniture.place",
+      "zh": "擺家具",
+      "kind": "sfx",
+      "sfx_hook": "sfx_furn_place",
+      "files": [
+        "sfx_furn_place_a.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "唔借用 sfx_pet_place。"
+    },
+    {
+      "event": "furniture.place",
+      "zh": "擺家具",
+      "kind": "sfx",
+      "sfx_hook": "sfx_furn_place",
+      "files": [
+        "sfx_furn_place_b.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "唔借用 sfx_pet_place。"
+    },
+    {
+      "event": "furniture.buy",
+      "zh": "買家具",
+      "kind": "sfx",
+      "sfx_hook": "sfx_furn_buy",
+      "files": [
+        "sfx_furn_buy.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "買完隨即 place：建議 t=0 buy、t=120–160 place，兩聲錯開。"
+    },
+    {
+      "event": "hunt.enter",
+      "zh": "進入草原（PHASE_HUNT）",
+      "kind": "sfx",
+      "sfx_hook": "sfx_hunt_enter",
+      "files": [
+        "sfx_hunt_enter.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "AudioManager.BGM_BY_BAND 未有狩獵條目，要新接口（例如 play_scene_bgm）。"
+    },
+    {
+      "event": "hunt.pounce",
+      "zh": "寵物撲出",
+      "kind": "sfx",
+      "sfx_hook": "sfx_hunt_pounce",
+      "files": [
+        "sfx_hunt_pounce_a.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "大怪遭遇第二隻寵物而家播 scratch／sneeze／cheer，沿用現有寵物聲。"
+    },
+    {
+      "event": "hunt.pounce",
+      "zh": "寵物撲出",
+      "kind": "sfx",
+      "sfx_hook": "sfx_hunt_pounce",
+      "files": [
+        "sfx_hunt_pounce_b.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "accent_measure": "peak",
+      "lufs20": -14,
+      "lufs": -14,
+      "source": "new",
+      "bus": "SFX",
+      "delay_ms": 0,
+      "notes": "大怪遭遇第二隻寵物而家播 scratch／sneeze／cheer，沿用現有寵物聲。"
+    },
+    {
+      "event": "hunt.enter",
+      "zh": "狩獵 BGM",
+      "kind": "bgm",
+      "sfx_hook": "bgm_hunt_loop",
+      "files": [
+        "bgm/bgm_hunt_loop.ogg"
+      ],
+      "accent_offset_ms": 0,
+      "lufs": -16.0,
+      "source": "new",
+      "bus": "BGM",
+      "delay_ms": 0,
+      "bpm": 108,
+      "bars": 16,
+      "notes": "16 小節 @ 108 BPM，樣本精確循環；進入 PHASE_HUNT 時 crossfade。"
+    }
+  ]
+}

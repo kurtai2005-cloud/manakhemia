@@ -180,6 +180,44 @@ func _build_backdrops() -> void:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mi.name = str(b.get("id", "backdrop"))
 		add_child(mi)
+	_build_house_cover()
+
+
+func _house_cover_cfg() -> Dictionary:
+	if GameData and "m1c" in GameData:
+		return GameData.m1c.get("hunt", {}).get("hide_garden_house", {})
+	return {}
+
+
+func _build_house_cover() -> void:
+	# 遠丘／樹卡擋花園小屋；數字喺 m1c.json
+	var cfg := _house_cover_cfg()
+	if not bool(cfg.get("enabled", true)):
+		return
+	var cov: Dictionary = cfg.get("cover", {})
+	if cov.is_empty():
+		cov = {"id": "bg_hills_cover", "file3x": "backdrop/bg_hills@3x.png", "file": "backdrop/bg_hills.png", "z": -400, "sizePx": [1024, 220]}
+	var rel := str(cov.get("file3x", cov.get("file", "")))
+	var tex := _tex(ROOT + rel)
+	if tex == null:
+		tex = _tex(ROOT + str(cov.get("file", "")))
+	if tex == null:
+		return
+	var sz: Array = cov.get("sizePx", [1024, 220])
+	var w := float(sz[0]) if sz.size() >= 1 else 1024.0
+	var h := float(sz[1]) if sz.size() >= 2 else 220.0
+	var mi := MeshInstance3D.new()
+	mi.mesh = GardenLoader.backdrop_mesh(w, h)
+	var mat := GardenLoader.make_mat(tex, true, 0.01)
+	mi.material_override = mat
+	mi.position = Vector3(0, 0, float(cov.get("z", -400)))
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.name = str(cov.get("id", "bg_hills_cover"))
+	add_child(mi)
+
+
+func has_house_cover() -> bool:
+	return get_node_or_null("bg_hills_cover") != null
 
 
 func _sprite(tex: Texture2D, psize: float, pos: Vector3, frame_h: float = 32.0) -> Sprite3D:
@@ -275,6 +313,12 @@ func hunt_sfx(key: String) -> String:
 		"catch": "sfx_mg_catch",
 		"win": "sfx_mg_win",
 		"miss_startle": "sfx_critter_startle",
+		"miss_shake": "sfx_critter_shake",
+		"enter": "sfx_hunt_enter",
+		"pounce": "sfx_hunt_pounce",
+		"catch_transform": "sfx_critter_transform",
+		"catch_roll": "sfx_critter_roll",
+		"carry_pickup": "sfx_pet_pickup",
 	}
 	return str(sfx.get(key, defaults.get(key, "")))
 
@@ -325,8 +369,7 @@ func begin(team_walkers: Array) -> void:
 				brain.pending_tap = ""
 		w.brain_driven = false
 		w.cancel_move()
-	_play_hook(hunt_sfx("start"))
-	_play_hook(hunt_sfx("event"))
+	# 出發／入場聲由 AudioManager 接 HuntSystem 信號；唔喺呢度重播
 
 
 func end_duty() -> void:
@@ -477,6 +520,8 @@ func try_pounce(force_hit: bool = false, force_roll: float = -1.0) -> String:
 	var is_miss := false
 	if not force_hit and HuntSystem:
 		is_miss = HuntSystem.roll_is_miss(lead_pet_id(), misses, _pounce_rng, force_roll)
+	# 每次撲都有體勢氣流（a/b Randomizer）
+	_play_hook(hunt_sfx("pounce"))
 	if is_miss:
 		_apply_miss(c)
 		_next_pounce_at = _t + retry_sec()
@@ -490,6 +535,7 @@ func _apply_miss(c: Dictionary) -> void:
 	c["startled"] = true
 	# 受驚＋走位＋再追；唔播 sfx_mg_miss，唔扣戰利品
 	_play_hook(hunt_sfx("miss_startle"))
+	_play_hook(hunt_sfx("miss_shake"))
 	var spr: Sprite3D = c.get("node")
 	var rng := _pounce_rng if _pounce_rng else RandomNumberGenerator.new()
 	var fu := flee_units()
@@ -510,8 +556,16 @@ func _apply_catch(c: Dictionary) -> void:
 	if _did_catch:
 		return
 	_did_catch = true
-	_pounce_critter(c)
 	_play_hook(hunt_sfx("catch"))
+	var tms := 100
+	var rms := 120
+	if GameData and "m1c" in GameData:
+		var sx: Dictionary = GameData.m1c.get("hunt", {}).get("sfx", {})
+		tms = int(sx.get("catch_transform_delay_ms", 100))
+		rms = int(sx.get("catch_roll_delay_ms", 120))
+	_play_hook_later(hunt_sfx("catch_transform"), float(tms) / 1000.0)
+	_play_hook_later(hunt_sfx("catch_roll"), float(rms) / 1000.0)
+	_pounce_critter(c)
 
 
 func _miss_one() -> void:
@@ -539,8 +593,6 @@ func _pounce_critter(c: Dictionary) -> void:
 		spr.pixel_size = 1.0
 		spr.offset = Vector2(0, 16)
 	c["roll"] = (spr.position if spr else c.get("home", Vector3.ZERO)) + Vector3(40, 0, 20)
-	_play_hook("sfx_critter_transform")
-	_play_hook("sfx_critter_roll")
 	if walkers.size():
 		var w: Walker = walkers[0]
 		w.play_live_clip("pounce")
@@ -575,6 +627,7 @@ func _pickup_and_line() -> void:
 			add_child(fs)
 			_fruit_held[w] = fs
 			fruit_nodes.append(fs)
+			_play_hook(hunt_sfx("carry_pickup"))
 		w.play_live_clip("carry_fruit", true)
 		if i == 0:
 			w.go_to(gate)
@@ -605,3 +658,12 @@ func _play_hook(hook: String) -> void:
 		return
 	if AudioManager and AudioManager.has_method("play"):
 		AudioManager.play(hook, null)
+
+
+func _play_hook_later(hook: String, delay_sec: float) -> void:
+	if hook == "" or hook == "sfx_mg_miss":
+		return
+	if AudioManager and AudioManager.has_method("play_later"):
+		AudioManager.play_later(hook, delay_sec, null)
+	elif delay_sec <= 0.0:
+		_play_hook(hook)

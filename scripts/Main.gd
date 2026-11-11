@@ -170,6 +170,7 @@ func _build_world(objs_doc: Dictionary, objects: Array, lights: Dictionary) -> v
 		var unlit := false
 		var mat := GardenLoader.make_mat(tex, unlit, float(doc.get("alphaTest", 0.5)), em)
 		var mi := MeshInstance3D.new()
+		mi.name = str(o.get("id", "mesh"))
 		mi.mesh = GardenLoader.mesh_from_json(doc, true)
 		mi.material_override = mat
 		if em:
@@ -1106,7 +1107,7 @@ func _on_pet_tapped(w: Walker) -> void:
 	if brain and brain.has_method("notify_tap"):
 		brain.notify_tap("pet")
 	if AudioManager:
-		AudioManager.play("sfx_ui8_btn_press_a")
+		AudioManager.play("sfx_ui8_btn_press")
 
 
 func pet_all_react() -> void:
@@ -1280,11 +1281,13 @@ func qa_family(kind: String) -> bool:
 func _setup_m1b() -> void:
 	if CollectionSystem:
 		CollectionSystem.ensure()
+		CollectionSystem.silent_unlocks = true
 		var form := str(Sim.state.get("form", "radiant"))
 		if form == "":
 			form = "radiant"
 		CollectionSystem.unlock_form("%s_%s" % [form, str(Sim.state.get("stage", "sprout"))])
 		CollectionSystem.unlock_kid("A1")
+		CollectionSystem.silent_unlocks = false
 	_build_work_spots()
 	_build_warehouse()
 	hunt_field = HuntField.new()
@@ -1463,6 +1466,7 @@ func _on_hunt_phase(phase: String) -> void:
 					w.global_position = hunt_field.field_pos(Vector3(-20 + i * 24, 0, 20))
 			hunt_field.begin(_hunt_team)
 			in_hunt_view = true
+			set_garden_hidden_for_hunt(true)
 	elif phase == HuntSystem.PHASE_CARRY:
 		pass
 	elif phase == HuntSystem.PHASE_READY or phase == HuntSystem.PHASE_HOME:
@@ -1482,6 +1486,7 @@ func _return_from_hunt() -> void:
 		# 野外隱藏，花園倉保留果堆
 		hunt_field.visible = false
 	in_hunt_view = false
+	set_garden_hidden_for_hunt(false)
 	_place_cam(0.0)
 	_fit_sky_card()
 
@@ -1554,9 +1559,7 @@ func _on_building_tapped(area: Area3D) -> void:
 	if spot == null or not (spot is WorkSpot):
 		return
 	var bid := str((spot as WorkSpot).building_id)
-	if AudioManager:
-		AudioManager.play("sfx_ui8_btn_press_a")
-	# 未派就派；做好就收
+	# 未派就派；做好就收。成功功能聲由 AudioManager 接信號；失敗播 error。
 	if WorkSystem and WorkSystem.is_ready(bid):
 		var rec: Dictionary = WorkSystem.collect(bid)
 		if hud and hud.has_method("_on_care"):
@@ -1575,7 +1578,10 @@ func _on_building_tapped(area: Area3D) -> void:
 		if ids.is_empty():
 			ids = ["tuanrong"]
 		var r: Dictionary = WorkSystem.dispatch(bid, ids)
-		if hud and bool(r.get("ok", false)) and hud.has_method("_queue_or_show"):
+		if not bool(r.get("ok", false)):
+			if AudioManager:
+				AudioManager.play("sfx_ui8_error")
+		elif hud and hud.has_method("_queue_or_show"):
 			hud._queue_or_show([{"icon": "ev_work", "num": str((spot as WorkSpot).title)}])
 	else:
 		# 睇佢做嘢：跟住正在做嘢嗰隻
@@ -1644,3 +1650,14 @@ func _make_furniture(id: String, sl: String, pos: Vector3) -> Node3D:
 	s.position = Vector3(pos.x, 0, pos.z)
 	s.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return s
+
+func set_garden_hidden_for_hunt(on: bool) -> void:
+	var ids: Array = ["cottage"]
+	if GameData and "m1c" in GameData:
+		var cfg: Dictionary = GameData.m1c.get("hunt", {}).get("hide_garden_house", {})
+		if cfg.get("hide_node_ids") is Array and not cfg["hide_node_ids"].is_empty():
+			ids = cfg["hide_node_ids"]
+	for id in ids:
+		var n := find_child(str(id), true, false)
+		if n:
+			n.visible = not on

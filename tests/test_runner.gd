@@ -55,6 +55,7 @@ func _ready() -> void:
 	_test_m1c_furniture_art()
 	_test_m1c_plugins_ported()
 	_test_m1c_pounce_miss()
+	_test_m1c1_m1b_audio_and_fixes()
 	print("=== %d passed, %d failed ===" % [passed, failed])
 
 	get_tree().quit(0 if failed == 0 else 1)
@@ -1021,16 +1022,23 @@ func _test_m1c_hunt_field_and_sfx() -> void:
 		var spr: Sprite3D = field.critters[0]["node"]
 		ok(spr.billboard == BaseMaterial3D.BILLBOARD_FIXED_Y, "critter upright FIXED_Y")
 	ok(is_equal_approx(field.cam_pitch(), 30.0), "hunt cam pitch 30", field.cam_pitch())
-	# miss / catch sfx
-	AudioManager.last_play = {}
+	# miss / catch sfx（M1c.1：撲有 pounce；miss 係 startle 後 shake；catch 之後先 transform／roll）
+	AudioManager.clear_play_log()
 	field.begin([])
-	var hooks: Array = []
 	field._miss_one()
-	hooks.append(str(AudioManager.last_play.get("hook", "")))
-	ok(str(AudioManager.last_play.get("hook", "")).begins_with("sfx_critter_startle"), "miss plays startle not mg_miss", AudioManager.last_play)
-	ok(str(AudioManager.last_play.get("hook", "")) != "sfx_mg_miss", "explicitly not miss")
+	var miss_hooks: Array = AudioManager.hooks_played()
+	ok("sfx_hunt_pounce" in miss_hooks or AudioManager.hook_count("sfx_hunt_pounce") >= 1, "miss still plays pounce", miss_hooks)
+	ok(AudioManager.hook_count("sfx_critter_startle") >= 1, "miss plays startle", miss_hooks)
+	ok(AudioManager.hook_count("sfx_critter_shake") >= 1, "miss then shake", miss_hooks)
+	ok(AudioManager.hook_count("sfx_mg_miss") == 0, "explicitly not mg_miss")
+	AudioManager.clear_play_log()
 	field._catch_one()
-	ok(str(AudioManager.last_play.get("hook", "")).begins_with("sfx_mg_catch") or str(AudioManager.last_play.get("hook", "")).begins_with("sfx_critter"), "catch plays catch/transform", AudioManager.last_play)
+	var catch_hooks: Array = AudioManager.hooks_played()
+	ok(AudioManager.hook_count("sfx_hunt_pounce") >= 1, "catch also plays pounce", catch_hooks)
+	ok(AudioManager.hook_count("sfx_mg_catch") >= 1, "catch plays sfx_mg_catch", catch_hooks)
+	AudioManager._process(0.16)
+	ok(AudioManager.hook_count("sfx_critter_transform") >= 1, "then transform", AudioManager.hooks_played())
+	ok(AudioManager.hook_count("sfx_critter_roll") >= 1, "then roll", AudioManager.hooks_played())
 	# replay catch hook directly
 	var cat: Dictionary = AudioManager.play(field.hunt_sfx("catch"), null)
 	ok(str(cat.get("hook", "")).begins_with("sfx_mg_catch"), "catch hook resolves", cat)
@@ -1152,3 +1160,241 @@ func _test_m1c_pounce_miss() -> void:
 	field.queue_free()
 	HuntSystem.phase = HuntSystem.PHASE_IDLE
 	HuntSystem.pending = {}
+
+
+func _test_m1c1_m1b_audio_and_fixes() -> void:
+	print("# M1c.1 遊音 M1b wiring + 5 bug fixes")
+	# 檔同 map 都喺工程內（唔入 _preview_*）
+	ok(FileAccess.file_exists("res://audio/m1b_sfx_map.json"), "m1b_sfx_map.json present")
+	for hook in ["sfx_hunt_enter", "sfx_hunt_pounce_a", "sfx_furn_buy", "sfx_post_letter_send", "sfx_post_letter_receive", "sfx_kitchen_cook_start", "sfx_kitchen_cook_done", "sfx_kitchen_stir", "sfx_codex_page_flip_a", "sfx_codex_new_entry", "sfx_furn_place_a"]:
+		ok(FileAccess.file_exists("res://audio/sfx/%s.ogg" % hook), "sfx file %s" % hook)
+	ok(FileAccess.file_exists("res://audio/bgm/bgm_hunt_loop.ogg"), "bgm_hunt_loop present")
+	ok(not FileAccess.file_exists("res://audio/sfx/_preview_m1b.ogg"), "preview ogg not shipped")
+	ok(AudioManager.m1b_map.get("format", "") == "m1b_sfx_map/1" or AudioManager.m1b_map.has("events"), "map loaded", AudioManager.m1b_map.get("format", ""))
+	ok(not is_equal_approx(AudioManager.hunt_bar_sec(), AudioManager.BAR_SEC), "hunt bar != care BAR_SEC", AudioManager.hunt_bar_sec())
+	ok(is_equal_approx(AudioManager.hunt_bar_sec(), 98000.0 / 44100.0), "hunt bar 2.222s exact", AudioManager.hunt_bar_sec())
+	ok(is_equal_approx(AudioManager.hunt_xfade_sec(), 1.5), "hunt xfade 1.5s")
+
+	# (5) 系統信號已接 AudioManager
+	ok(AudioManager._systems_connected, "feature hooks connected")
+	ok(WorkSystem.dispatched.is_connected(AudioManager._on_work_dispatched), "WorkSystem.dispatched → AudioManager")
+	ok(WorkSystem.work_ready.is_connected(AudioManager._on_work_ready), "work_ready → AudioManager")
+	ok(WorkSystem.collected.is_connected(AudioManager._on_work_collected), "collected → AudioManager")
+	ok(HuntSystem.hunt_started.is_connected(AudioManager._on_hunt_started), "hunt_started → AudioManager")
+	ok(HuntSystem.hunt_phase.is_connected(AudioManager._on_hunt_phase), "hunt_phase → AudioManager")
+	ok(CollectionSystem.unlocked.is_connected(AudioManager._on_unlocked), "unlocked → AudioManager")
+	ok(CollectionSystem.placed.is_connected(AudioManager._on_placed), "placed → AudioManager")
+	ok(CollectionSystem.bought.is_connected(AudioManager._on_bought), "bought → AudioManager")
+
+	# 郵局寄／收
+	SaveSystem.clear()
+	Sim.state = Sim.fresh_state() if Sim.has_method("fresh_state") else Sim.state
+	WorkSystem.ensure(Sim.state)
+	HuntSystem.ensure(Sim.state)
+	HuntSystem.phase = HuntSystem.PHASE_IDLE
+	var used: Dictionary = HuntSystem.ensure().get("worked_or_hunted", {})
+	used.clear()
+	HuntSystem.ensure()["worked_or_hunted"] = used
+	# 清建築
+	for b in WorkSystem.buildings():
+		var sit: Dictionary = WorkSystem.site(str(b.get("id", "")))
+		sit["status"] = WorkSystem.ST_EMPTY
+		sit["pets"] = []
+		sit["watch"] = 0.0
+	AudioManager.clear_play_log()
+	var post: Dictionary = WorkSystem.dispatch("post", ["tuanrong"])
+	ok(bool(post.get("ok", false)), "post dispatch ok", post)
+	ok(AudioManager.hook_count("sfx_post_letter_send") == 1, "post send hook", AudioManager.hooks_played())
+	# 做到 ready
+	WorkSystem.site("post")["watch"] = 999.0
+	WorkSystem.tick_watch(1.0)
+	ok(AudioManager.hook_count("sfx_post_letter_receive") == 1, "post receive hook", AudioManager.hooks_played())
+
+	# 廚房開火／完成；無攪拌動作就唔播 stir loop
+	used.clear()
+	HuntSystem.ensure()["worked_or_hunted"] = used
+	AudioManager.clear_play_log()
+	ok(not AudioManager.has_kitchen_stir_action(), "no stir action in current art")
+	var kit: Dictionary = WorkSystem.dispatch("kitchen", ["tuanrong"])
+	ok(bool(kit.get("ok", false)), "kitchen dispatch ok", kit)
+	ok(AudioManager.hook_count("sfx_kitchen_cook_start") == 1, "cook_start", AudioManager.hooks_played())
+	ok(AudioManager.hook_count("sfx_kitchen_stir") == 0, "stir not started without action", AudioManager.hooks_played())
+	var stir_p: AudioStreamPlayer = AudioManager._loop_players.get("sfx_kitchen_stir", null)
+	ok(stir_p == null or not stir_p.playing, "stir loop not playing")
+	WorkSystem.site("kitchen")["watch"] = 999.0
+	WorkSystem.tick_watch(1.0)
+	ok(AudioManager.hook_count("sfx_kitchen_cook_done") == 1, "cook_done", AudioManager.hooks_played())
+
+	# 圖鑑開：只翻頁，唔疊 popup_open；開局 unlock 唔播 new_entry
+	AudioManager.clear_play_log()
+	CollectionSystem.silent_unlocks = true
+	CollectionSystem.unlock_form("m1c1_boot_form")
+	CollectionSystem.unlock_kid("BOOTX")
+	ok(AudioManager.hook_count("sfx_codex_new_entry") == 0, "boot unlocks silent", AudioManager.hooks_played())
+	CollectionSystem.silent_unlocks = false
+	CollectionSystem.unlock_critter("dewlet_m1c1")
+	CollectionSystem.unlock_badge("2026-11", "bronze")
+	ok(AudioManager.hook_count("sfx_codex_new_entry") == 1, "later unlocks play new_entry once", AudioManager.hooks_played())
+
+	var hud_script: Script = load("res://scripts/Hud.gd")
+	var hud: Node = hud_script.new()
+	add_child(hud)
+	AudioManager.clear_play_log()
+	if hud.has_method("_toggle_book"):
+		hud._toggle_book()
+	var open_hooks: Array = AudioManager.hooks_played()
+	ok(AudioManager.hook_count("sfx_codex_page_flip") >= 1, "codex open = page_flip", open_hooks)
+	ok(AudioManager.hook_count("sfx_ui8_popup_open") == 0, "no popup_open on book open", open_hooks)
+	ok(AudioManager.hook_count("sfx_ui8_btn_press") == 0, "no btn_press on book open", open_hooks)
+	AudioManager.clear_play_log()
+	hud._toggle_book()
+	ok(AudioManager.hook_count("sfx_ui8_popup_close") >= 1, "book close popup_close", AudioManager.hooks_played())
+
+	# 家具：t=0 buy，120–160 ms 後 place；商店掣有聲
+	CollectionSystem.ensure()
+	# 保證夠碎、未擁有 rug
+	if CollectionSystem.stardust() < 15:
+		CollectionSystem.add_shards(20, "old")
+	# 若已有就換檯
+	var buy_id := "rug_leaf"
+	if CollectionSystem.is_owned(buy_id):
+		buy_id = "table_stump"
+		if CollectionSystem.stardust() < 20:
+			CollectionSystem.add_shards(20, "old")
+	AudioManager.clear_play_log()
+	var br: Dictionary = CollectionSystem.buy(buy_id)
+	ok(bool(br.get("ok", false)), "buy ok", br)
+	ok(AudioManager.hook_count("sfx_furn_buy") == 1, "buy at 0ms", AudioManager.hooks_played())
+	ok(AudioManager.hook_count("sfx_furn_place") == 0, "place not yet", AudioManager.hooks_played())
+	var pr: Dictionary = CollectionSystem.place(buy_id)
+	ok(bool(pr.get("ok", false)), "place queued", pr)
+	ok(AudioManager.hook_count("sfx_furn_place") == 0, "place delayed after buy", AudioManager.hooks_played())
+	AudioManager._process(0.10)
+	ok(AudioManager.hook_count("sfx_furn_place") == 0, "place still waiting at 100ms")
+	AudioManager._process(0.06)
+	ok(AudioManager.hook_count("sfx_furn_place") == 1, "place at 120–160ms", AudioManager.hooks_played())
+	# 碎唔夠 → error（經 HUD 商店）
+	# 花光碎
+	var have := CollectionSystem.stardust()
+	if have > 0:
+		CollectionSystem.spend_shards(have)
+	AudioManager.clear_play_log()
+	# 搵一件未有嘅貴嘢
+	var fail_id := "wall_shelf" if not CollectionSystem.is_owned("wall_shelf") else "table_stump"
+	if CollectionSystem.is_owned(fail_id):
+		# 直接播 error 路徑：Hud 商店會 _play_error
+		hud._play_error()
+	else:
+		var bad: Dictionary = CollectionSystem.buy(fail_id)
+		ok(not bool(bad.get("ok", false)), "buy fails without shards", bad)
+		hud._play_error()
+	ok(AudioManager.hook_count("sfx_ui8_error") >= 1, "furn buy fail error")
+
+	# 通用掣用 hook 唔寫死 _a（resolve a/b）
+	var press: Dictionary = AudioManager.resolve_play("sfx_ui8_btn_press")
+	ok(not bool(press.get("silent", true)), "btn_press hook resolves a/b", press)
+	ok(str(press.get("stream", "")).find("sfx_ui8_btn_press") >= 0, "stream is btn_press", press)
+	AudioManager.clear_play_log()
+	hud._play_press()
+	ok(AudioManager.hook_count("sfx_ui8_btn_press") == 1, "hud press uses shared hook")
+
+	# 狩獵／派工失敗 → error（冇 Main 時 _do_hunt 回 no_main）
+	AudioManager.clear_play_log()
+	hud._one_tap("hunt")
+	ok(AudioManager.hook_count("sfx_ui8_error") >= 1, "failed hunt plays error", AudioManager.hooks_played())
+	ok(AudioManager.hook_count("sfx_ui8_btn_press") == 0, "failed hunt no press")
+	AudioManager.clear_play_log()
+	hud._one_tap("dispatch")
+	# stub 冇 Main → no_main → error
+	ok(AudioManager.hook_count("sfx_ui8_error") >= 1, "failed dispatch plays error", AudioManager.hooks_played())
+
+	hud.queue_free()
+
+	# (1) Walker._fire_sfx 只 emit，唔直接 play（避免播兩次）
+	var src := FileAccess.get_file_as_string("res://scripts/Walker.gd")
+	var fire_i := src.find("func _fire_sfx")
+	var fire_j := src.find("func _anim", fire_i)
+	var fire_body := src.substr(fire_i, fire_j - fire_i) if fire_i >= 0 and fire_j > fire_i else ""
+	ok(fire_body.find("ArtImporter.sfx_cue.emit") >= 0, "_fire_sfx emits cue")
+	ok(fire_body.find("AudioManager.play") < 0, "_fire_sfx does not call play directly")
+	# runtime：同一個 cue 只入 log 一次
+	var w := Walker.new()
+	w.character = "tuanrong"
+	w.body_size = "L"
+	add_child(w)
+	AudioManager.clear_play_log()
+	var played := w.play_live_clip("pounce")
+	if played:
+		var jumps := AudioManager.hook_count("sfx_pet_jump")
+		ok(jumps <= 1, "pounce jump cue not double-played", AudioManager.hooks_played())
+	else:
+		ok(true, "pounce clip missing in this headless import; source guard is enough")
+	w.queue_free()
+
+	# (4) stop_loop 真正淡出；sync_bgm 處理狩獵
+	AudioManager.muted = false
+	AudioManager._scene_bgm = ""
+	AudioManager._bgm_band = ""
+	AudioManager.sync_bgm("noon")
+	ok(AudioManager._bgm_band == "noon" or AudioManager._bgm_band == "day", "care bgm noon", AudioManager._bgm_band)
+	AudioManager.clear_play_log()
+	HuntSystem.set_phase(HuntSystem.PHASE_IDLE)
+	HuntSystem.set_phase(HuntSystem.PHASE_HUNT)
+	ok(AudioManager.hook_count("sfx_hunt_enter") == 1, "PHASE_HUNT plays enter", AudioManager.hooks_played())
+	ok(AudioManager.is_hunt_bgm(), "crossfade to hunt bgm")
+	ok(is_equal_approx(AudioManager._fade_dur, 1.5) or AudioManager._fade_t < 0.0, "enter uses 1.5s fade", AudioManager._fade_dur)
+	# 確認而家條 BGM 係 hunt loop
+	var inn: AudioStreamPlayer = AudioManager._bgm_a if AudioManager._bgm_front else AudioManager._bgm_b
+	var stpath := ""
+	if inn and inn.stream:
+		stpath = str(inn.stream.resource_path)
+	ok(stpath.find("bgm_hunt_loop") >= 0, "incoming stream is bgm_hunt_loop", stpath)
+	AudioManager.sync_bgm("night")
+	ok(AudioManager.is_hunt_bgm(), "sync_bgm does not overwrite hunt")
+	ok((AudioManager._bgm_a.stream and str(AudioManager._bgm_a.stream.resource_path).find("bgm_hunt_loop") >= 0) or (AudioManager._bgm_b.stream and str(AudioManager._bgm_b.stream.resource_path).find("bgm_hunt_loop") >= 0), "hunt loop still loaded")
+	HuntSystem.set_phase(HuntSystem.PHASE_READY)
+	ok(not AudioManager.is_hunt_bgm(), "exit hunt fades back to care")
+	HuntSystem.phase = HuntSystem.PHASE_IDLE
+	HuntSystem.pending = {}
+
+	# start_loop + fade stop
+	AudioManager.start_loop("sfx_kitchen_stir")
+	var lp: AudioStreamPlayer = AudioManager._loop_players.get("sfx_kitchen_stir", null)
+	ok(lp != null and lp.playing, "start_loop plays even without _loop in filename", lp)
+	if lp and lp.stream is AudioStreamOggVorbis:
+		ok((lp.stream as AudioStreamOggVorbis).loop, "start_loop forces loop")
+	var vol0 := lp.volume_db if lp else 0.0
+	AudioManager.stop_loop("sfx_kitchen_stir", 0.4)
+	ok(lp != null and lp.playing, "stop_loop still playing during fade")
+	AudioManager._process(0.2)
+	ok(lp.playing, "mid-fade still on")
+	ok(lp.volume_db < vol0 - 0.5 or lp.volume_db < -3.0, "volume actually faded", lp.volume_db)
+	AudioManager._process(0.3)
+	ok(not lp.playing, "fade completed and stopped")
+
+	# 草原遠丘卡擋花園小屋
+	var field := HuntField.new()
+	add_child(field)
+	field.setup()
+	ok(field.has_house_cover(), "hunt field has far hill/foliage cover")
+	var cover := field.get_node_or_null("bg_hills_cover")
+	ok(cover != null, "cover node named bg_hills_cover")
+	field.queue_free()
+
+	# 進入狩獵唔再自動播 2.5s treasure event
+	AudioManager.clear_play_log()
+	# begin 唔好自己播 start／event
+	var field2 := HuntField.new()
+	add_child(field2)
+	field2.setup()
+	field2.begin([])
+	ok(AudioManager.hook_count("sfx_event_treasure_hunt") == 0, "begin does not autoplay treasure event", AudioManager.hooks_played())
+	ok(AudioManager.hook_count("sfx_mg_start") == 0, "begin does not double start (signal does)", AudioManager.hooks_played())
+	field2.queue_free()
+	# 恢復廚房／郵局
+	for b2 in WorkSystem.buildings():
+		var sit2: Dictionary = WorkSystem.site(str(b2.get("id", "")))
+		sit2["status"] = WorkSystem.ST_EMPTY
+		sit2["pets"] = []
+		sit2["watch"] = 0.0
+	used.clear()

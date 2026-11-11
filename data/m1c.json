@@ -1,6 +1,6 @@
 {
   "_file": "m1c.json",
-  "_title": "M1c 遊程設定：草原實裝、傢俬美術、開場碎、狩獵音效",
+  "_title": "M1c／M1c.1 遊程設定：草原實裝、傢俬美術、開場碎、狩獵音效、M1b 功能音",
   "starting_shards": 25,
   "starting_shards_note": "遊策：新玩家開場 25 星星碎。最平葉仔地氈 15、樹樁檯 20、小盆栽層架 18；頭幾分鐘夠買一件中平傢俬，又唔係一次過塞滿。只喺新存檔第一次建立 wallet 時發，舊存檔唔補。",
   "hunt": {
@@ -31,9 +31,40 @@
       "no_miss_sfx": true,
       "never_play": [
         "sfx_mg_miss"
-      ]
+      ],
+      "enter": "sfx_hunt_enter",
+      "pounce": "sfx_hunt_pounce",
+      "miss_shake": "sfx_critter_shake",
+      "catch_transform": "sfx_critter_transform",
+      "catch_roll": "sfx_critter_roll",
+      "catch_transform_delay_ms": 100,
+      "catch_roll_delay_ms": 120,
+      "carry_pickup": "sfx_pet_pickup",
+      "bgm": "bgm_hunt_loop",
+      "bgm_crossfade_sec": 1.5,
+      "bgm_bar_sec": 2.2222222222222223,
+      "bgm_bpm": 108,
+      "play_treasure_hunt_on_enter": false
     },
-    "pounce_miss_src": "data/hunting.json hunt.pounce_miss"
+    "pounce_miss_src": "data/hunting.json hunt.pounce_miss",
+    "hide_garden_house": {
+      "enabled": true,
+      "hide_node_ids": [
+        "cottage",
+        "tree",
+        "lanterns"
+      ],
+      "cover": {
+        "id": "bg_hills_cover",
+        "file3x": "backdrop/bg_hills@3x.png",
+        "file": "backdrop/bg_hills.png",
+        "z": -400,
+        "sizePx": [
+          1024,
+          220
+        ]
+      }
+    }
   },
   "bubbles": {
     "art": "res://art/m1-icons/bubble_%s.png",
@@ -54,5 +85,17 @@
   "furniture": {
     "art_dir": "res://art-pet/sprites/series2_house/furniture/",
     "pixel_size": 1.0
+  },
+  "audio": {
+    "m1b_sfx_map": "res://audio/m1b_sfx_map.json",
+    "hunt_bgm_bar_sec": 2.2222222222222223,
+    "hunt_bgm_crossfade_sec": 1.5,
+    "furn_buy_delay_ms": 0,
+    "furn_place_after_buy_ms": 140,
+    "furn_place_burst_max": 3,
+    "furn_place_burst_gap_ms": 120,
+    "codex_open": "sfx_codex_page_flip",
+    "codex_open_no_popup": true,
+    "kitchen_stir_only_if_action": true
   }
 }

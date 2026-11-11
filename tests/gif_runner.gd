@@ -1,6 +1,6 @@
 extends Node
 ## M1b 玩法預覽：viewport 逐幀出圖，再交 ffmpeg 轉 GIF。
-## GODOT_M1C_GIF=hunt|work|collect|care|bubbles ；GODOT_M1C_FRAME_DIR=...
+## GODOT_M1C_GIF / GODOT_M1C1_GIF=hunt|... ；GODOT_M1C_FRAME_DIR / GODOT_M1C1_FRAME_DIR=...
 
 const FPS := 15
 const SECS := 8.0
@@ -15,14 +15,18 @@ var _did3 := false
 
 
 func _ready() -> void:
-	_feat = str(OS.get_environment("GODOT_M1C_GIF"))
+	_feat = str(OS.get_environment("GODOT_M1C1_GIF"))
+	if _feat == "":
+		_feat = str(OS.get_environment("GODOT_M1C_GIF"))
 	if _feat == "":
 		_feat = str(OS.get_environment("GODOT_M1B_GIF"))
 	if _feat == "":
 		_feat = str(OS.get_environment("GODOT_M1A_GIF"))
 	if _feat == "":
 		_feat = "hunt"
-	var d := str(OS.get_environment("GODOT_M1C_FRAME_DIR"))
+	var d := str(OS.get_environment("GODOT_M1C1_FRAME_DIR"))
+	if d == "":
+		d = str(OS.get_environment("GODOT_M1C_FRAME_DIR"))
 	if d == "":
 		d = str(OS.get_environment("GODOT_M1B_FRAME_DIR"))
 	if d == "":
@@ -39,7 +43,7 @@ func _ready() -> void:
 				da.remove(fn)
 			fn = da.get_next()
 		da.list_dir_end()
-	print("=== M1c gif ", _feat, " → ", _dir, " ===")
+	print("=== M1c.1 gif ", _feat, " → ", _dir, " ===")
 	OS.set_environment("GODOT_M1A_DEMO", "1")
 	QualitySettings.set_tier(QualitySettings.Tier.LOW)
 	var packed: PackedScene = load("res://scenes/Main.tscn")
@@ -117,15 +121,20 @@ func _setup_feat() -> void:
 func _tick_events(t: float) -> void:
 	match _feat:
 		"hunt":
-			if t >= 0.4 and not _did1:
+			if t >= 0.25 and not _did1:
 				_did1 = true
 				if _main.has_method("start_hunt"):
 					_main.start_hunt()
-			if t >= 2.0 and HuntSystem:
-				# 壓縮觀看：跳去撥草／撲
-				HuntSystem.watch_elapsed = float(GameData.m1b.get("hunt", {}).get("watch_sec", 18)) * 0.2
-			if t >= 5.5 and HuntSystem:
-				HuntSystem.watch_elapsed = float(GameData.m1b.get("hunt", {}).get("watch_sec", 18)) * 0.7
+				# 即入場：顯示 enter＋狩獵 BGM 環境（12% 起 PHASE_HUNT）
+				if HuntSystem:
+					var dur := float(GameData.m1b.get("hunt", {}).get("watch_sec", 18))
+					HuntSystem.watch_elapsed = dur * 0.13
+					HuntSystem.tick_watch(0.0)
+			if t >= 3.5 and HuntSystem:
+				# 撲／抱果
+				HuntSystem.watch_elapsed = float(GameData.m1b.get("hunt", {}).get("watch_sec", 18)) * 0.40
+			if t >= 6.5 and HuntSystem:
+				HuntSystem.watch_elapsed = float(GameData.m1b.get("hunt", {}).get("watch_sec", 18)) * 0.70
 		"work":
 			if t >= 0.5 and not _did1:
 				_did1 = true
