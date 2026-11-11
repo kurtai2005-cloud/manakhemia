@@ -1,6 +1,6 @@
 # anim timing fix2
 
-`art/anim-timing-fix2` 已推。`d459c4bec2a9d5a1b4c50e4d6f76b1f16f1f9ac3`，父 commit 係 fix1 `f6d60b5e`。只讀，冇 merge。`art-pet/sfx_hooks.json` 已刪。
+`art/anim-timing-fix2` 已推。commit `d459c4bec2a9d5a1b4c50e4d6f76b1f16f1f9ac3`，tree `3e87a68ac389547238ecf217fe049448d86a9ad4`，父 commit 係 fix1 `f6d60b5e`。只讀，冇 merge。`art-pet/sfx_hooks.json` 已刪。今次就係呢個 tree 再跑。
 
 fix1 係舊的 6-hook 快照，今次冇再深查。art 分支冇 `audio/anim_sfx_map.json`。map 由 `audio/pet-plan-a` @ `07762d21` 抽出（blob `03df3ef6`），用 `--sfx-map` 指住，冇放進 art 工作樹：
 
