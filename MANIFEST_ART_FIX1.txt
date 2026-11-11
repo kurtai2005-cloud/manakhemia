@@ -1,0 +1,88 @@
+MANIFEST_ART_FIX1 — 招牌·文靜 idle_quiet 改坐低；細佬／三位訪客 M 48px 生命感 scratch／sneeze／sniff。
+疊喺 art/m2-actions @ 230dab2f0df3ae27c38d0c3978309bdd020fd5c0。解壓到 repo 根。冇 git commit／push／merge。
+日期：2026-11-11 09:11 Asia/Hong_Kong
+
+任務 3 夜色：already OK。遊程 G0.1 code/glimmer-godot @ 86769723 已修夜地／遠山／側窗燈／草 moiré；
+對照 /home/box/keep/godot/G0.1/g01-night.png、g01-mid-night.png、g01-w768-night.png，
+地同山都唔再過光或過綠（前景草地 lum 約 16，遠山約 48，對比舊 P0 草地 lum 約 120／山約 90）。
+呢份 zip 冇夾 night_tint.json，唔使再套一層 multiply。參考底：art/godot-fx1 @ 33cf453febbb1a6896ab1b92dbdd96896c53648c。
+
+幀數／時機冇改：idle_quiet 仍 6 幀 6 fps loop；scratch 6／8 fps 唔 loop，sneeze 5／8 fps 唔 loop，sniff 4／6 fps 唔 loop。
+坐低 L 寬高比 0.938–1.023（約 0.957），符合 0.8–1.1。每幀有 eyeL／eyeR／mouth anchors 同 pivot。
+細佬外形係 series2 A1，pivot (24,45)；訪客 pivot 同招牌：蝸牛 (22,45)、婆婆 (24,45)、螢火 (24,44)。
+
+驗證（疊喺 m2-actions 複本上）：
+  validate_art_fix1.py  611/611 通過
+  validate_m2_actions.py  322/322 通過
+  validate_anim_timing.py（anim-timing-fix2 + 新 idle_quiet）  OK  clips=31 events=42 hooked=41 null=1
+
+遊程請將 zip 解壓到 art 工作樹，commit 到 art/ 分支，唔好 merge main。
+
+[A] art-pet/tools/art_fix1_sit.py  13773B  sha1:2287a624f10fe498f5bc95d890da557d540b38f2
+[A] art-pet/tools/art_fix1_liveliness.py  27285B  sha1:3ec3b11919fcb6f36a0db1a24f502e91e8be96e3
+[A] art-pet/tools/build_art_fix1.py  10605B  sha1:6c0c0c9b4f46824d6f6b8c139cb70abf939890fe
+[M] art-pet/tools/build_m2_clips.py  14293B  sha1:89b60801e1930b5f14279d449426daaaae58bfd3
+[A] art-pet/tools/validate_art_fix1.py  5823B  sha1:abcde41c57d92b368e6259dd24386620f21fb93e
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_S.png  860B  sha1:43a107a97e75b13a352920fc88e9d37fcaee9659
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_S_n.png  2361B  sha1:56d2c1f49dc8709b12da062e96b6a9383779335d
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_S_emissive.png  351B  sha1:2690a8c19984cd1b43c233e127401fe2de2091e8
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_S.json  2324B  sha1:7936ff76237d1f1331dc09d0915f277133147ba6
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_M.png  1318B  sha1:8424fcb2844923b576307ce456958591f3d71b67
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_M_n.png  4326B  sha1:14dead4bd29e290572c3cb14d6c3132a16a72cf3
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_M_emissive.png  587B  sha1:8a1d240f1b8f76669ca93ccbea97002d53d098cd
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_M.json  2325B  sha1:438429a515742da32cd1c32e0c60779be43221e7
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_L.png  1533B  sha1:59ac58719bb6b3834f1f8f4bdc848b5b9374ac76
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_L_n.png  5542B  sha1:247f23c3b870b4c8b46c91d610563c51ffcc3907
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_L_emissive.png  816B  sha1:1cbd067a010bf5df014a4f709948099a89c52992
+[M] art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_L.json  2326B  sha1:c43e26f6416bd58a227423e6e9beee64f4f05909
+[A] art-pet/sprites/series2/liveliness/atlas_A1_scratch.png  1687B  sha1:e60f82740f4b45a10cba34540988b323fe157fc5
+[A] art-pet/sprites/series2/liveliness/atlas_A1_scratch_n.png  3615B  sha1:e335a7ee8c040da25739bf278ef583935c8026f2
+[A] art-pet/sprites/series2/liveliness/atlas_A1_scratch_emissive.png  370B  sha1:05830506f6e16ecc85fc80f8ee3f2c0065e0b29c
+[A] art-pet/sprites/series2/liveliness/atlas_A1_scratch.json  2383B  sha1:21646bc3ca033c706f06313279c0086bd83bbd00
+[A] art-pet/sprites/series2/liveliness/atlas_A1_sneeze.png  2519B  sha1:bf411c6c42bb76d5fda9ba641933e302398c666d
+[A] art-pet/sprites/series2/liveliness/atlas_A1_sneeze_n.png  5617B  sha1:7b3473d08fe44a1dab60e69e475f782b65a98b18
+[A] art-pet/sprites/series2/liveliness/atlas_A1_sneeze_emissive.png  526B  sha1:505314477f1e85c943dd87715845e20e2350f6a8
+[A] art-pet/sprites/series2/liveliness/atlas_A1_sneeze.json  2098B  sha1:efee51cf517053d561a2c1c2e3268b0fa487061a
+[A] art-pet/sprites/series2/liveliness/atlas_A1_sniff.png  1913B  sha1:ee8d6f851f07641ca2c03949a0eb778b34d54f70
+[A] art-pet/sprites/series2/liveliness/atlas_A1_sniff_n.png  4638B  sha1:003959efb6974af80c75f9b51f91f5f6a180b2ac
+[A] art-pet/sprites/series2/liveliness/atlas_A1_sniff_emissive.png  356B  sha1:02bb093e5c398924be70a7d741f477285caeb604
+[A] art-pet/sprites/series2/liveliness/atlas_A1_sniff.json  1815B  sha1:47240bb54276c9fe4d1db7fd278d63cff671ef8a
+[A] art-pet/sprites/series2/liveliness/clips.json  1179B  sha1:596d390c062db7a98fee069ec38b3908b9f4fdff
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_scratch.png  1320B  sha1:b5e86753c114babf54e6eb387d1825b218ffb88e
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_scratch_n.png  3407B  sha1:a6db5985c3832856fcbf9c5cfbc814c2b6a66a41
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_scratch_emissive.png  489B  sha1:7887298960e7e925b6ddd19aa7a65678e92ad99c
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_scratch.json  2409B  sha1:7e7777a84c6811234b46c6980fa39bcdd9efe9c3
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_sneeze.png  1083B  sha1:911b9eeac8e193397282b343d767753f7fb1fa7d
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_sneeze_n.png  2331B  sha1:67b8ea5f53abc675c93dd07f2660776468dcddc5
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_sneeze_emissive.png  350B  sha1:4c948e6407ca910d54beb4c8d0ad53cc5c5631a7
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_sneeze.json  2124B  sha1:a0271e64011d739a31cadb29500451ce2b0330dd
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_sniff.png  1137B  sha1:646052feb867d93a6897cd27b3a1010e5da0e5f4
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_sniff_n.png  3400B  sha1:fd32a68dd3285faef86f5f8ba21adce52e60a977
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_sniff_emissive.png  272B  sha1:2872c9685d8802b7733e3ce63aff41372e697d1e
+[A] art-pet/sprites/visitors/m2/atlas_snail_postman_sniff.json  1841B  sha1:ac1db7bb7ddb7510f284bc01cd964b9ac171fb2a
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_scratch.png  1433B  sha1:b8d872b590e8c81a3a2aae4889b0189c7985cf0a
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_scratch_n.png  3781B  sha1:834317c2c978309968e895c8be719f2c82790ed1
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_scratch_emissive.png  443B  sha1:baae1092c4972a756d1cfbc31674aceaaeb3f3a9
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_scratch.json  2417B  sha1:6dfa5e76069e941ca7ea4349db75fde7f9cd75e7
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_sneeze.png  1663B  sha1:4654e8dd1d6afd6bcad63943dc8c5a788c5747b3
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_sneeze_n.png  4404B  sha1:aa6b61ad4d4cad9c8799e0952f2e673b78685f17
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_sneeze_emissive.png  442B  sha1:4c2ec8eaf49396f8036d33777e4ca11c785b561b
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_sneeze.json  2132B  sha1:50ce074d34381843e13f394523664db46be69aac
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_sniff.png  1453B  sha1:89310f5c741299a739514bffc89403e13bbfd442
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_sniff_n.png  4284B  sha1:20282e1345260a656835a3dd8f2590571cf0f8dc
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_sniff_emissive.png  376B  sha1:4eb9504fc9a7275658d577184e6ce248268fe360
+[A] art-pet/sprites/visitors/m2/atlas_mushroom_granny_sniff.json  1849B  sha1:7d384f1bc9dcd676c63597b4645ab1c24c7b45da
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_scratch.png  1619B  sha1:ac6b5fd216d8505b6877d18feabff74ab6b0ca61
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_scratch_n.png  4256B  sha1:6377d5c8568e049b99988454cad17f1fed003c0f
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_scratch_emissive.png  911B  sha1:3b3ba50216f32dd95ece7c2eac7cdc0cdbffddff
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_scratch.json  2413B  sha1:d6ab252e79453f6674a8e3964bfa53833a498b59
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sneeze.png  1578B  sha1:53591c4f0846eaa4dfa234373d78d2f22c11c245
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sneeze_n.png  4006B  sha1:fb7115996e4bd74447b3ee6110e445f53a98cbb2
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sneeze_emissive.png  893B  sha1:357e9f019657f57653d611179404247e857c1736
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sneeze.json  2128B  sha1:e80f9b7f8dea62e4d51976e7776e7766cd350c2a
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sniff.png  1437B  sha1:70f0ef2c15dc69646b0924f7f3d0435c7aed474b
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sniff_n.png  3066B  sha1:5d470110584ef63a9926211c1997f46eec4cd15e
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sniff_emissive.png  774B  sha1:356c36419e23dc308d728476ed2f48c827c16c8f
+[A] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sniff.json  1845B  sha1:36c9ec9a9e74e92c53ba7de2d00188a92b3ff1b7
+[A] art-pet/sprites/visitors/m2/liveliness_clips.json  2817B  sha1:7c24820a646a5de4af8101d79fd795d4b8e3636f
+[A] art-pet/validation_art_fix1.json  51927B  sha1:8d076d1386480c02dec7d7e96da2d9aa41371d85

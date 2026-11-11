@@ -91,20 +91,9 @@ def pose_idle_lively(i):
     return finish_spr(im)
 
 def pose_idle_quiet(i):
-    """文靜：坐低喺度，輕輕呼吸、偶爾眨眼。"""
-    blink = i in (2, 3)
-    base = fr('blink_03' if blink else ('idle_03' if i % 2 else 'idle_01'))
-    # 坐：下半壓扁、放低、稍闊
-    breath = 0.70 + 0.03 * math.sin(i * math.pi / 3)
-    sit = _squash(base, 56, breath, 1.18)
-    sit = shift(sit, dy=6)
-    im = rgba(64)
-    blit(im, sit, 0, 0)
-    # 坐墊／腿團（一眼睇到係坐住）
-    fill_ellipse(im, 32, 58, 14 + (i % 2), 6, PAL['cream1'])
-    fill_ellipse(im, 32, 57, 11, 4, PAL['cream2'])
-    pset(im, 24, 56, PAL['cream3']); pset(im, 40, 56, PAL['cream3'])
-    return finish_spr(im)
+    """文靜：坐低收腳（Kurt 批坐低草稿，2026-11-11），輕輕呼吸、偶爾眨眼。"""
+    from art_fix1_sit import pose_idle_quiet as _sit
+    return _sit(i)
 
 def pose_idle_diligent(i):
     """勤力：彎腰執落葉，執起再擺好。"""

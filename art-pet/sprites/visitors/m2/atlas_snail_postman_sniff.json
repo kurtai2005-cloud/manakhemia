@@ -1,0 +1,141 @@
+{
+ "format": "art_fix1.visitor.liveliness.atlas/1",
+ "frameSize": 48,
+ "pivotPx": [
+  22,
+  45
+ ],
+ "frames": {
+  "sniff_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     30,
+     30
+    ],
+    "eyeR": [
+     36,
+     30
+    ],
+    "mouth": [
+     34,
+     34
+    ]
+   }
+  },
+  "sniff_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     30,
+     30
+    ],
+    "eyeR": [
+     36,
+     30
+    ],
+    "mouth": [
+     34,
+     34
+    ]
+   }
+  },
+  "sniff_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     30,
+     30
+    ],
+    "eyeR": [
+     36,
+     30
+    ],
+    "mouth": [
+     34,
+     34
+    ]
+   }
+  },
+  "sniff_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     30,
+     31
+    ],
+    "eyeR": [
+     36,
+     31
+    ],
+    "mouth": [
+     34,
+     35
+    ]
+   }
+  }
+ },
+ "frameCount": 4,
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "meta": {
+  "image": "atlas_snail_postman_sniff.png",
+  "normal": "atlas_snail_postman_sniff_n.png",
+  "emissive": "atlas_snail_postman_sniff_emissive.png",
+  "size": {
+   "w": 256,
+   "h": 64
+  },
+  "padding": 2,
+  "frameSize": 48,
+  "pivotPx": [
+   22,
+   45
+  ]
+ },
+ "id": "snail_postman",
+ "zh": "蝸牛郵差",
+ "clip": "sniff",
+ "clip_zh": "嗅地",
+ "fps": 6,
+ "loop": false,
+ "size": "M",
+ "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
+ "note": "蝸牛郵差 外形／色；48px；pivot [22, 45]；時機同團絨 liveliness。"
+}

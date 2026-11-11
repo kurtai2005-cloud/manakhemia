@@ -20,6 +20,20 @@
    "pivotPx": {
     "x": 24,
     "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
    }
   },
   "idle_quiet_02": {
@@ -32,6 +46,20 @@
    "pivotPx": {
     "x": 24,
     "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
    }
   },
   "idle_quiet_03": {
@@ -44,6 +72,20 @@
    "pivotPx": {
     "x": 24,
     "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     31
+    ],
+    "eyeR": [
+     28,
+     31
+    ],
+    "mouth": [
+     24,
+     37
+    ]
    }
   },
   "idle_quiet_04": {
@@ -56,6 +98,20 @@
    "pivotPx": {
     "x": 24,
     "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
    }
   },
   "idle_quiet_05": {
@@ -68,6 +124,20 @@
    "pivotPx": {
     "x": 24,
     "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
    }
   },
   "idle_quiet_06": {
@@ -80,6 +150,20 @@
    "pivotPx": {
     "x": 24,
     "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
    }
   }
  },
@@ -88,6 +172,8 @@
  "frameCount": 6,
  "kind": "idle",
  "personality": "quiet",
+ "pose": "sit",
+ "poseNote": "文靜改為坐低收腳（Kurt 2026-11-11 批坐低草稿）",
  "meta": {
   "image": "atlas_radiant_idle_quiet_M.png",
   "normal": "atlas_radiant_idle_quiet_M_n.png",

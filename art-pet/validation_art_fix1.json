@@ -1,0 +1,3062 @@
+{
+ "ok": true,
+ "total": 611,
+ "passed": 611,
+ "checks": [
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_S.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_radiant_idle_quiet_S frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_radiant_idle_quiet_S atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_M.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_radiant_idle_quiet_M frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_radiant_idle_quiet_M atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_L.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_radiant_idle_quiet_L frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_radiant_idle_quiet_L atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_01 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_02 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_03 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_04 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_05 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "idle_quiet_06 寬高比 0.8–1.1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "kid clips.json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/series2/liveliness/atlas_A1_scratch.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_A1_scratch frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_A1_scratch atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/series2/liveliness/atlas_A1_sneeze.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_A1_sneeze frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_A1_sneeze atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/series2/liveliness/atlas_A1_sniff.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_A1_sniff frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_A1_sniff atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "visitor liveliness_clips.json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_snail_postman_scratch.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_snail_postman_scratch frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_snail_postman_scratch atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_snail_postman_sneeze.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_snail_postman_sneeze frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_snail_postman_sneeze atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_snail_postman_sniff.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_snail_postman_sniff frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_snail_postman_sniff atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_mushroom_granny_scratch.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_mushroom_granny_scratch frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_mushroom_granny_scratch atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_mushroom_granny_sneeze.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_mushroom_granny_sneeze frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_mushroom_granny_sneeze atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_mushroom_granny_sniff.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_mushroom_granny_sniff frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_mushroom_granny_sniff atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_firefly_vendor_scratch.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_firefly_vendor_scratch frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_firefly_vendor_scratch atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "scratch_06 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_firefly_vendor_sneeze.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_firefly_vendor_sneeze frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_firefly_vendor_sneeze atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sneeze_05 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "/workspace/art-fix1-src/art-pet/sprites/visitors/m2/atlas_firefly_vendor_sniff.json 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_firefly_vendor_sniff frameCount/fps/loop/size/pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas_firefly_vendor_sniff atlas 尺寸同 meta",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_01 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_02 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_03 法線綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 有 pivotPx",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 有 eye/mouth anchors",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 anchors 喺幀內",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 法線單位／Z+",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sniff_04 法線綠＝上",
+   "ok": true,
+   "info": null
+  }
+ ]
+}

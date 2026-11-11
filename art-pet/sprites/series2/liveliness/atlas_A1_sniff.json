@@ -1,0 +1,143 @@
+{
+ "format": "art_fix1.kid.liveliness.atlas/1",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "frames": {
+  "sniff_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     36
+    ],
+    "eyeR": [
+     30,
+     35
+    ],
+    "mouth": [
+     24,
+     39
+    ]
+   }
+  },
+  "sniff_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     37
+    ],
+    "eyeR": [
+     29,
+     36
+    ],
+    "mouth": [
+     24,
+     43
+    ]
+   }
+  },
+  "sniff_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     37
+    ],
+    "eyeR": [
+     29,
+     36
+    ],
+    "mouth": [
+     24,
+     43
+    ]
+   }
+  },
+  "sniff_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     37
+    ],
+    "eyeR": [
+     30,
+     36
+    ],
+    "mouth": [
+     24,
+     40
+    ]
+   }
+  }
+ },
+ "frameCount": 4,
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "meta": {
+  "image": "atlas_A1_sniff.png",
+  "normal": "atlas_A1_sniff_n.png",
+  "emissive": "atlas_A1_sniff_emissive.png",
+  "size": {
+   "w": 256,
+   "h": 64
+  },
+  "padding": 2,
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   45
+  ]
+ },
+ "id": "A1",
+ "zh": "細佬",
+ "actor": "kid",
+ "form": "A1",
+ "clip": "sniff",
+ "clip_zh": "嗅地",
+ "fps": 6,
+ "loop": false,
+ "size": "M",
+ "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
+ "note": "細佬 A1 外形／色；48px；pivot (24,45)；時機同團絨 liveliness。"
+}
