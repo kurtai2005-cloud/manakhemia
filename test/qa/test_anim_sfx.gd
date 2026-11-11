@@ -1,9 +1,10 @@
 extends GutTest
 ## 草稿。未接入遊程，唔好寫入 project.godot。
 ## 契約係本檔 _cue。遊程播放器好之後，測試改呼叫佢哋嘅函式。
-## art/anim-timing-fix1 @ f6d60b5e 的 42 個 event，
+## art/anim-timing-fix2 @ d459c4be（疊喺 fix1 f6d60b5e）。
 ## 配聲跟 audio/pet-plan-a @ 07762d21 的 anim_sfx_map.json。
-## toleranceFrames=1。遊音新檔能量峰 ≤27 ms。
+## toleranceFrames=1。sfx_hooks.json 已刪。
+## every_n_loops 的 JSON 冇寫 N；草稿用 2，即隔一圈。
 
 const TOLERANCE_FRAMES := 1
 const PITCH := {"S": 1.12, "M": 1.0, "L": 0.88}
@@ -53,15 +54,16 @@ const ROWS := [
 	"firefly_vendor_vendor_show|rattle|2|250|8|sfx_visitor_rattle_a|0",
 	"firefly_vendor_vendor_show|rattle|4|500|8|sfx_visitor_rattle_a|0",
 ]
-## 循環 clip 唔好每圈都響。數值係 clip 長度 ms。
-const LOOP_MS := {
-	"idle_diligent": 750,
-	"idle_clingy": 750,
-	"idle_lazy": 1200,
-	"snail_postman_snail_deliver": 750,
-	"mushroom_granny_granny_seed": 750,
-	"firefly_vendor_vendor_show": 750,
+## 只記 fix2 有寫 loopPlay 的 event。其餘每圈都播。
+const LOOP_PLAY := {
+	"dewlet_scared|startle": "on_enter",
+	"loambun_scared|startle": "on_enter",
+	"mossback_scared|startle": "on_enter",
+	"seedfluff_scared|startle": "on_enter",
+	"idle_lazy|yawn": "every_n_loops",
+	"snail_postman_snail_deliver|offer": "every_n_loops",
 }
+const EVERY_N := 2
 
 
 func test_forty_two_events_forty_one_files_and_hop_peak_silent() -> void:
@@ -69,7 +71,7 @@ func test_forty_two_events_forty_one_files_and_hop_peak_silent() -> void:
 	var voiced := 0
 	var saw_hop := false
 	for row in ROWS:
-		var cue := _cue(row, "tuanrong", "M", true, 0, -1)
+		var cue := _cue(row, "tuanrong", "M", true, 0)
 		var p: PackedStringArray = row.split("|")
 		if p[1] == "hop_peak" and int(p[3]) == 250:
 			saw_hop = true
@@ -86,8 +88,9 @@ func test_forty_two_events_forty_one_files_and_hop_peak_silent() -> void:
 
 func test_yawn_starts_at_t_minus_600() -> void:
 	var row := _row("idle_lazy", "yawn")
-	var cue := _cue(row, "tuanrong", "M", true, 0, -1)
+	var cue := _cue(row, "tuanrong", "M", true, 0)
 	assert_eq(cue.stream, "sfx_pet_yawn")
+	assert_eq(int(row.split("|")[6]), YAWN_PREROLL_MS)
 	assert_eq(cue.play_ms, 600 - YAWN_PREROLL_MS)
 	assert_eq(cue.play_ms, 0)
 	# 能量峰約 603 ms，對住事件 600。差 3 ms，細過一幀（fps 5 → 200 ms）。
@@ -96,39 +99,37 @@ func test_yawn_starts_at_t_minus_600() -> void:
 
 func test_pitch_follows_size() -> void:
 	var row := _row("cheer", "cheer_peak")
-	assert_almost_eq(_cue(row, "kid", "S", true, 0, -1).pitch, 1.12, 0.0001)
-	assert_almost_eq(_cue(row, "tuanrong", "M", true, 0, -1).pitch, 1.0, 0.0001)
-	assert_almost_eq(_cue(row, "visitor", "L", true, 0, -1).pitch, 0.88, 0.0001)
+	assert_almost_eq(_cue(row, "kid", "S", true, 0).pitch, 1.12, 0.0001)
+	assert_almost_eq(_cue(row, "tuanrong", "M", true, 0).pitch, 1.0, 0.0001)
+	assert_almost_eq(_cue(row, "visitor", "L", true, 0).pitch, 0.88, 0.0001)
 
 
 func test_startle_only_when_entering() -> void:
 	for clip in ["dewlet_scared", "loambun_scared", "mossback_scared", "seedfluff_scared"]:
 		var row := _row(clip, "startle")
-		var enter := _cue(row, "critter", "S", true, 0, -1)
+		assert_eq(LOOP_PLAY[clip + "|startle"], "on_enter")
+		var enter := _cue(row, "critter", "S", true, 0)
 		assert_true(enter.play, clip)
 		assert_eq(enter.stream, "sfx_critter_startle_a")
-		var looped := _cue(row, "critter", "S", false, 667, 0)
+		var looped := _cue(row, "critter", "S", false, 1)
 		assert_false(looped.play, clip)
 		assert_eq(looped.stream, "")
 
 
-func test_loop_sfx_not_every_cycle() -> void:
-	var cases := [
-		["idle_diligent", "pickup", 750],
-		["idle_clingy", "reach", 750],
-		["snail_postman_snail_deliver", "offer", 750],
-		["mushroom_granny_granny_seed", "nod", 750],
-		["firefly_vendor_vendor_show", "rattle", 750],
-		["idle_lazy", "yawn", 1200],
-	]
-	for c in cases:
-		var row := _row(c[0], c[1])
-		var first := _cue(row, "tuanrong", "M", true, 0, -1)
-		assert_true(first.play, c[0])
-		var again := _cue(row, "tuanrong", "M", false, int(c[2]) - 1, 0)
-		assert_false(again.play, c[0])
-		var later := _cue(row, "tuanrong", "M", false, int(c[2]), 0)
-		assert_true(later.play, c[0])
+func test_yawn_and_letter_skip_alternate_loops() -> void:
+	var pairs: Array = [["idle_lazy", "yawn"], ["snail_postman_snail_deliver", "offer"]]
+	for pair in pairs:
+		var row := _row(pair[0], pair[1])
+		assert_eq(LOOP_PLAY[pair[0] + "|" + pair[1]], "every_n_loops")
+		assert_true(_cue(row, "tuanrong", "M", true, 0).play, pair[0])
+		assert_false(_cue(row, "tuanrong", "M", false, 1).play, pair[0])
+		assert_true(_cue(row, "tuanrong", "M", false, EVERY_N).play, pair[0])
+	# 冇 loopPlay 的循環動作每圈都播。
+	var land := _row("idle_lively", "land")
+	assert_true(_cue(land, "tuanrong", "M", false, 0).play)
+	assert_true(_cue(land, "tuanrong", "M", false, 1).play)
+	var rattle := _row("firefly_vendor_vendor_show", "rattle")
+	assert_true(_cue(rattle, "visitor", "M", false, 1).play)
 
 
 func test_accent_stays_inside_one_frame() -> void:
@@ -154,7 +155,7 @@ func _within_frames(heard_ms: int, event_ms: int, fps: int) -> bool:
 	return absi(heard_ms - event_ms) <= frame_ms * TOLERANCE_FRAMES
 
 
-func _cue(row: String, _actor: String, size: String, entering: bool, now_ms: int, last_play_ms: int) -> Cue:
+func _cue(row: String, _actor: String, size: String, entering: bool, loop_index: int) -> Cue:
 	var p: PackedStringArray = row.split("|")
 	var clip := p[0]
 	var event := p[1]
@@ -166,15 +167,18 @@ func _cue(row: String, _actor: String, size: String, entering: bool, now_ms: int
 		out.play = false
 		out.stream = ""
 		return out
-	if event == "startle" and not entering:
+	var policy := ""
+	var key := clip + "|" + event
+	if LOOP_PLAY.has(key):
+		policy = str(LOOP_PLAY[key])
+	if policy == "on_enter" and not entering:
 		out.play = false
 		out.stream = ""
 		return out
-	if clip in LOOP_MS and last_play_ms >= 0:
-		if now_ms - last_play_ms < int(LOOP_MS[clip]):
-			out.play = false
-			out.stream = ""
-			return out
+	if policy == "every_n_loops" and loop_index % EVERY_N != 0:
+		out.play = false
+		out.stream = ""
+		return out
 	out.play = true
 	out.stream = hook
 	out.play_ms = int(p[3]) - preroll
