@@ -445,3 +445,22 @@ Kurt 揀咗 **HD-2D「金邊玻璃・寶石光」UI**（取代 B2 繪本貼紙�
 - **所有新檔我都未親耳聽過**（冇聽覺）；只做咗數據檢查（長度、響度、峰值、頻譜、循環接縫、起止樣本）。「可愛、溫柔、唔煩」係設計意圖，**要有人聽過先算數**，尤其 `bgm_care_morning_loop`（鳥仔 chirp 似唔似鳥、會唔會煩）、`bgm_care_night_loop`（係咪夠柔、-22 LUFS 夠唔夠聽到）、`bgm_care_evening_loop`（琥珀暖感）、`sfx_env_flowerpot_bump`（似唔似陶盆）、`sfx_env_sunbathe_loop`（暖唔暖、loop 有冇可察覺嘅脈動），同 `sfx_pet_grumpy`、`sfx_pet_uncomfortable`（有冇偏嚇人／偏煩）、`sfx_pet_sleep_breath_loop`（似唔似呼吸）同 `sfx_event_dream_talk`。
 - 偏差：`sfx_event_shiny_day` 實測 -15.3 LUFS（目標 -14），因為峰值上限 -2 dBFS 內，唔用 limiter／失真就唔夠大聲；佢嘅「最特別」靠長度（3.0 s）同密度，唔係靠大聲。`sfx_event_meteor_night`、`rainbow`、`treasure_hunt` 都係峰值限制下接近目標（-15.2 至 -15.8）。
 - `sfx_pet_sleep_breath_loop` 目標係 -22 LUFS（自訂，比一般 SFX 細聲）。
+
+### 7.13 需求泡泡提示音（`sfx_need_warning_a`／`_b`，2026-11-11）
+
+需要泡泡（飢／潔／親等）出現時播。2 檔，`sfx/`，`tools/gen_sfx_need.py`。全部原創程式合成，無取樣。現有檔一字未改。
+
+規格：ogg Vorbis 44.1 kHz 單聲道 `-q:a 4`、`-fflags +bitexact`；HPF 120 Hz、LPF 5.5 kHz；檔頭 3 ms 淡入、檔尾 20 ms 淡出＋10 ms 靜音；峰值上限 -1.5 dBFS（硬上限 -1）；純增益至 **LUFS20 -18**（次要／通知檔：解碼後無間隔重複 20 次）。重音喺 0 ms（hook 喺泡泡出現即播）。長度 0.35–0.5 s。a/b 交替或隨機，唔好連續兩次同一個。
+
+**觸發規則**（俾遊程）：泡泡出現時播一次；每個寵物冷卻 ≥ 8 s；兩個或以上泡泡一齊出現只播一次。
+
+| 檔名 | 長度 | LUFS20 | peak dBFS | 重音 ms | 備註 |
+|---|---|---|---|---|---|
+| `sfx_need_warning_a` | 0.422 s | -18.0 | -8.1 | 0（能量峰 7.7） | E5→A5 圓潤啵鈴＋D6 細閃 |
+| `sfx_need_warning_b` | 0.435 s | -18.0 | -8.3 | 0（能量峰 7.3） | 高半音（F5→Bb5），第二音稍遲 |
+
+同現有 UI 音嘅分別（刻意唔好撞）：`sfx_ui8_error` 係低暖雙噗（A3／A4、向下、0.16 s、-16 LUFS20），呢對係中音域上行兩音，唔係錯誤蜂鳴。`sfx_ui8_toast_in`／`sfx_ui8_popup_open` 用 25% 脈衝上滑＋C7／G6 鋼片琴，重音約 220–238 ms、重心約 1.8–2.0 kHz、-16 LUFS20；呢對用正弦／二諧波圓氣泡、5.5 kHz 低通、重心約 750–800 Hz，重音喺開頭，細 2 LU，冇密集 shimmer。聽感表：`audio/LISTEN_need.md`。
+
+**未有人聽過**——尤其：會唔會仍然太似 toast／popup、夠唔夠「泡泡」、細閃光夠唔夠聽到、手機喇叭 -18 LUFS 聽唔聽到。
+
+- 「欣賞」模式開住時唔播 `sfx_need_warning`（泡泡照出；遊策 §0.5，2026-11-11）。
