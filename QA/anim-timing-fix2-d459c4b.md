@@ -2,10 +2,10 @@
 
 `art/anim-timing-fix2` 已推。`d459c4bec2a9d5a1b4c50e4d6f76b1f16f1f9ac3`，父 commit 係 fix1 `f6d60b5e`。只讀，冇 merge。`art-pet/sfx_hooks.json` 已刪。
 
-驗證器預設讀 `<root>/audio/anim_sfx_map.json`。art 分支冇呢份檔。跑之前把 `audio/pet-plan-a` @ `07762d21` 的 `audio/anim_sfx_map.json`（blob `03df3ef6`）放到工作樹，冇加任何參數：
+fix1 係舊的 6-hook 快照，今次冇再深查。art 分支冇 `audio/anim_sfx_map.json`。map 由 `audio/pet-plan-a` @ `07762d21` 抽出（blob `03df3ef6`），用 `--sfx-map` 指住，冇放進 art 工作樹：
 
 ```
-PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/validate_anim_timing.py
+PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/validate_anim_timing.py --sfx-map /tmp/anim_sfx_map-07762d21.json
 ```
 
 **PASS**，exit 0。
