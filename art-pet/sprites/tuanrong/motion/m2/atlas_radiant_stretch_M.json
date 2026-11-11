@@ -1,0 +1,107 @@
+{
+ "format": "m2.petclip.atlas/1",
+ "form": "radiant",
+ "size": "M",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "clip": "stretch",
+ "zh": "伸懶腰",
+ "frames": {
+  "stretch_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "stretch_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "stretch_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "stretch_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "stretch_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "stretch_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  }
+ },
+ "fps": 8,
+ "loop": false,
+ "frameCount": 6,
+ "kind": "fidget",
+ "personality": null,
+ "meta": {
+  "image": "atlas_radiant_stretch_M.png",
+  "normal": "atlas_radiant_stretch_M_n.png",
+  "emissive": "atlas_radiant_stretch_M_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "form": "radiant",
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   45
+  ]
+ }
+}

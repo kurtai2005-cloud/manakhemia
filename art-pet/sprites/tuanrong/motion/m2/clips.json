@@ -1,0 +1,169 @@
+{
+ "format": "m2.petclip/1",
+ "form": "radiant",
+ "sizes": {
+  "S": {
+   "size": 32,
+   "pivot": [
+    16,
+    29
+   ],
+   "zh": "細體（絨芽級 32px）"
+  },
+  "M": {
+   "size": 48,
+   "pivot": [
+    24,
+    45
+   ],
+   "zh": "中體（長老 evo_still 級 48px）"
+  },
+  "L": {
+   "size": 64,
+   "pivot": [
+    32,
+    61
+   ],
+   "zh": "大體（花園 radiant／dir4 級 64px）"
+  }
+ },
+ "clips": {
+  "mail_post": {
+   "zh": "投信",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "kind": "action"
+  },
+  "idle_lively": {
+   "zh": "招牌·活潑",
+   "frames": 6,
+   "fps": 8,
+   "loop": true,
+   "kind": "idle",
+   "personality": "lively"
+  },
+  "idle_quiet": {
+   "zh": "招牌·文靜",
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "kind": "idle",
+   "personality": "quiet"
+  },
+  "idle_diligent": {
+   "zh": "招牌·勤力",
+   "frames": 6,
+   "fps": 8,
+   "loop": true,
+   "kind": "idle",
+   "personality": "diligent"
+  },
+  "idle_lazy": {
+   "zh": "招牌·懶散",
+   "frames": 6,
+   "fps": 5,
+   "loop": true,
+   "kind": "idle",
+   "personality": "lazy"
+  },
+  "idle_clingy": {
+   "zh": "招牌·黐人",
+   "frames": 6,
+   "fps": 8,
+   "loop": true,
+   "kind": "idle",
+   "personality": "clingy"
+  },
+  "idle_indep": {
+   "zh": "招牌·獨立",
+   "frames": 6,
+   "fps": 6,
+   "loop": true,
+   "kind": "idle",
+   "personality": "indep"
+  },
+  "scratch_head": {
+   "zh": "抓頭",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "kind": "fidget"
+  },
+  "stretch": {
+   "zh": "伸懶腰",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "kind": "fidget"
+  },
+  "look_sky": {
+   "zh": "望天",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "kind": "fidget"
+  },
+  "proud_hips": {
+   "zh": "叉腰得意",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "kind": "fidget"
+  },
+  "point_frame": {
+   "zh": "指相框",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "kind": "action"
+  }
+ },
+ "facing": "全部朝右；朝左＝scaleX −1，法線 R→255−R",
+ "normal": "OpenGL Y+（綠＝上）",
+ "alpha": "0/255",
+ "atlases": {
+  "S": {
+   "mail_post": "atlas_radiant_mail_post_S.json",
+   "idle_lively": "atlas_radiant_idle_lively_S.json",
+   "idle_quiet": "atlas_radiant_idle_quiet_S.json",
+   "idle_diligent": "atlas_radiant_idle_diligent_S.json",
+   "idle_lazy": "atlas_radiant_idle_lazy_S.json",
+   "idle_clingy": "atlas_radiant_idle_clingy_S.json",
+   "idle_indep": "atlas_radiant_idle_indep_S.json",
+   "scratch_head": "atlas_radiant_scratch_head_S.json",
+   "stretch": "atlas_radiant_stretch_S.json",
+   "look_sky": "atlas_radiant_look_sky_S.json",
+   "proud_hips": "atlas_radiant_proud_hips_S.json",
+   "point_frame": "atlas_radiant_point_frame_S.json"
+  },
+  "M": {
+   "mail_post": "atlas_radiant_mail_post_M.json",
+   "idle_lively": "atlas_radiant_idle_lively_M.json",
+   "idle_quiet": "atlas_radiant_idle_quiet_M.json",
+   "idle_diligent": "atlas_radiant_idle_diligent_M.json",
+   "idle_lazy": "atlas_radiant_idle_lazy_M.json",
+   "idle_clingy": "atlas_radiant_idle_clingy_M.json",
+   "idle_indep": "atlas_radiant_idle_indep_M.json",
+   "scratch_head": "atlas_radiant_scratch_head_M.json",
+   "stretch": "atlas_radiant_stretch_M.json",
+   "look_sky": "atlas_radiant_look_sky_M.json",
+   "proud_hips": "atlas_radiant_proud_hips_M.json",
+   "point_frame": "atlas_radiant_point_frame_M.json"
+  },
+  "L": {
+   "mail_post": "atlas_radiant_mail_post_L.json",
+   "idle_lively": "atlas_radiant_idle_lively_L.json",
+   "idle_quiet": "atlas_radiant_idle_quiet_L.json",
+   "idle_diligent": "atlas_radiant_idle_diligent_L.json",
+   "idle_lazy": "atlas_radiant_idle_lazy_L.json",
+   "idle_clingy": "atlas_radiant_idle_clingy_L.json",
+   "idle_indep": "atlas_radiant_idle_indep_L.json",
+   "scratch_head": "atlas_radiant_scratch_head_L.json",
+   "stretch": "atlas_radiant_stretch_L.json",
+   "look_sky": "atlas_radiant_look_sky_L.json",
+   "proud_hips": "atlas_radiant_proud_hips_L.json",
+   "point_frame": "atlas_radiant_point_frame_L.json"
+  }
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "format": "m2.props.scene/1",
+ "meshes": {
+  "prop_envelope": {
+   "json": "meshes/prop_envelope.json",
+   "glb": "meshes/prop_envelope.glb",
+   "triangles": 8,
+   "textureSize": [
+    64,
+    64
+   ]
+  },
+  "prop_postcard": {
+   "json": "meshes/prop_postcard.json",
+   "glb": "meshes/prop_postcard.glb",
+   "triangles": 8,
+   "textureSize": [
+    64,
+    64
+   ]
+  },
+  "prop_letter": {
+   "json": "meshes/prop_letter.json",
+   "glb": "meshes/prop_letter.glb",
+   "triangles": 8,
+   "textureSize": [
+    64,
+    64
+   ]
+  }
+ },
+ "units": "1 unit＝1 art px；Y 上"
+}

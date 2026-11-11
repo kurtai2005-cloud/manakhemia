@@ -1,0 +1,107 @@
+{
+ "format": "m2.petclip.atlas/1",
+ "form": "radiant",
+ "size": "M",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "clip": "idle_lazy",
+ "zh": "招牌·懶散",
+ "frames": {
+  "idle_lazy_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_lazy_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_lazy_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_lazy_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_lazy_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_lazy_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  }
+ },
+ "fps": 5,
+ "loop": true,
+ "frameCount": 6,
+ "kind": "idle",
+ "personality": "lazy",
+ "meta": {
+  "image": "atlas_radiant_idle_lazy_M.png",
+  "normal": "atlas_radiant_idle_lazy_M_n.png",
+  "emissive": "atlas_radiant_idle_lazy_M_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "form": "radiant",
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   45
+  ]
+ }
+}

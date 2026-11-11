@@ -1,0 +1,107 @@
+{
+ "format": "m2.petclip.atlas/1",
+ "form": "radiant",
+ "size": "M",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "clip": "idle_diligent",
+ "zh": "招牌·勤力",
+ "frames": {
+  "idle_diligent_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_diligent_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_diligent_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_diligent_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_diligent_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "idle_diligent_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  }
+ },
+ "fps": 8,
+ "loop": true,
+ "frameCount": 6,
+ "kind": "idle",
+ "personality": "diligent",
+ "meta": {
+  "image": "atlas_radiant_idle_diligent_M.png",
+  "normal": "atlas_radiant_idle_diligent_M_n.png",
+  "emissive": "atlas_radiant_idle_diligent_M_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "form": "radiant",
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   45
+  ]
+ }
+}

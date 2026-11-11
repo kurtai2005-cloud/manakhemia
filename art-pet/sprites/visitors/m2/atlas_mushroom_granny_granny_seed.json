@@ -1,0 +1,113 @@
+{
+ "format": "m2.visitorclip.atlas/1",
+ "id": "mushroom_granny",
+ "zh": "蘑菇婆婆",
+ "clip": "granny_seed",
+ "clip_zh": "奉上種子",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "srcSize": [
+  40,
+  48
+ ],
+ "frames": {
+  "granny_seed_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "granny_seed_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "granny_seed_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "granny_seed_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "granny_seed_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "granny_seed_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  }
+ },
+ "fps": 8,
+ "loop": true,
+ "frameCount": 6,
+ "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "billboard": true,
+ "note": "3b 訪客；招牌：點頭奉上種子。",
+ "meta": {
+  "image": "atlas_mushroom_granny_granny_seed.png",
+  "normal": "atlas_mushroom_granny_granny_seed_n.png",
+  "emissive": "atlas_mushroom_granny_granny_seed_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   45
+  ]
+ }
+}

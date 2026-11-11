@@ -1,0 +1,172 @@
+{
+ "format": "m2.props/1",
+ "count": 4,
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "note": "§3.1 三件：信封、明信片、手信。細件 billboard，同時出薄片 glb 俾 3D 場景擺。腳印貼地係 3.1 另一項，一併交付。",
+ "items": [
+  {
+   "id": "prop_envelope",
+   "zh": "信封",
+   "file": "prop_envelope.png",
+   "normal": "prop_envelope_n.png",
+   "sizePx": [
+    32,
+    32
+   ],
+   "pivotPx": [
+    16,
+    28
+   ],
+   "alpha": "0/255",
+   "normalConv": "OpenGL Y+（綠＝上）",
+   "billboard": true,
+   "note": "投信用；寵物 clip 已烙一封作示範，場景可再生成。",
+   "type": "prop",
+   "glb": "scenes/m2_props/meshes/prop_envelope.glb",
+   "mesh": "scenes/m2_props/meshes/prop_envelope.json",
+   "units": "1 unit＝1 art px；薄片立喺 Y，pivot 底中"
+  },
+  {
+   "id": "prop_postcard",
+   "zh": "明信片",
+   "file": "prop_postcard.png",
+   "normal": "prop_postcard_n.png",
+   "sizePx": [
+    32,
+    32
+   ],
+   "pivotPx": [
+    16,
+    28
+   ],
+   "alpha": "0/255",
+   "normalConv": "OpenGL Y+（綠＝上）",
+   "billboard": true,
+   "note": "蝸牛郵差送到門口信箱；卡面係原創遠足小景。",
+   "type": "prop",
+   "glb": "scenes/m2_props/meshes/prop_postcard.glb",
+   "mesh": "scenes/m2_props/meshes/prop_postcard.json",
+   "units": "1 unit＝1 art px；薄片立喺 Y，pivot 底中"
+  },
+  {
+   "id": "prop_letter",
+   "zh": "手信",
+   "file": "prop_letter.png",
+   "normal": "prop_letter_n.png",
+   "sizePx": [
+    32,
+    32
+   ],
+   "pivotPx": [
+    16,
+    28
+   ],
+   "alpha": "0/255",
+   "normalConv": "OpenGL Y+（綠＝上）",
+   "billboard": true,
+   "note": "鄰居探訪完留低。",
+   "type": "prop",
+   "glb": "scenes/m2_props/meshes/prop_letter.glb",
+   "mesh": "scenes/m2_props/meshes/prop_letter.json",
+   "units": "1 unit＝1 art px；薄片立喺 Y，pivot 底中"
+  },
+  {
+   "id": "decal_footprints",
+   "zh": "腳印貼地",
+   "file": "decal_footprints.png",
+   "normal": "decal_footprints_n.png",
+   "sizePx": [
+    64,
+    32
+   ],
+   "pivotPx": [
+    32,
+    28
+   ],
+   "alpha": "0/255",
+   "normalConv": "OpenGL Y+（綠＝上）",
+   "billboard": true,
+   "note": "同手信一組：門口一串腳印。貼地 decal，唔使陰影。",
+   "type": "decal"
+  }
+ ],
+ "atlas": {
+  "image": "atlas_props.png",
+  "normal": "atlas_props_n.png",
+  "size": {
+   "w": 256,
+   "h": 64
+  },
+  "padding": 2,
+  "frames": {
+   "prop_envelope": {
+    "frame": {
+     "x": 2,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   },
+   "prop_postcard": {
+    "frame": {
+     "x": 38,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   },
+   "prop_letter": {
+    "frame": {
+     "x": 74,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   }
+  },
+  "note": "只包 32×32 三件；腳印見 decal_footprints.png"
+ },
+ "meshes": {
+  "prop_envelope": {
+   "json": "meshes/prop_envelope.json",
+   "glb": "meshes/prop_envelope.glb",
+   "triangles": 8,
+   "textureSize": [
+    64,
+    64
+   ]
+  },
+  "prop_postcard": {
+   "json": "meshes/prop_postcard.json",
+   "glb": "meshes/prop_postcard.glb",
+   "triangles": 8,
+   "textureSize": [
+    64,
+    64
+   ]
+  },
+  "prop_letter": {
+   "json": "meshes/prop_letter.json",
+   "glb": "meshes/prop_letter.glb",
+   "triangles": 8,
+   "textureSize": [
+    64,
+    64
+   ]
+  }
+ },
+ "godot": "billboard：Sprite3D Y-billboard、Nearest、Alpha Scissor 0.5。glb：同花園，MASK＋NEAREST，建議 import scale＝1。"
+}

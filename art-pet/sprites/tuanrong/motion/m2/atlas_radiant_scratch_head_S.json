@@ -1,0 +1,107 @@
+{
+ "format": "m2.petclip.atlas/1",
+ "form": "radiant",
+ "size": "S",
+ "frameSize": 32,
+ "pivotPx": [
+  16,
+  29
+ ],
+ "clip": "scratch_head",
+ "zh": "抓頭",
+ "frames": {
+  "scratch_head_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "scratch_head_02": {
+   "frame": {
+    "x": 38,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "scratch_head_03": {
+   "frame": {
+    "x": 74,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "scratch_head_04": {
+   "frame": {
+    "x": 110,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "scratch_head_05": {
+   "frame": {
+    "x": 146,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "scratch_head_06": {
+   "frame": {
+    "x": 182,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  }
+ },
+ "fps": 8,
+ "loop": false,
+ "frameCount": 6,
+ "kind": "fidget",
+ "personality": null,
+ "meta": {
+  "image": "atlas_radiant_scratch_head_S.png",
+  "normal": "atlas_radiant_scratch_head_S_n.png",
+  "emissive": "atlas_radiant_scratch_head_S_emissive.png",
+  "size": {
+   "w": 256,
+   "h": 64
+  },
+  "padding": 2,
+  "form": "radiant",
+  "frameSize": 32,
+  "pivotPx": [
+   16,
+   29
+  ]
+ }
+}

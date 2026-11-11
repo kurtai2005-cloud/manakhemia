@@ -1,0 +1,107 @@
+{
+ "format": "m2.petclip.atlas/1",
+ "form": "radiant",
+ "size": "L",
+ "frameSize": 64,
+ "pivotPx": [
+  32,
+  61
+ ],
+ "clip": "idle_clingy",
+ "zh": "招牌·黐人",
+ "frames": {
+  "idle_clingy_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "idle_clingy_02": {
+   "frame": {
+    "x": 70,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "idle_clingy_03": {
+   "frame": {
+    "x": 138,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "idle_clingy_04": {
+   "frame": {
+    "x": 206,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "idle_clingy_05": {
+   "frame": {
+    "x": 274,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  },
+  "idle_clingy_06": {
+   "frame": {
+    "x": 342,
+    "y": 2,
+    "w": 64,
+    "h": 64
+   },
+   "pivotPx": {
+    "x": 32,
+    "y": 61
+   }
+  }
+ },
+ "fps": 8,
+ "loop": true,
+ "frameCount": 6,
+ "kind": "idle",
+ "personality": "clingy",
+ "meta": {
+  "image": "atlas_radiant_idle_clingy_L.png",
+  "normal": "atlas_radiant_idle_clingy_L_n.png",
+  "emissive": "atlas_radiant_idle_clingy_L_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 128
+  },
+  "padding": 2,
+  "form": "radiant",
+  "frameSize": 64,
+  "pivotPx": [
+   32,
+   61
+  ]
+ }
+}

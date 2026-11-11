@@ -1,0 +1,113 @@
+{
+ "format": "m2.visitorclip.atlas/1",
+ "id": "firefly_vendor",
+ "zh": "螢火小販",
+ "clip": "vendor_show",
+ "clip_zh": "搖瓶展示",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  44
+ ],
+ "srcSize": [
+  48,
+  48
+ ],
+ "frames": {
+  "vendor_show_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   }
+  },
+  "vendor_show_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   }
+  },
+  "vendor_show_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   }
+  },
+  "vendor_show_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   }
+  },
+  "vendor_show_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   }
+  },
+  "vendor_show_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   }
+  }
+ },
+ "fps": 8,
+ "loop": true,
+ "frameCount": 6,
+ "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "billboard": true,
+ "note": "3b 訪客（夜間 17:00–07:00）；招牌：飛住搖螢火瓶展示貨物。",
+ "meta": {
+  "image": "atlas_firefly_vendor_vendor_show.png",
+  "normal": "atlas_firefly_vendor_vendor_show_n.png",
+  "emissive": "atlas_firefly_vendor_vendor_show_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   44
+  ]
+ }
+}
