@@ -5,7 +5,7 @@
 檢查：clip 數同 atlas 一致；fps／幀數／loop 同 atlas 一致；
 frameMs 加總 = durationMs，而且同 fps 換算一致；
 每個 event 必有 sfx_hook、t_ms、accent；
-sfx_hook 須存在於 遊音 hook 表或為 null；
+sfx_hook 須存在於 art-pet/sfx_hooks.json（或 --sfx-readme 覆蓋）或為 null；
 t_ms 喺 clip 長度內，而且等於 sum(frameMs[:frameIndex])；
 accent 只可以係 land／peak／release。
 """
@@ -77,7 +77,8 @@ def discover_clip_ids(m1: Path, m2: Path) -> dict[str, dict]:
 
 def validate(timing_path: Path, *, m1: Path | None, m2: Path | None,
              root: Path, sfx_readme: Path | None,
-             report_path: Path | None = None) -> int:
+             report_path: Path | None = None,
+             refresh_hooks: bool = False) -> int:
     errors: list[str] = []
     warnings: list[str] = []
     doc = json.loads(timing_path.read_text(encoding='utf-8'))
@@ -107,22 +108,22 @@ def validate(timing_path: Path, *, m1: Path | None, m2: Path | None,
         if extra:
             err(errors, f'timing 有但 atlas 冇：{extra}')
 
-    # hook 表：優先用 README 現場抽出，再同檔內烘焙名單對
+    # hook 表：預設 art-pet/sfx_hooks.json；--sfx-readme 先覆蓋。唔會讀本 repo 舊 audio/README.md。
     try:
-        readme = B.find_readme(sfx_readme, [m1r, m2r])
-        hooks = set(B.parse_sfx_hooks(readme))
-        baked = set((doc.get('sfxHooks') or {}).get('names') or [])
-        if baked and baked != hooks:
-            warnings.append(
-                f'檔內烘焙 hook 表同而家 README 唔一致 '
-                f'(baked={len(baked)} readme={len(hooks)} '
-                f'only_baked={sorted(baked-hooks)[:8]} only_readme={sorted(hooks-baked)[:8]})'
-            )
+        hook_list, hook_meta = B.resolve_hooks(root, sfx_readme, refresh=refresh_hooks)
+        hooks = set(hook_list)
     except SystemExit as e:
-        hooks = set((doc.get('sfxHooks') or {}).get('names') or [])
-        warnings.append(f'冇 README，改用檔內烘焙 hook 表（{len(hooks)}）：{e}')
+        err(errors, f'讀 hook 表失敗：{e}')
+        hooks = set()
+    baked = set((doc.get('sfxHooks') or {}).get('names') or [])
+    if hooks and baked and baked != hooks:
+        warnings.append(
+            f'anim_timing.json 內烘焙 hook 表同 {hook_meta.get("via")} 唔一致 '
+            f'(baked={len(baked)} current={len(hooks)} '
+            f'only_baked={sorted(baked-hooks)[:8]} only_current={sorted(hooks-baked)[:8]})'
+        )
     if not hooks:
-        err(errors, '冇任何允許嘅 sfx_hook 名單（README 同烘焙表都空）')
+        err(errors, '冇任何允許嘅 sfx_hook 名單（請確認 art-pet/sfx_hooks.json 存在，或用 --sfx-readme --refresh-hooks）')
 
     ev_total = 0
     ev_null = 0
@@ -252,7 +253,10 @@ def main() -> int:
     ap.add_argument('--root', default='.')
     ap.add_argument('--m1', default=None)
     ap.add_argument('--m2', default=None)
-    ap.add_argument('--sfx-readme', default=None)
+    ap.add_argument('--sfx-readme', default=None,
+                    help='遊音最新 audio/README.md（覆蓋快照；配合 --refresh-hooks 重寫 art-pet/sfx_hooks.json）')
+    ap.add_argument('--refresh-hooks', action='store_true',
+                    help='用 --sfx-readme 抽出嘅名單重寫 art-pet/sfx_hooks.json（必須同時提供 --sfx-readme）')
     ap.add_argument('--timing', default=None, help='anim_timing.json（預設 <root>/art-pet/anim_timing.json）')
     ap.add_argument('--write-report', default=None, help='寫 validation JSON')
     args = ap.parse_args()
@@ -267,6 +271,7 @@ def main() -> int:
         root=Path(args.root),
         sfx_readme=Path(args.sfx_readme) if args.sfx_readme else None,
         report_path=Path(args.write_report) if args.write_report else None,
+        refresh_hooks=bool(args.refresh_hooks),
     )
 
 

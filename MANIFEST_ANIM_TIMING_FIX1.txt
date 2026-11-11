@@ -1,0 +1,12 @@
+MANIFEST_ANIM_TIMING_FIX1 — 修 validate_anim_timing.py 預設誤讀本 repo 舊稿 audio/README.md（冇 hook 表）而失敗。
+疊喺 art/anim-timing @ 330d3a57。解壓到 repo 根。新增 art-pet/sfx_hooks.json（遊音最新 README 83 個 sfx_* 快照，含來源路徑同日期 2026-11-09 Asia/Hong_Kong）。
+build_anim_timing.py 同 validate_anim_timing.py 預設讀呢份快照，唔再自動用本 repo audio/README.md。--sfx-readme 可覆蓋；加 --refresh-hooks 會由最新 README 重寫快照（必須同時提供 --sfx-readme）。
+驗證（唔使加參數）：PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/validate_anim_timing.py  → 已喺 330d3a57 複本上無參數跑過，全過。
+冇 git commit／push／merge。
+
+[A] art-pet/ANIM_TIMING.md  2233B  sha1:20c21f32481f
+[A] art-pet/sfx_hooks.json  2538B  sha1:659b386baecf
+[A] art-pet/anim_timing.json  35296B  sha1:8c58bc61f97f
+[A] art-pet/anim_timing.validation.json  8715B  sha1:0f05b1bfc34b
+[A] art-pet/tools/build_anim_timing.py  23971B  sha1:5a493ab735ac
+[A] art-pet/tools/validate_anim_timing.py  12147B  sha1:348e8979acfb

@@ -4,7 +4,7 @@
 
 時機（fps、幀數、loop、體型）以 atlas／clips.json 為準。
 事件係跟 build 腳本嘅姿勢註解對出來，唔會加姿勢入面冇嘅動作。
-每個事件必有 sfx_hook（須係 遊音 audio/README.md 已有嘅 sfx_* 名，對唔上就 null，唔自製）、
+每個事件必有 sfx_hook（須係 art-pet/sfx_hooks.json 快照入面嘅 sfx_* 名，對唔上就 null，唔自製；可用 --sfx-readme --refresh-hooks 更新快照）、
 t_ms（由 clip 開頭計）、accent（land／peak／release）。
 """
 from __future__ import annotations
@@ -208,17 +208,99 @@ def parse_sfx_hooks(readme: Path) -> list[str]:
     return sorted(names)
 
 
-def find_readme(args_path: Path | None, roots: list[Path]) -> Path:
-    candidates = []
-    if args_path:
-        candidates.append(args_path)
-    for r in roots:
-        candidates.append(r / 'audio' / 'README.md')
-    candidates.append(Path('/workspace/遊音-staging/audio/README.md'))
-    for p in candidates:
-        if p and p.is_file():
-            return p.resolve()
-    raise SystemExit('搵唔到 遊音 audio/README.md（可用 --sfx-readme）')
+HOOKS_JSON_REL = 'art-pet/sfx_hooks.json'
+HOOKS_SOURCE_LABEL = (
+    '遊音 audio/README.md（最新，§3 + §7.1／7.2／7.5／7.9／7.11；'
+    '非本 repo 內舊稿 audio/README.md）'
+)
+
+
+def hooks_json_path(root: Path) -> Path:
+    return Path(root) / HOOKS_JSON_REL
+
+
+def _hkt_date_of(path: Path) -> str:
+    from datetime import datetime, timezone, timedelta
+    hkt = timezone(timedelta(hours=8), name='HKT')
+    return datetime.fromtimestamp(path.stat().st_mtime, hkt).strftime('%Y-%m-%d')
+
+
+def _hkt_today() -> str:
+    from datetime import datetime, timezone, timedelta
+    hkt = timezone(timedelta(hours=8), name='HKT')
+    return datetime.now(hkt).strftime('%Y-%m-%d')
+
+
+def load_hooks_json(path: Path) -> list[str]:
+    """由 art-pet/sfx_hooks.json 讀快照名單。"""
+    J = json.loads(path.read_text(encoding='utf-8'))
+    names = J.get('names')
+    if not isinstance(names, list) or not names:
+        raise SystemExit(f'{path}: names 空或者唔係陣列')
+    if any(not isinstance(n, str) or not n.startswith('sfx_') for n in names):
+        raise SystemExit(f'{path}: names 要全部係 sfx_* 字串')
+    if J.get('count') not in (None, len(names)):
+        raise SystemExit(f'{path}: count {J.get("count")} ≠ names {len(names)}')
+    return list(names)
+
+
+def write_hooks_snapshot(path: Path, names: list[str], readme: Path) -> dict:
+    """由遊音最新 README 重寫 hook 快照。"""
+    doc = {
+        'format': 'sfx_hooks/1',
+        'source': HOOKS_SOURCE_LABEL,
+        'sourcePath': str(readme.resolve()),
+        'date': _hkt_date_of(readme),
+        'dateZone': 'Asia/Hong_Kong',
+        'snapshotTaken': _hkt_today(),
+        'count': len(names),
+        'note': (
+            '允許嘅 hook 名來自 遊音最新 README 全文已列嘅 sfx_*。'
+            '本 repo 根目錄 audio/README.md 係舊稿（風野競走時期），冇 §7 hook 表，唔好用佢嚟驗證。'
+        ),
+        'names': names,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    return doc
+
+
+def resolve_hooks(root: Path, sfx_readme: Path | None, refresh: bool = False
+                  ) -> tuple[list[str], dict]:
+    """預設讀 art-pet/sfx_hooks.json；--sfx-readme 覆蓋；--refresh-hooks 連快照都重寫。
+
+    唔會自動用本 repo 嘅 audio/README.md（舊表，冇 hook）。
+    """
+    snap = hooks_json_path(root)
+    if sfx_readme:
+        readme = Path(sfx_readme)
+        if not readme.is_file():
+            raise SystemExit(f'搵唔到 --sfx-readme {readme}')
+        names = parse_sfx_hooks(readme)
+        if not names:
+            raise SystemExit(f'--sfx-readme {readme} 抽出 0 個 sfx_*（係咪用咗本 repo 舊 README？）')
+        meta = {
+            'via': 'sfx-readme',
+            'source': str(readme.resolve()),
+            'count': len(names),
+        }
+        if refresh:
+            write_hooks_snapshot(snap, names, readme)
+            meta['refreshed'] = str(snap)
+            print(f'refreshed {snap}  hooks={len(names)}  from {readme}')
+        return names, meta
+    if refresh:
+        raise SystemExit(
+            '--refresh-hooks 要同時提供 --sfx-readme <遊音最新 README>；'
+            '唔好用本 repo 舊嘅 audio/README.md'
+        )
+    if snap.is_file():
+        names = load_hooks_json(snap)
+        return names, {'via': 'sfx_hooks.json', 'source': str(snap), 'count': len(names)}
+    raise SystemExit(
+        f'搵唔到 {snap}。請用 --sfx-readme <遊音最新 README> --refresh-hooks 生成快照；'
+        '唔好用本 repo 舊嘅 audio/README.md'
+    )
 
 
 def _first_existing(*paths: Path) -> Path | None:
@@ -412,8 +494,11 @@ HOOKS: set[str] = set()
 def build(args) -> dict:
     global HOOKS
     m1, m2 = resolve_roots(args)
-    readme = find_readme(Path(args.sfx_readme) if args.sfx_readme else None, [m1, m2])
-    hook_list = parse_sfx_hooks(readme)
+    hook_list, hook_meta = resolve_hooks(
+        Path(args.root),
+        Path(args.sfx_readme) if args.sfx_readme else None,
+        refresh=bool(getattr(args, 'refresh_hooks', False)),
+    )
     HOOKS = set(hook_list)
 
     hunt_idx = 'art-pet/sprites/tuanrong/motion/hunt/clips.json'
@@ -446,13 +531,14 @@ def build(args) -> dict:
             '（該幀開始）。遊測若同引擎播放相差超過 1 幀（toleranceFrames）就 fail。'
             '事件只來自姿勢／atlas，冇加姿勢入面冇嘅動作。'
             '每個 event 必有 sfx_hook、t_ms、accent（land／peak／release）。'
-            'sfx_hook 必須係 遊音 audio/README.md 已列出嘅 sfx_* 名；對唔上就 null，唔自製。'
+            'sfx_hook 必須係 art-pet/sfx_hooks.json（遊音最新 README 快照）已列出嘅 sfx_* 名；對唔上就 null，唔自製。'
         ),
         'sfxHooks': {
-            'source': str(readme),
+            'source': HOOKS_JSON_REL,
+            'via': hook_meta.get('via'),
             'note': (
-                '允許嘅 hook 名來自 遊音 README 全文已列嘅 sfx_*'
-                '（第 3 節清單同 §7.1／7.2／7.5／7.9／7.11）。'
+                '允許嘅 hook 名以 art-pet/sfx_hooks.json 為準（遊音最新 README 快照）。'
+                '唔好讀本 repo 舊稿 audio/README.md。'
                 '§7.11 本身係 HD-2D UI hook；寵物／訪客／小動物動作多數喺 §7.1 同 §7.9。'
             ),
             'count': len(hook_list),
@@ -474,7 +560,10 @@ def main() -> int:
     ap.add_argument('--root', default='.')
     ap.add_argument('--m1', default=None, help='M1  overlay 根（預設 = --root）')
     ap.add_argument('--m2', default=None, help='M2  overlay 根（預設 = --root）')
-    ap.add_argument('--sfx-readme', default=None, help='遊音 audio/README.md')
+    ap.add_argument('--sfx-readme', default=None,
+                    help='遊音最新 audio/README.md（覆蓋快照；配合 --refresh-hooks 重寫 art-pet/sfx_hooks.json）')
+    ap.add_argument('--refresh-hooks', action='store_true',
+                    help='用 --sfx-readme 抽出嘅名單重寫 art-pet/sfx_hooks.json（必須同時提供 --sfx-readme）')
     ap.add_argument('--out', default=None, help='輸出路徑（預設 <root>/art-pet/anim_timing.json）')
     ap.add_argument('--validate', action='store_true', help='寫完即跑 validator')
     args = ap.parse_args()

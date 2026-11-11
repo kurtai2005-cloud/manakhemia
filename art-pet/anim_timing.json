@@ -8,8 +8,8 @@
   "toleranceFrames": 1,
   "doc": "遊音同遊測共用呢份檔。每個 clip：id、sizes、frameCount、frameMs、durationMs、loop、events。t_ms 由 clip 開頭計，等於 sum(frameMs[:frameIndex])（該幀開始）。遊測若同引擎播放相差超過 1 幀（toleranceFrames）就 fail。事件只來自姿勢／atlas，冇加姿勢入面冇嘅動作。每個 event 必有 sfx_hook、t_ms、accent（land／peak／release）。sfx_hook 必須係 遊音 audio/README.md 已列出嘅 sfx_* 名；對唔上就 null，唔自製。",
   "sfxHooks": {
-    "source": "/workspace/遊音-staging/audio/README.md",
-    "note": "允許嘅 hook 名來自 遊音 README 全文已列嘅 sfx_*（第 3 節清單同 §7.1／7.2／7.5／7.9／7.11）。§7.11 本身係 HD-2D UI hook；寵物／訪客／小動物動作多數喺 §7.1 同 §7.9。",
+    "source": "art-pet/sfx_hooks.json",
+    "note": "允許嘅 hook 名以 art-pet/sfx_hooks.json 為準（遊音最新 README 快照）。唔好讀本 repo 舊稿 audio/README.md。§7.11 本身係 HD-2D UI hook；寵物／訪客／小動物動作多數喺 §7.1 同 §7.9。",
     "count": 83,
     "names": [
       "sfx_cancel",
@@ -95,7 +95,8 @@
       "sfx_ui8_transition_veil_close",
       "sfx_ui8_transition_veil_open",
       "sfx_win"
-    ]
+    ],
+    "via": "sfx_hooks.json"
   },
   "counts": {
     "clips": 31,
