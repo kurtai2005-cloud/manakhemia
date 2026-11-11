@@ -1,0 +1,79 @@
+{
+ "format": "m1.need_bubble/1",
+ "style": "V3-A 金光深藍、金幼線、深藍霜玻璃（焗成 0/255，Sprite3D 用）",
+ "size": [
+  64,
+  56
+ ],
+ "scale": "@3x（1:1 顯示，同 kit_hd2d_v3）",
+ "alpha": "sprite 0/255；透明 RGB=0",
+ "pivotPx": [
+  32,
+  54
+ ],
+ "iconSlot": {
+  "x": 16,
+  "y": 7,
+  "w": 32,
+  "h": 32
+ },
+ "plate": "bubble_need@3x.png",
+ "items": [
+  {
+   "id": "need_eat",
+   "file": "need_eat@3x.png",
+   "godot": "art/m1-icons/bubble_need_eat.png"
+  },
+  {
+   "id": "need_play",
+   "file": "need_play@3x.png",
+   "godot": "art/m1-icons/bubble_need_play.png"
+  },
+  {
+   "id": "need_sleep",
+   "file": "need_sleep@3x.png",
+   "godot": "art/m1-icons/bubble_need_sleep.png"
+  },
+  {
+   "id": "need_pet",
+   "file": "need_pet@3x.png",
+   "godot": "art/m1-icons/bubble_need_pet.png"
+  }
+ ],
+ "engine": {
+  "path": "res://art/m1-icons/bubble_need_eat.png  （依 icon_id 換 bubble_{id}.png）",
+  "do_not_replace": "art/m1-icons/need_*.png — HUD 一鍵掣共用呢批 32px 純 icon",
+  "do_not_use": "bubble_dream@3x.png（兩格事件框、真 alpha）",
+  "sprite3d": {
+   "shaded": false,
+   "alpha_cut": "ALPHA_CUT_DISCARD",
+   "alpha_scissor_threshold": 0.5,
+   "texture_filter": "TEXTURE_FILTER_NEAREST",
+   "modulate": "Color(1, 1, 1, 1)",
+   "pixel_size": 0.62,
+   "billboard": "BILLBOARD_ENABLED",
+   "double_sided": true,
+   "render_priority": 2,
+   "no_depth_test": true,
+   "cast_shadow": "SHADOW_CASTING_SETTING_OFF",
+   "pixel_size_note": "64×56 × 0.62 ≈ 40×35 世界單位；overview 寵物框 64u、畫面高佔 10% 時泡泡約 52px 高。唔好再用 0.35 掛裸 32px icon（約 15px）。"
+  },
+  "lut": "Sprite3D 會食環境 LUT／tonemap。夜間 exposure 0.88。因為框已係實色深藍＋金線，LUT 之後仍然對得上草地。唔使 modulate>1。Godot 4 唔可以單獨豁免一粒 Sprite3D 唔食 LUT；若要完全豁免，改 CanvasLayer 投影。",
+  "position": "用 walker.visible_world_top() + 泡泡高度一半 + 6，避開招牌頭頂光球（atlas_radiant 光球大約喺框頂以下 7px）。"
+ },
+ "contrast": {
+  "navy2_vs_day_grass": 7.12,
+  "navy2_vs_night_grass": 1.01,
+  "gold_vs_day_grass": 1.25,
+  "gold_vs_night_grass": 8.87,
+  "need_eat_cream_vs_day_grass": 1.84,
+  "need_play_leaf_vs_day_grass": 1.12
+ },
+ "sources": {
+  "need_eat": "/workspace/art-fix1-wt/art-pet/ui/m1_icons/icons/need_eat@3x.png",
+  "need_play": "/workspace/art-fix1-wt/art-pet/ui/m1_icons/icons/need_play@3x.png",
+  "need_sleep": "/workspace/art-fix1-wt/art-pet/ui/m1_icons/icons/need_sleep@3x.png",
+  "need_pet": "/workspace/art-fix1-wt/art-pet/ui/m1_icons/icons/need_pet@3x.png"
+ },
+ "note": "風格同已通過嘅 V3-A 一緻：金幼線、深藍霜玻璃。加強嘅係外框對比同焗實 alpha，唔改造型語言。"
+}
