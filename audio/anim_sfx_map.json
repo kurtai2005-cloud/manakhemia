@@ -1,0 +1,841 @@
+{
+  "format": "anim_sfx_map/1",
+  "timingSource": {
+    "format": "anim_timing/1",
+    "stack": "art/m2-actions @ 230dab2f",
+    "toleranceFrames": 1,
+    "pathHint": "read-only reference, e.g. /tmp/anim-timing/art-pet/anim_timing.json"
+  },
+  "rules": {
+    "accent": "hook 喺 clip 嘅 t_ms 觸發；檔內 accent 預設喺 0 ms。若有 preroll_ms，播放起點＝t_ms − preroll_ms（現有 yawn 要用）。",
+    "kind": {
+      "foley": "共用一檔（所有角色：團絨／細佬／訪客）。執行時按體型調 playbackRate：S 1.12／M 1.00／L 0.88。a/b 交替或隨機，唔好連續兩次同一個。",
+      "voice": "每角色一檔，命名 sfx_pet_<action>_<character>_<a|b>（character＝tuanrong／kid／visitor）。而家只有團絨（現有檔名尚未加角色後綴，例如 sfx_pet_happy、sfx_pet_yawn；future_name 係建議改名，今次唔改檔以免破壞現有 hook）。細佬／訪客尚未做：fallback＝團絨檔，再加體型音高。"
+    },
+    "characters": [
+      "tuanrong",
+      "kid",
+      "visitor"
+    ],
+    "sizes": {
+      "S": 1.12,
+      "M": 1.0,
+      "L": 0.88
+    },
+    "alternate_ab": true,
+    "do_not_stack_sfx_tap": true
+  },
+  "counts": {
+    "events": 42,
+    "alreadyHookedExisting": 6,
+    "mappedToExistingAmongNulls": 0,
+    "newFoleyPoints": 35,
+    "silentRecommended": 1,
+    "newFiles": 36,
+    "existingFilesReused": 6
+  },
+  "entries": [
+    {
+      "clip": "part_grass",
+      "zh_clip": "撥草",
+      "kind_clip": "pet",
+      "event": "grass_rustle",
+      "zh": "撥草",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_grass_rustle_a",
+      "files": [
+        "sfx_pet_grass_rustle_a.ogg",
+        "sfx_pet_grass_rustle_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "撥草：肉墊入草＋葉沙。唔借用花盆 bump。a/b 交替。"
+    },
+    {
+      "clip": "pounce",
+      "zh_clip": "撲",
+      "kind_clip": "pet",
+      "event": "jump",
+      "zh": "起跳",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "release",
+      "sfx_hook": "sfx_pet_jump_a",
+      "files": [
+        "sfx_pet_jump_a.ogg",
+        "sfx_pet_jump_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "起跳蹬地＋短上 sweep。唔借用 step_hop（hop 係落地）。"
+    },
+    {
+      "clip": "pounce",
+      "zh_clip": "撲",
+      "kind_clip": "pet",
+      "event": "land",
+      "zh": "落地",
+      "frameIndex": 4,
+      "t_ms": 500,
+      "accent": "land",
+      "sfx_hook": "sfx_pet_step_hop_a",
+      "files": [
+        "sfx_pet_step_hop_a.ogg",
+        "sfx_pet_step_hop_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "accent_offset_ms": 12,
+      "source": "existing",
+      "note": "已有 hook。落地；a/b 交替。現有檔能量峰約 11–12 ms（10 ms 淡入）。"
+    },
+    {
+      "clip": "carry_fruit",
+      "zh_clip": "抱果行",
+      "kind_clip": "pet",
+      "event": "footstep",
+      "zh": "腳步",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "land",
+      "sfx_hook": "sfx_pet_step_walk_a",
+      "files": [
+        "sfx_pet_step_walk_a.ogg",
+        "sfx_pet_step_walk_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "普通行路步。MOTION 註明唔借用 hop／drag／plod。循環兩步（0／300），a/b 交替，檔長須 <300 ms。"
+    },
+    {
+      "clip": "carry_fruit",
+      "zh_clip": "抱果行",
+      "kind_clip": "pet",
+      "event": "footstep",
+      "zh": "腳步",
+      "frameIndex": 3,
+      "t_ms": 300,
+      "accent": "land",
+      "sfx_hook": "sfx_pet_step_walk_a",
+      "files": [
+        "sfx_pet_step_walk_a.ogg",
+        "sfx_pet_step_walk_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "另一步；建議播 _b 或交替。"
+    },
+    {
+      "clip": "cheer",
+      "zh_clip": "歡呼",
+      "kind_clip": "pet",
+      "event": "jump",
+      "zh": "起跳",
+      "frameIndex": 1,
+      "t_ms": 100,
+      "accent": "release",
+      "sfx_hook": "sfx_pet_jump_a",
+      "files": [
+        "sfx_pet_jump_a.ogg",
+        "sfx_pet_jump_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "同 pounce 起跳共用。"
+    },
+    {
+      "clip": "cheer",
+      "zh_clip": "歡呼",
+      "kind_clip": "pet",
+      "event": "cheer_peak",
+      "zh": "歡呼峰",
+      "frameIndex": 2,
+      "t_ms": 200,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_happy",
+      "files": [
+        "sfx_pet_happy.ogg"
+      ],
+      "kind": "voice",
+      "preroll_ms": 0,
+      "accent_offset_ms": 63,
+      "character": "tuanrong",
+      "future_name": "sfx_pet_happy_tuanrong",
+      "source": "existing",
+      "note": "已有 hook。團絨聲線；細佬／訪客尚未做，fallback＝本檔＋體型音高。現有檔三音上行，能量峰約 63 ms（第一聲近 0，未改檔）。"
+    },
+    {
+      "clip": "cheer",
+      "zh_clip": "歡呼",
+      "kind_clip": "pet",
+      "event": "land",
+      "zh": "落地",
+      "frameIndex": 4,
+      "t_ms": 400,
+      "accent": "land",
+      "sfx_hook": "sfx_pet_step_hop_a",
+      "files": [
+        "sfx_pet_step_hop_a.ogg",
+        "sfx_pet_step_hop_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "accent_offset_ms": 12,
+      "source": "existing",
+      "note": "已有 hook。落地；a/b 交替。"
+    },
+    {
+      "clip": "dewlet_scared",
+      "zh_clip": "露珠偶·scared",
+      "kind_clip": "critter",
+      "event": "startle",
+      "zh": "嚇驚",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "peak",
+      "sfx_hook": "sfx_critter_startle_a",
+      "files": [
+        "sfx_critter_startle_a.ogg",
+        "sfx_critter_startle_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "受驚身體一縮（四種小動物共用）。循環 scared clip 只喺進入狀態播一次，唔好每圈（~667 ms）重播。唔做每種小動物聲線。"
+    },
+    {
+      "clip": "dewlet_tofruit",
+      "zh_clip": "露珠偶·tofruit",
+      "kind_clip": "critter",
+      "event": "shake",
+      "zh": "發抖",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "release",
+      "sfx_hook": "sfx_critter_shake_a",
+      "files": [
+        "sfx_critter_shake_a.ogg",
+        "sfx_critter_shake_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "變成果前左右抖，四種共用。"
+    },
+    {
+      "clip": "dewlet_tofruit",
+      "zh_clip": "露珠偶·tofruit",
+      "kind_clip": "critter",
+      "event": "transform",
+      "zh": "變成果",
+      "frameIndex": 3,
+      "t_ms": 375,
+      "accent": "peak",
+      "sfx_hook": "sfx_critter_transform_a",
+      "files": [
+        "sfx_critter_transform_a.ogg",
+        "sfx_critter_transform_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "成果瞬間：柔和短铃＋暖身，四種共用。唔借用 evolve／事件 jingle。"
+    },
+    {
+      "clip": "dewlet_tofruit",
+      "zh_clip": "露珠偶·tofruit",
+      "kind_clip": "critter",
+      "event": "roll",
+      "zh": "碌走",
+      "frameIndex": 4,
+      "t_ms": 500,
+      "accent": "land",
+      "sfx_hook": "sfx_critter_roll_a",
+      "files": [
+        "sfx_critter_roll_a.ogg",
+        "sfx_critter_roll_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "成果碌走：幾下軟「篤」。四種共用。"
+    },
+    {
+      "clip": "loambun_scared",
+      "zh_clip": "泥包包·scared",
+      "kind_clip": "critter",
+      "event": "startle",
+      "zh": "嚇驚",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "peak",
+      "sfx_hook": "sfx_critter_startle_a",
+      "files": [
+        "sfx_critter_startle_a.ogg",
+        "sfx_critter_startle_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "受驚身體一縮（四種小動物共用）。循環 scared clip 只喺進入狀態播一次，唔好每圈（~667 ms）重播。唔做每種小動物聲線。"
+    },
+    {
+      "clip": "loambun_tofruit",
+      "zh_clip": "泥包包·tofruit",
+      "kind_clip": "critter",
+      "event": "shake",
+      "zh": "發抖",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "release",
+      "sfx_hook": "sfx_critter_shake_a",
+      "files": [
+        "sfx_critter_shake_a.ogg",
+        "sfx_critter_shake_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "變成果前左右抖，四種共用。"
+    },
+    {
+      "clip": "loambun_tofruit",
+      "zh_clip": "泥包包·tofruit",
+      "kind_clip": "critter",
+      "event": "transform",
+      "zh": "變成果",
+      "frameIndex": 3,
+      "t_ms": 375,
+      "accent": "peak",
+      "sfx_hook": "sfx_critter_transform_a",
+      "files": [
+        "sfx_critter_transform_a.ogg",
+        "sfx_critter_transform_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "成果瞬間：柔和短铃＋暖身，四種共用。唔借用 evolve／事件 jingle。"
+    },
+    {
+      "clip": "loambun_tofruit",
+      "zh_clip": "泥包包·tofruit",
+      "kind_clip": "critter",
+      "event": "roll",
+      "zh": "碌走",
+      "frameIndex": 4,
+      "t_ms": 500,
+      "accent": "land",
+      "sfx_hook": "sfx_critter_roll_a",
+      "files": [
+        "sfx_critter_roll_a.ogg",
+        "sfx_critter_roll_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "成果碌走：幾下軟「篤」。四種共用。"
+    },
+    {
+      "clip": "mossback_scared",
+      "zh_clip": "苔丘·scared",
+      "kind_clip": "critter",
+      "event": "startle",
+      "zh": "嚇驚",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "peak",
+      "sfx_hook": "sfx_critter_startle_a",
+      "files": [
+        "sfx_critter_startle_a.ogg",
+        "sfx_critter_startle_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "受驚身體一縮（四種小動物共用）。循環 scared clip 只喺進入狀態播一次，唔好每圈（~667 ms）重播。唔做每種小動物聲線。"
+    },
+    {
+      "clip": "mossback_tofruit",
+      "zh_clip": "苔丘·tofruit",
+      "kind_clip": "critter",
+      "event": "shake",
+      "zh": "發抖",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "release",
+      "sfx_hook": "sfx_critter_shake_a",
+      "files": [
+        "sfx_critter_shake_a.ogg",
+        "sfx_critter_shake_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "變成果前左右抖，四種共用。"
+    },
+    {
+      "clip": "mossback_tofruit",
+      "zh_clip": "苔丘·tofruit",
+      "kind_clip": "critter",
+      "event": "transform",
+      "zh": "變成果",
+      "frameIndex": 3,
+      "t_ms": 375,
+      "accent": "peak",
+      "sfx_hook": "sfx_critter_transform_a",
+      "files": [
+        "sfx_critter_transform_a.ogg",
+        "sfx_critter_transform_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "成果瞬間：柔和短铃＋暖身，四種共用。唔借用 evolve／事件 jingle。"
+    },
+    {
+      "clip": "mossback_tofruit",
+      "zh_clip": "苔丘·tofruit",
+      "kind_clip": "critter",
+      "event": "roll",
+      "zh": "碌走",
+      "frameIndex": 4,
+      "t_ms": 500,
+      "accent": "land",
+      "sfx_hook": "sfx_critter_roll_a",
+      "files": [
+        "sfx_critter_roll_a.ogg",
+        "sfx_critter_roll_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "成果碌走：幾下軟「篤」。四種共用。"
+    },
+    {
+      "clip": "seedfluff_scared",
+      "zh_clip": "穗綿·scared",
+      "kind_clip": "critter",
+      "event": "startle",
+      "zh": "嚇驚",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "peak",
+      "sfx_hook": "sfx_critter_startle_a",
+      "files": [
+        "sfx_critter_startle_a.ogg",
+        "sfx_critter_startle_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "受驚身體一縮（四種小動物共用）。循環 scared clip 只喺進入狀態播一次，唔好每圈（~667 ms）重播。唔做每種小動物聲線。"
+    },
+    {
+      "clip": "seedfluff_tofruit",
+      "zh_clip": "穗綿·tofruit",
+      "kind_clip": "critter",
+      "event": "shake",
+      "zh": "發抖",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "release",
+      "sfx_hook": "sfx_critter_shake_a",
+      "files": [
+        "sfx_critter_shake_a.ogg",
+        "sfx_critter_shake_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "變成果前左右抖，四種共用。"
+    },
+    {
+      "clip": "seedfluff_tofruit",
+      "zh_clip": "穗綿·tofruit",
+      "kind_clip": "critter",
+      "event": "transform",
+      "zh": "變成果",
+      "frameIndex": 3,
+      "t_ms": 375,
+      "accent": "peak",
+      "sfx_hook": "sfx_critter_transform_a",
+      "files": [
+        "sfx_critter_transform_a.ogg",
+        "sfx_critter_transform_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "成果瞬間：柔和短铃＋暖身，四種共用。唔借用 evolve／事件 jingle。"
+    },
+    {
+      "clip": "seedfluff_tofruit",
+      "zh_clip": "穗綿·tofruit",
+      "kind_clip": "critter",
+      "event": "roll",
+      "zh": "碌走",
+      "frameIndex": 4,
+      "t_ms": 500,
+      "accent": "land",
+      "sfx_hook": "sfx_critter_roll_a",
+      "files": [
+        "sfx_critter_roll_a.ogg",
+        "sfx_critter_roll_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "成果碌走：幾下軟「篤」。四種共用。"
+    },
+    {
+      "clip": "mail_post",
+      "zh_clip": "投信",
+      "kind_clip": "pet",
+      "event": "footstep",
+      "zh": "腳步",
+      "frameIndex": 0,
+      "t_ms": 0,
+      "accent": "land",
+      "sfx_hook": "sfx_pet_step_walk_a",
+      "files": [
+        "sfx_pet_step_walk_a.ogg",
+        "sfx_pet_step_walk_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "行近信箱，共用普通行路步。"
+    },
+    {
+      "clip": "mail_post",
+      "zh_clip": "投信",
+      "kind_clip": "pet",
+      "event": "letter_drop",
+      "zh": "投信入箱",
+      "frameIndex": 4,
+      "t_ms": 500,
+      "accent": "land",
+      "sfx_hook": "sfx_pet_letter_drop_a",
+      "files": [
+        "sfx_pet_letter_drop_a.ogg",
+        "sfx_pet_letter_drop_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "信封入箱：紙沙＋細「篤」。唔借用 gift_return 事件合輯。"
+    },
+    {
+      "clip": "mail_post",
+      "zh_clip": "投信",
+      "kind_clip": "pet",
+      "event": "clap",
+      "zh": "拍手",
+      "frameIndex": 5,
+      "t_ms": 625,
+      "accent": "release",
+      "sfx_hook": "sfx_pet_clap_a",
+      "files": [
+        "sfx_pet_clap_a.ogg",
+        "sfx_pet_clap_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "軟肉墊拍手（b 兩下）。唔借用 bug_pat。"
+    },
+    {
+      "clip": "idle_lively",
+      "zh_clip": "招牌·活潑",
+      "kind_clip": "pet",
+      "event": "hop_peak",
+      "zh": "蹦跳峰",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "peak",
+      "sfx_hook": null,
+      "files": [],
+      "kind": null,
+      "preroll_ms": 0,
+      "source": "silent",
+      "note": "建議唔好有聲：循環 750 ms 嘅蹦跳峰；落地已有 step_hop。再加峰頂聲會太密。"
+    },
+    {
+      "clip": "idle_lively",
+      "zh_clip": "招牌·活潑",
+      "kind_clip": "pet",
+      "event": "land",
+      "zh": "落地",
+      "frameIndex": 4,
+      "t_ms": 500,
+      "accent": "land",
+      "sfx_hook": "sfx_pet_step_hop_a",
+      "files": [
+        "sfx_pet_step_hop_a.ogg",
+        "sfx_pet_step_hop_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "accent_offset_ms": 12,
+      "source": "existing",
+      "note": "已有 hook。循環落地（750 ms）；a/b 交替。"
+    },
+    {
+      "clip": "idle_diligent",
+      "zh_clip": "招牌·勤力",
+      "kind_clip": "pet",
+      "event": "pickup",
+      "zh": "執起葉子",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_pickup_a",
+      "files": [
+        "sfx_pet_pickup_a.ogg",
+        "sfx_pet_pickup_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "執起葉子。循環 750 ms，請保持細聲；a/b 交替。"
+    },
+    {
+      "clip": "idle_diligent",
+      "zh_clip": "招牌·勤力",
+      "kind_clip": "pet",
+      "event": "place",
+      "zh": "放低葉子",
+      "frameIndex": 5,
+      "t_ms": 625,
+      "accent": "land",
+      "sfx_hook": "sfx_pet_place_a",
+      "files": [
+        "sfx_pet_place_a.ogg",
+        "sfx_pet_place_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "放低葉子。循環 750 ms。"
+    },
+    {
+      "clip": "idle_lazy",
+      "zh_clip": "招牌·懶散",
+      "kind_clip": "pet",
+      "event": "yawn",
+      "zh": "呵欠",
+      "frameIndex": 3,
+      "t_ms": 600,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_yawn",
+      "files": [
+        "sfx_pet_yawn.ogg"
+      ],
+      "kind": "voice",
+      "preroll_ms": 600,
+      "accent_offset_ms": 603,
+      "character": "tuanrong",
+      "future_name": "sfx_pet_yawn_tuanrong",
+      "source": "existing",
+      "note": "已有 hook。現有檔有吸氣前導，能量峰約 603 ms。播放起點＝t_ms−600（約 clip t=0），令呵欠峰對準 frame 3。循環 1200 ms 但檔長 1.58 s，可能同下一圈重疊；建議狀態機唔好每圈重觸發，或者淡出。細佬／訪客 fallback＝本檔＋體型音高。未改檔。"
+    },
+    {
+      "clip": "idle_clingy",
+      "zh_clip": "招牌·黐人",
+      "kind_clip": "pet",
+      "event": "reach",
+      "zh": "伸手",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_reach_a",
+      "files": [
+        "sfx_pet_reach_a.ogg",
+        "sfx_pet_reach_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "伸爪最盡：身體前傾毛皮輕 sweep，唔用 curious／turn_huh（聲線，而且語境唔同）。循環 750 ms。若後日要加「嗯？」聲，應做 voice（每角色一檔）。"
+    },
+    {
+      "clip": "scratch_head",
+      "zh_clip": "抓頭",
+      "kind_clip": "pet",
+      "event": "scratch",
+      "zh": "抓頭",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_scratch_a",
+      "files": [
+        "sfx_pet_scratch_a.ogg",
+        "sfx_pet_scratch_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "accent_offset_ms": 7,
+      "accent_measure": "onset",
+      "source": "existing",
+      "note": "已有 hook。抓癢開始；a（快 6 下）／b（慢 5 下）交替。accent＝起音（約 4–7 ms），中段仲有幾下沙沙，能量峰唔喺 0。"
+    },
+    {
+      "clip": "stretch",
+      "zh_clip": "伸懶腰",
+      "kind_clip": "pet",
+      "event": "stretch",
+      "zh": "伸懶腰",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_stretch_a",
+      "files": [
+        "sfx_pet_stretch_a.ogg",
+        "sfx_pet_stretch_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "踮腳拉到最高再放鬆。MOTION 註明唔借用 yawn。純身體／毛皮，冇口型聲。"
+    },
+    {
+      "clip": "proud_hips",
+      "zh_clip": "叉腰得意",
+      "kind_clip": "pet",
+      "event": "hands_hips",
+      "zh": "叉腰挺胸",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_proud_a",
+      "files": [
+        "sfx_pet_proud_a.ogg",
+        "sfx_pet_proud_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "挺胸叉腰：胸腔輕「噗」＋爪就位。唔借用 happy（歡呼聲太大）。若加得意叫聲應做 voice。"
+    },
+    {
+      "clip": "point_frame",
+      "zh_clip": "指相框",
+      "kind_clip": "pet",
+      "event": "point",
+      "zh": "指相框",
+      "frameIndex": 3,
+      "t_ms": 375,
+      "accent": "peak",
+      "sfx_hook": "sfx_pet_point_a",
+      "files": [
+        "sfx_pet_point_a.ogg",
+        "sfx_pet_point_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "臂伸到最前：短 sweep＋細叮。"
+    },
+    {
+      "clip": "snail_postman_snail_deliver",
+      "zh_clip": "蝸牛郵差·鞠躬遞信",
+      "kind_clip": "visitor",
+      "event": "offer",
+      "zh": "鞠躬遞信",
+      "frameIndex": 3,
+      "t_ms": 375,
+      "accent": "peak",
+      "sfx_hook": "sfx_visitor_offer_letter",
+      "files": [
+        "sfx_visitor_offer_letter.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "鞠躬遞信：紙沙＋身低。loop 750 ms，建議只喺進入動作／每 N 圈播，唔好每圈都響。純 foley，未做訪客聲線。"
+    },
+    {
+      "clip": "mushroom_granny_granny_seed",
+      "zh_clip": "蘑菇婆婆·奉上種子",
+      "kind_clip": "visitor",
+      "event": "nod",
+      "zh": "點頭",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "land",
+      "sfx_hook": "sfx_visitor_nod_a",
+      "files": [
+        "sfx_visitor_nod_a.ogg",
+        "sfx_visitor_nod_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "點頭最低：軟肉墊／帽「篤」。loop 750 ms。"
+    },
+    {
+      "clip": "mushroom_granny_granny_seed",
+      "zh_clip": "蘑菇婆婆·奉上種子",
+      "kind_clip": "visitor",
+      "event": "offer",
+      "zh": "奉上種子",
+      "frameIndex": 3,
+      "t_ms": 375,
+      "accent": "peak",
+      "sfx_hook": "sfx_visitor_offer_seed",
+      "files": [
+        "sfx_visitor_offer_seed.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "種子伸到最前：細有機「篤」，同遞信分開。loop 750 ms。"
+    },
+    {
+      "clip": "firefly_vendor_vendor_show",
+      "zh_clip": "螢火小販·搖瓶展示",
+      "kind_clip": "visitor",
+      "event": "rattle",
+      "zh": "搖瓶",
+      "frameIndex": 2,
+      "t_ms": 250,
+      "accent": "peak",
+      "sfx_hook": "sfx_visitor_rattle_a",
+      "files": [
+        "sfx_visitor_rattle_a.ogg",
+        "sfx_visitor_rattle_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "搖瓶（一邊）。同 t=500 交替 a/b。兩下相隔 250 ms，檔長須短過呢個間隔。loop 750 ms。"
+    },
+    {
+      "clip": "firefly_vendor_vendor_show",
+      "zh_clip": "螢火小販·搖瓶展示",
+      "kind_clip": "visitor",
+      "event": "rattle",
+      "zh": "搖瓶",
+      "frameIndex": 4,
+      "t_ms": 500,
+      "accent": "peak",
+      "sfx_hook": "sfx_visitor_rattle_a",
+      "files": [
+        "sfx_visitor_rattle_a.ogg",
+        "sfx_visitor_rattle_b.ogg"
+      ],
+      "kind": "foley",
+      "preroll_ms": 0,
+      "source": "new",
+      "note": "搖瓶（另一邊）；建議播 _b。"
+    }
+  ]
+}

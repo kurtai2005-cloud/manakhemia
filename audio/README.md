@@ -375,6 +375,71 @@ Kurt 揀咗 **HD-2D「金邊玻璃・寶石光」UI**（取代 B2 繪本貼紙�
 
 **未有人聽過**——尤其：暖唔暖、夠唔夠「寶石光」又保持萌、鈴聲會唔會太多（tab／toast／coin／confirm 都有鈴）、光幕 shimmer 似唔似金色光（定似沙沙）、confirm＋sparkle 同時播會唔會太滿、手機喇叭聽唔聽到暖 pad。
 
+### 7.12 寵物／訪客／小動物動作音（`anim_timing.json` 對拍，2026-11-11）
+
+遊美交出 31 clip、42 個配聲點（`anim_timing.json`，疊喺 art/m2-actions @ 230dab2f）。其中 6 個已對到現有 hook，36 個 `sfx_hook=null`。今次為 null 點配聲：**0 個硬套現有檔**（遊美註明唔借用 hop／drag／plod／yawn 等，我跟），**35 個新 foley**（19 款，多數 a/b），**1 個建議靜音**（`idle_lively`／`hop_peak`：循環蹦跳峰，落地已有 `step_hop`）。全部原創程式合成，無取樣。現有檔一字未改。
+
+對照表：`audio/anim_sfx_map.json`（俾遊美貼 hook、跑 `art-pet/tools/build_anim_timing.py`）。生成：`tools/gen_sfx_anim.py`（讀 timing JSON，每個**新檔**嘅 accent 放喺 0 ms：hook 喺 clip 嘅 `t_ms` 觸發即播）。檢查：`tools/qa_audio.py`（一條指令出 LUFS20、peak、最大樣本跳、>6 kHz 能量、長度、onset／accent 誤差、PASS/FAIL）。試聽合輯（**唔入遊戲**）：`sfx/_preview_pet_anim.ogg`；聽感表：`audio/LISTEN_pet_anim.md`。一鍵：`PY=… bash tools/build_anim.sh`。
+
+**角色／體型規則（所有動作 clip 共用：團絨、細佬、訪客；S／M／L）**
+
+| `kind` | 檔案 | 執行時 |
+|---|---|---|
+| `foley` | 共用一檔（今次全部新聲都係 foley） | 按體型調 `playbackRate`：**S 1.12／M 1.00／L 0.88**。a/b 交替或隨機，唔好連續兩次同一個。 |
+| `voice` | 每角色一檔，命名 `sfx_pet_<action>_<character>_<a\|b>`（`tuanrong`／`kid`／`visitor`） | **而家只有團絨**，而且現有檔名尚未加角色後綴（`sfx_pet_happy`、`sfx_pet_yawn`；`future_name` 寫喺 map，今次唔改檔以免破壞已有 hook）。細佬／訪客**尚未做**：fallback＝團絨檔，再加體型音高。 |
+
+規格：ogg Vorbis 44.1 kHz 單聲道 `-q:a 3`、`-fflags +bitexact`（重跑 sha256 一樣）；4.2 kHz 二階低通（>6 kHz 能量 ≤ 0.02 %）；檔頭 10 ms 餘弦淡入、檔尾 40 ms 淡出＋10 ms 靜音；峰值上限 -6 dBFS（硬上限 -1）；純增益，冇 limiter。LUFS20 目標同 §7.9：一般 -20、腳步／細 foley -22。新檔能量峰（accent）喺起音後約 10–27 ms（10 ms 淡入），QA 容差 30 ms。每個新檔用 `crc32(檔名)` 做隨機種子。
+
+**現有檔 preroll（未改檔）**：`sfx_pet_yawn` 能量峰約 603 ms（前面有吸氣）。播放起點＝`t_ms − 600`（idle_lazy 嘅 yawn 喺 600 ms，即約 clip t=0 開始播），令呵欠峰對準 frame 3。`sfx_pet_happy` 第一聲近 0，最響約 63 ms，唔使 preroll。`sfx_pet_scratch_*` 嘅 accent 係**起音**（抓癢開始，約 4–7 ms），中段仲有幾下沙沙。
+
+#### Hook 名（新；遊美可貼入 timing）
+
+`sfx_pet_grass_rustle_a`／`sfx_pet_grass_rustle_b`、`sfx_pet_jump_a`／`sfx_pet_jump_b`、`sfx_pet_step_walk_a`／`sfx_pet_step_walk_b`、`sfx_pet_letter_drop_a`／`sfx_pet_letter_drop_b`、`sfx_pet_clap_a`／`sfx_pet_clap_b`、`sfx_pet_pickup_a`／`sfx_pet_pickup_b`、`sfx_pet_place_a`／`sfx_pet_place_b`、`sfx_pet_reach_a`／`sfx_pet_reach_b`、`sfx_pet_stretch_a`／`sfx_pet_stretch_b`、`sfx_pet_proud_a`／`sfx_pet_proud_b`、`sfx_pet_point_a`／`sfx_pet_point_b`、`sfx_critter_startle_a`／`sfx_critter_startle_b`、`sfx_critter_shake_a`／`sfx_critter_shake_b`、`sfx_critter_transform_a`／`sfx_critter_transform_b`、`sfx_critter_roll_a`／`sfx_critter_roll_b`、`sfx_visitor_offer_letter`、`sfx_visitor_offer_seed`、`sfx_visitor_nod_a`／`sfx_visitor_nod_b`、`sfx_visitor_rattle_a`／`sfx_visitor_rattle_b`。已有：`sfx_pet_step_hop_a`／`b`、`sfx_pet_happy`、`sfx_pet_yawn`、`sfx_pet_scratch_a`／`b`。
+
+#### 檔案表（新 36 檔；試聽合輯另計）
+
+| 檔名 | 長度 | LUFS20 | peak dBFS | kind | 用喺（clip／event＠t_ms） |
+|---|---|---|---|---|---|
+| `sfx_pet_grass_rustle_a/b` | 0.190 / 0.192 s | -21.9 / -22.0 | -7.3 / -7.2 | foley | part_grass／grass_rustle＠250 |
+| `sfx_pet_jump_a/b` | 0.140 / 0.140 s | -21.9 / -21.9 | -7.7 / -7.4 | foley | pounce／jump＠250；cheer／jump＠100 |
+| `sfx_pet_step_walk_a/b` | 0.140 / 0.140 s | -22.0 / -22.1 | -6.4 / -7.8 | foley | carry_fruit／footstep＠0、＠300；mail_post／footstep＠0 |
+| `sfx_pet_letter_drop_a/b` | 0.170 / 0.170 s | -22.1 / -22.0 | -7.3 / -6.4 | foley | mail_post／letter_drop＠500 |
+| `sfx_pet_clap_a/b` | 0.120 / 0.120 s | -22.0 / -22.0 | -7.7 / -6.3 | foley | mail_post／clap＠625 |
+| `sfx_pet_pickup_a/b` | 0.150 / 0.150 s | -22.0 / -21.9 | -7.3 / -8.4 | foley | idle_diligent／pickup＠250（loop 750 ms） |
+| `sfx_pet_place_a/b` | 0.135 / 0.135 s | -22.0 / -22.0 | -7.8 / -6.9 | foley | idle_diligent／place＠625（loop 750 ms） |
+| `sfx_pet_reach_a/b` | 0.110 / 0.110 s | -22.0 / -22.0 | -8.6 / -9.4 | foley | idle_clingy／reach＠250（loop 750 ms） |
+| `sfx_pet_stretch_a/b` | 0.370 / 0.370 s | -20.0 / -20.0 | -6.1 / -6.0 | foley | stretch／stretch＠250（唔借用 yawn） |
+| `sfx_pet_proud_a/b` | 0.170 / 0.170 s | -19.9 / -20.0 | -7.1 / -7.2 | foley | proud_hips／hands_hips＠250 |
+| `sfx_pet_point_a/b` | 0.100 / 0.100 s | -22.0 / -22.0 | -9.9 / -8.7 | foley | point_frame／point＠375 |
+| `sfx_critter_startle_a/b` | 0.095 / 0.095 s | -20.0 / -20.0 | -6.7 / -6.7 | foley | 四種小動物 scared／startle＠0（共用） |
+| `sfx_critter_shake_a/b` | 0.171 / 0.193 s | -22.0 / -22.0 | -8.0 / -7.4 | foley | 四種 tofruit／shake＠0 |
+| `sfx_critter_transform_a/b` | 0.390 / 0.390 s | -20.0 / -20.0 | -8.9 / -8.6 | foley | 四種 tofruit／transform＠375 |
+| `sfx_critter_roll_a/b` | 0.260 / 0.260 s | -21.9 / -22.0 | -7.3 / -7.2 | foley | 四種 tofruit／roll＠500 |
+| `sfx_visitor_offer_letter` | 0.170 s | -22.0 | -9.2 | foley | snail_postman_snail_deliver／offer＠375 |
+| `sfx_visitor_offer_seed` | 0.150 s | -21.9 | -8.1 | foley | mushroom_granny_granny_seed／offer＠375 |
+| `sfx_visitor_nod_a/b` | 0.120 / 0.120 s | -22.0 / -22.0 | -8.3 / -8.9 | foley | mushroom_granny_granny_seed／nod＠250 |
+| `sfx_visitor_rattle_a/b` | 0.167 / 0.110 s | -22.0 / -22.1 | -8.3 / -9.0 | foley | firefly_vendor_vendor_show／rattle＠250、＠500（交替 a/b） |
+
+沿用現有（6 個已有 hook；檔未改）：`sfx_pet_step_hop_a/b` → pounce／cheer／idle_lively 嘅 land；`sfx_pet_happy`（voice，團絨）→ cheer／cheer_peak＠200；`sfx_pet_yawn`（voice，團絨，preroll 600 ms）→ idle_lazy／yawn＠600；`sfx_pet_scratch_a/b` → scratch_head／scratch＠250。
+
+試聽合輯：`sfx/_preview_pet_anim.ogg`（26.102 s，42 段，每個之間 0.4 s 靜音；新 foley＋今次用到嘅現有檔）——**只供試聽，唔係遊戲資源，唔好入 build**。
+
+**建議唔好有聲**：`idle_lively`／`hop_peak`＠250（map 入面 `sfx_hook` 仍係 null）。已經無 event 嘅 clip（look_sky、idle_quiet、idle_indep、四種小動物 idle）保持靜音。
+
+**循環 clip 請遊程注意**：
+1. `dewlet/loambun/mossback/seedfluff_scared` 嘅 startle 只應喺**進入狀態**播一次，唔好每圈（~667 ms）重播。
+2. 訪客 offer／nod／rattle、招牌 pickup／place／reach 都係 750 ms loop；foley 已做細聲（-22），但仍建議唔好無冷卻每圈都響（尤其 rattle 一圈兩下，相隔 250 ms）。
+3. `idle_lazy` 循環 1200 ms 但 `sfx_pet_yawn` 長 1.58 s，可能同下一圈重疊；建議唔好每圈重觸發。
+
+**偏差（如實）**：
+1. 新檔全部 foley，冇新 voice——伸懶腰／伸手／叉腰如果日後要加「嗯／咦」聲，應做 `sfx_pet_<action>_tuanrong_a/b`，唔好改呢批 foley。
+2. 四種小動物共用同一套 startle／shake／transform／roll（體型音高仍然適用）；未做每種聲線。
+3. `sfx_visitor_offer_letter` 同 `sfx_visitor_offer_seed` 分開，因為道具唔同（信紙 vs 種子），唔係 a/b 變體。
+4. 新檔 peak 約 -6 至 -10 dBFS（跟 §7.9 生命感同一天花板），遠低於 -1。
+5. QA 42 檔（36 新＋6 現有）全部 PASS；accent 容差 30 ms。`sfx_visitor_offer_letter` 能量峰 27 ms，最貼近上限。
+
+**未有人聽過**——尤其：普通行路步似唔似（會唔會仍然似 hop／plod）、起跳同落地分唔分到、撥草喺手機喇叭聽唔聽到（葉沙偏亮）、伸懶腰會唔會誤聽成呵欠、成果變身够唔够「魔法」定太似 UI 鈴、循環 idle／訪客會唔會煩。
+
 ### 7.7 如實聲明
 
 - **所有新檔我都未親耳聽過**（冇聽覺）；只做咗數據檢查（長度、響度、峰值、頻譜、循環接縫、起止樣本）。「可愛、溫柔、唔煩」係設計意圖，**要有人聽過先算數**，尤其 `bgm_care_morning_loop`（鳥仔 chirp 似唔似鳥、會唔會煩）、`bgm_care_night_loop`（係咪夠柔、-22 LUFS 夠唔夠聽到）、`bgm_care_evening_loop`（琥珀暖感）、`sfx_env_flowerpot_bump`（似唔似陶盆）、`sfx_env_sunbathe_loop`（暖唔暖、loop 有冇可察覺嘅脈動），同 `sfx_pet_grumpy`、`sfx_pet_uncomfortable`（有冇偏嚇人／偏煩）、`sfx_pet_sleep_breath_loop`（似唔似呼吸）同 `sfx_event_dream_talk`。
