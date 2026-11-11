@@ -1,0 +1,155 @@
+{
+ "form": "fx",
+ "frameSize": 24,
+ "facing": "right",
+ "clips": {
+  "zzz": {
+   "fps": 2,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 0,
+     "px": 2,
+     "py": 22,
+     "x": 0,
+     "y": 0
+    },
+    {
+     "i": 1,
+     "px": 2,
+     "py": 22,
+     "x": 24,
+     "y": 0
+    },
+    {
+     "i": 2,
+     "px": 2,
+     "py": 22,
+     "x": 48,
+     "y": 0
+    }
+   ]
+  },
+  "heart": {
+   "fps": 3,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 3,
+     "px": 12,
+     "py": 21,
+     "x": 72,
+     "y": 0
+    },
+    {
+     "i": 4,
+     "px": 12,
+     "py": 21,
+     "x": 96,
+     "y": 0
+    }
+   ]
+  },
+  "sweat": {
+   "fps": 3,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 5,
+     "px": 12,
+     "py": 21,
+     "x": 120,
+     "y": 0
+    },
+    {
+     "i": 6,
+     "px": 12,
+     "py": 21,
+     "x": 144,
+     "y": 0
+    }
+   ]
+  },
+  "exclaim": {
+   "fps": 4,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 7,
+     "px": 12,
+     "py": 21,
+     "x": 168,
+     "y": 0
+    },
+    {
+     "i": 8,
+     "px": 12,
+     "py": 21,
+     "x": 0,
+     "y": 24
+    }
+   ]
+  },
+  "need_hunger": {
+   "fps": 1,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 9,
+     "px": 12,
+     "py": 22,
+     "x": 24,
+     "y": 24
+    }
+   ]
+  },
+  "need_mood": {
+   "fps": 1,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 10,
+     "px": 12,
+     "py": 22,
+     "x": 48,
+     "y": 24
+    }
+   ]
+  },
+  "need_clean": {
+   "fps": 1,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 11,
+     "px": 12,
+     "py": 22,
+     "x": 72,
+     "y": 24
+    }
+   ]
+  },
+  "need_energy": {
+   "fps": 1,
+   "loop": true,
+   "pivot": "feet",
+   "frames": [
+    {
+     "i": 12,
+     "px": 12,
+     "py": 22,
+     "x": 96,
+     "y": 24
+    }
+   ]
+  }
+ },
+ "source": "art/atlas_props（zzz／heart／sweat／exclaim）＋src/ui.js ICONS（feed／play／clean／sleep）"
+}

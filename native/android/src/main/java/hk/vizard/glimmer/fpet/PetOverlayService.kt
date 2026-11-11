@@ -1,0 +1,979 @@
+package hk.vizard.glimmer.fpet
+
+import com.godot.game.R
+
+import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
+import android.content.pm.ServiceInfo
+import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import android.os.SystemClock
+import android.provider.Settings
+import android.util.Log
+import android.util.TypedValue
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewConfiguration
+import android.view.WindowInsets
+import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
+import kotlin.math.abs
+import kotlin.math.hypot
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.random.Random
+
+/**
+ * 前景服務＋TYPE_APPLICATION_OVERLAY。團絨視窗只包住一格，用 updateViewLayout 搬。
+ * 模式：沿底邊行（預設）／全畫面自由行／定點。≤15fps，熄屏停，瞌時 2fps。
+ */
+class PetOverlayService : Service() {
+    companion object {
+        const val TAG = "FloatingPet"
+        const val ACTION_START = "hk.vizard.glimmer.fpet.START"
+        const val ACTION_STOP = "hk.vizard.glimmer.fpet.STOP"
+        const val ACTION_SET_MODE = "hk.vizard.glimmer.fpet.SET_MODE"
+        const val ACTION_DEBUG_DOZE = "hk.vizard.glimmer.fpet.DEBUG_DOZE"
+        const val ACTION_DEBUG_PLAY = "hk.vizard.glimmer.fpet.DEBUG_PLAY"   // 測試：即刻去玩圖示
+        const val ACTION_SET_GRID = "hk.vizard.glimmer.fpet.SET_GRID"
+        const val ACTION_DEBUG_S12 = "hk.vizard.glimmer.fpet.DEBUG_S12"     // 測試（systems12）：EXTRA_MODE＝drop／water／sleep／voice 即刻出
+        const val EXTRA_MODE = "mode"
+        const val CHANNEL = "fpet"
+        const val NOTIF_ID = 4201
+        @Volatile var running = false
+
+        fun start(c: Context, action: String = ACTION_START, mode: String? = null) {
+            val i = Intent(c, PetOverlayService::class.java).setAction(action)
+            if (mode != null) i.putExtra(EXTRA_MODE, mode)
+            if (Build.VERSION.SDK_INT >= 26) c.startForegroundService(i) else c.startService(i)
+        }
+        fun send(c: Context, action: String, mode: String? = null) {
+            if (!running) return
+            val i = Intent(c, PetOverlayService::class.java).setAction(action)
+            if (mode != null) i.putExtra(EXTRA_MODE, mode)
+            c.startService(i)
+        }
+    }
+
+    // EMOTE＝播一段 clip（心情／需求／玩圖示動作）；GO_ICON＝行去 icon 格；FLING＝自由行／定點模式拋出滑行（冇重力）
+    private enum class St { IDLE, WALK, TURN, HAPPY, DRAG, FALL, DOZE_IN, ASLEEP, WAKE, EMOTE, GO_ICON, FLING }
+
+    private val h = Handler(Looper.getMainLooper())
+    private lateinit var wm: WindowManager
+    private var view: PetView? = null
+    private var lp: WindowManager.LayoutParams? = null
+    private var menu: View? = null
+    private lateinit var atlas: PetAtlas
+    private var scale = 3
+    private val safe = Rect()
+    private val screen = Rect()
+
+    // 狀態（螢幕 px，feet＝腳底 pivot；拖動時 anchor＝手指＝grab）
+    private var st = St.IDLE
+    private var feetX = 0f; private var feetY = 0f
+    private var fingerX = 0f; private var fingerY = 0f
+    private var tgtX = 0f; private var tgtY = 0f
+    private var vy = 0f; private var groundY = 0f; private var bounces = 0
+    private var facingLeft = false
+    private var clip: PetClip? = null
+    private var clipT = 0f
+    private var stTimer = 0f
+    private var lastInteract = SystemClock.elapsedRealtime()
+    private var lastTick = 0L
+    private var screenOn = true
+    private var appVisible = false
+    private var ticking = false
+    private var mode = PetPrefs.MODE_EDGE
+
+    // ── 同步遊戲狀況（snapshot v3）＋頭頂圖示 ──
+    private var snap: PetStatus.Snap? = null
+    private var status = PetStatus.Status.NONE
+    private var statusAt = 0L
+    private var dozeByGame = false
+    private var fxAtlas: PetAtlas? = null
+    private var fx: FxView? = null
+    private var fxLp: WindowManager.LayoutParams? = null
+    private var fxT = 0f
+    private var tapFx: String? = null; private var tapFxT = 0f
+    private var headTop = 0; private var headRight = 0   // idle 第 1 幀實際像素 bbox（頭頂／右緣，art px）
+    // ── 懸浮互動 ──
+    private var vx = 0f
+    private var emoteNext: (() -> Unit)? = null
+    private var playAct: String? = null
+    private var nextPlayAt = SystemClock.elapsedRealtime() + 20_000L
+    // 拋出速度：自己記最近幾個 (t,x,y)（raw 座標，因為視窗跟手指郁）；唔用 VelocityTracker，佢遇到 >40ms 嘅間隔會當停咗手
+    private val vT = LongArray(8); private val vX = FloatArray(8); private val vY = FloatArray(8); private var vN = 0
+
+    private fun dp(v: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v, resources.displayMetrics)
+
+    // ── lifecycle ──
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        wm = getSystemService(WINDOW_SERVICE) as WindowManager
+        val f = IntentFilter().apply { addAction(Intent.ACTION_SCREEN_OFF); addAction(Intent.ACTION_SCREEN_ON); addAction(Intent.ACTION_USER_PRESENT) }
+        registerReceiver(screenRx, f)
+        PetPrefs.cap(this).registerOnSharedPreferenceChangeListener(snapRx)
+        GlimmerApp.visibilityListener = { vis -> h.post { setAppVisible(vis) } }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        try {
+            val notif = buildNotif()
+            if (Build.VERSION.SDK_INT >= 34) {
+                startForeground(NOTIF_ID, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+            } else {
+                @Suppress("DEPRECATION")
+                startForeground(NOTIF_ID, notif)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "startForeground failed: $e"); stopSelf(); return START_NOT_STICKY
+        }
+        if (!Settings.canDrawOverlays(this)) { Log.w(TAG, "no overlay permission"); PetPrefs.setEnabled(this, false); stopSelf(); return START_NOT_STICKY }
+        when (intent?.action) {
+            ACTION_STOP -> { PetPrefs.setEnabled(this, false); stopSelf(); return START_NOT_STICKY }
+            ACTION_SET_MODE -> intent.getStringExtra(EXTRA_MODE)?.let { PetPrefs.setMode(this, it); if (view != null) applyMode(it) }
+            ACTION_DEBUG_DOZE -> if (view != null) { lastInteract = 0; if (st != St.DRAG) doze() }
+            ACTION_DEBUG_PLAY -> if (view != null && st != St.DRAG) { nextPlayAt = 0; startIconPlay() }
+            ACTION_SET_GRID -> intent.getStringExtra(EXTRA_MODE)?.let { PetPrefs.setGrid(this, it) }
+            ACTION_DEBUG_S12 -> if (view != null) h.postDelayed({ debugS12(intent.getStringExtra(EXTRA_MODE) ?: "") }, 300)
+        }
+        PetPrefs.setEnabled(this, true)
+        running = true
+        if (view == null) attach()
+        return START_STICKY
+    }
+
+    override fun onDestroy() {
+        running = false
+        h.removeCallbacksAndMessages(null)
+        try { unregisterReceiver(screenRx) } catch (_: Exception) {}
+        PetPrefs.cap(this).unregisterOnSharedPreferenceChangeListener(snapRx)
+        GlimmerApp.visibilityListener = null
+        hideMenu()
+        view?.let { try { wm.removeView(it) } catch (_: Exception) {} }
+        view = null
+        fx?.let { try { wm.removeView(it) } catch (_: Exception) {} }
+        fx = null
+        hideSay(); hideShard()
+        super.onDestroy()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        h.postDelayed({ computeBounds(); clampAfterBounds(); place() }, 300)
+    }
+
+    // ── notification ──
+    private fun buildNotif(): Notification {
+        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= 26 && nm.getNotificationChannel(CHANNEL) == null)
+            nm.createNotificationChannel(NotificationChannel(CHANNEL, "浮動團絨", NotificationManager.IMPORTANCE_LOW).apply { setShowBadge(false) })
+        val pf = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        val open = PendingIntent.getActivity(this, 0, Intent(this, SettingsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), pf)
+        val stop = PendingIntent.getService(this, 1, Intent(this, PetOverlayService::class.java).setAction(ACTION_STOP), pf)
+        return NotificationCompat.Builder(this, CHANNEL)
+            .setSmallIcon(R.drawable.ic_stat_pet)
+            .setContentTitle("團絨喺外面散步緊")
+            .setContentText("撳呢度改設定")
+            .setOngoing(true).setSilent(true)
+            .setContentIntent(open)
+            .addAction(0, "收起團絨", stop)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+    }
+
+    // ── window ──
+    @SuppressLint("ClickableViewAccessibility")
+    private fun attach() {
+        mode = PetPrefs.mode(this)
+        loadAtlas(PetPrefs.snapshotForm(this))
+        computeBounds()
+        val v = PetView(this) { e -> onPetTouch(e) }
+        v.atlas = atlas; v.scale = scale
+        val px = atlas.size * scale
+        val p = WindowManager.LayoutParams(px, px,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT)
+        p.gravity = Gravity.TOP or Gravity.START
+        if (Build.VERSION.SDK_INT >= 28) p.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        if (Build.VERSION.SDK_INT >= 30) p.setFitInsetsTypes(0)
+        p.title = "FloatingPet"
+        // 初始位置
+        val pin = PetPrefs.pin(this)
+        feetX = (safe.left + safe.right) / 2f
+        feetY = groundEdge()
+        if (mode == PetPrefs.MODE_PIN && pin != null) { feetX = pin.first; feetY = pin.second }
+        clampFeet()
+        view = v; lp = p
+        play("idle"); st = St.IDLE; stTimer = 1.5f
+        frameToView()
+        p.x = winX(); p.y = winY()
+        wm.addView(v, p)
+        attachFx()
+        appVisible = GlimmerApp.visible
+        v.visibility = if (appVisible) View.GONE else View.VISIBLE
+        fx?.visibility = v.visibility
+        refreshStatus(true)
+        lastInteract = SystemClock.elapsedRealtime()
+        startTicking()
+        Log.i(TAG, "attached form=${atlas.form} mode=$mode scale=$scale safe=$safe")
+    }
+
+    private fun loadAtlas(form: String) {
+        atlas = PetAtlas.load(this, form)
+        val target = dp(try { org.json.JSONObject(PetPrefs.cap(this).getString(PetPrefs.KEY_SNAPSHOT, null) ?: "{}").optDouble("sizeDp", Double.NaN).toFloat().takeIf { it.isFinite() && it > 0f } } catch (e: Exception) { null } ?: PetForm.defaultDp(form, atlas.size))   // 顯示大細（dp）：evo6 snapshot v2 sizeDp 跟階段；舊 snapshot 冇 sizeDp → 舊尺寸
+        scale = max(1, (target / atlas.size).roundToInt())
+        // 頭頂圖示位：idle 第 1 幀實際像素 bbox
+        val f0 = atlas.clip("idle").frames[0]; var top = atlas.size; var right = 0
+        for (y in 0 until atlas.size) for (x in 0 until atlas.size) if ((atlas.bitmap.getPixel(f0.src.left + x, f0.src.top + y) ushr 24) > 40) { if (y < top) top = y; if (x > right) right = x }
+        headTop = if (top >= atlas.size) atlas.size / 3 else top; headRight = if (right == 0) atlas.size * 3 / 4 else right
+    }
+
+    // 懸浮窗即時變大細（Kurt 10-31 批）：form 唔同，或者同 form 但 snapshot sizeDp 計出嘅 scale 唔同 → 都要 swapForm（同 loadAtlas 一樣計法）
+    private fun needSwap(form: String): Boolean {
+        if (form != atlas.form) return true
+        val target = dp(try { org.json.JSONObject(PetPrefs.cap(this).getString(PetPrefs.KEY_SNAPSHOT, null) ?: "{}").optDouble("sizeDp", Double.NaN).toFloat().takeIf { it.isFinite() && it > 0f } } catch (e: Exception) { null } ?: PetForm.defaultDp(form, if (form == atlas.form) atlas.size else 32))
+        val s = max(1, (target / atlas.size).roundToInt())
+        if (s != scale) Log.i(TAG, "resize form=$form scale $scale → $s")
+        return s != scale
+    }
+
+    private fun computeBounds() {
+        if (Build.VERSION.SDK_INT >= 30) {
+            val m = wm.currentWindowMetrics
+            screen.set(m.bounds)
+            val ins = m.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
+            safe.set(screen.left + ins.left, screen.top + ins.top, screen.right - ins.right, screen.bottom - ins.bottom)
+        } else {
+            val dm = android.util.DisplayMetrics()
+            @Suppress("DEPRECATION") wm.defaultDisplay.getRealMetrics(dm)
+            screen.set(0, 0, dm.widthPixels, dm.heightPixels)
+            fun dim(n: String): Int { val id = resources.getIdentifier(n, "dimen", "android"); return if (id > 0) resources.getDimensionPixelSize(id) else 0 }
+            safe.set(0, dim("status_bar_height"), dm.widthPixels, dm.heightPixels - dim("navigation_bar_height"))
+        }
+    }
+
+    // 腳底 pivot（idle 第 1 幀）
+    private val footPx get() = atlas.clip("idle").frames[0].px
+    private val footPy get() = atlas.clip("idle").frames[0].py
+    private fun minFeetX() = safe.left + footPx * scale.toFloat()
+    private fun maxFeetX() = safe.right - (atlas.size - footPx) * scale.toFloat()
+    private fun minFeetY() = safe.top + footPy * scale.toFloat()
+    private fun maxFeetY() = safe.bottom - (atlas.size - footPy) * scale.toFloat()
+    private fun groundEdge() = maxFeetY()
+    private fun clampFeet() {
+        feetX = feetX.coerceIn(minFeetX(), max(minFeetX(), maxFeetX()))
+        feetY = feetY.coerceIn(minFeetY(), max(minFeetY(), maxFeetY()))
+    }
+    private fun clampAfterBounds() {
+        clampFeet()
+        if (mode == PetPrefs.MODE_EDGE && st != St.DRAG && st != St.FALL) feetY = groundEdge()
+    }
+
+    private fun curFrame(): PetFrame {
+        val c = clip ?: atlas.clip("idle")
+        var i = (clipT * c.fps).toInt()
+        i = if (c.loop) i % c.frames.size else min(i, c.frames.size - 1)
+        return c.frames[i]
+    }
+    private fun clipDone() = clip?.let { !it.loop && clipT >= it.duration } ?: true
+    private fun play(name: String) { clip = atlas.clip(name); clipT = 0f }
+
+    private fun winX(): Int {
+        val f = curFrame()
+        val ax = if (st == St.DRAG) fingerX else feetX
+        return (ax - f.px * scale).roundToInt()
+    }
+    private fun winY(): Int {
+        val f = curFrame()
+        val ay = if (st == St.DRAG) fingerY else feetY
+        return (ay - f.py * scale).roundToInt()
+    }
+    private fun frameToView() { view?.show(curFrame(), facingLeft) }
+    private fun place() {
+        val v = view ?: return; val p = lp ?: return
+        frameToView()
+        val nx = winX(); val ny = winY()
+        if (nx != p.x || ny != p.y) { p.x = nx; p.y = ny; try { wm.updateViewLayout(v, p) } catch (_: Exception) {} }
+        placeFx()
+    }
+
+    // ── ticking（≤15fps；瞌 2fps；熄屏／app 前台停） ──
+    private val tickR = object : Runnable {
+        override fun run() {
+            if (!ticking) return
+            val now = SystemClock.uptimeMillis()
+            val dt = ((now - lastTick).coerceIn(0, 250)) / 1000f
+            lastTick = now
+            tick(dt)
+            h.postDelayed(this, tickDelay())   // 省電：瞓 2fps、企定／坐 ≈7fps、郁緊 15fps
+        }
+    }
+    private fun startTicking() {
+        if (ticking || !screenOn || appVisible || view == null) return
+        ticking = true; lastTick = SystemClock.uptimeMillis(); h.post(tickR)
+    }
+    private fun stopTicking() { ticking = false; h.removeCallbacks(tickR) }
+
+    private val screenRx = object : BroadcastReceiver() {
+        override fun onReceive(c: Context, i: Intent) {
+            when (i.action) {
+                Intent.ACTION_SCREEN_OFF -> { screenOn = false; stopTicking(); Log.i(TAG, "screen off → stop drawing") }
+                else -> { screenOn = true; startTicking() }
+            }
+        }
+    }
+
+    private fun setAppVisible(vis: Boolean) {
+        appVisible = vis
+        val v = view ?: return
+        if (vis) { hideMenu(); v.visibility = View.GONE; fx?.visibility = View.GONE; hideSay(); hideShard(); stopTicking() }
+        else {
+            // 返嚟可能已轉形態／改模式
+            val f = PetPrefs.snapshotForm(this)
+            if (needSwap(f)) swapForm(f)
+            val m = PetPrefs.mode(this); if (m != mode) applyMode(m)
+            refreshStatus(true)
+            v.visibility = View.VISIBLE; fx?.visibility = View.VISIBLE; startTicking()
+        }
+    }
+
+    private val snapRx = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == PetPrefs.KEY_SNAPSHOT) h.post { val f = PetPrefs.snapshotForm(this); if (view != null && needSwap(f)) swapForm(f); refreshStatus(true) }
+    }
+
+    private fun swapForm(form: String) {
+        val v = view ?: return; val p = lp ?: return
+        loadAtlas(form)
+        v.atlas = atlas; v.scale = scale
+        p.width = atlas.size * scale; p.height = atlas.size * scale
+        clip = atlas.clip(clip?.name ?: "idle")
+        clampAfterBounds()
+        try { wm.updateViewLayout(v, p) } catch (_: Exception) {}
+        place(); v.invalidate()
+        Log.i(TAG, "form → $form")
+    }
+
+    private fun tick(dt: Float) {
+        clipT += dt
+        val dozeMs = PetPrefs.dozeMinutes(this) * 60_000L
+        refreshStatus(false)
+        val now = SystemClock.elapsedRealtime()
+        // 遊戲入面瞓緊 → 團絨都瞓（撚醒佢會醒一陣，6 秒冇郁又再瞓）；遊戲醒咗 → 跟住醒
+        if (status.sleeping && (st == St.IDLE || st == St.WALK || st == St.EMOTE) && now - lastInteract > 6000) { doze(); dozeByGame = true; Log.i(TAG, "game sleeping → doze"); return }
+        if (!status.sleeping && dozeByGame && (st == St.ASLEEP || st == St.DOZE_IN)) { dozeByGame = false; st = St.WAKE; play("wake"); Log.i(TAG, "game woke → wake") }
+        when (st) {
+            St.IDLE -> {
+                stTimer -= dt
+                if (now - lastInteract > dozeMs) { doze(); return }
+                tickWeather(dt); if (st != St.IDLE) return
+                if (stTimer <= 0) idleNext()
+            }
+            St.EMOTE -> { stTimer -= dt; if (stTimer <= 0 && (clip?.loop == true || clipDone())) { val n = emoteNext; emoteNext = null; if (n != null) n() else toIdle(1.5f) } }
+            St.GO_ICON -> {
+                val speed = 26f * scale
+                val dx = tgtX - feetX; val dy = tgtY - feetY; val d = hypot(dx, dy)
+                if (d <= speed * dt || d < 1f) { feetX = tgtX; feetY = tgtY; doIconAct() }
+                else { feetX += dx / d * speed * dt; feetY += dy / d * speed * dt; if (abs(dx) > 2f) facingLeft = dx < 0 }
+            }
+            St.FLING -> {
+                // 自由行／定點：拋出滑行（摩擦減速），撞四邊彈返
+                feetX += vx * dt; feetY += vy * dt
+                val k = Math.exp(-2.6 * dt).toFloat(); vx *= k; vy *= k
+                if (feetX < minFeetX()) { feetX = minFeetX(); vx = abs(vx) * 0.6f } else if (feetX > maxFeetX()) { feetX = maxFeetX(); vx = -abs(vx) * 0.6f }
+                if (feetY < minFeetY()) { feetY = minFeetY(); vy = abs(vy) * 0.6f } else if (feetY > maxFeetY()) { feetY = maxFeetY(); vy = -abs(vy) * 0.6f }
+                if (hypot(vx, vy) < dp(40f)) { vx = 0f; vy = 0f; landed() }
+            }
+            St.WALK -> {
+                if (now - lastInteract > dozeMs) { doze(); return }
+                val speed = 20f * scale     // 12px／6 幀 @10fps ≈ 20 art px/s
+                val dx = tgtX - feetX; val dy = tgtY - feetY; val d = hypot(dx, dy)
+                if (d <= speed * dt || d < 1f) {
+                    feetX = tgtX; feetY = tgtY
+                    if (sideSit) { sideSit = false; facingLeft = feetX > (minFeetX() + maxFeetX()) / 2; toIdle(Random.nextDouble(5.0, 9.0).toFloat()) }   // 坐喺邊，面向入面
+                    else toIdle(Random.nextDouble(2.0, 5.0).toFloat())
+                } else {
+                    feetX += dx / d * speed * dt; feetY += dy / d * speed * dt
+                    if (abs(dx) > 2f) facingLeft = dx < 0
+                }
+            }
+            St.TURN -> if (clipDone()) {
+                // 撚佢反應跟心情：開心＝emo_happy＋心心；唔開心＝droop＋汗；有需求＝氣泡（照舊回頭先）
+                if (status.moodBand == "sad") { st = St.HAPPY; play(if (atlas.clips.containsKey("droop")) "droop" else "emo_happy"); stTimer = 1.6f; showTapFx("sweat") }
+                else { st = St.HAPPY; play("emo_happy"); stTimer = 1.0f; showTapFx("heart") }
+            }
+            St.HAPPY -> { stTimer -= dt; if (stTimer <= 0) toIdle(1.5f) }
+            St.DRAG -> if (clip?.name == "picked_up_enter" && clipDone()) play("picked_up")
+            St.FALL -> {
+                vy += dp(2200f) * dt
+                feetY += vy * dt
+                // 拋出（沿底邊行模式）：有橫向慣性，撞左右／頂邊彈返
+                if (vx != 0f) {
+                    feetX += vx * dt
+                    if (feetX < minFeetX()) { feetX = minFeetX(); vx = abs(vx) * 0.55f } else if (feetX > maxFeetX()) { feetX = maxFeetX(); vx = -abs(vx) * 0.55f }
+                    if (abs(vx) > 2f) facingLeft = vx < 0
+                }
+                if (feetY < minFeetY()) { feetY = minFeetY(); vy = abs(vy) * 0.5f }
+                if (feetY >= groundY) {
+                    feetY = groundY
+                    if (bounces < (if (vx != 0f) 3 else 1) && vy > dp(250f)) { vy = -vy * 0.35f; bounces++; vx *= 0.7f }
+                    else { vx = 0f; landed() }
+                }
+            }
+            St.DOZE_IN -> if (clipDone()) { st = St.ASLEEP; play("sleep_loop"); Log.i(TAG, "asleep (2fps)") }
+            St.ASLEEP -> {}
+            St.WAKE -> if (clipDone()) toIdle(1.5f)
+        }
+        place()
+        tickFx(dt)
+        tickSys12(dt)
+    }
+
+    private fun toIdle(t: Float) { st = St.IDLE; playIdle(); stTimer = t }
+
+    // ── v10.2（遊測 40fe202 P2-1）：落雨 IDLE → 撐葉（leaf_umbrella_in 開葉一次 → leaf_umbrella loop）；霧／冬 → 間中打冷震（shiver ×3）。
+    //    天氣嚟自 snapshot.sys12.wx（JS 一日一抽、今日起 7 日；DEV 覆蓋 = manual），每 10 秒重讀；冇／舊 snapshot → 晴，照舊 idle。
+    private var wxAt = 0L; private var wxNow = "clear"; private var wxSnap: PetSys12.Wx? = null; private var shiverT = 30f
+    private fun curWeather(): String {
+        val now = System.currentTimeMillis()
+        if (now - wxAt > 10_000L) { wxAt = now; val sn = PetPrefs.snapshotSys12(this); wxSnap = if (sn == null || sn.egg) null else sn.wx; wxNow = PetSys12.weatherAt(wxSnap, now) }
+        return wxNow
+    }
+    private fun idleName() = PetSys12.idleClip(curWeather()) { atlas.clips.containsKey(it) }
+    private fun playIdle() {
+        val n = idleName()
+        if (n == "leaf_umbrella") { if (clip?.name != "leaf_umbrella") { play(if (atlas.clips.containsKey("leaf_umbrella_in")) "leaf_umbrella_in" else n); Log.i(TAG, "rain → leaf_umbrella") } }
+        else play(n)
+    }
+    private fun tickWeather(dt: Float) {
+        if (clip?.name == "leaf_umbrella_in" && clipDone()) { play("leaf_umbrella"); return }
+        val want = idleName(); val cur = clip?.name
+        val umb = cur == "leaf_umbrella" || cur == "leaf_umbrella_in"
+        if ((want == "leaf_umbrella") != umb) { playIdle(); return }   // 天氣轉咗 → 即刻換
+        shiverT -= dt
+        if (shiverT <= 0f) {
+            shiverT = PetSys12.shiverNextSec(wxSnap, Random.nextDouble()).toFloat()
+            if (!umb && atlas.clips.containsKey("shiver") && Random.nextDouble() < PetSys12.shiverChance(wxSnap, wxNow)) { Log.i(TAG, "shiver ($wxNow)"); emote("shiver", 0f) { toIdle(1.5f) } }
+        }
+    }
+
+    private var sideSit = false
+    private fun startWalk() {
+        sideSit = false
+        when (mode) {
+            PetPrefs.MODE_EDGE -> {
+                feetY = groundEdge()
+                if (Random.nextFloat() < 0.25f) {   // 沿底邊行去左／右角，坐喺邊
+                    sideSit = true; tgtX = if (feetX > (minFeetX() + maxFeetX()) / 2) minFeetX() else maxFeetX(); tgtY = feetY
+                    st = St.WALK; play("walk"); return
+                }
+                val span = maxFeetX() - minFeetX()
+                var x = minFeetX() + Random.nextFloat() * span
+                if (abs(x - feetX) < dp(40f)) x = if (feetX > (minFeetX() + maxFeetX()) / 2) feetX - dp(80f) else feetX + dp(80f)
+                tgtX = x.coerceIn(minFeetX(), maxFeetX()); tgtY = feetY
+            }
+            PetPrefs.MODE_FREE -> {
+                tgtX = minFeetX() + Random.nextFloat() * (maxFeetX() - minFeetX())
+                tgtY = minFeetY() + Random.nextFloat() * (maxFeetY() - minFeetY())
+                if (Random.nextFloat() < 0.2f) { sideSit = true; tgtX = if (feetX > (minFeetX() + maxFeetX()) / 2) maxFeetX() else minFeetX() }   // 行去左／右邊坐
+                // 每段唔好行太遠
+                val dx = tgtX - feetX; val dy = tgtY - feetY; val d = hypot(dx, dy); val lim = dp(220f)
+                if (d > lim) { tgtX = feetX + dx / d * lim; tgtY = feetY + dy / d * lim }
+            }
+            else -> return
+        }
+        st = St.WALK; play("walk")
+    }
+
+    private fun doze() { hideMenu(); dozeByGame = false; st = St.DOZE_IN; play("fall_asleep"); Log.i(TAG, "dozing (no interaction ${PetPrefs.dozeMinutes(this)} min)") }
+
+    private fun landed() {
+        bounces = 0; vy = 0f
+        if (mode == PetPrefs.MODE_PIN) PetPrefs.setPin(this, feetX, feetY)
+        toIdle(if (mode == PetPrefs.MODE_PIN) 3f else 1.2f)
+    }
+
+    private fun applyMode(m: String) {
+        mode = m; PetPrefs.setMode(this, m)
+        Log.i(TAG, "mode → $m")
+        if (st == St.DRAG) return
+        when (m) {
+            PetPrefs.MODE_EDGE -> if (feetY < groundEdge() - 1) { st = St.FALL; play("idle"); groundY = groundEdge(); vy = 0f; bounces = 0 } else toIdle(0.8f)
+            PetPrefs.MODE_PIN -> { PetPrefs.setPin(this, feetX, feetY); toIdle(3f) }
+            else -> toIdle(0.8f)
+        }
+    }
+
+    // ── 觸控：撚一下回頭（等 250ms 雙擊判定）、撚兩下開 game、拖動、長按選單 ──
+    private var downX = 0f; private var downY = 0f
+    private var dragging = false; private var longFired = false; private var tapPending = false
+    private val slop by lazy { ViewConfiguration.get(this).scaledTouchSlop.toFloat() }
+    private val longR = Runnable { longFired = true; interact(); showMenu() }
+    private val singleTapR = Runnable { tapPending = false; onSingleTap() }
+
+    private fun onPetTouch(e: MotionEvent): Boolean {
+        when (e.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                vN = 0; trackV(e)
+                downX = e.rawX; downY = e.rawY; dragging = false; longFired = false
+                hideMenu()
+                h.postDelayed(longR, ViewConfiguration.getLongPressTimeout().toLong())
+            }
+            MotionEvent.ACTION_MOVE -> {
+                trackV(e)
+                if (!dragging && !longFired && hypot(e.rawX - downX, e.rawY - downY) > slop) {
+                    h.removeCallbacks(longR); startDrag(e.rawX, e.rawY)
+                }
+                if (dragging) { fingerX = e.rawX; fingerY = e.rawY; clampFinger(); place() }
+            }
+            MotionEvent.ACTION_UP -> {
+                h.removeCallbacks(longR)
+                when {
+                    dragging -> { val v = flingV(e.eventTime); endDrag(v.first, v.second) }
+                    longFired -> {}
+                    tapPending -> { h.removeCallbacks(singleTapR); tapPending = false; onDoubleTap() }
+                    else -> { tapPending = true; h.postDelayed(singleTapR, 250) }
+                }
+            }
+            MotionEvent.ACTION_CANCEL -> { h.removeCallbacks(longR); if (dragging) endDrag() }
+        }
+        return true
+    }
+
+    private fun interact() { lastInteract = SystemClock.elapsedRealtime() }
+    // 視窗跟手指郁，所以用 raw 座標計速度
+    private fun trackV(e: MotionEvent) {
+        if (vN == vT.size) { System.arraycopy(vT, 1, vT, 0, vN - 1); System.arraycopy(vX, 1, vX, 0, vN - 1); System.arraycopy(vY, 1, vY, 0, vN - 1); vN-- }
+        vT[vN] = e.eventTime; vX[vN] = e.rawX; vY[vN] = e.rawY; vN++
+    }
+    /** 放手時速度 px/s：用最後 ~100ms 嘅位移；放手前停咗 >150ms 當冇拋 */
+    private fun flingV(upT: Long): Pair<Float, Float> {
+        if (vN < 2) return Pair(0f, 0f)
+        val last = vN - 1
+        if (upT - vT[last] > 150) return Pair(0f, 0f)
+        var i = last - 1
+        while (i > 0 && vT[last] - vT[i - 1] <= 100) i--
+        val dt = (vT[last] - vT[i]).coerceAtLeast(8L) / 1000f
+        return Pair((vX[last] - vX[i]) / dt, (vY[last] - vY[i]) / dt)
+    }
+
+    private fun clampFinger() {
+        val f = curFrame()
+        fingerX = fingerX.coerceIn(screen.left + f.px * scale.toFloat(), screen.right - (atlas.size - f.px) * scale.toFloat())
+        fingerY = fingerY.coerceIn(screen.top + f.py * scale.toFloat(), screen.bottom - (atlas.size - f.py) * scale.toFloat())
+    }
+
+    private fun startDrag(x: Float, y: Float) {
+        dragging = true; interact()
+        st = St.DRAG; play(if (atlas.clips.containsKey("picked_up_enter")) "picked_up_enter" else "picked_up")   // faceOnEnter：第一個循環 surprised
+        fingerX = x; fingerY = y; clampFinger()   // sprite 位置 = 手指 − grab
+        place()
+        Log.i(TAG, "drag start (picked_up, pivot=grab)")
+    }
+
+    private fun endDrag(flingX: Float = 0f, flingY: Float = 0f) {
+        dragging = false; interact()
+        val g = curFrame()
+        // 由 grab 轉返腳底 pivot
+        feetX = fingerX - g.px * scale + footPx * scale
+        feetY = fingerY - g.py * scale + footPy * scale
+        clampFeet()
+        groundY = when (mode) {
+            PetPrefs.MODE_EDGE -> groundEdge()
+            else -> min(feetY + dp(14f), maxFeetY())
+        }
+        st = St.FALL; play("idle"); vy = 0f; vx = 0f; bounces = 0
+        // 拋出（Kurt 10-31 批）：快速拖放有慣性；慢放照舊直跌
+        val cap = dp(2600f); val fx0 = flingX.coerceIn(-cap, cap); val fy0 = flingY.coerceIn(-cap, cap)
+        if (hypot(fx0, fy0) > dp(350f)) {
+            if (mode == PetPrefs.MODE_EDGE) { vx = fx0; vy = fy0; groundY = groundEdge() }
+            else { st = St.FLING; vx = fx0; vy = fy0 }
+            Log.i(TAG, "fling v=(${fx0.roundToInt()},${fy0.roundToInt()}) px/s")
+        } else Log.i(TAG, "drop v=(${fx0.roundToInt()},${fy0.roundToInt()}) px/s (慢放，直跌)")
+        PetPrefs.appendQueue(this, "drag")
+        Log.i(TAG, "drag end → fall to $groundY")
+    }
+
+    private fun onSingleTap() {
+        interact()
+        when (st) {
+            St.ASLEEP, St.DOZE_IN -> { st = St.WAKE; play("wake"); emoteNext = null; PetPrefs.appendQueue(this, "wake"); Log.i(TAG, "wake") }
+            St.DRAG, St.FALL, St.FLING -> {}
+            else -> { st = St.TURN; play("turn_back"); PetPrefs.appendQueue(this, "tap"); queuePat(); Log.i(TAG, "tap → turn_back"); tryVoice(false) }
+        }
+        place()
+    }
+
+    // evo6 v8 火苗：真・撳兩下開 game ＝ 一局小遊戲（第 2 批未出）→ queue "open_game"，返 app 時 fpet-bridge 叫 __glimmer.evo.overlayOpenGame(t)
+    // 選單「開返遊戲」唔係撳兩下 → fromMenu=true 唔入 queue
+    private fun onDoubleTap(fromMenu: Boolean = false) {
+        interact()
+        if (!fromMenu) PetPrefs.appendQueue(this, "open_game")
+        Log.i(TAG, "double tap → open game" + if (fromMenu) " (menu)" else "")
+        startActivity(Intent().setClassName(this, "com.godot.game.GodotApp").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
+    }
+
+    // ── 心情／需求／玩圖示 ──
+    private fun refreshStatus(force: Boolean) {
+        val now = SystemClock.elapsedRealtime()
+        if (!force && now - statusAt < 5000) return
+        statusAt = now
+        snap = PetPrefs.snapshotStatus(this)
+        val n = PetStatus.project(snap, System.currentTimeMillis())
+        if (n.moodBand != status.moodBand || n.sleeping != status.sleeping || n.urgent != status.urgent) Log.i(TAG, "status mood=${n.moodBand} sleeping=${n.sleeping} urgent=${n.urgent}")
+        // 遊戲瞓緊／啱啱醒，而團絨已經瞓緊（例如自己瞌咗）→ 交俾遊戲狀態控制，遊戲一醒就跟住醒
+        if ((n.sleeping || status.sleeping) && (st == St.ASLEEP || st == St.DOZE_IN)) dozeByGame = true
+        status = n
+    }
+
+    private fun emote(name: String, minT: Float, next: (() -> Unit)? = null) {
+        st = St.EMOTE; play(if (atlas.clips.containsKey(name)) name else if (atlas.clips.containsKey("emo_happy") && !PetForm.isEvo(atlas.form)) "emo_happy" else "idle"); stTimer = minT; emoteNext = next   // evo：冇呢個 clip → 同形態 idle
+    }
+
+    private fun idleNext() {
+        if (mode == PetPrefs.MODE_EDGE && feetY < groundEdge() - 1) { st = St.FALL; play("idle"); groundY = groundEdge(); vy = 0f; vx = 0f; bounces = 0; return }   // 玩圖示途中被打斷 → 跌返落底
+        val r = Random.nextFloat()
+        val now = SystemClock.elapsedRealtime()
+        when {
+            status.urgent != null && r < 0.35f -> emote(if (status.urgent == "hunger") "emo_hungry" else "droop", 3f)
+            status.moodBand == "sad" && r < 0.35f -> emote("droop", 3f)
+            status.moodBand == "happy" && r < 0.12f -> emote("cheer_jump", 0f) { emote("cheer_jump", 0f) }
+            !atlas.clips.containsKey("walk") -> emote("idle", 3f)   // 光卵：冇 walk（遊戲光卵唔郁）→ 原地 idle
+            mode != PetPrefs.MODE_PIN && now >= nextPlayAt && r < 0.6f && PetPrefs.grid(this) != "off" -> startIconPlay()
+            mode != PetPrefs.MODE_PIN -> startWalk()
+            else -> stTimer = 3f
+        }
+    }
+
+    /** 估主畫面 icon 格中心（col×row，dock 預留一行）。只係幾何估算，唔讀其他 app。 */
+    private fun iconCells(): List<Pair<Float, Float>> {
+        val g = PetPrefs.grid(this); if (g == "off") return emptyList()
+        val (c, r) = g.split("x").map { it.toInt() }
+        val w = safe.width().toFloat(); val hh = safe.height().toFloat()
+        val top = safe.top + hh * 0.04f; val bottom = safe.bottom - hh / (r + 1.5f)
+        val cw = w / c; val ch = (bottom - top) / r
+        val out = ArrayList<Pair<Float, Float>>()
+        for (j in 0 until r) for (i in 0 until c) out.add(Pair(safe.left + cw * (i + 0.5f), top + ch * (j + 0.5f)))
+        return out
+    }
+
+    private fun startIconPlay() {
+        nextPlayAt = SystemClock.elapsedRealtime() + Random.nextLong(45_000L, 120_000L)
+        val cells = iconCells(); if (cells.isEmpty() || mode == PetPrefs.MODE_PIN) { startWalk(); return }
+        val (cx, cy) = cells[Random.nextInt(cells.size)]
+        val icon = min(safe.width() / 4f, dp(60f)) * 0.9f
+        tgtX = cx.coerceIn(minFeetX(), max(minFeetX(), maxFeetX()))
+        tgtY = (cy - icon * 0.45f).coerceIn(minFeetY(), max(minFeetY(), maxFeetY()))   // 腳底踩喺 icon 頂
+        playAct = listOf("sit", "sniff", "swat", "hop")[Random.nextInt(4)]
+        st = St.GO_ICON; play("walk")
+        Log.i(TAG, "icon play → (${cx.roundToInt()},${cy.roundToInt()}) $playAct grid=${PetPrefs.grid(this)}")
+    }
+
+    private fun doIconAct() {
+        val after: () -> Unit = {
+            if (mode == PetPrefs.MODE_EDGE && feetY < groundEdge() - 1) { st = St.FALL; play("idle"); groundY = groundEdge(); vy = 0f; vx = 0f; bounces = 0 }   // 玩完跳返落底
+            else toIdle(1.5f)
+        }
+        when (playAct) {
+            "sniff" -> emote("sniff", 0f) { emote("sniff", 0f) { emote("idle", 1.5f, after) } }
+            "swat" -> emote("swat", 0f) { emote("swat", 0f) { emote("idle", 1.2f, after) } }
+            "hop" -> emote("cheer_jump", 0f) { emote("cheer_jump", 0f) { emote("idle", 1.2f, after) } }
+            else -> emote("idle", Random.nextDouble(5.0, 9.0).toFloat(), after)   // 坐喺 icon 上面
+        }
+        Log.i(TAG, "icon act $playAct")
+    }
+
+    private fun tickDelay(): Long = when (st) {
+        St.ASLEEP -> 500L
+        St.IDLE -> 150L
+        St.EMOTE -> if (clip?.name == "idle") 150L else max(67L, min(150L, (1000f / (clip?.fps ?: 6f)).toLong()))
+        else -> 67L
+    }
+
+    // ── 頭頂圖示 overlay（唔收觸控） ──
+    private fun fxScale() = max(2, dp(1.15f).roundToInt())
+    private fun attachFx() {
+        val a = try { PetAtlas.load(this, "fx") } catch (e: Exception) { Log.w(TAG, "fx atlas: $e"); null } ?: return
+        fxAtlas = a
+        val v = FxView(this, a).apply { scale = fxScale(); visibility = View.GONE }
+        val px = a.size * v.scale
+        val p = WindowManager.LayoutParams(px, px, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT)
+        p.gravity = Gravity.TOP or Gravity.START
+        if (Build.VERSION.SDK_INT >= 28) p.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        if (Build.VERSION.SDK_INT >= 30) p.setFitInsetsTypes(0)
+        p.title = "FloatingPetFx"
+        try { wm.addView(v, p); fx = v; fxLp = p } catch (e: Exception) { Log.w(TAG, "fx window: $e") }
+    }
+
+    private fun showTapFx(name: String) { tapFx = name; tapFxT = 2.2f }
+
+    private fun wantFx(): Pair<String, Boolean>? {
+        if (st == St.ASLEEP || st == St.DOZE_IN) return Pair("zzz", false)
+        if (st == St.DRAG || st == St.FALL || st == St.FLING) return null
+        if (tapFxT > 0f) tapFx?.let { return Pair(it, false) }
+        status.urgent?.let { if (fxT % 8f < 4.5f) return Pair("need_$it", true) }
+        if (status.moodBand == "sad" && fxT % 7f < 3f) return Pair("sweat", false)
+        if (st == St.EMOTE && clip?.name == "cheer_jump") return Pair("heart", false)
+        return null
+    }
+
+    private fun tickFx(dt: Float) {
+        val v = fx ?: return; val a = fxAtlas ?: return
+        fxT += dt; if (tapFxT > 0f) tapFxT -= dt
+        val w = if (view?.visibility == View.VISIBLE) wantFx() else null
+        if (w == null) { if (v.visibility != View.GONE) v.visibility = View.GONE; return }
+        val c = a.clip(w.first); val fr = c.frames[((fxT * c.fps).toInt()) % c.frames.size]
+        v.show(fr, w.second)
+        if (v.visibility != View.VISIBLE) v.visibility = View.VISIBLE
+        placeFx()
+    }
+
+    private fun placeFx() {
+        val v = fx ?: return; val p = fxLp ?: return; val l = lp ?: return; val f = v.frame ?: return
+        if (v.visibility != View.VISIBLE) return
+        val fs = v.scale; val cell = (fxAtlas?.size ?: 24) * fs
+        val headY = l.y + headTop * scale
+        val nx: Int; val ny: Int
+        if (v.bubble) { nx = l.x + atlas.size * scale / 2 - cell / 2; ny = headY - cell + 2 * fs }   // 氣泡：頭頂正中，尾尖指住個頭
+        else {
+            val hx = if (facingLeft) l.x + (atlas.size - 1 - headRight) * scale else l.x + headRight * scale
+            nx = hx - f.px * fs; ny = headY + 3 * scale - f.py * fs
+        }
+        val cx = nx.coerceIn(screen.left, max(screen.left, screen.right - cell)); val cy = ny.coerceIn(screen.top, max(screen.top, screen.bottom - cell))
+        if (cx != p.x || cy != p.y) { p.x = cx; p.y = cy; try { wm.updateViewLayout(v, p) } catch (_: Exception) {} }
+    }
+
+    // ── systems12（第 1 批）：心聲（系統 6）＋小驚喜（系統 12：星星碎／飲水／早瞓）。數值全部嚟自 snapshot v5 sys12；
+    //    懸浮自己計時，結果 queue 俾 JS（sys12Apply 入帳）。設定閂咗 → 乜都唔出。舊 www（v<5）→ 完全唔出。
+    private var s12: PetSys12.Snap? = null
+    private var s12At = 0L
+    private val s12Art by lazy { Sys12Art(this) }
+    private var say: SayView? = null; private var sayLp: WindowManager.LayoutParams? = null; private var sayT = 0f
+    private var shard: ShardView? = null; private var shardLp: WindowManager.LayoutParams? = null; private var shardT = 0f; private var shardAge = 0f
+    private fun s12K() = max(1, dp(1f).roundToInt())
+    private fun ovLp(w: Int, h: Int, touch: Boolean, title: String) = WindowManager.LayoutParams(w, h, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or (if (touch) 0 else WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE),
+        PixelFormat.TRANSLUCENT).apply {
+        gravity = Gravity.TOP or Gravity.START; this.title = title
+        if (Build.VERSION.SDK_INT >= 28) layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        if (Build.VERSION.SDK_INT >= 30) setFitInsetsTypes(0)
+    }
+
+    private fun showSay(text: String, icon: Bitmap?, sec: Int) {
+        hideSay()
+        val v = SayView(this, s12Art, s12K(), dp(220f).toInt()); v.set(text, icon)
+        val (w, hh) = v.want(); val p = ovLp(w, hh, false, "FloatingPetSay")
+        try { wm.addView(v, p); say = v; sayLp = p; sayT = sec.toFloat(); placeSay() } catch (e: Exception) { Log.w(TAG, "say window: $e") }
+        Log.i(TAG, "s12 say: $text")
+    }
+    private fun hideSay() { say?.let { try { wm.removeView(it) } catch (_: Exception) {} }; say = null; sayT = 0f }
+    private fun placeSay() {
+        val v = say ?: return; val p = sayLp ?: return; val l = lp ?: return
+        val above = (fxAtlas?.size ?: 24) * fxScale() / 2
+        val nx = (l.x + atlas.size * scale / 2 - p.width / 2).coerceIn(screen.left, max(screen.left, screen.right - p.width))
+        val ny0 = l.y + headTop * scale - p.height - above
+        val ny = (if (ny0 < safe.top) l.y + atlas.size * scale else ny0).coerceIn(screen.top, max(screen.top, screen.bottom - p.height))
+        if (nx != p.x || ny != p.y) { p.x = nx; p.y = ny; try { wm.updateViewLayout(v, p) } catch (_: Exception) {} }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun showShard(sec: Int) {
+        hideShard()
+        val px = dp(30f).toInt(); val v = ShardView(this, s12Art.shard32, px); val p = ovLp(px, px, true, "FloatingPetShard")
+        val l = lp ?: return; val cell = atlas.size * scale
+        val right = feetX < (safe.left + safe.right) / 2f
+        p.x = (if (right) l.x + cell * 3 / 4 else l.x + cell / 4 - px).coerceIn(safe.left, max(safe.left, safe.right - px))
+        p.y = (feetY - px).toInt().coerceIn(safe.top, max(safe.top, safe.bottom - px))
+        v.setOnTouchListener { _, e -> if (e.actionMasked == MotionEvent.ACTION_UP) collectShard(); true }
+        try { wm.addView(v, p); shard = v; shardLp = p; shardT = sec.toFloat(); shardAge = 0f; Log.i(TAG, "s12 shard drop (${sec}s)") } catch (e: Exception) { Log.w(TAG, "shard window: $e") }
+    }
+    private fun hideShard() { shard?.let { try { wm.removeView(it) } catch (_: Exception) {} }; shard = null; shardT = 0f }
+    private fun collectShard() {
+        if (shard == null) return
+        interact(); hideShard()
+        val now = System.currentTimeMillis()
+        val got = (PetPrefs.s12Str(this, "got") ?: "").split(',').mapNotNull { it.toLongOrNull() }.filter { PetSys12.dayKey(it) == PetSys12.dayKey(now) } + now
+        PetPrefs.setS12Str(this, "got", got.joinToString(","))
+        PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", now).put("k", "drop"))
+        showTapFx("heart")
+        val sn = s12; showSay(PetSys12.line(sn?.surp, "drop", Random.nextDouble()) ?: "★", s12Art.shard16, sn?.surp?.showSec ?: 6)
+        Log.i(TAG, "s12 shard collected (${got.size} today)")
+    }
+    private fun collected(): List<Long> = (PetPrefs.s12Str(this, "got") ?: "").split(',').mapNotNull { it.toLongOrNull() }
+
+    private fun remind(what: String) {
+        val sn = s12; val line = PetSys12.line(sn?.surp, what, Random.nextDouble()) ?: return
+        showSay(line, s12Art.icon(what), sn?.surp?.showSec ?: 6)
+        PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", System.currentTimeMillis()).put("k", "remind").put("what", what))
+    }
+    private fun tryVoice(force: Boolean) {
+        val sn = s12 ?: PetPrefs.snapshotSys12(this) ?: return
+        val now = System.currentTimeMillis()
+        val line = if (force) PetSys12.voiceTry(sn.copy(voice = sn.voice.copy(chance = 1.0, lastAt = 0L)), now, 0L, 0.0, Random.nextDouble(), Random.nextDouble(), Random.nextDouble())
+                   else PetSys12.voiceTry(sn, now, PetPrefs.s12Long(this, "voiceAt"), Random.nextDouble(), Random.nextDouble(), Random.nextDouble(), Random.nextDouble())
+        if (line == null) return
+        PetPrefs.setS12Long(this, "voiceAt", now)
+        PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", now).put("k", "voice").put("line", line))
+        showSay(line, null, sn.voice.showSec)
+    }
+
+    /** v10.3：懸浮摸頭計入摸頭委託（queue {k:'pat'}；每日上限讀 snapshot.sys12.pat.cap）。 */
+    private fun queuePat() {
+        val sn = s12 ?: PetPrefs.snapshotSys12(this); val now = System.currentTimeMillis(); val day = PetSys12.dayKey(now)
+        val sent = if (PetPrefs.s12Str(this, "patDay") == day) PetPrefs.s12Long(this, "patN").toInt() else 0
+        if (!PetSys12.patOk(sn, sent)) return
+        PetPrefs.setS12Str(this, "patDay", day); PetPrefs.setS12Long(this, "patN", (sent + 1).toLong())
+        PetPrefs.appendQueueObj(this, org.json.JSONObject().put("t", now).put("k", "pat"))
+        Log.i(TAG, "s12 pat queued ${sent + 1}/${sn?.pat?.cap} (left ${sn?.pat?.left})")
+    }
+
+    private fun tickSys12(dt: Float) {
+        if (sayT > 0f) { sayT -= dt; if (sayT <= 0f) hideSay() else placeSay() }
+        shard?.let { v -> shardT -= dt; shardAge += dt; if (shardT <= 0f) { hideShard(); Log.i(TAG, "s12 shard expired") } else v.bob = kotlin.math.sin(shardAge * 2.4f) }
+        val nowE = SystemClock.elapsedRealtime(); if (nowE - s12At < 1000) return; s12At = nowE
+        val sn = PetPrefs.snapshotSys12(this); s12 = sn
+        if (sn == null) { hideShard(); return }
+        val set = PetSys12.settings(sn.surp, PetPrefs.surpLocal(this)) ?: return
+        val now = System.currentTimeMillis(); val busy = st == St.DRAG || st == St.FALL || st == St.FLING
+        // 星星碎：每 minH–maxH 小時一粒（今日仲有位先掉）；閂咗／蛋 → 收埋
+        if (set.on["drop"] != true || sn.egg) { hideShard(); if (PetPrefs.s12Long(this, "dropAt") != 0L) PetPrefs.setS12Long(this, "dropAt", 0L) }
+        else if (shard == null && !busy) {
+            val at = PetPrefs.s12Long(this, "dropAt")
+            if (at == 0L) PetPrefs.setS12Long(this, "dropAt", PetSys12.dropNext(now, Random.nextDouble(), sn.surp.dropMinH, sn.surp.dropMaxH))
+            else if (now >= at) {
+                if (PetSys12.dropRoom(sn.surp, now, collected()) > 0) showShard(sn.surp.dropShowSec)
+                PetPrefs.setS12Long(this, "dropAt", PetSys12.dropNext(now, Random.nextDouble(), sn.surp.dropMinH, sn.surp.dropMaxH))
+            }
+        }
+        // 飲水：距上次（或開咗嗰刻）≥ waterH 小時、fromH–toH 之間
+        if (set.on["water"] != true) { if (PetPrefs.s12Long(this, "waterAt") != 0L) PetPrefs.setS12Long(this, "waterAt", 0L) }
+        else { val last = PetPrefs.s12Long(this, "waterAt")
+            if (last == 0L) PetPrefs.setS12Long(this, "waterAt", now)
+            else if (sayT <= 0f && PetSys12.waterDue(last, set.waterH, now, sn.surp.waterFromH, sn.surp.waterToH)) { PetPrefs.setS12Long(this, "waterAt", now); remind("water") } }
+        // 早瞓：每晚一次（sleepAt 起 sleepWinMin 分鐘內）
+        if (set.on["sleep"] == true && sayT <= 0f) { val (due, night) = PetSys12.sleepDue(set.sleepAt, PetPrefs.s12Str(this, "sleepNight"), now, sn.surp.sleepWinMin)
+            if (due) { PetPrefs.setS12Str(this, "sleepNight", night); remind("sleep") } }
+    }
+    private fun debugS12(what: String) {
+        s12 = PetPrefs.snapshotSys12(this); val sn = s12
+        Log.i(TAG, "s12 debug $what snap=${sn != null}")
+        when (what) { "drop" -> showShard(sn?.surp?.dropShowSec ?: 30); "water", "sleep" -> remind(what); "voice" -> tryVoice(true) }
+    }
+
+    // ── 長按小選單（獨立 overlay 視窗，撳外面收） ──
+    @SuppressLint("ClickableViewAccessibility")
+    private fun showMenu() {
+        hideMenu()
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            val pad = dp(6f).toInt(); setPadding(pad, pad, pad, pad)
+            background = GradientDrawable().apply { setColor(Color.argb(240, 255, 250, 240)); cornerRadius = dp(14f); setStroke(dp(1f).toInt(), Color.rgb(230, 200, 160)) }
+            elevation = dp(6f)
+        }
+        fun item(label: String, on: () -> Unit) {
+            box.addView(TextView(this).apply {
+                text = label; textSize = 15f; setTextColor(Color.rgb(90, 60, 40))
+                val pv = dp(9f).toInt(); val ph = dp(14f).toInt(); setPadding(ph, pv, ph, pv)
+                minHeight = dp(48f).toInt(); gravity = Gravity.CENTER_VERTICAL
+                setOnClickListener { hideMenu(); on() }
+            })
+        }
+        addStatusHeader(box)
+        fun mk(m: String, l: String) = (if (mode == m) "✓ " else "　 ") + l
+        item(mk(PetPrefs.MODE_EDGE, "沿底邊行")) { applyMode(PetPrefs.MODE_EDGE) }
+        item(mk(PetPrefs.MODE_FREE, "全畫面自由行")) { applyMode(PetPrefs.MODE_FREE) }
+        item(mk(PetPrefs.MODE_PIN, "定點")) { applyMode(PetPrefs.MODE_PIN) }
+        item("　 開返遊戲") { onDoubleTap(true) }
+        item("　 收起團絨") { PetPrefs.setEnabled(this, false); stopSelf() }
+        box.setOnTouchListener { _, e -> if (e.actionMasked == MotionEvent.ACTION_OUTSIDE) { hideMenu(); true } else false }
+        val p = WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            PixelFormat.TRANSLUCENT)
+        p.gravity = Gravity.TOP or Gravity.START
+        box.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val mw = box.measuredWidth; val mh = box.measuredHeight
+        val l = lp!!
+        val cell = atlas.size * scale
+        p.x = (l.x + cell / 2 - mw / 2).coerceIn(safe.left, max(safe.left, safe.right - mw))
+        p.y = (if (l.y - mh - dp(4f) >= safe.top) l.y - mh - dp(4f).toInt() else l.y + cell).coerceIn(safe.top, max(safe.top, safe.bottom - mh))
+        p.title = "FloatingPetMenu"
+        wm.addView(box, p); menu = box
+        Log.i(TAG, "long press → menu")
+    }
+    // ── 長按狀態區（snapshot v4；Kurt 10-31 22:50）：名／階段名、形態、心情、瞓覺、四項需求（遊戲 HUD icon＋細條）、階段進度／幾日大。只顯示，唔撳得。
+    private var menuIcons: PetAtlas? = null
+    private fun addStatusHeader(box: LinearLayout) {
+        refreshStatus(true)
+        val snap = PetPrefs.snapshotStatus(this)
+        val m = PetStatus.menu(PetPrefs.snapshotInfo(this), PetPrefs.snapshotStage(this), snap, status)
+        val ink = Color.rgb(90, 60, 40); val w = dp(248f).toInt(); val ph = dp(14f).toInt()
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(ph, dp(8f).toInt(), ph, dp(6f).toInt()); contentDescription = "status"; importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES }
+        col.addView(TextView(this).apply { text = m.title; textSize = 16f; setTextColor(ink); setTypeface(typeface, android.graphics.Typeface.BOLD) })
+        m.sub?.let { t -> col.addView(TextView(this).apply { text = t; textSize = 12.5f; setTextColor(Color.rgb(140, 105, 70)) }) }
+        col.addView(TextView(this).apply { text = m.moodLine; textSize = 13f; setTextColor(ink); setPadding(0, dp(3f).toInt(), 0, dp(2f).toInt()) })
+        if (menuIcons == null) menuIcons = try { PetAtlas.load(this, "fx") } catch (e: Exception) { null }
+        for (n in m.needs) {
+            val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; setPadding(0, dp(2f).toInt(), 0, dp(2f).toInt()) }
+            menuIcons?.clips?.get("need_${n.key}")?.frames?.firstOrNull()?.let { f ->
+                val src = menuIcons!!.bitmap; var x0 = f.src.right; var y0 = f.src.bottom; var x1 = f.src.left - 1; var y1 = f.src.top - 1   // 裁到 icon 實際像素（HUD icon 10×10）
+                for (yy in f.src.top until f.src.bottom) for (xx in f.src.left until f.src.right) if ((src.getPixel(xx, yy) ushr 24) > 20) { x0 = min(x0, xx); y0 = min(y0, yy); x1 = max(x1, xx); y1 = max(y1, yy) }
+                val bm = if (x1 >= x0) android.graphics.Bitmap.createBitmap(src, x0, y0, x1 - x0 + 1, y1 - y0 + 1) else android.graphics.Bitmap.createBitmap(src, f.src.left, f.src.top, f.src.width(), f.src.height())
+                row.addView(android.widget.ImageView(this).apply { setImageDrawable(android.graphics.drawable.BitmapDrawable(resources, bm).apply { isFilterBitmap = false }); scaleType = android.widget.ImageView.ScaleType.FIT_CENTER },
+                    LinearLayout.LayoutParams(dp(18f).toInt(), dp(18f).toInt()))
+            }
+            row.addView(TextView(this).apply { text = n.label; textSize = 12.5f; setTextColor(ink); setPadding(dp(4f).toInt(), 0, dp(6f).toInt(), 0) }, LinearLayout.LayoutParams(dp(44f).toInt(), LinearLayout.LayoutParams.WRAP_CONTENT))
+            row.addView(BarView(this, n.value / 100f, n.color), LinearLayout.LayoutParams(0, dp(9f).toInt(), 1f))
+            row.addView(TextView(this).apply { text = n.value.toString(); textSize = 12f; setTextColor(ink); gravity = Gravity.END }, LinearLayout.LayoutParams(dp(30f).toInt(), LinearLayout.LayoutParams.WRAP_CONTENT))
+            col.addView(row)
+        }
+        if (m.progress != null) {
+            col.addView(TextView(this).apply { text = m.progressText; textSize = 12.5f; setTextColor(ink); setPadding(0, dp(4f).toInt(), 0, dp(2f).toInt()) })
+            col.addView(BarView(this, m.progress.toFloat(), 0xFFFFD36A.toInt()), LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(7f).toInt()))
+        }
+        box.addView(col, LinearLayout.LayoutParams(w, LinearLayout.LayoutParams.WRAP_CONTENT))   // 固定闊度（唔好撐到成個畫面）
+        box.addView(View(this).apply { setBackgroundColor(Color.rgb(230, 200, 160)) }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(1f).toInt()).apply { topMargin = dp(4f).toInt() })
+        Log.i(TAG, "menu status: ${m.title} | ${m.sub} | ${m.moodLine} | ${m.needs.joinToString { it.key + "=" + it.value }} | ${m.progressText}")
+    }
+
+    /** 遊戲 HUD 需求條（index.html .track：深藍底＋啡邊，圓角）。 */
+    private class BarView(ctx: Context, val frac: Float, val color: Int) : View(ctx) {
+        private val p = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+        private val r = android.graphics.RectF()
+        override fun onDraw(c: android.graphics.Canvas) {
+            val w = width.toFloat(); val h = height.toFloat(); val rad = h / 2f
+            r.set(0f, 0f, w, h); p.style = android.graphics.Paint.Style.FILL; p.color = 0xFF0B1030.toInt(); c.drawRoundRect(r, rad, rad, p)
+            val f = frac.coerceIn(0f, 1f); if (f > 0f) { r.set(1f, 1f, 1f + (w - 2f) * f, h - 1f); p.color = color; c.drawRoundRect(r, rad, rad, p) }
+            r.set(0.5f, 0.5f, w - 0.5f, h - 0.5f); p.style = android.graphics.Paint.Style.STROKE; p.strokeWidth = 1f; p.color = 0xFF6A5A3A.toInt(); c.drawRoundRect(r, rad, rad, p)
+        }
+    }
+
+    private fun hideMenu() { menu?.let { try { wm.removeView(it) } catch (_: Exception) {} }; menu = null }
+}

@@ -1,0 +1,76 @@
+{
+ "format": "art_fix1.kid.liveliness/1",
+ "actor": "A1",
+ "zh": "細佬",
+ "pivotPx": [
+  24,
+  45
+ ],
+ "frameSize": 48,
+ "size": "M",
+ "note": "抓癢／噴嚏／嗅地用細佬自己嘅 A1 水滴外形，唔好再套團絨 L。時機同團絨 scratch／sneeze／sniff。",
+ "clips": {
+  "scratch": {
+   "zh": "抓癢",
+   "frames": 6,
+   "fps": 8,
+   "loop": false
+  },
+  "sneeze": {
+   "zh": "噴嚏",
+   "frames": 5,
+   "fps": 8,
+   "loop": false
+  },
+  "sniff": {
+   "zh": "嗅地",
+   "frames": 4,
+   "fps": 6,
+   "loop": false
+  }
+ },
+ "items": [
+  {
+   "id": "A1",
+   "clip": "scratch",
+   "zh": "抓癢",
+   "atlas": "atlas_A1_scratch.json",
+   "pivotPx": [
+    24,
+    45
+   ],
+   "frameSize": 48,
+   "fps": 8,
+   "loop": false,
+   "frameCount": 6
+  },
+  {
+   "id": "A1",
+   "clip": "sneeze",
+   "zh": "噴嚏",
+   "atlas": "atlas_A1_sneeze.json",
+   "pivotPx": [
+    24,
+    45
+   ],
+   "frameSize": 48,
+   "fps": 8,
+   "loop": false,
+   "frameCount": 5
+  },
+  {
+   "id": "A1",
+   "clip": "sniff",
+   "zh": "嗅地",
+   "atlas": "atlas_A1_sniff.json",
+   "pivotPx": [
+    24,
+    45
+   ],
+   "frameSize": 48,
+   "fps": 6,
+   "loop": false,
+   "frameCount": 4
+  }
+ ]
+}

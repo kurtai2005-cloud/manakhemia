@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature android:glEsVersion="0x00030000" android:required="false" tools:replace="android:required" />
+    <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="false" />
+    <uses-feature android:name="android.hardware.location" android:required="false" />
+    <uses-feature android:name="android.hardware.location.network" android:required="false" />
+
+    <application>
+        <activity
+            android:name="com.godot.game.GodotApp"
+            android:screenOrientation="portrait"
+            tools:replace="android:screenOrientation" />
+
+        <activity
+            android:name="hk.vizard.glimmer.fpet.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:label="浮動團絨"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
+        <activity
+            android:name="hk.vizard.glimmer.fpet.PowerGuideActivity"
+            android:screenOrientation="portrait"
+            android:label="自啟動／省電白名單"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
+
+        <service
+            android:name="hk.vizard.glimmer.fpet.PetOverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Floating virtual pet overlay drawn above other apps while the user has it switched on (desktop companion)." />
+        </service>
+
+        <meta-data
+            android:name="org.godotengine.plugin.v2.GlimmerOverlay"
+            android:value="hk.vizard.glimmer.fpet.GlimmerOverlayPlugin" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:replace="android:authorities" />
+    </application>
+</manifest>

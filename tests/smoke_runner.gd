@@ -4,7 +4,7 @@ extends Node
 func _shot_dir() -> String:
 	var d := str(OS.get_environment("GODOT_SHOT_DIR"))
 	if d == "":
-		d = "/home/box/keep/godot/G0.1"
+		d = "/home/box/keep/godot/M1a"
 	DirAccess.make_dir_recursive_absolute(d)
 	return d
 
@@ -68,7 +68,7 @@ func _prep(main: Node, tod: String, pose: String) -> void:
 
 
 func _ready() -> void:
-	print("=== G0.1 smoke ===")
+	print("=== M1a smoke ===")
 	print("visual checklist: res://tools/visual_checklist.md")
 	QualitySettings.set_tier(QualitySettings.Tier.LOW)
 	await get_tree().process_frame
@@ -87,6 +87,11 @@ func _ready() -> void:
 		return
 	print("Main children=", root.get_child_count())
 	var main := get_tree().root.get_node_or_null("Main")
+	if str(OS.get_environment("GODOT_SMOKE_QUICK")) == "1":
+		await _quick_m1a(main)
+		print("SMOKE_QUICK_OK")
+		get_tree().quit(0)
+		return
 	await _prep(main, "day", "default")
 
 	# LOW cap（目標 ~33ms @30fps）— 喺休息鏡頭量，避免行路干擾
@@ -141,5 +146,88 @@ func _ready() -> void:
 		await _prep(main, "day", "default")
 		await _save_shot(vp, "g01-w%d-mid-day" % w)
 
+	# M1a 玩法截圖（總覽、跟拍、需要泡泡、一鍵照顧＋總結卡）
+	if main and main.has_method("set_shot_size"):
+		main.set_shot_size(390, 844)
+	QualitySettings.set_tier(QualitySettings.Tier.LOW)
+	if main and main.has_method("qa_overview"):
+		main.qa_overview()
+	else:
+		await _prep(main, "day", "default")
+	for i in range(8):
+		await get_tree().process_frame
+	if main and main.has_method("qa_framing"):
+		print("framing overview ", main.qa_framing())
+	await _save_shot(vp, "m1a-overview")
+	if main and main.has_method("qa_follow_pet"):
+		main.qa_follow_pet()
+	for i in range(8):
+		await get_tree().process_frame
+	if main and main.has_method("qa_framing"):
+		print("framing follow ", main.qa_framing())
+	await _save_shot(vp, "m1a-follow")
+	if main and main.has_method("qa_overview"):
+		main.qa_overview()
+	if main and main.has_method("qa_force_needs"):
+		main.qa_force_needs(20.0, 90.0, 90.0, 90.0)
+	for i in range(10):
+		await get_tree().process_frame
+	await _save_shot(vp, "m1a-bubbles")
+	# 一鍵摸頭／餵／執 → 總結卡（退出跟拍先睇到底欄）
+	if main and main.has_method("qa_overview"):
+		main.qa_overview()
+	if Sim:
+		Sim.state["poops"] = 2
+		Sim.state["poop_age"] = [1.0, 2.0]
+		var n: Dictionary = Sim.state.get("needs", {})
+		n["hunger"] = 40.0
+		n["mood"] = 50.0
+		Sim.state["needs"] = n
+		Sim.state_changed.emit()
+		Sim.feed("meal")
+		Sim.pat()
+		Sim.clean_all()
+	for i in range(12):
+		await get_tree().process_frame
+	await _save_shot(vp, "m1a-care")
+	if main and main.has_method("qa_family") and main.qa_family("walk_together"):
+		for i in range(10):
+			await get_tree().process_frame
+		await _save_shot(vp, "m1a-family")
+
 	print("SMOKE_OK")
 	get_tree().quit(0)
+
+
+func _quick_m1a(main: Node) -> void:
+	var vp := get_viewport()
+	print("quick: prep")
+	QualitySettings.set_tier(QualitySettings.Tier.LOW)
+	await _prep(main, "day", "default")
+	print("quick: care")
+	if Sim:
+		var n: Dictionary = Sim.state.get("needs", {})
+		n["hunger"] = 40.0
+		n["mood"] = 50.0
+		Sim.state["needs"] = n
+		Sim.state["poops"] = 2
+		Sim.state["poop_age"] = [1.0, 2.0]
+		print("quick: state")
+		Sim.state_changed.emit()
+		print("quick: feed", Sim.feed("meal"))
+		print("quick: pat", Sim.pat())
+		print("quick: clean", Sim.clean_all())
+	print("quick: frames")
+	for i in range(4):
+		await get_tree().process_frame
+		print("quick: frame ", i)
+	print("quick: save care")
+	await _save_shot(vp, "m1a-care")
+	print("quick: saved care")
+	if main and main.has_method("qa_overview"):
+		main.qa_overview()
+	if main and main.has_method("qa_family"):
+		main.qa_family("walk_together")
+	for i in range(10):
+		await get_tree().process_frame
+	await _save_shot(vp, "m1a-family")

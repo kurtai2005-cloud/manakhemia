@@ -6,7 +6,7 @@ var passed := 0
 
 func _ready() -> void:
 	# 等 autoload
-	print("=== G0 unit tests (Godot %s) ===" % Engine.get_version_info().get("string", "?"))
+	print("=== M1a unit tests (Godot %s) ===" % Engine.get_version_info().get("string", "?"))
 	# 隔離：用假時鐘，清空存檔副作用前備份唔需要（user:// 喺測試目錄）
 	SaveSystem.clear()
 	Sim.paused = true
@@ -37,6 +37,13 @@ func _ready() -> void:
 	_test_audio_actor_pitch()
 	_test_walk_fps_not_overridden()
 	_test_g01_actor_anim_and_lut()
+	_test_m1a_care_actions()
+	_test_m1a_personality()
+	_test_m1a_need_bubbles()
+	_test_m1a_art_fix1()
+	_test_m1a_audio_buses()
+	_test_m1a_beehave_and_family()
+	_test_m1a_camera_framing()
 	print("=== %d passed, %d failed ===" % [passed, failed])
 
 	get_tree().quit(0 if failed == 0 else 1)
@@ -400,6 +407,10 @@ func _test_sim_params_from_data() -> void:
 	ok(is_equal_approx(Sim.STAGE_SEC["sprout"], GameData.stage_duration("sprout")), "sprout duration from evolution.json")
 	ok(is_equal_approx(Sim.STAGE_SEC["sprout"], 64800.0), "sprout 64800 (data.js / evolution.json)")
 	ok(is_equal_approx(Sim.STAGE_SEC["egg"], 600.0), "egg 600s from evolution.json")
+	var care: Dictionary = p.get("care", {})
+	ok(is_equal_approx(Sim.FEED_MEAL, float(care.get("feed_meal", -1))), "FEED_MEAL from sim.json care")
+	ok(is_equal_approx(Sim.PAT_MOOD, float(care.get("pat_mood", -1))), "PAT_MOOD from sim.json care (playTease reuse)")
+	ok(is_equal_approx(Sim.FEED_REFUSE_AT, float(care.get("feed_refuse_at", -1))), "FEED_REFUSE_AT from sim.json care")
 
 
 func _test_art_importer_timing() -> void:
@@ -545,3 +556,206 @@ func _test_g01_actor_anim_and_lut() -> void:
 	w.character = "kid"
 	ok(w.body_size == "M", "kid walker size M")
 	w.free()
+
+func _test_m1a_care_actions() -> void:
+	print("# M1a care: feed / pat / clean_all（數值只由 sim.json）")
+	Sim.state = _fresh("sprout", {"hunger": 40.0, "mood": 50.0, "clean": 80.0, "energy": 80.0})
+	var meal := Sim.feed("meal")
+	ok(bool(meal.get("ok", false)), "feed meal ok", meal)
+	ok(is_equal_approx(float(meal.get("hunger", 0)), Sim.FEED_MEAL), "meal hunger +FEED_MEAL", meal)
+	ok(is_equal_approx(float(meal.get("mood", 0)), Sim.FOOD_MOOD_BONUS), "meal mood +FOOD_MOOD_BONUS", meal)
+	Sim.state = _fresh("sprout", {"hunger": 95.0, "mood": 50.0})
+	var refused := Sim.feed("meal")
+	ok(not bool(refused.get("ok", true)) and str(refused.get("reason", "")) == "full", "refuse feed when hunger >= 90", refused)
+	Sim.state = _fresh("sprout", {"mood": 40.0})
+	var p := Sim.pat()
+	ok(bool(p.get("ok", false)), "pat ok", p)
+	ok(is_equal_approx(float(p.get("mood", 0)), Sim.PAT_MOOD), "pat mood +PAT_MOOD", p)
+	Sim.state = _fresh("sprout")
+	Sim.state["poops"] = 3
+	Sim.state["poop_age"] = [1.0, 2.0, 3.0]
+	var c := Sim.clean_all()
+	ok(bool(c.get("ok", false)) and int(c.get("count", 0)) == 3, "clean_all clears 3 poops", c)
+	ok(int(Sim.state.get("poops", -1)) == 0, "poops now 0")
+	var c2 := Sim.clean_all()
+	ok(not bool(c2.get("ok", true)) and int(c2.get("count", -1)) == 0, "clean_all empty is not ok", c2)
+	# 離線規則不變：喂完之後 apply_offline 仍然跟舊公式
+	Sim.state = _fresh("sprout", {"hunger": 80.0})
+	Sim.feed("meal")
+	var after_feed := float(Sim.state["needs"]["hunger"])
+	var later := TimeService.now_ms() + 600_000
+	var off := Sim.state.duplicate(true)
+	off["last_seen"] = TimeService.now_ms()
+	TimeService.use_fake(later)
+	Sim.apply_offline(off, later)
+	ok(float(off["needs"]["hunger"]) <= after_feed, "offline still decays hunger after feed")
+	TimeService.use_fake(1_000_000_000_000)
+	TimeService.mark_sim()
+
+
+func _test_m1a_personality() -> void:
+	print("# M1a personality: birth [-3,3] + daily drift clamp ±2")
+	ok(Personality.birth_min == -3 and Personality.birth_max == 3, "birth range from personality.json")
+	ok(Personality.day_shift_min == -2 and Personality.day_shift_max == 2, "daily shift ±2 from data")
+	ok(is_equal_approx(Personality.walk_energetic_mul, 1.2), "energetic walk mul 1.2")
+	ok(is_equal_approx(Personality.walk_quiet_mul, 0.85), "quiet walk mul 0.85")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 42
+	for i in range(20):
+		var rec: Dictionary = Personality.roll(rng)
+		for a in Personality.AXES:
+			var v := int(rec.get(a, 99))
+			ok(v >= -3 and v <= 3, "birth %s in [-3,3]" % a, v)
+	Sim.state = _fresh("sprout")
+	Sim.state["personalities"] = {}
+	var rec2 := {"motion": 0, "work": 0, "social": 0, "day_key": "", "day_acc": {"motion": 0, "work": 0, "social": 0}}
+	Personality.set_for("tuanrong", rec2)
+	ok(Personality.primary_type("tuanrong") == "隨和", "all-small is 隨和")
+	rec2["motion"] = 8
+	Personality.set_for("tuanrong", rec2)
+	ok(Personality.primary_type("tuanrong") == "活潑", "motion+ is 活潑")
+	ok(is_equal_approx(Personality.walk_speed_mul("tuanrong"), lerpf(1.0, 1.2, 0.8)), "motion 8 interpolates toward energetic", Personality.walk_speed_mul("tuanrong"))
+	rec2["motion"] = 10
+	Personality.set_for("tuanrong", rec2)
+	ok(is_equal_approx(Personality.walk_speed_mul("tuanrong"), 1.2), "motion 10 = energetic mul", Personality.walk_speed_mul("tuanrong"))
+	rec2["motion"] = -10
+	Personality.set_for("tuanrong", rec2)
+	ok(Personality.primary_type("tuanrong") == "文靜", "motion- is 文靜")
+	ok(is_equal_approx(Personality.walk_speed_mul("tuanrong"), 0.85), "motion -10 quiet mul", Personality.walk_speed_mul("tuanrong"))
+	# 漂移：pat → social +1，一日最多 +2
+	rec2 = {"motion": 0, "work": 0, "social": 0, "day_key": "", "day_acc": {"motion": 0, "work": 0, "social": 0}}
+	Personality.set_for("tuanrong", rec2)
+	Personality.apply_care_act("tuanrong", "pat", "d1")
+	ok(Personality.axis("tuanrong", "social") == 1, "pat +1 social", Personality.get_for("tuanrong"))
+	Personality.apply_care_act("tuanrong", "pat", "d1")
+	ok(Personality.axis("tuanrong", "social") == 2, "second pat same day +1 (cap room)")
+	Personality.apply_care_act("tuanrong", "pat", "d1")
+	ok(Personality.axis("tuanrong", "social") == 2, "third pat same day clamped at +2")
+	Personality.apply_care_act("tuanrong", "pat", "d2")
+	ok(Personality.axis("tuanrong", "social") == 3, "new day resets cap, +1 more", Personality.get_for("tuanrong"))
+
+
+func _test_m1a_need_bubbles() -> void:
+	print("# M1a need bubbles: want=100-care, show when ≥70; only 團絨")
+	ok(not GameData.m1a.is_empty(), "data/m1a.json loaded")
+	ok(is_equal_approx(float(GameData.m1a.get("bubbles", {}).get("want_threshold", -1)), 70.0), "want threshold 70 from data")
+	var w := Walker.new()
+	w.name = "BubblePet"
+	w.character = "tuanrong"
+	add_child(w)
+	var b := NeedBubble.new()
+	add_child(b)
+	b.attach(w)
+	Sim.state = _fresh("sprout", {"hunger": 20.0, "mood": 90.0, "clean": 90.0, "energy": 90.0})
+	ok(b._pick() == "need_eat", "hunger 20 → want 80 → need_eat", b._pick())
+	Sim.state["needs"]["hunger"] = 80.0
+	Sim.state["needs"]["energy"] = 10.0
+	ok(b._pick() == "need_sleep", "energy 10 → need_sleep", b._pick())
+	Sim.state["needs"]["energy"] = 90.0
+	Sim.state["needs"]["mood"] = 90.0
+	ok(b._pick() == "", "all care high → no bubble", b._pick())
+	w.character = "kid"
+	Sim.state["needs"]["hunger"] = 10.0
+	ok(b._pick() == "", "kid has no need bubble")
+	var eat: Texture2D = IconBank.tex("need_eat")
+	ok(eat != null and eat.get_width() > 0, "need_eat icon loaded (hunt or placeholder)", eat)
+	ok(FileAccess.file_exists("res://art/m1-icons/need_eat.png"), "m1-icons need_eat present")
+	b.free()
+	w.free()
+
+
+func _test_m1a_art_fix1() -> void:
+	print("# art-fix1：細佬 A1 M 48px、訪客 liveliness 圖集、idle_quiet")
+	ok(ArtImporter.actor_pivot("kid") == Vector2(24, 45), "kid A1 pivot (24,45)")
+	ok(ArtImporter.actor_pivot("snail_postman") == Vector2(22, 45), "snail pivot (22,45)", ArtImporter.actor_pivot("snail_postman"))
+	ok(ArtImporter.actor_pivot("mushroom_granny") == Vector2(24, 45), "granny pivot (24,45)")
+	ok(ArtImporter.actor_pivot("firefly_vendor") == Vector2(24, 44), "firefly pivot (24,44)", ArtImporter.actor_pivot("firefly_vendor"))
+	ok(ArtImporter.frames_of("scratch", "M", "kid").size() >= 1, "kid A1 scratch frames")
+	ok(ArtImporter.frames_of("scratch", "M", "snail_postman").size() >= 1, "snail scratch frames")
+	ok(ArtImporter.frames_of("sneeze", "M", "mushroom_granny").size() >= 1, "granny sneeze frames")
+	ok(ArtImporter.frames_of("idle_quiet", "M", "tuanrong").size() >= 1, "idle_quiet M frames")
+	ok(ArtImporter.frames_of("idle_quiet", "S").size() >= 1, "idle_quiet S")
+	ok(ArtImporter.frames_of("idle_quiet", "L").size() >= 1, "idle_quiet L")
+
+
+func _test_m1a_audio_buses() -> void:
+	print("# audio buses UI + Pet besides BGM/AMB/SFX")
+	var want := ["Master", "BGM", "AMB", "SFX", "UI", "Pet"]
+	for i in range(AudioServer.bus_count):
+		var n := AudioServer.get_bus_name(i)
+		if n in want:
+			want.erase(n)
+	ok(want.is_empty(), "all six buses present", want)
+	ok(AudioManager.bus_for("sfx_ui8_btn_press_a") == "UI", "UI hook → UI bus")
+	ok(AudioManager.bus_for("sfx_pet_sneeze") == "Pet", "pet sneeze → Pet bus")
+	ok(AudioManager.bus_for("bgm_care_loop") == "BGM", "bgm → BGM")
+	ok(AudioManager.bus_for("sfx_world_leaf") == "SFX", "other sfx stay SFX")
+
+
+func _test_m1a_beehave_and_family() -> void:
+	print("# Beehave tree + FamilyDirector.force")
+	Sim.state = _fresh("sprout")
+	Sim.state["personalities"] = {}
+	var a := Walker.new()
+	a.name = "A"
+	a.character = "tuanrong"
+	var b := Walker.new()
+	b.name = "B"
+	b.character = "kid"
+	add_child(a)
+	add_child(b)
+	var fam := FamilyDirector.new()
+	add_child(fam)
+	var ba := PetBrain.new()
+	a.add_child(ba)
+	ba.setup(a, "tuanrong", fam)
+	var bb := PetBrain.new()
+	b.add_child(bb)
+	bb.setup(b, "kid", fam)
+	fam.register(a, ba)
+	fam.register(b, bb)
+	ok(ba.tree != null and ba.tree is BeehaveTree, "tuanrong has BeehaveTree")
+	ok(bb.tree != null, "kid has BeehaveTree")
+	ok(fam.force("walk_together"), "family force walk_together")
+	ok(fam.active_kind == "walk_together", "active_kind set", fam.active_kind)
+	ok(fam.kind_for(a) == "walk_together" and fam.kind_for(b) == "walk_together", "both actors tagged")
+	ba.notify_tap("pet")
+	ok(ba.pending_tap == "pet", "tap interrupt flags pending")
+	a.free()
+	b.free()
+	fam.free()
+
+
+func _test_m1a_camera_framing() -> void:
+	print("# M1a camera: overview garden fill + integer texel; follow pet ≥20% / y 55–60%")
+	var packed: PackedScene = load("res://scenes/Main.tscn")
+	ok(packed != null, "Main.tscn loads")
+	if packed == null:
+		return
+	var main: Node = packed.instantiate()
+	add_child(main)
+	# 等一幀讓 _ready／鏡頭就位
+	# 單元測試冇 await；直接叫 qa
+	if main.has_method("set_rest_look"):
+		main.set_rest_look(true)
+	if main.has_method("qa_overview"):
+		main.qa_overview()
+	elif main.has_method("qa_place_pet"):
+		main.qa_place_pet("default")
+	var fr: Dictionary = main.qa_framing() if main.has_method("qa_framing") else {}
+	print("  overview framing ", fr)
+	ok(str(fr.get("mode", "")) == "overview", "default cam mode overview", fr)
+	ok(float(fr.get("pet_h", 0)) >= 0.09, "overview pet height ≥10% (tol 1%)", fr)
+	ok(absf(float(fr.get("texel", 0)) - round(float(fr.get("texel", 0)))) < 0.35, "overview texel near integer", fr)
+	ok(round(float(fr.get("texel", 0))) >= 1.0, "overview texel scale integer ≥1", fr)
+	var vw := float(fr.get("visible_w", 0))
+	ok(vw >= 256.0 * 0.80 and vw <= 256.0 * 1.15, "overview garden fills width (~256)", fr)
+	if main.has_method("qa_follow_pet"):
+		main.qa_follow_pet()
+	var ff: Dictionary = main.qa_framing() if main.has_method("qa_framing") else {}
+	print("  follow framing ", ff)
+	ok(str(ff.get("mode", "")) == "follow", "follow cam mode", ff)
+	ok(float(ff.get("pet_h", 0)) >= 0.18, "follow pet height ≥20% (tol 2%)", ff)
+	var py := float(ff.get("pet_y", -1))
+	ok(py >= 0.52 and py <= 0.63, "follow pet_y near 55–60%", ff)
+	main.free()

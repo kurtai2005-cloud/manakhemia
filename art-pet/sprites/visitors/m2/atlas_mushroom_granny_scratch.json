@@ -1,0 +1,193 @@
+{
+ "format": "art_fix1.visitor.liveliness.atlas/1",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "frames": {
+  "scratch_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     21,
+     27
+    ],
+    "eyeR": [
+     27,
+     27
+    ],
+    "mouth": [
+     24,
+     31
+    ]
+   }
+  },
+  "scratch_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     26
+    ],
+    "eyeR": [
+     26,
+     26
+    ],
+    "mouth": [
+     24,
+     30
+    ]
+   }
+  },
+  "scratch_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     26
+    ],
+    "eyeR": [
+     26,
+     26
+    ],
+    "mouth": [
+     24,
+     30
+    ]
+   }
+  },
+  "scratch_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     26
+    ],
+    "eyeR": [
+     26,
+     26
+    ],
+    "mouth": [
+     24,
+     30
+    ]
+   }
+  },
+  "scratch_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     26
+    ],
+    "eyeR": [
+     26,
+     26
+    ],
+    "mouth": [
+     24,
+     30
+    ]
+   }
+  },
+  "scratch_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     21,
+     27
+    ],
+    "eyeR": [
+     27,
+     27
+    ],
+    "mouth": [
+     24,
+     31
+    ]
+   }
+  }
+ },
+ "frameCount": 6,
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "meta": {
+  "image": "atlas_mushroom_granny_scratch.png",
+  "normal": "atlas_mushroom_granny_scratch_n.png",
+  "emissive": "atlas_mushroom_granny_scratch_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   45
+  ]
+ },
+ "id": "mushroom_granny",
+ "zh": "蘑菇婆婆",
+ "clip": "scratch",
+ "clip_zh": "抓癢",
+ "fps": 8,
+ "loop": false,
+ "size": "M",
+ "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
+ "note": "蘑菇婆婆 外形／色；48px；pivot [24, 45]；時機同團絨 liveliness。"
+}

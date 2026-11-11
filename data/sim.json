@@ -63,5 +63,18 @@
     "clean": 90,
     "energy": 100,
     "_src": "data.js startNeedsSprout"
+  },
+  "care": {
+    "_src": "v10-qa/base/src/data.js PARAMS 行動回升（feedSnack/Meal/Soup、feedRefuseAt、foodMoodBonusWarm、playTease、playEnergyCost、rinse）",
+    "feed_snack": 20,
+    "feed_meal": 40,
+    "feed_soup": 20,
+    "food_mood_bonus_warm": 3,
+    "feed_refuse_at": 90,
+    "play_tease": 15,
+    "play_energy_cost": 3,
+    "rinse": 50,
+    "pat_mood": 15,
+    "pat_mood_src": "舊 PARAMS 無獨立摸頭回升；M1a 一鍵摸頭沿用 playTease=15，待遊策定專屬數"
   }
 }

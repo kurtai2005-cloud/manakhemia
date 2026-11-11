@@ -38,6 +38,11 @@ var _live_src_size := 64.0
 var _base_modulate := Color.WHITE
 var _tod_modulate := Color.WHITE
 var _low_unshaded := false
+var brain_driven := false
+var speed_mul := 1.0
+var follow_target: Node3D
+var follow_dist := 16.0
+var click_area: Area3D
 
 func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) -> void:
 	frames = tex_frames
@@ -68,6 +73,7 @@ func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) 
 	agent.max_speed = speed
 	add_child(agent)
 	pause_t = rng.randf_range(0.4, 1.2)
+	_add_click_area()
 	_apply_frame()
 
 
@@ -78,13 +84,22 @@ func set_feet(f: Footprints) -> void:
 func _process(dt: float) -> void:
 	if frames.is_empty() or sprite == null:
 		return
+	if follow_target and is_instance_valid(follow_target):
+		var gap := global_position.distance_to(follow_target.global_position)
+		if gap > follow_dist + 2.0:
+			var dest := follow_target.global_position
+			if use_nav and agent:
+				agent.target_position = dest
+			_fallback_dest = dest
+			pause_t = 0.0
 	if pause_t > 0.0:
 		pause_t -= dt
 		moving = false
 		_anim(dt)
 		if pause_t <= 0.0:
 			live_clip = ""
-			_pick_target()
+			if not brain_driven:
+				_pick_target()
 		return
 	var dest := agent.get_next_path_position() if use_nav else _fallback_dest
 	var pos := global_position
@@ -92,17 +107,19 @@ func _process(dt: float) -> void:
 	to.y = 0
 	if use_nav and agent.is_navigation_finished():
 		moving = false
-		pause_t = rng.randf_range(pause_min, pause_max)
-		_maybe_liveliness()
+		if not brain_driven:
+			pause_t = rng.randf_range(pause_min, pause_max)
+			_maybe_liveliness()
 		_anim(dt)
 		return
 	if to.length() < 1.5:
 		moving = false
-		pause_t = rng.randf_range(pause_min, pause_max)
-		_maybe_liveliness()
+		if not brain_driven:
+			pause_t = rng.randf_range(pause_min, pause_max)
+			_maybe_liveliness()
 		_anim(dt)
 		return
-	var step := to.normalized() * speed * dt
+	var step := to.normalized() * speed * maxf(speed_mul, 0.1) * dt
 	if step.length() > to.length():
 		step = to
 	var nxt := pos + step
@@ -157,7 +174,7 @@ func _maybe_liveliness() -> void:
 	if pool.is_empty():
 		return
 	var name := str(pool[rng.randi() % pool.size()])
-	var arr: Array = ArtImporter.frames_of(name, body_size)
+	var arr: Array = ArtImporter.frames_of(name, body_size, character)
 	if arr.is_empty():
 		return
 	live_clip = name
@@ -264,6 +281,7 @@ func _anim(dt: float) -> void:
 	if frame_t >= step_t:
 		frame_t = fmod(frame_t, step_t)
 		frame_i = (frame_i + 1) % arr.size()
+	frame_i = frame_i % arr.size()
 	if sprite.texture != arr[frame_i]:
 		sprite.texture = arr[frame_i]
 	_step_cool = maxf(0.0, _step_cool - dt)
@@ -315,6 +333,8 @@ func park() -> void:
 	use_nav = false
 	if agent:
 		agent.target_position = global_position
+	frame_i = 0
+	frame_t = 0.0
 	_anim(0.0)
 
 
@@ -378,3 +398,107 @@ func _add_blob() -> void:
 	blob.material_override = mat
 	blob.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(blob)
+
+
+func _add_click_area() -> void:
+	click_area = Area3D.new()
+	click_area.name = "Click"
+	click_area.input_ray_pickable = true
+	click_area.collision_layer = 4
+	click_area.collision_mask = 0
+	var cs := CollisionShape3D.new()
+	var sh := SphereShape3D.new()
+	sh.radius = maxf(radius, 14.0)
+	cs.shape = sh
+	cs.position = Vector3(0, maxf(radius, 14.0), 0)
+	click_area.add_child(cs)
+	add_child(click_area)
+
+
+func play_live_clip(name: String, loop: bool = false) -> bool:
+	if name == "" or ArtImporter == null:
+		return false
+	var arr: Array = ArtImporter.frames_of(name, body_size, character)
+	if arr.is_empty():
+		arr = ArtImporter.frames_of(name + "_noface", body_size)
+	if arr.is_empty():
+		arr = ArtImporter.frames_of(name, "")
+	if arr.is_empty():
+		return false
+	live_clip = name
+	live_frames = arr
+	_live_src_size = 64.0
+	if arr[0] is AtlasTexture:
+		var rg: Rect2 = (arr[0] as AtlasTexture).region
+		if rg.size.x > 0.0:
+			_live_src_size = rg.size.x
+	live_i = 0
+	live_t = 0.0
+	_clip_elapsed = 0.0
+	_sfx_fired.clear()
+	_apply_live_display(true)
+	_fire_sfx(0)
+	# 非循環會喺播完自己清；強制 loop 時等呼叫者停
+	if loop and ArtImporter and ArtImporter.has_method("clip_timing"):
+		pass
+	return true
+
+
+func cancel_move() -> void:
+	moving = false
+	follow_target = null
+	pause_t = 0.0
+	if agent:
+		agent.target_position = global_position
+	_fallback_dest = global_position
+
+
+func cancel_follow() -> void:
+	follow_target = null
+
+
+func stop_live() -> void:
+	live_clip = ""
+	_apply_live_display(false)
+
+
+func go_to(dest: Vector3) -> void:
+	dest.y = 0
+	pause_t = 0.0
+	_fallback_dest = dest
+	if use_nav and agent:
+		agent.target_position = dest
+
+
+func pick_nearby(radius_u: float = 70.0) -> void:
+	var t: Vector3
+	if feet:
+		t = feet.random_free(rng, radius)
+		# 限制距離
+		var d := t - global_position
+		d.y = 0
+		if d.length() > radius_u and d.length() > 0.01:
+			t = global_position + d.normalized() * radius_u
+			t.y = 0
+	else:
+		var ang := rng.randf() * TAU
+		t = global_position + Vector3(cos(ang), 0, sin(ang)) * rng.randf_range(20.0, radius_u)
+	go_to(t)
+
+
+func follow_node(n: Node3D, dist: float = 16.0) -> void:
+	follow_target = n
+	follow_dist = dist
+	pause_t = 0.0
+	if n and is_instance_valid(n):
+		go_to(n.global_position)
+
+
+func try_liveliness() -> void:
+	_maybe_liveliness()
+
+
+func world_height() -> float:
+	# 腳底到頭頂嘅世界高度（1 texel＝pixel_size 世界單位）
+	return frame_size.y * maxf(pixel_size, 0.001)
+

@@ -4,7 +4,7 @@
 set -euo pipefail
 GODOT="${GODOT:-/home/box/tools/godot/godot}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VER="${GODOT_SHOT_VER:-G0.1}"
+VER="${GODOT_SHOT_VER:-M1a}"
 SHOT="${GODOT_SHOT_DIR:-/home/box/keep/godot/${VER}}"
 export DISPLAY="${DISPLAY:-:24}"
 export GODOT_SHOT_DIR="$SHOT"
@@ -25,7 +25,8 @@ needed = ["g01-day.png", "g01-night.png", "g01-mid-day.png", "g01-mid-night.png"
           "g01-day-front-tree.png", "g01-day-behind-tree.png",
           "g01-day-front-cottage.png", "g01-day-behind-cottage.png",
           "g01-w412-day.png", "g01-w412-night.png", "g01-w412-mid-day.png",
-          "g01-w768-day.png", "g01-w768-night.png", "g01-w768-mid-day.png"]
+          "g01-w768-day.png", "g01-w768-night.png", "g01-w768-mid-day.png",
+          "m1a-overview.png", "m1a-follow.png", "m1a-bubbles.png", "m1a-care.png"]
 fail = 0
 BEIGE = (0xFF, 0xE8, 0xC8)
 for name in needed:
@@ -56,6 +57,11 @@ for name in needed:
     if p.stat().st_size < 20000:
         print(f"  FAIL {name}: file too small, likely empty clear-color")
         fail += 1
+fam = d / "m1a-family.png"
+if fam.exists():
+    print(f"OK file m1a-family.png {fam.stat().st_size} bytes")
+else:
+    print("WARN missing m1a-family.png (non-fatal)")
 sys.exit(fail)
 PY
 

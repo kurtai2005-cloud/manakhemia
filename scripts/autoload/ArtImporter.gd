@@ -29,6 +29,8 @@ var actor_anim: Dictionary = {}
 var import_docs: Array = []
 var _atlases: Array = []  # {json, texture, dir, frame_size}
 var _tex_cache: Dictionary = {}  # "scratch" or "scratch@M" -> Array[Texture2D]
+var _actor_atlases: Dictionary = {}  # character -> clip -> {doc, tex, frame_size, pivot}
+var _idle_quiet: Dictionary = {}  # size -> {doc, tex, frame_size, pivot}
 
 
 func _ready() -> void:
@@ -64,6 +66,8 @@ func _load_all() -> void:
 	# 預熱生命感 2–3 條（同 mood walk／nuzzle／rush）
 	for name in ["scratch", "sneeze", "sniff", "nuzzle", "rush", "walk_happy", "walk_drag"]:
 		frames_of(name)
+	_load_actor_catalogs()
+	_load_idle_quiet()
 
 
 func _json(path: String) -> Dictionary:
@@ -228,11 +232,33 @@ func sfx_cues(name: String) -> Array:
 	return evs
 
 
-func frames_of(name: String, size: String = "") -> Array:
-	# size：S／M／L。未有對應體型圖集就 fallback 去已有 atlas（而家得 L 64），由 Walker 按官方 pivot／尺吋顯示。
-	var key := name if size == "" else "%s@%s" % [name, size]
+func frames_of(name: String, size: String = "", character: String = "") -> Array:
+	# size：S／M／L。character 有就先用 art-fix1 角色圖集（細佬／訪客唔好再用團絨 L）。
+	var key := "%s@%s@%s" % [name, size, character]
 	if _tex_cache.has(key):
 		return _tex_cache[key]
+	if name == "idle_quiet":
+		var sz := size if size in _idle_quiet else ("L" if _idle_quiet.has("L") else "")
+		if sz != "":
+			var rec: Dictionary = _idle_quiet[sz]
+			var arr_q: Array = _frames_from_doc(rec.get("doc", {}), rec.get("tex"), "idle_quiet")
+			# 有啲圖集 frame key 可能唔帶 clip 名前綴
+			if arr_q.is_empty():
+				arr_q = _frames_from_doc(rec.get("doc", {}), rec.get("tex"), name)
+			_tex_cache[key] = arr_q
+			return arr_q
+	if character != "":
+		var who := character
+		if who == "visitor":
+			who = str(actor_spec("visitor").get("form", "snail_postman"))
+		var bag: Dictionary = _actor_atlases.get(who, _actor_atlases.get(character, {}))
+		if bag.has(name):
+			var rec2: Dictionary = bag[name]
+			var arr_a: Array = _frames_from_doc(rec2.get("doc", {}), rec2.get("tex"), name)
+			if arr_a.size():
+				_tex_cache[key] = arr_a
+				return arr_a
+	# size：S／M／L。未有對應體型圖集就 fallback 去已有 atlas（而家得 L 64），由 Walker 按官方 pivot／尺吋顯示。
 	var want := size_px(size) if size != "" else 0.0
 	var arr: Array = []
 	var fallback: Array = []
@@ -334,3 +360,127 @@ func actor_pivot(character: String) -> Vector2:
 
 func actor_frame(character: String) -> float:
 	return float(actor_spec(character).get("frame", size_px(str(actor_spec(character).get("size", "L")))))
+
+
+func _load_actor_catalogs() -> void:
+	# art-fix1：細佬 A1 同訪客各自 scratch／sneeze／sniff，唔再用團絨 L。
+	_actor_atlases.clear()
+	var paths := {
+		"kid": "res://art-pet/sprites/series2/liveliness/clips.json",
+		"A1": "res://art-pet/sprites/series2/liveliness/clips.json",
+		"snail_postman": "res://art-pet/sprites/visitors/m2/liveliness_clips.json",
+		"mushroom_granny": "res://art-pet/sprites/visitors/m2/liveliness_clips.json",
+		"firefly_vendor": "res://art-pet/sprites/visitors/m2/liveliness_clips.json",
+		"visitor": "res://art-pet/sprites/visitors/m2/liveliness_clips.json",
+	}
+	# 亦由 actor_anim 讀 index
+	for aid in actor_anim.get("actors", {}).keys() if actor_anim.get("actors", {}) is Dictionary else []:
+		var spec: Dictionary = actor_spec(str(aid))
+		var idx := str(spec.get("liveliness_index", ""))
+		if idx != "":
+			paths[str(aid)] = idx
+	var loaded: Dictionary = {}
+	for character in paths.keys():
+		var idx_path: String = str(paths[character])
+		if not loaded.has(idx_path):
+			loaded[idx_path] = _json(idx_path)
+		var cat: Dictionary = loaded[idx_path]
+		if cat.is_empty():
+			continue
+		var form := str(actor_spec(character).get("form", character))
+		if character == "kid":
+			form = "A1"
+		if character == "visitor":
+			form = str(actor_spec("visitor").get("form", "snail_postman"))
+		var bag: Dictionary = _actor_atlases.get(character, {})
+		for item in cat.get("items", []):
+			if not (item is Dictionary):
+				continue
+			var iid := str(item.get("id", ""))
+			# 呢份 index 可能包晒三位訪客；只收呢個角色
+			if cat.get("format", "").find("visitor") >= 0 and iid != form and character != "visitor":
+				if iid != character:
+					continue
+			if cat.get("format", "").find("visitor") >= 0 and character == "visitor" and iid != form:
+				continue
+			var clip := str(item.get("clip", ""))
+			var atlas_rel := str(item.get("atlas", ""))
+			if clip == "" or atlas_rel == "":
+				continue
+			var dir := idx_path.get_base_dir() + "/"
+			var doc := _json(dir + atlas_rel)
+			if doc.is_empty():
+				continue
+			var img := str(doc.get("alpha", doc.get("meta", {}).get("image", "") if doc.get("meta", {}) is Dictionary else ""))
+			if img == "":
+				var meta: Dictionary = doc.get("meta", {})
+				img = str(meta.get("image", atlas_rel.replace(".json", ".png")))
+			var tex: Texture2D = load(dir + img) if img != "" and (ResourceLoader.exists(dir + img) or FileAccess.file_exists(dir + img)) else null
+			if tex == null:
+				continue
+			bag[clip] = {
+				"doc": doc,
+				"tex": tex,
+				"frame_size": float(item.get("frameSize", doc.get("frameSize", 48))),
+				"pivot": item.get("pivotPx", doc.get("pivotPx", [24, 45])),
+				"fps": float(item.get("fps", doc.get("fps", 8))),
+				"loop": bool(item.get("loop", doc.get("loop", false))),
+			}
+		_actor_atlases[character] = bag
+	# alias
+	if _actor_atlases.has("kid"):
+		_actor_atlases["A1"] = _actor_atlases["kid"]
+
+
+func _load_idle_quiet() -> void:
+	_idle_quiet.clear()
+	for sz in ["S", "M", "L"]:
+		var path := "res://art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_%s.json" % sz
+		var doc := _json(path)
+		if doc.is_empty():
+			continue
+		var dir := path.get_base_dir() + "/"
+		var img := str(doc.get("alpha", ""))
+		if img == "":
+			var meta: Dictionary = doc.get("meta", {})
+			img = str(meta.get("image", "atlas_radiant_idle_quiet_%s.png" % sz))
+		var tex: Texture2D = load(dir + img) if img != "" else null
+		if tex == null:
+			continue
+		_idle_quiet[sz] = {
+			"doc": doc, "tex": tex,
+			"frame_size": float(doc.get("frameSize", 64)),
+			"pivot": doc.get("pivotPx", [32, 61]),
+			"fps": float(doc.get("fps", 6)),
+			"loop": true,
+		}
+
+
+func _frames_from_doc(doc: Dictionary, tex: Texture2D, clip: String) -> Array:
+	if tex == null or doc.is_empty():
+		return []
+	var frames: Dictionary = doc.get("frames", {})
+	var keys: Array = []
+	var i := 1
+	while frames.has("%s_%02d" % [clip, i]):
+		keys.append("%s_%02d" % [clip, i])
+		i += 1
+	if keys.is_empty():
+		# 有啲圖集 key 就係 clip_01
+		i = 1
+		while frames.has("%s_%02d" % [clip, i]):
+			keys.append("%s_%02d" % [clip, i])
+			i += 1
+	var arr: Array = []
+	for k in keys:
+		var info: Dictionary = frames[k]
+		var fr: Dictionary = info.get("frame", info)
+		var at := AtlasTexture.new()
+		at.atlas = tex
+		at.region = Rect2(float(fr.get("x", 0)), float(fr.get("y", 0)), float(fr.get("w", 48)), float(fr.get("h", 48)))
+		at.filter_clip = true
+		arr.append(at)
+	return arr
+
+
+

@@ -1,5 +1,5 @@
 extends Node3D
-## G0 主場景：3D 花園、自主行寵物／細佬、執屎、最簡 HUD。
+## M1a 主場景：觀察鏡頭、Beehave 自主行為、需要泡泡、一鍵照顧。低檔仍然係完整 3D。
 
 const H1 := "res://art/garden3d/H1/"
 const DIR4 := "res://art/garden3d/dir4/"
@@ -34,9 +34,18 @@ var _hills_mats: Array = []
 var _omni_lights: Array = []  # {node, data}
 var _luts: Dictionary = {}
 var _obs_pitch := 0.0
+enum CamMode { OVERVIEW, FOLLOW }
+var cam_mode := CamMode.OVERVIEW
+var follow_walker: Walker
+var family: FamilyDirector
+var _cam_dist := 580.0
+var _texel_px := 0.0
+var _pet_h_frac := 0.0
+var _visible_w := 0.0
 
 func _ready() -> void:
 	rng.randomize()
+	add_to_group("glimmer_main")
 	var objs_doc := GardenLoader.load_json(H1 + "objects.json")
 	cam_data = GardenLoader.load_json(H1 + "camera.json")
 	var lights := GardenLoader.load_json(H1 + "lights.json")
@@ -52,7 +61,10 @@ func _ready() -> void:
 	_on_quality(QualitySettings.tier)
 	follow_device_clock()
 	Sim.poops_changed.connect(func(_n): _sync_poops())
-	# 第一次進，如果未有便便，放一粒方便 G0 驗「可撳執」
+	# M1a 可玩照顧：新檔如果仲喺蛋就入萌芽（產蛋規則測試仍用 Sim.new_state）。
+	if str(Sim.state.get("stage", "egg")) == "egg" and Sim.has_method("force_stage"):
+		Sim.force_stage("sprout")
+	# 第一次進，如果未有便便，放一粒方便驗「可撳執」
 	if int(Sim.state.get("poops", 0)) == 0:
 		Sim.add_poop()
 
@@ -345,10 +357,10 @@ func _spawn_actors() -> void:
 		visitor.set_feet(feet)
 		var vis_pvt := ArtImporter.actor_pivot("visitor") if ArtImporter else Vector2(24, 45)
 		visitor.setup(_load_strip("res://art/kid/A1_idle.png", 48, 48, 4, "idle", "res://art/kid/A1_walk.png", 6), 1.0, vis_pvt, Vector2(48, 48))
-		visitor.character = "visitor"
+		visitor.character = "snail_postman"
 		visitor.body_size = "M"
-		if visitor.sprite:
-			visitor.set_base_modulate(Color(0.85, 0.78, 1.15))
+		# art-fix1：訪客 liveliness 用自己圖集；walk／idle 暫仍用 A1 條（未有訪客行路圖）。唔再染色以免同蝸牛圖衝突。
+	_setup_gameplay_ai()
 
 
 func _load_dir4() -> Dictionary:
@@ -403,10 +415,7 @@ func _sync_poops() -> void:
 	if poop_root == null:
 		return
 	var want := int(Sim.state.get("poops", 0))
-	while poop_root.get_child_count() > want:
-		poop_root.get_child(poop_root.get_child_count() - 1).queue_free()
-		# queue_free 唔即減 child count；改用立即 free
-	# 清晒重建最穩
+	# 即刻 free（queue_free 唔減 child count，唔好 while queue_free）
 	for c in poop_root.get_children():
 		c.free()
 	var tex: Texture2D = load("res://art/sprites/poop.png")
@@ -490,6 +499,27 @@ func _on_quality(tier: int) -> void:
 	set_time_of_day(_tod)
 
 
+func _cam_cfg() -> Dictionary:
+	if GameData:
+		return GameData.m1a.get("camera", {})
+	return {}
+
+
+func set_cam_follow(w: Walker) -> void:
+	if w == null:
+		cam_mode = CamMode.OVERVIEW
+		follow_walker = null
+		if hud and hud.has_method("set_observing"):
+			hud.set_observing(false)
+	else:
+		cam_mode = CamMode.FOLLOW
+		follow_walker = w
+		if hud and hud.has_method("set_observing"):
+			hud.set_observing(true)
+	_place_cam(0.0)
+	_fit_sky_card()
+
+
 func _place_cam(dt: float) -> void:
 	if cam == null:
 		return
@@ -498,16 +528,17 @@ func _place_cam(dt: float) -> void:
 	sway_t += dt
 	var yaw := 0.0 if rest_look else -A * cos(PI * sway_t / maxf(T, 0.1))
 	var base_pitch := float(cam_data.get("pitchDeg", 30))
-	# 每次由基線重算，唔好把上一鏡（例如遮擋位）嘅俯角累積落去
 	_obs_pitch = maxf(base_pitch, 42.0)
-	# 稍近稍俯，令天空唔超過畫面頂 25%，同時保留樹頂／屋簷
-	var dist := float(cam_data.get("dist", 580)) * 0.92
-	# 遊策 §0.5 觀察模式：寵物企喺畫面由上計 55–60%（中下），腳底下面見到地；跟拍都保持同一構圖。
-	# rest_look 只停 sway，仍然跟寵物構圖（QA 截圖要用呢個規格）。
+	var cfg := _cam_cfg()
 	var desired := cam_target
-	if pet:
-		var ppos := pet.global_position
-		desired = Vector3(ppos.x, 42.0, ppos.z - 36.0)
+	var look: Variant = cfg.get("overview_look", [0, 24, 16])
+	if look is Array and look.size() >= 3:
+		desired = Vector3(float(look[0]), float(look[1]), float(look[2]))
+	var subject: Walker = pet
+	if cam_mode == CamMode.FOLLOW and follow_walker and is_instance_valid(follow_walker):
+		subject = follow_walker
+		var ppos := subject.global_position
+		desired = Vector3(ppos.x, 28.0, ppos.z)
 	var damp := float(cam_data.get("followDamping", 2.0))
 	if rest_look:
 		follow_pos = desired
@@ -516,8 +547,23 @@ func _place_cam(dt: float) -> void:
 		follow_pos = follow_pos.lerp(desired, k)
 	else:
 		follow_pos = desired
+	var tex_scale := int(cfg.get("follow_texel_scale", 3) if cam_mode == CamMode.FOLLOW else cfg.get("overview_texel_scale", 2))
+	var dist_tex := _dist_for_texel(float(tex_scale))
+	var dist := dist_tex
+	if cam_mode == CamMode.OVERVIEW:
+		var dist_g := _dist_for_garden_width(float(cfg.get("garden_width", 256)))
+		# 預設：花園填滿畫面闊。窄屏可能只能 ×1；唔好為咗 ×2 切走花園。
+		dist = dist_g
+	_cam_dist = dist
 	_apply_cam_offset(yaw, _obs_pitch, dist)
-	_refine_observation(yaw, dist)
+	if cam_mode == CamMode.FOLLOW:
+		_refine_observation(yaw, dist)
+		_ensure_follow_pet_min(yaw)
+	else:
+		# 全景：先花園填滿，再保證寵物 ≥10%，先至考慮整數倍
+		_ensure_overview_pet_min(yaw)
+	_snap_integer_dist(yaw, tex_scale)
+	_measure_cam_metrics()
 
 
 func _process(dt: float) -> void:
@@ -536,19 +582,37 @@ func _unhandled_input(event: InputEvent) -> void:
 			_try_tap(st.position)
 
 
+func _ray_area(pos: Vector2, mask: int) -> Area3D:
+	if cam == null:
+		return null
+	var from := cam.project_ray_origin(pos)
+	var dir := cam.project_ray_normal(pos)
+	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 4000.0)
+	q.collide_with_areas = true
+	q.collide_with_bodies = false
+	q.collision_mask = mask
+	var hit := get_world_3d().direct_space_state.intersect_ray(q)
+	if hit and hit.get("collider") is Area3D:
+		return hit["collider"]
+	return null
+
+
 func _try_tap(pos: Vector2) -> void:
 	if cam == null:
 		return
-	var from := cam.project_ray_origin(pos)
-	var dir := cam.project_ray_normal(pos)
-	var to := from + dir * 4000.0
-	var q := PhysicsRayQueryParameters3D.create(from, to)
-	q.collide_with_areas = true
-	q.collide_with_bodies = false
-	q.collision_mask = 2
-	var hit := get_world_3d().direct_space_state.intersect_ray(q)
-	if hit and hit.get("collider") is Area3D:
-		_clean_poop(hit["collider"])
+	var pet_hit := _ray_area(pos, 4)
+	if pet_hit:
+		var w := pet_hit.get_parent()
+		if w is Walker:
+			_on_pet_tapped(w)
+			return
+	var poop_hit := _ray_area(pos, 2)
+	if poop_hit:
+		_clean_poop(poop_hit)
+		return
+	# 撳空地：跟拍中返全景
+	if cam_mode == CamMode.FOLLOW:
+		set_cam_follow(null)
 
 
 
@@ -624,6 +688,12 @@ func qa_park_actors() -> void:
 
 
 func qa_place_pet(where: String) -> void:
+	# 截圖預設用總覽；follow_* 先跟拍
+	if where.begins_with("follow"):
+		pass
+	else:
+		if cam_mode != CamMode.OVERVIEW:
+			set_cam_follow(null)
 	qa_park_actors()
 	if pet == null:
 		return
@@ -933,7 +1003,13 @@ func _refine_observation(yaw: float, dist: float) -> void:
 
 
 func qa_framing() -> Dictionary:
-	var out := {"pet_y": -1.0, "sky_y": -1.0, "ok": false, "pitch": _obs_pitch}
+	_measure_cam_metrics()
+	var cfg := _cam_cfg()
+	var out := {
+		"pet_y": -1.0, "sky_y": -1.0, "ok": false, "pitch": _obs_pitch,
+		"mode": "follow" if cam_mode == CamMode.FOLLOW else "overview",
+		"pet_h": _pet_h_frac, "texel": _texel_px, "visible_w": _visible_w, "dist": _cam_dist,
+	}
 	if cam == null or pet == null:
 		return out
 	var vp := get_viewport().get_visible_rect().size
@@ -941,5 +1017,210 @@ func qa_framing() -> Dictionary:
 		return out
 	out["pet_y"] = cam.unproject_position(pet.global_position).y / vp.y
 	out["sky_y"] = cam.unproject_position(Vector3(follow_pos.x, 80.0, -380.0)).y / vp.y
-	out["ok"] = float(out["pet_y"]) >= 0.55 and float(out["pet_y"]) <= 0.60 and float(out["sky_y"]) <= 0.25
+	if cam_mode == CamMode.FOLLOW:
+		out["ok"] = (
+			float(out["pet_y"]) >= float(cfg.get("pet_y_frac_min", 0.55))
+			and float(out["pet_y"]) <= float(cfg.get("pet_y_frac_max", 0.60))
+			and float(out["sky_y"]) <= float(cfg.get("sky_frac_max", 0.25))
+			and _pet_h_frac >= float(cfg.get("follow_pet_min_frac", 0.20)) - 0.02
+		)
+	else:
+		var want_w := float(cfg.get("garden_width", 256))
+		out["ok"] = (
+			_pet_h_frac >= float(cfg.get("overview_pet_min_frac", 0.10)) - 0.01
+			and _visible_w > 0.0 and _visible_w <= want_w * 1.15
+			and _visible_w >= want_w * 0.80
+			and absf(_texel_px - round(_texel_px)) < 0.25
+			and round(_texel_px) >= 1.0
+		)
 	return out
+
+
+func _setup_gameplay_ai() -> void:
+	family = FamilyDirector.new()
+	family.name = "FamilyDirector"
+	add_child(family)
+	for pair in [[pet, "tuanrong"], [kid, "kid"], [visitor, "snail_postman"]]:
+		var w: Walker = pair[0]
+		var id := str(pair[1])
+		if w == null:
+			continue
+		var brain := PetBrain.new()
+		brain.name = "PetBrain"
+		w.add_child(brain)
+		brain.setup(w, id, family)
+		if family:
+			family.register(w, brain)
+		var bubble := NeedBubble.new()
+		bubble.name = "NeedBubble"
+		w.add_child(bubble)
+		bubble.attach(w)
+	# 文靜角色休息時可用坐低 idle_quiet（art-fix1）
+	if Personality and pet and Personality.primary_type("tuanrong") == "文靜":
+		pass
+
+
+func _on_pet_tapped(w: Walker) -> void:
+	set_cam_follow(w)
+	var brain: Node = w.get_node_or_null("PetBrain")
+	if brain and brain.has_method("notify_tap"):
+		brain.notify_tap("pet")
+	if AudioManager:
+		AudioManager.play("sfx_ui8_btn_press_a")
+
+
+func pet_all_react() -> void:
+	for w in [pet, kid, visitor]:
+		if w == null:
+			continue
+		var brain: Node = w.get_node_or_null("PetBrain")
+		if brain and brain.has_method("notify_tap"):
+			brain.notify_tap("pet")
+
+
+func _dist_for_texel(texel_px: float) -> float:
+	var vp := get_viewport().get_visible_rect().size
+	if cam == null or vp.y < 8.0:
+		return float(cam_data.get("dist", 580))
+	var vfov := deg_to_rad(cam.fov)
+	return (vp.y * 0.5) / (tan(vfov * 0.5) * maxf(texel_px, 0.5))
+
+
+func _dist_for_garden_width(want_w: float) -> float:
+	var vp := get_viewport().get_visible_rect().size
+	if cam == null or vp.y < 8.0 or vp.x < 8.0:
+		return float(cam_data.get("dist", 580))
+	var aspect := vp.x / vp.y
+	var vfov := deg_to_rad(cam.fov)
+	var hfov := 2.0 * atan(tan(vfov * 0.5) * aspect)
+	return (maxf(want_w, 8.0) * 0.5) / tan(hfov * 0.5)
+
+
+func _ensure_follow_pet_min(yaw: float) -> void:
+	if cam == null or pet == null or cam_mode != CamMode.FOLLOW:
+		return
+	_measure_cam_metrics()
+	var need := float(_cam_cfg().get("follow_pet_min_frac", 0.20))
+	if _pet_h_frac >= need - 0.002 or _pet_h_frac <= 0.001:
+		return
+	var ratio := _pet_h_frac / need
+	_cam_dist = clampf(_cam_dist * ratio, 80.0, 1600.0)
+	_apply_cam_offset(yaw, _obs_pitch, _cam_dist)
+	_refine_observation(yaw, _cam_dist)
+	_measure_cam_metrics()
+
+
+func _ensure_overview_pet_min(yaw: float) -> void:
+	if cam == null or pet == null or cam_mode != CamMode.OVERVIEW:
+		return
+	_measure_cam_metrics()
+	var need := float(_cam_cfg().get("overview_pet_min_frac", 0.10))
+	if _pet_h_frac >= need - 0.002 or _pet_h_frac <= 0.001:
+		return
+	var ratio := _pet_h_frac / need
+	_cam_dist = clampf(_cam_dist * ratio, 80.0, 1600.0)
+	_apply_cam_offset(yaw, _obs_pitch, _cam_dist)
+	_measure_cam_metrics()
+
+
+func _snap_integer_dist(yaw: float, prefer: int) -> void:
+	if cam == null or pet == null:
+		return
+	_measure_cam_metrics()
+	var target := float(prefer)
+	if _texel_px <= 0.1:
+		return
+	# 拉近／拉遠到最接近嘅整數倍
+	var snapped := maxf(1.0, round(_texel_px))
+	if cam_mode == CamMode.FOLLOW:
+		snapped = maxf(float(prefer), 1.0)
+		if _texel_px >= 2.5 and prefer <= 3:
+			snapped = 3.0
+		elif _texel_px >= 1.5:
+			snapped = maxf(2.0, float(prefer) if prefer <= 2 else 2.0)
+	else:
+		# 總覽：只有喺寵物仍 ≥10%、花園仍見 ≥80% 先好跟整數倍
+		var want_w := float(_cam_cfg().get("garden_width", 256))
+		var need := float(_cam_cfg().get("overview_pet_min_frac", 0.10))
+		var vis2 := _visible_w * (_texel_px / snapped) if _texel_px > 0.01 else 0.0
+		var pet2 := _pet_h_frac * (snapped / _texel_px) if _texel_px > 0.01 else 0.0
+		if vis2 < want_w * 0.80 or pet2 < need - 0.005:
+			return
+	var ratio := _texel_px / snapped
+	if absf(ratio - 1.0) < 0.04:
+		return
+	_cam_dist = clampf(_cam_dist * ratio, 80.0, 1600.0)
+	_apply_cam_offset(yaw, _obs_pitch, _cam_dist)
+	if cam_mode == CamMode.FOLLOW:
+		_refine_observation(yaw, _cam_dist)
+
+
+func _measure_cam_metrics() -> void:
+	_texel_px = 0.0
+	_pet_h_frac = 0.0
+	_visible_w = 0.0
+	if cam == null or pet == null:
+		return
+	var vp := get_viewport().get_visible_rect().size
+	if vp.y < 8.0:
+		return
+	var feet := pet.global_position
+	if cam.is_position_behind(feet):
+		return
+	var up := feet + Vector3(0, 1, 0)
+	_texel_px = absf(cam.unproject_position(up).y - cam.unproject_position(feet).y)
+	var hh := pet.world_height() if pet.has_method("world_height") else 64.0
+	var head := feet + Vector3(0, hh, 0)
+	_pet_h_frac = absf(cam.unproject_position(head).y - cam.unproject_position(feet).y) / vp.y
+	# 可見闊（睇住點所在、垂直視線平面）
+	var mid := Vector2(vp.x * 0.5, vp.y * 0.5)
+	var left := Vector2(0.0, vp.y * 0.5)
+	var right := Vector2(vp.x, vp.y * 0.5)
+	var p0 := _ray_at_plane(mid)
+	var pl := _ray_at_plane(left)
+	var pr := _ray_at_plane(right)
+	if p0 != Vector3.INF and pl != Vector3.INF and pr != Vector3.INF:
+		_visible_w = pl.distance_to(pr)
+
+
+func _ray_at_plane(screen: Vector2) -> Vector3:
+	# 同鏡頭望向平面（經過 follow_pos、法線＝鏡頭向前）相交
+	if cam == null:
+		return Vector3.INF
+	var origin := cam.project_ray_origin(screen)
+	var dir := cam.project_ray_normal(screen)
+	var nrm := -cam.global_transform.basis.z.normalized()
+	var denom := dir.dot(nrm)
+	if absf(denom) < 0.0001:
+		return Vector3.INF
+	var t := (follow_pos - origin).dot(nrm) / denom
+	if t < 0.0:
+		return Vector3.INF
+	return origin + dir * t
+
+
+
+func qa_follow_pet() -> void:
+	if pet:
+		set_cam_follow(pet)
+
+
+func qa_overview() -> void:
+	set_cam_follow(null)
+	qa_place_pet("default")
+
+
+func qa_force_needs(hunger: float = 100.0, mood: float = 100.0, clean: float = 100.0, energy: float = 100.0) -> void:
+	if Sim == null:
+		return
+	var n: Dictionary = Sim.state.get("needs", {})
+	n["hunger"] = hunger
+	n["mood"] = mood
+	n["clean"] = clean
+	n["energy"] = energy
+	Sim.state["needs"] = n
+	Sim.state_changed.emit()
+
+
+func qa_family(kind: String) -> bool:
+	return family != null and family.force(kind)

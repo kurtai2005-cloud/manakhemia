@@ -35,6 +35,18 @@ var BRIGHT_CQ := 30.0
 var SOFT_CQ := 20.0
 var AHEAD_H := 24.0
 
+# 照顧回升（data/sim.json care；舊 data.js PARAMS）
+var FEED_SNACK := 20.0
+var FEED_MEAL := 40.0
+var FEED_SOUP := 20.0
+var FOOD_MOOD_BONUS := 3.0
+var FEED_REFUSE_AT := 90.0
+var PLAY_TEASE := 15.0
+var PLAY_ENERGY_COST := 3.0
+var RINSE := 50.0
+var PAT_MOOD := 15.0
+signal care_done(act: String, result: Dictionary)
+
 signal state_changed()
 signal poops_changed(count: int)
 signal stage_changed(stage: String)
@@ -113,6 +125,17 @@ func _boot_params() -> void:
 	BRIGHT_CQ = float(br.get("bright_cq", BRIGHT_CQ))
 	SOFT_CQ = float(br.get("soft_cq", SOFT_CQ))
 
+	var care: Dictionary = p.get("care", {})
+	FEED_SNACK = float(care.get("feed_snack", FEED_SNACK))
+	FEED_MEAL = float(care.get("feed_meal", FEED_MEAL))
+	FEED_SOUP = float(care.get("feed_soup", FEED_SOUP))
+	FOOD_MOOD_BONUS = float(care.get("food_mood_bonus_warm", FOOD_MOOD_BONUS))
+	FEED_REFUSE_AT = float(care.get("feed_refuse_at", FEED_REFUSE_AT))
+	PLAY_TEASE = float(care.get("play_tease", PLAY_TEASE))
+	PLAY_ENERGY_COST = float(care.get("play_energy_cost", PLAY_ENERGY_COST))
+	RINSE = float(care.get("rinse", RINSE))
+	PAT_MOOD = float(care.get("pat_mood", PAT_MOOD))
+
 
 func new_state(now_ms: int, seed: int = 0) -> Dictionary:
 	return {
@@ -140,6 +163,7 @@ func new_state(now_ms: int, seed: int = 0) -> Dictionary:
 		"save_resets": 0,
 		"save_reset_at": 0,
 		"auto_moon_sleep": true,
+		"personalities": {},
 	}
 
 
@@ -457,3 +481,80 @@ func stage_zh(st: String = "") -> String:
 	if bool(state.get("fade_ready", false)):
 		zh += " · 準備化光"
 	return zh
+
+
+func _day_key(ms: int = 0) -> String:
+	if ms == 0:
+		ms = TimeService.now_ms() if TimeService else 0
+	var d: Dictionary = TimeService.local_dict(ms) if TimeService else {}
+	return "%04d-%02d-%02d" % [int(d.get("year", 0)), int(d.get("month", 0)), int(d.get("day", 0))]
+
+
+func _apply_need(n: Dictionary, key: String, delta: float) -> float:
+	var before := float(n.get(key, 0))
+	n[key] = clampf(before + delta, 0.0, 100.0)
+	return float(n[key]) - before
+
+
+func feed(food: String = "meal") -> Dictionary:
+	var st := str(state.get("stage", "egg"))
+	if st == "egg":
+		return {"ok": false, "reason": "egg", "act": "feed"}
+	if bool(state.get("sleeping", false)):
+		return {"ok": false, "reason": "sleeping", "act": "feed"}
+	var n: Dictionary = state.get("needs", {})
+	if float(n.get("hunger", 0)) >= FEED_REFUSE_AT:
+		return {"ok": false, "reason": "full", "act": "feed", "hunger": float(n.get("hunger", 0))}
+	var add := FEED_MEAL
+	var mood_add := FOOD_MOOD_BONUS
+	if food == "snack":
+		add = FEED_SNACK
+		mood_add = 0.0
+	elif food == "soup":
+		add = FEED_SOUP
+	var dh := _apply_need(n, "hunger", add)
+	var dm := _apply_need(n, "mood", mood_add)
+	state["needs"] = n
+	if Personality:
+		Personality.apply_care_act("tuanrong", "eat_together" if food != "snack" else "feed", _day_key())
+	_dirty = true
+	var rec := {"ok": true, "act": "feed", "food": food, "hunger": dh, "mood": dm}
+	_push_ev(state, {"type": "fed", "food": food})
+	state_changed.emit()
+	care_done.emit("feed", rec)
+	return rec
+
+
+func pat() -> Dictionary:
+	var st := str(state.get("stage", "egg"))
+	if st == "egg":
+		return {"ok": false, "reason": "egg", "act": "pat"}
+	var n: Dictionary = state.get("needs", {})
+	var dm := _apply_need(n, "mood", PAT_MOOD)
+	state["needs"] = n
+	if Personality:
+		Personality.apply_care_act("tuanrong", "pat", _day_key())
+	_dirty = true
+	var rec := {"ok": true, "act": "pat", "mood": dm}
+	_push_ev(state, {"type": "pat"})
+	state_changed.emit()
+	care_done.emit("pat", rec)
+	return rec
+
+
+func force_stage(st: String) -> void:
+	_enter_stage(state, st)
+	_dirty = true
+	state_changed.emit()
+
+
+func clean_all() -> Dictionary:
+	var n := 0
+	var guard := maxi(int(state.get("poops", 0)), 0) + 2
+	while n < guard and clean_one():
+		n += 1
+	var rec := {"ok": n > 0, "act": "clean", "count": n}
+	if n > 0:
+		care_done.emit("clean", rec)
+	return rec
+

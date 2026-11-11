@@ -1,0 +1,193 @@
+{
+ "format": "m2.petclip.atlas/1",
+ "form": "radiant",
+ "size": "M",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "clip": "idle_quiet",
+ "zh": "招牌·文靜",
+ "frames": {
+  "idle_quiet_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   }
+  },
+  "idle_quiet_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   }
+  },
+  "idle_quiet_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     31
+    ],
+    "eyeR": [
+     28,
+     31
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   }
+  },
+  "idle_quiet_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   }
+  },
+  "idle_quiet_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   }
+  },
+  "idle_quiet_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     32
+    ],
+    "eyeR": [
+     28,
+     32
+    ],
+    "mouth": [
+     24,
+     37
+    ]
+   }
+  }
+ },
+ "fps": 6,
+ "loop": true,
+ "frameCount": 6,
+ "kind": "idle",
+ "personality": "quiet",
+ "pose": "sit",
+ "poseNote": "文靜改為坐低收腳（Kurt 2026-11-11 批坐低草稿）",
+ "meta": {
+  "image": "atlas_radiant_idle_quiet_M.png",
+  "normal": "atlas_radiant_idle_quiet_M_n.png",
+  "emissive": "atlas_radiant_idle_quiet_M_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "form": "radiant",
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   45
+  ]
+ }
+}

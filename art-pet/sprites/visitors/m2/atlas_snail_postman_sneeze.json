@@ -1,0 +1,167 @@
+{
+ "format": "art_fix1.visitor.liveliness.atlas/1",
+ "frameSize": 48,
+ "pivotPx": [
+  22,
+  45
+ ],
+ "frames": {
+  "sneeze_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     31,
+     31
+    ],
+    "eyeR": [
+     37,
+     31
+    ],
+    "mouth": [
+     34,
+     35
+    ]
+   }
+  },
+  "sneeze_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     30,
+     30
+    ],
+    "eyeR": [
+     36,
+     30
+    ],
+    "mouth": [
+     34,
+     34
+    ]
+   }
+  },
+  "sneeze_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     28,
+     30
+    ],
+    "eyeR": [
+     34,
+     30
+    ],
+    "mouth": [
+     32,
+     34
+    ]
+   }
+  },
+  "sneeze_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     29,
+     31
+    ],
+    "eyeR": [
+     35,
+     31
+    ],
+    "mouth": [
+     32,
+     35
+    ]
+   }
+  },
+  "sneeze_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 22,
+    "y": 45
+   },
+   "anchors": {
+    "eyeL": [
+     30,
+     31
+    ],
+    "eyeR": [
+     36,
+     31
+    ],
+    "mouth": [
+     34,
+     35
+    ]
+   }
+  }
+ },
+ "frameCount": 5,
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "meta": {
+  "image": "atlas_snail_postman_sneeze.png",
+  "normal": "atlas_snail_postman_sneeze_n.png",
+  "emissive": "atlas_snail_postman_sneeze_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "frameSize": 48,
+  "pivotPx": [
+   22,
+   45
+  ]
+ },
+ "id": "snail_postman",
+ "zh": "蝸牛郵差",
+ "clip": "sneeze",
+ "clip_zh": "噴嚏",
+ "fps": 8,
+ "loop": false,
+ "size": "M",
+ "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
+ "note": "蝸牛郵差 外形／色；48px；pivot [22, 45]；時機同團絨 liveliness。"
+}

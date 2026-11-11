@@ -1,0 +1,193 @@
+{
+ "format": "art_fix1.visitor.liveliness.atlas/1",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  44
+ ],
+ "frames": {
+  "scratch_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   },
+   "anchors": {
+    "eyeL": [
+     21,
+     25
+    ],
+    "eyeR": [
+     27,
+     25
+    ],
+    "mouth": [
+     24,
+     29
+    ]
+   }
+  },
+  "scratch_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     24
+    ],
+    "eyeR": [
+     26,
+     24
+    ],
+    "mouth": [
+     24,
+     28
+    ]
+   }
+  },
+  "scratch_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     24
+    ],
+    "eyeR": [
+     26,
+     24
+    ],
+    "mouth": [
+     24,
+     28
+    ]
+   }
+  },
+  "scratch_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     24
+    ],
+    "eyeR": [
+     26,
+     24
+    ],
+    "mouth": [
+     24,
+     28
+    ]
+   }
+  },
+  "scratch_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   },
+   "anchors": {
+    "eyeL": [
+     20,
+     24
+    ],
+    "eyeR": [
+     26,
+     24
+    ],
+    "mouth": [
+     24,
+     28
+    ]
+   }
+  },
+  "scratch_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 44
+   },
+   "anchors": {
+    "eyeL": [
+     21,
+     25
+    ],
+    "eyeR": [
+     26,
+     25
+    ],
+    "mouth": [
+     24,
+     29
+    ]
+   }
+  }
+ },
+ "frameCount": 6,
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "meta": {
+  "image": "atlas_firefly_vendor_scratch.png",
+  "normal": "atlas_firefly_vendor_scratch_n.png",
+  "emissive": "atlas_firefly_vendor_scratch_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   44
+  ]
+ },
+ "id": "firefly_vendor",
+ "zh": "螢火小販",
+ "clip": "scratch",
+ "clip_zh": "抓癢",
+ "fps": 8,
+ "loop": false,
+ "size": "M",
+ "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
+ "note": "螢火小販 外形／色；48px；pivot [24, 44]；時機同團絨 liveliness。"
+}

@@ -151,6 +151,22 @@ func resolve_play(hook: Variant, actor: Object = null) -> Dictionary:
 	return out
 
 
+
+func bus_for(hook: Variant) -> String:
+	var h := "" if hook == null else str(hook)
+	if h.begins_with("sfx_ui") or h.find("_btn_") >= 0 or h.find("sfx_ui8") >= 0:
+		return "UI"
+	if h.begins_with("bgm_"):
+		return "BGM"
+	if h.begins_with("amb_"):
+		return "AMB"
+	if h.begins_with("sfx_pet") or is_voiced(h) or is_generic(h):
+		return "Pet"
+	if h.find("sleep_breath") >= 0 or h.find("sfx_sleep") >= 0:
+		return "Pet"
+	return "SFX"
+
+
 func play(hook: Variant, actor: Object = null) -> Dictionary:
 	var rec := resolve_play(hook, actor)
 	# 寵物聲線最短間隔 4 s（grumpy 例外）；事件／UI／腳步／抓癢唔受呢條限
@@ -179,6 +195,7 @@ func play(hook: Variant, actor: Object = null) -> Dictionary:
 	var jitter := 1.0
 	if is_generic(str(rec["hook"])) or rec.get("fallback", false):
 		jitter = randf_range(0.95, 1.05)
+	p.bus = bus_for(rec.get("hook", hook))
 	p.pitch_scale = float(rec["pitch"]) * jitter
 	rec["pitch_played"] = p.pitch_scale
 	last_play = rec
@@ -204,7 +221,7 @@ func start_loop(hook: String, bus: String = "SFX") -> void:
 	_ensure_loop(st)
 	var p: AudioStreamPlayer = _loop_players.get(hook, null)
 	if p == null:
-		p = _make_player("LOOP_" + hook, bus)
+		p = _make_player("LOOP_" + hook, bus if bus != "SFX" else bus_for(hook))
 		_loop_players[hook] = p
 	p.stream = st
 	p.pitch_scale = 1.0
