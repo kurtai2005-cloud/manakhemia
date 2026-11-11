@@ -8,10 +8,13 @@ extends GutTest
 
 func before_each() -> void:
 	AudioManager.muted = false
-	AudioManager.appreciate_muted = false
-	AudioManager.clear_play_log()
-	AudioManager._scene_bgm = ""
-	AudioManager._bgm_band = ""
+	if "appreciate_muted" in AudioManager:
+		AudioManager.appreciate_muted = false
+	if AudioManager.has_method("clear_play_log"):
+		AudioManager.clear_play_log()
+	if "_scene_bgm" in AudioManager:
+		AudioManager._scene_bgm = ""
+		AudioManager._bgm_band = ""
 
 
 func test_footstep_emits_once() -> void:
@@ -29,14 +32,14 @@ func test_footstep_emits_once() -> void:
 	w._step_cool = 0.0
 	AudioManager.clear_play_log()
 	w._maybe_footstep(6)
-	var n := AudioManager.hook_count("sfx_pet_step_hop")
+	var n: int = AudioManager.hook_count("sfx_pet_step_hop")
 	gut.p("footstep plays=%d" % n)
 	assert_eq(n, 1, "one land frame plays the step hook exactly once")
 	w.free()
 
 
 func test_different_tempo_starts_at_zero() -> void:
-	AudioManager.sync_bgm("noon", true)
+	AudioManager.call("sync_bgm", "noon", true)
 	var care: AudioStreamPlayer = AudioManager._bgm_a if AudioManager._bgm_front else AudioManager._bgm_b
 	assert_true(care.playing and care.stream != null, "care BGM playing")
 	care.seek(4.0)
@@ -192,6 +195,116 @@ func _push_id(ids: PackedStringArray, id: String) -> void:
 	if id == "" or ids.has(id):
 		return
 	ids.append(id)
+
+
+func test_m1b_fire_sfx_plays_once() -> void:
+	# Walker._fire_sfx 同時 emit 同 play。通用 cue 兩次都出聲。
+	var w := Walker.new()
+	w.character = "tuanrong"
+	w.body_size = "L"
+	add_child(w)
+	w.play_live_clip("scratch")
+	w._sfx_fired.clear()
+	var i0 := int(AudioManager._pool_i)
+	w._fire_sfx(2)
+	var n: int = int(AudioManager._pool_i) - i0
+	gut.p("scratch plays=%d" % n)
+	assert_eq(n, 1, "one scratch cue plays once")
+	w.frame_i = 0
+	w._step_cool = 0.0
+	var i1 := int(AudioManager._pool_i)
+	w._maybe_footstep(6)
+	assert_eq(int(AudioManager._pool_i) - i1, 1, "one footstep plays once")
+	w.free()
+
+
+func test_m1b_btn_randomizer_and_shop_sound() -> void:
+	var i0 := int(AudioManager._pool_i)
+	AudioManager.play("sfx_ui8_btn_press_a")
+	var p: AudioStreamPlayer = AudioManager._sfx_pool[i0 % AudioManager._sfx_pool.size()]
+	assert_true(p.stream is AudioStreamRandomizer, "press goes through an a/b randomizer")
+	if p.stream is AudioStreamRandomizer:
+		assert_eq((p.stream as AudioStreamRandomizer).playback_mode, AudioStreamRandomizer.PLAYBACK_RANDOM_NO_REPEATS, "no immediate repeat")
+	var book := _fn_body("res://scripts/Hud.gd", "func _refresh_book", "func _toggle_book")
+	assert_true(book.find("AudioManager.play") >= 0, "furniture shop buttons play a sound")
+	var close := _fn_body("res://scripts/Hud.gd", "var close := _btn(\"關閉\")", "var rec := _btn")
+	assert_true(close.find("AudioManager.play") >= 0, "codex close button plays a sound")
+
+
+func test_m1b_hunt_fail_plays_error() -> void:
+	var hud: Node = load("res://scripts/Hud.gd").new()
+	add_child(hud)
+	var i0 := int(AudioManager._pool_i)
+	hud._one_tap("hunt")
+	gut.p("hunt fail last=%s" % str(AudioManager.last_play.get("hook", "")))
+	assert_true(str(AudioManager.last_play.get("hook", "")).find("sfx_ui8_error") >= 0, "failed hunt plays error")
+	assert_eq(int(AudioManager._pool_i) - i0, 1, "failed hunt does not also play a press")
+	hud.free()
+
+
+func test_m1b_stop_loop_fades_and_hunt_bar() -> void:
+	AudioManager.muted = false
+	AudioManager.start_loop("sfx_pet_sleep_breath_loop")
+	var lp: AudioStreamPlayer = AudioManager._loop_players.get("sfx_pet_sleep_breath_loop", null)
+	AudioManager.stop_loop("sfx_pet_sleep_breath_loop", 0.6)
+	assert_true(lp != null and lp.playing, "stop_loop keeps playing during the fade")
+	var src := FileAccess.get_file_as_string("res://scripts/autoload/AudioManager.gd")
+	var body := _fn_body_text(src, "func sync_bgm", "func _process")
+	assert_true(body.find("BAR_SEC") < 0 or body.find("2.222") >= 0 or body.find("hunt") >= 0, "sync_bgm does not quantize hunt with the 68 BPM bar")
+
+
+func test_m1b_feature_signals_connected() -> void:
+	var src := FileAccess.get_file_as_string("res://scripts/autoload/AudioManager.gd")
+	assert_true(src.find("dispatched.connect") >= 0, "WorkSystem.dispatched reaches AudioManager")
+	assert_true(src.find("hunt_phase.connect") >= 0 or src.find("hunt_started.connect") >= 0, "Hunt signals reach AudioManager")
+	assert_true(src.find("unlocked.connect") >= 0, "CollectionSystem.unlocked reaches AudioManager")
+
+
+func test_m1b_boot_unlock_silent() -> void:
+	var i0 := int(AudioManager._pool_i)
+	CollectionSystem.ensure()
+	CollectionSystem.unlock_form("m1b_boot_probe")
+	CollectionSystem.unlock_kid("BOOTY")
+	assert_eq(int(AudioManager._pool_i) - i0, 0, "boot unlocks play no sfx")
+	assert_true(str(AudioManager.last_play.get("hook", "")).find("sfx_codex_new_entry") < 0, "no sfx_codex_new_entry")
+
+
+func test_m1b_hunt_catch_sound() -> void:
+	var src := FileAccess.get_file_as_string("res://scripts/HuntField.gd")
+	assert_true(src.find("sfx_mg_miss") < 0, "hunt never names sfx_mg_miss")
+	assert_true(src.find("sfx_mg_catch") >= 0, "catch plays sfx_mg_catch")
+
+
+func test_m1b_need_warning_rules() -> void:
+	AudioManager.reset_need_warning_cooldowns()
+	AudioManager.appreciate_muted = true
+	var muted: Dictionary = AudioManager.play_need_warning("tuanrong")
+	assert_false(bool(muted.get("played", true)), "欣賞 mutes the warning")
+	assert_eq(str(muted.get("reason", "")), "appreciate", "reason is appreciate")
+	AudioManager.appreciate_muted = false
+	AudioManager.reset_need_warning_cooldowns()
+	var a: Dictionary = AudioManager.play_need_warning("tuanrong")
+	assert_true(bool(a.get("played", false)), "first warning plays")
+	var b: Dictionary = AudioManager.play_need_warning("kid")
+	assert_eq(str(b.get("reason", "")), "same_moment", "two bubbles one sound")
+	AudioManager._need_warn_global_at = -999.0
+	var c: Dictionary = AudioManager.play_need_warning("tuanrong")
+	assert_eq(str(c.get("reason", "")), "pet_cooldown", "same pet waits 8s")
+	var p: AudioStreamPlayer = AudioManager._sfx_pool[(int(AudioManager._pool_i) - 1) % 6]
+	assert_true(p.stream is AudioStreamRandomizer, "warning a/b uses the no-repeat randomizer")
+	AudioManager.appreciate_muted = false
+
+
+func _fn_body(path: String, start: String, end: String) -> String:
+	return _fn_body_text(FileAccess.get_file_as_string(path), start, end)
+
+
+func _fn_body_text(src: String, start: String, end: String) -> String:
+	var i := src.find(start)
+	var j := src.find(end, i + start.length()) if i >= 0 else -1
+	if i < 0 or j < 0:
+		return ""
+	return src.substr(i, j - i)
 
 
 func _id_has_file(id: String) -> bool:

@@ -56,6 +56,26 @@
 - 浮動窗同遊戲狀態的完整同步，同 6b RealWorld、6d Share，呢份未有。M1b 只把 snapshot 寫去 `user://overlay_snapshot.json`（測試過）。負責：遊程。
 - 冇落雨。`Main` 冇 `set_rain`。四個直向只有日、黃昏、夜。負責：遊程。
 
+## Audio wiring
+
+對住 `2c676c6e` 的碼同一次 headless 探測。GUT 在 `test/qa/test_audio_wiring.gd` 的 `test_m1b_*`：8 項裡 2 過（開局解鎖、需求警告），其餘失敗，同下面的 FAIL 一致。
+
+1. **FAIL，P2。** `Walker.gd:247-249`：`_fire_sfx` 先 `sfx_cue.emit`，再自己 `AudioManager.play`。`AudioManager.gd:54-55` 已經把 `sfx_cue` 接到 `_on_sfx_cue`，那裡再 `play` 一次（`:213-217`）。抓癢 cue（frame 2）聲池 +2，兩次都出聲。噴嚏只聽到一次，因為有聲線的 4 秒閘把第二次收成靜音，唔係只播一次。腳步 `Walker.gd:318-321` 同一個寫法，聲池 +2。修法：`_fire_sfx` 同 `_maybe_footstep` 只 emit，唔好再直接 `play`。負責：遊音。
+
+2. **FAIL，P2。** 掣的字串寫死 `sfx_ui8_btn_press_a`（圖鑑開鍵 `Hud.gd:67`，一鍵列 `Hud.gd:504`，另外十處）。`play()` 會剝 `_a` 再交 `AudioStreamRandomizer`，模式係 `PLAYBACK_RANDOM_NO_REPEATS`（`AudioManager.gd:346-348`），所以聽到的唔係釘死 `_a`。`last_play.stream` 仍然永遠記 `_a`，睇唔到抽中邊條。圖鑑「關閉」`Hud.gd:336-341` 冇聲。商店每一行 `Hud.gd:390-405` 冇聲。「一鍵擺家具」`Hud.gd:343-345` 有聲。修法：商店列同關閉掣播共用的 `sfx_ui8_btn_press`，唔好寫死 `_a`。負責：遊音。
+
+3. **FAIL，P2。** `Hud.gd:502-504` 一鍵列一按就播 `sfx_ui8_btn_press_a`，之後先做狩獵／派工。失敗回 `{ok:false}` 時 `_on_care`（`:563-566`）直接返回，冇 `sfx_ui8_error`。探測：冇 Main 時 hunt 同 dispatch 都只剩 `sfx_ui8_btn_press_a`。修法：失敗改播 `sfx_ui8_error`，唔好播按下聲。負責：遊音。
+
+4. **FAIL，P2。** `AudioManager.gd:243-247`：`stop_loop` 的 `fade` 冇用，播放中就 `stop()`。睡眠呼吸 loop 停之前音量 −3，停完即刻唔再播，音量仍係 −3。`sync_bgm`（`:250-275`）只識照顧時段，小節長只用 `BAR_SEC` 3.5294。冇 `PHASE_HUNT`，工程裡亦冇 `bgm_hunt_loop.ogg`。修法：`stop_loop` 按 `fade` 把音量收完先停；狩獵相位改播 2.222 秒一節的狩獵 loop，唔好用 68 BPM 的 `BAR_SEC`。負責：遊音。
+
+5. **FAIL，P2。** `WorkSystem` 有 `dispatched`／`work_ready`／`collected`，`HuntSystem` 有 `hunt_started`／`hunt_phase`／`hunt_collected`，`CollectionSystem` 有 `unlocked`。`AudioManager` 一個都冇接。開 Main 之後，`Main.gd:1286-1289` 只把 `hunt_phase` 同 `dispatched` 接到自己的行路，唔係音效。探測時空載入，這七個信號的連接數都是 0。修法：在 `AudioManager._ready` 把這三個系統的信號接到對應的 `play`。負責：遊音。
+
+6. **PASS。** `Main.gd:1277-1278` 開局 `unlock_form`／`unlock_kid`。`CollectionSystem.gd:127-146` 只改存檔並 `unlocked.emit`，冇人播 `sfx_codex_new_entry`。這個檔在 M1b 根本不存在。探測聲池增量 0。唔使改。
+
+7. **FAIL，P2（打唔中那半駁回）。** `HuntField.gd` 冇 `AudioManager`，亦冇 `sfx_mg_miss`（打唔中唔會播出失敗聲，這半符合 §6）。捉到 `_pounce_critter`（`:249-268`）只換成果圖，冇 `sfx_mg_catch`。修法：捉到播 `sfx_mg_catch`，繼續不要播 `sfx_mg_miss`。負責：遊音。
+
+8. **PASS。** `AudioManager.gd:362-391`。欣賞模式 `reason=appreciate`、唔播。同一瞬間第二隻係 `same_moment`。同一隻 8 秒內係 `pet_cooldown`（`NEED_WARN_PET_COOLDOWN` 8.0，`:32`）。套件 `_test_m1b_need_warning` 這三條已過。a／b 走同一個 no-repeat randomizer。欣賞開關在 `Hud.gd:458-460`。唔使改。
+
 ## P0
 
 冇。
