@@ -331,8 +331,7 @@ func _maybe_footstep(nframes: int) -> void:
 		else:
 			hook = "sfx_pet_step_hop_a"
 	_step_cool = 0.45
-	if AudioManager:
-		AudioManager.play(hook, self)
+	# 只 emit；AudioManager 已 connect sfx_cue，避免播兩次（同 _fire_sfx）
 	if ArtImporter:
 		ArtImporter.sfx_cue.emit("walk", hook, frame_i, self)
 

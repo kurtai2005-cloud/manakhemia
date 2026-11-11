@@ -1,0 +1,26 @@
+MANIFEST_FURN_FIX1 — 散步鞋架 wall_shoes（補 M1c 缺圖色塊）。
+疊喺 code/glimmer-godot @ 6a315ec7（tree caa5466a；本地鏡像 a401943，同一棵樹）。
+解壓到 repo 根。冇 git commit／push／merge。
+日期：2026-11-11 10:53 Asia/Hong_Kong
+
+原因：economy.json 有 wall_shoes（散步鞋架，牆槽，25 碎），
+但 art-pet/sprites/series2_house/furniture/ 冇對應 png。
+引擎 Main._make_furniture 搵唔到 res://…/furniture/wall_shoes.png，就 fallback 米色 BoxMesh。
+路徑同其他 12 件一致，唔係讀錯檔名。其餘 12 件（床／檯／層架／相框／地氈／窗／燈，連附加 front／emissive／glow）都有圖，冇第二件同款缺口。
+收藏頁未有獨立縮圖（仍然係文字掣，遊策標咗 M2）。
+
+修正：按 house_4b_furniture.py 同一套 V3-A 程序繪製（Pillow／numpy，冇 AI 生圖），
+50×36、α 0/255、≤12 色、外框 OL、光由左上、兩層木架＋粉紅娃娃鞋同藍散步鞋。
+闊度同 wall_shelf（50），高度多 6px 擺兩層鞋。
+
+對照圖：/workspace/game-design/furn_fix1/before_after.png
+（Godot 4.7.2 Compatibility，Xvfb＋llvmpipe／opengl3，同遊戲 Sprite3D 設定）。
+
+遊程請將 wall_shoes.png 拷入家具目錄，按 ENGINE_FURN_FIX1.txt 接入，測試那條「缺圖色塊」要改。唔好 merge。
+
+FILES
+
+[A] ENGINE_FURN_FIX1.txt  2606B  sha1:798bc6eb6c205fef76ffe01e1c4c667e5baf8f7c
+[A] art-pet/sprites/series2_house/furniture/wall_shoes.png  783B  sha1:0b041b5c1cc5ef3b71a60199d43547fc8d1e103c
+[A] art-pet/sprites/series2_house/furniture/wall_shoes.json  473B  sha1:2986a74fd6878e292ab50c440c6e488a64416fd6
+[A] art-pet/tools/build_furn_fix1.py  5628B  sha1:f7fbdde548b5d3360d0596b4b5193947399a8ee6

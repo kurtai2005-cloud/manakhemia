@@ -56,6 +56,8 @@ func _ready() -> void:
 	_test_m1c_plugins_ported()
 	_test_m1c_pounce_miss()
 	_test_m1c1_m1b_audio_and_fixes()
+	_test_m1c2_hunt_hides_garden()
+	_test_m1c2_audio_fixes()
 	print("=== %d passed, %d failed ===" % [passed, failed])
 
 	get_tree().quit(0 if failed == 0 else 1)
@@ -1053,6 +1055,7 @@ func _test_m1c_furniture_art() -> void:
 	ok(ResourceLoader.exists("res://art-pet/sprites/series2_house/furniture/bed_leaf.png"), "bed_leaf art")
 	ok(ResourceLoader.exists("res://art-pet/sprites/series2_house/furniture/rug_leaf.png"), "rug_leaf art")
 	ok(ResourceLoader.exists("res://art-pet/sprites/series2_house/furniture/table_stump.png"), "table_stump art")
+	ok(ResourceLoader.exists("res://art-pet/sprites/series2_house/furniture/wall_shoes.png"), "wall_shoes art")
 	var packed: PackedScene = load("res://scenes/Main.tscn")
 	ok(packed != null, "Main.tscn for furniture")
 	var main: Node = packed.instantiate() if packed else null
@@ -1060,9 +1063,12 @@ func _test_m1c_furniture_art() -> void:
 		# 唔入樹，避免整個花園 _ready；直接叫 helper
 		pass
 	if main and main.has_method("_make_furniture"):
-		var bed: Node3D = main._make_furniture("bed_leaf", "bed", Vector3(0, 0, 0))
+		ok(main.furniture_mount("wall_shoes", "wall") == "wall", "wall_shoes mount=wall")
+		ok(main.furniture_mount("bed_leaf", "bed") == "floor", "bed_leaf mount=floor")
+		var bed: Node3D = main._make_furniture("bed_leaf", "bed", Vector3(70, 4, -48))
 		ok(bed is Sprite3D, "bed is art sprite not a colour box", bed)
 		if bed:
+			ok(is_equal_approx(bed.position.y, 0.0), "floor sprite y=0 not slot y", bed.position)
 			bed.free()
 		var rug: Node3D = main._make_furniture("rug_leaf", "rug", Vector3(0, 0, 0))
 		ok(rug is MeshInstance3D, "rug is textured plane", rug)
@@ -1071,9 +1077,21 @@ func _test_m1c_furniture_art() -> void:
 			ok(mat is StandardMaterial3D and (mat as StandardMaterial3D).albedo_texture != null, "rug has texture")
 		if rug:
 			rug.free()
-		var missing: Node3D = main._make_furniture("wall_shoes", "wall", Vector3(0, 0, 0))
-		ok(missing is MeshInstance3D, "missing art falls back to block")
+		var shoes: Node3D = main._make_furniture("wall_shoes", "wall", Vector3(86, 16, -44))
+		ok(shoes is Sprite3D, "wall_shoes is art sprite not a colour box", shoes)
+		if shoes:
+			ok(is_equal_approx(shoes.position.y, 16.0), "wall-mounted uses slot pos.y=16", shoes.position)
+			ok(shoes is Sprite3D and (shoes as Sprite3D).billboard == BaseMaterial3D.BILLBOARD_FIXED_Y, "shoes upright FIXED_Y")
+			shoes.free()
+		var shelf: Node3D = main._make_furniture("wall_shelf", "wall", Vector3(86, 16, -44))
+		ok(shelf is Sprite3D and is_equal_approx(shelf.position.y, 16.0), "wall_shelf also uses slot y", shelf.position if shelf else Vector3.ZERO)
+		if shelf:
+			shelf.free()
+		# 故意冇圖嘅 id 先至色塊 fallback
+		var missing: Node3D = main._make_furniture("no_such_furn_xyz", "wall", Vector3(10, 16, -8))
+		ok(missing is MeshInstance3D, "missing art falls back to block", missing)
 		if missing:
+			ok(is_equal_approx(missing.position.y, 16.0), "fallback block keeps slot y", missing.position)
 			missing.free()
 		main.free()
 	else:
@@ -1166,7 +1184,7 @@ func _test_m1c1_m1b_audio_and_fixes() -> void:
 	print("# M1c.1 遊音 M1b wiring + 5 bug fixes")
 	# 檔同 map 都喺工程內（唔入 _preview_*）
 	ok(FileAccess.file_exists("res://audio/m1b_sfx_map.json"), "m1b_sfx_map.json present")
-	for hook in ["sfx_hunt_enter", "sfx_hunt_pounce_a", "sfx_furn_buy", "sfx_post_letter_send", "sfx_post_letter_receive", "sfx_kitchen_cook_start", "sfx_kitchen_cook_done", "sfx_kitchen_stir", "sfx_codex_page_flip_a", "sfx_codex_new_entry", "sfx_furn_place_a"]:
+	for hook in ["sfx_hunt_enter", "sfx_hunt_pounce_a", "sfx_furn_buy", "sfx_post_letter_send", "sfx_post_letter_receive", "sfx_kitchen_cook_start", "sfx_kitchen_cook_done", "sfx_kitchen_stir_loop", "sfx_codex_page_flip_a", "sfx_codex_new_entry", "sfx_furn_place_a"]:
 		ok(FileAccess.file_exists("res://audio/sfx/%s.ogg" % hook), "sfx file %s" % hook)
 	ok(FileAccess.file_exists("res://audio/bgm/bgm_hunt_loop.ogg"), "bgm_hunt_loop present")
 	ok(not FileAccess.file_exists("res://audio/sfx/_preview_m1b.ogg"), "preview ogg not shipped")
@@ -1218,8 +1236,8 @@ func _test_m1c1_m1b_audio_and_fixes() -> void:
 	var kit: Dictionary = WorkSystem.dispatch("kitchen", ["tuanrong"])
 	ok(bool(kit.get("ok", false)), "kitchen dispatch ok", kit)
 	ok(AudioManager.hook_count("sfx_kitchen_cook_start") == 1, "cook_start", AudioManager.hooks_played())
-	ok(AudioManager.hook_count("sfx_kitchen_stir") == 0, "stir not started without action", AudioManager.hooks_played())
-	var stir_p: AudioStreamPlayer = AudioManager._loop_players.get("sfx_kitchen_stir", null)
+	ok(AudioManager.hook_count("sfx_kitchen_stir_loop") == 0, "stir not started without action", AudioManager.hooks_played())
+	var stir_p: AudioStreamPlayer = AudioManager._loop_players.get("sfx_kitchen_stir_loop", null)
 	ok(stir_p == null or not stir_p.playing, "stir loop not playing")
 	WorkSystem.site("kitchen")["watch"] = 999.0
 	WorkSystem.tick_watch(1.0)
@@ -1358,13 +1376,13 @@ func _test_m1c1_m1b_audio_and_fixes() -> void:
 	HuntSystem.pending = {}
 
 	# start_loop + fade stop
-	AudioManager.start_loop("sfx_kitchen_stir")
-	var lp: AudioStreamPlayer = AudioManager._loop_players.get("sfx_kitchen_stir", null)
+	AudioManager.start_loop("sfx_kitchen_stir_loop")
+	var lp: AudioStreamPlayer = AudioManager._loop_players.get("sfx_kitchen_stir_loop", null)
 	ok(lp != null and lp.playing, "start_loop plays even without _loop in filename", lp)
 	if lp and lp.stream is AudioStreamOggVorbis:
 		ok((lp.stream as AudioStreamOggVorbis).loop, "start_loop forces loop")
 	var vol0 := lp.volume_db if lp else 0.0
-	AudioManager.stop_loop("sfx_kitchen_stir", 0.4)
+	AudioManager.stop_loop("sfx_kitchen_stir_loop", 0.4)
 	ok(lp != null and lp.playing, "stop_loop still playing during fade")
 	AudioManager._process(0.2)
 	ok(lp.playing, "mid-fade still on")
@@ -1398,3 +1416,112 @@ func _test_m1c1_m1b_audio_and_fixes() -> void:
 		sit2["pets"] = []
 		sit2["watch"] = 0.0
 	used.clear()
+
+
+func _test_m1c2_hunt_hides_garden() -> void:
+	print("# M1c.2 hunt hides remaining garden mid-ground props")
+	var packed: PackedScene = load("res://scenes/Main.tscn")
+	ok(packed != null, "Main.tscn for hide test")
+	var main: Node = packed.instantiate() if packed else null
+	if main == null or not main.has_method("hunt_hidden_garden_ids"):
+		ok(false, "hunt_hidden_garden_ids missing")
+		if main:
+			main.free()
+		return
+	var ids: Array = main.hunt_hidden_garden_ids()
+	for need in ["cottage", "tree", "lanterns", "bed", "lamp", "pot_L", "pot_R", "pot_S", "fence"]:
+		ok(need in ids, "hide list includes %s" % need, ids)
+	# 模擬花園節點，唔入樹跑 _ready
+	var probes: Dictionary = {}
+	for id in ids:
+		var mi := MeshInstance3D.new()
+		mi.name = str(id)
+		main.add_child(mi)
+		probes[id] = mi
+	main.set_garden_hidden_for_hunt(true)
+	var all_hidden := true
+	for id in probes.keys():
+		if probes[id].visible:
+			all_hidden = false
+	ok(all_hidden, "all listed garden props hidden in hunt view")
+	ok(not probes["pot_L"].visible, "planter pot_L hidden")
+	ok(not probes["bed"].visible, "veg bed hidden")
+	ok(not probes["lamp"].visible, "lamp post hidden")
+	# 中景系統物件（工作點／倉／傢俬）
+	var furn := Node3D.new()
+	furn.name = "Furniture"
+	main.add_child(furn)
+	main.furniture_root = furn
+	var wh := Node3D.new()
+	wh.name = "Warehouse"
+	main.add_child(wh)
+	main.warehouse = wh
+	var ws := Node3D.new()
+	ws.name = "KitchenSpot"
+	main.add_child(ws)
+	main.work_spots = {"kitchen": ws}
+	main.set_garden_hidden_for_hunt(true)
+	ok(not furn.visible and not wh.visible and not ws.visible, "furniture/warehouse/work spots hidden in hunt")
+	main.set_garden_hidden_for_hunt(false)
+	ok(probes["pot_L"].visible and probes["bed"].visible and probes["lamp"].visible, "shown again after leaving hunt")
+	ok(furn.visible and wh.visible and ws.visible, "mid-ground systems shown again")
+	# 遠丘卡仍然喺狩獵場
+	var field := HuntField.new()
+	add_child(field)
+	field.setup()
+	ok(field.has_house_cover(), "far hill/tree card still present")
+	field.queue_free()
+	main.free()
+
+
+func _test_m1c2_audio_fixes() -> void:
+	print("# M1c.2 遊音 4 audio fixes")
+	# (1) 腳步只 emit，唔直接 play
+	var src := FileAccess.get_file_as_string("res://scripts/Walker.gd")
+	var i := src.find("func _maybe_footstep")
+	var j := src.find("func _apply_frame", i)
+	var body := src.substr(i, j - i) if i >= 0 and j > i else ""
+	ok(body.find("ArtImporter.sfx_cue.emit") >= 0, "_maybe_footstep emits sfx_cue")
+	ok(body.find("AudioManager.play") < 0, "_maybe_footstep does not call play directly")
+	var w := Walker.new()
+	w.character = "tuanrong"
+	w.body_size = "L"
+	add_child(w)
+	AudioManager.clear_play_log()
+	w._maybe_footstep(8)
+	ok(AudioManager.hook_count("sfx_pet_step_hop") == 1, "footstep plays once via signal", AudioManager.hooks_played())
+	w.queue_free()
+
+	# (2) 拍速唔同唔對位，由 0 起；同拍先 captur 舊小節
+	AudioManager.muted = false
+	AudioManager._scene_bgm = ""
+	AudioManager._bgm_band = ""
+	AudioManager.sync_bgm("noon", true)
+	AudioManager.last_bgm_start_sec = -1.0
+	AudioManager.enter_hunt_bgm()
+	ok(AudioManager.is_hunt_bgm(), "entered hunt bgm")
+	ok(is_equal_approx(AudioManager.last_outgoing_bar, AudioManager.BAR_SEC), "captured care bar before flag flip", AudioManager.last_outgoing_bar)
+	ok(is_equal_approx(AudioManager.last_bgm_start_sec, 0.0), "different tempo starts hunt BGM at 0", AudioManager.last_bgm_start_sec)
+	AudioManager.exit_hunt_bgm()
+	ok(not AudioManager.is_hunt_bgm(), "left hunt bgm")
+	ok(is_equal_approx(AudioManager.last_outgoing_bar, AudioManager.hunt_bar_sec()), "captured hunt bar before leaving", AudioManager.last_outgoing_bar)
+	ok(is_equal_approx(AudioManager.last_bgm_start_sec, 0.0), "different tempo starts care BGM at 0", AudioManager.last_bgm_start_sec)
+	# 同拍（照顧 noon→evening）會用 BAR_SEC 對位，唔係錯誤用狩獵小節
+	AudioManager._scene_bgm = ""
+	AudioManager.sync_bgm("noon", true)
+	AudioManager.sync_bgm("evening", true)
+	ok(is_equal_approx(AudioManager.last_outgoing_bar, AudioManager.BAR_SEC), "same-tempo care uses BAR_SEC", AudioManager.last_outgoing_bar)
+
+	# (3) 圖鑑聲走 UI bus，跟 map
+	ok(AudioManager.bus_for("sfx_codex_page_flip") == "UI", "codex page_flip → UI")
+	ok(AudioManager.bus_for("sfx_codex_page_flip_a") == "UI", "codex page_flip_a → UI")
+	ok(AudioManager.bus_for("sfx_codex_new_entry") == "UI", "codex new_entry → UI")
+	ok(AudioManager.bus_for("sfx_furn_buy") == "SFX", "furn buy stays SFX")
+
+	# (4) 狩獵 BGM import 同照顧一樣 loop=true
+	ok(FileAccess.file_exists("res://audio/bgm/bgm_hunt_loop.ogg.import"), "hunt bgm import exists")
+	var imp := FileAccess.get_file_as_string("res://audio/bgm/bgm_hunt_loop.ogg.import")
+	ok(imp.find("loop=true") >= 0, "bgm_hunt_loop.import loop=true")
+	ok(imp.find("loop=false") < 0, "hunt import not loop=false")
+	var st: AudioStream = AudioManager._load_stream(AudioManager.hunt_bgm_path())
+	ok(st is AudioStreamOggVorbis and (st as AudioStreamOggVorbis).loop, "loaded hunt BGM loops", st)

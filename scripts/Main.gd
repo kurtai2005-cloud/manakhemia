@@ -1594,6 +1594,33 @@ func qa_force_hungry() -> void:
 
 
 
+func furniture_mount(id: String, sl: String = "") -> String:
+	# 每件 mount: wall／floor（data/economy.json；slot 後備喺 m1c.json）
+	var item: Dictionary = {}
+	if CollectionSystem and CollectionSystem.has_method("_item"):
+		item = CollectionSystem._item(id)
+	if str(item.get("mount", "")) != "":
+		return str(item.get("mount"))
+	var by_slot: Dictionary = {}
+	var default := "floor"
+	if GameData and "m1c" in GameData:
+		var furn: Dictionary = GameData.m1c.get("furniture", {})
+		by_slot = furn.get("mount_by_slot", {})
+		default = str(furn.get("default_mount", "floor"))
+	if sl != "" and by_slot.has(sl):
+		return str(by_slot[sl])
+	if sl == "wall" or sl == "window":
+		return "wall"
+	return default
+
+
+func furniture_sprite_y(id: String, sl: String, pos: Vector3) -> float:
+	# 掛牆用 slot 嘅 pos.y（牆槽舊色塊 y=16）；落地寫 0，唔寫死喺程式
+	if furniture_mount(id, sl) == "wall":
+		return pos.y
+	return 0.0
+
+
 func _make_furniture(id: String, sl: String, pos: Vector3) -> Node3D:
 	var dir := "res://art-pet/sprites/series2_house/furniture/"
 	if GameData and "m1c" in GameData:
@@ -1605,8 +1632,9 @@ func _make_furniture(id: String, sl: String, pos: Vector3) -> Node3D:
 	var tex: Texture2D = null
 	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
 		tex = load(path)
+	var y := furniture_sprite_y(id, sl, pos)
 	if tex == null:
-		# 冇遊美圖就用色塊
+		# 冇遊美圖就用色塊（仍然用晒 slot pos，包括牆槽 y）
 		var mi := MeshInstance3D.new()
 		var box := BoxMesh.new()
 		box.size = Vector3(12, 8 if sl != "rug" else 1.2, 12 if sl != "wall" else 4)
@@ -1636,28 +1664,42 @@ func _make_furniture(id: String, sl: String, pos: Vector3) -> Node3D:
 		mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 		mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 		mi.material_override = mat
-		mi.position = Vector3(pos.x, 0.4, pos.z)
+		mi.position = Vector3(pos.x, pos.y if pos.y != 0.0 else 0.4, pos.z)
 		return mi
-	var s := Sprite3D.new()
-	s.texture = tex
-	s.pixel_size = psize
-	s.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	s.shaded = false
-	s.centered = true
-	s.offset = Vector2(0, tex.get_height() * 0.5)
-	s.position = Vector3(pos.x, 0, pos.z)
-	s.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	return s
+	var spr := Sprite3D.new()
+	spr.texture = tex
+	spr.pixel_size = psize
+	spr.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+	spr.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+	spr.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	spr.shaded = false
+	spr.centered = true
+	spr.offset = Vector2(0, tex.get_height() * 0.5)
+	spr.position = Vector3(pos.x, y, pos.z)
+	spr.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return spr
 
-func set_garden_hidden_for_hunt(on: bool) -> void:
-	var ids: Array = ["cottage"]
+func hunt_hidden_garden_ids() -> Array:
+	var ids: Array = ["cottage", "tree", "lanterns"]
 	if GameData and "m1c" in GameData:
 		var cfg: Dictionary = GameData.m1c.get("hunt", {}).get("hide_garden_house", {})
 		if cfg.get("hide_node_ids") is Array and not cfg["hide_node_ids"].is_empty():
 			ids = cfg["hide_node_ids"]
-	for id in ids:
+	return ids
+
+
+func set_garden_hidden_for_hunt(on: bool) -> void:
+	# 隱藏花園中景／遠景道具，避免喺狩獵場背景透出
+	for id in hunt_hidden_garden_ids():
 		var n := find_child(str(id), true, false)
 		if n:
 			n.visible = not on
+	# 工作點／倉／已擺傢俬都喺花園中景，一併收埋
+	if furniture_root and is_instance_valid(furniture_root):
+		furniture_root.visible = not on
+	if warehouse and is_instance_valid(warehouse):
+		warehouse.visible = not on
+	for sid in work_spots.keys():
+		var spot = work_spots[sid]
+		if spot and is_instance_valid(spot):
+			spot.visible = not on

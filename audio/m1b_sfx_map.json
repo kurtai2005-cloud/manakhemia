@@ -117,9 +117,9 @@
     {
       "event": "work.kitchen.stir",
       "zh": "廚房攪拌（工作期間）",
-      "code": "建議：WorkSystem.site('kitchen').status==work 期間 AudioManager.start_loop('sfx_kitchen_stir')，收工／離開 stop_loop。而家 WorkSpot／Main._send_pets_to_work 只播 idle_quiet／scratch，未有攪拌 hook。",
+      "code": "建議：WorkSystem.site('kitchen').status==work 期間 AudioManager.start_loop('sfx_kitchen_stir_loop')，收工／離開 stop_loop。而家 WorkSpot／Main._send_pets_to_work 只播 idle_quiet／scratch，未有攪拌 hook。",
       "files": [
-        "sfx_kitchen_stir.ogg"
+        "sfx_kitchen_stir_loop.ogg"
       ],
       "reuse": [],
       "delay_ms": 0,
@@ -131,7 +131,7 @@
       "volume": 0.85,
       "randomize": "playbackRate 0.97–1.03（loop 時建議固定 1.0 以免接縫走音）",
       "timing": "0.500 s 圓周無縫。watch_sec 12 s 期間可循環。",
-      "notes": "AudioManager._ensure_loop 只對檔名含 _loop 自動 ogg.loop=true。遊程接入時請改名 sfx_kitchen_stir_loop.ogg，或擴 _ensure_loop 認呢個 hook。"
+      "notes": "AudioManager._ensure_loop 只對檔名含 _loop 自動 ogg.loop=true。檔名已含 _loop（2026-11-11 改名），start_loop 會自動循環。"
     },
     {
       "event": "work.kitchen.ready",
@@ -621,9 +621,9 @@
       "event": "work.kitchen.stir",
       "zh": "廚房攪拌（工作期間）",
       "kind": "sfx",
-      "sfx_hook": "sfx_kitchen_stir",
+      "sfx_hook": "sfx_kitchen_stir_loop",
       "files": [
-        "sfx_kitchen_stir.ogg"
+        "sfx_kitchen_stir_loop.ogg"
       ],
       "accent_offset_ms": 0,
       "accent_measure": "peak",
@@ -632,7 +632,7 @@
       "source": "new",
       "bus": "SFX",
       "delay_ms": 0,
-      "notes": "AudioManager._ensure_loop 只對檔名含 _loop 自動 ogg.loop=true。遊程接入時請改名 sfx_kitchen_stir_loop.ogg，或擴 _ensure_loop 認呢個 hook。"
+      "notes": "AudioManager._ensure_loop 只對檔名含 _loop 自動 ogg.loop=true。檔名已含 _loop（2026-11-11 改名），start_loop 會自動循環。"
     },
     {
       "event": "work.kitchen.ready",

@@ -219,7 +219,8 @@
         "slot": "bed",
         "slot_zh": "床",
         "price": 0,
-        "src": "default"
+        "src": "default",
+        "mount": "floor"
       },
       {
         "id": "bed_cloud",
@@ -227,7 +228,8 @@
         "slot": "bed",
         "slot_zh": "床",
         "price": 40,
-        "src": "shop"
+        "src": "shop",
+        "mount": "floor"
       },
       {
         "id": "table_stump",
@@ -235,7 +237,8 @@
         "slot": "table",
         "slot_zh": "檯",
         "price": 20,
-        "src": "shop"
+        "src": "shop",
+        "mount": "floor"
       },
       {
         "id": "table_round",
@@ -243,7 +246,8 @@
         "slot": "table",
         "slot_zh": "檯",
         "price": 25,
-        "src": "shop"
+        "src": "shop",
+        "mount": "floor"
       },
       {
         "id": "wall_shelf",
@@ -251,7 +255,8 @@
         "slot": "wall",
         "slot_zh": "牆",
         "price": 18,
-        "src": "shop"
+        "src": "shop",
+        "mount": "wall"
       },
       {
         "id": "wall_frame",
@@ -260,7 +265,8 @@
         "slot_zh": "牆",
         "price": null,
         "src": "commission",
-        "commission_quests": 3
+        "commission_quests": 3,
+        "mount": "wall"
       },
       {
         "id": "wall_shoes",
@@ -269,7 +275,8 @@
         "slot_zh": "牆",
         "price": 25,
         "src": "shop",
-        "note": "6b.1 加；舊 7 件價錢不變"
+        "note": "6b.1 加；舊 7 件價錢不變",
+        "mount": "wall"
       },
       {
         "id": "rug_round",
@@ -277,7 +284,8 @@
         "slot": "rug",
         "slot_zh": "地氈",
         "price": 22,
-        "src": "shop"
+        "src": "shop",
+        "mount": "floor"
       },
       {
         "id": "rug_leaf",
@@ -285,7 +293,8 @@
         "slot": "rug",
         "slot_zh": "地氈",
         "price": 15,
-        "src": "shop"
+        "src": "shop",
+        "mount": "floor"
       },
       {
         "id": "win_curtain",
@@ -293,7 +302,8 @@
         "slot": "window",
         "slot_zh": "窗",
         "price": 25,
-        "src": "shop"
+        "src": "shop",
+        "mount": "wall"
       },
       {
         "id": "win_star",
@@ -302,7 +312,8 @@
         "slot_zh": "窗",
         "price": null,
         "src": "commission",
-        "commission_quests": 9
+        "commission_quests": 9,
+        "mount": "wall"
       },
       {
         "id": "lamp_mushroom",
@@ -310,7 +321,8 @@
         "slot": "lamp",
         "slot_zh": "燈",
         "price": null,
-        "src": "visitor:mushroom_granny"
+        "src": "visitor:mushroom_granny",
+        "mount": "floor"
       },
       {
         "id": "lamp_firefly",
@@ -318,7 +330,8 @@
         "slot": "lamp",
         "slot_zh": "燈",
         "price": null,
-        "src": "visitor:firefly_vendor"
+        "src": "visitor:firefly_vendor",
+        "mount": "floor"
       }
     ]
   },

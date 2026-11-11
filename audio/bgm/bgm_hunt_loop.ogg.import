@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/bgm_hunt_loop.ogg-ceac73b3a928dd730baacdbfa03
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

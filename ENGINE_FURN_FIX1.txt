@@ -1,0 +1,47 @@
+ENGINE_FURN_FIX1 — 散步鞋架 wall_shoes 接入（M1c）
+
+疊喺 code/glimmer-godot @ 6a315ec7（tree caa5466a）。
+本地鏡像 HEAD 係 a401943，同一棵樹、同一個 M1c 訊息。
+請開 art/furn-fix1，唔好 merge、唔好 force。
+
+一、點解會變成色塊
+唔係路徑寫錯，係檔案根本未有。
+Main._make_furniture 會讀：
+  res://art-pet/sprites/series2_house/furniture/{id}.png
+（目錄可由 data/m1c.json furniture.art_dir 改，而家就係上面呢條。）
+搵唔到就整一個米色 BoxMesh（牆槽 12×8×4，色 Color(0.75, 0.62, 0.42)）。
+economy.json 13 件傢俬入面，淨係 wall_shoes（散步鞋架）缺 png；其餘 12 件（連 _front／_emissive／_glow）都齊。
+收藏頁仍然係文字掣，冇獨立縮圖；之後若要細圖，用同一張 png nearest 整數倍就得。
+
+二、要拷入嘅檔
+解壓到 repo 根之後，美術檔喺：
+  art-pet/sprites/series2_house/furniture/wall_shoes.png
+  art-pet/sprites/series2_house/furniture/wall_shoes.json   （尺寸／pivot 備註，引擎唔使讀）
+  art-pet/tools/build_furn_fix1.py                         （重跑腳本，唔使進遊戲）
+
+png：50×36、RGBA、alpha 只有 0／255、12 色、外框 (74,44,62)，風格同 wall_shelf／wall_frame。
+2D 屋仔牆槽 pivot＝中心 (25, 18)。Godot 而家唔讀呢個 pivot。
+
+三、import 設定（跟 wall_shelf.png.import）
+Godot 會自動出 .import／uid，唔使預先交。請用：
+  compress/mode=0
+  mipmaps/generate=false
+  process/fix_alpha_border=true
+  detect_3d/compress_to=1
+執行時 Sprite3D 已經設 TEXTURE_FILTER_NEAREST、ALPHA_CUT_DISCARD、shaded=false、
+BILLBOARD_FIXED_Y、pixel_size=1.0（data/m1c.json furniture.pixel_size）。
+唔使改 Main.gd 都可以由色塊變 Sprite3D。
+
+四、測試要改
+tests/test_runner.gd _test_m1c_furniture_art 而家寫住：
+  wall_shoes 應該係 MeshInstance3D（「缺圖就用色塊」）。
+接入之後呢條會 FAIL。請改成同 bed_leaf 一樣期望 Sprite3D，另外用一個故意冇圖嘅 id 去驗 fallback。
+
+五、可選（唔阻呢次接入）
+_make_furniture 對有圖嘅傢俬會把 position.y 寫死做 0（底中企喺地）；
+色塊先至用晒 slot 嘅 pos（牆槽 y=16，所以而家個盒係浮起）。
+接入後鞋架會同床、檯一樣企喺地，唔再浮。若想掛牆上，之後先改用 slot 嘅 pos.y。
+2D 屋仔 house.json 未加呢筆；M1c 花園唔讀 house.json。若要補，items 加 wall_shoes，pivot [25,18]，size [50,36]。
+
+六、唔好做
+唔好 merge 入 main。唔好改 HUD 傢俬文字清單以外嘅嘢。

@@ -48,6 +48,8 @@ var _loop_fades: Dictionary = {}  # hook -> {player, t, dur, start_lin}
 var play_log: Array = []  # 測試用：每次 play／延遲觸發
 var m1b_map: Dictionary = {}
 var _scene_bgm := ""  # "" 照顧時段；"hunt" 狩獵場
+var last_bgm_start_sec := 0.0
+var last_outgoing_bar := 0.0
 var _pending: Array = []  # {at, hook, actor}
 var _place_burst: Array = []
 var _bought_at := -999.0
@@ -179,6 +181,8 @@ func bus_for(hook: Variant) -> String:
 	var h := "" if hook == null else str(hook)
 	if h.find("sfx_need_warning") >= 0:
 		return "UI"
+	if h.begins_with("sfx_codex_"):
+		return "UI"
 	if h.begins_with("sfx_ui") or h.find("_btn_") >= 0 or h.find("sfx_ui8") >= 0:
 		return "UI"
 	if h.begins_with("bgm_"):
@@ -302,21 +306,30 @@ func is_hunt_bgm() -> bool:
 	return _scene_bgm == "hunt"
 
 
+func _current_bar_sec() -> float:
+	# 而家正在播嗰條嘅小節；改旗標前先 captur
+	if _scene_bgm == "hunt" or _bgm_band == "hunt":
+		return hunt_bar_sec()
+	return BAR_SEC
+
+
 func enter_hunt_bgm() -> void:
+	var out_bar := _current_bar_sec()  # 通常係照顧 BAR_SEC；要喺改旗標前捉
 	_scene_bgm = "hunt"
-	_crossfade_to(hunt_bgm_path(), hunt_xfade_sec(), hunt_bar_sec(), _outgoing_bar_sec())
+	_crossfade_to(hunt_bgm_path(), hunt_xfade_sec(), hunt_bar_sec(), out_bar)
 	_bgm_band = "hunt"
 
 
 func exit_hunt_bgm() -> void:
 	if _scene_bgm != "hunt" and _bgm_band != "hunt":
 		return
+	var out_bar := _current_bar_sec()  # 狩獵小節，改旗標前捉
 	_scene_bgm = ""
 	_bgm_band = ""  # 逼 sync 重新對照顧
-	sync_bgm("", true)
+	sync_bgm("", true, out_bar)
 
 
-func sync_bgm(band: String = "", force: bool = false) -> void:
+func sync_bgm(band: String = "", force: bool = false, outgoing_bar: float = -1.0) -> void:
 	# 狩獵場 BGM 期間唔好被時段照顧 loop 蓋過
 	if _scene_bgm == "hunt" and not force:
 		return
@@ -327,13 +340,10 @@ func sync_bgm(band: String = "", force: bool = false) -> void:
 	if not force and band == _bgm_band and (_bgm_a.playing or _bgm_b.playing):
 		return
 	var path := str(BGM_BY_BAND.get(band, BGM_BY_BAND["noon"]))
-	var fade := hunt_xfade_sec() if _bgm_band == "hunt" else 1.5
-	_crossfade_to(path, fade, BAR_SEC, _outgoing_bar_sec())
+	var fade := hunt_xfade_sec() if outgoing_bar == hunt_bar_sec() or _bgm_band == "hunt" else 1.5
+	var out_bar := outgoing_bar if outgoing_bar > 0.0 else _current_bar_sec()
+	_crossfade_to(path, fade, BAR_SEC, out_bar)
 	_bgm_band = band
-
-
-func _outgoing_bar_sec() -> float:
-	return hunt_bar_sec() if _scene_bgm == "hunt" or _bgm_band == "hunt" else BAR_SEC
 
 
 func _crossfade_to(path: String, fade_dur: float, incoming_bar: float, outgoing_bar: float) -> void:
@@ -344,10 +354,13 @@ func _crossfade_to(path: String, fade_dur: float, incoming_bar: float, outgoing_
 	var incoming: AudioStreamPlayer = _bgm_b if _bgm_front else _bgm_a
 	var outgoing: AudioStreamPlayer = _bgm_a if _bgm_front else _bgm_b
 	incoming.stream = st
-	# 下一小節對位：用嗰條曲自己嘅小節長，狩獵唔好用 BAR_SEC
+	# 兩條拍速唔同（照顧 3.5294 vs 狩獵 2.222）就唔對位，新曲由 0 起。
+	# 拍速相同先用舊曲小節長（要喺改 _scene_bgm 前 captur）。
 	var start_sec := 0.0
-	var bar := outgoing_bar if outgoing_bar > 0.0 else incoming_bar
-	if outgoing.playing and outgoing.stream:
+	var same_tempo := outgoing_bar > 0.0 and incoming_bar > 0.0 and is_equal_approx(outgoing_bar, incoming_bar)
+	last_outgoing_bar = outgoing_bar
+	if same_tempo and outgoing.playing and outgoing.stream:
+		var bar := outgoing_bar
 		var pos := outgoing.get_playback_position()
 		var b := int(floor(pos / maxf(bar, 0.001)))
 		var len := 0.0
@@ -356,6 +369,7 @@ func _crossfade_to(path: String, fade_dur: float, incoming_bar: float, outgoing_
 		var bars := int(round(len / maxf(bar, 0.001))) if len > 0.1 else 0
 		if bars > 0:
 			start_sec = fmod(float(b + 1), float(bars)) * bar
+	last_bgm_start_sec = start_sec
 	incoming.play(start_sec)
 	incoming.volume_db = -80.0
 	_fade_dur = fade_dur if fade_dur > 0.0 else 1.5
@@ -628,14 +642,14 @@ func _on_work_dispatched(building: String, _pets: Array) -> void:
 		play("sfx_kitchen_cook_start")
 		# 攪拌只喺真係有攪拌動作先 loop；而家寵物只播 idle_quiet／scratch
 		if has_kitchen_stir_action():
-			start_loop("sfx_kitchen_stir")
+			start_loop("sfx_kitchen_stir_loop")
 
 
 func _on_work_ready(building: String) -> void:
 	if building == "post":
 		play("sfx_post_letter_receive")
 	elif building == "kitchen":
-		stop_loop("sfx_kitchen_stir", 0.4)
+		stop_loop("sfx_kitchen_stir_loop", 0.4)
 		play("sfx_kitchen_cook_done")
 
 
