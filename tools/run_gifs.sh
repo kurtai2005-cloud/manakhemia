@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
-# M1b 玩法預覽 GIF：hunt / work / collect / care / bubbles
+# M1c 玩法預覽 GIF：hunt / work / collect / care / bubbles
 set -euo pipefail
 GODOT="${GODOT:-/home/box/tools/godot/godot}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-OUT="${GODOT_GIF_DIR:-/home/box/keep/godot/M1b/gif}"
+OUT="${GODOT_GIF_DIR:-/home/box/keep/godot/M1c/gif}"
 export DISPLAY="${DISPLAY:-:24}"
 export GODOT_M1A_DEMO=1
 export GODOT_M1B_DEMO=1
+export GODOT_M1C_DEMO=1
 mkdir -p "$OUT"
 feats=(hunt work collect care bubbles)
 for feat in "${feats[@]}"; do
-  FRAMES="/tmp/m1b-gif-${feat}"
+  FRAMES="/tmp/m1c-gif-${feat}"
   mkdir -p "$FRAMES"
   rm -f "$FRAMES"/*.png
   echo "== gif $feat =="
-  GODOT_M1B_GIF="$feat" GODOT_M1B_FRAME_DIR="$FRAMES" GODOT_M1A_GIF="$feat" GODOT_M1A_FRAME_DIR="$FRAMES" \
+  GODOT_M1C_GIF="$feat" GODOT_M1C_FRAME_DIR="$FRAMES" GODOT_M1A_GIF="$feat" GODOT_M1A_FRAME_DIR="$FRAMES" \
     "$GODOT" --path "$ROOT" --rendering-driver opengl3 --fixed-fps 15 \
     res://tests/GifMain.tscn
   n=$(ls -1 "$FRAMES"/*.png 2>/dev/null | wc -l)
@@ -23,8 +24,8 @@ for feat in "${feats[@]}"; do
     echo "  FAIL too few frames for $feat" >&2
     exit 1
   fi
-  pal="/tmp/m1b-pal-${feat}.png"
-  dest="$OUT/m1b-${feat}.gif"
+  pal="/tmp/m1c-pal-${feat}.png"
+  dest="$OUT/m1c-${feat}.gif"
   ffmpeg -y -hide_banner -loglevel error -framerate 15 -pattern_type glob -i "$FRAMES/${feat}_*.png" \
     -vf "scale=360:-1:flags=neighbor,palettegen=max_colors=64:stats_mode=diff" "$pal"
   ffmpeg -y -hide_banner -loglevel error -framerate 15 -pattern_type glob -i "$FRAMES/${feat}_*.png" -i "$pal" \

@@ -6,7 +6,7 @@ config_version=5
 config/name="微光小圃"
 config/name_localized={"zh_HK": "微光小圃", "zh_TW": "微光小圃"}
 config/description="Godot 4 port M1b"
-config/version="2.0.0-m1b"
+config/version="2.0.0-m1c"
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.png"
@@ -28,6 +28,7 @@ IconBank="*res://scripts/autoload/IconBank.gd"
 HuntSystem="*res://scripts/autoload/HuntSystem.gd"
 WorkSystem="*res://scripts/autoload/WorkSystem.gd"
 CollectionSystem="*res://scripts/autoload/CollectionSystem.gd"
+DeviceLink="*res://scripts/autoload/DeviceLink.gd"
 BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
 BeehaveGlobalDebugger="*res://addons/beehave/debug/global_debugger.gd"
 

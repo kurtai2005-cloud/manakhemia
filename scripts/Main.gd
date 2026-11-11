@@ -544,15 +544,19 @@ func _place_cam(dt: float) -> void:
 	sway_t += dt
 	var yaw := 0.0 if rest_look else -A * cos(PI * sway_t / maxf(T, 0.1))
 	var base_pitch := float(cam_data.get("pitchDeg", 30))
-	_obs_pitch = maxf(base_pitch, 42.0)
+	var hunt_overview := in_hunt_view and hunt_field != null and cam_mode != CamMode.FOLLOW
+	if in_hunt_view and hunt_field:
+		# 草原用遊美鏡頭（pitch 30），唔好再強制 42° 令寵物睇落好似瞓低
+		_obs_pitch = hunt_field.cam_pitch()
+	else:
+		_obs_pitch = maxf(base_pitch, 42.0)
 	var cfg := _cam_cfg()
 	var desired := cam_target
 	var look: Variant = cfg.get("overview_look", [0, 24, 16])
 	if look is Array and look.size() >= 3:
 		desired = Vector3(float(look[0]), float(look[1]), float(look[2]))
-	# 狩獵觀察：鏡頭跟住草原，而唔係花園全景
-	if in_hunt_view and hunt_field:
-		desired = hunt_field.field_origin + Vector3(0, 28, 10)
+	if hunt_overview:
+		desired = hunt_field.look_target()
 	var subject: Walker = pet
 	if cam_mode == CamMode.FOLLOW and follow_walker and is_instance_valid(follow_walker):
 		subject = follow_walker
@@ -570,9 +574,12 @@ func _place_cam(dt: float) -> void:
 	var dist_tex := _dist_for_texel(float(tex_scale))
 	var dist := dist_tex
 	if cam_mode == CamMode.OVERVIEW:
-		var dist_g := _dist_for_garden_width(float(cfg.get("garden_width", 256)))
-		# 預設：花園填滿畫面闊。窄屏可能只能 ×1；唔好為咗 ×2 切走花園。
-		dist = dist_g
+		if hunt_overview:
+			dist = hunt_field.cam_dist()
+		else:
+			var dist_g := _dist_for_garden_width(float(cfg.get("garden_width", 256)))
+			# 預設：花園填滿畫面闊。窄屏可能只能 ×1；唔好為咗 ×2 切走花園。
+			dist = dist_g
 	_cam_dist = dist
 	_apply_cam_offset(yaw, _obs_pitch, dist)
 	if cam_mode == CamMode.FOLLOW:
@@ -581,7 +588,9 @@ func _place_cam(dt: float) -> void:
 	else:
 		# 全景：先花園填滿，再保證寵物 ≥10%，先至考慮整數倍
 		_ensure_overview_pet_min(yaw)
-	_snap_integer_dist(yaw, tex_scale)
+	if not hunt_overview:
+		_snap_integer_dist(yaw, tex_scale)
+	# 狩獵全景一樣保證可見高度 ≥10%
 	_measure_cam_metrics()
 
 
@@ -1370,21 +1379,10 @@ func refresh_furniture() -> void:
 	for sl in placed.keys():
 		var id := str(placed[sl])
 		var pos: Vector3 = slots.get(sl, Vector3(64, 4, -40))
-		var mi := MeshInstance3D.new()
-		var box := BoxMesh.new()
-		box.size = Vector3(12, 8 if sl != "rug" else 1.2, 12 if sl != "wall" else 4)
-		mi.mesh = box
-		var mat := StandardMaterial3D.new()
-		mat.albedo_color = Color(0.75, 0.62, 0.42)
-		if sl == "bed":
-			mat.albedo_color = Color(0.62, 0.78, 0.48)
-		elif sl == "lamp":
-			mat.albedo_color = Color(1.0, 0.85, 0.4)
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		mi.material_override = mat
-		mi.position = pos
-		mi.name = "Furn_%s" % id
-		furniture_root.add_child(mi)
+		var node := _make_furniture(id, sl, pos)
+		if node:
+			node.name = "Furn_%s" % id
+			furniture_root.add_child(node)
 
 
 func hand_feed(w: Walker, food: String = "meal") -> Dictionary:
@@ -1492,7 +1490,7 @@ func _sync_hunt_view() -> void:
 	if not in_hunt_view or hunt_field == null or cam == null:
 		return
 	# 觀察野外：鏡頭望住隊
-	var look := hunt_field.field_origin + Vector3(0, 24, 0)
+	var look := hunt_field.look_target()
 	if cam_mode != CamMode.FOLLOW:
 		follow_pos = follow_pos.lerp(look, 0.2)
 
@@ -1588,3 +1586,61 @@ func _on_building_tapped(area: Area3D) -> void:
 func qa_force_hungry() -> void:
 	qa_force_needs(18.0, 88.0, 88.0, 88.0)
 
+
+
+func _make_furniture(id: String, sl: String, pos: Vector3) -> Node3D:
+	var dir := "res://art-pet/sprites/series2_house/furniture/"
+	if GameData and "m1c" in GameData:
+		dir = str(GameData.m1c.get("furniture", {}).get("art_dir", dir))
+	var psize := 1.0
+	if GameData and "m1c" in GameData:
+		psize = float(GameData.m1c.get("furniture", {}).get("pixel_size", 1.0))
+	var path := dir + id + ".png"
+	var tex: Texture2D = null
+	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
+		tex = load(path)
+	if tex == null:
+		# 冇遊美圖就用色塊
+		var mi := MeshInstance3D.new()
+		var box := BoxMesh.new()
+		box.size = Vector3(12, 8 if sl != "rug" else 1.2, 12 if sl != "wall" else 4)
+		mi.mesh = box
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(0.75, 0.62, 0.42)
+		if sl == "bed":
+			mat.albedo_color = Color(0.62, 0.78, 0.48)
+		elif sl == "lamp":
+			mat.albedo_color = Color(1.0, 0.85, 0.4)
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mi.material_override = mat
+		mi.position = pos
+		return mi
+	if sl == "rug":
+		# 平放喺地上
+		var mi := MeshInstance3D.new()
+		var sz := tex.get_size()
+		var pm := PlaneMesh.new()
+		pm.size = Vector2(sz.x * psize, sz.y * psize)
+		mi.mesh = pm
+		var mat := StandardMaterial3D.new()
+		mat.albedo_texture = tex
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+		mat.alpha_scissor_threshold = 0.5
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		mi.material_override = mat
+		mi.position = Vector3(pos.x, 0.4, pos.z)
+		return mi
+	var s := Sprite3D.new()
+	s.texture = tex
+	s.pixel_size = psize
+	s.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+	s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+	s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	s.shaded = false
+	s.centered = true
+	s.offset = Vector2(0, tex.get_height() * 0.5)
+	s.position = Vector3(pos.x, 0, pos.z)
+	s.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return s

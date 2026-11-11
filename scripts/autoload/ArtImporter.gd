@@ -21,6 +21,7 @@ const GODOT_IMPORT_PATHS: PackedStringArray = [
 ]
 const ENV_PATH := "res://art/import/environments.json"
 const ACTOR_ANIM_PATH := "res://data/actor_anim.json"
+const SFX_MAP_PATH := "res://audio/anim_sfx_map.json"
 
 var clips_doc: Dictionary = {}
 var timing: Dictionary = {}  # clip name -> timing dict
@@ -32,6 +33,7 @@ var _tex_cache: Dictionary = {}  # "scratch" or "scratch@M" -> Array[Texture2D]
 var _actor_atlases: Dictionary = {}  # character -> clip -> {doc, tex, frame_size, pivot}
 var _idle_quiet: Dictionary = {}  # size -> {doc, tex, frame_size, pivot}
 var _hunt: Dictionary = {}  # "clip@S" -> {doc, tex}
+var sfx_map: Dictionary = {}  # clip -> Array of cue dicts
 
 
 func _ready() -> void:
@@ -68,6 +70,7 @@ func _load_all() -> void:
 	for name in ["scratch", "sneeze", "sniff", "nuzzle", "rush", "walk_happy", "walk_drag"]:
 		frames_of(name)
 	_load_actor_catalogs()
+	_load_sfx_map()
 	_load_idle_quiet()
 	_load_hunt_clips()
 
@@ -229,6 +232,10 @@ func frame_duration_sec(name: String, index: int) -> float:
 
 
 func sfx_cues(name: String) -> Array:
+	if sfx_map.has(name):
+		var mapped: Array = sfx_map[name]
+		if mapped.size() > 0:
+			return mapped
 	var tmg := clip_timing(name)
 	var evs: Array = tmg.get("sfx", tmg.get("events", []))
 	return evs
@@ -517,5 +524,36 @@ func _frames_from_doc(doc: Dictionary, tex: Texture2D, clip: String) -> Array:
 		arr.append(at)
 	return arr
 
+
+
+
+func _load_sfx_map() -> void:
+	sfx_map = {}
+	var doc := _json(SFX_MAP_PATH)
+	if doc.is_empty():
+		return
+	for e in doc.get("entries", []):
+		if not (e is Dictionary):
+			continue
+		var cue: Dictionary = e.duplicate(true)
+		var preroll := int(cue.get("preroll_ms", 0))
+		if preroll > 0:
+			cue["t_ms"] = int(cue.get("t_ms", 0)) - preroll
+		if str(cue.get("kind_clip", "")) == "critter" and str(cue.get("event", "")) == "startle":
+			cue["on_enter"] = true
+		var clip := str(cue.get("clip", ""))
+		if clip.begins_with("idle_") or str(cue.get("kind_clip", "")) == "visitor":
+			if int(cue.get("every_n_loops", 0)) <= 0:
+				cue["every_n_loops"] = 3
+		if clip == "":
+			continue
+		if not sfx_map.has(clip):
+			sfx_map[clip] = []
+		var arr: Array = sfx_map[clip]
+		arr.append(cue)
+		sfx_map[clip] = arr
+	# aliases：scratch／sneeze／sniff 細佬／訪客共用同一 hook
+	if sfx_map.has("scratch_head") and not sfx_map.has("scratch"):
+		sfx_map["scratch"] = sfx_map["scratch_head"]
 
 

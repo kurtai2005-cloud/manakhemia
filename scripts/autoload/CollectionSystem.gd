@@ -16,14 +16,21 @@ func econ() -> Dictionary:
 	return GameData.economy if GameData else {}
 
 
+func starting_shards() -> int:
+	if GameData and "m1c" in GameData and not GameData.m1c.is_empty():
+		return int(GameData.m1c.get("starting_shards", 25))
+	return 25
+
+
 func ensure(s: Dictionary = {}) -> Dictionary:
 	if s.is_empty() and Sim:
 		s = Sim.state
 	if not s.has("wallet"):
 		s["wallet"] = {
-			"stardust": 0,
+			"stardust": starting_shards(),
 			"day_key": "",
 			"earned": {"old": 0, "jobs_trips": 0, "steps": 0},
+			"starter_granted": true,
 		}
 	if not s.has("collection"):
 		s["collection"] = {

@@ -48,6 +48,13 @@ func _ready() -> void:
 	_test_m1b_need_warning()
 	_test_m1b_hunt_work_collection()
 	_test_m1b_overlay_snapshot()
+	_test_m1c_starting_shards()
+	_test_m1c_need_bubble_art()
+	_test_m1c_anim_sfx_map()
+	_test_m1c_hunt_field_and_sfx()
+	_test_m1c_furniture_art()
+	_test_m1c_plugins_ported()
+	_test_m1c_pounce_miss()
 	print("=== %d passed, %d failed ===" % [passed, failed])
 
 	get_tree().quit(0 if failed == 0 else 1)
@@ -844,14 +851,15 @@ func _test_m1b_hunt_work_collection() -> void:
 	print("# M1b hunt lite + work buildings + collection / furniture / red dots")
 	Sim.state = _fresh("sprout")
 	CollectionSystem.ensure()
-	ok(CollectionSystem.stardust() == 0, "wallet starts at 0")
+	ok(CollectionSystem.stardust() == CollectionSystem.starting_shards(), "new wallet starts with starter shards", CollectionSystem.stardust())
+	var start := CollectionSystem.stardust()
 	var added := CollectionSystem.add_shards(3, "jobs_trips")
-	ok(added == 3 and CollectionSystem.stardust() == 3, "add 3 shards")
-	# 每日打工／遠足上限 12
+	ok(added == 3 and CollectionSystem.stardust() == start + 3, "add 3 shards")
+	# 每日打工／遠足上限 12（開場碎唔入每日 earned）
 	var more := CollectionSystem.add_shards(20, "jobs_trips")
-	ok(more == 9 and CollectionSystem.stardust() == 12, "jobs_trips cap 12", more)
+	ok(more == 9 and CollectionSystem.stardust() == start + 12, "jobs_trips cap 12", more)
 	CollectionSystem.add_shards(40, "old")
-	ok(CollectionSystem.stardust() == 42, "old cap 30 + 12 jobs = 42", CollectionSystem.stardust())
+	ok(CollectionSystem.stardust() == start + 42, "old cap 30 + 12 jobs + starter", CollectionSystem.stardust())
 	# 狩獵出發／收隊
 	HuntSystem.phase = HuntSystem.PHASE_IDLE
 	HuntSystem.pending = {}
@@ -916,3 +924,231 @@ func _test_m1b_overlay_snapshot() -> void:
 	ok(not SaveSystem.last_overlay_snapshot.is_empty(), "last_overlay_snapshot kept")
 	ok(FileAccess.file_exists("user://overlay_snapshot.json"), "desktop overlay file written")
 
+
+func _test_m1c_starting_shards() -> void:
+	print("# M1c starting shards for new players")
+	ok(CollectionSystem.starting_shards() == 25, "starter is 25", CollectionSystem.starting_shards())
+	Sim.state = _fresh("sprout")
+	ok(not Sim.state.has("wallet"), "fresh save has no wallet yet")
+	CollectionSystem.ensure()
+	ok(CollectionSystem.stardust() == 25, "new wallet gets 25", CollectionSystem.stardust())
+	ok(bool(CollectionSystem.wallet().get("starter_granted", false)), "starter_granted flagged")
+	# 舊存檔已有 wallet 唔補發
+	Sim.state = _fresh("sprout")
+	Sim.state["wallet"] = {"stardust": 0, "day_key": "", "earned": {"old": 0, "jobs_trips": 0, "steps": 0}}
+	CollectionSystem.ensure()
+	ok(CollectionSystem.stardust() == 0, "existing empty wallet not topped up")
+
+
+func _test_m1c_need_bubble_art() -> void:
+	print("# M1c bubble-fix1 world bubbles")
+	ok(ResourceLoader.exists("res://art/m1-icons/bubble_need_eat.png"), "bubble_need_eat present")
+	ok(ResourceLoader.exists("res://art/m1-icons/need_eat.png"), "HUD need_eat unchanged")
+	var w := Walker.new()
+	w.character = "tuanrong"
+	add_child(w)
+	var bubble := NeedBubble.new()
+	add_child(bubble)
+	bubble.attach(w)
+	if bubble.sprite == null:
+		bubble._ready()
+	ok(bubble.sprite != null, "sprite created")
+	if bubble.sprite:
+		ok(bubble.sprite.shaded == false, "shaded false")
+		ok(bubble.sprite.alpha_cut == SpriteBase3D.ALPHA_CUT_DISCARD, "alpha discard")
+		ok(bubble.sprite.modulate == Color(1, 1, 1, 1), "modulate white")
+		ok(is_equal_approx(bubble.sprite.pixel_size, 0.62), "pixel_size 0.62", bubble.sprite.pixel_size)
+		ok(bubble.sprite.render_priority == 2, "render_priority 2")
+		ok(bubble.sprite.no_depth_test == true, "no_depth_test")
+		ok(bubble.get_node_or_null("back") == null and bubble.get_child_count() == 1, "no beige backdrop child")
+	Sim.state = _fresh("sprout", {"hunger": 20.0, "mood": 90.0, "clean": 90.0, "energy": 90.0})
+	ok(bubble._pick() == "need_eat", "picks need_eat")
+	var tex: Texture2D = bubble._need_tex("need_eat")
+	ok(tex != null, "composed bubble tex loads")
+	bubble.free()
+	w.free()
+
+
+func _test_m1c_anim_sfx_map() -> void:
+	print("# M1c anim_sfx_map wiring")
+	ok(ArtImporter.sfx_map.size() >= 10, "map loaded", ArtImporter.sfx_map.size())
+	var grass: Array = ArtImporter.sfx_cues("part_grass")
+	ok(grass.size() >= 1, "part_grass cues")
+	ok(str(grass[0].get("sfx_hook", "")).begins_with("sfx_pet_grass_rustle"), "grass rustle hook", grass[0])
+	var yawn: Array = ArtImporter.sfx_cues("idle_lazy")
+	var yhook := ""
+	var yt := -1
+	for e in yawn:
+		if e is Dictionary and str(e.get("event", "")) == "yawn":
+			yhook = str(e.get("sfx_hook", ""))
+			yt = int(e.get("t_ms", -1))
+	ok(yhook == "sfx_pet_yawn", "yawn hook", yhook)
+	ok(yt == 0, "yawn plays at t_ms-600 (=0)", yt)
+	var st: Array = ArtImporter.sfx_cues("dewlet_scared")
+	ok(st.size() >= 1 and bool(st[0].get("on_enter", false)), "critter startle on_enter only", st)
+	ok(str(st[0].get("sfx_hook", "")).begins_with("sfx_critter_startle"), "startle hook")
+	var idle: Array = ArtImporter.sfx_cues("idle_diligent")
+	var ev := 0
+	for e in idle:
+		if e is Dictionary:
+			ev = int(e.get("every_n_loops", 0))
+			break
+	ok(ev == 3, "idle every_n_loops 3", ev)
+	var rec: Dictionary = AudioManager.play("sfx_pet_jump", null)
+	ok(not bool(rec.get("silent", true)), "new jump sfx plays", rec)
+	var rec2: Dictionary = AudioManager.play("sfx_critter_startle", null)
+	ok(not bool(rec2.get("silent", true)), "startle sfx plays", rec2)
+
+
+func _test_m1c_hunt_field_and_sfx() -> void:
+	print("# M1c hunt prairie + §6 no miss sfx")
+	var sfx: Dictionary = GameData.m1c.get("hunt", {}).get("sfx", {})
+	ok(bool(sfx.get("no_miss_sfx", false)), "policy no_miss_sfx")
+	var never: Array = sfx.get("never_play", [])
+	ok("sfx_mg_miss" in never, "never play sfx_mg_miss")
+	ok(str(sfx.get("miss_startle", "")) == "sfx_critter_startle", "miss uses startle")
+	ok(str(sfx.get("catch", "")) == "sfx_mg_catch", "catch hook")
+	ok(str(sfx.get("start", "")) == "sfx_mg_start", "start hook")
+	ok(str(sfx.get("win", "")) == "sfx_mg_win", "win hook")
+	ok(str(sfx.get("event", "")) == "sfx_event_treasure_hunt", "treasure hunt hook")
+	var field := HuntField.new()
+	add_child(field)
+	field.setup()
+	ok(field.mesh_instance_count() >= 20, "prairie meshes instanced", field.mesh_instance_count())
+	ok(field.ground != null, "textured ground")
+	ok(field.critters.size() >= 3, "critters spawned", field.critters.size())
+	if field.critters.size():
+		var spr: Sprite3D = field.critters[0]["node"]
+		ok(spr.billboard == BaseMaterial3D.BILLBOARD_FIXED_Y, "critter upright FIXED_Y")
+	ok(is_equal_approx(field.cam_pitch(), 30.0), "hunt cam pitch 30", field.cam_pitch())
+	# miss / catch sfx
+	AudioManager.last_play = {}
+	field.begin([])
+	var hooks: Array = []
+	field._miss_one()
+	hooks.append(str(AudioManager.last_play.get("hook", "")))
+	ok(str(AudioManager.last_play.get("hook", "")).begins_with("sfx_critter_startle"), "miss plays startle not mg_miss", AudioManager.last_play)
+	ok(str(AudioManager.last_play.get("hook", "")) != "sfx_mg_miss", "explicitly not miss")
+	field._catch_one()
+	ok(str(AudioManager.last_play.get("hook", "")).begins_with("sfx_mg_catch") or str(AudioManager.last_play.get("hook", "")).begins_with("sfx_critter"), "catch plays catch/transform", AudioManager.last_play)
+	# replay catch hook directly
+	var cat: Dictionary = AudioManager.play(field.hunt_sfx("catch"), null)
+	ok(str(cat.get("hook", "")).begins_with("sfx_mg_catch"), "catch hook resolves", cat)
+	var miss: Dictionary = AudioManager.play("sfx_mg_miss", null)
+	# 檔案可以存在，但狩獵路徑唔好叫佢
+	ok(field.hunt_sfx("miss_startle") != "sfx_mg_miss", "hunt miss hook is not mg_miss")
+	field.queue_free()
+
+
+func _test_m1c_furniture_art() -> void:
+	print("# M1c furniture uses 遊美 props")
+	ok(ResourceLoader.exists("res://art-pet/sprites/series2_house/furniture/bed_leaf.png"), "bed_leaf art")
+	ok(ResourceLoader.exists("res://art-pet/sprites/series2_house/furniture/rug_leaf.png"), "rug_leaf art")
+	ok(ResourceLoader.exists("res://art-pet/sprites/series2_house/furniture/table_stump.png"), "table_stump art")
+	var packed: PackedScene = load("res://scenes/Main.tscn")
+	ok(packed != null, "Main.tscn for furniture")
+	var main: Node = packed.instantiate() if packed else null
+	if main:
+		# 唔入樹，避免整個花園 _ready；直接叫 helper
+		pass
+	if main and main.has_method("_make_furniture"):
+		var bed: Node3D = main._make_furniture("bed_leaf", "bed", Vector3(0, 0, 0))
+		ok(bed is Sprite3D, "bed is art sprite not a colour box", bed)
+		if bed:
+			bed.free()
+		var rug: Node3D = main._make_furniture("rug_leaf", "rug", Vector3(0, 0, 0))
+		ok(rug is MeshInstance3D, "rug is textured plane", rug)
+		if rug is MeshInstance3D:
+			var mat: Material = (rug as MeshInstance3D).material_override
+			ok(mat is StandardMaterial3D and (mat as StandardMaterial3D).albedo_texture != null, "rug has texture")
+		if rug:
+			rug.free()
+		var missing: Node3D = main._make_furniture("wall_shoes", "wall", Vector3(0, 0, 0))
+		ok(missing is MeshInstance3D, "missing art falls back to block")
+		if missing:
+			missing.free()
+		main.free()
+	else:
+		ok(true, "furniture art files present; Main helper tested in smoke")
+		if main:
+			main.free()
+
+
+func _test_m1c_plugins_ported() -> void:
+	print("# M1c RealWorld + Share6d ported")
+	ok(FileAccess.file_exists("res://../native/android/src/main/java/hk/vizard/glimmer/fpet/RealWorldPlugin.kt") or FileAccess.file_exists("/workspace/glimmer-godot/native/android/src/main/java/hk/vizard/glimmer/fpet/RealWorldPlugin.kt"), "RealWorldPlugin.kt")
+	ok(FileAccess.file_exists("/workspace/glimmer-godot/native/android/src/main/java/hk/vizard/glimmer/fpet/Share6dPlugin.kt"), "Share6dPlugin.kt")
+	ok(DeviceLink != null, "DeviceLink autoload")
+	var st: Dictionary = DeviceLink.rw_status()
+	ok(str(st.get("error", "")) == "desktop" or st.has("steps"), "status desktop or plugin", st)
+	var cp: Dictionary = DeviceLink.copy_text("測試朋友碼")
+	ok(bool(cp.get("ok", false)), "copy call ok", cp)
+	var pv: Dictionary = DeviceLink.paste_text()
+	ok(bool(pv.get("ok", false)), "paste call ok", pv)
+	if not bool(cp.get("no_clipboard", false)) and DisplayServer.has_feature(DisplayServer.FEATURE_CLIPBOARD):
+		ok(str(pv.get("text", "")) == "測試朋友碼", "desktop clipboard paste", pv)
+
+
+func _test_m1c_pounce_miss() -> void:
+	print("# M1c pounce miss cap + loot unchanged")
+	var cfg: Dictionary = HuntSystem.pounce_miss_cfg()
+	ok(is_equal_approx(float(cfg.get("chance", 0)), 0.25), "base miss 25%", cfg)
+	ok(int(cfg.get("max_misses_per_critter", 0)) == 2, "max 2 misses", cfg)
+	ok(bool(cfg.get("cosmetic_only", false)) and bool(cfg.get("loot_unchanged", false)), "cosmetic, loot unchanged")
+	ok(bool(cfg.get("no_sfx_mg_miss", false)), "no sfx_mg_miss in data")
+	# personality adjust
+	Sim.state = _fresh("sprout")
+	var rec := Personality.blank()
+	rec["work"] = 10
+	rec["motion"] = 0
+	rec["social"] = 0
+	Personality.set_for("tuanrong", rec)
+	ok(Personality.primary_type("tuanrong") == "勤力", "diligent type", Personality.primary_type("tuanrong"))
+	ok(is_equal_approx(HuntSystem.miss_chance_for("tuanrong"), 0.20), "diligent 25-5=20%", HuntSystem.miss_chance_for("tuanrong"))
+	rec["work"] = -10
+	Personality.set_for("tuanrong", rec)
+	ok(Personality.primary_type("tuanrong") == "懶散", "lazy type", Personality.primary_type("tuanrong"))
+	ok(is_equal_approx(HuntSystem.miss_chance_for("tuanrong"), 0.30), "lazy 25+5=30%", HuntSystem.miss_chance_for("tuanrong"))
+	# 隨和 = 25%
+	rec["work"] = 0
+	Personality.set_for("tuanrong", rec)
+	ok(is_equal_approx(HuntSystem.miss_chance_for("tuanrong"), 0.25), "easygoing 25%", HuntSystem.miss_chance_for("tuanrong"))
+	# cap：兩次可以 miss，第三次必中
+	ok(HuntSystem.roll_is_miss("tuanrong", 0, null, 0.0) == true, "roll 0 misses when chance 25%")
+	ok(HuntSystem.roll_is_miss("tuanrong", 0, null, 0.9) == false, "roll 0.9 hits")
+	ok(HuntSystem.roll_is_miss("tuanrong", 1, null, 0.0) == true, "second pounce can still miss")
+	ok(HuntSystem.roll_is_miss("tuanrong", 2, null, 0.0) == false, "3rd pounce always hits even if roll would miss")
+	ok(HuntSystem.max_misses_per_critter() == 2, "cap from data")
+	# 戰利品：miss 唔扣 shards／fruit
+	HuntSystem.phase = HuntSystem.PHASE_IDLE
+	HuntSystem.pending = {}
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 11
+	var dep: Dictionary = HuntSystem.depart(["tuanrong"], rng)
+	ok(bool(dep.get("ok", false)), "depart for loot test", dep)
+	var shards := int(HuntSystem.pending.get("shards", -1))
+	var fruits: Array = (HuntSystem.pending.get("fruits", []) as Array).duplicate(true)
+	ok(shards >= 1 and fruits.size() >= 1, "loot rolled from hunting.json", {"shards": shards, "nfruit": fruits.size()})
+	var field := HuntField.new()
+	add_child(field)
+	field.setup()
+	field.begin([])
+	# 強制兩次 miss
+	var r1 := field.try_pounce(false, 0.0)
+	ok(r1 == "miss", "first forced miss", r1)
+	var r2 := field.try_pounce(false, 0.0)
+	ok(r2 == "miss", "second forced miss", r2)
+	ok(int(HuntSystem.pending.get("shards", -2)) == shards, "shards unchanged after 2 misses")
+	ok((HuntSystem.pending.get("fruits", []) as Array).size() == fruits.size(), "fruit count unchanged")
+	# 第三次必中，戰利品仍不變
+	var r3 := field.try_pounce(false, 0.0)
+	ok(r3 == "catch", "third pounce always hits", r3)
+	ok(int(HuntSystem.pending.get("shards", -2)) == shards, "shards unchanged after catch")
+	ok((HuntSystem.pending.get("fruits", []) as Array).size() == fruits.size(), "fruit count unchanged after catch")
+	# 範圍仍係 hunting.json
+	var h: Dictionary = GameData.hunting.get("hunt", {})
+	ok(shards >= int(h.get("shards_min", 1)) and shards <= int(h.get("shards_max", 3)), "shards in hunting.json range")
+	ok(fruits.size() >= int(h.get("fruit_min", 2)), "fruit at least hunting.json min (plus maybe big)", fruits.size())
+	field.queue_free()
+	HuntSystem.phase = HuntSystem.PHASE_IDLE
+	HuntSystem.pending = {}

@@ -1,6 +1,6 @@
 extends Node
 ## M1b 玩法預覽：viewport 逐幀出圖，再交 ffmpeg 轉 GIF。
-## GODOT_M1B_GIF=hunt|work|collect|care|bubbles ；GODOT_M1B_FRAME_DIR=...
+## GODOT_M1C_GIF=hunt|work|collect|care|bubbles ；GODOT_M1C_FRAME_DIR=...
 
 const FPS := 15
 const SECS := 8.0
@@ -15,12 +15,16 @@ var _did3 := false
 
 
 func _ready() -> void:
-	_feat = str(OS.get_environment("GODOT_M1B_GIF"))
+	_feat = str(OS.get_environment("GODOT_M1C_GIF"))
+	if _feat == "":
+		_feat = str(OS.get_environment("GODOT_M1B_GIF"))
 	if _feat == "":
 		_feat = str(OS.get_environment("GODOT_M1A_GIF"))
 	if _feat == "":
 		_feat = "hunt"
-	var d := str(OS.get_environment("GODOT_M1B_FRAME_DIR"))
+	var d := str(OS.get_environment("GODOT_M1C_FRAME_DIR"))
+	if d == "":
+		d = str(OS.get_environment("GODOT_M1B_FRAME_DIR"))
 	if d == "":
 		d = str(OS.get_environment("GODOT_M1A_FRAME_DIR"))
 	if d != "":
@@ -35,7 +39,7 @@ func _ready() -> void:
 				da.remove(fn)
 			fn = da.get_next()
 		da.list_dir_end()
-	print("=== M1b gif ", _feat, " → ", _dir, " ===")
+	print("=== M1c gif ", _feat, " → ", _dir, " ===")
 	OS.set_environment("GODOT_M1A_DEMO", "1")
 	QualitySettings.set_tier(QualitySettings.Tier.LOW)
 	var packed: PackedScene = load("res://scenes/Main.tscn")
@@ -99,6 +103,9 @@ func _setup_feat() -> void:
 			if CollectionSystem:
 				CollectionSystem.add_shards(25, "old")
 				CollectionSystem.notify("collection", true)
+				CollectionSystem.place("bed_leaf")
+				if _main.has_method("refresh_furniture"):
+					_main.refresh_furniture()
 		"hunt":
 			if _main.has_method("qa_overview"):
 				_main.qa_overview()

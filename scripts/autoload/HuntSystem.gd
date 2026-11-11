@@ -257,3 +257,38 @@ func mark_worked(pet_id: String) -> void:
 	var used: Dictionary = h.get("worked_or_hunted", {})
 	used[str(pet_id)] = true
 	h["worked_or_hunted"] = used
+
+
+func pounce_miss_cfg() -> Dictionary:
+	var h: Dictionary = hdata().get("hunt", {})
+	var cfg: Dictionary = h.get("pounce_miss", {})
+	return cfg
+
+
+func miss_chance_for(pet_id: String) -> float:
+	var cfg := pounce_miss_cfg()
+	var ch := float(cfg.get("chance", 0.25))
+	var typ := ""
+	if Personality and pet_id != "":
+		typ = str(Personality.primary_type(pet_id))
+	var adj: Dictionary = cfg.get("personality_adjust", {})
+	if typ != "" and adj.has(typ):
+		ch += float(adj[typ])
+	return clampf(ch, 0.0, 1.0)
+
+
+func max_misses_per_critter() -> int:
+	return int(pounce_miss_cfg().get("max_misses_per_critter", pounce_miss_cfg().get("always_hit_after_misses", 2)))
+
+
+## misses_so_far >= cap → 呢一次必中。force 0..1 可覆寫 rng（測試用）。
+func roll_is_miss(pet_id: String, misses_so_far: int, rng: RandomNumberGenerator = null, force: float = -1.0) -> bool:
+	if misses_so_far >= max_misses_per_critter():
+		return false
+	var r := force
+	if r < 0.0:
+		if rng == null:
+			rng = RandomNumberGenerator.new()
+			rng.randomize()
+		r = rng.randf()
+	return r < miss_chance_for(pet_id)

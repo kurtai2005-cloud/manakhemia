@@ -28,6 +28,7 @@ var live_clip := ""
 var live_frames: Array = []
 var live_i := 0
 var live_t := 0.0
+var _clip_loops := 0
 var _sfx_fired: Dictionary = {}
 var character := "tuanrong"
 var body_size := "L"  # S / M / L；clip 共用，各自用自己尺寸同 anchor
@@ -196,6 +197,7 @@ func _maybe_liveliness() -> void:
 	live_i = 0
 	live_t = 0.0
 	_clip_elapsed = 0.0
+	_clip_loops = 0
 	_sfx_fired.clear()
 	_apply_live_display(true)
 	_fire_sfx(0)
@@ -241,12 +243,16 @@ func _fire_sfx(frame_index: int) -> void:
 			hit = true
 		if not hit:
 			continue
+		var every_n := int(cue.get("every_n_loops", 1))
+		if every_n > 1 and (_clip_loops % every_n) != 0:
+			continue
+		if bool(cue.get("on_enter", false)) and _clip_loops > 0:
+			continue
 		_sfx_fired[key] = true
 		# hook 係 null → 靜音（仍然 emit 方便測試）
 		var hook_s := "" if hook == null else str(hook)
+		# 只 emit；AudioManager 已 connect sfx_cue，避免播兩次
 		ArtImporter.sfx_cue.emit(live_clip, hook_s, frame_index, self)
-		if hook_s != "" and AudioManager:
-			AudioManager.play(hook_s, self)
 
 
 func _anim(dt: float) -> void:
@@ -263,7 +269,17 @@ func _anim(dt: float) -> void:
 					if loop:
 						live_i = 0
 						_clip_elapsed = 0.0
-						_sfx_fired.clear()
+						_clip_loops += 1
+						var keep: Dictionary = {}
+						for cue2 in ArtImporter.sfx_cues(live_clip):
+							if not (cue2 is Dictionary):
+								continue
+							if bool(cue2.get("on_enter", false)):
+								var hk = cue2.get("sfx_hook", cue2.get("hook", null))
+								var kk := str(hk) if hk != null else str(cue2.get("id", ""))
+								if kk != "" and bool(_sfx_fired.get(kk, false)):
+									keep[kk] = true
+						_sfx_fired = keep
 					else:
 						live_clip = ""
 						live_i = 0
@@ -442,6 +458,7 @@ func play_live_clip(name: String, loop: bool = false) -> bool:
 	live_i = 0
 	live_t = 0.0
 	_clip_elapsed = 0.0
+	_clip_loops = 0
 	_sfx_fired.clear()
 	_apply_live_display(true)
 	_fire_sfx(0)

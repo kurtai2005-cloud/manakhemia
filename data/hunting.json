@@ -29,7 +29,24 @@
     "stardust_total_daily_cap_unchanged": 47,
     "no_injury": true,
     "no_fail_penalty": true,
-    "offline_counts": true
+    "offline_counts": true,
+    "pounce_miss": {
+      "_note": "觀看時撲擊miss係化妝（受驚走位＋再追），唔扣戰利品、冇傷害。數字唔好寫死喺腳本。",
+      "chance": 0.25,
+      "personality_adjust": {
+        "勤力": -0.05,
+        "diligent": -0.05,
+        "懶散": 0.05,
+        "lazy": 0.05
+      },
+      "max_misses_per_critter": 2,
+      "always_hit_after_misses": 2,
+      "cosmetic_only": true,
+      "loot_unchanged": true,
+      "no_sfx_mg_miss": true,
+      "retry_sec": 1.6,
+      "flee_units": 36
+    }
   },
   "long_trip_unchanged": {
     "_src": "long5b.js:20; core-loop-3d-v1.md:§6",

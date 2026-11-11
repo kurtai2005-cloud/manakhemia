@@ -151,6 +151,20 @@ def patch_manifest(path: Path) -> None:
         md.set(f"{AND}name", "org.godotengine.plugin.v2.GlimmerOverlay")
         md.set(f"{AND}value", "hk.vizard.glimmer.fpet.GlimmerOverlayPlugin")
 
+    def ensure_plugin(meta_name: str, cls: str) -> None:
+        hit = False
+        for el in app.findall("meta-data"):
+            if el.get(f"{AND}name") == meta_name:
+                el.set(f"{AND}value", cls)
+                hit = True
+        if not hit:
+            md = ET.SubElement(app, "meta-data")
+            md.set(f"{AND}name", meta_name)
+            md.set(f"{AND}value", cls)
+
+    ensure_plugin("org.godotengine.plugin.v2.RealWorld", "hk.vizard.glimmer.fpet.RealWorldPlugin")
+    ensure_plugin("org.godotengine.plugin.v2.Share6d", "hk.vizard.glimmer.fpet.Share6dPlugin")
+
     # InitializationProvider authority
     prov = find_child(app, "provider", "androidx.startup.InitializationProvider")
     if prov is None:

@@ -1,0 +1,58 @@
+{
+  "_file": "m1c.json",
+  "_title": "M1c 遊程設定：草原實裝、傢俬美術、開場碎、狩獵音效",
+  "starting_shards": 25,
+  "starting_shards_note": "遊策：新玩家開場 25 星星碎。最平葉仔地氈 15、樹樁檯 20、小盆栽層架 18；頭幾分鐘夠買一件中平傢俬，又唔係一次過塞滿。只喺新存檔第一次建立 wallet 時發，舊存檔唔補。",
+  "hunt": {
+    "field_origin": [
+      0,
+      0,
+      520
+    ],
+    "camera": {
+      "target": [
+        0,
+        30,
+        -72
+      ],
+      "pitchDeg": 30,
+      "dist": 580,
+      "fovDeg": 40,
+      "overview_pet_min_frac": 0.1,
+      "use_garden_width": false,
+      "force_overview_pitch_min": false
+    },
+    "sfx": {
+      "start": "sfx_mg_start",
+      "event": "sfx_event_treasure_hunt",
+      "catch": "sfx_mg_catch",
+      "win": "sfx_mg_win",
+      "miss_startle": "sfx_critter_startle",
+      "no_miss_sfx": true,
+      "never_play": [
+        "sfx_mg_miss"
+      ]
+    },
+    "pounce_miss_src": "data/hunting.json hunt.pounce_miss"
+  },
+  "bubbles": {
+    "art": "res://art/m1-icons/bubble_%s.png",
+    "pixel_size": 0.62,
+    "shaded": false,
+    "alpha_cut": "discard",
+    "modulate": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "render_priority": 2,
+    "no_depth_test": true,
+    "offset_above_head": 6,
+    "tail_px": 26
+  },
+  "furniture": {
+    "art_dir": "res://art-pet/sprites/series2_house/furniture/",
+    "pixel_size": 1.0
+  }
+}
