@@ -28,6 +28,7 @@ def mix(*a):
     for x in a: y[:len(x)]+=x
     return y
 n=lambda m:440*2**((m-69)/12)
+import os; os.makedirs("tmp",exist_ok=True)
 S={}
 S['sfx_tap']=mix(tone(1200,0.08,decay=45,harm=(1,2),amps=(1,.25)),0.3*noise(0.02,2000,8000,decay=150))
 S['sfx_confirm']=seq([(0,tone(n(76),0.14,decay=14,harm=(1,2),amps=(1,.3))),(0.07,tone(n(83),0.25,decay=9,harm=(1,2),amps=(1,.3)))])
