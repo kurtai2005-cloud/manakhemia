@@ -1,157 +1,188 @@
 extends GutTest
-## 草稿。未接入遊程，唔好喺 project.godot 登記。
-## 契約係本檔 _play。遊程播放器好之後，測試改呼叫佢哋嘅函式，預期表唔好改。
-## 依據 art/anim-timing @ 330d3a57，toleranceFrames=1。
-## 聲線：sfx_pet_<動作>_<角色>_a/b。未有角色檔就用團絨檔，再加體型 pitch。
+## 草稿。未接入遊程，唔好寫入 project.godot。
+## 契約係本檔 _cue。遊程播放器好之後，測試改呼叫佢哋嘅函式。
+## art/anim-timing-fix1 @ f6d60b5e 的 42 個 event，
+## 配聲跟 audio/pet-plan-a @ 07762d21 的 anim_sfx_map.json。
+## toleranceFrames=1。遊音新檔能量峰 ≤27 ms。
 
 const TOLERANCE_FRAMES := 1
-const ACTORS := ["tuanrong", "kid", "visitor"]
 const PITCH := {"S": 1.12, "M": 1.0, "L": 0.88}
-## 有聲線。噴嚏係命名例子；呵欠、開心係 timing 入面已接嘅聲線。
-const VOICED := ["sneeze", "yawn", "happy"]
+const YAWN_PREROLL_MS := 600
+## clip|event|frame|t_ms|fps|hook|preroll。hook 空＝無聲。
+const ROWS := [
+	"part_grass|grass_rustle|2|250|8|sfx_pet_grass_rustle_a|0",
+	"pounce|jump|2|250|8|sfx_pet_jump_a|0",
+	"pounce|land|4|500|8|sfx_pet_step_hop_a|0",
+	"carry_fruit|footstep|0|0|10|sfx_pet_step_walk_a|0",
+	"carry_fruit|footstep|3|300|10|sfx_pet_step_walk_a|0",
+	"cheer|jump|1|100|10|sfx_pet_jump_a|0",
+	"cheer|cheer_peak|2|200|10|sfx_pet_happy|0",
+	"cheer|land|4|400|10|sfx_pet_step_hop_a|0",
+	"dewlet_scared|startle|0|0|6|sfx_critter_startle_a|0",
+	"dewlet_tofruit|shake|0|0|8|sfx_critter_shake_a|0",
+	"dewlet_tofruit|transform|3|375|8|sfx_critter_transform_a|0",
+	"dewlet_tofruit|roll|4|500|8|sfx_critter_roll_a|0",
+	"loambun_scared|startle|0|0|6|sfx_critter_startle_a|0",
+	"loambun_tofruit|shake|0|0|8|sfx_critter_shake_a|0",
+	"loambun_tofruit|transform|3|375|8|sfx_critter_transform_a|0",
+	"loambun_tofruit|roll|4|500|8|sfx_critter_roll_a|0",
+	"mossback_scared|startle|0|0|6|sfx_critter_startle_a|0",
+	"mossback_tofruit|shake|0|0|8|sfx_critter_shake_a|0",
+	"mossback_tofruit|transform|3|375|8|sfx_critter_transform_a|0",
+	"mossback_tofruit|roll|4|500|8|sfx_critter_roll_a|0",
+	"seedfluff_scared|startle|0|0|6|sfx_critter_startle_a|0",
+	"seedfluff_tofruit|shake|0|0|8|sfx_critter_shake_a|0",
+	"seedfluff_tofruit|transform|3|375|8|sfx_critter_transform_a|0",
+	"seedfluff_tofruit|roll|4|500|8|sfx_critter_roll_a|0",
+	"mail_post|footstep|0|0|8|sfx_pet_step_walk_a|0",
+	"mail_post|letter_drop|4|500|8|sfx_pet_letter_drop_a|0",
+	"mail_post|clap|5|625|8|sfx_pet_clap_a|0",
+	"idle_lively|hop_peak|2|250|8||0",
+	"idle_lively|land|4|500|8|sfx_pet_step_hop_a|0",
+	"idle_diligent|pickup|2|250|8|sfx_pet_pickup_a|0",
+	"idle_diligent|place|5|625|8|sfx_pet_place_a|0",
+	"idle_lazy|yawn|3|600|5|sfx_pet_yawn|600",
+	"idle_clingy|reach|2|250|8|sfx_pet_reach_a|0",
+	"scratch_head|scratch|2|250|8|sfx_pet_scratch_a|0",
+	"stretch|stretch|2|250|8|sfx_pet_stretch_a|0",
+	"proud_hips|hands_hips|2|250|8|sfx_pet_proud_a|0",
+	"point_frame|point|3|375|8|sfx_pet_point_a|0",
+	"snail_postman_snail_deliver|offer|3|375|8|sfx_visitor_offer_letter|0",
+	"mushroom_granny_granny_seed|nod|2|250|8|sfx_visitor_nod_a|0",
+	"mushroom_granny_granny_seed|offer|3|375|8|sfx_visitor_offer_seed|0",
+	"firefly_vendor_vendor_show|rattle|2|250|8|sfx_visitor_rattle_a|0",
+	"firefly_vendor_vendor_show|rattle|4|500|8|sfx_visitor_rattle_a|0",
+]
+## 循環 clip 唔好每圈都響。數值係 clip 長度 ms。
+const LOOP_MS := {
+	"idle_diligent": 750,
+	"idle_clingy": 750,
+	"idle_lazy": 1200,
+	"snail_postman_snail_deliver": 750,
+	"mushroom_granny_granny_seed": 750,
+	"firefly_vendor_vendor_show": 750,
+}
+
+
+func test_forty_two_events_forty_one_files_and_hop_peak_silent() -> void:
+	assert_eq(ROWS.size(), 42)
+	var voiced := 0
+	var saw_hop := false
+	for row in ROWS:
+		var cue := _cue(row, "tuanrong", "M", true, 0, -1)
+		var p: PackedStringArray = row.split("|")
+		if p[1] == "hop_peak" and int(p[3]) == 250:
+			saw_hop = true
+			assert_eq(p[0], "idle_lively")
+			assert_false(cue.play)
+			assert_eq(cue.stream, "")
+		else:
+			assert_true(cue.play, row)
+			assert_false(cue.stream.is_empty(), row)
+			voiced += 1
+	assert_true(saw_hop)
+	assert_eq(voiced, 41)
+
+
+func test_yawn_starts_at_t_minus_600() -> void:
+	var row := _row("idle_lazy", "yawn")
+	var cue := _cue(row, "tuanrong", "M", true, 0, -1)
+	assert_eq(cue.stream, "sfx_pet_yawn")
+	assert_eq(cue.play_ms, 600 - YAWN_PREROLL_MS)
+	assert_eq(cue.play_ms, 0)
+	# 能量峰約 603 ms，對住事件 600。差 3 ms，細過一幀（fps 5 → 200 ms）。
+	assert_true(_within_frames(603, 600, 5))
+
+
+func test_pitch_follows_size() -> void:
+	var row := _row("cheer", "cheer_peak")
+	assert_almost_eq(_cue(row, "kid", "S", true, 0, -1).pitch, 1.12, 0.0001)
+	assert_almost_eq(_cue(row, "tuanrong", "M", true, 0, -1).pitch, 1.0, 0.0001)
+	assert_almost_eq(_cue(row, "visitor", "L", true, 0, -1).pitch, 0.88, 0.0001)
+
+
+func test_startle_only_when_entering() -> void:
+	for clip in ["dewlet_scared", "loambun_scared", "mossback_scared", "seedfluff_scared"]:
+		var row := _row(clip, "startle")
+		var enter := _cue(row, "critter", "S", true, 0, -1)
+		assert_true(enter.play, clip)
+		assert_eq(enter.stream, "sfx_critter_startle_a")
+		var looped := _cue(row, "critter", "S", false, 667, 0)
+		assert_false(looped.play, clip)
+		assert_eq(looped.stream, "")
+
+
+func test_loop_sfx_not_every_cycle() -> void:
+	var cases := [
+		["idle_diligent", "pickup", 750],
+		["idle_clingy", "reach", 750],
+		["snail_postman_snail_deliver", "offer", 750],
+		["mushroom_granny_granny_seed", "nod", 750],
+		["firefly_vendor_vendor_show", "rattle", 750],
+		["idle_lazy", "yawn", 1200],
+	]
+	for c in cases:
+		var row := _row(c[0], c[1])
+		var first := _cue(row, "tuanrong", "M", true, 0, -1)
+		assert_true(first.play, c[0])
+		var again := _cue(row, "tuanrong", "M", false, int(c[2]) - 1, 0)
+		assert_false(again.play, c[0])
+		var later := _cue(row, "tuanrong", "M", false, int(c[2]), 0)
+		assert_true(later.play, c[0])
+
+
+func test_accent_stays_inside_one_frame() -> void:
+	# 新檔實測最慢 sfx_visitor_offer_letter 能量峰 27 ms。訪客 fps 8，一幀 125 ms。
+	assert_true(_within_frames(375 + 27, 375, 8))
+	# 現有 happy 峰 63 ms。cheer fps 10，一幀 100 ms，仍喺 1 幀內。
+	assert_true(_within_frames(200 + 63, 200, 10))
+	# 超過一幀就失敗。
+	assert_false(_within_frames(200 + 100, 200, 10))
+
+
+func _row(clip: String, event: String) -> String:
+	for row in ROWS:
+		var p: PackedStringArray = row.split("|")
+		if p[0] == clip and p[1] == event:
+			return row
+	push_error("missing " + clip + " " + event)
+	return ""
+
+
+func _within_frames(heard_ms: int, event_ms: int, fps: int) -> bool:
+	var frame_ms := int(round(1000.0 / float(fps)))
+	return absi(heard_ms - event_ms) <= frame_ms * TOLERANCE_FRAMES
+
+
+func _cue(row: String, _actor: String, size: String, entering: bool, now_ms: int, last_play_ms: int) -> Cue:
+	var p: PackedStringArray = row.split("|")
+	var clip := p[0]
+	var event := p[1]
+	var hook := p[5]
+	var preroll := int(p[6])
+	var out := Cue.new()
+	out.pitch = float(PITCH[size])
+	if hook.is_empty():
+		out.play = false
+		out.stream = ""
+		return out
+	if event == "startle" and not entering:
+		out.play = false
+		out.stream = ""
+		return out
+	if clip in LOOP_MS and last_play_ms >= 0:
+		if now_ms - last_play_ms < int(LOOP_MS[clip]):
+			out.play = false
+			out.stream = ""
+			return out
+	out.play = true
+	out.stream = hook
+	out.play_ms = int(p[3]) - preroll
+	return out
 
 
 class Cue:
 	var play: bool
 	var stream: String
 	var pitch: float
-	var actor: String
-	var fallback: bool
-
-
-func test_voice_follows_the_actor() -> void:
-	var files := PackedStringArray([
-		"sfx_pet_sneeze_tuanrong_a",
-		"sfx_pet_sneeze_kid_a",
-		"sfx_pet_sneeze_visitor_a",
-		"sfx_pet_yawn_kid_a",
-		"sfx_pet_happy_visitor_a",
-	])
-	for actor in ACTORS:
-		var cue := _play("sneeze", actor, "M", "a", "sfx_pet_sneeze_a", files)
-		assert_true(cue.play, actor)
-		assert_eq(cue.stream, "sfx_pet_sneeze_%s_a" % actor, actor)
-		assert_false(cue.fallback, actor)
-	var kid := _play("yawn", "kid", "M", "a", "sfx_pet_yawn", files)
-	assert_eq(kid.stream, "sfx_pet_yawn_kid_a")
-	var visitor := _play("happy", "visitor", "M", "a", "sfx_pet_happy", files)
-	assert_eq(visitor.stream, "sfx_pet_happy_visitor_a")
-	assert_ne(kid.stream, visitor.stream)
-
-
-func test_pitch_follows_size() -> void:
-	var files := PackedStringArray(["sfx_pet_scratch_a"])
-	assert_almost_eq(_play("scratch", "kid", "S", "a", "sfx_pet_scratch_a", files).pitch, 1.12, 0.0001)
-	assert_almost_eq(_play("scratch", "tuanrong", "M", "a", "sfx_pet_scratch_a", files).pitch, 1.0, 0.0001)
-	assert_almost_eq(_play("scratch", "visitor", "L", "a", "sfx_pet_scratch_a", files).pitch, 0.88, 0.0001)
-	# 有自己把聲都跟體型，唔好因為檔名已經分角色就用 1.0。
-	var voice := PackedStringArray(["sfx_pet_sneeze_kid_a", "sfx_pet_sneeze_kid_b"])
-	assert_almost_eq(_play("sneeze", "kid", "S", "a", "sfx_pet_sneeze_a", voice).pitch, 1.12, 0.0001)
-	assert_almost_eq(_play("sneeze", "kid", "L", "b", "sfx_pet_sneeze_b", voice).pitch, 0.88, 0.0001)
-
-
-func test_sneeze_and_voiced_actions_fall_back_to_tuanrong_plus_pitch() -> void:
-	var only_tuanrong := PackedStringArray([
-		"sfx_pet_sneeze_a",
-		"sfx_pet_sneeze_b",
-		"sfx_pet_yawn",
-		"sfx_pet_happy",
-	])
-	for actor in ["kid", "visitor"]:
-		for size in ["S", "M", "L"]:
-			var sneeze := _play("sneeze", actor, size, "a", "sfx_pet_sneeze_a", only_tuanrong)
-			assert_eq(sneeze.stream, "sfx_pet_sneeze_a", actor + size)
-			assert_true(sneeze.fallback, actor)
-			assert_almost_eq(sneeze.pitch, float(PITCH[size]), 0.0001)
-			var other := _play("sneeze", actor, size, "b", "sfx_pet_sneeze_b", only_tuanrong)
-			assert_eq(other.stream, "sfx_pet_sneeze_b")
-	# 團絨自己用現有檔，唔當借用別人。
-	var self_cue := _play("sneeze", "tuanrong", "M", "a", "sfx_pet_sneeze_a", only_tuanrong)
-	assert_eq(self_cue.stream, "sfx_pet_sneeze_a")
-	assert_false(self_cue.fallback)
-	assert_eq(_play("yawn", "kid", "S", "a", "sfx_pet_yawn", only_tuanrong).stream, "sfx_pet_yawn")
-	assert_eq(_play("happy", "visitor", "L", "a", "sfx_pet_happy", only_tuanrong).stream, "sfx_pet_happy")
-	assert_almost_eq(_play("yawn", "kid", "S", "a", "sfx_pet_yawn", only_tuanrong).pitch, 1.12, 0.0001)
-	# 有帶角色名嘅團絨檔，先用佢，唔好跳去舊名。
-	var named := PackedStringArray(["sfx_pet_sneeze_tuanrong_a", "sfx_pet_sneeze_a"])
-	assert_eq(_play("sneeze", "kid", "M", "a", "sfx_pet_sneeze_a", named).stream, "sfx_pet_sneeze_tuanrong_a")
-
-
-func test_action_and_sound_stay_within_one_frame() -> void:
-	# pounce，fps 8，6 幀。land 喺 frame 4、t_ms 500。每幀 125 ms。
-	var pounce: Array = [125, 125, 125, 125, 125, 125]
-	assert_true(_within(500, 4, pounce))
-	assert_true(_within(625, 4, pounce))
-	assert_false(_within(750, 4, pounce))
-	# idle_lazy yawn：frame 3、t_ms 600。fps 5，每幀 200 ms。聲峰對準 600，播放可以早 600 ms preroll。
-	var lazy: Array = [200, 200, 200, 200, 200, 200]
-	assert_true(_within(600, 3, lazy))
-	assert_eq(_accent_ms(0, 600), 600)
-	assert_true(_within(_accent_ms(0, 600), 3, lazy))
-	assert_false(_within(_accent_ms(0, 200), 3, lazy))
-
-
-func test_null_hook_stays_silent() -> void:
-	# idle_lively hop_peak，timing 寫 sfx_hook=null。
-	var files := PackedStringArray(["sfx_pet_step_hop_a", "sfx_pet_happy"])
-	var cue := _play("hop_peak", "tuanrong", "M", "a", null, files)
-	assert_false(cue.play)
-	assert_eq(cue.stream, "")
-	# 行路步而家都係 null。有步進檔都唔好播。
-	var step := _play("footstep", "kid", "S", "a", null, PackedStringArray(["sfx_pet_step_walk_a"]))
-	assert_false(step.play)
-	assert_eq(step.stream, "")
-
-
-func _within(play_ms: int, frame_index: int, frame_ms: Array) -> bool:
-	return absi(_frame_at(play_ms, frame_ms) - frame_index) <= TOLERANCE_FRAMES
-
-
-func _accent_ms(play_start_ms: int, preroll_ms: int) -> int:
-	return play_start_ms + preroll_ms
-
-
-func _frame_at(t_ms: int, frame_ms: Array) -> int:
-	var acc := 0
-	for i in frame_ms.size():
-		var dur: int = int(frame_ms[i])
-		if t_ms < acc + dur:
-			return i
-		acc += dur
-	if t_ms == acc and frame_ms.size() > 0:
-		return frame_ms.size()
-	return frame_ms.size()
-
-
-func _play(action: String, actor: String, size: String, variant: String, hook, files: PackedStringArray) -> Cue:
-	var cue := Cue.new()
-	cue.pitch = float(PITCH[size])
-	cue.actor = actor
-	if hook == null:
-		cue.play = false
-		cue.stream = ""
-		cue.fallback = false
-		return cue
-	cue.play = true
-	if action in VOICED:
-		var specific := "sfx_pet_%s_%s_%s" % [action, actor, variant]
-		if files.has(specific):
-			cue.stream = specific
-			cue.fallback = false
-			return cue
-		var named := "sfx_pet_%s_tuanrong_%s" % [action, variant]
-		if files.has(named):
-			cue.stream = named
-			cue.fallback = actor != "tuanrong"
-			return cue
-		var legacy_ab := "sfx_pet_%s_%s" % [action, variant]
-		if files.has(legacy_ab):
-			cue.stream = legacy_ab
-			cue.fallback = actor != "tuanrong"
-			return cue
-		cue.stream = "sfx_pet_%s" % action
-		cue.fallback = actor != "tuanrong"
-		return cue
-	cue.stream = str(hook)
-	cue.fallback = false
-	return cue
+	var play_ms: int
