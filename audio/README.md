@@ -464,3 +464,84 @@ Kurt 揀咗 **HD-2D「金邊玻璃・寶石光」UI**（取代 B2 繪本貼紙�
 **未有人聽過**——尤其：會唔會仍然太似 toast／popup、夠唔夠「泡泡」、細閃光夠唔夠聽到、手機喇叭 -18 LUFS 聽唔聽到。
 
 - 「欣賞」模式開住時唔播 `sfx_need_warning`（泡泡照出；遊策 §0.5，2026-11-11）。
+
+### 7.14 M1b 功能音＋狩獵 BGM（2026-11-11）
+
+為 M1b 新功能配聲：郵局、廚房、圖鑑、擺家具、狩獵。15 個新 SFX ＋ 1 條狩獵 BGM。現有檔一字未改。對照表：`audio/m1b_sfx_map.json`。生成：`tools/gen_sfx_m1b.py`、`tools/gen_bgm_hunt.py`。檢查：`tools/qa_audio.py --map m1b_sfx_map.json`（已加立體聲 BGM 循環接縫／整數小節／integrated LUFS）。試聽合輯（**唔入遊戲**）：`sfx/_preview_m1b.ogg`；聽感表：`audio/LISTEN_m1b.md`。一鍵：`PY=/workspace/audio-venv/bin/python bash tools/build_m1b.sh`。
+
+**未有人聽過**——全部只做數值 QA。
+
+#### SFX
+
+15 檔，`sfx/`。100% 原創程式合成（numpy/scipy），無取樣。規格：ogg Vorbis 44.1 kHz 單聲道 `-q:a 4`、`-fflags +bitexact`；HPF 120 Hz、LPF 6.5 kHz（>6 kHz 能量 0.00 %）；檔頭 3 ms 淡入、檔尾 20 ms 淡出＋10 ms 靜音（`sfx_kitchen_stir` 例外：0.500 s＝22,050 samples，圓周 EQ、C0 接縫，冇尾靜音）。峰值硬上限 -1 dBFS；純增益迭代至 LUFS20 目標（解碼後無間隔重複 20 次），輔以低通填體同線性 RMS 增益騎乘來降低波峰因數（冇 tanh／limiter）。重音喺 0 ms。每個檔用 `crc32(檔名)` 做隨機種子。15 檔共 87,586 bytes。
+
+LUFS20 分檔：-14 主要功能動作；-16 次要（翻頁、提起家具）；-18 可循環攪拌。
+
+| 檔名 | 長度 | LUFS20 | peak dBFS | 重音 ms | 觸發（code） | 備註 |
+|---|---|---|---|---|---|---|
+| `sfx_post_letter_send` | 0.552 s | -14.0 | -1.23 | 0（能量峰 9.5） | `WorkSystem.dispatch('post')` → `dispatched`（WorkSystem.gd:106）；`Main._send_pets_to_work`／`_on_building_tapped` | 寄信。唔借用 letter_drop／offer_letter。 |
+| `sfx_post_letter_receive` | 0.562 s | -14.0 | -1.82 | 0（16.1） | `WorkSystem.work_ready('post')`（WorkSystem.gd:120／136） | 信到／門光。 |
+| `sfx_kitchen_cook_start` | 0.554 s | -14.0 | -1.95 | 0（28.3） | `WorkSystem.dispatch('kitchen')` | 開火。唔借用 feed_meal。 |
+| `sfx_kitchen_stir` | 0.500 s | -18.0 | -3.77 | 0（9.1） | 建議 `start_loop` 於廚房 `status==work`（而家未有 hook） | 圓周無縫；seam 0.019 ＜ p99.9 0.087。`_ensure_loop` 要檔名含 `_loop` 先自動循環。 |
+| `sfx_kitchen_cook_done` | 0.710 s | -14.0 | -2.09 | 0（13.8） | `WorkSystem.work_ready('kitchen')` | 鍋蓋叮；同時停攪拌。 |
+| `sfx_codex_page_flip_a` | 0.422 s | -16.0 | -4.28 | 0（10.3） | `Hud._toggle_book` 打開（Hud.gd:409） | a/b 交替。建議 t=0 只播翻頁，唔疊 popup_open。長度跟 popup／頁轉，唔跟 900 ms 大轉場。 |
+| `sfx_codex_page_flip_b` | 0.425 s | -16.0 | -2.47 | 0（9.5） | 同上；亦預留分頁（M1b 未有） | |
+| `sfx_codex_new_entry` | 0.585 s | -14.0 | -1.88 | 0（11.7） | `CollectionSystem.unlocked`（CollectionSystem.gd:135 等） | 一次多個只播一次；`_setup_m1b` 開局 unlock 唔好播。 |
+| `sfx_furn_pickup` | 0.403 s | -16.0 | -2.28 | 0（9.6） | （預留）M1b 未有拖曳／提起 | 唔借用 sfx_pet_pickup。playbackRate 0.95–1.05。 |
+| `sfx_furn_place_a` | 0.490 s | -13.9 | -3.20 | 0（14.1） | `CollectionSystem.place` → `placed`（.gd:252）；`place_recommended` | a/b 交替；連續擺最多 3 下、間隔 ≥120 ms。 |
+| `sfx_furn_place_b` | 0.490 s | -14.0 | -2.64 | 0（9.5） | 同上 | |
+| `sfx_furn_buy` | 0.542 s | -14.0 | -2.94 | 0（17.0） | `CollectionSystem.buy`（.gd:216）；Hud 家具掣 | t=0 buy；隨即 place 建議遲 120–160 ms。碎唔夠用 sfx_ui8_error。 |
+| `sfx_hunt_pounce_a` | 0.430 s | -14.0 | -2.89 | 0（16.0） | `HuntField._pounce_critter`（HuntField.gd:249） | 體勢氣流。clip 原有 jump／land（step_hop）照播。 |
+| `sfx_hunt_pounce_b` | 0.430 s | -14.1 | -2.21 | 0（19.9） | 同上 | |
+| `sfx_hunt_enter` | 0.722 s | -14.0 | -2.39 | 0（14.3） | `Main._on_hunt_phase(PHASE_HUNT)`（Main.gd:1458）＋ `hunt_field.begin` | 入草原；同時 crossfade `bgm_hunt_loop`。 |
+
+時間軸（對遊美 MOTION_HD2D.md；呢幾個畫面未有專屬動畫，跟通用 UI）：
+
+- 開圖鑑：接近 popup open 420 ms，t=0 翻頁（返回／關閉 200 ms 用現有 `sfx_ui8_popup_close`）。
+- 轉去草原／返花園：若用大頁轉場，t=0 `sfx_ui8_transition_veil_close`、t=420 `sfx_ui8_transition_veil_open`（返回 600 ms 只播 open）；`sfx_hunt_enter` 另外喺 PHASE_HUNT 播。
+- 摘要卡／toast：t=0 `sfx_ui8_toast_in`（in 220／停 1800／出 180）；有數字滾（400 ms、每跳 4）先加 `sfx_ui8_coin`（t=140 起）。M1b `_show_card` 而家係靜態數字，未做滾數。
+- 收工完成：t=0 `sfx_ui8_confirm`（stamp 160 ms）。
+- 通用掣：down 60 ms 用 `sfx_ui8_btn_press_a/b`（而家 code 寫死 `_a`）；up 120 ms 唔加聲。
+
+收工／收成複用（唔另做檔）：郵局／廚房 `collect`、狩獵 `HuntSystem.collect`／`Hud._do_harvest` → `sfx_ui8_confirm` 或 toast／coin。狩獵出發掣成功後，`HuntSystem.depart` 建議加現有 `sfx_mg_start`；撲中：`sfx_mg_catch`（t=0）→ `sfx_critter_transform`（約 80–120 ms）→ `sfx_critter_roll`；撲唔中（規格有、**code 未有分支**）：`sfx_critter_startle`＋`sfx_critter_shake`。**唔用** `sfx_mg_miss`／`sfx_hit`／`sfx_lose`。抱果複用 `sfx_pet_pickup`；入倉／READY 用現有 `sfx_mg_win` 一次。
+
+#### BGM
+
+`bgm_hunt_loop.ogg`：44.1 kHz 立體聲 Vorbis `-q:a 5`、`-fflags +bitexact`；**108 BPM、4/4、16 小節＝1,568,000 samples＝35.555… s**（每小節 98,000 samples，樣本精確）。解碼後 **I = -16.0 LUFS，TP -3.10 dBTP**（sample peak -3.10 dBFS）。循環接縫 L/R 0.00320／0.00487 ＜ p99.9 0.04206／0.04045。592,294 bytes。
+
+編曲：輕冒險但仍然暖。VCSL CC0 Concert Harp／Glockenspiel／Baroque Soprano Recorder，經原創 SFZ map（`/workspace/audio-libs/maps/`）同 pysfizz 0.1.3 渲染；低音、輕踢／木篤／shaker 同空氣層係程式合成。唔用 pedalboard（團規 GPL；殘響用現有圓周 scipy）。頭尾都落喺 C 大調，尾巴 overlap-add 回開頭。VCSL 係第三方 CC0 樣本，只用嚟做樂器，唔當遊音原創素材發行。
+
+接入：`PHASE_HUNT` 由照顧 BGM equal-power crossfade 過去（建議 1.5 s）；`Main._return_from_hunt` 再 crossfade 返照顧。**注意** `AudioManager.BGM_BY_BAND` 未有狩獵條目，而且 `BAR_SEC` 寫死 3.5294 s（68 BPM 照顧小節）；狩獵小節係 2.222… s，對位唔好重用 `BAR_SEC`。
+
+#### QA
+
+`qa_audio.py` 16 檔（15 SFX＋BGM）全部 **PASS**（peak ≤ -1 dBFS、LUFS 容差 0.3、accent ≤ 30 ms、BGM 整數小節同接縫）。`sfx_furn_place_a` 實測 -13.9、`sfx_hunt_pounce_b` -14.1，都喺容差內。
+
+#### 遊程接入（M1b／M1c 而家幾乎未接）
+
+而家幾乎所有新事件都只播咗 `sfx_ui8_btn_press_a`，或者完全冇聲。請按 `m1b_sfx_map.json` 嘅 event 接 hook。Bus：新功能一-shot 用 `SFX`，複用 ui8 用 `UI`，複用寵物／小動物用 `Pet`，BGM 用 `BGM`。
+
+#### 仍然冇聲嘅事件（同原因）
+
+- **狩獵 miss**：遊策 §6 有規則，但 `HuntField._pounce_critter` 每次都成功，未有 miss 路徑。檔已用現有 startle／shake 對好，有分支先接。
+- **提起家具**：未有拖曳 UX，`sfx_furn_pickup` 先做低。
+- **廚房攪拌 loop**：寵物只喺門口播 `idle_quiet`／`scratch`，未有攪拌動畫或 hook。
+- **圖鑑分頁**：`book_panel` 得一頁簡表，未有翻頁／分類 tab。
+- **獎勵數字滾／蓋印動畫**：M1b 摘要卡係靜態標籤，未做 MOTION §10.1 滾數同 stamp；規則已寫喺 map，有動畫先接 coin／confirm。
+- **開局 unlock**：`Main._setup_m1b` 會 `unlock_form`／`unlock_kid`，唔好播 `sfx_codex_new_entry`。
+
+#### 睇 code 時發現嘅音訊問題（請遊程知）
+
+1. **Live clip 可能播兩次**：`Walker._fire_sfx` 既 `ArtImporter.sfx_cue.emit` 又直接 `AudioManager.play`；`AudioManager._ready` 亦 connect 咗 `sfx_cue` → `_on_sfx_cue` → `play`。pounce 嘅 jump／land 可能疊兩層。
+2. **HUD 幾乎全部寫死** `sfx_ui8_btn_press_a`，沒用 hook `sfx_ui8_btn_press` 嘅 a/b Randomizer。關閉圖鑑掣而家完全冇聲；家具買／擺掣亦冇聲。
+3. **失敗咁都播 press**：`_one_tap`／`one_tap_dispatch`／`start_hunt` 喺 can_depart 失敗（busy、每日上限、work_or_hunt）時仍然播 press，冇 `sfx_ui8_error`。
+4. **`start_loop` 只對檔名含 `_loop` 設** `ogg.loop=true`；`stop_loop` 嘅 fade 參數未用（即時停）。
+5. **`sync_bgm` 只有時段照顧 loop**，冇場景 BGM；`BAR_SEC` 寫死照顧拍速。
+6. **WorkSystem／HuntSystem／CollectionSystem 嘅信號**（`dispatched`、`work_ready`、`collected`、`hunt_started`、`hunt_phase`、`hunt_collected`、`unlocked`、`placed`）都未接 AudioManager。
+7. 欣賞模式只靜音需求警告，功能聲照播——呢點同規格一一致，唔使改。
+
+#### 偏差（如實）
+
+- 新 SFX 為咗喺峰值上限內達到 -14／-16 LUFS20，中低音體偏多（150–1000 Hz 好多檔 >80 %），會暖、少少少「亮閃」；未試聽，手機喇叭可能反而更易聽到。
+- `sfx_kitchen_cook_start` 能量峰 28.3 ms，貼近 30 ms 容差上限（onset 已經喺 0 ms）。
+- 唔用 pedalboard（GPL）。BGM 殘響用現有圓周 scipy，同照顧 BGM 同一套方法。

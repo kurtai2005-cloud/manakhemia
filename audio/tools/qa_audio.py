@@ -4,6 +4,9 @@
   PYTHONPATH=tools /workspace/audio-venv/bin/python tools/qa_audio.py
   PYTHONPATH=tools python tools/qa_audio.py --map anim_sfx_map.json [files...]
   PYTHONPATH=tools python tools/qa_audio.py sfx/sfx_pet_jump_a.ogg
+  PYTHONPATH=tools python tools/qa_audio.py --map m1b_sfx_map.json bgm/bgm_hunt_loop.ogg
+BGM（檔名有 _loop 而且係立體聲，或 map kind=bgm）：查 integrated LUFS（唔係 LUFS20）、
+44.1 kHz 立體聲、peak、循環接縫（|x[0]−x[-1]| ≤ p99.9 相鄰差）、整數小節樣本數。
 
 預設讀 anim_sfx_map.json 入面用到嘅全部檔（現有＋新）。
 PASS 門檻（可用旗標改）：
@@ -59,7 +62,24 @@ def guess_tgt(stem: str):
         if any(s in stem for s in ("touch", "grumpy")):
             return None
         return -20.0
+    # M1b feature SFX（LUFS20 tiers：-14 主要／-16 次要／-18 環境）
+    if any(s in stem for s in (
+        "post_letter_send", "post_letter_receive",
+        "kitchen_cook_start", "kitchen_cook_done",
+        "codex_new_entry", "furn_place", "furn_buy",
+        "hunt_pounce", "hunt_enter",
+    )):
+        return -14.0
+    if any(s in stem for s in ("codex_page_flip", "furn_pickup")):
+        return -16.0
+    if "kitchen_stir" in stem:
+        return -18.0
     return None
+
+
+BGM_SPECS = {
+    "bgm_hunt_loop": {"lufs": -16.0, "bpm": 108, "bars": 16, "beats_per_bar": 4},
+}
 
 
 def lufs20(path: Path) -> float:
@@ -74,7 +94,78 @@ def rms_env(x, sr, win_ms=8.0):
     return np.sqrt(np.convolve(x ** 2, np.ones(win) / win, "same"))
 
 
-def analyse(path: Path, expected_accent_ms=0.0, tgt=None, require_tgt=True, measure='peak'):
+def integrated_lufs(path: Path):
+    return ebur(str(path))[0]
+
+
+def analyse_bgm(path: Path, spec=None, tgt=None, require_tgt=True):
+    """Stereo loop BGM: integrated LUFS, integer bars, seam vs p99.9 adjacent diff."""
+    spec = spec or BGM_SPECS.get(path.stem) or {}
+    codec, sr, ch, dur = probe(str(path))
+    x, sr2 = sf.read(str(path))
+    if x.ndim == 1:
+        x = x[:, None]
+    peak = float(np.max(np.abs(x)) + 1e-12)
+    peak_db = 20 * np.log10(peak)
+    jump = float(np.max(np.abs(np.diff(x, axis=0)))) if len(x) > 1 else 0.0
+    seam = np.abs(x[0] - x[-1])
+    d = np.abs(np.diff(x, axis=0))
+    p999 = np.percentile(d, 99.9, axis=0)
+    seam_max = float(np.max(seam))
+    p999_max = float(np.max(p999))
+    n = len(x)
+    try:
+        L = integrated_lufs(path)
+    except Exception as ex:
+        L = float("nan")
+        lufs_err = str(ex)
+    else:
+        lufs_err = None
+    bpm = spec.get("bpm")
+    bars = spec.get("bars")
+    bpb = spec.get("beats_per_bar", 4)
+    bar_samp = None
+    if bpm and bars:
+        bar_samp = int(round(bpb * SR_EXPECT * 60.0 / float(bpm)))
+        expect_n = bar_samp * int(bars)
+    else:
+        expect_n = None
+    tgt_l = tgt if tgt is not None else spec.get("lufs", -16.0)
+    fails = []
+    if codec not in ("vorbis", "ogg"):
+        fails.append(f"codec={codec}")
+    if sr != SR_EXPECT:
+        fails.append(f"sr={sr}")
+    if ch != 2:
+        fails.append(f"ch={ch}")
+    if peak_db > PEAK_MAX + 1e-6:
+        fails.append(f"peak {peak_db:.2f} > {PEAK_MAX}")
+    if expect_n is not None and n != expect_n:
+        fails.append(f"samples {n} != {expect_n} ({bars} bars @{bpm} BPM)")
+    if seam_max > p999_max + 1e-6:
+        fails.append(f"seam {seam_max:.5f} > p99.9 {p999_max:.5f}")
+    if tgt_l is not None and require_tgt and not np.isnan(L):
+        if abs(L - tgt_l) > LUFS_TOL:
+            fails.append(f"LUFS {L:.1f} vs {tgt_l:.1f}")
+    status = "FAIL" if fails else "PASS"
+    return dict(
+        file=path.name, path=str(path), codec=codec, sr=sr, ch=ch, kind="bgm",
+        dur=round(float(dur), 3), LUFS20=None if np.isnan(L) else round(float(L), 1),
+        peak=round(peak_db, 2), jump=round(jump, 3), hi6=None,
+        body=None, onset_ms=None, accent_ms=None,
+        expected_accent_ms=0.0, err_ms=0.0,
+        tgt=tgt_l, status=status, fails=fails, lufs_err=lufs_err,
+        seam=round(seam_max, 5), p999=round(p999_max, 5),
+        samples=n, expect_samples=expect_n,
+        bpm=bpm, bars=bars,
+    )
+
+
+def analyse(path: Path, expected_accent_ms=0.0, tgt=None, require_tgt=True, measure='peak', kind='sfx'):
+    if kind == "bgm" or path.stem in BGM_SPECS or (
+        path.stem.startswith("bgm_") and path.stem.endswith("_loop")
+    ):
+        return analyse_bgm(path, BGM_SPECS.get(path.stem), tgt=tgt, require_tgt=require_tgt)
     codec, sr, ch, dur = probe(str(path))
     x, sr2 = sf.read(str(path))
     if x.ndim > 1:
@@ -141,7 +232,11 @@ def collect_from_map(mp, root: Path):
         for fn in e.get("files") or []:
             p = (Path(fn) if fn.startswith("/") else root / "sfx" / Path(fn).name)
             stem = Path(fn).stem
-            tgt = guess_tgt(stem)
+            tgt = e.get("lufs20", e.get("tgt", e.get("lufs")))
+            if tgt is None:
+                tgt = guess_tgt(stem)
+            else:
+                tgt = float(tgt)
             require = e.get("source") != "existing" or stem.startswith(
                 ("sfx_pet_step_", "sfx_pet_scratch", "sfx_pet_bug", "sfx_pet_sneeze",
                  "sfx_pet_turn", "sfx_pet_nuzzle", "sfx_pet_reunion")
@@ -151,7 +246,8 @@ def collect_from_map(mp, root: Path):
             key = str(p.resolve()) if p.exists() else str(p)
             cur = info.get(key)
             if cur is None or (exp and not cur[0]):
-                info[key] = (exp, tgt, require, measure)
+                kind = e.get("kind") or ("bgm" if Path(fn).stem.startswith("bgm_") else "sfx")
+                info[key] = (exp, tgt, require, measure, kind)
     return info
 
 
@@ -159,6 +255,14 @@ def fmt_row(r):
     tgt = "—" if r["tgt"] is None else f"{r['tgt']:.1f}"
     L = "—" if r["LUFS20"] is None else f"{r['LUFS20']:.1f}"
     why = "" if not r["fails"] else "  (" + "; ".join(r["fails"]) + ")"
+    if r.get("kind") == "bgm":
+        seam = r.get("seam")
+        p999 = r.get("p999")
+        return (
+            f"{r['status']:4s} {r['file']:32s} {r['dur']:6.3f}s  LUFS   {L:>5s} (tgt {tgt:>5s})  "
+            f"peak {r['peak']:6.2f}  jump {r['jump']:.3f}  seam {seam:.5f}  "
+            f"p99.9 {p999:.5f}  samples {r.get('samples')}{why}"
+        )
     return (
         f"{r['status']:4s} {r['file']:32s} {r['dur']:6.3f}s  LUFS20 {L:>5s} (tgt {tgt:>5s})  "
         f"peak {r['peak']:6.2f}  jump {r['jump']:.3f}  >6k {r['hi6']:5.2f}%  "
@@ -192,15 +296,21 @@ def main():
         paths = sorted((root / "sfx").glob("sfx_pet_*.ogg"))
     rows = []
     for p in paths:
-        default = (0.0, guess_tgt(p.stem), True, "peak")
+        kind_guess = "bgm" if (p.stem in BGM_SPECS or (p.stem.startswith("bgm_") and p.stem.endswith("_loop"))) else "sfx"
+        default = (0.0, guess_tgt(p.stem), True, "peak", kind_guess)
         rec = expected.get(str(p.resolve())) or expected.get(str(p))
         if rec is None:
             for k, v in expected.items():
                 if Path(k).name == p.name:
                     rec = v
                     break
-        exp, tgt, req, meas = rec or default
-        rows.append(analyse(p, expected_accent_ms=exp, tgt=tgt, require_tgt=req, measure=meas))
+        rec = rec or default
+        if len(rec) == 4:
+            exp, tgt, req, meas = rec
+            kind = kind_guess
+        else:
+            exp, tgt, req, meas, kind = rec
+        rows.append(analyse(p, expected_accent_ms=exp, tgt=tgt, require_tgt=req, measure=meas, kind=kind))
     print(f"{'STAT':4s} {'file':32s} {'dur':>7s}  {'LUFS20':^18s}  {'peak':>8s}  {'jump':>5s}  {'>6k':>8s}  {'body':>6s}  {'onset':>6s}  {'accent':>6s}  err")
     for r in rows:
         print(fmt_row(r))
