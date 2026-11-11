@@ -2,7 +2,7 @@
 
 唯讀 `code/glimmer-godot` @ `8da4d168e7e693a13a4e3faf612bff1135a11e4a`，tree `5f4ccc27dc021e2c46c2d22a925889e4bda4a6c0`。由 `86769723` 快進。Godot `4.7.2.stable.official.ed1daf0bf`。畫面用 xvfb（1280×1280）＋ `--display-driver x11 --rendering-driver opengl3 --audio-driver Dummy`。冇改 code branch，冇 merge。
 
-截圖：`QA/shots-m1a/`（倉庫煙測 19 張＋橫向 1 張）。單元測試：`res://tests/TestMain.tscn`（`tests/test_runner.gd`）。
+截圖：`QA/shots-m1a/`。單元測試：`res://tests/TestMain.tscn`（`tests/test_runner.gd`）。
 
 ## 275 項
 
@@ -39,7 +39,7 @@ Omni、遠草各向異性、細佬 pivot (24, 45)、walk 10 都喺 275 項入面
 | 總覽 | 10.05% | 55.2% | 14.4% | 1.17 | 228 |
 | 跟拍 | 18.1% | 57.3% | 15.9% | 2.04 | 142 |
 
-總覽過 ≥10%。跟拍 18.1%，測試容差係 20% 減 2 個百分點，所以 275 項過；大約係 20%。768 總覽 texel 1.96（×2）、寵物高 14.8%、可見闊 256。390 總覽 texel 1.17，未鎖到 ×2／×3。`Main.gd:1141-1148`：總覽只有寵物仍 ≥10% 而且花園仍見 ≥80% 先跟整數倍。下面 P3。
+上面 `pet_h` 係引擎用成個精靈框（`world_height`）除屏幕高。275 項用呢個數，所以總覽當 ≥10%、跟拍當大約 20%。畫面上實心奶油身體更細，見下面「已知」。768 總覽 texel 1.96（×2）、可見闊 256。390 總覽 texel 1.17，未鎖到 ×2／×3。`Main.gd:1141-1148`：總覽只有寵物仍 ≥10% 而且花園仍見 ≥80% 先跟整數倍。下面 P3。
 
 需要文字列已拆。頭頂改 `NeedBubble`（`Main.gd:1054`）。底欄係餵／執／摸三個 icon 掣（`Hud.gd:52-60`）。總結卡係 icon＋數字，截圖見到「×2」。時鐘 `12:00`／`23:00` 仍然係短 Label（`Hud.gd:30`），唔係舊的飢／心／潔／力長句。
 
@@ -57,9 +57,38 @@ OFL：`art/fonts/OFL_GenWanMin2.txt` 在源碼，匯入之後仍然冇 `.import`
 
 ## 已知、未做
 
-唔開等級。
+唔開等級。遊策已報的三項，今次再量。
 
-- 浮動窗同遊戲狀態未同步。Godot 腳本冇 `overlay_status`。Kotlin `PetPrefs.kt:8` 仍然寫 snapshot 由 JS 寫、queue 由 overlay 寫。
+一鍵餵／摸違反規格 §1。而家底欄三個掣都係一鍵：`Hud.gd:273-278` 餵叫 `Sim.feed("meal")`、摸叫 `Sim.pat()`，冇先揀一隻寵物，亦冇手動餵／摸的反應動畫流程。規格係先揀寵物，再手動餵、手動摸，帶反應動畫；而家只應該一鍵執屎。執屎掣確實係一鍵 `Sim.clean_all()`。
+
+總結卡蓋住「欣賞」同「開發者」。卡係底錨、闊 280、高 75（`Hud.gd:63-71`）。兩個掣高 44，頂邊比卡底高 40（`Hud.gd:97-99`、`:112-114`）。`get_global_rect` 相交：
+
+| 畫面 | 欣賞 | 開發者 |
+|---|---|---|
+| 360×640 | 80×44 | 96×44 |
+| 393×852 | 63×44 | 79×44 |
+| 412×915 | 54×44 | 70×44 |
+| 768×1024 | 0×0 | 0×0 |
+
+三個窄屏相交高度等於掣的全部 44px，卡蓋住掣的內側。768 卡留在中間，兩個掣喺左右，冇相交。圖：`QA/shots-m1a/card-360x640.png`、`card-393x852.png`、`card-412x915.png`、`card-768x1024.png`。
+
+寵物實心高度未到 10%／20%。奶油身體（唔計光冠射線）除屏幕高，對引擎 `pet_h`：
+
+| 畫面 | 總覽身體 | 跟拍身體 | 引擎總覽 | 引擎跟拍 |
+|---|---:|---:|---:|---:|
+| 360×640 | 5.3% | 11.6% | 11.5% | 25.7% |
+| 393×852 | 4.8% | 7.6% | 10.0% | 18.0% |
+| 412×915 | 4.8% | 11.1% | 10.1% | 27.1% |
+| 768×1024 | 6.9% | 9.9% | 14.8% | 22.0% |
+
+393 寬度上 4.8%／7.6%，同遊策講的約 6%／8% 同一帶。引擎把透明框都計入，所以測試印到 10%／18% 並當過關。規格要的係畫面 10%／20%。圖：`QA/shots-m1a/ov-393x852.png`、`fo-393x852.png`。
+
+另外，M1b 先做、而家未遷：6b RealWorld、6d Share、浮動窗同遊戲狀態同步。Godot 腳本冇 `overlay_status`。`PetPrefs.kt:8` 仍然寫 snapshot 由 JS 寫。
+
+浮動窗本身：`AndroidManifest.xml:38-49` 登記 `PetOverlayService` 同 `GlimmerOverlay` 插件。`GlimmerOverlayPlugin.onMainCreate` 只裝 `GlimmerApp.install`（`GlimmerOverlayPlugin.kt:16-18`）。`startOverlay` 冇 activity 就返回（`:22-24`）。`PetOverlayService.onStartCommand` 的 `startForeground` 失敗會 catch 然後 `stopSelf`，冇懸浮權限亦 `stopSelf`，唔拋出（`PetOverlayService.kt:143-155`）。桌面跑 5 分鐘同煙測都冇載入呢個 Android 插件，亦冇因為佢崩潰。呢部機冇 Android SDK 同模擬器，冇真的把服務跑起來。
+
+其餘已知：
+
 - 需要泡泡太淡。`NeedBubble.gd:16` `pixel_size` 0.35。`m1a-bubbles.png` 頭頂只有一小塊。
 - 訪客行路未做。`FamilyDirector.force` 單元測試過，截圖未見到行路循環。
 
