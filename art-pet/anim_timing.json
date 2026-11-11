@@ -1,108 +1,67 @@
 {
   "format": "anim_timing/1",
-  "stack": "art/m2-actions @ 230dab2f",
+  "stack": "art/anim-timing-fix1 @ f6d60b5e",
   "sources": {
     "m1": "art/m1-icons-hunt @ 13a00477",
     "m2": "art/m2-actions @ 230dab2f"
   },
   "toleranceFrames": 1,
-  "doc": "遊音同遊測共用呢份檔。每個 clip：id、sizes、frameCount、frameMs、durationMs、loop、events。t_ms 由 clip 開頭計，等於 sum(frameMs[:frameIndex])（該幀開始）。遊測若同引擎播放相差超過 1 幀（toleranceFrames）就 fail。事件只來自姿勢／atlas，冇加姿勢入面冇嘅動作。每個 event 必有 sfx_hook、t_ms、accent（land／peak／release）。sfx_hook 必須係 遊音 audio/README.md 已列出嘅 sfx_* 名；對唔上就 null，唔自製。",
+  "doc": "遊音同遊測共用呢份檔。每個 clip：id、sizes、frameCount、frameMs、durationMs、loop、events。t_ms 由 clip 開頭計，等於 sum(frameMs[:frameIndex])（該幀開始）。遊測若同引擎播放相差超過 1 幀（toleranceFrames）就 fail。事件只來自姿勢／atlas，冇加姿勢入面冇嘅動作。每個 event 必有 sfx_hook、t_ms、accent（land／peak／release）。sfx_hook 必須係 audio/anim_sfx_map.json（遊音 audio/pet-plan-a @ 07762d21）已列出嘅 sfx_* 名；對唔上就 null，唔自製。可選欄 preroll_ms（播放起點＝t_ms − preroll_ms，例如 yawn 600）、kind、accent_offset_ms、loopPlay（on_enter／every_n_loops）、character。",
   "sfxHooks": {
-    "source": "art-pet/sfx_hooks.json",
-    "note": "允許嘅 hook 名以 art-pet/sfx_hooks.json 為準（遊音最新 README 快照）。唔好讀本 repo 舊稿 audio/README.md。§7.11 本身係 HD-2D UI hook；寵物／訪客／小動物動作多數喺 §7.1 同 §7.9。",
-    "count": 83,
+    "source": "audio/anim_sfx_map.json",
+    "via": "anim_sfx_map.json",
+    "note": "允許嘅 hook 名以 audio/anim_sfx_map.json 為準（遊音 PR #16 / audio/pet-plan-a @ 07762d21）。art 分支本身唔包含呢份檔；驗證前要疊埋該 commit，或用 --sfx-map。唔好讀本 repo 舊稿 audio/README.md，亦唔再用 art-pet/sfx_hooks.json。",
+    "count": 42,
     "names": [
-      "sfx_cancel",
-      "sfx_clean_poop",
-      "sfx_clean_wash",
-      "sfx_coin",
-      "sfx_confirm",
-      "sfx_env_flowerpot_bump",
-      "sfx_env_sunbathe_loop",
-      "sfx_error",
-      "sfx_event_butterfly_visit",
-      "sfx_event_dream_talk",
-      "sfx_event_gift_return",
-      "sfx_event_meteor_night",
-      "sfx_event_rainbow",
-      "sfx_event_shiny_day",
-      "sfx_event_sulk",
-      "sfx_event_treasure_hunt",
-      "sfx_evolve",
-      "sfx_fade_light",
-      "sfx_feed_meal",
-      "sfx_feed_snack",
-      "sfx_hatch",
-      "sfx_hit",
-      "sfx_lose",
-      "sfx_mg_catch",
-      "sfx_mg_combo",
-      "sfx_mg_miss",
-      "sfx_mg_start",
-      "sfx_mg_win",
-      "sfx_need_warning",
-      "sfx_pet_bug_pat_a",
-      "sfx_pet_bug_pat_b",
-      "sfx_pet_content",
-      "sfx_pet_curious",
-      "sfx_pet_grumpy",
-      "sfx_pet_happy",
-      "sfx_pet_hungry",
-      "sfx_pet_nuzzle_purr_a",
-      "sfx_pet_nuzzle_purr_b",
-      "sfx_pet_reunion_happy_a",
-      "sfx_pet_reunion_happy_b",
-      "sfx_pet_scratch_a",
-      "sfx_pet_scratch_b",
-      "sfx_pet_sleep_breath_loop",
-      "sfx_pet_sleepy",
-      "sfx_pet_sneeze_a",
-      "sfx_pet_sneeze_b",
-      "sfx_pet_step_drag_a",
-      "sfx_pet_step_drag_b",
+      "sfx_pet_grass_rustle_a",
+      "sfx_pet_grass_rustle_b",
+      "sfx_pet_jump_a",
+      "sfx_pet_jump_b",
       "sfx_pet_step_hop_a",
       "sfx_pet_step_hop_b",
-      "sfx_pet_step_plod_a",
-      "sfx_pet_step_plod_b",
-      "sfx_pet_touch_a",
-      "sfx_pet_touch_b",
-      "sfx_pet_turn_huh_a",
-      "sfx_pet_turn_huh_b",
-      "sfx_pet_uncomfortable",
+      "sfx_pet_step_walk_a",
+      "sfx_pet_step_walk_b",
+      "sfx_pet_happy",
+      "sfx_critter_startle_a",
+      "sfx_critter_startle_b",
+      "sfx_critter_shake_a",
+      "sfx_critter_shake_b",
+      "sfx_critter_transform_a",
+      "sfx_critter_transform_b",
+      "sfx_critter_roll_a",
+      "sfx_critter_roll_b",
+      "sfx_pet_letter_drop_a",
+      "sfx_pet_letter_drop_b",
+      "sfx_pet_clap_a",
+      "sfx_pet_clap_b",
+      "sfx_pet_pickup_a",
+      "sfx_pet_pickup_b",
+      "sfx_pet_place_a",
+      "sfx_pet_place_b",
       "sfx_pet_yawn",
-      "sfx_play_tease",
-      "sfx_reward_orb",
-      "sfx_sleep_off",
-      "sfx_sleep_on",
-      "sfx_tap",
-      "sfx_ui8_badge_wiggle",
-      "sfx_ui8_btn_press_a",
-      "sfx_ui8_btn_press_b",
-      "sfx_ui8_btn_sparkle",
-      "sfx_ui8_cancel",
-      "sfx_ui8_coin",
-      "sfx_ui8_confirm",
-      "sfx_ui8_error",
-      "sfx_ui8_popup_close",
-      "sfx_ui8_popup_open",
-      "sfx_ui8_tab_switch_a",
-      "sfx_ui8_tab_switch_b",
-      "sfx_ui8_tap_a",
-      "sfx_ui8_tap_b",
-      "sfx_ui8_toast_in",
-      "sfx_ui8_toggle_off",
-      "sfx_ui8_toggle_on",
-      "sfx_ui8_transition_veil_close",
-      "sfx_ui8_transition_veil_open",
-      "sfx_win"
-    ],
-    "via": "sfx_hooks.json"
+      "sfx_pet_reach_a",
+      "sfx_pet_reach_b",
+      "sfx_pet_scratch_a",
+      "sfx_pet_scratch_b",
+      "sfx_pet_stretch_a",
+      "sfx_pet_stretch_b",
+      "sfx_pet_proud_a",
+      "sfx_pet_proud_b",
+      "sfx_pet_point_a",
+      "sfx_pet_point_b",
+      "sfx_visitor_offer_letter",
+      "sfx_visitor_nod_a",
+      "sfx_visitor_nod_b",
+      "sfx_visitor_offer_seed",
+      "sfx_visitor_rattle_a",
+      "sfx_visitor_rattle_b"
+    ]
   },
   "counts": {
     "clips": 31,
     "events": 42,
-    "eventsWithHook": 6,
-    "eventsHookNull": 36
+    "eventsWithHook": 41,
+    "eventsHookNull": 1
   },
   "clips": [
     {
@@ -144,9 +103,10 @@
           "zh": "撥草",
           "frameIndex": 2,
           "t_ms": 250,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_grass_rustle_a",
           "accent": "peak",
-          "note": "伸手撥入右側草叢（gx 開始移），下一幀草分開。表入面冇撥草／葉沙專屬 hook。"
+          "note": "伸手撥入右側草叢（gx 開始移），下一幀草分開。",
+          "kind": "foley"
         }
       ]
     },
@@ -189,9 +149,10 @@
           "zh": "起跳",
           "frameIndex": 2,
           "t_ms": 250,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_jump_a",
           "accent": "release",
-          "note": "彈起（dy=-8）。表入面冇起跳專屬 hook。"
+          "note": "彈起（dy=-8）。",
+          "kind": "foley"
         },
         {
           "id": "land",
@@ -200,7 +161,9 @@
           "t_ms": 500,
           "sfx_hook": "sfx_pet_step_hop_a",
           "accent": "land",
-          "note": "由空中（dy=-4）落到近地（dy=+1）；§7.9 蹦跳腳步「每次落地播一次」。"
+          "note": "由空中（dy=-4）落到近地（dy=+1）；§7.9 蹦跳腳步「每次落地播一次」。",
+          "kind": "foley",
+          "accent_offset_ms": 12
         }
       ]
     },
@@ -243,18 +206,20 @@
           "zh": "腳步",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_step_walk_a",
           "accent": "land",
-          "note": "walk_01 雙腳踏地。表入面有 hop／drag／plod，冇普通行路步；唔借用。"
+          "note": "walk_01 雙腳踏地。",
+          "kind": "foley"
         },
         {
           "id": "footstep",
           "zh": "腳步",
           "frameIndex": 3,
           "t_ms": 300,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_step_walk_a",
           "accent": "land",
-          "note": "walk_04 雙腳踏地（另一步）。同上，sfx_hook=null。"
+          "note": "walk_04 雙腳踏地（另一步）。",
+          "kind": "foley"
         }
       ]
     },
@@ -297,9 +262,10 @@
           "zh": "起跳",
           "frameIndex": 1,
           "t_ms": 100,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_jump_a",
           "accent": "release",
-          "note": "開始離地（dy=-3）。表入面冇起跳專屬 hook。"
+          "note": "開始離地（dy=-3）。",
+          "kind": "foley"
         },
         {
           "id": "cheer_peak",
@@ -308,7 +274,10 @@
           "t_ms": 200,
           "sfx_hook": "sfx_pet_happy",
           "accent": "peak",
-          "note": "跳到最高（dy=-10）。歡呼對應 §7.1 寵物開心（玩耍完成）。"
+          "note": "跳到最高（dy=-10）。歡呼對應 §7.1 寵物開心（玩耍完成）。",
+          "kind": "voice",
+          "accent_offset_ms": 63,
+          "character": "tuanrong"
         },
         {
           "id": "land",
@@ -317,7 +286,9 @@
           "t_ms": 400,
           "sfx_hook": "sfx_pet_step_hop_a",
           "accent": "land",
-          "note": "快落地（dy=-2）。§7.9 蹦跳腳步每次落地。"
+          "note": "快落地（dy=-2）。§7.9 蹦跳腳步每次落地。",
+          "kind": "foley",
+          "accent_offset_ms": 12
         }
       ]
     },
@@ -377,9 +348,11 @@
           "zh": "嚇驚",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_startle_a",
           "accent": "peak",
-          "note": "進入受驚姿勢（圓眼、身壓低）。四幀幾乎同一姿勢；只喺循環開頭標一次。表入面冇受驚 hook。"
+          "note": "進入受驚姿勢（圓眼、身壓低）。四幀幾乎同一姿勢；只喺循環開頭標一次。",
+          "kind": "foley",
+          "loopPlay": "on_enter"
         }
       ]
     },
@@ -415,27 +388,30 @@
           "zh": "發抖",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_shake_a",
           "accent": "release",
-          "note": "tofruit 第 1–2 幀左右抖。表入面冇對應 hook。"
+          "note": "tofruit 第 1–2 幀左右抖。",
+          "kind": "foley"
         },
         {
           "id": "transform",
           "zh": "變成果",
           "frameIndex": 3,
           "t_ms": 375,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_transform_a",
           "accent": "peak",
-          "note": "第 4 幀（index 3）成果。表入面冇變身 hook。"
+          "note": "第 4 幀（index 3）成果。",
+          "kind": "foley"
         },
         {
           "id": "roll",
           "zh": "碌走",
           "frameIndex": 4,
           "t_ms": 500,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_roll_a",
           "accent": "land",
-          "note": "第 5 幀開始碌（果左右移）。表入面冇碌走 hook。"
+          "note": "第 5 幀開始碌（果左右移）。",
+          "kind": "foley"
         }
       ]
     },
@@ -495,9 +471,11 @@
           "zh": "嚇驚",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_startle_a",
           "accent": "peak",
-          "note": "進入受驚姿勢。表入面冇受驚 hook。"
+          "note": "進入受驚姿勢。",
+          "kind": "foley",
+          "loopPlay": "on_enter"
         }
       ]
     },
@@ -533,27 +511,30 @@
           "zh": "發抖",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_shake_a",
           "accent": "release",
-          "note": "tofruit 第 1–2 幀左右抖。表入面冇對應 hook。"
+          "note": "tofruit 第 1–2 幀左右抖。",
+          "kind": "foley"
         },
         {
           "id": "transform",
           "zh": "變成果",
           "frameIndex": 3,
           "t_ms": 375,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_transform_a",
           "accent": "peak",
-          "note": "第 4 幀成果。表入面冇變身 hook。"
+          "note": "第 4 幀成果。",
+          "kind": "foley"
         },
         {
           "id": "roll",
           "zh": "碌走",
           "frameIndex": 4,
           "t_ms": 500,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_roll_a",
           "accent": "land",
-          "note": "第 5 幀開始碌。表入面冇碌走 hook。"
+          "note": "第 5 幀開始碌。",
+          "kind": "foley"
         }
       ]
     },
@@ -613,9 +594,11 @@
           "zh": "嚇驚",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_startle_a",
           "accent": "peak",
-          "note": "進入受驚姿勢。表入面冇受驚 hook。"
+          "note": "進入受驚姿勢。",
+          "kind": "foley",
+          "loopPlay": "on_enter"
         }
       ]
     },
@@ -651,27 +634,30 @@
           "zh": "發抖",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_shake_a",
           "accent": "release",
-          "note": "tofruit 第 1–2 幀左右抖。表入面冇對應 hook。"
+          "note": "tofruit 第 1–2 幀左右抖。",
+          "kind": "foley"
         },
         {
           "id": "transform",
           "zh": "變成果",
           "frameIndex": 3,
           "t_ms": 375,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_transform_a",
           "accent": "peak",
-          "note": "第 4 幀成果。表入面冇變身 hook。"
+          "note": "第 4 幀成果。",
+          "kind": "foley"
         },
         {
           "id": "roll",
           "zh": "碌走",
           "frameIndex": 4,
           "t_ms": 500,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_roll_a",
           "accent": "land",
-          "note": "第 5 幀開始碌。表入面冇碌走 hook。"
+          "note": "第 5 幀開始碌。",
+          "kind": "foley"
         }
       ]
     },
@@ -731,9 +717,11 @@
           "zh": "嚇驚",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_startle_a",
           "accent": "peak",
-          "note": "進入受驚姿勢（翼收）。表入面冇受驚 hook。"
+          "note": "進入受驚姿勢（翼收）。",
+          "kind": "foley",
+          "loopPlay": "on_enter"
         }
       ]
     },
@@ -769,27 +757,30 @@
           "zh": "發抖",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_shake_a",
           "accent": "release",
-          "note": "tofruit 第 1–2 幀左右抖。表入面冇對應 hook。"
+          "note": "tofruit 第 1–2 幀左右抖。",
+          "kind": "foley"
         },
         {
           "id": "transform",
           "zh": "變成果",
           "frameIndex": 3,
           "t_ms": 375,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_transform_a",
           "accent": "peak",
-          "note": "第 4 幀成果。表入面冇變身 hook。"
+          "note": "第 4 幀成果。",
+          "kind": "foley"
         },
         {
           "id": "roll",
           "zh": "碌走",
           "frameIndex": 4,
           "t_ms": 500,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_critter_roll_a",
           "accent": "land",
-          "note": "第 5 幀開始碌。表入面冇碌走 hook。"
+          "note": "第 5 幀開始碌。",
+          "kind": "foley"
         }
       ]
     },
@@ -833,27 +824,30 @@
           "zh": "腳步",
           "frameIndex": 0,
           "t_ms": 0,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_step_walk_a",
           "accent": "land",
-          "note": "用 walk_01（踏地拍）行近。冇普通行路 hook。"
+          "note": "用 walk_01（踏地拍）行近。",
+          "kind": "foley"
         },
         {
           "id": "letter_drop",
           "zh": "投信入箱",
           "frameIndex": 4,
           "t_ms": 500,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_letter_drop_a",
           "accent": "land",
-          "note": "伸手塞入（信封去到最前 44,22）；下一幀信封唔見。表入面冇投信／入箱 hook。"
+          "note": "伸手塞入（信封去到最前 44,22）；下一幀信封唔見。",
+          "kind": "foley"
         },
         {
           "id": "clap",
           "zh": "拍手",
           "frameIndex": 5,
           "t_ms": 625,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_clap_a",
           "accent": "release",
-          "note": "拍完手、兩爪喺胸前。表入面冇拍手 hook。"
+          "note": "拍完手、兩爪喺胸前。",
+          "kind": "foley"
         }
       ]
     },
@@ -909,7 +903,9 @@
           "t_ms": 500,
           "sfx_hook": "sfx_pet_step_hop_a",
           "accent": "land",
-          "note": "快落地（hop=-1）。§7.9 蹦跳腳步每次落地。"
+          "note": "快落地（hop=-1）。§7.9 蹦跳腳步每次落地。",
+          "kind": "foley",
+          "accent_offset_ms": 12
         }
       ]
     },
@@ -991,18 +987,20 @@
           "zh": "執起葉子",
           "frameIndex": 2,
           "t_ms": 250,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_pickup_a",
           "accent": "peak",
-          "note": "執到（葉離地提到手中）。表入面冇執／放物件 hook。"
+          "note": "執到（葉離地提到手中）。",
+          "kind": "foley"
         },
         {
           "id": "place",
           "zh": "放低葉子",
           "frameIndex": 5,
           "t_ms": 625,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_place_a",
           "accent": "land",
-          "note": "葉放返地下（y=54）。表入面冇執／放物件 hook。"
+          "note": "葉放返地下（y=54）。",
+          "kind": "foley"
         }
       ]
     },
@@ -1049,7 +1047,12 @@
           "t_ms": 600,
           "sfx_hook": "sfx_pet_yawn",
           "accent": "peak",
-          "note": "中段打呵欠（用 yawn_02 攤住）。§7.1 sfx_pet_yawn。"
+          "note": "中段打呵欠（用 yawn_02 攤住）。§7.1 sfx_pet_yawn。",
+          "preroll_ms": 600,
+          "kind": "voice",
+          "accent_offset_ms": 603,
+          "loopPlay": "every_n_loops",
+          "character": "tuanrong"
         }
       ]
     },
@@ -1094,9 +1097,10 @@
           "zh": "伸手",
           "frameIndex": 2,
           "t_ms": 250,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_reach_a",
           "accent": "peak",
-          "note": "前傾同伸爪最盡。表入面冇伸手／招手 hook。"
+          "note": "前傾同伸爪最盡。",
+          "kind": "foley"
         }
       ]
     },
@@ -1179,7 +1183,9 @@
           "t_ms": 250,
           "sfx_hook": "sfx_pet_scratch_a",
           "accent": "peak",
-          "note": "爪到頭側開始撓（第 3–5 幀繼續晃）。§7.9 抓癢動畫開始；a/b 可由遊音交替。"
+          "note": "爪到頭側開始撓（第 3–5 幀繼續晃）。§7.9 抓癢動畫開始；a/b 可由遊音交替。",
+          "kind": "foley",
+          "accent_offset_ms": 7
         }
       ]
     },
@@ -1223,9 +1229,10 @@
           "zh": "伸懶腰",
           "frameIndex": 2,
           "t_ms": 250,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_stretch_a",
           "accent": "peak",
-          "note": "踮腳拉到最高。雖然用咗 yawn 底圖，動作係伸懶腰唔係呵欠；唔借用 sfx_pet_yawn。"
+          "note": "踮腳拉到最高。雖然用咗 yawn 底圖，動作係伸懶腰唔係呵欠；唔借用 sfx_pet_yawn。",
+          "kind": "foley"
         }
       ]
     },
@@ -1305,9 +1312,10 @@
           "zh": "叉腰挺胸",
           "frameIndex": 2,
           "t_ms": 250,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_proud_a",
           "accent": "peak",
-          "note": "胸膛最挺、兩爪叉腰。表入面冇得意／叉腰 hook。"
+          "note": "胸膛最挺、兩爪叉腰。",
+          "kind": "foley"
         }
       ]
     },
@@ -1351,9 +1359,10 @@
           "zh": "指相框",
           "frameIndex": 3,
           "t_ms": 375,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_pet_point_a",
           "accent": "peak",
-          "note": "臂伸到最前、有指引短線。表入面冇指向 hook。"
+          "note": "臂伸到最前、有指引短線。",
+          "kind": "foley"
         }
       ]
     },
@@ -1389,9 +1398,11 @@
           "zh": "鞠躬遞信",
           "frameIndex": 3,
           "t_ms": 375,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_visitor_offer_letter",
           "accent": "peak",
-          "note": "鞠躬最低、信件伸得最前。表入面冇訪客遞信 hook。"
+          "note": "鞠躬最低、信件伸得最前。",
+          "kind": "foley",
+          "loopPlay": "every_n_loops"
         }
       ]
     },
@@ -1427,18 +1438,20 @@
           "zh": "點頭",
           "frameIndex": 2,
           "t_ms": 250,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_visitor_nod_a",
           "accent": "land",
-          "note": "點頭最低。表入面冇訪客點頭 hook。"
+          "note": "點頭最低。",
+          "kind": "foley"
         },
         {
           "id": "offer",
           "zh": "奉上種子",
           "frameIndex": 3,
           "t_ms": 375,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_visitor_offer_seed",
           "accent": "peak",
-          "note": "種子伸得最前。表入面冇訪客奉上 hook。"
+          "note": "種子伸得最前。",
+          "kind": "foley"
         }
       ]
     },
@@ -1474,18 +1487,20 @@
           "zh": "搖瓶",
           "frameIndex": 2,
           "t_ms": 250,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_visitor_rattle_a",
           "accent": "peak",
-          "note": "螢火瓶搖到最前。表入面冇搖瓶／貨檔 hook。"
+          "note": "螢火瓶搖到最前。",
+          "kind": "foley"
         },
         {
           "id": "rattle",
           "zh": "搖瓶",
           "frameIndex": 4,
           "t_ms": 500,
-          "sfx_hook": null,
+          "sfx_hook": "sfx_visitor_rattle_a",
           "accent": "peak",
-          "note": "螢火瓶搖去另一邊。同上。"
+          "note": "螢火瓶搖去另一邊。同上。",
+          "kind": "foley"
         }
       ]
     }

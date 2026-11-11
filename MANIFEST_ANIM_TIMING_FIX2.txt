@@ -1,0 +1,19 @@
+MANIFEST_ANIM_TIMING_FIX2 — 用遊音 audio/anim_sfx_map.json 重新生成 art-pet/anim_timing.json，刪走 art-pet/sfx_hooks.json。
+疊喺 art/anim-timing-fix1 @ f6d60b5e351a92b990b5ae613934edc26419aa4b。解壓到 repo 根。冇 git commit／push／merge。
+日期：2026-11-11 08:54 Asia/Hong_Kong
+
+驗證依賴：art 分支本身冇 audio/anim_sfx_map.json。要無參數跑 validator，須同時有遊音 audio/pet-plan-a @ 07762d21f732f014a590003895d99154a509ef07（PR #16，tree 904bc635）嘅 audio/anim_sfx_map.json。
+遊程請將 07762d21 嘅 audio/anim_sfx_map.json 放入工作樹（唔使連 ogg／工具一齊），疊喺呢份 art zip 上面，然後跑：
+  PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/validate_anim_timing.py
+呢次 zip 冇夾帶任何 audio 檔，亦冇複製 anim_sfx_map.json。可用 --sfx-map <路徑> 覆蓋。
+
+結果：42 個事件，41 個已填 hook，1 個刻意 null（idle_lively hop_peak @250 ms）。frameIndex／t_ms／accent 同 map 全部對得上，冇改時機。
+可選欄：idle_lazy.yawn preroll_ms=600（播放起點＝t_ms−600）；loopPlay=on_enter（4 個小動物 startle）；loopPlay=every_n_loops（yawn、訪客遞信）。
+build／validate 預設讀 audio/anim_sfx_map.json；已刪 --refresh-hooks；--sfx-readme 只係後備。已喺同時放咗 map 嘅 f6d60b5e 複本上無參數跑過，全過。timing 入面嘅 hook 若唔喺 map，validator 會明確 fail。
+
+[D] art-pet/sfx_hooks.json  （刪：名單改以 audio/anim_sfx_map.json 為單一來源）
+[M] art-pet/ANIM_TIMING.md  3348B  sha1:59f810d1227d
+[M] art-pet/anim_timing.json  35775B  sha1:f96b78c321f9
+[M] art-pet/anim_timing.validation.json  418B  sha1:74cf49874a54
+[M] art-pet/tools/build_anim_timing.py  28069B  sha1:272329fd917c
+[M] art-pet/tools/validate_anim_timing.py  13665B  sha1:8fb568efefcb

@@ -5,9 +5,11 @@
 檢查：clip 數同 atlas 一致；fps／幀數／loop 同 atlas 一致；
 frameMs 加總 = durationMs，而且同 fps 換算一致；
 每個 event 必有 sfx_hook、t_ms、accent；
-sfx_hook 須存在於 art-pet/sfx_hooks.json（或 --sfx-readme 覆蓋）或為 null；
+sfx_hook 須存在於 audio/anim_sfx_map.json（或 --sfx-map 覆蓋；--sfx-readme 只係後備）或為 null；
+若 hook 唔喺 map 允許名單，明確 fail；
 t_ms 喺 clip 長度內，而且等於 sum(frameMs[:frameIndex])；
 accent 只可以係 land／peak／release。
+可選欄 preroll_ms／kind／accent_offset_ms／loopPlay／character 若出現須格式正確。
 """
 from __future__ import annotations
 
@@ -76,9 +78,9 @@ def discover_clip_ids(m1: Path, m2: Path) -> dict[str, dict]:
 
 
 def validate(timing_path: Path, *, m1: Path | None, m2: Path | None,
-             root: Path, sfx_readme: Path | None,
-             report_path: Path | None = None,
-             refresh_hooks: bool = False) -> int:
+             root: Path, sfx_map: Path | None = None,
+             sfx_readme: Path | None = None,
+             report_path: Path | None = None) -> int:
     errors: list[str] = []
     warnings: list[str] = []
     doc = json.loads(timing_path.read_text(encoding='utf-8'))
@@ -108,9 +110,12 @@ def validate(timing_path: Path, *, m1: Path | None, m2: Path | None,
         if extra:
             err(errors, f'timing 有但 atlas 冇：{extra}')
 
-    # hook 表：預設 art-pet/sfx_hooks.json；--sfx-readme 先覆蓋。唔會讀本 repo 舊 audio/README.md。
+    # hook 表：預設 audio/anim_sfx_map.json；--sfx-map 覆蓋；--sfx-readme 只係後備。
+    hook_meta: dict = {}
     try:
-        hook_list, hook_meta = B.resolve_hooks(root, sfx_readme, refresh=refresh_hooks)
+        hook_list, hook_meta, _entries = B.resolve_hooks(
+            root, sfx_map=sfx_map, sfx_readme=sfx_readme,
+        )
         hooks = set(hook_list)
     except SystemExit as e:
         err(errors, f'讀 hook 表失敗：{e}')
@@ -123,7 +128,7 @@ def validate(timing_path: Path, *, m1: Path | None, m2: Path | None,
             f'only_baked={sorted(baked-hooks)[:8]} only_current={sorted(hooks-baked)[:8]})'
         )
     if not hooks:
-        err(errors, '冇任何允許嘅 sfx_hook 名單（請確認 art-pet/sfx_hooks.json 存在，或用 --sfx-readme --refresh-hooks）')
+        err(errors, '冇任何允許嘅 sfx_hook 名單（請確認 audio/anim_sfx_map.json 存在，或用 --sfx-map）')
 
     ev_total = 0
     ev_null = 0
@@ -187,7 +192,26 @@ def validate(timing_path: Path, *, m1: Path | None, m2: Path | None,
             else:
                 ev_hooked += 1
                 if hook not in hooks:
-                    err(errors, f'{prefix}: sfx_hook {hook!r} 唔喺遊音 hook 表，亦唔係 null')
+                    if hooks:
+                        err(errors, f'{prefix}: sfx_hook {hook!r} 唔喺 audio/anim_sfx_map.json 允許名單，亦唔係 null')
+                    # 名單本身讀唔到時，上面已有「讀 hook 表失敗」，唔再重複 41 次
+            # 可選欄（有就檢查格式，冇就跳過，唔破壞舊 schema）
+            preroll = ev.get('preroll_ms')
+            if preroll is not None:
+                if not isinstance(preroll, int) or preroll < 0:
+                    err(errors, f'{prefix}: preroll_ms 要係 ≥0 整數，實際 {preroll!r}')
+                elif isinstance(t, int) and t - preroll < 0:
+                    # 容許 0，少過 0 先警告（播放會提早過 clip 開頭）
+                    warnings.append(f'{prefix}: t_ms − preroll_ms = {t - preroll} < 0')
+            kind = ev.get('kind')
+            if kind is not None and kind not in ('foley', 'voice'):
+                err(errors, f'{prefix}: kind {kind!r} 唔係 foley／voice')
+            offset = ev.get('accent_offset_ms')
+            if offset is not None and (not isinstance(offset, int) or offset < 0):
+                err(errors, f'{prefix}: accent_offset_ms 要係 ≥0 整數，實際 {offset!r}')
+            lp = ev.get('loopPlay')
+            if lp is not None and lp not in ('on_enter', 'every_n_loops', 'every_loop'):
+                err(errors, f'{prefix}: loopPlay {lp!r} 唔係 on_enter／every_n_loops／every_loop')
             if accent is not None and accent not in ACCENTS:
                 err(errors, f'{prefix}: accent {accent!r} 唔係 land/peak/release')
             if not isinstance(t, int):
@@ -253,10 +277,10 @@ def main() -> int:
     ap.add_argument('--root', default='.')
     ap.add_argument('--m1', default=None)
     ap.add_argument('--m2', default=None)
+    ap.add_argument('--sfx-map', default=None,
+                    help='遊音 audio/anim_sfx_map.json（預設 <root>/audio/anim_sfx_map.json）')
     ap.add_argument('--sfx-readme', default=None,
-                    help='遊音最新 audio/README.md（覆蓋快照；配合 --refresh-hooks 重寫 art-pet/sfx_hooks.json）')
-    ap.add_argument('--refresh-hooks', action='store_true',
-                    help='用 --sfx-readme 抽出嘅名單重寫 art-pet/sfx_hooks.json（必須同時提供 --sfx-readme）')
+                    help='後備：由 README 抽 sfx_* 名單（無 anim_sfx_map.json 先用）')
     ap.add_argument('--timing', default=None, help='anim_timing.json（預設 <root>/art-pet/anim_timing.json）')
     ap.add_argument('--write-report', default=None, help='寫 validation JSON')
     args = ap.parse_args()
@@ -269,9 +293,9 @@ def main() -> int:
         m1=Path(args.m1) if args.m1 else None,
         m2=Path(args.m2) if args.m2 else None,
         root=Path(args.root),
+        sfx_map=Path(args.sfx_map) if args.sfx_map else None,
         sfx_readme=Path(args.sfx_readme) if args.sfx_readme else None,
         report_path=Path(args.write_report) if args.write_report else None,
-        refresh_hooks=bool(args.refresh_hooks),
     )
 
 

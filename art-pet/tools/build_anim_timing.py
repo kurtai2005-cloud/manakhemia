@@ -4,8 +4,9 @@
 
 時機（fps、幀數、loop、體型）以 atlas／clips.json 為準。
 事件係跟 build 腳本嘅姿勢註解對出來，唔會加姿勢入面冇嘅動作。
-每個事件必有 sfx_hook（須係 art-pet/sfx_hooks.json 快照入面嘅 sfx_* 名，對唔上就 null，唔自製；可用 --sfx-readme --refresh-hooks 更新快照）、
+每個事件必有 sfx_hook（須係 audio/anim_sfx_map.json 已列嘅 sfx_* 名，對唔上就 null，唔自製；可用 --sfx-map 覆蓋路徑；--sfx-readme 只係後備）、
 t_ms（由 clip 開頭計）、accent（land／peak／release）。
+可選欄：preroll_ms（播放起點＝t_ms − preroll_ms）、kind（foley／voice）、accent_offset_ms、loopPlay（on_enter／every_n_loops）、character。
 """
 from __future__ import annotations
 
@@ -20,7 +21,7 @@ SIZES_PX = {'S': 32, 'M': 48, 'L': 64}
 SIZE_OF_PX = {32: 'S', 48: 'M', 64: 'L'}
 
 # 疊本
-STACK_BASE = 'art/m2-actions @ 230dab2f'
+STACK_BASE = 'art/anim-timing-fix1 @ f6d60b5e'
 SOURCE_M1 = 'art/m1-icons-hunt @ 13a00477'
 SOURCE_M2 = 'art/m2-actions @ 230dab2f'
 
@@ -208,99 +209,107 @@ def parse_sfx_hooks(readme: Path) -> list[str]:
     return sorted(names)
 
 
-HOOKS_JSON_REL = 'art-pet/sfx_hooks.json'
-HOOKS_SOURCE_LABEL = (
-    '遊音 audio/README.md（最新，§3 + §7.1／7.2／7.5／7.9／7.11；'
-    '非本 repo 內舊稿 audio/README.md）'
-)
+SFX_MAP_REL = 'audio/anim_sfx_map.json'
+
+# 由遊音 map note 抽出循環播放策略（結構化，唔改 schema 必填欄）
+_LOOP_ON_ENTER_MARKERS = ('只喺進入狀態播一次',)
+_LOOP_EVERY_N_MARKERS = ('每 N 圈', '唔好每圈都響', '唔好每圈重觸發')
 
 
-def hooks_json_path(root: Path) -> Path:
-    return Path(root) / HOOKS_JSON_REL
+def sfx_map_path(root: Path, override: Path | None = None) -> Path:
+    return Path(override) if override else Path(root) / SFX_MAP_REL
 
 
-def _hkt_date_of(path: Path) -> str:
-    from datetime import datetime, timezone, timedelta
-    hkt = timezone(timedelta(hours=8), name='HKT')
-    return datetime.fromtimestamp(path.stat().st_mtime, hkt).strftime('%Y-%m-%d')
+def _file_stem(name: str) -> str:
+    return name[:-4] if name.endswith('.ogg') else name
 
 
-def _hkt_today() -> str:
-    from datetime import datetime, timezone, timedelta
-    hkt = timezone(timedelta(hours=8), name='HKT')
-    return datetime.now(hkt).strftime('%Y-%m-%d')
+def _allowed_names_from_map(entries: list[dict]) -> list[str]:
+    """允許嘅 hook：entries 嘅 sfx_hook，再加 files[] 檔名（含 a/b 交替）。"""
+    names: list[str] = []
+    seen: set[str] = set()
+    for e in entries:
+        hook = e.get('sfx_hook')
+        if isinstance(hook, str) and hook.startswith('sfx_') and hook not in seen:
+            names.append(hook)
+            seen.add(hook)
+        for f in e.get('files') or []:
+            if not isinstance(f, str):
+                continue
+            stem = _file_stem(f)
+            if stem.startswith('sfx_') and stem not in seen:
+                names.append(stem)
+                seen.add(stem)
+    return names
 
 
-def load_hooks_json(path: Path) -> list[str]:
-    """由 art-pet/sfx_hooks.json 讀快照名單。"""
+def load_sfx_map(path: Path) -> tuple[list[str], dict, list[dict]]:
+    """讀遊音 audio/anim_sfx_map.json。"""
     J = json.loads(path.read_text(encoding='utf-8'))
-    names = J.get('names')
-    if not isinstance(names, list) or not names:
-        raise SystemExit(f'{path}: names 空或者唔係陣列')
-    if any(not isinstance(n, str) or not n.startswith('sfx_') for n in names):
-        raise SystemExit(f'{path}: names 要全部係 sfx_* 字串')
-    if J.get('count') not in (None, len(names)):
-        raise SystemExit(f'{path}: count {J.get("count")} ≠ names {len(names)}')
-    return list(names)
-
-
-def write_hooks_snapshot(path: Path, names: list[str], readme: Path) -> dict:
-    """由遊音最新 README 重寫 hook 快照。"""
-    doc = {
-        'format': 'sfx_hooks/1',
-        'source': HOOKS_SOURCE_LABEL,
-        'sourcePath': str(readme.resolve()),
-        'date': _hkt_date_of(readme),
-        'dateZone': 'Asia/Hong_Kong',
-        'snapshotTaken': _hkt_today(),
+    if J.get('format') != 'anim_sfx_map/1':
+        raise SystemExit(f'{path}: format 應為 anim_sfx_map/1，實際 {J.get("format")!r}')
+    entries = J.get('entries')
+    if not isinstance(entries, list) or not entries:
+        raise SystemExit(f'{path}: entries 空或者唔係陣列')
+    names = _allowed_names_from_map(entries)
+    if not names:
+        raise SystemExit(f'{path}: 抽唔到任何 sfx_* 名')
+    meta = {
+        'via': 'anim_sfx_map.json',
+        'source': str(path),
+        'sourceRel': SFX_MAP_REL,
+        'format': J.get('format'),
         'count': len(names),
-        'note': (
-            '允許嘅 hook 名來自 遊音最新 README 全文已列嘅 sfx_*。'
-            '本 repo 根目錄 audio/README.md 係舊稿（風野競走時期），冇 §7 hook 表，唔好用佢嚟驗證。'
-        ),
-        'names': names,
+        'mapEvents': len(entries),
     }
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    return doc
+    return names, meta, entries
 
 
-def resolve_hooks(root: Path, sfx_readme: Path | None, refresh: bool = False
-                  ) -> tuple[list[str], dict]:
-    """預設讀 art-pet/sfx_hooks.json；--sfx-readme 覆蓋；--refresh-hooks 連快照都重寫。
+def loop_play_of(entry: dict) -> str | None:
+    note = entry.get('note') or ''
+    if any(m in note for m in _LOOP_ON_ENTER_MARKERS):
+        return 'on_enter'
+    if any(m in note for m in _LOOP_EVERY_N_MARKERS):
+        return 'every_n_loops'
+    return None
 
-    唔會自動用本 repo 嘅 audio/README.md（舊表，冇 hook）。
+
+def resolve_hooks(root: Path, sfx_map: Path | None = None,
+                  sfx_readme: Path | None = None
+                  ) -> tuple[list[str], dict, list[dict] | None]:
+    """預設讀 audio/anim_sfx_map.json；--sfx-map 覆蓋路徑；--sfx-readme 只係後備。
+
+    唔會自動用本 repo 舊稿 audio/README.md。
     """
-    snap = hooks_json_path(root)
+    if sfx_map:
+        path = Path(sfx_map)
+        if not path.is_file():
+            raise SystemExit(f'搵唔到 --sfx-map {path}')
+        return load_sfx_map(path)
+    default = Path(root) / SFX_MAP_REL
+    if default.is_file():
+        return load_sfx_map(default)
     if sfx_readme:
         readme = Path(sfx_readme)
         if not readme.is_file():
             raise SystemExit(f'搵唔到 --sfx-readme {readme}')
         names = parse_sfx_hooks(readme)
         if not names:
-            raise SystemExit(f'--sfx-readme {readme} 抽出 0 個 sfx_*（係咪用咗本 repo 舊 README？）')
+            raise SystemExit(
+                f'--sfx-readme {readme} 抽出 0 個 sfx_*（係咪用咗本 repo 舊 README？）'
+            )
         meta = {
             'via': 'sfx-readme',
             'source': str(readme.resolve()),
             'count': len(names),
         }
-        if refresh:
-            write_hooks_snapshot(snap, names, readme)
-            meta['refreshed'] = str(snap)
-            print(f'refreshed {snap}  hooks={len(names)}  from {readme}')
-        return names, meta
-    if refresh:
-        raise SystemExit(
-            '--refresh-hooks 要同時提供 --sfx-readme <遊音最新 README>；'
-            '唔好用本 repo 舊嘅 audio/README.md'
-        )
-    if snap.is_file():
-        names = load_hooks_json(snap)
-        return names, {'via': 'sfx_hooks.json', 'source': str(snap), 'count': len(names)}
+        return names, meta, None
     raise SystemExit(
-        f'搵唔到 {snap}。請用 --sfx-readme <遊音最新 README> --refresh-hooks 生成快照；'
-        '唔好用本 repo 舊嘅 audio/README.md'
+        f'搵唔到 {SFX_MAP_REL}（遊音 audio/pet-plan-a @ 07762d21 / PR #16）。'
+        'art 分支本身冇呢份檔：請將該 commit 嘅 audio/anim_sfx_map.json 放到 repo 根，'
+        '或用 --sfx-map <路徑>。唔好用本 repo 舊嘅 audio/README.md。'
     )
+
 
 
 def _first_existing(*paths: Path) -> Path | None:
@@ -346,6 +355,90 @@ def load_json(p: Path) -> dict:
     return json.loads(p.read_text(encoding='utf-8'))
 
 
+def _stale_nohook_sentence(sent: str) -> bool:
+    return bool(re.search(
+        r'表入面冇|冇普通行路 hook|sfx_hook=null|表入面有 hop',
+        sent,
+    ))
+
+
+def _clean_note(note: str, hook: str | None) -> str:
+    """hook 已由 map 填上時，刪走「表入面冇 hook」呢類過時句；姿勢描述留低。"""
+    if not note or hook is None:
+        return note
+    parts = re.split(r'(?<=。)', note)
+    kept = [p for p in parts if p and not _stale_nohook_sentence(p)]
+    return ''.join(kept).strip() or note
+
+
+def lookup_map_entry(clip_id: str, eid: str, fi: int, t: int) -> dict | None:
+    """用 (clip, event id, frameIndex, t_ms) 對 map；對唔到再試 (clip, id, t_ms)。"""
+    exact = []
+    loose = []
+    for e in MAP_ENTRIES:
+        if e.get('clip') != clip_id or e.get('event') != eid:
+            continue
+        loose.append(e)
+        if e.get('frameIndex') == fi and e.get('t_ms') == t:
+            exact.append(e)
+    if exact:
+        return exact[0]
+    if loose:
+        return loose[0]
+    return None
+
+
+def apply_map_to_event(clip_id: str, ev: dict, hooks: set[str]) -> dict:
+    """用 anim_sfx_map.json 填 sfx_hook 同可選欄；frameIndex／t_ms／accent 預設唔改。"""
+    entry = lookup_map_entry(clip_id, ev['id'], ev['frameIndex'], ev['t_ms'])
+    if entry is None:
+        if ev['sfx_hook'] is not None and ev['sfx_hook'] not in hooks:
+            ev['sfx_hook'] = None
+        return ev
+
+    # 記錄時機／重音唔一致，但跟 art 原值（除非完全對得上先安心用 map 嘅 hook）
+    diffs = []
+    if entry.get('frameIndex') != ev['frameIndex']:
+        diffs.append(f"frameIndex map={entry.get('frameIndex')} art={ev['frameIndex']}")
+    if entry.get('t_ms') != ev['t_ms']:
+        diffs.append(f"t_ms map={entry.get('t_ms')} art={ev['t_ms']}")
+    if entry.get('accent') != ev['accent']:
+        diffs.append(f"accent map={entry.get('accent')} art={ev['accent']}")
+    if diffs:
+        MAP_MISMATCHES.append(
+            f"{clip_id}.{ev['id']} @{ev['t_ms']}: " + '; '.join(diffs)
+        )
+
+    hook = entry.get('sfx_hook')
+    if hook is None or hook == '':
+        ev['sfx_hook'] = None
+    elif not isinstance(hook, str) or not hook.startswith('sfx_') or hook not in hooks:
+        MAP_MISMATCHES.append(
+            f"{clip_id}.{ev['id']} @{ev['t_ms']}: map hook {hook!r} 唔喺允許名單，改 null"
+        )
+        ev['sfx_hook'] = None
+    else:
+        ev['sfx_hook'] = hook
+
+    preroll = entry.get('preroll_ms')
+    if isinstance(preroll, int) and preroll > 0:
+        ev['preroll_ms'] = preroll
+    kind = entry.get('kind')
+    if kind in ('foley', 'voice'):
+        ev['kind'] = kind
+    offset = entry.get('accent_offset_ms')
+    if isinstance(offset, int):
+        ev['accent_offset_ms'] = offset
+    lp = loop_play_of(entry)
+    if lp:
+        ev['loopPlay'] = lp
+    ch = entry.get('character')
+    if isinstance(ch, str) and ch:
+        ev['character'] = ch
+    ev['note'] = _clean_note(ev.get('note') or '', ev['sfx_hook'])
+    return ev
+
+
 def make_events(clip_id: str, frame_ms: list[int], hooks: set[str]) -> list[dict]:
     out = []
     for ev in EVENTS.get(clip_id, []):
@@ -355,10 +448,10 @@ def make_events(clip_id: str, frame_ms: list[int], hooks: set[str]) -> list[dict
         if accent not in ACCENTS:
             raise SystemExit(f'{clip_id}: event {eid} accent={accent!r} 唔係 land/peak/release')
         if hook is not None and hook not in hooks:
-            # 防呆：寫錯就當 null，唔自製
+            # 防呆：寫錯就當 null，唔自製（map 稍後會覆蓋）
             hook = None
         t = sum(frame_ms[:fi])
-        out.append({
+        rec = {
             'id': eid,
             'zh': zh,
             'frameIndex': fi,
@@ -366,7 +459,10 @@ def make_events(clip_id: str, frame_ms: list[int], hooks: set[str]) -> list[dict
             'sfx_hook': hook,
             'accent': accent,
             'note': note,
-        })
+        }
+        if MAP_ENTRIES:
+            rec = apply_map_to_event(clip_id, rec, hooks)
+        out.append(rec)
     return out
 
 
@@ -489,17 +585,21 @@ def collect_visitors(m2: Path, repo: Path) -> list[dict]:
 
 
 HOOKS: set[str] = set()
+MAP_ENTRIES: list[dict] = []
+MAP_MISMATCHES: list[str] = []
 
 
 def build(args) -> dict:
-    global HOOKS
     m1, m2 = resolve_roots(args)
-    hook_list, hook_meta = resolve_hooks(
+    global HOOKS, MAP_ENTRIES, MAP_MISMATCHES
+    MAP_MISMATCHES = []
+    hook_list, hook_meta, map_entries = resolve_hooks(
         Path(args.root),
-        Path(args.sfx_readme) if args.sfx_readme else None,
-        refresh=bool(getattr(args, 'refresh_hooks', False)),
+        sfx_map=Path(args.sfx_map) if getattr(args, 'sfx_map', None) else None,
+        sfx_readme=Path(args.sfx_readme) if getattr(args, 'sfx_readme', None) else None,
     )
     HOOKS = set(hook_list)
+    MAP_ENTRIES = list(map_entries or [])
 
     hunt_idx = 'art-pet/sprites/tuanrong/motion/hunt/clips.json'
     m2_idx = 'art-pet/sprites/tuanrong/motion/m2/clips.json'
@@ -531,15 +631,16 @@ def build(args) -> dict:
             '（該幀開始）。遊測若同引擎播放相差超過 1 幀（toleranceFrames）就 fail。'
             '事件只來自姿勢／atlas，冇加姿勢入面冇嘅動作。'
             '每個 event 必有 sfx_hook、t_ms、accent（land／peak／release）。'
-            'sfx_hook 必須係 art-pet/sfx_hooks.json（遊音最新 README 快照）已列出嘅 sfx_* 名；對唔上就 null，唔自製。'
+            'sfx_hook 必須係 audio/anim_sfx_map.json（遊音 audio/pet-plan-a @ 07762d21）已列出嘅 sfx_* 名；對唔上就 null，唔自製。'
+            '可選欄 preroll_ms（播放起點＝t_ms − preroll_ms，例如 yawn 600）、kind、accent_offset_ms、loopPlay（on_enter／every_n_loops）、character。'
         ),
         'sfxHooks': {
-            'source': HOOKS_JSON_REL,
+            'source': SFX_MAP_REL,
             'via': hook_meta.get('via'),
             'note': (
-                '允許嘅 hook 名以 art-pet/sfx_hooks.json 為準（遊音最新 README 快照）。'
-                '唔好讀本 repo 舊稿 audio/README.md。'
-                '§7.11 本身係 HD-2D UI hook；寵物／訪客／小動物動作多數喺 §7.1 同 §7.9。'
+                '允許嘅 hook 名以 audio/anim_sfx_map.json 為準（遊音 PR #16 / audio/pet-plan-a @ 07762d21）。'
+                'art 分支本身唔包含呢份檔；驗證前要疊埋該 commit，或用 --sfx-map。'
+                '唔好讀本 repo 舊稿 audio/README.md，亦唔再用 art-pet/sfx_hooks.json。'
             ),
             'count': len(hook_list),
             'names': hook_list,
@@ -552,6 +653,10 @@ def build(args) -> dict:
         },
         'clips': clips,
     }
+    if MAP_MISMATCHES:
+        print(f'警告：map 同 art 時機有 {len(MAP_MISMATCHES)} 處唔一致（已保留 art 嘅 frameIndex/t_ms/accent）：')
+        for line in MAP_MISMATCHES:
+            print('  -', line)
     return doc
 
 
@@ -560,10 +665,10 @@ def main() -> int:
     ap.add_argument('--root', default='.')
     ap.add_argument('--m1', default=None, help='M1  overlay 根（預設 = --root）')
     ap.add_argument('--m2', default=None, help='M2  overlay 根（預設 = --root）')
+    ap.add_argument('--sfx-map', default=None,
+                    help='遊音 audio/anim_sfx_map.json（預設 <root>/audio/anim_sfx_map.json）')
     ap.add_argument('--sfx-readme', default=None,
-                    help='遊音最新 audio/README.md（覆蓋快照；配合 --refresh-hooks 重寫 art-pet/sfx_hooks.json）')
-    ap.add_argument('--refresh-hooks', action='store_true',
-                    help='用 --sfx-readme 抽出嘅名單重寫 art-pet/sfx_hooks.json（必須同時提供 --sfx-readme）')
+                    help='後備：由 README 抽 sfx_* 名單（無 anim_sfx_map.json 先用；唔好用本 repo 舊稿）')
     ap.add_argument('--out', default=None, help='輸出路徑（預設 <root>/art-pet/anim_timing.json）')
     ap.add_argument('--validate', action='store_true', help='寫完即跑 validator')
     args = ap.parse_args()
@@ -581,6 +686,7 @@ def main() -> int:
             m1=Path(args.m1) if args.m1 else None,
             m2=Path(args.m2) if args.m2 else None,
             root=Path(args.root),
+            sfx_map=Path(args.sfx_map) if args.sfx_map else None,
             sfx_readme=Path(args.sfx_readme) if args.sfx_readme else None,
         )
     return 0
