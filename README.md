@@ -3,7 +3,7 @@
 M1 用 Godot 4 重做。舊 HTML5／three.js（`code/glimmer-3d-h1`）凍結作參考，唔刪。
 
 - 引擎：Godot 4.7.2.stable
-- 開發基線：低畫質（穩定 30fps；無 DoF／glow）
+- 開發基線：低畫質（穩定 30fps）。低檔仍係完整 3D 花園（同一場景／鏡頭／mesh／nav／遮擋），只關 shadow map、glow／DoF／fog，並降低 3D render scale；永遠唔退回分層 2D。
 - applicationId：`hk.vizard.glimmer.fpet.godot`（同舊 app 並排安裝）
 - versionName `2.0.0-g0`，versionCode 1
 

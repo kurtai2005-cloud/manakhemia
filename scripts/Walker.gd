@@ -43,6 +43,7 @@ func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) 
 	# pivot：置中後把腳底對準 origin
 	sprite.offset = Vector2(frame_size.x * 0.5 - pivot.x, pivot.y - frame_size.y * 0.5)
 	add_child(sprite)
+	_add_blob()
 	agent = NavigationAgent3D.new()
 	agent.path_desired_distance = 4.0
 	agent.target_desired_distance = 6.0
@@ -146,3 +147,21 @@ func _anim(dt: float) -> void:
 func _apply_frame() -> void:
 	frame_i = 0
 	_anim(0.0)
+
+func _add_blob() -> void:
+	# 低成本腳底影（低畫質唔開 shadow map 都用呢個；唔替代 3D 遮擋）
+	var blob := MeshInstance3D.new()
+	blob.name = "BlobShadow"
+	var q := QuadMesh.new()
+	q.size = Vector2(radius * 1.8, radius * 1.1)
+	blob.mesh = q
+	blob.rotation_degrees.x = -90
+	blob.position = Vector3(0, 0.08, 0.4)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color = Color(0, 0, 0, 0.28)
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	blob.material_override = mat
+	blob.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(blob)

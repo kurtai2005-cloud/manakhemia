@@ -398,10 +398,11 @@ func _clean_poop(node: Area3D) -> void:
 
 
 func _on_quality(tier: int) -> void:
+	# 三檔共用同一 3D 花園：mesh、相機、nav、billboard、遮擋一律保留。
+	# 低檔只關貴嘅效果，唔換場景、唔改做分層 2D。
 	var low := tier == QualitySettings.Tier.LOW
-	var mid := tier == QualitySettings.Tier.MID
 	if sun:
-		sun.shadow_enabled = not low
+		sun.shadow_enabled = not low  # 低：冇 shadow map；腳底 blob 仍在
 		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
 		sun.light_energy = 1.0 if not (tier == QualitySettings.Tier.HIGH) else 1.1
 	if env and env.environment:
@@ -412,13 +413,14 @@ func _on_quality(tier: int) -> void:
 		if not low:
 			e.fog_light_color = e.background_color
 			e.fog_density = 0.0004
-		# DoF 只 high
+		# DoF：4.7 走 CameraAttributes，預設關。低檔禁止開。
 		e.background_mode = Environment.BG_COLOR
-	# 低畫質唔開 MSAA；mid/high 都保持 compatibility 便宜
-	get_viewport().msaa_3d = Viewport.MSAA_DISABLED
+	var vp := get_viewport()
+	vp.msaa_3d = Viewport.MSAA_DISABLED
+	vp.scaling_3d_scale = QualitySettings.render_scale()
 	if fill:
-		fill.visible = true
-		fill.light_energy = 0.2 if low else 0.38
+		fill.visible = true  # 三檔都保留補光，先至唔會睇落扁平
+		fill.light_energy = 0.28 if low else 0.38
 
 
 func _place_cam(dt: float) -> void:
