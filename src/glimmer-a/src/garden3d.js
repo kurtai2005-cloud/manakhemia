@@ -6,14 +6,15 @@
    H1.2：直版可見區構圖（樹／籬笆／燈柱／屋唔被 UI 遮）＋跟拍保建立鏡頭；日影／夜空對齊參考；網格預設關；3D 行速 20 u/s。
    H1.3：寵物自主四圍行（唔使撳）；2D 地面物件全部做 billboard（寫 depth、被擋、影子、坐 XZ、跟光）；細佬自主 nav；遊測 P2／P3（mid 縮影圖、high 減 shadow 更新、LICENSE 入包）。
    H1.4：遊測 H1.3 QA — 屎盒優先命中、半透明 actor alphaTest 0.1、mid 影圖 256、high 關 soft shadow、雨點加大加深。
-   H1.5：遊測 H1.4 P2 效能 — 尺寸／dpr 冇變就唔好每幀 setSize；high／mid dpr 上限 1.5／1.25；3D 開時 renderer.frame 唔再畫 L0／L1。 */
+   H1.5：遊測 H1.4 P2 效能 — 尺寸／dpr 冇變就唔好每幀 setSize；high／mid dpr 上限 1.5／1.25；3D 開時 renderer.frame 唔再畫 L0／L1。
+   H1.6：遊測 H1.5 P2 — high dpr 1.5→1；WebGL 緩衝整數倍對齊顯示（關平滑上採）；3D 開時唔畫 2D 寵物。 */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else { root.Glimmer = root.Glimmer || {}; root.Glimmer.garden3d = factory(); }
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   const W = 195, H = 422, CX = 97, GROUND_Y = 292, ZSCALE = 1.6;
-  const KEY_Q = 'glimmer.g3d.quality', KEY_SWAY = 'glimmer.g3d.sway', KEY_FOLLOW = 'glimmer.g3d.follow', KEY_GRID = 'glimmer.g3d.grid';
+  const KEY_Q = 'glimmer.g3d.quality', KEY_Q_MANUAL = 'glimmer.g3d.qManual', KEY_SWAY = 'glimmer.g3d.sway', KEY_FOLLOW = 'glimmer.g3d.follow', KEY_GRID = 'glimmer.g3d.grid';
   /* 可見花園區：layout_hd2d_v2.json bands.garden 42–348，向下讓過頂欄／頭像／開發者掣，向右讓過 rail，向上讓過 action。 */
   const VIS = { x: 2, y: 64, w: 152, h: 278 };
   const VIS_HFOV_DEG = 29;           /* 參考 day_cam_steady crop 有效橫向 FOV ≈29°；landmark 方位跨度 ≈25° */
@@ -438,15 +439,18 @@
 
   /* ── 畫質：high／mid＝3D；low＝2D 後備。?3d=0 永遠 2D；低端機自動 low。── */
   const QSET = {
-    high: { dpr: 1.5, shadow: 1024, tex3x: true, shadows: true, shadowEvery: 3, softShadow: false },  /* H1.5：dpr 上限 1.5；影圖 2048→1024、PCF */
-    mid: { dpr: 1.25, shadow: 256, tex3x: false, shadows: true, shadowEvery: 2, softShadow: false },  /* H1.5：dpr 上限 1.25；影圖 256、每 2 幀、PCF */
+    high: { dpr: 1, shadow: 1024, tex3x: true, shadows: true, shadowEvery: 3, softShadow: false },    /* H1.6：dpr 上限 1（整數倍 195×422→390×844，關平滑） */
+    mid: { dpr: 1, shadow: 256, tex3x: false, shadows: true, shadowEvery: 2, softShadow: false },     /* H1.6：after 量度後 mid 亦 dpr 1（整數倍），影圖 256、每 2 幀 */
     low: { dpr: 1, shadow: 0, tex3x: false, shadows: false, shadowEvery: 0, softShadow: false }
   };
   /* k＝2D 顯示倍數；dprCap＝3D 幀緩衝上限。回傳 WebGL 實際像素。 */
   function viewScale(k, dprCap) {
     k = k || 2;
     const gk = Math.min(k, dprCap == null ? k : dprCap);
-    return { gk: gk, w: Math.max(1, Math.round(W * gk)), h: Math.max(1, Math.round(H * gk)) };
+    const w = Math.max(1, Math.round(W * gk)), h = Math.max(1, Math.round(H * gk));
+    const dw = W * k, dh = H * k;
+    const integer = (w === dw && h === dh) || (dw % w === 0 && dh % h === 0);
+    return { gk: gk, w: w, h: h, dw: dw, dh: dh, integer: integer };
   }
   const ACTOR_ALPHA_SOFT = 0.1;  /* 低過 6d 影子 alpha 0.45，半透明片元唔好被切走 */
   const RAIN = { n: 200, size: 6, color: 0x4a6a96, opacity: 0.9, sizeAttenuation: false };
@@ -457,11 +461,12 @@
     if (o.force === 'off' || v === '0') return { want: false, quality: 'low', reason: 'off' };
     if (o.webgl === false) return { want: false, quality: 'low', reason: 'nowebgl' };
     if (v === 'high' || v === 'mid' || v === 'low') return { want: v !== 'low', quality: v, reason: 'qs' };
-    if (v === '1') { /* 強制開，仲可以自動揀級 */ }
+    /* H1.6：自動偵測唔可高過 low；mid／high 只喺開發者模式（或 ?3d=mid／high）先揀 */
+    if (v === '1') return { want: false, quality: 'low', reason: 'auto' };
     const lowEnd = (o.hardwareConcurrency != null && o.hardwareConcurrency <= (o.lowEndCores || 4))
       || (o.deviceMemory != null && o.deviceMemory <= (o.lowEndMemGB || 4));
-    if (lowEnd && v !== '1') return { want: false, quality: 'low', reason: 'lowend' };
-    return { want: true, quality: 'high', reason: 'auto' };
+    if (lowEnd) return { want: false, quality: 'low', reason: 'lowend' };
+    return { want: false, quality: 'low', reason: 'auto' };
   }
   function hasWebGL() {
     if (typeof document === 'undefined') return false;
@@ -479,7 +484,7 @@
     this.base = opts.base || 'art/garden3d/H1/';
     this.dir4base = opts.dir4base || 'art/garden3d/dir4/';
     this.enabled = opts.enabled !== false;
-    this.quality = opts.quality || 'high';
+    this.quality = opts.quality || 'low';
     this.swayOn = opts.swayOn !== false;
     this.followOn = opts.followOn !== false;
     this.gridOn = !!opts.gridOn;
@@ -1005,9 +1010,9 @@
       this.renderer.shadowMap.autoUpdate = true;
     }
     this.renderer.render(this.scene, this.camera);
-    const dw = W * k, dh = H * k;
-    ctx.imageSmoothingEnabled = !(this.canvas.width === dw && this.canvas.height === dh);
-    ctx.drawImage(this.canvas, 0, 0, dw, dh);
+    const vs = viewScale(k, this.qs().dpr);
+    ctx.imageSmoothingEnabled = !vs.integer;  /* 整數倍（1×／2×）關平滑，唔好每幀雙線性放大 293×633 */
+    ctx.drawImage(this.canvas, 0, 0, vs.dw, vs.dh);
     const ms = ((typeof performance !== 'undefined' && performance.now) ? performance.now() : 0) - t0;
     this.stat.draws++; this.stat.lastMs = ms; this.stat.ms += ms;
     this.perf.n++; this.perf.sum += ms; this.perf.max = Math.max(this.perf.max, ms); this.perf.last = ms;
@@ -1214,9 +1219,10 @@
     return poop || best;  /* 撳中點喺屎盒入面就優先回屎（細佬／訪客高盒唔好搶） */
   };
 
-  Scene.prototype.setQuality = function (q) {
+  Scene.prototype.setQuality = function (q, o) {
     if (q !== 'high' && q !== 'mid' && q !== 'low') return this.quality;
     const prev = this.quality; this.quality = q; lsSet(KEY_Q, q);
+    if (o && o.manual) lsSet(KEY_Q_MANUAL, q === 'low' ? '0' : '1');
     if (this.loaded && prev !== q && q !== 'low') {
       try { this._build(window.THREE); } catch (e) { this.error = String(e && e.message || e); }
     }
@@ -1271,7 +1277,11 @@
       lowEndMemGB: (P.quality && P.quality.lowEndMemGB) || 4
     });
     let quality = det.quality;
-    if (savedQ && !qs.get('3d') && (savedQ === 'high' || savedQ === 'mid' || savedQ === 'low')) quality = savedQ;
+    const manual = lsGet(KEY_Q_MANUAL, '') === '1';
+    /* 手動（開發者模式）先可以沿用 mid／high；自動／舊自動偵測存檔一律 cap 喺 low */
+    if (savedQ && !qs.get('3d') && savedQ === 'low') quality = 'low';
+    else if (savedQ && !qs.get('3d') && (savedQ === 'high' || savedQ === 'mid') && manual) quality = savedQ;
+    else if (!qs.get('3d')) quality = 'low';
     const S = new Scene({
       base: (P.art && P.art.base || 'art/') + 'garden3d/H1/',
       dir4base: (P.art && P.art.base || 'art/') + 'garden3d/dir4/',
@@ -1404,12 +1414,12 @@
     };
 
     const DEV = {
-      id: 'g3d', title: '3D 花園 H1.5', order: 13,
+      id: 'g3d', title: '3D 花園 H1.6', order: 13,
       status: function () { return (S.on() ? ('3D ' + S.quality) : (qs.get('3d') === '0' ? '?3d=0 2D' : '2D 後備')) + '・擺鏡 ' + (S.swayOn ? '開' : '關') + '・跟拍 ' + (S.followOn ? '開' : '關') + '・網格 ' + (S.gridOn ? '開' : '關'); },
       items: [
-        { k: 'high', label: '畫質：高（3D）', run: function () { S.setQuality('high'); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 高' }; } },
-        { k: 'mid', label: '畫質：中（3D）', run: function () { S.setQuality('mid'); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 中' }; } },
-        { k: 'low', label: '畫質：低（2D 後備）', run: function () { S.setQuality('low'); return { ok: true, msg: '已轉返 2D 花園' }; } },
+        { k: 'high', label: '畫質：高（3D）', run: function () { S.setQuality('high', { manual: true }); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 高' }; } },
+        { k: 'mid', label: '畫質：中（3D）', run: function () { S.setQuality('mid', { manual: true }); if (!S.ready) S.load(); return { ok: true, msg: '3D 畫質 → 中' }; } },
+        { k: 'low', label: '畫質：低（2D 後備）', run: function () { S.setQuality('low', { manual: true }); return { ok: true, msg: '已轉返 2D 花園' }; } },
         { k: 'sway', label: '鏡頭自動擺（預設開）', run: function () { const v = S.setSway(!S.swayOn); return { ok: true, msg: v ? '自動擺鏡開' : '自動擺鏡關' }; } },
         { k: 'follow', label: '鏡頭跟拍（預設開）', run: function () { const v = S.setFollow(!S.followOn); return { ok: true, msg: v ? '跟拍開' : '跟拍關' }; } },
         { k: 'grid', label: '地面網格（預設關）', run: function () { const v = S.setGrid(!S.gridOn); return { ok: true, msg: v ? '地面網格開' : '地面網格關' }; } },

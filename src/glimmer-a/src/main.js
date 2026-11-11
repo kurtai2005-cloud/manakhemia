@@ -139,11 +139,27 @@
   if (boot.rep && boot.rep.show) UI.showSummary(boot.rep);
   G.save();
   G.bootReport = boot.rep;
+  G._simAt = G.now();
   if (G.state.fadeReady && G.state.stage === 'elder') G.state.ev.push({ type: 'fadeReady', form: G.state.form });   // evo6：上次揀「再陪多陣」→ 下次開 app 再問
   if (G.state.migrated && !G.state.migrated.told) { G.state.migrated.told = true; setTimeout(() => UI.toast('團絨而家係「' + D.STAGE_NAME[G.state.stage] + '」階段（成長表更新咗）'), 1200); }
 
   // ── 主迴圈 ──
   let last = performance.now(), saveT = 0;
+  let hiddenAt = null;
+  /* H1.6：APK／WebView 停錶時 rAF dt 會被 cap 0.25s，要按牆鐘補離線成長（visibility 唔穩都得）。 */
+  G.catchUpOffline = function (src) {
+    if (!G.state) return null;
+    const now = G.now();
+    const rep = SIM.catchUp(G.state, now, G._simAt);
+    if (!rep || rep.skipped) return null;
+    G._simAt = now;
+    last = performance.now();
+    if (rep.show) EV.noteOpen(G.state, { hour: G.hour(), now: now });
+    if (!window.__noSaveOnHide) G.save();
+    if (rep.show) UI.showSummary(rep);
+    G.reunionCheck(rep);
+    return rep;
+  };
   const qm = { sum: 0, n: 0, slow: 0, grace: P.quality.graceFrames, lastAvg: 0, drops: 0 };   // rAF 幀間隔量度
   G.qm = qm;
   G.paused = false;
@@ -152,14 +168,17 @@
     const rawMs = ts - last, dtReal = Math.min(0.25, rawMs / 1000); last = ts;
     const s = G.state;
     if (!document.hidden) {
+      if (G.catchUpOffline('stall')) { /* 停錶補時已計入成長；今幀唔再疊 0.25s */ }
       const dtW = G.paused ? 0 : dtReal;
       if (G.clockRun && G.clock.fake) G.clock.t += dtW * G.timeScale * 1000;   // 開發模式快進：假時鐘跟 ×N 行 → 時段／HD-2D 場景跟住變
       SIM.advance(s, dtW * G.timeScale, { hour: (G.hourOverride != null || G.timeScale === 1 || G.clockRun) ? G.hour() : null, now: G.now() }, 30);
+      G._simAt = G.now();
       if (G.sysTick) G.sysTick(dtW);
       if (G.touchTick) G.touchTick(dtReal);
       if (G.b3bTick) G.b3bTick(dtReal);   // 3b：訪客／大場面／預兆（實時）
       if (G.s2Tick) G.s2Tick(dtReal);     // 4a：細佬（實時）
-      saveT += dtReal; if (saveT >= P.autosaveSec) { saveT = 0; G.save(); }
+      saveT += dtReal; if (saveT >= P.autosaveSec) { saveT = 0;   // H1.6：autosave 移出 rAF，避免 50–140ms long task
+        if (!G._saveIdle) { G._saveIdle = 1; const go = function () { G._saveIdle = 0; G.save(); }; if (typeof requestIdleCallback === 'function') requestIdleCallback(go, { timeout: 800 }); else setTimeout(go, 0); } }
       UI.update(dtW);
       const view = G.tickWorld(dtW);
       AUD.update(dtW, G.audioWorld);
@@ -270,15 +289,18 @@
   // v7 晶角「上線」：開 app（boot）或者離開 ≥ crystal.loginGapSec 再返嚟 → 開即清窗口（sim.noteLogin）
   G.login = function (t) { const L = SIM.noteLogin(G.state, t == null ? G.now() : t); if (L) G.save(); return L; };
   G.login();
-  let hiddenAt = null;
-  function onHide() { if (!window.__noSaveOnHide) G.save(); }
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { hiddenAt = G.now(); onHide(); }
-    else { const rep = SIM.applyOffline(G.state, G.now());
-      if (hiddenAt != null && G.now() - hiddenAt >= P.evo6.branch.crystal.loginGapSec * 1000) G.login(); hiddenAt = null; if (rep.show) EV.noteOpen(G.state, { hour: G.hour(), now: G.now() }); G.save(); last = performance.now(); if (rep.show) UI.showSummary(rep); G.reunionCheck(rep); }
-  });
+  function onHide() { hiddenAt = G.now(); G._simAt = G.now(); if (!window.__noSaveOnHide) G.save(); }
+  function onShow(src) {
+    const rep = G.catchUpOffline(src || 'vis');
+    if (hiddenAt != null && G.now() - hiddenAt >= P.evo6.branch.crystal.loginGapSec * 1000) G.login();
+    hiddenAt = null; return rep;
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) onHide(); else onShow('vis'); });
   window.addEventListener('pagehide', onHide);
   window.addEventListener('beforeunload', onHide);
+  window.addEventListener('pageshow', () => { if (!document.hidden) onShow('pageshow'); });
+  window.addEventListener('focus', () => { if (!document.hidden) onShow('focus'); });
+  try { const C = window.Capacitor, App = C && ((C.Plugins && C.Plugins.App) || C.App); if (App && App.addListener) App.addListener('appStateChange', function (st) { if (st && st.isActive) onShow('app'); else if (st && st.isActive === false) onHide(); }); } catch (e) { }
 
   // ── 效能量度（測試用）──
   G.bench = function (quality, n) {

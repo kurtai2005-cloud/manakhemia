@@ -322,6 +322,7 @@
     offlineGrowthRatio: 0.5,      // （evo6 前）離線成長比例；evo6 起成長改用 offlineGrowCapH，呢個唔再用
     offlineGrowCapH: 24,          // evo6（遊策 10-31 §6 補充）：離線成長照真實時間計，單次上限 24h；每次返嚟最多升 1 階，升完停喺新階段開頭
     offlineMinAwaySec: 300,       // 離開 >= 5 分鐘先顯示回歸摘要
+    offlineStallSec: 2,           // H1.6：rAF／WebView 停錶超過呢個秒數就當離線補時（唔好用 0.25s dt cap 當成長）
     offlineGiftPerH: 1, offlineGiftMax: 10, // 光粒小禮物（估計值）
     // ── 迷你遊戲：接星屑 ──
     mg: {

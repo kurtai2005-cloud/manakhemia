@@ -438,6 +438,14 @@
   }
   const offlineHooks = [];
   function addOfflineHook(fn) { offlineHooks.push(fn); }       // events.js 掛：離線事件按「日」補抽（info: {from, now, T, tampered}）
+  /* H1.6：WebView／APK 停錶補時。simAt＝上次確實有 SIM.advance 嘅牆鐘；只補呢個以後嘅空隙，避免同已推進時間重複計。 */
+  function catchUp(s, nowMs, simAt) {
+    nowMs = +nowMs; const stall = (P.offlineStallSec != null ? P.offlineStallSec : 2);
+    if (simAt != null && isFinite(+simAt)) s.lastSeen = Math.max(+s.lastSeen || 0, +simAt);
+    const gap = Math.max(0, (nowMs - (+s.lastSeen || nowMs)) / 1000);
+    if (gap < stall) return { skipped: true, T: gap, show: false };
+    return applyOffline(s, nowMs);
+  }
   function applyOffline(s, nowMs) {
     const reset = sanitizeSaveTime(s, nowMs);
     const T = Math.max(0, (nowMs - s.lastSeen) / 1000);
@@ -682,7 +690,7 @@
 
   return {
     makeRng, newState, effectiveOffline, isUnwell, lowestNeed, needBand, decideForm, overlayStatus,
-    step, advance, applyOffline, offlineGrow, addStepHook, addOfflineHook, addCareHook, addFadeHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
+    step, advance, applyOffline, catchUp, offlineGrow, addStepHook, addOfflineHook, addCareHook, addFadeHook, hourOf, fmtDur, feed, play, rinse, clearPoop, toggleSleep, tapEgg,
     mgCount, mgRouteOk, mgRouteW, eggProgress, stageProgress, dayKey, STAGES, nextStage, enterStage, checkStage, decideBranch, lumiCheck, branch5Check, notePetSleep, noteClean, setRainFn, localDayNum, dayWeatherN, dayWeather, isRaining, isMoonHour, careWindow, inWindow, routeLead, routeBulb, checkForeshadow, isDrowsy, lullSleep, poopAges, noteLogin, checkQuickClean, b5Need, overlayOpenGame, normWeather, setWeatherFn, weatherNow, setNowFn, nowMs, careDaysCheck, noteDay, setBranchRoll, branchRoll, cqCare, cqDecay, dexList, unlockDex, noteDexHint, careShare, noteCare, noteEvent, isNightHour, setHourFn, fade, rebirth, migrate, Minigame, mgReward, mgApply, serialize, deserialize, sanitizeSaveTime, settleCQ,
   };
 });

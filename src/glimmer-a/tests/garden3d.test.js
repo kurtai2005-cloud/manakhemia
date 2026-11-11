@@ -121,7 +121,9 @@ console.log('⑥ 畫質自動');
   const lo = G3.detectQuality({ webgl: true, hardwareConcurrency: 4, deviceMemory: 3 });
   ok(lo.want === false && lo.quality === 'low' && lo.reason === 'lowend', '低端機（≤4 核或 ≤4GB）自動 2D', lo);
   const hi = G3.detectQuality({ webgl: true, hardwareConcurrency: 8, deviceMemory: 8 });
-  ok(hi.want === true && hi.quality === 'high', '中高階自動 3D high', hi);
+  ok(hi.want === false && hi.quality === 'low' && hi.reason === 'auto', 'H1.6：自動偵測唔高過 low（中高階都係 2D 後備）', hi);
+  ok(G3.detectQuality({ qs: { '3d': '1' }, webgl: true, hardwareConcurrency: 8, deviceMemory: 8 }).quality === 'low', '?3d=1 都唔自動升 mid／high');
+  ok(G3.detectQuality({ qs: { '3d': 'high' }, webgl: true }).want === true && G3.detectQuality({ qs: { '3d': 'high' } }).quality === 'high', '?3d=high 仍可開高（開發者／測試）');
   ok(G3.detectQuality({ qs: { '3d': 'mid' }, webgl: true, hardwareConcurrency: 2 }).quality === 'mid', '?3d=mid 覆蓋低端');
   ok(G3.QSET.high.tex3x && !G3.QSET.mid.tex3x && G3.QSET.high.shadow > G3.QSET.mid.shadow, 'high＝@3x＋大影圖、mid＝1x＋細影');
 }
@@ -219,11 +221,11 @@ console.log('⑩ H1.3／H1.4 自主行／世界物件／影圖／LICENSE／雨')
 {
   ok(G3.QSET.mid.shadow === 256 && G3.QSET.mid.shadowEvery === 2 && G3.QSET.mid.softShadow === false, 'mid 影圖 256、每 2 幀、PCF', G3.QSET.mid);
   ok(G3.QSET.high.shadow === 1024 && G3.QSET.high.shadowEvery === 3 && G3.QSET.high.softShadow === false, 'high 影圖 1024、每 3 幀、關 soft shadow', G3.QSET.high);
-  ok(G3.QSET.high.dpr === 1.5 && G3.QSET.mid.dpr === 1.25, 'H1.5 high／mid dpr 上限 1.5／1.25', { high: G3.QSET.high.dpr, mid: G3.QSET.mid.dpr });
+  ok(G3.QSET.high.dpr === 1 && G3.QSET.mid.dpr === 1, 'H1.6 high／mid dpr 上限 1／1', { high: G3.QSET.high.dpr, mid: G3.QSET.mid.dpr });
   const vsH = G3.viewScale(2, G3.QSET.high.dpr), vsM = G3.viewScale(2, G3.QSET.mid.dpr), vsSame = G3.viewScale(2, 2);
-  ok(vsH.w === Math.round(195 * 1.5) && vsH.h === Math.round(422 * 1.5) && vsH.gk === 1.5, 'high k=2 → WebGL 1.5x', vsH);
-  ok(vsM.w === Math.round(195 * 1.25) && vsM.h === Math.round(422 * 1.25) && vsM.gk === 1.25, 'mid k=2 → WebGL 1.25x', vsM);
-  ok(vsSame.w === 390 && vsSame.h === 844 && G3.viewScale(1, 1.5).gk === 1, 'cap 唔大於 k；k 細過 cap 就用 k', vsSame);
+  ok(vsH.w === 195 && vsH.h === 422 && vsH.gk === 1 && vsH.integer === true, 'high k=2 → WebGL 195×422 整數倍 2×', vsH);
+  ok(vsM.w === 195 && vsM.h === 422 && vsM.gk === 1 && vsM.integer === true, 'mid k=2 → WebGL 195×422 整數倍 2×', vsM);
+  ok(vsSame.w === 390 && vsSame.h === 844 && vsSame.integer === true && G3.viewScale(1, 1.5).gk === 1, 'cap 唔大於 k；k 細過 cap 就用 k；1:1 整數', vsSame);
   const a = G3.viewScale(2, 1.5), b = G3.viewScale(2, 1.5);
   ok(a.w === b.w && a.h === b.h, '同一 k／dpr 計出同一尺寸（setSize 可跳過）', { a, b });
   ok(G3.ACTOR_ALPHA_SOFT === 0.1, '半透明 actor alphaTest 0.1', G3.ACTOR_ALPHA_SOFT);

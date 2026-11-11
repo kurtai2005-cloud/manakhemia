@@ -413,11 +413,15 @@ body.u62tipon #l6dbtn,#l6dbtn.l6d-yield{opacity:0 !important;pointer-events:none
       const col = ['l6cbtn', 'u62workbtn', 'l6bbtn'].map(id => document.getElementById(id)).filter(e => e && vis(e.id) && e.style.top);
       const u = U(), rl = u && u.rail;
       const uiEl = document.getElementById('ui');
-      const kUi = uiEl && uiEl.offsetWidth ? ((uiEl.getBoundingClientRect().width || uiEl.offsetWidth) / uiEl.offsetWidth) : 1;
-      const hOf = (e) => { if (!e) return 66; const r = e.getBoundingClientRect(); const h = r.height && kUi ? r.height / kUi : (e.offsetHeight || 0); return Math.max(h, e.offsetHeight || 0, 48); };
+      const now = pnow();
+      if (!RB.cache || now - (RB.cache.t || 0) > 1000) RB.cache = { t: now, k: 0, h: new Map(), r: new Map() };
+      if (!RB.cache.k) RB.cache.k = uiEl && uiEl.offsetWidth ? ((uiEl.getBoundingClientRect().width || uiEl.offsetWidth) / uiEl.offsetWidth) : 1;
+      const kUi = RB.cache.k;
+      const hOf = (e) => { if (!e) return 66; if (RB.cache.h.has(e)) return RB.cache.h.get(e); const r = e.getBoundingClientRect(); const h = Math.max(r.height && kUi ? r.height / kUi : (e.offsetHeight || 0), e.offsetHeight || 0, 48); RB.cache.h.set(e, h); return h; };
       const GAP = 8, pitch = (e) => hOf(e) + GAP;
       const railBtns = () => [...document.querySelectorAll('#hdRail .ibtn')].filter(e => e && e !== el && vis(e.id));
-      const overlapsRail = () => { const a = el.getBoundingClientRect(); if (a.width < 2 || a.height < 2) return false; return railBtns().some(b => { const c = b.getBoundingClientRect(); return a.left < c.right && c.left < a.right && a.top < c.bottom && c.top < a.bottom; }); };
+      const rectOf = (e) => { if (RB.cache.r.has(e)) return RB.cache.r.get(e); const r = e.getBoundingClientRect(); RB.cache.r.set(e, r); return r; };
+      const overlapsRail = () => { RB.cache.r.delete(el); const a = rectOf(el); if (a.width < 2 || a.height < 2) return false; return railBtns().some(b => { const c = rectOf(b); return a.left < c.right && c.left < a.right && a.top < c.bottom && c.top < a.bottom; }); };
       if (col.length) {   // 主列（最右）同左邊列（6c 落唔到會去 x−76）分開計
         const L = (e) => parseFloat(e.style.left) || 0, Tp = (e) => parseFloat(e.style.top) || 0, mx = Math.max(...col.map(L)), main = col.filter(e => L(e) >= mx - 20), side = col.filter(e => L(e) < mx - 20);
         const lo = main.reduce((a, b) => (Tp(b) > Tp(a) ? b : a)), y = Tp(lo) + pitch(lo);

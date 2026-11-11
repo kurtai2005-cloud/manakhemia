@@ -847,14 +847,17 @@
       if (this.b3bLayer) this.b3bLayer(x, 'back', c, base);   // 3b 訪客／擺設／道具（y ≤ 寵物腳底）
       const kmOn = !!(this.s2Main && s.fam && s.fam.km && s.stage !== 'egg');   // 5a.1：細佬做主養 → 主位畫細佬（s2ui），團絨唔畫
       // 影子（3D 場景自己有軟 blob，2D 唔畫）
-      x.fillStyle = hidePet || kmOn || c.g3d ? 'rgba(0,0,0,0)' : 'rgba(10,20,20,0.35)';
       const efk = this.fkOf(s), efs = D.FORMS[efk] && D.FORMS[efk].evo ? D.FORMS[efk].frameSize : 0;
-      const shw = efs ? Math.round(efs * 0.36) : D.isBig(s.stage) ? 24 : s.stage === 'sprout' ? 13 : 12, shl = 1 - Math.min(1, Math.abs(lift) / 18) * 0.35;
-      for (let dy = -3; dy <= 3; dy++) { const w = Math.round(shw * shl * Math.sqrt(1 - dy * dy / 16)); x.fillRect(ox(gx - w), oy(base - 1 + dy), w * 2, 1); }
+      if (!(hidePet || kmOn || c.g3d)) {
+        x.fillStyle = 'rgba(10,20,20,0.35)';
+        const shw = efs ? Math.round(efs * 0.36) : D.isBig(s.stage) ? 24 : s.stage === 'sprout' ? 13 : 12, shl = 1 - Math.min(1, Math.abs(lift) / 18) * 0.35;
+        for (let dy = -3; dy <= 3; dy++) { const w = Math.round(shw * shl * Math.sqrt(1 - dy * dy / 16)); x.fillRect(ox(gx - w), oy(base - 1 + dy), w * 2, 1); }
+      }
       let an, sx, sy;
       this.petBlit = null;
       if (kmOn && !hidePet) this.petDraw = this.s2Main(x, s, view, c, gx, base) || { x: gx - 12, y: base - 30, w: 24, h: 30, bud: { x: gx, y: base - 20 }, footY: base, km: true };
       else if (useBeh && hidePet) this.petDraw = { x: gx - 10, y: base - 30, w: 20, h: 30, bud: { x: gx, y: base - 20 }, footY: base, hidden: true };
+      else if (useBeh && c.g3d) this.petDraw = this.preparePet3d(x, s, view, c, gx, base);  /* H1.6：3D 開時唔畫 2D 寵物（dir4／快取後備） */
       else if (useBeh) this.petDraw = this.drawPetBeh(x, s, view, c, gx, base);
       else if (s.stage === 'egg' && efs && P.art.useAtlas !== false) {
         // evo6 光卵：evo_egg（idle／glow／tap；進度 ≥50% 或輕點時 glow；輕點脈衝 tap）
@@ -1010,6 +1013,16 @@
         else if (f === 'hat') { P('#2a2230', hx - 6, hy - 1, 12, 1); P('#2a2230', hx - 3, hy - 3, 6, 2); P('#ffd35a', hx + 5, hy, 1, 4); }
       }
       x.restore();
+    }
+    preparePet3d(x, s, view, c, gx, base) {
+      const b = view.beh || {}, fk = this.fkOf(s);
+      const useDir4 = !s.form || s.form === 'radiant' || s.form === 'bright' || fk === 'radiant' || fk === 'evo_still_radiant';
+      if (!useDir4 && this.g3d && this.g3d.setPetSprite) {
+        const key = [fk, b.clip, b.frame, b.dir, b.expr, (b.show && b.show.clip) || '', (b.gest && b.gest.clip) || ''].join('|');
+        if (this._g3PetKey !== key) { this.drawPetBeh(x, s, view, c, gx, base); this._g3PetKey = key; }
+      }
+      const h = D.isBig(s.stage) ? 48 : 32;
+      return { x: gx - 20, y: base - h, w: 40, h: h, bud: { x: gx, y: base - h * 0.5 }, footY: base, g3d: true };
     }
     drawPetBeh(x, s, view, c, gx, base) {
       const b = view.beh, t = c.t, clip = b.clip, cdef = D.CLIPS[clip], fk = this.fkOf(s), art = P.art, FCP = P.face, EVO = !!(D.FORMS[fk] && D.FORMS[fk].evo);

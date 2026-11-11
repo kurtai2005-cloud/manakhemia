@@ -89,6 +89,20 @@ console.log('# 離線睡眠 / 成長（evo6：真實時間、上限 24h、最多
   const e = S.newState(1e12, 1); e.lastSeen = 1e12 - 1000 * 1000; const r = S.applyOffline(e, 1e12); ok(e.stage === 'newborn' && e.growthSec === 0, '光卵離線 1000s ≥ 10 分 → 孵化做絨點、進度 0', [e.stage, e.growthSec]);
   const sh = adult(); sh.lastSeen = 1e12 - 60 * 1000; const r2 = S.applyOffline(sh, 1e12); ok(!r2.show, '離開 <5 分鐘唔彈摘要');
 }
+console.log('# 離線成長 catchUp（H1.6：APK／WebView 停錶，唔重複已模擬時間）');
+{
+  ok(P.offlineStallSec === 2, 'offlineStallSec = 2');
+  const s = sprout(); s.growthSec = 10; const simAt = 1e12 - 6 * H * 1000;
+  s.lastSeen = simAt - 5;   // autosave 比上次 advance 早 5 秒
+  const r = S.catchUp(s, 1e12, simAt);
+  ok(!r.skipped && Math.abs((s.growthSec) - (10 + 6 * H)) < 1, '停錶 6h 只補未模擬空隙（唔重複已推進嘅 5s）', [s.growthSec, r.T, r.grow && r.grow.G]);
+  const s2 = sprout(); s2.growthSec = 100; s2.lastSeen = 1e12 - 1; const r2 = S.catchUp(s2, 1e12, 1e12 - 1);
+  ok(r2.skipped && s2.growthSec === 100, '空隙 < stall 秒 → 唔補、唔改成長', r2);
+  const s3 = sprout(); s3.growthSec = 0; s3.lastSeen = 1e12 - 30 * H * 1000;
+  const r3 = S.catchUp(s3, 1e12, 1e12 - 30 * H * 1000);
+  ok(s3.stage === 'juvenile' && s3.growthSec === 0 && r3.grow && r3.grow.up, '停錶 30h（cap 24h ≥ 芽崽 18h）→ 升跳跳期', [s3.stage, s3.growthSec]);
+}
+
 console.log('# 不適（<15）停止成長');
 {
   const s = sprout({ hunger: 10, mood: 100, clean: 100, energy: 100 }); ok(S.isUnwell(s), '需求 <15 → 不適');
