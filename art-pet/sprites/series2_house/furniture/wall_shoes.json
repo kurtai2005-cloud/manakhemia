@@ -1,0 +1,24 @@
+{
+  "id": "wall_shoes",
+  "slot": "wall",
+  "zh": "散步鞋架",
+  "price": 25,
+  "source": "shop",
+  "png": "furniture/wall_shoes.png",
+  "pivot": [
+    25,
+    18
+  ],
+  "pivot_note": "2D 屋仔牆槽同 wall_shelf／wall_frame，用中心。Godot M1c Sprite3D 則同其他非地氈傢俬：centered + offset (0, height/2)＝底中，position.y 強制 0。",
+  "size": [
+    50,
+    36
+  ],
+  "colors": 12,
+  "alpha": "0/255",
+  "outline": [
+    74,
+    44,
+    62
+  ]
+}
