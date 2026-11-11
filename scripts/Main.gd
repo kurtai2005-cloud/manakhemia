@@ -49,6 +49,19 @@ var furniture_root: Node3D
 var warehouse: Node3D
 var _hunt_team: Array = []
 var in_hunt_view := false
+var interior_room: InteriorRoom
+var in_interior := false
+var _interior_lock_cam := false
+var _interior_guest: Walker
+var _interior_guest_home := Vector3.ZERO
+var _fade_rect: ColorRect
+var _house_click: Area3D
+var _rotate_layer: CanvasLayer
+var _exterior_door: Node3D
+signal door_open
+signal door_close
+signal enter_interior
+signal exit_interior
 
 func _ready() -> void:
 	rng.randomize()
@@ -64,6 +77,10 @@ func _ready() -> void:
 	_sync_poops()
 	hud = preload("res://scripts/Hud.gd").new()
 	add_child(hud)
+	_setup_rotate_overlay()
+	if get_viewport():
+		get_viewport().size_changed.connect(_sync_rotate_overlay)
+	_sync_rotate_overlay()
 	QualitySettings.changed.connect(_on_quality)
 	_on_quality(QualitySettings.tier)
 	follow_device_clock()
@@ -180,6 +197,7 @@ func _build_world(objs_doc: Dictionary, objects: Array, lights: Dictionary) -> v
 		if not bool(o.get("castShadow", true)):
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(mi)
+	_apply_cottage_exterior()
 
 	# 光
 	var sun_d: Dictionary = lights.get("sun", {})
@@ -241,7 +259,7 @@ func _build_world(objs_doc: Dictionary, objects: Array, lights: Dictionary) -> v
 	cam = Camera3D.new()
 	cam.projection = Camera3D.PROJECTION_PERSPECTIVE
 	cam.fov = float(cam_data.get("fovDeg", 40))
-	cam.near = float(cam_data.get("near", 10))
+	cam.near = minf(float(cam_data.get("near", 10)), 2.0)
 	cam.far = float(cam_data.get("far", 4000))
 	cam.current = true
 	add_child(cam)
@@ -477,6 +495,8 @@ func _on_quality(tier: int) -> void:
 	# 三檔共用同一 3D 花園：mesh、相機、nav、billboard、遮擋一律保留。
 	# 低檔只關貴嘅效果，唔換場景、唔改做分層 2D。
 	var low := tier == QualitySettings.Tier.LOW
+	if interior_room and interior_room.has_method("apply_tier"):
+		interior_room.apply_tier()
 	if sun:
 		sun.shadow_enabled = not low  # 低：冇 shadow map；腳底 blob 仍在
 		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
@@ -490,7 +510,7 @@ func _on_quality(tier: int) -> void:
 		if e.fog_enabled:
 			e.fog_light_color = Color(135.0 / 255.0, 189.0 / 255.0, 224.0 / 255.0)
 			e.fog_density = 0.00025
-		if e.background_mode != Environment.BG_SKY:
+		if (not in_interior) and e.background_mode != Environment.BG_SKY:
 			e.background_mode = Environment.BG_SKY
 	var vp := get_viewport()
 	vp.msaa_3d = Viewport.MSAA_DISABLED
@@ -545,8 +565,13 @@ func _place_cam(dt: float) -> void:
 	sway_t += dt
 	var yaw := 0.0 if rest_look else -A * cos(PI * sway_t / maxf(T, 0.1))
 	var base_pitch := float(cam_data.get("pitchDeg", 30))
+	if _interior_lock_cam:
+		return
 	var hunt_overview := in_hunt_view and hunt_field != null and cam_mode != CamMode.FOLLOW
-	if in_hunt_view and hunt_field:
+	if in_interior and interior_room:
+		_obs_pitch = interior_room.cam_pitch()
+		yaw = interior_room.cam_yaw()
+	elif in_hunt_view and hunt_field:
 		# 草原用遊美鏡頭（pitch 30），唔好再強制 42° 令寵物睇落好似瞓低
 		_obs_pitch = hunt_field.cam_pitch()
 	else:
@@ -554,9 +579,14 @@ func _place_cam(dt: float) -> void:
 	var cfg := _cam_cfg()
 	var desired := cam_target
 	var look: Variant = cfg.get("overview_look", [0, 24, 16])
+	var glook: Variant = garden_cfg().get("overview_look", [])
+	if glook is Array and glook.size() >= 3:
+		look = glook
 	if look is Array and look.size() >= 3:
 		desired = Vector3(float(look[0]), float(look[1]), float(look[2]))
-	if hunt_overview:
+	if in_interior and interior_room:
+		desired = interior_room.look_target()
+	elif hunt_overview:
 		desired = hunt_field.look_target()
 	var subject: Walker = pet
 	if cam_mode == CamMode.FOLLOW and follow_walker and is_instance_valid(follow_walker):
@@ -575,7 +605,9 @@ func _place_cam(dt: float) -> void:
 	var dist_tex := _dist_for_texel(float(tex_scale))
 	var dist := dist_tex
 	if cam_mode == CamMode.OVERVIEW:
-		if hunt_overview:
+		if in_interior and interior_room:
+			dist = interior_room.cam_dist()
+		elif hunt_overview:
 			dist = hunt_field.cam_dist()
 		else:
 			var dist_g := _dist_for_garden_width(float(cfg.get("garden_width", 256)))
@@ -583,6 +615,10 @@ func _place_cam(dt: float) -> void:
 			dist = dist_g
 	_cam_dist = dist
 	_apply_cam_offset(yaw, _obs_pitch, dist)
+	if in_interior:
+		# 室內用 data 鏡頭距離，唔好再用花園整數倍／寵物最低高度去拉遠
+		_measure_cam_metrics()
+		return
 	if cam_mode == CamMode.FOLLOW:
 		_refine_observation(yaw, dist)
 		_ensure_follow_pet_min(yaw)
@@ -591,6 +627,8 @@ func _place_cam(dt: float) -> void:
 		_ensure_overview_pet_min(yaw)
 	if not hunt_overview:
 		_snap_integer_dist(yaw, tex_scale)
+	if not hunt_overview and cam_mode == CamMode.OVERVIEW:
+		_ensure_cottage_roof_in_frame(yaw)
 	# 狩獵全景一樣保證可見高度 ≥10%
 	_measure_cam_metrics()
 
@@ -647,6 +685,11 @@ func _try_tap(pos: Vector2) -> void:
 	if poop_hit:
 		_clean_poop(poop_hit)
 		return
+	if not in_interior and not in_hunt_view:
+		var house := _ray_area(pos, 16)
+		if house:
+			enter_house()
+			return
 	var bld := _ray_area(pos, 8)
 	if bld:
 		_on_building_tapped(bld)
@@ -767,6 +810,7 @@ func set_shot_size(w: int, h: int) -> void:
 	_place_cam(0.0)
 	_apply_vis_fov()
 	_fit_sky_card()
+	_sync_rotate_overlay()
 
 func set_rest_look(on: bool) -> void:
 	rest_look = on
@@ -811,7 +855,9 @@ func set_time_of_day(tod: String) -> void:
 			fill.light_energy = 0.28 if QualitySettings.is_low() else 0.38
 	if env and env.environment:
 		var e := env.environment
-		if night:
+		if in_interior:
+			_apply_interior_background(true)
+		elif night:
 			e.ambient_light_color = Color(0.29, 0.35, 0.56)
 			e.ambient_light_energy = 0.35
 			e.background_color = Color(0.12, 0.14, 0.28)
@@ -1294,6 +1340,7 @@ func _setup_m1b() -> void:
 	add_child(hunt_field)
 	hunt_field.setup()
 	hunt_field.attach_warehouse(warehouse)
+	_setup_interior()
 	refresh_furniture()
 	if HuntSystem and HuntSystem.has_signal("hunt_phase"):
 		HuntSystem.hunt_phase.connect(func(p): _on_hunt_phase(str(p)))
@@ -1333,6 +1380,13 @@ func _build_work_spots() -> void:
 		var pos := Vector3(0, 0, 0)
 		if pos_a is Array and pos_a.size() >= 3:
 			pos = Vector3(float(pos_a[0]), float(pos_a[1]), float(pos_a[2]))
+		# 佔位色塊搬去花園邊位，唔好堵門口或中間草地
+		if GameData and "m1d" in GameData:
+			var key := "post_pos" if id == "post" else ("kitchen_pos" if id == "kitchen" else "")
+			if key != "":
+				var pp: Variant = GameData.m1d.get("garden", {}).get(key, [])
+				if pp is Array and pp.size() >= 3:
+					pos = Vector3(float(pp[0]), float(pp[1]), float(pp[2]))
 		var spot := WorkSpot.new()
 		add_child(spot)
 		spot.setup(id, str(b.get("zh", id)), pos, cols.get(id, Color(0.7, 0.6, 0.45)))
@@ -1347,6 +1401,9 @@ func _build_warehouse() -> void:
 		var p: Variant = GameData.m1b.get("hunt", {}).get("warehouse", [18, 0, -96])
 		if p is Array and p.size() >= 3:
 			pos = Vector3(float(p[0]), float(p[1]), float(p[2]))
+	var wp: Variant = garden_cfg().get("warehouse_pos", [])
+	if wp is Array and wp.size() >= 3:
+		pos = Vector3(float(wp[0]), float(wp[1]), float(wp[2]))
 	warehouse.position = pos
 	var box := MeshInstance3D.new()
 	var bm := BoxMesh.new()
@@ -1367,11 +1424,17 @@ func refresh_furniture() -> void:
 	furniture_root = Node3D.new()
 	furniture_root.name = "Furniture"
 	add_child(furniture_root)
+	var indoor_root: Node3D = null
+	if interior_room and is_instance_valid(interior_room):
+		if interior_room.furniture_root and is_instance_valid(interior_room.furniture_root):
+			for c in interior_room.furniture_root.get_children():
+				c.queue_free()
+			indoor_root = interior_room.furniture_root
 	if CollectionSystem == null:
 		return
 	var placed: Dictionary = CollectionSystem.placed_items()
-	# 屋仔附近推薦位
-	var slots := {
+	# 花園只擺戶外件；室內件擺喺獨立房間
+	var garden_slots := {
 		"bed": Vector3(70, 4, -48),
 		"table": Vector3(52, 4, -36),
 		"rug": Vector3(64, 0.4, -40),
@@ -1381,11 +1444,20 @@ func refresh_furniture() -> void:
 	}
 	for sl in placed.keys():
 		var id := str(placed[sl])
-		var pos: Vector3 = slots.get(sl, Vector3(64, 4, -40))
-		var node := _make_furniture(id, sl, pos)
-		if node:
-			node.name = "Furn_%s" % id
-			furniture_root.add_child(node)
+		var zone := furniture_zone(id, str(sl))
+		var node: Node3D
+		if zone == "indoor" and indoor_root and interior_room:
+			var pos: Vector3 = interior_room.slot_pos(str(sl))
+			node = _make_furniture(id, str(sl), pos)
+			if node:
+				node.name = "Furn_%s" % id
+				indoor_root.add_child(node)
+		else:
+			var pos: Vector3 = garden_slots.get(sl, Vector3(64, 4, -40))
+			node = _make_furniture(id, str(sl), pos)
+			if node:
+				node.name = "Furn_%s" % id
+				furniture_root.add_child(node)
 
 
 func hand_feed(w: Walker, food: String = "meal") -> Dictionary:
@@ -1666,18 +1738,139 @@ func _make_furniture(id: String, sl: String, pos: Vector3) -> Node3D:
 		mi.material_override = mat
 		mi.position = Vector3(pos.x, pos.y if pos.y != 0.0 else 0.4, pos.z)
 		return mi
-	var spr := Sprite3D.new()
-	spr.texture = tex
-	spr.pixel_size = psize
-	spr.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	spr.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	spr.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	spr.shaded = false
-	spr.centered = true
-	spr.offset = Vector2(0, tex.get_height() * 0.5)
-	spr.position = Vector3(pos.x, y, pos.z)
-	spr.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	return spr
+	# 立體傢俬：貼圖喺正面，側面／頂有厚度，會同寵物遮擋。唔再用 Sprite3D 廣告牌。
+	return _make_furniture_box(id, sl, pos, tex, psize, y)
+
+
+func _furniture_depth(sl: String, tex: Texture2D) -> float:
+	var depths: Dictionary = {}
+	if GameData and "m1d" in GameData:
+		depths = GameData.m1d.get("interior", {}).get("furniture_depth_wu", {})
+	if depths.has(sl):
+		return float(depths[sl])
+	if sl == "bed":
+		return 32.0
+	if sl == "table":
+		return 22.0
+	if sl == "lamp":
+		return 14.0
+	if sl == "wall" or sl == "window":
+		return 8.0
+	if tex:
+		return maxf(10.0, float(tex.get_width()) * 0.28)
+	return 16.0
+
+
+func _make_furniture_box(id: String, sl: String, pos: Vector3, tex: Texture2D, psize: float, y: float) -> Node3D:
+	var w := float(tex.get_width()) * psize
+	var h := float(tex.get_height()) * psize
+	var d := _furniture_depth(sl, tex)
+	if d < 0.5:
+		d = 8.0
+	var root := Node3D.new()
+	root.name = "FurnBox"
+	var place := pos
+	var yaw := 0.0
+	# 掛牆件貼實後牆／側牆，正面朝房內
+	if furniture_mount(id, sl) == "wall" and interior_room:
+		var sz: Vector3 = interior_room.size
+		var back_z := -sz.z * 0.5
+		var left_x := -sz.x * 0.5
+		var right_x := sz.x * 0.5
+		var dist_back := absf(pos.z - back_z)
+		var dist_l := absf(pos.x - left_x)
+		var dist_r := absf(pos.x - right_x)
+		if dist_back <= dist_l and dist_back <= dist_r:
+			place = Vector3(pos.x, y, back_z + d * 0.5 + 0.2)
+			yaw = 0.0
+		elif dist_l <= dist_r:
+			place = Vector3(left_x + d * 0.5 + 0.2, y, pos.z)
+			yaw = -90.0
+		else:
+			place = Vector3(right_x - d * 0.5 - 0.2, y, pos.z)
+			yaw = 90.0
+	else:
+		place = Vector3(pos.x, y, pos.z)
+	root.position = place
+	root.rotation_degrees.y = yaw
+	var mi := MeshInstance3D.new()
+	mi.name = "Mesh"
+	mi.mesh = _furniture_box_mesh(w, h, d)
+	var mat := StandardMaterial3D.new()
+	mat.albedo_texture = tex
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	mat.alpha_scissor_threshold = 0.5
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mi.material_override = mat
+	mi.position = Vector3(0, 0, 0)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	root.add_child(mi)
+	return root
+
+
+func _furniture_box_mesh(w: float, h: float, d: float) -> ArrayMesh:
+	# 原點＝底面中心，正面朝 +Z。UV：正面／背面用成張圖，側面用左右邊緣一條，頂／底用上下邊緣。
+	var hw := w * 0.5
+	var hd := d * 0.5
+	var verts := PackedVector3Array()
+	var nrm := PackedVector3Array()
+	var uv := PackedVector2Array()
+	var idx := PackedInt32Array()
+	# front +Z
+	_box_quad(verts, nrm, uv, idx,
+		Vector3(-hw, 0, hd), Vector3(hw, 0, hd), Vector3(hw, h, hd), Vector3(-hw, h, hd),
+		Vector3(0, 0, 1), Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0))
+	# back -Z
+	_box_quad(verts, nrm, uv, idx,
+		Vector3(hw, 0, -hd), Vector3(-hw, 0, -hd), Vector3(-hw, h, -hd), Vector3(hw, h, -hd),
+		Vector3(0, 0, -1), Vector2(1, 1), Vector2(0, 1), Vector2(0, 0), Vector2(1, 0))
+	# left -X（用圖左邊一條）
+	_box_quad(verts, nrm, uv, idx,
+		Vector3(-hw, 0, -hd), Vector3(-hw, 0, hd), Vector3(-hw, h, hd), Vector3(-hw, h, -hd),
+		Vector3(-1, 0, 0), Vector2(0.04, 1), Vector2(0.0, 1), Vector2(0.0, 0), Vector2(0.04, 0))
+	# right +X
+	_box_quad(verts, nrm, uv, idx,
+		Vector3(hw, 0, hd), Vector3(hw, 0, -hd), Vector3(hw, h, -hd), Vector3(hw, h, hd),
+		Vector3(1, 0, 0), Vector2(0.96, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0.96, 0))
+	# top +Y
+	_box_quad(verts, nrm, uv, idx,
+		Vector3(-hw, h, hd), Vector3(hw, h, hd), Vector3(hw, h, -hd), Vector3(-hw, h, -hd),
+		Vector3(0, 1, 0), Vector2(0, 0.04), Vector2(1, 0.04), Vector2(1, 0.0), Vector2(0, 0.0))
+	# bottom -Y
+	_box_quad(verts, nrm, uv, idx,
+		Vector3(-hw, 0, -hd), Vector3(hw, 0, -hd), Vector3(hw, 0, hd), Vector3(-hw, 0, hd),
+		Vector3(0, -1, 0), Vector2(0, 1), Vector2(1, 1), Vector2(1, 0.96), Vector2(0, 0.96))
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	arrays[Mesh.ARRAY_NORMAL] = nrm
+	arrays[Mesh.ARRAY_TEX_UV] = uv
+	arrays[Mesh.ARRAY_INDEX] = idx
+	var am := ArrayMesh.new()
+	am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return am
+
+
+func _box_quad(verts: PackedVector3Array, nrm: PackedVector3Array, uv: PackedVector2Array, idx: PackedInt32Array, a: Vector3, b: Vector3, c: Vector3, d: Vector3, n: Vector3, ua: Vector2, ub: Vector2, uc: Vector2, ud: Vector2) -> void:
+	var base := verts.size()
+	verts.append(a)
+	verts.append(b)
+	verts.append(c)
+	verts.append(d)
+	for _i in range(4):
+		nrm.append(n)
+	uv.append(ua)
+	uv.append(ub)
+	uv.append(uc)
+	uv.append(ud)
+	idx.append(base)
+	idx.append(base + 1)
+	idx.append(base + 2)
+	idx.append(base)
+	idx.append(base + 2)
+	idx.append(base + 3)
 
 func hunt_hidden_garden_ids() -> Array:
 	var ids: Array = ["cottage", "tree", "lanterns"]
@@ -1712,3 +1905,556 @@ func set_garden_hidden_for_hunt(on: bool) -> void:
 		poop_root.visible = not on
 	for poop in find_children("Poop_*", "", true, false):
 		poop.visible = not on
+
+
+func set_garden_hidden_for_interior(on: bool) -> void:
+	# 入屋近鏡：收埋整個花園（草地／天空／道具／佔位色塊），淨低室內同跟入去嘅寵物。
+	var ids: Array = garden_cfg().get("hide_ids_in_interior", [])
+	if ids.is_empty():
+		ids = ["cottage", "tree", "lanterns", "fence", "bed", "lamp", "mushrooms", "can", "jar", "pot_L", "pot_R", "pot_S", "bush_bR", "trees_bR", "bush_bL", "bush_bL2", "trees_bL", "bg_sky", "bg_hills", "GroundTile", "Ground256", "GroundAO", "Warehouse", "Furniture", "Kid", "Visitor"]
+	for id in ids:
+		var n := find_child(str(id), true, false)
+		if n:
+			n.visible = not on
+	if furniture_root and is_instance_valid(furniture_root):
+		furniture_root.visible = not on
+	if warehouse and is_instance_valid(warehouse):
+		warehouse.visible = not on
+	for sid in work_spots.keys():
+		var spot = work_spots[sid]
+		if spot and is_instance_valid(spot):
+			spot.visible = not on
+	if poop_root and is_instance_valid(poop_root):
+		poop_root.visible = not on
+	for poop in find_children("Poop_*", "", true, false):
+		poop.visible = not on
+	# 訪客／細佬：如果唔係跟入屋嘅 guest 就收埋
+	for w in [kid, visitor]:
+		if w and is_instance_valid(w) and w != _interior_guest:
+			w.visible = not on
+	_apply_interior_background(on)
+
+
+func _apply_interior_background(on: bool) -> void:
+	if env == null or env.environment == null:
+		return
+	var e := env.environment
+	var col_a: Variant = GameData.m1d.get("interior", {}).get("bg_color", [0.14, 0.09, 0.07]) if GameData and "m1d" in GameData else [0.14, 0.09, 0.07]
+	var warm := Color(0.14, 0.09, 0.07)
+	if col_a is Array and col_a.size() >= 3:
+		warm = Color(float(col_a[0]), float(col_a[1]), float(col_a[2]))
+	if on:
+		e.background_mode = Environment.BG_COLOR
+		e.background_color = warm
+		e.ambient_light_color = warm
+		if _sky_mat:
+			_sky_mat.sky_top_color = warm
+			_sky_mat.sky_horizon_color = warm
+			_sky_mat.ground_horizon_color = warm
+			_sky_mat.ground_bottom_color = warm
+	else:
+		e.background_mode = Environment.BG_SKY
+		# 交返 set_time_of_day 恢復晝夜色
+		set_time_of_day(_tod if _tod != "" else "noon")
+
+
+func furniture_zone(id: String, sl: String = "") -> String:
+	if CollectionSystem and CollectionSystem.has_method("furniture_zone"):
+		return CollectionSystem.furniture_zone(id, sl)
+	return "indoor"
+
+
+func _setup_interior() -> void:
+	if interior_room and is_instance_valid(interior_room):
+		return
+	interior_room = InteriorRoom.new()
+	add_child(interior_room)
+	interior_room.setup()
+	_setup_house_click()
+	_setup_fade()
+
+
+func _setup_house_click() -> void:
+	var house_id := "cottage"
+	if GameData and "m1d" in GameData:
+		house_id = str(GameData.m1d.get("garden", {}).get("house_id", "cottage"))
+	var house := find_child(house_id, true, false)
+	if house == null:
+		return
+	_house_click = Area3D.new()
+	_house_click.name = "HouseClick"
+	_house_click.input_ray_pickable = true
+	_house_click.collision_layer = 16
+	_house_click.collision_mask = 0
+	var cs := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	# 小屋 bounds 約 71×142×52；包實門同牆
+	box.size = Vector3(72, 140, 56)
+	cs.shape = box
+	cs.position = Vector3(0, 70, 0)
+	_house_click.add_child(cs)
+	house.add_child(_house_click)
+
+
+func _setup_fade() -> void:
+	if _fade_rect and is_instance_valid(_fade_rect):
+		return
+	var layer := CanvasLayer.new()
+	layer.name = "InteriorFade"
+	layer.layer = 40
+	add_child(layer)
+	_fade_rect = ColorRect.new()
+	_fade_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_fade_rect.color = Color(0.05, 0.04, 0.04, 0.0)
+	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(_fade_rect)
+
+
+func cottage_door_world() -> Vector3:
+	var house_id := "cottage"
+	var door_local := Vector3(11.5, 24, 22)
+	if GameData and "m1d" in GameData:
+		var g: Dictionary = GameData.m1d.get("garden", {})
+		house_id = str(g.get("house_id", "cottage"))
+		var a: Variant = g.get("door_local", [11.5, 24, 22])
+		if a is Array and a.size() >= 3:
+			door_local = Vector3(float(a[0]), float(a[1]), float(a[2]))
+	var house := find_child(house_id, true, false)
+	if house is Node3D:
+		return (house as Node3D).to_global(door_local)
+	return Vector3(94.0, 24.0, -50.0)
+
+
+func _pick_interior_guest() -> Walker:
+	if follow_walker and is_instance_valid(follow_walker):
+		return follow_walker
+	var door := cottage_door_world()
+	var best: Walker = pet
+	var best_d := 1.0e9
+	for w in [pet, kid]:
+		if w == null or not is_instance_valid(w):
+			continue
+		var ww: Walker = w
+		var d: float = ww.global_position.distance_to(door)
+		if d < best_d:
+			best_d = d
+			best = ww
+	return best
+
+
+func enter_house(instant: bool = false, guest: Walker = null) -> void:
+	if in_interior or in_hunt_view or interior_room == null:
+		return
+	if guest == null:
+		guest = _pick_interior_guest()
+	_interior_guest = guest
+	if guest:
+		_interior_guest_home = guest.global_position
+	if instant:
+		_cut_to_interior()
+		if interior_room:
+			interior_room.set_door_open(1.0)
+		if AudioManager and AudioManager.has_method("set_interior_ambience"):
+			AudioManager.set_interior_ambience(true)
+		enter_interior.emit()
+		return
+	_interior_lock_cam = true
+	_run_enter_transition()
+
+
+func exit_house(instant: bool = false) -> void:
+	if not in_interior:
+		return
+	if instant:
+		_cut_to_garden()
+		set_exterior_door(0.0)
+		if AudioManager and AudioManager.has_method("set_interior_ambience"):
+			AudioManager.set_interior_ambience(false)
+		exit_interior.emit()
+		return
+	_interior_lock_cam = true
+	_run_exit_transition()
+
+
+func _run_enter_transition() -> void:
+	if cam == null or interior_room == null:
+		_cut_to_interior()
+		return
+	var fade_s := interior_room.fade_sec()
+	var dolly_s := interior_room.dolly_sec()
+	var open_s := interior_room.door_open_sec()
+	var start_pos := cam.global_position
+	var door := cottage_door_world()
+	var dolly_pos := door + Vector3(0, 16, 70)
+	_emit_audio_hook("door_open")
+	door_open.emit()
+	set_exterior_door(0.0)
+	var tw := create_tween()
+	tw.set_parallel(true)
+	tw.tween_method(func(w: float):
+		set_exterior_door(w)
+	, 0.0, 1.0, open_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tw.tween_method(func(w: float):
+		if cam == null:
+			return
+		cam.global_position = start_pos.lerp(dolly_pos, w)
+		if cam.global_position.distance_to(door) > 0.01:
+			cam.look_at(door)
+	, 0.0, 1.0, dolly_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_method(func(a: float):
+		if _fade_rect:
+			var c := _fade_rect.color
+			c.a = a
+			_fade_rect.color = c
+	, 0.0, 1.0, fade_s).set_delay(maxf(0.0, dolly_s - fade_s * 0.35))
+	tw.set_parallel(false)
+	tw.tween_callback(func():
+		_cut_to_interior()
+		if interior_room:
+			interior_room.set_door_open(1.0)
+		_emit_audio_hook("enter_interior")
+		enter_interior.emit()
+		if AudioManager and AudioManager.has_method("set_interior_ambience"):
+			AudioManager.set_interior_ambience(true)
+	)
+	tw.tween_method(func(a: float):
+		if _fade_rect:
+			var c := _fade_rect.color
+			c.a = a
+			_fade_rect.color = c
+	, 1.0, 0.0, fade_s)
+	tw.tween_callback(func():
+		_interior_lock_cam = false
+		_place_cam(0.0)
+	)
+
+
+func _run_exit_transition() -> void:
+	if cam == null or interior_room == null:
+		_cut_to_garden()
+		return
+	var fade_s := interior_room.fade_sec()
+	var close_s := interior_room.door_close_sec()
+	_emit_audio_hook("exit_interior")
+	exit_interior.emit()
+	var tw := create_tween()
+	tw.tween_method(func(a: float):
+		if _fade_rect:
+			var c := _fade_rect.color
+			c.a = a
+			_fade_rect.color = c
+	, 0.0, 1.0, fade_s)
+	tw.tween_callback(func():
+		_cut_to_garden()
+		set_exterior_door(1.0)
+		if AudioManager and AudioManager.has_method("set_interior_ambience"):
+			AudioManager.set_interior_ambience(false)
+		_emit_audio_hook("door_close")
+		door_close.emit()
+	)
+	tw.set_parallel(true)
+	tw.tween_method(func(a: float):
+		if _fade_rect:
+			var c := _fade_rect.color
+			c.a = a
+			_fade_rect.color = c
+	, 1.0, 0.0, fade_s)
+	tw.tween_method(func(w: float):
+		set_exterior_door(1.0 - w)
+	, 0.0, 1.0, close_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tw.set_parallel(false)
+	tw.tween_callback(func():
+		_interior_lock_cam = false
+		_place_cam(0.0)
+	)
+
+
+func _cut_to_interior() -> void:
+	in_interior = true
+	set_garden_hidden_for_interior(true)
+	if interior_room:
+		interior_room.visible = true
+	var guest: Walker = _interior_guest
+	if guest and is_instance_valid(guest) and interior_room:
+		guest.global_position = interior_room.pet_enter_pos()
+		guest.cancel_follow()
+		guest.brain_driven = false
+		guest.use_nav = true
+		guest.in_interior = true
+		guest.pause_t = 0.0
+		if guest.agent and interior_room.nav_region:
+			guest.agent.set_navigation_map(interior_room.nav_region.get_navigation_map())
+		# 入屋後行兩步，顯得房間用得
+		guest.go_to(interior_room.walk_point(rng if rng else RandomNumberGenerator.new()))
+	if hud and hud.has_method("set_in_interior"):
+		hud.set_in_interior(true)
+	cam_mode = CamMode.OVERVIEW
+	var mid_fade := _fade_rect != null and _fade_rect.color.a > 0.5
+	_interior_lock_cam = false
+	_place_cam(0.0)
+	# 過渡中途切鏡：鏡頭已對準室內，鎖住直到 fade in 完
+	if mid_fade:
+		_interior_lock_cam = true
+
+
+func _cut_to_garden() -> void:
+	var guest: Walker = _interior_guest
+	if guest and is_instance_valid(guest):
+		var home := _interior_guest_home
+		if home == Vector3.ZERO:
+			home = cottage_door_world() + Vector3(0, 0, 36)
+		home.y = 0
+		guest.global_position = home
+		guest.brain_driven = true
+		guest.use_nav = true
+		if guest.agent and nav_region:
+			guest.agent.set_navigation_map(nav_region.get_navigation_map())
+		guest.in_interior = false
+		guest.pause_t = 0.4
+	_interior_guest = null
+	in_interior = false
+	set_garden_hidden_for_interior(false)
+	if interior_room:
+		interior_room.visible = false
+	if hud and hud.has_method("set_in_interior"):
+		hud.set_in_interior(false)
+	# 鏡頭先放喺屋門前，fade in 先再 _place_cam 拉回總覽
+	var door := cottage_door_world()
+	if cam:
+		cam.global_position = door + Vector3(0, 28, 80)
+		cam.look_at(door)
+	cam_mode = CamMode.OVERVIEW
+
+
+
+func _emit_audio_hook(key: String) -> void:
+	var hook := key
+	if GameData and "m1d" in GameData:
+		hook = str(GameData.m1d.get("audio", {}).get("hooks", {}).get(key, "sfx_" + key))
+	if AudioManager:
+		AudioManager.play(hook)
+
+
+func garden_cfg() -> Dictionary:
+	if GameData and "m1d" in GameData:
+		return GameData.m1d.get("garden", {})
+	return {}
+
+
+func _apply_cottage_exterior() -> void:
+	var house := find_child("cottage", true, false)
+	if house == null or not (house is Node3D):
+		return
+	var g := garden_cfg()
+	var sc: Variant = g.get("cottage_scale", [2, 2, 2])
+	if sc is Array and sc.size() >= 3:
+		(house as Node3D).scale = Vector3(float(sc[0]), float(sc[1]), float(sc[2]))
+	var pos: Variant = g.get("cottage_position", [82.5, 0, -94])
+	if pos is Array and pos.size() >= 3:
+		(house as Node3D).position = Vector3(float(pos[0]), float(pos[1]), float(pos[2]))
+	if house is MeshInstance3D:
+		var hmi := house as MeshInstance3D
+		var hmat := hmi.material_override as StandardMaterial3D
+		if hmat:
+			hmat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_widen_cottage_door(house as MeshInstance3D if house is MeshInstance3D else null, 28.0, 48.0)
+	_make_exterior_door(house as Node3D)
+
+
+func _widen_cottage_door(house: MeshInstance3D, unscaled_w: float, _unscaled_h: float) -> void:
+	# 均勻 ×2 之後門洞只有 32 闊；改局部 x 令世界闊變成 56（28 局部）。鉸鏈中心維持 11.5。
+	if house == null or house.mesh == null:
+		return
+	var am := house.mesh as ArrayMesh
+	if am == null or am.get_surface_count() < 1:
+		return
+	var arr := am.surface_get_arrays(0)
+	if arr.is_empty() or arr[Mesh.ARRAY_VERTEX] == null:
+		return
+	var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+	var cx := 11.5
+	var old_l := 3.5
+	var old_r := 19.5
+	var new_l := cx - unscaled_w * 0.5
+	var new_r := cx + unscaled_w * 0.5
+	var changed := false
+	for i in range(verts.size()):
+		var v := verts[i]
+		# 只改前門洞兩框（z 近 19–22、y 喺門高之內），唔好郁上層前牆／屋頂
+		if v.z < 18.5 or v.y > 48.5:
+			continue
+		if is_equal_approx(v.x, old_l) or absf(v.x - old_l) < 0.05:
+			v.x = new_l
+			verts[i] = v
+			changed = true
+		elif is_equal_approx(v.x, old_r) or absf(v.x - old_r) < 0.05:
+			v.x = new_r
+			verts[i] = v
+			changed = true
+	if not changed:
+		return
+	arr[Mesh.ARRAY_VERTEX] = verts
+	var neu := ArrayMesh.new()
+	neu.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
+	house.mesh = neu
+	var cmat := house.material_override as StandardMaterial3D
+	if cmat == null:
+		cmat = StandardMaterial3D.new()
+		if house.get_surface_override_material(0):
+			cmat = house.get_surface_override_material(0) as StandardMaterial3D
+		if cmat:
+			house.material_override = cmat
+	if cmat:
+		cmat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		cmat.no_depth_test = false
+
+
+func _make_exterior_door(house: Node3D) -> void:
+	if house == null:
+		return
+	if _exterior_door and is_instance_valid(_exterior_door):
+		_exterior_door.queue_free()
+	var g := garden_cfg()
+	# 局部未放大：闊 28、高 48，×2 之後 56×96。鉸鏈喺左邊框。
+	var w := 28.0
+	var h := 48.0
+	var cx := 11.5
+	var hinge_x := cx - w * 0.5
+	var z := 20.5
+	var pivot := Node3D.new()
+	pivot.name = "ExteriorDoorPivot"
+	pivot.position = Vector3(hinge_x, 0, z)
+	house.add_child(pivot)
+	var mi := MeshInstance3D.new()
+	mi.name = "ExteriorDoor"
+	var q := QuadMesh.new()
+	q.size = Vector2(w, h)
+	mi.mesh = q
+	mi.position = Vector3(w * 0.5, h * 0.5, 0)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var tex: Texture2D = load("res://art/garden3d/H1/interior/meshes/door.png")
+	if tex:
+		mat.albedo_texture = tex
+	else:
+		mat.albedo_color = Color(0.58, 0.32, 0.18)
+	mi.material_override = mat
+	pivot.add_child(mi)
+	_exterior_door = pivot
+	set_exterior_door(0.0)
+
+
+func set_exterior_door(weight: float) -> void:
+	if _exterior_door == null or not is_instance_valid(_exterior_door):
+		return
+	# 0 關，1 開（向屋內 -Z 轉）
+	_exterior_door.rotation_degrees.y = lerpf(0.0, 95.0, clampf(weight, 0.0, 1.0))
+
+
+func _cottage_frame_points(house: Node3D) -> Array:
+	# 屋頂、前簷、左右上角、門頂——近鏡頭嘅屋簷會比煙囪更高出畫面
+	var locals: Array = [
+		Vector3(0, 142, 0),
+		Vector3(-35.5, 86.7, 26),
+		Vector3(35.5, 86.7, 26),
+		Vector3(-29.5, 94, 22),
+		Vector3(29.5, 94, 22),
+		Vector3(0, 130, 26),
+		Vector3(11.5, 48, 22),
+		Vector3(-29.5, 0, 22),
+		Vector3(29.5, 0, 22),
+	]
+	var out: Array = []
+	for p in locals:
+		out.append(house.to_global(p))
+	return out
+
+
+func _cottage_out_of_frame(house: Node3D, vp: Vector2) -> bool:
+	if cam == null:
+		return false
+	var pad_x := vp.x * 0.05
+	var pad_y := vp.y * 0.10
+	for p in _cottage_frame_points(house):
+		if cam.is_position_behind(p):
+			return true
+		var sp: Vector2 = cam.unproject_position(p)
+		if sp.y < pad_y or sp.y > vp.y - pad_y or sp.x < pad_x or sp.x > vp.x - pad_x:
+			return true
+	return false
+
+
+func _ensure_cottage_roof_in_frame(yaw: float) -> void:
+	var g := garden_cfg()
+	if not bool(g.get("keep_roof_in_frame", true)):
+		return
+	var house := find_child("cottage", true, false)
+	if house == null or cam == null:
+		return
+	var vp := get_viewport().get_visible_rect().size
+	if vp.y <= 1.0:
+		return
+	# 屋 ×2 之後拉遠先可以見到成個屋頂；寵物可見身高保底 6%（M1a 10% 喺呢個尺度對唔上）
+	for _i in range(12):
+		if not _cottage_out_of_frame(house as Node3D, vp):
+			break
+		var prev := _cam_dist
+		_cam_dist *= 1.05
+		_apply_cam_offset(yaw, _obs_pitch, _cam_dist)
+		_measure_cam_metrics()
+		if _pet_h_frac < 0.06:
+			_cam_dist = prev
+			_apply_cam_offset(yaw, _obs_pitch, _cam_dist)
+			_measure_cam_metrics()
+			break
+
+
+func is_portrait_window() -> bool:
+	var vp := get_viewport().get_visible_rect().size if get_viewport() else Vector2.ZERO
+	var win := get_window()
+	if win:
+		# 以視窗像素為準（桌面拉橫 852×393）
+		vp = Vector2(win.size)
+	return vp.y >= vp.x and vp.x > 0.0
+
+
+func _setup_rotate_overlay() -> void:
+	if _rotate_layer and is_instance_valid(_rotate_layer):
+		return
+	_rotate_layer = CanvasLayer.new()
+	_rotate_layer.name = "RotatePortrait"
+	_rotate_layer.layer = 80
+	add_child(_rotate_layer)
+	var root := Control.new()
+	root.name = "RotateRoot"
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	_rotate_layer.add_child(root)
+	var bg := ColorRect.new()
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.07, 0.06, 0.05, 0.94)
+	root.add_child(bg)
+	var lab := Label.new()
+	lab.name = "RotateLabel"
+	lab.text = "請轉為直向"
+	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lab.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lab.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var font: Font = load("res://art/fonts/GenWanMin2TC-R.subset.otf")
+	if font:
+		lab.add_theme_font_override("font", font)
+	lab.add_theme_font_size_override("font_size", 28)
+	lab.add_theme_color_override("font_color", Color(1.0, 0.96, 0.9))
+	root.add_child(lab)
+	_rotate_layer.visible = false
+
+
+func _sync_rotate_overlay() -> void:
+	# 橫向視窗唔好改 HUD 做橫版；只顯示請轉直向。
+	var portrait := is_portrait_window()
+	if _rotate_layer:
+		_rotate_layer.visible = not portrait
+	if hud:
+		hud.visible = portrait

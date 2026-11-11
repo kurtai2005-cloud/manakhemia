@@ -246,7 +246,7 @@ func frames_of(name: String, size: String = "", character: String = "") -> Array
 	var key := "%s@%s@%s" % [name, size, character]
 	if _tex_cache.has(key):
 		return _tex_cache[key]
-	if name == "idle_quiet":
+	if name == "idle_quiet" and _is_shared_tuanrong(character):
 		var sz := size if size in _idle_quiet else ("L" if _idle_quiet.has("L") else "")
 		if sz != "":
 			var rec: Dictionary = _idle_quiet[sz]
@@ -256,8 +256,8 @@ func frames_of(name: String, size: String = "", character: String = "") -> Array
 				arr_q = _frames_from_doc(rec.get("doc", {}), rec.get("tex"), name)
 			_tex_cache[key] = arr_q
 			return arr_q
-	# 狩獵 clip：part_grass／pounce／carry_fruit／cheer（S／M／L）
-	if name in ["part_grass", "pounce", "carry_fruit", "cheer"]:
+	# 狩獵 clip：part_grass／pounce／carry_fruit／cheer（S／M／L）——只屬於團絨
+	if name in ["part_grass", "pounce", "carry_fruit", "cheer"] and _is_shared_tuanrong(character):
 		var hsz := size if size != "" else "L"
 		var hkey := "%s@%s" % [name, hsz]
 		if not _hunt.has(hkey):
@@ -267,17 +267,16 @@ func frames_of(name: String, size: String = "", character: String = "") -> Array
 			var arr_h: Array = _frames_from_doc(rec_h.get("doc", {}), rec_h.get("tex"), name)
 			_tex_cache[key] = arr_h
 			return arr_h
-	if character != "":
-		var who := character
-		if who == "visitor":
-			who = str(actor_spec("visitor").get("form", "snail_postman"))
-		var bag: Dictionary = _actor_atlases.get(who, _actor_atlases.get(character, {}))
-		if bag.has(name):
-			var rec2: Dictionary = bag[name]
-			var arr_a: Array = _frames_from_doc(rec2.get("doc", {}), rec2.get("tex"), name)
-			if arr_a.size():
-				_tex_cache[key] = arr_a
-				return arr_a
+	# 指定角色就只准用自己圖集；唔好墮去團絨 L／walk_happy，否則細佬會變團同沉腳。
+	if character != "" and not _is_shared_tuanrong(character):
+		var arr_own: Array = _actor_frames(name, character)
+		_tex_cache[key] = arr_own
+		return arr_own
+	if _is_shared_tuanrong(character) and character != "":
+		var arr_self: Array = _actor_frames(name, character)
+		if arr_self.size():
+			_tex_cache[key] = arr_self
+			return arr_self
 	# size：S／M／L。未有對應體型圖集就 fallback 去已有 atlas（而家得 L 64），由 Walker 按官方 pivot／尺吋顯示。
 	var want := size_px(size) if size != "" else 0.0
 	var arr: Array = []
@@ -288,17 +287,28 @@ func frames_of(name: String, size: String = "", character: String = "") -> Array
 		if tex == null:
 			continue
 		var frames: Dictionary = doc.get("frames", {})
-		# 優先完整幀 name_01，其次 noface
+		# 有 face-kit 錨點就優先 noface，運行時疊五官；否則先完整幀
 		var keys: Array = []
 		var i := 1
-		while frames.has("%s_%02d" % [name, i]):
-			keys.append("%s_%02d" % [name, i])
-			i += 1
-		if keys.is_empty():
-			i = 1
+		var prefer_noface := clip_has_facekit(name)
+		if prefer_noface:
 			while frames.has("%s_noface_%02d" % [name, i]):
 				keys.append("%s_noface_%02d" % [name, i])
 				i += 1
+			if keys.is_empty():
+				i = 1
+				while frames.has("%s_%02d" % [name, i]):
+					keys.append("%s_%02d" % [name, i])
+					i += 1
+		else:
+			while frames.has("%s_%02d" % [name, i]):
+				keys.append("%s_%02d" % [name, i])
+				i += 1
+			if keys.is_empty():
+				i = 1
+				while frames.has("%s_noface_%02d" % [name, i]):
+					keys.append("%s_noface_%02d" % [name, i])
+					i += 1
 		if keys.is_empty():
 			continue
 		for k in keys:
@@ -321,11 +331,12 @@ func frames_of(name: String, size: String = "", character: String = "") -> Array
 	return fallback
 
 
-func liveliness_idle_pool() -> PackedStringArray:
+func liveliness_idle_pool(character: String = "") -> PackedStringArray:
 	# G0.1：生命感段落先接 scratch／sneeze／sniff（同 CLIPS 已交付）
+	# 有指定角色就只收佢自己有嘅 clip，避免細佬播團絨。
 	var pool := PackedStringArray()
 	for n in ["scratch", "sneeze", "sniff"]:
-		if frames_of(n).size():
+		if frames_of(n, "", character).size():
 			pool.append(n)
 	return pool
 
@@ -348,6 +359,98 @@ func size_px(size: String) -> float:
 			return 48.0
 		_:
 			return 64.0
+
+
+func _is_shared_tuanrong(character: String) -> bool:
+	return character == "" or character == "tuanrong"
+
+
+func _actor_who(character: String) -> String:
+	var who := character
+	if who == "visitor":
+		who = str(actor_spec("visitor").get("form", "snail_postman"))
+	return who
+
+
+func _actor_frames(name: String, character: String) -> Array:
+	var who := _actor_who(character)
+	var bag: Dictionary = _actor_atlases.get(who, _actor_atlases.get(character, {}))
+	if not bag.has(name):
+		return []
+	var rec2: Dictionary = bag[name]
+	return _frames_from_doc(rec2.get("doc", {}), rec2.get("tex"), name)
+
+
+func _actor_sheet(name: String, character: String) -> Dictionary:
+	var who := _actor_who(character)
+	var bag: Dictionary = _actor_atlases.get(who, _actor_atlases.get(character, {}))
+	if bag.has(name):
+		return _sheet_from_rec(bag[name])
+	return {}
+
+
+func has_clip(name: String, character: String = "", size: String = "") -> bool:
+	return frames_of(name, size, character).size() > 0
+
+
+func available_clips(character: String) -> PackedStringArray:
+	var out := PackedStringArray()
+	var seen: Dictionary = {}
+	if not _is_shared_tuanrong(character):
+		var who := _actor_who(character)
+		var bag: Dictionary = _actor_atlases.get(who, _actor_atlases.get(character, {}))
+		for k in bag.keys():
+			var n := str(k)
+			if not seen.has(n) and _actor_frames(n, character).size():
+				seen[n] = true
+				out.append(n)
+		return out
+	for n in ["idle_quiet", "scratch", "sneeze", "sniff", "nuzzle", "rush", "walk_happy", "walk_drag", "yawn", "eat", "play", "fall_asleep", "sleep_loop", "wake", "part_grass", "pounce", "carry_fruit", "cheer"]:
+		if frames_of(n, "L" if character == "tuanrong" or character == "" else "", character).size() and not seen.has(n):
+			seen[n] = true
+			out.append(n)
+	for atlas in _atlases:
+		var frames: Dictionary = atlas.get("doc", {}).get("frames", {}) if atlas.get("doc", {}) is Dictionary else {}
+		for k in frames.keys():
+			var s := str(k)
+			var clip := s
+			var us := s.rfind("_")
+			if us > 0:
+				clip = s.substr(0, us)
+				if clip.ends_with("_noface"):
+					clip = clip.substr(0, clip.length() - 7)
+			if not seen.has(clip) and frames_of(clip, "", character).size():
+				seen[clip] = true
+				out.append(clip)
+	return out
+
+
+func texture_atlas_path(tex: Texture2D) -> String:
+	if tex == null:
+		return ""
+	if tex is AtlasTexture:
+		var at := tex as AtlasTexture
+		if at.atlas:
+			return at.atlas.resource_path
+	return tex.resource_path
+
+
+func sheet_matches_character(tex: Texture2D, character: String) -> bool:
+	var path := texture_atlas_path(tex).replace("\\", "/").to_lower()
+	if path == "":
+		return false
+	var who := _actor_who(character)
+	if who == "kid" or who == "A1":
+		return ("/art/kid/" in path or "/series2/liveliness" in path or "a1_" in path) and path.find("tuanrong") < 0
+	if who == "tuanrong" or character == "":
+		return path.find("tuanrong") >= 0 or path.find("dir4") >= 0 or path.find("atlas_radiant") >= 0
+	if who == "snail_postman":
+		return path.find("snail") >= 0
+	if who == "firefly_vendor":
+		return path.find("firefly") >= 0
+	if who == "mushroom_granny":
+		return path.find("mushroom") >= 0 or path.find("granny") >= 0
+	return path.find(who.to_lower()) >= 0
 
 
 func liveliness_pivot(size: String) -> Vector2:
@@ -431,10 +534,15 @@ func _load_actor_catalogs() -> void:
 			var doc := _json(dir + atlas_rel)
 			if doc.is_empty():
 				continue
-			var img := str(doc.get("alpha", doc.get("meta", {}).get("image", "") if doc.get("meta", {}) is Dictionary else ""))
+			# alpha 可能係「0/255」鍵值說明，唔係檔名；圖路用 meta.image 或 atlas 同名 png。
+			var img := ""
+			var meta: Dictionary = doc.get("meta", {}) if doc.get("meta", {}) is Dictionary else {}
+			img = str(meta.get("image", ""))
+			var alpha_s := str(doc.get("alpha", ""))
+			if img == "" and alpha_s.ends_with(".png"):
+				img = alpha_s
 			if img == "":
-				var meta: Dictionary = doc.get("meta", {})
-				img = str(meta.get("image", atlas_rel.replace(".json", ".png")))
+				img = atlas_rel.replace(".json", ".png")
 			var tex: Texture2D = load(dir + img) if img != "" and (ResourceLoader.exists(dir + img) or FileAccess.file_exists(dir + img)) else null
 			if tex == null:
 				continue
@@ -554,31 +662,33 @@ func clip_sheet(name: String, size: String = "", character: String = "") -> Dict
 	# 每張圖集自己嘅 frame size 同腳錨；Walker 用呢份資料對地，唔好寫死 64／(32,61)
 	if name == "":
 		return {}
-	if name == "idle_quiet":
+	if name == "idle_quiet" and _is_shared_tuanrong(character):
 		var sz := size if size in _idle_quiet else ("L" if _idle_quiet.has("L") else "")
 		if sz != "":
 			return _sheet_from_rec(_idle_quiet[sz])
-	if name in ["part_grass", "pounce", "carry_fruit", "cheer"]:
+	if name in ["part_grass", "pounce", "carry_fruit", "cheer"] and _is_shared_tuanrong(character):
 		var hsz := size if size != "" else "L"
 		var hkey := "%s@%s" % [name, hsz]
 		if not _hunt.has(hkey):
 			hkey = "%s@L" % name
 		if _hunt.has(hkey):
 			return _sheet_from_rec(_hunt[hkey])
+	if character != "" and not _is_shared_tuanrong(character):
+		var rec_own: Dictionary = _actor_sheet(name, character)
+		return rec_own
 	if character != "":
-		var who := character
-		if who == "visitor":
-			who = str(actor_spec("visitor").get("form", "snail_postman"))
-		var bag: Dictionary = _actor_atlases.get(who, _actor_atlases.get(character, {}))
-		if bag.has(name):
-			return _sheet_from_rec(bag[name])
+		var rec_self: Dictionary = _actor_sheet(name, character)
+		if not rec_self.is_empty():
+			return rec_self
 	var want := size_px(size) if size != "" else 0.0
 	var fallback := {}
 	for atlas in _atlases:
 		var doc: Dictionary = atlas["doc"]
 		var frames: Dictionary = doc.get("frames", {})
 		var key := ""
-		if frames.has("%s_01" % name):
+		if clip_has_facekit(name) and frames.has("%s_noface_01" % name):
+			key = "%s_noface_01" % name
+		elif frames.has("%s_01" % name):
 			key = "%s_01" % name
 		elif frames.has("%s_noface_01" % name):
 			key = "%s_noface_01" % name
@@ -629,3 +739,104 @@ func _load_sfx_map() -> void:
 		sfx_map["scratch"] = sfx_map["scratch_head"]
 
 
+
+
+
+func clip_has_facekit(name: String) -> bool:
+	var rec := clip_def(name)
+	if rec.is_empty():
+		return false
+	var anc: Variant = rec.get("anchors", {})
+	return anc is Dictionary and not (anc as Dictionary).is_empty()
+
+
+func clip_def(name: String) -> Dictionary:
+	for c in clips_doc.get("clips", []):
+		if c is Dictionary and str(c.get("name", "")) == name:
+			return c
+	return {}
+
+
+func pet_form() -> String:
+	if Sim and Sim.state:
+		var f := str(Sim.state.get("form", "radiant"))
+		if f != "":
+			return f
+	return "radiant"
+
+
+func facekit() -> Dictionary:
+	return clips_doc.get("faceKit", {})
+
+
+func clip_anchor(name: String, form: String, frame_i: int) -> Dictionary:
+	var rec := clip_def(name)
+	var anc: Dictionary = rec.get("anchors", {})
+	var arr: Variant = anc.get(form, anc.get("radiant", []))
+	if arr is Array and frame_i >= 0 and frame_i < arr.size() and arr[frame_i] is Dictionary:
+		return arr[frame_i]
+	return {}
+
+
+func face_piece_tex(kind: String, style: String = "", gaze: String = "C", side: String = "l") -> Texture2D:
+	# kind: eye / mouth / bulb_base / bulb_glow
+	var key := ""
+	if kind == "eye":
+		var st := style if style != "" else "neutral"
+		var gz := gaze if gaze != "" else "C"
+		var closed: Array = facekit().get("eyes", {}).get("closedOnlyC", [])
+		if st in closed:
+			gz = "C"
+		key = "eyes_%s_%s_%s" % [st, gz, side]
+		# 唔存在就退回 C，再退回 neutral
+		if _atlas_frame(key) == null:
+			key = "eyes_%s_C_%s" % [st, side]
+		if _atlas_frame(key) == null:
+			key = "eyes_neutral_C_%s" % side
+	elif kind == "mouth":
+		key = "mouth_%s" % (style if style != "" else "neutral")
+		if _atlas_frame(key) == null:
+			key = "mouth_neutral"
+	elif kind == "bulb_base":
+		key = "bulb_base"
+	elif kind == "bulb_glow":
+		key = "bulb_glow"
+	return _atlas_frame(key)
+
+
+func face_piece_info(form: String, kind: String) -> Dictionary:
+	var info: Dictionary = facekit().get("pieceInfo", {}).get(form, facekit().get("pieceInfo", {}).get("radiant", {}))
+	var k := kind
+	if k.begins_with("bulb"):
+		k = "bulb"
+	if k == "eye" or k == "eyes":
+		k = "eyes"
+	return info.get(k, {})
+
+
+func _atlas_frame(key: String) -> Texture2D:
+	if key == "":
+		return null
+	for atlas in _atlases:
+		var doc: Dictionary = atlas.get("doc", {})
+		var frames: Dictionary = doc.get("frames", {})
+		if not frames.has(key):
+			continue
+		var tex: Texture2D = atlas.get("tex")
+		if tex == null:
+			continue
+		var info: Dictionary = frames[key]
+		var fr: Dictionary = info.get("frame", info)
+		var at := AtlasTexture.new()
+		at.atlas = tex
+		at.region = Rect2(float(fr.get("x", 0)), float(fr.get("y", 0)), float(fr.get("w", 8)), float(fr.get("h", 8)))
+		at.filter_clip = true
+		return at
+	return null
+
+
+func bulb_mood(style: String) -> Dictionary:
+	var moods: Dictionary = clips_doc.get("bulb", {}).get("moods", {})
+	if moods.has(style):
+		return moods[style]
+	return moods.get("neutral", {})

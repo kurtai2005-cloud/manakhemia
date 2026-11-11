@@ -35,6 +35,14 @@
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
 
+        <activity
+            android:name="org.godotengine.godot.utils.ProcessPhoenix"
+            android:exported="false"
+            android:process=":phoenix"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:screenOrientation="portrait"
+            tools:replace="android:screenOrientation" />
+
         <service
             android:name="hk.vizard.glimmer.fpet.PetOverlayService"
             android:exported="false"

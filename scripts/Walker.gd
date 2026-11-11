@@ -51,6 +51,9 @@ var _vis_tex: Texture2D
 var _vis_top := 0.0
 var _vis_bot := 0.0
 var _vis_ok := false
+var in_interior := false
+var _face_sprites: Dictionary = {}  # eyeL/eyeR/mouth/bulb_base/bulb_glow -> Sprite3D
+var _face_ready := false
 
 func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) -> void:
 	frames = tex_frames
@@ -72,6 +75,7 @@ func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) 
 	_base_offset = foot_offset(frame_size, pivot)
 	sprite.offset = _base_offset
 	add_child(sprite)
+	_setup_face_layers()
 	_base_modulate = sprite.modulate
 	_add_blob()
 	agent = NavigationAgent3D.new()
@@ -128,6 +132,9 @@ func _process(dt: float) -> void:
 			_maybe_liveliness()
 		_anim(dt)
 		return
+	# 開步就停非行路 live clip，避免播緊團絨照顧／靜態 clip 時繼續變樣行路
+	if live_clip != "" and live_clip != "carry_fruit":
+		stop_live()
 	var step := to.normalized() * speed * maxf(speed_mul, 0.1) * dt
 	if step.length() > to.length():
 		step = to
@@ -172,6 +179,9 @@ func _update_dir(dx: float, dz: float) -> void:
 		dir = "back"
 		flip_x = false
 	sprite.flip_h = flip_x
+	for s in _face_sprites.values():
+		if s:
+			s.flip_h = flip_x
 
 
 func _maybe_liveliness() -> void:
@@ -179,7 +189,7 @@ func _maybe_liveliness() -> void:
 		return
 	if rng.randf() > 0.5:
 		return
-	var pool: PackedStringArray = ArtImporter.liveliness_idle_pool()
+	var pool: PackedStringArray = ArtImporter.liveliness_idle_pool(character)
 	if pool.is_empty():
 		return
 	var name := str(pool[rng.randi() % pool.size()])
@@ -230,7 +240,10 @@ func _apply_live_display(on: bool) -> void:
 	else:
 		sprite.pixel_size = pixel_size
 		_base_offset = foot_offset(frame_size, pivot)
+		_hide_face_kit()
 	sprite.offset = _base_offset
+	if on:
+		_update_face_kit()
 
 
 func _fire_sfx(frame_index: int) -> void:
@@ -304,6 +317,7 @@ func _anim(dt: float) -> void:
 					step = ArtImporter.frame_duration_sec(live_clip, live_i)
 		if live_clip != "" and live_i < live_frames.size():
 			sprite.texture = live_frames[live_i]
+			_update_face_kit()
 			return
 	var clip := dir + ("_walk" if moving else "_idle")
 	var arr: Array = frames.get(clip, frames.get("front_idle", []))
@@ -345,6 +359,8 @@ func _maybe_footstep(nframes: int) -> void:
 		else:
 			hook = "sfx_pet_step_hop_a"
 	_step_cool = 0.45
+	if in_interior:
+		hook = "sfx_interior_footstep"
 	# 只 emit；AudioManager 已 connect sfx_cue，避免播兩次（同 _fire_sfx）
 	if ArtImporter:
 		ArtImporter.sfx_cue.emit("walk", hook, frame_i, self)
@@ -456,9 +472,7 @@ func play_live_clip(name: String, loop: bool = false) -> bool:
 		return false
 	var arr: Array = ArtImporter.frames_of(name, body_size, character)
 	if arr.is_empty():
-		arr = ArtImporter.frames_of(name + "_noface", body_size)
-	if arr.is_empty():
-		arr = ArtImporter.frames_of(name, "")
+		arr = ArtImporter.frames_of(name + "_noface", body_size, character)
 	if arr.is_empty():
 		return false
 	live_clip = name
@@ -626,3 +640,112 @@ func visible_world_bottom() -> float:
 func visible_world_height() -> float:
 	return maxf(4.0, visible_world_top() - visible_world_bottom())
 
+
+
+
+func _setup_face_layers() -> void:
+	if _face_ready:
+		return
+	_face_ready = true
+	var order := ["eyeL", "eyeR", "mouth", "bulb_base", "bulb_glow"]
+	for i in range(order.size()):
+		var id := str(order[i])
+		var s := Sprite3D.new()
+		s.name = "Face_%s" % id
+		s.centered = true
+		s.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		s.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
+		s.alpha_scissor_threshold = 0.5
+		s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		s.shaded = false
+		s.double_sided = true
+		s.pixel_size = pixel_size
+		s.render_priority = i + 1
+		s.sorting_offset = 0.02 * float(i + 1)
+		s.visible = false
+		add_child(s)
+		_face_sprites[id] = s
+
+
+func _hide_face_kit() -> void:
+	for s in _face_sprites.values():
+		if s:
+			s.visible = false
+
+
+func _update_face_kit() -> void:
+	if not _face_ready or ArtImporter == null:
+		return
+	# 只喺團絨 liveliness／照顧 clip 疊五官；訪客同 dir4 行路唔用呢套
+	var who := str(character)
+	if who != "" and who != "tuanrong":
+		_hide_face_kit()
+		return
+	if live_clip == "" or not ArtImporter.clip_has_facekit(live_clip):
+		_hide_face_kit()
+		return
+	var form := ArtImporter.pet_form()
+	var anc_v: Variant = ArtImporter.clip_anchor(live_clip, form, live_i)
+	var anc: Dictionary = anc_v if anc_v is Dictionary else {}
+	if anc.is_empty():
+		_hide_face_kit()
+		return
+	var rec: Dictionary = ArtImporter.clip_sheet(live_clip, body_size, character)
+	var fs: Vector2 = rec.get("frame_size", Vector2(64, 64))
+	var pv: Vector2 = rec.get("pivot", ArtImporter.liveliness_pivot(body_size))
+	var visible := bool(anc.get("faceVisible", true))
+	var face_v: Variant = anc.get("face", {})
+	var face: Dictionary = face_v if face_v is Dictionary else {}
+	var eyes_style := str(face.get("eyes", "neutral"))
+	var gaze := str(face.get("gaze", "C"))
+	var mouth_style := str(face.get("mouth", "neutral"))
+	var skip_eyes := (not visible) or eyes_style.find("sick") >= 0 or eyes_style.find("保留原幀") >= 0
+	var skip_mouth := (not visible) or mouth_style == "none"
+	var skip_bulb := (not visible) or live_clip == "sick" or eyes_style.find("sick") >= 0
+	_place_face_piece("eyeL", "eye", eyes_style, gaze, "l", anc.get("eyeL", []), fs, pv, not skip_eyes)
+	_place_face_piece("eyeR", "eye", eyes_style, gaze, "r", anc.get("eyeR", []), fs, pv, not skip_eyes)
+	_place_face_piece("mouth", "mouth", mouth_style, "", "", anc.get("mouth", []), fs, pv, not skip_mouth)
+	_place_face_piece("bulb_base", "bulb_base", "", "", "", anc.get("bulb", []), fs, pv, not skip_bulb)
+	_place_face_piece("bulb_glow", "bulb_glow", eyes_style, "", "", anc.get("bulb", []), fs, pv, not skip_bulb)
+	# 燈泡 tint
+	if not skip_bulb and _face_sprites.get("bulb_glow"):
+		var mood: Dictionary = ArtImporter.bulb_mood(eyes_style if eyes_style in ["happy", "sleepy", "hungry", "grumpy"] else "neutral")
+		if live_clip.find("sleep") >= 0 or live_clip.find("fall_asleep") >= 0:
+			mood = ArtImporter.bulb_mood("sleepy")
+		var tint := Color(1, 1, 1)
+		var ts := str(mood.get("tint", "#FFEFC4"))
+		if ts.begins_with("#") and ts.length() >= 7:
+			tint = Color(ts)
+		var energy := float(mood.get("intensity", 0.8))
+		var glow: Sprite3D = _face_sprites["bulb_glow"]
+		glow.modulate = Color(tint.r, tint.g, tint.b, clampf(energy, 0.3, 1.0))
+
+
+func _place_face_piece(id: String, kind: String, style: String, gaze: String, side: String, anchor: Variant, fs: Vector2, pv: Vector2, show: bool) -> void:
+	var s: Sprite3D = _face_sprites.get(id)
+	if s == null:
+		return
+	if not show or not (anchor is Array) or anchor.size() < 2:
+		s.visible = false
+		return
+	var tex: Texture2D = ArtImporter.face_piece_tex(kind, style, gaze, side)
+	if tex == null:
+		s.visible = false
+		return
+	s.texture = tex
+	s.pixel_size = sprite.pixel_size if sprite else pixel_size
+	s.flip_h = flip_x
+	s.visible = true
+	var form := ArtImporter.pet_form()
+	var info: Dictionary = ArtImporter.face_piece_info(form, kind)
+	var psz: Variant = info.get("size", [tex.get_width(), tex.get_height()])
+	var ppv: Variant = info.get("pivotPx", [float(psz[0]) * 0.5 if psz is Array else 0.0, float(psz[1]) * 0.5 if psz is Array else 0.0])
+	var pw := float(psz[0]) if psz is Array and psz.size() >= 1 else float(tex.get_width())
+	var ph := float(psz[1]) if psz is Array and psz.size() >= 2 else float(tex.get_height())
+	var ppx := float(ppv[0]) if ppv is Array and ppv.size() >= 1 else pw * 0.5
+	var ppy := float(ppv[1]) if ppv is Array and ppv.size() >= 2 else ph * 0.5
+	var ax := float(anchor[0])
+	var ay := float(anchor[1])
+	# 身體腳錨喺 origin；piece pivot 對準該幀錨點。y 軸：圖向下、Sprite3D offset 向上。
+	var piece_base := foot_offset(Vector2(pw, ph), Vector2(ppx, ppy))
+	s.offset = piece_base + Vector2(ax - pv.x, pv.y - ay)

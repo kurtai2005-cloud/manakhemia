@@ -17,6 +17,7 @@ var btn_feed: Button
 var btn_snack: Button
 var btn_pat: Button
 var btn_book: Button
+var back_btn: Button
 var book_dot: ColorRect
 var harvest_badge: Label
 var card: PanelContainer
@@ -52,16 +53,16 @@ func _ready() -> void:
 	shard_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shard_lbl)
 
-	# 右上收藏
+	# 左上收藏（屋 ×2 之後右上會同煙囪重疊）
 	btn_book = _btn("圖鑑")
-	btn_book.anchor_left = 1
+	btn_book.anchor_left = 0
 	btn_book.anchor_top = 0
-	btn_book.anchor_right = 1
+	btn_book.anchor_right = 0
 	btn_book.anchor_bottom = 0
-	btn_book.offset_left = -136
-	btn_book.offset_top = 12
-	btn_book.offset_right = -16
-	btn_book.offset_bottom = 56
+	btn_book.offset_left = 16
+	btn_book.offset_top = 64
+	btn_book.offset_right = 136
+	btn_book.offset_bottom = 108
 	btn_book.pressed.connect(func():
 		_toggle_book()
 	)
@@ -73,6 +74,25 @@ func _ready() -> void:
 	book_dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	book_dot.visible = false
 	btn_book.add_child(book_dot)
+
+	# 室內返回（只喺屋內顯示；同圖鑑一列疊喺左上，避開煙囪）
+	back_btn = _btn("返回")
+	back_btn.anchor_left = 0
+	back_btn.anchor_top = 0
+	back_btn.anchor_right = 0
+	back_btn.anchor_bottom = 0
+	back_btn.offset_left = 16
+	back_btn.offset_top = 116
+	back_btn.offset_right = 136
+	back_btn.offset_bottom = 160
+	back_btn.visible = false
+	back_btn.pressed.connect(func():
+		_play_press()
+		var main := get_tree().get_first_node_in_group("glimmer_main")
+		if main and main.has_method("exit_house"):
+			main.exit_house()
+	)
+	root.add_child(back_btn)
 
 	# 底部一鍵列：執／收成／出發／派工
 	bar = HBoxContainer.new()
@@ -703,3 +723,8 @@ func _process(dt: float) -> void:
 			_sync_side_buttons()
 			if not observing and not card_queue.is_empty():
 				_show_card(card_queue.pop_front())
+
+
+func set_in_interior(on: bool) -> void:
+	if back_btn:
+		back_btn.visible = on

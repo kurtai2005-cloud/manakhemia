@@ -63,6 +63,12 @@ func _ready() -> void:
 	_test_m1c3_loop_imports()
 	_test_m1c3_codex_map_bus()
 	_test_m1d_anim_foot_pivot()
+	_test_m1d_interior()
+	_test_m1d_facekit()
+	_test_m1d_rotate_overlay()
+	_test_m1d_process_phoenix()
+	_test_m1d_species_clips()
+	_test_m1d_codex_and_follow_tap()
 	print("=== %d passed, %d failed ===" % [passed, failed])
 
 	get_tree().quit(0 if failed == 0 else 1)
@@ -560,7 +566,7 @@ func _test_g01_actor_anim_and_lut() -> void:
 	ok(ArtImporter.liveliness_pivot("L") == Vector2(32, 61), "L pivot (32, 61)")
 	ok(ArtImporter.liveliness_pivot("S") == Vector2(16, 29), "S pivot (16, 29)")
 	ok(ArtImporter.actor_pivot("kid") == Vector2(24, 45), "kid actor pivot from data/actor_anim.json", ArtImporter.actor_pivot("kid"))
-	ok(ArtImporter.actor_pivot("visitor") == Vector2(24, 45), "visitor pivot (24, 45)")
+	ok(ArtImporter.actor_pivot("visitor") == Vector2(24, 40), "visitor pivot (24, 40)")
 	ok(is_equal_approx(ArtImporter.actor_walk_fps("kid"), 10.0), "kid walk fps 10 from data", ArtImporter.actor_walk_fps("kid"))
 	var shared: Array = ArtImporter.frames_of("scratch")
 	var mid: Array = ArtImporter.frames_of("scratch", "M")
@@ -686,9 +692,9 @@ func _test_m1a_need_bubbles() -> void:
 func _test_m1a_art_fix1() -> void:
 	print("# art-fix1：細佬 A1 M 48px、訪客 liveliness 圖集、idle_quiet")
 	ok(ArtImporter.actor_pivot("kid") == Vector2(24, 45), "kid A1 pivot (24,45)")
-	ok(ArtImporter.actor_pivot("snail_postman") == Vector2(22, 45), "snail pivot (22,45)", ArtImporter.actor_pivot("snail_postman"))
+	ok(ArtImporter.actor_pivot("snail_postman") == Vector2(22, 40), "snail pivot (22,40)", ArtImporter.actor_pivot("snail_postman"))
 	ok(ArtImporter.actor_pivot("mushroom_granny") == Vector2(24, 45), "granny pivot (24,45)")
-	ok(ArtImporter.actor_pivot("firefly_vendor") == Vector2(24, 44), "firefly pivot (24,44)", ArtImporter.actor_pivot("firefly_vendor"))
+	ok(ArtImporter.actor_pivot("firefly_vendor") == Vector2(24, 36), "firefly pivot (24,36)", ArtImporter.actor_pivot("firefly_vendor"))
 	ok(ArtImporter.frames_of("scratch", "M", "kid").size() >= 1, "kid A1 scratch frames")
 	ok(ArtImporter.frames_of("scratch", "M", "snail_postman").size() >= 1, "snail scratch frames")
 	ok(ArtImporter.frames_of("sneeze", "M", "mushroom_granny").size() >= 1, "granny sneeze frames")
@@ -764,7 +770,13 @@ func _test_m1a_camera_framing() -> void:
 	var fr: Dictionary = main.qa_framing() if main.has_method("qa_framing") else {}
 	print("  overview framing ", fr)
 	ok(str(fr.get("mode", "")) == "overview", "default cam mode overview", fr)
-	ok(float(fr.get("pet_h", 0)) >= 0.09, "overview visible pet height ≥10% (tol 1%)", fr)
+	var pet_min := 0.09
+	# M1d 小屋 ×2 要整棟屋頂入畫，總覽寵物身高可以低過 10%，但唔好低過 6%
+	if GameData and "m1d" in GameData and not GameData.m1d.is_empty():
+		var sc: Variant = GameData.m1d.get("garden", {}).get("cottage_scale", [])
+		if sc is Array and sc.size() >= 2 and float(sc[0]) >= 2.0 and bool(GameData.m1d.get("garden", {}).get("keep_roof_in_frame", true)):
+			pet_min = 0.055
+	ok(float(fr.get("pet_h", 0)) >= pet_min, "overview visible pet height ≥10% (tol 1%; M1d ×2 roof 6%)", fr)
 	var vw := float(fr.get("visible_w", 0))
 	print("  overview trade-off garden_w=", vw, " texel=", fr.get("texel", 0), " quad=", fr.get("pet_h_quad", 0), " vis=", fr.get("pet_h_visible", fr.get("pet_h", 0)))
 	# 花園填滿／整數倍為次要，可見身高優先（遊策回饋）
@@ -777,6 +789,16 @@ func _test_m1a_camera_framing() -> void:
 	ok(float(ff.get("pet_h", 0)) >= 0.18, "follow visible pet height ≥20% (tol 2%)", ff)
 	var py := float(ff.get("pet_y", -1))
 	ok(py >= 0.52 and py <= 0.63, "follow pet_y near 55–60%", ff)
+	# 由跟拍返總覽再模擬撳寵物（M1a：跟拍 ≥20%；總覽維持而家取捨）
+	if main.has_method("qa_overview"):
+		main.qa_overview()
+	if main.has_method("_on_pet_tapped") and main.get("pet"):
+		main._on_pet_tapped(main.pet)
+		if main.has_method("_place_cam"):
+			main._place_cam(0.0)
+	var tap_fr: Dictionary = main.qa_framing() if main.has_method("qa_framing") else {}
+	ok(str(tap_fr.get("mode", "")) == "follow", "tapping a pet enters follow", tap_fr)
+	ok(float(tap_fr.get("pet_h", 0)) >= 0.18, "tap-follow zooms to ≥20% height (tol 2%)", tap_fr)
 	main.free()
 
 
@@ -1055,6 +1077,19 @@ func _test_m1c_hunt_field_and_sfx() -> void:
 	field.queue_free()
 
 
+func _furn_is_textured_3d(n: Node) -> bool:
+	if n == null:
+		return false
+	var nodes: Array = [n]
+	nodes.append_array(n.find_children("*", "MeshInstance3D", true, false))
+	for it in nodes:
+		if it is MeshInstance3D:
+			var mat: Material = (it as MeshInstance3D).material_override
+			if mat is StandardMaterial3D and (mat as StandardMaterial3D).albedo_texture != null:
+				return true
+	return false
+
+
 func _test_m1c_furniture_art() -> void:
 	print("# M1c furniture uses 遊美 props")
 	ok(ResourceLoader.exists("res://art-pet/sprites/series2_house/furniture/bed_leaf.png"), "bed_leaf art")
@@ -1071,25 +1106,22 @@ func _test_m1c_furniture_art() -> void:
 		ok(main.furniture_mount("wall_shoes", "wall") == "wall", "wall_shoes mount=wall")
 		ok(main.furniture_mount("bed_leaf", "bed") == "floor", "bed_leaf mount=floor")
 		var bed: Node3D = main._make_furniture("bed_leaf", "bed", Vector3(70, 4, -48))
-		ok(bed is Sprite3D, "bed is art sprite not a colour box", bed)
+		ok(_furn_is_textured_3d(bed), "bed is art sprite not a colour box", bed)
 		if bed:
 			ok(is_equal_approx(bed.position.y, 0.0), "floor sprite y=0 not slot y", bed.position)
 			bed.free()
 		var rug: Node3D = main._make_furniture("rug_leaf", "rug", Vector3(0, 0, 0))
-		ok(rug is MeshInstance3D, "rug is textured plane", rug)
-		if rug is MeshInstance3D:
-			var mat: Material = (rug as MeshInstance3D).material_override
-			ok(mat is StandardMaterial3D and (mat as StandardMaterial3D).albedo_texture != null, "rug has texture")
+		ok(_furn_is_textured_3d(rug), "rug is textured plane", rug)
 		if rug:
 			rug.free()
 		var shoes: Node3D = main._make_furniture("wall_shoes", "wall", Vector3(86, 16, -44))
-		ok(shoes is Sprite3D, "wall_shoes is art sprite not a colour box", shoes)
+		ok(_furn_is_textured_3d(shoes), "wall_shoes is art sprite not a colour box", shoes)
 		if shoes:
 			ok(is_equal_approx(shoes.position.y, 16.0), "wall-mounted uses slot pos.y=16", shoes.position)
-			ok(shoes is Sprite3D and (shoes as Sprite3D).billboard == BaseMaterial3D.BILLBOARD_FIXED_Y, "shoes upright FIXED_Y")
+			ok(shoes.find_children("*", "Sprite3D", true, false).is_empty(), "shoes upright 3D mesh (not a billboard)")
 			shoes.free()
 		var shelf: Node3D = main._make_furniture("wall_shelf", "wall", Vector3(86, 16, -44))
-		ok(shelf is Sprite3D and is_equal_approx(shelf.position.y, 16.0), "wall_shelf also uses slot y", shelf.position if shelf else Vector3.ZERO)
+		ok(_furn_is_textured_3d(shelf) and is_equal_approx(shelf.position.y, 16.0), "wall_shelf also uses slot y", shelf.position if shelf else Vector3.ZERO)
 		if shelf:
 			shelf.free()
 		# 故意冇圖嘅 id 先至色塊 fallback
@@ -1773,3 +1805,376 @@ func _test_m1d_anim_foot_pivot() -> void:
 	ok(is_equal_approx(vis.sprite.offset.y, vbase.y), "visitor stop bob restores foot offset, not 0", vis.sprite.offset)
 	w.queue_free()
 	vis.queue_free()
+
+
+func _test_m1d_interior() -> void:
+	print("# M1d interior room + indoor furniture leave the garden")
+	ok(GameData != null and not GameData.m1d.is_empty(), "GameData.m1d loaded")
+	var ic: Dictionary = GameData.m1d.get("interior", {})
+	var sz: Variant = ic.get("size_wu", [])
+	ok(sz is Array and sz.size() >= 3 and is_equal_approx(float(sz[0]), 160.0) and is_equal_approx(float(sz[1]), 120.0) and is_equal_approx(float(sz[2]), 128.0), "room size_wu 160×120×128 (W×H×D)", sz)
+	var px: Variant = ic.get("size_px_1x", [])
+	ok(px is Array and px.size() >= 3 and is_equal_approx(float(px[0]), 160.0) and is_equal_approx(float(px[1]), 120.0) and is_equal_approx(float(px[2]), 128.0), "room art px at 1x matches wu (1 px = 1 wu)", px)
+	ok(is_equal_approx(float(ic.get("texel_wu", 0)), 1.0) and is_equal_approx(float(ic.get("tile_px", 0)), 64.0), "texel_wu=1, tile 64 px / 64 wu")
+	ok(str(ic.get("textures", {}).get("floor", "")).begins_with("res://"), "floor texture path is data-driven")
+	ok(CollectionSystem.furniture_zone("bed_leaf") == "indoor", "bed_leaf zone indoor")
+	ok(CollectionSystem.furniture_zone("wall_shoes") == "indoor", "wall_shoes zone indoor")
+	ok(CollectionSystem.furniture_zone("rug_leaf") == "indoor", "rug_leaf zone indoor")
+	ok(CollectionSystem.furniture_zone("deco_mailbox") == "outdoor", "mailbox zone outdoor")
+	var room: InteriorRoom = InteriorRoom.new()
+	add_child(room)
+	room.setup()
+	ok(is_equal_approx(room.size.x, 160.0) and is_equal_approx(room.size.y, 120.0) and is_equal_approx(room.size.z, 128.0), "InteriorRoom reads size from data", room.size)
+	ok(room.get_node_or_null("floor") != null and room.get_node_or_null("wall_back") != null and room.get_node_or_null("wall_L") != null and room.get_node_or_null("wall_R") != null, "floor + back + side walls present")
+	var floor_mi := room.get_node_or_null("floor") as MeshInstance3D
+	var back_mi := room.get_node_or_null("wall_back") as MeshInstance3D
+	var left_mi := room.get_node_or_null("wall_L") as MeshInstance3D
+	ok(floor_mi != null and floor_mi.get_aabb().size.y >= 2.9, "floor slab has thickness", floor_mi.get_aabb().size if floor_mi else Vector3.ZERO)
+	ok(back_mi != null and back_mi.get_aabb().size.z >= 2.9, "back wall has thickness", back_mi.get_aabb().size if back_mi else Vector3.ZERO)
+	ok(left_mi != null and left_mi.get_aabb().size.x >= 2.9, "left wall has thickness", left_mi.get_aabb().size if left_mi else Vector3.ZERO)
+	ok(room.nav_region != null and room.nav_region.navigation_mesh != null, "interior navmesh baked")
+	ok(room.furniture_root != null, "interior furniture root")
+	# 床 92 px 闊（pixel_size 1）大過 L 寵物 64，對得上
+	var bed_tex: Texture2D = load("res://art-pet/sprites/series2_house/furniture/bed_leaf.png")
+	ok(bed_tex != null and bed_tex.get_width() >= 64, "bed art wider than L pet (64 px)", bed_tex.get_width() if bed_tex else 0)
+	room.queue_free()
+
+	var packed: PackedScene = load("res://scenes/Main.tscn")
+	ok(packed != null, "Main.tscn for interior")
+	var main: Node = packed.instantiate() if packed else null
+	if main == null:
+		ok(false, "Main instantiate")
+		return
+	if CollectionSystem:
+		CollectionSystem.place("bed_leaf", "bed")
+	add_child(main)
+	if main.has_method("refresh_furniture"):
+		main.refresh_furniture()
+	ok(main.has_method("enter_house") and main.interior_room != null, "Main has interior room")
+	if main.interior_room:
+		ok(main.interior_room.get_node_or_null("floor") != null and main.interior_room.get_node_or_null("window") != null and main.interior_room.get_node_or_null("DoorPivot") != null, "room built on Main with window and door")
+	# 預設床應該喺室內，唔喺花園
+	var garden_bed: Node = main.furniture_root.find_child("Furn_bed_leaf", true, false) if main.furniture_root else null
+	var room_root: Node3D = main.interior_room.furniture_root if main.interior_room else null
+	var room_bed := room_root.find_child("Furn_bed_leaf", true, false) if room_root else null
+	ok(garden_bed == null, "default bed is not in the garden")
+	ok(room_bed != null, "default bed is in the interior")
+	var bed_spr := room_bed.find_children("*", "Sprite3D", true, false) if room_bed else []
+	var bed_mesh := room_bed.find_children("*", "MeshInstance3D", true, false) if room_bed else []
+	ok(bed_spr.is_empty() and (room_bed is MeshInstance3D or not bed_mesh.is_empty()), "interior bed is a 3D mesh, not a Sprite3D billboard")
+	# 擺鞋架、地氈，刷新後都應該入屋
+	if CollectionSystem:
+		if CollectionSystem.stardust() < 40:
+			CollectionSystem.add_shards(40, "old")
+		if not CollectionSystem.is_owned("rug_leaf"):
+			CollectionSystem.buy("rug_leaf")
+		if not CollectionSystem.is_owned("wall_shoes"):
+			CollectionSystem.buy("wall_shoes")
+		CollectionSystem.place("rug_leaf", "rug")
+		CollectionSystem.place("wall_shoes", "wall")
+		main.refresh_furniture()
+	room_root = main.interior_room.furniture_root if main.interior_room else null
+	ok(room_root != null and room_root.find_child("Furn_rug_leaf", true, false) != null, "rug placed in interior")
+	ok(room_root != null and room_root.find_child("Furn_wall_shoes", true, false) != null, "shoe rack placed in interior")
+	ok(main.furniture_root == null or main.furniture_root.find_child("Furn_rug_leaf", true, false) == null, "rug not left in the garden")
+	var house := main.find_child("cottage", true, false)
+	ok(house != null and house.get_node_or_null("HouseClick") != null, "cottage has a tap target")
+	var pet_before: Vector3 = main.pet.global_position if main.pet else Vector3.ZERO
+	main.enter_house(true, main.pet)
+	ok(main.in_interior, "enter_house instant sets in_interior")
+	ok(main.interior_room.visible, "interior visible after enter")
+	if main.pet:
+		ok(main.pet.global_position.distance_to(pet_before) > 8.0, "pet moved into the room", main.pet.global_position)
+	main.exit_house(true)
+	ok(not main.in_interior, "exit_house leaves interior")
+	ok(main.interior_room == null or not main.interior_room.visible, "interior hidden after exit")
+	main.queue_free()
+
+
+
+func _test_m1d_facekit() -> void:
+	print("# M1d face-kit hook")
+	ok(ArtImporter != null and ArtImporter.clip_has_facekit("eat"), "eat has face-kit anchors")
+	ok(ArtImporter.clip_has_facekit("yawn") and ArtImporter.clip_has_facekit("sleep_loop"), "care clips have anchors")
+	var eat: Array = ArtImporter.frames_of("eat", "L", "tuanrong")
+	ok(eat.size() >= 2, "eat noface frames available", eat.size())
+	# 優先 noface：圖集 key 應係 eat_noface
+	if eat.size() and eat[0] is AtlasTexture:
+		var at := eat[0] as AtlasTexture
+		# 只要有五官 piece
+		ok(ArtImporter.face_piece_tex("eye", "neutral", "C", "l") != null, "eye piece exists")
+		ok(ArtImporter.face_piece_tex("mouth", "happy") != null, "mouth piece exists")
+		ok(ArtImporter.face_piece_tex("bulb_base") != null, "bulb_base exists")
+	var w := Walker.new()
+	var idle: Array = ArtImporter.frames_of("idle", "L", "tuanrong")
+	if idle.is_empty():
+		idle = eat
+	w.setup({"front_idle": idle, "front_walk": idle}, 1.0, Vector2(32, 61), Vector2(64, 64))
+	w.character = "tuanrong"
+	w.body_size = "L"
+	add_child(w)
+	ok(w.play_live_clip("eat"), "play eat (noface + kit)")
+	w._anim(0.0)
+	var eye: Sprite3D = w.get_node_or_null("Face_eyeL")
+	ok(eye != null and eye.visible and eye.texture != null, "eat shows a runtime eye", eye)
+	var mouth: Sprite3D = w.get_node_or_null("Face_mouth")
+	ok(mouth != null and mouth.visible and mouth.texture != null, "eat shows a runtime mouth", mouth)
+	w.queue_free()
+
+
+func _test_m1d_rotate_overlay() -> void:
+	print("# M1d landscape shows rotate-to-portrait overlay")
+	var packed: PackedScene = load("res://scenes/Main.tscn")
+	ok(packed != null, "Main.tscn for rotate overlay")
+	var main: Node = packed.instantiate() if packed else null
+	if main == null:
+		ok(false, "Main instantiate for rotate")
+		return
+	add_child(main)
+	ok(main.has_method("is_portrait_window") and main.has_method("_sync_rotate_overlay"), "rotate helpers exist")
+	if main.has_method("set_shot_size"):
+		main.set_shot_size(852, 393)
+	ok(not main.is_portrait_window(), "852x393 is landscape", main.get_window().size if main.get_window() else Vector2i())
+	var layer: CanvasLayer = main.get_node_or_null("RotatePortrait")
+	ok(layer != null and layer.visible, "landscape shows rotate overlay")
+	var hud: Node = main.get("hud")
+	ok(hud == null or not (hud as CanvasLayer).visible, "landscape does not keep the HUD laid out")
+	main.set_shot_size(390, 844)
+	ok(main.is_portrait_window(), "390x844 is portrait")
+	ok(layer == null or not layer.visible, "portrait hides rotate overlay")
+	ok(hud == null or (hud as CanvasLayer).visible, "portrait shows HUD")
+	main.queue_free()
+
+
+func _test_m1d_process_phoenix() -> void:
+	print("# M1d ProcessPhoenix portrait lock")
+	var root := ProjectSettings.globalize_path("res://")
+	var inject := FileAccess.get_file_as_string(root.path_join("tools/inject_android_overlay.py"))
+	ok(inject.find("ProcessPhoenix") >= 0 and inject.find("screenOrientation") >= 0, "export inject locks ProcessPhoenix to portrait")
+	var xml := FileAccess.get_file_as_string(root.path_join("native/android/src/main/AndroidManifest.xml"))
+	ok(xml.find("org.godotengine.godot.utils.ProcessPhoenix") >= 0, "native manifest names ProcessPhoenix")
+	# 同一個 activity 標咗 portrait
+	var i := xml.find("ProcessPhoenix")
+	ok(i >= 0 and xml.find("screenOrientation=\"portrait\"", i) >= 0, "ProcessPhoenix activity is portrait")
+
+
+func _test_m1d_species_clips() -> void:
+	print("# M1d every species walks all clips: own sheet + constant feet y")
+	ok(ArtImporter != null, "ArtImporter present")
+	# 細佬唔可以墮去團絨 walk_happy／eat
+	ok(ArtImporter.frames_of("walk_happy", "M", "kid").is_empty(), "kid has no walk_happy fallback to tuanrong")
+	ok(ArtImporter.frames_of("eat", "M", "kid").is_empty(), "kid has no eat fallback to tuanrong")
+	ok(ArtImporter.frames_of("idle_quiet", "M", "kid").is_empty(), "kid has no idle_quiet fallback to tuanrong")
+	var kid_scratch: Array = ArtImporter.frames_of("scratch", "M", "kid")
+	ok(not kid_scratch.is_empty(), "kid has own scratch frames")
+	if not kid_scratch.is_empty():
+		ok(ArtImporter.sheet_matches_character(kid_scratch[0], "kid"), "kid scratch is A1/series2 sheet", ArtImporter.texture_atlas_path(kid_scratch[0]))
+	var tu_scratch: Array = ArtImporter.frames_of("scratch", "L", "tuanrong")
+	ok(not tu_scratch.is_empty() and ArtImporter.sheet_matches_character(tu_scratch[0], "tuanrong"), "tuanrong scratch stays on tuanrong sheet")
+
+	var species: Array = [
+		{"id": "tuanrong", "size": "L", "pivot": ArtImporter.actor_pivot("tuanrong") if ArtImporter.has_method("actor_pivot") else Vector2(32, 61), "fs": Vector2(64, 64), "idle": "res://art/garden3d/dir4/atlas_radiant_dir4.png", "walk": ""},
+		{"id": "kid", "size": "M", "pivot": ArtImporter.actor_pivot("kid") if ArtImporter.has_method("actor_pivot") else Vector2(24, 45), "fs": Vector2(48, 48), "idle": "res://art/kid/A1_idle.png", "walk": "res://art/kid/A1_walk.png"},
+		{"id": "snail_postman", "size": "M", "pivot": ArtImporter.actor_pivot("snail_postman") if ArtImporter.has_method("actor_pivot") else Vector2(22, 40), "fs": Vector2(48, 48), "idle": "", "walk": ""},
+		{"id": "firefly_vendor", "size": "M", "pivot": ArtImporter.actor_pivot("firefly_vendor") if ArtImporter.has_method("actor_pivot") else Vector2(24, 36), "fs": Vector2(48, 48), "idle": "", "walk": ""},
+	]
+	var all_ok := true
+	var bad: Array = []
+	for spec in species:
+		var who := str(spec["id"])
+		var w := Walker.new()
+		w.character = who
+		w.body_size = str(spec["size"])
+		w.walk_bob = false
+		add_child(w)
+		var frames := _species_setup_frames(spec)
+		if frames.is_empty():
+			ok(false, "%s setup frames" % who)
+			w.queue_free()
+			all_ok = false
+			continue
+		var pv: Vector2 = spec["pivot"]
+		var fs: Vector2 = spec["fs"]
+		w.setup(frames, 1.0, pv, fs)
+		w.position = Vector3(0, 0, 0)
+		w.moving = true
+		w.dir = "front"
+		var foot0 := w.sprite.offset.y
+		var y0 := w.global_position.y
+		for i in range(12):
+			w._anim(0.1)
+			if not is_equal_approx(w.global_position.y, y0):
+				all_ok = false
+				bad.append("%s walk world y %s" % [who, w.global_position.y])
+				break
+			if not is_equal_approx(w.sprite.offset.y, foot0):
+				all_ok = false
+				bad.append("%s walk feet y %s want %s" % [who, w.sprite.offset.y, foot0])
+				break
+			var tex: Texture2D = w.sprite.texture
+			if tex and not ArtImporter.sheet_matches_character(tex, who):
+				# setup walk strip for tuanrong is dir4 (atlas_radiant_dir4) — allowed
+				if who == "tuanrong" and ArtImporter.texture_atlas_path(tex).find("dir4") >= 0:
+					pass
+				elif who == "kid" and ArtImporter.texture_atlas_path(tex).find("art/kid") >= 0:
+					pass
+				else:
+					all_ok = false
+					bad.append("%s walk morph into %s" % [who, ArtImporter.texture_atlas_path(tex)])
+					break
+		# 每個角色自己有嘅 live clip
+		var clips: PackedStringArray = ArtImporter.available_clips(who)
+		ok(true, "%s available clips %s" % [who, clips.size()])
+		for clip in clips:
+			var arr: Array = ArtImporter.frames_of(str(clip), str(spec["size"]), who)
+			if arr.is_empty():
+				continue
+			for fr in arr:
+				if not ArtImporter.sheet_matches_character(fr, who):
+					all_ok = false
+					bad.append("%s clip %s sheet %s" % [who, clip, ArtImporter.texture_atlas_path(fr)])
+					break
+			if not w.play_live_clip(str(clip), true):
+				all_ok = false
+				bad.append("%s failed to play own clip %s" % [who, clip])
+				continue
+			var rec: Dictionary = ArtImporter.clip_sheet(str(clip), str(spec["size"]), who)
+			var cfs: Vector2 = rec.get("frame_size", fs)
+			var cpv: Vector2 = rec.get("pivot", pv)
+			var expect: Vector2 = w.foot_offset(cfs, cpv)
+			var live_y := w.sprite.offset.y
+			if not (is_equal_approx(w.sprite.offset.x, expect.x) and is_equal_approx(w.sprite.offset.y, expect.y)):
+				all_ok = false
+				bad.append("%s %s pivot offset %s want %s" % [who, clip, w.sprite.offset, expect])
+			for i in range(maxi(arr.size(), 2)):
+				w._anim(0.05)
+				if not is_equal_approx(w.global_position.y, 0.0):
+					all_ok = false
+					bad.append("%s %s sank y=%s" % [who, clip, w.global_position.y])
+					break
+				if absf(w.sprite.offset.y - live_y) > 0.05:
+					all_ok = false
+					bad.append("%s %s feet y changed %s -> %s" % [who, clip, live_y, w.sprite.offset.y])
+					break
+			w.stop_live()
+			w._anim(0.0)
+			if not is_equal_approx(w.global_position.y, 0.0):
+				all_ok = false
+				bad.append("%s after %s world y %s" % [who, clip, w.global_position.y])
+		# 唔屬於自己嘅團絨 clip 應該播唔到
+		if who != "tuanrong":
+			if w.play_live_clip("walk_happy"):
+				all_ok = false
+				bad.append("%s must not play tuanrong walk_happy" % who)
+				w.stop_live()
+			if w.play_live_clip("eat"):
+				all_ok = false
+				bad.append("%s must not play tuanrong eat" % who)
+				w.stop_live()
+		w.queue_free()
+	ok(all_ok, "every species keeps own sheets and constant feet y", bad)
+
+
+func _species_setup_frames(spec: Dictionary) -> Dictionary:
+	var who := str(spec.get("id", ""))
+	var fs: Vector2 = spec.get("fs", Vector2(48, 48))
+	var idle_path := str(spec.get("idle", ""))
+	var walk_path := str(spec.get("walk", ""))
+	if who == "kid" and idle_path != "" and walk_path != "":
+		return _load_strip_frames(idle_path, int(fs.x), int(fs.y), 4, walk_path, 6)
+	if who == "tuanrong" and idle_path != "":
+		var atlas: Texture2D = load(idle_path)
+		if atlas == null:
+			return {}
+		var at := AtlasTexture.new()
+		at.atlas = atlas
+		at.region = Rect2(0, 0, 64, 64)
+		return {
+			"front_idle": [at], "back_idle": [at], "side_idle": [at],
+			"front_walk": [at], "back_walk": [at], "side_walk": [at],
+		}
+	# 訪客：用自己 liveliness 幀
+	var frames: Array = ArtImporter.frames_of("scratch", str(spec.get("size", "M")), who)
+	if frames.is_empty():
+		frames = ArtImporter.frames_of("sniff", str(spec.get("size", "M")), who)
+	if frames.is_empty():
+		return {}
+	return {
+		"front_idle": frames, "back_idle": frames, "side_idle": frames,
+		"front_walk": frames, "back_walk": frames, "side_walk": frames,
+	}
+
+
+func _load_strip_frames(idle_path: String, fw: int, fh: int, n_idle: int, walk_path: String, n_walk: int) -> Dictionary:
+	var idle: Texture2D = load(idle_path)
+	var walk: Texture2D = load(walk_path)
+	if idle == null or walk == null:
+		return {}
+	var mk := func(tex: Texture2D, n: int) -> Array:
+		var a: Array = []
+		for i in range(n):
+			var at := AtlasTexture.new()
+			at.atlas = tex
+			at.region = Rect2(i * fw, 0, fw, fh)
+			at.filter_clip = true
+			a.append(at)
+		return a
+	var idles: Array = mk.call(idle, n_idle)
+	var walks: Array = mk.call(walk, n_walk)
+	return {
+		"front_idle": idles, "back_idle": idles, "side_idle": idles,
+		"front_walk": walks, "back_walk": walks, "side_walk": walks,
+	}
+
+
+func _test_m1d_codex_and_follow_tap() -> void:
+	print("# M1d 圖鑑 clears chimney; tap follow stays ≥20%")
+	var packed: PackedScene = load("res://scenes/Main.tscn")
+	ok(packed != null, "Main.tscn for 圖鑑")
+	if packed == null:
+		return
+	var main: Node = packed.instantiate()
+	add_child(main)
+	if main.has_method("set_shot_size"):
+		main.set_shot_size(390, 844)
+	if main.has_method("set_rest_look"):
+		main.set_rest_look(true)
+	if main.has_method("qa_overview"):
+		main.qa_overview()
+	var hud: Node = main.get("hud")
+	ok(hud != null and hud.get("btn_book") != null, "HUD 圖鑑 button exists")
+	var btn: Control = hud.get("btn_book") if hud else null
+	if btn:
+		ok(is_equal_approx(btn.anchor_left, 0.0) and btn.offset_left >= 0.0 and btn.offset_right <= 200.0, "圖鑑 is left-stacked, not top-right over the chimney", Vector2(btn.offset_left, btn.offset_right))
+		var back: Control = hud.get("back_btn")
+		if back:
+			ok(is_equal_approx(back.anchor_left, 0.0) and back.offset_top >= btn.offset_bottom - 0.5, "返回 sits under 圖鑑 on the left", back.offset_top)
+		# 煙囪／屋脊唔好同圖鑑矩形相交
+		var house := main.find_child("cottage", true, false)
+		var cam: Camera3D = main.get("cam")
+		if house and cam and house is Node3D:
+			var pts: Array = [
+				(house as Node3D).to_global(Vector3(0, 142, 0)),
+				(house as Node3D).to_global(Vector3(35.5, 86.7, 26)),
+				(house as Node3D).to_global(Vector3(29.5, 94, 22)),
+			]
+			var r: Rect2 = btn.get_global_rect()
+			var hit := false
+			for p in pts:
+				if cam.is_position_behind(p):
+					continue
+				var sp: Vector2 = cam.unproject_position(p)
+				if r.grow(4.0).has_point(sp):
+					hit = true
+			ok(not hit, "圖鑑 rect does not cover chimney/roof points", r)
+	# overview 保持（唔因為跟拍規則去改）
+	var ov: Dictionary = main.qa_framing() if main.has_method("qa_framing") else {}
+	ok(str(ov.get("mode", "")) == "overview", "overview unchanged before tap", ov)
+	if main.has_method("_on_pet_tapped") and main.get("pet"):
+		main._on_pet_tapped(main.pet)
+		if main.has_method("_place_cam"):
+			main._place_cam(0.0)
+	var ff: Dictionary = main.qa_framing() if main.has_method("qa_framing") else {}
+	ok(str(ff.get("mode", "")) == "follow" and float(ff.get("pet_h", 0)) >= 0.18, "tap zooms follow to ≥20%", ff)
+	main.queue_free()
+

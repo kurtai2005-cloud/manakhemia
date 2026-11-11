@@ -172,3 +172,140 @@ static func opaque_tex_mat(tex: Texture2D, unlit: bool, repeat: bool, aniso_mip:
 	if not unlit:
 		m.diffuse_mode = BaseMaterial3D.DIFFUSE_LAMBERT
 	return m
+
+
+
+static func solidify_mesh(src: ArrayMesh, thickness: float) -> ArrayMesh:
+	# 把薄面擠出厚度（法線朝室內／向上，向外擠），補齊外牆同孔洞側壁，令房間係立體盒而唔係平面層。
+	if src == null or thickness <= 0.001 or src.get_surface_count() < 1:
+		return src
+	var arr: Array = src.surface_get_arrays(0)
+	if arr.is_empty() or arr[Mesh.ARRAY_VERTEX] == null or arr[Mesh.ARRAY_INDEX] == null:
+		return src
+	var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+	var uvs: PackedVector2Array = PackedVector2Array()
+	if arr[Mesh.ARRAY_TEX_UV] != null:
+		uvs = arr[Mesh.ARRAY_TEX_UV]
+	var idx: PackedInt32Array = arr[Mesh.ARRAY_INDEX]
+	var seen: Dictionary = {}
+	var faces: Array = []
+	var t := 0
+	while t + 2 < idx.size():
+		var i0 := int(idx[t])
+		var i1 := int(idx[t + 1])
+		var i2 := int(idx[t + 2])
+		t += 3
+		if i0 >= verts.size() or i1 >= verts.size() or i2 >= verts.size():
+			continue
+		var a: Vector3 = verts[i0]
+		var b: Vector3 = verts[i1]
+		var c: Vector3 = verts[i2]
+		var n: Vector3 = (b - a).cross(c - a)
+		if n.length_squared() < 0.000001:
+			continue
+		n = n.normalized()
+		var key := _face_key(a, b, c)
+		if seen.has(key):
+			continue
+		seen[key] = true
+		faces.append({"i0": i0, "i1": i1, "i2": i2, "n": n})
+	if faces.is_empty():
+		return src
+	var edge_use: Dictionary = {}
+	var edge_info: Dictionary = {}
+	for f in faces:
+		_note_edge(edge_use, edge_info, verts[f["i0"]], verts[f["i1"]], f["i0"], f["i1"], f["n"])
+		_note_edge(edge_use, edge_info, verts[f["i1"]], verts[f["i2"]], f["i1"], f["i2"], f["n"])
+		_note_edge(edge_use, edge_info, verts[f["i2"]], verts[f["i0"]], f["i2"], f["i0"], f["n"])
+	var nv := PackedVector3Array()
+	var nn := PackedVector3Array()
+	var nu := PackedVector2Array()
+	var ni := PackedInt32Array()
+	for f in faces:
+		var i0: int = f["i0"]
+		var i1: int = f["i1"]
+		var i2: int = f["i2"]
+		var n: Vector3 = f["n"]
+		var out := -n * thickness
+		var p0: Vector3 = verts[i0]
+		var p1: Vector3 = verts[i1]
+		var p2: Vector3 = verts[i2]
+		var u0 := uvs[i0] if i0 < uvs.size() else Vector2.ZERO
+		var u1 := uvs[i1] if i1 < uvs.size() else Vector2.ZERO
+		var u2 := uvs[i2] if i2 < uvs.size() else Vector2.ZERO
+		_emit_tri(nv, nn, nu, ni, p0, p1, p2, n, u0, u1, u2)
+		_emit_tri(nv, nn, nu, ni, p0 + out, p2 + out, p1 + out, -n, u0, u2, u1)
+	for ek in edge_use.keys():
+		if int(edge_use[ek]) != 1:
+			continue
+		var info: Dictionary = edge_info[ek]
+		var p0: Vector3 = info["p0"]
+		var p1: Vector3 = info["p1"]
+		var n: Vector3 = info["n"]
+		var out := -n * thickness
+		var i0: int = info["i0"]
+		var i1: int = info["i1"]
+		var u0 := uvs[i0] if i0 < uvs.size() else Vector2.ZERO
+		var u1 := uvs[i1] if i1 < uvs.size() else Vector2.ZERO
+		var side_n: Vector3 = (p1 - p0).cross(out)
+		if side_n.length_squared() < 0.000001:
+			continue
+		side_n = side_n.normalized()
+		_emit_tri(nv, nn, nu, ni, p0, p1, p1 + out, side_n, u0, u1, u1)
+		_emit_tri(nv, nn, nu, ni, p0, p1 + out, p0 + out, side_n, u0, u1, u0)
+	var out_arr: Array = []
+	out_arr.resize(Mesh.ARRAY_MAX)
+	out_arr[Mesh.ARRAY_VERTEX] = nv
+	out_arr[Mesh.ARRAY_NORMAL] = nn
+	out_arr[Mesh.ARRAY_TEX_UV] = nu
+	out_arr[Mesh.ARRAY_INDEX] = ni
+	var am := ArrayMesh.new()
+	am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, out_arr)
+	return am
+
+
+static func _face_key(a: Vector3, b: Vector3, c: Vector3) -> String:
+	var pts: Array = [a, b, c]
+	pts.sort_custom(func(p: Vector3, q: Vector3) -> bool:
+		if p.x != q.x:
+			return p.x < q.x
+		if p.y != q.y:
+			return p.y < q.y
+		return p.z < q.z
+	)
+	return "%s|%s|%s" % [_vec_key(pts[0]), _vec_key(pts[1]), _vec_key(pts[2])]
+
+
+static func _vec_key(v: Vector3) -> String:
+	return "%d,%d,%d" % [int(round(v.x * 100.0)), int(round(v.y * 100.0)), int(round(v.z * 100.0))]
+
+
+static func _edge_key(a: Vector3, b: Vector3) -> String:
+	var ka := _vec_key(a)
+	var kb := _vec_key(b)
+	if ka < kb:
+		return ka + ">" + kb
+	return kb + ">" + ka
+
+
+static func _note_edge(use_c: Dictionary, info: Dictionary, a: Vector3, b: Vector3, ia: int, ib: int, n: Vector3) -> void:
+	var k := _edge_key(a, b)
+	use_c[k] = int(use_c.get(k, 0)) + 1
+	if not info.has(k):
+		info[k] = {"p0": a, "p1": b, "i0": ia, "i1": ib, "n": n}
+
+
+static func _emit_tri(nv: PackedVector3Array, nn: PackedVector3Array, nu: PackedVector2Array, ni: PackedInt32Array, a: Vector3, b: Vector3, c: Vector3, n: Vector3, ua: Vector2, ub: Vector2, uc: Vector2) -> void:
+	var base := nv.size()
+	nv.append(a)
+	nv.append(b)
+	nv.append(c)
+	nn.append(n)
+	nn.append(n)
+	nn.append(n)
+	nu.append(ua)
+	nu.append(ub)
+	nu.append(uc)
+	ni.append(base)
+	ni.append(base + 1)
+	ni.append(base + 2)

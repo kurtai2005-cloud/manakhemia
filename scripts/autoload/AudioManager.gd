@@ -723,3 +723,50 @@ func has_kitchen_stir_action() -> bool:
 			if not fr.is_empty():
 				return true
 	return false
+
+
+
+var _amb_interior := false
+var _amb_lpf: AudioEffectLowPassFilter
+var _amb_base_db := 0.0
+
+
+func set_interior_ambience(inside: bool) -> void:
+	# 入屋：把戶外 AMB 壓低並加低通（悶聲）。冇 AMB 軌道都安全。
+	var idx := AudioServer.get_bus_index("AMB")
+	if idx < 0:
+		_amb_interior = inside
+		return
+	if not _amb_interior and not inside:
+		return
+	if not _amb_interior:
+		_amb_base_db = AudioServer.get_bus_volume_db(idx)
+	_amb_interior = inside
+	var duck := -12.0
+	var hz := 900.0
+	if GameData and "m1d" in GameData:
+		var amb: Dictionary = GameData.m1d.get("audio", {}).get("ambience", {})
+		duck = float(amb.get("duck_db", -12.0))
+		hz = float(amb.get("muffle_hz", 900.0))
+	if inside:
+		AudioServer.set_bus_volume_db(idx, _amb_base_db + duck)
+		if _amb_lpf == null:
+			_amb_lpf = AudioEffectLowPassFilter.new()
+			_amb_lpf.cutoff_hz = hz
+			AudioServer.add_bus_effect(idx, _amb_lpf)
+		else:
+			_amb_lpf.cutoff_hz = hz
+			# 確保 effect 仍在
+			var found := false
+			for i in range(AudioServer.get_bus_effect_count(idx)):
+				if AudioServer.get_bus_effect(idx, i) == _amb_lpf:
+					found = true
+					AudioServer.set_bus_effect_enabled(idx, i, true)
+			if not found:
+				AudioServer.add_bus_effect(idx, _amb_lpf)
+	else:
+		AudioServer.set_bus_volume_db(idx, _amb_base_db)
+		if _amb_lpf:
+			for i in range(AudioServer.get_bus_effect_count(idx) - 1, -1, -1):
+				if AudioServer.get_bus_effect(idx, i) == _amb_lpf:
+					AudioServer.set_bus_effect_enabled(idx, i, false)

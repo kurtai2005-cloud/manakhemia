@@ -9,6 +9,7 @@ var sim: Dictionary = {}
 var m1a: Dictionary = {}
 var m1b: Dictionary = {}
 var m1c: Dictionary = {}
+var m1d: Dictionary = {}
 
 const NEED_KEYS: PackedStringArray = ["hunger", "mood", "clean", "energy"]
 
@@ -21,6 +22,7 @@ func _ready() -> void:
 	m1a = _load_json("res://data/m1a.json")
 	m1b = _load_json("res://data/m1b.json")
 	m1c = _load_json("res://data/m1c.json")
+	m1d = _load_json("res://data/m1d.json")
 
 
 func _load_json(path: String) -> Dictionary:

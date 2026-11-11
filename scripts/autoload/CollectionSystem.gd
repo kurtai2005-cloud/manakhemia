@@ -50,7 +50,7 @@ func ensure(s: Dictionary = {}) -> Dictionary:
 			default_id = str(furn.get("default_item"))
 		s["house"] = {
 			"owned": [default_id],
-			"placed": {},  # slot -> item id
+			"placed": { "bed": default_id },  # 預設床一開始已擺（而家喺室內）
 			"new": [],
 		}
 	if not s.has("notifs"):
@@ -284,11 +284,35 @@ func place_recommended() -> Dictionary:
 	return {"ok": not done.is_empty(), "items": done}
 
 
+func decoration_items() -> Array:
+	var deco: Dictionary = econ().get("vendor_decorations", {})
+	var items: Variant = deco.get("items", [])
+	return items if items is Array else []
+
+
 func _item(id: String) -> Dictionary:
 	for it in furniture_items():
 		if it is Dictionary and str(it.get("id", "")) == id:
 			return it
+	for it in decoration_items():
+		if it is Dictionary and str(it.get("id", "")) == id:
+			return it
 	return {}
+
+
+func furniture_zone(id: String, sl: String = "") -> String:
+	var item := _item(id)
+	if str(item.get("zone", "")) != "":
+		return str(item.get("zone"))
+	var slot := sl if sl != "" else str(item.get("slot", ""))
+	var by: Dictionary = {}
+	var default := "indoor"
+	if GameData and "m1d" in GameData:
+		by = GameData.m1d.get("zone_by_slot", {})
+		default = str(GameData.m1d.get("default_zone", "indoor"))
+	if slot != "" and by.has(slot):
+		return str(by[slot])
+	return default
 
 
 func form_ids() -> Array:

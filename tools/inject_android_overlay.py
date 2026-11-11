@@ -121,6 +121,21 @@ def patch_manifest(path: Path) -> None:
     ensure_activity("hk.vizard.glimmer.fpet.SettingsActivity", "浮動團絨", "true")
     ensure_activity("hk.vizard.glimmer.fpet.PowerGuideActivity", "自啟動／省電白名單", "false")
 
+    # 遊測 P2：Godot 庫帶入嘅 ProcessPhoenix 冇 screenOrientation，匯出時鎖直向
+    phoenix = find_child(app, "activity", "org.godotengine.godot.utils.ProcessPhoenix")
+    if phoenix is None:
+        phoenix = ET.SubElement(app, "activity")
+        phoenix.set(f"{AND}name", "org.godotengine.godot.utils.ProcessPhoenix")
+    phoenix.set(f"{AND}screenOrientation", "portrait")
+    phoenix.set(f"{AND}exported", "false")
+    phoenix.set(f"{AND}process", ":phoenix")
+    phoenix.set(f"{AND}theme", "@android:style/Theme.Translucent.NoTitleBar")
+    prev_p = phoenix.get(f"{TOOLS}replace", "")
+    bits_p = [b for b in prev_p.split(",") if b]
+    if "android:screenOrientation" not in bits_p:
+        bits_p.append("android:screenOrientation")
+    phoenix.set(f"{TOOLS}replace", ",".join(bits_p))
+
     svc = find_child(app, "service", "hk.vizard.glimmer.fpet.PetOverlayService")
     if svc is None:
         svc = ET.SubElement(app, "service")

@@ -1,0 +1,226 @@
+{
+  "format": "m1d.interior/1",
+  "note": "1 world unit = 1 art pixel at 1x. Room size matches 遊美 interior1 assumed size so the delivered meshes and 64px tiles fit without a redraw. Swap texture paths if art moves; meshes live under art/garden3d/H1/interior/.",
+  "interior": {
+    "enabled": true,
+    "origin": [
+      0,
+      0,
+      -900
+    ],
+    "size_wu": [
+      160,
+      120,
+      128
+    ],
+    "size_px_1x": [
+      160,
+      120,
+      128
+    ],
+    "texel_wu": 1.0,
+    "tile_px": 64,
+    "tile_wu": 64,
+    "wall_thickness_wu": 3,
+    "root": "res://art/garden3d/H1/interior/",
+    "objects": "res://art/garden3d/H1/interior/objects.json",
+    "room": "res://art/garden3d/H1/interior/room.json",
+    "camera_path": "res://art/garden3d/H1/interior/camera.json",
+    "lights_path": "res://art/garden3d/H1/interior/lights.json",
+    "textures": {
+      "floor": "res://art/garden3d/H1/interior/meshes/floor.png",
+      "wall_back": "res://art/garden3d/H1/interior/meshes/wall_back.png",
+      "wall_left": "res://art/garden3d/H1/interior/meshes/wall_side.png",
+      "wall_right": "res://art/garden3d/H1/interior/meshes/wall_side.png",
+      "door": "res://art/garden3d/H1/interior/meshes/door.png",
+      "window": "res://art/garden3d/H1/interior/meshes/window.png",
+      "window_emissive": "res://art/garden3d/H1/interior/meshes/window_emissive.png",
+      "floor_tile": "res://art/garden3d/H1/interior/tiles/floor_tile.png",
+      "wall_tile": "res://art/garden3d/H1/interior/tiles/wall_tile.png"
+    },
+    "fade_sec": 0.4,
+    "dolly_sec": 0.45,
+    "door_open_ms": 400,
+    "door_close_ms": 400,
+    "door": {
+      "local": [
+        80,
+        0,
+        0
+      ],
+      "width_wu": 56,
+      "height_wu": 96,
+      "wall": "right"
+    },
+    "camera": {
+      "look": [
+        -12,
+        42,
+        -12
+      ],
+      "pitchDeg": 32,
+      "dist": 210,
+      "fovDeg": 40,
+      "yawDeg": 26
+    },
+    "slots": {
+      "bed": [
+        -8,
+        0,
+        -28
+      ],
+      "rug": [
+        0,
+        0.4,
+        -8
+      ],
+      "table": [
+        -42,
+        0,
+        8
+      ],
+      "lamp": [
+        28,
+        0,
+        10
+      ],
+      "wall": [
+        -50,
+        36,
+        -62
+      ],
+      "window": [
+        0,
+        52,
+        -62
+      ]
+    },
+    "pet_enter": [
+      48,
+      0,
+      8
+    ],
+    "walk": {
+      "margin": 12
+    },
+    "bg_color": [
+      0.14,
+      0.09,
+      0.07
+    ],
+    "furniture_depth_wu": {
+      "bed": 32,
+      "table": 22,
+      "lamp": 14,
+      "rug": 0,
+      "wall": 8,
+      "window": 6
+    }
+  },
+  "garden": {
+    "house_id": "cottage",
+    "cottage_scale": [
+      2,
+      2,
+      2
+    ],
+    "cottage_position": [
+      82.5,
+      0,
+      -94
+    ],
+    "door_local": [
+      11.5,
+      24,
+      22
+    ],
+    "door_width_wu": 56,
+    "door_height_wu": 96,
+    "keep_roof_in_frame": true,
+    "post_pos": [
+      -150,
+      0,
+      40
+    ],
+    "overview_look": [
+      24,
+      36,
+      0
+    ],
+    "kitchen_pos": [
+      -150,
+      0,
+      -24
+    ],
+    "warehouse_pos": [
+      0,
+      0,
+      -260
+    ],
+    "hide_ids_in_interior": [
+      "cottage",
+      "tree",
+      "lanterns",
+      "fence",
+      "bed",
+      "lamp",
+      "mushrooms",
+      "can",
+      "jar",
+      "pot_L",
+      "pot_R",
+      "pot_S",
+      "bush_bR",
+      "trees_bR",
+      "bush_bL",
+      "bush_bL2",
+      "trees_bL",
+      "bg_sky",
+      "bg_hills",
+      "GroundTile",
+      "Ground256",
+      "GroundAO",
+      "Warehouse",
+      "Furniture",
+      "Kid",
+      "Visitor"
+    ]
+  },
+  "zone_by_slot": {
+    "bed": "indoor",
+    "table": "indoor",
+    "rug": "indoor",
+    "wall": "indoor",
+    "window": "indoor",
+    "lamp": "indoor"
+  },
+  "default_zone": "indoor",
+  "audio": {
+    "hooks": {
+      "door_open": "sfx_door_open",
+      "door_close": "sfx_door_close",
+      "enter_interior": "sfx_enter_interior",
+      "exit_interior": "sfx_exit_interior",
+      "interior_footstep": "sfx_interior_footstep"
+    },
+    "ambience": {
+      "bus": "AMB",
+      "duck_db": -12.0,
+      "muffle_hz": 900.0
+    },
+    "timing_ms": {
+      "door_open_start_ms": 0,
+      "door_open_end_ms": 400,
+      "dolly_ms": 450,
+      "fade_ms": 400,
+      "fade_out_start_ms": 310,
+      "enter_cut_ms": 710,
+      "enter_total_ms": 1110,
+      "exit_start_ms": 0,
+      "exit_cut_ms": 400,
+      "door_close_start_ms": 400,
+      "door_close_end_ms": 800,
+      "exit_total_ms": 800
+    }
+  }
+}
