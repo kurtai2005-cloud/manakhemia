@@ -1,0 +1,105 @@
+{
+ "format": "hunt.petclip.atlas/1",
+ "form": "radiant",
+ "size": "M",
+ "frameSize": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "clip": "pounce",
+ "zh": "撲",
+ "frames": {
+  "pounce_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "pounce_02": {
+   "frame": {
+    "x": 54,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "pounce_03": {
+   "frame": {
+    "x": 106,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "pounce_04": {
+   "frame": {
+    "x": 158,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "pounce_05": {
+   "frame": {
+    "x": 210,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  },
+  "pounce_06": {
+   "frame": {
+    "x": 262,
+    "y": 2,
+    "w": 48,
+    "h": 48
+   },
+   "pivotPx": {
+    "x": 24,
+    "y": 45
+   }
+  }
+ },
+ "fps": 8,
+ "loop": false,
+ "frameCount": 6,
+ "meta": {
+  "image": "atlas_radiant_pounce_M.png",
+  "normal": "atlas_radiant_pounce_M_n.png",
+  "emissive": "atlas_radiant_pounce_M_emissive.png",
+  "size": {
+   "w": 512,
+   "h": 64
+  },
+  "padding": 2,
+  "form": "radiant",
+  "frameSize": 48,
+  "pivotPx": [
+   24,
+   45
+  ]
+ }
+}

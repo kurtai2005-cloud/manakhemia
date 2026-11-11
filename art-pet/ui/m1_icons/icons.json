@@ -1,0 +1,865 @@
+{
+ "format": "m1.icons/1",
+ "size": 32,
+ "scale": "@3x（1:1 顯示，同 kit_hd2d_v3）",
+ "style": "V3-A 金光深藍、金幼線、像素打光",
+ "alpha": "sprite 0/255；透明 RGB=0",
+ "count": 34,
+ "items": [
+  {
+   "id": "need_eat",
+   "zh": "想食",
+   "group": "need",
+   "size": 32,
+   "file": "icons/need_eat@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "need_play",
+   "zh": "想玩",
+   "group": "need",
+   "size": 32,
+   "file": "icons/need_play@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "need_sleep",
+   "zh": "想瞓",
+   "group": "need",
+   "size": 32,
+   "file": "icons/need_sleep@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "need_pet",
+   "zh": "想摸",
+   "group": "need",
+   "size": 32,
+   "file": "icons/need_pet@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "expr_lively",
+   "zh": "活潑",
+   "group": "expr",
+   "size": 32,
+   "file": "icons/expr_lively@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "expr_quiet",
+   "zh": "文靜",
+   "group": "expr",
+   "size": 32,
+   "file": "icons/expr_quiet@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "expr_diligent",
+   "zh": "勤力",
+   "group": "expr",
+   "size": 32,
+   "file": "icons/expr_diligent@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "expr_lazy",
+   "zh": "懶散",
+   "group": "expr",
+   "size": 32,
+   "file": "icons/expr_lazy@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "expr_clingy",
+   "zh": "黐人",
+   "group": "expr",
+   "size": 32,
+   "file": "icons/expr_clingy@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "expr_indep",
+   "zh": "獨立",
+   "group": "expr",
+   "size": 32,
+   "file": "icons/expr_indep@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "mood_happy",
+   "zh": "開心",
+   "group": "mood",
+   "size": 32,
+   "file": "icons/mood_happy@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "mood_ok",
+   "zh": "普通",
+   "group": "mood",
+   "size": 32,
+   "file": "icons/mood_ok@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "mood_sad",
+   "zh": "唔開心",
+   "group": "mood",
+   "size": 32,
+   "file": "icons/mood_sad@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "mood_sleepy",
+   "zh": "眼瞓",
+   "group": "mood",
+   "size": 32,
+   "file": "icons/mood_sleepy@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_gift",
+   "zh": "帶禮物回來",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_gift@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_butterfly",
+   "zh": "蝴蝶訪客",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_butterfly@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_meteor",
+   "zh": "流星夜",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_meteor@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_rainbow",
+   "zh": "雨後彩虹",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_rainbow@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_firefly",
+   "zh": "螢火散步",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_firefly@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_sleeptalk",
+   "zh": "夢話",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_sleeptalk@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_tantrum",
+   "zh": "鬧脾氣",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_tantrum@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_treasure",
+   "zh": "尋寶",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_treasure@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_flash",
+   "zh": "閃光日",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_flash@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_eat",
+   "zh": "食過",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_eat@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_play",
+   "zh": "玩過",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_play@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_sleep",
+   "zh": "瞓過",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_sleep@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_walk",
+   "zh": "行過",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_walk@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_work",
+   "zh": "返過工",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_work@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_rain",
+   "zh": "落雨",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_rain@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_visit",
+   "zh": "有訪客",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_visit@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_hunt",
+   "zh": "去過狩獵",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_hunt@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_furniture",
+   "zh": "擺咗新傢俬",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_furniture@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_egg",
+   "zh": "新蛋到咗",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_egg@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  },
+  {
+   "id": "ev_steps",
+   "zh": "行咗好多步",
+   "group": "event",
+   "size": 32,
+   "file": "icons/ev_steps@3x.png",
+   "pivotPx": [
+    16,
+    16
+   ],
+   "alpha": "0/255"
+  }
+ ],
+ "atlas": {
+  "image": "atlas/icons_m1@3x.png",
+  "size": {
+   "w": 512,
+   "h": 256
+  },
+  "padding": 2,
+  "extrude": 1,
+  "frames": {
+   "need_eat": {
+    "frame": {
+     "x": 2,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "need_play": {
+    "frame": {
+     "x": 38,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "need_sleep": {
+    "frame": {
+     "x": 74,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "need_pet": {
+    "frame": {
+     "x": 110,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "expr_lively": {
+    "frame": {
+     "x": 146,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "expr_quiet": {
+    "frame": {
+     "x": 182,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "expr_diligent": {
+    "frame": {
+     "x": 218,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "expr_lazy": {
+    "frame": {
+     "x": 254,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "expr_clingy": {
+    "frame": {
+     "x": 2,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "expr_indep": {
+    "frame": {
+     "x": 38,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "mood_happy": {
+    "frame": {
+     "x": 74,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "mood_ok": {
+    "frame": {
+     "x": 110,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "mood_sad": {
+    "frame": {
+     "x": 146,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "mood_sleepy": {
+    "frame": {
+     "x": 182,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_gift": {
+    "frame": {
+     "x": 218,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_butterfly": {
+    "frame": {
+     "x": 254,
+     "y": 38,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_meteor": {
+    "frame": {
+     "x": 2,
+     "y": 74,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_rainbow": {
+    "frame": {
+     "x": 38,
+     "y": 74,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_firefly": {
+    "frame": {
+     "x": 74,
+     "y": 74,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_sleeptalk": {
+    "frame": {
+     "x": 110,
+     "y": 74,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_tantrum": {
+    "frame": {
+     "x": 146,
+     "y": 74,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_treasure": {
+    "frame": {
+     "x": 182,
+     "y": 74,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_flash": {
+    "frame": {
+     "x": 218,
+     "y": 74,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_eat": {
+    "frame": {
+     "x": 254,
+     "y": 74,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_play": {
+    "frame": {
+     "x": 2,
+     "y": 110,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_sleep": {
+    "frame": {
+     "x": 38,
+     "y": 110,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_walk": {
+    "frame": {
+     "x": 74,
+     "y": 110,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_work": {
+    "frame": {
+     "x": 110,
+     "y": 110,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_rain": {
+    "frame": {
+     "x": 146,
+     "y": 110,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_visit": {
+    "frame": {
+     "x": 182,
+     "y": 110,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_hunt": {
+    "frame": {
+     "x": 218,
+     "y": 110,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_furniture": {
+    "frame": {
+     "x": 254,
+     "y": 110,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_egg": {
+    "frame": {
+     "x": 2,
+     "y": 146,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   },
+   "ev_steps": {
+    "frame": {
+     "x": 38,
+     "y": 146,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 16
+    }
+   }
+  }
+ },
+ "bubble": {
+  "id": "bubble_dream",
+  "zh": "夢泡泡框",
+  "file": "bubble_dream@3x.png",
+  "size": [
+   96,
+   72
+  ],
+  "alpha": "true-alpha（UI 層）",
+  "slots": [
+   {
+    "id": "event_a",
+    "x": 14,
+    "y": 16,
+    "w": 32,
+    "h": 32
+   },
+   {
+    "id": "event_b",
+    "x": 42,
+    "y": 16,
+    "w": 32,
+    "h": 32
+   }
+  ],
+  "note": "兩格事件 icon 相接／重叠 4px，表示「兩件尋日事件撞埋」"
+ },
+ "note": "需要 4＋表情 10＋事件 20＝34；夢泡泡框另計。M2 動作未畫。"
+}

@@ -1,0 +1,105 @@
+{
+ "format": "hunt.petclip.atlas/1",
+ "form": "radiant",
+ "size": "S",
+ "frameSize": 32,
+ "pivotPx": [
+  16,
+  29
+ ],
+ "clip": "cheer",
+ "zh": "歡呼",
+ "frames": {
+  "cheer_01": {
+   "frame": {
+    "x": 2,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "cheer_02": {
+   "frame": {
+    "x": 38,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "cheer_03": {
+   "frame": {
+    "x": 74,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "cheer_04": {
+   "frame": {
+    "x": 110,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "cheer_05": {
+   "frame": {
+    "x": 146,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  },
+  "cheer_06": {
+   "frame": {
+    "x": 182,
+    "y": 2,
+    "w": 32,
+    "h": 32
+   },
+   "pivotPx": {
+    "x": 16,
+    "y": 29
+   }
+  }
+ },
+ "fps": 10,
+ "loop": false,
+ "frameCount": 6,
+ "meta": {
+  "image": "atlas_radiant_cheer_S.png",
+  "normal": "atlas_radiant_cheer_S_n.png",
+  "emissive": "atlas_radiant_cheer_S_emissive.png",
+  "size": {
+   "w": 256,
+   "h": 64
+  },
+  "padding": 2,
+  "form": "radiant",
+  "frameSize": 32,
+  "pivotPx": [
+   16,
+   29
+  ]
+ }
+}

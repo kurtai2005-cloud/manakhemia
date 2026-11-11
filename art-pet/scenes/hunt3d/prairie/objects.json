@@ -1,0 +1,1600 @@
+{
+ "format": "hunt3d.scene/1",
+ "id": "prairie",
+ "zh": "草原 1 區",
+ "units": "1 unit＝1x art px；Y 上；+Z 向鏡頭；原點＝隊伍出發位",
+ "objects": [
+  {
+   "id": "grass_tall_0",
+   "type": "mesh",
+   "zh": "高草叢",
+   "mesh": "meshes/grass_tall.json",
+   "glb": "meshes/grass_tall.glb",
+   "x": -88,
+   "z": 68,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -96,
+     -80
+    ],
+    "z": [
+     60,
+     76
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_tall_1",
+   "type": "mesh",
+   "zh": "高草叢",
+   "mesh": "meshes/grass_tall.json",
+   "glb": "meshes/grass_tall.glb",
+   "x": -72,
+   "z": 50,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -80,
+     -64
+    ],
+    "z": [
+     42,
+     58
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "bush_2",
+   "type": "mesh",
+   "zh": "採集灌木",
+   "mesh": "meshes/bush.json",
+   "glb": "meshes/bush.glb",
+   "x": -96,
+   "z": 44,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -106,
+     -86
+    ],
+    "z": [
+     36,
+     52
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "grass_0_3",
+   "type": "mesh",
+   "zh": "草叢1",
+   "mesh": "meshes/grass_0.json",
+   "glb": "meshes/grass_0.glb",
+   "x": -60,
+   "z": 42,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -66,
+     -54
+    ],
+    "z": [
+     36,
+     48
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_tall_4",
+   "type": "mesh",
+   "zh": "高草叢",
+   "mesh": "meshes/grass_tall.json",
+   "glb": "meshes/grass_tall.glb",
+   "x": 90,
+   "z": 62,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     82,
+     98
+    ],
+    "z": [
+     54,
+     70
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "bush_5",
+   "type": "mesh",
+   "zh": "採集灌木",
+   "mesh": "meshes/bush.json",
+   "glb": "meshes/bush.glb",
+   "x": 102,
+   "z": 48,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     92,
+     112
+    ],
+    "z": [
+     40,
+     56
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "grass_1_6",
+   "type": "mesh",
+   "zh": "草叢2",
+   "mesh": "meshes/grass_1.json",
+   "glb": "meshes/grass_1.glb",
+   "x": 74,
+   "z": 40,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     68,
+     80
+    ],
+    "z": [
+     34,
+     46
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "log_7",
+   "type": "mesh",
+   "zh": "枯木",
+   "mesh": "meshes/log.json",
+   "glb": "meshes/log.glb",
+   "x": 82,
+   "z": 28,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "near",
+   "triangles": 84,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     62,
+     102
+    ],
+    "z": [
+     24,
+     32
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "reed_8",
+   "type": "mesh",
+   "zh": "蘆葦",
+   "mesh": "meshes/reed.json",
+   "glb": "meshes/reed.glb",
+   "x": 110,
+   "z": 36,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     108,
+     112
+    ],
+    "z": [
+     34,
+     38
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "reed_9",
+   "type": "mesh",
+   "zh": "蘆葦",
+   "mesh": "meshes/reed.json",
+   "glb": "meshes/reed.glb",
+   "x": 118,
+   "z": 22,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     116,
+     120
+    ],
+    "z": [
+     20,
+     24
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_0_10",
+   "type": "mesh",
+   "zh": "草叢1",
+   "mesh": "meshes/grass_0.json",
+   "glb": "meshes/grass_0.glb",
+   "x": -28,
+   "z": 22,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -34,
+     -22
+    ],
+    "z": [
+     16,
+     28
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_1_11",
+   "type": "mesh",
+   "zh": "草叢2",
+   "mesh": "meshes/grass_1.json",
+   "glb": "meshes/grass_1.glb",
+   "x": 30,
+   "z": 22,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "near",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     24,
+     36
+    ],
+    "z": [
+     16,
+     28
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_1_12",
+   "type": "mesh",
+   "zh": "草叢2",
+   "mesh": "meshes/grass_1.json",
+   "glb": "meshes/grass_1.glb",
+   "x": -22,
+   "z": -32,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -28,
+     -16
+    ],
+    "z": [
+     -38,
+     -26
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_2_13",
+   "type": "mesh",
+   "zh": "草叢3",
+   "mesh": "meshes/grass_2.json",
+   "glb": "meshes/grass_2.glb",
+   "x": 22,
+   "z": -40,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     16,
+     28
+    ],
+    "z": [
+     -46,
+     -34
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_0_14",
+   "type": "mesh",
+   "zh": "草叢1",
+   "mesh": "meshes/grass_0.json",
+   "glb": "meshes/grass_0.glb",
+   "x": -62,
+   "z": -48,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -68,
+     -56
+    ],
+    "z": [
+     -54,
+     -42
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_1_15",
+   "type": "mesh",
+   "zh": "草叢2",
+   "mesh": "meshes/grass_1.json",
+   "glb": "meshes/grass_1.glb",
+   "x": 68,
+   "z": -56,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     62,
+     74
+    ],
+    "z": [
+     -62,
+     -50
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_2_16",
+   "type": "mesh",
+   "zh": "草叢3",
+   "mesh": "meshes/grass_2.json",
+   "glb": "meshes/grass_2.glb",
+   "x": -14,
+   "z": -58,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -20,
+     -8
+    ],
+    "z": [
+     -64,
+     -52
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_0_17",
+   "type": "mesh",
+   "zh": "草叢1",
+   "mesh": "meshes/grass_0.json",
+   "glb": "meshes/grass_0.glb",
+   "x": 14,
+   "z": -72,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     8,
+     20
+    ],
+    "z": [
+     -78,
+     -66
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_1_18",
+   "type": "mesh",
+   "zh": "草叢2",
+   "mesh": "meshes/grass_1.json",
+   "glb": "meshes/grass_1.glb",
+   "x": -78,
+   "z": 14,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -84,
+     -72
+    ],
+    "z": [
+     8,
+     20
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_2_19",
+   "type": "mesh",
+   "zh": "草叢3",
+   "mesh": "meshes/grass_2.json",
+   "glb": "meshes/grass_2.glb",
+   "x": 80,
+   "z": -24,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     74,
+     86
+    ],
+    "z": [
+     -30,
+     -18
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_0_20",
+   "type": "mesh",
+   "zh": "草叢1",
+   "mesh": "meshes/grass_0.json",
+   "glb": "meshes/grass_0.glb",
+   "x": -24,
+   "z": -88,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -30,
+     -18
+    ],
+    "z": [
+     -94,
+     -82
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_1_21",
+   "type": "mesh",
+   "zh": "草叢2",
+   "mesh": "meshes/grass_1.json",
+   "glb": "meshes/grass_1.glb",
+   "x": 24,
+   "z": -96,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     18,
+     30
+    ],
+    "z": [
+     -102,
+     -90
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "grass_2_22",
+   "type": "mesh",
+   "zh": "草叢3",
+   "mesh": "meshes/grass_2.json",
+   "glb": "meshes/grass_2.glb",
+   "x": 0,
+   "z": -130,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -6,
+     6
+    ],
+    "z": [
+     -136,
+     -124
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "flower_rose_23",
+   "type": "mesh",
+   "zh": "野花",
+   "mesh": "meshes/flower_rose.json",
+   "glb": "meshes/flower_rose.glb",
+   "x": -34,
+   "z": 8,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -37,
+     -31
+    ],
+    "z": [
+     5,
+     11
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "flower_gold_24",
+   "type": "mesh",
+   "zh": "野花",
+   "mesh": "meshes/flower_gold.json",
+   "glb": "meshes/flower_gold.glb",
+   "x": 26,
+   "z": -8,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     23,
+     29
+    ],
+    "z": [
+     -11,
+     -5
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "flower_rose_25",
+   "type": "mesh",
+   "zh": "野花",
+   "mesh": "meshes/flower_rose.json",
+   "glb": "meshes/flower_rose.glb",
+   "x": -18,
+   "z": -40,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -21,
+     -15
+    ],
+    "z": [
+     -43,
+     -37
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "flower_gold_26",
+   "type": "mesh",
+   "zh": "野花",
+   "mesh": "meshes/flower_gold.json",
+   "glb": "meshes/flower_gold.glb",
+   "x": 12,
+   "z": 16,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     9,
+     15
+    ],
+    "z": [
+     13,
+     19
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "flower_rose_27",
+   "type": "mesh",
+   "zh": "野花",
+   "mesh": "meshes/flower_rose.json",
+   "glb": "meshes/flower_rose.glb",
+   "x": 48,
+   "z": -64,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     45,
+     51
+    ],
+    "z": [
+     -67,
+     -61
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "flower_gold_28",
+   "type": "mesh",
+   "zh": "野花",
+   "mesh": "meshes/flower_gold.json",
+   "glb": "meshes/flower_gold.glb",
+   "x": -42,
+   "z": -22,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -45,
+     -39
+    ],
+    "z": [
+     -25,
+     -19
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "flower_rose_29",
+   "type": "mesh",
+   "zh": "野花",
+   "mesh": "meshes/flower_rose.json",
+   "glb": "meshes/flower_rose.glb",
+   "x": 36,
+   "z": 6,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     33,
+     39
+    ],
+    "z": [
+     3,
+     9
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "rock_0_30",
+   "type": "mesh",
+   "zh": "石",
+   "mesh": "meshes/rock_0.json",
+   "glb": "meshes/rock_0.glb",
+   "x": -48,
+   "z": -28,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 76,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -60.0,
+     -36.0
+    ],
+    "z": [
+     -34,
+     -22
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "rock_1_31",
+   "type": "mesh",
+   "zh": "石",
+   "mesh": "meshes/rock_1.json",
+   "glb": "meshes/rock_1.glb",
+   "x": 44,
+   "z": -58,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 108,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     28.0,
+     60.0
+    ],
+    "z": [
+     -64,
+     -52
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "rock_0_32",
+   "type": "mesh",
+   "zh": "石",
+   "mesh": "meshes/rock_0.json",
+   "glb": "meshes/rock_0.glb",
+   "x": -16,
+   "z": -80,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "far",
+   "triangles": 76,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -28.0,
+     -4.0
+    ],
+    "z": [
+     -86,
+     -74
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "bush_33",
+   "type": "mesh",
+   "zh": "採集灌木",
+   "mesh": "meshes/bush.json",
+   "glb": "meshes/bush.glb",
+   "x": -36,
+   "z": -28,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -46,
+     -26
+    ],
+    "z": [
+     -36,
+     -20
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "bush_34",
+   "type": "mesh",
+   "zh": "採集灌木",
+   "mesh": "meshes/bush.json",
+   "glb": "meshes/bush.glb",
+   "x": 28,
+   "z": -52,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     18,
+     38
+    ],
+    "z": [
+     -60,
+     -44
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "bush_35",
+   "type": "mesh",
+   "zh": "採集灌木",
+   "mesh": "meshes/bush.json",
+   "glb": "meshes/bush.glb",
+   "x": 8,
+   "z": -18,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -2,
+     18
+    ],
+    "z": [
+     -26,
+     -10
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "bush_36",
+   "type": "mesh",
+   "zh": "採集灌木",
+   "mesh": "meshes/bush.json",
+   "glb": "meshes/bush.glb",
+   "x": -54,
+   "z": -68,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -64,
+     -44
+    ],
+    "z": [
+     -76,
+     -60
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "reed_37",
+   "type": "mesh",
+   "zh": "蘆葦",
+   "mesh": "meshes/reed.json",
+   "glb": "meshes/reed.glb",
+   "x": 88,
+   "z": -36,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     86,
+     90
+    ],
+    "z": [
+     -38,
+     -34
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "reed_38",
+   "type": "mesh",
+   "zh": "蘆葦",
+   "mesh": "meshes/reed.json",
+   "glb": "meshes/reed.glb",
+   "x": 96,
+   "z": -48,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     94,
+     98
+    ],
+    "z": [
+     -50,
+     -46
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "reed_39",
+   "type": "mesh",
+   "zh": "蘆葦",
+   "mesh": "meshes/reed.json",
+   "glb": "meshes/reed.glb",
+   "x": 84,
+   "z": -58,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     82,
+     86
+    ],
+    "z": [
+     -60,
+     -56
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "reed_40",
+   "type": "mesh",
+   "zh": "蘆葦",
+   "mesh": "meshes/reed.json",
+   "glb": "meshes/reed.glb",
+   "x": 104,
+   "z": -28,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     102,
+     106
+    ],
+    "z": [
+     -30,
+     -26
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "reed_41",
+   "type": "mesh",
+   "zh": "蘆葦",
+   "mesh": "meshes/reed.json",
+   "glb": "meshes/reed.glb",
+   "x": 92,
+   "z": -70,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "mid",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     90,
+     94
+    ],
+    "z": [
+     -72,
+     -68
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "knoll_42",
+   "type": "mesh",
+   "zh": "苔丘",
+   "mesh": "meshes/knoll.json",
+   "glb": "meshes/knoll.glb",
+   "x": -78,
+   "z": -108,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "far",
+   "triangles": 14,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -106,
+     -50
+    ],
+    "z": [
+     -124,
+     -92
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "arch_43",
+   "type": "mesh",
+   "zh": "木拱門",
+   "mesh": "meshes/arch.json",
+   "glb": "meshes/arch.glb",
+   "x": 70,
+   "z": -122,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "far",
+   "triangles": 40,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     46,
+     94
+    ],
+    "z": [
+     -127,
+     -117
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "sign_44",
+   "type": "mesh",
+   "zh": "木牌",
+   "mesh": "meshes/sign.json",
+   "glb": "meshes/sign.glb",
+   "x": -52,
+   "z": -74,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid",
+   "triangles": 20,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -60,
+     -44
+    ],
+    "z": [
+     -77,
+     -71
+    ],
+    "pad": 1
+   }
+  },
+  {
+   "id": "tree_0_45",
+   "type": "mesh",
+   "zh": "遠樹林剪影",
+   "mesh": "meshes/tree_0.json",
+   "glb": "meshes/tree_0.glb",
+   "x": -140,
+   "z": -200,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": false,
+   "layer": "far",
+   "triangles": 4,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -156,
+     -124
+    ],
+    "z": [
+     -204,
+     -196
+    ],
+    "pad": 0
+   }
+  },
+  {
+   "id": "tree_1_46",
+   "type": "mesh",
+   "zh": "遠樹林剪影",
+   "mesh": "meshes/tree_1.json",
+   "glb": "meshes/tree_1.glb",
+   "x": -100,
+   "z": -228,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": false,
+   "layer": "far",
+   "triangles": 4,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -116,
+     -84
+    ],
+    "z": [
+     -232,
+     -224
+    ],
+    "pad": 0
+   }
+  },
+  {
+   "id": "tree_0_47",
+   "type": "mesh",
+   "zh": "遠樹林剪影",
+   "mesh": "meshes/tree_0.json",
+   "glb": "meshes/tree_0.glb",
+   "x": -176,
+   "z": -236,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": false,
+   "layer": "far",
+   "triangles": 4,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -192,
+     -160
+    ],
+    "z": [
+     -240,
+     -232
+    ],
+    "pad": 0
+   }
+  },
+  {
+   "id": "tree_1_48",
+   "type": "mesh",
+   "zh": "遠樹林剪影",
+   "mesh": "meshes/tree_1.json",
+   "glb": "meshes/tree_1.glb",
+   "x": 140,
+   "z": -206,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": false,
+   "layer": "far",
+   "triangles": 4,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     124,
+     156
+    ],
+    "z": [
+     -210,
+     -202
+    ],
+    "pad": 0
+   }
+  },
+  {
+   "id": "tree_0_49",
+   "type": "mesh",
+   "zh": "遠樹林剪影",
+   "mesh": "meshes/tree_0.json",
+   "glb": "meshes/tree_0.glb",
+   "x": 96,
+   "z": -232,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": false,
+   "layer": "far",
+   "triangles": 4,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     80,
+     112
+    ],
+    "z": [
+     -236,
+     -228
+    ],
+    "pad": 0
+   }
+  },
+  {
+   "id": "tree_1_50",
+   "type": "mesh",
+   "zh": "遠樹林剪影",
+   "mesh": "meshes/tree_1.json",
+   "glb": "meshes/tree_1.glb",
+   "x": 168,
+   "z": -224,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": false,
+   "layer": "far",
+   "triangles": 4,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     152,
+     184
+    ],
+    "z": [
+     -228,
+     -220
+    ],
+    "pad": 0
+   }
+  },
+  {
+   "id": "bush_51",
+   "type": "mesh",
+   "zh": "採集灌木",
+   "mesh": "meshes/bush.json",
+   "glb": "meshes/bush.glb",
+   "x": -148,
+   "z": -184,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "far",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     -158,
+     -138
+    ],
+    "z": [
+     -192,
+     -176
+    ],
+    "pad": 2
+   }
+  },
+  {
+   "id": "bush_52",
+   "type": "mesh",
+   "zh": "採集灌木",
+   "mesh": "meshes/bush.json",
+   "glb": "meshes/bush.glb",
+   "x": 118,
+   "z": -190,
+   "y": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": false,
+   "layer": "far",
+   "triangles": 8,
+   "footprint": {
+    "type": "rect",
+    "x": [
+     108,
+     128
+    ],
+    "z": [
+     -198,
+     -182
+    ],
+    "pad": 2
+   }
+  }
+ ],
+ "backdrops": [
+  {
+   "id": "bg_sky",
+   "type": "backdrop",
+   "zh": "天空",
+   "file": "backdrop/bg_sky.png",
+   "file3x": "backdrop/bg_sky@3x.png",
+   "z": -470,
+   "layer": "far",
+   "fixed": true,
+   "unlit": true,
+   "sizePx": [
+    512,
+    128
+   ],
+   "unitsPerPx": "(cz_cam−z)/dist，同花園 H1"
+  },
+  {
+   "id": "bg_hills",
+   "type": "backdrop",
+   "zh": "遠丘＋遠樹剪影",
+   "file": "backdrop/bg_hills.png",
+   "file3x": "backdrop/bg_hills@3x.png",
+   "z": -380,
+   "layer": "far",
+   "fixed": true,
+   "unlit": true,
+   "sizePx": [
+    512,
+    56
+   ]
+  }
+ ],
+ "pet": {
+  "x": 0,
+  "z": 0,
+  "face": "cyl",
+  "billboard": true,
+  "radius": 10,
+  "dir4": "sprites/tuanrong/motion/dir4/atlas_radiant_dir4.json",
+  "huntClips": "sprites/tuanrong/motion/hunt/clips.json",
+  "shadow": true,
+  "note": "寵物係主要 billboard（小怪／果亦係 billboard）。pivot 對準 (x,0,z)。出發位原點，對齊 H1 鏡頭。"
+ },
+ "critters": {
+  "billboard": true,
+  "atlasDir": "sprites/hunt/critters/",
+  "spawn": [
+   {
+    "id": "dewlet",
+    "x": -58,
+    "z": 8,
+    "near": "bush",
+    "zh": "露珠偶"
+   },
+   {
+    "id": "loambun",
+    "x": 66,
+    "z": -18,
+    "near": "bush",
+    "zh": "泥包包"
+   },
+   {
+    "id": "seedfluff",
+    "x": 50,
+    "z": 10,
+    "near": "flower",
+    "zh": "穗綿"
+   },
+   {
+    "id": "mossback",
+    "x": -78,
+    "z": -100,
+    "big": true,
+    "near": "knoll",
+    "zh": "苔丘"
+   }
+  ]
+ },
+ "fruits": {
+  "billboard": true,
+  "atlas": "sprites/hunt/fruits/atlas_fruits.png",
+  "spawn": [
+   {
+    "id": "starberry",
+    "x": -26,
+    "z": 14
+   },
+   {
+    "id": "dewpear",
+    "x": -50,
+    "z": -10
+   },
+   {
+    "id": "goldgrain",
+    "x": 22,
+    "z": 16
+   },
+   {
+    "id": "sunkaki",
+    "x": 44,
+    "z": -14
+   },
+   {
+    "id": "mistgrape",
+    "x": 6,
+    "z": 6
+   },
+   {
+    "id": "moonplum",
+    "x": -60,
+    "z": -88
+   }
+  ],
+  "note": "場景預覽放咗示範果實；撥草或撲中後引擎可再生成。抱果行 clip 已烙入星莓。"
+ },
+ "ground": {
+  "image": "ground/ground.png",
+  "image3x": "ground/ground@3x.png",
+  "file": "ground/ground.png",
+  "file3x": "ground/ground@3x.png",
+  "ao": "ground/ground_ao.png",
+  "ao3x": "ground/ground_ao@3x.png",
+  "tile": "ground/ground_tile.png",
+  "tile3x": "ground/ground_tile@3x.png",
+  "cover": [
+   -128,
+   128,
+   -128,
+   128
+  ],
+  "size": [
+   256,
+   256
+  ],
+  "center": [
+   0,
+   0
+  ],
+  "outerTile": {
+   "file": "ground/ground_tile.png",
+   "file3x": "ground/ground_tile@3x.png",
+   "size": [
+    64,
+    64
+   ],
+   "note": "256 片外圍用：以 (−128,−128) 對齊每 64 units 平鋪，同 H1；外圍 ≥ x ±640、z −480…+320"
+  },
+  "tileExtent": {
+   "x": [
+    -640,
+    640
+   ],
+   "z": [
+    -480,
+    320
+   ]
+  },
+  "uv": "u=(x+128)/256，v=(z+128)/256，圖頂＝z −128；@3x 取樣 texel 密度＝3／unit，同 H1",
+  "lit": true
+ }
+}

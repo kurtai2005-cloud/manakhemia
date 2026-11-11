@@ -1,0 +1,3981 @@
+{
+ "passed": 795,
+ "total": 795,
+ "results": [
+  {
+   "check": "icon 數量 34",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "需要 4＋表情 6＋心情 4＋事件 20",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "icon id 無重複",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "每個 icon 檔存在 @3x 32×32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "icon sprite alpha 只有 0/255，透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "每個 icon 有足夠不透明像素（可讀）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "icons atlas 存在、2 次方寬高",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "atlas 幀同散檔一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "夢泡泡框 96×72、有真 alpha、有不透明像素",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "泡泡兩格 32×32 并且重叠或相接（撞埋）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "銅證 4 張",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "badge_copper_dewlet 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "badge_copper_loambun 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "badge_copper_seedfluff 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "badge_copper_mossback 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 6 種",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 atlas／_n 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 starberry 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 starberry _n alpha＝色圖、單位長、向外 B≥128",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 dewpear 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 dewpear _n alpha＝色圖、單位長、向外 B≥128",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 goldgrain 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 goldgrain _n alpha＝色圖、單位長、向外 B≥128",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 moonplum 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 moonplum _n alpha＝色圖、單位長、向外 B≥128",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 sunkaki 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 sunkaki _n alpha＝色圖、單位長、向外 B≥128",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 mistgrape 32×32 alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "果 mistgrape _n alpha＝色圖、單位長、向外 B≥128",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "小怪 4 種（1 隻大）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dewlet atlas／_n 同尺寸、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dewlet idle 4 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dewlet scared 4 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dewlet tofruit 6 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dewlet _n 單位長／向外／alpha 一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dewlet _n OpenGL 綠＝上（頂 G＞底 G）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dewlet size／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "loambun atlas／_n 同尺寸、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "loambun idle 4 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "loambun scared 4 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "loambun tofruit 6 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "loambun _n 單位長／向外／alpha 一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "loambun _n OpenGL 綠＝上（頂 G＞底 G）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "loambun size／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "seedfluff atlas／_n 同尺寸、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "seedfluff idle 4 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "seedfluff scared 4 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "seedfluff tofruit 6 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "seedfluff _n 單位長／向外／alpha 一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "seedfluff _n OpenGL 綠＝上（頂 G＞底 G）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "seedfluff size／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mossback atlas／_n 同尺寸、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mossback idle 4 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mossback scared 4 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mossback tofruit 6 幀",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mossback _n 單位長／向外／alpha 一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mossback _n OpenGL 綠＝上（頂 G＞底 G）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mossback size／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "clip 指數有 S/M/L × 4",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S part_grass 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S part_grass 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S part_grass alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S part_grass 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S part_grass _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S part_grass _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S pounce 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S pounce 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S pounce alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S pounce 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S pounce _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S pounce _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S carry_fruit 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S carry_fruit 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S carry_fruit alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S carry_fruit 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S carry_fruit _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S carry_fruit _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S cheer 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S cheer 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S cheer alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S cheer 每幀有像素、尺寸 32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S cheer _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "S cheer _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M part_grass 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M part_grass 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M part_grass alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M part_grass 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M part_grass _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M part_grass _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M pounce 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M pounce 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M pounce alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M pounce 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M pounce _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M pounce _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M carry_fruit 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M carry_fruit 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M carry_fruit alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M carry_fruit 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M carry_fruit _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M carry_fruit _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M cheer 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M cheer 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M cheer alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M cheer 每幀有像素、尺寸 48",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M cheer _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "M cheer _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L part_grass 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L part_grass 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L part_grass alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L part_grass 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L part_grass _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L part_grass _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L pounce 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L pounce 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L pounce alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L pounce 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L pounce _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L pounce _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L carry_fruit 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L carry_fruit 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L carry_fruit alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L carry_fruit 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L carry_fruit _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L carry_fruit _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L cheer 幀數／fps／loop／尺寸／pivot",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L cheer 色／_n／emissive 同尺寸",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L cheer alpha 0/255、_n alpha＝色、emissive ⊂ alpha",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L cheer 每幀有像素、尺寸 64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L cheer _n 單位長／向外",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "L cheer _n OpenGL 綠＝上",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "場景 format hunt3d.scene/1、有 objects／pet／critters／ground",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "地面 image 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "地面 image3x 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "地面 ao 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "地面 ao3x 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "地面 tile 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "地面 tile3x 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "地面 256、@3x＝nearest×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tile 64×64",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "backdrop bg_sky file",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "backdrop bg_sky file3x",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "backdrop bg_sky unlit／far",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "backdrop bg_hills file",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "backdrop bg_hills file3x",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "backdrop bg_hills unlit／far",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sun dir 正規化、向下",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sun color／ambient／shadowIntensity",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fill 正規化、唔投影注記",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "camera pitch 約 30、orbit ±10、穩陣擺鏡",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "物件 id 無重複",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "最少 8 件場景 mesh 實例（草原唔可以太空）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_0 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_1 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_2 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_3 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_tall_4 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_5 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_6 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "log_7 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_8 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_9 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_10 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_11 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_12 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_13 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_14 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_15 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_16 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_17 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_18 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_19 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_0_20 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_1_21 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_2_22 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_23 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_24 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_25 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_26 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_27 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_gold_28 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "flower_rose_29 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_30 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_1_31 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rock_0_32 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_33 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_34 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_35 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_36 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_37 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_38 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_39 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_40 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "reed_41 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "knoll_42 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "arch_43 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "sign_44 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_45 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_46 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_47 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_48 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_0_49 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "tree_1_50 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_51 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 type=mesh、有 json／glb",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 format garden3d.mesh/2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 ≤300 三角、指數一致",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 逆時針正面（幾何法線同頂點 normal 同向）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 法線單位長",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 uv 0–1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 貼圖 2 次方、@3x＝×3、alpha 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 textureSize 對得準",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 material nearest、alphaTest 0.5、doubleSided false",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 .glb 幾何／uv（V 翻）／index 同 json",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 .glb MASK＋NEAREST＋glTF 2.0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "bush_52 footprint 世界座標合法",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "寵物 billboard＋dir4 路徑欄位、huntClips",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "4 隻小怪 spawn（1 大）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "FORMAT.md 存在",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "FORMAT 有 Godot 4 匯入注意一節",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "FORMAT 寫明 OpenGL（Y+／綠＝上）法線",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "FORMAT 寫明單位／import scale",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "草原目錄冇明顯雜檔（__pycache__／_backups）",
+   "ok": true,
+   "info": null
+  }
+ ]
+}

@@ -1,0 +1,87 @@
+{
+ "format": "hunt.petclip/1",
+ "form": "radiant",
+ "sizes": {
+  "S": {
+   "size": 32,
+   "pivot": [
+    16,
+    29
+   ],
+   "zh": "細體（絨芽級 32px）"
+  },
+  "M": {
+   "size": 48,
+   "pivot": [
+    24,
+    45
+   ],
+   "zh": "中體（長老 evo_still 級 48px）"
+  },
+  "L": {
+   "size": 64,
+   "pivot": [
+    32,
+    61
+   ],
+   "zh": "大體（花園 radiant／dir4 級 64px）"
+  }
+ },
+ "clips": {
+  "part_grass": {
+   "zh": "撥草",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "priority": 3,
+   "interruptible": false
+  },
+  "pounce": {
+   "zh": "撲",
+   "frames": 6,
+   "fps": 8,
+   "loop": false,
+   "priority": 4,
+   "interruptible": false
+  },
+  "carry_fruit": {
+   "zh": "抱果行",
+   "frames": 6,
+   "fps": 10,
+   "loop": true,
+   "priority": 2,
+   "interruptible": true
+  },
+  "cheer": {
+   "zh": "歡呼",
+   "frames": 6,
+   "fps": 10,
+   "loop": false,
+   "priority": 6,
+   "interruptible": false
+  }
+ },
+ "facing": "全部朝右；朝左＝scaleX −1，法線 R→255−R",
+ "normal": "OpenGL Y+（綠＝上）",
+ "alpha": "0/255",
+ "atlases": {
+  "S": {
+   "part_grass": "atlas_radiant_part_grass_S.json",
+   "pounce": "atlas_radiant_pounce_S.json",
+   "carry_fruit": "atlas_radiant_carry_fruit_S.json",
+   "cheer": "atlas_radiant_cheer_S.json"
+  },
+  "M": {
+   "part_grass": "atlas_radiant_part_grass_M.json",
+   "pounce": "atlas_radiant_pounce_M.json",
+   "carry_fruit": "atlas_radiant_carry_fruit_M.json",
+   "cheer": "atlas_radiant_cheer_M.json"
+  },
+  "L": {
+   "part_grass": "atlas_radiant_part_grass_L.json",
+   "pounce": "atlas_radiant_pounce_L.json",
+   "carry_fruit": "atlas_radiant_carry_fruit_L.json",
+   "cheer": "atlas_radiant_cheer_L.json"
+  }
+ }
+}

@@ -1,0 +1,162 @@
+{
+ "format": "hunt.fruit/1",
+ "size": 32,
+ "pivotPx": [
+  16,
+  28
+ ],
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "count": 6,
+ "items": [
+  {
+   "id": "starberry",
+   "zh": "星莓",
+   "size": 32,
+   "pivotPx": [
+    16,
+    28
+   ],
+   "file": "starberry.png",
+   "normal": "starberry_n.png"
+  },
+  {
+   "id": "dewpear",
+   "zh": "露梨",
+   "size": 32,
+   "pivotPx": [
+    16,
+    28
+   ],
+   "file": "dewpear.png",
+   "normal": "dewpear_n.png"
+  },
+  {
+   "id": "goldgrain",
+   "zh": "金穗果",
+   "size": 32,
+   "pivotPx": [
+    16,
+    28
+   ],
+   "file": "goldgrain.png",
+   "normal": "goldgrain_n.png"
+  },
+  {
+   "id": "moonplum",
+   "zh": "月李",
+   "size": 32,
+   "pivotPx": [
+    16,
+    28
+   ],
+   "file": "moonplum.png",
+   "normal": "moonplum_n.png"
+  },
+  {
+   "id": "sunkaki",
+   "zh": "陽柿",
+   "size": 32,
+   "pivotPx": [
+    16,
+    28
+   ],
+   "file": "sunkaki.png",
+   "normal": "sunkaki_n.png"
+  },
+  {
+   "id": "mistgrape",
+   "zh": "霧葡",
+   "size": 32,
+   "pivotPx": [
+    16,
+    28
+   ],
+   "file": "mistgrape.png",
+   "normal": "mistgrape_n.png"
+  }
+ ],
+ "atlas": {
+  "image": "atlas_fruits.png",
+  "normal": "atlas_fruits_n.png",
+  "size": {
+   "w": 256,
+   "h": 64
+  },
+  "padding": 2,
+  "frames": {
+   "starberry": {
+    "frame": {
+     "x": 2,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   },
+   "dewpear": {
+    "frame": {
+     "x": 38,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   },
+   "goldgrain": {
+    "frame": {
+     "x": 74,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   },
+   "moonplum": {
+    "frame": {
+     "x": 110,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   },
+   "sunkaki": {
+    "frame": {
+     "x": 146,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   },
+   "mistgrape": {
+    "frame": {
+     "x": 182,
+     "y": 2,
+     "w": 32,
+     "h": 32
+    },
+    "pivotPx": {
+     "x": 16,
+     "y": 28
+    }
+   }
+  }
+ }
+}

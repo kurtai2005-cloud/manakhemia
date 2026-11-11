@@ -1,0 +1,228 @@
+{
+ "format": "hunt.critter/1",
+ "id": "mossback",
+ "zh": "苔丘",
+ "size": 48,
+ "pivotPx": [
+  24,
+  45
+ ],
+ "big": true,
+ "fruit": "moonplum",
+ "alpha": "0/255",
+ "normal": "OpenGL Y+（綠＝上）",
+ "note": "苔蘚蓋住嘅矮石丘，大隻；溫柔唔惡",
+ "atlas": {
+  "image": "atlas_mossback.png",
+  "normal": "atlas_mossback_n.png",
+  "size": {
+   "w": 512,
+   "h": 128
+  },
+  "padding": 2,
+  "frames": {
+   "mossback_idle_01": {
+    "frame": {
+     "x": 2,
+     "y": 2,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_idle_02": {
+    "frame": {
+     "x": 54,
+     "y": 2,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_idle_03": {
+    "frame": {
+     "x": 106,
+     "y": 2,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_idle_04": {
+    "frame": {
+     "x": 158,
+     "y": 2,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_scared_01": {
+    "frame": {
+     "x": 210,
+     "y": 2,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_scared_02": {
+    "frame": {
+     "x": 262,
+     "y": 2,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_scared_03": {
+    "frame": {
+     "x": 314,
+     "y": 2,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_scared_04": {
+    "frame": {
+     "x": 366,
+     "y": 2,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_tofruit_01": {
+    "frame": {
+     "x": 2,
+     "y": 54,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_tofruit_02": {
+    "frame": {
+     "x": 54,
+     "y": 54,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_tofruit_03": {
+    "frame": {
+     "x": 106,
+     "y": 54,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_tofruit_04": {
+    "frame": {
+     "x": 158,
+     "y": 54,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_tofruit_05": {
+    "frame": {
+     "x": 210,
+     "y": 54,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   },
+   "mossback_tofruit_06": {
+    "frame": {
+     "x": 262,
+     "y": 54,
+     "w": 48,
+     "h": 48
+    },
+    "pivotPx": {
+     "x": 24,
+     "y": 45
+    }
+   }
+  }
+ },
+ "animations": {
+  "idle": {
+   "frames": [
+    "mossback_idle_01",
+    "mossback_idle_02",
+    "mossback_idle_03",
+    "mossback_idle_04"
+   ],
+   "fps": 4,
+   "loop": true
+  },
+  "scared": {
+   "frames": [
+    "mossback_scared_01",
+    "mossback_scared_02",
+    "mossback_scared_03",
+    "mossback_scared_04"
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "tofruit": {
+   "frames": [
+    "mossback_tofruit_01",
+    "mossback_tofruit_02",
+    "mossback_tofruit_03",
+    "mossback_tofruit_04",
+    "mossback_tofruit_05",
+    "mossback_tofruit_06"
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ }
+}
