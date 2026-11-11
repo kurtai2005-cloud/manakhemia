@@ -473,7 +473,7 @@ Kurt 揀咗 **HD-2D「金邊玻璃・寶石光」UI**（取代 B2 繪本貼紙�
 
 #### SFX
 
-15 檔，`sfx/`。100% 原創程式合成（numpy/scipy），無取樣。規格：ogg Vorbis 44.1 kHz 單聲道 `-q:a 4`、`-fflags +bitexact`；HPF 120 Hz、LPF 6.5 kHz（>6 kHz 能量 0.00 %）；檔頭 3 ms 淡入、檔尾 20 ms 淡出＋10 ms 靜音（`sfx_kitchen_stir` 例外：0.500 s＝22,050 samples，圓周 EQ、C0 接縫，冇尾靜音）。峰值硬上限 -1 dBFS；純增益迭代至 LUFS20 目標（解碼後無間隔重複 20 次），輔以低通填體同線性 RMS 增益騎乘來降低波峰因數（冇 tanh／limiter）。重音喺 0 ms。每個檔用 `crc32(檔名)` 做隨機種子。15 檔共 87,586 bytes。
+15 檔，`sfx/`。100% 原創程式合成（numpy/scipy），無取樣。規格：ogg Vorbis 44.1 kHz 單聲道 `-q:a 4`、`-fflags +bitexact`；HPF 120 Hz、LPF 6.5 kHz（>6 kHz 能量 0.00 %）；檔頭 3 ms 淡入、檔尾 20 ms 淡出＋10 ms 靜音（`sfx_kitchen_stir_loop` 例外：0.500 s＝22,050 samples，圓周 EQ、C0 接縫，冇尾靜音）。峰值硬上限 -1 dBFS；純增益迭代至 LUFS20 目標（解碼後無間隔重複 20 次），輔以低通填體同線性 RMS 增益騎乘來降低波峰因數（冇 tanh／limiter）。重音喺 0 ms。每個檔用 `crc32(檔名)` 做隨機種子。15 檔共 87,586 bytes。
 
 LUFS20 分檔：-14 主要功能動作；-16 次要（翻頁、提起家具）；-18 可循環攪拌。
 
@@ -482,7 +482,7 @@ LUFS20 分檔：-14 主要功能動作；-16 次要（翻頁、提起家具）�
 | `sfx_post_letter_send` | 0.552 s | -14.0 | -1.23 | 0（能量峰 9.5） | `WorkSystem.dispatch('post')` → `dispatched`（WorkSystem.gd:106）；`Main._send_pets_to_work`／`_on_building_tapped` | 寄信。唔借用 letter_drop／offer_letter。 |
 | `sfx_post_letter_receive` | 0.562 s | -14.0 | -1.82 | 0（16.1） | `WorkSystem.work_ready('post')`（WorkSystem.gd:120／136） | 信到／門光。 |
 | `sfx_kitchen_cook_start` | 0.554 s | -14.0 | -1.95 | 0（28.3） | `WorkSystem.dispatch('kitchen')` | 開火。唔借用 feed_meal。 |
-| `sfx_kitchen_stir` | 0.500 s | -18.0 | -3.77 | 0（9.1） | 建議 `start_loop` 於廚房 `status==work`（而家未有 hook） | 圓周無縫；seam 0.019 ＜ p99.9 0.087。`_ensure_loop` 要檔名含 `_loop` 先自動循環。 |
+| `sfx_kitchen_stir_loop` | 0.500 s | -18.0 | -3.77 | 0（9.1） | 建議 `start_loop` 於廚房 `status==work`（而家未有 hook） | 圓周無縫；seam 0.019 ＜ p99.9 0.087。檔名已含 `_loop`，`_ensure_loop` 自動循環。 |
 | `sfx_kitchen_cook_done` | 0.710 s | -14.0 | -2.09 | 0（13.8） | `WorkSystem.work_ready('kitchen')` | 鍋蓋叮；同時停攪拌。 |
 | `sfx_codex_page_flip_a` | 0.422 s | -16.0 | -4.28 | 0（10.3） | `Hud._toggle_book` 打開（Hud.gd:409） | a/b 交替。建議 t=0 只播翻頁，唔疊 popup_open。長度跟 popup／頁轉，唔跟 900 ms 大轉場。 |
 | `sfx_codex_page_flip_b` | 0.425 s | -16.0 | -2.47 | 0（9.5） | 同上；亦預留分頁（M1b 未有） | |

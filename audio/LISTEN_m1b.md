@@ -9,7 +9,7 @@
 | `sfx_post_letter_send` | 信紙甩入郵筒：短氣流＋木篤，唔似 letter_drop 嘅短放低 |  | -14 LUFS20。派工去郵局即播。 |
 | `sfx_post_letter_receive` | 信落到枱＋細蠟印，略上行，唔似 ui8_confirm 落章 |  | 郵局 READY／門光亮時播。 |
 | `sfx_kitchen_cook_start` | 暖鍋沿一記＋薄蒸汽，唔似 feed_meal 咀嚼 |  | 派工去廚房。 |
-| `sfx_kitchen_stir` | 短木匙攪拌，0.500 s 可循環；唔刺耳 |  | -18。要檔名有 `_loop` 或者改 AudioManager 先會自動循環。 |
+| `sfx_kitchen_stir_loop` | 短木匙攪拌，0.500 s 可循環；唔刺耳 |  | -18。檔名已含 `_loop`，自動循環。 |
 | `sfx_kitchen_cook_done` | 鍋蓋中音叮，唔用 C7 鋼片琴簇 |  | 廚房 READY；建議同時停攪拌 loop。 |
 | `sfx_codex_page_flip_a`／`_b` | 翻一頁紙（摩擦＋氣流），長過 letter 聲，冇鈴 |  | 開圖鑑；a/b 交替。建議代替 popup_open，以免兩聲疊。 |
 | `sfx_codex_new_entry` | 紙上一記＋上行五度暖鈴，唔似 confirm／btn_sparkle |  | 新解鎖；一次多個只播一次；開局 unlock 唔好播。 |
