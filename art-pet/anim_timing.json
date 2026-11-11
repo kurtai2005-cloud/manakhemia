@@ -1,0 +1,1492 @@
+{
+  "format": "anim_timing/1",
+  "stack": "art/m2-actions @ 230dab2f",
+  "sources": {
+    "m1": "art/m1-icons-hunt @ 13a00477",
+    "m2": "art/m2-actions @ 230dab2f"
+  },
+  "toleranceFrames": 1,
+  "doc": "遊音同遊測共用呢份檔。每個 clip：id、sizes、frameCount、frameMs、durationMs、loop、events。t_ms 由 clip 開頭計，等於 sum(frameMs[:frameIndex])（該幀開始）。遊測若同引擎播放相差超過 1 幀（toleranceFrames）就 fail。事件只來自姿勢／atlas，冇加姿勢入面冇嘅動作。每個 event 必有 sfx_hook、t_ms、accent（land／peak／release）。sfx_hook 必須係 遊音 audio/README.md 已列出嘅 sfx_* 名；對唔上就 null，唔自製。",
+  "sfxHooks": {
+    "source": "/workspace/遊音-staging/audio/README.md",
+    "note": "允許嘅 hook 名來自 遊音 README 全文已列嘅 sfx_*（第 3 節清單同 §7.1／7.2／7.5／7.9／7.11）。§7.11 本身係 HD-2D UI hook；寵物／訪客／小動物動作多數喺 §7.1 同 §7.9。",
+    "count": 83,
+    "names": [
+      "sfx_cancel",
+      "sfx_clean_poop",
+      "sfx_clean_wash",
+      "sfx_coin",
+      "sfx_confirm",
+      "sfx_env_flowerpot_bump",
+      "sfx_env_sunbathe_loop",
+      "sfx_error",
+      "sfx_event_butterfly_visit",
+      "sfx_event_dream_talk",
+      "sfx_event_gift_return",
+      "sfx_event_meteor_night",
+      "sfx_event_rainbow",
+      "sfx_event_shiny_day",
+      "sfx_event_sulk",
+      "sfx_event_treasure_hunt",
+      "sfx_evolve",
+      "sfx_fade_light",
+      "sfx_feed_meal",
+      "sfx_feed_snack",
+      "sfx_hatch",
+      "sfx_hit",
+      "sfx_lose",
+      "sfx_mg_catch",
+      "sfx_mg_combo",
+      "sfx_mg_miss",
+      "sfx_mg_start",
+      "sfx_mg_win",
+      "sfx_need_warning",
+      "sfx_pet_bug_pat_a",
+      "sfx_pet_bug_pat_b",
+      "sfx_pet_content",
+      "sfx_pet_curious",
+      "sfx_pet_grumpy",
+      "sfx_pet_happy",
+      "sfx_pet_hungry",
+      "sfx_pet_nuzzle_purr_a",
+      "sfx_pet_nuzzle_purr_b",
+      "sfx_pet_reunion_happy_a",
+      "sfx_pet_reunion_happy_b",
+      "sfx_pet_scratch_a",
+      "sfx_pet_scratch_b",
+      "sfx_pet_sleep_breath_loop",
+      "sfx_pet_sleepy",
+      "sfx_pet_sneeze_a",
+      "sfx_pet_sneeze_b",
+      "sfx_pet_step_drag_a",
+      "sfx_pet_step_drag_b",
+      "sfx_pet_step_hop_a",
+      "sfx_pet_step_hop_b",
+      "sfx_pet_step_plod_a",
+      "sfx_pet_step_plod_b",
+      "sfx_pet_touch_a",
+      "sfx_pet_touch_b",
+      "sfx_pet_turn_huh_a",
+      "sfx_pet_turn_huh_b",
+      "sfx_pet_uncomfortable",
+      "sfx_pet_yawn",
+      "sfx_play_tease",
+      "sfx_reward_orb",
+      "sfx_sleep_off",
+      "sfx_sleep_on",
+      "sfx_tap",
+      "sfx_ui8_badge_wiggle",
+      "sfx_ui8_btn_press_a",
+      "sfx_ui8_btn_press_b",
+      "sfx_ui8_btn_sparkle",
+      "sfx_ui8_cancel",
+      "sfx_ui8_coin",
+      "sfx_ui8_confirm",
+      "sfx_ui8_error",
+      "sfx_ui8_popup_close",
+      "sfx_ui8_popup_open",
+      "sfx_ui8_tab_switch_a",
+      "sfx_ui8_tab_switch_b",
+      "sfx_ui8_tap_a",
+      "sfx_ui8_tap_b",
+      "sfx_ui8_toast_in",
+      "sfx_ui8_toggle_off",
+      "sfx_ui8_toggle_on",
+      "sfx_ui8_transition_veil_close",
+      "sfx_ui8_transition_veil_open",
+      "sfx_win"
+    ]
+  },
+  "counts": {
+    "clips": 31,
+    "events": 42,
+    "eventsWithHook": 6,
+    "eventsHookNull": 36
+  },
+  "clips": [
+    {
+      "id": "part_grass",
+      "zh": "撥草",
+      "source": "m1",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_part_grass_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_part_grass_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_part_grass_L.json"
+      },
+      "events": [
+        {
+          "id": "grass_rustle",
+          "zh": "撥草",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "伸手撥入右側草叢（gx 開始移），下一幀草分開。表入面冇撥草／葉沙專屬 hook。"
+        }
+      ]
+    },
+    {
+      "id": "pounce",
+      "zh": "撲",
+      "source": "m1",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_pounce_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_pounce_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_pounce_L.json"
+      },
+      "events": [
+        {
+          "id": "jump",
+          "zh": "起跳",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "release",
+          "note": "彈起（dy=-8）。表入面冇起跳專屬 hook。"
+        },
+        {
+          "id": "land",
+          "zh": "落地",
+          "frameIndex": 4,
+          "t_ms": 500,
+          "sfx_hook": "sfx_pet_step_hop_a",
+          "accent": "land",
+          "note": "由空中（dy=-4）落到近地（dy=+1）；§7.9 蹦跳腳步「每次落地播一次」。"
+        }
+      ]
+    },
+    {
+      "id": "carry_fruit",
+      "zh": "抱果行",
+      "source": "m1",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 10,
+      "frameMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 600,
+      "loop": true,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_carry_fruit_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_carry_fruit_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_carry_fruit_L.json"
+      },
+      "events": [
+        {
+          "id": "footstep",
+          "zh": "腳步",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "walk_01 雙腳踏地。表入面有 hop／drag／plod，冇普通行路步；唔借用。"
+        },
+        {
+          "id": "footstep",
+          "zh": "腳步",
+          "frameIndex": 3,
+          "t_ms": 300,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "walk_04 雙腳踏地（另一步）。同上，sfx_hook=null。"
+        }
+      ]
+    },
+    {
+      "id": "cheer",
+      "zh": "歡呼",
+      "source": "m1",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 10,
+      "frameMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 600,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_cheer_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_cheer_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/hunt/atlas_radiant_cheer_L.json"
+      },
+      "events": [
+        {
+          "id": "jump",
+          "zh": "起跳",
+          "frameIndex": 1,
+          "t_ms": 100,
+          "sfx_hook": null,
+          "accent": "release",
+          "note": "開始離地（dy=-3）。表入面冇起跳專屬 hook。"
+        },
+        {
+          "id": "cheer_peak",
+          "zh": "歡呼峰",
+          "frameIndex": 2,
+          "t_ms": 200,
+          "sfx_hook": "sfx_pet_happy",
+          "accent": "peak",
+          "note": "跳到最高（dy=-10）。歡呼對應 §7.1 寵物開心（玩耍完成）。"
+        },
+        {
+          "id": "land",
+          "zh": "落地",
+          "frameIndex": 4,
+          "t_ms": 400,
+          "sfx_hook": "sfx_pet_step_hop_a",
+          "accent": "land",
+          "note": "快落地（dy=-2）。§7.9 蹦跳腳步每次落地。"
+        }
+      ]
+    },
+    {
+      "id": "dewlet_idle",
+      "zh": "露珠偶·idle",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "dewlet",
+      "animation": "idle",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 4,
+      "fps": 4,
+      "frameMs": [
+        250,
+        250,
+        250,
+        250
+      ],
+      "durationMs": 1000,
+      "loop": true,
+      "atlas": "art-pet/sprites/hunt/critters/dewlet.json",
+      "events": []
+    },
+    {
+      "id": "dewlet_scared",
+      "zh": "露珠偶·scared",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "dewlet",
+      "animation": "scared",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 4,
+      "fps": 6,
+      "frameMs": [
+        167,
+        166,
+        167,
+        167
+      ],
+      "durationMs": 667,
+      "loop": true,
+      "atlas": "art-pet/sprites/hunt/critters/dewlet.json",
+      "events": [
+        {
+          "id": "startle",
+          "zh": "嚇驚",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "進入受驚姿勢（圓眼、身壓低）。四幀幾乎同一姿勢；只喺循環開頭標一次。表入面冇受驚 hook。"
+        }
+      ]
+    },
+    {
+      "id": "dewlet_tofruit",
+      "zh": "露珠偶·tofruit",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "dewlet",
+      "animation": "tofruit",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlas": "art-pet/sprites/hunt/critters/dewlet.json",
+      "events": [
+        {
+          "id": "shake",
+          "zh": "發抖",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "release",
+          "note": "tofruit 第 1–2 幀左右抖。表入面冇對應 hook。"
+        },
+        {
+          "id": "transform",
+          "zh": "變成果",
+          "frameIndex": 3,
+          "t_ms": 375,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "第 4 幀（index 3）成果。表入面冇變身 hook。"
+        },
+        {
+          "id": "roll",
+          "zh": "碌走",
+          "frameIndex": 4,
+          "t_ms": 500,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "第 5 幀開始碌（果左右移）。表入面冇碌走 hook。"
+        }
+      ]
+    },
+    {
+      "id": "loambun_idle",
+      "zh": "泥包包·idle",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "loambun",
+      "animation": "idle",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 4,
+      "fps": 4,
+      "frameMs": [
+        250,
+        250,
+        250,
+        250
+      ],
+      "durationMs": 1000,
+      "loop": true,
+      "atlas": "art-pet/sprites/hunt/critters/loambun.json",
+      "events": []
+    },
+    {
+      "id": "loambun_scared",
+      "zh": "泥包包·scared",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "loambun",
+      "animation": "scared",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 4,
+      "fps": 6,
+      "frameMs": [
+        167,
+        166,
+        167,
+        167
+      ],
+      "durationMs": 667,
+      "loop": true,
+      "atlas": "art-pet/sprites/hunt/critters/loambun.json",
+      "events": [
+        {
+          "id": "startle",
+          "zh": "嚇驚",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "進入受驚姿勢。表入面冇受驚 hook。"
+        }
+      ]
+    },
+    {
+      "id": "loambun_tofruit",
+      "zh": "泥包包·tofruit",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "loambun",
+      "animation": "tofruit",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlas": "art-pet/sprites/hunt/critters/loambun.json",
+      "events": [
+        {
+          "id": "shake",
+          "zh": "發抖",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "release",
+          "note": "tofruit 第 1–2 幀左右抖。表入面冇對應 hook。"
+        },
+        {
+          "id": "transform",
+          "zh": "變成果",
+          "frameIndex": 3,
+          "t_ms": 375,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "第 4 幀成果。表入面冇變身 hook。"
+        },
+        {
+          "id": "roll",
+          "zh": "碌走",
+          "frameIndex": 4,
+          "t_ms": 500,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "第 5 幀開始碌。表入面冇碌走 hook。"
+        }
+      ]
+    },
+    {
+      "id": "mossback_idle",
+      "zh": "苔丘·idle",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "mossback",
+      "animation": "idle",
+      "sizes": [
+        "M"
+      ],
+      "sizePx": {
+        "M": 48
+      },
+      "frameCount": 4,
+      "fps": 4,
+      "frameMs": [
+        250,
+        250,
+        250,
+        250
+      ],
+      "durationMs": 1000,
+      "loop": true,
+      "atlas": "art-pet/sprites/hunt/critters/mossback.json",
+      "events": []
+    },
+    {
+      "id": "mossback_scared",
+      "zh": "苔丘·scared",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "mossback",
+      "animation": "scared",
+      "sizes": [
+        "M"
+      ],
+      "sizePx": {
+        "M": 48
+      },
+      "frameCount": 4,
+      "fps": 6,
+      "frameMs": [
+        167,
+        166,
+        167,
+        167
+      ],
+      "durationMs": 667,
+      "loop": true,
+      "atlas": "art-pet/sprites/hunt/critters/mossback.json",
+      "events": [
+        {
+          "id": "startle",
+          "zh": "嚇驚",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "進入受驚姿勢。表入面冇受驚 hook。"
+        }
+      ]
+    },
+    {
+      "id": "mossback_tofruit",
+      "zh": "苔丘·tofruit",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "mossback",
+      "animation": "tofruit",
+      "sizes": [
+        "M"
+      ],
+      "sizePx": {
+        "M": 48
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlas": "art-pet/sprites/hunt/critters/mossback.json",
+      "events": [
+        {
+          "id": "shake",
+          "zh": "發抖",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "release",
+          "note": "tofruit 第 1–2 幀左右抖。表入面冇對應 hook。"
+        },
+        {
+          "id": "transform",
+          "zh": "變成果",
+          "frameIndex": 3,
+          "t_ms": 375,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "第 4 幀成果。表入面冇變身 hook。"
+        },
+        {
+          "id": "roll",
+          "zh": "碌走",
+          "frameIndex": 4,
+          "t_ms": 500,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "第 5 幀開始碌。表入面冇碌走 hook。"
+        }
+      ]
+    },
+    {
+      "id": "seedfluff_idle",
+      "zh": "穗綿·idle",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "seedfluff",
+      "animation": "idle",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 4,
+      "fps": 4,
+      "frameMs": [
+        250,
+        250,
+        250,
+        250
+      ],
+      "durationMs": 1000,
+      "loop": true,
+      "atlas": "art-pet/sprites/hunt/critters/seedfluff.json",
+      "events": []
+    },
+    {
+      "id": "seedfluff_scared",
+      "zh": "穗綿·scared",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "seedfluff",
+      "animation": "scared",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 4,
+      "fps": 6,
+      "frameMs": [
+        167,
+        166,
+        167,
+        167
+      ],
+      "durationMs": 667,
+      "loop": true,
+      "atlas": "art-pet/sprites/hunt/critters/seedfluff.json",
+      "events": [
+        {
+          "id": "startle",
+          "zh": "嚇驚",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "進入受驚姿勢（翼收）。表入面冇受驚 hook。"
+        }
+      ]
+    },
+    {
+      "id": "seedfluff_tofruit",
+      "zh": "穗綿·tofruit",
+      "source": "m1",
+      "kind": "critter",
+      "critter": "seedfluff",
+      "animation": "tofruit",
+      "sizes": [
+        "S"
+      ],
+      "sizePx": {
+        "S": 32
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlas": "art-pet/sprites/hunt/critters/seedfluff.json",
+      "events": [
+        {
+          "id": "shake",
+          "zh": "發抖",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "release",
+          "note": "tofruit 第 1–2 幀左右抖。表入面冇對應 hook。"
+        },
+        {
+          "id": "transform",
+          "zh": "變成果",
+          "frameIndex": 3,
+          "t_ms": 375,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "第 4 幀成果。表入面冇變身 hook。"
+        },
+        {
+          "id": "roll",
+          "zh": "碌走",
+          "frameIndex": 4,
+          "t_ms": 500,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "第 5 幀開始碌。表入面冇碌走 hook。"
+        }
+      ]
+    },
+    {
+      "id": "mail_post",
+      "zh": "投信",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_mail_post_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_mail_post_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_mail_post_L.json"
+      },
+      "clipKind": "action",
+      "events": [
+        {
+          "id": "footstep",
+          "zh": "腳步",
+          "frameIndex": 0,
+          "t_ms": 0,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "用 walk_01（踏地拍）行近。冇普通行路 hook。"
+        },
+        {
+          "id": "letter_drop",
+          "zh": "投信入箱",
+          "frameIndex": 4,
+          "t_ms": 500,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "伸手塞入（信封去到最前 44,22）；下一幀信封唔見。表入面冇投信／入箱 hook。"
+        },
+        {
+          "id": "clap",
+          "zh": "拍手",
+          "frameIndex": 5,
+          "t_ms": 625,
+          "sfx_hook": null,
+          "accent": "release",
+          "note": "拍完手、兩爪喺胸前。表入面冇拍手 hook。"
+        }
+      ]
+    },
+    {
+      "id": "idle_lively",
+      "zh": "招牌·活潑",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": true,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_lively_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_lively_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_lively_L.json"
+      },
+      "clipKind": "idle",
+      "personality": "lively",
+      "events": [
+        {
+          "id": "hop_peak",
+          "zh": "蹦跳峰",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "跳到最高（hop=-9）。落地先有 step_hop。"
+        },
+        {
+          "id": "land",
+          "zh": "落地",
+          "frameIndex": 4,
+          "t_ms": 500,
+          "sfx_hook": "sfx_pet_step_hop_a",
+          "accent": "land",
+          "note": "快落地（hop=-1）。§7.9 蹦跳腳步每次落地。"
+        }
+      ]
+    },
+    {
+      "id": "idle_quiet",
+      "zh": "招牌·文靜",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 6,
+      "frameMs": [
+        167,
+        166,
+        167,
+        167,
+        166,
+        167
+      ],
+      "durationMs": 1000,
+      "loop": true,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_L.json"
+      },
+      "clipKind": "idle",
+      "personality": "quiet",
+      "events": []
+    },
+    {
+      "id": "idle_diligent",
+      "zh": "招牌·勤力",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": true,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_diligent_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_diligent_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_diligent_L.json"
+      },
+      "clipKind": "idle",
+      "personality": "diligent",
+      "events": [
+        {
+          "id": "pickup",
+          "zh": "執起葉子",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "執到（葉離地提到手中）。表入面冇執／放物件 hook。"
+        },
+        {
+          "id": "place",
+          "zh": "放低葉子",
+          "frameIndex": 5,
+          "t_ms": 625,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "葉放返地下（y=54）。表入面冇執／放物件 hook。"
+        }
+      ]
+    },
+    {
+      "id": "idle_lazy",
+      "zh": "招牌·懶散",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 5,
+      "frameMs": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "durationMs": 1200,
+      "loop": true,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_lazy_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_lazy_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_lazy_L.json"
+      },
+      "clipKind": "idle",
+      "personality": "lazy",
+      "events": [
+        {
+          "id": "yawn",
+          "zh": "呵欠",
+          "frameIndex": 3,
+          "t_ms": 600,
+          "sfx_hook": "sfx_pet_yawn",
+          "accent": "peak",
+          "note": "中段打呵欠（用 yawn_02 攤住）。§7.1 sfx_pet_yawn。"
+        }
+      ]
+    },
+    {
+      "id": "idle_clingy",
+      "zh": "招牌·黐人",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": true,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_clingy_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_clingy_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_clingy_L.json"
+      },
+      "clipKind": "idle",
+      "personality": "clingy",
+      "events": [
+        {
+          "id": "reach",
+          "zh": "伸手",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "前傾同伸爪最盡。表入面冇伸手／招手 hook。"
+        }
+      ]
+    },
+    {
+      "id": "idle_indep",
+      "zh": "招牌·獨立",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 6,
+      "frameMs": [
+        167,
+        166,
+        167,
+        167,
+        166,
+        167
+      ],
+      "durationMs": 1000,
+      "loop": true,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_indep_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_indep_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_indep_L.json"
+      },
+      "clipKind": "idle",
+      "personality": "indep",
+      "events": []
+    },
+    {
+      "id": "scratch_head",
+      "zh": "抓頭",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_scratch_head_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_scratch_head_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_scratch_head_L.json"
+      },
+      "clipKind": "fidget",
+      "events": [
+        {
+          "id": "scratch",
+          "zh": "抓頭",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": "sfx_pet_scratch_a",
+          "accent": "peak",
+          "note": "爪到頭側開始撓（第 3–5 幀繼續晃）。§7.9 抓癢動畫開始；a/b 可由遊音交替。"
+        }
+      ]
+    },
+    {
+      "id": "stretch",
+      "zh": "伸懶腰",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_stretch_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_stretch_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_stretch_L.json"
+      },
+      "clipKind": "fidget",
+      "events": [
+        {
+          "id": "stretch",
+          "zh": "伸懶腰",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "踮腳拉到最高。雖然用咗 yawn 底圖，動作係伸懶腰唔係呵欠；唔借用 sfx_pet_yawn。"
+        }
+      ]
+    },
+    {
+      "id": "look_sky",
+      "zh": "望天",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_look_sky_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_look_sky_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_look_sky_L.json"
+      },
+      "clipKind": "fidget",
+      "events": []
+    },
+    {
+      "id": "proud_hips",
+      "zh": "叉腰得意",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_proud_hips_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_proud_hips_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_proud_hips_L.json"
+      },
+      "clipKind": "fidget",
+      "events": [
+        {
+          "id": "hands_hips",
+          "zh": "叉腰挺胸",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "胸膛最挺、兩爪叉腰。表入面冇得意／叉腰 hook。"
+        }
+      ]
+    },
+    {
+      "id": "point_frame",
+      "zh": "指相框",
+      "source": "m2",
+      "kind": "pet",
+      "form": "radiant",
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "sizePx": {
+        "S": 32,
+        "M": 48,
+        "L": 64
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": false,
+      "atlases": {
+        "S": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_point_frame_S.json",
+        "M": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_point_frame_M.json",
+        "L": "art-pet/sprites/tuanrong/motion/m2/atlas_radiant_point_frame_L.json"
+      },
+      "clipKind": "action",
+      "events": [
+        {
+          "id": "point",
+          "zh": "指相框",
+          "frameIndex": 3,
+          "t_ms": 375,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "臂伸到最前、有指引短線。表入面冇指向 hook。"
+        }
+      ]
+    },
+    {
+      "id": "snail_postman_snail_deliver",
+      "zh": "蝸牛郵差·鞠躬遞信",
+      "source": "m2",
+      "kind": "visitor",
+      "visitor": "snail_postman",
+      "clip": "snail_deliver",
+      "sizes": [
+        "M"
+      ],
+      "sizePx": {
+        "M": 48
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": true,
+      "atlas": "art-pet/sprites/visitors/m2/atlas_snail_postman_snail_deliver.json",
+      "events": [
+        {
+          "id": "offer",
+          "zh": "鞠躬遞信",
+          "frameIndex": 3,
+          "t_ms": 375,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "鞠躬最低、信件伸得最前。表入面冇訪客遞信 hook。"
+        }
+      ]
+    },
+    {
+      "id": "mushroom_granny_granny_seed",
+      "zh": "蘑菇婆婆·奉上種子",
+      "source": "m2",
+      "kind": "visitor",
+      "visitor": "mushroom_granny",
+      "clip": "granny_seed",
+      "sizes": [
+        "M"
+      ],
+      "sizePx": {
+        "M": 48
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": true,
+      "atlas": "art-pet/sprites/visitors/m2/atlas_mushroom_granny_granny_seed.json",
+      "events": [
+        {
+          "id": "nod",
+          "zh": "點頭",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "land",
+          "note": "點頭最低。表入面冇訪客點頭 hook。"
+        },
+        {
+          "id": "offer",
+          "zh": "奉上種子",
+          "frameIndex": 3,
+          "t_ms": 375,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "種子伸得最前。表入面冇訪客奉上 hook。"
+        }
+      ]
+    },
+    {
+      "id": "firefly_vendor_vendor_show",
+      "zh": "螢火小販·搖瓶展示",
+      "source": "m2",
+      "kind": "visitor",
+      "visitor": "firefly_vendor",
+      "clip": "vendor_show",
+      "sizes": [
+        "M"
+      ],
+      "sizePx": {
+        "M": 48
+      },
+      "frameCount": 6,
+      "fps": 8,
+      "frameMs": [
+        125,
+        125,
+        125,
+        125,
+        125,
+        125
+      ],
+      "durationMs": 750,
+      "loop": true,
+      "atlas": "art-pet/sprites/visitors/m2/atlas_firefly_vendor_vendor_show.json",
+      "events": [
+        {
+          "id": "rattle",
+          "zh": "搖瓶",
+          "frameIndex": 2,
+          "t_ms": 250,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "螢火瓶搖到最前。表入面冇搖瓶／貨檔 hook。"
+        },
+        {
+          "id": "rattle",
+          "zh": "搖瓶",
+          "frameIndex": 4,
+          "t_ms": 500,
+          "sfx_hook": null,
+          "accent": "peak",
+          "note": "螢火瓶搖去另一邊。同上。"
+        }
+      ]
+    }
+  ]
+}

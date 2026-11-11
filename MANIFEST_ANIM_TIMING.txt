@@ -1,0 +1,13 @@
+MANIFEST_ANIM_TIMING — 《微光小圃》art-pet/anim_timing.json（M1＋M2 全部寵物／訪客／小動物 clip 時機＋配聲事件）
+疊喺 art/m2-actions @ 230dab2f（M1 底本 art/m1-icons-hunt @ 13a00477）。解壓到 repo 根，全部新路徑，唔覆蓋 M1／M2 圖集。
+一份檔俾遊音對聲、遊測核對時機（相差超過 1 幀就 fail）。時機由 atlas JSON 再生成；事件跟姿勢對出來，冇加姿勢入面冇嘅動作。
+每個 event 必有 sfx_hook（須完全吻合 遊音 audio/README.md 已列嘅 sfx_*；對唔上就 null，唔自製）、t_ms（由 clip 開頭計）、accent（land／peak／release）。
+生成：PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/build_anim_timing.py [--root .] [--m1 DIR] [--m2 DIR] [--sfx-readme audio/README.md]
+驗證：PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/validate_anim_timing.py [--root .]  → 見 art-pet/anim_timing.validation.json
+格式說明：art-pet/ANIM_TIMING.md。31 clip、42 event（6 個對到已有 hook，36 個 sfx_hook=null 等遊音補）。冇 git commit／push／merge。
+
+[A] art-pet/ANIM_TIMING.md  1704B  sha1:9d244c462f5c
+[A] art-pet/anim_timing.json  35275B  sha1:e9aa1b369b59
+[A] art-pet/anim_timing.validation.json  8715B  sha1:0f05b1bfc34b
+[A] art-pet/tools/build_anim_timing.py  20257B  sha1:73c89d7c8265
+[A] art-pet/tools/validate_anim_timing.py  11679B  sha1:d044e1f42311
