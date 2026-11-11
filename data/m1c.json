@@ -67,7 +67,11 @@
         "bush_bL",
         "bush_bL2",
         "trees_bL",
-        "bg_hills"
+        "bg_hills",
+        "Kid",
+        "Visitor",
+        "Ground256",
+        "GroundAO"
       ],
       "cover": {
         "id": "bg_hills_cover",

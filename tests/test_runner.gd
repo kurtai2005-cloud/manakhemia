@@ -58,6 +58,10 @@ func _ready() -> void:
 	_test_m1c1_m1b_audio_and_fixes()
 	_test_m1c2_hunt_hides_garden()
 	_test_m1c2_audio_fixes()
+	_test_m1c3_hunt_hides_actors()
+	_test_m1c3_portrait_lock()
+	_test_m1c3_loop_imports()
+	_test_m1c3_codex_map_bus()
 	print("=== %d passed, %d failed ===" % [passed, failed])
 
 	get_tree().quit(0 if failed == 0 else 1)
@@ -1102,8 +1106,9 @@ func _test_m1c_furniture_art() -> void:
 
 func _test_m1c_plugins_ported() -> void:
 	print("# M1c RealWorld + Share6d ported")
-	ok(FileAccess.file_exists("res://../native/android/src/main/java/hk/vizard/glimmer/fpet/RealWorldPlugin.kt") or FileAccess.file_exists("/workspace/glimmer-godot/native/android/src/main/java/hk/vizard/glimmer/fpet/RealWorldPlugin.kt"), "RealWorldPlugin.kt")
-	ok(FileAccess.file_exists("/workspace/glimmer-godot/native/android/src/main/java/hk/vizard/glimmer/fpet/Share6dPlugin.kt"), "Share6dPlugin.kt")
+	var plugin_dir := ProjectSettings.globalize_path("res://").path_join("native/android/src/main/java/hk/vizard/glimmer/fpet")
+	ok(FileAccess.file_exists(plugin_dir.path_join("RealWorldPlugin.kt")) or FileAccess.file_exists("res://native/android/src/main/java/hk/vizard/glimmer/fpet/RealWorldPlugin.kt"), "RealWorldPlugin.kt")
+	ok(FileAccess.file_exists(plugin_dir.path_join("Share6dPlugin.kt")) or FileAccess.file_exists("res://native/android/src/main/java/hk/vizard/glimmer/fpet/Share6dPlugin.kt"), "Share6dPlugin.kt")
 	ok(DeviceLink != null, "DeviceLink autoload")
 	var st: Dictionary = DeviceLink.rw_status()
 	ok(str(st.get("error", "")) == "desktop" or st.has("steps"), "status desktop or plugin", st)
@@ -1525,3 +1530,138 @@ func _test_m1c2_audio_fixes() -> void:
 	ok(imp.find("loop=false") < 0, "hunt import not loop=false")
 	var st: AudioStream = AudioManager._load_stream(AudioManager.hunt_bgm_path())
 	ok(st is AudioStreamOggVorbis and (st as AudioStreamOggVorbis).loop, "loaded hunt BGM loops", st)
+
+
+func _test_m1c3_hunt_hides_actors() -> void:
+	print("# M1c.3 hunt hides Kid, Visitor, Poop_*, garden ground")
+	var packed: PackedScene = load("res://scenes/Main.tscn")
+	ok(packed != null, "Main.tscn for actor hide test")
+	var main: Node = packed.instantiate() if packed else null
+	if main == null or not main.has_method("set_garden_hidden_for_hunt"):
+		ok(false, "set_garden_hidden_for_hunt missing")
+		if main:
+			main.free()
+		return
+	var ids: Array = main.hunt_hidden_garden_ids() if main.has_method("hunt_hidden_garden_ids") else []
+	for need in ["Kid", "Visitor", "Ground256", "GroundAO"]:
+		ok(need in ids, "hide list includes %s" % need, ids)
+	var kid := Node3D.new()
+	kid.name = "Kid"
+	main.add_child(kid)
+	var vis := Node3D.new()
+	vis.name = "Visitor"
+	main.add_child(vis)
+	var g256 := MeshInstance3D.new()
+	g256.name = "Ground256"
+	main.add_child(g256)
+	var gao := MeshInstance3D.new()
+	gao.name = "GroundAO"
+	main.add_child(gao)
+	var poops := Node3D.new()
+	poops.name = "Poops"
+	main.add_child(poops)
+	main.poop_root = poops
+	var p0 := Node3D.new()
+	p0.name = "Poop_0"
+	poops.add_child(p0)
+	var p1 := Node3D.new()
+	p1.name = "Poop_1"
+	poops.add_child(p1)
+	# 狩獵場有自己嘅草原地面，花園 Ground256／GroundAO 唔係狩獵地板
+	var field := HuntField.new()
+	add_child(field)
+	field.setup()
+	ok(field.get_node_or_null("PrairieGround") != null or field.ground != null, "hunt field has its own prairie ground")
+	ok(field.get_node_or_null("PrairieTile") != null, "hunt field has its own prairie tile")
+	main.set_garden_hidden_for_hunt(true)
+	ok(not kid.visible and not vis.visible, "Kid and Visitor hidden in hunt")
+	ok(not p0.visible and not p1.visible, "Poop_* hidden in hunt")
+	ok(not poops.visible, "poop root hidden in hunt")
+	ok(not g256.visible and not gao.visible, "garden Ground256/GroundAO hidden; they are not the hunt floor")
+	ok(field.ground != null and field.ground.visible, "prairie ground stays visible (hunt's own floor)")
+	var pt := field.get_node_or_null("PrairieTile")
+	ok(pt != null and pt.visible, "prairie tile stays visible")
+	main.set_garden_hidden_for_hunt(false)
+	ok(kid.visible and vis.visible and p0.visible and p1.visible and poops.visible, "actors and poops restored after hunt")
+	ok(g256.visible and gao.visible, "garden grounds restored after hunt")
+	field.queue_free()
+	main.free()
+
+
+func _test_m1c3_portrait_lock() -> void:
+	print("# M1c.3 portrait lock")
+	var ori := int(ProjectSettings.get_setting("display/window/handheld/orientation"))
+	ok(ori == DisplayServer.SCREEN_PORTRAIT or ori == DisplayServer.SCREEN_SENSOR_PORTRAIT, "project orientation is portrait or sensor_portrait", ori)
+	ok(ori == 1 or ori == 5, "orientation enum is 1 or 5", ori)
+	var root := ProjectSettings.globalize_path("res://")
+	var manifest := root.path_join("native/android/src/main/AndroidManifest.xml")
+	ok(FileAccess.file_exists(manifest) or FileAccess.file_exists("res://native/android/src/main/AndroidManifest.xml"), "native AndroidManifest present")
+	var xml := FileAccess.get_file_as_string(manifest)
+	if xml == "":
+		xml = FileAccess.get_file_as_string("res://native/android/src/main/AndroidManifest.xml")
+	ok(xml.find("android:screenOrientation=\"portrait\"") >= 0, "native manifest locks portrait")
+	ok(xml.find("tools:replace=\"android:screenOrientation\"") >= 0, "native manifest replaces Godot orientation")
+	var inject := FileAccess.get_file_as_string(root.path_join("tools/inject_android_overlay.py"))
+	ok(inject.find("screenOrientation") >= 0 and inject.find("portrait") >= 0, "export inject locks GodotApp to portrait")
+
+
+func _audio_loop_import_paths() -> Array:
+	var out: Array = []
+	var stack: Array = ["res://audio"]
+	while not stack.is_empty():
+		var dir := str(stack.pop_back())
+		var da := DirAccess.open(dir)
+		if da == null:
+			continue
+		da.list_dir_begin()
+		var name := da.get_next()
+		while name != "":
+			if not name.begins_with("."):
+				var p := dir.path_join(name)
+				if da.current_is_dir():
+					stack.append(p)
+				elif name.ends_with(".ogg.import") and (name.begins_with("bgm_") or name.find("_loop") >= 0):
+					out.append(p)
+			name = da.get_next()
+		da.list_dir_end()
+	out.sort()
+	return out
+
+
+func _test_m1c3_loop_imports() -> void:
+	print("# M1c.3 *_loop and bgm_* imports loop=true")
+	var paths: Array = _audio_loop_import_paths()
+	ok(not paths.is_empty(), "found loop/bgm import files", paths)
+	var saw_stir := false
+	for p in paths:
+		var txt := FileAccess.get_file_as_string(str(p))
+		var params := txt
+		var i := txt.find("[params]")
+		if i >= 0:
+			params = txt.substr(i)
+		ok(params.find("loop=true") >= 0, "%s loop=true" % str(p).get_file())
+		ok(params.find("loop=false") < 0, "%s not loop=false" % str(p).get_file())
+		if str(p).get_file() == "sfx_kitchen_stir_loop.ogg.import":
+			saw_stir = true
+	ok(saw_stir, "scanned sfx_kitchen_stir_loop.ogg.import")
+	var st: AudioStream = load("res://audio/sfx/sfx_kitchen_stir_loop.ogg")
+	ok(st is AudioStreamOggVorbis and (st as AudioStreamOggVorbis).loop, "loaded stir loop stream.loop", st)
+
+
+func _test_m1c3_codex_map_bus() -> void:
+	print("# M1c.3 sfx_codex_new_entry map bus is UI")
+	var raw := FileAccess.get_file_as_string("res://audio/m1b_sfx_map.json")
+	var map: Variant = JSON.parse_string(raw)
+	ok(map is Dictionary, "m1b_sfx_map parses")
+	var ui_count := 0
+	if map is Dictionary:
+		for ev in map.get("events", []):
+			if ev is Dictionary and str(ev.get("event", "")) == "collection.unlocked":
+				ok(str(ev.get("bus", "")) == "UI", "events collection.unlocked bus UI", ev)
+				ui_count += 1
+		for ent in map.get("entries", []):
+			if ent is Dictionary and str(ent.get("sfx_hook", "")) == "sfx_codex_new_entry":
+				ok(str(ent.get("bus", "")) == "UI", "entries sfx_codex_new_entry bus UI", ent)
+				ui_count += 1
+	ok(ui_count == 2, "two new_entry bus fields are UI", ui_count)
+	ok(AudioManager.bus_for("sfx_codex_new_entry") == "UI", "AudioManager routes new_entry to UI")

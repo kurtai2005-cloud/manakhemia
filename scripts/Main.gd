@@ -1703,3 +1703,12 @@ func set_garden_hidden_for_hunt(on: bool) -> void:
 		var spot = work_spots[sid]
 		if spot and is_instance_valid(spot):
 			spot.visible = not on
+	# 花園角色／便便，同花園專用地板（狩獵場自己有 PrairieGround／PrairieTile）
+	for id in ["Kid", "Visitor", "Ground256", "GroundAO"]:
+		var actor := find_child(str(id), true, false)
+		if actor:
+			actor.visible = not on
+	if poop_root and is_instance_valid(poop_root):
+		poop_root.visible = not on
+	for poop in find_children("Poop_*", "", true, false):
+		poop.visible = not on
