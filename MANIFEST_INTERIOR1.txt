@@ -1,0 +1,41 @@
+MANIFEST_INTERIOR1 — 小屋室內第一批美術（地板、後牆、左右牆、窗、門內面、可平鋪 tile、光色）。
+V3-A HD-2D，程序化 Pillow／numpy，冇 AI 圖。色盤同 texel 跟 art/garden3d/H1 小屋。
+解壓到 repo 根。冇 git commit／push／merge。
+日期：2026-11-11 11:45 Asia/Hong_Kong
+
+假設房間 160×128×120 units（約 2.37×1.90×1.78 m，L 54 u＝0.80 m）。貼圖可平鋪，等遊程室內 GIF 再對最終尺寸。
+比例檢查（花園屋對寵物）見 /workspace/game-design/scale_check1/（before_after.png、INTERIOR_SPEC_DRAFT.md）。
+接入方法、import、光（高／中／低）見 ENGINE_INTERIOR1.txt。
+
+遊程請將 zip 解壓到 art 工作樹，commit 到 art/ 分支，唔好 merge main。
+
+[A] ENGINE_INTERIOR1.txt  3250B  sha1:5308159aa9c0011fa9ddd62c8c537f15b25ec346
+[A] INTERIOR_SPEC_DRAFT.md  5286B  sha1:7f3025864f3345af33aa1d718eeefb80a9afea5d
+[A] art-pet/tools/build_interior1.py  32721B  sha1:b921ee12ca97b32ebf6d830d5ccb51695957e301
+[A] art/garden3d/H1/interior/camera.json  274B  sha1:9882bc9136c13880e1ea05d8f7ded26dbcbbf2ab
+[A] art/garden3d/H1/interior/lights.json  1922B  sha1:54b8e3d6b66bfa3b0fd0d9703ad2cef0b0df1fc7
+[A] art/garden3d/H1/interior/meshes/door.json  1199B  sha1:38024087f7c6c2fa017c6c5dd8c9007c545906f1
+[A] art/garden3d/H1/interior/meshes/door.png  1096B  sha1:be38dcb2b891cf5484a422d08444230e9e40980f
+[A] art/garden3d/H1/interior/meshes/door@3x.png  3268B  sha1:407eb4a520aab23bc5499d08989f87ceb4165ca6
+[A] art/garden3d/H1/interior/meshes/floor.json  1192B  sha1:2c7f9d55de6b3e316ad762249d05a750a8ab2089
+[A] art/garden3d/H1/interior/meshes/floor.png  2247B  sha1:cc4506169090b03f1e76460ebe1cf90cb9babf7c
+[A] art/garden3d/H1/interior/meshes/floor@3x.png  7309B  sha1:f533715b6a70860af7285624afce0ffe7d812d28
+[A] art/garden3d/H1/interior/meshes/wall_L.json  1188B  sha1:89c777f485575c1e7f71c9540a616a4b600b3495
+[A] art/garden3d/H1/interior/meshes/wall_R.json  1184B  sha1:3fa1713238343117da5cb5b6cd51820ad8febd92
+[A] art/garden3d/H1/interior/meshes/wall_back.json  2183B  sha1:de1f1ae49462617f3c539c35d08018ae6809e230
+[A] art/garden3d/H1/interior/meshes/wall_back.png  1749B  sha1:99f7404f2a407e9f475a69cde805a609f5489538
+[A] art/garden3d/H1/interior/meshes/wall_back@3x.png  3855B  sha1:12240e5e54ec7131d34b0ae1457a39d8f7991bd2
+[A] art/garden3d/H1/interior/meshes/wall_side.png  1237B  sha1:95caee98e9562d47ff467704ce9c3470973395bc
+[A] art/garden3d/H1/interior/meshes/wall_side@3x.png  2739B  sha1:0f4223f0f8f8642cfe1b21d60df4669867802dca
+[A] art/garden3d/H1/interior/meshes/window.json  1277B  sha1:a6853683ecdc8c55b25b8f90348e9f031dca384f
+[A] art/garden3d/H1/interior/meshes/window.png  436B  sha1:3cfa0aa26ca8ae90bf16c6a9f7974217ea34da57
+[A] art/garden3d/H1/interior/meshes/window@3x.png  701B  sha1:f2723594e4677938732365502ab7ef06e5e029fa
+[A] art/garden3d/H1/interior/meshes/window_emissive.png  333B  sha1:8e50c7463c51e9012df535e423950024a2d64272
+[A] art/garden3d/H1/interior/meshes/window_emissive@3x.png  573B  sha1:46ec0a6a0a5578476805c02fd3f83d1ec701be8d
+[A] art/garden3d/H1/interior/objects.json  1965B  sha1:fd8fd69720135e594523bbff97caddfdabc6a860
+[A] art/garden3d/H1/interior/preview.png  72566B  sha1:6cb78044570360a53a84216f981d9447810e9e17
+[A] art/garden3d/H1/interior/room.json  1043B  sha1:b7a27231327939e282d30f69cee060f4c2d82f5c
+[A] art/garden3d/H1/interior/tiles/floor_tile.png  743B  sha1:c0d462f310f34274975b9e1cddb9fec74701bf95
+[A] art/garden3d/H1/interior/tiles/floor_tile@3x.png  1575B  sha1:b2775dbe84fd009d594cb1c26d4219393099aa5f
+[A] art/garden3d/H1/interior/tiles/wall_tile.png  388B  sha1:28ff48cae60a9aa64993e9752c6c928d9f47e1e0
+[A] art/garden3d/H1/interior/tiles/wall_tile@3x.png  892B  sha1:0ab7a334c2027d87d890db12e8cb5090613df3ab

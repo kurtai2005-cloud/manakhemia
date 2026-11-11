@@ -1,0 +1,16 @@
+{
+ "target": [
+  0,
+  48,
+  -16
+ ],
+ "pitchDeg": 30,
+ "dist": 300,
+ "fovDeg": 40,
+ "yawDeg": 0,
+ "orbitMinDeg": -12,
+ "orbitMaxDeg": 12,
+ "near": 4,
+ "far": 2000,
+ "note": "Octopath 固定 pitch 30°；近鏡（preview 用呢組）。遊程 GIF 可以改 dist／target。"
+}

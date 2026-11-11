@@ -1,0 +1,62 @@
+ENGINE_INTERIOR1 — 遊程接入備註。解壓到 repo 根。冇 git commit／push／merge。
+日期：2026-11-11 11:45 Asia/Hong_Kong
+
+0. 房間假設（等你嘅室內 GIF 先鎖定；貼圖可平鋪，換尺寸唔使重畫）
+   闊 160 × 深 128 × 天花 120 units（1 unit＝1 art px＝1 世界單位）。
+   牆厚 3。原點＝地板中心；+X 右、+Y 上、+Z 向鏡頭。三牆盒，冇前牆。
+   公尺：L 可見高 54 u 當 0.80 m → 1 u＝0.014815 m；房間約 2.37 × 1.90 × 1.78 m。
+   門（內面，掛右牆）：葉 56×96，連框約 66×101。後窗 48×48，窗台 y＝52（貼圖 64×64 連框）。
+
+1. 路徑（用返 GardenLoader.mesh_from_json／make_mat）
+   res://art/garden3d/H1/interior/objects.json
+   res://art/garden3d/H1/interior/camera.json
+   res://art/garden3d/H1/interior/lights.json
+   res://art/garden3d/H1/interior/room.json
+   meshes/：floor、wall_back、wall_L、wall_R、window、door
+     （每件 .json + .png + @3x.png；窗另有 window_emissive.png／@3x）
+   tiles/：floor_tile.png、wall_tile.png（64×64 可平鋪；改房尺寸時用 UV repeat）
+
+2. Import／物料（同花園 H1）
+   - texture_filter = NEAREST
+   - 唔好開 mipmap（@3x 已經係最近鄰 ×3）
+   - texture_repeat：獨幅 meshes 關；tiles 舖地／牆先開
+   - transparency = ALPHA_SCISSOR，alpha_scissor_threshold = 0.5
+   - cull = BACK（json 已帶反向背面三角）
+   - shading PER_PIXEL + LAMBERT（高／中）；低檔 unshaded
+   - specular disabled；sRGB albedo；貼圖冇烘光
+   - 窗 emissive：日 energy 0；夜乘 intensityNight
+   - UV：json 係 V-up，GardenLoader 現有 flip_v=true 保持
+
+3. 屋外比例（花園，同呢次室內分開）
+   cottage.scale = Vector3(2, 2, 2)
+   cottage.position = Vector3(82.5, 0, -94)   # 前牆／門平面維持世界 z=-50
+   寵物同傢俬 pixel_size 維持 1.0。
+   門高會變 96；闊均勻放大後得 32，請另外把門口加闊到 56（L 可見闊 44）。
+   室內傢俬全部唔好再擺花園。花盆、燈柱、籬笆、樹、菜畦、蘑菇、花灑、螢火瓶、串燈留低。
+   郵局 (96,0,-36) 喺門口，屋 ×2 會疊住，要搬或改成可進入外觀。
+
+4. 鏡頭（室內近鏡，preview 用；你 GIF 可以改）
+   target [0, 48, -16]，pitchDeg 30，dist 300，fovDeg 40，orbit ±12，near 4，far 2000。
+
+5. 光（lights.json → tiers）
+
+   高（High）
+     sun     #ffe6b8  energy 0.55   dir [0.35, -0.55, -0.76]  shadow_opacity 0.25  shaded true
+     fill    #ffe2c4  energy 0.50   dir [0.15, -0.20, -0.97]  唔投影
+     ambient #e8d8c0  energy 0.70
+     window  #ffc870  day 0.0  night 0.9  radius 90  位置 (0, 76, -62)
+     夜：sun 0.06，ambient #5a4a70 0.40
+
+   中（Mid）
+     sun 0.40，fill 0.35，ambient #e8d8c0 0.75，shadow_opacity 0.15，shaded true
+     window night 0.75
+
+   低（Low）
+     sun 0，fill 0，shadow 0，shaded false（unshaded）
+     ambient #f0e0c8 energy 1.0
+     window night 0.6
+     unshaded 調色：日 albedo 乘 #fff6e8；夜乘 #6a6088
+
+6. 預覽
+   /workspace/game-design/interior1/preview.png
+   （真實 Godot 4.7.2 Compatibility，Xvfb + llvmpipe，opengl3；房間＋床／地氈／檯／燈／鞋架＋ L／M／S 寵物）

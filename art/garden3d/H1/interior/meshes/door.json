@@ -1,0 +1,102 @@
+{
+ "format": "garden3d.mesh/2",
+ "id": "door",
+ "zh": "入屋門之內面（掛喺右牆；腳落地）",
+ "units": "1 unit＝1x art px；Y 上；原點＝物件底中（局部座標）；+Z 向鏡頭。放置用 objects.json 嘅 x／z／y＋yawDeg",
+ "texture": "meshes/door.png",
+ "texture3x": "meshes/door@3x.png",
+ "textureSize": [
+  128,
+  128
+ ],
+ "alphaTest": 0.5,
+ "doubleSided": false,
+ "material": {
+  "filter": "nearest",
+  "mipmap": false,
+  "lit": true,
+  "sRGB": true,
+  "bakedLight": false
+ },
+ "positions": [
+  79.6,
+  0.0,
+  33.0,
+  79.6,
+  0.0,
+  -33.0,
+  79.6,
+  101.0,
+  -33.0,
+  79.6,
+  101.0,
+  33.0
+ ],
+ "normals": [
+  -1.0,
+  0.0,
+  0.0,
+  -1.0,
+  0.0,
+  0.0,
+  -1.0,
+  0.0,
+  0.0,
+  -1.0,
+  0.0,
+  0.0
+ ],
+ "uvs": [
+  0.2422,
+  0.0,
+  0.7578,
+  0.0,
+  0.7578,
+  0.7891,
+  0.2422,
+  0.7891
+ ],
+ "indices": [
+  0,
+  1,
+  2,
+  0,
+  2,
+  3,
+  0,
+  2,
+  1,
+  0,
+  3,
+  2
+ ],
+ "bounds": {
+  "min": [
+   79.6,
+   0.0,
+   -33.0
+  ],
+  "max": [
+   79.6,
+   101.0,
+   33.0
+  ]
+ },
+ "footprint": {
+  "rect": {
+   "x": [
+    78.0,
+    80.0
+   ],
+   "z": [
+    -33.0,
+    33.0
+   ]
+  },
+  "pad": 0
+ },
+ "castShadow": true,
+ "receiveShadow": true,
+ "vertexCount": 4,
+ "triangleCount": 4
+}
