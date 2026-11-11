@@ -1,0 +1,257 @@
+{
+ "id": "fireflies",
+ "zh": "螢火蟲",
+ "cell": 8,
+ "image": "particles/fireflies.png",
+ "frames_h": 8,
+ "frames_v": 2,
+ "pivot": [
+  4,
+  4
+ ],
+ "colors": {
+  "core": "#ffffc8",
+  "glow": "#c8ffb0",
+  "align": "H1 jar #c8ffb0／預覽螢火 #fff696"
+ },
+ "animations": {
+  "pulse": {
+   "frames": [
+    "r0c0",
+    "r0c1",
+    "r0c2",
+    "r0c3",
+    "r0c4",
+    "r0c5",
+    "r0c6",
+    "r0c7"
+   ],
+   "fps": 8,
+   "loop": true
+  }
+ },
+ "atlas_frames": {
+  "r0c0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c1": {
+   "frame": {
+    "x": 8,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c2": {
+   "frame": {
+    "x": 16,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c3": {
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c4": {
+   "frame": {
+    "x": 32,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c5": {
+   "frame": {
+    "x": 40,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c6": {
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c7": {
+   "frame": {
+    "x": 56,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c0": {
+   "frame": {
+    "x": 0,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c1": {
+   "frame": {
+    "x": 8,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c2": {
+   "frame": {
+    "x": 16,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c3": {
+   "frame": {
+    "x": 24,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c4": {
+   "frame": {
+    "x": 32,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c5": {
+   "frame": {
+    "x": 40,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c6": {
+   "frame": {
+    "x": 48,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c7": {
+   "frame": {
+    "x": 56,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  }
+ },
+ "material": {
+  "shading_mode": "unshaded",
+  "blend_mode": "add",
+  "billboard": "particle",
+  "particles_anim_h_frames": 8,
+  "particles_anim_v_frames": 2,
+  "particles_anim_loop": true,
+  "texture_filter": "Nearest",
+  "vertex_color_use_as_albedo": true,
+  "emissive": true
+ },
+ "process_material": {
+  "emission_shape": "box",
+  "emission_box_extents": [
+   140,
+   40,
+   90
+  ],
+  "emission_offset_hint": "H1 花園：中心約 [−40, 35, −20]（燈柱／螢火瓶／舞台一帶）；狩獵草原：中心 [0, 40, 10]，只喺黃昏／夜開。",
+  "direction": [
+   0,
+   1,
+   0
+  ],
+  "spread": 180,
+  "flatness": 0.0,
+  "initial_velocity_min": 4,
+  "initial_velocity_max": 12,
+  "gravity": [
+   0,
+   0.4,
+   0
+  ],
+  "damping_min": 0.5,
+  "damping_max": 1.2,
+  "angular_velocity_min": -4,
+  "angular_velocity_max": 4,
+  "orbit_velocity_min": -0.05,
+  "orbit_velocity_max": 0.05,
+  "scale_min": 0.85,
+  "scale_max": 1.35,
+  "color": "#e8ffc0",
+  "color_ramp": [
+   {
+    "offset": 0.0,
+    "color": "#ffffff00"
+   },
+   {
+    "offset": 0.12,
+    "color": "#ffffe8ff"
+   },
+   {
+    "offset": 0.7,
+    "color": "#d8ffb0ff"
+   },
+   {
+    "offset": 1.0,
+    "color": "#ffffe800"
+   }
+  ],
+  "hue_variation_min": -0.04,
+  "hue_variation_max": 0.06,
+  "anim_speed_min": 0.6,
+  "anim_speed_max": 1.2,
+  "turbulence_enabled": true,
+  "turbulence_noise_strength": 0.8,
+  "turbulence_noise_scale": 1.5,
+  "turbulence_noise_speed": [
+   0.2,
+   0.15,
+   0.2
+  ]
+ },
+ "gpu_particles": {
+  "amount": 26,
+  "amount_high": 26,
+  "amount_mid": 16,
+  "amount_low": 8,
+  "amount_mobile": 16,
+  "lifetime": 6.0,
+  "preprocess": 3.0,
+  "explosiveness": 0.0,
+  "randomness": 0.4,
+  "speed_scale": 1.0,
+  "local_coords": false,
+  "visibility_aabb": [
+   -200,
+   0,
+   -160,
+   400,
+   120,
+   320
+  ]
+ }
+}

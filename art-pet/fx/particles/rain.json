@@ -1,0 +1,164 @@
+{
+ "id": "rain",
+ "zh": "雨",
+ "cell": 16,
+ "image": "particles/rain.png",
+ "frames_h": 4,
+ "frames_v": 2,
+ "pivot": [
+  8,
+  8
+ ],
+ "groups": {
+  "streak": [
+   "r0c0",
+   "r0c1",
+   "r0c2",
+   "r0c3"
+  ],
+  "splash": [
+   "r1c0",
+   "r1c1",
+   "r1c2",
+   "r1c3"
+  ]
+ },
+ "atlas_frames": {
+  "r0c0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 16
+   }
+  },
+  "r0c1": {
+   "frame": {
+    "x": 16,
+    "y": 0,
+    "w": 16,
+    "h": 16
+   }
+  },
+  "r0c2": {
+   "frame": {
+    "x": 32,
+    "y": 0,
+    "w": 16,
+    "h": 16
+   }
+  },
+  "r0c3": {
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 16,
+    "h": 16
+   }
+  },
+  "r1c0": {
+   "frame": {
+    "x": 0,
+    "y": 16,
+    "w": 16,
+    "h": 16
+   }
+  },
+  "r1c1": {
+   "frame": {
+    "x": 16,
+    "y": 16,
+    "w": 16,
+    "h": 16
+   }
+  },
+  "r1c2": {
+   "frame": {
+    "x": 32,
+    "y": 16,
+    "w": 16,
+    "h": 16
+   }
+  },
+  "r1c3": {
+   "frame": {
+    "x": 48,
+    "y": 16,
+    "w": 16,
+    "h": 16
+   }
+  }
+ },
+ "material": {
+  "shading_mode": "unshaded",
+  "blend_mode": "mix",
+  "transparency": "alpha_scissor",
+  "alpha_scissor_threshold": 0.5,
+  "billboard": "particle",
+  "particles_anim_h_frames": 4,
+  "particles_anim_v_frames": 2,
+  "particles_anim_loop": false,
+  "texture_filter": "Nearest",
+  "vertex_color_use_as_albedo": true,
+  "particle_flag_align_y_hint": "streak 建議 ParticleProcessMaterial particle_flag_align_y=true，令長條對準速度方向。"
+ },
+ "process_material": {
+  "emission_shape": "box",
+  "emission_box_extents": [
+   220,
+   8,
+   140
+  ],
+  "emission_offset_hint": "畫面頂上方 y≈220，覆蓋中景。",
+  "direction": [
+   0.08,
+   -1,
+   0
+  ],
+  "spread": 3,
+  "initial_velocity_min": 260,
+  "initial_velocity_max": 380,
+  "gravity": [
+   0,
+   -60,
+   0
+  ],
+  "scale_min": 0.8,
+  "scale_max": 1.3,
+  "color": "#d0e4ffff",
+  "color_ramp": [
+   {
+    "offset": 0,
+    "color": "#d0e4ffff"
+   },
+   {
+    "offset": 1,
+    "color": "#d0e4ffcc"
+   }
+  ],
+  "anim_speed_min": 0.0,
+  "anim_speed_max": 0.0,
+  "particle_flag_align_y": true
+ },
+ "gpu_particles": {
+  "amount": 120,
+  "amount_high": 120,
+  "amount_mid": 70,
+  "amount_low": 24,
+  "amount_mobile": 70,
+  "lifetime": 0.85,
+  "preprocess": 0.8,
+  "explosiveness": 0.0,
+  "randomness": 0.25,
+  "local_coords": false,
+  "visibility_aabb": [
+   -300,
+   -40,
+   -220,
+   600,
+   320,
+   440
+  ],
+  "splash_note": "落地水花可用第二個 one_shot GPUParticles3D，用 splash 幀、amount 每擊 1、lifetime 0.25、gravity 0，喺地面碰撞或定高 y=0 觸發。M1 可先淨係用 streak。"
+ }
+}

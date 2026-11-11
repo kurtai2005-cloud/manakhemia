@@ -1,0 +1,857 @@
+{
+ "format": "godot_fx1.particles/1",
+ "engine": "Godot 4",
+ "units": "速度／重力／AABB 用 art unit（1 unit＝1 art px）。import_scale=0.01 時全部 ×0.01，scale_min/max 同 amount 唔改。",
+ "alpha": "所有 sprite alpha 只有 0/255，透明 RGB=0；Filter Nearest，關 mipmap。",
+ "nodes": "每款一個 GPUParticles3D＋ParticleProcessMaterial＋StandardMaterial3D（或 ShaderMaterial）。螢火 add＋emissive；其他 Alpha Scissor 0.5。",
+ "quality": {
+  "low": "amount_low（開發基準；效果粒子仍喺同一 3D 場景播，只係數量少）",
+  "mid": "amount_mid（＝舊 amount_mobile）",
+  "high": "amount_high（＝amount）；落葉秋天用 amount_autumn"
+ },
+ "items": [
+  {
+   "id": "fireflies",
+   "zh": "螢火蟲",
+   "cell": 8,
+   "image": "particles/fireflies.png",
+   "frames_h": 8,
+   "frames_v": 2,
+   "pivot": [
+    4,
+    4
+   ],
+   "colors": {
+    "core": "#ffffc8",
+    "glow": "#c8ffb0",
+    "align": "H1 jar #c8ffb0／預覽螢火 #fff696"
+   },
+   "animations": {
+    "pulse": {
+     "frames": [
+      "r0c0",
+      "r0c1",
+      "r0c2",
+      "r0c3",
+      "r0c4",
+      "r0c5",
+      "r0c6",
+      "r0c7"
+     ],
+     "fps": 8,
+     "loop": true
+    }
+   },
+   "material": {
+    "shading_mode": "unshaded",
+    "blend_mode": "add",
+    "billboard": "particle",
+    "particles_anim_h_frames": 8,
+    "particles_anim_v_frames": 2,
+    "particles_anim_loop": true,
+    "texture_filter": "Nearest",
+    "vertex_color_use_as_albedo": true,
+    "emissive": true
+   },
+   "process_material": {
+    "emission_shape": "box",
+    "emission_box_extents": [
+     140,
+     40,
+     90
+    ],
+    "emission_offset_hint": "H1 花園：中心約 [−40, 35, −20]（燈柱／螢火瓶／舞台一帶）；狩獵草原：中心 [0, 40, 10]，只喺黃昏／夜開。",
+    "direction": [
+     0,
+     1,
+     0
+    ],
+    "spread": 180,
+    "flatness": 0.0,
+    "initial_velocity_min": 4,
+    "initial_velocity_max": 12,
+    "gravity": [
+     0,
+     0.4,
+     0
+    ],
+    "damping_min": 0.5,
+    "damping_max": 1.2,
+    "angular_velocity_min": -4,
+    "angular_velocity_max": 4,
+    "orbit_velocity_min": -0.05,
+    "orbit_velocity_max": 0.05,
+    "scale_min": 0.85,
+    "scale_max": 1.35,
+    "color": "#e8ffc0",
+    "color_ramp": [
+     {
+      "offset": 0.0,
+      "color": "#ffffff00"
+     },
+     {
+      "offset": 0.12,
+      "color": "#ffffe8ff"
+     },
+     {
+      "offset": 0.7,
+      "color": "#d8ffb0ff"
+     },
+     {
+      "offset": 1.0,
+      "color": "#ffffe800"
+     }
+    ],
+    "hue_variation_min": -0.04,
+    "hue_variation_max": 0.06,
+    "anim_speed_min": 0.6,
+    "anim_speed_max": 1.2,
+    "turbulence_enabled": true,
+    "turbulence_noise_strength": 0.8,
+    "turbulence_noise_scale": 1.5,
+    "turbulence_noise_speed": [
+     0.2,
+     0.15,
+     0.2
+    ]
+   },
+   "gpu_particles": {
+    "amount": 26,
+    "amount_high": 26,
+    "amount_mid": 16,
+    "amount_low": 8,
+    "amount_mobile": 16,
+    "lifetime": 6.0,
+    "preprocess": 3.0,
+    "explosiveness": 0.0,
+    "randomness": 0.4,
+    "speed_scale": 1.0,
+    "local_coords": false,
+    "visibility_aabb": [
+     -200,
+     0,
+     -160,
+     400,
+     120,
+     320
+    ]
+   },
+   "spec": "particles/fireflies.json"
+  },
+  {
+   "id": "leaves",
+   "zh": "落葉（四季顏色）",
+   "cell": 16,
+   "image": "particles/leaves.png",
+   "frames_h": 8,
+   "frames_v": 12,
+   "pivot": [
+    8,
+    8
+   ],
+   "groups": {
+    "spring_0": [
+     "r0c0",
+     "r0c1",
+     "r0c2",
+     "r0c3",
+     "r0c4",
+     "r0c5",
+     "r0c6",
+     "r0c7"
+    ],
+    "spring_1": [
+     "r1c0",
+     "r1c1",
+     "r1c2",
+     "r1c3",
+     "r1c4",
+     "r1c5",
+     "r1c6",
+     "r1c7"
+    ],
+    "spring_2": [
+     "r2c0",
+     "r2c1",
+     "r2c2",
+     "r2c3",
+     "r2c4",
+     "r2c5",
+     "r2c6",
+     "r2c7"
+    ],
+    "summer_0": [
+     "r3c0",
+     "r3c1",
+     "r3c2",
+     "r3c3",
+     "r3c4",
+     "r3c5",
+     "r3c6",
+     "r3c7"
+    ],
+    "summer_1": [
+     "r4c0",
+     "r4c1",
+     "r4c2",
+     "r4c3",
+     "r4c4",
+     "r4c5",
+     "r4c6",
+     "r4c7"
+    ],
+    "summer_2": [
+     "r5c0",
+     "r5c1",
+     "r5c2",
+     "r5c3",
+     "r5c4",
+     "r5c5",
+     "r5c6",
+     "r5c7"
+    ],
+    "autumn_0": [
+     "r6c0",
+     "r6c1",
+     "r6c2",
+     "r6c3",
+     "r6c4",
+     "r6c5",
+     "r6c6",
+     "r6c7"
+    ],
+    "autumn_1": [
+     "r7c0",
+     "r7c1",
+     "r7c2",
+     "r7c3",
+     "r7c4",
+     "r7c5",
+     "r7c6",
+     "r7c7"
+    ],
+    "autumn_2": [
+     "r8c0",
+     "r8c1",
+     "r8c2",
+     "r8c3",
+     "r8c4",
+     "r8c5",
+     "r8c6",
+     "r8c7"
+    ],
+    "winter_0": [
+     "r9c0",
+     "r9c1",
+     "r9c2",
+     "r9c3",
+     "r9c4",
+     "r9c5",
+     "r9c6",
+     "r9c7"
+    ],
+    "winter_1": [
+     "r10c0",
+     "r10c1",
+     "r10c2",
+     "r10c3",
+     "r10c4",
+     "r10c5",
+     "r10c6",
+     "r10c7"
+    ],
+    "winter_2": [
+     "r11c0",
+     "r11c1",
+     "r11c2",
+     "r11c3",
+     "r11c4",
+     "r11c5",
+     "r11c6",
+     "r11c7"
+    ]
+   },
+   "season_rows": {
+    "spring": [
+     0,
+     1,
+     2
+    ],
+    "summer": [
+     3,
+     4,
+     5
+    ],
+    "autumn": [
+     6,
+     7,
+     8
+    ],
+    "winter": [
+     9,
+     10,
+     11
+    ]
+   },
+   "material": {
+    "shading_mode": "unshaded",
+    "blend_mode": "mix",
+    "transparency": "alpha_scissor",
+    "alpha_scissor_threshold": 0.5,
+    "billboard": "particle",
+    "particles_anim_h_frames": 8,
+    "particles_anim_v_frames": 12,
+    "particles_anim_loop": true,
+    "texture_filter": "Nearest",
+    "vertex_color_use_as_albedo": true
+   },
+   "process_material": {
+    "emission_shape": "box",
+    "emission_box_extents": [
+     180,
+     10,
+     80
+    ],
+    "emission_offset_hint": "樹冠／畫面上方：H1 大樹約 [−110, 140, −44]；草原上空 [0, 160, −40]。",
+    "direction": [
+     0.25,
+     -1,
+     0.05
+    ],
+    "spread": 18,
+    "initial_velocity_min": 18,
+    "initial_velocity_max": 42,
+    "gravity": [
+     0,
+     -28,
+     0
+    ],
+    "damping_min": 0.4,
+    "damping_max": 1.0,
+    "angular_velocity_min": -12,
+    "angular_velocity_max": 12,
+    "orbit_velocity_min": -0.15,
+    "orbit_velocity_max": 0.15,
+    "tangential_accel_min": -4,
+    "tangential_accel_max": 4,
+    "scale_min": 0.7,
+    "scale_max": 1.35,
+    "color": "#ffffff",
+    "color_ramp": [
+     {
+      "offset": 0.0,
+      "color": "#ffffffff"
+     },
+     {
+      "offset": 0.85,
+      "color": "#ffffffee"
+     },
+     {
+      "offset": 1.0,
+      "color": "#ffffff00"
+     }
+    ],
+    "anim_speed_min": 0.4,
+    "anim_speed_max": 1.0,
+    "turbulence_enabled": true,
+    "turbulence_noise_strength": 1.1,
+    "turbulence_noise_scale": 2.0,
+    "turbulence_noise_speed": [
+     0.4,
+     0.0,
+     0.15
+    ]
+   },
+   "gpu_particles": {
+    "amount": 28,
+    "amount_high": 28,
+    "amount_mid": 16,
+    "amount_low": 6,
+    "amount_mobile": 16,
+    "amount_autumn": 40,
+    "amount_autumn_mid": 24,
+    "amount_autumn_low": 8,
+    "lifetime": 5.0,
+    "preprocess": 3.0,
+    "explosiveness": 0.0,
+    "randomness": 0.5,
+    "speed_scale": 1.0,
+    "local_coords": false,
+    "visibility_aabb": [
+     -260,
+     -20,
+     -200,
+     520,
+     280,
+     400
+    ],
+    "season_note": "春天用 spring_* 幀、夏天 summer_*、秋天 autumn_* 並用較多 amount、冬天 winter_* 減少量。anim_offset 隨機揀行。"
+   },
+   "spec": "particles/leaves.json"
+  },
+  {
+   "id": "petals",
+   "zh": "花瓣",
+   "cell": 8,
+   "image": "particles/petals.png",
+   "frames_h": 8,
+   "frames_v": 4,
+   "pivot": [
+    4,
+    4
+   ],
+   "groups": {
+    "pink": [
+     "r0c0",
+     "r0c1",
+     "r0c2",
+     "r0c3",
+     "r0c4",
+     "r0c5",
+     "r0c6",
+     "r0c7"
+    ],
+    "white": [
+     "r1c0",
+     "r1c1",
+     "r1c2",
+     "r1c3",
+     "r1c4",
+     "r1c5",
+     "r1c6",
+     "r1c7"
+    ],
+    "gold": [
+     "r2c0",
+     "r2c1",
+     "r2c2",
+     "r2c3",
+     "r2c4",
+     "r2c5",
+     "r2c6",
+     "r2c7"
+    ]
+   },
+   "material": {
+    "shading_mode": "unshaded",
+    "blend_mode": "mix",
+    "transparency": "alpha_scissor",
+    "alpha_scissor_threshold": 0.5,
+    "billboard": "particle",
+    "particles_anim_h_frames": 8,
+    "particles_anim_v_frames": 4,
+    "particles_anim_loop": true,
+    "texture_filter": "Nearest",
+    "vertex_color_use_as_albedo": true
+   },
+   "process_material": {
+    "emission_shape": "box",
+    "emission_box_extents": [
+     120,
+     8,
+     60
+    ],
+    "emission_offset_hint": "花圃／盆花上方：H1 pot／bed 一帶；草原花叢上方。春夏為主。",
+    "direction": [
+     0.15,
+     -1,
+     0
+    ],
+    "spread": 22,
+    "initial_velocity_min": 8,
+    "initial_velocity_max": 20,
+    "gravity": [
+     0,
+     -10,
+     0
+    ],
+    "damping_min": 0.6,
+    "damping_max": 1.4,
+    "angular_velocity_min": -8,
+    "angular_velocity_max": 8,
+    "orbit_velocity_min": -0.2,
+    "orbit_velocity_max": 0.2,
+    "scale_min": 0.8,
+    "scale_max": 1.4,
+    "color": "#ffffff",
+    "color_ramp": [
+     {
+      "offset": 0,
+      "color": "#ffffffff"
+     },
+     {
+      "offset": 0.8,
+      "color": "#ffffffcc"
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff00"
+     }
+    ],
+    "anim_speed_min": 0.3,
+    "anim_speed_max": 0.8,
+    "turbulence_enabled": true,
+    "turbulence_noise_strength": 1.3,
+    "turbulence_noise_scale": 2.4,
+    "turbulence_noise_speed": [
+     0.35,
+     0.05,
+     0.2
+    ]
+   },
+   "gpu_particles": {
+    "amount": 22,
+    "amount_high": 22,
+    "amount_mid": 12,
+    "amount_low": 6,
+    "amount_mobile": 12,
+    "lifetime": 6.5,
+    "preprocess": 4.0,
+    "explosiveness": 0.0,
+    "randomness": 0.5,
+    "local_coords": false,
+    "visibility_aabb": [
+     -200,
+     -10,
+     -160,
+     400,
+     200,
+     320
+    ]
+   },
+   "spec": "particles/petals.json"
+  },
+  {
+   "id": "rain",
+   "zh": "雨",
+   "cell": 16,
+   "image": "particles/rain.png",
+   "frames_h": 4,
+   "frames_v": 2,
+   "pivot": [
+    8,
+    8
+   ],
+   "groups": {
+    "streak": [
+     "r0c0",
+     "r0c1",
+     "r0c2",
+     "r0c3"
+    ],
+    "splash": [
+     "r1c0",
+     "r1c1",
+     "r1c2",
+     "r1c3"
+    ]
+   },
+   "material": {
+    "shading_mode": "unshaded",
+    "blend_mode": "mix",
+    "transparency": "alpha_scissor",
+    "alpha_scissor_threshold": 0.5,
+    "billboard": "particle",
+    "particles_anim_h_frames": 4,
+    "particles_anim_v_frames": 2,
+    "particles_anim_loop": false,
+    "texture_filter": "Nearest",
+    "vertex_color_use_as_albedo": true,
+    "particle_flag_align_y_hint": "streak 建議 ParticleProcessMaterial particle_flag_align_y=true，令長條對準速度方向。"
+   },
+   "process_material": {
+    "emission_shape": "box",
+    "emission_box_extents": [
+     220,
+     8,
+     140
+    ],
+    "emission_offset_hint": "畫面頂上方 y≈220，覆蓋中景。",
+    "direction": [
+     0.08,
+     -1,
+     0
+    ],
+    "spread": 3,
+    "initial_velocity_min": 260,
+    "initial_velocity_max": 380,
+    "gravity": [
+     0,
+     -60,
+     0
+    ],
+    "scale_min": 0.8,
+    "scale_max": 1.3,
+    "color": "#d0e4ffff",
+    "color_ramp": [
+     {
+      "offset": 0,
+      "color": "#d0e4ffff"
+     },
+     {
+      "offset": 1,
+      "color": "#d0e4ffcc"
+     }
+    ],
+    "anim_speed_min": 0.0,
+    "anim_speed_max": 0.0,
+    "particle_flag_align_y": true
+   },
+   "gpu_particles": {
+    "amount": 120,
+    "amount_high": 120,
+    "amount_mid": 70,
+    "amount_low": 24,
+    "amount_mobile": 70,
+    "lifetime": 0.85,
+    "preprocess": 0.8,
+    "explosiveness": 0.0,
+    "randomness": 0.25,
+    "local_coords": false,
+    "visibility_aabb": [
+     -300,
+     -40,
+     -220,
+     600,
+     320,
+     440
+    ],
+    "splash_note": "落地水花可用第二個 one_shot GPUParticles3D，用 splash 幀、amount 每擊 1、lifetime 0.25、gravity 0，喺地面碰撞或定高 y=0 觸發。M1 可先淨係用 streak。"
+   },
+   "spec": "particles/rain.json"
+  },
+  {
+   "id": "snow",
+   "zh": "雪",
+   "cell": 8,
+   "image": "particles/snow.png",
+   "frames_h": 8,
+   "frames_v": 4,
+   "pivot": [
+    4,
+    4
+   ],
+   "groups": {
+    "dot": [
+     "r0c0",
+     "r0c1",
+     "r0c2",
+     "r0c3",
+     "r0c4",
+     "r0c5",
+     "r0c6",
+     "r0c7"
+    ],
+    "plus": [
+     "r1c0",
+     "r1c1",
+     "r1c2",
+     "r1c3",
+     "r1c4",
+     "r1c5",
+     "r1c6",
+     "r1c7"
+    ],
+    "asterisk": [
+     "r2c0",
+     "r2c1",
+     "r2c2",
+     "r2c3",
+     "r2c4",
+     "r2c5",
+     "r2c6",
+     "r2c7"
+    ],
+    "crystal": [
+     "r3c0",
+     "r3c1",
+     "r3c2",
+     "r3c3",
+     "r3c4",
+     "r3c5",
+     "r3c6",
+     "r3c7"
+    ]
+   },
+   "material": {
+    "shading_mode": "unshaded",
+    "blend_mode": "mix",
+    "transparency": "alpha_scissor",
+    "alpha_scissor_threshold": 0.5,
+    "billboard": "particle",
+    "particles_anim_h_frames": 8,
+    "particles_anim_v_frames": 4,
+    "particles_anim_loop": true,
+    "texture_filter": "Nearest",
+    "vertex_color_use_as_albedo": true
+   },
+   "process_material": {
+    "emission_shape": "box",
+    "emission_box_extents": [
+     220,
+     8,
+     140
+    ],
+    "emission_offset_hint": "畫面頂上方 y≈200。",
+    "direction": [
+     0.1,
+     -1,
+     0
+    ],
+    "spread": 12,
+    "initial_velocity_min": 12,
+    "initial_velocity_max": 28,
+    "gravity": [
+     0,
+     -8,
+     0
+    ],
+    "damping_min": 0.2,
+    "damping_max": 0.6,
+    "angular_velocity_min": -6,
+    "angular_velocity_max": 6,
+    "orbit_velocity_min": -0.12,
+    "orbit_velocity_max": 0.12,
+    "scale_min": 0.6,
+    "scale_max": 1.5,
+    "color": "#f5f8ffff",
+    "color_ramp": [
+     {
+      "offset": 0,
+      "color": "#ffffffff"
+     },
+     {
+      "offset": 0.9,
+      "color": "#f0f6ffee"
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff00"
+     }
+    ],
+    "anim_speed_min": 0.4,
+    "anim_speed_max": 1.0,
+    "turbulence_enabled": true,
+    "turbulence_noise_strength": 1.4,
+    "turbulence_noise_scale": 2.8,
+    "turbulence_noise_speed": [
+     0.25,
+     0.0,
+     0.2
+    ]
+   },
+   "gpu_particles": {
+    "amount": 64,
+    "amount_high": 64,
+    "amount_mid": 36,
+    "amount_low": 16,
+    "amount_mobile": 36,
+    "lifetime": 6.5,
+    "preprocess": 4.0,
+    "explosiveness": 0.0,
+    "randomness": 0.55,
+    "local_coords": false,
+    "visibility_aabb": [
+     -300,
+     -20,
+     -220,
+     600,
+     280,
+     440
+    ]
+   },
+   "spec": "particles/snow.json"
+  },
+  {
+   "id": "grass_debris",
+   "zh": "撥草碎屑",
+   "cell": 8,
+   "image": "particles/grass_debris.png",
+   "frames_h": 8,
+   "frames_v": 2,
+   "pivot": [
+    4,
+    6
+   ],
+   "use": "寵物播 part_grass 嗰下喺腳底／草叢位 one-shot 爆發；H1 菜畦／花盆互動同狩獵撥草共用。",
+   "material": {
+    "shading_mode": "unshaded",
+    "blend_mode": "mix",
+    "transparency": "alpha_scissor",
+    "alpha_scissor_threshold": 0.5,
+    "billboard": "particle",
+    "particles_anim_h_frames": 8,
+    "particles_anim_v_frames": 2,
+    "particles_anim_loop": false,
+    "texture_filter": "Nearest",
+    "vertex_color_use_as_albedo": true
+   },
+   "process_material": {
+    "emission_shape": "sphere",
+    "emission_sphere_radius": 6,
+    "emission_offset_hint": "跟寵物 pivot 地面 (x, 4, z)；part_grass 第 2–3 幀觸發。",
+    "direction": [
+     0,
+     1,
+     0
+    ],
+    "spread": 75,
+    "initial_velocity_min": 36,
+    "initial_velocity_max": 88,
+    "gravity": [
+     0,
+     -90,
+     0
+    ],
+    "damping_min": 2.0,
+    "damping_max": 4.0,
+    "angular_velocity_min": -18,
+    "angular_velocity_max": 18,
+    "scale_min": 0.7,
+    "scale_max": 1.4,
+    "color": "#ffffff",
+    "color_ramp": [
+     {
+      "offset": 0,
+      "color": "#ffffffff"
+     },
+     {
+      "offset": 0.65,
+      "color": "#ffffffdd"
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff00"
+     }
+    ],
+    "anim_speed_min": 0.0,
+    "anim_speed_max": 0.0,
+    "hue_variation_min": -0.04,
+    "hue_variation_max": 0.05
+   },
+   "gpu_particles": {
+    "amount": 14,
+    "amount_high": 14,
+    "amount_mid": 10,
+    "amount_low": 6,
+    "amount_mobile": 10,
+    "lifetime": 0.55,
+    "preprocess": 0.0,
+    "explosiveness": 1.0,
+    "randomness": 0.6,
+    "one_shot": true,
+    "local_coords": false,
+    "visibility_aabb": [
+     -40,
+     0,
+     -40,
+     80,
+     60,
+     80
+    ],
+    "trigger": "part_grass 開始後約 80–120ms 發射一次。"
+   },
+   "spec": "particles/grass_debris.json"
+  }
+ ]
+}

@@ -1,0 +1,42 @@
+MANIFEST_GODOT_FX1 — 《微光小圃》Godot 4 強化第一批：景深＋7 套調色 LUT、粒子圖（螢火／落葉四季／花瓣／雨／雪／撥草碎屑）
+疊喺 art/m1-icons-hunt @ 13a0047796cc51bfee4aa107f44b205e58f0e245（未 merge）。解壓到 repo 根，全部新路徑 art-pet/fx/ 同 art-pet/tools/*godot_fx1*／fx1_common.py，唔覆蓋花園 H1、M1 icon／狩獵、唔掂 M2 動作。
+美術全程序化（Pillow／numpy），冇 AI 圖。目標只係 Godot 4（舊 HTML5／three.js 已凍結）。
+畫質：低檔＝開發基準，同一個 3D 場景，熄影／glow／DoF／fog；LUT 仍開；粒子用 amount_low。中／高開效果（只開發者模式）。見 art-pet/fx/FORMAT.md §0.1 同 environments.json quality。
+LUT：官方 33×33×33 strip（1089×33），Import As Texture3D、Horizontal slices=33。CameraAttributesPractical DoF 對齊 H1 pitch 30°／dist 580。
+生成：PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/build_godot_fx1.py [--root .]
+驗證：PYTHONDONTWRITEBYTECODE=1 python3 art-pet/tools/validate_godot_fx1.py [--root .]  → art-pet/fx/validation.json
+預覽（唔包入 zip）：/workspace/game-design/godot_fx1/
+冇 git commit／push／merge。
+
+[A] art-pet/fx/FORMAT.md  10550B  sha1:3226a7b3950b
+[A] art-pet/fx/environments/environments.json  15549B  sha1:0ec145e29c8f
+[A] art-pet/fx/godot_import.json  1138B  sha1:45a401f34a02
+[A] art-pet/fx/luts/lut_autumn.png  15557B  sha1:d47ae98fd3e9
+[A] art-pet/fx/luts/lut_day.png  10497B  sha1:94036e33fc5a
+[A] art-pet/fx/luts/lut_dusk.png  14619B  sha1:57f420e8c77f
+[A] art-pet/fx/luts/lut_identity.png  296B  sha1:787a89056ff8
+[A] art-pet/fx/luts/lut_night.png  27325B  sha1:f6ee7113e6c7
+[A] art-pet/fx/luts/lut_spring.png  11617B  sha1:5a3d283b706c
+[A] art-pet/fx/luts/lut_summer.png  10529B  sha1:8c40b82be7b6
+[A] art-pet/fx/luts/lut_winter.png  17347B  sha1:6c52f8a56a6b
+[A] art-pet/fx/luts/luts.json  1118B  sha1:685fe6257fbb
+[A] art-pet/fx/particles/fireflies.json  3605B  sha1:ba4eaf211732
+[A] art-pet/fx/particles/fireflies.png  265B  sha1:24c1214c8a20
+[A] art-pet/fx/particles/grass_debris.json  3168B  sha1:5af16d625dba
+[A] art-pet/fx/particles/grass_debris.png  221B  sha1:a33b42dd3ad5
+[A] art-pet/fx/particles/leaves.json  12046B  sha1:79f964f8e1f2
+[A] art-pet/fx/particles/leaves.png  6254B  sha1:7a0e22338855
+[A] art-pet/fx/particles/particles.json  16413B  sha1:72f33f3d0f13
+[A] art-pet/fx/particles/petals.json  4140B  sha1:4b47090a9f90
+[A] art-pet/fx/particles/petals.png  573B  sha1:0cc9175ec3e2
+[A] art-pet/fx/particles/rain.json  2581B  sha1:098800f480f1
+[A] art-pet/fx/particles/rain.png  228B  sha1:60407cca0135
+[A] art-pet/fx/particles/snow.json  4869B  sha1:8d9eae54ee1d
+[A] art-pet/fx/particles/snow.png  374B  sha1:441029fcd446
+[A] art-pet/fx/validation.json  10697B  sha1:473a150f0f49
+[A] art-pet/tools/build_godot_fx1.py  39067B  sha1:86506287d350
+[A] art-pet/tools/fx1_common.py  12090B  sha1:9bb4514c4241
+[A] art-pet/tools/preview_godot_fx1.py  23617B  sha1:318dcbb3183f
+[A] art-pet/tools/validate_godot_fx1.py  11823B  sha1:7501126e940f
+
+檔案 30  合計 288173B

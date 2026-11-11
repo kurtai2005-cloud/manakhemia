@@ -1,0 +1,220 @@
+{
+ "id": "grass_debris",
+ "zh": "撥草碎屑",
+ "cell": 8,
+ "image": "particles/grass_debris.png",
+ "frames_h": 8,
+ "frames_v": 2,
+ "pivot": [
+  4,
+  6
+ ],
+ "atlas_frames": {
+  "r0c0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c1": {
+   "frame": {
+    "x": 8,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c2": {
+   "frame": {
+    "x": 16,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c3": {
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c4": {
+   "frame": {
+    "x": 32,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c5": {
+   "frame": {
+    "x": 40,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c6": {
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c7": {
+   "frame": {
+    "x": 56,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c0": {
+   "frame": {
+    "x": 0,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c1": {
+   "frame": {
+    "x": 8,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c2": {
+   "frame": {
+    "x": 16,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c3": {
+   "frame": {
+    "x": 24,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c4": {
+   "frame": {
+    "x": 32,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c5": {
+   "frame": {
+    "x": 40,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c6": {
+   "frame": {
+    "x": 48,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c7": {
+   "frame": {
+    "x": 56,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  }
+ },
+ "use": "寵物播 part_grass 嗰下喺腳底／草叢位 one-shot 爆發；H1 菜畦／花盆互動同狩獵撥草共用。",
+ "material": {
+  "shading_mode": "unshaded",
+  "blend_mode": "mix",
+  "transparency": "alpha_scissor",
+  "alpha_scissor_threshold": 0.5,
+  "billboard": "particle",
+  "particles_anim_h_frames": 8,
+  "particles_anim_v_frames": 2,
+  "particles_anim_loop": false,
+  "texture_filter": "Nearest",
+  "vertex_color_use_as_albedo": true
+ },
+ "process_material": {
+  "emission_shape": "sphere",
+  "emission_sphere_radius": 6,
+  "emission_offset_hint": "跟寵物 pivot 地面 (x, 4, z)；part_grass 第 2–3 幀觸發。",
+  "direction": [
+   0,
+   1,
+   0
+  ],
+  "spread": 75,
+  "initial_velocity_min": 36,
+  "initial_velocity_max": 88,
+  "gravity": [
+   0,
+   -90,
+   0
+  ],
+  "damping_min": 2.0,
+  "damping_max": 4.0,
+  "angular_velocity_min": -18,
+  "angular_velocity_max": 18,
+  "scale_min": 0.7,
+  "scale_max": 1.4,
+  "color": "#ffffff",
+  "color_ramp": [
+   {
+    "offset": 0,
+    "color": "#ffffffff"
+   },
+   {
+    "offset": 0.65,
+    "color": "#ffffffdd"
+   },
+   {
+    "offset": 1,
+    "color": "#ffffff00"
+   }
+  ],
+  "anim_speed_min": 0.0,
+  "anim_speed_max": 0.0,
+  "hue_variation_min": -0.04,
+  "hue_variation_max": 0.05
+ },
+ "gpu_particles": {
+  "amount": 14,
+  "amount_high": 14,
+  "amount_mid": 10,
+  "amount_low": 6,
+  "amount_mobile": 10,
+  "lifetime": 0.55,
+  "preprocess": 0.0,
+  "explosiveness": 1.0,
+  "randomness": 0.6,
+  "one_shot": true,
+  "local_coords": false,
+  "visibility_aabb": [
+   -40,
+   0,
+   -40,
+   80,
+   60,
+   80
+  ],
+  "trigger": "part_grass 開始後約 80–120ms 發射一次。"
+ }
+}

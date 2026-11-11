@@ -1,0 +1,572 @@
+{
+ "total": 113,
+ "passed": 113,
+ "failed": 0,
+ "checks": [
+  {
+   "check": "必備檔齊",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_identity 1089×33",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_identity 係官方佈局中性立方（最大誤差 ≤1）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "slice0 四角 R／G 軸正確",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "最後 slice B=255 四角正確",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_day 1089×33 RGB",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_day 唔係中性（有調色）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_dusk 1089×33 RGB",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_dusk 唔係中性（有調色）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_night 1089×33 RGB",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_night 唔係中性（有調色）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_spring 1089×33 RGB",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_spring 唔係中性（有調色）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_summer 1089×33 RGB",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_summer 唔係中性（有調色）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_autumn 1089×33 RGB",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_autumn 唔係中性（有調色）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_winter 1089×33 RGB",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "lut_winter 唔係中性（有調色）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "七套季節／時段 LUT 內容互唔相同",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "中性 LUT 套用灰階誤差 ≤2",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "夜 LUT：引擎過亮地面（L≈55 暖綠）→ L 18–32",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "夜 LUT：夜空中性（L≈51）保持 45–65",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "夜 LUT：燈高光仍然亮（L≥140）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "夜 LUT：已暗地面（L≈22）唔再大幅壓暗（L 16–30）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "environments format",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "7 個 preset：日暮夜春夏秋冬",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "CameraAttributesPractical 有 near／far DoF 距離同 amount",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "DoF 對齊 dist 580（near < 580 < far）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "day 有 glow／fog depth／tonemap Linear／adjustment＋LUT",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "day 關 SSR／SSAO／SDFGI（手機）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dusk 有 glow／fog depth／tonemap Linear／adjustment＋LUT",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "dusk 關 SSR／SSAO／SDFGI（手機）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "night 有 glow／fog depth／tonemap Linear／adjustment＋LUT",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "night 關 SSR／SSAO／SDFGI（手機）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "spring 有 glow／fog depth／tonemap Linear／adjustment＋LUT",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "spring 關 SSR／SSAO／SDFGI（手機）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "summer 有 glow／fog depth／tonemap Linear／adjustment＋LUT",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "summer 關 SSR／SSAO／SDFGI（手機）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "autumn 有 glow／fog depth／tonemap Linear／adjustment＋LUT",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "autumn 關 SSR／SSAO／SDFGI（手機）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "winter 有 glow／fog depth／tonemap Linear／adjustment＋LUT",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "winter 關 SSR／SSAO／SDFGI（手機）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "godot_import LUT slices 33×1 Texture3D",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "quality.baseline＝low",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "有 low／mid／high 三檔",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "low：熄影／glow／DoF／fog，LUT 仍開",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "mid：影／glow／DoF／fog／LUT 開",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "high：影／glow／DoF／fog／LUT 開",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "field_tiers.glow_enabled low=false、mid/high=true",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "field_tiers.fog_enabled low=false、mid/high=true",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "field_tiers.dof_blur_near_enabled low=false、mid/high=true",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "field_tiers.dof_blur_far_enabled low=false、mid/high=true",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "field_tiers.shadow_enabled low=false、mid/high=true",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "field_tiers LUT 三檔都開",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "particles 6 款",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "粒子 id 齊",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fireflies 圖存在、寬高 2 次方",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fireflies alpha 只有 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fireflies 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fireflies 有足夠不透明像素",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fireflies 格尺寸整除（至少一格）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fireflies 有 GPUParticles／ProcessMaterial 參數",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fireflies material Filter Nearest",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "螢火蟲 blend add + emissive",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "螢火蟲 amount 配合 H1（16–40）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "fireflies 有 amount_low／mid／high，且 low≤mid≤high、low≥1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "leaves 圖存在、寬高 2 次方",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "leaves alpha 只有 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "leaves 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "leaves 有足夠不透明像素",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "leaves 格尺寸整除（至少一格）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "leaves 有 GPUParticles／ProcessMaterial 參數",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "leaves material Filter Nearest",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "落葉有四季 groups",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "leaves 有 amount_low／mid／high，且 low≤mid≤high、low≥1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "petals 圖存在、寬高 2 次方",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "petals alpha 只有 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "petals 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "petals 有足夠不透明像素",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "petals 格尺寸整除（至少一格）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "petals 有 GPUParticles／ProcessMaterial 參數",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "petals material Filter Nearest",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "petals 有 amount_low／mid／high，且 low≤mid≤high、low≥1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rain 圖存在、寬高 2 次方",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rain alpha 只有 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rain 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rain 有足夠不透明像素",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rain 格尺寸整除（至少一格）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rain 有 GPUParticles／ProcessMaterial 參數",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rain material Filter Nearest",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "rain 有 amount_low／mid／high，且 low≤mid≤high、low≥1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snow 圖存在、寬高 2 次方",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snow alpha 只有 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snow 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snow 有足夠不透明像素",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snow 格尺寸整除（至少一格）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snow 有 GPUParticles／ProcessMaterial 參數",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snow material Filter Nearest",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "snow 有 amount_low／mid／high，且 low≤mid≤high、low≥1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_debris 圖存在、寬高 2 次方",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_debris alpha 只有 0/255",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_debris 透明 RGB=0",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_debris 有足夠不透明像素",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_debris 格尺寸整除（至少一格）",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_debris 有 GPUParticles／ProcessMaterial 參數",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_debris material Filter Nearest",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "撥草碎屑 one_shot＋explosiveness 1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "grass_debris 有 amount_low／mid／high，且 low≤mid≤high、low≥1",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "工具 fx1_common.py",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "工具 build_godot_fx1.py",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "工具 validate_godot_fx1.py",
+   "ok": true,
+   "info": null
+  },
+  {
+   "check": "工具 preview_godot_fx1.py",
+   "ok": true,
+   "info": null
+  }
+ ]
+}

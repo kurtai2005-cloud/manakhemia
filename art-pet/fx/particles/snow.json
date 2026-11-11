@@ -1,0 +1,399 @@
+{
+ "id": "snow",
+ "zh": "雪",
+ "cell": 8,
+ "image": "particles/snow.png",
+ "frames_h": 8,
+ "frames_v": 4,
+ "pivot": [
+  4,
+  4
+ ],
+ "groups": {
+  "dot": [
+   "r0c0",
+   "r0c1",
+   "r0c2",
+   "r0c3",
+   "r0c4",
+   "r0c5",
+   "r0c6",
+   "r0c7"
+  ],
+  "plus": [
+   "r1c0",
+   "r1c1",
+   "r1c2",
+   "r1c3",
+   "r1c4",
+   "r1c5",
+   "r1c6",
+   "r1c7"
+  ],
+  "asterisk": [
+   "r2c0",
+   "r2c1",
+   "r2c2",
+   "r2c3",
+   "r2c4",
+   "r2c5",
+   "r2c6",
+   "r2c7"
+  ],
+  "crystal": [
+   "r3c0",
+   "r3c1",
+   "r3c2",
+   "r3c3",
+   "r3c4",
+   "r3c5",
+   "r3c6",
+   "r3c7"
+  ]
+ },
+ "atlas_frames": {
+  "r0c0": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c1": {
+   "frame": {
+    "x": 8,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c2": {
+   "frame": {
+    "x": 16,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c3": {
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c4": {
+   "frame": {
+    "x": 32,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c5": {
+   "frame": {
+    "x": 40,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c6": {
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r0c7": {
+   "frame": {
+    "x": 56,
+    "y": 0,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c0": {
+   "frame": {
+    "x": 0,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c1": {
+   "frame": {
+    "x": 8,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c2": {
+   "frame": {
+    "x": 16,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c3": {
+   "frame": {
+    "x": 24,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c4": {
+   "frame": {
+    "x": 32,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c5": {
+   "frame": {
+    "x": 40,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c6": {
+   "frame": {
+    "x": 48,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r1c7": {
+   "frame": {
+    "x": 56,
+    "y": 8,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r2c0": {
+   "frame": {
+    "x": 0,
+    "y": 16,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r2c1": {
+   "frame": {
+    "x": 8,
+    "y": 16,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r2c2": {
+   "frame": {
+    "x": 16,
+    "y": 16,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r2c3": {
+   "frame": {
+    "x": 24,
+    "y": 16,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r2c4": {
+   "frame": {
+    "x": 32,
+    "y": 16,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r2c5": {
+   "frame": {
+    "x": 40,
+    "y": 16,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r2c6": {
+   "frame": {
+    "x": 48,
+    "y": 16,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r2c7": {
+   "frame": {
+    "x": 56,
+    "y": 16,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r3c0": {
+   "frame": {
+    "x": 0,
+    "y": 24,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r3c1": {
+   "frame": {
+    "x": 8,
+    "y": 24,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r3c2": {
+   "frame": {
+    "x": 16,
+    "y": 24,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r3c3": {
+   "frame": {
+    "x": 24,
+    "y": 24,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r3c4": {
+   "frame": {
+    "x": 32,
+    "y": 24,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r3c5": {
+   "frame": {
+    "x": 40,
+    "y": 24,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r3c6": {
+   "frame": {
+    "x": 48,
+    "y": 24,
+    "w": 8,
+    "h": 8
+   }
+  },
+  "r3c7": {
+   "frame": {
+    "x": 56,
+    "y": 24,
+    "w": 8,
+    "h": 8
+   }
+  }
+ },
+ "material": {
+  "shading_mode": "unshaded",
+  "blend_mode": "mix",
+  "transparency": "alpha_scissor",
+  "alpha_scissor_threshold": 0.5,
+  "billboard": "particle",
+  "particles_anim_h_frames": 8,
+  "particles_anim_v_frames": 4,
+  "particles_anim_loop": true,
+  "texture_filter": "Nearest",
+  "vertex_color_use_as_albedo": true
+ },
+ "process_material": {
+  "emission_shape": "box",
+  "emission_box_extents": [
+   220,
+   8,
+   140
+  ],
+  "emission_offset_hint": "畫面頂上方 y≈200。",
+  "direction": [
+   0.1,
+   -1,
+   0
+  ],
+  "spread": 12,
+  "initial_velocity_min": 12,
+  "initial_velocity_max": 28,
+  "gravity": [
+   0,
+   -8,
+   0
+  ],
+  "damping_min": 0.2,
+  "damping_max": 0.6,
+  "angular_velocity_min": -6,
+  "angular_velocity_max": 6,
+  "orbit_velocity_min": -0.12,
+  "orbit_velocity_max": 0.12,
+  "scale_min": 0.6,
+  "scale_max": 1.5,
+  "color": "#f5f8ffff",
+  "color_ramp": [
+   {
+    "offset": 0,
+    "color": "#ffffffff"
+   },
+   {
+    "offset": 0.9,
+    "color": "#f0f6ffee"
+   },
+   {
+    "offset": 1,
+    "color": "#ffffff00"
+   }
+  ],
+  "anim_speed_min": 0.4,
+  "anim_speed_max": 1.0,
+  "turbulence_enabled": true,
+  "turbulence_noise_strength": 1.4,
+  "turbulence_noise_scale": 2.8,
+  "turbulence_noise_speed": [
+   0.25,
+   0.0,
+   0.2
+  ]
+ },
+ "gpu_particles": {
+  "amount": 64,
+  "amount_high": 64,
+  "amount_mid": 36,
+  "amount_low": 16,
+  "amount_mobile": 36,
+  "lifetime": 6.5,
+  "preprocess": 4.0,
+  "explosiveness": 0.0,
+  "randomness": 0.55,
+  "local_coords": false,
+  "visibility_aabb": [
+   -300,
+   -20,
+   -220,
+   600,
+   280,
+   440
+  ]
+ }
+}
