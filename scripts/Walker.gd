@@ -46,6 +46,7 @@ var follow_dist := 16.0
 var click_area: Area3D
 var walk_bob := false
 var _bob_t := 0.0
+var _base_offset := Vector2.ZERO
 var _vis_tex: Texture2D
 var _vis_top := 0.0
 var _vis_bot := 0.0
@@ -67,8 +68,9 @@ func setup(tex_frames: Dictionary, p_size: float, pvt: Vector2, fsize: Vector2) 
 	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	sprite.shaded = true
 	sprite.double_sided = true
-	# pivot：置中後把腳底對準 origin
-	sprite.offset = Vector2(frame_size.x * 0.5 - pivot.x, pivot.y - frame_size.y * 0.5)
+	# pivot：置中後把腳底對準 origin（之後所有 clip 都經 _apply_clip_sheet）
+	_base_offset = foot_offset(frame_size, pivot)
+	sprite.offset = _base_offset
 	add_child(sprite)
 	_base_modulate = sprite.modulate
 	_add_blob()
@@ -203,20 +205,32 @@ func _maybe_liveliness() -> void:
 	_fire_sfx(0)
 
 
+func foot_offset(fs: Vector2, pv: Vector2) -> Vector2:
+	# Sprite3D centered=true：把每張圖嘅腳錨對準 origin
+	return Vector2(fs.x * 0.5 - pv.x, pv.y - fs.y * 0.5)
+
+
 func _apply_live_display(on: bool) -> void:
+	# 用該圖集自己嘅 frame size／foot pivot；世界尺吋跟角色官方體型，唔好逐 clip 轉 ×2/×3
 	if sprite == null:
 		return
 	if on and ArtImporter:
-		# 共用 clip：有對應體型圖集就用；冇 M 就 fallback L 紋理，但顯示尺吋／pivot 跟官方體型（M＝48、pivot 24,45）
-		var dest := ArtImporter.size_px(body_size)
-		var src := _live_src_size if _live_src_size > 0.0 else 64.0
-		sprite.pixel_size = dest / src * _base_pixel_size
-		var pv_dest: Vector2 = ArtImporter.liveliness_pivot(body_size)
-		var pv := Vector2(pv_dest.x * src / dest, pv_dest.y * src / dest)
-		sprite.offset = Vector2(src * 0.5 - pv.x, pv.y - src * 0.5)
+		var rec: Dictionary = ArtImporter.clip_sheet(live_clip, body_size, character)
+		var fs: Vector2 = rec.get("frame_size", Vector2(_live_src_size, _live_src_size))
+		if fs.x <= 0.0:
+			fs = Vector2(_live_src_size if _live_src_size > 0.0 else 64.0, _live_src_size if _live_src_size > 0.0 else 64.0)
+		var pv: Vector2 = rec.get("pivot", ArtImporter.liveliness_pivot(body_size))
+		if pv == Vector2.ZERO:
+			pv = ArtImporter.liveliness_pivot(body_size)
+		var official := ArtImporter.size_px(body_size)
+		if official <= 0.0:
+			official = frame_size.x if frame_size.x > 0.0 else 64.0
+		sprite.pixel_size = official / fs.x * _base_pixel_size
+		_base_offset = foot_offset(fs, pv)
 	else:
 		sprite.pixel_size = pixel_size
-		sprite.offset = Vector2(frame_size.x * 0.5 - pivot.x, pivot.y - frame_size.y * 0.5)
+		_base_offset = foot_offset(frame_size, pivot)
+	sprite.offset = _base_offset
 
 
 func _fire_sfx(frame_index: int) -> void:
@@ -527,15 +541,16 @@ func world_height() -> float:
 
 
 func _apply_walk_bob(dt: float) -> void:
+	# 彈跳只加喺腳錨 offset 上面，停步唔好把 offset 清成 0（否則半個身體沒入地）
 	if sprite == null:
 		return
+	var bob := 0.0
 	if walk_bob and moving:
 		_bob_t += dt
-		sprite.offset.y = sin(_bob_t * TAU * 5.0) * 3.0
+		bob = sin(_bob_t * TAU * 5.0) * 3.0
 	else:
 		_bob_t = 0.0
-		if absf(sprite.offset.y) > 0.01:
-			sprite.offset.y = 0.0
+	sprite.offset = _base_offset + Vector2(0.0, bob)
 
 
 func _scan_visible(tex: Texture2D) -> void:

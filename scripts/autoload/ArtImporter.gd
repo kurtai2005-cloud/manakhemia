@@ -495,7 +495,9 @@ func _load_hunt_clips() -> void:
 			var tex: Texture2D = load(dir + img) if img != "" else null
 			if tex == null:
 				continue
-			_hunt["%s@%s" % [str(clip), str(sz)]] = {"doc": doc, "tex": tex}
+			var fs := float(doc.get("frameSize", doc.get("meta", {}).get("frameSize", 64) if doc.get("meta", {}) is Dictionary else 64))
+			var pv = doc.get("pivotPx", doc.get("meta", {}).get("pivotPx", [fs * 0.5, fs - 3.0]) if doc.get("meta", {}) is Dictionary else [fs * 0.5, fs - 3.0])
+			_hunt["%s@%s" % [str(clip), str(sz)]] = {"doc": doc, "tex": tex, "frame_size": fs, "pivot": pv}
 
 
 func _frames_from_doc(doc: Dictionary, tex: Texture2D, clip: String) -> Array:
@@ -525,6 +527,76 @@ func _frames_from_doc(doc: Dictionary, tex: Texture2D, clip: String) -> Array:
 	return arr
 
 
+
+
+
+func _pivot_from(v: Variant, frame_px: float) -> Vector2:
+	if v is Array and v.size() >= 2:
+		return Vector2(float(v[0]), float(v[1]))
+	if v is Dictionary:
+		return Vector2(float(v.get("x", frame_px * 0.5)), float(v.get("y", frame_px - 3.0)))
+	return Vector2(frame_px * 0.5, frame_px - 3.0)
+
+
+func _sheet_from_rec(rec: Dictionary) -> Dictionary:
+	var fs := float(rec.get("frame_size", 64))
+	var pv := _pivot_from(rec.get("pivot", []), fs)
+	var doc: Dictionary = rec.get("doc", {})
+	if doc is Dictionary:
+		if fs <= 0.0:
+			fs = float(doc.get("frameSize", 64))
+		if rec.get("pivot") == null or (rec.get("pivot") is Array and rec.get("pivot").is_empty()):
+			pv = _pivot_from(doc.get("pivotPx", []), fs)
+	return {"frame_size": Vector2(fs, fs), "pivot": pv}
+
+
+func clip_sheet(name: String, size: String = "", character: String = "") -> Dictionary:
+	# 每張圖集自己嘅 frame size 同腳錨；Walker 用呢份資料對地，唔好寫死 64／(32,61)
+	if name == "":
+		return {}
+	if name == "idle_quiet":
+		var sz := size if size in _idle_quiet else ("L" if _idle_quiet.has("L") else "")
+		if sz != "":
+			return _sheet_from_rec(_idle_quiet[sz])
+	if name in ["part_grass", "pounce", "carry_fruit", "cheer"]:
+		var hsz := size if size != "" else "L"
+		var hkey := "%s@%s" % [name, hsz]
+		if not _hunt.has(hkey):
+			hkey = "%s@L" % name
+		if _hunt.has(hkey):
+			return _sheet_from_rec(_hunt[hkey])
+	if character != "":
+		var who := character
+		if who == "visitor":
+			who = str(actor_spec("visitor").get("form", "snail_postman"))
+		var bag: Dictionary = _actor_atlases.get(who, _actor_atlases.get(character, {}))
+		if bag.has(name):
+			return _sheet_from_rec(bag[name])
+	var want := size_px(size) if size != "" else 0.0
+	var fallback := {}
+	for atlas in _atlases:
+		var doc: Dictionary = atlas["doc"]
+		var frames: Dictionary = doc.get("frames", {})
+		var key := ""
+		if frames.has("%s_01" % name):
+			key = "%s_01" % name
+		elif frames.has("%s_noface_01" % name):
+			key = "%s_noface_01" % name
+		if key == "":
+			continue
+		var info: Dictionary = frames[key]
+		var fr: Dictionary = info.get("frame", info)
+		var fw := float(fr.get("w", atlas.get("frame_size", 64)))
+		var fh := float(fr.get("h", fw))
+		var raw_pv = info.get("pivotPx", doc.get("pivotPx", doc.get("meta", {}).get("pivotPx", []) if doc.get("meta", {}) is Dictionary else []))
+		var pv := _pivot_from(raw_pv, fw)
+		var rec := {"frame_size": Vector2(fw, fh), "pivot": pv}
+		var fs_atlas := float(atlas.get("frame_size", fw))
+		if want <= 0.0 or is_equal_approx(fs_atlas, want) or is_equal_approx(fw, want):
+			return rec
+		if fallback.is_empty():
+			fallback = rec
+	return fallback
 
 
 func _load_sfx_map() -> void:

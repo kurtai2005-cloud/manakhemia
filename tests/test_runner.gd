@@ -62,6 +62,7 @@ func _ready() -> void:
 	_test_m1c3_portrait_lock()
 	_test_m1c3_loop_imports()
 	_test_m1c3_codex_map_bus()
+	_test_m1d_anim_foot_pivot()
 	print("=== %d passed, %d failed ===" % [passed, failed])
 
 	get_tree().quit(0 if failed == 0 else 1)
@@ -1665,3 +1666,110 @@ func _test_m1c3_codex_map_bus() -> void:
 				ui_count += 1
 	ok(ui_count == 2, "two new_entry bus fields are UI", ui_count)
 	ok(AudioManager.bus_for("sfx_codex_new_entry") == "UI", "AudioManager routes new_entry to UI")
+
+
+func _test_m1d_anim_foot_pivot() -> void:
+	print("# M1d foot pivot + scale consistent across clips")
+	ok(ArtImporter != null and ArtImporter.has_method("clip_sheet"), "ArtImporter.clip_sheet present")
+	var w := Walker.new()
+	w.character = "tuanrong"
+	w.body_size = "L"
+	add_child(w)
+	var dir4: Dictionary = {}
+	# reuse a minimal front_idle so _anim 唔會空
+	var packed_tex: Texture2D = load("res://art/garden3d/dir4/atlas_radiant_dir4.png")
+	ok(packed_tex != null, "dir4 atlas texture")
+	var at := AtlasTexture.new()
+	at.atlas = packed_tex
+	at.region = Rect2(2, 2, 64, 64)
+	dir4 = {
+		"front_idle": [at],
+		"front_walk": [at],
+		"side_idle": [at],
+		"side_walk": [at],
+		"back_idle": [at],
+		"back_walk": [at],
+	}
+	w.setup(dir4, 1.0, Vector2(32, 61), Vector2(64, 64))
+	var idle_off: Vector2 = w.foot_offset(Vector2(64, 64), Vector2(32, 61))
+	ok(is_equal_approx(w.sprite.offset.x, idle_off.x) and is_equal_approx(w.sprite.offset.y, idle_off.y), "setup plants feet with pivot offset", w.sprite.offset)
+	# 模擬每幀 _anim：以前會把 offset.y 清成 0
+	w.moving = false
+	for i in range(6):
+		w._anim(0.1)
+	ok(is_equal_approx(w.sprite.pixel_size, 1.0), "idle pixel_size stays 1 for L/64", w.sprite.pixel_size)
+	ok(is_equal_approx(w.sprite.offset.y, idle_off.y), "idle _anim does not zero foot offset", w.sprite.offset)
+	w.moving = true
+	w.dir = "front"
+	for i in range(6):
+		w._anim(0.1)
+	ok(is_equal_approx(w.sprite.offset.y, idle_off.y), "walk without bob keeps foot offset", w.sprite.offset)
+	ok(is_equal_approx(w.sprite.pixel_size, 1.0), "walk pixel_size stays 1", w.sprite.pixel_size)
+
+	var clips: Array = [
+		"scratch", "sneeze", "sniff", "idle_quiet", "eat", "yawn", "sleep_loop",
+		"walk_happy", "nuzzle", "pounce", "cheer", "part_grass", "carry_fruit",
+	]
+	var sizes: Dictionary = {}
+	var ok_all := true
+	var bad: Array = []
+	for name in clips:
+		var arr: Array = ArtImporter.frames_of(str(name), "L", "tuanrong")
+		if arr.is_empty():
+			arr = ArtImporter.frames_of(str(name), "L")
+		if arr.is_empty():
+			ok(false, "clip %s has frames" % name)
+			ok_all = false
+			continue
+		ok(w.play_live_clip(str(name), true), "play %s" % name)
+		var rec: Dictionary = ArtImporter.clip_sheet(str(name), "L", "tuanrong")
+		ok(rec.has("pivot") and rec.has("frame_size"), "clip_sheet %s has pivot+size" % name, rec)
+		var fs: Vector2 = rec.get("frame_size", Vector2(64, 64))
+		var pv: Vector2 = rec.get("pivot", Vector2(32, 61))
+		var expect_ps := 64.0 / fs.x * 1.0
+		var expect_off: Vector2 = w.foot_offset(fs, pv)
+		if not is_equal_approx(w.sprite.pixel_size, expect_ps):
+			ok_all = false
+			bad.append("%s pixel_size %s want %s" % [name, w.sprite.pixel_size, expect_ps])
+		if not (is_equal_approx(w.sprite.offset.x, expect_off.x) and is_equal_approx(w.sprite.offset.y, expect_off.y)):
+			ok_all = false
+			bad.append("%s offset %s want %s" % [name, w.sprite.offset, expect_off])
+		sizes[name] = w.sprite.pixel_size
+		w.stop_live()
+		w._anim(0.1)
+		if not is_equal_approx(w.sprite.pixel_size, 1.0) or not is_equal_approx(w.sprite.offset.y, idle_off.y):
+			ok_all = false
+			bad.append("%s after stop not restored ps=%s off=%s" % [name, w.sprite.pixel_size, w.sprite.offset])
+	ok(ok_all, "all live clips keep official scale and per-sheet foot pivot", bad)
+	# 64px 圖同 idle 同一世界尺吋
+	var ps64_ok := true
+	for name in sizes.keys():
+		var rec2: Dictionary = ArtImporter.clip_sheet(str(name), "L", "tuanrong")
+		var fs2: Vector2 = rec2.get("frame_size", Vector2(64, 64))
+		if is_equal_approx(fs2.x, 64.0) and not is_equal_approx(float(sizes[name]), 1.0):
+			ps64_ok = false
+	ok(ps64_ok, "every 64px L clip uses the same pixel_size as idle", sizes)
+
+	# visitor walk_bob 唔可以覆蓋腳錨
+	var vis := Walker.new()
+	vis.character = "visitor"
+	vis.body_size = "M"
+	add_child(vis)
+	var at2 := AtlasTexture.new()
+	at2.atlas = packed_tex
+	at2.region = Rect2(0, 0, 48, 48)
+	vis.setup({"front_idle": [at2], "front_walk": [at2], "side_idle": [at2], "side_walk": [at2], "back_idle": [at2], "back_walk": [at2]}, 1.0, Vector2(22, 45), Vector2(48, 48))
+	vis.walk_bob = true
+	var vbase: Vector2 = vis.foot_offset(Vector2(48, 48), Vector2(22, 45))
+	vis.moving = false
+	vis._anim(0.2)
+	ok(is_equal_approx(vis.sprite.offset.y, vbase.y), "visitor idle keeps foot offset (not 0)", vis.sprite.offset)
+	vis.moving = true
+	vis._anim(0.05)
+	ok(is_equal_approx(vis.sprite.offset.x, vbase.x), "visitor bob keeps foot offset.x", vis.sprite.offset)
+	ok(absf(vis.sprite.offset.y - vbase.y) <= 3.01, "visitor bob is added on top of foot offset", vis.sprite.offset)
+	vis.moving = false
+	vis._anim(0.1)
+	ok(is_equal_approx(vis.sprite.offset.y, vbase.y), "visitor stop bob restores foot offset, not 0", vis.sprite.offset)
+	w.queue_free()
+	vis.queue_free()
