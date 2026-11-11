@@ -1,92 +1,92 @@
 {
-  "format": "glimmer.actor_anim/1",
-  "note": "角色錨點同步行 fps，由遊美 A1／體型規格提供。腳本只讀呢份，唔好寫死。",
-  "actors": {
-    "tuanrong": {
-      "size": "L",
-      "frame": 64,
-      "pivot": [
-        32,
-        61
-      ],
-      "walk_fps": 10,
-      "idle_fps": 4
-    },
-    "kid": {
-      "size": "M",
-      "frame": 48,
-      "pivot": [
-        24,
-        45
-      ],
-      "walk_fps": 10,
-      "idle_fps": 4,
-      "walk_frames": 6,
-      "walk_frame_ms": 100,
-      "note": "A1 walk 6 幀、每幀 100 ms＝10 fps；官方 pivot (24, 45)",
-      "form": "A1",
-      "liveliness_index": "res://art-pet/sprites/series2/liveliness/clips.json"
-    },
-    "visitor": {
-      "size": "M",
-      "frame": 48,
-      "pivot": [
-        24,
-        45
-      ],
-      "walk_fps": 10,
-      "idle_fps": 4,
-      "form": "snail_postman",
-      "liveliness_index": "res://art-pet/sprites/visitors/m2/liveliness_clips.json"
-    },
-    "snail_postman": {
-      "size": "M",
-      "frame": 48,
-      "pivot": [
-        22,
-        45
-      ],
-      "walk_fps": 10,
-      "idle_fps": 4,
-      "form": "snail_postman",
-      "liveliness_index": "res://art-pet/sprites/visitors/m2/liveliness_clips.json",
-      "note": "art/art-fix1 蝸牛郵差；walk／idle 暫用 A1 條，liveliness 用自己圖集"
-    },
-    "mushroom_granny": {
-      "size": "M",
-      "frame": 48,
-      "pivot": [
-        24,
-        45
-      ],
-      "walk_fps": 10,
-      "idle_fps": 4,
-      "form": "mushroom_granny",
-      "liveliness_index": "res://art-pet/sprites/visitors/m2/liveliness_clips.json"
-    },
-    "firefly_vendor": {
-      "size": "M",
-      "frame": 48,
-      "pivot": [
-        24,
-        44
-      ],
-      "walk_fps": 10,
-      "idle_fps": 4,
-      "form": "firefly_vendor",
-      "liveliness_index": "res://art-pet/sprites/visitors/m2/liveliness_clips.json"
-    }
+ "format": "glimmer.actor_anim/1",
+ "note": "角色錨點同步行 fps，由遊美 A1／體型規格提供。腳本只讀呢份，唔好寫死。",
+ "actors": {
+  "tuanrong": {
+   "size": "L",
+   "frame": 64,
+   "pivot": [
+    32,
+    61
+   ],
+   "walk_fps": 10,
+   "idle_fps": 4
   },
-  "idle_quiet": {
-    "sizes": [
-      "S",
-      "M",
-      "L"
-    ],
-    "atlas": "res://art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_{size}.json",
-    "fps": 6,
-    "loop": true,
-    "frames": 6,
-    "_src": "art/art-fix1 文靜坐低 idle_quiet"
+  "kid": {
+   "size": "M",
+   "frame": 48,
+   "pivot": [
+    24,
+    45
+   ],
+   "walk_fps": 10,
+   "idle_fps": 4,
+   "walk_frames": 6,
+   "walk_frame_ms": 100,
+   "note": "A1 walk 6 幀、每幀 100 ms＝10 fps；官方 pivot (24, 45)",
+   "form": "A1",
+   "liveliness_index": "res://art-pet/sprites/series2/liveliness/clips.json"
+  },
+  "visitor": {
+   "size": "M",
+   "frame": 48,
+   "pivot": [
+    24,
+    40
+   ],
+   "walk_fps": 10,
+   "idle_fps": 4,
+   "form": "snail_postman",
+   "liveliness_index": "res://art-pet/sprites/visitors/m2/liveliness_clips.json"
+  },
+  "snail_postman": {
+   "size": "M",
+   "frame": 48,
+   "pivot": [
+    22,
+    40
+   ],
+   "walk_fps": 10,
+   "idle_fps": 4,
+   "form": "snail_postman",
+   "liveliness_index": "res://art-pet/sprites/visitors/m2/liveliness_clips.json",
+   "note": "art/art-fix1 蝸牛郵差；walk／idle 暫用 A1 條，liveliness 用自己圖集"
+  },
+  "mushroom_granny": {
+   "size": "M",
+   "frame": 48,
+   "pivot": [
+    24,
+    45
+   ],
+   "walk_fps": 10,
+   "idle_fps": 4,
+   "form": "mushroom_granny",
+   "liveliness_index": "res://art-pet/sprites/visitors/m2/liveliness_clips.json"
+  },
+  "firefly_vendor": {
+   "size": "M",
+   "frame": 48,
+   "pivot": [
+    24,
+    36
+   ],
+   "walk_fps": 10,
+   "idle_fps": 4,
+   "form": "firefly_vendor",
+   "liveliness_index": "res://art-pet/sprites/visitors/m2/liveliness_clips.json"
   }
+ },
+ "idle_quiet": {
+  "sizes": [
+   "S",
+   "M",
+   "L"
+  ],
+  "atlas": "res://art-pet/sprites/tuanrong/motion/m2/atlas_radiant_idle_quiet_{size}.json",
+  "fps": 6,
+  "loop": true,
+  "frames": 6,
+  "_src": "art/art-fix1 文靜坐低 idle_quiet"
+ }
 }

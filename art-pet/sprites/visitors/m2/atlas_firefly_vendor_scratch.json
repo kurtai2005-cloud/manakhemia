@@ -3,7 +3,7 @@
  "frameSize": 48,
  "pivotPx": [
   24,
-  44
+  36
  ],
  "frames": {
   "scratch_01": {
@@ -15,7 +15,7 @@
    },
    "pivotPx": {
     "x": 24,
-    "y": 44
+    "y": 36
    },
    "anchors": {
     "eyeL": [
@@ -41,7 +41,7 @@
    },
    "pivotPx": {
     "x": 24,
-    "y": 44
+    "y": 36
    },
    "anchors": {
     "eyeL": [
@@ -67,7 +67,7 @@
    },
    "pivotPx": {
     "x": 24,
-    "y": 44
+    "y": 36
    },
    "anchors": {
     "eyeL": [
@@ -93,7 +93,7 @@
    },
    "pivotPx": {
     "x": 24,
-    "y": 44
+    "y": 36
    },
    "anchors": {
     "eyeL": [
@@ -119,7 +119,7 @@
    },
    "pivotPx": {
     "x": 24,
-    "y": 44
+    "y": 36
    },
    "anchors": {
     "eyeL": [
@@ -145,7 +145,7 @@
    },
    "pivotPx": {
     "x": 24,
-    "y": 44
+    "y": 36
    },
    "anchors": {
     "eyeL": [
@@ -178,7 +178,7 @@
   "frameSize": 48,
   "pivotPx": [
    24,
-   44
+   36
   ]
  },
  "id": "firefly_vendor",
@@ -189,5 +189,5 @@
  "loop": false,
  "size": "M",
  "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
- "note": "螢火小販 外形／色；48px；pivot [24, 44]；時機同團絨 liveliness。"
+ "note": "螢火小販 外形／色；48px；pivot [24, 36]；時機同團絨 liveliness。"
 }

@@ -1,0 +1,38 @@
+MANIFEST_M1D_FEET — 腳錨對地（訪客 pivot、團絨 walk_happy 下移）+ face-kit hook 規格。
+
+疊喺 code/glimmer-godot @ 3a8437e（M1d）。解壓到 repo 根。冇 git commit／push／merge。
+日期：2026-11-11 Asia/Hong_Kong
+
+改動摘要
+- firefly_vendor 3 條 clip（scratch 6、sneeze 5、sniff 4）：pivot.y 44→36；sniff 3 幀上移以免入土。
+- snail_postman 3 條 clip（scratch 6、sneeze 5、sniff 4）：pivot.y 45→40，像素唔郁。
+- 團絨 walk_happy + walk_happy_noface：02／05 下移 3px、03／06 下移 5px（共 8 格），CLIPS 錨點跟住移。
+- data/actor_anim.json 同步新 pivot，否則訪客行路（重用 scratch／sniff）仍然浮。
+- art_fix1_liveliness.py 源頭一齊改，下次 rebuild 唔會返舊錯。
+
+掃描（±1px；跳躍幀當離地、唔算錯）
+  已修項目全部 PASS。留下：play／celebrate／catch_reach 各 1 幀 −3px（當動作）；
+  idle_quiet S／M 成套 +2（resize 規則「foot = pivot+2」）。詳見 ENGINE。
+
+Face kit：41 clip 錨點齊，建議遊程接 hook，唔好烘面。規格喺 ENGINE_M1D_FEET.txt 第四節。
+
+對照圖：/workspace/game-design/m1d_feet/before_after.png
+  （Godot 4.7.2 + Xvfb + llvmpipe + opengl3，紅線＝腳錨）
+
+[A] art-pet/tools/art_fix1_liveliness.py
+[A] art-pet/tools/fix_m1d_feet.py
+[A] art-pet/tools/scan_foot_contact.py
+[A] art-pet/tools/m1_common.py
+[A] ENGINE_M1D_FEET.txt
+[A] MANIFEST_M1D_FEET.txt
+[M] art/liveliness/atlas_radiant_live.png
+[M] art/liveliness/CLIPS.json
+[M] art-pet/sprites/visitors/m2/atlas_firefly_vendor_scratch.json
+[M] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sneeze.json
+[M] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sniff.json
+[M] art-pet/sprites/visitors/m2/atlas_firefly_vendor_sniff.png
+[M] art-pet/sprites/visitors/m2/atlas_snail_postman_scratch.json
+[M] art-pet/sprites/visitors/m2/atlas_snail_postman_sneeze.json
+[M] art-pet/sprites/visitors/m2/atlas_snail_postman_sniff.json
+[M] art-pet/sprites/visitors/m2/liveliness_clips.json
+[M] data/actor_anim.json

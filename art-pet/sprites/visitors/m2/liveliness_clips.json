@@ -1,7 +1,7 @@
 {
  "format": "art_fix1.visitor.liveliness/1",
  "count": 3,
- "note": "三位 M2 訪客各自外形嘅 scratch／sneeze／sniff，48px，pivot 同招牌動作一致。時機同團絨。",
+ "note": "三位 M2 訪客各自外形嘅 scratch／sneeze／sniff，48px，pivot 同招牌動作一致。時機同團絨。 腳錨改為實際 vis_bot：蝸牛 (22,40)、螢火 (24,36)，同招牌動作舊標註唔再跟。",
  "clips": {
   "scratch": {
    "zh": "抓癢",
@@ -31,7 +31,7 @@
    "atlas": "atlas_snail_postman_scratch.json",
    "pivotPx": [
     22,
-    45
+    40
    ],
    "frameSize": 48,
    "fps": 8,
@@ -46,7 +46,7 @@
    "atlas": "atlas_snail_postman_sneeze.json",
    "pivotPx": [
     22,
-    45
+    40
    ],
    "frameSize": 48,
    "fps": 8,
@@ -61,7 +61,7 @@
    "atlas": "atlas_snail_postman_sniff.json",
    "pivotPx": [
     22,
-    45
+    40
    ],
    "frameSize": 48,
    "fps": 6,
@@ -121,7 +121,7 @@
    "atlas": "atlas_firefly_vendor_scratch.json",
    "pivotPx": [
     24,
-    44
+    36
    ],
    "frameSize": 48,
    "fps": 8,
@@ -136,7 +136,7 @@
    "atlas": "atlas_firefly_vendor_sneeze.json",
    "pivotPx": [
     24,
-    44
+    36
    ],
    "frameSize": 48,
    "fps": 8,
@@ -151,7 +151,7 @@
    "atlas": "atlas_firefly_vendor_sniff.json",
    "pivotPx": [
     24,
-    44
+    36
    ],
    "frameSize": 48,
    "fps": 6,

@@ -3,7 +3,7 @@
  "frameSize": 48,
  "pivotPx": [
   22,
-  45
+  40
  ],
  "frames": {
   "sniff_01": {
@@ -15,7 +15,7 @@
    },
    "pivotPx": {
     "x": 22,
-    "y": 45
+    "y": 40
    },
    "anchors": {
     "eyeL": [
@@ -41,7 +41,7 @@
    },
    "pivotPx": {
     "x": 22,
-    "y": 45
+    "y": 40
    },
    "anchors": {
     "eyeL": [
@@ -67,7 +67,7 @@
    },
    "pivotPx": {
     "x": 22,
-    "y": 45
+    "y": 40
    },
    "anchors": {
     "eyeL": [
@@ -93,7 +93,7 @@
    },
    "pivotPx": {
     "x": 22,
-    "y": 45
+    "y": 40
    },
    "anchors": {
     "eyeL": [
@@ -126,7 +126,7 @@
   "frameSize": 48,
   "pivotPx": [
    22,
-   45
+   40
   ]
  },
  "id": "snail_postman",
@@ -137,5 +137,5 @@
  "loop": false,
  "size": "M",
  "facing": "朝右；朝左＝scaleX −1，法線 R→255−R",
- "note": "蝸牛郵差 外形／色；48px；pivot [22, 45]；時機同團絨 liveliness。"
+ "note": "蝸牛郵差 外形／色；48px；pivot [22, 40]；時機同團絨 liveliness。"
 }

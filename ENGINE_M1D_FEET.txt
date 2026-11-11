@@ -1,0 +1,103 @@
+ENGINE_M1D_FEET — 腳錨對地 + face-kit hook 規格（M1d）
+
+疊喺 code/glimmer-godot @ 3a8437e（M1d: plant pet feet with per-sheet pivots）。
+解壓到 repo 根。冇 git commit／push／merge。請開獨立 art 分支。
+
+日期：2026-11-11 Asia/Hong_Kong
+
+一、腳錨改咗咩
+1) 訪客 firefly_vendor scratch／sneeze／sniff
+   成套腳錨偏低 8px（vis_bot＝36，舊 pivot.y＝44）。美術一致，改 pivot.y 做 36。
+   sniff 中間兩幀原本成隻俯低到 vis_bot＝43（鼻貼地），改完 pivot 之後會入土 7px，
+   所以把 sniff_01 上移 1px、sniff_02／03 上移 6px，四幀都停喺 pivot+1（許可範圍）。
+2) 訪客 snail_postman scratch／sneeze／sniff
+   成套 vis_bot＝40，舊 pivot.y＝45。美術一致，改 pivot.y 做 40。像素唔使郁。
+3) 團絨 atlas_radiant_live walk_happy（同 noface）
+   02／05 離地 3px、03／06 離地 5px（正常 walk 中步只係 0／−1）。唔係有意跳起。
+   把呢 8 格像素下移，令 vis_bot 對準 pivot.y＝61。CLIPS.json radiant 嗰 4 幀
+   嘅 eyeL／eyeR／mouth／head_r／bulb 全部跟住 +dy。
+4) 源頭：art-pet/tools/art_fix1_liveliness.py
+   舊 pin_foot 跟住當幀 vis_bot 改 target，所以標註 pivot 同畫出來嘅腳底永遠唔夾。
+   而家蝸牛官方 pivot (22,40)、螢火 (24,36)，pin_foot 一律對呢個 y；
+   螢火 sniff 嘅 hover 收細，避免再俯穿地面。下次 rebuild 唔會返舊錯。
+
+二、引擎一定要跟住改嘅資料／測試
+- data/actor_anim.json 已改：snail_postman [22,40]、firefly_vendor [24,36]、
+  visitor（預設蝸牛）y 改 40、x 仍然 24（舊值；sheet 用 22，呢個 x 偏差本來就喺度）。
+- Walker 行路用 setup() 嗰個 actor_pivot，而花園訪客行路係再用 scratch／sniff 幀
+  （Main._apply_visitor_own_walk）。唔改 actor_anim 嘅話，live clip 對咗地、行路仍然浮。
+- tests/test_runner.gd 大約 690／692 行寫死咗舊 pivot (22,45)／(24,44)，接入後會 FAIL，
+  請改成 (22,40)／(24,36)。呢份 zip 冇改測試檔。
+
+三、掃過但唔改
+- catch_reach_noface_04、celebrate_noface_02、play_noface_04：單幀離地 3px，
+  曲線似伸手／慶祝小跳／玩時彈起，當動作，唔當錯腳。
+- cheer_jump／pounce 等跳躍幀：名就係離地，忽略。
+- idle_quiet S／M 同狩獵 S／M 成套 +2：art_fix1_sit／resize 寫明「S/M foot = pivot+2」，
+  有意微沒，唔改。L 正常。
+- art-fix1-wt 入面嘅招牌動作（而家 Godot 樹未 cop 入）同樣浮：
+  snail_deliver 腳錨偏低 5–8px，vendor_show 偏低 7–9px。之後接入請用同一套新 pivot
+  （蝸牛 40、螢火 36），再按個別幀 vis_bot 微調。蘑菇婆婆本來就準，唔使郁。
+
+四、Face-kit hook——建議接，唔好再烘面
+檢查結果：41 條 clip、每個形態每幀都有完整錨點（0 缺），face kit 喺圖集入面齊。
+呢個係原本交貨規格（noface 身體 + CLIPS.json 錨點 + 五官套），唔使複製烘面美術。
+而家 ArtImporter 優先播完整幀，冇完整幀就播 noface，所以照顧 clip 會突然冇面。
+
+4.1 播邊張身體
+  優先播 atlas 入面嘅 `<clip>_noface_NN`（art/liveliness/atlas_<form>_live.json）。
+  有烘面完整幀都可以改用 noface＋kit，表情先至跟得住 anchors[].face。
+  s2（smug_pose／act_cool／lookup_tip／getup／sniff_itch）兩種都有，做法一樣。
+
+4.2 錨點欄位（CLIPS.json clips[].anchors[<form>][frame]）
+  eyeL, eyeR, mouth, head_r, bulb?     全部係幀內像素座標 [x, y]
+  faceVisible                         false 就唔畫五官（turn_back 轉背幀）
+  face.eyes / face.gaze / face.mouth  揀 piece；face.src 只係舊烘面備註，唔使讀
+  特殊值：
+    mouth == "none"           → 唔畫嘴（sleep_loop、fall_asleep 末幀）
+    eyes == "sick(保留原幀)"  → 唔疊眼（sick、pot_bump 其中一幀）。
+                                未有 sick 眼款；要頂住可以用 sad。
+
+4.3 五官套路徑同命名（團絨 radiant，已喺現有圖集）
+  圖：res://art/liveliness/atlas_radiant_live.png
+  JSON：res://art/liveliness/atlas_radiant_live.json
+  眼：eyes_<style>_<gaze>_l ／ _r     （l＝畫面左眼、r＝右眼）
+  嘴：mouth_<style>
+  燈：bulb_base、bulb_glow
+  style：neutral happy surprised sleepy squint wink angry sad
+  gaze：L CL C CR R U D
+  閉眼款 happy／sleepy／wink 只有 _C_（見 faceKit.eyes.closedOnlyC）。
+  piece 尺寸同 pivot（faceKit.pieceInfo.radiant）：
+    眼 9×8 pivotPx (4,4)；嘴 7×4 (3,0)；燈 11×11 (5,5)
+  擺法：piece 嘅 pivotPx 對準該幀對應錨點。Nearest、唔開 mipmap。
+  scaleX −1 時跟住成隻鏡像（L/R 係 sprite 空間）。
+  其他形態用 atlas_<form>_live.json（而家呢棵 Godot 樹只有 radiant + s2）。
+
+4.4 每條 clip 用邊款表情
+  以該幀 anchors[form][i].face 為準，唔好寫死成條 clip 一個樣。摘要（radiant）：
+    idle 中性，眨眼一幀 sleepy；blink 開→半→閉；sway 中性
+    yawn squint/surprised→sleepy/surprised；walk 中性
+    emo_happy happy/happy；emo_hungry 嘴 sad→surprised
+    emo_wantplay surprised/happy；emo_sleepy squint→sleepy
+    emo_cuddly happy + 嘴 squint；emo_surprised 雙眼嘴 surprised
+    play／catch_reach／cheer_jump／celebrate 以 happy／surprised 為主
+    eat 中性→happy；fall_asleep／sleep_loop 閉眼，嘴 none
+    wake 半開→中性；sunbathe happy／sleepy；droop 眼 sad／squint
+    sick 保留原幀（唔疊眼）；walk_happy happy；walk_drag sad／squint、gaze D
+    sniff squint gaze D；lookup gaze U；scratch squint gaze CL
+    sneeze 先 squint/surprised，再 wink 嘴；nuzzle squint 嘴
+    rush surprised gaze R；turn_back 轉背幀 faceVisible=false
+    其餘 liveliness／s2 都已寫喺每幀 face。
+
+4.5 畫序（faceKit.drawOrder，由下到上）
+  body(<clip>_noface)
+  → eyeL → eyeR → mouth
+  → bulb_base → bulb_glow（tint／intensity 跟 CLIPS.json bulb.moods；sick 期間唔疊燈）
+  → head_r 圖示（如果有附件）
+
+4.6 唔好做
+  唔好再烘一套有面嘅照顧幀。錨點齊、套件齊，缺嘅只係 hook。
+
+五、對照圖
+  真機 Godot 4.7.2、Xvfb、llvmpipe、opengl3 Compatibility、冇 --headless。
+  /workspace/game-design/m1d_feet/before_after.png
