@@ -6,6 +6,7 @@ const Policy := preload("res://gameplay/m1_camera_policy.gd")
 const Rules := preload("res://gameplay/m1_input_rules.gd")
 const Gesture := preload("res://gameplay/m1_gesture.gd")
 const Fade := preload("res://gameplay/m1_ui_fade.gd")
+const Layout := preload("res://gameplay/m1_ui_layout.gd")
 
 var fails := 0
 
@@ -20,6 +21,7 @@ func _run() -> void:
 	_test_gesture()
 	_test_fade()
 	_test_care_and_save()
+	_test_ui_r1()
 	if fails == 0:
 		print("m1_care_test PASS")
 		quit(0)
@@ -143,3 +145,48 @@ func _test_care_and_save() -> void:
 	_ok(is_equal_approx(float(loaded_needs.get("hunger", -1)), float(after.get("hunger", -2))), "save keeps hunger")
 	_ok(int(loaded.get("poops", -1)) == 0, "save keeps poop count")
 	_ok(str(loaded.get("stage", "")) == "sprout", "save keeps stage")
+
+
+func _test_ui_r1() -> void:
+	var s540 := Layout.layout_scale(540)
+	var s1080 := Layout.layout_scale(1080)
+	_ok(s540 == 1 and s1080 == 2, "layout scale follows viewport width")
+	_ok(Layout.tex_mul(s540) == 2 and Layout.tex_mul(s1080) == 4, "nearest multiples are 2x and 4x")
+	_ok(Layout.button_display(s540) == 80 and Layout.button_touch(s540) == 96, "540 shows 80 and touches 96")
+	_ok(Layout.button_display(s1080) == 160 and Layout.button_touch(s1080) == 192, "1080 shows 160 and touches 192")
+	_ok(Layout.bubble_display(s540) == 96 and Layout.bubble_display(s1080) == 192, "need bubble display is 96 and 192")
+	var row540: Dictionary = Layout.care_row(Vector2(540, 1140), s540)
+	var slot0: Dictionary = (row540["slots"] as Array)[0]
+	_ok((slot0["display"] as Vector2).is_equal_approx(Vector2(98, 1032)), "540 care row starts at the spec point")
+	var row1080: Dictionary = Layout.care_row(Vector2(1080, 1920), s1080)
+	var y1080 := float(( (row1080["slots"] as Array)[0]["display"] as Vector2).y)
+	_ok(y1080 >= 0.0 and y1080 + 160.0 <= 1920.0, "1080 care row stays inside the window")
+	var admire: Dictionary = Layout.admire_slot(Vector2(540, 1140), 1)
+	_ok((admire["display"] as Vector2).is_equal_approx(Vector2(436, 28)), "admire sits at the spec corner")
+	_ok(Layout.effect("pat") == "pat" and Layout.effect("water") == "none", "palm is pat and water has no effect")
+	_ok(Layout.effect("poop") == "clean_one" and Layout.effect("feed") == "feed", "poop cleans one and feed stays feed")
+	_ok(Layout.blocks_ground(true, 1.0), "visible controls block the ground")
+	_ok(not Layout.blocks_ground(true, 0.0), "fully faded controls do not block")
+	_ok(_png_size("res://gameplay/ui_r1/assets/icons/icon_care_pat_32.png") == Vector2i(32, 32), "pat icon is 32")
+	_ok(_png_size("res://gameplay/ui_r1/assets/buttons/btn_care_water_disabled.png") == Vector2i(40, 40), "water button is 40")
+	_ok(_png_size("res://gameplay/ui_r1/assets/bubbles/bubble_need_eat.png") == Vector2i(48, 48), "need bubble is 48")
+	_ok(not FileAccess.file_exists("res://gameplay/ui_r1/assets/buttons/btn_care_play_normal.png"), "no play care button")
+	_ok(_sha("res://gameplay/ui_r1/assets/icons/icon_care_pat_32.png") == "d5c5a9c12b93c9ea738c806a41b3930ae6f10eff8a2cbe7a54c3427e96f32831", "pat icon hash matches the pack")
+
+
+func _png_size(path: String) -> Vector2i:
+	var img := Image.new()
+	if img.load(path) != OK:
+		return Vector2i.ZERO
+	return Vector2i(img.get_width(), img.get_height())
+
+
+func _sha(path: String) -> String:
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return ""
+	var ctx := HashingContext.new()
+	ctx.start(HashingContext.HASH_SHA256)
+	ctx.update(f.get_buffer(f.get_length()))
+	f.close()
+	return ctx.finish().hex_encode()

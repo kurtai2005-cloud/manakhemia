@@ -1,17 +1,17 @@
 extends Node
-## First M1 slice on the vc27 pilot: observation + care.
-## Art, shaders, and art_depth stay untouched. Icons are the original
-## 32px M1 files (Nearest, integer scale). 64x56 V3 bubble frames are not used.
-##
-## Water / play are not wired. See the note at the bottom of this file.
+## M1 observation + care on the vc27 pilot.
+## UI art is gameplay/ui_r1 (art r1.1), used as supplied. Nearest, integer scale.
+## The fourth control is the palm pat button and calls Sim.pat. It is not play.
+## Water stays on the disabled art and does not change needs.
+## Approved scene art, shaders, and art_depth are not edited here.
 
 const Rules := preload("res://gameplay/m1_input_rules.gd")
 const Gesture := preload("res://gameplay/m1_gesture.gd")
 const Fade := preload("res://gameplay/m1_ui_fade.gd")
+const Layout := preload("res://gameplay/m1_ui_layout.gd")
 
-const ICON_SCALE := 2
-const POOP_SCALE := 2
-const TOUCH := Vector2(96, 96)
+const UI_ROOT := "res://gameplay/ui_r1/assets/"
+const POOP_WORLD_SCALE := 2
 
 var host: Node = null
 var pets: Array[Node3D] = []
@@ -21,14 +21,11 @@ var overview := false
 var gesture
 var fade
 var _ui_ready := false
-var _care_bar: Control
-var _fade_root: CanvasItem
-var _btn_appreciate: Button
-var _btn_feed: Button
-var _btn_pat: Button
-var _btn_one: Button
-var _btn_all: Button
-var _bubble: Sprite3D
+var _layer: CanvasLayer
+var _fade_root: Control
+var _bubble: TextureRect
+var _hits: Dictionary = {}
+var _pressed_id := ""
 var _poop_root: Node3D
 var _poops: Array[Sprite3D] = []
 
@@ -50,7 +47,7 @@ func bind_host(p_host: Node) -> void:
 		if int(Sim.state.get("poops", 0)) == 0 and Sim.has_method("add_poop"):
 			Sim.add_poop()
 	_build_ui()
-	_build_bubble()
+	_apply_layout()
 	_build_poops()
 	if Sim and Sim.has_signal("poops_changed"):
 		Sim.poops_changed.connect(func(_n): _sync_poops())
@@ -78,6 +75,12 @@ func subject_origin(subject: Node3D) -> Vector3:
 
 func handle_event(event: InputEvent) -> void:
 	if not _ui_ready:
+		return
+	if fade.appreciate and _is_press(event):
+		# Admire hides every control, including itself. The next press only exits.
+		fade.toggle_appreciate()
+		fade.note_input()
+		_apply_fade()
 		return
 	if event is InputEventScreenTouch:
 		var st := event as InputEventScreenTouch
@@ -109,9 +112,11 @@ func _process(dt: float) -> void:
 	if kind != "":
 		_dispatch(kind, gesture.last)
 	fade.tick(dt)
+	_apply_layout()
 	_apply_fade()
 	_sync_buttons()
 	_sync_bubble()
+	_maybe_ui_shots(dt)
 
 
 func _dispatch(kind: String, screen_pos: Vector2) -> void:
@@ -201,211 +206,235 @@ func _want_threshold() -> float:
 	return 70.0
 
 
+func _is_press(event: InputEvent) -> bool:
+	if event is InputEventScreenTouch:
+		return (event as InputEventScreenTouch).pressed
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		return mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT
+	return false
+
+
 func _build_ui() -> void:
-	var layer := CanvasLayer.new()
-	layer.name = "M1CareUi"
-	layer.layer = 30
-	add_child(layer)
-	var font := _font()
+	_layer = CanvasLayer.new()
+	_layer.name = "M1CareUi"
+	_layer.layer = 30
+	add_child(_layer)
+	_fade_root = Control.new()
+	_fade_root.name = "FadeRoot"
+	_fade_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_fade_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_layer.add_child(_fade_root)
+	for id in ["feed", "water", "poop", "pat", "admire"]:
+		_hits[id] = _make_hit(id)
+		_fade_root.add_child(_hits[id]["root"])
+	_bubble = TextureRect.new()
+	_bubble.name = "NeedBubble"
+	_bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bubble.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_bubble.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_bubble.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_bubble.visible = false
+	_layer.add_child(_bubble)
+	if host and host.get_viewport():
+		var vp := host.get_viewport()
+		if not vp.size_changed.is_connected(_apply_layout):
+			vp.size_changed.connect(_apply_layout)
+
+
+func _make_hit(id: String) -> Dictionary:
 	var root := Control.new()
-	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layer.add_child(root)
-	_fade_root = root
-
-	_btn_appreciate = Button.new()
-	_btn_appreciate.text = "欣賞"
-	_btn_appreciate.focus_mode = Control.FOCUS_NONE
-	_btn_appreciate.anchor_left = 1.0
-	_btn_appreciate.anchor_right = 1.0
-	_btn_appreciate.anchor_top = 0.0
-	_btn_appreciate.anchor_bottom = 0.0
-	_btn_appreciate.offset_left = -200.0
-	_btn_appreciate.offset_right = -24.0
-	_btn_appreciate.offset_top = 88.0
-	_btn_appreciate.offset_bottom = 160.0
-	if font:
-		_btn_appreciate.add_theme_font_override("font", font)
-		_btn_appreciate.add_theme_font_size_override("font_size", 28)
-	_btn_appreciate.pressed.connect(_on_appreciate)
-	root.add_child(_btn_appreciate)
-
-	_care_bar = HBoxContainer.new()
-	_care_bar.anchor_left = 0.0
-	_care_bar.anchor_right = 1.0
-	_care_bar.anchor_top = 1.0
-	_care_bar.anchor_bottom = 1.0
-	_care_bar.offset_left = 24.0
-	_care_bar.offset_right = -24.0
-	_care_bar.offset_top = -220.0
-	_care_bar.offset_bottom = -48.0
-	_care_bar.alignment = BoxContainer.ALIGNMENT_CENTER
-	_care_bar.add_theme_constant_override("separation", 18)
-	_care_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(_care_bar)
-	_btn_feed = _icon_button("need_eat", "餵", font)
-	_btn_pat = _icon_button("need_pet", "摸", font)
-	_btn_one = _icon_button("poop", "執一", font)
-	_btn_all = _icon_button("poop", "執晒", font)
-	_btn_feed.pressed.connect(func(): _act_feed())
-	_btn_pat.pressed.connect(func(): _act_pat())
-	_btn_one.pressed.connect(func(): _act_clean_one())
-	_btn_all.pressed.connect(func(): _act_clean_all())
-	_care_bar.add_child(_btn_feed)
-	_care_bar.add_child(_btn_pat)
-	_care_bar.add_child(_btn_one)
-	_care_bar.add_child(_btn_all)
+	root.name = "Hit_%s" % id
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.focus_mode = Control.FOCUS_NONE
+	root.gui_input.connect(_on_hit_input.bind(id))
+	var icon := TextureRect.new()
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	root.add_child(icon)
+	return {"root": root, "icon": icon}
 
 
-func _icon_button(icon_id: String, tip: String, font: Font) -> Button:
-	var b := Button.new()
-	b.custom_minimum_size = TOUCH
-	b.focus_mode = Control.FOCUS_NONE
-	b.tooltip_text = tip
-	b.flat = true
-	var box := VBoxContainer.new()
-	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var rect := TextureRect.new()
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rect.texture = _icon(icon_id)
-	rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var tex_px := 32
-	if rect.texture:
-		tex_px = rect.texture.get_width()
-	var shown := float(tex_px * (ICON_SCALE if icon_id != "poop" else POOP_SCALE))
-	rect.custom_minimum_size = Vector2(shown, shown)
-	box.add_child(rect)
-	var lab := Label.new()
-	lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	lab.text = tip
-	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	if font:
-		lab.add_theme_font_override("font", font)
-		lab.add_theme_font_size_override("font_size", 22)
-	box.add_child(lab)
-	b.add_child(box)
-	return b
-
-
-func _icon(id: String) -> Texture2D:
-	var path := "res://gameplay/icons/%s.png" % id
-	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
-		var tex := load(path) as Texture2D
-		return tex
-	return null
-
-
-func _font() -> Font:
-	var path := "res://art/ui/GenWanMin2TC-R.subset.otf"
-	if not ResourceLoader.exists(path) and not FileAccess.file_exists(path):
-		return null
-	var ff := FontFile.new()
-	ff.load_dynamic_font(path)
-	return ff
-
-
-func _on_appreciate() -> void:
-	fade.toggle_appreciate()
-	_btn_appreciate.text = "顯示" if fade.appreciate else "欣賞"
-	_apply_fade()
-
-
-func _apply_fade() -> void:
-	if _care_bar == null:
+func _apply_layout() -> void:
+	if _fade_root == null:
 		return
-	var a := float(fade.alpha)
-	var hidden: bool = fade.appreciate
-	_care_bar.visible = not hidden
-	_care_bar.modulate = Color(1, 1, 1, a)
-	var take: bool = (not hidden) and a > 0.2 and not overview
-	_care_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for b in [_btn_feed, _btn_pat, _btn_one, _btn_all]:
-		if b:
-			b.mouse_filter = Control.MOUSE_FILTER_STOP if take else Control.MOUSE_FILTER_IGNORE
+	var vp := _viewport_size()
+	var layout := Layout.layout_scale(vp.x)
+	var row: Dictionary = Layout.care_row(vp, layout)
+	var disp := int(row["display"])
+	var touch := int(row["touch"])
+	for slot in row["slots"]:
+		_place_hit(str(slot["id"]), slot["touch"], touch, slot["display"], disp)
+	var admire: Dictionary = Layout.admire_slot(vp, layout)
+	_place_hit("admire", admire["touch"], int(admire["size_touch"]), admire["display"], int(admire["size_display"]))
+	var bubble := Layout.bubble_display(layout)
+	if _bubble:
+		_bubble.custom_minimum_size = Vector2(bubble, bubble)
+		_bubble.size = Vector2(bubble, bubble)
+
+
+func _place_hit(id: String, touch_pos: Vector2, touch: int, display_pos: Vector2, disp: int) -> void:
+	var hit: Dictionary = _hits[id]
+	var root: Control = hit["root"]
+	var icon: TextureRect = hit["icon"]
+	root.position = touch_pos
+	root.size = Vector2(touch, touch)
+	root.custom_minimum_size = Vector2(touch, touch)
+	icon.position = display_pos - touch_pos
+	icon.size = Vector2(disp, disp)
+	icon.custom_minimum_size = Vector2(disp, disp)
+
+
+func _viewport_size() -> Vector2:
+	if host and host.get_viewport():
+		return host.get_viewport().get_visible_rect().size
+	return Vector2(1080, 1920)
+
+
+func _on_hit_input(event: InputEvent, id: String) -> void:
+	var press := false
+	var release := false
+	if event is InputEventMouseButton and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+		press = (event as InputEventMouseButton).pressed
+		release = not press
+	elif event is InputEventScreenTouch:
+		press = (event as InputEventScreenTouch).pressed
+		release = not press
+	else:
+		return
+	get_viewport().set_input_as_handled()
+	if press:
+		fade.note_input()
+		if _allowed(id):
+			_pressed_id = id
+		_refresh_hit(id)
+		return
+	if release:
+		var fire := _pressed_id == id and _allowed(id)
+		if _pressed_id == id:
+			_pressed_id = ""
+		_refresh_hit(id)
+		if fire:
+			_run(id)
+
+
+func _allowed(id: String) -> bool:
+	if id == "water":
+		return false
+	if id == "admire":
+		return true
+	if Sim == null:
+		return false
+	var egg := str(Sim.state.get("stage", "egg")) == "egg"
+	var sleeping := bool(Sim.state.get("sleeping", false))
+	var hunger := float((Sim.state.get("needs", {}) as Dictionary).get("hunger", 100))
+	var full := hunger >= float(Sim.FEED_REFUSE_AT)
+	var poops := int(Sim.state.get("poops", 0))
+	match id:
+		"feed":
+			return not egg and not sleeping and not full
+		"pat":
+			return not egg
+		"poop":
+			return poops > 0
+	return false
+
+
+func _run(id: String) -> void:
+	fade.note_input()
+	match Layout.effect(id):
+		"feed":
+			if Sim:
+				Sim.feed("meal")
+		"pat":
+			if Sim:
+				Sim.pat()
+		"clean_one":
+			if Sim and int(Sim.state.get("poops", 0)) > 0:
+				Sim.clean_one()
+		"appreciate":
+			fade.toggle_appreciate()
+			_apply_fade()
+		"none":
+			pass
+
+
+func _tex(state_id: String, visual: String) -> Texture2D:
+	var folder := "buttons/btn_admire_" if state_id == "admire" else "buttons/btn_care_%s_" % state_id
+	return _tex_file(UI_ROOT + folder + visual + ".png")
+
+
+func _tex_file(path: String) -> Texture2D:
+	# Load the supplied PNG bytes directly so a missing .import sidecar
+	# cannot swap in a filtered or missing texture.
+	if not FileAccess.file_exists(path):
+		return null
+	var img := Image.new()
+	if img.load(path) != OK:
+		return null
+	return ImageTexture.create_from_image(img)
+
+
+func _refresh_hit(id: String) -> void:
+	if not _hits.has(id):
+		return
+	var visual := "disabled"
+	if _allowed(id):
+		visual = "pressed" if _pressed_id == id else "normal"
+	var icon: TextureRect = _hits[id]["icon"]
+	icon.texture = _tex(id, visual)
 
 
 func _sync_buttons() -> void:
-	if _care_bar == null:
+	for id in _hits.keys():
+		_refresh_hit(str(id))
+
+
+func _apply_fade() -> void:
+	if _fade_root == null:
 		return
-	_care_bar.visible = (not overview) and (not fade.appreciate)
-	var poops := int(Sim.state.get("poops", 0)) if Sim else 0
-	var hunger := 100.0
-	var egg := true
-	var sleeping := false
-	if Sim:
-		var n: Dictionary = Sim.state.get("needs", {})
-		hunger = float(n.get("hunger", 100))
-		egg = str(Sim.state.get("stage", "egg")) == "egg"
-		sleeping = bool(Sim.state.get("sleeping", false))
-	var full := hunger >= float(Sim.FEED_REFUSE_AT) if Sim else false
-	_set_enabled(_btn_feed, not egg and not sleeping and not full)
-	_set_enabled(_btn_pat, not egg)
-	_set_enabled(_btn_one, poops > 0)
-	_set_enabled(_btn_all, poops > 0)
-
-
-func _set_enabled(b: Button, on: bool) -> void:
-	if b == null:
-		return
-	b.disabled = not on
-	b.modulate = Color(1, 1, 1, 1) if on else Color(1, 1, 1, 0.4)
-
-
-func _act_feed() -> void:
-	fade.note_input()
-	if Sim:
-		Sim.feed("meal")
-
-
-func _act_pat() -> void:
-	fade.note_input()
-	if Sim:
-		Sim.pat()
-
-
-func _act_clean_one() -> void:
-	fade.note_input()
-	if Sim and int(Sim.state.get("poops", 0)) > 0:
-		Sim.clean_one()
-
-
-func _act_clean_all() -> void:
-	fade.note_input()
-	if Sim and int(Sim.state.get("poops", 0)) > 0:
-		Sim.clean_all()
-
-
-func _build_bubble() -> void:
-	var pet := follow_subject()
-	if pet == null:
-		return
-	_bubble = Sprite3D.new()
-	_bubble.name = "NeedBubble"
-	_bubble.pixel_size = 1.0
-	_bubble.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_bubble.shaded = false
-	_bubble.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	_bubble.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	_bubble.alpha_scissor_threshold = 0.5
-	_bubble.position = Vector3(0, 48, 0)
-	_bubble.visible = false
-	pet.add_child(_bubble)
+	var hidden: bool = fade.appreciate
+	var alpha := float(fade.alpha)
+	_fade_root.visible = not hidden
+	_fade_root.modulate = Color(1, 1, 1, alpha)
+	var take: bool = Layout.blocks_ground(not hidden, alpha)
+	for id in _hits.keys():
+		var root: Control = _hits[id]["root"]
+		root.mouse_filter = Control.MOUSE_FILTER_STOP if take else Control.MOUSE_FILTER_IGNORE
+	if _bubble:
+		_bubble.modulate = Color(1, 1, 1, 0.0 if hidden else alpha)
 
 
 func _sync_bubble() -> void:
-	if _bubble == null or Sim == null:
+	if _bubble == null or Sim == null or host == null:
+		return
+	if fade.appreciate:
+		_bubble.visible = false
 		return
 	var id := _need_id()
 	if id == "":
 		_bubble.visible = false
 		return
-	var tex := _icon(id)
+	var tex := _tex_file(UI_ROOT + "bubbles/bubble_%s.png" % id)
 	_bubble.texture = tex
-	_bubble.visible = tex != null
+	_bubble.visible = tex != null and float(fade.alpha) > 0.05
+	if not _bubble.visible:
+		return
+	var cam: Camera3D = host.get("_camera") as Camera3D
+	var pet := follow_subject()
+	if cam == null or pet == null:
+		_bubble.visible = false
+		return
+	if cam.is_position_behind(pet.global_position):
+		_bubble.visible = false
+		return
+	var layout := Layout.layout_scale(_viewport_size().x)
+	var size := float(Layout.bubble_display(layout))
+	var head := cam.unproject_position(pet.global_position + Vector3(0, 36, 0))
+	_bubble.position = Vector2(head.x + size * 0.15, head.y - size - float(8 * layout))
+	_bubble.size = Vector2(size, size)
 
 
 func _need_id() -> String:
@@ -442,10 +471,11 @@ func _sync_poops() -> void:
 	var n := int(Sim.state.get("poops", 0))
 	var pet := host.get("_pet") as Node3D if host else null
 	var base := pet.global_position if pet else Vector3.ZERO
+	var tex := _tex_file(UI_ROOT + "icons/icon_care_poop_32.png")
 	while _poops.size() < n:
 		var spr := Sprite3D.new()
-		spr.texture = _icon("poop")
-		spr.pixel_size = float(POOP_SCALE)
+		spr.texture = tex
+		spr.pixel_size = float(POOP_WORLD_SCALE)
 		spr.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 		spr.shaded = false
 		spr.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
@@ -461,9 +491,70 @@ func _sync_poops() -> void:
 			last.queue_free()
 
 
-# Water / play — not wired.
-# data/sim.json care.rinse is 50 and Sim.RINSE loads it, but no call applies it.
-# The comment groups rinse with other restore amounts and does not name the need.
-# personality.json water_plants is only a 勤力 autonomous weight (1.3), not a player act.
-# care.play_tease is 15 and is also loaded (Sim.PLAY_TEASE) with no player call.
-# pat_mood is the wired "摸" amount. Do not invent a water or play delta.
+var _shot_t := 0.0
+var _shot_i := 0
+
+
+func _maybe_ui_shots(dt: float) -> void:
+	# Opt-in frame dump for a machine that can actually rasterize.
+	# Does not move the camera or change quality.
+	if OS.get_environment("HD2D_UI_SHOT") != "1":
+		return
+	_shot_t += dt
+	if _shot_i == 0 and _shot_t >= 0.35:
+		if Sim:
+			var needs: Dictionary = Sim.state.get("needs", {})
+			needs["hunger"] = 20.0
+			Sim.state["needs"] = needs
+		_save_view("01_observe")
+		_shot_i = 1
+	elif _shot_i == 1 and _shot_t >= 0.7:
+		if Sim:
+			Sim.feed("meal")
+		_sync_buttons()
+		_sync_bubble()
+		_save_view("02_feed")
+		_shot_i = 2
+	elif _shot_i == 2 and _shot_t >= 1.05:
+		if Sim:
+			Sim.pat()
+		_sync_buttons()
+		_save_view("03_pat")
+		_shot_i = 3
+	elif _shot_i == 3 and _shot_t >= 1.4:
+		if Sim and int(Sim.state.get("poops", 0)) > 0:
+			Sim.clean_one()
+		_sync_buttons()
+		_sync_poops()
+		_save_view("04_clean")
+		_shot_i = 4
+	elif _shot_i == 4 and _shot_t >= 1.7:
+		get_tree().quit(0)
+
+
+func _save_view(stem: String) -> void:
+	var out := OS.get_environment("HD2D_UI_OUT")
+	if out == "":
+		out = "/tmp/vc27_ui_shot"
+	DirAccess.make_dir_recursive_absolute(out)
+	var vp := get_viewport()
+	if vp == null:
+		print("ui shot missing viewport")
+		return
+	var img := vp.get_texture().get_image()
+	if img == null:
+		print("ui shot null image ", stem)
+		return
+	var path := out.path_join(stem + ".png")
+	var err := img.save_png(path)
+	var hunger := -1.0
+	var poops := -1
+	if Sim:
+		hunger = float((Sim.state.get("needs", {}) as Dictionary).get("hunger", -1))
+		poops = int(Sim.state.get("poops", -1))
+	print("ui shot ", path, " ", img.get_width(), "x", img.get_height(), " err=", err, " hunger=", hunger, " poops=", poops, " bubble=", _bubble.visible if _bubble else false)
+
+
+# Water: btn_care_water_* is shown disabled. Sim.RINSE is 50 and is not applied.
+# The data comment does not name which need rinse restores.
+# Play: the palm button is pat (Sim.pat / pat_mood). play_tease stays unwired.
