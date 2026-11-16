@@ -1,11 +1,19 @@
-# r4 walk candidate on Low 1080x2280 (19:9). Isolated profile. Does not touch the normal save.
-# Do not pass --display-driver. The GPU reviewer uses the default driver and mobile.
-# This is not an art acceptance and not a smoothness claim.
+# r4 evidence fixture. Isolated profile. Does not touch the normal save.
+# Without -Movie this is the windowed run. A clamped 1080x1410 window is logged
+# separately and is not a 1080x2280 movie-close pass.
+# -Movie writes a PNG sequence. The temporary override sets stretch mode viewport
+# so the recorded texture is the 1080x2280 viewport. The override is removed on exit.
+# project.godot and the camera policy are not changed. Do not pass --display-driver.
+# PNG suffix N equals Engine.get_frames_drawn() sampled in _process before that
+# frame is drawn, when every loop draws once. select_png_index on stop_end is that N.
+# The next leg is armed only after a later drawn frame. process_frames is not a movie frame.
 # Usage:
 #   .\tools\run_walk_clip_trace.ps1 -Godot "C:\path\Godot_v4.7.2-stable_win64.exe" -RenderingMethod mobile
+#   .\tools\run_walk_clip_trace.ps1 -Godot "C:\path\Godot_v4.7.2-stable_win64.exe" -RenderingMethod mobile -Movie "C:\temp\vc27_walkclip.png"
 param(
     [string]$Godot = "godot",
-    [string]$RenderingMethod = "mobile"
+    [string]$RenderingMethod = "mobile",
+    [string]$Movie = ""
 )
 $ErrorActionPreference = "Continue"
 $Root = Split-Path -Parent $PSScriptRoot
@@ -73,15 +81,19 @@ function Invoke-GodotLogged {
 
 $exitCode = 0
 try {
+    $stretch = ""
+    if ($Movie -ne "") { $stretch = "window/stretch/mode=`"viewport`"" }
     @"
 [display]
 window/size/viewport_width=1080
 window/size/viewport_height=2280
+$stretch
 
 [application]
 config/use_custom_user_dir=true
 config/custom_user_dir_name="$ProfileName"
 "@ | Set-Content -LiteralPath $Override -Encoding ascii
+    Write-Host "movie=$Movie"
     $godotPath = Resolve-GodotPath $Godot
     if (-not $godotPath) {
         Write-Host "FAIL launch: Godot not found: $Godot"
@@ -98,7 +110,9 @@ config/custom_user_dir_name="$ProfileName"
             $env:HD2D_PROFILE_NAME = $ProfileName
             $env:HD2D_MODE = "low"
             $walkLog = Join-Path $LogDir "walkclip.log"
-            $code = Invoke-GodotLogged $godotPath @("--rendering-method", $RenderingMethod, "--path", $Root) $walkLog
+            $godotArgs = @("--rendering-method", $RenderingMethod, "--path", $Root)
+            if ($Movie -ne "") { $godotArgs = @("--rendering-method", $RenderingMethod, "--write-movie", $Movie, "--path", $Root) }
+            $code = Invoke-GodotLogged $godotPath $godotArgs $walkLog
             Write-Host "walkclip_exit=$code"
             Write-Host "logs=$LogDir"
             Get-Content -LiteralPath $walkLog

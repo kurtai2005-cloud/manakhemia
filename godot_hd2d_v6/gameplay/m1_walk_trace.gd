@@ -1,22 +1,32 @@
 extends RefCounted
-## In-scene r4 candidate. Low 19:9. Not an art acceptance and not a Mobile claim.
-## Autonomous opening uses the live roam tick and whatever personality mul the
-## isolated profile rolled. The four facing legs and the seek use the live
-## manual walker (WALK_SPEED 48), the same function a ground tap uses after
-## the raycast. The 20 wu/s leg sets motion axis 0 on this profile only, then
-## uses the live roam tick. Care hold, blocked, and stop use real zero steps.
+## Evidence fixture for the r4 walk candidate. Not art acceptance.
+## Does not change speeds, camera policy, or normal tap-return.
+## A ground tap while follow is on still leaves follow and does not walk.
+## This fixture never sends that tap. It calls _enter_follow, then sets
+## _walk_target or a roam dest directly, so follow stays on.
+##
+## Movie frame mapping, Godot 4.7.2 main.cpp:
+## process runs, then draw increments Engine.get_frames_drawn(), then
+## MovieWriter.add_frame writes the viewport texture.
+## PNG suffix N is the frames_drawn value sampled in the process whose
+## draw becomes that image, when every iteration draws once.
+## The window title "MovieWriter: Frame N" is that value plus 1.
+## process_frames is not a movie frame. It is logged only so a skipped
+## draw is visible. AVI has no per-frame filename.
 
 const TRACE_SEED := 2
+const ROUTE_WU := 24.0
+const STOP_SEC := 0.30
+const MOVIE_W := 1080
+const MOVIE_H := 2280
 
 static var _dead := false
 static var _t := 0.0
 static var _phase := "open"
+static var _stage := "run"
 static var _right := Vector2.RIGHT
 static var _away := Vector2(0, -1)
-static var _pads: Array[Vector2] = []
-static var _dirs: Array[Vector2] = []
-static var _names: PackedStringArray = []
-static var _leg := 0
+static var _origin := Vector2.ZERO
 static var _goal := Vector2.ZERO
 static var _phase0 := 0.0
 static var _moved := 0.0
@@ -28,41 +38,43 @@ static var _full: Array[float] = []
 static var _expect := 48.0
 static var _mark := 0.0
 static var _hold_dest: Variant = null
-static var _side_stop := false
 static var _auto_wu := 0.0
 static var _auto_sec := 0.0
 static var _auto_full: Array[float] = []
 static var _auto_partial := 0
 static var _mul := 1.0
 static var _seen_walk := false
-static var _anchor := Vector2.ZERO
+static var _leg_name := ""
+static var _stop_next := ""
+static var _stop_drawn := -1
 static var _rate_wu := 0.0
-static var _last_walk := ""
+static var _movie_judged := false
+static var _threshold := 70.0
+static var _anchor := Vector2.ZERO
+static var _settle_next := "follow48"
 
 
 static func fixture(care: Node) -> void:
 	_require()
-	var vp: Vector2 = care.call("_viewport_size")
-	print("TRACE header walkclip=r4_candidate_not_accepted")
-	print("TRACE header viewport=", vp, " mode=low aspect=19:9")
-	print("TRACE header schedule=autonomous_zero_taps; care_hold; live_manual_48 right,left,stop_side_idle,back,front; roam_blocked; fixture_motion_0_live_roam_20")
-	print("TRACE header speeds live_tap=manual_48 autonomous=roam_20_times_personality no_fps_cap")
+	_keep_bubble(care)
+	print("TRACE header walkclip=r4_evidence_fixture_not_accepted")
+	print("TRACE header schedule=autonomous_zero_taps; hold>=0.30; panorama_side48_24wu; stop>=0.30 plus one rendered frame; existing_follow_side48_24wu; stop; isolated_profile_side20_24wu; stop")
+	print("TRACE header speeds live_manual=48 fixture_roam20=motion_axis_0_only no_fps_cap")
+	print("TRACE header movie_png_index=frames_drawn_in_process_before_draw title_frame=frames_drawn_plus_1 process_frames_is_not_a_movie_frame")
 	print("TRACE header rights=not_independently_verified not_commercially_cleared")
-	print("TRACE header foot=side_identity_only front_back_projection_no_z_lock quantization_under_2wu_not_claimed")
+	_log_sizes(care, "boot")
 	var roam = care.host.get("_roam")
 	if roam and roam.has_method("seed"):
 		roam.seed(TRACE_SEED)
 	_right = care.host.call("walk_view_right")
 	_away = care.host.call("walk_view_away")
-	_dirs = [_right, -_right, _away, -_away]
-	_names = PackedStringArray(["side_right", "side_left", "back", "front"])
-	_pads = [Vector2(0, 55), Vector2(0, 70), Vector2(-60, 10), Vector2(100, 20), Vector2(-20, 60), Vector2(20, 60)]
 	var personality := _personality()
 	if personality:
 		_mul = float(personality.call("walk_speed_mul", "tuanrong"))
 	_pos = _xz(care)
 	_have = true
-	print("TRACE t=0 kind=view right=(", snapped(_right.x, 0.001), ",", snapped(_right.y, 0.001), ") away=(", snapped(_away.x, 0.001), ",", snapped(_away.y, 0.001), ") personality_mul=", snapped(_mul, 0.001), " provenance=actual_isolated_profile")
+	_threshold = _want_threshold()
+	print("TRACE t=0 kind=view right=(", snapped(_right.x, 0.001), ",", snapped(_right.y, 0.001), ") away=(", snapped(_away.x, 0.001), ",", snapped(_away.y, 0.001), ") personality_mul=", snapped(_mul, 0.001), " provenance=actual_isolated_profile ", _frame_tag())
 	print("profile walkclip user_data_dir=", OS.get_user_data_dir())
 
 
@@ -70,6 +82,7 @@ static func tick(care: Node, dt: float) -> void:
 	if _dead:
 		return
 	_t += dt
+	_keep_bubble(care)
 	if not _contract(care):
 		return
 	var pos := _xz(care)
@@ -88,19 +101,20 @@ static func tick(care: Node, dt: float) -> void:
 	_pos = pos
 	_have = true
 	_had_target = target_on
+	if (_phase == "leg" or _phase == "rate20") and _leg_name != "":
+		if not _visible(care):
+			return
 	match _phase:
 		"open":
 			_tick_open(care, dt, moved)
 		"hold":
 			_tick_hold(care)
-		"seek":
-			_tick_seek(care)
 		"leg":
 			_tick_leg(care)
 		"stop":
 			_tick_stop(care)
-		"blocked":
-			_tick_blocked(care, moved)
+		"follow_wait":
+			_tick_follow_wait(care)
 		"rate20":
 			_tick_rate20(care, dt, moved)
 		_:
@@ -127,51 +141,65 @@ static func _tick_open(care: Node, dt: float, moved: float) -> void:
 		if spd >= want_now - 0.75:
 			_auto_full.append(spd)
 		elif moved > 0.0001:
-			# The roam step is min(speed*dt, distance still left). A short remainder is not a new speed.
 			_auto_partial += 1
-	if _auto_sec >= 3.0 and _seen_walk:
-		var measured := _auto_wu / _auto_sec
-		var want := 20.0 * _mul
-		var full_avg := 0.0
-		for s in _auto_full:
-			full_avg += s
-		if _auto_full.size() > 0:
-			full_avg /= float(_auto_full.size())
-		print("TRACE t=", snapped(_t, 0.01), " kind=autonomous_open taps=0 walk_sec=", snapped(float(roam.walk_sec), 0.01), " path_wu_s=", snapped(measured, 0.01), " full_step_wu_s=", snapped(full_avg, 0.01), " full_steps=", _auto_full.size(), " short_remainders=", _auto_partial, " expected_wu_s=", snapped(want, 0.01), " mul=", snapped(_mul, 0.001), " cause=", str(roam.cause), " provenance=actual_roam_tick_zero_taps")
-		if str(roam.cause) != "autonomous":
-			_fail("opening cause was " + str(roam.cause))
-			return
-		if _auto_full.is_empty() or absf(full_avg - want) > 0.5:
-			_fail("autonomous full steps averaged %s, want %s" % [full_avg, want])
-			return
-		_hold_dest = roam.dest
-		roam.set_care_hold(true)
-		_mark = _t
-		_phase0 = float(care.host.call("walk_clip_state").get("phase_wu", 0.0))
-		_anchor = _xz(care)
-		_phase = "hold"
+	if _auto_sec < 3.0 or not _seen_walk:
+		if _t >= 12.0:
+			_fail("autonomous motion did not reach 3s, walk_sec=%s" % float(roam.walk_sec))
 		return
-	if _t >= 12.0:
-		_fail("autonomous motion did not reach 3s, walk_sec=%s" % float(roam.walk_sec))
+	var measured := _auto_wu / _auto_sec
+	var want := 20.0 * _mul
+	var full_avg := 0.0
+	for s in _auto_full:
+		full_avg += s
+	if _auto_full.size() > 0:
+		full_avg /= float(_auto_full.size())
+	print("TRACE t=", snapped(_t, 0.01), " kind=autonomous_open taps=0 walk_sec=", snapped(float(roam.walk_sec), 0.01), " path_wu_s=", snapped(measured, 0.01), " full_step_wu_s=", snapped(full_avg, 0.01), " full_steps=", _auto_full.size(), " short_remainders=", _auto_partial, " expected_wu_s=", snapped(want, 0.01), " mul=", snapped(_mul, 0.001), " cause=", str(roam.cause), " provenance=actual_roam_tick_zero_taps ", _frame_tag())
+	if str(roam.cause) != "autonomous":
+		_fail("opening cause was " + str(roam.cause))
+		return
+	if _auto_full.is_empty() or absf(full_avg - want) > 0.5:
+		_fail("autonomous full steps averaged %s, want %s" % [full_avg, want])
+		return
+	_hold_dest = roam.dest
+	roam.set_care_hold(true)
+	_mark = _t
+	_stage = "hold"
+	_phase0 = float(care.host.call("walk_clip_state").get("phase_wu", 0.0))
+	_anchor = _xz(care)
+	print("TRACE t=", snapped(_t, 0.01), " kind=hold_begin provenance=live_care_hold_zero_distance ", _frame_tag())
+	_phase = "hold"
 
 
 static func _tick_hold(care: Node) -> void:
 	var roam = care.host.get("_roam")
 	roam.set_care_hold(true)
+	if _stage == "gap":
+		if Engine.get_frames_drawn() <= _stop_drawn:
+			return
+		if roam.dest != _hold_dest:
+			_fail("care hold cleared the roam target")
+			return
+		print("TRACE t=", snapped(_t, 0.01), " kind=hold_gap rendered_after_end=true ", _frame_tag())
+		roam.set_care_hold(false)
+		roam.dest = null
+		roam._stash = null
+		roam._pause = 0.0
+		roam._manual = false
+		_arm_panorama_from_search(care)
+		return
 	if _t < _mark + 0.15:
 		return
 	var st: Dictionary = care.host.call("walk_clip_state")
-	var drift := _xz(care).distance_to(_anchor)
-	if drift > 0.001:
-		_fail("care hold moved the pet by %s" % drift)
+	if _xz(care).distance_to(_anchor) > 0.001:
+		_fail("care hold moved the pet")
 		return
 	if bool(st.get("moving", true)):
 		_fail("care hold played a walk frame")
 		return
-	if absf(float(st.get("phase_wu", -1)) - _phase0) > 0.0001:
+	if absf(float(st.get("phase_wu", -1.0)) - _phase0) > 0.0001:
 		_fail("care hold advanced the phase")
 		return
-	if _t < _mark + 0.55:
+	if _t < _mark + STOP_SEC:
 		return
 	if str(roam.motion) != "hold":
 		_fail("care hold motion was " + str(roam.motion))
@@ -179,82 +207,38 @@ static func _tick_hold(care: Node) -> void:
 	if roam.dest != _hold_dest:
 		_fail("care hold cleared the roam target")
 		return
-	print("TRACE t=", snapped(_t, 0.01), " kind=hold clip=", str(st.get("clip", "")), " phase_wu=", snapped(float(st.get("phase_wu", 0)), 0.01), " facing=", str(st.get("facing", "")), " provenance=live_care_hold_zero_distance")
-	roam.set_care_hold(false)
-	roam.dest = null
-	roam._stash = null
-	roam._pause = 0.0
-	roam._manual = false
-	_phase = "seek"
-
-
-static func _tick_seek(care: Node) -> void:
-	var here := _xz(care)
-	var pad := _best_pad(care, here)
-	if pad == Vector2.INF:
-		_fail("no lawn pad has 12wu clear on right, left, back, and front")
-		return
-	if here.distance_to(pad) <= 1.5:
-		print("TRACE t=", snapped(_t, 0.01), " kind=pad world=(", snapped(pad.x, 0.1), ",", snapped(pad.y, 0.1), ") provenance=already_there")
-		_leg = 0
-		_begin_leg(care)
-		return
-	if care.host.get("_walk_target") == null and not _tracking:
-		print("TRACE t=", snapped(_t, 0.01), " kind=seek world=(", snapped(pad.x, 0.1), ",", snapped(pad.y, 0.1), ") provenance=live_manual_walk_target")
-		_begin_manual(care, pad, 48.0)
-		return
-	if care.host.get("_walk_target") == null and _tracking and _moved > 1.0:
-		if _full.is_empty():
-			_fail("seek produced no full 48 step")
-			return
-		print("TRACE t=", snapped(_t, 0.01), " kind=seek_done samples=", _full.size(), " speed=", snapped(_full[0], 0.01), " provenance=live_manual_walk_target")
-		_tracking = false
-		_leg = 0
-		_begin_leg(care)
+	_stop_drawn = Engine.get_frames_drawn()
+	_stage = "gap"
+	print("TRACE t=", snapped(_t, 0.01), " kind=hold_end held_sec=", snapped(_t - _mark, 0.01), " clip=", str(st.get("clip", "")), " select_png_index=", _stop_drawn, " ", _frame_tag())
 
 
 static func _tick_leg(care: Node) -> void:
 	if care.host.get("_walk_target") != null:
-		var live: Dictionary = care.host.call("walk_clip_state")
-		if bool(live.get("moving", false)):
-			_last_walk = str(live.get("path", "")) + " frame=" + str(live.get("frame", -1))
 		if _t >= _mark + 4.0:
-			_fail("manual leg %s did not arrive" % _names[_leg])
+			_fail("manual leg %s did not arrive" % _leg_name)
 		return
-	if _moved < 8.0:
-		_fail("manual leg %s moved only %s" % [_names[_leg], _moved])
+	if _moved < ROUTE_WU - 0.05:
+		_fail("manual leg %s moved only %s" % [_leg_name, _moved])
 		return
 	if _full.is_empty():
-		_fail("manual leg %s produced no full 48 step" % _names[_leg])
-		return
-	if _last_walk == "":
-		_fail("manual leg %s never showed a walk frame" % _names[_leg])
+		_fail("manual leg %s produced no full 48 step" % _leg_name)
 		return
 	var st: Dictionary = care.host.call("walk_clip_state")
 	var phase_now := float(st.get("phase_wu", 0.0))
 	if absf((phase_now - _phase0) - _moved) > 0.05:
 		_fail("phase %s did not follow distance %s" % [phase_now - _phase0, _moved])
 		return
-	var want_face := "side"
-	var want_flip := false
-	if _names[_leg] == "side_left":
-		want_flip = true
-	elif _names[_leg] == "back":
-		want_face = "back"
-	elif _names[_leg] == "front":
-		want_face = "front"
-	if str(st.get("facing", "")) != want_face or bool(st.get("flip_h", false)) != want_flip:
-		_fail("leg %s facing %s flip %s" % [_names[_leg], st.get("facing", ""), st.get("flip_h", false)])
+	if str(st.get("facing", "")) != "side" or bool(st.get("flip_h", true)):
+		_fail("leg %s facing %s flip %s" % [_leg_name, st.get("facing", ""), st.get("flip_h", true)])
 		return
-	print("TRACE t=", snapped(_t, 0.01), " kind=manual leg=", _names[_leg], " facing=", want_face, " flip=", want_flip, " dist_wu=", snapped(_moved, 0.01), " phase_delta=", snapped(phase_now - _phase0, 0.01), " full_steps=", _full.size(), " speed=", snapped(_full[0], 0.01), " last_walk=", _last_walk, " provenance=live_manual_walk_target speed_const=48")
-	_side_stop = _names[_leg] == "side_left"
-	_phase0 = phase_now
-	_mark = _t
-	_tracking = false
-	_phase = "stop"
+	var cycles := _moved / 12.0
+	print("TRACE t=", snapped(_t, 0.01), " kind=leg_end leg=", _leg_name, " facing=side flip=false dist_wu=", snapped(_moved, 0.01), " cycles=", snapped(cycles, 0.01), " phase_delta=", snapped(phase_now - _phase0, 0.01), " full_steps=", _full.size(), " speed=", snapped(_full[0], 0.01), " provenance=live_manual_walk_target ", _frame_tag())
+	_begin_stop(care, "follow_setup" if _leg_name == "panorama48" else "rate20_setup")
 
 
 static func _tick_stop(care: Node) -> void:
+	var roam_stop = care.host.get("_roam")
+	roam_stop.set_care_hold(true)
 	if care.host.get("_walk_target") != null:
 		_fail("stop still had a manual target")
 		return
@@ -268,57 +252,59 @@ static func _tick_stop(care: Node) -> void:
 		_fail("stop advanced the phase")
 		return
 	var clip := str(st.get("clip", ""))
-	if _t < _mark + 0.4:
-		return
-	if not clip.ends_with("_idle"):
-		_fail("stop clip was " + clip)
-		return
-	if _side_stop:
-		var path := str(st.get("path", ""))
-		if not path.ends_with("side_idle_01.png") or path.find("front_idle") >= 0:
-			_fail("side stop used " + path)
+	if _stage == "gap":
+		if Engine.get_frames_drawn() <= _stop_drawn:
 			return
-		if not bool(st.get("flip_h", false)):
-			_fail("side stop lost the left flip")
+		if not clip.ends_with("side_idle") or bool(st.get("flip_h", true)):
+			_fail("gap frame left side idle, clip=%s flip=%s" % [clip, st.get("flip_h", true)])
 			return
-	print("TRACE t=", snapped(_t, 0.01), " kind=stop clip=", clip, " flip=", bool(st.get("flip_h", false)), " phase_wu=", snapped(float(st.get("phase_wu", 0)), 0.01), " provenance=zero_distance_after_manual")
-	_leg += 1
-	if _leg < _names.size():
-		_begin_leg(care)
+		print("TRACE t=", snapped(_t, 0.01), " kind=stop_gap rendered_after_end=true select_png_index=", _stop_drawn, " ", _frame_tag())
+		_after_stop(care)
 		return
-	_begin_blocked(care)
+	if _t < _mark + STOP_SEC:
+		return
+	if not clip.ends_with("side_idle") or bool(st.get("flip_h", true)):
+		_fail("stop clip was %s flip=%s" % [clip, st.get("flip_h", true)])
+		return
+	_stop_drawn = Engine.get_frames_drawn()
+	_stage = "gap"
+	print("TRACE t=", snapped(_t, 0.01), " kind=stop_end held_sec=", snapped(_t - _mark, 0.01), " clip=", clip, " flip=false select_png_index=", _stop_drawn, " next_not_armed=true ", _frame_tag())
 
 
-static func _tick_blocked(care: Node, moved: float) -> void:
+static func _tick_follow_wait(care: Node) -> void:
 	var roam = care.host.get("_roam")
+	roam.set_care_hold(true)
+	if care.host.get("_walk_target") != null:
+		_fail("follow settle armed a manual target")
+		return
+	if not bool(care.call("follow_close")):
+		_fail("follow did not stay on")
+		return
+	var st: Dictionary = care.host.call("follow_zoom_state")
+	if not bool(st.get("settled", false)) or float(st.get("frac", 0.0)) < float(st.get("need", 0.20)):
+		if _t >= _mark + 12.0:
+			_fail("follow did not settle, frac=%s" % st.get("frac", 0.0))
+		return
+	if not _movie_judged:
+		_movie_judged = true
+		if not _judge_movie_close(care, st):
+			return
+	if Engine.get_frames_drawn() <= _stop_drawn:
+		return
 	roam.set_care_hold(false)
-	roam._manual = false
-	roam._pause = 0.0
-	roam.dest = Vector2(80, -70)
-	if moved > 0.05:
-		_fail("blocked roam moved %s" % moved)
-		return
-	if _t < _mark + 0.45:
-		return
-	var st: Dictionary = care.host.call("walk_clip_state")
-	if bool(st.get("moving", true)):
-		_fail("blocked roam played a walk")
-		return
-	if absf(float(st.get("phase_wu", 0.0)) - _phase0) > 0.02:
-		_fail("blocked roam advanced the phase")
-		return
-	if _xz(care).distance_to(_anchor) > 0.02:
-		_fail("blocked roam left the cottage edge")
-		return
-	if str(roam.motion) != "idle":
-		_fail("blocked motion was " + str(roam.motion))
-		return
-	print("TRACE t=", snapped(_t, 0.01), " kind=blocked clip=", str(st.get("clip", "")), " motion=", str(roam.motion), " provenance=live_roam_tick_into_cottage")
-	_begin_rate20(care)
+	print("TRACE t=", snapped(_t, 0.01), " kind=follow_settled next=", _settle_next, " frac=", st.get("frac", 0), " need=", st.get("need", 0), " dist=", st.get("dist", 0), " no_ground_tap=true ", _frame_tag())
+	_log_sizes(care, "follow_settled")
+	if _settle_next == "rate20":
+		_start_rate20(care)
+	else:
+		_arm_route(care, "follow48", 48.0)
 
 
 static func _tick_rate20(care: Node, dt: float, moved: float) -> void:
 	var roam = care.host.get("_roam")
+	if not bool(care.call("follow_close")):
+		_fail("side20 left follow")
+		return
 	if str(roam.motion) == "walk" and dt > 0.0 and moved > 0.0001:
 		_rate_wu += moved
 		var spd := moved / dt
@@ -328,52 +314,96 @@ static func _tick_rate20(care: Node, dt: float, moved: float) -> void:
 		if spd >= 19.25:
 			_full.append(spd)
 	var here := _xz(care)
-	if here.distance_to(_goal) > 1.6 and _t < _mark + 3.0:
+	if here.distance_to(_goal) > 1.6 and _t < _mark + 4.0:
 		return
-	if _full.is_empty() or _rate_wu < 8.0:
+	if _rate_wu < ROUTE_WU - 0.05 or _full.is_empty():
 		_fail("fixture 20 leg samples %s dist %s" % [_full.size(), _rate_wu])
 		return
-	var st: Dictionary = care.host.call("walk_clip_state")
-	print("TRACE t=", snapped(_t, 0.01), " kind=roam20 samples=", _full.size(), " speed=", snapped(_full[0], 0.01), " dist_wu=", snapped(_rate_wu, 0.01), " facing=", str(st.get("facing", "")), " phase_wu=", snapped(float(st.get("phase_wu", 0)), 0.01), " provenance=fixture_motion_axis_0_live_roam_tick")
-	_dead = true
-	print("PASS walkclip")
-	care.get_tree().quit(0)
-
-
-static func _begin_leg(care: Node) -> void:
-	var here := _xz(care)
-	var dir: Vector2 = _dirs[_leg]
-	var span := _span(care, here, dir)
-	if span < 12.0:
-		_fail("leg %s clear span %s from %s" % [_names[_leg], span, here])
+	var clip: Dictionary = care.host.call("walk_clip_state")
+	var cycles := _rate_wu / 12.0
+	print("TRACE t=", snapped(_t, 0.01), " kind=leg_end leg=follow20 facing=", str(clip.get("facing", "")), " flip=", bool(clip.get("flip_h", true)), " dist_wu=", snapped(_rate_wu, 0.01), " cycles=", snapped(cycles, 0.01), " speed=", snapped(_full[0], 0.01), " provenance=fixture_motion_axis_0_live_roam_tick ", _frame_tag())
+	if str(clip.get("facing", "")) != "side" or bool(clip.get("flip_h", true)):
+		_fail("side20 did not stay on unflipped side")
 		return
-	print("TRACE t=", snapped(_t, 0.01), " kind=leg_start leg=", _names[_leg], " span=", span, " provenance=live_manual_walk_target")
-	_begin_manual(care, here + dir * span, 48.0)
-	_phase = "leg"
+	_phase0 = float(clip.get("phase_wu", 0.0))
+	_begin_stop(care, "finish")
 
 
-static func _begin_blocked(care: Node) -> void:
-	var pet: Node3D = care.host.get("_pet")
-	pet.position = Vector3(80.0, pet.position.y, -39.999)
-	care.host.call("walk_clip_rebase")
+static func _after_stop(care: Node) -> void:
+	match _stop_next:
+		"follow_setup":
+			_place_origin(care)
+			care.call("_enter_follow", care.host.get("_pet"))
+			var roam = care.host.get("_roam")
+			roam.set_care_hold(true)
+			roam.dest = null
+			care.host.set("_walk_target", null)
+			_settle_next = "follow48"
+			_mark = _t
+			_stop_drawn = Engine.get_frames_drawn()
+			_phase = "follow_wait"
+			print("TRACE t=", snapped(_t, 0.01), " kind=follow_enter via=_enter_follow no_ground_tap=true ", _frame_tag())
+		"rate20_setup":
+			_place_origin(care)
+			_settle_next = "rate20"
+			var roam_r = care.host.get("_roam")
+			roam_r.set_care_hold(true)
+			roam_r.dest = null
+			care.host.set("_walk_target", null)
+			_mark = _t
+			_stop_drawn = Engine.get_frames_drawn()
+			_phase = "follow_wait"
+		"finish":
+			_log_sizes(care, "done")
+			print("PASS walkclip")
+			_dead = true
+			care.get_tree().quit(0)
+		_:
+			_fail("unknown stop next " + _stop_next)
+
+
+static func _begin_stop(care: Node, next: String) -> void:
+	var st: Dictionary = care.host.call("walk_clip_state")
+	_phase0 = float(st.get("phase_wu", 0.0))
+	_stop_next = next
+	_stage = "hold"
+	_mark = _t
+	_tracking = false
+	_phase = "stop"
 	var roam = care.host.get("_roam")
+	roam.set_care_hold(true)
+	roam._stash = null
+	care.host.set("_walk_target", null)
+	print("TRACE t=", snapped(_t, 0.01), " kind=stop_begin clip=", str(st.get("clip", "")), " facing=", str(st.get("facing", "")), " flip=", bool(st.get("flip_h", true)), " ", _frame_tag())
+
+
+static func _arm_route(care: Node, leg: String, speed: float) -> void:
+	var goal := _origin + _right * ROUTE_WU
+	var roam = care.host.get("_roam")
+	if not roam.segment_free(_origin, goal):
+		_fail("route is no longer a free 24wu segment")
+		return
+	_leg_name = leg
+	_phase = "leg"
+	_expect = speed
+	_goal = goal
+	_phase0 = float(care.host.call("walk_clip_state").get("phase_wu", 0.0))
+	_moved = 0.0
+	_full = []
+	_tracking = true
+	_had_target = true
+	_mark = _t
 	roam.set_care_hold(false)
-	roam.dest = Vector2(80, -70)
+	roam.dest = null
 	roam._stash = null
 	roam._pause = 0.0
 	roam._manual = false
-	care.host.set("_walk_target", null)
-	_pos = Vector2(80.0, -39.999)
-	_anchor = _pos
-	_have = true
-	_tracking = false
-	_phase0 = float(care.host.call("walk_clip_state").get("phase_wu", 0.0))
-	_mark = _t
-	_phase = "blocked"
-	print("TRACE t=", snapped(_t, 0.01), " kind=blocked_place world=(80,-39.999) note=rebase_so_the_placement_is_not_a_step provenance=live_roam_tick_into_cottage")
+	care.host.set("_walk_target", Vector3(goal.x, 0.0, goal.y))
+	print("TRACE t=", snapped(_t, 0.01), " kind=leg_start leg=", leg, " dist_wu=", ROUTE_WU, " cycles=2 speed_const=", speed, " provenance=live_manual_walk_target ", _frame_tag())
+	_log_sizes(care, "leg_start_" + leg)
 
 
-static func _begin_rate20(care: Node) -> void:
+static func _start_rate20(care: Node) -> void:
 	var personality := _personality()
 	if personality == null:
 		_fail("personality missing")
@@ -387,13 +417,14 @@ static func _begin_rate20(care: Node) -> void:
 	if not is_equal_approx(mul, 1.0):
 		_fail("motion 0 mul was %s" % mul)
 		return
-	var here := _xz(care)
-	var goal := Vector2(here.x, here.y + 16.0)
+	_place_origin(care)
+	# Roam stops when the remaining distance is within its existing ARRIVE.
+	# Aim past the 24 wu mark by that radius so the walked distance still reaches two cycles.
+	var arrive := float((load("res://gameplay/m1_roam.gd") as GDScript).get_script_constant_map()["ARRIVE"])
+	var goal := _origin + _right * (ROUTE_WU + arrive)
 	var roam = care.host.get("_roam")
-	if not roam.segment_free(here, goal):
-		goal = Vector2(here.x, here.y - 16.0)
-	if not roam.segment_free(here, goal):
-		_fail("no 16wu roam leg from the cottage edge")
+	if not roam.segment_free(_origin, goal):
+		_fail("side20 segment is not free for 24wu plus the existing arrival radius")
 		return
 	roam.set_care_hold(false)
 	roam.dest = goal
@@ -404,60 +435,172 @@ static func _begin_rate20(care: Node) -> void:
 	_goal = goal
 	_full = []
 	_rate_wu = 0.0
+	_tracking = false
+	_leg_name = "follow20"
 	_mark = _t
 	_phase = "rate20"
-	print("TRACE t=", snapped(_t, 0.01), " kind=rate20_start motion_before=", before, " motion_now=0 goal=(", snapped(goal.x, 0.1), ",", snapped(goal.y, 0.1), ") provenance=fixture_motion_axis_0_live_roam_tick isolated_profile_only")
+	print("TRACE t=", snapped(_t, 0.01), " kind=leg_start leg=follow20 dist_wu=", ROUTE_WU, " cycles=2 motion_before=", before, " motion_now=0 provenance=fixture_motion_axis_0_live_roam_tick isolated_profile_only ", _frame_tag())
 
 
-static func _begin_manual(care: Node, goal: Vector2, expect: float) -> void:
+static func _place_origin(care: Node) -> void:
+	var pet: Node3D = care.host.get("_pet")
+	pet.position = Vector3(_origin.x, pet.position.y, _origin.y)
+	care.host.call("walk_clip_rebase")
+	_pos = _origin
+	_have = true
+	print("TRACE t=", snapped(_t, 0.01), " kind=rebase_to_route_origin note=placement_is_not_a_step world=(", snapped(_origin.x, 0.1), ",", snapped(_origin.y, 0.1), ")")
+
+
+static func _find_and_store_origin(care: Node) -> bool:
 	var roam = care.host.get("_roam")
-	roam.set_care_hold(false)
-	roam.dest = null
-	roam._stash = null
-	roam._pause = 0.0
-	roam._manual = false
-	_goal = goal
-	_phase0 = float(care.host.call("walk_clip_state").get("phase_wu", 0.0))
-	_moved = 0.0
-	_full = []
-	_expect = expect
-	_tracking = true
-	_last_walk = ""
-	# The target is armed for the next capture tick. That step must be counted.
-	_had_target = true
-	_mark = _t
-	care.host.set("_walk_target", Vector3(goal.x, 0.0, goal.y))
-
-
-static func _best_pad(care: Node, here: Vector2) -> Vector2:
-	var roam = care.host.get("_roam")
-	var best := Vector2.INF
-	var best_score := -1.0
-	var spots: Array[Vector2] = [here]
-	for p in _pads:
-		spots.append(p)
+	var spots: Array[Vector2] = [_xz(care), Vector2(0, 55), Vector2(0, 70), Vector2(-60, 10), Vector2(-20, 60), Vector2(20, 60), Vector2(100, 20)]
 	for spot in spots:
-		if spot != here and not roam.segment_free(here, spot):
-			continue
-		var score := 24.0
-		for d in _dirs:
-			score = minf(score, _span(care, spot, d))
-		if score > best_score:
-			best_score = score
-			best = spot
-	if best_score < 12.0:
-		return Vector2.INF
-	return best
+		var goal := spot + _right * ROUTE_WU
+		if roam.segment_free(spot, goal):
+			_origin = spot
+			return true
+	_fail("no straight 24wu side segment; not shortening the route")
+	return false
 
 
-static func _span(care: Node, origin: Vector2, dir: Vector2) -> float:
-	var roam = care.host.get("_roam")
-	var best := 0.0
-	for d in [24.0, 16.0, 12.0, 8.0]:
-		if roam.segment_free(origin, origin + dir * d):
-			return d
-		best = 0.0
-	return best
+static func _arm_panorama_from_search(care: Node) -> void:
+	if not _find_and_store_origin(care):
+		return
+	if _xz(care).distance_to(_origin) > 0.05:
+		_place_origin(care)
+	_arm_route(care, "panorama48", 48.0)
+
+
+static func _visible(care: Node) -> bool:
+	var cam: Camera3D = care.host.get("_camera") as Camera3D
+	var pet: Node3D = care.host.get("_pet") as Node3D
+	if cam == null or pet == null:
+		_fail("missing camera or pet for visibility")
+		return false
+	var vp: Vector2 = care.call("_viewport_size")
+	var head := pet.global_position + Vector3(0, 27, 0)
+	var ground := Vector3(pet.global_position.x, 0.0, pet.global_position.z)
+	var tex_h := 64.0
+	var px := 1.0
+	var st: Dictionary = care.host.call("walk_clip_state")
+	if float(st.get("tex_h", 0)) > 0.0:
+		tex_h = float(st.get("tex_h"))
+	if float(st.get("pixel_size", 0)) > 0.0:
+		px = float(st.get("pixel_size"))
+	var sole := Vector3(pet.global_position.x, pet.global_position.y - tex_h * px * 0.5, pet.global_position.z)
+	if not _point_in(cam, vp, head) or not _point_in(cam, vp, ground) or not _point_in(cam, vp, sole):
+		_fail("head or feet left the visible rect during " + _leg_name)
+		return false
+	var bubble: CanvasItem = care.get("_bubble") as CanvasItem
+	if bubble == null or not bubble.visible:
+		_fail("need bubble was not visible during " + _leg_name)
+		return false
+	var bp: Vector2 = bubble.position
+	var bs: Vector2 = bubble.size
+	if bp.x < 0.0 or bp.y < 0.0 or bp.x + bs.x > vp.x or bp.y + bs.y > vp.y:
+		_fail("bubble rect left the visible rect during " + _leg_name)
+		return false
+	if not bool(care.call("bubble_fits_at", Vector2(pet.global_position.x, pet.global_position.z))):
+		_fail("bubble_fits_at rejected the live pet during " + _leg_name)
+		return false
+	return true
+
+
+static func _point_in(cam: Camera3D, vp: Vector2, world: Vector3) -> bool:
+	if cam.is_position_behind(world):
+		return false
+	var sp := cam.unproject_position(world)
+	return sp.x >= 0.0 and sp.y >= 0.0 and sp.x <= vp.x and sp.y <= vp.y
+
+
+static func _judge_movie_close(care: Node, st: Dictionary) -> bool:
+	var render := _render_size(care)
+	var visible: Vector2 = care.call("_viewport_size")
+	var frac := float(st.get("frac", 0.0))
+	var box_on_render := _box_px(care)
+	var movie := Engine.get_write_movie_path()
+	_log_sizes(care, "movie_judge")
+	print("TRACE t=", snapped(_t, 0.01), " kind=movie_judge render=", render, " visible=", visible, " unproject_box_px=", snapped(box_on_render, 1.0), " frac_on_visible=", snapped(frac, 0.001), " settled=", bool(st.get("settled", false)), " movie=", movie)
+	if movie == "":
+		print("TRACE kind=movie_close skipped_not_movie render=", render, " visible=", visible, " note=window_or_visible_fraction_is_not_movie_close")
+		return true
+	if render.x != MOVIE_W or render.y != MOVIE_H:
+		_fail("movie render texture is %s x %s, not %s x %s; a clamped window fraction is not movie close" % [render.x, render.y, MOVIE_W, MOVIE_H])
+		return false
+	var need_px := 0.20 * float(MOVIE_H)
+	if box_on_render + 1.5 < need_px:
+		_fail("movie pet box is %s px on the %s render, under 0.20 of that height" % [box_on_render, MOVIE_H])
+		return false
+	print("TRACE kind=movie_close PASS render=", render, " unproject_box_px=", snapped(box_on_render, 1.0), " need_px=", snapped(need_px, 1.0), " basis=viewport_texture_not_window")
+	return true
+
+
+static func _box_px(care: Node) -> float:
+	var cam: Camera3D = care.host.get("_camera") as Camera3D
+	var pet: Node3D = care.host.get("_pet") as Node3D
+	if cam == null or pet == null:
+		return 0.0
+	var mid := pet.global_position
+	var top := cam.unproject_position(mid + Vector3(0, 27, 0))
+	var bot := cam.unproject_position(mid + Vector3(0, -27, 0))
+	return absf(bot.y - top.y)
+
+
+static func _render_size(care: Node) -> Vector2i:
+	var vp := care.get_viewport()
+	if vp == null:
+		return Vector2i.ZERO
+	var tex := vp.get_texture()
+	if tex == null:
+		return Vector2i.ZERO
+	return tex.get_size()
+
+
+static func _log_sizes(care: Node, tag: String) -> void:
+	var visible: Vector2 = care.call("_viewport_size")
+	var win := DisplayServer.window_get_size()
+	var screen := DisplayServer.screen_get_size()
+	var render := _render_size(care)
+	var req_w := int(ProjectSettings.get_setting("display/window/size/viewport_width"))
+	var req_h := int(ProjectSettings.get_setting("display/window/size/viewport_height"))
+	var stretch := str(ProjectSettings.get_setting("display/window/stretch/mode"))
+	var clamped := win.y + 8 < req_h
+	print("TRACE t=", snapped(_t, 0.01), " kind=size tag=", tag, " requested=", req_w, "x", req_h, " window=", win, " visible=", visible, " render_texture=", render, " screen=", screen, " stretch=", stretch, " window_clamped=", clamped, " movie=", Engine.get_write_movie_path(), " ", _frame_tag())
+
+
+static func _frame_tag() -> String:
+	var drawn := Engine.get_frames_drawn()
+	var proc := Engine.get_process_frames()
+	return "frames_drawn=%s process_frames=%s png_index=%s title_frame=%s draw_matches_process=%s" % [drawn, proc, drawn, drawn + 1, drawn == proc or drawn + 1 == proc]
+
+
+static func _keep_bubble(care: Node) -> void:
+	var fade = care.get("fade")
+	if fade and fade.has_method("note_input"):
+		fade.call("note_input")
+	var tree := Engine.get_main_loop()
+	if tree == null:
+		return
+	var sim: Node = tree.root.get_node_or_null("Sim")
+	if sim == null:
+		return
+	var state: Dictionary = sim.get("state")
+	var needs: Dictionary = state.get("needs", {})
+	needs["hunger"] = 100.0 - _threshold
+	state["needs"] = needs
+	sim.set("state", state)
+
+
+static func _want_threshold() -> float:
+	var tree := Engine.get_main_loop()
+	if tree == null:
+		return 70.0
+	var gd: Node = tree.root.get_node_or_null("GameData")
+	if gd == null:
+		return 70.0
+	var m1a: Dictionary = gd.get("m1a")
+	var bubbles: Dictionary = m1a.get("bubbles", {})
+	return float(bubbles.get("want_threshold", 70.0))
 
 
 static func _contract(care: Node) -> bool:
