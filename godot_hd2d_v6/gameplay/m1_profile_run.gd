@@ -1,6 +1,8 @@
 extends RefCounted
-## Two-process save/restore and real button coverage.
-## Seed may write the isolated profile. Verify only reads, then compares.
+## Two-process save/restore and the optional visual trace.
+## Seed and visual may write an isolated profile. Verify only reads.
+
+const Layout := preload("res://gameplay/m1_ui_layout.gd")
 
 static var _t := 0.0
 static var _n := 0
@@ -98,6 +100,190 @@ static func tick_seed(care: Node, dt: float) -> void:
 		_write_expect()
 		print("PASS seed saved")
 		care.get_tree().quit(0)
+
+
+static func visual_fixture() -> void:
+	# Separate from the restore seed. Hunger is the existing bubble line:
+	# want_eat = 100 - hunger, shown when want > threshold - 0.01.
+	_require_profile_dir()
+	print("TRACE header wake=pointer_down_calls_note_input_only_when_appreciate_is_false")
+	print("TRACE header key_n=capture_unhandled_input_returns_before_care_and_does_not_toggle_appreciate")
+	print("TRACE header walk=tap_directed_only no_autonomous_wander")
+	print("TRACE header autonomous_walk=absent samples_with_a_target_are_tap_directed samples_without_a_target_are_none")
+	print("TRACE header day_night=key_n_only_after_the_appreciate_hold_and_it_does_not_wake_the_ui")
+	print("TRACE schedule t=0.6 bubble_shown; t=1.0 empty_tap_leaves_follow; t=1.5 tap_walk_a=(110,-30); t=4.0 tap_walk_b=(-40,10); t=6.5 feed_while_ui_still_shown; t=7.0 pat; t=7.4 clean_one; t=7.8 longpress; quiet+1.5 ui_shown; quiet+3.5 ui_hidden; quiet+3.9 pointer_wake_shows_ui; quiet+4.3 wake_restored appreciate_still_false; quiet+4.6 appreciate; appreciate+2.2 still_on_and_no_input; appreciate+2.6 key_n; appreciate+3.1 mode_night appreciate_still_on")
+	print("profile visual user_data_dir=", OS.get_user_data_dir())
+	if _sim() == null:
+		_fail("visual missing Sim")
+		return
+	if str(_state().get("stage", "egg")) == "egg" and _sim().has_method("force_stage"):
+		_sim().call("force_stage", "sprout")
+	while int(_state().get("poops", 0)) < 2 and _sim().has_method("add_poop"):
+		_sim().call("add_poop")
+	var needs: Dictionary = _state().get("needs", {})
+	needs["hunger"] = Layout.hunger_for_need_bubble(_threshold())
+	_state()["needs"] = needs
+	print("profile visual fixture hunger=", needs["hunger"], " threshold=", _threshold(), " poops=", _poops())
+
+
+static func tick_visual(care: Node, dt: float) -> void:
+	if _dead:
+		return
+	_t += dt
+	var pos := _pet_pos(care)
+	if _have_prev:
+		_walked += pos.distance_to(_walk_prev)
+	_walk_prev = pos
+	_have_prev = true
+	if care.host.get("_walk_target") != null:
+		_tap_walk_sec += dt
+	if _hold_until >= 0.0 and _t >= _hold_until:
+		_trace_pointer(care, _ground(care), false, "longpress_up")
+		_hold_until = -1.0
+	_sample_walk(care)
+	var mark := _vn
+	if mark == 0 and _t >= 0.6:
+		_trace_state(care, "bubble_before_feed", true, "shown", false, "low")
+		if not _bubble_on(care):
+			_fail("need bubble was not visible before feed")
+			return
+		_vn = 1
+	elif mark == 1 and _t >= 1.0:
+		_trace_pointer(care, _mid(care), true, "exit_follow_down")
+		_trace_pointer(care, _mid(care), false, "exit_follow_up")
+		_vn = 2
+	elif mark == 2 and _t >= 1.5:
+		_walk_from = pos
+		# Open lawn in the opening frame. (110, -70) is inside the cottage footprint and stops on a prop.
+		_trace_pointer(care, _screen_of(care, Vector3(110, 0, -30)), true, "walk_a_down")
+		_trace_pointer(care, _screen_of(care, Vector3(110, 0, -30)), false, "walk_a_up")
+		_vn = 3
+	elif mark == 3 and _t >= 4.0:
+		_trace_pointer(care, _screen_of(care, Vector3(-40, 0, 10)), true, "walk_b_down")
+		_trace_pointer(care, _screen_of(care, Vector3(-40, 0, 10)), false, "walk_b_up")
+		_vn = 4
+	elif mark == 4 and _t >= 6.5:
+		print("TRACE t=", snapped(_t, 0.01), " kind=walk_check path_wu=", snapped(_walked, 0.1), " tap_directed_sec=", snapped(_tap_walk_sec, 0.01), " straight_from_start=", snapped(pos.distance_to(_walk_from), 0.1), " cause=", _walk_cause(care))
+		if _walked < 100.0 or _tap_walk_sec < 4.0:
+			_fail("walk was not continuous, path=%s tap_sec=%s" % [_walked, _tap_walk_sec])
+			return
+		if float(care.get("fade").alpha) < 0.95:
+			_fail("UI faded before feed, alpha=%s" % care.get("fade").alpha)
+			return
+		if not _bubble_on(care):
+			_fail("bubble disappeared before the feed tap")
+			return
+		if not _bubble_in_view(care):
+			_fail("need bubble was outside the viewport before feed")
+			return
+		_hunger_before_feed = _hunger()
+		_trace_pointer(care, care.call("_button_center", 0), true, "feed_down")
+		_trace_pointer(care, care.call("_button_center", 0), false, "feed_up")
+		_vn = 5
+	elif mark == 5 and _t >= 7.0:
+		var got := _hunger()
+		var meal := float(_sim().get("FEED_MEAL"))
+		if absf((got - _hunger_before_feed) - meal) > 0.25:
+			_fail("visual feed delta %s meal %s" % [got - _hunger_before_feed, meal])
+			return
+		if _bubble_on(care):
+			_fail("bubble still visible after feed")
+			return
+		_trace_state(care, "after_feed", false, "shown", false, "low")
+		_trace_pointer(care, care.call("_button_center", 3), true, "pat_down")
+		_trace_pointer(care, care.call("_button_center", 3), false, "pat_up")
+		_vn = 6
+	elif mark == 6 and _t >= 7.4:
+		_poops_before_one = _poops()
+		_trace_pointer(care, care.call("_button_center", 2), true, "clean_one_down")
+		_trace_pointer(care, care.call("_button_center", 2), false, "clean_one_up")
+		_vn = 7
+	elif mark == 7 and _t >= 7.8:
+		if _poops() != _poops_before_one - 1 or _poops() <= 0:
+			_fail("visual clean_one poops %s from %s" % [_poops(), _poops_before_one])
+			return
+		_trace_pointer(care, _ground(care), true, "longpress_down")
+		_hold_until = _t + 0.7
+		_vn = 8
+	elif mark == 8 and _hold_until < 0.0 and _t >= 8.6:
+		if _poops() != 0:
+			_fail("visual longpress poops %s" % _poops())
+			return
+		_quiet_at = _t
+		print("TRACE t=", snapped(_t, 0.01), " kind=quiet_start last_input=", snapped(_last_input, 0.01), " expected_ui=shown_until_idle_reaches_fade_sec no_input_from_here")
+		_vn = 9
+	elif mark == 9 and _t >= _quiet_at + 1.5:
+		_trace_state(care, "fade_not_yet", false, "shown", false, "low")
+		if float(care.get("fade").alpha) < 0.95:
+			_fail("UI faded before the 3s idle, alpha=%s" % care.get("fade").alpha)
+			return
+		_vn = 10
+	elif mark == 10 and _t >= _quiet_at + 3.5:
+		_trace_state(care, "fade_hidden", false, "hidden", false, "low")
+		if _t - _last_input < 3.0:
+			_fail("fade window had input at t=%s" % _last_input)
+			return
+		if float(care.get("fade").alpha) > 0.05:
+			_fail("fade did not hide UI after 3.5s idle, alpha=%s" % care.get("fade").alpha)
+			return
+		_vn = 11
+	elif mark == 11 and _t >= _quiet_at + 3.9:
+		var admire: Vector2 = _admire(care)
+		_trace_pointer(care, admire, true, "wake_down_any_pointer_restores_faded_ui")
+		_trace_pointer(care, admire, false, "wake_up_button_was_ignore_so_appreciate_stays_off")
+		_vn = 12
+	elif mark == 12 and _t >= _quiet_at + 4.3:
+		_trace_state(care, "wake_restored", false, "shown", false, "low")
+		if bool(care.get("fade").appreciate):
+			_fail("wake tap toggled appreciate; it should only restore the fade")
+			return
+		if float(care.get("fade").alpha) < 0.95:
+			_fail("wake pointer did not restore the UI, alpha=%s" % care.get("fade").alpha)
+			return
+		_vn = 13
+	elif mark == 13 and _t >= _quiet_at + 4.6:
+		var admire2: Vector2 = _admire(care)
+		_trace_pointer(care, admire2, true, "appreciate_down")
+		_trace_pointer(care, admire2, false, "appreciate_up")
+		_appreciate_at = _t
+		_vn = 14
+	elif mark == 14 and _t >= _appreciate_at + 2.2:
+		if not bool(care.get("fade").appreciate):
+			_fail("appreciate did not stay on for 2s")
+			return
+		if _t - _last_input < 2.0:
+			_fail("input during appreciate window at t=%s" % _last_input)
+			return
+		_trace_state(care, "appreciate_hold", false, "hidden", true, "low")
+		_vn = 15
+	elif mark == 15 and _t >= _appreciate_at + 2.6:
+		_trace_key_n(care)
+		_vn = 16
+	elif mark == 16 and _t >= _appreciate_at + 3.1:
+		var mode := str(care.host.get("_mode"))
+		if mode != "night":
+			_fail("night key did not switch mode, mode=%s" % mode)
+			return
+		if not bool(care.get("fade").appreciate):
+			_fail("night key cleared appreciate; key input must not wake it")
+			return
+		if float(care.get("fade").alpha) > 0.05:
+			_fail("night key woke the UI, alpha=%s" % care.get("fade").alpha)
+			return
+		_trace_state(care, "night_after_appreciate", false, "hidden", true, "night")
+		print("PASS visual")
+		care.get_tree().quit(0)
+
+
+static var _vn := 0
+static var _walk_from := Vector3.ZERO
+static var _quiet_at := 0.0
+static var _appreciate_at := 0.0
+static var _last_input := -1.0
+static var _walked := 0.0
+static var _walk_prev := Vector3.ZERO
+static var _have_prev := false
+static var _tap_walk_sec := 0.0
 
 
 static func verify_and_quit(care: Node) -> void:
@@ -242,6 +428,134 @@ static func _now() -> int:
 	if clock == null:
 		return 0
 	return int(clock.call("now_ms"))
+
+
+static func _trace_pointer(care: Node, pos: Vector2, pressed: bool, note: String) -> void:
+	care.call("_pointer", pos, pressed)
+	_last_input = _t
+	print("TRACE t=", snapped(_t, 0.01), " kind=pointer pressed=", pressed, " pos=", pos, " note=", note, " ", _snap(care))
+
+
+static func _trace_key_n(care: Node) -> void:
+	var ev := InputEventKey.new()
+	ev.keycode = KEY_N
+	ev.pressed = true
+	var vp := care.get_viewport()
+	if vp:
+		vp.push_input(ev)
+	_last_input = _t
+	print("TRACE t=", snapped(_t, 0.01), " kind=key key=N expected_wake=false expected_appreciate=true ", _snap(care))
+
+
+static func _trace_state(care: Node, tag: String, expect_bubble: bool, expect_ui: String, expect_appreciate: bool, expect_mode: String) -> void:
+	var quiet := _t - _last_input if _last_input >= 0.0 else -1.0
+	print("TRACE t=", snapped(_t, 0.01), " kind=state tag=", tag,
+		" expected_bubble=", expect_bubble, " actual_bubble=", _bubble_on(care),
+		" expected_ui=", expect_ui, " actual_alpha=", _alpha(care),
+		" expected_appreciate=", expect_appreciate, " actual_appreciate=", _appreciate(care),
+		" expected_mode=", expect_mode, " no_input_sec=", snapped(quiet, 0.01),
+		" ", _snap(care))
+
+
+static func _sample_walk(care: Node) -> void:
+	var slot := int(_t / 0.5)
+	if slot == _sample_slot:
+		return
+	_sample_slot = slot
+	if _vn < 3 or _vn > 4:
+		return
+	print("TRACE t=", snapped(_t, 0.01), " kind=walk_sample cause=", _walk_cause(care), " ", _snap(care))
+
+
+static var _sample_slot := -1
+
+
+static func _snap(care: Node) -> String:
+	var pet := _pet_pos(care)
+	var target: Variant = care.host.get("_walk_target")
+	var dest := " target_none"
+	if target is Vector3:
+		var tv: Vector3 = target
+		dest = " target=(%.1f,%.1f)" % [tv.x, tv.z]
+	return "walk_cause=%s pet=(%.1f,%.1f) hunger=%.2f poops=%s mode=%s%s %s" % [
+		_walk_cause(care), pet.x, pet.z, _hunger(), _poops(), str(care.host.get("_mode")),
+		dest, _bubble_px(care),
+	]
+
+
+static func _bubble_px(care: Node) -> String:
+	var bubble: CanvasItem = care.get("_bubble") as CanvasItem
+	if bubble == null:
+		return "bubble_px=none"
+	var p: Vector2 = bubble.position
+	var s: Vector2 = bubble.size
+	return "bubble_px=(%.0f,%.0f) bubble_size=(%.0f,%.0f) bubble_vis=%s" % [p.x, p.y, s.x, s.y, bubble.visible]
+
+
+static func _bubble_in_view(care: Node) -> bool:
+	var bubble: CanvasItem = care.get("_bubble") as CanvasItem
+	if bubble == null or not bubble.visible:
+		return false
+	var vp: Vector2 = care.call("_viewport_size")
+	var p: Vector2 = bubble.position
+	var s: Vector2 = bubble.size
+	return p.x >= 0.0 and p.y >= 0.0 and p.x + s.x <= vp.x and p.y + s.y <= vp.y
+
+
+static func _walk_cause(care: Node) -> String:
+	if care.host.get("_walk_target") != null:
+		return "tap_directed"
+	return "none"
+
+
+static func _bubble_on(care: Node) -> bool:
+	var bubble: CanvasItem = care.get("_bubble") as CanvasItem
+	if bubble == null:
+		return false
+	return bubble.visible
+
+
+static func _alpha(care: Node) -> float:
+	return float(care.get("fade").alpha)
+
+
+static func _appreciate(care: Node) -> bool:
+	return bool(care.get("fade").appreciate)
+
+
+static func _pet_pos(care: Node) -> Vector3:
+	var pet: Node3D = care.host.get("_pet") as Node3D
+	if pet == null:
+		return Vector3.ZERO
+	return pet.global_position
+
+
+static func _screen_of(care: Node, world: Vector3) -> Vector2:
+	var cam: Camera3D = care.host.get("_camera") as Camera3D
+	if cam == null:
+		return _mid(care)
+	return cam.unproject_position(world)
+
+
+static func _mid(care: Node) -> Vector2:
+	var vp: Vector2 = care.call("_viewport_size")
+	return Vector2(vp.x * 0.50, vp.y * 0.36)
+
+
+static func _admire(care: Node) -> Vector2:
+	return care.call("_admire_center")
+
+
+static func _threshold() -> float:
+	var tree := Engine.get_main_loop()
+	if tree == null:
+		return 70.0
+	var gd: Node = tree.root.get_node_or_null("GameData")
+	if gd == null:
+		return 70.0
+	var m1a: Dictionary = gd.get("m1a")
+	var bubbles: Dictionary = m1a.get("bubbles", {})
+	return float(bubbles.get("want_threshold", 70.0))
 
 
 static func _hunger() -> float:

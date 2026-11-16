@@ -50,6 +50,8 @@ func bind_host(p_host: Node) -> void:
 		return
 	if phase == "seed":
 		M1ProfileRun.seed_fixture()
+	elif phase == "visual":
+		M1ProfileRun.visual_fixture()
 	elif Sim:
 		# Same boot as mainline Main._ready: a new egg save becomes sprout so
 		# feed/pat are reachable, and one poop is placed so clean can be tried.
@@ -131,6 +133,8 @@ func _process(dt: float) -> void:
 	_maybe_motion(dt)
 	if OS.get_environment("HD2D_PROFILE_PHASE") == "seed":
 		M1ProfileRun.tick_seed(self, dt)
+	elif OS.get_environment("HD2D_PROFILE_PHASE") == "visual":
+		M1ProfileRun.tick_visual(self, dt)
 
 
 func _dispatch(kind: String, screen_pos: Vector2) -> void:

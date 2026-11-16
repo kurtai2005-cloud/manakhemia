@@ -203,7 +203,21 @@ func _test_restore_prediction() -> void:
 	_ok(float(later_needs.get("hunger", 80)) < 80.0, "reload after the stall applies ordinary hunger decay")
 	_ok(int(later.get("poops", -1)) == 0, "that same decay does not invent or remove poops")
 	_ok(Layout.effect("water") == "none", "water still has no care effect")
-	_ok((Layout.CARE_IDS as PackedStringArray)[2] == "poop" and (Layout.CARE_IDS as PackedStringArray)[1] == "water", "poop and water keep their button slots")
+	_ok(Layout.CARE_IDS[2] == "poop" and Layout.CARE_IDS[1] == "water", "poop and water keep their button slots")
+	_test_profile_guard()
+
+
+func _test_profile_guard() -> void:
+	_ok(Layout.profile_allowed("", "/home/default", ""), "ordinary play may use the default save")
+	_ok(not Layout.profile_allowed("visual", "/home/.local/share/godot/app_userdata/pilot", ""), "visual without a profile name is refused")
+	_ok(not Layout.profile_allowed("seed", "/home/.local/share/godot/app_userdata/pilot", "vc27_care_restore_9"), "seed does not accept the default save dir")
+	_ok(not Layout.profile_allowed("verify", "/home/.local/share/godot/app_userdata/pilot", "vc27_care_restore_9"), "verify does not accept the default save dir")
+	_ok(Layout.profile_allowed("visual", "/home/.local/share/vc27_care_restore_9", "vc27_care_restore_9"), "visual accepts its isolated profile")
+	var hunger := Layout.hunger_for_need_bubble(70.0)
+	_ok(is_equal_approx(hunger, 30.0), "bubble hunger is 100 minus the existing threshold")
+	_ok(100.0 - hunger >= 70.0, "that hunger still asks for food")
+	_ok(100.0 - (hunger + 40.0) < 70.0, "one existing meal drops the ask below the bubble line")
+	_ok(hunger < 90.0, "that hunger is still under the existing refuse line")
 
 
 func _png_size(path: String) -> Vector2i:

@@ -1,7 +1,7 @@
 #!/bin/sh
-# Two Godot processes, isolated user dir, 540x1140 override.
+# Isolated seed then a new verify process. Does not keep a caller's override.cfg.
 # Usage: ./tools/run_restore_check.sh /path/to/Godot [rendering-method]
-# Reviewer GPU: pass "mobile". This VM's software GL run uses gl_compatibility.
+# GPU reviewer: pass mobile. This VM uses gl_compatibility.
 set -eu
 GODOT=${1:-godot}
 METHOD=${2:-mobile}
@@ -10,10 +10,21 @@ PROFILE=vc27_care_restore_$$
 FAKE_NOW=1710000000000
 EXPECT="$ROOT/user_restore_expect.json"
 LOGDIR=${HD2D_LOG_DIR:-/tmp/vc27_restore_$$}
+BACKUP=$(mktemp)
+HAD_OVERRIDE=0
 mkdir -p "$LOGDIR"
 cd "$ROOT"
+if [ -f "$ROOT/override.cfg" ]; then
+	cp "$ROOT/override.cfg" "$BACKUP"
+	HAD_OVERRIDE=1
+fi
 cleanup() {
-	rm -f "$ROOT/override.cfg" "$EXPECT"
+	if [ "$HAD_OVERRIDE" -eq 1 ]; then
+		cp "$BACKUP" "$ROOT/override.cfg"
+	else
+		rm -f "$ROOT/override.cfg"
+	fi
+	rm -f "$BACKUP" "$EXPECT"
 }
 trap cleanup EXIT
 cat > "$ROOT/override.cfg" << EOF
@@ -29,31 +40,47 @@ echo "profile=$PROFILE"
 echo "project=$ROOT"
 echo "method=$METHOD"
 set +e
-HD2D_PROFILE_PHASE=seed \
-HD2D_PROFILE_NAME="$PROFILE" \
-HD2D_FAKE_NOW_MS=$FAKE_NOW \
-HD2D_EXPECT_FILE="$EXPECT" \
-HD2D_MODE=low \
-"$GODOT" --rendering-method "$METHOD" --display-driver x11 --path "$ROOT" \
-	> "$LOGDIR/seed.log" 2>&1
+"$GODOT" --headless --import --path "$ROOT" > "$LOGDIR/import.log" 2>&1
+IMPORT=$?
+set -e
+echo "import_exit=$IMPORT"
+if [ "$IMPORT" -ne 0 ]; then
+	cat "$LOGDIR/import.log"
+	exit "$IMPORT"
+fi
+DRIVER=${HD2D_DISPLAY_DRIVER:-x11}
+run_phase() {
+	PHASE=$1
+	LOG=$2
+	set +e
+	HD2D_PROFILE_PHASE=$PHASE \
+	HD2D_PROFILE_NAME="$PROFILE" \
+	HD2D_FAKE_NOW_MS=$FAKE_NOW \
+	HD2D_EXPECT_FILE="$EXPECT" \
+	HD2D_MODE=low \
+	"$GODOT" --rendering-method "$METHOD" --display-driver "$DRIVER" --path "$ROOT" \
+		> "$LOG" 2>&1
+	CODE=$?
+	set -e
+	if [ "$CODE" -eq 0 ] && grep -q '^FAIL ' "$LOG"; then
+		echo "FAIL log contains FAIL while exit was 0"
+		CODE=1
+	fi
+	echo "${PHASE}_exit=$CODE"
+	return "$CODE"
+}
+set +e
+run_phase seed "$LOGDIR/seed.log"
 SEED=$?
 set -e
-echo "seed_exit=$SEED"
 if [ "$SEED" -ne 0 ]; then
 	cat "$LOGDIR/seed.log"
 	exit "$SEED"
 fi
 set +e
-HD2D_PROFILE_PHASE=verify \
-HD2D_PROFILE_NAME="$PROFILE" \
-HD2D_FAKE_NOW_MS=$FAKE_NOW \
-HD2D_EXPECT_FILE="$EXPECT" \
-HD2D_MODE=low \
-"$GODOT" --rendering-method "$METHOD" --display-driver x11 --path "$ROOT" \
-	> "$LOGDIR/verify.log" 2>&1
+run_phase verify "$LOGDIR/verify.log"
 VERIFY=$?
 set -e
-echo "verify_exit=$VERIFY"
 echo "logs=$LOGDIR"
 cat "$LOGDIR/seed.log"
 echo "-----"

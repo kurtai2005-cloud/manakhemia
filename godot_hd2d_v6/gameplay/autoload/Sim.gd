@@ -52,12 +52,21 @@ signal poops_changed(count: int)
 signal stage_changed(stage: String)
 signal cleaned()
 
+const M1UiLayout := preload("res://gameplay/m1_ui_layout.gd")
+
 var state: Dictionary = {}
 var _dirty := false
 var paused := false
 
 func _ready() -> void:
 	_boot_params()
+	var phase := OS.get_environment("HD2D_PROFILE_PHASE")
+	if not M1UiLayout.profile_allowed(phase, OS.get_user_data_dir(), OS.get_environment("HD2D_PROFILE_NAME")):
+		print("FAIL profile guard refused phase=", phase, " user_data_dir=", OS.get_user_data_dir())
+		var tree := Engine.get_main_loop()
+		if tree:
+			tree.quit(1)
+		return
 	var loaded := SaveSystem.load_state()
 	if loaded.is_empty():
 		state = new_state(TimeService.now_ms())

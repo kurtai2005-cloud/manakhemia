@@ -104,3 +104,20 @@ static func bubble_shown(has_need: bool, appreciate: bool, alpha: float) -> bool
 	# SPEC: appreciate hides the bubble. The 3s fade uses modulate and
 	# drops the bubble once the panel is essentially gone.
 	return has_need and (not appreciate) and alpha > 0.05
+
+
+static func profile_allowed(phase: String, user_dir: String, profile_name: String) -> bool:
+	# Empty phase is ordinary play and may use the default save.
+	if phase == "":
+		return true
+	if phase != "seed" and phase != "verify" and phase != "visual":
+		return false
+	if profile_name == "":
+		return false
+	return user_dir.find(profile_name) >= 0
+
+
+static func hunger_for_need_bubble(threshold: float) -> float:
+	# want_eat = 100 - hunger. The bubble shows when want > threshold - 0.01.
+	# Hunger 100 - threshold makes want equal the threshold, which still shows.
+	return 100.0 - threshold
