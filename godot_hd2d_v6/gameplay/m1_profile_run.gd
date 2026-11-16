@@ -4,6 +4,10 @@ extends RefCounted
 
 const Layout := preload("res://gameplay/m1_ui_layout.gd")
 
+# Deterministic visual-trace seed. Not a care or economy value.
+# Live play still uses Walker.randomize().
+const TRACE_ROAM_SEED := 2
+
 static var _t := 0.0
 static var _n := 0
 static var _hold_until := -1.0
@@ -102,16 +106,21 @@ static func tick_seed(care: Node, dt: float) -> void:
 		care.get_tree().quit(0)
 
 
-static func visual_fixture() -> void:
+static func visual_fixture(care: Node) -> void:
 	# Separate from the restore seed. Hunger is the existing bubble line:
 	# want_eat = 100 - hunger, shown when want > threshold - 0.01.
 	_require_profile_dir()
 	print("TRACE header wake=pointer_down_calls_note_input_only_when_appreciate_is_false")
 	print("TRACE header key_n=capture_unhandled_input_returns_before_care_and_does_not_toggle_appreciate")
-	print("TRACE header walk=tap_directed_only no_autonomous_wander")
-	print("TRACE header autonomous_walk=absent samples_with_a_target_are_tap_directed samples_without_a_target_are_none")
+	print("TRACE header walk=autonomous_then_tap_directed")
+	print("TRACE header autonomous_walk=walker_speed_and_idle_pause petbrain_nearby_pick")
+	print("TRACE header art=pet_tuanrong_radiant_idle_01 only no_walk_cycle movement_is_billboard_position")
 	print("TRACE header day_night=key_n_only_after_the_appreciate_hold_and_it_does_not_wake_the_ui")
-	print("TRACE schedule t=0.6 bubble_shown; t=1.0 empty_tap_leaves_follow; t=1.5 tap_walk_a=(110,-30); t=4.0 tap_walk_b=(-40,10); t=6.5 feed_while_ui_still_shown; t=7.0 pat; t=7.4 clean_one; t=7.8 longpress; quiet+1.5 ui_shown; quiet+3.5 ui_hidden; quiet+3.9 pointer_wake_shows_ui; quiet+4.3 wake_restored appreciate_still_false; quiet+4.6 appreciate; appreciate+2.2 still_on_and_no_input; appreciate+2.6 key_n; appreciate+3.1 mode_night appreciate_still_on")
+	print("TRACE schedule autonomous_motion>=3s_before_any_ground_tap; then empty_tap_leaves_follow; tap_walk_a; tap_walk_b; feed; pat; clean_one; longpress; quiet+1.5 ui_shown; quiet+3.5 ui_hidden; quiet+3.9 pointer_wake; quiet+4.3 wake_restored; quiet+4.6 appreciate; appreciate+2.2 hold_no_input mode_low; appreciate+2.6 key_n; appreciate+3.1 mode_night appreciate_still_on")
+	var roam = care.host.get("_roam") if care and care.host else null
+	if roam and roam.has_method("seed"):
+		# Trace seed only. Live play still randomizes like Walker.
+		roam.seed(TRACE_ROAM_SEED)
 	print("profile visual user_data_dir=", OS.get_user_data_dir())
 	if _sim() == null:
 		_fail("visual missing Sim")
@@ -131,41 +140,89 @@ static func tick_visual(care: Node, dt: float) -> void:
 		return
 	_t += dt
 	var pos := _pet_pos(care)
+	var step_wu := 0.0
 	if _have_prev:
-		_walked += pos.distance_to(_walk_prev)
+		step_wu = pos.distance_to(_walk_prev)
+		_walked += step_wu
 	_walk_prev = pos
 	_have_prev = true
 	if care.host.get("_walk_target") != null:
 		_tap_walk_sec += dt
+		_tap_wu += step_wu
 	if _hold_until >= 0.0 and _t >= _hold_until:
 		_trace_pointer(care, _ground(care), false, "longpress_up")
 		_hold_until = -1.0
 	_sample_walk(care)
 	var mark := _vn
-	if mark == 0 and _t >= 0.6:
+	if mark == 0 and _t >= 0.6 and not _bubble_seen:
 		_trace_state(care, "bubble_before_feed", true, "shown", false, "low")
 		if not _bubble_on(care):
 			_fail("need bubble was not visible before feed")
 			return
+		if _walk_cause(care) != "autonomous":
+			_fail("opening bubble sample was not autonomous, cause=%s" % _walk_cause(care))
+			return
+		_bubble_seen = true
+	if mark == 0 and _auto_ready(care):
+		var roam = care.host.get("_roam")
+		_auto_at = _t
+		_auto_sec = float(roam.walk_sec)
+		_auto_wu = _walked
+		_opening_logged = float(care.host.call("_pet_height_frac"))
+		_trace_state(care, "autonomous_open", true, "fading", false, "low")
+		print("TRACE t=", snapped(_t, 0.01), " kind=autonomous_check walk_sec=", snapped(_auto_sec, 0.01), " path_wu=", snapped(_auto_wu, 0.1), " cause=", _walk_cause(care), " motion=", str(roam.motion), " taps=", snapped(_tap_walk_sec, 0.01), " opening_frac=", snapped(_opening_logged, 0.001), " follow_min=", snapped(float(care.host.call("_follow_pet_min")), 0.001))
+		if _auto_sec < 3.0 or _tap_walk_sec > 0.0 or _last_input >= 0.0:
+			_fail("autonomous opening was not 3s of motion without taps")
+			return
 		_vn = 1
-	elif mark == 1 and _t >= 1.0:
-		_trace_pointer(care, _mid(care), true, "exit_follow_down")
-		_trace_pointer(care, _mid(care), false, "exit_follow_up")
+	elif mark == 0 and _t >= 8.0:
+		_fail("autonomous motion did not reach 3s before t=8, walk_sec=%s" % _roam_walk_sec(care))
+		return
+	elif mark == 1 and _follow_step == 0 and _t >= _auto_at + 0.3:
+		var pet_px: Vector2 = care.call("_pet_point")
+		_trace_pointer(care, pet_px, true, "follow_pet_down")
+		_trace_pointer(care, pet_px, false, "follow_pet_up")
+		_follow_step = 1
+	elif mark == 1 and _follow_step == 1 and _t >= _auto_at + 2.6:
+		var frac := float(care.host.call("_pet_height_frac"))
+		var need := float(care.host.call("_follow_pet_min"))
+		var close := bool(care.call("follow_close"))
+		print("TRACE t=", snapped(_t, 0.01), " kind=follow_zoom frac=", snapped(frac, 0.001), " need=", snapped(need, 0.001), " close=", close, " opening_frac=", snapped(_opening_logged, 0.001))
+		if not close:
+			_fail("pet tap did not enter follow")
+			return
+		if need > 0.0 and frac + 0.02 < need:
+			_fail("follow zoom left the pet at %s, m1a minimum %s" % [frac, need])
+			return
+		_follow_step = 2
+	elif mark == 1 and _follow_step == 2 and _t >= _auto_at + 2.8:
+		var away := Vector2(80, 200)
+		_trace_pointer(care, away, true, "leave_follow_down")
+		_trace_pointer(care, away, false, "leave_follow_up")
 		_vn = 2
-	elif mark == 2 and _t >= 1.5:
+	elif mark == 2 and _t >= _auto_at + 3.6:
 		_walk_from = pos
-		# Open lawn in the opening frame. (110, -70) is inside the cottage footprint and stops on a prop.
-		_trace_pointer(care, _screen_of(care, Vector3(110, 0, -30)), true, "walk_a_down")
-		_trace_pointer(care, _screen_of(care, Vector3(110, 0, -30)), false, "walk_a_up")
+		var here := Vector2(pos.x, pos.z)
+		var goal: Vector2 = care.host.get("_roam").far_free(here)
+		_trace_pointer(care, _screen_of(care, Vector3(goal.x, 0, goal.y)), true, "walk_a_down")
+		_trace_pointer(care, _screen_of(care, Vector3(goal.x, 0, goal.y)), false, "walk_a_up")
+		_leg_at = _t
 		_vn = 3
-	elif mark == 3 and _t >= 4.0:
-		_trace_pointer(care, _screen_of(care, Vector3(-40, 0, 10)), true, "walk_b_down")
-		_trace_pointer(care, _screen_of(care, Vector3(-40, 0, 10)), false, "walk_b_up")
+	elif mark == 3 and _t >= _leg_at + 1.6:
+		var here_b := Vector2(pos.x, pos.z)
+		var goal_b: Vector2 = care.host.get("_roam").far_free(here_b)
+		_trace_pointer(care, _screen_of(care, Vector3(goal_b.x, 0, goal_b.y)), true, "walk_b_down")
+		_trace_pointer(care, _screen_of(care, Vector3(goal_b.x, 0, goal_b.y)), false, "walk_b_up")
 		_vn = 4
-	elif mark == 4 and _t >= 6.5:
-		print("TRACE t=", snapped(_t, 0.01), " kind=walk_check path_wu=", snapped(_walked, 0.1), " tap_directed_sec=", snapped(_tap_walk_sec, 0.01), " straight_from_start=", snapped(pos.distance_to(_walk_from), 0.1), " cause=", _walk_cause(care))
-		if _walked < 100.0 or _tap_walk_sec < 4.0:
-			_fail("walk was not continuous, path=%s tap_sec=%s" % [_walked, _tap_walk_sec])
+	elif mark == 4 and _t >= _leg_at + 4.2:
+		var roam_now = care.host.get("_roam")
+		var auto_sec := _auto_sec
+		print("TRACE t=", snapped(_t, 0.01), " kind=walk_check path_wu=", snapped(_walked, 0.1), " auto_wu=", snapped(_auto_wu, 0.1), " auto_sec=", snapped(auto_sec, 0.01), " tap_directed_sec=", snapped(_tap_walk_sec, 0.01), " tap_wu=", snapped(_tap_wu, 0.1), " straight_from_start=", snapped(pos.distance_to(_walk_from), 0.1), " cause=", _walk_cause(care), " motion=", str(roam_now.motion) if roam_now else "none")
+		if auto_sec < 3.0:
+			_fail("autonomous opening was short, sec=%s" % auto_sec)
+			return
+		if _tap_walk_sec < 1.5 or _tap_wu < 60.0:
+			_fail("tap-directed walk was short, sec=%s wu=%s" % [_tap_walk_sec, _tap_wu])
 			return
 		if float(care.get("fade").alpha) < 0.95:
 			_fail("UI faded before feed, alpha=%s" % care.get("fade").alpha)
@@ -180,7 +237,7 @@ static func tick_visual(care: Node, dt: float) -> void:
 		_trace_pointer(care, care.call("_button_center", 0), true, "feed_down")
 		_trace_pointer(care, care.call("_button_center", 0), false, "feed_up")
 		_vn = 5
-	elif mark == 5 and _t >= 7.0:
+	elif mark == 5 and _t >= _leg_at + 4.7:
 		var got := _hunger()
 		var meal := float(_sim().get("FEED_MEAL"))
 		if absf((got - _hunger_before_feed) - meal) > 0.25:
@@ -193,19 +250,19 @@ static func tick_visual(care: Node, dt: float) -> void:
 		_trace_pointer(care, care.call("_button_center", 3), true, "pat_down")
 		_trace_pointer(care, care.call("_button_center", 3), false, "pat_up")
 		_vn = 6
-	elif mark == 6 and _t >= 7.4:
+	elif mark == 6 and _t >= _leg_at + 5.1:
 		_poops_before_one = _poops()
 		_trace_pointer(care, care.call("_button_center", 2), true, "clean_one_down")
 		_trace_pointer(care, care.call("_button_center", 2), false, "clean_one_up")
 		_vn = 7
-	elif mark == 7 and _t >= 7.8:
+	elif mark == 7 and _t >= _leg_at + 5.5:
 		if _poops() != _poops_before_one - 1 or _poops() <= 0:
 			_fail("visual clean_one poops %s from %s" % [_poops(), _poops_before_one])
 			return
 		_trace_pointer(care, _ground(care), true, "longpress_down")
 		_hold_until = _t + 0.7
 		_vn = 8
-	elif mark == 8 and _hold_until < 0.0 and _t >= 8.6:
+	elif mark == 8 and _hold_until < 0.0 and _t >= _leg_at + 6.3:
 		if _poops() != 0:
 			_fail("visual longpress poops %s" % _poops())
 			return
@@ -284,6 +341,14 @@ static var _walked := 0.0
 static var _walk_prev := Vector3.ZERO
 static var _have_prev := false
 static var _tap_walk_sec := 0.0
+static var _bubble_seen := false
+static var _auto_at := 0.0
+static var _auto_sec := 0.0
+static var _auto_wu := 0.0
+static var _follow_step := 0
+static var _opening_logged := 0.0
+static var _leg_at := 0.0
+static var _tap_wu := 0.0
 
 
 static func verify_and_quit(care: Node) -> void:
@@ -331,11 +396,17 @@ static func _assert_water(care: Node) -> void:
 	var hunger_now := _hunger()
 	var hunger_was := float((_needs0 as Dictionary).get("hunger", hunger_now))
 	var walk: Variant = care.host.get("_walk_target")
-	print("profile water result moved=", snapped(moved, 0.001), " hunger=", hunger_was, "->", hunger_now, " walk=", walk)
-	if moved > 1.0:
-		_fail("water press moved the pet by %s" % moved)
-	if walk != null:
+	var roam = care.host.get("_roam")
+	var roam_cause := "none"
+	if roam:
+		roam_cause = str(roam.cause)
+	print("profile water result moved=", snapped(moved, 0.001), " hunger=", hunger_was, "->", hunger_now, " walk=", walk, " roam=", roam_cause)
+	if walk != null or roam_cause == "tap_directed":
 		_fail("water press started a ground walk")
+	elif roam == null and moved > 1.0:
+		_fail("water press moved the pet by %s" % moved)
+	elif roam != null and roam_cause != "autonomous" and roam_cause != "none" and moved > 1.0:
+		_fail("water press moved the pet by %s" % moved)
 	if absf(hunger_now - hunger_was) > 0.05:
 		_fail("water press changed hunger by %s" % (hunger_now - hunger_was))
 	for key in ["mood", "clean", "energy"]:
@@ -462,7 +533,7 @@ static func _sample_walk(care: Node) -> void:
 	if slot == _sample_slot:
 		return
 	_sample_slot = slot
-	if _vn < 3 or _vn > 4:
+	if _vn != 0 and (_vn < 3 or _vn > 4):
 		return
 	print("TRACE t=", snapped(_t, 0.01), " kind=walk_sample cause=", _walk_cause(care), " ", _snap(care))
 
@@ -477,8 +548,12 @@ static func _snap(care: Node) -> String:
 	if target is Vector3:
 		var tv: Vector3 = target
 		dest = " target=(%.1f,%.1f)" % [tv.x, tv.z]
-	return "walk_cause=%s pet=(%.1f,%.1f) hunger=%.2f poops=%s mode=%s%s %s" % [
-		_walk_cause(care), pet.x, pet.z, _hunger(), _poops(), str(care.host.get("_mode")),
+	var motion := "none"
+	var roam = care.host.get("_roam")
+	if roam:
+		motion = str(roam.motion)
+	return "walk_cause=%s motion=%s pet=(%.1f,%.1f) hunger=%.2f poops=%s mode=%s%s %s" % [
+		_walk_cause(care), motion, pet.x, pet.z, _hunger(), _poops(), str(care.host.get("_mode")),
 		dest, _bubble_px(care),
 	]
 
@@ -505,7 +580,24 @@ static func _bubble_in_view(care: Node) -> bool:
 static func _walk_cause(care: Node) -> String:
 	if care.host.get("_walk_target") != null:
 		return "tap_directed"
-	return "none"
+	var roam = care.host.get("_roam")
+	if roam == null:
+		return "none"
+	return str(roam.cause)
+
+
+static func _auto_ready(care: Node) -> bool:
+	var roam = care.host.get("_roam")
+	if roam == null or care.host.get("_walk_target") != null:
+		return false
+	return float(roam.walk_sec) >= 3.0 and str(roam.cause) == "autonomous" and str(roam.motion) == "walk"
+
+
+static func _roam_walk_sec(care: Node) -> float:
+	var roam = care.host.get("_roam")
+	if roam == null:
+		return 0.0
+	return float(roam.walk_sec)
 
 
 static func _bubble_on(care: Node) -> bool:

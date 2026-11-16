@@ -8,6 +8,7 @@ const Gesture := preload("res://gameplay/m1_gesture.gd")
 const Fade := preload("res://gameplay/m1_ui_fade.gd")
 const Layout := preload("res://gameplay/m1_ui_layout.gd")
 const Profile := preload("res://gameplay/m1_profile_run.gd")
+const Roam := preload("res://gameplay/m1_roam.gd")
 
 var fails := 0
 
@@ -23,6 +24,7 @@ func _run() -> void:
 	_test_fade()
 	_test_care_and_save()
 	_test_ui_r1()
+	_test_roam()
 	if fails == 0:
 		print("m1_care_test PASS")
 		quit(0)
@@ -51,6 +53,20 @@ func _test_camera() -> void:
 	_ok(Policy.keeps_height(base, followed), "follow keeps camera height")
 	_ok(wide == base, "overview returns to opening camera")
 	_ok(wide.y == base.y and followed.y == base.y, "no vertical sway")
+	var opening := Vector3(12, 193, 208)
+	var scale := Policy.zoom_scale(0.083, 0.20)
+	_ok(is_equal_approx(scale, 0.083 / 0.20), "follow zoom is the measured fraction over the m1a minimum")
+	var pet_w := Vector3(0, 29, 0)
+	var zoomed := Policy.zoomed_along(opening, pet_w, scale)
+	var again_z := Policy.zoomed_along(opening, pet_w, scale)
+	_ok(zoomed == again_z, "follow zoom does not sway")
+	_ok(opening.distance_to(pet_w) > zoomed.distance_to(pet_w), "follow zoom moves closer along the opening axis")
+	var dir_far := (opening - pet_w).normalized()
+	var dir_near := (zoomed - pet_w).normalized()
+	_ok(dir_far.distance_to(dir_near) < 0.001, "follow zoom keeps the opening view direction")
+	_ok(is_equal_approx(Policy.zoom_scale(0.25, 0.20), 1.0), "follow does not zoom once the pet is already large enough")
+	_ok(is_equal_approx(Policy.zoom_scale(0.083, 0.0), 1.0), "a missing follow minimum does not move the camera")
+	_ok(Policy.desired(base, origin, pet, true) == base, "overview is never the zoomed camera")
 
 
 func _test_rules() -> void:
@@ -220,9 +236,73 @@ func _test_profile_guard() -> void:
 	_ok(hunger < 90.0, "that hunger is still under the existing refuse line")
 
 
+func _test_roam() -> void:
+	var agent = Roam.new()
+	agent.boot()
+	_ok(agent.garden_blocked(Vector2(80, -70)), "cottage footprint blocks a roam step")
+	_ok(agent.garden_blocked(Vector2(30, -20)), "a prop footprint blocks a roam step")
+	_ok(not agent.inside_walk(Vector2(-130, -100)), "back-left tree corner stays outside walk bounds")
+	_ok(agent.garden_free(Vector2.ZERO), "the pet spawn stays walkable")
+	var near_max := 0.0
+	var far_hit := false
+	var bad_path := 0
+	for s in 40:
+		agent.seed(1000 + s)
+		var near: Vector2 = agent.choose_dest(Vector2.ZERO, 0)
+		var far: Vector2 = agent.choose_dest(Vector2.ZERO, -5)
+		near_max = maxf(near_max, near.length())
+		if far.length() > 70.0:
+			far_hit = true
+		if not agent.segment_free(Vector2.ZERO, near) or not agent.segment_free(Vector2.ZERO, far):
+			bad_path += 1
+	_ok(bad_path == 0, "roam picks stay on a free path")
+	_ok(near_max <= 70.01, "ordinary roam stays inside the nearby pick radius")
+	_ok(far_hit, "a low social axis may pick the farther roam radius")
+	agent.seed(7)
+	agent.dest = Vector2(0, 80)
+	agent._pause = 0.0
+	agent._manual = false
+	var stepped: Vector2 = agent.tick(Vector2.ZERO, 1.0, 1.0, 0)
+	_ok(is_equal_approx(stepped.y, 20.0) and is_equal_approx(stepped.x, 0.0), "autonomous speed is the existing walker speed")
+	_ok(agent.cause == "autonomous" and agent.motion == "walk", "that step is logged as autonomous walking")
+	agent.dest = Vector2(80, -70)
+	agent._pause = 0.0
+	var blocked_from := Vector2(50, -39)
+	var held: Vector2 = agent.tick(blocked_from, 1.0, 1.0, 0)
+	_ok(held.distance_to(blocked_from) < 0.01 and not agent.garden_blocked(held), "a blocked step does not enter the cottage")
+	agent.dest = Vector2(0, 40)
+	agent.begin_manual()
+	var during: Vector2 = agent.tick(Vector2(5, 5), 0.5, 1.0, 0)
+	_ok(during == Vector2(5, 5) and agent.cause == "tap_directed", "a manual target takes precedence")
+	agent.notify_manual_done()
+	_ok(agent.cause == "autonomous" and agent.dest == Vector2(0, 40), "the agent target resumes after the manual target")
+	agent.seed(3)
+	agent.dest = null
+	agent._pause = 1.2
+	var idle_at := Vector2(3, 4)
+	var idled: Vector2 = agent.tick(idle_at, 0.4, 1.0, 0)
+	_ok(idled == idle_at and agent.motion == "idle", "the idle pause does not move the pet")
+	var armed: Vector2 = agent.tick(idle_at, 1.0, 1.0, 0)
+	_ok(armed == idle_at and agent.dest != null, "the idle pause arms the next roam target")
+	var resumed: Vector2 = agent.tick(armed, 0.5, 1.0, 0)
+	_ok(agent.motion == "walk" and resumed.distance_to(idle_at) > 0.5, "roam resumes after the idle pause")
+	var kept = agent.dest
+	agent.set_care_hold(true)
+	var frozen: Vector2 = agent.tick(resumed, 0.5, 1.0, 0)
+	_ok(frozen == resumed and agent.dest == kept and agent.motion == "hold", "care pauses without clearing the target")
+	agent.note_camera()
+	_ok(agent.dest == kept and agent.cause == "autonomous", "observe and follow do not clear the agent target")
+	agent.set_care_hold(false)
+
+
 func _png_size(path: String) -> Vector2i:
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return Vector2i.ZERO
 	var img := Image.new()
-	if img.load(path) != OK:
+	var err := img.load_png_from_buffer(f.get_buffer(f.get_length()))
+	f.close()
+	if err != OK:
 		return Vector2i.ZERO
 	return Vector2i(img.get_width(), img.get_height())
 

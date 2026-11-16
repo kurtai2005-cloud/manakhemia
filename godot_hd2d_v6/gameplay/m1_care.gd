@@ -19,6 +19,7 @@ var pets: Array[Node3D] = []
 var origins: Dictionary = {}
 var selected: Node3D = null
 var overview := false
+var observe_close := false
 var gesture
 var fade
 var _ui_ready := false
@@ -27,6 +28,7 @@ var _fade_root: Control
 var _bubble: TextureRect
 var _hits: Dictionary = {}
 var _pressed_id := ""
+var _tex_cache: Dictionary = {}
 var _poop_root: Node3D
 var _poops: Array[Sprite3D] = []
 
@@ -51,7 +53,7 @@ func bind_host(p_host: Node) -> void:
 	if phase == "seed":
 		M1ProfileRun.seed_fixture()
 	elif phase == "visual":
-		M1ProfileRun.visual_fixture()
+		M1ProfileRun.visual_fixture(self)
 	elif Sim:
 		# Same boot as mainline Main._ready: a new egg save becomes sprout so
 		# feed/pat are reachable, and one poop is placed so clean can be tried.
@@ -70,6 +72,10 @@ func bind_host(p_host: Node) -> void:
 
 func camera_overview() -> bool:
 	return overview
+
+
+func follow_close() -> bool:
+	return observe_close and not overview
 
 
 func follow_subject() -> Node3D:
@@ -121,6 +127,7 @@ func handle_event(event: InputEvent) -> void:
 func _process(dt: float) -> void:
 	if not _ui_ready:
 		return
+	_hold_roam()
 	var kind: String = gesture.tick(dt)
 	if kind != "":
 		_dispatch(kind, gesture.last)
@@ -151,6 +158,7 @@ func _dispatch(kind: String, screen_pos: Vector2) -> void:
 			_enter_follow(pet)
 		"overview":
 			overview = true
+			observe_close = false
 		"walk":
 			if host and host.has_method("_try_walk_tap"):
 				host.call("_try_walk_tap", screen_pos)
@@ -163,11 +171,24 @@ func _dispatch(kind: String, screen_pos: Vector2) -> void:
 			pass
 
 
+func _hold_roam() -> void:
+	# Care presses and appreciate pause stepping. They do not drop the target.
+	# Follow / overview never come through here.
+	if host == null:
+		return
+	var roam = host.get("_roam")
+	if roam == null or not roam.has_method("set_care_hold"):
+		return
+	var down := gesture != null and bool(gesture.pressed)
+	roam.set_care_hold(fade.appreciate or _pressed_id != "" or down)
+
+
 func _enter_follow(pet: Node3D) -> void:
 	if pet == null:
 		return
 	selected = pet
 	overview = false
+	observe_close = true
 
 
 func _cycle(dir: float) -> void:
@@ -180,6 +201,7 @@ func _cycle(dir: float) -> void:
 	var n := pets.size()
 	selected = pets[(i + step + n) % n]
 	overview = false
+	observe_close = true
 
 
 func _register(pet: Node3D, origin: Vector3) -> void:
@@ -385,14 +407,24 @@ func _tex(state_id: String, visual: String) -> Texture2D:
 
 
 func _tex_file(path: String) -> Texture2D:
-	# Load the supplied PNG bytes directly so a missing .import sidecar
-	# cannot swap in a filtered or missing texture.
+	# Same PNG bytes as the file on disk. Cached so a care refresh does not
+	# reopen the file every frame. load_png_from_buffer does not go through
+	# the imported-resource path, which is what prints the export warning.
+	if _tex_cache.has(path):
+		return _tex_cache[path]
 	if not FileAccess.file_exists(path):
 		return null
-	var img := Image.new()
-	if img.load(path) != OK:
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
 		return null
-	return ImageTexture.create_from_image(img)
+	var img := Image.new()
+	var err := img.load_png_from_buffer(f.get_buffer(f.get_length()))
+	f.close()
+	if err != OK:
+		return null
+	var tex := ImageTexture.create_from_image(img)
+	_tex_cache[path] = tex
+	return tex
 
 
 func _refresh_hit(id: String) -> void:

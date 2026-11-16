@@ -40,9 +40,13 @@ var _fps_accum := 0.0
 var _fps_frames := 0
 var _pet: Sprite3D
 var _walk_target: Variant = null  # Vector3 or null
+var _roam = null
 var _pet_origin_xz := Vector3.ZERO
 var _cam_base_pos := Vector3.ZERO
 var _cam_follow_pos := Vector3.ZERO
+var _cam_look := Vector3.ZERO
+var _opening_pet_frac := 0.0
+var _follow_zoom_scale := 1.0
 var _flag_secure_was_set := false
 const PET_CENTER_Y := 29.0
 const WALK_SPEED := 48.0
@@ -470,6 +474,7 @@ func _setup_camera(cam_j: Dictionary) -> void:
 	_camera.current = true
 	_cam_base_pos = _camera.position
 	_cam_follow_pos = _camera.position
+	_cam_look = target
 	print("camera pos=", _camera.position, " target=", target, " dist=", dist)
 
 
@@ -1001,6 +1006,52 @@ func _refresh_quality_btn() -> void:
 	_quality_btn.text = label
 
 
+func _solve_follow_scale(opening_frac: float, need: float) -> float:
+	# Find the distance scale that reaches m1a follow_pet_min_frac.
+	# The camera is moved only for the measurement and then put back.
+	if need <= 0.001 or opening_frac + 0.002 >= need:
+		return 1.0
+	var pet := _pet.global_position
+	var far := _camera.global_position
+	var saved := far
+	var lo := 0.35
+	var hi := M1CameraPolicy.zoom_scale(opening_frac, need)
+	for _i in 8:
+		var mid := (lo + hi) * 0.5
+		_camera.global_position = M1CameraPolicy.zoomed_along(far, pet, mid)
+		var got := _pet_height_frac()
+		if got < need:
+			hi = mid
+		else:
+			lo = mid
+	_camera.global_position = saved
+	return hi
+
+
+func _pet_height_frac() -> float:
+	if _camera == null or _pet == null:
+		return 0.0
+	var vp := get_viewport().get_visible_rect().size
+	var mid := _pet.global_position
+	var top: Vector2 = _camera.unproject_position(mid + Vector3(0, PET_VISIBLE_H * 0.5, 0))
+	var bot: Vector2 = _camera.unproject_position(mid + Vector3(0, -PET_VISIBLE_H * 0.5, 0))
+	return absf(bot.y - top.y) / maxf(vp.y, 1.0)
+
+
+func _follow_pet_min() -> float:
+	if GameData == null:
+		return 0.0
+	var cam: Dictionary = (GameData.m1a as Dictionary).get("camera", {})
+	return float(cam.get("follow_pet_min_frac", 0.0))
+
+
+func _overview_pet_min() -> float:
+	if GameData == null:
+		return 0.0
+	var cam: Dictionary = (GameData.m1a as Dictionary).get("camera", {})
+	return float(cam.get("overview_pet_min_frac", 0.0))
+
+
 func _print_pet_framing() -> void:
 	if _camera == null or _pet == null:
 		return
@@ -1009,7 +1060,23 @@ func _print_pet_framing() -> void:
 	var top: Vector2 = _camera.unproject_position(mid + Vector3(0, PET_VISIBLE_H * 0.5, 0))
 	var bot: Vector2 = _camera.unproject_position(mid + Vector3(0, -PET_VISIBLE_H * 0.5, 0))
 	var frac := absf(bot.y - top.y) / maxf(vp.y, 1.0)
-	print("pet screen height fraction=", snapped(frac, 0.001), "  (>=0.20 required) vp=", vp, " dist=", snapped(_camera.global_position.distance_to(mid), 0.1), " hfov=", _camera.fov, " keep=", _camera.keep_aspect, " target_y=", PORTRAIT_TARGET.y, " portrait_dist=", PORTRAIT_DIST)
+	_opening_pet_frac = frac
+	var follow_min := _follow_pet_min()
+	var overview_min := _overview_pet_min()
+	print("pet screen height fraction=", snapped(frac, 0.001),
+		" context=opening_panorama",
+		" vp=", vp,
+		" dist=", snapped(_camera.global_position.distance_to(mid), 0.1),
+		" hfov=", _camera.fov,
+		" keep=", _camera.keep_aspect,
+		" target_y=", PORTRAIT_TARGET.y,
+		" portrait_dist=", PORTRAIT_DIST,
+		" box_wu=", PET_VISIBLE_H,
+		" m1a_overview_min=", overview_min,
+		" m1a_follow_min=", follow_min,
+		" opening_camera_moved=false")
+	_follow_zoom_scale = _solve_follow_scale(frac, follow_min)
+	print("follow zoom scale=", snapped(_follow_zoom_scale, 0.001), " opening_camera_restored=true")
 	var cot_top: Vector2 = _camera.unproject_position(Vector3(82.5, 142, -72))
 	var cot_bot: Vector2 = _camera.unproject_position(Vector3(82.5, 0, -72))
 	var cfrac := absf(cot_bot.y - cot_top.y) / maxf(vp.y, 1.0)
@@ -1630,6 +1697,8 @@ func _try_walk_tap(screen_pos: Vector2) -> void:
 	if dest == Vector3.INF:
 		return
 	_walk_target = dest
+	if _roam:
+		_roam.begin_manual()
 	print("hd2d walk dest=", dest)
 
 
@@ -1655,26 +1724,16 @@ func _raycast_ground(screen_pos: Vector2) -> Vector3:
 
 
 func _walk_blocked(p: Vector2) -> bool:
-	# Coarse footprints only (cottage / fence / beds / props). Do NOT reuse
-	# _blocked() — that also rejects the garden path and the pet spawn.
-	var rects := [
-		Rect2(47, -100, 72, 60),
-		Rect2(-120, -60, 182, 14),
-		Rect2(-84, -43, 74, 24),
-	]
-	for r in rects:
-		if (r as Rect2).has_point(p):
-			return true
-	var props := [
-		Vector2(-72.5, 22), Vector2(71, 24), Vector2(-39, 42), Vector2(35, 22),
-		Vector2(-81, 70), Vector2(81, 54), Vector2(49, 22), Vector2(22, 18),
-		Vector2(-24, 28), Vector2(48, 48), Vector2(18, 8), Vector2(-15, 35),
-		Vector2(30, -20),
-	]
-	for q in props:
-		if p.distance_to(q) < 10.0:
-			return true
-	return false
+	# Cottage, fence, and props. The garden path and the pet spawn stay walkable.
+	# The same query drives tap steps and autonomous roam.
+	if _roam == null:
+		var roam_script := load("res://gameplay/m1_roam.gd") as GDScript
+		if roam_script:
+			_roam = roam_script.new()
+			_roam.boot()
+	if _roam == null:
+		return false
+	return bool(_roam.garden_blocked(p))
 
 
 func _in_walk_bounds(p: Vector2) -> bool:
@@ -1704,8 +1763,28 @@ func _clamp_walkable(dest: Vector3) -> Vector3:
 
 
 func _tick_walk(dt: float) -> void:
-	if _pet == null or _walk_target == null:
+	if _pet == null:
 		return
+	if _walk_target != null:
+		if _roam and not _roam._manual:
+			_roam.begin_manual()
+		_tick_manual_walk(dt)
+		return
+	# Prop-bump demo drives the pet itself and clears any target.
+	if OS.get_environment("HD2D_BUMP_DEMO") == "1":
+		return
+	if _roam == null:
+		return
+	var mul := 1.0
+	var social := 0
+	if Personality:
+		mul = float(Personality.walk_speed_mul("tuanrong"))
+		social = int(Personality.axis("tuanrong", "social"))
+	var nxt: Vector2 = _roam.tick(Vector2(_pet.position.x, _pet.position.z), dt, mul, social)
+	_pet.position = Vector3(nxt.x, PET_CENTER_Y, nxt.y)
+
+
+func _tick_manual_walk(dt: float) -> void:
 	var dest: Vector3 = _walk_target
 	var pos := _pet.position
 	var from := Vector3(pos.x, 0.0, pos.z)
@@ -1715,6 +1794,8 @@ func _tick_walk(dt: float) -> void:
 	if dist <= 1.25:
 		_pet.position = Vector3(dest.x, PET_CENTER_Y, dest.z)
 		_walk_target = null
+		if _roam:
+			_roam.notify_manual_done()
 		return
 	var step := WALK_SPEED * dt
 	var nxt := from + delta * (minf(step, dist) / dist)
@@ -1728,6 +1809,8 @@ func _tick_walk(dt: float) -> void:
 			nxt = sz
 		else:
 			_walk_target = null
+			if _roam:
+				_roam.notify_manual_done()
 			return
 	_pet.position = Vector3(nxt.x, PET_CENTER_Y, nxt.z)
 
@@ -1754,6 +1837,12 @@ func _tick_camera(dt: float) -> void:
 			if got is Vector3:
 				origin = got
 	var desired: Vector3 = M1CameraPolicy.desired(_cam_base_pos, origin, Vector3(subject.position.x, 0.0, subject.position.z), overview)
+	var close := false
+	if care and not overview and care.has_method("follow_close"):
+		close = bool(care.call("follow_close"))
+	if close:
+		var scale := _follow_zoom_scale if _follow_zoom_scale > 0.0 else M1CameraPolicy.zoom_scale(_opening_pet_frac, _follow_pet_min())
+		desired = M1CameraPolicy.zoomed_along(desired, subject.global_position, scale)
 	# v6.7: do not let the follow camera enter the back-left tree (x ≥ -100 in that band).
 	if not overview and desired.z <= CAM_TREE_BAND_Z:
 		desired.x = maxf(desired.x, CAM_FOLLOW_X_MIN)
@@ -2170,6 +2259,10 @@ func _print_shadow_caster_counts() -> void:
 
 func _add_m1_care() -> void:
 	# Gameplay slice. Does not edit art_depth, shaders, or mesh placement.
+	var roam_script := load("res://gameplay/m1_roam.gd") as GDScript
+	if roam_script:
+		_roam = roam_script.new()
+		_roam.boot()
 	var script := load("res://gameplay/m1_care.gd") as GDScript
 	if script == null:
 		push_warning("missing m1_care.gd")
