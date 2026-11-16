@@ -1,0 +1,79 @@
+; 微光小圃 HD-2D test v6.18-pilot vc27 (vc25 pace + night sky×albedo; not a release)
+config_version=5
+
+[application]
+config/name="微光 HD-2D 試景"
+config/description="HD-2D lighting pilot v6.9 (portrait, default Low, Mobile only). Art test only — not a release."
+config/version="0.6.18-pilot"
+run/main_scene="res://scenes/capture.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus", "Mobile", "GL Compatibility")
+
+[autoload]
+
+GameData="*res://gameplay/autoload/GameData.gd"
+SaveSystem="*res://gameplay/autoload/SaveSystem.gd"
+TimeService="*res://gameplay/autoload/TimeService.gd"
+Personality="*res://gameplay/autoload/Personality.gd"
+Sim="*res://gameplay/autoload/Sim.gd"
+
+[display]
+window/size/viewport_width=1080
+window/size/viewport_height=1920
+window/size/mode=0
+window/stretch/mode="disabled"
+window/handheld/orientation=1
+
+[rendering]
+; Phone ships Mobile only (Kurt: Forward+ is too slow on Note10+).
+; Desktop editor default remains Forward+; Android extra_args forces mobile.
+; This CPU box must capture with --rendering-method gl_compatibility
+; because there is no Vulkan ICD / lavapipe.
+renderer/rendering_method="forward_plus"
+renderer/rendering_method.mobile="mobile"
+textures/canvas_textures/default_texture_filter=0
+textures/vram_compression/import_etc2_astc=true
+textures/vram_compression/import_s3tc=false
+anti_aliasing/quality/msaa_3d=0
+anti_aliasing/quality/use_taa=false
+environment/defaults/default_clear_color=Color(0.31, 0.50, 0.77, 1)
+lights_and_shadows/directional_shadow/size=4096
+lights_and_shadows/directional_shadow/size.mobile=2048
+lights_and_shadows/positional_shadow/atlas_size.mobile=2048
+environment/volumetric_fog/volume_size=64
+environment/volumetric_fog/volume_depth=48
+camera/depth_of_field/depth_of_field_bokeh_quality=1
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=2
+lights_and_shadows/directional_shadow/16_bits=false
+environment/ssao_quality=2
+environment/glow/upscale_mode=1
+
+[shader_globals]
+; Reserve uniform for 遊美's grass/flower bend shaders (v6.9).
+; Temporary name: pet_pos_ws (world-space 團絨 position). Rename here + in
+; scenes/prop_bump.gd + data/prop_bump.json when 遊美 confirms the uniform.
+; Declared so RenderingServer.global_shader_parameter_set is valid even if
+; no shader samples it yet.
+pet_pos_ws={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+; v6.9 (遊美): lagged, spring-damped copy of pet_pos_ws fed by scenes/art_depth.gd, so plants
+; release slowly and swing back past rest once 團絨 has walked through (spring-back).
+pet_lag_ws={
+"type": "vec3",
+"value": Vector3(0, -1000, 0)
+}
+; v6.9 (遊美): one drifting cloud-shadow field shared by ground, foliage, grass and the
+; light shafts (art_depth.gd feeds cloud_off each frame; cloud_amt 0 turns it off).
+cloud_tex={
+"type": "sampler2D",
+"value": "res://textures/tiles/cloud_shadow.png"
+}
+cloud_off={
+"type": "vec2",
+"value": Vector2(0, 0)
+}
+cloud_amt={
+"type": "float",
+"value": 0.22
+}
