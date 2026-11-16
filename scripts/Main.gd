@@ -50,6 +50,7 @@ var warehouse: Node3D
 var _hunt_team: Array = []
 var in_hunt_view := false
 var interior_room: InteriorRoom
+var _hd2d_host: Node = null
 var in_interior := false
 var _interior_lock_cam := false
 var _interior_guest: Walker
@@ -688,7 +689,10 @@ func _try_tap(pos: Vector2) -> void:
 	if not in_interior and not in_hunt_view:
 		var house := _ray_area(pos, 16)
 		if house:
-			enter_house()
+			if _hd2d_host != null and bool(_hd2d_host.get("active")):
+				_hd2d_host.call("begin_approach")
+			else:
+				enter_house()
 			return
 	var bld := _ray_area(pos, 8)
 	if bld:
@@ -2008,6 +2012,19 @@ func _setup_fade() -> void:
 	_fade_rect.color = Color(0.05, 0.04, 0.04, 0.0)
 	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(_fade_rect)
+
+
+func enable_hd2d_presentation() -> Node:
+	# Rollback: leave this uncalled. H1 garden, camera, and enter_house stay as they are.
+	if _hd2d_host != null:
+		_hd2d_host.call("set_active", true)
+		return _hd2d_host
+	var script := load("res://scripts/hd2d_presentation.gd") as GDScript
+	_hd2d_host = script.new()
+	add_child(_hd2d_host)
+	_hd2d_host.call("setup", self, pet)
+	_hd2d_host.call("set_active", true)
+	return _hd2d_host
 
 
 func cottage_door_world() -> Vector3:
