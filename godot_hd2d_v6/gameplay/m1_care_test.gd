@@ -9,6 +9,7 @@ const Fade := preload("res://gameplay/m1_ui_fade.gd")
 const Layout := preload("res://gameplay/m1_ui_layout.gd")
 const Profile := preload("res://gameplay/m1_profile_run.gd")
 const Roam := preload("res://gameplay/m1_roam.gd")
+const WalkClip := preload("res://gameplay/m1_walk_clip.gd")
 
 var fails := 0
 
@@ -26,6 +27,7 @@ func _run() -> void:
 	_test_ui_r1()
 	_test_roam()
 	_test_poop_marker()
+	_test_walk_clip()
 	if fails == 0:
 		print("m1_care_test PASS")
 		quit(0)
@@ -249,6 +251,9 @@ func _test_profile_guard() -> void:
 	_ok(not Layout.profile_allowed("seed", "/home/.local/share/godot/app_userdata/pilot", "vc27_care_restore_9"), "seed does not accept the default save dir")
 	_ok(not Layout.profile_allowed("verify", "/home/.local/share/godot/app_userdata/pilot", "vc27_care_restore_9"), "verify does not accept the default save dir")
 	_ok(Layout.profile_allowed("visual", "/home/.local/share/vc27_care_restore_9", "vc27_care_restore_9"), "visual accepts its isolated profile")
+	_ok(not Layout.profile_allowed("walkclip", "/home/.local/share/godot/app_userdata/pilot", ""), "walk clip trace without a profile name is refused")
+	_ok(not Layout.profile_allowed("walkclip", "/home/.local/share/godot/app_userdata/pilot", "vc27_walkclip_1"), "walk clip trace does not accept the default save dir")
+	_ok(Layout.profile_allowed("walkclip", "/home/.local/share/vc27_walkclip_1", "vc27_walkclip_1"), "walk clip trace accepts its isolated profile")
 	var hunger := Layout.hunger_for_need_bubble(70.0)
 	_ok(is_equal_approx(hunger, 30.0), "bubble hunger is 100 minus the existing threshold")
 	_ok(100.0 - hunger >= 70.0, "that hunger still asks for food")
@@ -338,6 +343,132 @@ func _test_poop_marker() -> void:
 	_ok(Layout.button_touch(1) == 96, "poop button touch pad stays 96")
 	_ok(Rules.action("long", false, false, 2, 1) == "clean_all", "long press still cleans from the ground")
 	_ok(Rules.action("tap", false, true, 2, 1) == "walk", "a ground tap is still a walk, not a shrunken poop pick")
+
+
+func _test_walk_clip() -> void:
+	var right := Vector2(1, 0)
+	var away := Vector2(0, -1)
+	var clip = WalkClip.new()
+	_ok(not clip.moving and clip.facing == "front" and not clip.flip_h, "walk starts on the front idle")
+	_ok(clip.texture_path().ends_with("front_idle_01.png"), "the opening frame is the front idle file")
+	clip.advance(Vector2.ZERO, right, away)
+	_ok(not clip.moving and is_equal_approx(clip.phase_wu, 0.0), "a zero step does not start the cycle")
+	clip.advance(Vector2(4, 0), right, away)
+	_ok(clip.moving and clip.facing == "side" and not clip.flip_h, "screen-right motion uses the right-facing side sheet")
+	_ok(clip.frame_index() == 2 and clip.texture_path().ends_with("side_walk_03.png"), "4 wu is the third side frame")
+	clip.advance(Vector2.ZERO, right, away)
+	_ok(not clip.moving and clip.facing == "side" and not clip.flip_h, "stopping keeps the side facing")
+	_ok(clip.texture_path().ends_with("side_idle_01.png") and clip.texture_path().find("front_idle") < 0, "a stopped side uses side idle, not the front idle")
+	_ok(is_equal_approx(clip.phase_wu, 4.0), "the stop keeps the distance already walked")
+	var phase_held: float = clip.phase_wu
+	for _i in 4:
+		clip.advance(Vector2.ZERO, right, away)
+	_ok(is_equal_approx(clip.phase_wu, phase_held) and not clip.moving, "repeated zero steps do not fake a walk")
+	clip.advance(Vector2(-2, 0), right, away)
+	_ok(clip.facing == "side" and clip.flip_h and clip.frame_index() == 3, "screen-left flips the side sheet and continues the phase")
+	clip.advance(Vector2.ZERO, right, away)
+	_ok(clip.flip_h and clip.texture_path().ends_with("side_idle_01.png"), "a stopped left side keeps the flip and the side idle")
+	clip.advance(Vector2(0, -4), right, away)
+	_ok(clip.facing == "back" and not clip.flip_h and clip.moving, "motion away from the camera uses the back sheet")
+	_ok(not bool(clip.state().get("z_lock", true)), "back does not claim a Z foot lock")
+	clip.advance(Vector2.ZERO, right, away)
+	_ok(clip.texture_path().ends_with("back_idle_01.png") and not clip.flip_h, "a stop facing away uses the back idle")
+	clip.advance(Vector2(0, 4), right, away)
+	_ok(clip.facing == "front" and not clip.flip_h, "motion toward the camera uses the front sheet")
+	var kept: String = clip.facing
+	clip.advance(Vector2(3, -3), right, away)
+	_ok(clip.facing == kept, "an equal diagonal keeps the facing already on screen")
+	var slow = WalkClip.new()
+	for _i in 6:
+		slow.advance(Vector2(20.0 * 0.1, 0), right, away)
+	_ok(slow.moving and is_equal_approx(slow.phase_wu, 12.0) and slow.frame_index() == 0, "20 wu/s for 0.6s is one 12 wu cycle")
+	var fast = WalkClip.new()
+	fast.advance(Vector2(48.0 * 0.25, 0), right, away)
+	_ok(fast.moving and is_equal_approx(fast.phase_wu, 12.0) and fast.frame_index() == 0, "48 wu/s for 0.25s is the same 12 wu cycle")
+	var stepped = WalkClip.new()
+	stepped.advance(Vector2(48.0 / 48.0, 0), right, away)
+	_ok(stepped.frame_index() == 0 and stepped.texture_path().ends_with("side_walk_01.png"), "1 wu at 48 still shows the first frame")
+	stepped.advance(Vector2(48.0 / 48.0, 0), right, away)
+	_ok(stepped.frame_index() == 1, "the second wu advances one frame at either speed")
+	var mid = WalkClip.new()
+	mid.advance(Vector2(10, 0), right, away)
+	_ok(mid.frame_index() == 5 and mid.texture_path().ends_with("side_walk_06.png"), "10 wu is the sixth frame")
+	mid.advance(Vector2.ZERO, right, away)
+	_ok(mid.texture_path().ends_with("side_idle_01.png") and is_equal_approx(mid.phase_wu, 10.0), "stopping mid-cycle snaps to contact idle and keeps the phase")
+	mid.advance(Vector2(2, 0), right, away)
+	_ok(mid.frame_index() == 0 and is_equal_approx(mid.phase_wu, 12.0), "resume continues from the achieved distance")
+	var agent = Roam.new()
+	agent.boot()
+	agent.dest = Vector2(80, -70)
+	agent._pause = 0.0
+	agent._manual = false
+	var edge := Vector2(80, -39.999)
+	var blocked: Vector2 = agent.tick(edge, 0.05, 1.0, 0)
+	var blocked_clip = WalkClip.new()
+	blocked_clip.advance(Vector2(6, 0), right, away)
+	var blocked_phase: float = blocked_clip.phase_wu
+	blocked_clip.advance(blocked - edge, right, away)
+	_ok(blocked.distance_to(edge) < 0.0001 and agent.motion == "idle", "a roam step into the cottage does not move")
+	_ok(not blocked_clip.moving and is_equal_approx(blocked_clip.phase_wu, blocked_phase), "that blocked step does not advance the clip")
+	_ok(blocked_clip.texture_path().ends_with("side_idle_01.png"), "the blocked pet stays on the side idle")
+	agent.dest = Vector2(0, 40)
+	agent._pause = 0.0
+	agent.set_care_hold(true)
+	var held_from := Vector2(5, 5)
+	var held: Vector2 = agent.tick(held_from, 0.5, 1.0, 0)
+	blocked_clip.advance(held - held_from, right, away)
+	_ok(held == held_from and agent.motion == "hold" and not blocked_clip.moving, "care hold is zero distance and stays idle")
+	agent.set_care_hold(false)
+	var again: Vector2 = agent.tick(held, 0.5, 1.0, 0)
+	var before_resume: float = blocked_clip.phase_wu
+	blocked_clip.advance(again - held, right, away)
+	_ok(agent.motion == "walk" and blocked_clip.moving and blocked_clip.phase_wu > before_resume + 0.5, "resume after hold walks the achieved step")
+	var cap = load("res://scenes/capture.gd")
+	var roam_script = load("res://gameplay/m1_roam.gd")
+	_ok(is_equal_approx(float(cap.get_script_constant_map()["WALK_SPEED"]), 48.0), "the live manual speed constant is still 48")
+	_ok(is_equal_approx(float(cap.get_script_constant_map()["PET_CENTER_Y"]), 29.0), "the pet center stays at y 29")
+	_ok(is_equal_approx(float(roam_script.get_script_constant_map()["SPEED"]), 20.0), "the autonomous base speed is still 20")
+	var paths := WalkClip.frame_paths()
+	_ok(paths.size() == 21, "the candidate is 21 separate frames")
+	var seen := {}
+	var atlas := false
+	for p in paths:
+		seen[p] = true
+		if str(p).find("atlas") >= 0:
+			atlas = true
+	_ok(seen.size() == 21 and not atlas, "each frame is its own file and none is an atlas")
+	var want := {
+		"pet_tuanrong_radiant_back_idle_01.png": "fe626c694503d9e2f0d4af55090523c62f9ac4ddd4db199b76d6af954d2078a0",
+		"pet_tuanrong_radiant_back_walk_01.png": "fe626c694503d9e2f0d4af55090523c62f9ac4ddd4db199b76d6af954d2078a0",
+		"pet_tuanrong_radiant_back_walk_02.png": "414025c9d21650125262243b8e661fc6f11a1f646f1b1924999d46cd4c561554",
+		"pet_tuanrong_radiant_back_walk_03.png": "912a06b22f72363dcb8d3156eef39f2db7c64ce0afba5b313d18115a5878d73a",
+		"pet_tuanrong_radiant_back_walk_04.png": "ba51820f70713ec6b4db45dc2efa7199acc95f2304bdcc1865c72d9096a548d0",
+		"pet_tuanrong_radiant_back_walk_05.png": "40d808787eb9c6b47a122d5a0b080d3901615d1cef337b6d7f5a44212a6ffdfa",
+		"pet_tuanrong_radiant_back_walk_06.png": "7e1ef85f6fa2200b5a8cd2d9562655bf2d648500e5170d713e5030b7b7865475",
+		"pet_tuanrong_radiant_front_idle_01.png": "f2bceb847ea214c58301f841a4bcc1ce4065e07264696b7c7e6084bbea3762d1",
+		"pet_tuanrong_radiant_front_walk_01.png": "f2bceb847ea214c58301f841a4bcc1ce4065e07264696b7c7e6084bbea3762d1",
+		"pet_tuanrong_radiant_front_walk_02.png": "eb10ced72591075f9fbddf5002e523edd3f3f5dbed04ae031b0c5e48b0f66e76",
+		"pet_tuanrong_radiant_front_walk_03.png": "7ff5be0dfbe7ff20a1bf5c2e6eab28e1fe3a9a5e045256b5d511820c78497e47",
+		"pet_tuanrong_radiant_front_walk_04.png": "77db9882c2fd3e85d81c7ba88f94723b14930379d5bcd04f3290bd78fc4c8867",
+		"pet_tuanrong_radiant_front_walk_05.png": "6e3e43c82d69ccf9efe4b5759afc5ba74ffbae62de3e49c0dcdb9ca4ebe2f876",
+		"pet_tuanrong_radiant_front_walk_06.png": "4defff8b73d18a835d11797f1bd34eb0063238546d6166f78266d8673806d081",
+		"pet_tuanrong_radiant_side_idle_01.png": "307d394ad7d6fe164ef23e33ff688db616ec1ae7bbd6ebf76375d88ab99ce210",
+		"pet_tuanrong_radiant_side_walk_01.png": "307d394ad7d6fe164ef23e33ff688db616ec1ae7bbd6ebf76375d88ab99ce210",
+		"pet_tuanrong_radiant_side_walk_02.png": "b5bcb3ebe0bc05e167dd9bbe6ae784b86274f3aa3d52d909eda5391fd1908799",
+		"pet_tuanrong_radiant_side_walk_03.png": "da03e63b786cb623d31b2705660ed0f3158ca3ea931faa18e570f178a8bab397",
+		"pet_tuanrong_radiant_side_walk_04.png": "552c3ef8895d11242bb29e14c1aeb4713bc44242ca6e3df92fba73578350f25d",
+		"pet_tuanrong_radiant_side_walk_05.png": "098f5895c32ffb88750406581c6b2ed5316576d423b762c409bb491ee17f5486",
+		"pet_tuanrong_radiant_side_walk_06.png": "4321f92ba4b6a93850b4262292b7e2edfdeec4a5aac4f616f0ca7c3a0fe380da",
+	}
+	var hashed := 0
+	for name in want.keys():
+		var path := "res://art/pet/r4/" + str(name)
+		if _png_size(path) == Vector2i(64, 64) and _sha(path) == str(want[name]):
+			hashed += 1
+	_ok(hashed == 21, "all 21 frames are 64 and match the r4 byte list")
+	_ok(_sha("res://art/pet/pet_tuanrong_radiant_idle_01.png") == str(want["pet_tuanrong_radiant_front_idle_01.png"]), "front idle matches the previous single idle byte for byte")
+	_ok(_sha("res://art/pet/r4/pet_tuanrong_radiant_side_idle_01.png") != _sha("res://art/pet/r4/pet_tuanrong_radiant_front_idle_01.png"), "side idle is not the front idle")
+	_ok(bool(clip.state().get("continuous_lock", true)) == false, "the clip does not claim a continuous foot lock")
 
 
 func _png_size(path: String) -> Vector2i:

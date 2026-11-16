@@ -1,0 +1,107 @@
+{
+  "version": "r4",
+  "status": "parent_visual_review_then_scene_candidate_NOT_INTEGRATED",
+  "size": [
+    64,
+    64
+  ],
+  "format": "RGBA8_binary_alpha",
+  "filter": "nearest",
+  "pixel_size": 1,
+  "centered": true,
+  "source_layout_anchor_pixel_boundary": [
+    32,
+    61
+  ],
+  "ground_sole_edge_pixel_boundary_y": 63,
+  "new_offset": null,
+  "facing": {
+    "side": "right; flip_h for left",
+    "front": "towards camera",
+    "back": "away"
+  },
+  "identity": {
+    "R_near": "permanent near depth, brighter foot",
+    "L_far": "permanent far depth, darker foot"
+  },
+  "frame_distance_wu": 2,
+  "continuous_lock": false,
+  "frame_hold_quantization_drift_wu": "[0,2) for smooth root",
+  "clips": {
+    "front_walk": {
+      "frames": [
+        "frames/r4/pet_tuanrong_radiant_front_walk_01.png",
+        "frames/r4/pet_tuanrong_radiant_front_walk_02.png",
+        "frames/r4/pet_tuanrong_radiant_front_walk_03.png",
+        "frames/r4/pet_tuanrong_radiant_front_walk_04.png",
+        "frames/r4/pet_tuanrong_radiant_front_walk_05.png",
+        "frames/r4/pet_tuanrong_radiant_front_walk_06.png"
+      ],
+      "frame_count": 6,
+      "loop": true,
+      "stride_wu": 12,
+      "reference_speed_wu_s": 20,
+      "reference_fps": 10,
+      "fps_formula": "frame_count * actual_XZ_speed / stride_wu",
+      "pure_X_sampled_foot_lock": false,
+      "Z_lock": false
+    },
+    "front_idle": {
+      "frames": [
+        "frames/r4/pet_tuanrong_radiant_front_idle_01.png"
+      ],
+      "frame_count": 1,
+      "loop": false
+    },
+    "back_walk": {
+      "frames": [
+        "frames/r4/pet_tuanrong_radiant_back_walk_01.png",
+        "frames/r4/pet_tuanrong_radiant_back_walk_02.png",
+        "frames/r4/pet_tuanrong_radiant_back_walk_03.png",
+        "frames/r4/pet_tuanrong_radiant_back_walk_04.png",
+        "frames/r4/pet_tuanrong_radiant_back_walk_05.png",
+        "frames/r4/pet_tuanrong_radiant_back_walk_06.png"
+      ],
+      "frame_count": 6,
+      "loop": true,
+      "stride_wu": 12,
+      "reference_speed_wu_s": 20,
+      "reference_fps": 10,
+      "fps_formula": "frame_count * actual_XZ_speed / stride_wu",
+      "pure_X_sampled_foot_lock": false,
+      "Z_lock": false
+    },
+    "back_idle": {
+      "frames": [
+        "frames/r4/pet_tuanrong_radiant_back_idle_01.png"
+      ],
+      "frame_count": 1,
+      "loop": false
+    },
+    "side_walk": {
+      "frames": [
+        "frames/r4/pet_tuanrong_radiant_side_walk_01.png",
+        "frames/r4/pet_tuanrong_radiant_side_walk_02.png",
+        "frames/r4/pet_tuanrong_radiant_side_walk_03.png",
+        "frames/r4/pet_tuanrong_radiant_side_walk_04.png",
+        "frames/r4/pet_tuanrong_radiant_side_walk_05.png",
+        "frames/r4/pet_tuanrong_radiant_side_walk_06.png"
+      ],
+      "frame_count": 6,
+      "loop": true,
+      "stride_wu": 12,
+      "reference_speed_wu_s": 20,
+      "reference_fps": 10,
+      "fps_formula": "frame_count * actual_XZ_speed / stride_wu",
+      "pure_X_sampled_foot_lock": true,
+      "Z_lock": false
+    },
+    "side_idle": {
+      "frames": [
+        "frames/r4/pet_tuanrong_radiant_side_idle_01.png"
+      ],
+      "frame_count": 1,
+      "loop": false
+    }
+  }
+}

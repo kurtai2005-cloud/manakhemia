@@ -114,7 +114,7 @@ static func visual_fixture(care: Node) -> void:
 	print("TRACE header key_n=capture_unhandled_input_returns_before_care_and_does_not_toggle_appreciate")
 	print("TRACE header walk=autonomous_then_tap_directed")
 	print("TRACE header autonomous_walk=walker_speed_and_idle_pause petbrain_nearby_pick")
-	print("TRACE header art=pet_tuanrong_radiant_idle_01 only no_walk_cycle movement_is_billboard_position")
+	print("TRACE header art=r4_distance_clock_candidate not_accepted manual_48_roam_20_times_personality")
 	print("TRACE header day_night=key_n_only_after_the_appreciate_hold_and_it_does_not_wake_the_ui")
 	print("TRACE schedule autonomous_motion>=3s_before_any_ground_tap; then empty_tap_leaves_follow; tap_walk_a; tap_walk_b; feed; pat; clean_one; longpress; quiet+1.5 ui_shown; quiet+3.5 ui_hidden; quiet+3.9 pointer_wake; quiet+4.3 wake_restored; quiet+4.6 appreciate; appreciate+2.2 hold_no_input mode_low; appreciate+2.6 key_n; appreciate+3.1 mode_night appreciate_still_on")
 	var roam = care.host.get("_roam") if care and care.host else null

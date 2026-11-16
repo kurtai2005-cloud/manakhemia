@@ -2,6 +2,7 @@ extends Node3D
 
 const M1CameraPolicy := preload("res://gameplay/m1_camera_policy.gd")
 const M1UiLayout := preload("res://gameplay/m1_ui_layout.gd")
+const WalkClip := preload("res://gameplay/m1_walk_clip.gd")
 ## 微光小圃 HD-2D test v6.18 (0.6.18-pilot vc27: vc25 pace + night sky×albedo via art_depth). Modes: HD2D_MODE=high|low|night (default: low).
 ## Phone renderer is Mobile only. High DOF focus follows 團絨; light near blur on High.
 ## Screenshots: HD2D_CAPTURE=1 and/or HD2D_OUT=<dir>; HD2D_PET_SHOT=near|mid|far. 開發者模式 has in-app 截圖 + FPS log.
@@ -40,6 +41,10 @@ var _fps_accum := 0.0
 var _fps_frames := 0
 var _pet: Sprite3D
 var _walk_target: Variant = null  # Vector3 or null
+var _walk_clip: RefCounted
+var _walk_tex: Dictionary = {}
+var _walk_xz := Vector2.ZERO
+var _walk_xz_ready := false
 var _roam = null
 var _pet_origin_xz := Vector3.ZERO
 var _cam_base_pos := Vector3.ZERO
@@ -714,7 +719,14 @@ func _apply_atlas_materials(node: Node, emis: Texture2D) -> void:
 func _setup_pet() -> void:
 	var spr := Sprite3D.new()
 	spr.name = "Tuanrong"
-	spr.texture = _tex("res://art/pet/pet_tuanrong_radiant_idle_01.png")
+	_walk_clip = WalkClip.new()
+	for path in WalkClip.frame_paths():
+		var loaded := _tex(path)
+		if loaded == null:
+			push_error("missing walk frame " + path)
+		_walk_tex[path] = loaded
+	# One cached texture per file. Later frames only swap the reference.
+	spr.texture = _walk_tex.get(_walk_clip.texture_path(), null)
 	spr.pixel_size = 1.0
 	spr.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 	spr.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
@@ -728,7 +740,11 @@ func _setup_pet() -> void:
 	add_child(spr)
 	_pet = spr
 	_pet_origin_xz = Vector3(spr.position.x, 0.0, spr.position.z)
-	print("pet at ", spr.position)
+	_walk_xz = Vector2(spr.position.x, spr.position.z)
+	_walk_xz_ready = true
+	# Tap steps use WALK_SPEED below. Autonomous steps use m1_roam.SPEED
+	# times Personality.walk_speed_mul. The clip does not pick either one.
+	print("pet at ", spr.position, " walk_candidate=r4 frames=", _walk_tex.size(), " manual_speed=", WALK_SPEED, " centered=", spr.centered, " pixel_size=", spr.pixel_size, " offset=", spr.offset)
 
 
 func _setup_tile_props() -> void:
@@ -1716,6 +1732,8 @@ func _tick_play(dt: float) -> void:
 	var bump := get_node_or_null("PropBump")
 	if bump and bump.has_method("tick"):
 		bump.call("tick", dt)
+	# After every mover, including a prop-bump demo that writes the pet itself.
+	_present_walk_clip()
 	_fps_accum += dt
 	_fps_frames += 1
 	if _fps_accum >= 0.5:
@@ -1853,6 +1871,70 @@ func _tick_manual_walk(dt: float) -> void:
 				_roam.notify_manual_done()
 			return
 	_pet.position = Vector3(nxt.x, PET_CENTER_Y, nxt.z)
+
+
+func walk_view_right() -> Vector2:
+	var axis := Vector3.RIGHT
+	if _camera:
+		axis = _camera.global_transform.basis.x
+	return _view_ground(axis, Vector2(1, 0))
+
+
+func walk_view_away() -> Vector2:
+	# Camera looks down its -Z. The horizontal part is away from the camera.
+	var look := Vector3(0, 0, -1)
+	if _camera:
+		look = -_camera.global_transform.basis.z
+	return _view_ground(look, Vector2(0, -1))
+
+
+func walk_clip_state() -> Dictionary:
+	if _walk_clip == null or _pet == null:
+		return {}
+	var got: Dictionary = _walk_clip.state()
+	got["centered"] = _pet.centered
+	got["pixel_size"] = _pet.pixel_size
+	got["offset"] = _pet.offset
+	got["y"] = _pet.position.y
+	got["sprite_flip_h"] = _pet.flip_h
+	got["filter"] = _pet.texture_filter
+	var tex := _pet.texture
+	got["tex_w"] = tex.get_width() if tex else 0
+	got["tex_h"] = tex.get_height() if tex else 0
+	return got
+
+
+func walk_clip_rebase() -> void:
+	# Drops a test placement so it is not counted as a step.
+	if _pet == null:
+		return
+	_walk_xz = Vector2(_pet.position.x, _pet.position.z)
+	_walk_xz_ready = true
+
+
+func _view_ground(axis: Vector3, fallback: Vector2) -> Vector2:
+	var flat := Vector2(axis.x, axis.z)
+	if flat.length_squared() < 0.00000001:
+		return fallback
+	return flat.normalized()
+
+
+func _present_walk_clip() -> void:
+	if _pet == null or _walk_clip == null:
+		return
+	var now := Vector2(_pet.position.x, _pet.position.z)
+	if not _walk_xz_ready:
+		_walk_xz = now
+		_walk_xz_ready = true
+		return
+	var step := now - _walk_xz
+	_walk_xz = now
+	_walk_clip.advance(step, walk_view_right(), walk_view_away())
+	var path := str(_walk_clip.texture_path())
+	var tex: Texture2D = _walk_tex.get(path)
+	if tex != null:
+		_pet.texture = tex
+	_pet.flip_h = bool(_walk_clip.flip_h)
 
 
 func _tick_camera(dt: float) -> void:
@@ -2259,6 +2341,9 @@ func _place_pet_shot() -> void:
 		return
 	_pet.position = Vector3(p.x, PET_CENTER_Y, p.z)
 	_walk_target = null
+	# A shot placement is not a step. Do not spend walk phase on it.
+	_walk_xz = Vector2(_pet.position.x, _pet.position.z)
+	_walk_xz_ready = true
 	var delta := Vector3(_pet.position.x - _pet_origin_xz.x, 0.0, _pet.position.z - _pet_origin_xz.z)
 	_cam_follow_pos = _cam_base_pos + delta
 	_camera.position = _cam_follow_pos

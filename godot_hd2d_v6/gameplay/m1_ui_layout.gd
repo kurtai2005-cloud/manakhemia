@@ -110,7 +110,7 @@ static func profile_allowed(phase: String, user_dir: String, profile_name: Strin
 	# Empty phase is ordinary play and may use the default save.
 	if phase == "":
 		return true
-	if phase != "seed" and phase != "verify" and phase != "visual":
+	if phase != "seed" and phase != "verify" and phase != "visual" and phase != "walkclip":
 		return false
 	if profile_name == "":
 		return false

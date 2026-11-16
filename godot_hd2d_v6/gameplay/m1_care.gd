@@ -10,6 +10,7 @@ const Gesture := preload("res://gameplay/m1_gesture.gd")
 const Fade := preload("res://gameplay/m1_ui_fade.gd")
 const Layout := preload("res://gameplay/m1_ui_layout.gd")
 const M1ProfileRun := preload("res://gameplay/m1_profile_run.gd")
+const M1WalkTrace := preload("res://gameplay/m1_walk_trace.gd")
 
 const UI_ROOT := "res://gameplay/ui_r1/assets/"
 
@@ -53,6 +54,8 @@ func bind_host(p_host: Node) -> void:
 		M1ProfileRun.seed_fixture()
 	elif phase == "visual":
 		M1ProfileRun.visual_fixture(self)
+	elif phase == "walkclip":
+		M1WalkTrace.fixture(self)
 	elif Sim:
 		# Same boot as mainline Main._ready: a new egg save becomes sprout so
 		# feed/pat are reachable, and one poop is placed so clean can be tried.
@@ -141,6 +144,8 @@ func _process(dt: float) -> void:
 		M1ProfileRun.tick_seed(self, dt)
 	elif OS.get_environment("HD2D_PROFILE_PHASE") == "visual":
 		M1ProfileRun.tick_visual(self, dt)
+	elif OS.get_environment("HD2D_PROFILE_PHASE") == "walkclip":
+		M1WalkTrace.tick(self, dt)
 
 
 func _dispatch(kind: String, screen_pos: Vector2) -> void:
