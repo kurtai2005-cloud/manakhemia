@@ -183,18 +183,34 @@ static func tick_visual(care: Node, dt: float) -> void:
 		_trace_pointer(care, pet_px, true, "follow_pet_down")
 		_trace_pointer(care, pet_px, false, "follow_pet_up")
 		_follow_step = 1
-	elif mark == 1 and _follow_step == 1 and _t >= _auto_at + 2.6:
-		var frac := float(care.host.call("_pet_height_frac"))
-		var need := float(care.host.call("_follow_pet_min"))
+	elif mark == 1 and _follow_step == 1:
+		var roam_hold = care.host.get("_roam")
+		if roam_hold:
+			roam_hold.set_care_hold(true)
+		var st: Dictionary = care.host.call("follow_zoom_state")
+		var frac := float(st.get("frac", 0.0))
+		var need := float(st.get("need", 0.0))
 		var close := bool(care.call("follow_close"))
-		print("TRACE t=", snapped(_t, 0.01), " kind=follow_zoom frac=", snapped(frac, 0.001), " need=", snapped(need, 0.001), " close=", close, " opening_frac=", snapped(_opening_logged, 0.001))
-		if not close:
-			_fail("pet tap did not enter follow")
+		if not _follow_transient_logged:
+			_follow_transient_logged = true
+			print("TRACE t=", snapped(_t, 0.01), " kind=follow_zoom phase=transient frac=", snapped(frac, 0.001), " need=", snapped(need, 0.001), " err=", snapped(float(st.get("err", -1)), 0.1), " settled=false")
+		if bool(st.get("settled", false)):
+			if roam_hold:
+				roam_hold.set_care_hold(false)
+			print("TRACE t=", snapped(_t, 0.01), " kind=follow_zoom phase=settled frac=", frac, " need=", need, " close=", close, " opening_frac=", _opening_logged, " err=", snapped(float(st.get("err", -1)), 0.1))
+			if not close:
+				_fail("pet tap did not enter follow")
+				return
+			if need > 0.0 and frac < need:
+				_fail("settled follow box %s is under %s" % [frac, need])
+				return
+			_follow_step = 2
+		elif _t >= _auto_at + 8.0:
+			if roam_hold:
+				roam_hold.set_care_hold(false)
+			print("TRACE t=", snapped(_t, 0.01), " kind=follow_zoom phase=unsettled frac=", frac, " need=", need, " err=", snapped(float(st.get("err", -1)), 0.1))
+			_fail("follow did not settle at or above %s, last frac %s" % [need, frac])
 			return
-		if need > 0.0 and frac + 0.02 < need:
-			_fail("follow zoom left the pet at %s, m1a minimum %s" % [frac, need])
-			return
-		_follow_step = 2
 	elif mark == 1 and _follow_step == 2 and _t >= _auto_at + 2.8:
 		var away := Vector2(80, 200)
 		_trace_pointer(care, away, true, "leave_follow_down")
@@ -346,6 +362,7 @@ static var _auto_at := 0.0
 static var _auto_sec := 0.0
 static var _auto_wu := 0.0
 static var _follow_step := 0
+static var _follow_transient_logged := false
 static var _opening_logged := 0.0
 static var _leg_at := 0.0
 static var _tap_wu := 0.0

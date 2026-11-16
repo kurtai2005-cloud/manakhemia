@@ -47,6 +47,7 @@ var _cam_follow_pos := Vector3.ZERO
 var _cam_look := Vector3.ZERO
 var _opening_pet_frac := 0.0
 var _follow_zoom_scale := 1.0
+var _follow_goal := Vector3.ZERO
 var _flag_secure_was_set := false
 const PET_CENTER_Y := 29.0
 const WALK_SPEED := 48.0
@@ -1007,25 +1008,58 @@ func _refresh_quality_btn() -> void:
 
 
 func _solve_follow_scale(opening_frac: float, need: float) -> float:
-	# Find the distance scale that reaches m1a follow_pet_min_frac.
-	# The camera is moved only for the measurement and then put back.
-	if need <= 0.001 or opening_frac + 0.002 >= need:
+	# Pick a follow distance whose 54-unit box measures at least the m1a line.
+	# The camera is moved only for that measurement and then put back.
+	# The opening panorama is the restored pose.
+	if need <= 0.0 or opening_frac >= need:
 		return 1.0
 	var pet := _pet.global_position
 	var far := _camera.global_position
 	var saved := far
+	var guess := M1CameraPolicy.zoom_scale(opening_frac, need)
+	if _frac_at(M1CameraPolicy.zoomed_along(far, pet, guess)) >= need:
+		_camera.global_position = saved
+		return guess
 	var lo := 0.35
-	var hi := M1CameraPolicy.zoom_scale(opening_frac, need)
-	for _i in 8:
+	var hi := guess
+	var best := lo
+	for _i in 12:
 		var mid := (lo + hi) * 0.5
-		_camera.global_position = M1CameraPolicy.zoomed_along(far, pet, mid)
-		var got := _pet_height_frac()
-		if got < need:
-			hi = mid
-		else:
+		var got := _frac_at(M1CameraPolicy.zoomed_along(far, pet, mid))
+		if got >= need:
+			best = mid
 			lo = mid
+		else:
+			hi = mid
 	_camera.global_position = saved
-	return hi
+	return best
+
+
+func _frac_at(cam_pos: Vector3) -> float:
+	var saved := _camera.global_position
+	_camera.global_position = cam_pos
+	var got := _pet_height_frac()
+	_camera.global_position = saved
+	return got
+
+
+func follow_zoom_state() -> Dictionary:
+	var frac := _pet_height_frac()
+	var need := _follow_pet_min()
+	var pet := _pet.global_position if _pet else Vector3.ZERO
+	var dist := _camera.global_position.distance_to(pet) if _camera else 0.0
+	var goal_dist := _follow_goal.distance_to(pet)
+	var err := _camera.global_position.distance_to(_follow_goal) if _camera else 999.0
+	# One world unit on the ~110-unit follow offset. Not a pass band on 0.20.
+	var settled := err <= 1.0 and goal_dist > 1.0
+	return {
+		"frac": frac,
+		"need": need,
+		"dist": dist,
+		"goal_dist": goal_dist,
+		"err": err,
+		"settled": settled,
+	}
 
 
 func _pet_height_frac() -> float:
@@ -1846,6 +1880,8 @@ func _tick_camera(dt: float) -> void:
 	# v6.7: do not let the follow camera enter the back-left tree (x ≥ -100 in that band).
 	if not overview and desired.z <= CAM_TREE_BAND_Z:
 		desired.x = maxf(desired.x, CAM_FOLLOW_X_MIN)
+	if close:
+		_follow_goal = desired
 	var k := 1.0 - exp(-CAM_FOLLOW_DAMPING * dt)
 	_cam_follow_pos = _cam_follow_pos.lerp(desired, k)
 	if not overview and _cam_follow_pos.z <= CAM_TREE_BAND_Z:
