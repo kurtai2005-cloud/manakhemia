@@ -312,6 +312,10 @@ func _test_roam() -> void:
 	_ok(frozen == resumed and agent.dest == kept and agent.motion == "hold", "care pauses without clearing the target")
 	agent.note_camera()
 	_ok(agent.dest == kept and agent.cause == "autonomous", "observe and follow do not clear the agent target")
+	var raw: Vector2 = agent.far_free(Vector2(0, 75))
+	_ok(raw.x < -80.0, "the farthest clear spot from the front lawn is the left edge")
+	var open: Vector2 = agent.far_visible(Vector2(0, 75), func(p: Vector2) -> bool: return p.x > -80.0)
+	_ok(open.x > -80.0, "a trace walk goal can reject the off-screen left spot")
 	agent.set_care_hold(false)
 
 

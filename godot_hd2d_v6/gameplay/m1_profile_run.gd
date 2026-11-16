@@ -211,26 +211,46 @@ static func tick_visual(care: Node, dt: float) -> void:
 			print("TRACE t=", snapped(_t, 0.01), " kind=follow_zoom phase=unsettled frac=", frac, " need=", need, " err=", snapped(float(st.get("err", -1)), 0.1))
 			_fail("follow did not settle at or above %s, last frac %s" % [need, frac])
 			return
-	elif mark == 1 and _follow_step == 2 and _t >= _auto_at + 2.8:
+	elif mark == 1 and _follow_step == 2 and not _left_follow:
 		var away := Vector2(80, 200)
 		_trace_pointer(care, away, true, "leave_follow_down")
 		_trace_pointer(care, away, false, "leave_follow_up")
-		_vn = 2
-	elif mark == 2 and _t >= _auto_at + 3.6:
+		_left_follow = true
+		var hold = care.host.get("_roam")
+		if hold:
+			hold.set_care_hold(true)
+	elif mark == 1 and _follow_step == 2 and _left_follow:
+		var hold2 = care.host.get("_roam")
+		if hold2:
+			hold2.set_care_hold(true)
+		var cam_err := float(care.host.call("opening_camera_err"))
+		var back := bool(care.call("camera_overview")) and cam_err <= 1.0
+		if back:
+			if hold2:
+				hold2.set_care_hold(false)
+			print("TRACE t=", snapped(_t, 0.01), " kind=opening_camera err=", snapped(cam_err, 0.1))
+			_vn = 2
+		elif _t >= _auto_at + 14.0:
+			if hold2:
+				hold2.set_care_hold(false)
+			_fail("opening camera did not return before the walk taps, err=%s" % cam_err)
+			return
+	elif mark == 2:
 		_walk_from = pos
 		var here := Vector2(pos.x, pos.z)
-		var goal: Vector2 = care.host.get("_roam").far_free(here)
-		_trace_pointer(care, _screen_of(care, Vector3(goal.x, 0, goal.y)), true, "walk_a_down")
-		_trace_pointer(care, _screen_of(care, Vector3(goal.x, 0, goal.y)), false, "walk_a_up")
+		var goal: Vector2 = _visible_goal(care, here)
+		if goal.distance_to(here) < 20.0:
+			_fail("no on-screen walk goal from %s" % here)
+			return
+		var tap: Vector2 = _screen_of(care, Vector3(goal.x, 0, goal.y))
+		print("TRACE t=", snapped(_t, 0.01), " kind=walk_goal leg=a world=(", snapped(goal.x, 0.1), ",", snapped(goal.y, 0.1), ") screen=", tap)
+		_trace_pointer(care, tap, true, "walk_a_down")
+		_trace_pointer(care, tap, false, "walk_a_up")
 		_leg_at = _t
 		_vn = 3
 	elif mark == 3 and _t >= _leg_at + 1.6:
-		var here_b := Vector2(pos.x, pos.z)
-		var goal_b: Vector2 = care.host.get("_roam").far_free(here_b)
-		_trace_pointer(care, _screen_of(care, Vector3(goal_b.x, 0, goal_b.y)), true, "walk_b_down")
-		_trace_pointer(care, _screen_of(care, Vector3(goal_b.x, 0, goal_b.y)), false, "walk_b_up")
 		_vn = 4
-	elif mark == 4 and _t >= _leg_at + 4.2:
+	elif mark == 4 and _t >= _leg_at + 1.6:
 		var roam_now = care.host.get("_roam")
 		var auto_sec := _auto_sec
 		print("TRACE t=", snapped(_t, 0.01), " kind=walk_check path_wu=", snapped(_walked, 0.1), " auto_wu=", snapped(_auto_wu, 0.1), " auto_sec=", snapped(auto_sec, 0.01), " tap_directed_sec=", snapped(_tap_walk_sec, 0.01), " tap_wu=", snapped(_tap_wu, 0.1), " straight_from_start=", snapped(pos.distance_to(_walk_from), 0.1), " cause=", _walk_cause(care), " motion=", str(roam_now.motion) if roam_now else "none")
@@ -253,7 +273,7 @@ static func tick_visual(care: Node, dt: float) -> void:
 		_trace_pointer(care, care.call("_button_center", 0), true, "feed_down")
 		_trace_pointer(care, care.call("_button_center", 0), false, "feed_up")
 		_vn = 5
-	elif mark == 5 and _t >= _leg_at + 4.7:
+	elif mark == 5 and _t >= _leg_at + 2.1:
 		var got := _hunger()
 		var meal := float(_sim().get("FEED_MEAL"))
 		if absf((got - _hunger_before_feed) - meal) > 0.25:
@@ -266,19 +286,19 @@ static func tick_visual(care: Node, dt: float) -> void:
 		_trace_pointer(care, care.call("_button_center", 3), true, "pat_down")
 		_trace_pointer(care, care.call("_button_center", 3), false, "pat_up")
 		_vn = 6
-	elif mark == 6 and _t >= _leg_at + 5.1:
+	elif mark == 6 and _t >= _leg_at + 2.5:
 		_poops_before_one = _poops()
 		_trace_pointer(care, care.call("_button_center", 2), true, "clean_one_down")
 		_trace_pointer(care, care.call("_button_center", 2), false, "clean_one_up")
 		_vn = 7
-	elif mark == 7 and _t >= _leg_at + 5.5:
+	elif mark == 7 and _t >= _leg_at + 2.9:
 		if _poops() != _poops_before_one - 1 or _poops() <= 0:
 			_fail("visual clean_one poops %s from %s" % [_poops(), _poops_before_one])
 			return
 		_trace_pointer(care, _ground(care), true, "longpress_down")
 		_hold_until = _t + 0.7
 		_vn = 8
-	elif mark == 8 and _hold_until < 0.0 and _t >= _leg_at + 6.3:
+	elif mark == 8 and _hold_until < 0.0 and _t >= _leg_at + 3.7:
 		if _poops() != 0:
 			_fail("visual longpress poops %s" % _poops())
 			return
@@ -363,6 +383,7 @@ static var _auto_sec := 0.0
 static var _auto_wu := 0.0
 static var _follow_step := 0
 static var _follow_transient_logged := false
+static var _left_follow := false
 static var _opening_logged := 0.0
 static var _leg_at := 0.0
 static var _tap_wu := 0.0
@@ -573,6 +594,36 @@ static func _snap(care: Node) -> String:
 		_walk_cause(care), motion, pet.x, pet.z, _hunger(), _poops(), str(care.host.get("_mode")),
 		dest, _bubble_px(care),
 	]
+
+
+static func _visible_goal(care: Node, origin: Vector2) -> Vector2:
+	# Fixture only. Farthest clear lawn point whose bubble stays inside the
+	# camera that is up now. Does not change how a real tap walks.
+	var roam = care.host.get("_roam")
+	var best := origin
+	var best_d := 0.0
+	var x := float(roam.x_min)
+	while x <= float(roam.x_max):
+		var z := float(roam.z_min)
+		while z <= float(roam.z_max):
+			var spot := Vector2(x, z)
+			var d := origin.distance_to(spot)
+			if d > best_d and roam.segment_free(origin, spot) and _path_in_view(care, origin, spot):
+				best_d = d
+				best = spot
+			z += 20.0
+		x += 20.0
+	return best
+
+
+static func _path_in_view(care: Node, a: Vector2, b: Vector2) -> bool:
+	var dist := a.distance_to(b)
+	var n := int(dist / 20.0) + 1
+	for i in n + 1:
+		var spot: Vector2 = a.lerp(b, float(i) / float(n))
+		if not bool(care.call("bubble_fits_at", spot)):
+			return false
+	return true
 
 
 static func _bubble_px(care: Node) -> String:

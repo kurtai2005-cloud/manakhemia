@@ -488,6 +488,25 @@ func _sync_bubble() -> void:
 	_bubble.size = Vector2(size, size)
 
 
+func bubble_fits_at(world_xz: Vector2) -> bool:
+	# Same head offset and bubble rect as _sync_bubble. Does not move anything.
+	var cam: Camera3D = host.get("_camera") as Camera3D if host else null
+	var pet: Node3D = host.get("_pet") as Node3D if host else null
+	if cam == null or pet == null:
+		return false
+	var stand := Vector3(world_xz.x, pet.global_position.y, world_xz.y)
+	if cam.is_position_behind(stand):
+		return false
+	var vp := _viewport_size()
+	var size := float(Layout.bubble_display(Layout.layout_scale(vp.x)))
+	var head := cam.unproject_position(stand + Vector3(0, 27, 0))
+	var tl := Layout.bubble_top_left(head, size)
+	if tl.x < 0.0 or tl.y < 0.0 or tl.x + size > vp.x or tl.y + size > vp.y:
+		return false
+	var ground := cam.unproject_position(Vector3(world_xz.x, 0.0, world_xz.y))
+	return ground.x >= 0.0 and ground.y >= 0.0 and ground.x <= vp.x and ground.y <= vp.y
+
+
 func _need_id() -> String:
 	if Sim == null:
 		return ""

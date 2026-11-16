@@ -144,6 +144,15 @@ func tick(pos: Vector2, dt: float, mul: float, social: int) -> Vector2:
 
 
 func far_free(origin: Vector2) -> Vector2:
+	return _farthest(origin, Callable())
+
+
+func far_visible(origin: Vector2, accept: Callable) -> Vector2:
+	# Trace-only filter. Autonomous pick still uses choose_dest.
+	return _farthest(origin, accept)
+
+
+func _farthest(origin: Vector2, accept: Callable) -> Vector2:
 	boot()
 	var spots: Array[Vector2] = [
 		Vector2(110, -30), Vector2(-40, 10), Vector2(0, 75),
@@ -155,6 +164,8 @@ func far_free(origin: Vector2) -> Vector2:
 	for s in spots:
 		var p := clamp_walk(s)
 		if not segment_free(origin, p):
+			continue
+		if accept.is_valid() and not bool(accept.call(p)):
 			continue
 		var d := origin.distance_to(p)
 		if d > best_d:

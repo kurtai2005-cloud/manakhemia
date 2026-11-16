@@ -1043,6 +1043,12 @@ func _frac_at(cam_pos: Vector3) -> float:
 	return got
 
 
+func opening_camera_err() -> float:
+	if _camera == null:
+		return 999.0
+	return _camera.global_position.distance_to(_cam_base_pos)
+
+
 func follow_zoom_state() -> Dictionary:
 	var frac := _pet_height_frac()
 	var need := _follow_pet_min()
