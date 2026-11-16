@@ -35,6 +35,7 @@ func bind_host(p_host: Node) -> void:
 	gesture = Gesture.new()
 	fade = Fade.new()
 	fade.fade_sec = _fade_sec()
+	_motion = OS.get_environment("HD2D_MOTION_RUN") == "1"
 	var pet: Node3D = host.get("_pet") as Node3D
 	if pet:
 		_register(pet, host.get("_pet_origin_xz") as Vector3)
@@ -117,6 +118,7 @@ func _process(dt: float) -> void:
 	_sync_buttons()
 	_sync_bubble()
 	_maybe_ui_shots(dt)
+	_maybe_motion(dt)
 
 
 func _dispatch(kind: String, screen_pos: Vector2) -> void:
@@ -419,7 +421,7 @@ func _sync_bubble() -> void:
 		return
 	var tex := _tex_file(UI_ROOT + "bubbles/bubble_%s.png" % id)
 	_bubble.texture = tex
-	_bubble.visible = tex != null and float(fade.alpha) > 0.05
+	_bubble.visible = tex != null and Layout.bubble_shown(id != "", fade.appreciate, float(fade.alpha))
 	if not _bubble.visible:
 		return
 	var cam: Camera3D = host.get("_camera") as Camera3D
@@ -432,8 +434,10 @@ func _sync_bubble() -> void:
 		return
 	var layout := Layout.layout_scale(_viewport_size().x)
 	var size := float(Layout.bubble_display(layout))
-	var head := cam.unproject_position(pet.global_position + Vector3(0, 36, 0))
-	_bubble.position = Vector2(head.x + size * 0.15, head.y - size - float(8 * layout))
+	# Head is the top of the visible sprite. The bubble's bottom-center
+	# stays on that projected point, so walk and follow cannot leave a gap.
+	var head := cam.unproject_position(pet.global_position + Vector3(0, 27, 0))
+	_bubble.position = Layout.bubble_top_left(head, size)
 	_bubble.size = Vector2(size, size)
 
 
@@ -493,6 +497,203 @@ func _sync_poops() -> void:
 
 var _shot_t := 0.0
 var _shot_i := 0
+var _motion := false
+var _motion_t := 0.0
+var _motion_n := 0
+var _hold_until := -1.0
+var _hold_pos := Vector2.ZERO
+
+
+func _maybe_motion(dt: float) -> void:
+	# Deterministic input for a GPU reviewer. Real viewport events only.
+	# This does not call Sim.feed / pat / clean_one itself.
+	if not _motion or host == null:
+		return
+	_motion_t += dt
+	if _hold_until >= 0.0 and _motion_t >= _hold_until:
+		_pointer(_hold_pos, false)
+		_hold_until = -1.0
+		print("motion release longpress t=", snapped(_motion_t, 0.01))
+	_motion_shot()
+	var mark := _motion_n
+	if mark == 0 and _motion_t >= 0.4:
+		if Sim:
+			var needs: Dictionary = Sim.state.get("needs", {})
+			needs["hunger"] = 40.0
+			Sim.state["needs"] = needs
+		_log_chrome("day_idle")
+		_log_brown("day_idle")
+		_motion_n = 1
+	elif mark == 1 and _motion_t >= 0.7:
+		_pointer(_ground_point(), true)
+		_pointer(_ground_point(), false)
+		print("motion tap empty (leave follow or walk)")
+		_motion_n = 2
+	elif mark == 2 and _motion_t >= 1.1:
+		_pointer(_ground_point(), true)
+		_pointer(_ground_point(), false)
+		print("motion tap empty again")
+		_motion_n = 3
+	elif mark == 3 and _motion_t >= 2.2:
+		_log_brown("while_walking")
+		_pointer(_pet_point(), true)
+		_pointer(_pet_point(), false)
+		print("motion tap pet")
+		_motion_n = 4
+	elif mark == 4 and _motion_t >= 3.0:
+		_log_brown("during_follow")
+		_pointer(_ground_point(), true)
+		_pointer(_ground_point(), false)
+		print("motion tap empty return")
+		_motion_n = 5
+	elif mark == 5 and _motion_t >= 3.4:
+		var feed_at := _button_center(0)
+		_pointer(feed_at, true)
+		_pointer(feed_at, false)
+		print("motion tap feed button hunger_now=", _hunger_now())
+		_motion_n = 6
+	elif mark == 6 and _motion_t >= 3.8:
+		var pat_at := _button_center(3)
+		_pointer(pat_at, true)
+		_pointer(pat_at, false)
+		print("motion tap pat button hunger_now=", _hunger_now(), " poops=", _poop_count())
+		_motion_n = 7
+	elif mark == 7 and _motion_t >= 4.2:
+		_hold_pos = _ground_point()
+		_pointer(_hold_pos, true)
+		_hold_until = _motion_t + 0.6
+		print("motion longpress down")
+		_motion_n = 8
+	elif mark == 8 and _motion_t >= 5.2:
+		var a := Vector2(180, 420)
+		var b := Vector2(280, 424)
+		_pointer(a, true)
+		_motion_move(b)
+		_pointer(b, false)
+		print("motion swipe")
+		_motion_n = 9
+	elif mark == 9 and _motion_t >= 9.0:
+		_log_chrome("after_fade")
+		var admire := _admire_center()
+		_pointer(admire, true)
+		_pointer(admire, false)
+		print("motion tap appreciate")
+		_motion_n = 10
+	elif mark == 10 and _motion_t >= 9.4:
+		_key_n()
+		print("motion night key")
+		_motion_n = 11
+	elif mark == 11 and _motion_t >= 10.0:
+		_log_chrome("night")
+		_log_brown("night")
+		print("motion done")
+		get_tree().quit(0)
+
+
+func _motion_shot() -> void:
+	var every := 0.25
+	var slot := int(_motion_t / every)
+	if slot == _motion_saved_slot:
+		return
+	_motion_saved_slot = slot
+	_save_view("m%02d" % slot)
+
+
+var _motion_saved_slot := -1
+
+
+func _pointer(pos: Vector2, pressed: bool) -> void:
+	var ev := InputEventMouseButton.new()
+	ev.button_index = MOUSE_BUTTON_LEFT
+	ev.pressed = pressed
+	ev.position = pos
+	ev.global_position = pos
+	var vp := get_viewport()
+	if vp:
+		vp.push_input(ev)
+
+
+func _motion_move(pos: Vector2) -> void:
+	var ev := InputEventMouseMotion.new()
+	ev.position = pos
+	ev.global_position = pos
+	ev.relative = Vector2(40, 0)
+	var vp := get_viewport()
+	if vp:
+		vp.push_input(ev)
+
+
+func _key_n() -> void:
+	var ev := InputEventKey.new()
+	ev.keycode = KEY_N
+	ev.pressed = true
+	var vp := get_viewport()
+	if vp:
+		vp.push_input(ev)
+
+
+func _pet_point() -> Vector2:
+	var cam: Camera3D = host.get("_camera") as Camera3D
+	var pet: Node3D = host.get("_pet") as Node3D
+	if cam == null or pet == null:
+		return Vector2(270, 570)
+	return cam.unproject_position(pet.global_position)
+
+
+func _ground_point() -> Vector2:
+	var vp := _viewport_size()
+	return Vector2(vp.x * 0.50, vp.y * 0.42)
+
+
+func _button_center(index: int) -> Vector2:
+	var row: Dictionary = Layout.care_row(_viewport_size(), Layout.layout_scale(_viewport_size().x))
+	var slot: Dictionary = (row["slots"] as Array)[index]
+	var disp: Vector2 = slot["display"]
+	var size := float(row["display"])
+	return disp + Vector2(size * 0.5, size * 0.5)
+
+
+func _admire_center() -> Vector2:
+	var slot: Dictionary = Layout.admire_slot(_viewport_size(), Layout.layout_scale(_viewport_size().x))
+	var disp: Vector2 = slot["display"]
+	var size := float(slot["size_display"])
+	return disp + Vector2(size * 0.5, size * 0.5)
+
+
+func _log_chrome(tag: String) -> void:
+	var q := host.find_child("QualityBtn", true, false)
+	var g := host.find_child("GradeBtn", true, false)
+	var d := host.find_child("DevToggle", true, false)
+	var e := host.find_child("DevEntry", true, false)
+	var fps := host.find_child("FpsLabel", true, false)
+	print("motion chrome ", tag,
+		" quality=", q.visible if q else "missing",
+		" grade=", g.visible if g else "missing",
+		" dev_toggle=", d.visible if d else "missing",
+		" entry=", e.visible if e else "missing",
+		" fps=", fps.visible if fps else "missing")
+
+
+func _hunger_now() -> float:
+	if Sim == null:
+		return -1.0
+	return float((Sim.state.get("needs", {}) as Dictionary).get("hunger", -1))
+
+
+func _poop_count() -> int:
+	if Sim == null:
+		return -1
+	return int(Sim.state.get("poops", -1))
+
+
+func _log_brown(tag: String) -> void:
+	var pet: Node3D = host.get("_pet") as Node3D
+	var px := pet.global_position if pet else Vector3.ZERO
+	var bits := ""
+	for spr in _poops:
+		if spr:
+			bits += " poop=%s" % spr.global_position
+	print("motion brown ", tag, " pet=", px, bits)
 
 
 func _maybe_ui_shots(dt: float) -> void:

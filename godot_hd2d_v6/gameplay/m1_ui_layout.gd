@@ -87,3 +87,20 @@ static func effect(id: String) -> String:
 
 static func blocks_ground(shown: bool, alpha: float) -> bool:
 	return shown and alpha > 0.2
+
+
+static func debug_chrome_visible(dev_on: bool) -> bool:
+	# Quality, tone, the large developer toggle, and the FPS line.
+	# The small developer entry stays up either way.
+	return dev_on
+
+
+static func bubble_top_left(head_px: Vector2, size_px: float) -> Vector2:
+	# Bottom-center of the bubble sits on the pet head. No sideways bias.
+	return Vector2(head_px.x - size_px * 0.5, head_px.y - size_px)
+
+
+static func bubble_shown(has_need: bool, appreciate: bool, alpha: float) -> bool:
+	# SPEC: appreciate hides the bubble. The 3s fade uses modulate and
+	# drops the bubble once the panel is essentially gone.
+	return has_need and (not appreciate) and alpha > 0.05

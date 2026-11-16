@@ -1,6 +1,7 @@
 extends Node3D
 
 const M1CameraPolicy := preload("res://gameplay/m1_camera_policy.gd")
+const M1UiLayout := preload("res://gameplay/m1_ui_layout.gd")
 ## 微光小圃 HD-2D test v6.18 (0.6.18-pilot vc27: vc25 pace + night sky×albedo via art_depth). Modes: HD2D_MODE=high|low|night (default: low).
 ## Phone renderer is Mobile only. High DOF focus follows 團絨; light near blur on High.
 ## Screenshots: HD2D_CAPTURE=1 and/or HD2D_OUT=<dir>; HD2D_PET_SHOT=near|mid|far. 開發者模式 has in-app 截圖 + FPS log.
@@ -117,6 +118,7 @@ var _shadow_cast_inited := false
 var _shadow_policy_ready := false
 var _bed_flower_mats: Array[ShaderMaterial] = []
 var _dev_on := false
+var _dev_entry: Button
 var _dev_btn: Button
 var _shot_btn: Button
 var _dev_log: Label
@@ -961,6 +963,26 @@ func _setup_quality_toggle() -> void:
 	if ff:
 		_dev_log.add_theme_font_override("font", ff)
 	layer.add_child(_dev_log)
+	_dev_entry = Button.new()
+	_dev_entry.name = "DevEntry"
+	_dev_entry.text = "開發"
+	_dev_entry.focus_mode = Control.FOCUS_NONE
+	_dev_entry.anchor_left = 0.0
+	_dev_entry.anchor_right = 0.0
+	_dev_entry.anchor_top = 1.0
+	_dev_entry.anchor_bottom = 1.0
+	_dev_entry.offset_left = 12.0
+	_dev_entry.offset_right = 76.0
+	_dev_entry.offset_top = -44.0
+	_dev_entry.offset_bottom = -12.0
+	if ff:
+		_dev_entry.add_theme_font_override("font", ff)
+		_dev_entry.add_theme_font_size_override("font_size", 16)
+	_dev_entry.pressed.connect(_toggle_dev)
+	layer.add_child(_dev_entry)
+	_quality_btn.name = "QualityBtn"
+	_grade_btn.name = "GradeBtn"
+	_dev_btn.name = "DevToggle"
 	_refresh_dev_ui()
 
 
@@ -1560,6 +1582,7 @@ func _setup_fps_overlay() -> void:
 	_fps_label.text = "– FPS"
 	layer.add_child(_fps_label)
 	_refresh_fps_label(0.0)
+	_refresh_dev_ui()
 
 
 func _refresh_fps_label(fps: float) -> void:
@@ -2249,14 +2272,25 @@ func _toggle_dev() -> void:
 
 
 func _refresh_dev_ui() -> void:
+	var show_tools := M1UiLayout.debug_chrome_visible(_dev_on)
 	if _dev_btn:
 		_dev_btn.text = "開發者：開" if _dev_on else "開發者：關"
+		_dev_btn.visible = show_tools
+	if _quality_btn:
+		_quality_btn.visible = show_tools
+	if _grade_btn:
+		_grade_btn.visible = show_tools
 	if _shot_btn:
-		_shot_btn.visible = _dev_on
+		_shot_btn.visible = show_tools
 	if _dev_log:
-		_dev_log.visible = _dev_on
+		_dev_log.visible = show_tools
 		if _dev_on and _dev_log.text == "":
 			_dev_log.text = "開發者：截圖寫入 user://shots 同相簿；音效事件會列喺呢度。"
+	if _fps_label:
+		_fps_label.visible = show_tools
+	if _dev_entry:
+		_dev_entry.visible = true
+		_dev_entry.text = "開發中" if _dev_on else "開發"
 
 
 func _note_fps(fps: float) -> void:

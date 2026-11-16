@@ -172,6 +172,17 @@ func _test_ui_r1() -> void:
 	_ok(_png_size("res://gameplay/ui_r1/assets/bubbles/bubble_need_eat.png") == Vector2i(48, 48), "need bubble is 48")
 	_ok(not FileAccess.file_exists("res://gameplay/ui_r1/assets/buttons/btn_care_play_normal.png"), "no play care button")
 	_ok(_sha("res://gameplay/ui_r1/assets/icons/icon_care_pat_32.png") == "d5c5a9c12b93c9ea738c806a41b3930ae6f10eff8a2cbe7a54c3427e96f32831", "pat icon hash matches the pack")
+	_ok(not Layout.debug_chrome_visible(false), "debug chrome stays hidden until developer mode")
+	_ok(Layout.debug_chrome_visible(true), "debug chrome shows in developer mode")
+	var head := Vector2(200, 400)
+	var moved := head + Vector2(30, -12)
+	var a := Layout.bubble_top_left(head, 96)
+	var b := Layout.bubble_top_left(moved, 96)
+	_ok(b - a == moved - head, "bubble keeps the pet's screen delta with no extra drift")
+	_ok(is_equal_approx(a.x + 48.0, head.x) and is_equal_approx(a.y + 96.0, head.y), "bubble is centered on the head with no sideways bias")
+	_ok(Layout.bubble_shown(true, false, 1.0), "need bubble shows while the panel is up")
+	_ok(not Layout.bubble_shown(true, true, 1.0), "appreciate hides the need bubble")
+	_ok(not Layout.bubble_shown(true, false, 0.0), "full fade hides the need bubble")
 
 
 func _png_size(path: String) -> Vector2i:
