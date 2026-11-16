@@ -9,6 +9,7 @@ const Rules := preload("res://gameplay/m1_input_rules.gd")
 const Gesture := preload("res://gameplay/m1_gesture.gd")
 const Fade := preload("res://gameplay/m1_ui_fade.gd")
 const Layout := preload("res://gameplay/m1_ui_layout.gd")
+const M1ProfileRun := preload("res://gameplay/m1_profile_run.gd")
 
 const UI_ROOT := "res://gameplay/ui_r1/assets/"
 const POOP_WORLD_SCALE := 2
@@ -40,9 +41,18 @@ func bind_host(p_host: Node) -> void:
 	if pet:
 		_register(pet, host.get("_pet_origin_xz") as Vector3)
 		selected = pet
-	# Same boot as mainline Main._ready: a new egg save becomes sprout so
-	# feed/pat are reachable, and one poop is placed so clean can be tried.
-	if Sim:
+	var phase := OS.get_environment("HD2D_PROFILE_PHASE")
+	if phase == "verify":
+		_build_ui()
+		_apply_layout()
+		_ui_ready = true
+		M1ProfileRun.verify_and_quit(self)
+		return
+	if phase == "seed":
+		M1ProfileRun.seed_fixture()
+	elif Sim:
+		# Same boot as mainline Main._ready: a new egg save becomes sprout so
+		# feed/pat are reachable, and one poop is placed so clean can be tried.
 		if str(Sim.state.get("stage", "egg")) == "egg" and Sim.has_method("force_stage"):
 			Sim.force_stage("sprout")
 		if int(Sim.state.get("poops", 0)) == 0 and Sim.has_method("add_poop"):
@@ -119,6 +129,8 @@ func _process(dt: float) -> void:
 	_sync_bubble()
 	_maybe_ui_shots(dt)
 	_maybe_motion(dt)
+	if OS.get_environment("HD2D_PROFILE_PHASE") == "seed":
+		M1ProfileRun.tick_seed(self, dt)
 
 
 func _dispatch(kind: String, screen_pos: Vector2) -> void:
@@ -517,10 +529,6 @@ func _maybe_motion(dt: float) -> void:
 	_motion_shot()
 	var mark := _motion_n
 	if mark == 0 and _motion_t >= 0.4:
-		if Sim:
-			var needs: Dictionary = Sim.state.get("needs", {})
-			needs["hunger"] = 40.0
-			Sim.state["needs"] = needs
 		_log_chrome("day_idle")
 		_log_brown("day_idle")
 		_motion_n = 1

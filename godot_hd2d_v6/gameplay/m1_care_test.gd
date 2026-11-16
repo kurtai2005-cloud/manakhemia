@@ -7,6 +7,7 @@ const Rules := preload("res://gameplay/m1_input_rules.gd")
 const Gesture := preload("res://gameplay/m1_gesture.gd")
 const Fade := preload("res://gameplay/m1_ui_fade.gd")
 const Layout := preload("res://gameplay/m1_ui_layout.gd")
+const Profile := preload("res://gameplay/m1_profile_run.gd")
 
 var fails := 0
 
@@ -183,6 +184,26 @@ func _test_ui_r1() -> void:
 	_ok(Layout.bubble_shown(true, false, 1.0), "need bubble shows while the panel is up")
 	_ok(not Layout.bubble_shown(true, true, 1.0), "appreciate hides the need bubble")
 	_ok(not Layout.bubble_shown(true, false, 0.0), "full fade hides the need bubble")
+	_test_restore_prediction()
+
+
+func _test_restore_prediction() -> void:
+	var saved := {
+		"stage": "sprout",
+		"poops": 0,
+		"last_seen": 1710000000000,
+		"last_save_time": 1710000000000,
+		"needs": {"hunger": 80.0, "mood": 70.0, "clean": 90.0, "energy": 100.0},
+	}
+	var same: Dictionary = Profile.predict_reload(saved, 1710000000000 + 500)
+	var same_needs: Dictionary = same.get("needs", {})
+	_ok(is_equal_approx(float(same_needs.get("hunger", -1)), 80.0) and int(same.get("poops", -1)) == 0, "reload inside 2s stall keeps hunger and poops")
+	var later: Dictionary = Profile.predict_reload(saved, 1710000000000 + 10000)
+	var later_needs: Dictionary = later.get("needs", {})
+	_ok(float(later_needs.get("hunger", 80)) < 80.0, "reload after the stall applies ordinary hunger decay")
+	_ok(int(later.get("poops", -1)) == 0, "that same decay does not invent or remove poops")
+	_ok(Layout.effect("water") == "none", "water still has no care effect")
+	_ok((Layout.CARE_IDS as PackedStringArray)[2] == "poop" and (Layout.CARE_IDS as PackedStringArray)[1] == "water", "poop and water keep their button slots")
 
 
 func _png_size(path: String) -> Vector2i:

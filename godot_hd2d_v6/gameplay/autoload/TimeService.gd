@@ -16,6 +16,10 @@ var _last_other_day: String = ""
 var _in_catch_up := false
 
 func _ready() -> void:
+	# Test harness only. Normal play does not set this.
+	var pinned := OS.get_environment("HD2D_FAKE_NOW_MS")
+	if pinned != "":
+		use_fake(int(pinned))
 	_last_sim_ms = now_ms()
 
 
