@@ -121,3 +121,17 @@ static func hunger_for_need_bubble(threshold: float) -> float:
 	# want_eat = 100 - hunger. The bubble shows when want > threshold - 0.01.
 	# Hunger 100 - threshold makes want equal the threshold, which still shows.
 	return 100.0 - threshold
+
+
+static func poop_marker(pet_box: float, icon_px: float) -> Dictionary:
+	# Quarter of the existing 54-unit pet box. The icon file is not resized.
+	# A centered sprite sits at half that height so its feet are on y = 0.
+	var height := pet_box / 4.0
+	var px := maxf(icon_px, 1.0)
+	return {
+		"height": height,
+		"pixel_size": height / px,
+		"center_y": height * 0.5,
+		"bottom_y": 0.0,
+		"top_y": height,
+	}

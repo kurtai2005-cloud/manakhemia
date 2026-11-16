@@ -12,7 +12,6 @@ const Layout := preload("res://gameplay/m1_ui_layout.gd")
 const M1ProfileRun := preload("res://gameplay/m1_profile_run.gd")
 
 const UI_ROOT := "res://gameplay/ui_r1/assets/"
-const POOP_WORLD_SCALE := 2
 
 var host: Node = null
 var pets: Array[Node3D] = []
@@ -510,6 +509,15 @@ func _need_id() -> String:
 	return best
 
 
+func _pet_box_wu() -> float:
+	# The same 54-unit box capture.gd measures. Not a new pet scale.
+	if host:
+		var sc = host.get_script()
+		if sc is GDScript and (sc as GDScript).get_script_constant_map().has("PET_VISIBLE_H"):
+			return float((sc as GDScript).get_script_constant_map()["PET_VISIBLE_H"])
+	return 54.0
+
+
 func _build_poops() -> void:
 	_poop_root = Node3D.new()
 	_poop_root.name = "M1Poops"
@@ -527,14 +535,21 @@ func _sync_poops() -> void:
 	while _poops.size() < n:
 		var spr := Sprite3D.new()
 		spr.texture = tex
-		spr.pixel_size = float(POOP_WORLD_SCALE)
+		var icon_px := 32.0
+		if tex:
+			icon_px = float(tex.get_height())
+		var box := _pet_box_wu()
+		var marker: Dictionary = Layout.poop_marker(box, icon_px)
+		spr.pixel_size = float(marker["pixel_size"])
+		spr.centered = true
+		spr.offset = Vector2.ZERO
 		spr.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 		spr.shaded = false
 		spr.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 		spr.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 		var i := _poops.size()
 		var ang := TAU * float(i) / 5.0
-		spr.position = Vector3(base.x + cos(ang) * 22.0, 8.0, base.z + sin(ang) * 22.0)
+		spr.position = Vector3(base.x + cos(ang) * 22.0, float(marker["center_y"]), base.z + sin(ang) * 22.0)
 		_poop_root.add_child(spr)
 		_poops.append(spr)
 	while _poops.size() > n:

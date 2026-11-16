@@ -25,6 +25,7 @@ func _run() -> void:
 	_test_care_and_save()
 	_test_ui_r1()
 	_test_roam()
+	_test_poop_marker()
 	if fails == 0:
 		print("m1_care_test PASS")
 		quit(0)
@@ -312,6 +313,27 @@ func _test_roam() -> void:
 	agent.note_camera()
 	_ok(agent.dest == kept and agent.cause == "autonomous", "observe and follow do not clear the agent target")
 	agent.set_care_hold(false)
+
+
+func _test_poop_marker() -> void:
+	var cap = load("res://scenes/capture.gd")
+	var box := float(cap.get_script_constant_map()["PET_VISIBLE_H"])
+	var icon := _png_size("res://gameplay/ui_r1/assets/icons/icon_care_poop_32.png")
+	var marker: Dictionary = Layout.poop_marker(box, float(icon.y))
+	var old_height := 2.0 * float(icon.y)
+	var old_center := 8.0
+	_ok(is_equal_approx(box, 54.0), "poop marker uses the existing 54-unit pet box")
+	_ok(icon == Vector2i(32, 32), "poop icon file stays 32 pixels")
+	_ok(is_equal_approx(float(marker["height"]), box / 4.0), "marker height is a quarter of the pet box")
+	_ok(float(marker["height"]) < old_height, "marker is shorter than the old pixel_size 2 quad")
+	_ok(is_equal_approx(float(marker["pixel_size"]) * float(icon.y), float(marker["height"])), "pixel size times the icon height is the world height")
+	_ok(is_equal_approx(float(marker["bottom_y"]), 0.0), "marker feet sit on the ground")
+	_ok(is_equal_approx(float(marker["center_y"]), float(marker["height"]) * 0.5), "centered sprite is raised by half its height")
+	_ok(float(marker["top_y"]) < box * 0.5, "marker top stays below the pet center, not across the face")
+	_ok(old_center - old_height * 0.5 < 0.0, "the old marker center at y 8 put its feet underground")
+	_ok(Layout.button_touch(1) == 96, "poop button touch pad stays 96")
+	_ok(Rules.action("long", false, false, 2, 1) == "clean_all", "long press still cleans from the ground")
+	_ok(Rules.action("tap", false, true, 2, 1) == "walk", "a ground tap is still a walk, not a shrunken poop pick")
 
 
 func _png_size(path: String) -> Vector2i:
