@@ -56,13 +56,14 @@ static var _anchor := Vector2.ZERO
 static var _settle_next := "follow48"
 static var _ab_done := false
 static var _ab_stage := "old"
+static var _shadow_force := ""
 
 
 static func fixture(care: Node) -> void:
 	_require()
 	_keep_bubble(care)
 	print("TRACE header walkclip=r4_evidence_fixture_not_accepted")
-	print("TRACE header schedule=autonomous_zero_taps; hold>=0.30; panorama_side48_24wu; stop>=0.30 plus one rendered frame; existing_follow_side48_24wu; stop; isolated_profile_side20_24wu; stop")
+	print("TRACE header schedule=autonomous_zero_taps; hold>=0.30; panorama_side48_24wu; stop>=0.30 plus one rendered frame; follow settle; character_grounding offset0 then offset2; shadow_only uncorrected then corrected with offset2 held; existing_follow_side48_24wu; stop; isolated_profile_side20_24wu; stop")
 	print("TRACE header speeds live_manual=48 fixture_roam20=motion_axis_0_only no_fps_cap")
 	print("TRACE header movie_png_index=frames_drawn_in_process_before_draw title_frame=frames_drawn_plus_1 process_frames_is_not_a_movie_frame")
 	print("TRACE header rights=not_independently_verified not_commercially_cleared")
@@ -121,6 +122,8 @@ static func tick(care: Node, dt: float) -> void:
 			_tick_follow_wait(care)
 		"anchor_ab":
 			_tick_anchor_ab(care)
+		"shadow_ab":
+			_tick_shadow_ab(care)
 		"rate20":
 			_tick_rate20(care, dt, moved)
 		_:
@@ -415,28 +418,140 @@ static func _tick_anchor_ab(care: Node) -> void:
 		if _ab_stage == "old":
 			_begin_anchor_plate(care, true)
 		else:
-			roam.set_care_hold(false)
-			_arm_route(care, "follow48", 48.0)
+			_begin_shadow_plate(care, false)
 		return
 	if _t < _mark + STOP_SEC:
 		return
+	if not _live_shadow_ok(care, true):
+		return
 	_stop_drawn = Engine.get_frames_drawn()
 	_stage = "gap"
-	print("TRACE t=", snapped(_t, 0.01), " kind=anchor_end held_sec=", snapped(_t - _mark, 0.01), " source=", _ab_stage, " select_png_index=", _stop_drawn, " ", _anchor_line(care), " ", _frame_tag())
+	print("TRACE t=", snapped(_t, 0.01), " kind=anchor_end held_sec=", snapped(_t - _mark, 0.01), " source=", _ab_stage, " select_png_index=", _stop_drawn, " ", _anchor_line(care), " ", _shadow_line(care, true), " ", _frame_tag())
 
 
 static func _anchor_line(care: Node) -> String:
 	var got: Dictionary = care.host.call("foot_anchor_state")
 	var oy := float(got.get("offset_y", 0.0))
 	var sole := float(got.get("sole_boundary_y", 0.0))
-	# Same shear art_depth uses. It reads node y, not the quad offset, so Low's fake shadow does not follow this anchor.
-	var shift := Vector3(0.645, 0.0, 0.453) / 0.616 * oy
-	return "node_y=%.3f offset_y=%.3f sole_boundary_y=%.3f row61_center_y=%.3f row62_center_y=%.3f row62_span_y=%.3f..%.3f low_fake_shadow_shift_wu=%.3f art_depth_unchanged=true" % [
+	return "plate=character_grounding node_y=%.3f offset_y=%.3f sole_boundary_y=%.3f row61_center_y=%.3f row62_center_y=%.3f row62_span_y=%.3f..%.3f" % [
 		float(got.get("node_y", 0.0)), oy, sole,
 		float(got.get("row61_center_y", 0.0)), float(got.get("row62_center_y", 0.0)),
 		float(got.get("row62_bottom_y", 0.0)), float(got.get("row62_top_y", 0.0)),
-		Vector2(shift.x, shift.z).length(),
 	]
+
+
+static func _begin_shadow_plate(care: Node, corrected: bool) -> void:
+	care.host.call("set_foot_visual_anchor", true)
+	_ensure_shadow_force(care)
+	_shadow_force = "corrected" if corrected else "uncorrected"
+	care.host.set_meta("vc27_shadow_force", _shadow_force)
+	_stage = "hold"
+	_mark = _t
+	_phase = "shadow_ab"
+	var label := "corrected_visual_center" if corrected else "uncorrected_node_height"
+	print("TRACE t=", snapped(_t, 0.01), " kind=shadow_begin mode=", label, " pick=shadow_end foot_offset_held=2 ", _shadow_line(care, corrected), " ", _frame_tag())
+
+
+static func _tick_shadow_ab(care: Node) -> void:
+	var roam = care.host.get("_roam")
+	roam.set_care_hold(true)
+	if care.host.get("_walk_target") != null:
+		_fail("shadow plate armed a walk")
+		return
+	var got: Dictionary = care.host.call("foot_anchor_state")
+	if _shadow_force == "corrected" and absf(float(got.get("offset_y", -1.0)) - WalkClip.GROUNDED_OFFSET_Y) > 0.001:
+		_fail("shadow plate changed the foot offset")
+		return
+	if _shadow_force == "uncorrected" and care.host.has_meta("vc27_draw_offset"):
+		if absf(float(care.host.get_meta("vc27_draw_offset")) - WalkClip.GROUNDED_OFFSET_Y) > 0.001:
+			_fail("the uncorrected plate drew the feet at the wrong offset")
+			return
+	if absf(float(got.get("node_y", -1.0)) - 29.0) > 0.001:
+		_fail("shadow plate moved the walk root")
+		return
+	_ensure_shadow_force(care)
+	care.host.set_meta("vc27_shadow_force", _shadow_force)
+	if _stage == "gap":
+		if Engine.get_frames_drawn() <= _stop_drawn:
+			return
+		print("TRACE t=", snapped(_t, 0.01), " kind=shadow_gap mode=", _shadow_force, " rendered_after_end=true ", _frame_tag())
+		if _shadow_force == "uncorrected":
+			_begin_shadow_plate(care, true)
+		else:
+			_shadow_force = ""
+			care.host.set_meta("vc27_shadow_force", "")
+			roam.set_care_hold(false)
+			_arm_route(care, "follow48", 48.0)
+		return
+	if _t < _mark + STOP_SEC:
+		return
+	var corrected := _shadow_force == "corrected"
+	if not _live_shadow_ok(care, corrected):
+		return
+	if corrected:
+		var feet: Dictionary = care.host.call("foot_anchor_state")
+		if absf(float(feet.get("offset_y", -1.0)) - WalkClip.GROUNDED_OFFSET_Y) > 0.001:
+			_fail("corrected shadow plate moved the foot offset")
+			return
+	elif absf(float(care.host.get_meta("vc27_draw_offset", -1.0)) - WalkClip.GROUNDED_OFFSET_Y) > 0.001:
+		_fail("uncorrected plate did not restore the foot offset before the draw")
+		return
+	_stop_drawn = Engine.get_frames_drawn()
+	_stage = "gap"
+	var label := "corrected_visual_center" if corrected else "uncorrected_node_height"
+	print("TRACE t=", snapped(_t, 0.01), " kind=shadow_end held_sec=", snapped(_t - _mark, 0.01), " mode=", label, " select_png_index=", _stop_drawn, " foot_offset_held=2 ", _shadow_line(care, corrected), " ", _frame_tag())
+
+
+static func _ensure_shadow_force(care: Node) -> void:
+	if care.host.get_node_or_null("ShadowForceZero") != null:
+		return
+	var script := load("res://gameplay/m1_shadow_force.gd")
+	var early := Node.new()
+	early.name = "ShadowForceZero"
+	early.set_script(script)
+	early.set("job", "zero")
+	early.process_priority = -1000
+	care.host.add_child(early)
+	var late := Node.new()
+	late.name = "ShadowForceRestore"
+	late.set_script(script)
+	late.set("job", "restore")
+	late.process_priority = 100000
+	care.host.add_child(late)
+
+
+static func _shadow_line(care: Node, use_offset: bool) -> String:
+	var pet := care.host.get("_pet") as Sprite3D
+	var sh := care.host.get_node_or_null("PetShadow_v610") as MeshInstance3D
+	if pet == null:
+		return "shadow=missing"
+	var L := Vector3(0.645, 0.0, 0.453) / 0.616
+	var lift := pet.offset.y * pet.pixel_size if use_offset else 0.0
+	var yc := pet.global_position.y + lift
+	var origin := Vector3(pet.global_position.x, 0.25, pet.global_position.z) + L * yc
+	var node_only := Vector3(pet.global_position.x, 0.25, pet.global_position.z) + L * pet.global_position.y
+	var delta := origin - node_only
+	var measured := sh.global_position if sh != null else Vector3.INF
+	return "center_y=%.3f projection=(%.3f,%.3f,%.3f) delta_from_node_height=(%.3f,%.3f) delta_wu=%.3f measured=(%.3f,%.3f,%.3f) pixel_size=%.3f" % [
+		yc, origin.x, origin.y, origin.z, delta.x, delta.z, Vector2(delta.x, delta.z).length(),
+		measured.x, measured.y, measured.z, pet.pixel_size,
+	]
+
+
+static func _live_shadow_ok(care: Node, use_offset: bool) -> bool:
+	var pet := care.host.get("_pet") as Sprite3D
+	var sh := care.host.get_node_or_null("PetShadow_v610") as MeshInstance3D
+	if pet == null or sh == null or not sh.visible:
+		_fail("low fake shadow is not showing")
+		return false
+	var L := Vector3(0.645, 0.0, 0.453) / 0.616
+	var lift := pet.offset.y * pet.pixel_size if use_offset else 0.0
+	var yc := pet.global_position.y + lift
+	var want := Vector3(pet.global_position.x, 0.25, pet.global_position.z) + L * yc
+	if sh.global_position.distance_to(want) > 0.05:
+		_fail("shadow origin %s wanted %s use_offset=%s frame=%s" % [sh.global_position, want, use_offset, Engine.get_process_frames()])
+		return false
+	return true
 
 
 static func _arm_route(care: Node, leg: String, speed: float) -> void:

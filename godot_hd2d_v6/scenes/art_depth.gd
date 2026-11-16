@@ -2495,7 +2495,8 @@ func _low_fake_shadow(night: bool) -> void:
 		var h := float(tex.get_height()) * pet.pixel_size if tex else 64.0
 		var L := Vector3(0.645, 0.0, 0.453) / 0.616      # ground offset per wu of height
 		var gp := Vector3(pet.global_position.x, 0.25, pet.global_position.z)
-		var yc := pet.global_position.y
+		# Sprite3D offset is pixels, +Y raises the quad. pixel_size converts it to world units.
+		var yc := pet.global_position.y + pet.offset.y * pet.pixel_size
 		_pet_sh.global_transform = Transform3D(Basis(Vector3(w, 0, 0), L * h, Vector3(0, 1, 0)), gp + L * yc)
 	var fi := 1 if fake else 0
 	# v6.13: baked shade ON the beds (pickets / lamp / cottage / trees) when Low has no live sun shadow

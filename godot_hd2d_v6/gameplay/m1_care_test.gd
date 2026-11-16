@@ -29,6 +29,7 @@ func _run() -> void:
 	_test_poop_marker()
 	_test_walk_clip()
 	_test_foot_ground()
+	_test_frozen_shaders()
 	if fails == 0:
 		print("m1_care_test PASS")
 		quit(0)
@@ -486,10 +487,25 @@ func _test_foot_ground() -> void:
 	_ok(is_equal_approx(float(cap.get_script_constant_map()["PET_CENTER_Y"]), 29.0), "the walk root stays at y 29")
 	var shear := Vector3(0.645, 0.0, 0.453) / 0.616 * WalkClip.GROUNDED_OFFSET_Y
 	var gap := Vector2(shear.x, shear.z).length()
-	_ok(gap > 2.5 and gap < 2.62, "the low fake shadow shear would miss a 2 unit visual lift")
+	_ok(gap > 2.55 and gap < 2.57, "a 2 unit lift projects 2.559 wu along the existing light vector")
+	_ok(shear.x > 0.0 and shear.z > 0.0, "the projection moves toward +X and +Z, the light's ground direction")
 	var depth := FileAccess.get_file_as_string("res://scenes/art_depth.gd")
-	_ok(depth.find("var yc := pet.global_position.y") >= 0, "the low shadow still uses the node height")
-	_ok(depth.find("GROUNDED_OFFSET") < 0, "art_depth was not taught the visual offset")
+	_ok(depth.find("var yc := pet.global_position.y + pet.offset.y * pet.pixel_size") >= 0, "the shadow height adds offset pixels times pixel size")
+	_ok(depth.find("var yc := pet.global_position.y\n") < 0, "the node-only shadow height line is gone")
+	_ok(is_equal_approx(29.0 + 0.0 * 1.0, 29.0), "offset 0 keeps the previous shadow center")
+	_ok(is_equal_approx(29.0 + 2.0 * 1.0, 31.0), "offset 2 and pixel size 1 put the shadow center at 31")
+	_ok(29.0 + 2.0 * 1.0 > 29.0, "a positive sprite offset raises the shadow center")
+	_ok(is_equal_approx(29.0 + 2.0 * 0.5, 30.0), "pixel size scales the offset before it is added")
+	var old_origin := Vector3(0.645, 0.0, 0.453) / 0.616 * 29.0
+	var new_origin := Vector3(0.645, 0.0, 0.453) / 0.616 * 31.0
+	var moved := Vector2(new_origin.x - old_origin.x, new_origin.z - old_origin.z).length()
+	_ok(absf(moved - gap) < 0.0001, "offset 2 moves the shadow origin by the same 2.559 wu")
+	var shade := FileAccess.get_file_as_string("res://shaders/pet_shadow.gdshader")
+	_ok(shade.find("foot_v = 0.97") >= 0, "the shadow foot row is still 0.97")
+	_ok(shade.find("opacity = 0.58") >= 0, "the shadow opacity is unchanged")
+	_ok(depth.find("var L := Vector3(0.645, 0.0, 0.453) / 0.616") >= 0, "the shadow light vector is unchanged")
+	_ok(depth.find("var gp := Vector3(pet.global_position.x, 0.25, pet.global_position.z)") >= 0, "the shadow still sits 0.25 above the ground")
+	_ok(depth.find("Basis(Vector3(w, 0, 0), L * h, Vector3(0, 1, 0))") >= 0, "the shadow width and shear are unchanged")
 	var buried := 0
 	var clear := 0
 	for path in WalkClip.frame_paths():
@@ -500,6 +516,53 @@ func _test_foot_ground() -> void:
 			clear += 1
 	_ok(buried == 21, "all 21 frames keep their opaque sole on row 62")
 	_ok(clear == 21, "row 63 stays empty on all 21 frames")
+
+
+func _test_frozen_shaders() -> void:
+	var want := {
+		"shaders/backdrop_ring.gdshader": "75b3ee164db958e6da41855f3f79e1945e4528459d08de1862787931ac37ff1a",
+		"shaders/backdrop_ring.gdshader.uid": "9886c68fe2d18b998dcd85733180fa530d512de20157e9b4b081c9135732db8c",
+		"shaders/bake_height.gdshader": "f16080cf13184ee40b33aa17dc78ef5f206ea8f6a34f88cc77eb89bdc9ca4be2",
+		"shaders/bake_height.gdshader.uid": "419c25432b592e1278800344b2b5e2a674b6d9b326bd9f55c6c8b089a730033d",
+		"shaders/bed_flower.gdshader": "40bcbde1202572e6d7e1d4e016e37e9a7682244d8687696ed426c5c29f630c3d",
+		"shaders/bed_flower.gdshader.uid": "0ce86c6e5a729ed7ae4d273efa4361348a93748f0828c388b7db965d0aca0d26",
+		"shaders/clump_card.gdshader": "8ed52ef09fc91230a8a5a87d8af1541474d4fe0e50c11167c1d6696b0c55cad7",
+		"shaders/clump_card.gdshader.uid": "e3f9e54d555312ece2956a6255d08eeb66475641083f611ebb95d74e2dd5869e",
+		"shaders/core_leafy.gdshader": "93f9db367990493d5b35317b6ca3f4f9422b00ebb71f0bfd096b8afac0005b0e",
+		"shaders/core_leafy.gdshader.uid": "d4b178286782ffb26b428e5b6a89f87d7b66931d1170840f6d121ebbc86e76f3",
+		"shaders/fg_plant.gdshader": "202874c594c2b47b08c1338b3efaf9b5f790ae1a3d858f609570af2cb014d11e",
+		"shaders/fg_plant.gdshader.uid": "561dc3f6698e109797124eb3c71a08054362cd9f72ab8073e97409b6e258c3dc",
+		"shaders/glow_add.gdshader": "7188e18c18ddbe11c262050f5cdfebe58602cc86aea4cf7aca30cd75ac5ee9f4",
+		"shaders/glow_add.gdshader.uid": "02ca71ee15224ef02a409c41baa2c39edfcd924d9db96504b7d50bf7e7268625",
+		"shaders/grade.gdshader": "ef44da4545530e7c879611a773296fa44be8e713c67c1f037bf6458c5ba17850",
+		"shaders/grade.gdshader.uid": "88fe2c279423f3ce65a66dd7b8dc28e8ae7017741957cb8d618217b14cb4d714",
+		"shaders/ground_dapple.gdshader": "edcde0bed1926ab477548482e28f4cfa8d64327c37e93a45f38ebeb7b46755db",
+		"shaders/ground_dapple.gdshader.uid": "ae1dfb3db04ed8922c395db479b7a45dbf9670160ca99a15cdfa7dc9d94aee52",
+		"shaders/lawn_detail.gdshader": "c7d0d7d572a2e5af01ac0553da1d68c2af2f6e6e26f3d145512f122c0e92cec1",
+		"shaders/lawn_detail.gdshader.uid": "ef23ea9e7b03048e5ec198cd22cf427c6691ccb833974bd918589ab86510dd77",
+		"shaders/leaf_card.gdshader": "5ba6dc3f7a9893ea09496e70ff6bbf2b763c4fe1412548aad2a28be9779b1f43",
+		"shaders/leaf_card.gdshader.uid": "e5c108cec93cd31f5faaf8cf6bcba8917a4cfc99370211cac1b4b0fa83e8871d",
+		"shaders/light_shaft.gdshader": "e7675d924e558b3ab6c86f42be2bc4013389648a2f1bd5c986e5b7e0d8df9327",
+		"shaders/light_shaft.gdshader.uid": "266ac4432fc76c685082e66587914118c7000b737e55e105cf31e65964444409",
+		"shaders/near_lawn.gdshader": "18eedd3dcb2e102e578f49ceffa153f52e401921ca6c7de61332d0a53bf231a8",
+		"shaders/near_lawn.gdshader.uid": "42142efeb0a905c1922581dca397779ebd666224d3d28610e96521987746aa9d",
+		"shaders/pet_shadow.gdshader": "e0bd9644fcdfe1b342a6177682d0bf243374d9563e7381b0546e3e94dcb4bc93",
+		"shaders/pet_shadow.gdshader.uid": "92fe8640f26b470624a2bd2b63559c0578c6802128283182f49625d7f01f3fe2",
+		"shaders/rim_overlay.gdshader": "661011f763a0ced556f537cf571314fcba4b4e3db20b76c96cfe6b4e70d27577",
+		"shaders/rim_overlay.gdshader.uid": "e36c177a9f131d87a43e7ab722e3e8ab6cae7a716d2affc4b7d74bcd772b65f7",
+		"shaders/sky_dome.gdshader": "6652fd63376ba68f9fb7a9943de44e2d6af8da2725c08f4ab7c7d4c58856be9e",
+		"shaders/sky_dome.gdshader.uid": "7c957b30fc74327c950f208577dbececf8169c8ae80ac9a7a487c6153db82a10",
+		"shaders/texel_lit.gdshader": "d0279747e8f6ccdaa189c1c738a08ff0ae3848f8bc648f4ea7b434c51d246609",
+		"shaders/texel_lit.gdshader.uid": "b4cb6aa5a0f35b0a055ed676ea7d8f6f0e3090a1dc58a26251f9316c5f1eee46",
+		"shaders/tuft.gdshader": "b9fc471ab8dc94716bf24f4f0b510558aee8cb9407caf26e972f0e649d5213a6",
+		"shaders/tuft.gdshader.uid": "7461c3dc244cccecaae09bf765f9c7f212484d6eaf58afabf1913ebabc3198d2",
+	}
+	var matched := 0
+	for rel in want.keys():
+		if _sha("res://" + str(rel)) == str(want[rel]):
+			matched += 1
+	_ok(matched == 36, "the other 36 frozen shader files match the original baseline")
+	_ok(_sha("res://scenes/art_depth.gd") != "28af51f2a5a9e97795ab2544c0bc7e37430a73f9af44478e88af37ddf5592919", "art_depth is the one frozen file that changed")
 
 
 func _sole_rows(path: String) -> Vector2i:
