@@ -736,6 +736,8 @@ func _setup_pet() -> void:
 	spr.double_sided = true
 	spr.centered = true
 	spr.position = Vector3(0, PET_CENTER_Y, 0)
+	# Quad only. Walk root, targets, and the 54-unit framing box stay at y=29.
+	spr.offset = Vector2(0, WalkClip.GROUNDED_OFFSET_Y)
 	spr.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	add_child(spr)
 	_pet = spr
@@ -1902,6 +1904,29 @@ func walk_clip_state() -> Dictionary:
 	got["tex_w"] = tex.get_width() if tex else 0
 	got["tex_h"] = tex.get_height() if tex else 0
 	return got
+
+
+func set_foot_visual_anchor(grounded: bool) -> void:
+	# Comparison plate only. grounded=false is the old quad center at the node.
+	if _pet == null:
+		return
+	_pet.offset = Vector2(0, WalkClip.GROUNDED_OFFSET_Y if grounded else 0.0)
+	_pet.position.y = PET_CENTER_Y
+
+
+func foot_anchor_state() -> Dictionary:
+	var oy := 0.0 if _pet == null else _pet.offset.y
+	var ny := PET_CENTER_Y if _pet == null else _pet.position.y
+	return {
+		"node_y": ny,
+		"offset_y": oy,
+		"node_xz": Vector2(_pet.position.x, _pet.position.z) if _pet else Vector2.ZERO,
+		"sole_boundary_y": WalkClip.sole_boundary_world_y(ny, oy),
+		"row61_center_y": WalkClip.row_center_world_y(ny, oy, 61),
+		"row62_center_y": WalkClip.row_center_world_y(ny, oy, 62),
+		"row62_top_y": WalkClip.row_edge_world_y(ny, oy, 62),
+		"row62_bottom_y": WalkClip.row_edge_world_y(ny, oy, 63),
+	}
 
 
 func walk_clip_rebase() -> void:

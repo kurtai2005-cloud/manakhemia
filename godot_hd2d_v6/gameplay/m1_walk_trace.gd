@@ -1,4 +1,6 @@
 extends RefCounted
+
+const WalkClip := preload("res://gameplay/m1_walk_clip.gd")
 ## Evidence fixture for the r4 walk candidate. Not art acceptance.
 ## Does not change speeds, camera policy, or normal tap-return.
 ## A ground tap while follow is on still leaves follow and does not walk.
@@ -52,6 +54,8 @@ static var _movie_judged := false
 static var _threshold := 70.0
 static var _anchor := Vector2.ZERO
 static var _settle_next := "follow48"
+static var _ab_done := false
+static var _ab_stage := "old"
 
 
 static func fixture(care: Node) -> void:
@@ -115,6 +119,8 @@ static func tick(care: Node, dt: float) -> void:
 			_tick_stop(care)
 		"follow_wait":
 			_tick_follow_wait(care)
+		"anchor_ab":
+			_tick_anchor_ab(care)
 		"rate20":
 			_tick_rate20(care, dt, moved)
 		_:
@@ -291,13 +297,18 @@ static func _tick_follow_wait(care: Node) -> void:
 			return
 	if Engine.get_frames_drawn() <= _stop_drawn:
 		return
-	roam.set_care_hold(false)
 	print("TRACE t=", snapped(_t, 0.01), " kind=follow_settled next=", _settle_next, " frac=", st.get("frac", 0), " need=", st.get("need", 0), " dist=", st.get("dist", 0), " no_ground_tap=true ", _frame_tag())
 	_log_sizes(care, "follow_settled")
 	if _settle_next == "rate20":
+		roam.set_care_hold(false)
 		_start_rate20(care)
-	else:
-		_arm_route(care, "follow48", 48.0)
+		return
+	if not _ab_done:
+		_ab_done = true
+		_begin_anchor_plate(care, false)
+		return
+	roam.set_care_hold(false)
+	_arm_route(care, "follow48", 48.0)
 
 
 static func _tick_rate20(care: Node, dt: float, moved: float) -> void:
@@ -375,6 +386,57 @@ static func _begin_stop(care: Node, next: String) -> void:
 	roam._stash = null
 	care.host.set("_walk_target", null)
 	print("TRACE t=", snapped(_t, 0.01), " kind=stop_begin clip=", str(st.get("clip", "")), " facing=", str(st.get("facing", "")), " flip=", bool(st.get("flip_h", true)), " ", _frame_tag())
+
+
+static func _begin_anchor_plate(care: Node, grounded: bool) -> void:
+	care.host.call("set_foot_visual_anchor", grounded)
+	_ab_stage = "grounded" if grounded else "old"
+	_stage = "hold"
+	_mark = _t
+	_phase = "anchor_ab"
+	var label := "grounded_offset_y2_sole_boundary_y0" if grounded else "old_node_y29_offset0"
+	print("TRACE t=", snapped(_t, 0.01), " kind=anchor_begin source=", label, " ", _anchor_line(care))
+
+
+static func _tick_anchor_ab(care: Node) -> void:
+	var roam = care.host.get("_roam")
+	roam.set_care_hold(true)
+	if care.host.get("_walk_target") != null:
+		_fail("anchor plate armed a walk")
+		return
+	var got: Dictionary = care.host.call("foot_anchor_state")
+	if absf(float(got.get("node_y", -1.0)) - 29.0) > 0.001:
+		_fail("anchor plate moved the walk root")
+		return
+	if _stage == "gap":
+		if Engine.get_frames_drawn() <= _stop_drawn:
+			return
+		print("TRACE t=", snapped(_t, 0.01), " kind=anchor_gap source=", _ab_stage, " rendered_after_end=true ", _frame_tag())
+		if _ab_stage == "old":
+			_begin_anchor_plate(care, true)
+		else:
+			roam.set_care_hold(false)
+			_arm_route(care, "follow48", 48.0)
+		return
+	if _t < _mark + STOP_SEC:
+		return
+	_stop_drawn = Engine.get_frames_drawn()
+	_stage = "gap"
+	print("TRACE t=", snapped(_t, 0.01), " kind=anchor_end held_sec=", snapped(_t - _mark, 0.01), " source=", _ab_stage, " select_png_index=", _stop_drawn, " ", _anchor_line(care), " ", _frame_tag())
+
+
+static func _anchor_line(care: Node) -> String:
+	var got: Dictionary = care.host.call("foot_anchor_state")
+	var oy := float(got.get("offset_y", 0.0))
+	var sole := float(got.get("sole_boundary_y", 0.0))
+	# Same shear art_depth uses. It reads node y, not the quad offset, so Low's fake shadow does not follow this anchor.
+	var shift := Vector3(0.645, 0.0, 0.453) / 0.616 * oy
+	return "node_y=%.3f offset_y=%.3f sole_boundary_y=%.3f row61_center_y=%.3f row62_center_y=%.3f row62_span_y=%.3f..%.3f low_fake_shadow_shift_wu=%.3f art_depth_unchanged=true" % [
+		float(got.get("node_y", 0.0)), oy, sole,
+		float(got.get("row61_center_y", 0.0)), float(got.get("row62_center_y", 0.0)),
+		float(got.get("row62_bottom_y", 0.0)), float(got.get("row62_top_y", 0.0)),
+		Vector2(shift.x, shift.z).length(),
+	]
 
 
 static func _arm_route(care: Node, leg: String, speed: float) -> void:
@@ -480,14 +542,8 @@ static func _visible(care: Node) -> bool:
 	var vp: Vector2 = care.call("_viewport_size")
 	var head := pet.global_position + Vector3(0, 27, 0)
 	var ground := Vector3(pet.global_position.x, 0.0, pet.global_position.z)
-	var tex_h := 64.0
-	var px := 1.0
-	var st: Dictionary = care.host.call("walk_clip_state")
-	if float(st.get("tex_h", 0)) > 0.0:
-		tex_h = float(st.get("tex_h"))
-	if float(st.get("pixel_size", 0)) > 0.0:
-		px = float(st.get("pixel_size"))
-	var sole := Vector3(pet.global_position.x, pet.global_position.y - tex_h * px * 0.5, pet.global_position.z)
+	var anchor: Dictionary = care.host.call("foot_anchor_state")
+	var sole := Vector3(pet.global_position.x, float(anchor.get("sole_boundary_y", 0.0)), pet.global_position.z)
 	if not _point_in(cam, vp, head) or not _point_in(cam, vp, ground) or not _point_in(cam, vp, sole):
 		_fail("head or feet left the visible rect during " + _leg_name)
 		return false
@@ -618,8 +674,8 @@ static func _contract(care: Node) -> bool:
 		_fail("pet y changed")
 		return false
 	var off: Vector2 = st.get("offset", Vector2.INF)
-	if off.length() > 0.001:
-		_fail("a pivot offset was introduced")
+	if absf(off.x) > 0.001 or (absf(off.y) > 0.001 and absf(off.y - WalkClip.GROUNDED_OFFSET_Y) > 0.001):
+		_fail("sprite offset is not the old plate or the grounded sole anchor")
 		return false
 	if int(st.get("tex_w", 0)) != 64 or int(st.get("tex_h", 0)) != 64:
 		_fail("frame is not 64")

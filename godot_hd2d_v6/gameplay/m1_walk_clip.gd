@@ -12,6 +12,12 @@ extends RefCounted
 const FRAME_COUNT := 6
 const STRIDE_WU := 12.0
 const WU_PER_FRAME := 2.0
+const FRAME_PX := 64
+## Image boundary after the last opaque row. Row 62 occupies boundaries 62..63.
+## Row 63 is empty on every r4 frame. 0 is the top edge.
+const SOLE_BOTTOM_BOUNDARY := 63
+## Node stays at y=29. This pixel offset lifts only the quad so boundary 63 is at world Y=0.
+const GROUNDED_OFFSET_Y := 2.0
 const FACINGS: PackedStringArray = ["front", "back", "side"]
 const ROOT := "res://art/pet/r4/"
 
@@ -66,6 +72,19 @@ func state() -> Dictionary:
 		"z_lock": false,
 		"continuous_lock": false,
 	}
+
+
+static func sole_boundary_world_y(node_y: float, offset_y: float) -> float:
+	# Godot 4.7.2 SpriteBase3D, axis Z, centered: local Y = offset.y + frame/2 - image_boundary.
+	return node_y + offset_y + float(FRAME_PX) * 0.5 - float(SOLE_BOTTOM_BOUNDARY)
+
+
+static func row_center_world_y(node_y: float, offset_y: float, row: int) -> float:
+	return node_y + offset_y + float(FRAME_PX) * 0.5 - (float(row) + 0.5)
+
+
+static func row_edge_world_y(node_y: float, offset_y: float, boundary: int) -> float:
+	return node_y + offset_y + float(FRAME_PX) * 0.5 - float(boundary)
 
 
 static func frame_paths() -> PackedStringArray:

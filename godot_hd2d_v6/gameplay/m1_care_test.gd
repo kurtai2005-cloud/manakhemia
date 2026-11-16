@@ -28,6 +28,7 @@ func _run() -> void:
 	_test_roam()
 	_test_poop_marker()
 	_test_walk_clip()
+	_test_foot_ground()
 	if fails == 0:
 		print("m1_care_test PASS")
 		quit(0)
@@ -469,6 +470,58 @@ func _test_walk_clip() -> void:
 	_ok(_sha("res://art/pet/pet_tuanrong_radiant_idle_01.png") == str(want["pet_tuanrong_radiant_front_idle_01.png"]), "front idle matches the previous single idle byte for byte")
 	_ok(_sha("res://art/pet/r4/pet_tuanrong_radiant_side_idle_01.png") != _sha("res://art/pet/r4/pet_tuanrong_radiant_front_idle_01.png"), "side idle is not the front idle")
 	_ok(bool(clip.state().get("continuous_lock", true)) == false, "the clip does not claim a continuous foot lock")
+
+
+func _test_foot_ground() -> void:
+	var node_y := 29.0
+	_ok(is_equal_approx(WalkClip.row_center_world_y(node_y, 0.0, 61), -0.5), "row 61 center is y -0.5 on the old quad")
+	_ok(is_equal_approx(WalkClip.row_center_world_y(node_y, 0.0, 62), -1.5), "row 62 center is y -1.5 on the old quad")
+	_ok(is_equal_approx(WalkClip.sole_boundary_world_y(node_y, 0.0), -2.0), "the sole boundary is y -2 when the quad center is the node")
+	_ok(is_equal_approx(WalkClip.GROUNDED_OFFSET_Y, 2.0), "the visual lift is 2 pixels")
+	_ok(is_equal_approx(WalkClip.sole_boundary_world_y(node_y, WalkClip.GROUNDED_OFFSET_Y), 0.0), "the grounded offset puts the sole boundary on y 0")
+	_ok(is_equal_approx(WalkClip.row_edge_world_y(node_y, WalkClip.GROUNDED_OFFSET_Y, 62), 1.0), "grounded row 62 starts at y 1")
+	_ok(is_equal_approx(WalkClip.row_edge_world_y(node_y, WalkClip.GROUNDED_OFFSET_Y, 63), 0.0), "grounded row 62 ends at y 0")
+	_ok(is_equal_approx(WalkClip.row_center_world_y(node_y, WalkClip.GROUNDED_OFFSET_Y, 62), 0.5), "the grounded sole texel center is half a unit above the ground")
+	var cap = load("res://scenes/capture.gd")
+	_ok(is_equal_approx(float(cap.get_script_constant_map()["PET_CENTER_Y"]), 29.0), "the walk root stays at y 29")
+	var shear := Vector3(0.645, 0.0, 0.453) / 0.616 * WalkClip.GROUNDED_OFFSET_Y
+	var gap := Vector2(shear.x, shear.z).length()
+	_ok(gap > 2.5 and gap < 2.62, "the low fake shadow shear would miss a 2 unit visual lift")
+	var depth := FileAccess.get_file_as_string("res://scenes/art_depth.gd")
+	_ok(depth.find("var yc := pet.global_position.y") >= 0, "the low shadow still uses the node height")
+	_ok(depth.find("GROUNDED_OFFSET") < 0, "art_depth was not taught the visual offset")
+	var buried := 0
+	var clear := 0
+	for path in WalkClip.frame_paths():
+		var rows := _sole_rows(path)
+		if rows.x == 62:
+			buried += 1
+		if rows.y == 0:
+			clear += 1
+	_ok(buried == 21, "all 21 frames keep their opaque sole on row 62")
+	_ok(clear == 21, "row 63 stays empty on all 21 frames")
+
+
+func _sole_rows(path: String) -> Vector2i:
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return Vector2i(-1, -1)
+	var img := Image.new()
+	if img.load_png_from_buffer(f.get_buffer(f.get_length())) != OK:
+		f.close()
+		return Vector2i(-1, -1)
+	f.close()
+	var bottom := -1
+	for y in img.get_height():
+		for x in img.get_width():
+			if img.get_pixel(x, y).a > 0.0:
+				bottom = y
+				break
+	var row63 := 0.0
+	if img.get_height() > 63:
+		for x in img.get_width():
+			row63 = maxf(row63, img.get_pixel(x, 63).a)
+	return Vector2i(bottom, int(round(row63 * 255.0)))
 
 
 func _png_size(path: String) -> Vector2i:
