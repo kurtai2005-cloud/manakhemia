@@ -42,7 +42,24 @@ func _on_frame() -> void:
 			print("FAIL viewport ", vp.size if vp else "null")
 			quit(1)
 			return
+		if vp.render_target_update_mode != SubViewport.UPDATE_DISABLED:
+			print("FAIL child viewport is still redrawing")
+			quit(1)
+			return
+		if _main.get_node_or_null("Hd2dGardenView") != null:
+			print("FAIL root window is still copying the child texture")
+			quit(1)
+			return
 		var cam: Camera3D = _main.get("cam")
+		if cam == null or cam.get_parent() == vp:
+			print("FAIL root camera was moved into the child viewport")
+			quit(1)
+			return
+		var cottage := exterior.get_node_or_null("cottage") as Node3D
+		if cottage == null or cottage.get_world_3d() != cam.get_world_3d():
+			print("FAIL cottage is not in the root camera world")
+			quit(1)
+			return
 		var pos := cam.global_position if cam else Vector3.INF
 		if pos.distance_to(Vector3(12.0, 193.0, 207.8269)) > 1.0:
 			print("FAIL camera ", pos)

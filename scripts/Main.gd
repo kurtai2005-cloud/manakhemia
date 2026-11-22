@@ -39,6 +39,11 @@ var cam_mode := CamMode.OVERVIEW
 var follow_walker: Walker
 var play_frames := 0
 var play_inputs := 0
+var play_focus_events := 0
+var play_mouse_events := 0
+var _play_pulse_ms := 0
+var _play_last_ms := 0
+var _play_max_frame_ms := 0
 var family: FamilyDirector
 var _cam_dist := 580.0
 var _texel_px := 0.0
@@ -650,7 +655,16 @@ func _place_cam(dt: float) -> void:
 
 
 func _process(dt: float) -> void:
+	var now := Time.get_ticks_msec()
+	if _play_last_ms != 0:
+		var gap := now - _play_last_ms
+		if gap > _play_max_frame_ms:
+			_play_max_frame_ms = gap
+	_play_last_ms = now
 	play_frames += 1
+	if now - _play_pulse_ms >= 1000:
+		_play_pulse_ms = now
+		print("play pulse wall_ms=", now, " frames=", play_frames, " max_frame_ms=", _play_max_frame_ms, " inputs=", play_inputs, " focus=", play_focus_events, " mouse=", play_mouse_events, " display=", DisplayServer.get_name())
 	_place_cam(dt)
 	if HuntSystem:
 		HuntSystem.tick_watch(dt)
@@ -660,6 +674,13 @@ func _process(dt: float) -> void:
 	if WorkSystem:
 		WorkSystem.tick_watch(dt)
 		_sync_work_glow()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN or what == NOTIFICATION_WM_WINDOW_FOCUS_OUT or what == NOTIFICATION_APPLICATION_FOCUS_IN or what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		play_focus_events += 1
+	elif what == NOTIFICATION_WM_MOUSE_ENTER or what == NOTIFICATION_WM_MOUSE_EXIT:
+		play_mouse_events += 1
 
 
 func _unhandled_input(event: InputEvent) -> void:

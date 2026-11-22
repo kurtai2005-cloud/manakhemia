@@ -219,19 +219,23 @@ func grab_compare_image() -> Image:
 
 
 func present_on_window() -> void:
-	# Normal Main. Shows the existing 675 garden in the window.
-	# Does not pause the pet, does not read compare flags, does not change camera numbers.
-	if _compare_view == null:
+	# Normal Main. The 1080x2280 child viewport has already done the measure.
+	# Leave it disabled. Do not copy its texture onto the root window: that copy
+	# runs on the same thread as the window, and the Windows session stayed
+	# Not Responding while frames and this log kept moving.
+	# The root camera uses the opening transform already stored. Numbers are unchanged.
+	if _compare_view == null or root_main == null:
 		return
-	_compare_view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	_compare_view.size = Vector2i(1080, 2280)
+	_compare_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	_hide_root_scenery()
 	_use_exterior_environment()
 	_lock_play_camera()
 	_apply_opening_to_root_cam()
-	_open_compare_viewport()
-	_show_garden_rect()
-	print("hd2d garden mounted viewport=", _compare_view.size, " renderer=", RenderingServer.get_current_rendering_method())
+	var cam: Camera3D = root_main.get("cam")
+	if cam:
+		cam.current = true
+	var root_vp := root_main.get_viewport()
+	print("hd2d garden on root window viewport=", root_vp.size if root_vp else Vector2i.ZERO, " child=", _compare_view.size, " child_update=disabled renderer=", RenderingServer.get_current_rendering_method())
 
 
 func apply_same_view() -> void:
