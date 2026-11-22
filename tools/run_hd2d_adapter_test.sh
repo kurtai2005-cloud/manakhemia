@@ -12,7 +12,14 @@ cat > "$CFG" << EOF
 config/use_custom_user_dir=true
 config/custom_user_dir_name="$PROFILE"
 EOF
-"$ROOT/tools/stage_hd2d_assets.sh"
+if command -v python3 >/dev/null 2>&1; then
+  python3 "$ROOT/tools/stage_hd2d_assets.py"
+elif command -v py >/dev/null 2>&1; then
+  py -3 "$ROOT/tools/stage_hd2d_assets.py"
+else
+  echo "run_hd2d_adapter_test: python3 is required to copy the 675 stage" >&2
+  exit 1
+fi
 STAGE_TEX="$ROOT/hd2d_stage/pet/r4/pet_tuanrong_radiant_side_idle_01.png.import"
 STAGE_CTEX=""
 if [[ -f "$STAGE_TEX" ]]; then
