@@ -1,0 +1,112 @@
+extends "res://scenes/capture.gd"
+## Copied into a temporary 675 project by tools/run_hd2d_mobile_compare.sh.
+## Not part of the frozen tree. Same visual init and step as the root host.
+## Does not call capture._ready, _process, _tick_play, _tick_camera, or _add_m1_care.
+
+var frame_index := 0
+var follow_camera_steps := 0
+var _fixed := false
+
+
+func _ready() -> void:
+	_apply_measure_viewport()
+	_mode = _resolve_mode()
+	var shafts := OS.get_environment("HD2D_SHAFTS").to_lower()
+	if shafts in ["vol", "cards", "both"]:
+		_shaft_style = shafts
+	_capturing = false
+	_dev_on = false
+	_clear_android_flag_secure()
+	if OS.get_environment("HD2D_GRADE").to_lower() in ["off", "0", "old"]:
+		_grade_tweak = false
+	_build_scene()
+	_configure_dof_quality()
+	_place_pet_shot()
+	if OS.get_environment("HD2D_COMPARE_FIXED") == "1":
+		begin_fixed_steps()
+
+
+func _process(_dt: float) -> void:
+	pass
+
+
+func _unhandled_input(_event: InputEvent) -> void:
+	pass
+
+
+func begin_fixed_steps() -> void:
+	_fixed = true
+	var depth := get_node_or_null("ArtDepth")
+	if depth:
+		depth.set_process(false)
+	var bump := get_node_or_null("PropBump")
+	if bump:
+		bump.set_process(false)
+
+
+func step_visual(dt: float) -> void:
+	frame_index += 1
+	var bump := get_node_or_null("PropBump")
+	if bump and bump.has_method("tick"):
+		bump.tick(dt)
+	var depth := get_node_or_null("ArtDepth")
+	if depth == null:
+		return
+	if OS.get_environment("HD2D_COMPARE_FULL") == "1":
+		depth._process(dt)
+		follow_camera_steps += 1
+		return
+	var night := str(_mode) == "night"
+	depth.call("_dynamics", night, dt)
+	depth.call("_low_fake_shadow", night)
+
+
+func comparison_state() -> Dictionary:
+	var depth := get_node_or_null("ArtDepth")
+	var cam: Camera3D = _camera
+	var visual := _pet as Sprite3D
+	var cloud_t := float(depth.get("_t")) if depth else 0.0
+	var lag := Vector3.ZERO
+	if depth and depth.get("_pet_lag") is Vector3:
+		lag = depth.get("_pet_lag")
+	var origin := Vector3.ZERO
+	var fov := 0.0
+	var keep := 0
+	var basis := Basis.IDENTITY
+	if cam:
+		origin = cam.global_position
+		fov = cam.fov
+		keep = cam.keep_aspect
+		basis = cam.global_transform.basis
+	var vp := get_viewport().get_visible_rect().size if get_viewport() else Vector2.ZERO
+	var visual_at := visual.global_position if visual else Vector3.ZERO
+	var feet := Vector3(visual_at.x, 0.0, visual_at.z) if visual else Vector3.ZERO
+	return {
+		"protocol": "hd2d_same_view_v2",
+		"side": "pilot_standalone",
+		"viewport_requested": [1080, 2280],
+		"viewport_actual": [int(vp.x), int(vp.y)],
+		"aspect": "19:9",
+		"mode": str(_mode),
+		"steps": frame_index,
+		"fixed_dt": 1.0 / 60.0,
+		"follow_camera_steps": follow_camera_steps,
+		"tick_camera_called": false,
+		"tick_play_called": false,
+		"care_present": get_node_or_null("M1Care") != null,
+		"camera_set_once": true,
+		"camera_overwritten_each_step": false,
+		"camera_origin": [origin.x, origin.y, origin.z],
+		"camera_basis": [basis.x.x, basis.x.y, basis.x.z, basis.y.x, basis.y.y, basis.y.z, basis.z.x, basis.z.y, basis.z.z],
+		"camera_fov": fov,
+		"camera_keep_aspect": keep,
+		"feet_global": [feet.x, feet.y, feet.z],
+		"visual_global": [visual_at.x, visual_at.y, visual_at.z],
+		"visual_offset_y": visual.offset.y if visual else 0.0,
+		"visual_pixel_size": visual.pixel_size if visual else 0.0,
+		"cloud_t": cloud_t,
+		"pet_lag": [lag.x, lag.y, lag.z],
+		"renderer_actual": RenderingServer.get_current_rendering_method(),
+		"mobile_acceptance": false,
+		"pixel_compared": false,
+	}

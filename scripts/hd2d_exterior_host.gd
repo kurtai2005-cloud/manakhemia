@@ -23,12 +23,15 @@ var opening_far := 4000.0
 var opening_keep := Camera3D.KEEP_WIDTH
 var opening_attrs: CameraAttributesPractical
 var frame_index := 0
+var follow_camera_steps := 0
 var _fixed := false
 var _same_view := false
 var _hidden: Array = []
 var _env_backup: Environment
 var _lock_prev := false
 var _have_lock := false
+var _compare_view: SubViewport
+var _cam_parent: Node
 
 
 func bind_root(main: Node3D, walker: Node3D) -> void:
@@ -78,20 +81,102 @@ func begin_fixed_steps() -> void:
 
 
 func step_visual(dt: float) -> void:
-	# Fixed steps call the original cloud, lag, and shadow updates.
-	# They do not call art_depth._process, whose _follow_camera reface does not
-	# finish on this software-GL box. Engine-driven play still uses that _process.
+	# One matched step. The camera is not written again here.
+	# HD2D_COMPARE_FULL=1 runs art_depth._process, including _follow_camera.
+	# Without that flag, only the cloud, lag, and shadow calls run. That shorter
+	# path is not a same-view frame.
 	frame_index += 1
-	if _same_view:
-		_apply_opening_to_root_cam()
 	_tick_bump(dt)
 	var depth := get_node_or_null("ArtDepth")
-	if depth:
-		var night := str(_mode) == "night"
-		depth.call("_dynamics", night, dt)
-		depth.call("_low_fake_shadow", night)
-	if _same_view:
-		_apply_opening_to_root_cam()
+	if depth == null:
+		return
+	if OS.get_environment("HD2D_COMPARE_FULL") == "1":
+		depth._process(dt)
+		follow_camera_steps += 1
+		return
+	var night := str(_mode) == "night"
+	depth.call("_dynamics", night, dt)
+	depth.call("_low_fake_shadow", night)
+
+
+func comparison_state() -> Dictionary:
+	var depth := get_node_or_null("ArtDepth")
+	var cam: Camera3D = _camera
+	var visual := _pet as Sprite3D
+	var cloud_t := float(depth.get("_t")) if depth else 0.0
+	var lag := Vector3.ZERO
+	if depth and depth.get("_pet_lag") is Vector3:
+		lag = depth.get("_pet_lag")
+	var origin := Vector3.ZERO
+	var fov := 0.0
+	var keep := 0
+	var basis := Basis.IDENTITY
+	if cam:
+		origin = cam.global_position
+		fov = cam.fov
+		keep = cam.keep_aspect
+		basis = cam.global_transform.basis
+	var vp := Vector2(_compare_view.size) if _compare_view else (get_viewport().get_visible_rect().size if get_viewport() else Vector2.ZERO)
+	var visual_at := visual.global_position if visual else Vector3.ZERO
+	var feet := root_walker.global_position if root_walker else Vector3.ZERO
+	return {
+		"protocol": "hd2d_same_view_v2",
+		"side": "root_presentation",
+		"viewport_requested": [1080, 2280],
+		"viewport_actual": [int(vp.x), int(vp.y)],
+		"aspect": "19:9",
+		"mode": str(_mode),
+		"steps": frame_index,
+		"fixed_dt": 1.0 / 60.0,
+		"follow_camera_steps": follow_camera_steps,
+		"tick_camera_called": false,
+		"tick_play_called": false,
+		"care_present": get_node_or_null("M1Care") != null,
+		"camera_set_once": true,
+		"camera_overwritten_each_step": false,
+		"camera_origin": [origin.x, origin.y, origin.z],
+		"camera_basis": [basis.x.x, basis.x.y, basis.x.z, basis.y.x, basis.y.y, basis.y.z, basis.z.x, basis.z.y, basis.z.z],
+		"camera_fov": fov,
+		"camera_keep_aspect": keep,
+		"feet_global": [feet.x, feet.y, feet.z],
+		"visual_global": [visual_at.x, visual_at.y, visual_at.z],
+		"visual_offset_y": visual.offset.y if visual else 0.0,
+		"visual_pixel_size": visual.pixel_size if visual else 0.0,
+		"cloud_t": cloud_t,
+		"pet_lag": [lag.x, lag.y, lag.z],
+		"renderer_actual": RenderingServer.get_current_rendering_method(),
+		"mobile_acceptance": false,
+		"render_target": "subviewport_1080x2280" if _compare_view else "window",
+		"ui_viewport_unchanged": [390, 844],
+		"pixel_compared": false,
+	}
+
+
+func _open_compare_viewport() -> void:
+	# The root project window stays 390x844 for H1. The compare frame is a
+	# 1080x2280 subviewport in the same world, using the opening camera once.
+	if _compare_view or root_main == null:
+		return
+	_compare_view = SubViewport.new()
+	_compare_view.name = "Hd2dCompareViewport"
+	_compare_view.size = Vector2i(1080, 2280)
+	_compare_view.own_world_3d = false
+	_compare_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	root_main.add_child(_compare_view)
+	var cam: Camera3D = root_main.get("cam")
+	if cam == null:
+		return
+	_cam_parent = cam.get_parent()
+	cam.reparent(_compare_view)
+	cam.global_transform = opening_transform
+	cam.fov = opening_fov
+	cam.near = opening_near
+	cam.far = opening_far
+	cam.keep_aspect = opening_keep
+	if opening_attrs:
+		cam.attributes = opening_attrs
+	cam.current = true
+	_camera = cam
 
 
 func apply_same_view() -> void:
@@ -123,10 +208,18 @@ func apply_same_view() -> void:
 				_hidden.append({"node": child, "visible": child.visible})
 				child.visible = false
 	_apply_opening_to_root_cam()
+	_open_compare_viewport()
 
 
 func restore_root_view() -> void:
 	_same_view = false
+	var cam: Camera3D = root_main.get("cam") if root_main else null
+	if cam and _cam_parent and is_instance_valid(_cam_parent):
+		cam.reparent(_cam_parent)
+	_cam_parent = null
+	if _compare_view and is_instance_valid(_compare_view):
+		_compare_view.queue_free()
+	_compare_view = null
 	for item in _hidden:
 		var node: Node = item["node"]
 		if is_instance_valid(node):

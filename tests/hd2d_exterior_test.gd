@@ -132,6 +132,8 @@ func _provenance() -> void:
 	var host := FileAccess.get_file_as_string("res://scripts/hd2d_exterior_host.gd")
 	_ok(host.find("_add_m1_care(") < 0 or host.find("Does not call _add_m1_care") >= 0, "host does not invoke pilot care")
 	_ok(host.find("func _process") >= 0 and host.find("_tick_play(") < 0, "host process does not tick the pilot walk")
+	_ok(host.find("depth._process(dt)") >= 0, "full compare step includes art_depth._process")
+	_ok(host.find("camera_overwritten_each_step") >= 0, "compare state records that the camera is not rewritten each step")
 
 
 func _project_settings() -> void:

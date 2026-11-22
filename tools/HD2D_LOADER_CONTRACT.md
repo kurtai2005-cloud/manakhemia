@@ -105,11 +105,8 @@ The root phone line is `rendering_method.mobile="mobile"`. Desktop stays `gl_com
 
 This is not the whole game and not Mobile acceptance. The interior pack stays `"locked": false` and is not read. The official exterior anchor stays unset. The off-mesh candidate, the on-mesh goal, and the walked stop stay three different positions.
 
-Same-view commands:
+Same-view command, on a machine with the Mobile renderer. Portrait is 1080×2280 (19:9), not 1080×1920. Both processes use `--rendering-method mobile` and the same fixed step, including `art_depth._process` / `_follow_camera`. Neither side calls `_tick_camera`. A headless GL run is engineering only and is not a pixel result.
 
 ```
-tools/run_hd2d_same_view.sh
-HD2D_MODE=low HD2D_VP=1080x1920 HD2D_OUT=<empty-dir> godot --headless --path godot_hd2d_v6 --rendering-method gl_compatibility
+HD2D_COMPARE_OUT=<empty-dir> tools/run_hd2d_mobile_compare.sh
 ```
-
-The pilot command is the accepted scene and quits at its own frame 20. The root command uses the opening camera and 20 steps at dt=1/60. Do not treat a software-GL image as phone acceptance.

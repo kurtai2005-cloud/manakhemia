@@ -1,0 +1,51 @@
+extends SceneTree
+
+var _node: Node
+var _wait := 0
+
+func _initialize() -> void:
+	root.size = Vector2i(1080, 2280)
+	var udir := OS.get_user_data_dir()
+	print("pilot_compare user_dir=", udir)
+	if udir.find("vc27_root_adapter") < 0:
+		print("FAIL user dir is not an isolated adapter profile")
+		quit(2)
+		return
+	var Host := load("res://hd2d_pilot_compare_host.gd")
+	_node = Host.new()
+	root.add_child(_node)
+	process_frame.connect(_tick)
+
+
+func _tick() -> void:
+	if _node.get("_camera") == null:
+		_wait += 1
+		if _wait > 180:
+			print("FAIL pilot visual init did not finish")
+			quit(1)
+		return
+	process_frame.disconnect(_tick)
+	var steps := int(OS.get_environment("HD2D_COMPARE_STEPS")) if OS.get_environment("HD2D_COMPARE_STEPS") != "" else 20
+	var dt := 1.0 / 60.0
+	for _i in steps:
+		_node.call("step_visual", dt)
+	var info: Dictionary = _node.call("comparison_state")
+	var out_dir := OS.get_environment("HD2D_COMPARE_OUT")
+	if out_dir == "":
+		out_dir = OS.get_user_data_dir().path_join("hd2d_compare")
+	DirAccess.make_dir_recursive_absolute(out_dir)
+	info["headless"] = OS.has_feature("headless")
+	var path := out_dir.path_join("pilot_standalone.json")
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(info, "\t"))
+	f.close()
+	print("pilot_compare json=", path, " renderer=", info.get("renderer_actual", ""), " follow=", info.get("follow_camera_steps", 0))
+	if OS.get_environment("HD2D_COMPARE_GRAB") == "1" and str(info.get("renderer_actual", "")) == "mobile":
+		var vp := _node.get_viewport()
+		var tex: ViewportTexture = vp.get_texture() if vp else null
+		if tex:
+			var img := tex.get_image()
+			if img:
+				img.save_png(out_dir.path_join("pilot_standalone.png"))
+				print("pilot_compare png written")
+	quit(0)
