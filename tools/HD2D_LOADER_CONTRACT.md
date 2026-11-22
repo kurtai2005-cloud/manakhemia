@@ -97,6 +97,19 @@ Fields the loader will accept, and what it will not invent:
 
 Care, offline catch-up, work, hunt, and family are unchanged root systems. The coat does not drive them. The interior room stays the existing placeholder. Renderer acceptance still needs a real Mobile run. This software-GL run is not that.
 
-## Full 675 exterior
+## Exterior candidate
 
-This contract does not mount `capture.tscn` or `art_depth.gd`. The live garden stays the current root garden. A reduced cottage, a second runtime, and an edit to `godot_hd2d_v6/project.godot` are not the next step. Any broader extraction stays unbuilt until its scope is agreed. The review notes name the path-remap copy that can keep the frozen source hashes, and the two root settings that copy cannot change: the Mobile renderer line, and the five shader globals.
+`tools/stage_hd2d_assets.py` also copies `textures/`, `shaders/`, `art/`, and `data/prop_bump.json` into `res://hd2d_stage/`, and writes path-prefix copies of `capture.gd`, `art_depth.gd`, `prop_bump.gd`, and the three gameplay scripts those files preload. `tools/hd2d_generated_provenance.txt` records frozen and generated hashes. The only script change in those copies is the `res://` prefix. `scripts/hd2d_exterior_host.gd` is the lifecycle binding, not a generated copy. It does not call pilot care, walk, or the pilot camera loop.
+
+The root phone line is `rendering_method.mobile="mobile"`. Desktop stays `gl_compatibility`. Rollback is `tools/HD2D_RENDERER_ROLLBACK.txt`. The five shader globals use the 675 names and initial values. `cloud_tex` is the staged cloud texture.
+
+This is not the whole game and not Mobile acceptance. The interior pack stays `"locked": false` and is not read. The official exterior anchor stays unset. The off-mesh candidate, the on-mesh goal, and the walked stop stay three different positions.
+
+Same-view commands:
+
+```
+tools/run_hd2d_same_view.sh
+HD2D_MODE=low HD2D_VP=1080x1920 HD2D_OUT=<empty-dir> godot --headless --path godot_hd2d_v6 --rendering-method gl_compatibility
+```
+
+The pilot command is the accepted scene and quits at its own frame 20. The root command uses the opening camera and 20 steps at dt=1/60. Do not treat a software-GL image as phone acceptance.

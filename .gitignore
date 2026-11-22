@@ -15,3 +15,9 @@ user://
 hd2d_stage/pet/r4/*.png
 hd2d_stage/meshes/*.glb
 hd2d_stage/meshes/cottage_*.png
+hd2d_stage/textures/
+hd2d_stage/shaders/
+hd2d_stage/art/
+hd2d_stage/data/
+hd2d_stage/scenes/
+hd2d_stage/gameplay/

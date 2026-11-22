@@ -48,12 +48,40 @@ pointing/emulate_touch_from_mouse=true
 [rendering]
 textures/vram_compression/import_etc2_astc=true
 renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+; Phone integration uses the 675 Mobile renderer. Desktop stays gl_compatibility
+; so H1, the root UI, and this software-GL box do not switch to Forward+.
+; Rollback: set rendering_method.mobile back to gl_compatibility.
+; See tools/HD2D_RENDERER_ROLLBACK.txt.
+renderer/rendering_method.mobile="mobile"
 textures/canvas_textures/default_texture_filter=0
 textures/default_filters/anisotropic_filter_level=2
 anti_aliasing/quality/msaa_3d=0
 lights_and_shadows/directional_shadow/size=1024
 environment/defaults/default_clear_color=Color(0.529, 0.741, 0.878, 1)
+
+[shader_globals]
+; Same five globals as godot_hd2d_v6/project.godot. cloud_tex is the staged
+; copy of textures/tiles/cloud_shadow.png, not a blank texture.
+pet_pos_ws={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+pet_lag_ws={
+"type": "vec3",
+"value": Vector3(0, -1000, 0)
+}
+cloud_tex={
+"type": "sampler2D",
+"value": "res://hd2d_stage/textures/tiles/cloud_shadow.png"
+}
+cloud_off={
+"type": "vec2",
+"value": Vector2(0, 0)
+}
+cloud_amt={
+"type": "float",
+"value": 0.22
+}
 
 [android]
 package/unique_name="hk.vizard.glimmer.fpet.godot"

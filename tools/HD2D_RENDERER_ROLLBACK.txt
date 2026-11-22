@@ -1,0 +1,11 @@
+Desktop renderer stays gl_compatibility. That is the H1 and software-GL path.
+
+Phone line, current integration:
+renderer/rendering_method.mobile="mobile"
+
+Phone line, rollback:
+renderer/rendering_method.mobile="gl_compatibility"
+
+The five shader globals in project.godot are the 675 names and initial values.
+Removing that [shader_globals] block is the rollback for those uniforms.
+cloud_tex points at res://hd2d_stage/textures/tiles/cloud_shadow.png.

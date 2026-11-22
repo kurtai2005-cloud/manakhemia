@@ -51,6 +51,7 @@ var _hunt_team: Array = []
 var in_hunt_view := false
 var interior_room: InteriorRoom
 var _hd2d_host: Node = null
+var _hd2d_exterior: Node = null
 var in_interior := false
 var _interior_lock_cam := false
 var _interior_guest: Walker
@@ -2028,6 +2029,32 @@ func enable_hd2d_presentation() -> Node:
 	_hd2d_host.call("setup", self, pet)
 	_hd2d_host.call("set_active", true)
 	return _hd2d_host
+
+
+func enable_hd2d_exterior() -> Node:
+	# Rollback: leave this uncalled. Does not replace Main, Sim, or the save.
+	if _hd2d_exterior != null and is_instance_valid(_hd2d_exterior):
+		return _hd2d_exterior
+	enable_hd2d_presentation()
+	var script := load("res://scripts/hd2d_exterior_host.gd") as GDScript
+	if script == null:
+		push_error("hd2d exterior host failed to load. Run tools/stage_hd2d_assets.py first.")
+		return null
+	var host: Node = script.new()
+	host.name = "Hd2dExterior"
+	if host.has_method("bind_root"):
+		host.call("bind_root", self, pet)
+	add_child(host)
+	_hd2d_exterior = host
+	return host
+
+
+func disable_hd2d_exterior() -> void:
+	if _hd2d_exterior != null and is_instance_valid(_hd2d_exterior):
+		if _hd2d_exterior.has_method("restore_root_view"):
+			_hd2d_exterior.call("restore_root_view")
+		_hd2d_exterior.queue_free()
+	_hd2d_exterior = null
 
 
 func cottage_door_world() -> Vector3:
