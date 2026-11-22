@@ -127,10 +127,14 @@ Head `61ae7968817149d4c9a9c4e63af1b248cbcec80f`, one headless Mobile run, after 
 
 The root frame is a 1080×2280 SubViewport. The H1 window stays 390×844. The pilot frame is the window of a temporary 675 project copy set to 1080×2280. The frozen tree is not edited. Those are different render targets at the same size, so a later grab can still differ.
 
-Windows, displayed Mobile, both processes, PNG required:
+Windows, displayed Mobile, both processes, PNG required. `Baseline675` is the art-only 675 tree the reviewer already has (`godot_hd2d_v6` plus its identity and stage files). It does not contain the game root. Pass both root archives as `-RootPack`. Support is `project.godot`, `scenes/Main.tscn`, the autoload scripts, addons, and the compare scripts. Assets are the unchanged `art/`, `art-pet/`, and `audio/` files. Neither archive invents a scene. `tools/hd2d_root_closure.sha256` is the hash list. A path marked `source_absent` (the H1 interior textures, including `door.png`) was already missing in the source tree and is not given a stub.
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File tools\run_hd2d_mobile_compare.ps1 -GodotExe <Godot.exe> -Python <python.exe> -Baseline675 <clean 67519344 checkout> -DeltaPath <this review zip> -OutputDir <empty dir>
+powershell -NoProfile -File tools\run_hd2d_mobile_compare.ps1 -GodotExe <Godot.exe> -Python <python.exe> -Baseline675 <art-only 675 tree> -RootPack <root-support.zip>,<root-assets.zip> -DeltaPath <this review zip> -OutputDir <empty dir>
 ```
+
+Prepare refuses to start Godot when `scenes/Main.tscn` or a root autoload from that closure is missing. An import log that cannot open the main scene, cannot create an autoload, or has a script parse error stops the run even when Godot's exit code is 0. The output directory must be missing or empty; a directory that already has files is left untouched.
 
 A missing, empty, undecodable, or wrong-size PNG fails the process. State JSON alone is not success. The two comparison processes are displayed. A separate `--import` pass only builds the asset cache and is not the picture.
+
+The four pilot `Parameter "material" is null` lines are RendererRD lookups (`material_casts_shadows`, `material_is_animated`, `material_get_instance_shader_parameters`, `material_update_dependency`) on one null material RID. The same calls show up at process teardown after a frame has already been drawn. They stay in the log. They are not a missing frozen texture and they are not a reason to retune art. A log that also contains a failed resource load is an import failure, not this teardown class.

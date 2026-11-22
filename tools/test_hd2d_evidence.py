@@ -237,5 +237,118 @@ class OutputEvidenceTests(unittest.TestCase):
         self.assertEqual((out / "root_presentation.png").read_bytes(), before)
 
 
+class RootClosureTests(unittest.TestCase):
+    def test_closure_names_the_real_main_scene(self) -> None:
+        required, absent = ev.read_closure()
+        self.assertIn("scenes/Main.tscn", required)
+        self.assertIn("scripts/autoload/GameData.gd", required)
+        self.assertIn("icon.png", required)
+        self.assertIn("art/garden3d/H1/interior/meshes/door.png", absent)
+        self.assertNotIn("export_presets.cfg", required)
+
+    def test_windows_import_log_is_fatal(self) -> None:
+        text = Path("/home/ubuntu/.cursor/projects/agent-repos-manakhemia/uploads/root.import.err_9153.log").read_text(encoding="utf-8")
+        report = ev.classify_godot_log(text, set(ev.read_closure()[0]))
+        self.assertTrue(report["fatal"])
+        self.assertTrue(any("Main.tscn" in line for line in report["fatal"]))
+        self.assertTrue(any("GameData.gd" in line for line in report["fatal"]))
+
+    def test_four_renderer_material_lines_are_teardown(self) -> None:
+        text = Path("/home/ubuntu/.cursor/projects/agent-repos-manakhemia/uploads/pilot.err_9863.log").read_text(encoding="utf-8")
+        report = ev.classify_godot_log(text, set(ev.read_closure()[0]))
+        self.assertEqual(len(report["material_null"]), 4)
+        self.assertEqual(report["material_null_class"], "lifetime_cleanup")
+        self.assertFalse(report["fatal"])
+        for name in ev.MATERIAL_NULL_FUNCS:
+            self.assertIn(name, text)
+
+    def test_known_absent_door_texture_is_not_an_import_stop(self) -> None:
+        text = "ERROR: Resource file not found: res://art/garden3d/H1/interior/meshes/door.png\n"
+        report = ev.classify_godot_log(text, set(ev.read_closure()[0]))
+        self.assertFalse(report["fatal"])
+
+    def test_art_only_baseline_fails_before_a_work_tree_is_written(self) -> None:
+        repo = Path("/agent/repos/manakhemia")
+        base = self._art_only(minimal=True)
+        delta = self.tmp / "delta.zip"
+        _zip(delta, _package({"tools/hd2d_delta_marker.txt": b"marker"}))
+        work = self.tmp / "work"
+        with self.assertRaises(SystemExit) as caught:
+            ev.prepare(base, delta, work, root_packs=[])
+        self.assertIn("scenes/Main.tscn", str(caught.exception.code))
+        self.assertFalse(work.exists())
+
+    def test_support_pack_without_assets_fails_before_write(self) -> None:
+        repo = Path("/agent/repos/manakhemia")
+        required, _absent = ev.read_closure()
+        support, _assets = ev.split_closure(required)
+        pack = self.tmp / "support.zip"
+        ev.build_support_zip(repo, pack, support)
+        base = self._art_only(minimal=True)
+        delta = self.tmp / "delta.zip"
+        _zip(delta, _package({"tools/hd2d_delta_marker.txt": b"marker"}))
+        work = self.tmp / "work"
+        with self.assertRaises(SystemExit) as caught:
+            ev.prepare(base, delta, work, root_packs=[pack])
+        self.assertIn("missing the root game files", str(caught.exception.code))
+        self.assertNotIn("scenes/Main.tscn", str(caught.exception.code))
+        self.assertFalse(work.exists())
+
+    def test_art_only_plus_both_packs_rebuilds_the_root(self) -> None:
+        repo = Path("/agent/repos/manakhemia")
+        required, _absent = ev.read_closure()
+        support, assets = ev.split_closure(required)
+        support_zip = self.tmp / "support.zip"
+        assets_zip = self.tmp / "assets.zip"
+        ev.build_support_zip(repo, support_zip, support)
+        ev.build_support_zip(repo, assets_zip, assets)
+        base = self._art_only(minimal=False)
+        preset = base / "export_presets.cfg"
+        preset.write_bytes(b"SECRET")
+        preset.chmod(0)
+        delta = self.tmp / "delta.zip"
+        _zip(delta, _package({"tools/hd2d_delta_marker.txt": b"marker"}))
+        work = self.tmp / "work"
+        pilot = self.tmp / "pilot"
+        try:
+            ev.prepare(base, delta, work, root_packs=[support_zip, assets_zip])
+            ev.make_pilot(work, pilot)
+        finally:
+            preset.chmod(stat.S_IRUSR | stat.S_IWUSR)
+        self.assertEqual((work / "scenes/Main.tscn").read_bytes(), (repo / "scenes/Main.tscn").read_bytes())
+        self.assertTrue((work / "scripts/autoload/SaveSystem.gd").is_file())
+        self.assertTrue((work / "addons/beehave/plugin.cfg").is_file())
+        self.assertTrue((work / "icon.png").is_file())
+        self.assertFalse((work / "export_presets.cfg").exists())
+        self.assertIn("viewport_height=2280", (pilot / "project.godot").read_text(encoding="utf-8"))
+        self.assertIn("viewport_height=1920", (base / "godot_hd2d_v6/project.godot").read_text(encoding="utf-8"))
+
+    def setUp(self) -> None:
+        self.tmp = Path(tempfile.mkdtemp(prefix="hd2d_root_"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(self.tmp, ignore_errors=True))
+
+    def _art_only(self, minimal: bool) -> Path:
+        repo = Path("/agent/repos/manakhemia")
+        base = self.tmp / "art_only"
+        base.mkdir()
+        names = []
+        for manifest in ("hd2d_baseline_67519344.sha256", "hd2d_stage_prerequisites.sha256"):
+            for _digest, rel in ev.read_manifest(repo / "tools" / manifest):
+                names.append(rel)
+        if not minimal:
+            source = repo / "godot_hd2d_v6"
+            for src in source.rglob("*"):
+                if not src.is_file() or src.is_symlink() or ev.skipped(src):
+                    continue
+                rel = "godot_hd2d_v6/" + src.relative_to(source).as_posix()
+                names.append(rel)
+        for rel in sorted(set(names)):
+            src = repo / rel
+            dest = base / rel
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            __import__("shutil").copyfile(src, dest)
+        return base
+
+
 if __name__ == "__main__":
     unittest.main()

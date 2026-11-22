@@ -5,8 +5,10 @@ param(
     [Parameter(Mandatory = $true)][string]$GodotExe,
     [Parameter(Mandatory = $true)][string]$Python,
     [Parameter(Mandatory = $true)][string]$Baseline675,
+    [Parameter(Mandatory = $true)][string[]]$RootPack,
     [Parameter(Mandatory = $true)][string]$DeltaPath,
     [Parameter(Mandatory = $true)][string]$OutputDir,
+    [string[]]$RootPackSha = @(),
     [string]$DeltaSha = ""
 )
 $ErrorActionPreference = 'Stop'
@@ -73,6 +75,20 @@ config/custom_user_dir_name="$Profile"
     [System.IO.File]::WriteAllText($cfg, ($cfgText -replace "(?<!`r)`n", "`r`n"), $utf8)
 }
 
+function Save-GodotStreams($Proc, $OutTask, $ErrTask, [string]$LogPath, [string]$ErrPath) {
+    try { [void]$Proc.WaitForExit(15000) } catch {}
+    foreach ($task in @($OutTask, $ErrTask)) {
+        try { [void]$task.Wait(15000) } catch {}
+    }
+    $utf8 = New-Object System.Text.UTF8Encoding $false
+    $outText = "stream was not readable after stop`r`n"
+    $errText = "stream was not readable after stop`r`n"
+    if ($OutTask.IsCompleted -and -not $OutTask.IsFaulted -and -not $OutTask.IsCanceled) { $outText = [string]$OutTask.Result }
+    if ($ErrTask.IsCompleted -and -not $ErrTask.IsFaulted -and -not $ErrTask.IsCanceled) { $errText = [string]$ErrTask.Result }
+    [System.IO.File]::WriteAllText($LogPath, $outText, $utf8)
+    [System.IO.File]::WriteAllText($ErrPath, $errText, $utf8)
+}
+
 function Import-Project([string]$Project, [string]$LogPath, [string]$ErrPath) {
     # Asset import only. This is not the displayed comparison and it does not grab.
     $utf8 = New-Object System.Text.UTF8Encoding $false
@@ -94,11 +110,10 @@ function Import-Project([string]$Project, [string]$LogPath, [string]$ErrPath) {
     $errTask = $proc.StandardError.ReadToEndAsync()
     if (-not $proc.WaitForExit(1200000)) {
         Stop-Owned $proc
+        Save-GodotStreams $proc $outTask $errTask $LogPath $ErrPath
         throw "Godot import timed out: $Project"
     }
-    $proc.WaitForExit()
-    [System.IO.File]::WriteAllText($LogPath, $outTask.Result, $utf8)
-    [System.IO.File]::WriteAllText($ErrPath, $errTask.Result, $utf8)
+    Save-GodotStreams $proc $outTask $errTask $LogPath $ErrPath
     if ($proc.ExitCode -ne 0) { throw "Godot import failed: $Project ($($proc.ExitCode))" }
 }
 
@@ -123,11 +138,10 @@ function Start-Godot([string]$Project, [string]$Script, [string]$LogPath, [strin
     $errTask = $proc.StandardError.ReadToEndAsync()
     if (-not $proc.WaitForExit(1200000)) {
         Stop-Owned $proc
+        Save-GodotStreams $proc $outTask $errTask $LogPath $ErrPath
         throw "Godot timed out: $Project"
     }
-    $proc.WaitForExit()
-    [System.IO.File]::WriteAllText($LogPath, $outTask.Result, $utf8)
-    [System.IO.File]::WriteAllText($ErrPath, $errTask.Result, $utf8)
+    Save-GodotStreams $proc $outTask $errTask $LogPath $ErrPath
     return $proc.ExitCode
 }
 
@@ -145,6 +159,12 @@ try {
         (Join-Path $PSScriptRoot 'hd2d_evidence.py'),
         'prepare', '--baseline', $Baseline675, '--delta', $DeltaPath, '--work', $work, '--pilot', $pilot
     )
+    for ($i = 0; $i -lt $RootPack.Count; $i++) {
+        $prepareArgs += @('--root', $RootPack[$i])
+        if ($i -lt $RootPackSha.Count -and -not [string]::IsNullOrWhiteSpace($RootPackSha[$i])) {
+            $prepareArgs += @('--root-sha', $RootPackSha[$i])
+        }
+    }
     if (-not [string]::IsNullOrWhiteSpace($DeltaSha)) { $prepareArgs += @('--delta-sha', $DeltaSha) }
     & $Python @prepareArgs
     if ($LASTEXITCODE -ne 0) { throw "prepare failed: $LASTEXITCODE" }
@@ -176,12 +196,25 @@ try {
     Import-Project $pilot (Join-Path $OutputDir 'pilot.import.log') (Join-Path $OutputDir 'pilot.import.err.log')
     Write-Override $work $rootProfile
     Import-Project $work (Join-Path $OutputDir 'root.import.log') (Join-Path $OutputDir 'root.import.err.log')
+    & $Python (Join-Path $PSScriptRoot 'hd2d_evidence.py') import-log --err (Join-Path $OutputDir 'root.import.err.log') --out (Join-Path $OutputDir 'result.json')
+    if ($LASTEXITCODE -ne 0) { throw "root import log has a fatal resource error" }
     $pilotCode = Start-Godot $pilot 'res://hd2d_pilot_compare_main.gd' (Join-Path $OutputDir 'pilot.log') (Join-Path $OutputDir 'pilot.err.log') $pilotProfile
     $rootCode = Start-Godot $work 'res://tests/hd2d_same_view.gd' (Join-Path $OutputDir 'root.log') (Join-Path $OutputDir 'root.err.log') $rootProfile
     & $Python (Join-Path $PSScriptRoot 'hd2d_evidence.py') check --out $OutputDir --launch (Join-Path $OutputDir 'launch.json')
     $check = $LASTEXITCODE
     if ($pilotCode -ne 0 -or $rootCode -ne 0 -or $check -ne 0) { exit 1 }
     exit 0
+}
+catch {
+    if ($outputAccepted) {
+        $resultPath = Join-Path $OutputDir 'result.json'
+        if (-not (Test-Path -LiteralPath $resultPath)) {
+            $reason = "$_".Trim()
+            $payload = @{ ok = $false; windows_gpu_proof = $false; reasons = @($reason) } | ConvertTo-Json
+            [System.IO.File]::WriteAllText($resultPath, $payload, (New-Object System.Text.UTF8Encoding $false))
+        }
+    }
+    throw
 }
 finally {
     foreach ($proc in $children) { Stop-Owned $proc }

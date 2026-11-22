@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import shutil
 import stat
 import struct
@@ -24,6 +25,18 @@ SKIP_FILES = {"export_presets.cfg", "export_credentials.cfg", "override.cfg"}
 SKIP_SUFFIXES = {".keystore", ".jks", ".apk", ".aab"}
 PNG_SIG = b"\x89PNG\r\n\x1a\n"
 MEMBER_NAME = "MEMBER_SHA256"
+CLOSURE_NAME = "hd2d_root_closure.sha256"
+RES_TOKEN = re.compile(r"res://([A-Za-z0-9_./%+\-@]+)")
+BINARY_SUFFIXES = {
+    ".png", ".jpg", ".jpeg", ".webp", ".glb", ".ogg", ".wav", ".mp3",
+    ".otf", ".ttf", ".aac",
+}
+MATERIAL_NULL_FUNCS = (
+    "material_casts_shadows",
+    "material_is_animated",
+    "material_get_instance_shader_parameters",
+    "material_update_dependency",
+)
 
 
 def sha256(path: Path) -> str:
@@ -115,6 +128,249 @@ def require_fresh_output(path: Path) -> None:
 def load_identity() -> dict[str, str]:
     ident = Path(__file__).with_name("hd2d_baseline_67519344.sha256")
     return {rel: digest for digest, rel in read_manifest(ident)}
+
+
+def closure_path() -> Path:
+    return Path(__file__).with_name(CLOSURE_NAME)
+
+
+def read_closure(path: Path | None = None) -> tuple[dict[str, str], list[str]]:
+    required: dict[str, str] = {}
+    absent: list[str] = []
+    for raw in (path or closure_path()).read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        kind, rest = line.split(None, 1)
+        if kind == "required":
+            digest, rel = rest.split(None, 1)
+            required[rel.replace("\\", "/")] = digest.lower()
+        elif kind == "source_absent":
+            absent.append(rest.replace("\\", "/"))
+        else:
+            raise SystemExit(f"bad closure line: {line}")
+    if "scenes/Main.tscn" not in required:
+        raise SystemExit("root closure is missing scenes/Main.tscn")
+    return required, absent
+
+
+def source_names(path: Path) -> set[str]:
+    """File names only. Secret names are skipped and their bytes are not read."""
+    names: set[str] = set()
+    if path.is_dir():
+        for src in path.rglob("*"):
+            if src.is_symlink() or not src.is_file() or skipped(src):
+                continue
+            names.add(src.relative_to(path).as_posix())
+        return names
+    if path.is_file() and path.suffix.lower() == ".zip":
+        with zipfile.ZipFile(path) as zf:
+            return set(_zip_file_names(zf)) - {MEMBER_NAME}
+    raise SystemExit(f"not a directory or zip: {path}")
+
+
+def assert_root_available(available: set[str], required: dict[str, str]) -> None:
+    missing = sorted(rel for rel in required if rel not in available)
+    if not missing:
+        return
+    first = [rel for rel in ("scenes/Main.tscn", "project.godot", "icon.png", "scripts/autoload/GameData.gd") if rel in missing]
+    preview = ", ".join(first + [rel for rel in missing if rel not in first][:8])
+    raise SystemExit(
+        "art-only baseline is missing the root game files required by project.godot "
+        f"({len(missing)}): {preview}"
+    )
+
+
+def _consider_file(repo: Path, rel: str, required: dict[str, str], queue: list[str]) -> None:
+    if rel in required or skipped(Path(rel)) or rel.startswith(("godot_hd2d_v6/", ".godot/")):
+        return
+    path = repo / rel
+    if path.is_symlink() or not path.is_file():
+        return
+    required[rel] = sha256(path)
+    queue.append(rel)
+    for suffix in (".import", ".uid"):
+        extra = rel + suffix
+        extra_path = repo / extra
+        if extra not in required and extra_path.is_file() and not extra_path.is_symlink() and not skipped(extra_path):
+            required[extra] = sha256(extra_path)
+
+
+def _consider_tree(repo: Path, prefix: str, required: dict[str, str], queue: list[str], seen_dirs: set[str]) -> None:
+    prefix = prefix.strip("/") + "/"
+    if prefix in seen_dirs or prefix.startswith(("godot_hd2d_v6/", ".godot/")):
+        return
+    seen_dirs.add(prefix)
+    base = repo / prefix
+    if not base.is_dir() or base.is_symlink():
+        return
+    for child in base.rglob("*"):
+        if not child.is_file() or child.is_symlink() or skipped(child):
+            continue
+        rel = child.relative_to(repo).as_posix()
+        _consider_file(repo, rel, required, queue)
+
+
+def collect_root_closure(repo: Path) -> tuple[dict[str, str], list[str]]:
+    """Real files reachable from the root project. Does not invent missing art."""
+    required: dict[str, str] = {}
+    absent: list[str] = []
+    queue: list[str] = []
+    seen_dirs: set[str] = set()
+
+    def consider(token: str) -> None:
+        rel = token.replace("\\", "/").split("::", 1)[0].strip()
+        if not rel or rel.startswith(("godot_hd2d_v6/", ".godot/", "uid:")):
+            return
+        if skipped(Path(rel)):
+            return
+        if "%" in rel or "*" in rel or rel.endswith("/"):
+            prefix = rel.split("%", 1)[0].split("*", 1)[0]
+            if not prefix.endswith("/"):
+                prefix = prefix.rsplit("/", 1)[0] + "/" if "/" in prefix else prefix
+            base = repo / prefix
+            if not base.exists():
+                absent.append(prefix)
+            else:
+                _consider_tree(repo, prefix, required, queue, seen_dirs)
+            return
+        path = repo / rel
+        if path.is_dir() and not path.is_symlink():
+            _consider_tree(repo, rel, required, queue, seen_dirs)
+            return
+        if path.is_file() and not path.is_symlink():
+            before = len(required)
+            _consider_file(repo, rel, required, queue)
+            if rel.startswith("addons/") and "/" in rel:
+                _consider_tree(repo, "/".join(rel.split("/")[:2]), required, queue, seen_dirs)
+            if len(required) != before or rel in required:
+                return
+        absent.append(rel)
+
+    seeds = [
+        "project.godot",
+        "icon.png",
+        "scenes/Main.tscn",
+        "tests/hd2d_same_view.gd",
+        "tools/stage_hd2d_assets.py",
+        "tools/hd2d_stage_prerequisites.sha256",
+        "tools/hd2d_pilot_compare_host.gd.txt",
+        "tools/hd2d_pilot_compare_main.gd.txt",
+        "scripts/hd2d_exterior_host.gd",
+        "scripts/hd2d_presentation.gd",
+        "scripts/hd2d_assets.gd",
+        "scripts/hd2d_door.gd",
+    ]
+    for rel in seeds:
+        consider(rel)
+    while queue:
+        rel = queue.pop()
+        path = repo / rel
+        if path.suffix.lower() in BINARY_SUFFIXES or skipped(path):
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        for match in RES_TOKEN.finditer(text):
+            consider(match.group(1))
+    return required, sorted(set(absent))
+
+
+def write_closure(repo: Path, dest: Path) -> None:
+    required, absent = collect_root_closure(repo)
+    lines = [
+        "# Root files the compare loads. Hashes are of the named source tree.",
+        "# required <sha256> <path>",
+        "# source_absent <path> is referenced and was not in that tree. No stub is added.",
+    ]
+    for rel in sorted(required):
+        lines.append(f"required {required[rel]} {rel}")
+    for rel in absent:
+        lines.append(f"source_absent {rel}")
+    dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def split_closure(required: dict[str, str]) -> tuple[dict[str, str], dict[str, str]]:
+    support: dict[str, str] = {}
+    assets: dict[str, str] = {}
+    for rel, digest in required.items():
+        if rel.startswith(("art/", "art-pet/", "audio/")):
+            assets[rel] = digest
+        else:
+            support[rel] = digest
+    return support, assets
+
+
+def build_support_zip(repo: Path, dest: Path, required: dict[str, str] | None = None) -> dict[str, bytes]:
+    if required is None:
+        required, _absent = read_closure()
+    members: dict[str, bytes] = {}
+    for rel, digest in sorted(required.items()):
+        path = repo / rel
+        if path.is_symlink() or not path.is_file() or skipped(path):
+            raise SystemExit(f"root support file is not a regular file: {rel}")
+        data = path.read_bytes()
+        got = hashlib.sha256(data).hexdigest()
+        if got != digest:
+            raise SystemExit(f"root support hash mismatch {rel}")
+        members[rel] = data
+    listed = [f"{hashlib.sha256(members[name]).hexdigest()}  {name}" for name in sorted(members)]
+    packed = dict(members)
+    packed[MEMBER_NAME] = ("\n".join(listed) + "\n").encode("utf-8")
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(dest, "w", compression=zipfile.ZIP_DEFLATED) as handle:
+        for name in sorted(packed):
+            handle.writestr(name, packed[name])
+    return packed
+
+
+def classify_godot_log(text: str, required: set[str] | None = None) -> dict:
+    """Separate import/parse failures from the known null-material teardown lines."""
+    required = required or set()
+    fatal: list[str] = []
+    material: list[str] = []
+    rows = [raw.strip() for raw in text.splitlines() if raw.strip()]
+    index = 0
+    while index < len(rows):
+        line = rows[index]
+        nxt = rows[index + 1] if index + 1 < len(rows) and rows[index + 1].startswith("at:") else ""
+        if nxt:
+            index += 1
+        blob = f"{line} {nxt}".strip()
+        index += 1
+        if "Parameter \"material\" is null" in blob and any(name in blob for name in MATERIAL_NULL_FUNCS):
+            material.append(blob)
+            continue
+        line = blob
+        path_match = RES_TOKEN.search(line)
+        rel = path_match.group(1) if path_match else ""
+        structural = any(token in line for token in (
+            "Failed to create an autoload",
+            "Parse Error",
+            "SCRIPT ERROR",
+            "Failed to load script",
+            "Cannot open file",
+        ))
+        resource = "Failed loading resource" in line or "Attempt to open script" in line or "Resource file not found" in line
+        if structural or (resource and (not rel or rel in required)):
+            fatal.append(line)
+    material_class = "none"
+    if material and not fatal:
+        material_class = "lifetime_cleanup"
+    elif material:
+        material_class = "alongside_fatal"
+    return {
+        "fatal": fatal,
+        "material_null": material,
+        "material_null_class": material_class,
+        "material_null_note": (
+            "Four RendererRD material RID lookups returned null once each. "
+            "The same calls appear at process teardown after a drawn frame. "
+            "They are not a Failed-loading-resource for a frozen texture, and they are not removed from the log."
+            if material_class == "lifetime_cleanup" else ""
+        ),
+    }
 
 
 def parse_manifest_text(text: str) -> list[tuple[str, str]]:
@@ -258,16 +514,46 @@ def apply_delta(delta: Path, work: Path, names: list[str] | None = None, expecte
         shutil.copyfile(src, dest)
 
 
-def prepare(baseline: Path, delta: Path, work: Path, expected_sha: str | None = None) -> None:
+def prepare(
+    baseline: Path,
+    delta: Path,
+    work: Path,
+    expected_sha: str | None = None,
+    root_packs: list[Path] | None = None,
+    root_shas: list[str] | None = None,
+    closure: Path | None = None,
+) -> None:
     require_fresh_output(work)
-    names = verify_delta_members(delta, expected_sha)
+    packs = list(root_packs or [])
+    shas = list(root_shas or [])
+    names_by_pack = []
+    for index, pack in enumerate(packs):
+        sha = shas[index] if index < len(shas) and shas[index] else None
+        names_by_pack.append(verify_delta_members(pack, sha))
+    delta_names = verify_delta_members(delta, expected_sha)
     ident = Path(__file__).with_name("hd2d_baseline_67519344.sha256")
     check_hashes(baseline, ident, "baseline")
+    prereq = Path(__file__).with_name("hd2d_stage_prerequisites.sha256")
+    check_hashes(baseline, prereq, "stage prerequisites")
+    required, _absent = read_closure(closure)
+    available = source_names(baseline)
+    for pack in packs:
+        available.update(source_names(pack))
+    available.update(delta_names)
+    assert_root_available(available, required)
     work.mkdir(parents=True, exist_ok=True)
     copy_tree(baseline, work)
-    apply_delta(delta, work, names)
+    for pack, names in zip(packs, names_by_pack):
+        apply_delta(pack, work, names)
+    apply_delta(delta, work, delta_names)
     check_hashes(work, ident, "work after delta")
-    prereq = work / "tools" / "hd2d_stage_prerequisites.sha256"
+    for rel, digest in required.items():
+        src = work / rel
+        if src.is_symlink() or not src.is_file():
+            raise SystemExit(f"root closure missing after prepare: {rel}")
+        got = sha256(src)
+        if got != digest:
+            raise SystemExit(f"root closure hash mismatch {rel}\n  expected {digest}\n  actual   {got}")
     check_hashes(work, prereq, "stage prerequisites")
     stage = work / "tools" / "stage_hd2d_assets.py"
     subprocess.run([sys.executable, str(stage)], cwd=work, check=True)
@@ -379,6 +665,23 @@ def check(out: Path, launch: Path | None) -> dict:
         reasons.append("png_written is false")
     if pilot.get("care_present") or root.get("care_present"):
         reasons.append("care")
+    material_class = "none"
+    material_count = 0
+    material_note = ""
+    if closure_path().is_file():
+        required_paths, _absent_paths = read_closure()
+        combined = []
+        for name in ("pilot.err.log", "root.err.log", "pilot.import.err.log", "root.import.err.log"):
+            log_path = out / name
+            if log_path.is_file():
+                combined.append(log_path.read_text(encoding="utf-8", errors="replace"))
+        if combined:
+            report = classify_godot_log("\n".join(combined), set(required_paths))
+            material_class = report["material_null_class"]
+            material_count = len(report["material_null"])
+            material_note = report["material_null_note"]
+            for line in report["fatal"][:8]:
+                reasons.append(line)
     windows = False
     if launch and launch.is_file():
         meta = json.loads(launch.read_text(encoding="utf-8-sig"))
@@ -393,6 +696,9 @@ def check(out: Path, launch: Path | None) -> dict:
         "pilot_json": str(pilot_json),
         "root_json": str(root_json),
         "render_target_note": "root SubViewport 1080x2280 versus pilot window 1080x2280; images are evidence, not declared identical",
+        "material_null_class": material_class,
+        "material_null_count": material_count,
+        "material_null_note": material_note,
     }
     if result["ok"] and windows:
         result["windows_gpu_proof"] = True
@@ -551,6 +857,11 @@ def selftest() -> None:
         raise SystemExit("selftest: powershell entry requests headless or bash")
     if "function Import-Project" not in script or "--import" not in script:
         raise SystemExit("selftest: asset import pass is missing")
+    if "[Parameter(Mandatory = $true)][string[]]$RootPack" not in script:
+        raise SystemExit("selftest: powershell entry does not require the root packs")
+    import_block = script.split("function Import-Project", 1)[1].split("function Start-Godot", 1)[0]
+    if "Save-GodotStreams" not in import_block or import_block.find("Save-GodotStreams") > import_block.find('throw "Godot import timed out'):
+        raise SystemExit("selftest: timeout does not flush Godot logs first")
     fresh = script.find("Assert-FreshOutput $OutputDir")
     created = script.find("New-Item -ItemType Directory")
     prepare_at = script.find("'prepare'")
@@ -568,14 +879,58 @@ def selftest() -> None:
     print("checker fixture can record windows_gpu_proof; this process did not launch Windows")
 
 
+def _paired_args(argv: list[str]) -> tuple[dict[str, str], list[str], list[str]]:
+    args: dict[str, str] = {}
+    roots: list[str] = []
+    root_shas: list[str] = []
+    pairs = list(zip(argv[::2], argv[1::2]))
+    if len(argv) % 2:
+        raise SystemExit("arguments must be --flag value pairs")
+    for key, value in pairs:
+        if key == "--root":
+            roots.append(value)
+        elif key == "--root-sha":
+            root_shas.append(value)
+        else:
+            args[key] = value
+    return args, roots, root_shas
+
+
 def main() -> None:
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "prepare":
-        args = dict(zip(sys.argv[2::2], sys.argv[3::2]))
+        args, roots, root_shas = _paired_args(sys.argv[2:])
         work = Path(args["--work"])
-        prepare(Path(args["--baseline"]), Path(args["--delta"]), work, args.get("--delta-sha") or None)
+        prepare(
+            Path(args["--baseline"]),
+            Path(args["--delta"]),
+            work,
+            args.get("--delta-sha") or None,
+            [Path(item) for item in roots],
+            root_shas,
+        )
         make_pilot(work, Path(args["--pilot"]))
         print("prepare ok")
+        return
+    if cmd == "import-log":
+        args, _roots, _shas = _paired_args(sys.argv[2:])
+        text = Path(args["--err"]).read_text(encoding="utf-8", errors="replace")
+        required, _absent = read_closure()
+        report = classify_godot_log(text, set(required))
+        out = Path(args["--out"]) if "--out" in args else None
+        payload = {
+            "ok": not report["fatal"],
+            "windows_gpu_proof": False,
+            "reasons": report["fatal"][:20],
+            "material_null_class": report["material_null_class"],
+            "material_null_count": len(report["material_null"]),
+            "material_null_note": report["material_null_note"],
+        }
+        if out:
+            out.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        print(json.dumps({"ok": payload["ok"], "material_null_class": payload["material_null_class"], "fatal": len(report["fatal"])}))
+        if report["fatal"]:
+            raise SystemExit(1)
         return
     if cmd == "fresh-output":
         args = dict(zip(sys.argv[2::2], sys.argv[3::2]))
