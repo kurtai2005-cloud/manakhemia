@@ -161,7 +161,10 @@ func _open_compare_viewport() -> void:
 	_compare_view.name = "Hd2dCompareViewport"
 	_compare_view.size = Vector2i(1080, 2280)
 	_compare_view.own_world_3d = false
-	_compare_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	if OS.get_environment("HD2D_COMPARE_GRAB") == "1":
+		_compare_view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	else:
+		_compare_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	root_main.add_child(_compare_view)
 	var cam: Camera3D = root_main.get("cam")
 	if cam == null:
@@ -177,6 +180,15 @@ func _open_compare_viewport() -> void:
 		cam.attributes = opening_attrs
 	cam.current = true
 	_camera = cam
+
+
+func grab_compare_image() -> Image:
+	if _compare_view == null:
+		return null
+	var tex := _compare_view.get_texture()
+	if tex == null:
+		return null
+	return tex.get_image()
 
 
 func apply_same_view() -> void:

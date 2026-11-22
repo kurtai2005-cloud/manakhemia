@@ -127,6 +127,10 @@ Head `61ae7968817149d4c9a9c4e63af1b248cbcec80f`, one headless Mobile run, after 
 
 The root frame is a 1080×2280 SubViewport. The H1 window stays 390×844. The pilot frame is the window of a temporary 675 project copy set to 1080×2280. The frozen tree is not edited. Those are different render targets at the same size, so a later grab can still differ.
 
+Windows, displayed Mobile, both processes, PNG required:
+
 ```
-HD2D_COMPARE_OUT=<empty-dir> tools/run_hd2d_mobile_compare.sh
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\run_hd2d_mobile_compare.ps1 -GodotExe <Godot.exe> -Python <python.exe> -Baseline675 <clean 67519344 checkout> -DeltaPath <this review zip> -OutputDir <empty dir>
 ```
+
+A missing, empty, undecodable, or wrong-size PNG fails the process. State JSON alone is not success. The two comparison processes are displayed. A separate `--import` pass only builds the asset cache and is not the picture.

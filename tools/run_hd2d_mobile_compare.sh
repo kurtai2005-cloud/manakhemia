@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# GPU comparison. Both processes use --rendering-method mobile, 1080x2280,
-# and the same fixed visual step, including art_depth._process / _follow_camera.
-# Does not edit godot_hd2d_v6. Does not claim a pixel match.
-# --headless is engineering only. Omit it on the GPU machine.
+# Engineering copy of the comparison. The Windows evidence entry is
+# tools/run_hd2d_mobile_compare.ps1. This file is not that proof.
+# Both processes request a real PNG. A missing image fails.
+# Does not edit godot_hd2d_v6.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GODOT="${GODOT:-godot}"
@@ -39,6 +39,8 @@ export HD2D_COMPARE_OUT="$OUT"
 export HD2D_COMPARE_FIXED=1
 export HD2D_COMPARE_FULL=1
 export HD2D_COMPARE_STEPS="$STEPS"
+export HD2D_COMPARE_GRAB=1
+export HD2D_COMPARE_DISPLAY=1
 export HD2D_MODE=low
 export HD2D_VP=1080x2280
 "$GODOT" --headless --path "$PILOT" --import --quit
@@ -58,10 +60,11 @@ root_rc=$?
 rm -f "$ROOT_CFG" "$PILOT/override.cfg"
 set -e
 echo "pilot_exit=$pilot_rc root_exit=$root_rc"
-if [[ -f "$OUT/pilot_standalone.json" && -f "$OUT/root_presentation.json" ]]; then
-  python3 "$ROOT/tools/hd2d_compare_states.py" "$OUT/pilot_standalone.json" "$OUT/root_presentation.json" || true
-else
-  echo "same_view: state JSON missing. This is not a pixel result."
+python3 "$ROOT/tools/hd2d_evidence.py" check --out "$OUT"
+status=$?
+echo "evidence_exit=$status"
+echo "Windows displayed entry is tools/run_hd2d_mobile_compare.ps1. This shell is not that proof."
+if [[ "$status" -eq 0 ]]; then
+  exit 2
 fi
-echo "Outputs: $OUT/pilot_standalone.json $OUT/root_presentation.json"
-echo "Do not read a software-GL or missing image as Mobile acceptance."
+exit "$status"
