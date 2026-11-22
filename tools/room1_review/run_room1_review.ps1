@@ -135,6 +135,17 @@ try {
     if (-not (Test-Path -LiteralPath $statePath)) {
         $pngOk = $false
         $reasons += 'state json missing'
+    } else {
+        $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+        $vp = @($state.viewport_actual)
+        if ($vp.Count -ne 2 -or [int]$vp[0] -ne 1080 -or [int]$vp[1] -ne 2280) {
+            $pngOk = $false
+            $reasons += "state viewport_actual is $($vp -join 'x')"
+        }
+        if ($state.png_written -ne $true) {
+            $pngOk = $false
+            $reasons += 'state png_written is not true'
+        }
     }
     $result = @{
         ok = $pngOk

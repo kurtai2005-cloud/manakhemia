@@ -59,6 +59,8 @@ func build() -> String:
 	_load_collision()
 	_note_ignored_meta()
 	view.size = Vector2i(1080, 2280)
+	if view.size.x != 1080 or view.size.y != 2280:
+		return "room1 viewport stayed %s" % view.size
 	apply_shot(shot_plan()[0])
 	_built = true
 	return ""
@@ -366,3 +368,6 @@ func _note_ignored_meta() -> void:
 	if parsed is Dictionary:
 		info["shell_meta_path_value"] = str(parsed.get("path", ""))
 		info["shell_meta_path_followed"] = false
+		var nodes: Variant = parsed.get("nodes", [])
+		if nodes is Array and nodes.has("interior_room1"):
+			info["shell_source_node"] = "interior_room1"

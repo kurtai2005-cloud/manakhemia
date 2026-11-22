@@ -43,15 +43,27 @@ func _on_frame() -> void:
 		var err: String = review.call("build")
 		if err != "":
 			print("FAIL ", err)
+			_write_state(false)
 			quit(1)
 			return
 		if not grab:
+			if not _viewport_ok():
+				print("FAIL viewport actual ", review.call("viewport_size"), " want 1080x2280")
+				_write_state(false)
+				quit(1)
+				return
 			_write_state(false)
-			print("room1 load ok png_written=false renderer=", RenderingServer.get_current_rendering_method())
+			print("room1 load ok png_written=false renderer=", RenderingServer.get_current_rendering_method(), " viewport=", review.call("viewport_size"))
 			quit(0)
 			return
 		if _display_blocked():
 			print("FAIL display is headless; refusing to claim a review PNG")
+			print("viewport_requested=1080x2280 viewport_actual=", review.call("viewport_size"))
+			_write_state(false)
+			quit(1)
+			return
+		if not _viewport_ok():
+			print("FAIL viewport actual ", review.call("viewport_size"), " want 1080x2280")
 			_write_state(false)
 			quit(1)
 			return
@@ -66,8 +78,14 @@ func _on_frame() -> void:
 		var img: Image = review.call("grab_image")
 		var shot: Dictionary = shots[shot_i]
 		var path := out_dir.path_join(str(shot["file"]))
+		if not _viewport_ok():
+			print("FAIL viewport drifted ", review.call("viewport_size"))
+			_write_state(false)
+			quit(1)
+			return
 		if not _png_ok(img, path):
 			print("FAIL png ", shot["file"])
+			_write_state(false)
 			quit(1)
 			return
 		shot["png_written"] = true
@@ -84,6 +102,11 @@ func _on_frame() -> void:
 
 func _display_blocked() -> bool:
 	return DisplayServer.get_name() == "headless" or OS.has_feature("headless")
+
+
+func _viewport_ok() -> bool:
+	var vp: Vector2i = review.call("viewport_size")
+	return vp.x == 1080 and vp.y == 2280
 
 
 func _png_ok(img: Image, path: String) -> bool:
@@ -107,6 +130,10 @@ func _write_state(wrote_png: bool) -> void:
 	var vp: Vector2i = review.call("viewport_size")
 	body["viewport_actual"] = [vp.x, vp.y]
 	body["viewport_requested"] = [1080, 2280]
+	body["viewport_configured"] = vp != Vector2i.ZERO
+	body["grab_attempted"] = grab
+	body["grab_rejected"] = grab and not wrote_png
+	body["grab_rejected_before_viewport_configure"] = false
 	body["renderer_actual"] = RenderingServer.get_current_rendering_method()
 	body["driver"] = RenderingServer.get_current_rendering_driver_name()
 	body["headless"] = _display_blocked()
