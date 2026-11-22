@@ -12,9 +12,9 @@ HEADLESS=()
 if [[ "${HD2D_COMPARE_HEADLESS:-}" == "1" ]]; then
   HEADLESS=(--headless)
 fi
+python3 "$ROOT/tools/hd2d_evidence.py" fresh-output --out "$OUT"
 mkdir -p "$OUT"
 PILOT="$OUT/pilot_project"
-rm -rf "$PILOT"
 mkdir -p "$PILOT"
 python3 - "$ROOT/godot_hd2d_v6/project.godot" "$PILOT/project.godot" << 'PY'
 import sys

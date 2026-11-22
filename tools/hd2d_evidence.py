@@ -11,9 +11,11 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import stat
 import struct
 import subprocess
 import sys
+import zipfile
 import zlib
 from pathlib import Path
 
@@ -21,6 +23,7 @@ SKIP_DIRS = {".godot", ".gradle", "android", "build", "__pycache__", ".git", "us
 SKIP_FILES = {"export_presets.cfg", "export_credentials.cfg", "override.cfg"}
 SKIP_SUFFIXES = {".keystore", ".jks", ".apk", ".aab"}
 PNG_SIG = b"\x89PNG\r\n\x1a\n"
+MEMBER_NAME = "MEMBER_SHA256"
 
 
 def sha256(path: Path) -> str:
@@ -78,52 +81,191 @@ def copy_tree(src: Path, dest: Path) -> None:
     shutil.copyfile(src, dest)
 
 
-def safe_join(root: Path, rel: str) -> Path:
-    rel = rel.replace("\\", "/").lstrip("/")
-    if rel.startswith("../") or "/../" in f"/{rel}/" or rel == "..":
+def reject_rel(rel: str) -> None:
+    text = rel.replace("\\", "/")
+    if not text or "\x00" in text or text.startswith("/") or text.startswith("//"):
         raise SystemExit(f"refusing delta path {rel}")
+    head = text.split("/", 1)[0]
+    if ":" in head:
+        raise SystemExit(f"refusing delta path {rel}")
+    parts = [part for part in text.split("/") if part not in ("", ".")]
+    if not parts or any(part == ".." for part in parts):
+        raise SystemExit(f"refusing delta path {rel}")
+
+
+def safe_join(root: Path, rel: str) -> Path:
+    rel = rel.replace("\\", "/")
+    reject_rel(rel)
     dest = (root / rel).resolve()
     if root.resolve() not in dest.parents and dest != root.resolve():
         raise SystemExit(f"refusing delta path {rel}")
     return dest
 
 
-def apply_delta(delta: Path, work: Path) -> None:
-    if delta.is_file() and delta.suffix.lower() == ".zip":
-        import zipfile
-        with zipfile.ZipFile(delta) as zf:
-            for info in zf.infolist():
-                name = info.filename.replace("\\", "/")
-                if name.endswith("/") or skipped(Path(name)):
-                    continue
-                dest = safe_join(work, name)
-                dest.parent.mkdir(parents=True, exist_ok=True)
-                if dest.exists() or dest.is_symlink():
-                    dest.unlink()
-                with zf.open(info) as src, dest.open("wb") as out:
-                    shutil.copyfileobj(src, out)
+def require_fresh_output(path: Path) -> None:
+    """Accept a missing path or an empty directory. Do not create or delete anything."""
+    if not path.exists() and not path.is_symlink():
         return
+    if path.is_symlink() or not path.is_dir():
+        raise SystemExit(f"output is not an empty directory: {path}")
+    if any(path.iterdir()):
+        raise SystemExit(f"output is not empty: {path}")
+
+
+def load_identity() -> dict[str, str]:
+    ident = Path(__file__).with_name("hd2d_baseline_67519344.sha256")
+    return {rel: digest for digest, rel in read_manifest(ident)}
+
+
+def parse_manifest_text(text: str) -> list[tuple[str, str]]:
+    rows = []
+    seen = set()
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        digest, rel = line.split(None, 1)
+        digest = digest.lower()
+        rel = rel.replace("\\", "/")
+        if len(digest) != 64 or any(char not in "0123456789abcdef" for char in digest):
+            raise SystemExit(f"bad member digest for {rel}")
+        reject_rel(rel)
+        if rel == MEMBER_NAME:
+            raise SystemExit("MEMBER_SHA256 must not list itself")
+        if rel in seen:
+            raise SystemExit(f"duplicate manifest entry {rel}")
+        if skipped(Path(rel)):
+            raise SystemExit(f"manifest lists a skipped entry {rel}")
+        seen.add(rel)
+        rows.append((digest, rel))
+    if not rows:
+        raise SystemExit("MEMBER_SHA256 lists no files")
+    return rows
+
+
+def _zip_file_names(zf: zipfile.ZipFile) -> list[str]:
+    names = []
+    for info in zf.infolist():
+        name = info.filename.replace("\\", "/")
+        is_dir = name.endswith("/")
+        rel = name[:-1] if is_dir else name
+        reject_rel(rel)
+        mode = (info.external_attr >> 16) & 0xFFFF
+        if mode and stat.S_ISLNK(mode):
+            raise SystemExit(f"refusing symlink entry {name}")
+        if skipped(Path(rel)):
+            raise SystemExit(f"refusing secret entry {name}")
+        if is_dir:
+            continue
+        names.append(name)
+    if len(names) != len(set(names)):
+        raise SystemExit("duplicate zip entry")
+    return names
+
+
+def verify_delta_members(delta: Path, expected_sha: str | None = None, identity: dict[str, str] | None = None) -> list[str]:
+    """Check the member list before any extract. MEMBER_SHA256 is not a listed file."""
+    if identity is None:
+        identity = load_identity()
+    if delta.is_file() and delta.suffix.lower() == ".zip":
+        with zipfile.ZipFile(delta) as zf:
+            names = _zip_file_names(zf)
+            if MEMBER_NAME not in names:
+                raise SystemExit("delta is missing MEMBER_SHA256")
+            rows = parse_manifest_text(zf.read(MEMBER_NAME).decode("utf-8"))
+            listed = {rel: digest for digest, rel in rows}
+            members = set(names) - {MEMBER_NAME}
+            missing = sorted(set(listed) - members)
+            unlisted = sorted(members - set(listed))
+            if missing:
+                raise SystemExit(f"manifest lists files that are not in the zip: {missing}")
+            if unlisted:
+                raise SystemExit(f"zip members are not listed in MEMBER_SHA256: {unlisted}")
+            for rel, digest in listed.items():
+                if rel in identity and identity[rel] != digest:
+                    raise SystemExit(f"delta changes frozen file {rel}")
+            for rel, digest in listed.items():
+                got = hashlib.sha256(zf.read(rel)).hexdigest()
+                if got != digest:
+                    raise SystemExit(f"member hash mismatch {rel}")
+        if expected_sha and sha256(delta).lower() != expected_sha.lower():
+            raise SystemExit("delta sha mismatch")
+        return [rel for _digest, rel in rows]
     if not delta.is_dir():
         raise SystemExit(f"delta is not a directory or zip: {delta}")
-    for src in delta.rglob("*"):
-        if not src.is_file() or src.is_symlink() or skipped(src):
-            continue
+    found = []
+    for src in sorted(delta.rglob("*")):
         rel = src.relative_to(delta).as_posix()
-        dest = safe_join(work, rel)
+        reject_rel(rel)
+        if src.is_symlink():
+            raise SystemExit(f"refusing symlink entry {rel}")
+        if src.is_dir():
+            if skipped(src):
+                raise SystemExit(f"refusing secret entry {rel}")
+            continue
+        if skipped(src):
+            raise SystemExit(f"refusing secret entry {rel}")
+        found.append(rel)
+    if len(found) != len(set(found)):
+        raise SystemExit("duplicate delta entry")
+    if MEMBER_NAME not in found:
+        raise SystemExit("delta is missing MEMBER_SHA256")
+    rows = parse_manifest_text((delta / MEMBER_NAME).read_text(encoding="utf-8"))
+    listed = {rel: digest for digest, rel in rows}
+    members = set(found) - {MEMBER_NAME}
+    missing = sorted(set(listed) - members)
+    unlisted = sorted(members - set(listed))
+    if missing:
+        raise SystemExit(f"manifest lists files that are not in the delta: {missing}")
+    if unlisted:
+        raise SystemExit(f"delta files are not listed in MEMBER_SHA256: {unlisted}")
+    for rel, digest in listed.items():
+        if rel in identity and identity[rel] != digest:
+            raise SystemExit(f"delta changes frozen file {rel}")
+        src = delta / rel
+        if src.is_symlink() or skipped(src):
+            raise SystemExit(f"refusing secret entry {rel}")
+        if sha256(src) != digest:
+            raise SystemExit(f"member hash mismatch {rel}")
+    if expected_sha:
+        raise SystemExit("delta sha applies to a zip, not a directory")
+    return [rel for _digest, rel in rows]
+
+
+def apply_delta(delta: Path, work: Path, names: list[str] | None = None, expected_sha: str | None = None, identity: dict[str, str] | None = None) -> None:
+    if names is None:
+        names = verify_delta_members(delta, expected_sha, identity)
+    if delta.is_file() and delta.suffix.lower() == ".zip":
+        with zipfile.ZipFile(delta) as zf:
+            for name in names:
+                if name == MEMBER_NAME or skipped(Path(name)):
+                    raise SystemExit(f"refusing to extract {name}")
+                dest = safe_join(work, name)
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                if dest.is_symlink():
+                    raise SystemExit(f"refusing to replace symlink {name}")
+                with zf.open(name) as src, dest.open("wb") as out:
+                    shutil.copyfileobj(src, out)
+        return
+    for name in names:
+        if name == MEMBER_NAME or skipped(Path(name)):
+            raise SystemExit(f"refusing to extract {name}")
+        src = delta / name
+        if src.is_symlink() or not src.is_file():
+            raise SystemExit(f"refusing delta path {name}")
+        dest = safe_join(work, name)
         dest.parent.mkdir(parents=True, exist_ok=True)
-        if dest.exists() or dest.is_symlink():
-            dest.unlink()
         shutil.copyfile(src, dest)
 
 
-def prepare(baseline: Path, delta: Path, work: Path) -> None:
-    if work.exists():
-        shutil.rmtree(work)
-    work.mkdir(parents=True)
+def prepare(baseline: Path, delta: Path, work: Path, expected_sha: str | None = None) -> None:
+    require_fresh_output(work)
+    names = verify_delta_members(delta, expected_sha)
     ident = Path(__file__).with_name("hd2d_baseline_67519344.sha256")
     check_hashes(baseline, ident, "baseline")
+    work.mkdir(parents=True, exist_ok=True)
     copy_tree(baseline, work)
-    apply_delta(delta, work)
+    apply_delta(delta, work, names)
     check_hashes(work, ident, "work after delta")
     prereq = work / "tools" / "hd2d_stage_prerequisites.sha256"
     check_hashes(work, prereq, "stage prerequisites")
@@ -132,9 +274,8 @@ def prepare(baseline: Path, delta: Path, work: Path) -> None:
 
 
 def make_pilot(work: Path, pilot: Path) -> None:
-    if pilot.exists():
-        shutil.rmtree(pilot)
-    pilot.mkdir(parents=True)
+    require_fresh_output(pilot)
+    pilot.mkdir(parents=True, exist_ok=True)
     src_godot = work / "godot_hd2d_v6"
     text = (src_godot / "project.godot").read_text(encoding="utf-8")
     text = text.replace("viewport_height=1920", "viewport_height=2280", 1)
@@ -410,7 +551,19 @@ def selftest() -> None:
         raise SystemExit("selftest: powershell entry requests headless or bash")
     if "function Import-Project" not in script or "--import" not in script:
         raise SystemExit("selftest: asset import pass is missing")
+    fresh = script.find("Assert-FreshOutput $OutputDir")
+    created = script.find("New-Item -ItemType Directory")
+    prepare_at = script.find("'prepare'")
+    if fresh < 0 or created < 0 or prepare_at < 0 or fresh > created or fresh > prepare_at:
+        raise SystemExit("selftest: OutputDir is not checked before a write")
+    if "OutputDir is not empty" not in script or "$outputAccepted" not in script:
+        raise SystemExit("selftest: nonempty OutputDir cleanup is not refused")
     shutil.rmtree(root, ignore_errors=True)
+    import unittest
+    suite = unittest.defaultTestLoader.loadTestsFromName("test_hd2d_evidence")
+    outcome = unittest.TextTestRunner(verbosity=1).run(suite)
+    if not outcome.wasSuccessful():
+        raise SystemExit("selftest: unit tests failed")
     print("selftest ok windows_gpu_proof=false")
     print("checker fixture can record windows_gpu_proof; this process did not launch Windows")
 
@@ -420,9 +573,14 @@ def main() -> None:
     if cmd == "prepare":
         args = dict(zip(sys.argv[2::2], sys.argv[3::2]))
         work = Path(args["--work"])
-        prepare(Path(args["--baseline"]), Path(args["--delta"]), work)
+        prepare(Path(args["--baseline"]), Path(args["--delta"]), work, args.get("--delta-sha") or None)
         make_pilot(work, Path(args["--pilot"]))
         print("prepare ok")
+        return
+    if cmd == "fresh-output":
+        args = dict(zip(sys.argv[2::2], sys.argv[3::2]))
+        require_fresh_output(Path(args["--out"]))
+        print("fresh-output ok")
         return
     if cmd == "check":
         args = dict(zip(sys.argv[2::2], sys.argv[3::2]))
@@ -432,7 +590,7 @@ def main() -> None:
     if cmd == "selftest":
         selftest()
         return
-    raise SystemExit("usage: hd2d_evidence.py prepare|check|selftest")
+    raise SystemExit("usage: hd2d_evidence.py prepare|check|fresh-output|selftest")
 
 
 if __name__ == "__main__":

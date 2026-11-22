@@ -6,7 +6,8 @@ param(
     [Parameter(Mandatory = $true)][string]$Python,
     [Parameter(Mandatory = $true)][string]$Baseline675,
     [Parameter(Mandatory = $true)][string]$DeltaPath,
-    [Parameter(Mandatory = $true)][string]$OutputDir
+    [Parameter(Mandatory = $true)][string]$OutputDir,
+    [string]$DeltaSha = ""
 )
 $ErrorActionPreference = 'Stop'
 $OutputEncoding = New-Object System.Text.UTF8Encoding $false
@@ -22,8 +23,23 @@ $envNames = @(
 $savedEnv = @{}
 foreach ($name in $envNames) { $savedEnv[$name] = [Environment]::GetEnvironmentVariable($name) }
 $children = @()
+$outputAccepted = $false
 $work = Join-Path $OutputDir 'work'
 $pilot = Join-Path $OutputDir 'pilot_project'
+
+function Assert-FreshOutput([string]$Path) {
+    if ([string]::IsNullOrWhiteSpace($Path)) { throw "OutputDir is required" }
+    if (-not (Test-Path -LiteralPath $Path)) { return }
+    $item = Get-Item -LiteralPath $Path -Force
+    if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+        throw "OutputDir is not an empty directory: $Path"
+    }
+    if (-not $item.PSIsContainer) { throw "OutputDir is not an empty directory: $Path" }
+    $existing = @(Get-ChildItem -LiteralPath $Path -Force | Select-Object -First 1)
+    if ($existing.Count -gt 0) {
+        throw "OutputDir is not empty; refusing to delete or reuse $Path"
+    }
+}
 
 function Restore-Env {
     [Console]::OutputEncoding = $savedConsoleOut
@@ -116,6 +132,8 @@ function Start-Godot([string]$Project, [string]$Script, [string]$LogPath, [strin
 }
 
 try {
+    Assert-FreshOutput $OutputDir
+    $outputAccepted = $true
     [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding $false
     [Console]::InputEncoding = New-Object System.Text.UTF8Encoding $false
     $env:PYTHONIOENCODING = 'utf-8'
@@ -123,7 +141,12 @@ try {
     if (-not (Test-Path -LiteralPath $GodotExe)) { throw "Godot not found: $GodotExe" }
     if (-not (Test-Path -LiteralPath $Python)) { throw "Python not found: $Python" }
     New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
-    & $Python (Join-Path $PSScriptRoot 'hd2d_evidence.py') prepare --baseline $Baseline675 --delta $DeltaPath --work $work --pilot $pilot
+    $prepareArgs = @(
+        (Join-Path $PSScriptRoot 'hd2d_evidence.py'),
+        'prepare', '--baseline', $Baseline675, '--delta', $DeltaPath, '--work', $work, '--pilot', $pilot
+    )
+    if (-not [string]::IsNullOrWhiteSpace($DeltaSha)) { $prepareArgs += @('--delta-sha', $DeltaSha) }
+    & $Python @prepareArgs
     if ($LASTEXITCODE -ne 0) { throw "prepare failed: $LASTEXITCODE" }
     $launch = @{
         displayed = $true
@@ -162,8 +185,10 @@ try {
 }
 finally {
     foreach ($proc in $children) { Stop-Owned $proc }
-    foreach ($cfg in @((Join-Path $work 'override.cfg'), (Join-Path $pilot 'override.cfg'))) {
-        if (Test-Path -LiteralPath $cfg) { Remove-Item -LiteralPath $cfg -Force -ErrorAction SilentlyContinue }
+    if ($outputAccepted) {
+        foreach ($cfg in @((Join-Path $work 'override.cfg'), (Join-Path $pilot 'override.cfg'))) {
+            if (Test-Path -LiteralPath $cfg) { Remove-Item -LiteralPath $cfg -Force -ErrorAction SilentlyContinue }
+        }
     }
     Restore-Env
 }
