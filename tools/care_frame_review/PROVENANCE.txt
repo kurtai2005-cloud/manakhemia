@@ -1,0 +1,27 @@
+Care frame composition for art review. Not a Mobile screenshot. Not care gameplay.
+Sources, verified before bake. A mismatch stops the script. Nothing is substituted.
+
+art/liveliness/atlas_radiant_live.png
+  91826 bytes
+  SHA-256 b7a4a9dc6db5fe09c9089c573add40c154dbf1414ba5c9c67c4cbc79a6dbf20b
+art/liveliness/atlas_radiant_live.json
+  112303 bytes
+  SHA-256 f7e982ee09aa627634c58bfeaaec87ef045f87988588b5c9bfb97f45adc4d608
+art/liveliness/CLIPS.json
+  571057 bytes
+  SHA-256 fd1d72fad8f2aafe34a7907cc3a3b9c960d8b10edcfdee14ecf8d77fd2124801
+
+Every atlas body frame used here has pivotPx (32, 61). CLIPS clips do not carry a pivot.
+(32, 61) is not the r4 world foot. The quad stays 64, node y=29, offset.y=2, pixel_size=1.
+Image boundary 63, which is the bottom of row 62, is world y=0.
+emo_happy_02 stays on row 60. emo_surprised stays on rows 60 and 61. Those lifts are not grounded.
+
+idle.png is idle_noface_01 plus radiant idle frame-0 eyes and mouth. It matches
+godot_hd2d_v6/art/pet/r4/pet_tuanrong_radiant_front_idle_01.png byte for byte after decode.
+nuzzle_01..06 are the full-faced atlas frames, not a second face pass.
+eat and emo are noface bodies plus eyes and mouth from the same atlas. No bulb overlay.
+No faceov files. Rights are unverified and block release.
+
+The contact sheet is nearest-neighbor 4x. The magenta tick is the shared sole line
+at the bottom of row 62. It is in the margin, not on the pet.
+Open project.godot to see one 64 quad. This run did not grab a Mobile frame.

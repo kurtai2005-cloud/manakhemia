@@ -1,0 +1,32 @@
+{
+  "idle_equals_r4": true,
+  "idle_diff_bytes": 0,
+  "body_pivot_px_recorded": [
+    32,
+    61
+  ],
+  "body_pivot_used_as_world_foot": false,
+  "foot_rule": "64 quad, node y=29, offset.y=2, pixel_size=1, image boundary 63 (row 62) at world y=0",
+  "emo_lifts_retained": true,
+  "last_solid_row": {
+    "idle": 62,
+    "eat_01": 62,
+    "eat_02": 62,
+    "eat_03": 62,
+    "eat_04": 62,
+    "emo_happy_01": 62,
+    "emo_happy_02": 60,
+    "emo_surprised_01": 60,
+    "emo_surprised_02": 61,
+    "nuzzle_01": 62,
+    "nuzzle_02": 62,
+    "nuzzle_03": 62,
+    "nuzzle_04": 62,
+    "nuzzle_05": 62,
+    "nuzzle_06": 62
+  },
+  "bulb_overlaid": false,
+  "nuzzle_source": "full-faced nuzzle_01..06, not a face-kit composite",
+  "renderer": "cpu nearest composite, not a Mobile screenshot",
+  "rights": "unverified"
+}
