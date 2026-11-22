@@ -1,0 +1,420 @@
+{
+  "note": "Art notes and candidate cameras/room size. Loader entry is pack.json per HD2D_LOADER_CONTRACT.md. All locked flags in pack.json stay false. Do not write these coordinates into save. Garden-space door test points are not recorded here.",
+  "contract": {
+    "source": "/home/box/keep/遊美/hd2d_loader_contract_0c2c50f04b5c/HD2D_LOADER_CONTRACT.md",
+    "bytes": 7075,
+    "sha256": "527b0cd25424d89d4f33f2c57173aa2bd565d80f5d020502bbcc8bda891eb8e7"
+  },
+  "files": {
+    "glb": "shell.glb",
+    "textures": "textures/",
+    "pack": "pack.json"
+  },
+  "unit_detail": {
+    "glb_unit": "1 glTF unit = 1 wu = 1 Godot unit",
+    "pet": "1 wu = 1 art px is locked only for the pet. Official r4 / 675 presentation is unchanged: Sprite3D 64×64, pixel_size 1, node_y=29, offset.y=2 so the 64 canvas is centered at y=31 (canvas y=-1..63). Last opaque foot row 62 sits at world y=0. Do not also move the node to y=31 while keeping offset.y=2.",
+    "furniture_and_room": "candidate wu, not locked from 2D sprite pixels"
+  },
+  "root_node": "interior_room1",
+  "axes": {
+    "x": "+X right",
+    "y": "+Y up",
+    "z": "+Z toward open front / default camera (glTF front)"
+  },
+  "room": {
+    "width": 128.0,
+    "depth": 148.0,
+    "ceiling": 108.0,
+    "wall_thickness": 3.0,
+    "open_front": true,
+    "bounds_x": [
+      -64.0,
+      64.0
+    ],
+    "bounds_z": [
+      -74.0,
+      74.0
+    ],
+    "inner_x": [
+      -61.0,
+      61.0
+    ],
+    "inner_z": [
+      -71.0,
+      74.0
+    ],
+    "locked": false,
+    "basis": "Circulation for a 44-wide pet (corridor >= 48) plus 19:9 front-stable framing. Not copied from old 160×128×120 as a lock, and not from 2D 92px furniture."
+  },
+  "slot_sizes_candidate": {
+    "bed": {
+      "size_wu": {
+        "x": 56.0,
+        "z": 34.0,
+        "mattress_y": 16.0,
+        "headboard_y": 34.0
+      }
+    },
+    "rug": {
+      "size_wu": {
+        "x": 52.0,
+        "z": 32.0,
+        "y": 0.4
+      }
+    },
+    "table": {
+      "radius": 10.0,
+      "height": 14.0
+    },
+    "lamp": {
+      "radius": 6.0,
+      "height": 32.0
+    },
+    "wall": {
+      "size_wu": {
+        "along_x": 24.0,
+        "depth_z": 6.0,
+        "y": 10.0
+      },
+      "wall": "back"
+    },
+    "window": {
+      "hole": {
+        "cx": -30.0,
+        "sill": 36.0,
+        "w": 36.0,
+        "h": 36.0
+      }
+    }
+  },
+  "walkable_intent": {
+    "plane_y": 0,
+    "x": [
+      -61.0,
+      61.0
+    ],
+    "z": [
+      -71.0,
+      74.0
+    ],
+    "subtract": [
+      "bed",
+      "table",
+      "lamp",
+      "walls",
+      "door_leaf"
+    ],
+    "do_not_block": [
+      "rug",
+      "wall_shelf",
+      "window_curtains"
+    ],
+    "note": "Pet visible width 44 wu; recommended corridor >= 48. pack.json walkable.mesh is empty and locked:false until a walk mesh is authored and explicitly locked."
+  },
+  "door_visual": {
+    "role": "indoor visual + near-door interact, not a walk-through of the 675 garden cottage door",
+    "wall": "right (+X)",
+    "width": 48.0,
+    "height": 60.0,
+    "closed_leaf": true,
+    "walk_through": false,
+    "outward_room_local": [
+      1,
+      0,
+      0
+    ],
+    "note": "door_anchor in pack.json is this interior threshold, locked:false. It does not replace the 675 exterior recess. Official outdoor anchor stays unset. Garden-space test points are not written into this pack."
+  },
+  "camera_candidates": {
+    "convention": "19:9 cutaway (slight -X offset) so the right-wall door face is readable; not yaw26 as a style copy, and not 675 exterior proportions.",
+    "aspect": "19:9",
+    "locked": false,
+    "hero_before_20261122_0934": {
+      "eye": [
+        0.0,
+        48.0,
+        170.0
+      ],
+      "target": [
+        0.0,
+        28.0,
+        -20.0
+      ],
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "vfov": 50.0,
+      "znear": 2,
+      "zfar": 500,
+      "apron": true,
+      "measured_1080x2280_pet_bbox": {
+        "width_pct": 63.2,
+        "height_pct": 37.7,
+        "px": [
+          198,
+          755,
+          880,
+          1614
+        ]
+      },
+      "fails": "pet too large; bed cropped on the right; door not in frame; ceiling press; apron hid near-edge void"
+    },
+    "hero_19x9": {
+      "eye": [
+        -55.0,
+        48.0,
+        400.0
+      ],
+      "target": [
+        10.0,
+        40.0,
+        -20.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vfov": 46.0,
+      "znear": 2.0,
+      "zfar": 900.0,
+      "yaw": 0
+    },
+    "door_clear_19x9": {
+      "eye": [
+        -12.0,
+        50.0,
+        125.0
+      ],
+      "target": [
+        44.0,
+        30.0,
+        24.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vfov": 48.0,
+      "znear": 2.0,
+      "zfar": 900.0,
+      "yaw": 0
+    },
+    "pet_scale_19x9": {
+      "eye": [
+        18.0,
+        42.0,
+        130.0
+      ],
+      "target": [
+        10.0,
+        22.0,
+        -14.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vfov": 44.0,
+      "znear": 2.0,
+      "zfar": 900.0,
+      "yaw": 0
+    },
+    "note": "Indoor framing candidates only, locked:false. Current hero CAM has apron=false; no +Z floor apron in the archived 1080 previews. An optional apron path still exists in tools/build_room1.py render_view for older cameras; it is preview-only, not in shell.glb, not walkable.",
+    "hero_after_20261122_0938": {
+      "eye": [
+        -55.0,
+        48.0,
+        400.0
+      ],
+      "target": [
+        10.0,
+        40.0,
+        -20.0
+      ],
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "vfov": 46.0,
+      "znear": 2,
+      "zfar": 900,
+      "apron": false,
+      "pet_world_unchanged": {
+        "canvas": 64,
+        "center_y": 31,
+        "offset_y": 2,
+        "pos_xz": [
+          0,
+          8
+        ]
+      },
+      "measured_1080x2280_pet_bbox": {
+        "x0": 353,
+        "y0": 1035,
+        "x1": 647,
+        "y1": 1412,
+        "width_px": 295,
+        "height_px": 378,
+        "width_pct": 27.3,
+        "height_pct": 16.6
+      },
+      "in_frame": "left wall, right wall, floor near edge, right door FACE, full bed, table, window, shelf, lamp",
+      "layout_note": "Mild -X cutaway so the right-wall door face is readable. A true +Z front camera only sees that door edge-on. Exterior house not changed. No apron.",
+      "vertical_fill_limit": "With room 128×148×108 and pet canvas 64 at 15–23% of a 19:9 frame, the room's vertical angular size is only about half the FOV, so empty bands remain above and below the set. Filling those bands without changing pet world scale would need a substantially larger candidate room (about 200+ tall and much deeper). Not applied silently this round.",
+      "empty_bands_1080x2280": {
+        "measured_on": [
+          "previews/room1_19x9_hero.png",
+          "previews/room1_19x9_hero_shell.png"
+        ],
+        "content_y_excl_caption": [
+          585,
+          1488
+        ],
+        "content_span_px": 904,
+        "content_pct_of_frame": 39.6,
+        "top_blank_px": 585,
+        "top_blank_pct_of_frame": 25.7,
+        "bottom_blank_above_caption_px": 709,
+        "bottom_blank_pct_of_frame": 31.1,
+        "preview_caption_bar_px": 82,
+        "preview_caption_y": [
+          2198,
+          2279
+        ],
+        "caption_is_preview_only": true,
+        "decision": "Parent 2026-11-22 09:46 Asia/Hong_Kong: do not blindly enlarge the room to ~200+ tall to fill 19:9. Stop offline camera iteration. Wait for Godot Mobile review-fixture frames."
+      }
+    }
+  },
+  "pet_preview_only": {
+    "canvas": 64,
+    "visible_h": 54,
+    "visible_w": 44,
+    "pixel_size": 1.0,
+    "node_y": 29.0,
+    "offset_y": 2.0,
+    "center_y": 31.0,
+    "source_frame": "/workspace/pet_walk_art_r4/frames/r4/pet_tuanrong_radiant_front_idle_01.png",
+    "source_frame_sha256": "f2bceb847ea214c58301f841a4bcc1ce4065e07264696b7c7e6084bbea3762d1",
+    "in_shell_glb": false,
+    "675_pet_unchanged": true,
+    "placement": {
+      "method": "Preview quad uses ONLY center_y=31 as the 64×64 canvas center. offset_y=2 is already included in center_y (= node_y 29 + offset_y 2). offset_y is not added a second time.",
+      "canvas_world_y": [
+        -1.0,
+        63.0
+      ],
+      "uv": "V=0 at world y=-1 (image bottom, glTF convention); V=1 at world y=63 (image top). raster3d samples y=(1-v)*h.",
+      "opaque_rows_pil_top0": {
+        "first": 7,
+        "last": 62
+      },
+      "foot_last_opaque_row": 62,
+      "foot_world_y": 0.0,
+      "crown_first_opaque_world_y": 55.0,
+      "engineering": "Use official r4 Sprite3D: pixel_size=1, 64×64, node at y=29, offset.y=2, foot at y=0. Do not set node_y=31 and also keep offset.y=2."
+    }
+  },
+  "set_A_occupancy": [
+    "bed_leaf",
+    "table_stump",
+    "wall_shelf",
+    "rug_leaf",
+    "win_curtain",
+    "lamp_mushroom"
+  ],
+  "not_in_this_slice": "Remaining furniture IDs of the 13 are not authored as 3D in this pack. No new IDs.",
+  "preview_raster_limits": {
+    "wall_receive_shadow": {
+      "offline": "Shipped wall pieces were rasterized with receive_shadow=False because the preview height-map shadow (tools/raster3d.py planar Y map) quantized into regular horizontal bands on vertical walls. Ceiling also receive_shadow=False in the preview path.",
+      "not_an_art_decision": true,
+      "not_in_glb": "receive_shadow / cast_shadow / unlit / color_factor-as-light are preview-raster flags. write_glb exports only glTF PBR (baseColor, metallic, roughness, normal, alpha, emissive, doubleSided). The engine will not inherit wall-shadow-off.",
+      "engine_must": "Godot Mobile review must use form-correct soft shadows on walls, floor, and furniture. Do not treat unshadowed walls, or the offline raster look, as the approved material/lighting result."
+    }
+  },
+  "review_fixture_sources": {
+    "purpose": "Independent 遊程 Godot Mobile review fixture. pack.json locked:false — engineering must not officially consume sizes/meshes/camera, must not flip locked:true, must not write these coords into save.",
+    "load": {
+      "pack_root": "/workspace/interior_room1_art_r1/ (keep mirror /home/box/keep/interior_room1_art_r1/)",
+      "glb": "shell.glb (self-contained; textures also duplicated as PNGs under textures/)",
+      "pack": "pack.json",
+      "unit": "1 glTF unit = 1 wu = 1 Godot unit; root interior_room1; ground y=0; no hidden root scale"
+    },
+    "materials": {
+      "authoritative": "glTF materials inside shell.glb plus the 14 PNGs in textures/ (same images are embedded).",
+      "authored_by": "tools/author_textures.py (clean warm plaster, wide floor boards) and tools/write_glb.py (PBR).",
+      "typical_pbr": {
+        "walls": "room1_wall + room1_wall_n, roughness 0.9, opaque",
+        "floor": "room1_floor + room1_floor_n, roughness 0.92, opaque",
+        "ceiling": "room1_plaster + room1_plaster_n, roughness 0.95, baseColorFactor [1.02, 1.0, 0.96, 1.0]",
+        "timber_beams_dado_door": "room1_timber / room1_wood + normals, roughness ~0.7–0.88",
+        "furniture_atlas": "room1_furn_atlas, wrap false",
+        "glass": "room1_glass, BLEND, roughness 0.15, metallic 0, emissive [0.16, 0.14, 0.08], doubleSided",
+        "daylight_plane": "room1_daylight, opaque (preview also marked unlit — that flag is not in the glb)",
+        "curtains": "room1_curtain, MASK cutoff 0.15, doubleSided"
+      }
+    },
+    "lighting": {
+      "engine": "Use the approved 67519344 HD-2D Godot Mobile environment / sun / fill / ambient / shadows from the live official scene. That is the lighting source of truth for this review. Do not copy the offline raster lighting as an official indoor lock.",
+      "offline_preview_only": {
+        "where": "tools/build_room1.py lighting dict + tools/raster3d.py Lambert + planar height-map shadows, nearest texel. Previews are captioned 'not Godot Mobile acceptance'.",
+        "light_dir_toward_light": [
+          -0.18,
+          0.78,
+          -0.6
+        ],
+        "fill_dir": [
+          0.15,
+          0.35,
+          0.92
+        ],
+        "ambient": [
+          0.3,
+          0.28,
+          0.25
+        ],
+        "key_col": [
+          1.08,
+          0.94,
+          0.72
+        ],
+        "fill_col": [
+          0.22,
+          0.26,
+          0.32
+        ],
+        "bg_rgba": [
+          42,
+          50,
+          62,
+          255
+        ],
+        "use": "Composition, camera, pet bbox, and material albedo reference only — not lighting/shadow ground truth."
+      },
+      "historical_outdoor_art_lights_not_a_lock": {
+        "path": "/home/box/keep/godot/hd2d-pilot-v6/godot_hd2d_v6_9-merged/art/lights.json",
+        "note": "H1 outdoor 晨光暖調 (sun dir travel [0.4206, -0.721, 0.5507], color #ffe6b8, intensity 1.0, ambient #cfe0f0 0.55, shadowIntensity 0.3, fill #ffe2c4 0.38). Garden/outdoor documentation, possibly older tool convention; not an indoor room lock. Review fixture should use live 675 Mobile lights, not paste this JSON blindly."
+      }
+    },
+    "camera_for_comparison_only": {
+      "hero_after": "eye [-55, 48, 400], target [10, 40, -20], up [0,1,0], vfov 46, znear 2, zfar 900, apron false, 19:9 1080×2280",
+      "locked": false,
+      "note": "Candidate indoor framing (mild -X cutaway so the right-wall door face is readable). Not 675 exterior proportions. Not to be written into save."
+    },
+    "slots_and_room": "All official slots and the room size remain candidates, locked:false. Wait for real Mobile frames before further art changes. No asset expansion and no engineering edits in this archive step."
+  },
+  "archive_20261122_0947": {
+    "time": "2026-11-22 09:47 Asia/Hong_Kong UTC+8",
+    "status": "Parent reviewed the new hero: full room / door / bed are readable; real improvement. Not for user delivery. Not locked.",
+    "rollback": "/workspace/interior_room1_art_r1_rollback_20261122_0934/ (keep same name)",
+    "sha256_manifest": "data/SHA256_ARCHIVE_20261122_0947.txt",
+    "assets_frozen_this_round": "shell.glb, textures/*.png, pack.json, and the five 1080 previews were not rebuilt in this archive step.",
+    "next": "Wait for 遊程 Godot Mobile review-fixture images. No further offline camera/material iteration in this slice until then."
+  }
+}

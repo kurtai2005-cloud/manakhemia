@@ -1,0 +1,7 @@
+Official loader contract used for pack.json alignment (read-only, not modified):
+  /home/box/keep/遊美/hd2d_loader_contract_0c2c50f04b5c/HD2D_LOADER_CONTRACT.md
+  7075 bytes
+  SHA-256 527b0cd25424d89d4f33f2c57173aa2bd565d80f5d020502bbcc8bda891eb8e7
+  extracted 2026-11-22 09:29 Asia/Hong_Kong UTC+8 from tools/HD2D_LOADER_CONTRACT.md
+  in vc27-review-delta-67519344-to-0c2c50f04b5c (head 0c2c50f04b5c)
+This pack does not copy the contract body, so the text cannot drift.
