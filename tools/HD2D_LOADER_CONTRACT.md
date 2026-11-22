@@ -4,7 +4,7 @@ This is the file contract for the art owner. Root code owns the loader. The art 
 
 ## What the root project can load
 
-Godot ignores `res://godot_hd2d_v6/` because that folder has its own `project.godot`. `load()` of those paths fails even though the files are on disk. The root import path is `res://hd2d_stage/`, a symlink map built by `tools/stage_hd2d_assets.sh`. The symlinks point at the frozen files. The script does not copy or edit them.
+Godot ignores `res://godot_hd2d_v6/` because that folder has its own `project.godot`. `load()` of those paths fails even though the files are on disk. The root import path is `res://hd2d_stage/`. `tools/stage_hd2d_assets.py` (also `tools/stage_hd2d_assets.sh`) copies regular files from `godot_hd2d_v6/art/` into that folder after each source matches `tools/hd2d_stage_prerequisites.sha256`. The copy is a normal file. The script does not create a symlink, junction, or hard link, and it does not edit the frozen source. Windows does not need `core.symlinks` or Developer Mode.
 
 Run the stager, then import the root project once:
 
@@ -36,7 +36,13 @@ The cottage glb has no node translation, rotation, or scale. Its mesh stays in t
 
 Measured 675 threshold, cottage at `(82.5, 0, −72)`: world `(94, 0, −50)`. The front is a closed recess, not a passage. Outward is +Z. The root footprint still blocks `z <= −36` at the door for radius 10. Do not shrink that collider and do not move the cottage to make a test pass.
 
-`(94, 0, −29.5)` is an engineering test point, not an art-locked anchor. The baked root navigation mesh, with the existing agent radius 12 and cell size 4, ends at z=−28. The test point is off that mesh. The agent can path to the closest on-mesh point and then stops up to `target_desired_distance` (6) short of it. The official exterior anchor stays unset until a measured on-mesh path and a positive clearance from z=−36 are accepted as the anchor. This slice does not write either number into art data.
+Three different positions are in use. None of them is the official exterior anchor.
+
+- Engineering candidate, off the baked mesh: `(94, 0, −29.5)`.
+- Closest on-mesh point the agent is given: `(94, 0, −28)`. The mesh south edge is z=−28 with the existing agent radius 12 and cell size 4. The source polygon starts at z=−40.
+- Walked stop: about `(94, 0, −22.5)`. `target_desired_distance` is 6, so the agent stops short of the on-mesh point. Clearance from this stop to the block line z=−36 is about 13.5 wu.
+
+The off-mesh candidate is not the walked stop. The official exterior anchor stays unset. This slice does not write any of these numbers into art data.
 
 Entering the house is the existing cut. The pet does not walk through the door.
 
@@ -44,7 +50,7 @@ Entering the house is the existing cut. The pet does not walk through the door.
 
 The owner is making an art-only shell, six slot volumes, and furniture volumes. Not thirteen finished items. Room size, camera, and slot coordinates are candidates. The loader will not read a coordinate as locked.
 
-Deliver one folder of files. Do not put a `project.godot` inside it. The root will symlink that folder under `res://hd2d_stage/room1/` the same way it stages the pet and the cottage.
+Deliver one folder of regular files. Do not put a `project.godot` inside it. The root stager will copy that folder to `res://hd2d_stage/room1/` the same way it copies the pet frames and the cottage. Do not deliver symlinks.
 
 `shell.glb`
 
@@ -91,10 +97,6 @@ Fields the loader will accept, and what it will not invent:
 
 Care, offline catch-up, work, hunt, and family are unchanged root systems. The coat does not drive them. The interior room stays the existing placeholder. Renderer acceptance still needs a real Mobile run. This software-GL run is not that.
 
-## If the full 675 exterior must be the live scene
+## Full 675 exterior
 
-That is a larger choice than this loader. The frozen files stay as they are until one of these is chosen:
-
-1. Keep the stage as the resource map and keep the current H1 garden as the live scene. This is the current choice.
-2. Hide the H1 cottage and instance the staged glb with root materials only. That is not the accepted 675 exterior, because the depth, ground, and lighting stay in `art_depth.gd`.
-3. Stop ignoring `godot_hd2d_v6/` by removing or renaming its `project.godot`, or by running `capture.tscn` as the scene. That edits the pilot project boundary or starts a second runtime. It is not done here.
+This contract does not mount `capture.tscn` or `art_depth.gd`. The live garden stays the current root garden. A reduced cottage, a second runtime, and an edit to `godot_hd2d_v6/project.godot` are not the next step. Any broader extraction stays unbuilt until its scope is agreed. The review notes name the path-remap copy that can keep the frozen source hashes, and the two root settings that copy cannot change: the Mobile renderer line, and the five shader globals.

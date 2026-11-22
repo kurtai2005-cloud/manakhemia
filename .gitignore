@@ -11,3 +11,7 @@ android/.gradle/
 *.aab
 user://
 .DS_Store
+# Generated copies of frozen 675 bytes. Recreate with tools/stage_hd2d_assets.py
+hd2d_stage/pet/r4/*.png
+hd2d_stage/meshes/*.glb
+hd2d_stage/meshes/cottage_*.png
