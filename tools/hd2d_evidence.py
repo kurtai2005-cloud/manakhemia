@@ -182,7 +182,7 @@ def assert_root_available(available: set[str], required: dict[str, str]) -> None
 
 
 def _consider_file(repo: Path, rel: str, required: dict[str, str], queue: list[str]) -> None:
-    if rel in required or skipped(Path(rel)) or rel.startswith(("godot_hd2d_v6/", ".godot/")):
+    if rel in required or skipped(Path(rel)) or rel.startswith(("godot_hd2d_v6/", "hd2d_stage/", ".godot/")):
         return
     path = repo / rel
     if path.is_symlink() or not path.is_file():
@@ -198,7 +198,7 @@ def _consider_file(repo: Path, rel: str, required: dict[str, str], queue: list[s
 
 def _consider_tree(repo: Path, prefix: str, required: dict[str, str], queue: list[str], seen_dirs: set[str]) -> None:
     prefix = prefix.strip("/") + "/"
-    if prefix in seen_dirs or prefix.startswith(("godot_hd2d_v6/", ".godot/")):
+    if prefix in seen_dirs or prefix.startswith(("godot_hd2d_v6/", "hd2d_stage/", ".godot/")):
         return
     seen_dirs.add(prefix)
     base = repo / prefix
@@ -220,7 +220,7 @@ def collect_root_closure(repo: Path) -> tuple[dict[str, str], list[str]]:
 
     def consider(token: str) -> None:
         rel = token.replace("\\", "/").split("::", 1)[0].strip()
-        if not rel or rel.startswith(("godot_hd2d_v6/", ".godot/", "uid:")):
+        if not rel or rel.startswith(("godot_hd2d_v6/", "hd2d_stage/", ".godot/", "uid:")):
             return
         if skipped(Path(rel)):
             return
@@ -557,6 +557,9 @@ def prepare(
     check_hashes(work, prereq, "stage prerequisites")
     stage = work / "tools" / "stage_hd2d_assets.py"
     subprocess.run([sys.executable, str(stage)], cwd=work, check=True)
+    staged = work / "hd2d_stage" / "textures" / "tiles" / "cloud_shadow.png"
+    if staged.is_symlink() or not staged.is_file():
+        raise SystemExit("stage did not produce hd2d_stage/textures/tiles/cloud_shadow.png")
 
 
 def make_pilot(work: Path, pilot: Path) -> None:
