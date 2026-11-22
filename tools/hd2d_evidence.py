@@ -263,6 +263,19 @@ def collect_root_closure(repo: Path) -> tuple[dict[str, str], list[str]]:
     ]
     for rel in seeds:
         consider(rel)
+    class_name = re.compile(r"(?m)^class_name\s+[A-Za-z_][A-Za-z0-9_]*")
+    for path in repo.rglob("*.gd"):
+        if not path.is_file() or path.is_symlink() or skipped(path):
+            continue
+        rel = path.relative_to(repo).as_posix()
+        if rel.startswith(("godot_hd2d_v6/", "hd2d_stage/", ".godot/")):
+            continue
+        try:
+            head = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        if class_name.search(head):
+            consider(rel)
     while queue:
         rel = queue.pop()
         path = repo / rel
@@ -860,7 +873,7 @@ def selftest() -> None:
         raise SystemExit("selftest: powershell entry requests headless or bash")
     if "function Import-Project" not in script or "--import" not in script:
         raise SystemExit("selftest: asset import pass is missing")
-    if "[Parameter(Mandatory = $true)][string[]]$RootPack" not in script:
+    if "[Parameter(Mandatory = $true)][string[]]$RootPack" not in script or "Expand-PackArgument" not in script:
         raise SystemExit("selftest: powershell entry does not require the root packs")
     import_block = script.split("function Import-Project", 1)[1].split("function Start-Godot", 1)[0]
     if "Save-GodotStreams" not in import_block or import_block.find("Save-GodotStreams") > import_block.find('throw "Godot import timed out'):

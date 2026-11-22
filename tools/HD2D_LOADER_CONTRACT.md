@@ -129,9 +129,13 @@ The root frame is a 1080×2280 SubViewport. The H1 window stays 390×844. The pi
 
 Windows, displayed Mobile, both processes, PNG required. `Baseline675` is the art-only 675 tree the reviewer already has (`godot_hd2d_v6` plus its identity and stage files). It does not contain the game root. Pass both root archives as `-RootPack`. Support is `project.godot`, `scenes/Main.tscn`, the autoload scripts, addons, and the compare scripts. Assets are the unchanged `art/`, `art-pet/`, and `audio/` files. Neither archive invents a scene. `tools/hd2d_root_closure.sha256` is the hash list. A path marked `source_absent` (the H1 interior textures, including `door.png`) was already missing in the source tree and is not given a stub.
 
+Run this from an open PowerShell session. `@()` binds the two packs as a string array. `powershell.exe -File` does not do that with a comma.
+
 ```
-powershell -NoProfile -File tools\run_hd2d_mobile_compare.ps1 -GodotExe <Godot.exe> -Python <python.exe> -Baseline675 <art-only 675 tree> -RootPack <root-support.zip>,<root-assets.zip> -DeltaPath <this review zip> -OutputDir <empty dir>
+& .\tools\run_hd2d_mobile_compare.ps1 -GodotExe <Godot.exe> -Python <python.exe> -Baseline675 <art-only 675 tree> -RootPack @(<root-support.zip>, <root-assets.zip>) -DeltaPath <this review zip> -OutputDir <empty dir>
 ```
+
+The script also accepts one comma-separated `-RootPack` string and a repeated `-RootPack`, because `-File` passes the comma through as text.
 
 Prepare refuses to start Godot when `scenes/Main.tscn` or a root autoload from that closure is missing. An import log that cannot open the main scene, cannot create an autoload, or has a script parse error stops the run even when Godot's exit code is 0. The output directory must be missing or empty; a directory that already has files is left untouched.
 

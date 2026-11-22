@@ -145,7 +145,24 @@ function Start-Godot([string]$Project, [string]$Script, [string]$LogPath, [strin
     return $proc.ExitCode
 }
 
+function Expand-PackArgument([string[]]$Values) {
+    # powershell.exe -File passes "a.zip,b.zip" as one string. A session call
+    # with @('a.zip','b.zip') or a repeated -RootPack already arrives as items.
+    $expanded = New-Object System.Collections.Generic.List[string]
+    foreach ($value in @($Values)) {
+        if ([string]::IsNullOrWhiteSpace($value)) { continue }
+        foreach ($part in ($value -split ',')) {
+            $part = $part.Trim().Trim('"').Trim("'")
+            if (-not [string]::IsNullOrWhiteSpace($part)) { [void]$expanded.Add($part) }
+        }
+    }
+    return $expanded.ToArray()
+}
+
 try {
+    $RootPack = @(Expand-PackArgument $RootPack)
+    $RootPackSha = @(Expand-PackArgument $RootPackSha)
+    if ($RootPack.Count -lt 1) { throw "RootPack is required" }
     Assert-FreshOutput $OutputDir
     $outputAccepted = $true
     [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding $false
