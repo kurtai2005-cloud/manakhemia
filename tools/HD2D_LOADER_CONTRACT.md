@@ -135,7 +135,7 @@ Run this from an open PowerShell session. `@()` binds the two packs as a string 
 & .\tools\run_hd2d_mobile_compare.ps1 -GodotExe <Godot.exe> -Python <python.exe> -Baseline675 <art-only 675 tree> -RootPack @(<root-support.zip>, <root-assets.zip>) -DeltaPath <this review zip> -OutputDir <empty dir>
 ```
 
-The script also accepts one comma-separated `-RootPack` string and a repeated `-RootPack`, because `-File` passes the comma through as text.
+`powershell.exe -File -RootPack a.zip,b.zip` also works: `-File` passes that comma string as one argument, and the script splits it. A repeated `-RootPack` switch is rejected by `powershell.exe -File`.
 
 Prepare refuses to start Godot when `scenes/Main.tscn` or a root autoload from that closure is missing. An import log that cannot open the main scene, cannot create an autoload, or has a script parse error stops the run even when Godot's exit code is 0. The output directory must be missing or empty; a directory that already has files is left untouched.
 
