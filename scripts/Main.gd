@@ -37,6 +37,8 @@ var _obs_pitch := 0.0
 enum CamMode { OVERVIEW, FOLLOW }
 var cam_mode := CamMode.OVERVIEW
 var follow_walker: Walker
+var play_frames := 0
+var play_inputs := 0
 var family: FamilyDirector
 var _cam_dist := 580.0
 var _texel_px := 0.0
@@ -648,6 +650,7 @@ func _place_cam(dt: float) -> void:
 
 
 func _process(dt: float) -> void:
+	play_frames += 1
 	_place_cam(dt)
 	if HuntSystem:
 		HuntSystem.tick_watch(dt)
@@ -660,6 +663,7 @@ func _process(dt: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	play_inputs += 1
 	# 備用：ray 撳屎（萬一 Area 收唔到）
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton

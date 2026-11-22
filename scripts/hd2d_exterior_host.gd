@@ -231,7 +231,7 @@ func present_on_window() -> void:
 	_apply_opening_to_root_cam()
 	_open_compare_viewport()
 	_show_garden_rect()
-	print("hd2d garden mounted viewport=", _compare_view.size)
+	print("hd2d garden mounted viewport=", _compare_view.size, " renderer=", RenderingServer.get_current_rendering_method())
 
 
 func apply_same_view() -> void:
