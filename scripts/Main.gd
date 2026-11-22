@@ -2382,7 +2382,9 @@ func _make_exterior_door(house: Node3D) -> void:
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	var tex: Texture2D = load("res://art/garden3d/H1/interior/meshes/door.png")
+	# door.png is not in this source tree. The color below is the existing fallback.
+	var door_path := "res://art/garden3d/H1/interior/meshes/door.png"
+	var tex: Texture2D = load(door_path) if FileAccess.file_exists(door_path) else null
 	if tex:
 		mat.albedo_texture = tex
 	else:

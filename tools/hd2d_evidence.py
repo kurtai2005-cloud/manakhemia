@@ -37,6 +37,7 @@ MATERIAL_NULL_FUNCS = (
     "material_get_instance_shader_parameters",
     "material_update_dependency",
 )
+KNOWN_OPTIONAL = {"art/garden3d/H1/interior/meshes/door.png"}
 
 
 def sha256(path: Path) -> str:
@@ -147,6 +148,8 @@ def read_closure(path: Path | None = None) -> tuple[dict[str, str], list[str]]:
             required[rel.replace("\\", "/")] = digest.lower()
         elif kind == "source_absent":
             absent.append(rest.replace("\\", "/"))
+        elif kind == "baseline_known_optional":
+            continue
         else:
             raise SystemExit(f"bad closure line: {line}")
     if "scenes/Main.tscn" not in required:
@@ -300,6 +303,8 @@ def write_closure(repo: Path, dest: Path) -> None:
     for rel in sorted(required):
         lines.append(f"required {required[rel]} {rel}")
     for rel in absent:
+        if rel in KNOWN_OPTIONAL:
+            lines.append(f"baseline_known_optional {rel}")
         lines.append(f"source_absent {rel}")
     dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -343,6 +348,7 @@ def classify_godot_log(text: str, required: set[str] | None = None) -> dict:
     required = required or set()
     fatal: list[str] = []
     material: list[str] = []
+    known_optional: list[str] = []
     rows = [raw.strip() for raw in text.splitlines() if raw.strip()]
     index = 0
     while index < len(rows):
@@ -365,6 +371,12 @@ def classify_godot_log(text: str, required: set[str] | None = None) -> dict:
             "Failed to load script",
             "Cannot open file",
         ))
+        if rel in KNOWN_OPTIONAL and ("Resource file not found" in line or "Failed loading resource" in line):
+            known_optional.append(line)
+            continue
+        if any(token in line for token in ("Parse JSON failed", "missing JSON", "empty JSON", "failed to parse")):
+            fatal.append(line)
+            continue
         resource = "Failed loading resource" in line or "Attempt to open script" in line or "Resource file not found" in line
         if structural or (resource and (not rel or rel in required)):
             fatal.append(line)
@@ -383,6 +395,7 @@ def classify_godot_log(text: str, required: set[str] | None = None) -> dict:
             "They are not a Failed-loading-resource for a frozen texture, and they are not removed from the log."
             if material_class == "lifetime_cleanup" else ""
         ),
+        "baseline_known_optional": known_optional,
     }
 
 

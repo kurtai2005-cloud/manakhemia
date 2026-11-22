@@ -139,6 +139,8 @@ Run this from an open PowerShell session. `@()` binds the two packs as a string 
 
 Prepare refuses to start Godot when `scenes/Main.tscn` or a root autoload from that closure is missing. An import log that cannot open the main scene, cannot create an autoload, or has a script parse error stops the run even when Godot's exit code is 0. The output directory must be missing or empty; a directory that already has files is left untouched.
 
+`res://art/garden3d/H1/interior/meshes/door.png` is a baseline-known optional absence. The exterior door already falls back to a flat color, and the loader does not call `load` when the file is missing. `res://art/garden3d/H1/interior/objects.json` is named by `data/m1d.json` and opened with `FileAccess` from `GardenLoader.load_json` during `InteriorRoom._build_from_art`. That JSON is not in the source tree. It is a mandatory runtime failure, not an optional door, and it is not replaced with a stub. A JSON parse error or a missing required JSON blocks the compare result.
+
 A missing, empty, undecodable, or wrong-size PNG fails the process. State JSON alone is not success. The two comparison processes are displayed. A separate `--import` pass only builds the asset cache and is not the picture.
 
 The four pilot `Parameter "material" is null` lines are RendererRD lookups (`material_casts_shadows`, `material_is_animated`, `material_get_instance_shader_parameters`, `material_update_dependency`) on one null material RID. The same calls show up at process teardown after a frame has already been drawn. They stay in the log. They are not a missing frozen texture and they are not a reason to retune art. A log that also contains a failed resource load is an import failure, not this teardown class.

@@ -33,6 +33,9 @@ func _on_frame() -> void:
 			quit(1)
 		return
 	process_frame.disconnect(_on_frame)
+	if not _runtime_data_ok():
+		quit(1)
+		return
 	_shoot(pet)
 
 
@@ -98,6 +101,22 @@ func _write(wrote: bool, img: Image) -> void:
 	print("same_view json=", json_path, " png_written=", wrote, " follow=", _info.get("follow_camera_steps", 0), " renderer=", _info.get("renderer_actual", ""))
 	if _exterior:
 		_exterior.call("restore_root_view")
+
+
+func _runtime_data_ok() -> bool:
+	var objects := "res://art/garden3d/H1/interior/objects.json"
+	var gd := root.get_node_or_null("GameData")
+	if gd and gd.get("m1d") is Dictionary:
+		var interior: Variant = (gd.get("m1d") as Dictionary).get("interior", {})
+		if interior is Dictionary and str(interior.get("objects", "")) != "":
+			objects = str(interior.get("objects"))
+	var door := "res://art/garden3d/H1/interior/meshes/door.png"
+	if not FileAccess.file_exists(door):
+		print("baseline_known_optional absent: ", door)
+	if not FileAccess.file_exists(objects):
+		print("FAIL mandatory runtime JSON missing: ", objects)
+		return false
+	return true
 
 
 func _display_blocked() -> bool:

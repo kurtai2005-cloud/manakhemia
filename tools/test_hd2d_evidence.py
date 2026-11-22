@@ -265,6 +265,18 @@ class RootClosureTests(unittest.TestCase):
         for name in ev.MATERIAL_NULL_FUNCS:
             self.assertIn(name, text)
 
+    def test_json_parse_blocks_and_door_stays_optional(self) -> None:
+        text = (
+            "ERROR: Parse JSON failed. Error at line 0: Unknown error getting token\n"
+            "ERROR: GardenLoader: missing JSON res://art/garden3d/H1/interior/objects.json\n"
+            "ERROR: Resource file not found: res://art/garden3d/H1/interior/meshes/door.png\n"
+        )
+        report = ev.classify_godot_log(text, set(ev.read_closure()[0]))
+        self.assertTrue(any("Parse JSON" in line for line in report["fatal"]))
+        self.assertTrue(any("missing JSON" in line for line in report["fatal"]))
+        self.assertTrue(report["baseline_known_optional"])
+        self.assertFalse(any("door.png" in line for line in report["fatal"]))
+
     def test_known_absent_door_texture_is_not_an_import_stop(self) -> None:
         text = "ERROR: Resource file not found: res://art/garden3d/H1/interior/meshes/door.png\n"
         report = ev.classify_godot_log(text, set(ev.read_closure()[0]))
