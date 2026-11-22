@@ -1,0 +1,18 @@
+# Recovered H1 interior runtime files
+
+These 44 files were not tracked at 67519344fa95636dd7a652b18dfb686cfa9ff022.
+They are not a 675 room1 candidate and they do not change Room 1 locked:false.
+
+Archive checked before extract:
+  name: recovered_h1_interior_reference
+  bytes: 116386
+  sha256: a5bf58ccab6c2136011cb7a2592276d258f17704ecae3a7ac70efa05a14f6670
+  MEMBER_SHA256 lists 44 paths and does not list itself.
+  RECOVERY_NOTES.txt was not installed as a game resource.
+  No .godot cache, export preset, credential, or package was in the archive.
+
+objects.json sha256: 205fab1ecb721cd9fd62980eeb0c084bcabf34862ffe0b8eb42fc56796e66dea
+format garden3d.interior/1, id H1_interior, 6 mesh entries.
+InteriorRoom already loads this path from data/m1d.json via FileAccess.
+Mesh texture, texture3x, and emissive files named by those mesh JSON files are in the same set.
+door.png at art/garden3d/H1/interior/meshes/door.png is this original file. The color fallback remains only when that file is absent.

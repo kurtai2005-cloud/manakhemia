@@ -1,0 +1,103 @@
+{
+ "variant": "H1_interior",
+ "name": "室內晨光（窗光為主）",
+ "assumedRoom": {
+  "width": 160,
+  "depth": 128,
+  "ceiling": 120
+ },
+ "lights": [
+  {
+   "id": "window",
+   "zh": "後窗日光／夜燈",
+   "x": 0,
+   "y": 76.0,
+   "z": -62.0,
+   "color": "#ffc870",
+   "radius": 90,
+   "intensity": 0.0,
+   "intensityNight": 0.9,
+   "flicker": 0.02
+  }
+ ],
+ "sun": {
+  "dir": [
+   0.35,
+   -0.55,
+   -0.76
+  ],
+  "color": "#ffe6b8",
+  "intensity": 0.55,
+  "ambient": {
+   "color": "#e8d8c0",
+   "intensity": 0.7
+  },
+  "shadowIntensity": 0.25,
+  "note": "由窗方向略斜照入；唔烘入貼圖"
+ },
+ "fill": {
+  "dir": [
+   0.15,
+   -0.2,
+   -0.97
+  ],
+  "color": "#ffe2c4",
+  "intensity": 0.5,
+  "intensityNight": 0.0,
+  "note": "鏡頭方向補光，日 0.50，夜 0"
+ },
+ "night": {
+  "sun": 0.06,
+  "ambient": "#5a4a70",
+  "ambientIntensity": 0.4
+ },
+ "fog": {
+  "color": "#ffe8c8",
+  "near": 420,
+  "far": 1400,
+  "enabled": false
+ },
+ "tiers": {
+  "high": {
+   "sun_color": "#ffe6b8",
+   "sun_energy": 0.55,
+   "fill_color": "#ffe2c4",
+   "fill_energy": 0.5,
+   "ambient_color": "#e8d8c0",
+   "ambient_energy": 0.7,
+   "window_color": "#ffc870",
+   "window_day": 0.0,
+   "window_night": 0.9,
+   "shadow_opacity": 0.25,
+   "shaded": true
+  },
+  "mid": {
+   "sun_color": "#ffe6b8",
+   "sun_energy": 0.4,
+   "fill_color": "#ffe2c4",
+   "fill_energy": 0.35,
+   "ambient_color": "#e8d8c0",
+   "ambient_energy": 0.75,
+   "window_color": "#ffc870",
+   "window_day": 0.0,
+   "window_night": 0.75,
+   "shadow_opacity": 0.15,
+   "shaded": true
+  },
+  "low": {
+   "sun_color": "#ffe6b8",
+   "sun_energy": 0.0,
+   "fill_color": "#ffe2c4",
+   "fill_energy": 0.0,
+   "ambient_color": "#f0e0c8",
+   "ambient_energy": 1.0,
+   "window_color": "#ffc870",
+   "window_day": 0.0,
+   "window_night": 0.6,
+   "shadow_opacity": 0.0,
+   "shaded": false,
+   "albedo_mul_day": "#fff6e8",
+   "albedo_mul_night": "#6a6088"
+  }
+ }
+}

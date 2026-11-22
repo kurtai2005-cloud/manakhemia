@@ -245,8 +245,14 @@ class RootClosureTests(unittest.TestCase):
         self.assertIn("scripts/Walker.gd", required)
         self.assertIn("scripts/Footprints.gd", required)
         self.assertIn("scripts/GardenLoader.gd", required)
+        self.assertIn("art/garden3d/H1/interior/objects.json", required)
+        self.assertNotIn("art/garden3d/H1/interior/objects.json", absent)
+        self.assertEqual(
+            required["art/garden3d/H1/interior/objects.json"],
+            "205fab1ecb721cd9fd62980eeb0c084bcabf34862ffe0b8eb42fc56796e66dea",
+        )
+        self.assertIn("art/garden3d/H1/interior/meshes/door.png", required)
         self.assertIn("icon.png", required)
-        self.assertIn("art/garden3d/H1/interior/meshes/door.png", absent)
         self.assertNotIn("export_presets.cfg", required)
 
     def test_windows_import_log_is_fatal(self) -> None:

@@ -139,7 +139,7 @@ Run this from an open PowerShell session. `@()` binds the two packs as a string 
 
 Prepare refuses to start Godot when `scenes/Main.tscn` or a root autoload from that closure is missing. An import log that cannot open the main scene, cannot create an autoload, or has a script parse error stops the run even when Godot's exit code is 0. The output directory must be missing or empty; a directory that already has files is left untouched.
 
-`res://art/garden3d/H1/interior/meshes/door.png` is a baseline-known optional absence. The exterior door already falls back to a flat color, and the loader does not call `load` when the file is missing. `res://art/garden3d/H1/interior/objects.json` is named by `data/m1d.json` and opened with `FileAccess` from `GardenLoader.load_json` during `InteriorRoom._build_from_art`. That JSON is not in the source tree. It is a mandatory runtime failure, not an optional door, and it is not replaced with a stub. A JSON parse error or a missing required JSON blocks the compare result.
+`res://art/garden3d/H1/interior/objects.json` is original H1 runtime data recovered from outside the 675 git tree. It was not tracked at `67519344`. Provenance is `tools/hd2d_h1_interior_recovery.txt`. It is not room 1 and it does not change `"locked": false`. `door.png` in that same subtree is the original texture. `Main` loads it when the file exists and keeps the flat color only when it is absent. A missing required JSON still blocks the compare. A JSON parse error still blocks the compare.
 
 A missing, empty, undecodable, or wrong-size PNG fails the process. State JSON alone is not success. The two comparison processes are displayed. A separate `--import` pass only builds the asset cache and is not the picture.
 

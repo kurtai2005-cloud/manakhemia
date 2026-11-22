@@ -1,0 +1,104 @@
+{
+ "format": "garden3d.interior/1",
+ "id": "H1_interior",
+ "zh": "小屋室內（三牆盒：地板、後牆、左右牆、窗、門）",
+ "assumedRoom": {
+  "units": "1 unit = 1 art px = 1 world unit",
+  "width": 160,
+  "depth": 128,
+  "ceiling": 120,
+  "wallThickness": 3,
+  "metres": {
+   "note": "L 寵物可見身高 54 u 當 0.80 m（Q 版小伴）；遊程 GIF 出咗可以改",
+   "mPerUnit": 0.014815,
+   "width_m": 2.37,
+   "depth_m": 1.896,
+   "ceiling_m": 1.778
+  },
+  "tileable": true,
+  "tileSize": 64,
+  "origin": "floor center; +X right, +Y up, +Z toward camera / near edge",
+  "openFront": true
+ },
+ "objects": [
+  {
+   "id": "floor",
+   "type": "mesh",
+   "zh": "地板",
+   "mesh": "meshes/floor.json",
+   "x": 0,
+   "y": 0,
+   "z": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "near"
+  },
+  {
+   "id": "wall_back",
+   "type": "mesh",
+   "zh": "後牆",
+   "mesh": "meshes/wall_back.json",
+   "x": 0,
+   "y": 0,
+   "z": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid"
+  },
+  {
+   "id": "wall_L",
+   "type": "mesh",
+   "zh": "左牆",
+   "mesh": "meshes/wall_L.json",
+   "x": 0,
+   "y": 0,
+   "z": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid"
+  },
+  {
+   "id": "wall_R",
+   "type": "mesh",
+   "zh": "右牆",
+   "mesh": "meshes/wall_R.json",
+   "x": 0,
+   "y": 0,
+   "z": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "mid"
+  },
+  {
+   "id": "window",
+   "type": "mesh",
+   "zh": "後窗",
+   "mesh": "meshes/window.json",
+   "x": 0,
+   "y": 0,
+   "z": 0,
+   "yawDeg": 0,
+   "castShadow": false,
+   "receiveShadow": true,
+   "layer": "mid",
+   "emissiveLight": "window"
+  },
+  {
+   "id": "door",
+   "type": "mesh",
+   "zh": "門（內面）",
+   "mesh": "meshes/door.json",
+   "x": 0,
+   "y": 0,
+   "z": 0,
+   "yawDeg": 0,
+   "castShadow": true,
+   "receiveShadow": true,
+   "layer": "near"
+  }
+ ]
+}
