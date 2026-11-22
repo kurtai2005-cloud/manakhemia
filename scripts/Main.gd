@@ -324,9 +324,12 @@ func _build_nav() -> void:
 	var x1 := 180.0
 	var z0 := -40.0
 	var z1 := 200.0
+	# add_faces reverses winding before Recast. These two triangles are the
+	# opposite of a +Y visual face so the baked mesh faces up. A +Y face
+	# bakes to zero polygons and the agent never receives a path.
 	var faces := PackedVector3Array([
-		Vector3(x0, 0, z0), Vector3(x1, 0, z1), Vector3(x1, 0, z0),
-		Vector3(x0, 0, z0), Vector3(x0, 0, z1), Vector3(x1, 0, z1),
+		Vector3(x0, 0, z0), Vector3(x1, 0, z0), Vector3(x1, 0, z1),
+		Vector3(x0, 0, z0), Vector3(x1, 0, z1), Vector3(x0, 0, z1),
 	])
 	src.add_faces(faces, Transform3D.IDENTITY)
 	for r in feet.rects:

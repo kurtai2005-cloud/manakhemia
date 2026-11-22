@@ -27,7 +27,9 @@ const WALKER_RADIUS := 10.0
 const TARGET_DESIRED := 6.0
 ## Strict root block is z <= -36 at the door x. Candidate z = -30 can stop
 ## on that line. This 0.5 wu margin is an engineering stand for the route
-## test, not the art-locked exterior anchor.
+## test, not the art-locked exterior anchor. The baked root mesh ends north
+## of this stand, so a NavigationAgent goal has to snap onto the mesh.
+## That snap is not a new anchor.
 const ARRIVE_MARGIN := 0.5
 
 const BLOCK_X := 47.0

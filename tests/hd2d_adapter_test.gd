@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Door := preload("res://scripts/hd2d_door.gd")
+const Assets := preload("res://scripts/hd2d_assets.gd")
 ## Isolated Main route for the 675 presentation adapter.
 ## Requires application/config/custom_user_dir_name to contain vc27_root_adapter.
 ## Software GL on this machine is not a phone or Mobile-renderer result.
@@ -20,6 +21,8 @@ var _version := -1
 var _cams := 0
 var _envs := 0
 var _walkers := 0
+var _saw_path := false
+var _saw_reachable := false
 
 
 func _initialize() -> void:
@@ -31,6 +34,7 @@ func _initialize() -> void:
 		return
 	_geometry()
 	_frozen()
+	_resources()
 	_main = load("res://scenes/Main.tscn").instantiate()
 	if _main == null or not _main.has_method("enable_hd2d_presentation"):
 		print("FAIL Main did not load. Global class cache may be missing.")
@@ -105,6 +109,51 @@ func _sha(path: String) -> String:
 	return ctx.finish().hex_encode()
 
 
+func _resources() -> void:
+	var tex := Assets.load_texture("res://art/pet/r4/pet_tuanrong_radiant_side_idle_01.png")
+	_ok(tex != null and tex.get_width() == 64 and tex.get_height() == 64, "staged r4 idle loads as a 64 texture")
+	_ok(tex != null and str(tex.resource_path).begins_with("res://hd2d_stage/"), "r4 texture comes from the root stage")
+	var scene := Assets.load_cottage()
+	_ok(scene != null, "staged cottage glb loads as a packed scene")
+	if scene == null:
+		return
+	var inst := scene.instantiate()
+	var box := _mesh_aabb(inst)
+	var textured := _has_albedo(inst)
+	var parked := inst.is_inside_tree()
+	inst.free()
+	_ok(box.size.x > 60.0 and box.size.y > 100.0 and box.size.z > 40.0, "cottage mesh keeps its authored size")
+	_ok(box.position.y >= -0.01 and box.position.y < 1.0, "cottage mesh stays on local y=0")
+	_ok(textured, "cottage scene keeps an embedded albedo texture")
+	_ok(not parked, "loaded cottage is not added to the live garden")
+	_ok(not FileAccess.file_exists("res://hd2d_stage/meshes/cottage_0.png"), "importer did not write a sibling cottage texture")
+
+
+func _has_albedo(node: Node) -> bool:
+	if node is MeshInstance3D:
+		var mesh_node := node as MeshInstance3D
+		for surface in mesh_node.mesh.get_surface_count():
+			var mat: Material = mesh_node.get_active_material(surface)
+			if mat == null:
+				mat = mesh_node.mesh.surface_get_material(surface)
+			if mat is StandardMaterial3D and (mat as StandardMaterial3D).albedo_texture != null:
+				return true
+	for child in node.get_children():
+		if _has_albedo(child):
+			return true
+	return false
+
+
+func _mesh_aabb(node: Node) -> AABB:
+	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+		return (node as MeshInstance3D).mesh.get_aabb()
+	for child in node.get_children():
+		var box := _mesh_aabb(child)
+		if box.size.length() > 0.0:
+			return box
+	return AABB()
+
+
 func _boot() -> void:
 	var method := RenderingServer.get_current_rendering_method()
 	print("adapter renderer=", method, " project_mobile_not_claimed=true")
@@ -163,6 +212,12 @@ func _on_frame() -> void:
 			_ok(false, "pet entered the root footprint during " + _phase)
 			_finish()
 			return
+		if pet.use_nav and pet.agent:
+			var path: PackedVector3Array = pet.agent.get_current_navigation_path()
+			if path.size() >= 2:
+				_saw_path = true
+			if pet.agent.is_target_reachable():
+				_saw_reachable = true
 	_frames += 1
 	if _phase == "foot":
 		if bool(_host.get("arrived")):
@@ -170,14 +225,18 @@ func _on_frame() -> void:
 			_ok(_moved > 20.0, "foot approach achieved real distance")
 			var coat: Sprite3D = pet.get_node_or_null("Hd2dCoat")
 			_ok(coat != null and coat.visible and coat.texture != null, "r4 coat is the visible pet")
+			_ok(coat != null and coat.texture != null and str(coat.texture.resource_path).begins_with("res://hd2d_stage/"), "visible coat is the imported stage texture")
 			_ok(pet.sprite == null or not pet.sprite.visible, "the old walker sprite is hidden")
-			_phase = "cancel"
+			_phase = "nav"
 			_place(pet, Vector2(94.0, 2.0))
-			pet.use_nav = false
+			pet.use_nav = true
 			_frames = 0
 			_moved = 0.0
+			_min_z = 2.0
 			_last = Vector2(94.0, 2.0)
-			_host.call("begin_approach")
+			_saw_path = false
+			_saw_reachable = false
+			_ok(bool(_host.call("begin_approach")), "nav path accepts a reachable goal toward the engineering stand")
 			return
 		if _frames > 900:
 			_ok(false, "foot approach did not arrive, z=%s" % z)
@@ -206,8 +265,10 @@ func _on_frame() -> void:
 			_moved = 0.0
 			_min_z = pet.global_position.z
 			_last = Vector2(pet.global_position.x, pet.global_position.z)
-			pet.use_nav = false
-			_ok(bool(_host.call("begin_approach_to", Vector3(110.0, 0.0, 10.0))), "retarget accepts a clear point")
+			_saw_path = false
+			_saw_reachable = false
+			pet.use_nav = true
+			_ok(bool(_host.call("begin_approach_to", Vector3(110.0, 0.0, 10.0))), "nav retarget accepts a clear point")
 	elif _phase == "retarget":
 		if _moved > 3.0:
 			_frames = 0
@@ -215,27 +276,47 @@ func _on_frame() -> void:
 			_min_z = 1000.0
 			_last = Vector2(pet.global_position.x, pet.global_position.z)
 			_phase = "reanchor"
-			_ok(bool(_host.call("begin_approach")), "second approach accepts the anchor")
+			_saw_path = false
+			_saw_reachable = false
+			_ok(bool(_host.call("begin_approach")), "nav retarget returns toward the engineering stand")
 		elif _frames > 900:
 			_ok(false, "retarget did not move")
 			_finish()
 	elif _phase == "reanchor":
 		if bool(_host.get("arrived")):
-			_ok(_min_z > -36.0, "retarget approach stayed clear")
+			_ok(_min_z > -36.0, "nav return stayed at z > -36")
+			_ok(_saw_path and _saw_reachable, "nav return followed a reachable path")
+			_ok(_moved > 3.0, "nav return achieved real distance")
 			_phase = "door"
 			_frames = 0
 		elif _frames > 900:
-			_ok(false, "retarget did not reach the anchor")
+			_ok(false, "nav return did not arrive")
 			_finish()
 	elif _phase == "nav":
 		if bool(_host.get("arrived")):
+			var stand := Door.exterior_anchor()
+			var goal: Vector3 = _host.get("goal")
+			var stop := Vector2(pet.global_position.x, pet.global_position.z)
+			var clearance := pet.global_position.z - Door.root_block_z()
 			_ok(_min_z > -36.0, "nav approach stayed at z > -36")
-			_ok(pet.global_position.z > -36.0, "nav arrival is outside the footprint")
-			print("adapter nav_arrived=true z=", pet.global_position.z)
-			_finish()
+			_ok(_moved > 20.0, "nav approach achieved real distance")
+			_ok(_saw_path, "nav approach followed a path with at least two points")
+			_ok(_saw_reachable, "nav target was reachable")
+			_ok(stop.distance_to(Vector2(goal.x, goal.z)) <= Door.TARGET_DESIRED, "nav stop is within 6 wu of the point given to the agent")
+			_ok(clearance > 0.0, "nav stop has positive clearance from the block line")
+			_ok(goal.z > Door.root_block_z(), "nav goal stays north of the block line")
+			_ok(Vector2(goal.x, goal.z).distance_to(Vector2(stand.x, stand.z)) <= 8.0, "nav goal stays within 8 wu of the engineering stand")
+			print("adapter nav_arrived=true stand=", stand, " goal=", goal, " stop=", pet.global_position, " snapped=", _host.get("nav_snapped"), " clearance=", clearance)
+			_phase = "cancel"
+			_place(pet, Vector2(94.0, 2.0))
+			pet.use_nav = true
+			_frames = 0
+			_moved = 0.0
+			_last = Vector2(94.0, 2.0)
+			_host.call("begin_approach")
+			return
 		elif _frames > 900:
-			_ok(pet.global_position.z > -36.0, "nav did not enter the footprint when it did not arrive")
-			print("adapter nav_arrived=false z=", pet.global_position.z, " moved=", _moved)
+			_ok(false, "nav approach did not arrive, z=%s moved=%s" % [pet.global_position.z, _moved])
 			_finish()
 	elif _phase == "door":
 		var before := pet.global_position
@@ -243,25 +324,15 @@ func _on_frame() -> void:
 		_ok(bool(_main.get("in_interior")), "interior flag follows the existing enter")
 		_ok(bool(_host.call("commit_exit")), "exit returns through the existing exit")
 		_ok(not bool(_main.get("in_interior")), "exit clears the interior flag")
-		_ok(pet.global_position.distance_to(before) < 1.0 or pet.global_position.z > -36.0, "exit stand is the exterior approach, not the threshold")
-		_ok(pet.global_position.z > -36.0, "exit position stays outside the footprint")
-		var back := Vector2(pet.global_position.x, pet.global_position.z)
-		var goal := Vector2(Door.exterior_anchor().x, Door.exterior_anchor().z)
-		_ok(back.distance_to(goal) <= Door.TARGET_DESIRED and pet.global_position.z > -36.0, "exit stand is within 6 wu of the engineering anchor and past z=-36")
+		_ok(pet.global_position.distance_to(before) < 1.0, "exit returns to the walked nav stop")
+		_ok(pet.global_position.z > Door.root_block_z(), "exit stand stays north of the block line")
 		var placed: Dictionary = root.get_node("CollectionSystem").call("placed_items")
 		_ok(placed == _house, "furniture placement is unchanged")
 		_ok(int(root.get_node("Sim").get("state").get("version", -1)) == 1, "save version is still 1")
 		_ok(_count_type("Camera3D") == _cams, "camera count stays one")
 		_ok(_count_type("WorldEnvironment") == _envs, "environment count stays one")
 		_ok(_count_type("Walker") == _walkers, "walker count is unchanged")
-		_phase = "nav"
-		_place(pet, Vector2(94.0, 2.0))
-		pet.use_nav = true
-		_frames = 0
-		_moved = 0.0
-		_min_z = 2.0
-		_last = Vector2(94.0, 2.0)
-		_ok(bool(_host.call("begin_approach")), "nav path accepts the anchor")
+		_finish()
 
 
 func _place(pet: Node3D, xz: Vector2) -> void:

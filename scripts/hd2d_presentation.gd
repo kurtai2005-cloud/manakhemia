@@ -4,11 +4,14 @@ extends Node
 ## The Walker remains the only body. Main remains the only camera and input.
 
 const WalkClip := preload("res://godot_hd2d_v6/gameplay/m1_walk_clip.gd")
+const Assets := preload("res://scripts/hd2d_assets.gd")
 
 var active := false
 var approaching := false
 var arrived := false
 var blocked_stop := false
+var nav_snapped := false
+var requested_goal := Vector3.ZERO
 var main: Node3D
 var walker: Walker
 var clip: RefCounted
@@ -41,30 +44,11 @@ func setup(host: Node3D, body: Walker) -> void:
 	coat.offset = Vector2(0.0, WalkClip.GROUNDED_OFFSET_Y)
 	coat.visible = false
 	for path in WalkClip.frame_paths():
-		var use := str(path).replace("res://art/", "res://godot_hd2d_v6/art/")
-		var tex := _load_png(use)
+		var tex := Assets.load_texture(str(path))
 		if tex != null:
 			_tex[str(path)] = tex
 	if walker:
 		walker.add_child(coat)
-
-
-func _load_png(res_path: String) -> Texture2D:
-	# The root project skips godot_hd2d_v6/ because that folder has its own
-	# project.godot, so the imported Texture2D remap does not resolve here.
-	# The PNG bytes are still on disk. This reads them without editing 675.
-	var f := FileAccess.open(res_path, FileAccess.READ)
-	if f == null:
-		f = FileAccess.open(ProjectSettings.globalize_path(res_path), FileAccess.READ)
-	if f == null:
-		push_warning("hd2d presentation missing " + res_path)
-		return null
-	var img := Image.new()
-	var err := img.load_png_from_buffer(f.get_buffer(f.get_length()))
-	f.close()
-	if err != OK:
-		return null
-	return ImageTexture.create_from_image(img)
 
 
 func set_active(on: bool) -> void:
@@ -81,7 +65,26 @@ func set_active(on: bool) -> void:
 
 
 func begin_approach() -> bool:
-	return begin_approach_to(Hd2dDoor.exterior_anchor())
+	var requested := Hd2dDoor.exterior_anchor()
+	requested_goal = requested
+	nav_snapped = false
+	var point := requested
+	# The engineering stand can sit off the baked mesh. NavigationAgent only
+	# paths to a point on the mesh. Snap to that closest point, and refuse
+	# a snap that would cross the closed-door block line.
+	if walker and walker.use_nav and walker.agent:
+		var closest: Vector3 = NavigationServer3D.map_get_closest_point(walker.agent.get_navigation_map(), requested)
+		closest.y = 0.0
+		var gap := Vector2(closest.x, closest.z).distance_to(Vector2(requested.x, requested.z))
+		if gap > 30.0 or closest.z <= Hd2dDoor.root_block_z():
+			blocked_stop = true
+			approaching = false
+			arrived = false
+			return false
+		if gap > 0.05:
+			nav_snapped = true
+		point = closest
+	return begin_approach_to(point)
 
 
 func begin_approach_to(point: Vector3) -> bool:

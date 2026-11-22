@@ -12,7 +12,14 @@ cat > "$CFG" << EOF
 config/use_custom_user_dir=true
 config/custom_user_dir_name="$PROFILE"
 EOF
-if [[ ! -f "$ROOT/.godot/global_script_class_cache.cfg" ]]; then
+"$ROOT/tools/stage_hd2d_assets.sh"
+STAGE_TEX="$ROOT/hd2d_stage/pet/r4/pet_tuanrong_radiant_side_idle_01.png.import"
+STAGE_CTEX=""
+if [[ -f "$STAGE_TEX" ]]; then
+  STAGE_CTEX="$(awk -F'"' '/^path=/{print $2; exit}' "$STAGE_TEX")"
+  STAGE_CTEX="${STAGE_CTEX#res://}"
+fi
+if [[ ! -f "$ROOT/.godot/global_script_class_cache.cfg" || ! -f "$STAGE_TEX" || -z "$STAGE_CTEX" || ! -f "$ROOT/$STAGE_CTEX" ]]; then
   "$GODOT" --headless --path "$ROOT" --import --quit
 fi
 "$GODOT" --headless --path "$ROOT" --script res://tests/hd2d_adapter_test.gd
