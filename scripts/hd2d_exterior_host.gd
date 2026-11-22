@@ -40,7 +40,13 @@ func bind_root(main: Node3D, walker: Node3D) -> void:
 
 
 func _ready() -> void:
+	# capture and art_depth read get_viewport() while they place the foreground
+	# and screen-height fractions. That has to be the 1080x2280 compare
+	# viewport. The root window stays the 390x844 UI host. Halo clustering
+	# reads mesh pixels, not this viewport.
+	_ensure_visual_viewport()
 	_apply_measure_viewport()
+	_restore_ui_window()
 	_mode = _resolve_mode()
 	var shafts := OS.get_environment("HD2D_SHAFTS").to_lower()
 	if shafts in ["vol", "cards", "both"]:
@@ -152,22 +158,42 @@ func comparison_state() -> Dictionary:
 	}
 
 
-func _open_compare_viewport() -> void:
-	# The root project window stays 390x844 for H1. The compare frame is a
-	# 1080x2280 subviewport in the same world, using the opening camera once.
+func _ensure_visual_viewport() -> void:
 	if _compare_view or root_main == null:
 		return
 	_compare_view = SubViewport.new()
 	_compare_view.name = "Hd2dCompareViewport"
 	_compare_view.size = Vector2i(1080, 2280)
 	_compare_view.own_world_3d = false
+	_compare_view.handle_input_locally = false
 	if OS.get_environment("HD2D_COMPARE_GRAB") == "1":
 		_compare_view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	else:
 		_compare_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	root_main.add_child(_compare_view)
+	reparent(_compare_view)
+
+
+func _restore_ui_window() -> void:
+	# _apply_measure_viewport also asks the OS window for 1080x2280. Put the
+	# root UI viewport back. The visual viewport is the SubViewport.
+	var window := root_main.get_viewport() if root_main else null
+	if window == null or window == get_viewport():
+		return
+	window.size = Vector2i(390, 844)
+	DisplayServer.window_set_size(Vector2i(390, 844))
+
+
+func _open_compare_viewport() -> void:
+	# The root project window stays 390x844 for H1. The compare frame is a
+	# 1080x2280 subviewport in the same world, using the opening camera once.
+	_ensure_visual_viewport()
+	if _compare_view == null:
+		return
 	var cam: Camera3D = root_main.get("cam")
-	if cam == null:
+	if cam == null or cam.get_parent() == _compare_view:
+		if cam:
+			_camera = cam
 		return
 	_cam_parent = cam.get_parent()
 	cam.reparent(_compare_view)
@@ -225,10 +251,23 @@ func apply_same_view() -> void:
 
 func restore_root_view() -> void:
 	_same_view = false
+	var built: Camera3D = null
+	for child in get_children():
+		if child is Camera3D and child != _camera:
+			built = child
+			break
 	var cam: Camera3D = root_main.get("cam") if root_main else null
 	if cam and _cam_parent and is_instance_valid(_cam_parent):
 		cam.reparent(_cam_parent)
 	_cam_parent = null
+	# The host was parented into the compare viewport so art_depth measured
+	# that viewport. Move it back before the viewport is freed.
+	if _compare_view and get_parent() == _compare_view and root_main:
+		reparent(root_main)
+	if built:
+		built.current = false
+	if cam:
+		cam.current = true
 	if _compare_view and is_instance_valid(_compare_view):
 		_compare_view.queue_free()
 	_compare_view = null
@@ -289,9 +328,8 @@ func _apply_opening_to_root_cam() -> void:
 
 
 func _ensure_cloud_tex() -> void:
-	# project.godot declares the five 675 globals. This headless server does
-	# not install them on its own, so register the same initial values here.
-	# cloud_tex is the staged cloud image, not a blank texture.
+	# project.godot declares the five 675 globals and the renderer creates
+	# them from that declaration. cloud_tex is the staged cloud image.
 	var tex: Texture2D = load("res://hd2d_stage/textures/tiles/cloud_shadow.png")
 	_add_global("pet_pos_ws", RenderingServer.GLOBAL_VAR_TYPE_VEC3, Vector3.ZERO)
 	_add_global("pet_lag_ws", RenderingServer.GLOBAL_VAR_TYPE_VEC3, Vector3(0, -1000, 0))
@@ -301,10 +339,11 @@ func _ensure_cloud_tex() -> void:
 
 
 func _add_global(param: String, kind: int, value: Variant) -> void:
-	var listed: PackedStringArray = RenderingServer.global_shader_parameter_get_list()
-	if listed.has(param):
-		if value != null:
-			RenderingServer.global_shader_parameter_set(param, value)
+	# The editor-only global list errors on the RD renderer and comes back
+	# empty. Adding after that then errors because the project declaration
+	# already created the global.
+	if ProjectSettings.has_setting("shader_globals/" + param):
+		RenderingServer.global_shader_parameter_set(param, value)
 		return
 	RenderingServer.global_shader_parameter_add(param, kind, value)
 

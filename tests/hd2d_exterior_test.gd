@@ -58,6 +58,9 @@ func _run(pet: Node3D) -> void:
 	var sim: Node = root.get_node("Sim")
 	_ok(int(sim.get("state").get("version", -1)) == 1, "save version is 1 before the exterior")
 	OS.set_environment("HD2D_COMPARE_FIXED", "1")
+	OS.set_environment("HD2D_VP", "1080x2280")
+	for param in ["pet_pos_ws", "pet_lag_ws", "cloud_tex", "cloud_off", "cloud_amt"]:
+		_ok(ProjectSettings.has_setting("shader_globals/" + param), "project already declares " + param)
 	var exterior: Node = _main.call("enable_hd2d_exterior")
 	_ok(exterior != null, "exterior host loads")
 	if exterior == null:
@@ -74,6 +77,12 @@ func _run(pet: Node3D) -> void:
 	_ok(coat is Sprite3D and exterior.get("_pet") == coat, "shadow pet is the root coat")
 	_ok(coat is Sprite3D and is_equal_approx((coat as Sprite3D).offset.y, 2.0), "coat keeps offset 2")
 	_ok(exterior.get_node_or_null("ArtDepth") != null, "art_depth is attached")
+	var visual := exterior.get_viewport().get_visible_rect().size
+	_ok(int(visual.x) == 1080 and int(visual.y) == 2280, "art_depth viewport is the 1080x2280 compare target")
+	var ui := _main.get_viewport().get_visible_rect().size
+	_ok(int(ui.x) == 390 and int(ui.y) == 844, "root UI viewport stays 390x844")
+	var host_src := FileAccess.get_file_as_string("res://scripts/hd2d_exterior_host.gd")
+	_ok(host_src.find("global_shader_parameter_get_list") < 0, "host does not call the editor-only global list")
 	_ok(exterior.get_node_or_null("GroundInner") != null, "ground was built")
 	_ok(exterior.get_node_or_null("cottage") != null, "cottage mesh was built")
 	var names: PackedStringArray = RenderingServer.global_shader_parameter_get_list()
