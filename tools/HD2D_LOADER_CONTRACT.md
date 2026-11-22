@@ -18,17 +18,23 @@ After that import:
 - `res://hd2d_stage/pet/r4/<frame>.png` loads as `CompressedTexture2D`.
 - `res://hd2d_stage/meshes/cottage.glb` loads as `PackedScene`. Its import setting `gltf/embedded_image_handling` is `Embed as Uncompressed` (3), so the importer keeps the glb images inside the scene and does not write sibling pngs.
 
-`scripts/hd2d_assets.gd` is the only loader. A missing stage returns null. It does not decode PNG bytes and it does not instance `capture.tscn`.
+`scripts/hd2d_assets.gd` loads the coat frames and the cottage measurement scene. A missing stage returns null. It does not decode PNG bytes and it does not instance `capture.tscn`.
 
-The 675 cottage scene is loaded for measurement only. The live garden keeps the existing H1 cottage, the closed door, and the existing footprint colliders. This slice does not hide that cottage or drop a second one into the garden.
+The 675 cottage scene from that loader is for measurement only. The live garden keeps the existing H1 cottage, the closed door, and the existing footprint colliders. This slice does not hide that cottage or drop a second one into the garden.
 
-Shaders, `art_depth.gd`, and `capture.gd` are not staged. Importing them would not reproduce the accepted exterior, because that look is built by the pilot scene at runtime. Doing that here would be a second runtime. See the options at the bottom if a full exterior mount is required later.
+Frozen originals stay in `godot_hd2d_v6/`. Nothing there is edited. `tools/stage_hd2d_assets.py` writes generated copies under `res://hd2d_stage/`:
+
+- Byte copies: `textures/`, `shaders/`, `art/`, `data/prop_bump.json`, the 21 r4 PNGs, and `cottage.glb`. The hash matches the frozen file.
+- Path-prefix script copies: `scenes/capture.gd`, `scenes/art_depth.gd`, `scenes/prop_bump.gd`, `gameplay/m1_walk_clip.gd`, `gameplay/m1_camera_policy.gd`, `gameplay/m1_ui_layout.gd`. The only text change is `res://` to `res://hd2d_stage/`. `tools/hd2d_generated_provenance.txt` records both hashes.
+- Not a generated copy: `scripts/hd2d_exterior_host.gd`. That is the root lifecycle binding. It calls the visual build and `art_depth._process` for the comparison step. It does not call `_add_m1_care`, `_tick_play`, or `_tick_camera`.
+
+One actor, one input, and one current camera: root `Main`, root `Walker`, root input. The generated pilot sprite stays hidden. There is one `Sim` and one `SaveSystem`. No `M1Care` node.
 
 ## Units and the pet
 
 1 world unit equals 1 art pixel for the pet frames only. Do not convert furniture pixel sizes into world units.
 
-Pet frames are 64×64. The coat node sits at local `(0, 29, 0)` with texture offset `(0, 2)`, so the sole is at world y=0. Ground y stays 0. The Walker origin stays the feet.
+Pet frames are 64×64. The coat node sits at local `(0, 29, 0)` with texture offset `(0, 2)` and `pixel_size` 1, so the sole is at world y=0. The low shadow uses `global_position.y + offset.y * pixel_size` (29 + 2 = 31) and still sits 0.25 above the ground. Ground y stays 0. The Walker origin stays the feet. Compare the coat, not the feet, with the pilot sprite.
 
 The cottage glb has no node translation, rotation, or scale. Its mesh stays in the file's local bounds (about x −35.5..35.5, y 0..142, z −26..26). The pilot places that node at `(82.5, 0, −72)`, yaw 0, scale 1. The root game's visible cottage is a different transform and is not this contract.
 
@@ -101,11 +107,25 @@ Care, offline catch-up, work, hunt, and family are unchanged root systems. The c
 
 `tools/stage_hd2d_assets.py` also copies `textures/`, `shaders/`, `art/`, and `data/prop_bump.json` into `res://hd2d_stage/`, and writes path-prefix copies of `capture.gd`, `art_depth.gd`, `prop_bump.gd`, and the three gameplay scripts those files preload. `tools/hd2d_generated_provenance.txt` records frozen and generated hashes. The only script change in those copies is the `res://` prefix. `scripts/hd2d_exterior_host.gd` is the lifecycle binding, not a generated copy. It does not call pilot care, walk, or the pilot camera loop.
 
-The root phone line is `rendering_method.mobile="mobile"`. Desktop stays `gl_compatibility`. Rollback is `tools/HD2D_RENDERER_ROLLBACK.txt`. The five shader globals use the 675 names and initial values. `cloud_tex` is the staged cloud texture.
+Desktop flag: `renderer/rendering_method="gl_compatibility"`. Phone flag: `renderer/rendering_method.mobile="mobile"`. Rollback of the phone line is `tools/HD2D_RENDERER_ROLLBACK.txt`. A desktop GL run is not a Mobile result.
 
-This is not the whole game and not Mobile acceptance. The interior pack stays `"locked": false` and is not read. The official exterior anchor stays unset. The off-mesh candidate, the on-mesh goal, and the walked stop stay three different positions.
+Five shader globals, same names and initial values as 675. `cloud_tex` points at the staged copy of `textures/tiles/cloud_shadow.png`.
 
-Same-view command, on a machine with the Mobile renderer. Portrait is 1080×2280 (19:9), not 1080×1920. Both processes use `--rendering-method mobile` and the same fixed step, including `art_depth._process` / `_follow_camera`. Neither side calls `_tick_camera`. A headless GL run is engineering only and is not a pixel result.
+| name | 675 initial value | meaning | who writes it each frame |
+|---|---|---|---|
+| `pet_pos_ws` | `(0, 0, 0)` | visual center, y mode `center` (coat or pilot sprite, not the feet) | `prop_bump.tick` |
+| `pet_lag_ws` | `(0, -1000, 0)` | spring follow of that center; if the lag is still `(0, 0, 0)` it snaps to the center first. `k=100`, damping `9`, step `clamp(dt, 0, 0.05)` | `art_depth._dynamics` |
+| `cloud_tex` | staged `cloud_shadow.png` | cloud field texture | not rewritten each frame; loaded once |
+| `cloud_off` | `(0, 0)` | `(5.2, 3.9) * t`, and `t` grows by `clamp(dt, 0, 0.1)` | `art_depth._dynamics` |
+| `cloud_amt` | `0.22` | `0` at night, otherwise `0.22` | `art_depth._dynamics` |
+
+This is not the whole game and not Mobile acceptance. Room 1 stays `"locked": false` and is not read. No interior layout is added here. The official exterior anchor stays unset. The off-mesh candidate, the on-mesh goal, and the walked stop stay three different positions.
+
+Same-view command. Portrait is 1080×2280 (19:9), not 1080×1920. Both processes use `--rendering-method mobile` and the same 20 steps at dt=1/60, including `art_depth._process` / `_follow_camera`. Neither side calls `_tick_camera`. `_follow_camera` moves cards with the camera. It does not move the camera. Record eye, target, and fov after those steps. Do not promise a pixel match.
+
+Head `61ae7968817149d4c9a9c4e63af1b248cbcec80f`, one headless Mobile run, after the 20 follow steps: eye `(12, 193, 207.826858520508)`, target `(12, 58, -26)`, fov 50, `png_written` false. That is a state record, not a picture.
+
+The root frame is a 1080×2280 SubViewport. The H1 window stays 390×844. The pilot frame is the window of a temporary 675 project copy set to 1080×2280. The frozen tree is not edited. Those are different render targets at the same size, so a later grab can still differ.
 
 ```
 HD2D_COMPARE_OUT=<empty-dir> tools/run_hd2d_mobile_compare.sh
