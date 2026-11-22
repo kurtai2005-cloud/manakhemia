@@ -22,6 +22,20 @@ var _have_last := false
 var _tex: Dictionary = {}
 var _tree_on := true
 var _brain: Node
+var _care_id := ""
+var _care_elapsed := 0.0
+var _care_tex: Dictionary = {}
+var _blob_y := 0.08
+
+## Completion is one authored pass. CLIPS "next" is not followed.
+## nuzzle's atlas loop flag is not an endless pat: one cycle, then idle or walk.
+const CARE := {
+	"eat": {"frames": 4, "fps": 8.0, "repeats": 1, "priority": 5, "interruptible": false},
+	"nuzzle": {"frames": 6, "fps": 6.0, "repeats": 1, "priority": 4, "interruptible": true},
+	"emo_happy": {"frames": 2, "fps": 4.0, "repeats": 4, "priority": 4, "interruptible": true},
+	"emo_surprised": {"frames": 2, "fps": 6.0, "repeats": 1, "priority": 4, "interruptible": false},
+}
+const CARE_DIR := "res://tools/care_frame_review/frames/"
 
 
 func setup(host: Node3D, body: Walker) -> void:
@@ -57,9 +71,18 @@ func set_active(on: bool) -> void:
 		coat.visible = on
 	if walker and walker.sprite:
 		walker.sprite.visible = not on
+	_set_face_sprites_visible(not on)
+	var blob := walker.get_node_or_null("BlobShadow") if walker else null
+	if blob:
+		if on:
+			_blob_y = blob.position.y
+			blob.position.y = 0.25
+		else:
+			blob.position.y = _blob_y
 	if on:
 		_have_last = false
 	else:
+		_care_id = ""
 		_release_brain()
 		approaching = false
 
@@ -140,6 +163,7 @@ func commit_exit() -> bool:
 func _process(_dt: float) -> void:
 	if not active or walker == null or coat == null:
 		return
+	_set_face_sprites_visible(false)
 	var now := Vector2(walker.global_position.x, walker.global_position.z)
 	if not _have_last:
 		_last = now
@@ -159,6 +183,9 @@ func _process(_dt: float) -> void:
 				view_away = view_away.normalized()
 		clip.advance(now - _last, view_right, view_away)
 		_last = now
+	if _care_id != "":
+		_tick_care(_dt)
+		return
 	var mapped: String = str(clip.texture_path())
 	var tex: Texture2D = _tex.get(mapped)
 	if tex != null:
@@ -187,6 +214,93 @@ func _stand_clear(x: float, z: float) -> bool:
 	if walker and walker.feet and walker.feet.blocked(x, z, walker.radius):
 		return false
 	return true
+
+
+func care_active() -> bool:
+	return _care_id != ""
+
+
+func care_id() -> String:
+	return _care_id
+
+
+func play_care(id: String) -> bool:
+	if not CARE.has(id):
+		push_error("unknown care clip " + id)
+		return false
+	if _care_id != "":
+		var current: Dictionary = CARE[_care_id]
+		var incoming: Dictionary = CARE[id]
+		if int(incoming["priority"]) < int(current["priority"]):
+			return false
+		if not bool(current["interruptible"]) and int(incoming["priority"]) <= int(current["priority"]):
+			return false
+	if _care_tex.is_empty():
+		var missing := _load_care_frames()
+		if missing != "":
+			push_error(missing)
+			return false
+	_care_id = id
+	_care_elapsed = 0.0
+	_show_care_frame(0)
+	return true
+
+
+func cancel_care() -> void:
+	_care_id = ""
+	_care_elapsed = 0.0
+
+
+func _load_care_frames() -> String:
+	for id in CARE.keys():
+		var spec: Dictionary = CARE[id]
+		var count := int(spec["frames"])
+		for i in count:
+			var path := CARE_DIR + "%s_%02d.png" % [id, i + 1]
+			if not FileAccess.file_exists(path):
+				return "care frame missing " + path
+			var image := Image.new()
+			if image.load(path) != OK:
+				return "care frame failed to load " + path
+			if image.get_width() != 64 or image.get_height() != 64:
+				return "care frame is not 64x64 " + path
+			var tex := ImageTexture.create_from_image(image)
+			_care_tex["%s_%02d" % [id, i + 1]] = tex
+	return ""
+
+
+func _tick_care(dt: float) -> void:
+	var spec: Dictionary = CARE[_care_id]
+	var frame_len := 1.0 / float(spec["fps"])
+	var total := int(spec["frames"]) * int(spec["repeats"]) * frame_len
+	_care_elapsed += dt
+	if _care_elapsed >= total:
+		_care_id = ""
+		_care_elapsed = 0.0
+		var mapped: String = str(clip.texture_path())
+		var tex: Texture2D = _tex.get(mapped)
+		if tex != null:
+			coat.texture = tex
+		coat.flip_h = bool(clip.flip_h)
+		return
+	var index := int(floor(_care_elapsed / frame_len)) % int(spec["frames"])
+	_show_care_frame(index)
+
+
+func _show_care_frame(index: int) -> void:
+	var key := "%s_%02d" % [_care_id, index + 1]
+	var tex: Texture2D = _care_tex.get(key)
+	if tex != null:
+		coat.texture = tex
+	coat.flip_h = false
+
+
+func _set_face_sprites_visible(show: bool) -> void:
+	if walker == null:
+		return
+	for child in walker.get_children():
+		if str(child.name).begins_with("Face_"):
+			child.visible = show
 
 
 func _hold_brain() -> void:

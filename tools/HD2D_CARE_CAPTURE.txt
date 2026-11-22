@@ -1,0 +1,14 @@
+Short 19:9 low care clip for a displayed Mobile review. This VM did not record it.
+
+Use the same official runner as the exterior, with the new delta below and the unchanged 580 support and assets packs. OutputDir must be empty. One -RootPack array. Do not repeat -RootPack. Do not use powershell.exe -File for the array.
+
+The compare grab is still the garden view. For the care clip, open the prepared work tree in Godot 4.7.2 with --rendering-method mobile, window 1080x2280, and play Main. The coat is already on.
+
+1. Select the pet. Press feed. Eat plays at 8 fps, four frames, no loop, then idle or walk. Frames 2-4 bring the baked berry toward the mouth. There is no second food sprite.
+2. Walk so the coat faces back. Press pat. The coat switches to the front nuzzle frames for one 6-frame cycle at 6 fps, then returns to the back idle or walk. The front face is not left on a back frame.
+3. Press pat several times. Nuzzle restarts. Press feed during nuzzle and eat replaces it. Press pat during eat and the eat pose stays.
+4. Press clean. One poop is removed. The coat does not start an eat pose.
+
+Happy is two frames at 4 fps, repeated four times, then idle. Surprised is two frames at 6 fps, once, then idle. They use the same coat player. The HUD has no separate happy or surprised button; poke uses surprised, and the automated test calls play_care for happy. Do not treat a CPU sheet as this recording.
+
+emo airtime stays in the frame. Feet stay node y=29, offset y=2, pixel size 1. Rights are unverified. This is not a release.

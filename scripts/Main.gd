@@ -94,6 +94,8 @@ func _ready() -> void:
 	if int(Sim.state.get("poops", 0)) == 0:
 		Sim.add_poop()
 	_setup_m1b()
+	if pet:
+		enable_hd2d_presentation()
 
 
 func _build_world(objs_doc: Dictionary, objects: Array, lights: Dictionary) -> void:
@@ -1475,14 +1477,17 @@ func hand_feed(w: Walker, food: String = "meal") -> Dictionary:
 	if hud and hud.has_method("set_care_target"):
 		hud.set_care_target(w)
 	var brain: Node = w.get_node_or_null("PetBrain")
-	if brain and brain.has_method("notify_tap"):
-		brain.notify_tap("feed")
 	if AudioManager:
 		var hook := "sfx_feed_meal" if food != "snack" else "sfx_feed_snack"
 		AudioManager.play(hook, w)
+	var rec: Dictionary
 	if str(w.character) == "tuanrong":
-		return Sim.feed(food)
-	return {"ok": true, "act": "feed", "hunger": 0, "mood": 0, "flavor": true}
+		rec = Sim.feed(food)
+	else:
+		rec = {"ok": true, "act": "feed", "hunger": 0, "mood": 0, "flavor": true}
+	if bool(rec.get("ok", false)) and brain and brain.has_method("notify_tap"):
+		brain.notify_tap("feed")
+	return rec
 
 
 func hand_pat(w: Walker) -> Dictionary:
@@ -1492,11 +1497,14 @@ func hand_pat(w: Walker) -> Dictionary:
 	if hud and hud.has_method("set_care_target"):
 		hud.set_care_target(w)
 	var brain: Node = w.get_node_or_null("PetBrain")
-	if brain and brain.has_method("notify_tap"):
-		brain.notify_tap("pat")
+	var rec: Dictionary
 	if str(w.character) == "tuanrong":
-		return Sim.pat()
-	return {"ok": true, "act": "pat", "mood": 0, "flavor": true}
+		rec = Sim.pat()
+	else:
+		rec = {"ok": true, "act": "pat", "mood": 0, "flavor": true}
+	if bool(rec.get("ok", false)) and brain and brain.has_method("notify_tap"):
+		brain.notify_tap("pat")
+	return rec
 
 
 func family_team() -> Array:

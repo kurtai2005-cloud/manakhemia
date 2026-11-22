@@ -97,6 +97,15 @@ func _family_kind() -> String:
 	return ""
 
 
+func _coat_owner() -> Node:
+	if walker == null:
+		return null
+	var host := walker.get_parent()
+	if host == null:
+		return null
+	return host.get_node_or_null("Hd2dPresentation")
+
+
 func notify_tap(kind: String = "pet") -> void:
 	pending_tap = kind if kind != "" else "pet"
 	if tree:
@@ -176,18 +185,27 @@ func _tick_tap(_a: Node, _b: Blackboard) -> int:
 		action_t = 0.01
 		expr_name = Personality.expr_icon(actor_id) if Personality else "mood_happy"
 		expr_t = 2.2
-		if walker:
-			var clip := "nuzzle"
-			if pending_tap == "feed":
-				clip = "eat"
-			elif pending_tap == "poke":
-				clip = "emo_surprised"
+		var care_id := "nuzzle"
+		if pending_tap == "feed":
+			care_id = "eat"
+		elif pending_tap == "poke":
+			care_id = "emo_surprised"
+		elif pending_tap == "emo_happy":
+			care_id = "emo_happy"
+		var coat := _coat_owner()
+		if coat and coat.has_method("play_care"):
+			coat.play_care(care_id)
+		elif walker:
+			var clip := care_id
 			if not walker.play_live_clip(clip):
 				walker.play_live_clip("emo_happy" if pending_tap != "feed" else "nuzzle")
-			if AudioManager and pending_tap != "feed":
-				# 餵食聲由 Main.hand_feed 喺入口嗰下播 sfx_feed_meal／snack
-				AudioManager.play("sfx_pet_nuzzle_purr" if pending_tap == "pet" or pending_tap == "pat" else "sfx_pet_curious", walker)
+		if AudioManager and pending_tap != "feed":
+			# 餵食聲由 Main.hand_feed 喺入口嗰下播 sfx_feed_meal／snack
+			AudioManager.play("sfx_pet_nuzzle_purr" if pending_tap == "pet" or pending_tap == "pat" else "sfx_pet_curious", walker)
 		pending_tap = "running"
+	var coat_now := _coat_owner()
+	if coat_now and coat_now.has_method("care_active") and bool(coat_now.call("care_active")):
+		return R
 	if walker and walker.live_clip != "":
 		return R
 	pending_tap = ""
