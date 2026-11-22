@@ -95,7 +95,14 @@ func _ready() -> void:
 		Sim.add_poop()
 	_setup_m1b()
 	if pet:
-		enable_hd2d_presentation()
+		# The 675 garden is the play picture. Presentation stays on the same pet.
+		var exterior := enable_hd2d_exterior()
+		if exterior and exterior.has_method("present_on_window"):
+			exterior.call("present_on_window")
+		elif _hd2d_host == null:
+			enable_hd2d_presentation()
+		if hud and hud.has_method("set_care_target"):
+			hud.set_care_target(pet)
 
 
 func _build_world(objs_doc: Dictionary, objects: Array, lights: Dictionary) -> void:

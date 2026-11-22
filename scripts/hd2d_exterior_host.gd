@@ -32,6 +32,7 @@ var _lock_prev := false
 var _have_lock := false
 var _compare_view: SubViewport
 var _cam_parent: Node
+var _garden_rect: TextureRect
 
 
 func bind_root(main: Node3D, walker: Node3D) -> void:
@@ -217,36 +218,91 @@ func grab_compare_image() -> Image:
 	return tex.get_image()
 
 
+func present_on_window() -> void:
+	# Normal Main. Shows the existing 675 garden in the window.
+	# Does not pause the pet, does not read compare flags, does not change camera numbers.
+	if _compare_view == null:
+		return
+	_compare_view.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_compare_view.size = Vector2i(1080, 2280)
+	_hide_root_scenery()
+	_use_exterior_environment()
+	_lock_play_camera()
+	_apply_opening_to_root_cam()
+	_open_compare_viewport()
+	_show_garden_rect()
+	print("hd2d garden mounted viewport=", _compare_view.size)
+
+
 func apply_same_view() -> void:
 	_same_view = true
 	_hold_walker(true)
-	if root_main:
-		_have_lock = true
-		_lock_prev = bool(root_main.get("_interior_lock_cam"))
-		root_main.set("_interior_lock_cam", true)
-		var world: WorldEnvironment = root_main.get("env")
-		if world:
-			_env_backup = world.environment
-			world.environment = null
-		for light_name in ["sun", "fill"]:
-			var light: Light3D = root_main.get(light_name)
-			if light:
-				_hidden.append({"node": light, "visible": light.visible})
-				light.visible = false
-		for child in root_main.get_children():
-			if child == self or child == root_walker:
-				continue
-			if child is CanvasLayer or child is Camera3D:
-				continue
-			if child == root_main.get("sun") or child == root_main.get("fill") or child == root_main.get("env"):
-				continue
-			if child.name == "Hd2dPresentation":
-				continue
-			if child is Node3D:
-				_hidden.append({"node": child, "visible": child.visible})
-				child.visible = false
+	_hide_root_scenery()
+	_use_exterior_environment()
+	_lock_play_camera()
 	_apply_opening_to_root_cam()
 	_open_compare_viewport()
+
+
+func _hide_root_scenery() -> void:
+	if root_main == null or _hidden.size() > 0:
+		return
+	for light_name in ["sun", "fill"]:
+		var light: Light3D = root_main.get(light_name)
+		if light:
+			_hidden.append({"node": light, "visible": light.visible})
+			light.visible = false
+	for child in root_main.get_children():
+		if child == self or child == root_walker or child == _compare_view:
+			continue
+		if child is CanvasLayer or child is Camera3D:
+			continue
+		if child == root_main.get("sun") or child == root_main.get("fill") or child == root_main.get("env"):
+			continue
+		if child.name == "Hd2dPresentation" or child.name == "Hd2dGardenView":
+			continue
+		if child is Node3D:
+			_hidden.append({"node": child, "visible": child.visible})
+			child.visible = false
+
+
+func _use_exterior_environment() -> void:
+	if root_main == null or _env_backup != null:
+		return
+	var world: WorldEnvironment = root_main.get("env")
+	if world:
+		_env_backup = world.environment
+		world.environment = null
+
+
+func _lock_play_camera() -> void:
+	if root_main == null:
+		return
+	if not _have_lock:
+		_lock_prev = bool(root_main.get("_interior_lock_cam"))
+		_have_lock = true
+	root_main.set("_interior_lock_cam", true)
+
+
+func _show_garden_rect() -> void:
+	if _compare_view == null or root_main == null:
+		return
+	if _garden_rect != null and is_instance_valid(_garden_rect):
+		return
+	var layer := CanvasLayer.new()
+	layer.name = "Hd2dGardenView"
+	layer.layer = 0
+	root_main.add_child(layer)
+	_garden_rect = TextureRect.new()
+	_garden_rect.name = "Hd2dGardenFrame"
+	_garden_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_garden_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_garden_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_garden_rect.stretch_mode = TextureRect.STRETCH_SCALE
+	var tex := _compare_view.get_texture()
+	if tex:
+		_garden_rect.texture = tex
+	layer.add_child(_garden_rect)
 
 
 func restore_root_view() -> void:
@@ -268,6 +324,8 @@ func restore_root_view() -> void:
 		built.current = false
 	if cam:
 		cam.current = true
+	if _garden_rect and is_instance_valid(_garden_rect):
+		_garden_rect.visible = false
 	if _compare_view and is_instance_valid(_compare_view):
 		_compare_view.queue_free()
 	_compare_view = null
