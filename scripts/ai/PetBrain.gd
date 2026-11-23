@@ -19,6 +19,7 @@ var pending_tap := ""  # "pet" | "poke" | ""
 var expr_name := ""
 var expr_t := 0.0
 var busy := false
+var _life_wait := 0.0
 
 func setup(w: Walker, id: String, fam: Node = null) -> void:
 	walker = w
@@ -119,11 +120,86 @@ func _process(dt: float) -> void:
 		expr_t -= dt
 		if expr_t <= 0.0:
 			expr_name = ""
+	if actor_id == "tuanrong":
+		_life(dt)
 	if pending_tap != "" or _family_kind() != "":
 		return
 	rechoose_t -= dt
 	if rechoose_t <= 0.0 and not busy:
 		_pick_action(false)
+
+
+func _life(dt: float) -> void:
+	# The pet chooses. Ground taps do not send it.
+	if pending_tap != "":
+		return
+	var main := walker.get_parent() if walker else null
+	if main == null or bool(main.get("in_interior")):
+		return
+	var errand := main.get_node_or_null("GardenErrand")
+	if errand == null:
+		return
+	var phase := str(errand.call("_task").get("phase", "idle"))
+	if phase != "idle" and phase != "blocked":
+		busy = true
+		return
+	if Sim and bool(Sim.state.get("sleeping", false)):
+		return
+	_life_wait -= dt
+	if _life_wait > 0.0:
+		return
+	_life_wait = 2.0
+	if WorkSystem and WorkSystem.is_ready("kitchen"):
+		var got: Dictionary = WorkSystem.collect("kitchen")
+		if bool(got.get("ok", false)):
+			var hud: Node = main.get("hud")
+			if hud and hud.has_method("_queue_or_show"):
+				var items: Array = [{"icon": "ev_gift", "num": "+%d" % int(got.get("shards", 0))}]
+				hud.call("_queue_or_show", items)
+		return
+	if WorkSystem and WorkSystem.any_working():
+		busy = true
+		return
+	if bool(errand.call("rest_offered")):
+		_hold_for_life()
+		errand.call("press_rest")
+		return
+	if bool(errand.call("food_offered")):
+		_hold_for_life()
+		errand.call("press_food")
+		return
+	var fruit := 0
+	if CollectionSystem:
+		fruit = int(CollectionSystem.fruit_count("starberry"))
+	var hunger := 100.0
+	if Sim:
+		hunger = float(Sim.state.get("needs", {}).get("hunger", 100))
+	var filled := int(errand.call("_task").get("paid_through", 0)) > 0
+	var roomy := Sim == null or hunger < float(Sim.FEED_REFUSE_AT)
+	if fruit <= 0 and (not filled or roomy):
+		_hold_for_life()
+		errand.call("player_press")
+		return
+	if str(Sim.state.get("stage", "egg")) == "egg":
+		busy = false
+		return
+	var energy := float(Sim.state.get("needs", {}).get("energy", 100)) if Sim else 100.0
+	if energy < 40.0 or hunger < 40.0:
+		busy = false
+		return
+	if main.has_method("one_tap_dispatch"):
+		var sent: Dictionary = main.call("one_tap_dispatch")
+		if bool(sent.get("ok", false)):
+			_hold_for_life()
+			return
+	busy = false
+
+
+func _hold_for_life() -> void:
+	busy = true
+	if tree:
+		tree.interrupt()
+	chosen = "life"
 
 
 func _pick_action(force: bool) -> void:

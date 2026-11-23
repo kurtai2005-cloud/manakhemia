@@ -730,10 +730,8 @@ func _try_tap(pos: Vector2) -> void:
 		return
 	var forage_hit := _ray_area(pos, 32)
 	if forage_hit:
-		var errand := get_node_or_null("GardenErrand")
-		if errand and errand.has_method("press_target"):
-			errand.call("press_target", forage_hit)
-			return
+		# The berry and the home mark are the pet's own route. A ground tap does not send it.
+		return
 	var pet_hit := _ray_area(pos, 4)
 	if pet_hit:
 		var w := pet_hit.get_parent()

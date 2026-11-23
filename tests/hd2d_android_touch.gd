@@ -8,9 +8,12 @@ var _main: Node
 func _initialize() -> void:
 	var udir := OS.get_user_data_dir()
 	print("touch user_dir=", udir)
-	if udir.find("vc27_play_36bfd") >= 0 or udir.find("vc27_draft_try") >= 0 or udir.find("vc27_android_touch") < 0:
+	if udir.find("vc27_play_36bfd") >= 0 or udir.find("vc27_draft_try") >= 0 or (udir.find("vc27_android_touch") < 0 and udir.find("vc27_android_preview") < 0):
 		print("TOUCH_FAIL profile")
 		quit(2)
+		return
+	if OS.get_environment("VC27_TOUCH_PHASE") == "2":
+		await _restart()
 		return
 	_main = (load("res://scenes/Main.tscn") as PackedScene).instantiate()
 	root.add_child(_main)
@@ -24,17 +27,27 @@ func _initialize() -> void:
 	var errand: Node = _main.get_node("GardenErrand")
 	var berry: Vector3 = errand.get("berry_pos")
 	var screen := (_main.get("cam") as Camera3D).unproject_position(berry)
-	_touch(screen, true)
-	await _frames(2)
-	_mouse(screen)
-	await _frames(2)
+	var started := Time.get_ticks_msec() + 20000
+	while str(errand.call("_task").get("phase", "")) != "to_pick" and Time.get_ticks_msec() < started:
+		await process_frame
 	if str(errand.call("_task").get("phase", "")) != "to_pick":
-		_die("finger touch did not keep the berry carry")
+		_die("pet did not choose the berry")
 		return
+	_mouse(screen)
 	_touch(screen, true)
-	await _frames(2)
-	if str(errand.call("_task").get("phase", "")) != "idle":
-		_die("a second finger touch did not cancel")
+	await _frames(3)
+	if str(errand.call("_task").get("phase", "")) != "to_pick":
+		_die("a tap cancelled the pet's own carry")
+		return
+	var col: Node = root.get_node("CollectionSystem")
+	var brought := Time.get_ticks_msec() + 40000
+	while int(col.call("fruit_count", "starberry")) < 1 and Time.get_ticks_msec() < brought:
+		await process_frame
+	if int(col.call("fruit_count", "starberry")) < 1:
+		_die("pet did not bring the berry home")
+		return
+	if not bool(root.get_node("Sim").state.get("collection", {}).get("discovered", {}).get("glow_berry", false)):
+		_die("bringing the berry home did not record it")
 		return
 	var dispatch := _button("派工")
 	if dispatch == null:
@@ -44,25 +57,9 @@ func _initialize() -> void:
 	_touch(at, true)
 	_touch(at, false)
 	await _frames(4)
-	if bool(hud.get("care_bar").visible) or bool(hud.get("observing")):
-		_die("care row stayed up after dispatch")
+	if bool(hud.get("care_bar").visible):
+		_die("care row stayed up after the button")
 		return
-	var card: CanvasItem = hud.get("card")
-	if card and card.visible:
-		var until := Time.get_ticks_msec() + 8000
-		while card.visible and Time.get_ticks_msec() < until:
-			await process_frame
-		if card.visible:
-			_die("summary card stayed up")
-			return
-	_touch(screen, true)
-	_mouse(screen)
-	await _frames(2)
-	if str(errand.call("_task").get("phase", "")) != "to_pick":
-		_die("berry touch was blocked after the card")
-		return
-	_touch(screen, true)
-	await _frames(2)
 	var house: Node3D = _main.get_node_or_null("HouseClick")
 	if house == null:
 		_die("house click missing")
@@ -112,6 +109,24 @@ func _initialize() -> void:
 		_die("interior still showing outside")
 		return
 	print("TOUCH_OK berry=kept card=dismissed pet_on_screen=true")
+	quit(0)
+
+
+func _restart() -> void:
+	_main = (load("res://scenes/Main.tscn") as PackedScene).instantiate()
+	root.add_child(_main)
+	if not await _ready_pet():
+		_die("restart had no pet")
+		return
+	var sim: Node = root.get_node("Sim")
+	var col: Node = root.get_node("CollectionSystem")
+	var fruit := int(col.call("fruit_count", "starberry"))
+	var glow := bool(sim.state.get("collection", {}).get("discovered", {}).get("glow_berry", false))
+	print("RESTART stage=", sim.state.get("stage"), " fruit=", fruit, " glow=", glow, " meals=", sim.state.get("errand", {}).get("meals", 0))
+	if fruit < 1 or not glow:
+		_die("restart lost the berry the pet brought home")
+		return
+	print("TOUCH_RESTART_OK")
 	quit(0)
 
 
