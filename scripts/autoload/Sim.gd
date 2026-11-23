@@ -546,6 +546,29 @@ func pat() -> Dictionary:
 	return rec
 
 
+func credit_egg_exploration() -> bool:
+	# Preview saves only. A normal egg still waits out duration_sec.
+	if not bool(state.get("preview_fixture", false)):
+		return false
+	if str(state.get("stage", "")) != "egg":
+		return false
+	var sec := float(STAGE_SEC.get("egg", 0.0))
+	if sec <= 0.0:
+		return false
+	var before := str(state.get("stage", ""))
+	if float(state.get("growth_sec", 0.0)) < sec:
+		state["growth_sec"] = sec
+	_check_stage(state)
+	var hatched := before == "egg" and str(state.get("stage", "")) != "egg"
+	if hatched:
+		var needs: Dictionary = state.get("needs", {})
+		needs["energy"] = maxf(0.0, float(SLEEP_MIN_ENERGY) - 5.0)
+		state["needs"] = needs
+	_dirty = true
+	_save_now(true)
+	return hatched
+
+
 func force_stage(st: String) -> void:
 	_enter_stage(state, st)
 	_dirty = true

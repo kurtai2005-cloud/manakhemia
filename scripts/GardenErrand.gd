@@ -228,6 +228,9 @@ func _grant_once() -> void:
 		return
 	if CollectionSystem:
 		CollectionSystem.add_fruit(FRUIT_ID, 1)
+		CollectionSystem.discover_fruit(FRUIT_ID)
+	if Sim and Sim.has_method("credit_egg_exploration"):
+		Sim.credit_egg_exploration()
 	var done: Array = task.get("delivered", [])
 	if FRUIT_ID not in done:
 		done.append(FRUIT_ID)
@@ -306,6 +309,10 @@ func _watch_door() -> void:
 	if main != null and bool(main.get("in_interior")):
 		walker.clear_errand()
 		Sim.set_sleeping(true)
+		if bool(Sim.state.get("preview_fixture", false)):
+			var needs: Dictionary = Sim.state.get("needs", {})
+			needs["energy"] = maxf(0.0, float(Sim.SLEEP_WAKE_AT) - 1.0)
+			Sim.state["needs"] = needs
 		var task := _task()
 		task["phase"] = "asleep"
 		task["active_id"] = ""

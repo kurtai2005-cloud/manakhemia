@@ -85,6 +85,7 @@ func _ready() -> void:
 	_build_nav()
 	_spawn_actors()
 	_sync_poops()
+	_maybe_preview_seed()
 	hud = preload("res://scripts/Hud.gd").new()
 	add_child(hud)
 	_setup_rotate_overlay()
@@ -1381,6 +1382,25 @@ func qa_force_needs(hunger: float = 100.0, mood: float = 100.0, clean: float = 1
 
 func qa_family(kind: String) -> bool:
 	return family != null and family.force(kind)
+
+
+func _maybe_preview_seed() -> void:
+	# Only a brand-new save opened by Play-Draft -Preview. Never touches another profile.
+	if OS.get_environment("VC27_DRAFT_PREVIEW") != "1":
+		return
+	if Sim == null or bool(Sim.state.get("preview_applied", false)):
+		return
+	if str(Sim.state.get("stage", "")) != "egg":
+		return
+	var errand: Dictionary = Sim.state.get("errand", {})
+	if int(errand.get("meals", 0)) > 0 or int(errand.get("paid_through", 0)) > 0:
+		return
+	Sim.state["preview_fixture"] = true
+	Sim.state["preview_applied"] = true
+	var sec := float(Sim.STAGE_SEC.get("egg", 600.0))
+	Sim.state["growth_sec"] = maxf(0.0, sec - 20.0)
+	Sim._dirty = true
+	Sim._save_now(true)
 
 
 func _remember_stage(st: String) -> void:

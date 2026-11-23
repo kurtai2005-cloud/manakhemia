@@ -18,16 +18,25 @@ It never deletes a different override.cfg.
 The profile directory is not deleted. Closing the game and running the same command again opens the same save.
 The script never reads or writes vc27_play_36bfd.
 
-From the spare folder:
+From the spare folder, normal draft. This keeps the existing vc27_draft_try save. It does not reset it.
 
-powershell -NoProfile -File .\tools\Play-Draft.ps1 -GodotExe "C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe" -ProjectDir "C:\path\to\spare\project"
+powershell -NoProfile -File .\tools\Play-Draft.ps1 -GodotExe "C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe" -ProjectDir "C:\Users\nasa2\hd2d_test\vc27_draft_try_1dbc3b90"
 
-What to try is unchanged from tools\VC27_PLAY_LOOP.txt:
-a new save starts as an egg, the berry stores one fruit, feeding waits until the existing 600 second hatch, one meal spends one fruit, rest follows the existing energy line, and quitting and opening the same profile keeps the save.
+Preview. A different profile, vc27_draft_preview. A new save is marked preview_fixture. Opening it again does not reset progress. It does not touch vc27_draft_try.
+
+powershell -NoProfile -File .\tools\Play-Draft.ps1 -Preview -GodotExe "C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe" -ProjectDir "C:\Users\nasa2\hd2d_test\vc27_draft_try_1dbc3b90"
+
+What to try, three steps:
+1. Normal profile: click the berry, carry it home. One fruit is stored and 圖鑑 shows 微光莓. The egg still waits 600 seconds.
+2. Preview profile: the same delivery also hatches the egg, the book shows 絨點, then feed and rest. The screen says 試玩.
+3. Quit and run the same command. That profile's save is still there.
+
+Preview fixtures, not earned: a new preview save is an egg with 20 seconds of the existing duration left; the delivery fills the rest of that egg; after hatch, energy is set to 85; on entering sleep, energy is set to one below the wake point. The duration, decay, and regen numbers in the data files are unchanged.
+Real earned progress: the fruit count, the 微光莓 discovery, the meal spent, the stage unlock, and the rest trip. Those stay in the save.
 
 Known limits
 - This file was checked as text only. It was not run under Windows PowerShell 5.1, and it was not run on Windows.
-- The launcher does not speed the clock. The egg still takes 600 seconds. Rest still waits until energy falls under the existing sleep line.
+- Without -Preview, the egg still takes 600 seconds and rest still waits on the real energy line. -Preview does not change those data values. It only marks a new vc27_draft_preview save.
 - Eat frames still read as a face change. That was not worked on here.
 - 3988 remains a partial feeding clip, not a gate.
 - The eight old root-suite failures were not rerun and are not fixed.
@@ -37,4 +46,4 @@ Known limits
 - If the window is killed before the script finishes, override.cfg may remain in the spare folder. The next start then stops. Do not delete an override.cfg whose text you have not read. The script will not delete one it did not just write.
 - No merge, no publish, no install onto the live Windows tree, no APK.
 
-WAIT_AFTER_DRAFT_DELIVERY
+WAIT_AFTER_BATCH_DELIVERY

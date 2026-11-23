@@ -73,6 +73,11 @@ func _ready() -> void:
 	food_lbl.position = Vector2(176, 36)
 	food_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(food_lbl)
+	if Sim and bool(Sim.state.get("preview_fixture", false)):
+		var preview := _lbl("試玩", 14)
+		preview.position = Vector2(176, 58)
+		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(preview)
 
 	# 左上收藏（屋 ×2 之後右上會同煙囪重疊）
 	btn_book = _btn("圖鑑")
@@ -443,7 +448,15 @@ func _refresh_book() -> void:
 	var info: Label = book_panel.find_child("BookInfo", true, false) as Label
 	if info:
 		var forms: Dictionary = CollectionSystem.ensure()["collection"].get("forms", {})
-		info.text = "星星碎 %d　圖鑑 %d／54　家具 %d" % [CollectionSystem.stardust(), forms.size(), CollectionSystem.owned().size()]
+		var found := ""
+		if CollectionSystem.has_method("discovered_names"):
+			var names: PackedStringArray = CollectionSystem.discovered_names()
+			if names.size() > 0:
+				found = "　已發現 " + "、".join(names)
+		var stage_name := ""
+		if Sim and Sim.has_method("stage_zh"):
+			stage_name = Sim.stage_zh() + "　"
+		info.text = "%s星星碎 %d　圖鑑 %d／54　家具 %d%s" % [stage_name, CollectionSystem.stardust(), forms.size(), CollectionSystem.owned().size(), found]
 	var shop: VBoxContainer = book_panel.find_child("Shop", true, false) as VBoxContainer
 	if shop == null:
 		return

@@ -2,10 +2,12 @@
 # Does not edit Play-Main.ps1 and does not change the execution policy.
 param(
     [Parameter(Mandatory = $true)][string]$GodotExe,
-    [Parameter(Mandatory = $true)][string]$ProjectDir
+    [Parameter(Mandatory = $true)][string]$ProjectDir,
+    [switch]$Preview
 )
 $ErrorActionPreference = 'Stop'
 $profile = 'vc27_draft_try'
+if ($Preview) { $profile = 'vc27_draft_preview' }
 
 function Assert-NotPlayer([string]$path) {
     if ($path -match 'vc27_play_36bfd') { throw "refusing a path that touches the player profile" }
@@ -45,8 +47,14 @@ function Remove-OwnOverride {
 
 Write-Output "Spare project: $projFull"
 Write-Output "Isolated profile, kept across launches: $env:APPDATA\$profile"
-Write-Output "This run does not read, write, or delete vc27_play_36bfd."
-Write-Output "Renderer requested: mobile. No editor. No test script. The draft save is not wiped."
+Write-Output "This run does not read, write, or delete vc27_play_36bfd or vc27_draft_try unless that is the profile named above."
+if ($Preview) {
+    Write-Output "PREVIEW fixture profile. A new save is marked preview_fixture. An existing preview save is not reset."
+    $env:VC27_DRAFT_PREVIEW = '1'
+} else {
+    Remove-Item Env:VC27_DRAFT_PREVIEW -ErrorAction SilentlyContinue
+}
+Write-Output "Renderer requested: mobile. No editor. No test script. The save is not wiped."
 $code = 1
 try {
     [System.IO.File]::WriteAllText($cfg, $cfgText, $utf8)
@@ -57,5 +65,6 @@ try {
     if ($null -eq $proc.ExitCode) { $code = 0 } else { $code = $proc.ExitCode }
 } finally {
     Remove-OwnOverride
+    if ($Preview) { Remove-Item Env:VC27_DRAFT_PREVIEW -ErrorAction SilentlyContinue }
 }
 exit $code
