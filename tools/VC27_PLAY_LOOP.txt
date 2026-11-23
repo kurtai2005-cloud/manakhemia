@@ -10,7 +10,7 @@ Rule, from the existing specs
 - Stored fruit count is the existing starberry picture plus a number. It is not a new currency.
 - The ground berry is the same starberry picture, drawn larger, with the same forage hit area.
 - The home marker uses the existing eat or sleep icon for the action a click will take. It is hidden when neither action is available. Two icon buttons do the same thing explicitly: food spends one fruit, rest starts the existing door walk. Below 50 energy, rest can still start on its own.
-- Rest does not call enter_house by itself. The door goal is the existing exterior stand. The body uses the same footprint steering as the berry walk, because the nav agent does not cross this garden. Arrival then uses the existing commit_enter. Sleep starts inside. Waking clears sleep and leaves the pet indoors until the existing 返回 button. A click on the upper door does the same enter.
+- Rest does not call enter_house by itself. The door goal is the existing exterior stand. The body uses the same footprint steering as the berry walk, because the nav agent does not cross this garden. Arrival then uses the existing commit_enter. Sleep starts inside. At sleep_wake_at the existing watch calls exit_house and the pet is outside again. 返回 is an optional earlier exit. It is not required for the wake.
 - The normal HUD hides 開發者 unless VC27_DEV_HUD=1. 欣賞 sits at the top and does not cover the action buttons.
 - Offline time stays on the existing cap and does not finish a delivery or add this fruit. A backwards clock is ignored.
 - Shop furniture in data/economy.json has prices. This loop does not buy it and does not grant a free shop item.
@@ -19,7 +19,7 @@ What you can do
 - Click the berry. The pet walks, carries it, and walks to the home marker.
 - Click the berry again to cancel. Click again to retry the same delivery.
 - The food icon spends one stored fruit. The pet walks to the home marker, the coat plays eat, then the pet wanders.
-- The sleep icon, after that meal and while energy is below 90, walks to the door and sleeps inside. 返回 leaves. The pet does not walk itself back out.
+- The sleep icon, after that meal and while energy is below 90, walks to the door and sleeps inside. When energy reaches sleep_wake_at the pet leaves on its own. 返回 can leave earlier.
 - Feed, pat, and clean on the pet still use the one coat.
 
 Not in this slice

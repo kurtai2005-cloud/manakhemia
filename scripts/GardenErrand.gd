@@ -272,17 +272,13 @@ func _watch_door() -> void:
 func _watch_rest() -> void:
 	var energy := float(_needs().get("energy", 0))
 	var sleeping := bool(Sim.state.get("sleeping", false))
-	var inside := main != null and bool(main.get("in_interior"))
-	if not inside:
-		if sleeping:
-			Sim.set_sleeping(false)
-		_set_phase("idle")
-		walker.pause_t = 0.4
-		return
 	if sleeping and energy < Sim.SLEEP_WAKE_AT:
 		return
-	if sleeping:
-		Sim.set_sleeping(false)
+	Sim.set_sleeping(false)
+	if main and bool(main.get("in_interior")) and main.has_method("exit_house"):
+		main.call("exit_house", true)
+	_set_phase("idle")
+	walker.pause_t = 0.4
 
 
 func _maybe_rest() -> void:
