@@ -525,9 +525,10 @@ func _begin_toss() -> void:
 	if int(task.get("toss_seq", 0)) <= paid:
 		task["toss_seq"] = paid + 1
 	var origin := walker.global_position if walker else Vector3.ZERO
-	toss_land = _free_spot(origin + Vector3(0, 0, 40))
-	if toss_land.distance_to(origin) < 18.0:
-		toss_land = _free_spot(origin + Vector3(-16, 0, 30))
+	# Mostly sideways, so the existing side-walk sheet plays instead of a front slide.
+	toss_land = _free_spot(origin + Vector3(34, 0, 8))
+	if toss_land.distance_to(origin) < 16.0:
+		toss_land = _free_spot(origin + Vector3(-34, 0, 8))
 	toss_from = origin + Vector3(0, 28, 0)
 	toss_age = 0.0
 	var land := [toss_land.x, toss_land.y, toss_land.z]
@@ -562,6 +563,19 @@ func _place_toss(at: Vector3) -> void:
 		return
 	toss.visible = true
 	toss.global_position = at
+
+
+func _swallow(frame: int) -> void:
+	if toss == null or walker == null:
+		return
+	if frame >= 3:
+		_hide_toss()
+		return
+	var u := clampf(float(frame) / 3.0, 0.0, 1.0)
+	toss.visible = true
+	toss.pixel_size = lerpf(1.15, 0.15, u)
+	var mouth := walker.global_position + Vector3(0, lerpf(26.0, 18.0, u), 0)
+	toss.global_position = mouth
 
 
 func _hide_toss() -> void:
@@ -602,8 +616,7 @@ func _tick_reaction() -> void:
 		if id == "eat":
 			_saw_eat = true
 			var frame := int(pres.call("care_frame")) if pres.has_method("care_frame") else 0
-			if frame >= 2:
-				_hide_toss()
+			_swallow(frame)
 		elif _saw_eat and not active and pres.has_method("play_care"):
 			pres.call("play_care", "emo_happy")
 			_after_eat = "happy"

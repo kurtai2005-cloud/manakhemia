@@ -30,7 +30,7 @@ var _blob_y := 0.08
 ## Completion is one authored pass. CLIPS "next" is not followed.
 ## nuzzle's atlas loop flag is not an endless pat: one cycle, then idle or walk.
 const CARE := {
-	"eat": {"frames": 4, "fps": 2.0, "repeats": 1, "priority": 5, "interruptible": false},
+	"eat": {"frames": 4, "fps": 4.0, "repeats": 1, "priority": 5, "interruptible": false},
 	"nuzzle": {"frames": 6, "fps": 6.0, "repeats": 1, "priority": 4, "interruptible": true},
 	"emo_happy": {"frames": 2, "fps": 2.0, "repeats": 2, "priority": 4, "interruptible": true},
 	"emo_surprised": {"frames": 2, "fps": 6.0, "repeats": 1, "priority": 4, "interruptible": false},

@@ -145,8 +145,7 @@ func _hold_care(id: String, need: int, why: String) -> bool:
 		var frame := int(pres.call("care_frame")) if pres and pres.has_method("care_frame") else -1
 		if now == id and frame != last:
 			last = frame
-			for _k in range(8):
-				_save_frame()
+			_save_frame()
 			if id == "eat" and frame not in _eat_seen:
 				_eat_seen.append(frame)
 			if id == "emo_happy" and frame not in _happy_seen:
@@ -221,7 +220,7 @@ func _sample_for(frames: int) -> void:
 func _maybe_frame() -> void:
 	_note_visuals()
 	_sample_n += 1
-	if _sample_n < 6:
+	if _sample_n < 2:
 		return
 	_sample_n = 0
 	_save_frame()
@@ -373,14 +372,26 @@ func _line(extra: Dictionary) -> void:
 		"sleeping": bool(root.get_node("Sim").state.get("sleeping", false)),
 		"pos": [walker.global_position.x, walker.global_position.z] if walker else [],
 		"care": str(pres.call("care_id")) if pres and pres.has_method("care_id") else "",
+		"care_frame": int(pres.call("care_frame")) if pres and pres.has_method("care_frame") else -1,
+		"coat": _coat_path(),
 		"renderer_setting": str(ProjectSettings.get_setting("rendering/renderer/rendering_method")),
 		"renderer": _running_renderer(),
 		"rendering_driver": _running_driver(),
-		"sample": "every 6th engine frame, playback 6 fps, not wall-clock realtime",
+		"sample": "every 2nd engine frame, playback 8 fps review rate, not wall-clock realtime. Eat poses advance at 4 fps in game time. No duplicated holds.",
 	}
 	row.merge(extra, true)
 	_trace.store_line(JSON.stringify(row))
 	_trace.flush()
+
+
+func _coat_path() -> String:
+	var pet := _pet()
+	if pet == null:
+		return ""
+	var coat := pet.get_node_or_null("Hd2dCoat") as Sprite3D
+	if coat == null or coat.texture == null:
+		return ""
+	return str(coat.texture.resource_path)
 
 
 func _running_renderer() -> String:
@@ -434,7 +445,7 @@ func _write(ok: bool, reason: String) -> void:
 		"ok": ok,
 		"reason": reason,
 		"frames": _frame,
-		"sample": "every 6th engine frame, playback 6 fps, not wall-clock realtime",
+		"sample": "every 2nd engine frame, playback 8 fps review rate, not wall-clock realtime. Eat poses advance at 4 fps in game time. No duplicated holds.",
 		"saw_toss": _saw_toss,
 		"saw_carry": _saw_carry,
 		"saw_eat": _saw_eat,

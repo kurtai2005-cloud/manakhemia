@@ -1,7 +1,8 @@
 extends SceneTree
 ## Inventory only. Not a picture pass.
-## Calls the same press_food handler the meal button uses.
-## Starting fruit and hunger are fixture setup.
+## Same process: calls press_food, reads user://save_v1.json, puts that dict back
+## into the live Sim autoload, then frees Main and instances it again.
+## The autoloads are not restarted. This is not a new OS process.
 
 func _initialize() -> void:
 	var udir := OS.get_user_data_dir()
