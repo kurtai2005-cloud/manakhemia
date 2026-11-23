@@ -4,7 +4,7 @@
 param(
     [Parameter(Mandatory = $true)][string]$GodotExe,
     [Parameter(Mandatory = $true)][string]$OutputDir,
-    [ValidateSet('Picture', 'Wake')]
+    [ValidateSet('Picture', 'Wake', 'Motion')]
     [string]$Mode = 'Picture'
 )
 $ErrorActionPreference = 'Stop'
@@ -48,18 +48,23 @@ if ($Mode -eq 'Wake') {
     $scriptPath = 'res://tests/hd2d_rest_wake.gd'
     $headless = $true
     $timeoutMs = 120000
+} elseif ($Mode -eq 'Motion') {
+    $profile = 'vc27_motion_capture'
+    $scriptPath = 'res://tests/hd2d_motion_capture.gd'
+    $headless = $false
+    $timeoutMs = 420000
 } else {
     $profile = 'vc27_play_usable'
     $scriptPath = 'res://tests/hd2d_play_usable.gd'
     $headless = $false
     $timeoutMs = 480000
 }
-if ($profile -ne 'vc27_play_usable' -and $profile -ne 'vc27_rest_wake') {
+if ($profile -ne 'vc27_play_usable' -and $profile -ne 'vc27_rest_wake' -and $profile -ne 'vc27_motion_capture') {
     throw "refusing profile $profile"
 }
 
 function Clear-IsolatedProfile([string]$name) {
-    if ($name -ne 'vc27_play_usable' -and $name -ne 'vc27_rest_wake') { throw "refusing profile $name" }
+    if ($name -ne 'vc27_play_usable' -and $name -ne 'vc27_rest_wake' -and $name -ne 'vc27_motion_capture') { throw "refusing profile $name" }
     $roots = @()
     if (-not [string]::IsNullOrEmpty($env:APPDATA)) {
         $roots += (Join-Path $env:APPDATA $name)
@@ -98,7 +103,9 @@ try {
     $psi.RedirectStandardError = $true
     $psi.CreateNoWindow = $headless
     $psi.Arguments = $args
-    if (-not $headless) {
+    if ($Mode -eq 'Motion') {
+        $psi.EnvironmentVariables["VC27_MOTION_OUT"] = $outFull
+    } elseif (-not $headless) {
         $psi.EnvironmentVariables["VC27_USABLE_OUT"] = $outFull
     }
     $proc = New-Object System.Diagnostics.Process
@@ -144,6 +151,29 @@ try {
         }
         Write-Output "PLAY_USABLE_CAPTURE mode=Wake exit=$code output=$outFull"
         Write-Output "SYNTHETIC. enter_house and the energy write are fixture setup. Not a manual play pass."
+    } elseif ($Mode -eq 'Motion' -and $code -eq 0) {
+        $trace = Join-Path $outFull 'trace.jsonl'
+        $result = Join-Path $outFull 'result.json'
+        $clip = Join-Path $outFull 'motion.mp4'
+        if (-not (Test-Path -LiteralPath $trace) -or -not (Test-Path -LiteralPath $result)) {
+            $code = 1
+            [System.IO.File]::WriteAllText($exitPath, "$code`r`n", $utf8)
+            throw "expected trace.jsonl and result.json"
+        }
+        $frames = Join-Path $outFull 'frames'
+        if (-not (Test-Path -LiteralPath $clip) -and (Test-Path -LiteralPath $frames)) {
+            $ffmpeg = Get-Command ffmpeg -ErrorAction SilentlyContinue
+            if ($ffmpeg) {
+                & $ffmpeg.Source -y -framerate 6 -i (Join-Path $frames 'f_%04d.jpg') -c:v libx264 -pix_fmt yuv420p -crf 28 $clip
+            }
+        }
+        if (-not (Test-Path -LiteralPath $clip)) {
+            $code = 1
+            [System.IO.File]::WriteAllText($exitPath, "$code`r`n", $utf8)
+            throw "motion.mp4 missing"
+        }
+        Write-Output "PLAY_USABLE_CAPTURE mode=Motion exit=$code output=$outFull"
+        Write-Output "Sampled game frames, not a claim of wall-clock realtime. Not an RTX or phone pass."
     } else {
         throw "godot exit $code"
     }

@@ -408,7 +408,9 @@ func _line(extra: Dictionary) -> void:
 		"energy": float(needs.get("energy", 0)),
 		"inside": bool(_main.get("in_interior")),
 		"pos": [walker.global_position.x, walker.global_position.z] if walker else [],
-		"renderer": str(ProjectSettings.get_setting("rendering/renderer/rendering_method")),
+		"renderer_setting": str(ProjectSettings.get_setting("rendering/renderer/rendering_method")),
+		"renderer": _running_renderer(),
+		"rendering_driver": _running_driver(),
 		"display": str(DisplayServer.get_name()),
 	}
 	row.merge(extra, true)
@@ -464,6 +466,18 @@ func _home_texture() -> String:
 	if home == null or home.texture == null:
 		return ""
 	return home.texture.resource_path
+
+
+func _running_renderer() -> String:
+	if RenderingServer.has_method("get_current_rendering_method"):
+		return str(RenderingServer.call("get_current_rendering_method"))
+	return ""
+
+
+func _running_driver() -> String:
+	if RenderingServer.has_method("get_current_rendering_driver_name"):
+		return str(RenderingServer.call("get_current_rendering_driver_name"))
+	return ""
 
 
 func _fruit() -> int:

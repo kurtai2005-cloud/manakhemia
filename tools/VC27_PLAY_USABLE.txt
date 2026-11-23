@@ -16,5 +16,9 @@ Optional narrow wake check. Synthetic. Same isolation rules, profile vc27_rest_w
 
 powershell -NoProfile -File .\tools\Play-Usable.ps1 -Mode Wake -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -OutputDir C:\Users\nasa2\hd2d_test\vc27_rest_wake_out
 
-The Linux tools/run_play_usable.sh is the same picture behavior for this machine. It is not the Windows runner.
+Continuous motion, after the overlay that includes the toss. Do not rerun Picture or Layers for this. Empty absolute output folder. The clip is sampled game time at about 6 frames per game second, not a claim of wall-clock realtime.
+
+powershell -NoProfile -File .\tools\Play-Usable.ps1 -Mode Motion -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -OutputDir C:\Users\nasa2\hd2d_test\vc27_motion_out
+
+The Linux tools/run_play_usable.sh is the older picture behavior for this machine. It is not the Windows runner.
 Root Play-Main.ps1, scripts/hd2d_exterior_host.gd, and art stay as they are.

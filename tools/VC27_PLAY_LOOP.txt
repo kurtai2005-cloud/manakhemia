@@ -18,7 +18,7 @@ Rule, from the existing specs
 What you can do
 - Click the berry. The pet walks, carries it, and walks to the home marker.
 - Click the berry again to cancel. Click again to retry the same delivery.
-- The food icon spends one stored fruit. The pet walks to the home marker, the coat plays eat, then the pet wanders.
+- The meal control tosses one stored fruit in an arc onto open grass. The pet walks to it, plays the existing eat frames, then the existing happy frames. A full pet does not spend the fruit. Cancelling before the bite, or reloading the same toss, does not spend it twice.
 - The sleep icon, after that meal and while energy is below 90, walks to the door and sleeps inside. When energy reaches sleep_wake_at the pet leaves on its own. 返回 can leave earlier.
 - Feed, pat, and clean on the pet still use the one coat.
 

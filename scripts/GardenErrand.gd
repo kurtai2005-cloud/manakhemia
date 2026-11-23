@@ -6,8 +6,12 @@ extends Node
 
 const FRUIT_ID := "starberry"
 const FRUIT_TEX := "res://art-pet/sprites/hunt/fruits/starberry.png"
-const WANT_BERRY := Vector3(48, 0, 36)
-const WANT_HOME := Vector3(-40, 0, 16)
+# Open foreground grass, in view of the opening camera and off the crate cluster
+# and the left canopy. The rest mark is the door stand, not this drop point.
+const WANT_BERRY := Vector3(46, 0, 40)
+const WANT_HOME := Vector3(28, 0, 22)
+const TOSS_ARC_SEC := 1.05
+const TOSS_ARC_H := 26.0
 
 var main: Node3D
 var walker: Walker
@@ -19,6 +23,13 @@ var berry_pos := Vector3.ZERO
 var home_pos := Vector3.ZERO
 var home_area: Area3D
 var goal_bubble: Sprite3D
+var toss: Sprite3D
+var rest_mark: Sprite3D
+var toss_from := Vector3.ZERO
+var toss_land := Vector3.ZERO
+var toss_age := 0.0
+var _after_eat := ""
+var _saw_eat := false
 
 
 func setup(host: Node3D, body: Walker) -> void:
@@ -39,8 +50,18 @@ func resume_saved() -> void:
 	var phase := str(_task().get("phase", "idle"))
 	if phase == "to_pick":
 		walker.set_errand(berry_pos)
-	elif phase == "carry" or phase == "to_eat" or phase == "to_rest":
+	elif phase == "toss" or phase == "to_eat":
+		_place_toss(_toss_land())
+		if phase == "toss":
+			var task := _task()
+			task["phase"] = "to_eat"
+			_write(task)
+		walker.set_errand(_toss_land())
+	elif phase == "carry":
 		walker.set_errand(home_pos)
+	elif phase == "to_rest":
+		var stand: Vector3 = _door_stand()
+		walker.set_errand(stand)
 
 
 func press_target(area: Area3D) -> String:
@@ -94,16 +115,21 @@ func rest_offered() -> bool:
 
 
 func press_food() -> String:
-	if str(_task().get("phase", "idle")) != "idle":
+	var phase := str(_task().get("phase", "idle"))
+	if phase == "toss" or phase == "to_eat":
+		if not _toss_consumed():
+			_cancel_toss()
+			return "cancel"
+		return "busy"
+	if phase != "idle":
 		return "busy"
 	if _fruit_count() <= 0:
 		return "none"
 	if _feed_blocked():
 		return "full"
 	_clear_care()
-	_set_phase("to_eat")
-	walker.set_errand(home_pos)
-	return "eat"
+	_begin_toss()
+	return "toss"
 
 
 func press_rest() -> String:
@@ -115,9 +141,12 @@ func press_rest() -> String:
 
 func press_home() -> String:
 	var phase := str(_task().get("phase", "idle"))
-	if phase == "to_eat" or phase == "to_rest":
-		_set_phase("idle")
-		walker.clear_errand()
+	if phase == "toss" or phase == "to_eat" or phase == "to_rest":
+		if phase != "to_rest" and not _toss_consumed():
+			_cancel_toss()
+		else:
+			_set_phase("idle")
+			walker.clear_errand()
 		if main:
 			main.set("_door_pending", false)
 		return "cancel"
@@ -138,8 +167,13 @@ func _process(dt: float) -> void:
 		return
 	var task: Dictionary = _task()
 	var phase := str(task.get("phase", "idle"))
+	_tick_reaction()
 	if phase == "asleep":
 		_watch_rest()
+		_pulse_markers(phase)
+		return
+	if phase == "toss":
+		_fly_toss(dt)
 		_pulse_markers(phase)
 		return
 	if phase == "to_rest":
@@ -166,7 +200,7 @@ func _process(dt: float) -> void:
 		walker.clear_errand()
 		walker.pause_t = 0.4
 		_restore_visual()
-	elif phase == "to_eat" and _close(home_pos):
+	elif phase == "to_eat" and _close(_toss_land()):
 		_eat_one()
 		walker.clear_errand()
 		walker.pause_t = 0.6
@@ -206,26 +240,36 @@ func _grant_once() -> void:
 
 
 func _eat_one() -> Dictionary:
-	if _fruit_count() <= 0:
+	var task := _task()
+	var open := int(task.get("toss_seq", 0))
+	var paid := int(task.get("toss_paid", 0))
+	if open <= paid:
+		_hide_toss()
 		_set_phase("idle")
-		return {"ok": false, "reason": "none"}
-	if _feed_blocked():
+		return {"ok": false, "reason": "already"}
+	if _fruit_count() <= 0 or _feed_blocked():
+		_hide_toss()
 		_set_phase("idle")
-		return {"ok": false, "reason": "blocked"}
+		return {"ok": false, "reason": "full" if _feed_blocked() else "none"}
 	var rec: Dictionary = Sim.feed("meal")
 	if not bool(rec.get("ok", false)):
+		_hide_toss()
 		_set_phase("idle")
 		return rec
 	if CollectionSystem:
 		CollectionSystem.spend_fruit(FRUIT_ID, 1)
-	var task := _task()
+	task = _task()
 	task["meals"] = int(task.get("meals", 0)) + 1
+	task["toss_paid"] = open
 	task["phase"] = "idle"
 	task["active_id"] = ""
 	_write(task)
+	_hide_toss()
 	var pres := _presentation()
 	if pres and pres.has_method("play_care"):
 		pres.call("play_care", "eat")
+		_after_eat = "eat"
+		_saw_eat = false
 	return rec
 
 
@@ -272,10 +316,17 @@ func _watch_door() -> void:
 func _watch_rest() -> void:
 	var energy := float(_needs().get("energy", 0))
 	var sleeping := bool(Sim.state.get("sleeping", false))
+	var inside := main != null and bool(main.get("in_interior"))
+	if not inside:
+		if sleeping:
+			Sim.set_sleeping(false)
+		_set_phase("idle")
+		walker.pause_t = 0.4
+		return
 	if sleeping and energy < Sim.SLEEP_WAKE_AT:
 		return
 	Sim.set_sleeping(false)
-	if main and bool(main.get("in_interior")) and main.has_method("exit_house"):
+	if main.has_method("exit_house"):
 		main.call("exit_house", true)
 	_set_phase("idle")
 	walker.pause_t = 0.4
@@ -341,7 +392,7 @@ func _free_spot(prefer: Vector3) -> Vector3:
 func _build_markers() -> void:
 	var tex := load(FRUIT_TEX) as Texture2D
 	berry = _marker("ForageBerry", berry_pos, tex)
-	berry.pixel_size = 0.85
+	berry.pixel_size = 1.25
 	berry_area = Area3D.new()
 	berry_area.name = "ForageBerryArea"
 	berry_area.collision_layer = 32
@@ -369,13 +420,15 @@ func _build_markers() -> void:
 	held = Sprite3D.new()
 	held.name = "CarriedBerry"
 	held.texture = tex
-	held.pixel_size = 0.7
+	held.pixel_size = 1.15
 	held.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-	held.shaded = true
+	held.shaded = false
+	held.no_depth_test = true
+	held.render_priority = 12
 	held.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	held.visible = false
 	walker.add_child(held)
-	held.position = Vector3(8, 22, 0)
+	held.position = Vector3(0, 48, 0)
 	var held_area := Area3D.new()
 	held_area.name = "CarriedBerryArea"
 	held_area.collision_layer = 32
@@ -395,7 +448,19 @@ func _build_markers() -> void:
 	goal_bubble.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	goal_bubble.visible = false
 	walker.add_child(goal_bubble)
-	goal_bubble.position = Vector3(0, 36, 0)
+	goal_bubble.position = Vector3(0, 62, 0)
+	toss = _marker("TossedFood", Vector3.ZERO, tex)
+	toss.pixel_size = 1.2
+	toss.shaded = false
+	toss.no_depth_test = true
+	toss.render_priority = 12
+	toss.visible = false
+	var sleep_tex: Texture2D = load("res://art/m1-icons/need_sleep.png")
+	rest_mark = _marker("DoorRest", _door_stand(), sleep_tex if sleep_tex != null else tex)
+	rest_mark.shaded = false
+	rest_mark.no_depth_test = true
+	rest_mark.render_priority = 11
+	rest_mark.visible = false
 
 
 func _pulse_markers(phase: String) -> void:
@@ -406,21 +471,21 @@ func _pulse_markers(phase: String) -> void:
 	var bubble_path := ""
 	if phase == "to_rest" or phase == "asleep":
 		bubble_path = "res://art/m1-icons/bubble_need_sleep.png"
-	elif phase == "to_pick" or phase == "carry" or phase == "to_eat":
-		bubble_path = "res://art/m1-icons/bubble_need_eat.png"
 	if bubble_path == "" or not ResourceLoader.exists(bubble_path):
 		goal_bubble.visible = false
 		return
-	var inside := main != null and bool(main.get("in_interior"))
 	goal_bubble.texture = load(bubble_path)
-	goal_bubble.visible = not inside
+	goal_bubble.visible = true
 
 
 func _marker(node_name: String, pos: Vector3, tex: Texture2D) -> Sprite3D:
 	var spr := Sprite3D.new()
 	spr.name = node_name
 	spr.texture = tex
-	spr.pixel_size = 0.7
+	spr.pixel_size = 1.05
+	spr.shaded = false
+	spr.no_depth_test = true
+	spr.render_priority = 10
 	spr.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 	spr.shaded = true
 	spr.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
@@ -442,17 +507,107 @@ func _restore_visual() -> void:
 		if held_area:
 			held_area.collision_layer = 32 if held.visible else 0
 	if home:
-		var shown := offer()
-		home.visible = not inside and shown != ""
-		if shown == "rest" and ResourceLoader.exists("res://art/m1-icons/need_sleep.png"):
-			home.texture = load("res://art/m1-icons/need_sleep.png")
-		elif shown == "food" and ResourceLoader.exists("res://art/m1-icons/need_eat.png"):
-			home.texture = load("res://art/m1-icons/need_eat.png")
-		else:
-			home.texture = load(FRUIT_TEX)
+		home.visible = not inside and phase == "carry"
+		home.texture = load(FRUIT_TEX)
 		home.modulate = Color(1, 1, 1, 1)
 	if home_area:
 		home_area.collision_layer = 32 if home != null and home.visible else 0
+	if rest_mark:
+		var show_rest := not inside and (phase == "to_rest" or offer() == "rest")
+		rest_mark.visible = show_rest
+		rest_mark.position = _door_stand() + Vector3(0, 12, 0)
+	if toss and phase != "toss" and phase != "to_eat":
+		toss.visible = false
+
+
+func _begin_toss() -> void:
+	var task := _task()
+	var paid := int(task.get("toss_paid", 0))
+	if int(task.get("toss_seq", 0)) <= paid:
+		task["toss_seq"] = paid + 1
+	var origin := walker.global_position if walker else Vector3.ZERO
+	toss_land = _free_spot(origin + Vector3(0, 0, 40))
+	if toss_land.distance_to(origin) < 18.0:
+		toss_land = _free_spot(origin + Vector3(-16, 0, 30))
+	toss_from = origin + Vector3(0, 28, 0)
+	toss_age = 0.0
+	var land := [toss_land.x, toss_land.y, toss_land.z]
+	task["toss_land"] = land
+	_write(task)
+	_place_toss(toss_from)
+	_set_phase("toss")
+
+
+func _fly_toss(dt: float) -> void:
+	toss_age += dt
+	var u := clampf(toss_age / TOSS_ARC_SEC, 0.0, 1.0)
+	var p := toss_from.lerp(toss_land + Vector3(0, 3, 0), u)
+	p.y += sin(u * PI) * TOSS_ARC_H
+	_place_toss(p)
+	if u < 1.0:
+		return
+	_place_toss(toss_land + Vector3(0, 3, 0))
+	_set_phase("to_eat")
+	walker.set_errand(toss_land)
+
+
+func _cancel_toss() -> void:
+	_hide_toss()
+	walker.clear_errand()
+	_after_eat = ""
+	_set_phase("idle")
+
+
+func _place_toss(at: Vector3) -> void:
+	if toss == null:
+		return
+	toss.visible = true
+	toss.global_position = at
+
+
+func _hide_toss() -> void:
+	if toss:
+		toss.visible = false
+
+
+func _toss_land() -> Vector3:
+	var raw: Variant = _task().get("toss_land", [])
+	if raw is Array and raw.size() >= 3:
+		return Vector3(float(raw[0]), 0.0, float(raw[2]))
+	if toss_land != Vector3.ZERO:
+		return toss_land
+	return home_pos
+
+
+func _toss_consumed() -> bool:
+	var task := _task()
+	return int(task.get("toss_seq", 0)) <= int(task.get("toss_paid", 0)) and int(task.get("toss_seq", 0)) > 0
+
+
+func _door_stand() -> Vector3:
+	if ClassDB.class_exists("Hd2dDoor"):
+		return Hd2dDoor.exterior_anchor()
+	return Vector3(94.0, 0.0, -29.0)
+
+
+func _tick_reaction() -> void:
+	if _after_eat == "":
+		return
+	var pres := _presentation()
+	if pres == null or not pres.has_method("care_id"):
+		_after_eat = ""
+		return
+	var id := str(pres.call("care_id"))
+	var active := pres.has_method("care_active") and bool(pres.call("care_active"))
+	if _after_eat == "eat":
+		if id == "eat":
+			_saw_eat = true
+		elif _saw_eat and not active and pres.has_method("play_care"):
+			pres.call("play_care", "emo_happy")
+			_after_eat = "happy"
+			_saw_eat = false
+	elif _after_eat == "happy" and not active:
+		_after_eat = ""
 
 
 func _clear_care() -> void:

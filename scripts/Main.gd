@@ -1530,7 +1530,13 @@ func hand_feed(w: Walker, food: String = "meal") -> Dictionary:
 		var hook := "sfx_feed_meal" if food != "snack" else "sfx_feed_snack"
 		AudioManager.play(hook, w)
 	var rec: Dictionary
-	if str(w.character) == "tuanrong":
+	if str(w.character) == "tuanrong" and food == "meal":
+		var errand := get_node_or_null("GardenErrand")
+		if errand and errand.has_method("press_food"):
+			var why := str(errand.call("press_food"))
+			return {"ok": why == "toss", "reason": why, "act": "feed"}
+		rec = Sim.feed(food)
+	elif str(w.character) == "tuanrong":
 		rec = Sim.feed(food)
 	else:
 		rec = {"ok": true, "act": "feed", "hunger": 0, "mood": 0, "flavor": true}
@@ -1551,8 +1557,12 @@ func hand_pat(w: Walker) -> Dictionary:
 		rec = Sim.pat()
 	else:
 		rec = {"ok": true, "act": "pat", "mood": 0, "flavor": true}
-	if bool(rec.get("ok", false)) and brain and brain.has_method("notify_tap"):
-		brain.notify_tap("pat")
+	if bool(rec.get("ok", false)):
+		if brain and brain.has_method("notify_tap"):
+			brain.notify_tap("pat")
+		var pres := get_node_or_null("Hd2dPresentation")
+		if pres and pres.has_method("play_care"):
+			pres.call("play_care", "nuzzle")
 	return rec
 
 
@@ -2284,6 +2294,12 @@ func _run_exit_transition() -> void:
 	, 0.0, 1.0, close_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tw.set_parallel(false)
 	tw.tween_callback(func():
+		if _hd2d_exterior != null and is_instance_valid(_hd2d_exterior):
+			if _hd2d_exterior.has_method("_apply_opening_to_root_cam"):
+				_hd2d_exterior.call("_apply_opening_to_root_cam")
+			if _hd2d_exterior.has_method("_lock_play_camera"):
+				_hd2d_exterior.call("_lock_play_camera")
+			return
 		_interior_lock_cam = false
 		_place_cam(0.0)
 	)

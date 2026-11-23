@@ -173,14 +173,14 @@ func _ready() -> void:
 
 	goal_bar = VBoxContainer.new()
 	goal_bar.name = "GoalBar"
-	goal_bar.anchor_left = 0.0
-	goal_bar.anchor_right = 0.0
+	goal_bar.anchor_left = 1.0
+	goal_bar.anchor_right = 1.0
 	goal_bar.anchor_top = 0.0
 	goal_bar.anchor_bottom = 0.0
-	goal_bar.offset_left = 8
-	goal_bar.offset_right = 96
-	goal_bar.offset_top = 180
-	goal_bar.offset_bottom = 276
+	goal_bar.offset_left = -100
+	goal_bar.offset_right = -8
+	goal_bar.offset_top = 56
+	goal_bar.offset_bottom = 248
 	goal_bar.add_theme_constant_override("separation", 8)
 	goal_bar.alignment = BoxContainer.ALIGNMENT_CENTER
 	goal_bar.visible = false
