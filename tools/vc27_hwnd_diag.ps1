@@ -1,236 +1,349 @@
-# Read-only window census for one already-running Godot process.
+# Read-only window census. Windows PowerShell 5.1 compatible.
 # Does not launch the game, does not send WM_CLOSE, does not read saves.
-# Optional -IncludeBareWindow starts a separate empty project in its own profile.
+# Every exit writes hwnd_diag.json, including failures.
 param(
-    [Parameter(Mandatory = $true)][int]$GamePid,
+    [int]$GamePid = 0,
     [int]$WrapperPid = 0,
-    [Parameter(Mandatory = $true)][string]$OutputDir,
-    [string]$GodotExe = '',
-    [switch]$IncludeBareWindow
+    [string]$OutputDir = '',
+    [switch]$SelfTest
 )
 $ErrorActionPreference = 'Stop'
-$started = Get-Date
-if ([string]::IsNullOrWhiteSpace($OutputDir)) { throw 'OutputDir is required' }
-if (Test-Path -LiteralPath $OutputDir) {
-    $item = Get-Item -LiteralPath $OutputDir -Force
-    if (-not $item.PSIsContainer) { throw "OutputDir is not a directory: $OutputDir" }
-    $existing = @(Get-ChildItem -LiteralPath $OutputDir -Force | Select-Object -First 1)
-    if ($existing.Count -gt 0) { throw "OutputDir is not empty: $OutputDir" }
-} else {
-    New-Item -ItemType Directory -Path $OutputDir | Out-Null
-}
-$gameRoot = 'C:\Users\nasa2\hd2d_test\vc27_play_main_2092'
-$saveHint = 'C:\Users\nasa2\AppData\Roaming\vc27_play_36bfd'
-if ($OutputDir.TrimEnd('\') -eq $gameRoot -or $OutputDir.TrimEnd('\') -eq $saveHint) {
-    throw 'OutputDir must not be the game folder or the play profile'
+$stage = 'init'
+$diagPath = $null
+
+function Escape-JsonText([string]$Value) {
+    if ($null -eq $Value) { return '' }
+    $s = $Value.Replace('\', '\\').Replace('"', '\"').Replace("`r", '\r').Replace("`n", '\n').Replace("`t", '\t')
+    return $s
 }
 
-Add-Type -TypeDefinition @"
+function Write-DiagFile($Path, $Object) {
+    $json = $null
+    try {
+        $json = $Object | ConvertTo-Json -Depth 8 -Compress:$false
+    } catch {
+        $msg = Escape-JsonText ([string]$_.Exception.Message)
+        $json = "{`r`n  `"ok`": false,`r`n  `"stage`": `"json_convert`",`r`n  `"exception`": `"System.Management.Automation.ErrorRecord`",`r`n  `"message`": `"$msg`"`r`n}`r`n"
+    }
+    $utf8 = New-Object System.Text.UTF8Encoding $false
+    [System.IO.File]::WriteAllText($Path, $json, $utf8)
+}
+
+function Write-Failure($Path, $StageName, $Record) {
+    $ex = $null
+    $msg = ''
+    $stack = ''
+    $typeName = 'System.Exception'
+    if ($null -ne $Record) {
+        if ($null -ne $Record.Exception) {
+            $ex = $Record.Exception
+            $typeName = $ex.GetType().FullName
+            $msg = [string]$ex.Message
+        } else {
+            $msg = [string]$Record
+        }
+        $stack = [string]$Record.ScriptStackTrace
+        if ([string]::IsNullOrEmpty($stack) -and $null -ne $ex) { $stack = [string]$ex.ToString() }
+    }
+    $safe = [ordered]@{
+        ok = $false
+        stage = [string]$StageName
+        exception = $typeName
+        message = $msg
+        stack = $stack
+    }
+    Write-DiagFile $Path $safe
+}
+
+if ($SelfTest) {
+    if ([string]::IsNullOrWhiteSpace($OutputDir)) { throw 'SelfTest requires OutputDir' }
+    New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
+    $sample = [ordered]@{
+        ok = $true
+        stage = 'self_test'
+        game_pid = 4748
+        windows = @(
+            [ordered]@{
+                hwnd = '0x14C0ACE'
+                pid = 4748
+                thread_id = 1
+                class_name = 'Engine'
+                title = 'sample'
+                visible = $true
+                is_hung_app_window = $false
+                wm_null_answered = $true
+                ghost_class = $false
+            }
+        )
+    }
+    $okPath = Join-Path $OutputDir 'self_test_success.json'
+    Write-DiagFile $okPath $sample
+    $bad = New-Object System.Management.Automation.ErrorRecord (
+        (New-Object System.ArgumentException 'Argument types do not match'),
+        'SelfTest',
+        'InvalidArgument',
+        $null
+    )
+    $badPath = Join-Path $OutputDir 'self_test_failure.json'
+    Write-Failure $badPath 'enumerate' $bad
+    $a = Get-Content -LiteralPath $okPath -Raw | ConvertFrom-Json
+    $b = Get-Content -LiteralPath $badPath -Raw | ConvertFrom-Json
+    if ($a.ok -ne $true -or $a.windows[0].hwnd -ne '0x14C0ACE') { throw 'success json did not round-trip' }
+    if ($b.ok -ne $false -or $b.stage -ne 'enumerate' -or $b.exception -ne 'System.ArgumentException') { throw 'failure json did not round-trip' }
+    if ($b.message -notlike '*Argument types do not match*') { throw 'failure message missing' }
+    Write-Output 'self_test_ok'
+    exit 0
+}
+
+try {
+    $stage = 'output_dir'
+    if ($GamePid -le 0) { throw 'GamePid is required' }
+    if ([string]::IsNullOrWhiteSpace($OutputDir)) { throw 'OutputDir is required' }
+    $gameRoot = 'C:\Users\nasa2\hd2d_test\vc27_play_main_2092'
+    $saveHint = 'C:\Users\nasa2\AppData\Roaming\vc27_play_36bfd'
+    $fullOut = [System.IO.Path]::GetFullPath($OutputDir)
+    if ($fullOut.TrimEnd('\') -eq $gameRoot -or $fullOut.TrimEnd('\') -eq $saveHint) {
+        throw 'OutputDir must not be the game folder or the play profile'
+    }
+    if (Test-Path -LiteralPath $fullOut) {
+        $item = Get-Item -LiteralPath $fullOut -Force
+        if (-not $item.PSIsContainer) { throw "OutputDir is not a directory: $fullOut" }
+        $existing = @(Get-ChildItem -LiteralPath $fullOut -Force | Select-Object -First 1)
+        if ($existing.Count -gt 0) { throw "OutputDir is not empty: $fullOut" }
+    } else {
+        New-Item -ItemType Directory -Path $fullOut | Out-Null
+    }
+    $diagPath = Join-Path $fullOut 'hwnd_diag.json'
+    Write-DiagFile $diagPath ([ordered]@{ ok = $false; stage = 'started'; message = 'census started' })
+
+    $stage = 'resolve_process'
+    $game = $null
+    $wrap = $null
+    $notes = New-Object System.Collections.Generic.List[string]
+    $notes.Add('Read-only. No WM_CLOSE. No save read. No new game process.')
+    $notes.Add('WM_NULL uses SendMessageTimeout 500 ms with SMTO_ABORTIFHUNG.')
+    try { $game = Get-Process -Id $GamePid -ErrorAction Stop } catch {
+        $notes.Add("Game PID $GamePid is not running. Stop. Do not relaunch the game.")
+    }
+    if ($WrapperPid -gt 0) {
+        try { $wrap = Get-Process -Id $WrapperPid -ErrorAction Stop } catch {
+            $notes.Add("Wrapper PID $WrapperPid is not running.")
+        }
+    }
+    $collector = Get-Process -Id $PID
+
+    function Proc-Info($Proc) {
+        if ($null -eq $Proc) { return $null }
+        $cmd = ''
+        try {
+            $w = Get-CimInstance Win32_Process -Filter ("ProcessId=" + $Proc.Id) -ErrorAction Stop
+            $cmd = [string]$w.CommandLine
+        } catch { $cmd = 'command line unreadable' }
+        $startedAt = ''
+        try { $startedAt = $Proc.StartTime.ToString('o') } catch { $startedAt = '' }
+        $cpu = $null
+        try { $cpu = [math]::Round($Proc.CPU, 3) } catch { $cpu = $null }
+        $threads = @()
+        try { $threads = @($Proc.Threads | ForEach-Object { $_.Id }) } catch { $threads = @() }
+        return [ordered]@{
+            pid = $Proc.Id
+            name = [string]$Proc.ProcessName
+            session_id = $Proc.SessionId
+            start_time = $startedAt
+            cpu_seconds = $cpu
+            working_set = $Proc.WorkingSet64
+            main_window_handle = ('0x{0:X}' -f $Proc.MainWindowHandle.ToInt64())
+            main_window_title = [string]$Proc.MainWindowTitle
+            command_line = $cmd
+            thread_ids = $threads
+        }
+    }
+
+    if ($null -eq $game) {
+        $stage = 'write_absent'
+        Write-DiagFile $diagPath ([ordered]@{
+            ok = $false
+            stage = 'resolve_process'
+            game_pid = $GamePid
+            game_alive = $false
+            notes = @($notes)
+        })
+        Write-Output 'game process absent'
+        exit 2
+    }
+
+    $stage = 'add_type'
+    if (-not ('Vc27WinCensus' -as [type])) {
+        Add-Type -TypeDefinition @"
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
-public class Vc27Win {
-    public delegate bool EnumProc(IntPtr hWnd, IntPtr lParam);
-    [DllImport("user32.dll")] public static extern bool EnumWindows(EnumProc cb, IntPtr lp);
-    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint pid);
-    [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hWnd);
-    [DllImport("user32.dll")] public static extern bool IsHungAppWindow(IntPtr hWnd);
-    [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetWindowText(IntPtr hWnd, StringBuilder s, int n);
-    [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetClassName(IntPtr hWnd, StringBuilder s, int n);
-    [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out RECT r);
-    [DllImport("user32.dll")] public static extern IntPtr GetParent(IntPtr hWnd);
-    [DllImport("user32.dll", EntryPoint="SendMessageTimeoutW")] public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, uint flags, uint timeout, out IntPtr result);
-    public struct RECT { public int Left, Top, Right, Bottom; }
-    public static List<IntPtr> Tops() {
-        List<IntPtr> found = new List<IntPtr>();
-        EnumWindows(delegate(IntPtr h, IntPtr l) { found.Add(h); return true; }, IntPtr.Zero);
-        return found;
+public class Vc27WinRow {
+    public string Hwnd;
+    public int Pid;
+    public int ThreadId;
+    public string ClassName;
+    public string Title;
+    public bool Visible;
+    public bool IsHung;
+    public bool WmNullAnswered;
+    public string ProbeError;
+    public int Left;
+    public int Top;
+    public int Right;
+    public int Bottom;
+    public string ParentHwnd;
+    public bool GhostClass;
+}
+public class Vc27WinCensus {
+    public int EnumCount;
+    public bool EnumCapped;
+    public bool ProbeCapped;
+    public List<Vc27WinRow> Windows = new List<Vc27WinRow>();
+    delegate bool EnumProc(IntPtr hWnd, IntPtr lParam);
+    [DllImport("user32.dll")] static extern bool EnumWindows(EnumProc cb, IntPtr lp);
+    [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint pid);
+    [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr hWnd);
+    [DllImport("user32.dll")] static extern bool IsHungAppWindow(IntPtr hWnd);
+    [DllImport("user32.dll", CharSet=CharSet.Unicode)] static extern int GetWindowText(IntPtr hWnd, StringBuilder s, int n);
+    [DllImport("user32.dll", CharSet=CharSet.Unicode)] static extern int GetClassName(IntPtr hWnd, StringBuilder s, int n);
+    [DllImport("user32.dll")] static extern bool GetWindowRect(IntPtr hWnd, out RECT r);
+    [DllImport("user32.dll")] static extern IntPtr GetParent(IntPtr hWnd);
+    [DllImport("user32.dll", EntryPoint="SendMessageTimeoutW")] static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, uint flags, uint timeout, out IntPtr result);
+    struct RECT { public int Left, Top, Right, Bottom; }
+    static string Txt(IntPtr h) {
+        StringBuilder b = new StringBuilder(512);
+        GetWindowText(h, b, b.Capacity);
+        return b.ToString();
+    }
+    static string Cls(IntPtr h) {
+        StringBuilder b = new StringBuilder(256);
+        GetClassName(h, b, b.Capacity);
+        return b.ToString();
+    }
+    public static Vc27WinCensus Collect(int[] watchPids, int maxEnum, int maxProbe, uint timeoutMs) {
+        Vc27WinCensus bag = new Vc27WinCensus();
+        List<IntPtr> all = new List<IntPtr>();
+        EnumWindows(delegate(IntPtr h, IntPtr l) { all.Add(h); return true; }, IntPtr.Zero);
+        foreach (IntPtr h in all) {
+            bag.EnumCount++;
+            if (bag.EnumCount > maxEnum) { bag.EnumCapped = true; break; }
+            uint opid;
+            uint tid = GetWindowThreadProcessId(h, out opid);
+            string title = "";
+            string cls = "";
+            try { title = Txt(h); cls = Cls(h); } catch (Exception ex) { title = ex.GetType().FullName; }
+            bool wanted = false;
+            if (watchPids != null) {
+                for (int i = 0; i < watchPids.Length; i++) {
+                    if (watchPids[i] == (int)opid) { wanted = true; break; }
+                }
+            }
+            if (!wanted && cls == "Ghost") wanted = true;
+            if (!wanted && title != null && title.IndexOf("\u5FAE\u5149") >= 0) wanted = true;
+            if (!wanted) continue;
+            if (bag.Windows.Count >= maxProbe) { bag.ProbeCapped = true; break; }
+            Vc27WinRow row = new Vc27WinRow();
+            row.Hwnd = "0x" + h.ToInt64().ToString("X");
+            row.Pid = (int)opid;
+            row.ThreadId = (int)tid;
+            row.ClassName = cls;
+            row.Title = title;
+            row.GhostClass = cls == "Ghost";
+            try {
+                row.Visible = IsWindowVisible(h);
+                row.IsHung = IsHungAppWindow(h);
+                RECT rect;
+                GetWindowRect(h, out rect);
+                row.Left = rect.Left; row.Top = rect.Top; row.Right = rect.Right; row.Bottom = rect.Bottom;
+                row.ParentHwnd = "0x" + GetParent(h).ToInt64().ToString("X");
+                IntPtr result;
+                IntPtr sm = SendMessageTimeout(h, 0, IntPtr.Zero, IntPtr.Zero, 2, timeoutMs, out result);
+                row.WmNullAnswered = sm != IntPtr.Zero;
+            } catch (Exception ex) {
+                row.ProbeError = ex.GetType().FullName + ": " + ex.Message;
+            }
+            bag.Windows.Add(row);
+        }
+        return bag;
     }
 }
 "@
+    }
 
-function Text-Of([IntPtr]$h) {
-    $b = New-Object System.Text.StringBuilder 512
-    [void][Vc27Win]::GetWindowText($h, $b, $b.Capacity)
-    return $b.ToString()
-}
-function Class-Of([IntPtr]$h) {
-    $b = New-Object System.Text.StringBuilder 256
-    [void][Vc27Win]::GetClassName($h, $b, $b.Capacity)
-    return $b.ToString()
-}
+    $stage = 'enumerate'
+    $pids = New-Object int[] 2
+    $pids[0] = $GamePid
+    $pids[1] = $WrapperPid
+    $bag = [Vc27WinCensus]::Collect($pids, 400, 30, [uint32]500)
+    $rows = New-Object System.Collections.Generic.List[object]
+    foreach ($row in $bag.Windows) {
+        $rows.Add([ordered]@{
+            hwnd = [string]$row.Hwnd
+            pid = [int]$row.Pid
+            thread_id = [int]$row.ThreadId
+            class_name = [string]$row.ClassName
+            title = [string]$row.Title
+            visible = [bool]$row.Visible
+            is_hung_app_window = [bool]$row.IsHung
+            wm_null_answered = [bool]$row.WmNullAnswered
+            wm_null_timeout_ms = 500
+            parent = [string]$row.ParentHwnd
+            rect = @([int]$row.Left, [int]$row.Top, [int]$row.Right, [int]$row.Bottom)
+            width = ([int]$row.Right - [int]$row.Left)
+            height = ([int]$row.Bottom - [int]$row.Top)
+            ghost_class = [bool]$row.GhostClass
+            probe_error = [string]$row.ProbeError
+        })
+    }
 
-$collector = Get-Process -Id $PID
-$note = New-Object System.Collections.Generic.List[string]
-$note.Add('Read-only. No WM_CLOSE. No save read. No full-game launch.')
-$note.Add('SendMessageTimeout is WM_NULL, 500 ms, SMTO_ABORTIFHUNG. A timeout is a measurement, not a repair.')
-$note.Add('inputs=0 in the game log was required by the no-click protocol. This script does not click.')
-
-$game = $null
-$wrap = $null
-try { $game = Get-Process -Id $GamePid -ErrorAction Stop } catch { $note.Add("Game PID $GamePid is not running. Stop. Do not relaunch the game.") }
-if ($WrapperPid -ne 0) {
-    try { $wrap = Get-Process -Id $WrapperPid -ErrorAction Stop } catch { $note.Add("Wrapper PID $WrapperPid is not running.") }
-}
-if ($null -eq $game) {
-    $out = @{ collected_at = (Get-Date).ToString('o'); game_pid = $GamePid; game_alive = $false; notes = @($note); windows = @() }
-    $out | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $OutputDir 'hwnd_diag.json') -Encoding UTF8
-    Write-Output 'game process absent'
-    exit 2
-}
-
-$targets = @{}
-$targets[$GamePid] = $true
-if ($null -ne $wrap) { $targets[$WrapperPid] = $true }
-$interest = New-Object System.Collections.Generic.List[object]
-$seen = 0
-foreach ($h in [Vc27Win]::Tops()) {
-    $seen++
-    if ($seen -gt 400) { $note.Add('Stopped enumerating after 400 top-level windows.'); break }
-    $opid = [uint32]0
-    $tid = [Vc27Win]::GetWindowThreadProcessId($h, [ref]$opid)
-    $title = Text-Of $h
-    $cls = Class-Of $h
-    $keep = $targets.ContainsKey([int]$opid) -or $cls -eq 'Ghost' -or $title.Contains([string][char]0x5FAE + [char]0x5149)
-    if (-not $keep) { continue }
-    if ($interest.Count -ge 30) { $note.Add('Stopped message probes after 30 matching windows.'); break }
-    $rect = New-Object Vc27Win+RECT
-    [void][Vc27Win]::GetWindowRect($h, [ref]$rect)
-    $result = [IntPtr]::Zero
-    $sm = [Vc27Win]::SendMessageTimeout($h, 0, [IntPtr]::Zero, [IntPtr]::Zero, 2, 500, [ref]$result)
-    $answered = ($sm -ne [IntPtr]::Zero)
-    $interest.Add([ordered]@{
-        hwnd = ('0x{0:X}' -f $h.ToInt64())
-        pid = [int]$opid
-        thread_id = [int]$tid
-        class_name = $cls
-        title = $title
-        visible = [bool]([Vc27Win]::IsWindowVisible($h))
-        is_hung_app_window = [bool]([Vc27Win]::IsHungAppWindow($h))
-        wm_null_answered = $answered
-        wm_null_timeout_ms = 500
-        parent = ('0x{0:X}' -f ([Vc27Win]::GetParent($h).ToInt64()))
-        rect = @( $rect.Left, $rect.Top, $rect.Right, $rect.Bottom )
-        width = ($rect.Right - $rect.Left)
-        height = ($rect.Bottom - $rect.Top)
-        ghost_class = ($cls -eq 'Ghost')
+    $stage = 'write_json'
+    $gameInfo = Proc-Info $game
+    $wrapInfo = Proc-Info $wrap
+    Write-DiagFile $diagPath ([ordered]@{
+        ok = $true
+        stage = 'done'
+        game_alive = $true
+        game_pid = $GamePid
+        wrapper_pid = $WrapperPid
+        collector_pid = $PID
+        collector_session = $collector.SessionId
+        same_session_as_game = ($collector.SessionId -eq $game.SessionId)
+        game = $gameInfo
+        wrapper = $wrapInfo
+        enum_count = $bag.EnumCount
+        enum_capped = [bool]$bag.EnumCapped
+        probe_capped = [bool]$bag.ProbeCapped
+        windows = @($rows)
+        limits = [ordered]@{
+            enum_cap = 400
+            probe_cap = 30
+            wm_null_timeout_ms = 500
+            smto_abort_if_hung = $true
+            no_click = $true
+            no_wm_close = $true
+            no_save_read = $true
+            no_new_process = $true
+        }
+        notes = @(
+            'Read-only. No WM_CLOSE. No save read. No new process.',
+            'WM_NULL uses SendMessageTimeout 500 ms with SMTO_ABORTIFHUNG.',
+            'A Ghost class window that is hung, plus another HWND of the game PID that answers WM_NULL: the earlier title was a ghost.',
+            'Every visible HWND of the game PID fails IsHungAppWindow or WM_NULL: that window is not dispatching. Frame pulses are not a pump.',
+            'No HWND has the game PID: the title belonged to another process.',
+            'same_session_as_game false: this PowerShell is not on that process desktop.'
+        )
     })
-}
-
-function Proc-Info($p) {
-    if ($null -eq $p) { return $null }
-    $cmd = ''
-    try {
-        $w = Get-CimInstance Win32_Process -Filter "ProcessId=$($p.Id)" -ErrorAction Stop
-        $cmd = [string]$w.CommandLine
-    } catch { $cmd = "command line unreadable: $($_.Exception.Message)" }
-    return [ordered]@{
-        pid = $p.Id
-        name = $p.ProcessName
-        session_id = $p.SessionId
-        start_time = $(try { $p.StartTime.ToString('o') } catch { '' })
-        cpu_seconds = $(try { [math]::Round($p.CPU, 3) } catch { $null })
-        working_set = $p.WorkingSet64
-        main_window_handle = ('0x{0:X}' -f $p.MainWindowHandle.ToInt64())
-        main_window_title = [string]$p.MainWindowTitle
-        command_line = $cmd
-        thread_ids = $(try { @($p.Threads | ForEach-Object { $_.Id }) } catch { @() })
-    }
-}
-
-$bare = $null
-if ($IncludeBareWindow) {
-    if ([string]::IsNullOrWhiteSpace($GodotExe) -or -not (Test-Path -LiteralPath $GodotExe)) {
-        $note.Add('IncludeBareWindow skipped: GodotExe missing.')
+    Write-Output ("wrote " + $diagPath)
+    Write-Output ("windows=" + $rows.Count)
+    exit 0
+} catch {
+    if ($null -ne $diagPath) {
+        Write-Failure $diagPath $stage $_
+        Write-Output ("wrote failure " + $diagPath)
     } else {
-        $bareDir = Join-Path $env:TEMP ('vc27_hwnd_bare_' + $PID)
-        New-Item -ItemType Directory -Force -Path $bareDir | Out-Null
-        $utf8 = New-Object System.Text.UTF8Encoding $false
-        [System.IO.File]::WriteAllText((Join-Path $bareDir 'project.godot'), @"
-config_version=5
-[application]
-config/name="Vc27 Hwnd Bare"
-run/main_scene="res://bare.tscn"
-config/features=PackedStringArray("4.7")
-[display]
-window/size/viewport_width=640
-window/size/viewport_height=360
-"@, $utf8)
-        [System.IO.File]::WriteAllText((Join-Path $bareDir 'bare.tscn'), "[gd_scene format=3]`n`n[node name=`"Bare`" type=`"Node`"]`n", $utf8)
-        [System.IO.File]::WriteAllText((Join-Path $bareDir 'override.cfg'), "[application]`r`nconfig/use_custom_user_dir=true`r`nconfig/custom_user_dir_name=`"vc27_hwnd_bare_$PID`"`r`n", $utf8)
-        $bp = Start-Process -FilePath $GodotExe -ArgumentList @('--path', $bareDir) -PassThru
-        $deadline = (Get-Date).AddSeconds(12)
-        $bareHwnd = @()
-        while ((Get-Date) -lt $deadline) {
-            Start-Sleep -Milliseconds 400
-            if ($bp.HasExited) { break }
-            $got = $false
-            foreach ($h in [Vc27Win]::Tops()) {
-                $opid = [uint32]0
-                $tid = [Vc27Win]::GetWindowThreadProcessId($h, [ref]$opid)
-                if ([int]$opid -ne $bp.Id) { continue }
-                $got = $true
-                $result = [IntPtr]::Zero
-                $sm = [Vc27Win]::SendMessageTimeout($h, 0, [IntPtr]::Zero, [IntPtr]::Zero, 2, 500, [ref]$result)
-                $rect = New-Object Vc27Win+RECT
-                [void][Vc27Win]::GetWindowRect($h, [ref]$rect)
-                $bareHwnd += [ordered]@{
-                    hwnd = ('0x{0:X}' -f $h.ToInt64())
-                    pid = [int]$opid
-                    thread_id = [int]$tid
-                    class_name = (Class-Of $h)
-                    title = (Text-Of $h)
-                    visible = [bool]([Vc27Win]::IsWindowVisible($h))
-                    is_hung_app_window = [bool]([Vc27Win]::IsHungAppWindow($h))
-                    wm_null_answered = ($sm -ne [IntPtr]::Zero)
-                    width = ($rect.Right - $rect.Left)
-                    height = ($rect.Bottom - $rect.Top)
-                }
-            }
-            if ($got) { break }
-        }
-        if (-not $bp.HasExited) {
-            [void]$bp.CloseMainWindow()
-            if (-not $bp.WaitForExit(3000)) { Stop-Process -Id $bp.Id -Force -ErrorAction SilentlyContinue }
-        }
-        Remove-Item -LiteralPath (Join-Path $bareDir 'override.cfg') -Force -ErrorAction SilentlyContinue
-        $bare = [ordered]@{ pid = $bp.Id; profile = "vc27_hwnd_bare_$PID"; windows = @($bareHwnd); note = 'Separate empty project. Not the game. Closed after the probe.' }
-        $note.Add('Bare window comparison ran in a disposable profile. The game PID was not closed.')
+        Write-Output ("failed before output file stage=" + $stage + " " + $_.Exception.Message)
     }
+    exit 1
 }
-
-$report = [ordered]@{
-    collected_at = (Get-Date).ToString('o')
-    elapsed_ms = [int]((Get-Date) - $started).TotalMilliseconds
-    collector_pid = $PID
-    collector_session = $collector.SessionId
-    game = (Proc-Info $game)
-    wrapper = (Proc-Info $wrap)
-    same_session_as_game = ($(if ($null -ne $game) { $collector.SessionId -eq $game.SessionId } else { $false }))
-    windows = @($interest)
-    bare_window = $bare
-    limits = [ordered]@{
-        enum_cap = 400
-        probe_cap = 30
-        wm_null_timeout_ms = 500
-        smto_abort_if_hung = $true
-        no_click = $true
-        no_wm_close_to_game = $true
-        no_save_read = $true
-    }
-    notes = @($note)
-    how_to_read = @(
-        'A Ghost class or a title that already says Not Responding, plus another HWND of the game PID that answers WM_NULL: the reported hung window is a ghost. The render window answered.',
-        'Every visible HWND of the game PID fails IsHungAppWindow or WM_NULL: the render window itself is not dispatching. Do not treat frame pulses as proof the pump ran.',
-        'No HWND belongs to the game PID: the earlier title match was a different process.',
-        'collector_session differs from game.session_id: this script is not in the interactive session of that process.',
-        'Bare window answers and the game window does not: the hang is specific to the open game, not to every Godot window on this desktop.',
-        'Bare window also fails WM_NULL: a Godot window on this desktop is not answering. Still not a cause for the garden scene.'
-    )
-}
-$jsonPath = Join-Path $OutputDir 'hwnd_diag.json'
-$report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $jsonPath -Encoding UTF8
-Write-Output "wrote $jsonPath"
-Write-Output ("windows=" + $interest.Count + " game_alive=true same_session=" + $report.same_session_as_game)
-exit 0
