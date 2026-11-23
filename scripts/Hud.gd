@@ -588,6 +588,8 @@ func _hand(act: String, food: String) -> void:
 		rec = main.hand_pat(care_target)
 	if rec.is_empty():
 		return
+	card_queue.clear()
+	set_observing(false)
 	# 團絨經 Sim.care_done 出卡；flavor（細佬／訪客）或者食唔落先喺呢度出
 	if bool(rec.get("flavor", false)) or str(rec.get("reason", "")) == "full":
 		_on_care(act, rec)
@@ -616,6 +618,9 @@ func _one_tap(act: String) -> void:
 				_play_error()
 	if rec.is_empty():
 		return
+	if bool(rec.get("ok", false)):
+		card_queue.clear()
+		set_observing(false)
 	_on_care(str(rec.get("act", act)), rec)
 
 

@@ -61,6 +61,7 @@ var interior_room: InteriorRoom
 var _hd2d_host: Node = null
 var _hd2d_exterior: Node = null
 var in_interior := false
+var _pet_lawn_pos := Vector3.ZERO
 var _interior_lock_cam := false
 var _interior_guest: Walker
 var _interior_guest_home := Vector3.ZERO
@@ -110,8 +111,6 @@ func _ready() -> void:
 			exterior.call("present_on_window")
 		elif _hd2d_host == null:
 			enable_hd2d_presentation()
-		if hud and hud.has_method("set_care_target"):
-			hud.set_care_target(pet)
 		var errand_script := load("res://scripts/GardenErrand.gd") as GDScript
 		if errand_script:
 			var errand: Node = errand_script.new()
@@ -502,6 +501,8 @@ func _sync_poops() -> void:
 
 
 func _on_poop_input(_cam: Node, event: InputEvent, _pos: Vector3, _normal: Vector3, _shape: int, node: Area3D) -> void:
+	if event is InputEventMouseButton and event.device == -1:
+		return
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
@@ -673,6 +674,7 @@ func _process(dt: float) -> void:
 		_play_pulse_ms = now
 		print("play pulse wall_ms=", now, " frames=", play_frames, " max_frame_ms=", _play_max_frame_ms, " inputs=", play_inputs, " focus=", play_focus_events, " mouse=", play_mouse_events, " display=", DisplayServer.get_name())
 	_place_cam(dt)
+	_remember_pet_lawn()
 	_commit_door_if_arrived()
 	if HuntSystem:
 		HuntSystem.tick_watch(dt)
@@ -693,6 +695,10 @@ func _notification(what: int) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	play_inputs += 1
+	# Android turns one finger into a touch and a mouse click. The second
+	# event was cancelling the berry trip the first event had just started.
+	if event is InputEventMouseButton and event.device == -1:
+		return
 	# 備用：ray 撳屎（萬一 Area 收唔到）
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
@@ -754,8 +760,8 @@ func _try_tap(pos: Vector2) -> void:
 	if bld:
 		_on_building_tapped(bld)
 		return
-	# 撳空地：跟拍中返全景
-	if cam_mode == CamMode.FOLLOW:
+	# 撳空地：收起跟拍同餵／摸列，等下一下手可以再撳世界
+	if cam_mode == CamMode.FOLLOW or (hud and bool(hud.get("observing"))):
 		set_cam_follow(null)
 
 
@@ -2194,21 +2200,17 @@ func cottage_door_world() -> Vector3:
 	return Vector3(94.0, 24.0, -50.0)
 
 
+func _remember_pet_lawn() -> void:
+	if in_interior or _door_pending or pet == null:
+		return
+	if cam and cam.is_position_behind(pet.global_position):
+		return
+	_pet_lawn_pos = pet.global_position
+
+
 func _pick_interior_guest() -> Walker:
-	if follow_walker and is_instance_valid(follow_walker):
-		return follow_walker
-	var door := cottage_door_world()
-	var best: Walker = pet
-	var best_d := 1.0e9
-	for w in [pet, kid]:
-		if w == null or not is_instance_valid(w):
-			continue
-		var ww: Walker = w
-		var d: float = ww.global_position.distance_to(door)
-		if d < best_d:
-			best_d = d
-			best = ww
-	return best
+	# The player pet is the one that must still be on screen after leaving.
+	return pet
 
 
 func enter_house(instant: bool = false, guest: Walker = null) -> void:
@@ -2375,7 +2377,7 @@ func _cut_to_interior() -> void:
 func _cut_to_garden() -> void:
 	var guest: Walker = _interior_guest
 	if guest and is_instance_valid(guest):
-		var home := _interior_guest_home
+		var home := _pet_lawn_pos if guest == pet and _pet_lawn_pos != Vector3.ZERO else _interior_guest_home
 		if home == Vector3.ZERO:
 			home = cottage_door_world() + Vector3(0, 0, 36)
 		home.y = 0
@@ -2429,7 +2431,12 @@ func _rehide_exterior_legacy() -> void:
 	if visitor and is_instance_valid(visitor):
 		visitor.visible = false
 	if pet and pet.sprite:
-		pet.sprite.visible = false
+		var coat := pet.get_node_or_null("Hd2dCoat")
+		if coat:
+			coat.visible = true
+			pet.sprite.visible = false
+		else:
+			pet.sprite.visible = true
 
 
 func _emit_audio_hook(key: String) -> void:

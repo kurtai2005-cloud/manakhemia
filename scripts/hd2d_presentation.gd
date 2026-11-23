@@ -125,7 +125,7 @@ func begin_approach_to(point: Vector3) -> bool:
 	goal = point
 	_hold_brain()
 	walker.pause_t = 0.0
-	walker.go_to(point)
+	walker.set_errand(point)
 	return true
 
 
@@ -134,7 +134,7 @@ func cancel_approach() -> void:
 	arrived = false
 	if walker:
 		walker.pause_t = 30.0
-		walker.go_to(walker.global_position)
+		walker.clear_errand()
 	_release_brain()
 
 
@@ -193,16 +193,19 @@ func _process(_dt: float) -> void:
 	coat.flip_h = bool(clip.flip_h)
 	if not approaching:
 		return
-	if not _stand_clear(now.x, now.y):
+	# A garden prop within an arm's length is not the closed door. Aborting
+	# there cancelled the walk before the pet could go around it.
+	if Hd2dDoor.root_blocked(now.x, now.y, Hd2dDoor.WALKER_RADIUS):
 		approaching = false
 		arrived = false
 		blocked_stop = true
 		walker.pause_t = 30.0
-		walker.go_to(walker.global_position)
+		walker.clear_errand()
 		return
 	if now.distance_to(Vector2(goal.x, goal.z)) <= Hd2dDoor.TARGET_DESIRED:
 		approaching = false
 		arrived = true
+		walker.clear_errand()
 		walker.pause_t = 30.0
 
 
