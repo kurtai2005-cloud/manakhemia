@@ -253,8 +253,12 @@ func play_care(id: String) -> bool:
 	_care_id = id
 	_care_elapsed = 0.0
 	_show_care_frame(0)
-	if walker and walker.errand_active:
-		walker.errand_hold = true
+	_hold_brain()
+	if walker:
+		walker.cancel_move()
+		walker.pause_t = 30.0
+		if walker.errand_active:
+			walker.errand_hold = true
 	return true
 
 
@@ -294,6 +298,10 @@ func _tick_care(dt: float) -> void:
 		if tex != null:
 			coat.texture = tex
 		coat.flip_h = bool(clip.flip_h)
+		if not approaching:
+			_release_brain()
+			if walker:
+				walker.pause_t = 0.4
 		return
 	var index := int(floor(_care_elapsed / frame_len)) % int(spec["frames"])
 	_show_care_frame(index)

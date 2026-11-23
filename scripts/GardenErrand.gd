@@ -203,7 +203,8 @@ func _process(dt: float) -> void:
 	elif phase == "to_eat" and _close(_toss_land()):
 		_eat_one()
 		walker.clear_errand()
-		walker.pause_t = 0.6
+		# Eat is 1s and the happy clip after it is 2s. The pause has to cover both.
+		walker.pause_t = 3.6
 		_restore_visual()
 	elif phase == "to_rest":
 		_watch_door()
@@ -525,10 +526,9 @@ func _begin_toss() -> void:
 	if int(task.get("toss_seq", 0)) <= paid:
 		task["toss_seq"] = paid + 1
 	var origin := walker.global_position if walker else Vector3.ZERO
-	# Mostly sideways, so the existing side-walk sheet plays instead of a front slide.
-	toss_land = _free_spot(origin + Vector3(34, 0, 8))
-	if toss_land.distance_to(origin) < 16.0:
-		toss_land = _free_spot(origin + Vector3(-34, 0, 8))
+	toss_land = _open_land(origin)
+	_quiet_brain(true)
+	walker.pause_t = TOSS_ARC_SEC + 0.2
 	toss_from = origin + Vector3(0, 28, 0)
 	toss_age = 0.0
 	var land := [toss_land.x, toss_land.y, toss_land.z]
@@ -548,11 +548,13 @@ func _fly_toss(dt: float) -> void:
 		return
 	_place_toss(toss_land + Vector3(0, 3, 0))
 	_set_phase("to_eat")
+	_quiet_brain(false)
 	walker.set_errand(toss_land)
 
 
 func _cancel_toss() -> void:
 	_hide_toss()
+	_quiet_brain(false)
 	walker.clear_errand()
 	_after_eat = ""
 	_set_phase("idle")
@@ -565,17 +567,32 @@ func _place_toss(at: Vector3) -> void:
 	toss.global_position = at
 
 
-func _swallow(frame: int) -> void:
-	if toss == null or walker == null:
+func _open_land(origin: Vector3) -> Vector3:
+	# CrateWood is the 16-unit box at (22, 18). CrateWood2 is at (-24, 28).
+	var crates: Array[Vector3] = [Vector3(22, 0, 18), Vector3(-24, 0, 28)]
+	var best := origin
+	var best_gap := -1.0
+	for off in [Vector3(0, 0, 16), Vector3(0, 0, -14), Vector3(-12, 0, 4), Vector3(10, 0, -10)]:
+		var spot := _free_spot(origin + off)
+		var gap := 999.0
+		for crate in crates:
+			gap = minf(gap, Vector2(spot.x, spot.z).distance_to(Vector2(crate.x, crate.z)))
+		if gap > best_gap:
+			best = spot
+			best_gap = gap
+	return best
+
+
+func _quiet_brain(on: bool) -> void:
+	if walker == null:
 		return
-	if frame >= 3:
-		_hide_toss()
+	var brain := walker.get_node_or_null("PetBrain")
+	if brain == null:
 		return
-	var u := clampf(float(frame) / 3.0, 0.0, 1.0)
-	toss.visible = true
-	toss.pixel_size = lerpf(1.15, 0.15, u)
-	var mouth := walker.global_position + Vector3(0, lerpf(26.0, 18.0, u), 0)
-	toss.global_position = mouth
+	var tree: Node = brain.get("tree")
+	if tree:
+		tree.set("enabled", not on)
+	brain.set("busy", on)
 
 
 func _hide_toss() -> void:
@@ -616,7 +633,8 @@ func _tick_reaction() -> void:
 		if id == "eat":
 			_saw_eat = true
 			var frame := int(pres.call("care_frame")) if pres.has_method("care_frame") else 0
-			_swallow(frame)
+			if frame >= 2:
+				_hide_toss()
 		elif _saw_eat and not active and pres.has_method("play_care"):
 			pres.call("play_care", "emo_happy")
 			_after_eat = "happy"
