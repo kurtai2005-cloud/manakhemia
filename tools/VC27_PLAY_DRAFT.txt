@@ -1,0 +1,40 @@
+WAIT_AFTER_DRAFT_DELIVERY
+Play the draft on a spare copy. This file is the launcher note. It does not change the game.
+
+Do not run tools\Play-Main.ps1 for this try. That launcher always writes the player profile vc27_play_36bfd, even if the folder is a copy.
+Do not run tools\Play-Usable.ps1 for this try. That launcher is a capture. It is not an interactive game, and it clears its own profile on each start.
+This launcher is tools\Play-Draft.ps1. It opens ordinary Main. It does not pass --editor or --script.
+
+GodotExe is required. This script does not look for Godot and does not install it.
+The path named in the earlier Windows notes is:
+C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe
+If that file is not on this machine, pass the Godot 4.7 Windows executable you already have.
+
+ProjectDir is the spare folder that contains project.godot. Use a copy. Do not point it at the only c0df tree.
+If that folder already contains override.cfg, the script stops and does not change or delete that file.
+While Main is open, the script's own override.cfg points the spare project at the persistent profile vc27_draft_try.
+When the window closes, the script deletes that override.cfg only if the text is still exactly the text it wrote.
+It never deletes a different override.cfg.
+The profile directory is not deleted. Closing the game and running the same command again opens the same save.
+The script never reads or writes vc27_play_36bfd.
+
+From the spare folder:
+
+powershell -NoProfile -File .\tools\Play-Draft.ps1 -GodotExe "C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe" -ProjectDir "C:\path\to\spare\project"
+
+What to try is unchanged from tools\VC27_PLAY_LOOP.txt:
+a new save starts as an egg, the berry stores one fruit, feeding waits until the existing 600 second hatch, one meal spends one fruit, rest follows the existing energy line, and quitting and opening the same profile keeps the save.
+
+Known limits
+- This file was checked as text only. It was not run under Windows PowerShell 5.1, and it was not run on Windows.
+- The launcher does not speed the clock. The egg still takes 600 seconds. Rest still waits until energy falls under the existing sleep line.
+- Eat frames still read as a face change. That was not worked on here.
+- 3988 remains a partial feeding clip, not a gate.
+- The eight old root-suite failures were not rerun and are not fixed.
+- A fresh save still receives one starter poop, and kid A1 is still unlocked at boot without play.
+- Hunt, dispatch, harvest, and the shop are not this loop.
+- Stages after newborn stay on the normal clock. This launcher does not add them.
+- If the window is killed before the script finishes, override.cfg may remain in the spare folder. The next start then stops. Do not delete an override.cfg whose text you have not read. The script will not delete one it did not just write.
+- No merge, no publish, no install onto the live Windows tree, no APK.
+
+WAIT_AFTER_DRAFT_DELIVERY
