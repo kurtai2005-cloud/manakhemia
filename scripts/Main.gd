@@ -58,6 +58,10 @@ var warehouse: Node3D
 var _hunt_team: Array = []
 var _hunt_stand := Vector3.ZERO
 var in_hunt_view := false
+var replay_kind := ""
+var replay_step := ""
+var replay_t := 0.0
+var replay_home := Vector3.ZERO
 var interior_room: InteriorRoom
 var _hd2d_host: Node = null
 var _hd2d_exterior: Node = null
@@ -681,9 +685,10 @@ func _process(dt: float) -> void:
 	_mark_work_arrived()
 	if HuntSystem:
 		HuntSystem.tick_watch(dt)
-		if hunt_field and hunt_field.active:
+		if replay_kind == "" and hunt_field and hunt_field.active:
 			hunt_field.tick(dt, HuntSystem.phase)
 			_sync_hunt_view()
+	_tick_replay(dt)
 	if WorkSystem:
 		WorkSystem.tick_watch(dt)
 		_sync_work_glow()
@@ -1712,6 +1717,159 @@ func _release_hunt_travel() -> void:
 	for w in _hunt_team:
 		if w and is_instance_valid(w) and w.has_method("clear_errand"):
 			w.clear_errand()
+
+
+func replay_block_reason() -> String:
+	if Sim == null or not bool(Sim.state.get("preview_fixture", false)):
+		return "正常檔"
+	if replay_kind != "":
+		return "重看中"
+	if in_interior:
+		return "屋內"
+	if bool(Sim.state.get("sleeping", false)):
+		return "瞓緊"
+	if HuntSystem and HuntSystem.phase != HuntSystem.PHASE_IDLE:
+		return "出緊獵"
+	if WorkSystem and (WorkSystem.any_working() or WorkSystem.is_ready()):
+		return "做緊工"
+	var errand := get_node_or_null("GardenErrand")
+	if errand:
+		var phase := str(errand.call("_task").get("phase", "idle"))
+		if phase != "idle" and phase != "blocked":
+			return "做緊野"
+	return ""
+
+
+func replay_post() -> Dictionary:
+	return _begin_replay("post")
+
+
+func replay_hunt() -> Dictionary:
+	return _begin_replay("hunt")
+
+
+func _begin_replay(kind: String) -> Dictionary:
+	var why := replay_block_reason()
+	if why != "":
+		return {"ok": false, "reason": why}
+	if pet == null:
+		return {"ok": false, "reason": "無寵物"}
+	replay_kind = kind
+	replay_step = "walk"
+	replay_t = 0.0
+	replay_home = pet.global_position
+	var brain: Node = pet.get_node_or_null("PetBrain")
+	if brain:
+		brain.busy = true
+		brain.pending_tap = ""
+	pet.brain_driven = false
+	pet.cancel_move()
+	if kind == "post":
+		var spot: WorkSpot = work_spots.get("post")
+		if spot == null:
+			_replay_finish()
+			return {"ok": false, "reason": "無郵局"}
+		pet.set_errand(spot.door_pos())
+	else:
+		_hunt_stand = _reachable_gate_stand()
+		pet.set_errand(_hunt_stand)
+	return {"ok": true, "reason": ""}
+
+
+func _tick_replay(dt: float) -> void:
+	if replay_kind == "" or pet == null:
+		return
+	replay_t += dt
+	if replay_step == "walk":
+		var dest := replay_home
+		if replay_kind == "post":
+			var spot: WorkSpot = work_spots.get("post")
+			if spot:
+				dest = spot.door_pos()
+		else:
+			dest = _hunt_stand
+		var here := Vector2(pet.global_position.x, pet.global_position.z)
+		if here.distance_to(Vector2(dest.x, dest.z)) <= 2.2 and not bool(pet.get("errand_blocked")):
+			pet.clear_errand()
+			replay_t = 0.0
+			if replay_kind == "post":
+				replay_step = "act"
+				pet.play_live_clip("scratch")
+			else:
+				_replay_enter_field()
+		elif bool(pet.get("errand_blocked")) and replay_t > 20.0:
+			_replay_finish()
+	elif replay_step == "act":
+		if replay_t >= 4.0:
+			replay_step = "home"
+			replay_t = 0.0
+			pet.brain_driven = false
+			pet.set_errand(replay_home)
+	elif replay_step == "field":
+		var local := HuntSystem.PHASE_HUNT if HuntSystem else "hunt"
+		if replay_t >= 4.0:
+			local = HuntSystem.PHASE_CARRY if HuntSystem else "carry"
+		if hunt_field:
+			hunt_field.tick(dt, local)
+			_sync_hunt_view()
+		if replay_t >= 8.0:
+			_replay_leave_field()
+			replay_step = "home"
+			replay_t = 0.0
+			pet.brain_driven = false
+			pet.set_errand(replay_home)
+	elif replay_step == "home":
+		var back := Vector2(pet.global_position.x, pet.global_position.z)
+		var goal := Vector2(replay_home.x, replay_home.z)
+		if back.distance_to(goal) <= 2.2 or replay_t > 25.0:
+			_replay_finish()
+
+
+func _replay_enter_field() -> void:
+	if pet == null or hunt_field == null:
+		_replay_finish()
+		return
+	_hunt_team = [pet]
+	pet.global_position = hunt_field.field_pos(Vector3(-20, 0, 20))
+	hunt_field.begin([pet])
+	hunt_field.visible = true
+	in_hunt_view = true
+	set_garden_hidden_for_hunt(true)
+	replay_step = "field"
+	replay_t = 0.0
+
+
+func _replay_leave_field() -> void:
+	if hunt_field:
+		hunt_field.end_duty()
+		hunt_field.visible = false
+	in_hunt_view = false
+	set_garden_hidden_for_hunt(false)
+	if pet:
+		pet.global_position = _hunt_stand if _hunt_stand != Vector3.ZERO else replay_home
+		pet.cancel_follow()
+		pet.clear_errand()
+
+
+func _replay_finish() -> void:
+	if pet:
+		pet.clear_errand()
+		pet.cancel_follow()
+		pet.brain_driven = true
+		var brain: Node = pet.get_node_or_null("PetBrain")
+		if brain:
+			brain.busy = false
+		var coat := pet.get_node_or_null("Hd2dCoat")
+		if coat:
+			coat.visible = true
+	if hunt_field and hunt_field.visible and replay_kind == "hunt":
+		hunt_field.end_duty()
+		hunt_field.visible = false
+	in_hunt_view = false
+	set_garden_hidden_for_hunt(false)
+	replay_kind = ""
+	replay_step = ""
+	replay_t = 0.0
 
 
 func _on_hunt_phase(phase: String) -> void:

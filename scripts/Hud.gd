@@ -33,6 +33,9 @@ var food_lbl: Label
 var goal_bar: BoxContainer
 var btn_goal_food: Button
 var btn_goal_rest: Button
+var btn_replay_post: Button
+var btn_replay_hunt: Button
+var replay_reason: Label
 
 
 func _ready() -> void:
@@ -78,6 +81,7 @@ func _ready() -> void:
 		preview.position = Vector2(176, 58)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		root.add_child(preview)
+		_build_replay_buttons(root)
 
 	# 左上收藏（屋 ×2 之後右上會同煙囪重疊）
 	btn_book = _btn("圖鑑")
@@ -778,6 +782,78 @@ func _refresh() -> void:
 	_sync_side_buttons()
 
 
+func _build_replay_buttons(root_node: Control) -> void:
+	# Preview only. These are not created on a normal save.
+	btn_replay_post = _btn("重看郵局")
+	btn_replay_post.anchor_left = 1
+	btn_replay_post.anchor_right = 1
+	btn_replay_post.anchor_top = 0
+	btn_replay_post.anchor_bottom = 0
+	btn_replay_post.offset_left = -176
+	btn_replay_post.offset_right = -8
+	btn_replay_post.offset_top = 88
+	btn_replay_post.offset_bottom = 136
+	btn_replay_post.pressed.connect(func(): _press_replay("post"))
+	root_node.add_child(btn_replay_post)
+	btn_replay_hunt = _btn("重看狩獵")
+	btn_replay_hunt.anchor_left = 1
+	btn_replay_hunt.anchor_right = 1
+	btn_replay_hunt.anchor_top = 0
+	btn_replay_hunt.anchor_bottom = 0
+	btn_replay_hunt.offset_left = -176
+	btn_replay_hunt.offset_right = -8
+	btn_replay_hunt.offset_top = 144
+	btn_replay_hunt.offset_bottom = 192
+	btn_replay_hunt.pressed.connect(func(): _press_replay("hunt"))
+	root_node.add_child(btn_replay_hunt)
+	replay_reason = _lbl("", 14)
+	replay_reason.anchor_left = 1
+	replay_reason.anchor_right = 1
+	replay_reason.anchor_top = 0
+	replay_reason.anchor_bottom = 0
+	replay_reason.offset_left = -176
+	replay_reason.offset_right = -8
+	replay_reason.offset_top = 196
+	replay_reason.offset_bottom = 224
+	replay_reason.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	root_node.add_child(replay_reason)
+
+
+func _press_replay(kind: String) -> void:
+	var main := get_tree().get_first_node_in_group("glimmer_main")
+	if main == null:
+		return
+	var rec: Dictionary = {}
+	if kind == "post" and main.has_method("replay_post"):
+		rec = main.replay_post()
+	elif kind == "hunt" and main.has_method("replay_hunt"):
+		rec = main.replay_hunt()
+	if bool(rec.get("ok", false)):
+		_play_press()
+		if replay_reason:
+			replay_reason.text = ""
+	else:
+		_play_error()
+		if replay_reason:
+			replay_reason.text = str(rec.get("reason", ""))
+
+
+func _sync_replay_buttons() -> void:
+	if btn_replay_post == null or btn_replay_hunt == null:
+		return
+	var main := get_tree().get_first_node_in_group("glimmer_main")
+	var why := ""
+	if main and main.has_method("replay_block_reason"):
+		why = str(main.replay_block_reason())
+	var blocked := why != ""
+	btn_replay_post.disabled = blocked
+	btn_replay_hunt.disabled = blocked
+	btn_replay_post.modulate = Color(1, 1, 1, 0.45) if blocked else Color.WHITE
+	btn_replay_hunt.modulate = Color(1, 1, 1, 0.45) if blocked else Color.WHITE
+	if replay_reason:
+		replay_reason.text = why
+
+
 func _process(dt: float) -> void:
 	if time_lbl and not hidden and TimeService:
 		var d: Dictionary = TimeService.local_dict(TimeService.now_ms())
@@ -786,6 +862,7 @@ func _process(dt: float) -> void:
 		food_lbl.text = str(int(CollectionSystem.call("fruit_count", "starberry")))
 	if not hidden:
 		_refresh_goal()
+	_sync_replay_buttons()
 	if card_t > 0.0:
 		card_t -= dt
 		if card_t <= 0.0:

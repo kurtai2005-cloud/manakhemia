@@ -29,19 +29,25 @@ Linux, no gameplay calls, on a copy of the r3 preview (newborn, meals 1, 微光�
 
 Still out: eating frames, a redrawn interior, a second pet, the kid as new scope, more hunt areas, a letter scene beyond this post job.
 
-This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r4.apk
-bytes: 68654272
-sha256: 394f58a14a196d767184c307e636fc093b07078a739a404432d1bb60979afd3f
-versionName: vc27-11fb9c14-r4
-versionCode: 14
+r5. Preview only, top right, two text buttons: 重看郵局 then 重看狩獵. A line under them says why they are dim: 重看中, 屋內, 瞓緊, 出緊獵, 做緊工, or 做緊野. They replay the walk and the prairie. They do not pay, do not add fruit, and do not write a job. A normal save does not create the buttons. 微光試稿 has none.
+
+Linux ScreenTouch plus the device -1 mouse, twice each, on a copy of the r4 preview (17 stars, meal, rug). Post reached the door. Hunt reached the prairie, z over 400. Stars stayed 17, fruit 3, critter 1, meal 1, post empty, hunt idle. The pet came back visible and the life loop was free again. A later process read the same save. Another copy was closed mid-walk. The next process still had 17 stars, an empty post, and no pending hunt. A normal profile printed R5_NORMAL_OK. Not an Android launch and not a Note10+.
+
+The replay is shorter than a paid job: about 4 seconds at the post door, about 8 seconds on the prairie. It is a viewing pass, not a second payment.
+
+This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r5.apk
+bytes: 68659140
+sha256: be39075c7d19b305c79a7baf07c890c5321bac56d1ebdb915f0f3e125a71cedc
+versionName: vc27-11fb9c14-r5
+versionCode: 15
 package: hk.vizard.glimmer.fpet.vc27draft
 Same debug signer CN=VC27 Debug, cert a5e16b2ab309a3478e0cd28304daae179bd0e85c7a7940592101b2aa77127b10. v2 only. arm64-v8a. Portrait. Renderer mobile. Install over the test app. Do not clear its data.
-The r3 file stays vc27-draft-11fb9c14-r3.apk, 68646292 bytes, sha256 b7a742a7e7a985111299e31121245d00b526ff1b5192bdbd5187b25f69759d15. Do not upload it again.
+Do not upload r4 again: vc27-draft-11fb9c14-r4.apk, 68654272 bytes, sha256 394f58a14a196d767184c307e636fc093b07078a739a404432d1bb60979afd3f.
 Gameplay head remains 11fb9c140d54d1bac61d2a965af32d79069a4447.
 
-Phone, about 5 to 10 minutes. Use 微光試稿·試玩. Do not clear storage.
+Phone. Use 微光試稿·試玩. Do not clear storage.
 1. Install over the test app. Leave 微光小圃 installed.
-2. Do not tap the ground. If this 試玩 already did the kitchen today, the pet walks to the post door, waits the existing 12 seconds, and the stars rise by 2.
-3. It then walks to the fence. The prairie hunt follows. After that existing 18 seconds the stars and the fruit rise once.
-4. Leave and open the same icon. The meal, the rug, the stars, and the fruit should still be there, with no second payment.
-5. 微光試稿 is the normal clock. On that save the pet still does only one work or one hunt that day.
+2. Top right: 重看郵局, then 重看狩獵. Tap one. The pet walks the route. Stars and fruit do not change. Tap it again. Still no change.
+3. The buttons go dim while the pet is sleeping, indoors, on a real trip, or already replaying. The line under them says why.
+4. Leave during a replay and open the same icon. Nothing extra was paid.
+5. 微光試稿 has no replay buttons. Its own save is unchanged.

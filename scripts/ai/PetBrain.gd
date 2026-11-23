@@ -136,6 +136,9 @@ func _life(dt: float) -> void:
 	var main := walker.get_parent() if walker else null
 	if main == null or bool(main.get("in_interior")):
 		return
+	if str(main.get("replay_kind")) != "":
+		busy = true
+		return
 	var errand := main.get_node_or_null("GardenErrand")
 	if errand == null:
 		return
