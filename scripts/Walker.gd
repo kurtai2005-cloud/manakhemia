@@ -161,6 +161,8 @@ var errand_active := false
 var errand_hold := false
 var errand_blocked := false
 var errand_dest := Vector3.ZERO
+var errand_path: Array = []
+var errand_routed := false
 
 
 func set_errand(dest: Vector3) -> void:
@@ -168,6 +170,8 @@ func set_errand(dest: Vector3) -> void:
 	errand_hold = false
 	errand_blocked = false
 	errand_dest = Vector3(dest.x, 0.0, dest.z)
+	errand_path = []
+	errand_routed = false
 	pause_t = 0.0
 	moving = true
 
@@ -176,6 +180,8 @@ func clear_errand() -> void:
 	errand_active = false
 	errand_hold = false
 	errand_blocked = false
+	errand_path = []
+	errand_routed = false
 	moving = false
 
 
@@ -192,6 +198,38 @@ func _step_errand(dt: float) -> void:
 		return
 	var dir := to / dist
 	var step_len := minf(speed * maxf(speed_mul, 0.1) * dt, dist)
+	if not errand_routed:
+		errand_path = _errand_route(pos, dest)
+		errand_routed = true
+	if not errand_path.is_empty():
+		var wp: Vector3 = errand_path[0]
+		if Vector2(pos.x, pos.z).distance_to(Vector2(wp.x, wp.z)) < 1.6:
+			errand_path.pop_front()
+			if not errand_path.is_empty():
+				wp = errand_path[0]
+		if not errand_path.is_empty():
+			var wdir := Vector3(wp.x - pos.x, 0.0, wp.z - pos.z)
+			var wd := wdir.length()
+			if wd > 0.01:
+				var wu := wdir / wd
+				var stepped := false
+				for deg2 in [0.0, 28.0, -28.0, 55.0, -55.0, 85.0, -85.0]:
+					var ang2 := deg_to_rad(deg2)
+					var steer2 := Vector3(wu.x * cos(ang2) - wu.z * sin(ang2), 0.0, wu.x * sin(ang2) + wu.z * cos(ang2))
+					var alt2 := pos + steer2 * minf(step_len, wd)
+					if feet and feet.blocked(alt2.x, alt2.z, radius):
+						continue
+					if Vector2(alt2.x, alt2.z).distance_to(Vector2(wp.x, wp.z)) < wd - 0.001:
+						alt2.y = 0.0
+						global_position = alt2
+						moving = true
+						errand_blocked = false
+						_update_dir(alt2.x - pos.x, alt2.z - pos.z)
+						stepped = true
+						break
+				if stepped:
+					return
+			errand_path = []
 	var best: Vector3 = pos
 	var best_d := dist
 	var found := false
@@ -209,15 +247,103 @@ func _step_errand(dt: float) -> void:
 			best_d = d
 			found = true
 	if not found:
-		errand_blocked = true
-		moving = false
-		return
+		if errand_path.is_empty():
+			errand_path = _errand_route(pos, dest)
+		if errand_path.is_empty():
+			errand_blocked = true
+			moving = false
+			return
+		var wp: Vector3 = errand_path[0]
+		if Vector2(pos.x, pos.z).distance_to(Vector2(wp.x, wp.z)) < 1.6:
+			errand_path.pop_front()
+			if errand_path.is_empty():
+				errand_blocked = true
+				moving = false
+				return
+			wp = errand_path[0]
+		var wdir := Vector3(wp.x - pos.x, 0.0, wp.z - pos.z)
+		var wd := wdir.length()
+		if wd > 0.01:
+			var wu := wdir / wd
+			for deg2 in [0.0, 28.0, -28.0, 55.0, -55.0]:
+				var ang2 := deg_to_rad(deg2)
+				var steer2 := Vector3(wu.x * cos(ang2) - wu.z * sin(ang2), 0.0, wu.x * sin(ang2) + wu.z * cos(ang2))
+				var alt2 := pos + steer2 * step_len
+				if feet and feet.blocked(alt2.x, alt2.z, radius):
+					continue
+				if Vector2(alt2.x, alt2.z).distance_to(Vector2(wp.x, wp.z)) < wd - 0.001:
+					best = alt2
+					found = true
+					break
+		if not found:
+			errand_path = []
+			errand_blocked = true
+			moving = false
+			return
 	errand_blocked = false
 	best.y = 0.0
 	var step := best - pos
 	global_position = best
 	moving = true
 	_update_dir(step.x, step.z)
+
+func _errand_route(from: Vector3, to: Vector3) -> Array:
+	var step := 4.0
+	var x0 := -180.0
+	var x1 := 90.0
+	var z0 := -50.0
+	var z1 := 90.0
+	var start := _errand_cell(from, step, x0, x1, z0, z1)
+	var goal := _errand_cell(to, step, x0, x1, z0, z1)
+	if start.x > 9000 or goal.x > 9000:
+		return []
+	var q: Array = [start]
+	var prev := {}
+	prev[start] = start
+	var guard := 0
+	while not q.is_empty() and guard < 4000:
+		guard += 1
+		var cur: Vector2i = q.pop_front() as Vector2i
+		if cur == goal:
+			break
+		for side in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			var nxt: Vector2i = cur + side
+			if prev.has(nxt):
+				continue
+			var wx := float(nxt.x) * step
+			var wz := float(nxt.y) * step
+			if wx < x0 or wx > x1 or wz < z0 or wz > z1:
+				continue
+			if feet and feet.blocked(wx, wz, radius):
+				continue
+			prev[nxt] = cur
+			q.append(nxt)
+	if not prev.has(goal):
+		return []
+	var cells: Array = []
+	var walk: Vector2i = goal
+	while walk != start:
+		cells.push_front(Vector3(float(walk.x) * step, 0.0, float(walk.y) * step))
+		walk = prev[walk] as Vector2i
+	return cells
+
+
+func _errand_cell(p: Vector3, step: float, x0: float, x1: float, z0: float, z1: float) -> Vector2i:
+	var best := Vector2i(9999, 9999)
+	var best_d := 1000000.0
+	var x := x0
+	while x <= x1:
+		var z := z0
+		while z <= z1:
+			if feet == null or not feet.blocked(x, z, radius):
+				var d := Vector2(x, z).distance_squared_to(Vector2(p.x, p.z))
+				if d < best_d:
+					best_d = d
+					best = Vector2i(int(round(x / step)), int(round(z / step)))
+			z += step
+		x += step
+	return best
+
 
 func _pick_target() -> void:
 	var t: Vector3

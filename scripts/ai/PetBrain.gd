@@ -149,13 +149,26 @@ func _life(dt: float) -> void:
 	if _life_wait > 0.0:
 		return
 	_life_wait = 2.0
+	if bool(main.get("in_hunt_view")):
+		busy = true
+		return
+	if HuntSystem and HuntSystem.phase == HuntSystem.PHASE_READY:
+		var hunted: Dictionary = HuntSystem.collect()
+		if bool(hunted.get("ok", false)):
+			_show_gift(main, int(hunted.get("shards", 0)))
+		return
+	if HuntSystem and HuntSystem.phase != HuntSystem.PHASE_IDLE:
+		busy = true
+		return
 	if WorkSystem and WorkSystem.is_ready("kitchen"):
 		var got: Dictionary = WorkSystem.collect("kitchen")
 		if bool(got.get("ok", false)):
-			var hud: Node = main.get("hud")
-			if hud and hud.has_method("_queue_or_show"):
-				var items: Array = [{"icon": "ev_gift", "num": "+%d" % int(got.get("shards", 0))}]
-				hud.call("_queue_or_show", items)
+			_show_gift(main, int(got.get("shards", 0)))
+		return
+	if WorkSystem and WorkSystem.is_ready("post"):
+		var posted: Dictionary = WorkSystem.collect("post")
+		if bool(posted.get("ok", false)):
+			_show_gift(main, int(posted.get("shards", 0)))
 		return
 	if WorkSystem and WorkSystem.any_working():
 		busy = true
@@ -192,7 +205,19 @@ func _life(dt: float) -> void:
 		if bool(sent.get("ok", false)):
 			_hold_for_life()
 			return
+	if main.has_method("start_hunt"):
+		var went: Dictionary = main.call("start_hunt")
+		if bool(went.get("ok", false)):
+			_hold_for_life()
+			return
 	busy = false
+
+
+func _show_gift(main: Node, shards: int) -> void:
+	var hud: Node = main.get("hud")
+	if hud and hud.has_method("_queue_or_show"):
+		var items: Array = [{"icon": "ev_gift", "num": "+%d" % shards}]
+		hud.call("_queue_or_show", items)
 
 
 func _hold_for_life() -> void:

@@ -80,4 +80,9 @@ func set_ready_glow(on: bool) -> void:
 
 
 func door_pos() -> Vector3:
-	return global_position + Vector3(0, 0, 22)
+	# The post's +22 stand is the pocket between the lamp and the watering can.
+	# Two units toward the camera is the same doorway, on the side the walk can enter.
+	var z := 22.0
+	if building_id == "post":
+		z = 24.0
+	return global_position + Vector3(0, 0, z)

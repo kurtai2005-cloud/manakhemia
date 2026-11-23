@@ -56,6 +56,7 @@ var work_spots: Dictionary = {}
 var furniture_root: Node3D
 var warehouse: Node3D
 var _hunt_team: Array = []
+var _hunt_stand := Vector3.ZERO
 var in_hunt_view := false
 var interior_room: InteriorRoom
 var _hd2d_host: Node = null
@@ -676,6 +677,8 @@ func _process(dt: float) -> void:
 	_place_cam(dt)
 	_remember_pet_lawn()
 	_commit_door_if_arrived()
+	_release_hunt_travel()
+	_mark_work_arrived()
 	if HuntSystem:
 		HuntSystem.tick_watch(dt)
 		if hunt_field and hunt_field.active:
@@ -1441,6 +1444,14 @@ func _setup_m1b() -> void:
 		HuntSystem.hunt_phase.connect(func(p): _on_hunt_phase(str(p)))
 	if WorkSystem and WorkSystem.has_signal("dispatched"):
 		WorkSystem.dispatched.connect(func(id, pets): _send_pets_to_work(str(id), pets))
+	if WorkSystem and WorkSystem.has_method("note_carried_jobs"):
+		WorkSystem.note_carried_jobs()
+	if HuntSystem and HuntSystem.has_method("restore"):
+		_hunt_team = family_team()
+		_hunt_stand = _reachable_gate_stand()
+		HuntSystem.restore()
+		if HuntSystem.travel_hold:
+			_send_hunt_to_stand()
 
 
 func _apply_visitor_own_walk(w: Walker) -> void:
@@ -1622,21 +1633,85 @@ func start_hunt() -> Dictionary:
 	if not bool(rec.get("ok", false)):
 		return rec
 	_hunt_team = ws
-	if hunt_field:
-		# 先排隊去後門
-		var gate := Vector3(0, 0, -118)
-		if GameData and "m1b" in GameData:
-			var g: Variant = GameData.m1b.get("hunt", {}).get("gate", [0, 0, -118])
-			if g is Array and g.size() >= 3:
-				gate = Vector3(float(g[0]), float(g[1]), float(g[2]))
-		for i in range(ws.size()):
-			var w: Walker = ws[i]
-			var brain: Node = w.get_node_or_null("PetBrain")
-			if brain:
-				brain.busy = true
-			w.brain_driven = false
-			w.go_to(gate + Vector3(float(i) * 16.0 - 8.0, 0, 0))
+	_hunt_stand = _reachable_gate_stand()
+	# The 18s field clock starts after the pet has walked to the fence. It does not finish a hunt they never reached.
+	HuntSystem.travel_hold = true
+	_send_hunt_to_stand()
 	return rec
+
+
+func _send_hunt_to_stand() -> void:
+	if _hunt_stand == Vector3.ZERO:
+		_hunt_stand = _reachable_gate_stand()
+	for i in range(_hunt_team.size()):
+		var w: Walker = _hunt_team[i]
+		if w == null:
+			continue
+		var brain: Node = w.get_node_or_null("PetBrain")
+		if brain:
+			brain.busy = true
+		w.brain_driven = false
+		var stand := _hunt_stand + Vector3(float(i) * 6.0, 0, 0)
+		if w.has_method("set_errand"):
+			w.set_errand(stand)
+		else:
+			w.go_to(stand)
+
+
+func _reachable_gate_stand() -> Vector3:
+	var gate := Vector3(0, 0, -118)
+	if GameData and "m1b" in GameData:
+		var g: Variant = GameData.m1b.get("hunt", {}).get("gate", [0, 0, -118])
+		if g is Array and g.size() >= 3:
+			gate = Vector3(float(g[0]), float(g[1]), float(g[2]))
+	var radius := 10.0
+	if pet:
+		radius = pet.radius
+	# The fence stops a body at z about -36. Stand on the lawn side of it, east of the bed, not on the first blocked step of the centre line.
+	var z := -24.0
+	while z < 40.0:
+		if feet == null or not feet.blocked(gate.x, z, radius):
+			return Vector3(gate.x, 0.0, z)
+		z += 2.0
+	return Vector3(gate.x, 0.0, 8.0)
+
+
+func _mark_work_arrived() -> void:
+	if WorkSystem == null or pet == null:
+		return
+	for id in work_spots.keys():
+		var sit: Dictionary = WorkSystem.site(str(id))
+		if str(sit.get("status", "")) != WorkSystem.ST_WORK:
+			continue
+		if not sit.has("arrived") or bool(sit.get("arrived", false)):
+			continue
+		var spot: WorkSpot = work_spots[id]
+		if spot == null:
+			continue
+		var door: Vector3 = spot.door_pos()
+		var here := Vector2(pet.global_position.x, pet.global_position.z)
+		if here.distance_to(Vector2(door.x, door.z)) > 2.2:
+			continue
+		if bool(pet.get("errand_blocked")):
+			continue
+		sit["arrived"] = true
+
+
+func _release_hunt_travel() -> void:
+	if HuntSystem == null or not HuntSystem.travel_hold or pet == null:
+		return
+	if _hunt_stand == Vector3.ZERO:
+		_hunt_stand = _reachable_gate_stand()
+	var here := Vector2(pet.global_position.x, pet.global_position.z)
+	var there := Vector2(_hunt_stand.x, _hunt_stand.z)
+	if here.distance_to(there) > 1.8:
+		return
+	if bool(pet.get("errand_blocked")):
+		return
+	HuntSystem.travel_hold = false
+	for w in _hunt_team:
+		if w and is_instance_valid(w) and w.has_method("clear_errand"):
+			w.clear_errand()
 
 
 func _on_hunt_phase(phase: String) -> void:
@@ -1657,13 +1732,18 @@ func _on_hunt_phase(phase: String) -> void:
 
 
 func _return_from_hunt() -> void:
-	var home := Vector3(0, 0, 24)
+	if _hunt_stand == Vector3.ZERO:
+		_hunt_stand = _reachable_gate_stand()
+	var home := _hunt_stand
 	for i in range(_hunt_team.size()):
 		var w: Walker = _hunt_team[i]
 		if w == null or not is_instance_valid(w):
 			continue
-		w.global_position = Vector3(home.x + float(i) * 18.0, 0, home.z)
+		w.global_position = home + Vector3(float(i) * 8.0, 0, 2.0)
 		w.cancel_follow()
+		if w.has_method("clear_errand"):
+			w.clear_errand()
+		w.brain_driven = true
 	if hunt_field:
 		hunt_field.end_duty()
 		# 野外隱藏，花園倉保留果堆
@@ -1689,8 +1769,7 @@ func one_tap_dispatch() -> Dictionary:
 		ids = WorkSystem.auto_team(["tuanrong"])
 	if ids.is_empty():
 		ids = ["tuanrong"]
-	# The post door is behind the lamp and the watering can, so the pet cannot
-	# walk there. The kitchen door is the workplace this walk can reach.
+	# Kitchen first, then the post. A finished building is refused, so the post is next.
 	for bid in ["kitchen", "post"]:
 		var r: Dictionary = WorkSystem.dispatch(bid, ids)
 		if bool(r.get("ok", false)):

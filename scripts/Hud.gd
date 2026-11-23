@@ -74,7 +74,7 @@ func _ready() -> void:
 	food_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(food_lbl)
 	if Sim and bool(Sim.state.get("preview_fixture", false)):
-		var preview := _lbl("試玩", 14)
+		var preview := _lbl("試玩·各一次", 14)
 		preview.position = Vector2(176, 58)
 		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		root.add_child(preview)

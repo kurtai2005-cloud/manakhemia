@@ -8,7 +8,7 @@ The older GAPS manual-command plan is not this batch.
 Before this batch: the player tapped the berry or 派工 to make the pet move.
 Target, from data already in the repo:
 - data/m1b.json care: the pet, not a ground tap, uses the berry trip, the meal, and the door rest.
-- data/m1b.json work kitchen, watch_sec 12, economy pay level+1. The pet starts that job when it is not hungry or tired, and collects when it is ready. The post door stays blocked by the lamp and the watering can.
+- data/m1b.json work kitchen and post, watch_sec 12, economy pay level+1. data/hunting.json one work or one hunt a day, hunt watch_sec 18, offline 2 hours. The pet walks to the post door, then later to the fence and the existing prairie.
 - data/economy.json shop. 葉仔地氈 is 15 stars. The player taps it. Nothing spends stars by itself.
 - data/evolution.json egg duration stays 600. Preview still uses only the existing preview_fixture shortcuts.
 
@@ -23,20 +23,25 @@ Done:
 Evidence, Linux only. The r2 touch route still prints TOUCH_OK. It stops at an egg and does not prove eat, rest, or the kitchen.
 The idle preview is tests/hd2d_life_idle.gd. No forage, feed, rest, or dispatch calls. Observed: to_pick, carry, newborn with 微光莓, toss, to_eat, meals=1, to_rest, asleep, wake on the ordinary sleep clock, kitchen work, ready, shards 25 to 27. Two lines are the existing preview shortcut, not a test clock: the delivery fills the egg, and sleep starts one below wake. Wake itself was about 250s of Sim's own tick. A later process tapped 圖鑑 then 葉仔地氈. The next process read newborn, meals=1, glow, shards=12, rug=rug_leaf. An already-newborn full preview was not reset and did not gather again; it started the kitchen. Not an Android launch and not a Note10+. The r3 APK bytes are unchanged.
 
-Deferred: hunt field, a second pet, the kid as new scope, eating frames, redrawing the interior, the post door.
+r4. The post door stand is two units toward the camera, clear of the lamp and watering-can pocket. The pet follows the open ground. The hunt clock stays held until the pet is on the lawn side of the fence. The existing 18 second prairie then plays, and the pet moves on that field. A normal save still does one work or one hunt per day. A 試玩 save, labelled 試玩·各一次, lets the kitchen, the post, and one hunt happen the same day. Each pays once. An r3 試玩 that already did the kitchen is not reset. The kitchen is remembered and the post is next.
 
-This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r3.apk
-bytes: 68646292
-sha256: b7a742a7e7a985111299e31121245d00b526ff1b5192bdbd5187b25f69759d15
-versionName: vc27-11fb9c14-r3
-versionCode: 13
+Linux, no gameplay calls, on a copy of the r3 preview (newborn, meals 1, 微光莓, rug, 12 stars). The pet walked to the post door near (-150, 64) and the stars went from 12 to 14. It walked toward the fence with the hunt clock held, then stood on the prairie: z 523, then 446 while hunting, then 328 while carrying. Stars 14 to 17, three fruit, critter rumble_root. The next process read the same newborn, meal, rug, 17 stars, and fruit. A second copy paused during the post at watch 1.03 and 12 stars. The next process paid once, to 14, then paused on the field at z 539, watch 2.17. The process after that paid once, to 16, and did not pay again. The touch route still prints TOUCH_OK and TOUCH_RESTART_OK. Not an Android launch and not a Note10+.
+
+Still out: eating frames, a redrawn interior, a second pet, the kid as new scope, more hunt areas, a letter scene beyond this post job.
+
+This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r4.apk
+bytes: 68654272
+sha256: 394f58a14a196d767184c307e636fc093b07078a739a404432d1bb60979afd3f
+versionName: vc27-11fb9c14-r4
+versionCode: 14
 package: hk.vizard.glimmer.fpet.vc27draft
-Same debug signer CN=VC27 Debug. Install over the test app. Do not clear its data.
+Same debug signer CN=VC27 Debug, cert a5e16b2ab309a3478e0cd28304daae179bd0e85c7a7940592101b2aa77127b10. v2 only. arm64-v8a. Portrait. Renderer mobile. Install over the test app. Do not clear its data.
+The r3 file stays vc27-draft-11fb9c14-r3.apk, 68646292 bytes, sha256 b7a742a7e7a985111299e31121245d00b526ff1b5192bdbd5187b25f69759d15. Do not upload it again.
 Gameplay head remains 11fb9c140d54d1bac61d2a965af32d79069a4447.
 
-Phone, about 5 to 10 minutes. Use 微光試稿·試玩 so the egg does not take 10 minutes.
-1. Install over the test app. Do not clear storage. Leave 微光小圃 installed.
-2. Do not tap the ground. Watch. The pet should walk to the berry and bring it home.
-3. On 試玩 it can then eat, walk to the house to rest, and walk to the kitchen. Wait about 12 seconds. The star count rises without you tapping 派工.
-4. Open 圖鑑. Tap 葉仔地氈 (15 碎). That is your choice. It places. Leave and open the same icon. The pet's progress and the rug should still be there.
-5. 微光試稿 is the normal clock. It keeps its own save.
+Phone, about 5 to 10 minutes. Use 微光試稿·試玩. Do not clear storage.
+1. Install over the test app. Leave 微光小圃 installed.
+2. Do not tap the ground. If this 試玩 already did the kitchen today, the pet walks to the post door, waits the existing 12 seconds, and the stars rise by 2.
+3. It then walks to the fence. The prairie hunt follows. After that existing 18 seconds the stars and the fruit rise once.
+4. Leave and open the same icon. The meal, the rug, the stars, and the fruit should still be there, with no second payment.
+5. 微光試稿 is the normal clock. On that save the pet still does only one work or one hunt that day.

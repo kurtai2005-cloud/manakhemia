@@ -18,6 +18,7 @@ var phase := PHASE_IDLE
 var team: Array = []  # walker names / ids
 var started_ms := 0
 var watch_elapsed := 0.0
+var travel_hold := false
 var pending: Dictionary = {}
 var big_encounter := false
 var fruits: Array = []
@@ -82,9 +83,16 @@ func can_depart(ids: Array = []) -> Dictionary:
 			return {"ok": false, "reason": "daily_pet_cap", "id": pid}
 		var h: Dictionary = ensure()
 		var used: Dictionary = h.get("worked_or_hunted", {})
-		if bool(used.get(pid, false)):
+		if bool(used.get(pid, false)) and not _preview_round():
 			return {"ok": false, "reason": "work_or_hunt", "id": pid}
+		# Preview sits through kitchen, post, then one hunt. A normal day stays one work or one hunt.
+		if _preview_round() and hunts_today(pid) >= 1:
+			return {"ok": false, "reason": "preview_once", "id": pid}
 	return {"ok": true}
+
+
+func _preview_round() -> bool:
+	return Sim != null and bool(Sim.state.get("preview_fixture", false))
 
 
 func depart(ids: Array, rng: RandomNumberGenerator = null) -> Dictionary:
@@ -144,8 +152,11 @@ func depart(ids: Array, rng: RandomNumberGenerator = null) -> Dictionary:
 	h["worked_or_hunted"] = used
 	h["pending"] = pending
 	h["bronze"] = bronze
+	h["phase"] = phase
+	h["watch"] = 0.0
 	if Sim:
 		Sim._dirty = true
+		Sim._save_now(true)
 	hunt_started.emit()
 	hunt_phase.emit(phase)
 	return {"ok": true, "pending": pending}
@@ -155,18 +166,29 @@ func set_phase(p: String) -> void:
 	if phase == p:
 		return
 	phase = p
+	var h: Dictionary = ensure()
+	h["phase"] = phase
+	h["watch"] = watch_elapsed
 	hunt_phase.emit(phase)
 	if p == PHASE_READY:
 		hunt_ready.emit()
 		if CollectionSystem:
 			CollectionSystem.notify("harvest", true)
 			CollectionSystem.notify("hunt", true)
+		if Sim:
+			Sim._dirty = true
+			Sim._save_now(true)
 
 
 func tick_watch(dt: float) -> void:
+	if travel_hold:
+		return
 	if phase == PHASE_IDLE or phase == PHASE_READY:
 		return
 	watch_elapsed += dt
+	var h: Dictionary = ensure()
+	h["watch"] = watch_elapsed
+	h["phase"] = phase
 	var dur := float(cfg().get("watch_sec", 18))
 	# 觀看階段：depart 0–12%，hunt 12–55%，carry 55–88%，home/ready 88–100%
 	var r := watch_elapsed / maxf(dur, 1.0)
@@ -201,11 +223,31 @@ func has_pending() -> bool:
 	return phase == PHASE_READY or not pending.is_empty() and phase != PHASE_IDLE
 
 
+func restore() -> void:
+	var h: Dictionary = ensure()
+	var pend: Dictionary = h.get("pending", {})
+	if pend.is_empty():
+		phase = PHASE_IDLE
+		travel_hold = false
+		pending = {}
+		return
+	pending = pend
+	fruits = pend.get("fruits", [])
+	shards = int(pend.get("shards", 0))
+	big_encounter = bool(pend.get("big", false))
+	team = pend.get("team", [])
+	watch_elapsed = float(h.get("watch", 0.0))
+	var saved := str(h.get("phase", PHASE_DEPART))
+	if saved == PHASE_IDLE:
+		saved = PHASE_DEPART
+	travel_hold = saved == PHASE_DEPART
+	set_phase(saved)
+
+
 func collect() -> Dictionary:
-	if phase != PHASE_READY and not (phase == PHASE_IDLE and not pending.is_empty()):
+	if phase != PHASE_READY:
 		if phase == PHASE_IDLE:
 			return {"ok": false, "reason": "none"}
-		# 未完成唔可以收
 		return {"ok": false, "reason": "not_ready", "phase": phase}
 	var rec := {
 		"ok": true,
@@ -232,9 +274,12 @@ func collect() -> Dictionary:
 	watch_elapsed = 0.0
 	var h: Dictionary = ensure()
 	h["pending"] = {}
+	h["phase"] = PHASE_IDLE
+	h["watch"] = 0.0
 	if Sim:
 		Sim._dirty = true
 		Sim.state_changed.emit()
+		Sim._save_now(true)
 	hunt_collected.emit(rec)
 	if CollectionSystem:
 		CollectionSystem.notify("harvest", false)
