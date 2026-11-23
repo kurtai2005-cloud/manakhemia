@@ -1,30 +1,38 @@
-Spatial forage on the current Main and the 675 garden. Not the finished product.
-A headless run is not a phone or GPU picture.
+Draft first. Polish after the whole loop exists.
+Kurt, 2026-11-23 18:07, 遊美: 唔好再修住,整好哂draft先修.
+The feeding-face pass is cancelled. Do not resume the bite, chew, capture, or hash loop.
+3988cad9 stays a partial feeding clip. It is not a gate and it is not a fix.
+The eight old root-suite failures were not rerun. Do not call them fixed.
+Do not install a polish build on the c0df Windows tree. Do not touch vc27_play_36bfd.
+No APK, no merge, no publish.
 
-Rule, from the existing specs
-- data/hunting.json names the fruit. This loop uses the existing starberry picture and CollectionSystem fruit count. It does not add a currency.
-- Each walk home has a delivery number. That number pays one fruit once. The same number pays nothing a second time, including after a reload. The berry comes back for the next number.
-- data/sim.json care.feed_meal is 40 hunger and food_mood_bonus_warm is 3. One stored fruit calls Sim.feed("meal"). feed_refuse_at 90, an egg, or sleep spends nothing.
-- Personality daily_shift on eat_together moves the social axis by its existing delta, inside the existing daily cap. That is the bond.
-- data/sim.json sick_threshold is 15. Online growth_sec moves only while the pet is not unwell. The meal does not add growth time. It raises hunger so the existing clock can move.
-- Stored fruit count is the existing starberry picture plus a number. It is not a new currency.
-- The ground berry is the same starberry picture, drawn larger, with the same forage hit area.
-- The home marker uses the existing eat or sleep icon for the action a click will take. It is hidden when neither action is available. Two icon buttons do the same thing explicitly: food spends one fruit, rest starts the existing door walk. Below 50 energy, rest can still start on its own.
-- Rest does not call enter_house by itself. The door goal is the existing exterior stand. The body uses the same footprint steering as the berry walk, because the nav agent does not cross this garden. Arrival then uses the existing commit_enter. Sleep starts inside. At sleep_wake_at the existing watch calls exit_house and the pet is outside again. 返回 is an optional earlier exit. It is not required for the wake.
-- The normal HUD hides 開發者 unless VC27_DEV_HUD=1. 欣賞 sits at the top and does not cover the action buttons.
-- Offline time stays on the existing cap and does not finish a delivery or add this fruit. A backwards clock is ignored.
-- Shop furniture in data/economy.json has prices. This loop does not buy it and does not grant a free shop item.
+This file is the playable draft, not the finished pet.
+Same Godot project, same 675 scene, same art, normal Main and the existing buttons.
+Pet actions stay the placeholders already in the scene. No chewing, face, lighting, material, camera, or art work in this pass.
 
-What you can do
-- Click the berry. The pet walks, carries it, and walks to the home marker.
-- Click the berry again to cancel. Click again to retry the same delivery.
-- The meal control tosses one stored fruit in an arc onto open grass. The pet walks to it, plays the existing eat frames, then the existing happy frames. A full pet does not spend the fruit. Cancel-before-bite and reload idempotency are checked by tests/hd2d_toss_idem.gd, not by the feeding clip.
-- The sleep icon, after that meal and while energy is below 90, walks to the door and sleeps inside. When energy reaches sleep_wake_at the pet leaves on its own. 返回 can leave earlier.
-- Feed, pat, and clean on the pet still use the one coat.
+Loop the existing pieces already implement
+- Click the ground berry. The pet walks, carries it, and delivers it once. The same delivery does not pay twice, including after a reload. The berry comes back for the next delivery.
+- A new save stays an egg until data/evolution.json says so (600 seconds of the existing Sim clock). Main no longer skips that and forces sprout.
+- While it is an egg, feeding and rest do nothing and spend nothing. The stored fruit waits.
+- When the clock hatches it, the existing collection records radiant_<stage>. That is the unlock. Later stages use the same signal. Adult still uses the existing CQ form (bright, soft, or dust).
+- After hatching, the meal button tosses one stored fruit. A full pet spends nothing. One fruit, one meal.
+- Rest is the existing door walk, after at least one meal, while energy is below the existing sleep line. Wake still leaves the house. 返回 is optional.
+- The save is still save_v1.json. Old fields stay. A second process that opens the same isolated profile sees the stage, the fruit count, the meal count, and the unlock.
 
-Not in this slice
-- More than one kind of forage, a shop, a second creature, or combat.
-- A growth stage that jumps because of the meal itself.
-- Room art, lighting, or a new picture.
-- A phone or GPU result. Windows still has to look at the head.
-- A new marker drawing. These icons are the existing eat, sleep, and fruit pictures. A clearer custom marker would be a separate art request.
+Normal stage lengths stay in evolution.json. A smoke test may call Sim.advance or Sim.tick and must print FIXTURE. That is not a shorter game.
+
+Not in this draft
+- A second creature, a shop purchase, paid or cloud AI, combat, or a new project.
+- Redrawing the room or the pet.
+- Chewing that reads as eating. The current eat frames are a face change. That stays deferred.
+- Claiming the Windows machine was missing stage PNGs. The delivered project zip already has those files. A git archive of c0df omitting gitignored copies is a different list.
+
+Deferred until the full draft is playable
+- 3988 feeding clip is only partial. Do not treat it as the draft.
+- Eight root failures, names unchanged, not rerun: _test_g01_actor_anim_and_lut 569, _test_m1a_art_fix1 695 and 697, _test_m1d_interior 1828, 1832, 1833, 1834, 1855.
+- Main still drops one poop on a save that has none, so the clean button is immediately usable.
+- Boot still unlocks kid A1 without a played action.
+- Hunt, dispatch, harvest, and the shop are present and are not this loop.
+- Stages after newborn are hours or days on the normal clock.
+- The collection grid is route times stage from evolution.json. The pre-adult id is radiant_<stage>, which is the id Main already wrote. It may not sit on a route cell.
+- Walk sheets differ mostly in the feet. That is an art limit, not a missing file on the PC.
