@@ -1,6 +1,6 @@
 Read-only window census. The art owner runs it. This agent does not touch the PC.
-The first package failed in about one second with System.ArgumentException: Argument types do not match, and left the output folder empty. That was PowerShell 5.1 refusing [ref] arguments into the native methods. This script keeps those calls inside C# and always writes hwnd_diag.json, including on failure.
-Windows PowerShell 5.1 is not available on the machine that built this package. Serialization was checked with PowerShell 7.4.6 on Linux. That is not a Windows user32 run.
+The first census failed before any window probe. The second census, script SHA-256 aed7f18385f29efd0bb5f54abe9f8ea9df82e8a5ea9ed377fa0b95fa6b2f415a, reached stage write_json and then threw System.ArgumentException: Argument types do not match at script line 304. Enumeration had already returned. The throw was PowerShell wrapping that List for JSON. The earlier note that blamed native ref arguments is not what this Windows run showed.
+This copy builds the JSON string in C# from that same list type. PowerShell only writes the string. Windows PowerShell 5.1 is not available here. The zero, one, and three row checks ran on PowerShell 7.4.6 on Linux. That is not a Windows user32 run.
 The open game stays open. PID 4748 and wrapper PID 9132 are the processes from the c30a collect. If either PID is already gone, the script stops and does not start the game again.
 
 What the c30a collect already shows, and what it does not:

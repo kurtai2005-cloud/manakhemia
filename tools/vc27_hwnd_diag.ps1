@@ -45,59 +45,16 @@ function Write-Failure($Path, $StageName, $Record) {
         $stack = [string]$Record.ScriptStackTrace
         if ([string]::IsNullOrEmpty($stack) -and $null -ne $ex) { $stack = [string]$ex.ToString() }
     }
-    $safe = [ordered]@{
-        ok = $false
-        stage = [string]$StageName
-        exception = $typeName
-        message = $msg
-        stack = $stack
-    }
-    Write-DiagFile $Path $safe
+    $json = '{"ok":false,"stage":"' + (Escape-JsonText $StageName) + '","exception":"' + (Escape-JsonText $typeName) + '","message":"' + (Escape-JsonText $msg) + '","stack":"' + (Escape-JsonText $stack) + '"}'
+    $utf8 = New-Object System.Text.UTF8Encoding $false
+    [System.IO.File]::WriteAllText($Path, $json, $utf8)
 }
 
-if ($SelfTest) {
-    if ([string]::IsNullOrWhiteSpace($OutputDir)) { throw 'SelfTest requires OutputDir' }
-    New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
-    $sample = [ordered]@{
-        ok = $true
-        stage = 'self_test'
-        game_pid = 4748
-        windows = @(
-            [ordered]@{
-                hwnd = '0x14C0ACE'
-                pid = 4748
-                thread_id = 1
-                class_name = 'Engine'
-                title = 'sample'
-                visible = $true
-                is_hung_app_window = $false
-                wm_null_answered = $true
-                ghost_class = $false
-            }
-        )
-    }
-    $okPath = Join-Path $OutputDir 'self_test_success.json'
-    Write-DiagFile $okPath $sample
-    $bad = New-Object System.Management.Automation.ErrorRecord (
-        (New-Object System.ArgumentException 'Argument types do not match'),
-        'SelfTest',
-        'InvalidArgument',
-        $null
-    )
-    $badPath = Join-Path $OutputDir 'self_test_failure.json'
-    Write-Failure $badPath 'enumerate' $bad
-    $a = Get-Content -LiteralPath $okPath -Raw | ConvertFrom-Json
-    $b = Get-Content -LiteralPath $badPath -Raw | ConvertFrom-Json
-    if ($a.ok -ne $true -or $a.windows[0].hwnd -ne '0x14C0ACE') { throw 'success json did not round-trip' }
-    if ($b.ok -ne $false -or $b.stage -ne 'enumerate' -or $b.exception -ne 'System.ArgumentException') { throw 'failure json did not round-trip' }
-    if ($b.message -notlike '*Argument types do not match*') { throw 'failure message missing' }
-    Write-Output 'self_test_ok'
-    exit 0
-}
+if ($SelfTest -and [string]::IsNullOrWhiteSpace($OutputDir)) { throw 'SelfTest requires OutputDir' }
 
 try {
     $stage = 'output_dir'
-    if ($GamePid -le 0) { throw 'GamePid is required' }
+    if (-not $SelfTest -and $GamePid -le 0) { throw 'GamePid is required' }
     if ([string]::IsNullOrWhiteSpace($OutputDir)) { throw 'OutputDir is required' }
     $gameRoot = 'C:\Users\nasa2\hd2d_test\vc27_play_main_2092'
     $saveHint = 'C:\Users\nasa2\AppData\Roaming\vc27_play_36bfd'
@@ -159,7 +116,9 @@ try {
         }
     }
 
-    if ($null -eq $game) {
+    if ($SelfTest) {
+        $stage = 'add_type'
+    } elseif ($null -eq $game) {
         $stage = 'write_absent'
         Write-DiagFile $diagPath ([ordered]@{
             ok = $false
@@ -268,8 +227,147 @@ public class Vc27WinCensus {
         }
         return bag;
     }
+    static string E(string s) {
+        if (s == null) return "";
+        StringBuilder b = new StringBuilder();
+        foreach (char c in s) {
+            if (c == '\\' || c == '"') { b.Append('\\'); b.Append(c); }
+            else if (c == '\r') b.Append("\\r");
+            else if (c == '\n') b.Append("\\n");
+            else if (c == '\t') b.Append("\\t");
+            else if (c < 32) b.Append(' ');
+            else b.Append(c);
+        }
+        return b.ToString();
+    }
+    public static string FailureJson(string stage, string exception, string message, string stack) {
+        return "{\"ok\":false,\"stage\":\"" + E(stage) + "\",\"exception\":\"" + E(exception) + "\",\"message\":\"" + E(message) + "\",\"stack\":\"" + E(stack) + "\"}";
+    }
+    public static Vc27WinCensus Sample(int count) {
+        Vc27WinCensus bag = new Vc27WinCensus();
+        bag.EnumCount = count;
+        for (int i = 0; i < count; i++) {
+            Vc27WinRow row = new Vc27WinRow();
+            row.Hwnd = "0x" + (0x14C0ACE + i).ToString("X");
+            row.Pid = (i % 2 == 0) ? 4748 : 9132;
+            row.ThreadId = 1000 + i;
+            row.ClassName = (i == 2) ? "Ghost" : "Engine";
+            row.Title = "sample-" + i.ToString();
+            row.Visible = true;
+            row.IsHung = (i == 2);
+            row.WmNullAnswered = (i != 2);
+            row.Left = 0; row.Top = 0; row.Right = 275; row.Bottom = 600;
+            row.ParentHwnd = "0x0";
+            row.GhostClass = row.ClassName == "Ghost";
+            row.ProbeError = "";
+            bag.Windows.Add(row);
+        }
+        return bag;
+    }
+    public static string ToJson(Vc27WinCensus bag, int gamePid, int wrapperPid, int collectorPid, int collectorSession, bool sameSession, string gameName, int gameSession, string gameStart, string gameMainHwnd, string gameTitle, string gameCmd, string wrapName, int wrapSession, string wrapMainHwnd, string wrapTitle) {
+        StringBuilder b = new StringBuilder();
+        b.Append("{\"ok\":true,\"stage\":\"done\",\"game_alive\":true,\"game_pid\":");
+        b.Append(gamePid);
+        b.Append(",\"wrapper_pid\":");
+        b.Append(wrapperPid);
+        b.Append(",\"collector_pid\":");
+        b.Append(collectorPid);
+        b.Append(",\"collector_session\":");
+        b.Append(collectorSession);
+        b.Append(",\"same_session_as_game\":");
+        b.Append(sameSession ? "true" : "false");
+        b.Append(",\"game\":{\"name\":\"");
+        b.Append(E(gameName));
+        b.Append("\",\"session_id\":");
+        b.Append(gameSession);
+        b.Append(",\"start_time\":\"");
+        b.Append(E(gameStart));
+        b.Append("\",\"main_window_handle\":\"");
+        b.Append(E(gameMainHwnd));
+        b.Append("\",\"main_window_title\":\"");
+        b.Append(E(gameTitle));
+        b.Append("\",\"command_line\":\"");
+        b.Append(E(gameCmd));
+        b.Append("\"},\"wrapper\":{\"name\":\"");
+        b.Append(E(wrapName));
+        b.Append("\",\"session_id\":");
+        b.Append(wrapSession);
+        b.Append(",\"main_window_handle\":\"");
+        b.Append(E(wrapMainHwnd));
+        b.Append("\",\"main_window_title\":\"");
+        b.Append(E(wrapTitle));
+        b.Append("\"},\"enum_count\":");
+        b.Append(bag == null ? 0 : bag.EnumCount);
+        b.Append(",\"enum_capped\":");
+        b.Append(bag != null && bag.EnumCapped ? "true" : "false");
+        b.Append(",\"probe_capped\":");
+        b.Append(bag != null && bag.ProbeCapped ? "true" : "false");
+        b.Append(",\"windows\":[");
+        if (bag != null) {
+            for (int i = 0; i < bag.Windows.Count; i++) {
+                Vc27WinRow w = bag.Windows[i];
+                if (i > 0) b.Append(',');
+                b.Append("{\"hwnd\":\"");
+                b.Append(E(w.Hwnd));
+                b.Append("\",\"pid\":");
+                b.Append(w.Pid);
+                b.Append(",\"thread_id\":");
+                b.Append(w.ThreadId);
+                b.Append(",\"class_name\":\"");
+                b.Append(E(w.ClassName));
+                b.Append("\",\"title\":\"");
+                b.Append(E(w.Title));
+                b.Append("\",\"visible\":");
+                b.Append(w.Visible ? "true" : "false");
+                b.Append(",\"is_hung_app_window\":");
+                b.Append(w.IsHung ? "true" : "false");
+                b.Append(",\"wm_null_answered\":");
+                b.Append(w.WmNullAnswered ? "true" : "false");
+                b.Append(",\"wm_null_timeout_ms\":500,\"parent\":\"");
+                b.Append(E(w.ParentHwnd));
+                b.Append("\",\"rect\":[");
+                b.Append(w.Left); b.Append(','); b.Append(w.Top); b.Append(','); b.Append(w.Right); b.Append(','); b.Append(w.Bottom);
+                b.Append("],\"width\":");
+                b.Append(w.Right - w.Left);
+                b.Append(",\"height\":");
+                b.Append(w.Bottom - w.Top);
+                b.Append(",\"ghost_class\":");
+                b.Append(w.GhostClass ? "true" : "false");
+                b.Append(",\"probe_error\":\"");
+                b.Append(E(w.ProbeError));
+                b.Append("\"}");
+            }
+        }
+        b.Append("],\"limits\":{\"enum_cap\":400,\"probe_cap\":30,\"wm_null_timeout_ms\":500,\"smto_abort_if_hung\":true,\"no_click\":true,\"no_wm_close\":true,\"no_save_read\":true,\"no_new_process\":true}}");
+        return b.ToString();
+    }
 }
 "@
+    }
+
+    if ($SelfTest) {
+        $stage = 'self_test'
+        $utf8 = New-Object System.Text.UTF8Encoding $false
+        foreach ($count in @(0, 1, 3)) {
+            $sample = [Vc27WinCensus]::Sample([int]$count)
+            $json = [Vc27WinCensus]::ToJson($sample, 4748, 9132, 1, 2, $true, 'Godot', 2, '2026-11-23T07:59:54.229+08:00', '0x14C0ACE', 'sample', '--rendering-method mobile --path game', 'powershell', 2, '0x0', 'wrapper')
+            $path = Join-Path $fullOut ("self_test_success_" + $count + ".json")
+            [System.IO.File]::WriteAllText($path, $json, $utf8)
+            $parsed = $json | ConvertFrom-Json
+            if ($parsed.ok -ne $true -or $parsed.stage -ne 'done') { throw "success json header $count" }
+            if ($count -eq 0 -and $json.Contains('"windows":[]') -eq $false) { throw 'zero-row json' }
+            if ($count -eq 1 -and $parsed.windows.hwnd -ne '0x14C0ACE') { throw 'one-row hwnd' }
+            if ($count -gt 1 -and $parsed.windows.Count -ne $count) { throw 'many-row count' }
+            if ($count -eq 3 -and $parsed.windows[2].ghost_class -ne $true) { throw 'ghost row' }
+            if ($count -eq 3 -and $parsed.windows[2].wm_null_answered -ne $false) { throw 'ghost wm_null' }
+        }
+        $fail = [Vc27WinCensus]::FailureJson('write_json', 'System.ArgumentException', 'Argument types do not match', 'line 304')
+        $failPath = Join-Path $fullOut 'self_test_failure.json'
+        [System.IO.File]::WriteAllText($failPath, $fail, $utf8)
+        $bf = $fail | ConvertFrom-Json
+        if ($bf.ok -ne $false -or $bf.stage -ne 'write_json' -or $bf.exception -ne 'System.ArgumentException') { throw 'failure json' }
+        Write-Output 'self_test_ok'
+        exit 0
     }
 
     $stage = 'enumerate'
@@ -277,66 +375,46 @@ public class Vc27WinCensus {
     $pids[0] = $GamePid
     $pids[1] = $WrapperPid
     $bag = [Vc27WinCensus]::Collect($pids, 400, 30, [uint32]500)
-    $rows = New-Object System.Collections.Generic.List[object]
-    foreach ($row in $bag.Windows) {
-        $rows.Add([ordered]@{
-            hwnd = [string]$row.Hwnd
-            pid = [int]$row.Pid
-            thread_id = [int]$row.ThreadId
-            class_name = [string]$row.ClassName
-            title = [string]$row.Title
-            visible = [bool]$row.Visible
-            is_hung_app_window = [bool]$row.IsHung
-            wm_null_answered = [bool]$row.WmNullAnswered
-            wm_null_timeout_ms = 500
-            parent = [string]$row.ParentHwnd
-            rect = @([int]$row.Left, [int]$row.Top, [int]$row.Right, [int]$row.Bottom)
-            width = ([int]$row.Right - [int]$row.Left)
-            height = ([int]$row.Bottom - [int]$row.Top)
-            ghost_class = [bool]$row.GhostClass
-            probe_error = [string]$row.ProbeError
-        })
-    }
 
     $stage = 'write_json'
-    $gameInfo = Proc-Info $game
-    $wrapInfo = Proc-Info $wrap
-    Write-DiagFile $diagPath ([ordered]@{
-        ok = $true
-        stage = 'done'
-        game_alive = $true
-        game_pid = $GamePid
-        wrapper_pid = $WrapperPid
-        collector_pid = $PID
-        collector_session = $collector.SessionId
-        same_session_as_game = ($collector.SessionId -eq $game.SessionId)
-        game = $gameInfo
-        wrapper = $wrapInfo
-        enum_count = $bag.EnumCount
-        enum_capped = [bool]$bag.EnumCapped
-        probe_capped = [bool]$bag.ProbeCapped
-        windows = @($rows)
-        limits = [ordered]@{
-            enum_cap = 400
-            probe_cap = 30
-            wm_null_timeout_ms = 500
-            smto_abort_if_hung = $true
-            no_click = $true
-            no_wm_close = $true
-            no_save_read = $true
-            no_new_process = $true
-        }
-        notes = @(
-            'Read-only. No WM_CLOSE. No save read. No new process.',
-            'WM_NULL uses SendMessageTimeout 500 ms with SMTO_ABORTIFHUNG.',
-            'A Ghost class window that is hung, plus another HWND of the game PID that answers WM_NULL: the earlier title was a ghost.',
-            'Every visible HWND of the game PID fails IsHungAppWindow or WM_NULL: that window is not dispatching. Frame pulses are not a pump.',
-            'No HWND has the game PID: the title belonged to another process.',
-            'same_session_as_game false: this PowerShell is not on that process desktop.'
-        )
-    })
+    $gameCmd = ''
+    try {
+        $w = Get-CimInstance Win32_Process -Filter ("ProcessId=" + $game.Id) -ErrorAction Stop
+        $gameCmd = [string]$w.CommandLine
+    } catch { $gameCmd = '' }
+    $gameStart = ''
+    try { $gameStart = $game.StartTime.ToString('o') } catch { $gameStart = '' }
+    $wrapName = ''
+    $wrapSession = 0
+    $wrapHwnd = '0x0'
+    $wrapTitle = ''
+    if ($null -ne $wrap) {
+        $wrapName = [string]$wrap.ProcessName
+        $wrapSession = [int]$wrap.SessionId
+        $wrapHwnd = ('0x{0:X}' -f $wrap.MainWindowHandle.ToInt64())
+        $wrapTitle = [string]$wrap.MainWindowTitle
+    }
+    $json = [Vc27WinCensus]::ToJson(
+        $bag,
+        [int]$GamePid,
+        [int]$WrapperPid,
+        [int]$PID,
+        [int]$collector.SessionId,
+        [bool]($collector.SessionId -eq $game.SessionId),
+        [string]$game.ProcessName,
+        [int]$game.SessionId,
+        [string]$gameStart,
+        ('0x{0:X}' -f $game.MainWindowHandle.ToInt64()),
+        [string]$game.MainWindowTitle,
+        [string]$gameCmd,
+        [string]$wrapName,
+        [int]$wrapSession,
+        [string]$wrapHwnd,
+        [string]$wrapTitle
+    )
+    $utf8 = New-Object System.Text.UTF8Encoding $false
+    [System.IO.File]::WriteAllText($diagPath, $json, $utf8)
     Write-Output ("wrote " + $diagPath)
-    Write-Output ("windows=" + $rows.Count)
     exit 0
 } catch {
     if ($null -ne $diagPath) {
