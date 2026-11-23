@@ -139,6 +139,10 @@ func _life(dt: float) -> void:
 	if str(main.get("replay_kind")) != "":
 		busy = true
 		return
+	if Ecosystem and Ecosystem.has_method("drive_rug"):
+		if bool(Ecosystem.drive_rug(walker, dt)):
+			busy = true
+			return
 	var errand := main.get_node_or_null("GardenErrand")
 	if errand == null:
 		return

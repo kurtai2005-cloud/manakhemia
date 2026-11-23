@@ -7,8 +7,15 @@ const ART_ROOT := "res://art/ecosystem_v1/"
 
 var cfg: Dictionary = {}
 var follow_id := ""
+var follow_pet_id := ""
 var patrol_label := ""
+var current_zone := "garden"
+var rug_phase := ""
 var _main: Node = null
+var _rug_left := 0.0
+var _fusion_t := 0.0
+var _fusion_fade := 0.0
+var _fusion_out := false
 
 
 func _ready() -> void:
@@ -384,27 +391,217 @@ func station_world(building_id: String) -> Vector3:
 
 func stop_follow() -> void:
 	follow_id = ""
+	follow_pet_id = ""
 
 
 func follow_pet(pet_id: String) -> void:
 	follow_id = pet_id
+	follow_pet_id = pet_id
+
+
+func _process(dt: float) -> void:
+	if _main == null:
+		return
+	_tick_kids(dt)
+	_tick_partner(dt)
+	_tick_fusion_visual(dt)
+	_refresh_pantry()
+	var card := _main.get_node_or_null("EcosystemHud/Root/CombatCard")
+	if card is Label:
+		(card as Label).text = _combat_line()
+	var prairie := _main.get_node_or_null("EcosystemHud/Root/PrairieObserve")
+	if prairie is Control:
+		prairie.visible = current_zone == "prairie_edge" or current_zone == "zone_prairie_deep"
 
 
 func present(main: Node) -> void:
 	_main = main
-	_sprite(main, "WorkOutdoorStove", ART_ROOT + "props/work_outdoor_stove_table.png", station_world("kitchen"))
-	_sprite(main, "WorkOutdoorPost", ART_ROOT + "props/work_outdoor_post_rack.png", station_world("post"))
-	_sprite(main, "FarmPlot", ART_ROOT + "props/farm_crop_stage1_sprout.png", Vector3(40, 0, 30))
-	_sprite(main, "PantryPile", ART_ROOT + "props/storage_fruit_pile_low.png", Vector3(20, 0, 36))
-	_sprite(main, "FamilyWall", ART_ROOT + "props/family_wall_board.png", Vector3(-20, 0, 48))
+	_ground_prop(main, "WorkOutdoorStove", "props/work_outdoor_stove_table.png", station_world("kitchen"))
+	_ground_prop(main, "WorkOutdoorPost", "props/work_outdoor_post_rack.png", station_world("post"))
+	_ground_prop(main, "FarmPlot", "props/farm_plot_empty.png", Vector3(40, 0, 30))
+	_ground_prop(main, "PantryPile", "props/storage_fruit_pile_low.png", Vector3(20, 0, 36))
+	_ground_prop(main, "FamilyWall", "props/family_wall_board.png", Vector3(-20, 0, 48))
+	_frame_slots(main)
+	_partner(main)
 	_kids(main)
 	_hud(main)
+	set_plot_stage("empty")
 
 
-func _sprite(main: Node, node_name: String, path: String, pos: Vector3) -> void:
+func set_plot_stage(stage: String) -> void:
+	if _main == null:
+		return
+	var plot := _main.get_node_or_null("FarmPlot") as Sprite3D
+	if plot == null:
+		return
+	var file := "props/farm_plot_empty.png"
+	if stage == "seed":
+		file = "props/farm_crop_stage1_sprout.png"
+	elif stage == "sprout":
+		file = "props/farm_crop_stage2_growing.png"
+	elif stage == "mature":
+		file = "props/farm_crop_stage3_ripe.png"
+	var tex := load(ART_ROOT + file) as Texture2D
+	if tex == null:
+		return
+	plot.texture = tex
+	plot.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+	var h := float(tex.get_height())
+	plot.offset.y = _sole(file) - h * 0.5
+	plot.position.y = 0.0
+
+
+func _sole(file: String) -> float:
+	var doc := _load_json(ART_ROOT + "MANIFEST.json")
+	for item in doc.get("items", []):
+		if item is Dictionary and str(item.get("path", "")) == file:
+			return float(item.get("sole_edge", 0))
+	return 0.0
+
+
+func _refresh_pantry() -> void:
+	if _main == null or Sim == null:
+		return
+	var pile := _main.get_node_or_null("PantryPile") as Sprite3D
+	if pile == null:
+		return
+	var n := 0
+	var fruits: Dictionary = Sim.state.get("collection", {}).get("fruits", {})
+	for k in fruits.keys():
+		n += int(fruits[k])
+	var file := "props/storage_fruit_pile_full.png" if n >= 3 else "props/storage_fruit_pile_low.png"
+	var tex := load(ART_ROOT + file) as Texture2D
+	if tex:
+		pile.texture = tex
+		pile.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+
+
+func drive_rug(walker: Walker, dt: float) -> bool:
+	if walker == null or Sim == null:
+		return false
+	if str(Sim.state.get("house", {}).get("placed", {}).get("rug", "")) != "rug_leaf":
+		return false
+	var needs: Dictionary = Sim.state.get("needs", {})
+	var hunger := float(needs.get("hunger", 100))
+	var energy := float(needs.get("energy", 100))
+	var hour := 12.0
+	if TimeService:
+		hour = float(TimeService.hour_of())
+	var bedtime := hour >= 21.0 or hour < 3.0
+	if rug_exit(hunger, energy, bedtime):
+		if rug_phase != "":
+			_rug_stop(walker)
+		return false
+	if rug_phase == "roll":
+		_rug_left -= dt
+		walker.global_position = _rug_point(walker)
+		walker.rotation.y += dt * 2.2
+		if _rug_left <= 0.0:
+			_rug_stop(walker)
+		return true
+	if rug_phase == "walk":
+		var spot := Vector3(8, 0, 18)
+		if walker.global_position.distance_to(spot) < 1.6:
+			rug_phase = "roll"
+			var span: Array = cfg.get("rug_leaf_rules", {}).get("roll_duration_sec", [4, 6])
+			_rug_left = float(span[0])
+			walker.clear_errand()
+		return true
+	var cool := float(cfg.get("rug_leaf_rules", {}).get("cooldown_sec_preview" if preview_now() else "cooldown_sec_normal", 90))
+	var last := float(Sim.state.get("rug_last_ms", 0))
+	var now := float(Time.get_ticks_msec())
+	if last > 0.0 and now - last < cool * 1000.0:
+		return false
+	rug_phase = "walk"
+	walker.brain_driven = false
+	walker.set_errand(Vector3(8, 0, 18))
+	return true
+
+
+func _rug_point(walker: Walker) -> Vector3:
+	var t := float(Time.get_ticks_msec()) / 1000.0
+	return Vector3(8.0 + sin(t * 3.0) * 1.2, 0.0, 18.0 + cos(t * 2.0) * 0.6)
+
+
+func _rug_stop(walker: Walker) -> void:
+	rug_phase = ""
+	walker.rotation.y = 0.0
+	walker.brain_driven = true
+	walker.clear_errand()
+	if Sim:
+		Sim.state["rug_last_ms"] = Time.get_ticks_msec()
+	if walker.has_method("play_live_clip"):
+		walker.play_live_clip("idle_quiet", true)
+
+
+func _tick_fusion_visual(dt: float) -> void:
+	if _main == null or Sim == null:
+		return
+	if bool(Sim.state.get("fusion", {}).get("active", false)):
+		recover_fusion(Time.get_ticks_msec())
+	var pet := _main.get("pet") as Node3D
+	if pet == null:
+		return
+	var active := bool(Sim.state.get("fusion", {}).get("active", false))
+	var echo := _main.get_node_or_null("FusionEcho") as Sprite3D
+	var halo := _main.get_node_or_null("FusionHalo") as Sprite3D
+	if active and echo == null:
+		_fusion_fade = 0.0
+		_fusion_out = false
+		echo = Sprite3D.new()
+		echo.name = "FusionEcho"
+		echo.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+		echo.centered = true
+		echo.pixel_size = 1.0
+		_main.add_child(echo)
+		halo = Sprite3D.new()
+		halo.name = "FusionHalo"
+		halo.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+		var halo_tex := load(ART_ROOT + "ui/ui_pet_portrait_frame.png") as Texture2D
+		halo.texture = halo_tex
+		halo.pixel_size = 0.7
+		_main.add_child(halo)
+	if not active and echo != null and not _fusion_out:
+		_fusion_out = true
+		_fusion_fade = 0.0
+	if echo == null:
+		return
+	var coat := pet.get_node_or_null("Hd2dCoat") as Sprite3D
+	if coat and coat.texture:
+		echo.texture = coat.texture
+	elif pet is Sprite3D and (pet as Sprite3D).texture:
+		echo.texture = (pet as Sprite3D).texture
+	_fusion_t += dt
+	var wave := 0.5 + 0.5 * sin(TAU * _fusion_t / 1.6)
+	var gold := Color("F2D98A")
+	var cyan := Color("7EC8C3")
+	var tint := gold.lerp(cyan, wave)
+	var strength := lerpf(0.28, 0.40, wave)
+	if _fusion_out:
+		_fusion_fade += dt
+		var a := clampf(1.0 - _fusion_fade / 0.40, 0.0, 1.0)
+		echo.modulate = Color(tint.r, tint.g, tint.b, 0.45 * a)
+		if halo:
+			halo.modulate.a = lerpf(0.22, 0.48, wave) * a
+		if _fusion_fade >= 0.40:
+			echo.queue_free()
+			if halo:
+				halo.queue_free()
+		return
+	_fusion_fade = minf(_fusion_fade + dt, 0.35)
+	var inn := clampf(_fusion_fade / 0.35, 0.0, 1.0)
+	echo.global_position = pet.global_position + Vector3(6, 0, 0)
+	echo.modulate = Color(tint.r, tint.g, tint.b, 0.45 * inn * strength / 0.28)
+	echo.modulate.a = 0.45 * inn
+	if halo:
+		halo.global_position = pet.global_position + Vector3(0, 1, 0)
+		halo.modulate = Color(tint.r, tint.g, tint.b, lerpf(0.22, 0.48, wave) * inn)
+
+
+func _ground_prop(main: Node, node_name: String, file: String, pos: Vector3) -> void:
 	if main.get_node_or_null(node_name) != null:
 		return
-	var tex := load(path) as Texture2D
+	var tex := load(ART_ROOT + file) as Texture2D
 	if tex == null:
 		return
 	var s := Sprite3D.new()
@@ -415,8 +612,79 @@ func _sprite(main: Node, node_name: String, path: String, pos: Vector3) -> void:
 	s.centered = true
 	s.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 	s.position = pos
-	s.position.y = 0
+	s.position.y = 0.0
+	s.offset.y = _sole(file) - float(tex.get_height()) * 0.5
 	main.add_child(s)
+
+
+func _frame_slots(main: Node) -> void:
+	var board := main.get_node_or_null("FamilyWall") as Node3D
+	if board == null:
+		return
+	for i in range(3):
+		var slot := Sprite3D.new()
+		slot.name = "FamilyFrame_%d" % i
+		var tex := load(ART_ROOT + "props/family_wall_frame_slot.png") as Texture2D
+		slot.texture = tex
+		slot.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+		slot.centered = true
+		slot.pixel_size = 0.45
+		slot.position = board.position + Vector3(-8 + i * 8, 18, 1)
+		main.add_child(slot)
+
+
+func _partner(main: Node) -> void:
+	var body := Sprite3D.new()
+	body.name = "PartnerPet"
+	var tex := load("res://art-pet/sprites/series2/A2_idle.png") as Texture2D
+	body.texture = tex
+	body.centered = true
+	body.pixel_size = 1.0
+	body.position = Vector3(12, 29, 8)
+	body.set_meta("home", body.position)
+	main.add_child(body)
+
+
+func set_kid_action(letter: String, action: String) -> void:
+	if _main == null:
+		return
+	var body := _main.get_node_or_null("KidBody_%s" % letter) as Sprite3D
+	if body == null:
+		return
+	var form := letter + "1"
+	if letter == "B":
+		form = "B1"
+	var tex := load("res://art-pet/sprites/series2/%s_%s.png" % [form, action]) as Texture2D
+	if tex:
+		body.texture = tex
+	body.offset.y = kid_offset_y(form)
+	body.set_meta("action", action)
+
+
+func _tick_kids(dt: float) -> void:
+	if _main == null:
+		return
+	var letters := ["A", "B", "C", "D", "E", "F", "G", "H"]
+	var actions := ["idle", "walk", "eat", "sleep", "cry"]
+	var step := int(Time.get_ticks_msec() / 800) % actions.size()
+	for letter in letters:
+		var body := _main.get_node_or_null("KidBody_%s" % letter) as Sprite3D
+		if body == null:
+			continue
+		var action := str(body.get_meta("action", actions[step]))
+		if action == "walk":
+			body.position.x += sin(float(Time.get_ticks_msec()) / 400.0) * dt
+		set_kid_action(letter, action if body.has_meta("action") else actions[step])
+
+
+func _tick_partner(dt: float) -> void:
+	if _main == null:
+		return
+	var body := _main.get_node_or_null("PartnerPet") as Sprite3D
+	if body == null:
+		return
+	var home: Vector3 = body.get_meta("home", body.position)
+	body.position.x = home.x + sin(float(Time.get_ticks_msec()) / 500.0) * 4.0
 
 
 func _kids(main: Node) -> void:
@@ -447,37 +715,92 @@ func _kids(main: Node) -> void:
 		main.add_child(mark)
 
 
+func _pill(active: bool) -> StyleBoxTexture:
+	var box := StyleBoxTexture.new()
+	var path := ART_ROOT + ("ui/ui_zone_pill_active.png" if active else "ui/ui_zone_pill_bg.png")
+	var tex := load(path) as Texture2D
+	if tex:
+		tex.get_rid()
+	box.texture = tex
+	box.texture_margin_left = 28
+	box.texture_margin_right = 28
+	box.texture_margin_top = 12
+	box.texture_margin_bottom = 12
+	box.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	box.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	return box
+
+
 func _hud(main: Node) -> void:
 	var layer := CanvasLayer.new()
 	layer.name = "EcosystemHud"
 	layer.layer = 21
 	main.add_child(layer)
 	var root := Control.new()
+	root.name = "Root"
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(root)
 	var zones: Array = ["garden", "cottage_yard_work", "prairie_edge", "zone_farm", "zone_workshop", "zone_prairie_deep", "zone_family_wall"]
-	var x := 16.0
+	var icons := {
+		"garden": "icon_zone_garden.png",
+		"cottage_yard_work": "icon_zone_cottage_yard_work.png",
+		"prairie_edge": "icon_zone_prairie_edge.png",
+		"zone_farm": "icon_zone_zone_farm.png",
+		"zone_workshop": "icon_zone_zone_workshop.png",
+		"zone_prairie_deep": "icon_zone_zone_prairie_deep.png",
+		"zone_family_wall": "icon_zone_zone_family_wall.png",
+	}
+	var x := 8.0
 	for zid in zones:
-		var b := Button.new()
-		b.name = "Zone_%s" % str(zid)
-		b.text = str(cfg.get("zones", {}).get("unlockable", {}).get(zid, {}).get("zh", zid))
-		if zid == "garden":
-			b.text = "花園"
-		elif zid == "cottage_yard_work":
-			b.text = "屋旁"
-		elif zid == "prairie_edge":
-			b.text = "草原邊"
-		b.custom_minimum_size = Vector2(64, 56)
-		b.position = Vector2(x, 700)
 		var id := str(zid)
+		var b := Button.new()
+		b.name = "Zone_%s" % id
+		b.custom_minimum_size = Vector2(72, 56)
+		b.position = Vector2(x, 460)
+		b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		b.icon = load(ART_ROOT + "ui/" + str(icons[id])) as Texture2D
+		b.add_theme_stylebox_override("normal", _pill(false))
+		b.add_theme_stylebox_override("hover", _pill(true))
+		b.add_theme_stylebox_override("pressed", _pill(true))
+		b.add_theme_stylebox_override("disabled", _pill(false))
+		var open := zone_unlocked(id, Sim.state if Sim else {})
+		b.disabled = not open
+		b.modulate = Color.WHITE if open else Color(1, 1, 1, 0.45)
 		b.pressed.connect(func():
+			current_zone = id
 			stop_follow()
-			if _main and _main.has_method("set_cam_follow"):
-				_main.set_cam_follow(null)
+			if _main:
+				_main.follow_pos = _zone_look(id)
+				if _main.has_method("set_cam_follow"):
+					_main.set_cam_follow(null)
 		)
 		root.add_child(b)
-		x += 52.0
+		x += 54.0
+	var portrait := Button.new()
+	portrait.name = "PetPortrait"
+	portrait.custom_minimum_size = Vector2(64, 64)
+	portrait.position = Vector2(300, 360)
+	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	portrait.icon = load(ART_ROOT + "ui/ui_pet_portrait_frame.png") as Texture2D
+	portrait.pressed.connect(func():
+		follow_pet("tuanrong")
+		if _main and _main.get("pet"):
+			_main.set_cam_follow(_main.get("pet"))
+	)
+	root.add_child(portrait)
+	var observe := HBoxContainer.new()
+	observe.name = "PrairieObserve"
+	observe.position = Vector2(240, 240)
+	observe.visible = false
+	for stat_file in ["icon_stat_power.png", "icon_stat_agility.png", "icon_stat_stamina.png"]:
+		var icon := TextureRect.new()
+		icon.texture = load(ART_ROOT + "ui/" + stat_file) as Texture2D
+		icon.custom_minimum_size = Vector2(48, 48)
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		observe.add_child(icon)
+	root.add_child(observe)
 	var roles := Label.new()
 	roles.name = "RoleLabel"
 	roles.text = "種嘢 採集 工作 戰鬥狩獵 組合協同"
@@ -493,6 +816,33 @@ func _hud(main: Node) -> void:
 	patrol.text = patrol_label
 	patrol.position = Vector2(16, 668)
 	root.add_child(patrol)
+
+
+func _zone_look(id: String) -> Vector3:
+	if id == "cottage_yard_work":
+		return station_world("kitchen")
+	if id == "zone_farm":
+		return Vector3(40, 30, 30)
+	if id == "zone_family_wall":
+		return Vector3(-20, 30, 48)
+	if id == "prairie_edge" or id == "zone_prairie_deep":
+		return Vector3(0, 30, -24)
+	return Vector3(0, 30, 8)
+
+
+func show_combo(kind: String) -> void:
+	if _main == null:
+		return
+	var root := _main.get_node_or_null("EcosystemHud/Root")
+	if root == null:
+		return
+	var badge := root.get_node_or_null("ComboBadge") as Label
+	if badge == null:
+		badge = Label.new()
+		badge.name = "ComboBadge"
+		root.add_child(badge)
+	badge.text = kind
+	badge.position = Vector2(240, 430)
 
 
 func _combat_line() -> String:

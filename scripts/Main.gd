@@ -717,6 +717,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		var mb := event as InputEventMouseButton
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 			_try_tap(mb.position)
+	elif event is InputEventScreenDrag:
+		if Ecosystem and Ecosystem.has_method("stop_follow"):
+			Ecosystem.stop_follow()
 	elif event is InputEventScreenTouch:
 		var st := event as InputEventScreenTouch
 		if st.pressed:

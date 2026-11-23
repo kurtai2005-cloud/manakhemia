@@ -33,11 +33,13 @@ r6. The two replay buttons follow the preview launch, not the old preview_fixtur
 
 r7 adds the living-ecosystem draft on top of the r6 preview buttons. Numbers come from data/ecosystem_v1.json. PetOverlayService is still deferred.
 
-This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r7.apk
-bytes: 70337792
-sha256: 9f4f1cdace1f8bf3fd7529afde71a210e1ea8b490759bb40069cdb0d53635770
-versionName: vc27-11fb9c14-r7
-versionCode: 17
+r8 wires those packaged pictures into the live scene. Zone pills use the 9-slice art and the seven zone icons. A portrait chip follows a pet until a finger drag lets go. The farm plot swaps one texture through empty, sprout, growing, and ripe. The pantry pile switches low and full. The family wall shows the board and frame slots. Pets walk to the outdoor stove and the outdoor post. Kids A–H change idle, walk, eat, sleep, and cry strips. The leaf rug rolls on its own and stops when hunger drops to 20. A temporary fusion shows the echo, the gold and cyan tint, and the halo, then split puts both pets back. PetOverlayService is still deferred.
+
+This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r8.apk
+bytes: 70348452
+sha256: 5011493456844428c078d5fd6d3bb5675dd2c9723e7666e00a7b2b1e4e312e77
+versionName: vc27-11fb9c14-r8
+versionCode: 18
 package: hk.vizard.glimmer.fpet.vc27draft
 Same debug signer CN=VC27 Debug, cert a5e16b2ab309a3478e0cd28304daae179bd0e85c7a7940592101b2aa77127b10. v2 only. arm64-v8a. Portrait. Renderer mobile. Install over the test app. Do not clear its data.
 Do not upload r5 again: vc27-draft-11fb9c14-r5.apk, 68659140 bytes, sha256 be39075c7d19b305c79a7baf07c890c5321bac56d1ebdb915f0f3e125a71cedc.
@@ -49,3 +51,4 @@ Phone. Use 微光試稿·試玩. Do not clear storage. An already hatched previe
 3. Leave during a replay and open the same icon. Nothing extra was paid. The buttons are still there.
 4. 微光試稿 has no replay buttons.
 5. The cottage yard stations, farm sprout, and zone labels are the new living-ecosystem draft. Do not expect a finished art pass. PetOverlayService is not in this build.
+6. On r8, look at the zone pills and a pet portrait. Drag the view: the camera should stop following. Walk to the farm and watch one plot change, the fruit pile, and the family-wall frames. Kids should move, not stay on one idle frame. If the leaf rug is down, a pet rolls on it and stops when it is hungry. A fusion should show a second faint body and a glow, then both pets return when it ends.
