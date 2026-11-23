@@ -1,0 +1,1036 @@
+{
+  "_title": "微光小圃 活生態圈 v1 最少可讀美術包 MANIFEST",
+  "_updated": "2026-11-24 Asia/Hong_Kong UTC+8",
+  "_root": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit",
+  "_category_default": "minimal_readable_draft",
+  "_note": "本包全部新圖均為 minimal_readable_draft，最後統一 675 精修。series2 原檔屬 reuse，不複製入本包。",
+  "nine_slice": {
+    "ui/ui_zone_pill_bg.png": {
+      "left": 28,
+      "top": 12,
+      "right": 28,
+      "bottom": 12,
+      "keep_height_px": 56
+    },
+    "ui/ui_zone_pill_active.png": {
+      "left": 28,
+      "top": 12,
+      "right": 28,
+      "bottom": 12,
+      "keep_height_px": 56
+    }
+  },
+  "assets": [
+    {
+      "path": "ui/icon_stat_power.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_stat_power.png",
+      "use": "輕戰鬥數值圖示：力量",
+      "zh": "力量",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "059a035960f6278dfead1382bb99d13fb05fbb761ec2d10a60a01f1230b6665f",
+      "json_keys": [
+        "combat_stats.ids.力量"
+      ],
+      "anchor_px": [
+        31.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        61,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_stat_agility.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_stat_agility.png",
+      "use": "輕戰鬥數值圖示：身手",
+      "zh": "身手",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "c6d04073107e625f18be74e76e05eb37928e022f5701148b73b841656199af9b",
+      "json_keys": [
+        "combat_stats.ids.身手"
+      ],
+      "anchor_px": [
+        31.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        61,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_stat_stamina.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_stat_stamina.png",
+      "use": "輕戰鬥數值圖示：耐力",
+      "zh": "耐力",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "ecc86e1e06208932f4cf03b1f1ef76e58ed5a0bd0845e865f475fd463db37bba",
+      "json_keys": [
+        "combat_stats.ids.耐力"
+      ],
+      "anchor_px": [
+        31.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        61,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_zone_garden.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_zone_garden.png",
+      "use": "區域小標：花園",
+      "zh": "花園",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "445a53e684b74c800e2087aa0a19d83d876801789c14f0c2124784036a2798da",
+      "json_keys": [
+        "zones.starting_always_on.garden",
+        "save_migration.defaults_if_missing.zones_unlocked.garden"
+      ],
+      "anchor_px": [
+        31.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        61,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_zone_cottage_yard_work.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_zone_cottage_yard_work.png",
+      "use": "區域小標：屋旁基礎工位",
+      "zh": "屋旁基礎工位",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "62ef7c142dd2360eb5beace3fab22a765dfdeb34973ecbd7beb08075c78ea85f",
+      "json_keys": [
+        "zones.starting_always_on.cottage_yard_work"
+      ],
+      "anchor_px": [
+        31.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        61,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_zone_prairie_edge.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_zone_prairie_edge.png",
+      "use": "區域小標：草原邊",
+      "zh": "草原邊",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "4649bd962acb5879c707a2e6a3acb14d0e84de504b25fda2e664737631a5e2c3",
+      "json_keys": [
+        "zones.starting_always_on.prairie_edge"
+      ],
+      "anchor_px": [
+        32.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        63,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_zone_zone_farm.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_zone_zone_farm.png",
+      "use": "區域小標：農圃（檔名雙 zone_ 對應穩定 id zone_farm）",
+      "zh": "農圃",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "82abd8d5c801e1c53ecaf4ce3f80953c1cd5998e0384c7740785cf7de499ba27",
+      "json_keys": [
+        "zones.unlockable.zone_farm"
+      ],
+      "anchor_px": [
+        31.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        61,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_zone_zone_workshop.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_zone_zone_workshop.png",
+      "use": "區域小標：開放工作角",
+      "zh": "開放工作角",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "5228d434798c5af1b81cd92663fd89bda3dd13d120e0e60b9743798d34846bab",
+      "json_keys": [
+        "zones.unlockable.zone_workshop"
+      ],
+      "anchor_px": [
+        31.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        61,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_zone_zone_prairie_deep.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_zone_zone_prairie_deep.png",
+      "use": "區域小標：草原深處",
+      "zh": "草原深處",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "518f126ff36d206b2458b15605a7e8f27ba1cf5591133809cc886955a15acf1e",
+      "json_keys": [
+        "zones.unlockable.zone_prairie_deep"
+      ],
+      "anchor_px": [
+        32.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        63,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/icon_zone_zone_family_wall.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/icon_zone_zone_family_wall.png",
+      "use": "區域小標：家族牆空間",
+      "zh": "家族牆空間",
+      "kind": "ui_icon",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "da728eb86481e4372318da54a9abb5a8e767a6b49f18197abd79d6350789c7b5",
+      "json_keys": [
+        "zones.unlockable.zone_family_wall"
+      ],
+      "anchor_px": [
+        31.5,
+        60
+      ],
+      "last_opaque_row": 60,
+      "sole_edge": 61,
+      "bbox": [
+        2,
+        3,
+        61,
+        60
+      ],
+      "suggested_sprite3d": {
+        "readable_at_px": [
+          24,
+          20
+        ]
+      }
+    },
+    {
+      "path": "ui/ui_zone_pill_bg.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/ui_zone_pill_bg.png",
+      "use": "切區膠囊按鈕底圖（平時）",
+      "zh": "切區膠囊（平時）",
+      "kind": "ui_chrome",
+      "category": "minimal_readable_draft",
+      "width": 160,
+      "height": 56,
+      "sha256": "9eaf5b32dd2faaba221872db77e4069bc6b7fb0336e634a719efc8800e76fda9",
+      "json_keys": [
+        "zones"
+      ],
+      "anchor_px": [
+        79.5,
+        55
+      ],
+      "last_opaque_row": 55,
+      "sole_edge": 56,
+      "bbox": [
+        0,
+        0,
+        159,
+        55
+      ],
+      "suggested_sprite3d": {
+        "touch_min_px": 48,
+        "nine_slice": {
+          "left": 28,
+          "top": 12,
+          "right": 28,
+          "bottom": 12,
+          "keep_height_px": 56
+        }
+      }
+    },
+    {
+      "path": "ui/ui_zone_pill_active.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/ui_zone_pill_active.png",
+      "use": "切區膠囊按鈕底圖（選中）",
+      "zh": "切區膠囊（選中）",
+      "kind": "ui_chrome",
+      "category": "minimal_readable_draft",
+      "width": 160,
+      "height": 56,
+      "sha256": "44a6eac08e5530258474861bef7ae8df03cf977a82502d34fc74ab60109c6cfe",
+      "json_keys": [
+        "zones"
+      ],
+      "anchor_px": [
+        79.5,
+        55
+      ],
+      "last_opaque_row": 55,
+      "sole_edge": 56,
+      "bbox": [
+        0,
+        0,
+        159,
+        55
+      ],
+      "suggested_sprite3d": {
+        "touch_min_px": 48,
+        "nine_slice": {
+          "left": 28,
+          "top": 12,
+          "right": 28,
+          "bottom": 12,
+          "keep_height_px": 56
+        }
+      }
+    },
+    {
+      "path": "ui/ui_pet_portrait_frame.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/ui_pet_portrait_frame.png",
+      "use": "寵物頭像切鏡框（平時，中空透明）",
+      "zh": "寵物頭像框（平時）",
+      "kind": "ui_chrome",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "c7f83c5229f0a5d30dad79103d67d8180dbed823abf5aef5182cf1f437477075",
+      "json_keys": [],
+      "anchor_px": [
+        31.5,
+        63
+      ],
+      "last_opaque_row": 63,
+      "sole_edge": 64,
+      "bbox": [
+        0,
+        0,
+        63,
+        63
+      ],
+      "suggested_sprite3d": {
+        "touch_min_px": 48,
+        "inner_hole_transparent": true
+      }
+    },
+    {
+      "path": "ui/ui_pet_portrait_frame_active.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/ui/ui_pet_portrait_frame_active.png",
+      "use": "寵物頭像切鏡框（選中，中空透明）",
+      "zh": "寵物頭像框（選中）",
+      "kind": "ui_chrome",
+      "category": "minimal_readable_draft",
+      "width": 64,
+      "height": 64,
+      "sha256": "c6bdd7b2383cf8f66745b5ba2154ff25cebe6b853d6f6df40e11dd74e99d7f06",
+      "json_keys": [],
+      "anchor_px": [
+        31.5,
+        63
+      ],
+      "last_opaque_row": 63,
+      "sole_edge": 64,
+      "bbox": [
+        0,
+        0,
+        63,
+        63
+      ],
+      "suggested_sprite3d": {
+        "touch_min_px": 48,
+        "inner_hole_transparent": true
+      }
+    },
+    {
+      "path": "props/farm_plot_empty.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/farm_plot_empty.png",
+      "use": "農圃空地塊（含木框土壤，3/4 視角）",
+      "zh": "空地塊",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 128,
+      "height": 128,
+      "sha256": "d6b26bb0c84d9afb5f7b532ad9b3d4e8ef77ee0f63013aa9d6eb2c6ccafb33cd",
+      "json_keys": [
+        "zones.unlockable.zone_farm"
+      ],
+      "anchor_px": [
+        63.5,
+        120
+      ],
+      "last_opaque_row": 120,
+      "sole_edge": 121,
+      "bbox": [
+        9,
+        49,
+        118,
+        120
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 57.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/farm_crop_stage1_sprout.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/farm_crop_stage1_sprout.png",
+      "use": "農圃作物階段 1：萌芽（含地上地塊，可整件替換）",
+      "zh": "作物階段 1 萌芽",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 128,
+      "height": 128,
+      "sha256": "4be51073cde5840cdab148638c433a9e24d3ef57ad1a700a8426bc0d88d5dd31",
+      "json_keys": [
+        "zones.unlockable.zone_farm"
+      ],
+      "anchor_px": [
+        63.5,
+        120
+      ],
+      "last_opaque_row": 120,
+      "sole_edge": 121,
+      "bbox": [
+        9,
+        49,
+        118,
+        120
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 57.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/farm_crop_stage2_growing.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/farm_crop_stage2_growing.png",
+      "use": "農圃作物階段 2：生長（含地上地塊，可整件替換）",
+      "zh": "作物階段 2 生長",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 128,
+      "height": 128,
+      "sha256": "9e4db34857fc628d53a102b4df6df58d02ec48c45d631d0f56c4245c39056283",
+      "json_keys": [
+        "zones.unlockable.zone_farm"
+      ],
+      "anchor_px": [
+        63.5,
+        120
+      ],
+      "last_opaque_row": 120,
+      "sole_edge": 121,
+      "bbox": [
+        9,
+        23,
+        118,
+        120
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 57.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/farm_crop_stage3_ripe.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/farm_crop_stage3_ripe.png",
+      "use": "農圃作物階段 3：成熟結果（含地上地塊，可整件替換）",
+      "zh": "作物階段 3 成熟",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 128,
+      "height": 128,
+      "sha256": "3d153148fea2d5408e3866615d7522228be74627dae62d80ef01f35117e74cc7",
+      "json_keys": [
+        "zones.unlockable.zone_farm"
+      ],
+      "anchor_px": [
+        63.5,
+        120
+      ],
+      "last_opaque_row": 120,
+      "sole_edge": 121,
+      "bbox": [
+        9,
+        16,
+        118,
+        120
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 57.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/work_outdoor_stove_table.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/work_outdoor_stove_table.png",
+      "use": "露天簡易檯灶（屋旁工位／開放工作角）",
+      "zh": "露天檯灶",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 128,
+      "height": 128,
+      "sha256": "668c182f1fd20c4642b3241942d5b8b742340121481affe6029d52b927ef54ca",
+      "json_keys": [
+        "zones.starting_always_on.cottage_yard_work",
+        "zones.unlockable.zone_workshop"
+      ],
+      "anchor_px": [
+        63.5,
+        107
+      ],
+      "last_opaque_row": 107,
+      "sole_edge": 108,
+      "bbox": [
+        13,
+        18,
+        114,
+        107
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 44.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/work_outdoor_post_rack.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/work_outdoor_post_rack.png",
+      "use": "露天郵架／分揀架",
+      "zh": "露天郵架",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 128,
+      "height": 128,
+      "sha256": "ede84413de6345c17dcc58abf389297c51504c90f3345339eaec2902d566bcd4",
+      "json_keys": [
+        "zones.starting_always_on.cottage_yard_work",
+        "zones.unlockable.zone_workshop"
+      ],
+      "anchor_px": [
+        64.0,
+        110
+      ],
+      "last_opaque_row": 110,
+      "sole_edge": 111,
+      "bbox": [
+        21,
+        11,
+        107,
+        110
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 47.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/storage_fruit_pile_low.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/storage_fruit_pile_low.png",
+      "use": "倉位可見果堆（少量）",
+      "zh": "果堆（少）",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 128,
+      "height": 128,
+      "sha256": "cfde6ada0e21bb259b38cf1324eabd98e3b4ecb8a7b6970df92a184269e63535",
+      "json_keys": [
+        "save_migration.keep_fields.fruits"
+      ],
+      "anchor_px": [
+        64.0,
+        107
+      ],
+      "last_opaque_row": 107,
+      "sole_edge": 108,
+      "bbox": [
+        30,
+        57,
+        98,
+        107
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 44.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/storage_fruit_pile_full.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/storage_fruit_pile_full.png",
+      "use": "倉位可見果堆（滿堆）；§6.1 正式倉堆留最後精修",
+      "zh": "果堆（滿）",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 128,
+      "height": 128,
+      "sha256": "3053ee61b584b01832fb38802d05ad8e60969af79794ad42d100a65320b68296",
+      "json_keys": [
+        "save_migration.keep_fields.fruits"
+      ],
+      "anchor_px": [
+        64.0,
+        111
+      ],
+      "last_opaque_row": 111,
+      "sole_edge": 112,
+      "bbox": [
+        20,
+        44,
+        108,
+        111
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 48.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/family_wall_board.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/family_wall_board.png",
+      "use": "家族牆木板佔位（含相框槽）",
+      "zh": "家族牆木板",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 192,
+      "height": 128,
+      "sha256": "8a033e9d6d537101778e95e2f1935028231af8334a05941283413a8dee13fb76",
+      "json_keys": [
+        "zones.unlockable.zone_family_wall"
+      ],
+      "anchor_px": [
+        95.5,
+        124
+      ],
+      "last_opaque_row": 124,
+      "sole_edge": 125,
+      "bbox": [
+        7,
+        8,
+        184,
+        124
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 61.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "props/family_wall_frame_slot.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/props/family_wall_frame_slot.png",
+      "use": "家族牆單個相框槽（中空透明）",
+      "zh": "家族牆相框槽",
+      "kind": "prop",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "354606624866caddf5c3eb54caa194710e887682aaeb0b6a860ee8b45511d3e8",
+      "json_keys": [
+        "zones.unlockable.zone_family_wall"
+      ],
+      "anchor_px": [
+        23.5,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        0,
+        0,
+        47,
+        47
+      ],
+      "suggested_sprite3d": {
+        "centered": true,
+        "pixel_size": 1,
+        "node_y_if_grounded": 0,
+        "offset_y_if_grounded": 24.0,
+        "offset_formula": "sole_edge - H/2  (centered, ps=1, node_y=0)"
+      }
+    },
+    {
+      "path": "kids_markers/kid_marker_A.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/kids_markers/kid_marker_A.png",
+      "use": "細佬 A 頭飾／色帶小標（水滴＋尾鰭）",
+      "zh": "細佬標記 A 滴滴／水",
+      "kind": "kid_marker",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "3eb70daea370306b41cbd8be3874cea427313ce7d7c2a6f0799e4af975c6423c",
+      "json_keys": [],
+      "anchor_px": [
+        25.0,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        8,
+        3,
+        42,
+        47
+      ],
+      "suggested_sprite3d": {
+        "overlay_on": "kid headTop + 2px"
+      }
+    },
+    {
+      "path": "kids_markers/kid_marker_B.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/kids_markers/kid_marker_B.png",
+      "use": "細佬 B 頭飾／色帶小標（泡泡）",
+      "zh": "細佬標記 B 燈燈／泡泡",
+      "kind": "kid_marker",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "5a7048e4fe5e8f21782b7606bd9cccccb498f0bba22582305c66a6a69a2930d5",
+      "json_keys": [],
+      "anchor_px": [
+        23.5,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        7,
+        7,
+        40,
+        47
+      ],
+      "suggested_sprite3d": {
+        "overlay_on": "kid headTop + 2px"
+      }
+    },
+    {
+      "path": "kids_markers/kid_marker_C.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/kids_markers/kid_marker_C.png",
+      "use": "細佬 C 頭飾／色帶小標（火焰）",
+      "zh": "細佬標記 C 火仔／火",
+      "kind": "kid_marker",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "433858e689c285666f58de7bc048459b8404a335400aa3000ea6d4e6fcf50926",
+      "json_keys": [],
+      "anchor_px": [
+        23.5,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        8,
+        3,
+        39,
+        47
+      ],
+      "suggested_sprite3d": {
+        "overlay_on": "kid headTop + 2px"
+      }
+    },
+    {
+      "path": "kids_markers/kid_marker_D.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/kids_markers/kid_marker_D.png",
+      "use": "細佬 D 頭飾／色帶小標（金晶）",
+      "zh": "細佬標記 D 熔石／金刺",
+      "kind": "kid_marker",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "8c44697d8370edabfeea4ca81ba3b074795882e080d475f1a0edbb6562781232",
+      "json_keys": [],
+      "anchor_px": [
+        23.5,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        8,
+        4,
+        39,
+        47
+      ],
+      "suggested_sprite3d": {
+        "overlay_on": "kid headTop + 2px"
+      }
+    },
+    {
+      "path": "kids_markers/kid_marker_E.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/kids_markers/kid_marker_E.png",
+      "use": "細佬 E 頭飾／色帶小標（辣椒）",
+      "zh": "細佬標記 E 火糰／辣椒",
+      "kind": "kid_marker",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "d1b9faa9c9fd450c9e43fd019e7e452cd50dc8d8bcdace2c0768ba6be0827c0e",
+      "json_keys": [],
+      "anchor_px": [
+        24.0,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        6,
+        2,
+        42,
+        47
+      ],
+      "suggested_sprite3d": {
+        "overlay_on": "kid headTop + 2px"
+      }
+    },
+    {
+      "path": "kids_markers/kid_marker_F.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/kids_markers/kid_marker_F.png",
+      "use": "細佬 F 頭飾／色帶小標（星）",
+      "zh": "細佬標記 F 星彈／星",
+      "kind": "kid_marker",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "b26c2e9254c9924fec3578b558578ee0dd0ada7abbe9445bb4305ca740e7f8f5",
+      "json_keys": [],
+      "anchor_px": [
+        23.5,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        6,
+        5,
+        41,
+        47
+      ],
+      "suggested_sprite3d": {
+        "overlay_on": "kid headTop + 2px"
+      }
+    },
+    {
+      "path": "kids_markers/kid_marker_G.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/kids_markers/kid_marker_G.png",
+      "use": "細佬 G 頭飾／色帶小標（夜書）",
+      "zh": "細佬標記 G 夜糰／書",
+      "kind": "kid_marker",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "3cef312a47eccc46163a1d89bbb0623c44d1254330ee1bb3e97468bc6ab2dbdd",
+      "json_keys": [],
+      "anchor_px": [
+        23.5,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        7,
+        9,
+        40,
+        47
+      ],
+      "suggested_sprite3d": {
+        "overlay_on": "kid headTop + 2px"
+      }
+    },
+    {
+      "path": "kids_markers/kid_marker_H.png",
+      "absolute": "/home/box/keep/godot/hd2d-pilot-v6/ecosystem_v1_minimal_kit/kids_markers/kid_marker_H.png",
+      "use": "細佬 H 頭飾／色帶小標（新月）",
+      "zh": "細佬標記 H 月角／月",
+      "kind": "kid_marker",
+      "category": "minimal_readable_draft",
+      "width": 48,
+      "height": 48,
+      "sha256": "244745d57e4db1721a6419e06ac5020f06ca3f46c26e60eb7bd62fd6c6a33dde",
+      "json_keys": [],
+      "anchor_px": [
+        25.0,
+        47
+      ],
+      "last_opaque_row": 47,
+      "sole_edge": 48,
+      "bbox": [
+        8,
+        6,
+        42,
+        47
+      ],
+      "suggested_sprite3d": {
+        "overlay_on": "kid headTop + 2px"
+      }
+    }
+  ],
+  "deferred_final_polish": [
+    "細佬 675 化正式行走套",
+    "廚房煮／郵局打包專用動作",
+    "擴建室內同正式家具位",
+    "§6.1 包裹、正式倉堆、合力抬、坐上大件、揮手召集",
+    "合體正式形態同分合動畫",
+    "家族牆關係線同成就框",
+    "新獵區（林邊、溪邊、花海、山丘）同銀金證"
+  ],
+  "reuse_not_in_this_kit": {
+    "series2": "/workspace/s2art/art-pet/sprites/series2",
+    "tuanrong_675_walk": "/home/box/keep/godot/hd2d-pilot-v6/pet_walk_art_r4/frames/r4/",
+    "care_ui_32": "/workspace/gameplay_art_r1/assets/icons/"
+  }
+}

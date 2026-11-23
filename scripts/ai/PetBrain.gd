@@ -213,6 +213,13 @@ func _life(dt: float) -> void:
 		if bool(went.get("ok", false)):
 			_hold_for_life()
 			return
+		var why := str(went.get("reason", ""))
+		if why == "work_or_hunt" or why == "preview_once" or why == "daily_pet_cap":
+			if Ecosystem and Ecosystem.has_method("observe_patrol"):
+				var patrol: Dictionary = Ecosystem.observe_patrol()
+				if bool(patrol.get("ok", false)):
+					_hold_for_life()
+					return
 	busy = false
 
 

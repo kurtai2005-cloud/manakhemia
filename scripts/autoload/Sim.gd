@@ -64,6 +64,8 @@ func _ready() -> void:
 		SaveSystem.save_state(state)
 	else:
 		state = loaded
+	if Ecosystem and Ecosystem.has_method("migrate"):
+		Ecosystem.migrate(state)
 	TimeService.catch_up(state)
 	TimeService.mark_sim()
 	_dirty = true

@@ -31,11 +31,13 @@ Still out: eating frames, a redrawn interior, a second pet, the kid as new scope
 
 r6. The two replay buttons follow the preview launch, not the old preview_fixture flag. They sit under 圖鑑, inside the safe area, in a font that contains 看, 狩, and 獵. Vc27PreviewApp always adds --vc27-preview. 微光試稿 does not.
 
-This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r6.apk
-bytes: 68667607
-sha256: 1040dc126843f22b4b379c52cdcba1e12f4ed5156d0c9a6761c66e0edc417c78
-versionName: vc27-11fb9c14-r6
-versionCode: 16
+r7 adds the living-ecosystem draft on top of the r6 preview buttons. Numbers come from data/ecosystem_v1.json. PetOverlayService is still deferred.
+
+This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r7.apk
+bytes: 70337792
+sha256: 9f4f1cdace1f8bf3fd7529afde71a210e1ea8b490759bb40069cdb0d53635770
+versionName: vc27-11fb9c14-r7
+versionCode: 17
 package: hk.vizard.glimmer.fpet.vc27draft
 Same debug signer CN=VC27 Debug, cert a5e16b2ab309a3478e0cd28304daae179bd0e85c7a7940592101b2aa77127b10. v2 only. arm64-v8a. Portrait. Renderer mobile. Install over the test app. Do not clear its data.
 Do not upload r5 again: vc27-draft-11fb9c14-r5.apk, 68659140 bytes, sha256 be39075c7d19b305c79a7baf07c890c5321bac56d1ebdb915f0f3e125a71cedc.
@@ -46,3 +48,4 @@ Phone. Use 微光試稿·試玩. Do not clear storage. An already hatched previe
 2. Under 圖鑑: 試玩·各一次, then 重看郵局, then 重看狩獵. Tap one. Stars and fruit do not change.
 3. Leave during a replay and open the same icon. Nothing extra was paid. The buttons are still there.
 4. 微光試稿 has no replay buttons.
+5. The cottage yard stations, farm sprout, and zone labels are the new living-ecosystem draft. Do not expect a finished art pass. PetOverlayService is not in this build.

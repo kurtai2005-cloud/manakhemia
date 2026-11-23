@@ -701,6 +701,11 @@ func _notification(what: int) -> void:
 		play_mouse_events += 1
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventScreenDrag and Ecosystem and Ecosystem.has_method("stop_follow"):
+		Ecosystem.stop_follow()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	play_inputs += 1
 	# Android turns one finger into a touch and a mouse click. The second
@@ -1454,6 +1459,8 @@ func _setup_m1b() -> void:
 		WorkSystem.dispatched.connect(func(id, pets): _send_pets_to_work(str(id), pets))
 	if WorkSystem and WorkSystem.has_method("note_carried_jobs"):
 		WorkSystem.note_carried_jobs()
+	if Ecosystem and Ecosystem.has_method("present"):
+		Ecosystem.present(self)
 	if HuntSystem and HuntSystem.has_method("restore"):
 		_hunt_team = family_team()
 		_hunt_stand = _reachable_gate_stand()
@@ -1697,6 +1704,10 @@ func _mark_work_arrived() -> void:
 		if spot == null:
 			continue
 		var door: Vector3 = spot.door_pos()
+		if Ecosystem and Ecosystem.has_method("station_world"):
+			var yard: Vector3 = Ecosystem.station_world(str(id))
+			if yard != Vector3.ZERO:
+				door = yard
 		var here := Vector2(pet.global_position.x, pet.global_position.z)
 		if here.distance_to(Vector2(door.x, door.z)) > 2.2:
 			continue
@@ -1947,6 +1958,10 @@ func _send_pets_to_work(building_id: String, ids: Array) -> void:
 	if spot == null:
 		return
 	var door: Vector3 = spot.door_pos()
+	if Ecosystem and Ecosystem.has_method("station_world"):
+		var yard: Vector3 = Ecosystem.station_world(building_id)
+		if yard != Vector3.ZERO:
+			door = yard
 	for w in [pet, kid, visitor]:
 		if w == null:
 			continue
