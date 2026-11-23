@@ -51,6 +51,32 @@ func _play() -> void:
 	if float(sim.state.get("needs", {}).get("energy", 100)) >= float(sim.get("SLEEP_MIN_ENERGY")):
 		_die("preview energy was not lowered after hatch")
 		return
+	var post: Node = _main.get("work_spots").get("post")
+	var kitchen: Node = _main.get("work_spots").get("kitchen")
+	if post == null or kitchen == null:
+		_die("work buildings were not in the garden")
+		return
+	var work: Node = root.get_node("WorkSystem")
+	var shards := int(col.call("stardust"))
+	var sent: Dictionary = _main.call("one_tap_dispatch")
+	if not bool(sent.get("ok", false)) or str(sent.get("building", "")) != "kitchen":
+		_die("dispatch did not choose the kitchen")
+		return
+	var walker: Node3D = _main.get("pet")
+	var dest: Vector3 = walker.get("errand_dest")
+	var spot_at: Vector3 = kitchen.global_position
+	if Vector2(dest.x, dest.z).distance_to(Vector2(spot_at.x, spot_at.z)) > 40.0:
+		_die("dispatch did not aim at the kitchen")
+		return
+	if not _arrived(dest, 800):
+		_die("pet did not walk to the kitchen")
+		return
+	work.tick_watch(12.0)
+	_main.call("_on_building_tapped", kitchen.get("click"))
+	_main.call("_on_building_tapped", post.get("click"))
+	if int(col.call("stardust")) != shards + 2 or str(work.site("post").get("status", "")) != "empty":
+		_die("kitchen pay or the same-day post gate failed")
+		return
 	if str(errand.call("press_food")) != "toss":
 		_die("meal did not start")
 		return
@@ -98,8 +124,9 @@ func _check() -> void:
 	var stage := str(sim.state.get("stage", ""))
 	var fruit := int(col.call("fruit_count", "starberry"))
 	var meals := int(sim.state.get("errand", {}).get("meals", 0))
-	print("RESTART stage=", stage, " fruit=", fruit, " meals=", meals, " glow=", bool(found.get("glow_berry", false)), " unlock=", bool(forms.get("radiant_newborn", false)), " preview=", bool(sim.state.get("preview_fixture", false)), " inside=", bool(_main.get("in_interior")), " sleeping=", bool(sim.state.get("sleeping", false)))
-	if stage != "newborn" or fruit != 0 or meals < 1 or not bool(found.get("glow_berry", false)) or not bool(forms.get("radiant_newborn", false)) or not bool(sim.state.get("preview_fixture", false)):
+	var shards := int(col.call("stardust"))
+	print("RESTART stage=", stage, " fruit=", fruit, " meals=", meals, " shards=", shards, " glow=", bool(found.get("glow_berry", false)), " unlock=", bool(forms.get("radiant_newborn", false)), " preview=", bool(sim.state.get("preview_fixture", false)), " inside=", bool(_main.get("in_interior")), " sleeping=", bool(sim.state.get("sleeping", false)))
+	if stage != "newborn" or fruit != 0 or meals < 1 or shards < 27 or not bool(found.get("glow_berry", false)) or not bool(forms.get("radiant_newborn", false)) or not bool(sim.state.get("preview_fixture", false)):
 		_die("restart lost preview progress")
 		return
 	if bool(_main.get("in_interior")) or bool(sim.state.get("sleeping", false)):

@@ -1680,15 +1680,14 @@ func _sync_hunt_view() -> void:
 
 
 func one_tap_dispatch() -> Dictionary:
-	# 照上次，冇就自動派團絨去空建築（先郵局）
 	var ids: Array = []
 	if WorkSystem:
 		ids = WorkSystem.auto_team(["tuanrong"])
 	if ids.is_empty():
 		ids = ["tuanrong"]
-	# 揀一間空建築
-	for b in (WorkSystem.buildings() if WorkSystem else []):
-		var bid := str(b.get("id", ""))
+	# The post door is behind the lamp and the watering can, so the pet cannot
+	# walk there. The kitchen door is the workplace this walk can reach.
+	for bid in ["kitchen", "post"]:
 		var r: Dictionary = WorkSystem.dispatch(bid, ids)
 		if bool(r.get("ok", false)):
 			return r
@@ -1708,7 +1707,11 @@ func _send_pets_to_work(building_id: String, ids: Array) -> void:
 			if brain:
 				brain.busy = true
 			w.brain_driven = false
-			w.go_to(door)
+			if w.has_method("set_errand"):
+				w.set_errand(door)
+			else:
+				w.go_to(door)
+			set_cam_follow(w)
 			if not w.play_live_clip("idle_quiet", true):
 				w.play_live_clip("scratch")
 	# 工作完（ready）會喺 _sync_work_glow 解除
@@ -1747,9 +1750,13 @@ func _on_building_tapped(area: Area3D) -> void:
 		for w in [pet, kid]:
 			if w:
 				w.brain_driven = true
+				if w.has_method("clear_errand"):
+					w.clear_errand()
 				var brain: Node = w.get_node_or_null("PetBrain")
 				if brain:
 					brain.busy = false
+		if Sim:
+			Sim._save_now(true)
 		return
 	var sit: Dictionary = WorkSystem.site(bid) if WorkSystem else {}
 	if str(sit.get("status", "empty")) == "empty":

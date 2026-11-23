@@ -188,7 +188,7 @@ func _process(dt: float) -> void:
 	walker.errand_hold = pres != null and pres.has_method("care_active") and bool(pres.call("care_active"))
 	if walker.errand_hold:
 		return
-	if walker.errand_blocked and phase != "blocked":
+	if walker.errand_blocked and (phase == "to_pick" or phase == "carry" or phase == "to_eat"):
 		_set_phase("blocked")
 		return
 	if phase == "to_pick" and _close(berry_pos):

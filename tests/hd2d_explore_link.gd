@@ -58,8 +58,59 @@ func _play() -> void:
 	if not bool(col.call("has_dot", "collection")):
 		_die("book dot was not set")
 		return
+	if str(errand.call("player_press")) != "start" or str(errand.call("player_press")) != "cancel":
+		_die("berry trip did not cancel")
+		return
+	if int(col.call("fruit_count", "starberry")) != 1:
+		_die("cancel changed the fruit")
+		return
+	var post: Node = _main.get("work_spots").get("post")
+	var kitchen: Node = _main.get("work_spots").get("kitchen")
+	if post == null or kitchen == null:
+		_die("work buildings were not in the garden")
+		return
+	var shards := int(col.call("stardust"))
+	var sent: Dictionary = _main.call("one_tap_dispatch")
+	var work: Node = root.get_node("WorkSystem")
+	if not bool(sent.get("ok", false)) or str(sent.get("building", "")) != "kitchen":
+		_die("dispatch did not choose the kitchen")
+		return
+	if str(work.site("kitchen").get("status", "")) != "work":
+		_die("kitchen job did not start")
+		return
+	_main.call("_on_building_tapped", kitchen.get("click"))
+	if str(work.site("kitchen").get("status", "")) != "work" or int(col.call("stardust")) != shards:
+		_die("second kitchen click paid early")
+		return
+	var walker: Node3D = _main.get("pet")
+	var dest: Vector3 = walker.get("errand_dest")
+	var spot_at: Vector3 = kitchen.global_position
+	if Vector2(dest.x, dest.z).distance_to(Vector2(spot_at.x, spot_at.z)) > 40.0:
+		_die("dispatch did not aim at the kitchen")
+		return
+	if not _arrived(dest, 800):
+		print("WORK_POS ", walker.global_position, " aim ", dest)
+		_die("pet did not walk to the kitchen")
+		return
+	work.tick_watch(12.0)
+	if not bool(work.call("is_ready", "kitchen")):
+		_die("kitchen was not ready after the existing 12s watch")
+		return
+	_main.call("_on_building_tapped", kitchen.get("click"))
+	if int(col.call("stardust")) != shards + 2:
+		_die("kitchen pay was not the existing level+1")
+		return
+	var again: Dictionary = work.collect("kitchen")
+	if bool(again.get("ok", false)) or int(col.call("stardust")) != shards + 2:
+		_die("collecting the kitchen twice paid again")
+		return
+	var again_send: Dictionary = _main.call("one_tap_dispatch")
+	_main.call("_on_building_tapped", post.get("click"))
+	if bool(again_send.get("ok", false)) or str(work.site("post").get("status", "")) != "empty":
+		_die("a second workplace started on the same day")
+		return
 	sim._save_now(true)
-	print("LINK_PHASE1_OK stage=egg fruit=1 glow_berry=true no_hatch=true")
+	print("LINK_PHASE1_OK stage=egg fruit=1 glow_berry=true kitchen_shards=2")
 	quit(0)
 
 
@@ -75,8 +126,9 @@ func _check() -> void:
 	var forms: Dictionary = sim.state.get("collection", {}).get("forms", {})
 	var stage := str(sim.state.get("stage", ""))
 	var fruit := int(col.call("fruit_count", "starberry"))
-	print("RESTART stage=", stage, " fruit=", fruit, " glow_berry=", bool(found.get("glow_berry", false)), " hatch_unlock=", bool(forms.get("radiant_newborn", false)))
-	if stage != "egg" or fruit != 1 or not bool(found.get("glow_berry", false)) or bool(forms.get("radiant_newborn", false)):
+	var shards := int(col.call("stardust"))
+	print("RESTART stage=", stage, " fruit=", fruit, " glow_berry=", bool(found.get("glow_berry", false)), " shards=", shards, " hatch_unlock=", bool(forms.get("radiant_newborn", false)))
+	if stage != "egg" or fruit != 1 or not bool(found.get("glow_berry", false)) or bool(forms.get("radiant_newborn", false)) or shards < 27:
 		_die("restart lost the normal delivery")
 		return
 	print("LINK_PHASE2_OK")
@@ -91,14 +143,21 @@ func _ready_pet() -> bool:
 	return false
 
 
+func _pump() -> void:
+	var walker: Node3D = _main.get("pet")
+	walker._process(0.05)
+	var pres := _main.get_node_or_null("Hd2dPresentation")
+	if pres:
+		pres._process(0.05)
+	_main.get_node("GardenErrand")._process(0.05)
+	if _main.has_method("_commit_door_if_arrived"):
+		_main.call("_commit_door_if_arrived")
+
+
 func _arrived(point: Vector3, steps: int) -> bool:
 	var walker: Node3D = _main.get("pet")
 	for _i in range(steps):
-		walker._process(0.05)
-		var pres := _main.get_node_or_null("Hd2dPresentation")
-		if pres:
-			pres._process(0.05)
-		_main.get_node("GardenErrand")._process(0.05)
+		_pump()
 		if Vector2(walker.global_position.x, walker.global_position.z).distance_to(Vector2(point.x, point.z)) < 1.2:
 			return true
 	return false

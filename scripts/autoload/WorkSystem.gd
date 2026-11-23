@@ -104,6 +104,8 @@ func dispatch(id: String, ids: Array) -> Dictionary:
 	if Sim:
 		Sim._dirty = true
 	dispatched.emit(id, sit["pets"])
+	if Sim:
+		Sim._save_now(true)
 	return {"ok": true, "building": id, "pets": sit["pets"]}
 
 
@@ -194,4 +196,6 @@ func collect(id: String = "") -> Dictionary:
 	collected.emit(rec)
 	if CollectionSystem and not is_ready():
 		CollectionSystem.notify("work", false)
+	if Sim:
+		Sim._save_now(true)
 	return rec
