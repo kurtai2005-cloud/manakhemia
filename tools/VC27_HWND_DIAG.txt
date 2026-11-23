@@ -1,0 +1,39 @@
+Read-only window census. The art owner runs it. This agent does not touch the PC.
+The open game stays open. PID 4748 and wrapper PID 9132 are the processes from the c30a collect. If either PID is already gone, the script stops and does not start the game again.
+
+What the c30a collect already shows, and what it does not:
+The log is 57548 bytes, SHA-256 03d97a1f003bbf8b3cf38b77878d03d10cb8551e5635c6f094352b198d7a8145.
+Vulkan Forward Mobile, root viewport 390x844, child 1080x2280 with updates disabled.
+172 pulses, wall_ms 3389 to 174608, frames 1 to 5137, max_frame_ms 87, focus 1, inputs 0, mouse 0, display=Windows.
+inputs and mouse stay 0 because the protocol forbade input. That is not a failed pump.
+max_frame_ms 87 means the script gap stayed under a tenth of a second while IsHungAppWindow was reported true.
+The collect does not record an HWND, window class, thread id, or session id. The title and the 275x600 size are not an HWND identity.
+Stopping the child-viewport copy did not clear the reported hang. That hypothesis is closed.
+
+One command, from any directory. OutputDir must be a new empty folder, not the game folder and not the play profile.
+
+powershell -NoProfile -ExecutionPolicy Bypass -File <this folder>\vc27_hwnd_diag.ps1 -GamePid 4748 -WrapperPid 9132 -OutputDir C:\Users\nasa2\hd2d_test\vc27_hwnd_diag_out
+
+The script returns in well under a minute. Each WM_NULL wait is 500 ms and aborts if Windows already calls the window hung. It never sends WM_CLOSE to 4748 or 9132. It does not read save_v1.json.
+
+Stop after hwnd_diag.json exists. Do not launch the game again in this pass.
+
+Read the json in this order:
+1. game_alive and same_session_as_game. If the game PID is dead, stop. If the sessions differ, this collect cannot see that desktop.
+2. For each window: pid, thread_id, class_name, title, visible, rect, is_hung_app_window, wm_null_answered, ghost_class.
+3. Compare hwnd with game.main_window_handle.
+
+Discriminating outcomes:
+A. A window of class Ghost, or a title that already contains Not Responding, is the hung one, and a different window of PID 4748 answers WM_NULL. The earlier report was the ghost. The render window answered. Not a game-code result.
+B. Every visible window of PID 4748 has is_hung_app_window true or wm_null_answered false. The render window itself is not dispatching. Frame pulses are not evidence that the pump ran.
+C. No window has pid 4748. The title match belonged to another process. Record that pid.
+D. same_session_as_game is false. Stop. Do not try to cross sessions.
+
+Only if the json is outcome B, one optional second command is allowed. It is not part of the first command. It opens an empty Godot window in profile vc27_hwnd_bare_<powershell pid>, waits at most 12 seconds, probes that new PID only, then closes that new PID. It does not close 4748.
+
+powershell -NoProfile -ExecutionPolicy Bypass -File <this folder>\vc27_hwnd_diag.ps1 -GamePid 4748 -WrapperPid 9132 -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -IncludeBareWindow -OutputDir C:\Users\nasa2\hd2d_test\vc27_hwnd_bare_out
+
+E. The bare window answers WM_NULL and the game window does not. The hang is specific to the open game process.
+F. The bare window also fails WM_NULL. A Godot window on this desktop is not answering. That still does not identify a garden or renderer cause.
+
+Stop after E or F. Do not relaunch the full game. Do not change art, renderer, or scripts from this result. Bring back hwnd_diag.json only.
