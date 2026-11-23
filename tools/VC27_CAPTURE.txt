@@ -20,10 +20,16 @@ Rows with driver=input are the clicks. Rows with driver=fixture are scripted nee
 Rows with driver=observe are pictures of the live scene after a real transition.
 
 Minimum manual steps for the Windows operator:
-  1. Use the project tree that already matches the seven cf0263 files. Do not start Play-Main.ps1 for this run.
-  2. Create the empty output folder named above.
-  3. Run the command. Let the window run. Do not click in it and do not close it early.
-  4. Return the output folder. Exit 0 and CAPTURE_OK are the harness result, not a GPU gameplay pass, until those PNGs are looked at on the RTX machine.
+  1. Close the normal Play-Main window yourself first. This script does not close it and does not touch vc27_play_36bfd.
+  2. If override.cfg is still in the project, stop. Do not delete it by hand for this run, and the script will not delete a file it did not create.
+  3. Create the empty output folder named above.
+  4. Run the command. Let the window run. Do not click in it and do not close it early.
+  5. Return the output folder. Exit 0 is not a GPU gameplay pass. The Linux selftest is llvmpipe only.
+
+The HUD clock is TimeService wall time. A 10 hour Sim.advance changes growth and needs only. The trace records wall_clock and sim growth separately.
+driver=input is a real click. driver=fixture is a scripted need, facing step, or sim advance.
+Each stage writes trace_<stage>.jsonl and result_<stage>.json. trace.jsonl is appended, not replaced.
+A sky-only return with the pet or house off screen is a failure, not CAPTURE_OK.
 
 Godot is started with --rendering-method mobile and without --headless on Windows.
 The Linux selftest tools/run_capture_selftest.sh uses the machine DISPLAY and does not pass --headless, because headless produced no viewport image. On this machine Vulkan lacked a surface and Godot switched to OpenGL 3, so the selftest renderer is gl_compatibility. That is not the RTX picture. The Windows command still requests --rendering-method mobile and opens a real window.

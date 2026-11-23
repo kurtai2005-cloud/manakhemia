@@ -11,6 +11,7 @@ var _stage := ""
 var _main: Node
 var _deadline := 0
 var _trace: FileAccess
+var _combined: FileAccess
 var _shots: Array[String] = []
 var _reason := ""
 var _inputs_seen := 0
@@ -32,10 +33,17 @@ func _initialize() -> void:
 	if limit <= 0:
 		limit = 200000
 	_deadline = Time.get_ticks_msec() + limit
-	_trace = FileAccess.open(_out.path_join("trace.jsonl"), FileAccess.WRITE)
+	_trace = FileAccess.open(_out.path_join("trace_%s.jsonl" % _stage), FileAccess.WRITE)
 	if _trace == null:
 		_die(1, "cannot open trace")
 		return
+	var combined_path := _out.path_join("trace.jsonl")
+	if FileAccess.file_exists(combined_path):
+		_combined = FileAccess.open(combined_path, FileAccess.READ_WRITE)
+		if _combined:
+			_combined.seek_end()
+	else:
+		_combined = FileAccess.open(combined_path, FileAccess.WRITE)
 	_main = (load("res://scenes/Main.tscn") as PackedScene).instantiate()
 	root.add_child(_main)
 	process_frame.connect(_boot)
@@ -106,14 +114,26 @@ func _errand_resume() -> bool:
 	if not await _shot("06_berry_respawn", "observe"):
 		return false
 	var paid := int(_errand_state().get("paid_through", 0))
+	var before_second := _fruits()
 	if not await _click_berry("07_second_walk"):
 		return false
 	if not await _until_phase("carry", 800, "second pickup"):
 		return false
-	if int(_errand_state().get("paid_through", 0)) != paid:
+	if int(_errand_state().get("paid_through", 0)) != paid or _fruits() != before_second:
 		_reason = "second pickup paid early"
 		return false
 	if not await _shot("07_second_carry", "observe"):
+		return false
+	if not await _until_phase("idle", 800, "second drop"):
+		return false
+	if _fruits() != before_second + 1:
+		_reason = "second drop did not pay exactly one"
+		return false
+	if not await _shot("07_second_drop", "observe"):
+		return false
+	var berry2: Node3D = _errand().get("berry")
+	if berry2 == null or not berry2.visible:
+		_reason = "berry did not respawn after the second drop"
 		return false
 	return await _care_pair()
 
@@ -137,8 +157,13 @@ func _progress() -> bool:
 	if _fruits() != 2:
 		_reason = "second delivery count"
 		return false
+	if not await _shot("04_before_meal", "observe"):
+		return false
+	if _fruits() != 2:
+		_reason = "before-meal shot lost the fruit count"
+		return false
 	_fixture_need("hunger", 40.0)
-	if not await _click_home("04_meal_walk"):
+	if not await _click_world(_errand().get("home_pos") + Vector3(0, 6, 0), "04_meal_click", false):
 		return false
 	if not await _until_phase("idle", 800, "meal"):
 		return false
@@ -147,15 +172,21 @@ func _progress() -> bool:
 		return false
 	if not await _shot("04_meal", "observe"):
 		return false
+	if not await _shot("05_before_refusal", "observe"):
+		return false
 	var held := _fruits()
 	_fixture_need("hunger", 95.0)
-	if not await _click_home("05_refusal_click"):
+	if not await _click_world(_errand().get("home_pos") + Vector3(0, 6, 0), "05_refusal_click", false):
 		return false
+	await process_frame
 	await process_frame
 	if _fruits() != held:
 		_reason = "refusal spent a fruit"
 		return false
 	if not await _shot("05_refusal", "observe"):
+		return false
+	if _fruits() != held:
+		_reason = "refusal shot does not match the inventory"
 		return false
 	_fixture_need("hunger", 10.0)
 	_sim().get("state")["growth_sec"] = 0.0
@@ -179,53 +210,167 @@ func _progress() -> bool:
 		return false
 	if not await _shot("07_growth_resumed", "fixture"):
 		return false
+	var home_before: Vector3 = _errand().get("home_pos")
+	if not await _click_berry("08_outward_click"):
+		return false
+	if not await _until_away(home_before, 12.0, 800, "outward walk"):
+		return false
+	if bool(_main.get("in_interior")):
+		_reason = "entered during the outward walk"
+		return false
+	if not await _shot("08_rest_outward", "observe"):
+		return false
+	if not await _click_berry("08_outward_cancel"):
+		return false
+	await process_frame
+	await process_frame
+	if str(_errand_state().get("phase", "")) != "idle":
+		_reason = "outward walk did not cancel"
+		return false
 	_fixture_need("energy", 30.0)
-	if not await _click_home("08_rest_walk"):
+	Engine.time_scale = 0.02
+	_line({"shot": "08_rest_pace", "driver": "fixture", "note": "time_scale 0.02 only spaces the walk across frames. It does not advance the sim hour or the HUD clock."})
+	if not await _click_home("08_rest_click"):
+		return false
+	if not await _until_outside_rest(home_before, 800):
+		return false
+	if not await _shot("08_rest_approach", "observe"):
+		return false
+	Engine.time_scale = 1.0
+	if bool(_main.get("in_interior")):
+		_reason = "approach frame is already indoors"
 		return false
 	if not await _until_interior(true, 800, "rest"):
 		return false
 	if not bool(_sim().get("state").get("sleeping", false)):
 		_reason = "rest did not sleep"
 		return false
+	var saw_pet := false
+	for _inside in range(12):
+		if not bool(_main.get("in_interior")):
+			_reason = "left the house before the interior frame"
+			return false
+		var sleeper := _pet()
+		if sleeper != null and _on_screen(sleeper.global_position + Vector3(0, 10, 0)):
+			saw_pet = true
+			break
+		await process_frame
+	if not saw_pet:
+		var sleeper2 := _pet()
+		_reason = "interior frame misses the pet at %s" % _screen_of(sleeper2.global_position + Vector3(0, 10, 0) if sleeper2 else Vector3.ZERO)
+		return false
+	var held_sleeper := _pet()
+	held_sleeper.pause_t = 30.0
+	held_sleeper.call("clear_errand")
 	if not await _shot("08_rest_interior", "observe"):
 		return false
-	_sim().call("advance", _sim().get("state"), 10.0 * 3600.0, {})
-	_line({"shot": "09_wake_garden", "driver": "fixture", "note": "ten hour advance is not player time"})
-	if not await _until_interior(false, 60, "wake"):
+	if not _on_screen(held_sleeper.global_position + Vector3(0, 10, 0)):
+		_reason = "interior picture lost the pet"
 		return false
-	return await _shot("09_wake_garden", "observe")
+	var wall_before := _wall_ms()
+	var growth_before := float(_sim().get("state").get("growth_sec", 0.0))
+	_sim().call("advance", _sim().get("state"), 10.0 * 3600.0, {})
+	var wall_after := _wall_ms()
+	_line({
+		"shot": "09_sim_advance",
+		"driver": "fixture",
+		"note": "Sim.advance 10h changes growth and needs only. The HUD clock is TimeService wall time and is not set by this call.",
+		"wall_before_ms": wall_before,
+		"wall_after_ms": wall_after,
+		"growth_before": growth_before,
+	})
+	if not await _until_interior(false, 90, "wake"):
+		return false
+	for _settle in range(8):
+		await process_frame
+	if not _play_garden_visible():
+		return false
+	if not await _shot("09_wake_garden", "observe"):
+		return false
+	if not _play_garden_visible():
+		_reason = "wake frame lost the pet or the house"
+		return false
+	return true
 
 
 func _care_pair() -> bool:
-	var walker := _pet()
 	var pres := _main.get_node_or_null("Hd2dPresentation")
 	if pres == null or not pres.has_method("play_care"):
 		_reason = "presentation missing"
 		return false
-	walker.set("dir", "front")
-	_line({"shot": "08_care_front", "driver": "fixture", "note": "facing and care clip are not a player click"})
-	if not bool(pres.call("play_care", "nuzzle")):
-		_reason = "front care did not start"
+	if not await _hold_projection("front", "08_care_front"):
 		return false
-	await process_frame
-	if not await _shot("08_care_front", "fixture"):
+	if not await _hold_projection("back", "09_care_back"):
 		return false
-	if pres.has_method("cancel_care"):
-		pres.call("cancel_care")
-	walker.set("dir", "back")
-	_line({"shot": "09_care_back", "driver": "fixture", "note": "back facing must not flip the coat"})
-	if not bool(pres.call("play_care", "eat")):
-		_reason = "back care did not start"
+	return true
+
+
+func _hold_projection(want: String, shot: String) -> bool:
+	if not await _step_facing(want):
 		return false
-	await process_frame
-	var coat: Sprite3D = walker.get_node_or_null("Hd2dCoat")
-	if coat == null or not coat.visible or coat.flip_h:
-		_reason = "back care flipped or hid the coat"
+	var walker := _pet()
+	walker.pause_t = 60.0
+	var held := walker.global_position
+	_line({"shot": shot, "driver": "fixture", "note": "real step selected the %s projection. Not a player click." % want})
+	if not _projection_is(want):
 		return false
-	if not await _shot("09_care_back", "fixture"):
+	walker.global_position = held
+	if not await _shot(shot, "fixture"):
 		return false
-	if pres.has_method("cancel_care"):
-		pres.call("cancel_care")
+	walker.global_position = held
+	if not _projection_is(want):
+		return false
+	return true
+
+
+func _projection_is(want: String) -> bool:
+	var pres := _main.get_node("Hd2dPresentation")
+	var clip: Object = pres.get("clip")
+	var coat: Sprite3D = _pet().get_node_or_null("Hd2dCoat")
+	var facing := str(clip.get("facing")) if clip != null else ""
+	var path := str(clip.call("texture_path")) if clip != null and clip.has_method("texture_path") else ""
+	if facing != want or path.find(want) < 0 or coat == null or not coat.visible or coat.flip_h:
+		_reason = "projection is %s %s flip=%s, wanted %s" % [facing, path, str(coat.flip_h if coat else true), want]
+		return false
+	return true
+
+
+func _step_facing(want: String) -> bool:
+	var walker := _pet()
+	var cam: Camera3D = _main.get("cam")
+	var pres := _main.get_node_or_null("Hd2dPresentation")
+	if walker == null or cam == null or pres == null:
+		_reason = "facing setup missing"
+		return false
+	walker.call("clear_errand")
+	walker.pause_t = 60.0
+	var away := Vector3(-cam.global_transform.basis.z.x, 0.0, -cam.global_transform.basis.z.z)
+	var right := Vector3(cam.global_transform.basis.x.x, 0.0, cam.global_transform.basis.x.z)
+	var choices: Array[Vector3] = [away, -away, right, -right]
+	for raw in choices:
+		var step: Vector3 = raw
+		if step.length() < 0.001:
+			continue
+		step = step.normalized()
+		for _i in range(4):
+			walker.global_position += step * 1.5
+			await process_frame
+			var clip: Object = pres.get("clip")
+			if clip != null and str(clip.get("facing")) == want:
+				return true
+	_reason = "coat did not face " + want
+	return false
+
+
+func _facing_is(want: String, care: String) -> bool:
+	var pres := _main.get_node("Hd2dPresentation")
+	var clip: Object = pres.get("clip")
+	var coat: Sprite3D = _pet().get_node_or_null("Hd2dCoat")
+	var facing := str(clip.get("facing")) if clip != null else ""
+	var care_now := str(pres.call("care_id")) if pres.has_method("care_id") else ""
+	if facing != want or care_now != care or coat == null or not coat.visible or coat.flip_h:
+		_reason = "care frame is %s/%s flip=%s, wanted %s/%s" % [facing, care_now, str(coat.flip_h if coat else true), want, care]
+		return false
 	return true
 
 
@@ -241,7 +386,7 @@ func _click_home(shot: String) -> bool:
 	return await _click_world(point + Vector3(0, 6, 0), shot)
 
 
-func _click_world(point: Vector3, shot: String) -> bool:
+func _click_world(point: Vector3, shot: String, take_shot: bool = true) -> bool:
 	var cam: Camera3D = _main.get("cam")
 	if cam == null:
 		_reason = "camera missing"
@@ -267,7 +412,46 @@ func _click_world(point: Vector3, shot: String) -> bool:
 		return false
 	_inputs_seen += after - before
 	_line({"shot": shot, "driver": "input", "note": "viewport mouse button through Main raycast", "screen": [screen.x, screen.y]})
+	if not take_shot:
+		return true
 	return await _shot(shot, "input")
+
+
+func _until_away(home: Vector3, min_dist: float, frames: int, why: String) -> bool:
+	for _i in range(frames):
+		if Time.get_ticks_msec() > _deadline:
+			_reason = "timeout " + why
+			return false
+		await process_frame
+		if bool(_main.get("in_interior")):
+			_reason = "went inside during " + why
+			return false
+		var walker := _pet()
+		if walker == null:
+			_reason = "pet missing during " + why
+			return false
+		if Vector2(walker.global_position.x, walker.global_position.z).distance_to(Vector2(home.x, home.z)) >= min_dist:
+			return true
+	_reason = "timeout " + why
+	return false
+
+
+func _until_outside_rest(home: Vector3, frames: int) -> bool:
+	for _i in range(frames):
+		if Time.get_ticks_msec() > _deadline:
+			_reason = "timeout outside rest approach"
+			return false
+		await process_frame
+		if bool(_main.get("in_interior")):
+			_reason = "entered before the outside rest frame"
+			return false
+		var walker := _pet()
+		var phase := str(_errand_state().get("phase", ""))
+		var dist := Vector2(walker.global_position.x, walker.global_position.z).distance_to(Vector2(home.x, home.z))
+		if phase == "to_rest" and dist > 3.0:
+			return true
+	_reason = "timeout outside rest approach"
+	return false
 
 
 func _until_phase(phase: String, frames: int, why: String) -> bool:
@@ -379,6 +563,8 @@ func _line(extra: Dictionary) -> void:
 		"coat_flip_h": coat.flip_h if coat else false,
 		"dir": str(walker.get("dir")) if walker else "",
 		"face_sprites": faces,
+		"coat_facing": _coat_facing(),
+		"care_id": _care_now(),
 		"renderer": RenderingServer.get_current_rendering_method(),
 		"display": DisplayServer.get_name(),
 		"play_inputs": int(_main.get("play_inputs")),
@@ -387,8 +573,37 @@ func _line(extra: Dictionary) -> void:
 	}
 	if extra.has("screen"):
 		row["screen"] = extra["screen"]
-	_trace.store_line(JSON.stringify(row))
+	var ts: Node = root.get_node("TimeService")
+	var wall := int(ts.call("now_ms"))
+	var local: Dictionary = ts.call("local_dict", wall)
+	row["wall_unix_ms"] = wall
+	row["wall_clock"] = "%02d:%02d:%02d" % [int(local.get("hour", 0)), int(local.get("minute", 0)), int(local.get("second", 0))]
+	row["sim_age_sec"] = float(_sim().get("state").get("age_sec", 0.0))
+	if extra.has("wall_before_ms"):
+		row["wall_before_ms"] = extra["wall_before_ms"]
+		row["wall_after_ms"] = extra["wall_after_ms"]
+		row["growth_before"] = extra["growth_before"]
+	var text := JSON.stringify(row)
+	_trace.store_line(text)
 	_trace.flush()
+	if _combined:
+		_combined.store_line(text)
+		_combined.flush()
+
+
+func _coat_facing() -> String:
+	var pres := _main.get_node_or_null("Hd2dPresentation")
+	if pres == null:
+		return ""
+	var clip: Object = pres.get("clip")
+	return str(clip.get("facing")) if clip != null else ""
+
+
+func _care_now() -> String:
+	var pres := _main.get_node_or_null("Hd2dPresentation")
+	if pres == null or not pres.has_method("care_id"):
+		return ""
+	return str(pres.call("care_id"))
 
 
 func _mark_drawn() -> void:
@@ -436,6 +651,50 @@ func _validate_pngs() -> bool:
 		if not _png_file_ok(path):
 			_reason = "final png check failed " + name
 			return false
+	return true
+
+
+func _wall_ms() -> int:
+	return int(root.get_node("TimeService").call("now_ms"))
+
+
+func _screen_of(world: Vector3) -> String:
+	var cam: Camera3D = _main.get("cam")
+	if cam == null:
+		return "no-cam"
+	if cam.is_position_behind(world):
+		return "behind"
+	var screen := cam.unproject_position(world)
+	return "(%.0f,%.0f)" % [screen.x, screen.y]
+
+
+func _on_screen(world: Vector3) -> bool:
+	var cam: Camera3D = _main.get("cam")
+	if cam == null or cam.is_position_behind(world):
+		return false
+	var screen := cam.unproject_position(world)
+	var size := _main.get_viewport().get_visible_rect().size
+	return screen.x > 12.0 and screen.y > 12.0 and screen.x < size.x - 12.0 and screen.y < size.y - 12.0
+
+
+func _play_garden_visible() -> bool:
+	if bool(_main.get("in_interior")):
+		_reason = "garden frame is still indoors"
+		return false
+	var walker := _pet()
+	var coat: Sprite3D = walker.get_node_or_null("Hd2dCoat") if walker else null
+	if coat == null or not coat.visible:
+		_reason = "garden frame has no coat"
+		return false
+	var pet_screen := _screen_of(walker.global_position + Vector3(0, 20, 0))
+	if not _on_screen(walker.global_position + Vector3(0, 20, 0)):
+		_reason = "pet is outside the settled garden frame at %s pos=%s" % [pet_screen, walker.global_position]
+		return false
+	var door: Vector3 = _main.call("cottage_door_world")
+	var door_screen := _screen_of(door + Vector3(0, 20, 0))
+	if not _on_screen(door + Vector3(0, 20, 0)):
+		_reason = "house is outside the settled garden frame at %s" % door_screen
+		return false
 	return true
 
 
@@ -537,7 +796,7 @@ func _write_result(ok: bool, reason: String) -> void:
 		"play_inputs": _inputs_seen,
 		"headless_note": "A headless or software display is not a GPU or phone pass.",
 	}
-	var f := FileAccess.open(_out.path_join("result.json"), FileAccess.WRITE)
+	var f := FileAccess.open(_out.path_join("result_%s.json" % _stage), FileAccess.WRITE)
 	if f:
 		f.store_string(JSON.stringify(row, "\t"))
 		f.flush()

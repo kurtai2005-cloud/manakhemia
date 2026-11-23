@@ -37,7 +37,60 @@ if [[ -z "${DISPLAY:-}" ]]; then
 fi
 echo "selftest out=$OUT"
 echo "DISPLAY=$DISPLAY. Not an RTX or phone pass."
+set +e
 run_stage errand vc27_errand_capture errand_out "$OUT/errand"
+ec1=$?
 run_stage errand vc27_errand_capture errand_resume "$OUT/errand"
+ec2=$?
 run_stage progress vc27_progress_capture progress "$OUT/progress"
-echo "SELFTEST_DONE $OUT"
+ec3=$?
+set -e
+python3 - "$OUT" << 'PY'
+import json, pathlib, sys
+out = pathlib.Path(sys.argv[1])
+rows = []
+for path in sorted(out.rglob("trace_*.jsonl")):
+    for line in path.read_text().splitlines():
+        if line.strip():
+            rows.append(json.loads(line))
+exits = {}
+for path in sorted((out / "logs").glob("*.exit")):
+    exits[path.stem] = int(path.read_text().strip() or "1")
+frames = []
+for row in rows:
+    png = row.get("png") or ""
+    file_path = None
+    size = 0
+    if png:
+        hits = list(out.rglob(png))
+        if hits:
+            file_path = str(hits[0].relative_to(out))
+            size = hits[0].stat().st_size
+    frames.append({
+        "stage": row.get("stage"),
+        "shot": row.get("shot"),
+        "driver": row.get("driver"),
+        "png": png,
+        "png_path": file_path,
+        "png_bytes": size,
+        "phase": row.get("phase"),
+        "fruit_count": row.get("fruit_count"),
+        "paid_through": row.get("paid_through"),
+        "coat_facing": row.get("coat_facing"),
+        "care_id": row.get("care_id"),
+        "wall_clock": row.get("wall_clock"),
+        "wall_unix_ms": row.get("wall_unix_ms"),
+        "growth_sec": row.get("growth_sec"),
+        "in_interior": row.get("in_interior"),
+        "note": row.get("note"),
+    })
+manifest = {
+    "display_note": "Linux DISPLAY selftest. llvmpipe/OpenGL fallback is not a GPU or phone pass.",
+    "exits": exits,
+    "frames": frames,
+}
+(out / "manifest.json").write_text(json.dumps(manifest, indent=2))
+print("manifest frames", len(frames), "pngs", sum(1 for f in frames if f["png_bytes"] > 0))
+PY
+echo "SELFTEST_DONE $OUT exits=$ec1,$ec2,$ec3"
+exit $(( ec1 || ec2 || ec3 ))

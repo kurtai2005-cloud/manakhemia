@@ -2316,12 +2316,20 @@ func _cut_to_garden() -> void:
 		interior_room.visible = false
 	if hud and hud.has_method("set_in_interior"):
 		hud.set_in_interior(false)
-	# 鏡頭先放喺屋門前，fade in 先再 _place_cam 拉回總覽
+	cam_mode = CamMode.OVERVIEW
+	# The 675 play camera is locked to the opening view. Leaving the house had
+	# cleared that lock, and the next overview step framed the sky. Put the
+	# same opening view back when that host is the active picture.
+	if _hd2d_exterior != null and is_instance_valid(_hd2d_exterior):
+		if _hd2d_exterior.has_method("_apply_opening_to_root_cam"):
+			_hd2d_exterior.call("_apply_opening_to_root_cam")
+		if _hd2d_exterior.has_method("_lock_play_camera"):
+			_hd2d_exterior.call("_lock_play_camera")
+		return
 	var door := cottage_door_world()
 	if cam:
 		cam.global_position = door + Vector3(0, 28, 80)
 		cam.look_at(door)
-	cam_mode = CamMode.OVERVIEW
 
 
 

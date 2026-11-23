@@ -27,12 +27,14 @@ foreach ($rootName in @($env:APPDATA, $env:LOCALAPPDATA)) {
 $existing = @(Get-ChildItem -LiteralPath $outFull -Force)
 if ($existing.Count -ne 0) { throw "OutputDir must be empty" }
 $cfg = Join-Path $project 'override.cfg'
-if (Test-Path -LiteralPath $cfg) { throw "override.cfg already exists; capture will not replace it" }
+if (Test-Path -LiteralPath $cfg) { throw "override.cfg already exists. Close Play-Main normally first. This script will not delete that file." }
+$script:wroteOverride = $false
 
 function Set-CaptureProfile([string]$name) {
     $utf8 = New-Object System.Text.UTF8Encoding $false
     $text = "[application]`r`nconfig/use_custom_user_dir=true`r`nconfig/custom_user_dir_name=`"$name`"`r`n"
     [System.IO.File]::WriteAllText($cfg, $text, $utf8)
+    $script:wroteOverride = $true
 }
 
 function Invoke-Capture([string]$stage, [string]$dest) {
@@ -78,5 +80,5 @@ try {
     if ($_.Exception.Message -like 'timeout*') { exit 124 }
     exit 1
 } finally {
-    if (Test-Path -LiteralPath $cfg) { Remove-Item -LiteralPath $cfg -Force }
+    if ($script:wroteOverride -and (Test-Path -LiteralPath $cfg)) { Remove-Item -LiteralPath $cfg -Force }
 }
