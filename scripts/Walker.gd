@@ -187,7 +187,7 @@ func _step_errand(dt: float) -> void:
 	var pos := global_position
 	var to := Vector3(dest.x - pos.x, 0.0, dest.z - pos.z)
 	var dist := to.length()
-	if dist < 1.6:
+	if dist < 0.9:
 		moving = false
 		return
 	var dir := to / dist

@@ -722,8 +722,8 @@ func _try_tap(pos: Vector2) -> void:
 	var forage_hit := _ray_area(pos, 32)
 	if forage_hit:
 		var errand := get_node_or_null("GardenErrand")
-		if errand and errand.has_method("player_press"):
-			errand.call("player_press")
+		if errand and errand.has_method("press_target"):
+			errand.call("press_target", forage_hit)
 			return
 	var pet_hit := _ray_area(pos, 4)
 	if pet_hit:

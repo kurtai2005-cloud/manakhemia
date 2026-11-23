@@ -191,6 +191,22 @@ func fruit_count(id: String) -> int:
 	return int(ensure()["collection"].get("fruits", {}).get(id, 0))
 
 
+func spend_fruit(id: String, n: int = 1) -> bool:
+	if id == "" or n <= 0 or fruit_count(id) < n:
+		return false
+	var col: Dictionary = ensure()["collection"]
+	var fr: Dictionary = col.get("fruits", {})
+	var left := int(fr.get(id, 0)) - n
+	if left <= 0:
+		fr.erase(id)
+	else:
+		fr[id] = left
+	col["fruits"] = fr
+	if Sim:
+		Sim._dirty = true
+	return true
+
+
 func _mark_new(kind: String, id: String) -> void:
 	var col: Dictionary = ensure()["collection"]
 	var neu: Dictionary = col.get("new", {})

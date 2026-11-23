@@ -1,25 +1,25 @@
-First spatial loop on the current Main and the 675 garden. This is not the finished product.
+Spatial forage on the current Main and the 675 garden. Not the finished product.
+A headless run is not a phone or GPU picture.
+
+Rule, from the existing specs
+- data/hunting.json names the fruit. This loop uses the existing starberry picture and CollectionSystem fruit count. It does not add a currency.
+- Each walk home has a delivery number. That number pays one fruit once. The same number pays nothing a second time, including after a reload. The berry comes back for the next number.
+- data/sim.json care.feed_meal is 40 hunger and food_mood_bonus_warm is 3. One stored fruit calls Sim.feed("meal"). feed_refuse_at 90, an egg, or sleep spends nothing.
+- Personality daily_shift on eat_together moves the social axis by its existing delta, inside the existing daily cap. That is the bond.
+- data/sim.json sick_threshold is 15. Online growth_sec moves only while the pet is not unwell. The meal does not add growth time. It raises hunger so the existing clock can move.
+- The first meal from a gathered fruit makes the home marker solid. Rest is allowed below sleep_min_energy_to_sleep (90). Below 50, rest wins over another meal and also starts on its own. The pet walks to the home marker, enter_house, and Sim.set_sleeping. Energy uses sleep_regen_per_hour and wakes at sleep_wake_at, then exit_house.
+- Offline time stays on the existing cap and does not finish a delivery or add this fruit. A backwards clock is ignored.
+- Shop furniture in data/economy.json has prices. This loop does not buy it and does not grant a free shop item.
 
 What you can do
-- Click the berry in the garden. The pet walks to it across the lawn.
-- The berry leaves the ground and sits on the pet. The pet walks to the pale home marker.
-- The existing fruit collection gains one starberry. A second delivery does not pay again.
-- Click the berry again before it is picked up, or click the berry on the pet, to cancel. Click once more to retry.
-- A solid footprint stops the walk and pays nothing.
-- Feed, pat, and clean stay on the one coat. The feet wait during that clip, then walking continues.
-- Closing the game mid-carry keeps the task in the existing save. Opening it again does not pay until the pet reaches the marker.
-
-Controls are the existing window. Left click or a screen tap. The isolated profile is still vc27_play_36bfd, started by tools/Play-Main.ps1 with the mobile renderer. Do not use the default 微光小圃 save.
+- Click the berry. The pet walks, carries it, and walks to the home marker.
+- Click the berry again to cancel. Click again to retry the same delivery.
+- Click the home marker to walk there and eat one stored fruit. The coat plays eat, then the pet wanders.
+- After that meal, click the home marker while tired. The pet walks home, goes inside, sleeps, and comes back out awake.
+- Feed, pat, and clean on the pet still use the one coat.
 
 Not in this slice
-- A field of objects, indoor foraging, a shop, or a second creature.
-- The house door still uses the existing enter and exit.
-- Growth is still the existing clock. Offline time still uses the existing cap and does not complete this delivery.
-- Room art, lighting, and materials are unchanged.
-- A headless run is not a phone or GPU picture. Windows still needs one later look when a pack is ready.
-- The old "not responding" flag is not treated as a blocker. A click landing on the pet only showed that the window takes a click.
-
-Known stderr on the headless runs, exit 0, not hidden
-- Parameter "material" is null (existing garden materials).
-- Capture not registered: beehave.
-- Resources still in use at exit.
+- More than one kind of forage, a shop, a second creature, or combat.
+- A growth stage that jumps because of the meal itself.
+- Room art, lighting, or a new picture.
+- A phone or GPU result. Windows still has to look at the head.

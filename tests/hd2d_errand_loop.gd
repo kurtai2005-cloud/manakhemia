@@ -166,7 +166,7 @@ func _arrived(walker: Node3D, point: Vector3, steps: int, loud: bool = true) -> 
 		walker._process(0.05)
 		var errand: Node = _main.get_node("GardenErrand")
 		errand._process(0.05)
-		if Vector2(walker.global_position.x, walker.global_position.z).distance_to(Vector2(point.x, point.z)) < 1.7:
+		if Vector2(walker.global_position.x, walker.global_position.z).distance_to(Vector2(point.x, point.z)) < 1.2:
 			return true
 	if loud:
 		print("stop at ", walker.global_position, " want ", point, " phase ", _main.get_node("GardenErrand")._task().get("phase"))
