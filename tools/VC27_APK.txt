@@ -20,7 +20,8 @@ Done:
 - Ground taps do not start or cancel those trips. Pet tap still watches. House tap still visits. 派工 still exists and closes the feed row.
 - r2 touch fix stays: the synthesized mouse click does not cancel a trip.
 
-Evidence, Linux only, InputEventScreenTouch: tests/hd2d_android_touch.gd prints TOUCH_OK and TOUCH_RESTART_OK on a normal save (egg, fruit 1, glow_berry kept by a second process). The same route prints TOUCH_OK with the preview shortcut. Not an Android launch and not a Note10+.
+Evidence, Linux only. The r2 touch route still prints TOUCH_OK. It stops at an egg and does not prove eat, rest, or the kitchen.
+The idle preview is tests/hd2d_life_idle.gd. No forage, feed, rest, or dispatch calls. Observed: to_pick, carry, newborn with 微光莓, toss, to_eat, meals=1, to_rest, asleep, wake on the ordinary sleep clock, kitchen work, ready, shards 25 to 27. Two lines are the existing preview shortcut, not a test clock: the delivery fills the egg, and sleep starts one below wake. Wake itself was about 250s of Sim's own tick. A later process tapped 圖鑑 then 葉仔地氈. The next process read newborn, meals=1, glow, shards=12, rug=rug_leaf. An already-newborn full preview was not reset and did not gather again; it started the kitchen. Not an Android launch and not a Note10+. The r3 APK bytes are unchanged.
 
 Deferred: hunt field, a second pet, the kid as new scope, eating frames, redrawing the interior, the post door.
 
