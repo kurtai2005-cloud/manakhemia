@@ -1,0 +1,20 @@
+Windows folder is an extracted project, not a git checkout.
+Close Play-Main yourself first. If override.cfg is already there, stop. Do not delete it.
+Do not run this against the player profile vc27_play_36bfd.
+Stage Layers already passed. This runner does not replace that and does not ask for another Layers run.
+The 15 picture files plus 4 motion frames already captured are commit 60d336c72d46523afe5893d5f49ff3e78bacb1b8, before the automatic wake return was put back. Do not rerender them.
+
+From the folder that contains project.godot:
+
+powershell -NoProfile -File .\tools\Play-Usable.ps1 -Mode Picture -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -OutputDir C:\Users\nasa2\hd2d_test\vc27_play_usable_out
+
+Picture mode opens a window, uses --rendering-method mobile, and does not pass --headless.
+It writes png, trace.jsonl, result.json, and logs\exit_code.txt.
+Hunger, energy, and play_care("eat") in that script are fixture or a direct call. A passing picture run is not a full manual pass.
+
+Optional narrow wake check. Synthetic. Same isolation rules, profile vc27_rest_wake, headless, no player profile:
+
+powershell -NoProfile -File .\tools\Play-Usable.ps1 -Mode Wake -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -OutputDir C:\Users\nasa2\hd2d_test\vc27_rest_wake_out
+
+The Linux tools/run_play_usable.sh is the same picture behavior for this machine. It is not the Windows runner.
+Root Play-Main.ps1, scripts/hd2d_exterior_host.gd, and art stay as they are.
