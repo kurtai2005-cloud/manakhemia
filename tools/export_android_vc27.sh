@@ -7,11 +7,11 @@ GODOT="${GODOT:-/tmp/godot-bin/Godot_v4.7.2-stable_linux.x86_64}"
 export JAVA_HOME="${JAVA_HOME:-$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")}"
 export ANDROID_HOME="${ANDROID_HOME:-/tmp/android-sdk}"
 export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"
-FINAL="${FINAL:-/opt/cursor/artifacts/vc27-draft-11fb9c14-r9.apk}"
-OUT="${OUT:-/tmp/vc27-apk/vc27-draft-11fb9c14-r9.apk}"
+FINAL="${FINAL:-/opt/cursor/artifacts/vc27-draft-11fb9c14-r10.apk}"
+OUT="${OUT:-/tmp/vc27-apk/vc27-draft-11fb9c14-r10.apk}"
 PKG="hk.vizard.glimmer.fpet.vc27draft"
-VER_CODE=19
-VER_NAME="vc27-11fb9c14-r9"
+VER_CODE=20
+VER_NAME="vc27-11fb9c14-r10"
 KS="${VC27_DEBUG_KEYSTORE:-/tmp/vc27-apk/vc27-debug.keystore}"
 mkdir -p "$(dirname "$OUT")" "$(dirname "$KS")" /tmp/vc27-apk
 
@@ -118,6 +118,9 @@ for path in files:
     path.write_bytes(data)
     print("patched", path, "count", count + 1)
 PY
+# The index is written before this patch. Refresh every recorded size and md5
+# from the asset files Gradle will pack, before zipalign and signing.
+python3 "$ROOT/tools/check_vc27_sparsepck.py" sync "$ROOT/android/build/src/main/assets"
 
 cp -f "$ROOT/tools/android_vc27/Vc27PreviewApp.java" "$ROOT/android/build/src/main/java/com/godot/game/Vc27PreviewApp.java"
 cp -f "$ROOT/tools/android_vc27/Vc27PreviewLaunch.java" "$ROOT/android/build/src/main/java/com/godot/game/Vc27PreviewLaunch.java"
@@ -159,5 +162,6 @@ fi
 cp -f "$APK" "$OUT"
 mkdir -p "$(dirname "$FINAL")"
 cp -f "$OUT" "$FINAL"
+python3 "$ROOT/tools/check_vc27_sparsepck.py" verify "$FINAL"
 ls -lh "$OUT" "$FINAL"
 echo "VC27_EXPORT_OK exit=$EX apk=$FINAL"
