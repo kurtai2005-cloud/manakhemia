@@ -1,5 +1,9 @@
-Draft first. Polish after the whole loop exists.
+WAIT_AFTER_DRAFT_DELIVERY
+Draft first. Polish after Kurt has tried this build.
 Kurt, 2026-11-23 18:07, 遊美: 唔好再修住,整好哂draft先修.
+Kurt, 2026-11-23 18:15, 遊美: 要轉方式,你整完比我試,我睇完就去下步.
+When this draft package is handed over, stop. Do not start another stage, another review loop, or more animation work until Kurt has played it and says the next step.
+No merge, no publish, no deploy onto the Windows PC, no APK.
 The feeding-face pass is cancelled. Do not resume the bite, chew, capture, or hash loop.
 3988cad9 stays a partial feeding clip. It is not a gate and it is not a fix.
 The eight old root-suite failures were not rerun. Do not call them fixed.
@@ -20,6 +24,17 @@ Loop the existing pieces already implement
 - The save is still save_v1.json. Old fields stay. A second process that opens the same isolated profile sees the stage, the fruit count, the meal count, and the unlock.
 
 Normal stage lengths stay in evolution.json. A smoke test may call Sim.advance or Sim.tick and must print FIXTURE. That is not a shorter game.
+
+What to try
+1. Start a new save. The pet is an egg. Click the berry. It walks, carries the berry home, and one fruit is stored. The meal button does nothing yet and does not spend that fruit.
+2. Leave the game open. After 600 seconds of the existing clock the egg hatches to newborn. The collection records radiant_newborn.
+3. Press the meal button. It tosses the stored fruit. One fruit is spent. Hunger goes up. A full pet spends nothing.
+4. Rest appears after that meal, once energy is below the existing sleep line. That takes hours on the normal clock. The pet walks to the door, sleeps, and comes back out when energy is full. 返回 can leave earlier.
+5. Quit and open the same save. Stage, fruit count, meal count, and the unlock are still there.
+
+The Linux smoke tests/hd2d_draft_loop.gd is two processes on vc27_draft_loop. It prints FIXTURE where it advances the clock. It is evidence, not the way to play. Do not point it at vc27_play_36bfd.
+
+WAIT_AFTER_DRAFT_DELIVERY: after this package is handed over, stop. Kurt tries it, then says the next step.
 
 Not in this draft
 - A second creature, a shop purchase, paid or cloud AI, combat, or a new project.

@@ -95,9 +95,9 @@ func _ready() -> void:
 	_on_quality(QualitySettings.tier)
 	follow_device_clock()
 	Sim.poops_changed.connect(func(_n): _sync_poops())
-	# M1a 可玩照顧：新檔如果仲喺蛋就入萌芽（產蛋規則測試仍用 Sim.new_state）。
-	if str(Sim.state.get("stage", "egg")) == "egg" and Sim.has_method("force_stage"):
-		Sim.force_stage("sprout")
+	# A new save stays an egg. data/evolution.json duration_sec is what hatches it.
+	if Sim.has_signal("stage_changed") and not Sim.stage_changed.is_connected(_remember_stage):
+		Sim.stage_changed.connect(_remember_stage)
 	# 第一次進，如果未有便便，放一粒方便驗「可撳執」
 	if int(Sim.state.get("poops", 0)) == 0:
 		Sim.add_poop()
@@ -1381,6 +1381,18 @@ func qa_force_needs(hunger: float = 100.0, mood: float = 100.0, clean: float = 1
 
 func qa_family(kind: String) -> bool:
 	return family != null and family.force(kind)
+
+
+func _remember_stage(st: String) -> void:
+	# Same id Main already writes for the book. No new catalog.
+	if CollectionSystem == null or Sim == null:
+		return
+	var form := str(Sim.state.get("form", ""))
+	if form == "":
+		form = "radiant"
+	CollectionSystem.unlock_form("%s_%s" % [form, st])
+	Sim._dirty = true
+	Sim._save_now(true)
 
 
 func _setup_m1b() -> void:
