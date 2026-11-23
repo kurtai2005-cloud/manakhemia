@@ -59,13 +59,15 @@ for path in sorted((out / "logs").glob("*.exit")):
 frames = []
 for row in rows:
     png = row.get("png") or ""
+    stage = str(row.get("stage") or "")
+    folder = {"errand_out": "errand", "errand_resume": "errand", "progress": "progress", "layers": "layers"}.get(stage, stage)
     file_path = None
     size = 0
     if png:
-        hits = list(out.rglob(png))
-        if hits:
-            file_path = str(hits[0].relative_to(out))
-            size = hits[0].stat().st_size
+        candidate = out / folder / png
+        if candidate.is_file():
+            file_path = str(candidate.relative_to(out))
+            size = candidate.stat().st_size
     frames.append({
         "stage": row.get("stage"),
         "shot": row.get("shot"),

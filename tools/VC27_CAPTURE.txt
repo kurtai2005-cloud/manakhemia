@@ -30,6 +30,7 @@ The HUD clock is TimeService wall time. A 10 hour Sim.advance changes growth and
 driver=input is a real click. driver=fixture is a scripted need, facing step, or sim advance.
 Each stage writes trace_<stage>.jsonl and result_<stage>.json. trace.jsonl is appended, not replaced.
 A sky-only return with the pet or house off screen is a failure, not CAPTURE_OK.
+Leaving the house must not show the old H1 cottage, Kid, or Visitor. Those stay hidden behind the 675 picture. tests/hd2d_exit_layers.gd counts them on a baseline, an enter, an exit, and a second enter and exit.
 
 Godot is started with --rendering-method mobile and without --headless on Windows.
 The Linux selftest tools/run_capture_selftest.sh uses the machine DISPLAY and does not pass --headless, because headless produced no viewport image. On this machine Vulkan lacked a surface and Godot switched to OpenGL 3, so the selftest renderer is gl_compatibility. That is not the RTX picture. The Windows command still requests --rendering-method mobile and opens a real window.

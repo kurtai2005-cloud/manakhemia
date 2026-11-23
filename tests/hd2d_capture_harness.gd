@@ -66,6 +66,8 @@ func _run() -> void:
 			ok = await _errand_resume()
 		"progress":
 			ok = await _progress()
+		"layers":
+			ok = await _layers()
 		_:
 			_die(2, "unknown stage")
 			return
@@ -78,6 +80,79 @@ func _run() -> void:
 	_write_result(true, "")
 	print("CAPTURE_OK stage=", _stage, " pngs=", _shots.size(), " renderer=", RenderingServer.get_current_rendering_method(), " display=", DisplayServer.get_name())
 	quit(0)
+
+
+func _layers() -> bool:
+	if not _legacy_clear("baseline"):
+		return false
+	if not await _shot("01_baseline_garden", "observe"):
+		return false
+	if not _play_garden_visible():
+		return false
+	for cycle in [1, 2]:
+		_main.call("enter_house", true)
+		await process_frame
+		if not bool(_main.get("in_interior")):
+			_reason = "enter %d failed" % cycle
+			return false
+		if not _legacy_clear("inside_%d" % cycle):
+			return false
+		var sleeper := _pet()
+		if sleeper == null or not _on_screen(sleeper.global_position + Vector3(0, 10, 0)):
+			_reason = "inside %d misses the pet" % cycle
+			return false
+		if not await _shot("0%d_inside" % (cycle + 1), "observe"):
+			return false
+		_main.call("exit_house", true)
+		for _i in range(6):
+			await process_frame
+		if bool(_main.get("in_interior")):
+			_reason = "exit %d failed" % cycle
+			return false
+		if not _legacy_clear("exit_%d" % cycle):
+			return false
+		if not _play_garden_visible():
+			return false
+		if not await _shot("0%d_wake" % (cycle + 3), "observe"):
+			return false
+		if not _legacy_clear("wake_%d" % cycle):
+			return false
+	return true
+
+
+func _legacy_clear(tag: String) -> bool:
+	var pet: Node3D = _main.get("pet")
+	var kid: Node = _main.get("kid")
+	var visitor: Node = _main.get("visitor")
+	var coat: Sprite3D = pet.get_node_or_null("Hd2dCoat") if pet else null
+	var sprite: Sprite3D = pet.get("sprite") if pet else null
+	var legacy := 0
+	for node in _main.find_children("cottage", "", true, false):
+		if bool(node.get("visible")) and not _under_named(node, "Hd2dExterior"):
+			legacy += 1
+	var extras := 0
+	if kid and kid.visible:
+		extras += 1
+	if visitor and visitor.visible:
+		extras += 1
+	_line({
+		"shot": "census_" + tag,
+		"driver": "observe",
+		"note": "legacy cottage %d extra actors %d coat %s root_sprite %s" % [legacy, extras, str(coat != null and coat.visible), str(sprite != null and sprite.visible)],
+	})
+	if coat == null or not coat.visible or (sprite != null and sprite.visible) or legacy != 0 or extras != 0:
+		_reason = "layers %s legacy=%d extras=%d" % [tag, legacy, extras]
+		return false
+	return true
+
+
+func _under_named(node: Node, wanted: String) -> bool:
+	var cur := node
+	while cur:
+		if str(cur.name) == wanted:
+			return true
+		cur = cur.get_parent()
+	return false
 
 
 func _errand_out() -> bool:
@@ -711,7 +786,7 @@ func _profile_ok(udir: String) -> bool:
 		print("FAIL profile is the player save")
 		return false
 	var want := ERRAND_PROFILE if _stage_family() == "errand" else PROGRESS_PROFILE
-	if _stage != "errand_out" and _stage != "errand_resume" and _stage != "progress":
+	if _stage != "errand_out" and _stage != "errand_resume" and _stage != "progress" and _stage != "layers":
 		print("FAIL stage")
 		return false
 	if not norm.ends_with("/" + want) and not norm.ends_with("\\" + want):
@@ -722,7 +797,7 @@ func _profile_ok(udir: String) -> bool:
 
 func _stage_family() -> String:
 	_stage = OS.get_environment("CAPTURE_STAGE")
-	if _stage.begins_with("errand"):
+	if _stage.begins_with("errand") or _stage == "layers":
 		return "errand"
 	return "progress"
 
@@ -746,7 +821,7 @@ func _out_ok() -> bool:
 	if not DirAccess.dir_exists_absolute(_out):
 		_reason = "output folder does not exist"
 		return false
-	if _stage == "errand_out" or _stage == "progress":
+	if _stage == "errand_out" or _stage == "progress" or _stage == "layers":
 		var dir := DirAccess.open(_out)
 		if dir == null:
 			_reason = "output folder cannot be read"

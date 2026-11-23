@@ -2312,6 +2312,10 @@ func _cut_to_garden() -> void:
 	_interior_guest = null
 	in_interior = false
 	set_garden_hidden_for_interior(false)
+	# That unhide is the H1 garden. The 675 host had already hidden those
+	# actors. Putting them back draws the old cottage plus Kid and Visitor
+	# on top of the approved garden.
+	_rehide_exterior_legacy()
 	if interior_room:
 		interior_room.visible = false
 	if hud and hud.has_method("set_in_interior"):
@@ -2331,6 +2335,24 @@ func _cut_to_garden() -> void:
 		cam.global_position = door + Vector3(0, 28, 80)
 		cam.look_at(door)
 
+
+
+func _rehide_exterior_legacy() -> void:
+	if _hd2d_exterior == null or not is_instance_valid(_hd2d_exterior):
+		return
+	var hidden: Variant = _hd2d_exterior.get("_hidden")
+	if hidden is Array:
+		for item in hidden:
+			if item is Dictionary:
+				var node: Node = item.get("node")
+				if node and is_instance_valid(node):
+					node.set("visible", false)
+	if kid and is_instance_valid(kid):
+		kid.visible = false
+	if visitor and is_instance_valid(visitor):
+		visitor.visible = false
+	if pet and pet.sprite:
+		pet.sprite.visible = false
 
 
 func _emit_audio_hook(key: String) -> void:
