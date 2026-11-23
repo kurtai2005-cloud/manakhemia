@@ -53,6 +53,14 @@ func _both() -> void:
 	if post_btn == null or hunt_btn == null:
 		_die("replay buttons missing on preview")
 		return
+	var sim: Node = root.get_node("Sim")
+	if bool(sim.state.get("preview_fixture", false)):
+		_die("upgrade save still had preview_fixture")
+		return
+	print("R6_UPGRADE_VISIBLE stage=", sim.state.get("stage"), " meals=", sim.state.get("errand", {}).get("meals"), " paid=", sim.state.get("errand", {}).get("paid_through"), " fixture=", sim.state.get("preview_fixture", false))
+	_probe_preview()
+	if not _layout(post_btn, hunt_btn):
+		return
 	var before := _snap()
 	print("R5_BOOT ", _fmt(before))
 	if not await _tap_and_play(post_btn, "post"):
@@ -181,6 +189,8 @@ func _mid() -> void:
 func _read(phase: String) -> void:
 	for _i in range(20):
 		await process_frame
+	if phase == "reread":
+		_probe_preview()
 	var sim: Node = root.get_node("Sim")
 	var st: Dictionary = sim.state
 	var shards := int(st.get("wallet", {}).get("stardust", -1))
@@ -216,8 +226,45 @@ func _normal() -> void:
 	if bool(root.get_node("Sim").state.get("preview_fixture", false)):
 		_die("normal save became preview")
 		return
-	print("R5_NORMAL_OK")
+	print("R6_NORMAL_OK")
 	quit(0)
+
+
+func _probe_preview() -> void:
+	var save: Node = root.get_node("SaveSystem")
+	var live := str(save.call("read_proc_cmdline"))
+	var preview_name := "hk.vizard.glimmer.fpet.vc27draft:vc27preview"
+	var normal_name := "hk.vizard.glimmer.fpet.vc27draft"
+	print("R6_PROC live=", live.replace("\n", " "))
+	print("R6_PROC preview=", save.call("text_is_preview_process", preview_name), " normal=", save.call("text_is_preview_process", normal_name))
+
+
+func _layout(post_btn: BaseButton, hunt_btn: BaseButton) -> bool:
+	var book := _button("圖鑑")
+	var vp: Vector2 = _main.get_viewport().get_visible_rect().size
+	for b in [post_btn, hunt_btn]:
+		var r: Rect2 = b.get_global_rect()
+		var font: Font = b.get_theme_font("font")
+		var missing := ""
+		if font:
+			for ch in b.text:
+				if not font.has_char(ch.unicode_at(0)):
+					missing += ch
+		var scale := minf(1080.0 / 390.0, 2280.0 / 844.0)
+		var x0: float = (1080.0 - 390.0 * scale) * 0.5 + r.position.x * scale
+		var y0: float = r.position.y * scale
+		var x1: float = x0 + r.size.x * scale
+		var y1: float = y0 + r.size.y * scale
+		var on_screen: bool = r.position.x >= 0.0 and r.position.y >= 72.0 and r.position.x + r.size.x <= vp.x and r.position.y + r.size.y <= vp.y and r.size.x > 40.0 and r.size.y > 40.0
+		var phone: bool = x0 >= 48.0 and y0 >= 160.0 and x1 <= 1080.0 - 48.0 and y1 <= 2280.0 - 48.0
+		var book_hit := false
+		if book:
+			book_hit = r.intersects(book.get_global_rect())
+		print("R6_LAYOUT ", b.text, " rect=", r, " missing=", missing, " viewport_ok=", on_screen, " note10_ok=", phone, " overlaps_book=", book_hit)
+		if missing != "" or not on_screen or not phone or book_hit:
+			_die("layout " + b.text)
+			return false
+	return true
 
 
 func _snap() -> Dictionary:

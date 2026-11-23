@@ -1400,6 +1400,9 @@ func _maybe_preview_seed() -> void:
 	# Only a brand-new save opened by Play-Draft -Preview. Never touches another profile.
 	if OS.get_environment("VC27_DRAFT_PREVIEW") != "1":
 		return
+	# Do not stamp the shortcut onto the shared normal save.
+	if SaveSystem and str(SaveSystem._save_path()).find("vc27_draft_preview") < 0:
+		return
 	if Sim == null or bool(Sim.state.get("preview_applied", false)):
 		return
 	if str(Sim.state.get("stage", "")) != "egg":
@@ -1719,8 +1722,12 @@ func _release_hunt_travel() -> void:
 			w.clear_errand()
 
 
+func _launch_is_preview() -> bool:
+	return SaveSystem != null and SaveSystem.has_method("is_preview") and SaveSystem.is_preview()
+
+
 func replay_block_reason() -> String:
-	if Sim == null or not bool(Sim.state.get("preview_fixture", false)):
+	if not _launch_is_preview():
 		return "正常檔"
 	if replay_kind != "":
 		return "重看中"

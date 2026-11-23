@@ -12,16 +12,48 @@ func _ready() -> void:
 	_activate_preview_flag()
 
 
+func is_preview() -> bool:
+	_activate_preview_flag()
+	return OS.get_environment("VC27_DRAFT_PREVIEW") == "1"
+
+
 func _activate_preview_flag() -> void:
 	if OS.get_environment("VC27_DRAFT_PREVIEW") == "1":
 		return
+	if _args_request_preview() or _process_is_preview():
+		OS.set_environment("VC27_DRAFT_PREVIEW", "1")
+
+
+func _args_request_preview() -> bool:
 	var seen: Array = []
 	seen.append_array(OS.get_cmdline_user_args())
 	seen.append_array(OS.get_cmdline_args())
 	for a in seen:
 		if str(a) == "--vc27-preview":
-			OS.set_environment("VC27_DRAFT_PREVIEW", "1")
-			return
+			return true
+	return false
+
+
+func _process_is_preview() -> bool:
+	# The preview icon is the activity in process :vc27preview. Android may drop
+	# the intent extra, but the process name is still on /proc/self/cmdline.
+	return text_is_preview_process(read_proc_cmdline())
+
+
+func text_is_preview_process(text: String) -> bool:
+	return text.find(":vc27preview") >= 0 and text.find("hk.vizard.glimmer.fpet.vc27draft") >= 0
+
+
+func read_proc_cmdline() -> String:
+	if not FileAccess.file_exists("/proc/self/cmdline"):
+		return ""
+	var f := FileAccess.open("/proc/self/cmdline", FileAccess.READ)
+	if f == null:
+		return ""
+	# /proc files report length 0, so read a fixed window.
+	var raw := f.get_buffer(4096)
+	f.close()
+	return raw.get_string_from_utf8().replace("\u0000", " ")
 
 
 func _save_path() -> String:
@@ -29,7 +61,11 @@ func _save_path() -> String:
 	# so the preview icon keeps its save beside the normal one.
 	_activate_preview_flag()
 	if OS.get_environment("VC27_DRAFT_PREVIEW") == "1" and OS.get_user_data_dir().find("vc27_draft_preview") < 0:
-		return "user://vc27_draft_preview/save_v1.json"
+		var nested := "user://vc27_draft_preview/save_v1.json"
+		# An older phone build that never saw the preview flag kept progress in the shared file.
+		# Do not hide that file behind an empty nested save.
+		if FileAccess.file_exists(nested) or not FileAccess.file_exists(SAVE_PATH):
+			return nested
 	return SAVE_PATH
 
 

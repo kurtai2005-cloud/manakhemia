@@ -20,6 +20,7 @@ LAUNCH = """
             android:exported="true"
             android:label="微光試稿·試玩"
             android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,6 +28,25 @@ LAUNCH = """
             </intent-filter>
         </activity>
 """
+
+def _ensure_portrait(text: str, activity_name: str) -> str:
+    idx = text.find(activity_name)
+    if idx < 0:
+        block = (
+            "\n        <activity\n"
+            f'            android:name="{activity_name}"\n'
+            '            android:screenOrientation="portrait" />\n'
+        )
+        return text.replace("</application>", block + "    </application>", 1)
+    start = text.rfind("<activity", 0, idx)
+    end = text.find(">", idx)
+    if start < 0 or end < 0:
+        return text
+    tag = text[start:end]
+    if "screenOrientation" in tag:
+        return text
+    return text[:end] + '\n            android:screenOrientation="portrait"' + text[end:]
+
 
 def _label_launcher(text: str) -> str:
     if 'android:name=".GodotAppLauncher"' not in text:
@@ -50,6 +70,8 @@ def main() -> None:
         original = text
         text = text.replace('android:screenOrientation="landscape"', 'android:screenOrientation="portrait"')
         text = _label_launcher(text)
+        text = _ensure_portrait(text, ".Vc27PreviewLaunch")
+        text = _ensure_portrait(text, "org.godotengine.godot.utils.ProcessPhoenix")
         if "Vc27PreviewLaunch" not in text and "</application>" in text and ".GodotApp" in text:
             text = text.replace("</application>", LAUNCH + "    </application>", 1)
         if text != original:

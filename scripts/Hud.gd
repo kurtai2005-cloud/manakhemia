@@ -36,6 +36,7 @@ var btn_goal_rest: Button
 var btn_replay_post: Button
 var btn_replay_hunt: Button
 var replay_reason: Label
+var preview_lbl: Label
 
 
 func _ready() -> void:
@@ -76,11 +77,10 @@ func _ready() -> void:
 	food_lbl.position = Vector2(176, 36)
 	food_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(food_lbl)
-	if Sim and bool(Sim.state.get("preview_fixture", false)):
-		var preview := _lbl("試玩·各一次", 14)
-		preview.position = Vector2(176, 58)
-		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		root.add_child(preview)
+	if _show_replay_buttons():
+		preview_lbl = _lbl("試玩·各一次", 14)
+		preview_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(preview_lbl)
 		_build_replay_buttons(root)
 
 	# 左上收藏（屋 ×2 之後右上會同煙囪重疊）
@@ -782,41 +782,134 @@ func _refresh() -> void:
 	_sync_side_buttons()
 
 
+func _show_replay_buttons() -> bool:
+	# Preview launch, not the saved egg shortcut. An upgraded save may lack preview_fixture.
+	return SaveSystem != null and SaveSystem.has_method("is_preview") and SaveSystem.is_preview()
+
+
+func _replay_font() -> Font:
+	# The game subset has no 看 / 狩 / 獵, so these labels use a font that contains them.
+	return load("res://art/fonts/vc27_label_fallback.otf") as FontFile
+
+
 func _build_replay_buttons(root_node: Control) -> void:
-	# Preview only. These are not created on a normal save.
-	btn_replay_post = _btn("重看郵局")
-	btn_replay_post.anchor_left = 1
-	btn_replay_post.anchor_right = 1
-	btn_replay_post.anchor_top = 0
-	btn_replay_post.anchor_bottom = 0
-	btn_replay_post.offset_left = -176
-	btn_replay_post.offset_right = -8
-	btn_replay_post.offset_top = 88
-	btn_replay_post.offset_bottom = 136
+	# Left column, under 圖鑑, inside the portrait safe area. Not the top-right corner.
+	var face := _replay_font()
+	var panel := StyleBoxFlat.new()
+	panel.bg_color = Color(1.0, 0.96, 0.88, 0.96)
+	panel.border_color = Color(0.25, 0.16, 0.08, 1)
+	panel.set_border_width_all(2)
+	panel.set_corner_radius_all(8)
+	panel.content_margin_left = 8
+	panel.content_margin_right = 8
+	btn_replay_post = _replay_btn("重看郵局", face, panel)
 	btn_replay_post.pressed.connect(func(): _press_replay("post"))
 	root_node.add_child(btn_replay_post)
-	btn_replay_hunt = _btn("重看狩獵")
-	btn_replay_hunt.anchor_left = 1
-	btn_replay_hunt.anchor_right = 1
-	btn_replay_hunt.anchor_top = 0
-	btn_replay_hunt.anchor_bottom = 0
-	btn_replay_hunt.offset_left = -176
-	btn_replay_hunt.offset_right = -8
-	btn_replay_hunt.offset_top = 144
-	btn_replay_hunt.offset_bottom = 192
+	btn_replay_hunt = _replay_btn("重看狩獵", face, panel)
 	btn_replay_hunt.pressed.connect(func(): _press_replay("hunt"))
 	root_node.add_child(btn_replay_hunt)
-	replay_reason = _lbl("", 14)
-	replay_reason.anchor_left = 1
-	replay_reason.anchor_right = 1
-	replay_reason.anchor_top = 0
-	replay_reason.anchor_bottom = 0
-	replay_reason.offset_left = -176
-	replay_reason.offset_right = -8
-	replay_reason.offset_top = 196
-	replay_reason.offset_bottom = 224
-	replay_reason.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	replay_reason = _lbl("", 16)
+	replay_reason.add_theme_font_override("font", face)
 	root_node.add_child(replay_reason)
+	btn_replay_post.z_index = 20
+	btn_replay_hunt.z_index = 20
+	_apply_replay_safe()
+
+
+func _safe_viewport_rect() -> Rect2:
+	var vp: Vector2 = get_viewport().get_visible_rect().size
+	var win: Vector2i = DisplayServer.window_get_size()
+	var safe: Rect2i = DisplayServer.get_display_safe_area()
+	var fit := 1.0
+	var ox := 0.0
+	var oy := 0.0
+	if win.x > 0 and win.y > 0 and vp.x > 1.0 and vp.y > 1.0:
+		fit = minf(float(win.x) / vp.x, float(win.y) / vp.y)
+		if fit <= 0.0:
+			fit = 1.0
+		ox = (float(win.x) - vp.x * fit) * 0.5
+		oy = (float(win.y) - vp.y * fit) * 0.5
+	var left := maxf(0.0, (float(safe.position.x) - ox) / fit)
+	var top := maxf(0.0, (float(safe.position.y) - oy) / fit)
+	var right := minf(vp.x, (float(safe.position.x + safe.size.x) - ox) / fit)
+	var bottom := minf(vp.y, (float(safe.position.y + safe.size.y) - oy) / fit)
+	left += 16.0
+	top += 8.0
+	right -= 16.0
+	bottom -= 8.0
+	return Rect2(Vector2(left, top), Vector2(maxf(0.0, right - left), maxf(0.0, bottom - top)))
+
+
+func _min_tap_px() -> float:
+	var dpi := float(DisplayServer.screen_get_dpi())
+	if dpi < 10.0:
+		dpi = 160.0
+	var win: Vector2i = DisplayServer.window_get_size()
+	var vp: Vector2 = get_viewport().get_visible_rect().size
+	var fit := 1.0
+	if win.x > 0 and win.y > 0 and vp.x > 1.0 and vp.y > 1.0:
+		fit = minf(float(win.x) / vp.x, float(win.y) / vp.y)
+	if fit <= 0.0:
+		fit = 1.0
+	# 48dp on the phone, and at least 64 design px so Note10+ 19:9 stays above that.
+	return maxf(64.0, (48.0 * dpi / 160.0) / fit)
+
+
+func _place_box(node: Control, x: float, y: float, w: float, h: float) -> void:
+	node.anchor_left = 0
+	node.anchor_right = 0
+	node.anchor_top = 0
+	node.anchor_bottom = 0
+	node.offset_left = x
+	node.offset_top = y
+	node.offset_right = x + w
+	node.offset_bottom = y + h
+
+
+func _apply_replay_safe() -> void:
+	if btn_replay_post == null or btn_replay_hunt == null:
+		return
+	var area := _safe_viewport_rect()
+	var tap := _min_tap_px()
+	# 圖鑑 occupies y 64–108. Stay under it even if its rect is not ready yet.
+	var book_end := 108.0
+	if btn_book:
+		var br: Rect2 = btn_book.get_global_rect()
+		if br.size.y > 1.0:
+			book_end = br.end.y
+	var y := maxf(area.position.y, book_end + 12.0)
+	var x := area.position.x
+	var w := minf(220.0, area.size.x)
+	if w < tap:
+		w = area.size.x
+	if preview_lbl:
+		_place_box(preview_lbl, x, y, w, 28.0)
+		y += 32.0
+	_place_box(btn_replay_post, x, y, w, tap)
+	_place_box(btn_replay_hunt, x, y + tap + 8.0, w, tap)
+	if replay_reason:
+		_place_box(replay_reason, x, y + (tap + 8.0) * 2.0, w, 28.0)
+
+
+func _replay_btn(text: String, face: Font, panel: StyleBox) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.add_theme_font_override("font", face)
+	b.add_theme_font_size_override("font_size", 22)
+	b.add_theme_color_override("font_color", Color(0.15, 0.08, 0.04))
+	b.add_theme_color_override("font_disabled_color", Color(0.35, 0.28, 0.22))
+	b.add_theme_stylebox_override("normal", panel)
+	b.add_theme_stylebox_override("hover", panel)
+	b.add_theme_stylebox_override("pressed", panel)
+	b.add_theme_stylebox_override("disabled", panel)
+	b.custom_minimum_size = Vector2(204, 52)
+	b.anchor_left = 0
+	b.anchor_right = 0
+	b.anchor_top = 0
+	b.anchor_bottom = 0
+	b.offset_left = 16
+	b.offset_right = 220
+	return b
 
 
 func _press_replay(kind: String) -> void:
@@ -852,6 +945,7 @@ func _sync_replay_buttons() -> void:
 	btn_replay_hunt.modulate = Color(1, 1, 1, 0.45) if blocked else Color.WHITE
 	if replay_reason:
 		replay_reason.text = why
+	_apply_replay_safe()
 
 
 func _process(dt: float) -> void:
