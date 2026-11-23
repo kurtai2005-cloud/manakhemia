@@ -1,8 +1,10 @@
 # Rendered capture for the current Main. Run from the project root.
-# Does not use the player profile and does not pass ExecutionPolicy Bypass.
+# Does not use the player profile and does not change the execution policy.
 param(
     [Parameter(Mandatory = $true)][string]$GodotExe,
-    [Parameter(Mandatory = $true)][string]$OutputDir
+    [Parameter(Mandatory = $true)][string]$OutputDir,
+    [ValidateSet('Full', 'Layers')]
+    [string]$Stage = 'Full'
 )
 $ErrorActionPreference = 'Stop'
 $project = Split-Path -Parent $PSScriptRoot
@@ -61,7 +63,9 @@ function Invoke-Capture([string]$stage, [string]$dest) {
 }
 
 Set-Location -LiteralPath $project
-foreach ($name in @('vc27_errand_capture', 'vc27_progress_capture')) {
+$profiles = @('vc27_errand_capture', 'vc27_progress_capture')
+if ($Stage -eq 'Layers') { $profiles = @('vc27_errand_capture') }
+foreach ($name in $profiles) {
     $cap = Join-Path $env:APPDATA $name
     if (Test-Path -LiteralPath $cap) { Remove-Item -LiteralPath $cap -Recurse -Force }
 }
@@ -69,11 +73,15 @@ try {
     Set-CaptureProfile 'vc27_errand_capture'
     $import = Start-Process -FilePath $GodotExe -ArgumentList @('--headless','--rendering-method','mobile','--path',$project,'--import','--quit') -Wait -PassThru -NoNewWindow
     if ($import.ExitCode -ne 0) { throw "import exit $($import.ExitCode)" }
-    Invoke-Capture 'errand_out' (Join-Path $outFull 'errand')
-    Invoke-Capture 'errand_resume' (Join-Path $outFull 'errand')
-    Set-CaptureProfile 'vc27_progress_capture'
-    Invoke-Capture 'progress' (Join-Path $outFull 'progress')
-    Write-Output "CAPTURE_OK output=$outFull"
+    if ($Stage -eq 'Layers') {
+        Invoke-Capture 'layers' (Join-Path $outFull 'layers')
+    } else {
+        Invoke-Capture 'errand_out' (Join-Path $outFull 'errand')
+        Invoke-Capture 'errand_resume' (Join-Path $outFull 'errand')
+        Set-CaptureProfile 'vc27_progress_capture'
+        Invoke-Capture 'progress' (Join-Path $outFull 'progress')
+    }
+    Write-Output "CAPTURE_OK stage=$Stage output=$outFull"
     exit 0
 } catch {
     Write-Output $_.Exception.Message

@@ -6,6 +6,7 @@ var _main: Node
 var _ran := false
 var _frames := 0
 var _fails := 0
+var _baseline_paths: Array[String] = []
 
 
 func _initialize() -> void:
@@ -61,12 +62,14 @@ func _census(tag: String) -> Dictionary:
 	var coat: Sprite3D = pet.get_node_or_null("Hd2dCoat") if pet else null
 	var sprite: Sprite3D = pet.get("sprite") if pet else null
 	var legacy_houses := 0
-	var exterior_houses := 0
+	var exterior_paths: Array[String] = []
 	for node in _main.find_children("cottage", "", true, false):
 		if not bool(node.get("visible")):
 			continue
+		var path := str(node.get_path())
 		if _under_exterior(node):
-			exterior_houses += 1
+			var owner_name := str(node.owner.name) if node.owner else ""
+			exterior_paths.append("%s owner=%s visible_in_tree=%s" % [path, owner_name, str(node.is_visible_in_tree())])
 		else:
 			legacy_houses += 1
 	var extra_walkers := 0
@@ -83,7 +86,7 @@ func _census(tag: String) -> Dictionary:
 		"kid": kid != null and kid.visible,
 		"visitor": visitor != null and visitor.visible,
 		"legacy_houses": legacy_houses,
-		"exterior_houses": exterior_houses,
+		"exterior_paths": exterior_paths,
 		"extra_walkers": extra_walkers,
 	}
 	print("CENSUS ", row)
@@ -97,7 +100,26 @@ func _expect_play(row: Dictionary, tag: String) -> void:
 	_ok(not bool(row["visitor"]), tag + " visitor hidden")
 	_ok(int(row["legacy_houses"]) == 0, tag + " no legacy cottage")
 	_ok(int(row["extra_walkers"]) == 0, tag + " no extra actors")
-	_ok(int(row["exterior_houses"]) >= 1, tag + " approved cottage remains")
+	_ok(_same_paths(row), tag + " approved cottage structure")
+
+
+## The approved cottage is one glb. Its instance root and the glb's own root
+## are both named cottage and both stay visible. Later exits must keep that
+## same pair. The hidden H1 cottage is counted separately and must stay at 0.
+func _same_paths(row: Dictionary) -> bool:
+	var paths: Array = (row["exterior_paths"] as Array).duplicate()
+	paths.sort()
+	if _baseline_paths.is_empty():
+		for item in paths:
+			_baseline_paths.append(str(item))
+		print("STRUCTURE ", _baseline_paths)
+		return not _baseline_paths.is_empty()
+	if paths.size() != _baseline_paths.size():
+		return false
+	for i in range(paths.size()):
+		if str(paths[i]) != _baseline_paths[i]:
+			return false
+	return true
 
 
 func _expect_legacy_hidden(tag: String) -> void:

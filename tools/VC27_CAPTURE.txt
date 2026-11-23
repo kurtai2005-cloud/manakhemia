@@ -6,6 +6,11 @@ Do not add ExecutionPolicy Bypass.
 
   powershell -NoProfile -File .\tools\Capture-Loop.ps1 -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -OutputDir C:\Users\nasa2\hd2d_test\vc27_capture_out_cf0263
 
+Bounded layer proof only. Same safety rules. Does not run the errand or meal captures.
+The profile is only vc27_errand_capture. CAPTURE_STAGE=layers.
+
+  powershell -NoProfile -File .\tools\Capture-Loop.ps1 -Stage Layers -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -OutputDir C:\Users\nasa2\hd2d_test\vc27_capture_layers_out
+
 OutputDir must already exist, be empty, be absolute, and sit outside this project and outside AppData.
 The script writes errand\ and progress\ inside it.
 Profiles are only vc27_errand_capture and vc27_progress_capture.
