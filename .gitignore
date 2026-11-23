@@ -5,6 +5,7 @@ godot_hd2d_v6/.godot/
 export_credentials.cfg
 android/build/
 android/.gradle/
+android/.build_version
 *.keystore
 *.jks
 *.apk

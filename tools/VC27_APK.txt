@@ -1,0 +1,41 @@
+VC27 internal phone APK. Not a store release. Do not upload this file from here.
+The coordinator hands the APK to 遊美. This build does not upload to Drive.
+
+Gameplay head: 11fb9c140d54d1bac61d2a965af32d79069a4447
+Build adaptation: the commit that adds this file, on cursor/vc27-m1-observe-care-848e.
+Artifact: /opt/cursor/artifacts/vc27-draft-11fb9c14.apk
+bytes: 68643644
+sha256: af8941a32beaa026fedac5c2eff681ed04e04ac7af2120145cf7ab293ea36f2d
+
+package: hk.vizard.glimmer.fpet.vc27draft
+versionName: vc27-11fb9c14
+versionCode: 11
+Home label: 微光試稿
+This is not hk.vizard.glimmer.fpet.godot. Installing it does not replace 微光小圃 or that app's save.
+
+Signing: a new local debug key, CN=VC27 Debug. APK Signature Scheme v2 only.
+The G0 keystore was not read. There is no release key in this APK.
+
+ABI: arm64-v8a
+minSdk 24, targetSdk 36, compileSdk 36
+Manifest renderer: mobile. Not Forward+.
+Both activities request portrait.
+GLES 3.0 is required. Vulkan is optional.
+Godot --export-debug "Android VC27" exited 0. Gradle assembleStandardDebug then succeeded.
+
+Two icons:
+- 微光試稿 opens com.godot.game.GodotAppLauncher. Normal clock. A new egg still waits 600 seconds.
+- 微光試稿·試玩 opens com.godot.game.Vc27PreviewLaunch, which starts the game with --vc27-preview in its own process. Its save is user://vc27_draft_preview/save_v1.json inside this package only.
+
+Phone, about 5 to 10 minutes. Use the 試玩 icon.
+1. Install this APK. Leave the existing 微光小圃 installed.
+2. Open 微光試稿·試玩. The screen says 試玩.
+3. Tap the berry and carry it home. The egg hatches. 圖鑑 shows 微光莓 and 絨點.
+4. Tap 派工. The camera follows the pet to the kitchen. Wait about 12 seconds. Tap 收成. The book gains 2 stars.
+5. Feed, then rest. Leave the app and open the same icon. That preview save is still there.
+6. 微光試稿 is the normal egg. It does not use the preview clock, and it does not read the 試玩 save.
+
+Preview automatic pieces, only for the 試玩 icon: the egg starts with 20 seconds left; the delivery fills the rest; energy becomes 85; sleep starts one point below the wake line. The kitchen's 12 seconds are not shortened. Data file rates are unchanged.
+
+Not tested: this APK was not started on Android. No Note10+ run. Graphics, touch, and speed on that phone are unknown. Linux preview smoke passed before export; that is not a phone launch.
+Still blocked, same as the desktop build: the post door, by the lamp and the watering can. Eating frames were not part of this package.
