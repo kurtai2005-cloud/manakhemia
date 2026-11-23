@@ -7,11 +7,11 @@ GODOT="${GODOT:-/tmp/godot-bin/Godot_v4.7.2-stable_linux.x86_64}"
 export JAVA_HOME="${JAVA_HOME:-$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")}"
 export ANDROID_HOME="${ANDROID_HOME:-/tmp/android-sdk}"
 export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"
-FINAL="${FINAL:-/opt/cursor/artifacts/vc27-draft-11fb9c14-r8.apk}"
-OUT="${OUT:-/tmp/vc27-apk/vc27-draft-11fb9c14-r8.apk}"
+FINAL="${FINAL:-/opt/cursor/artifacts/vc27-draft-11fb9c14-r9.apk}"
+OUT="${OUT:-/tmp/vc27-apk/vc27-draft-11fb9c14-r9.apk}"
 PKG="hk.vizard.glimmer.fpet.vc27draft"
-VER_CODE=18
-VER_NAME="vc27-11fb9c14-r8"
+VER_CODE=19
+VER_NAME="vc27-11fb9c14-r9"
 KS="${VC27_DEBUG_KEYSTORE:-/tmp/vc27-apk/vc27-debug.keystore}"
 mkdir -p "$(dirname "$OUT")" "$(dirname "$KS")" /tmp/vc27-apk
 
@@ -94,6 +94,30 @@ EX=$?
 set -e
 echo "godot export exit=$EX"
 tail -30 /tmp/vc27-godot-export.log || true
+
+# Godot omits rendering_method.mobile when it equals the engine default.
+# The phone build still has to carry the explicit mobile value.
+python3 - "$ROOT/android/build" << 'PY'
+import struct, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+files = list(root.rglob("project.binary"))
+if not files:
+    raise SystemExit("project.binary missing")
+key = b"rendering/renderer/rendering_method.mobile"
+for path in files:
+    data = bytearray(path.read_bytes())
+    if key in data:
+        print("renderer key already in", path)
+        continue
+    count = struct.unpack_from("<I", data, 4)[0]
+    struct.pack_into("<I", data, 4, count + 1)
+    text = b"mobile"
+    variant = struct.pack("<II", 4, len(text)) + text + b"\x00\x00"
+    data += struct.pack("<I", len(key)) + key + struct.pack("<I", len(variant)) + variant
+    path.write_bytes(data)
+    print("patched", path, "count", count + 1)
+PY
 
 cp -f "$ROOT/tools/android_vc27/Vc27PreviewApp.java" "$ROOT/android/build/src/main/java/com/godot/game/Vc27PreviewApp.java"
 cp -f "$ROOT/tools/android_vc27/Vc27PreviewLaunch.java" "$ROOT/android/build/src/main/java/com/godot/game/Vc27PreviewLaunch.java"

@@ -41,7 +41,7 @@ var preview_lbl: Label
 
 func _ready() -> void:
 	layer = 20
-	font = load("res://art/fonts/GenWanMin2TC-R.subset.otf")
+	font = Vc27Fonts.ensure()
 	root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -788,8 +788,8 @@ func _show_replay_buttons() -> bool:
 
 
 func _replay_font() -> Font:
-	# The game subset has no 看 / 狩 / 獵, so these labels use a font that contains them.
-	return load("res://art/fonts/vc27_label_fallback.otf") as FontFile
+	# Same chain as every other label: the subset, then the CJK fallback.
+	return Vc27Fonts.ensure()
 
 
 func _build_replay_buttons(root_node: Control) -> void:

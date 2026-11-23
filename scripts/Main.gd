@@ -2916,7 +2916,7 @@ func _setup_rotate_overlay() -> void:
 	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lab.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	lab.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var font: Font = load("res://art/fonts/GenWanMin2TC-R.subset.otf")
+	var font: Font = Vc27Fonts.ensure()
 	if font:
 		lab.add_theme_font_override("font", font)
 	lab.add_theme_font_size_override("font_size", 28)

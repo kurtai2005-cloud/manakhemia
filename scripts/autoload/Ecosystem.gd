@@ -18,7 +18,14 @@ var _fusion_fade := 0.0
 var _fusion_out := false
 
 
+var layout_override := false
+var layout_window := Vector2i.ZERO
+var layout_safe := Rect2i()
+var layout_viewport := Vector2.ZERO
+
+
 func _ready() -> void:
+	Vc27Fonts.ensure()
 	cfg = _load_json(DATA_PATH)
 	print("ECO_READY keys=", cfg.size(), " exists=", FileAccess.file_exists(DATA_PATH))
 
@@ -392,11 +399,13 @@ func station_world(building_id: String) -> Vector3:
 func stop_follow() -> void:
 	follow_id = ""
 	follow_pet_id = ""
+	_sync_portrait()
 
 
 func follow_pet(pet_id: String) -> void:
 	follow_id = pet_id
 	follow_pet_id = pet_id
+	_sync_portrait()
 
 
 func _process(dt: float) -> void:
@@ -731,6 +740,122 @@ func _pill(active: bool) -> StyleBoxTexture:
 	return box
 
 
+func _safe_viewport_rect() -> Rect2:
+	# Window pixels from the display cutout, converted the same way as Hud.
+	var live_safe: Rect2i = DisplayServer.get_display_safe_area()
+	var live_win: Vector2i = DisplayServer.window_get_size()
+	var vp := layout_viewport if layout_override else _viewport_size()
+	var win := layout_window if layout_override else live_win
+	var safe := layout_safe if layout_override else live_safe
+	if safe.size.x < 2 or safe.size.y < 2:
+		if win.x < 2 or win.y < 2:
+			win = Vector2i(maxi(1, int(vp.x)), maxi(1, int(vp.y)))
+		safe = Rect2i(Vector2i.ZERO, win)
+	var fit := 1.0
+	var ox := 0.0
+	var oy := 0.0
+	if win.x > 0 and win.y > 0 and vp.x > 1.0 and vp.y > 1.0:
+		fit = minf(float(win.x) / vp.x, float(win.y) / vp.y)
+		if fit <= 0.0:
+			fit = 1.0
+		ox = (float(win.x) - vp.x * fit) * 0.5
+		oy = (float(win.y) - vp.y * fit) * 0.5
+	var left := maxf(0.0, (float(safe.position.x) - ox) / fit)
+	var top := maxf(0.0, (float(safe.position.y) - oy) / fit)
+	var right := minf(vp.x, (float(safe.position.x + safe.size.x) - ox) / fit)
+	var bottom := minf(vp.y, (float(safe.position.y + safe.size.y) - oy) / fit)
+	left += 16.0
+	top += 8.0
+	right -= 16.0
+	bottom -= 8.0
+	return Rect2(Vector2(left, top), Vector2(maxf(0.0, right - left), maxf(0.0, bottom - top)))
+
+
+func _viewport_size() -> Vector2:
+	if _main and _main.get_viewport():
+		return _main.get_viewport().get_visible_rect().size
+	return Vector2(390, 844)
+
+
+func apply_safe_layout() -> void:
+	if _main == null:
+		return
+	var root := _main.get_node_or_null("EcosystemHud/Root") as Control
+	if root == null:
+		return
+	var safe := _safe_viewport_rect()
+	var hud: Node = _main.get("hud")
+	var bar_top := safe.position.y + safe.size.y
+	if hud and hud.get("bar") is Control and (hud.get("bar") as Control).visible:
+		var br: Rect2 = (hud.get("bar") as Control).get_global_rect()
+		if br.size.y > 1.0:
+			bar_top = minf(bar_top, br.position.y)
+	var blocked := safe.position.y
+	if hud:
+		for key in ["time_lbl", "shard_lbl", "food_lbl", "btn_book", "back_btn", "hide_btn", "dev_btn", "preview_lbl", "btn_replay_post", "btn_replay_hunt", "replay_reason"]:
+			var node: Object = hud.get(key)
+			if node is Control and (node as Control).visible:
+				var rr: Rect2 = (node as Control).get_global_rect()
+				if rr.size.y > 1.0 and rr.position.x < safe.position.x + safe.size.x * 0.55:
+					blocked = maxf(blocked, rr.end.y)
+	# The 9-slice pill needs its 28px margins, so each zone button is 84 wide.
+	# Two rows stay inside the safe width and above the bottom action bar.
+	var row_w := 84.0
+	var row_h := 56.0
+	var gap := 4.0
+	var zones: Array = ["garden", "cottage_yard_work", "prairie_edge", "zone_farm", "zone_workshop", "zone_prairie_deep", "zone_family_wall"]
+	var y2 := minf(safe.end.y, bar_top) - 8.0 - row_h
+	var y1 := y2 - gap - row_h
+	for i in range(zones.size()):
+		var count := 4 if i < 4 else 3
+		var index := i if i < 4 else i - 4
+		var total := row_w * float(count) + gap * float(count - 1)
+		var row_x := safe.position.x + maxf(0.0, (safe.size.x - total) * 0.5)
+		var row_y := y1 if i < 4 else y2
+		var b := root.get_node_or_null("Zone_%s" % str(zones[i])) as Control
+		if b:
+			_place(b, row_x + float(index) * (row_w + gap), row_y, row_w, row_h)
+	var label_w := minf(220.0, safe.size.x)
+	var label_y := y1 - 74.0
+	_place(root.get_node_or_null("RoleLabel") as Control, safe.position.x, label_y, label_w, 22.0)
+	_place(root.get_node_or_null("CombatCard") as Control, safe.position.x, label_y + 22.0, label_w, 22.0)
+	_place(root.get_node_or_null("PatrolLabel") as Control, safe.position.x, label_y + 44.0, label_w, 22.0)
+	_place(root.get_node_or_null("ComboBadge") as Control, safe.position.x + label_w + 8.0, label_y, 120.0, 22.0)
+	var observe := root.get_node_or_null("PrairieObserve") as Control
+	_place(observe, safe.position.x, blocked + 12.0, 144.0, 48.0)
+	var portrait := root.get_node_or_null("PetPortrait") as Control
+	_place(portrait, safe.end.x - 64.0, maxf(safe.position.y, 60.0), 64.0, 64.0)
+	_sync_portrait()
+
+
+func _place(node: Control, x: float, y: float, w: float, h: float) -> void:
+	if node == null:
+		return
+	node.anchor_left = 0.0
+	node.anchor_top = 0.0
+	node.anchor_right = 0.0
+	node.anchor_bottom = 0.0
+	node.offset_left = x
+	node.offset_top = y
+	node.offset_right = x + w
+	node.offset_bottom = y + h
+	node.position = Vector2(x, y)
+	node.size = Vector2(w, h)
+	node.custom_minimum_size = Vector2(w, h)
+
+
+func _sync_portrait() -> void:
+	if _main == null:
+		return
+	var portrait := _main.get_node_or_null("EcosystemHud/Root/PetPortrait") as Button
+	if portrait == null:
+		return
+	var file := "ui/ui_pet_portrait_frame_active.png" if follow_pet_id != "" else "ui/ui_pet_portrait_frame.png"
+	var tex := load(ART_ROOT + file) as Texture2D
+	if tex:
+		portrait.icon = tex
+
+
 func _hud(main: Node) -> void:
 	var layer := CanvasLayer.new()
 	layer.name = "EcosystemHud"
@@ -740,6 +865,7 @@ func _hud(main: Node) -> void:
 	root.name = "Root"
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.theme = Vc27Fonts.theme()
 	layer.add_child(root)
 	var zones: Array = ["garden", "cottage_yard_work", "prairie_edge", "zone_farm", "zone_workshop", "zone_prairie_deep", "zone_family_wall"]
 	var icons := {
@@ -751,19 +877,19 @@ func _hud(main: Node) -> void:
 		"zone_prairie_deep": "icon_zone_zone_prairie_deep.png",
 		"zone_family_wall": "icon_zone_zone_family_wall.png",
 	}
-	var x := 8.0
 	for zid in zones:
 		var id := str(zid)
 		var b := Button.new()
 		b.name = "Zone_%s" % id
-		b.custom_minimum_size = Vector2(72, 56)
-		b.position = Vector2(x, 460)
 		b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		b.icon = load(ART_ROOT + "ui/" + str(icons[id])) as Texture2D
 		b.add_theme_stylebox_override("normal", _pill(false))
 		b.add_theme_stylebox_override("hover", _pill(true))
 		b.add_theme_stylebox_override("pressed", _pill(true))
 		b.add_theme_stylebox_override("disabled", _pill(false))
+		b.add_theme_constant_override("icon_max_width", 28)
+		b.clip_contents = true
+		Vc27Fonts.bind(b)
 		var open := zone_unlocked(id, Sim.state if Sim else {})
 		b.disabled = not open
 		b.modulate = Color.WHITE if open else Color(1, 1, 1, 0.45)
@@ -776,46 +902,53 @@ func _hud(main: Node) -> void:
 					_main.set_cam_follow(null)
 		)
 		root.add_child(b)
-		x += 54.0
 	var portrait := Button.new()
 	portrait.name = "PetPortrait"
-	portrait.custom_minimum_size = Vector2(64, 64)
-	portrait.position = Vector2(300, 360)
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	portrait.icon = load(ART_ROOT + "ui/ui_pet_portrait_frame.png") as Texture2D
+	var empty := StyleBoxEmpty.new()
+	portrait.add_theme_stylebox_override("normal", empty)
+	portrait.add_theme_stylebox_override("hover", empty)
+	portrait.add_theme_stylebox_override("pressed", empty)
+	portrait.add_theme_stylebox_override("focus", empty)
+	portrait.clip_contents = true
+	Vc27Fonts.bind(portrait)
 	portrait.pressed.connect(func():
 		follow_pet("tuanrong")
 		if _main and _main.get("pet"):
 			_main.set_cam_follow(_main.get("pet"))
+		_sync_portrait()
 	)
 	root.add_child(portrait)
 	var observe := HBoxContainer.new()
 	observe.name = "PrairieObserve"
-	observe.position = Vector2(240, 240)
 	observe.visible = false
+	observe.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for stat_file in ["icon_stat_power.png", "icon_stat_agility.png", "icon_stat_stamina.png"]:
 		var icon := TextureRect.new()
 		icon.texture = load(ART_ROOT + "ui/" + stat_file) as Texture2D
-		icon.custom_minimum_size = Vector2(48, 48)
+		icon.custom_minimum_size = Vector2(40, 40)
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		observe.add_child(icon)
 	root.add_child(observe)
 	var roles := Label.new()
 	roles.name = "RoleLabel"
 	roles.text = "種嘢 採集 工作 戰鬥狩獵 組合協同"
-	roles.position = Vector2(16, 612)
+	Vc27Fonts.bind(roles)
 	root.add_child(roles)
 	var card := Label.new()
 	card.name = "CombatCard"
 	card.text = _combat_line()
-	card.position = Vector2(16, 640)
+	Vc27Fonts.bind(card)
 	root.add_child(card)
 	var patrol := Label.new()
 	patrol.name = "PatrolLabel"
 	patrol.text = patrol_label
-	patrol.position = Vector2(16, 668)
+	Vc27Fonts.bind(patrol)
 	root.add_child(patrol)
+	apply_safe_layout()
 
 
 func _zone_look(id: String) -> Vector3:
@@ -842,7 +975,8 @@ func show_combo(kind: String) -> void:
 		badge.name = "ComboBadge"
 		root.add_child(badge)
 	badge.text = kind
-	badge.position = Vector2(240, 430)
+	Vc27Fonts.bind(badge)
+	apply_safe_layout()
 
 
 func _combat_line() -> String:

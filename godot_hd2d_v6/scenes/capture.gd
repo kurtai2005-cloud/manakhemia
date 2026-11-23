@@ -939,6 +939,14 @@ func _setup_quality_toggle() -> void:
 	if ResourceLoader.exists(font_path):
 		ff = FontFile.new()
 		ff.load_dynamic_font(font_path)
+		var fb_path := "res://art/fonts/vc27_label_fallback.otf"
+		if ResourceLoader.exists(fb_path):
+			var fb := load(fb_path) as Font
+			if fb:
+				var next: Array[Font] = []
+				next.assign(ff.fallbacks)
+				next.append(fb)
+				ff.fallbacks = next
 	_quality_btn = Button.new()
 	_quality_btn.position = Vector2(24, 24)
 	_quality_btn.custom_minimum_size = Vector2(220, 64)
@@ -1703,6 +1711,14 @@ func _setup_fps_overlay() -> void:
 	if ResourceLoader.exists(font_path):
 		var ff := FontFile.new()
 		ff.load_dynamic_font(font_path)
+		var fb_path := "res://art/fonts/vc27_label_fallback.otf"
+		if ResourceLoader.exists(fb_path):
+			var fb := load(fb_path) as Font
+			if fb:
+				var next: Array[Font] = []
+				next.assign(ff.fallbacks)
+				next.append(fb)
+				ff.fallbacks = next
 		_fps_label.add_theme_font_override("font", ff)
 	_fps_label.text = "– FPS"
 	layer.add_child(_fps_label)
