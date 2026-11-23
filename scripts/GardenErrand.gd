@@ -18,6 +18,7 @@ var held: Sprite3D
 var berry_pos := Vector3.ZERO
 var home_pos := Vector3.ZERO
 var home_area: Area3D
+var goal_bubble: Sprite3D
 
 
 func setup(host: Node3D, body: Walker) -> void:
@@ -64,30 +65,69 @@ func player_press() -> String:
 	return "cancel"
 
 
+func offer() -> String:
+	if rest_offered() and float(_needs().get("energy", 100)) < 50.0:
+		return "rest"
+	if food_offered():
+		return "food"
+	if rest_offered():
+		return "rest"
+	return ""
+
+
+func food_offered() -> bool:
+	return food_choice() and not _feed_blocked()
+
+
+func food_choice() -> bool:
+	if str(_task().get("phase", "idle")) != "idle" or _fruit_count() <= 0:
+		return false
+	if str(Sim.state.get("stage", "egg")) == "egg":
+		return false
+	if bool(Sim.state.get("sleeping", false)):
+		return false
+	return true
+
+
+func rest_offered() -> bool:
+	return str(_task().get("phase", "idle")) == "idle" and _rest_ready()
+
+
+func press_food() -> String:
+	if str(_task().get("phase", "idle")) != "idle":
+		return "busy"
+	if _fruit_count() <= 0:
+		return "none"
+	if _feed_blocked():
+		return "full"
+	_clear_care()
+	_set_phase("to_eat")
+	walker.set_errand(home_pos)
+	return "eat"
+
+
+func press_rest() -> String:
+	if str(_task().get("phase", "idle")) != "idle":
+		return "busy"
+	_clear_care()
+	return _start_door_rest()
+
+
 func press_home() -> String:
 	var phase := str(_task().get("phase", "idle"))
 	if phase == "to_eat" or phase == "to_rest":
 		_set_phase("idle")
 		walker.clear_errand()
+		if main:
+			main.set("_door_pending", false)
 		return "cancel"
 	if phase != "idle":
 		return "busy"
-	# Tired enough to rest on its own: rest wins over another meal.
-	if _rest_ready() and float(_needs().get("energy", 100)) < 50.0:
-		_clear_care()
-		_set_phase("to_rest")
-		walker.set_errand(home_pos)
-		return "rest"
-	if _fruit_count() > 0 and not _feed_blocked():
-		_clear_care()
-		_set_phase("to_eat")
-		walker.set_errand(home_pos)
-		return "eat"
-	if _rest_ready():
-		_clear_care()
-		_set_phase("to_rest")
-		walker.set_errand(home_pos)
-		return "rest"
+	var shown := offer()
+	if shown == "food":
+		return press_food()
+	if shown == "rest":
+		return press_rest()
 	if _fruit_count() > 0 and float(_needs().get("hunger", 0)) >= Sim.FEED_REFUSE_AT:
 		return "full"
 	return "none"
@@ -100,7 +140,13 @@ func _process(dt: float) -> void:
 	var phase := str(task.get("phase", "idle"))
 	if phase == "asleep":
 		_watch_rest()
+		_pulse_markers(phase)
 		return
+	if phase == "to_rest":
+		_watch_door()
+		_pulse_markers(phase)
+		return
+	_pulse_markers(phase)
 	if not walker.errand_active:
 		_maybe_rest()
 		return
@@ -125,9 +171,8 @@ func _process(dt: float) -> void:
 		walker.clear_errand()
 		walker.pause_t = 0.6
 		_restore_visual()
-	elif phase == "to_rest" and _close(home_pos):
-		walker.clear_errand()
-		_begin_rest()
+	elif phase == "to_rest":
+		_watch_door()
 
 
 func _grant_once() -> void:
@@ -184,29 +229,60 @@ func _eat_one() -> Dictionary:
 	return rec
 
 
-func _begin_rest() -> void:
+func _start_door_rest() -> String:
 	if main == null or bool(main.get("in_interior")):
+		return "busy"
+	if not _rest_ready():
+		return "none"
+	walker.clear_errand()
+	var pres := _presentation()
+	if pres == null or not pres.has_method("begin_approach") or not bool(pres.call("begin_approach")):
+		return "blocked"
+	var stand: Vector3 = pres.get("goal")
+	walker.set_errand(stand)
+	main.set("_door_pending", true)
+	_set_phase("to_rest")
+	return "rest"
+
+
+func _watch_door() -> void:
+	var pres := _presentation()
+	if pres != null and bool(pres.get("arrived")):
+		walker.clear_errand()
+	if pres != null and bool(pres.get("blocked_stop")):
+		var stand: Vector3 = pres.get("goal")
+		if walker.global_position.distance_to(stand) > 15.0:
+			pres.set("blocked_stop", false)
+			pres.set("approaching", true)
+			walker.set_errand(stand)
+			return
+		walker.clear_errand()
+		_set_phase("idle")
 		return
-	Sim.set_sleeping(true)
-	if main.has_method("enter_house"):
-		main.call("enter_house", true)
-	var task := _task()
-	task["phase"] = "asleep"
-	task["active_id"] = ""
-	_write(task)
-	_restore_visual()
+	if main != null and bool(main.get("in_interior")):
+		walker.clear_errand()
+		Sim.set_sleeping(true)
+		var task := _task()
+		task["phase"] = "asleep"
+		task["active_id"] = ""
+		_write(task)
+		_restore_visual()
 
 
 func _watch_rest() -> void:
 	var energy := float(_needs().get("energy", 0))
 	var sleeping := bool(Sim.state.get("sleeping", false))
+	var inside := main != null and bool(main.get("in_interior"))
+	if not inside:
+		if sleeping:
+			Sim.set_sleeping(false)
+		_set_phase("idle")
+		walker.pause_t = 0.4
+		return
 	if sleeping and energy < Sim.SLEEP_WAKE_AT:
 		return
-	Sim.set_sleeping(false)
-	if main and bool(main.get("in_interior")) and main.has_method("exit_house"):
-		main.call("exit_house", true)
-	_set_phase("idle")
-	walker.pause_t = 0.4
+	if sleeping:
+		Sim.set_sleeping(false)
 
 
 func _maybe_rest() -> void:
@@ -219,8 +295,7 @@ func _maybe_rest() -> void:
 	var pres := _presentation()
 	if pres and pres.has_method("care_active") and bool(pres.call("care_active")):
 		return
-	_set_phase("to_rest")
-	walker.set_errand(home_pos)
+	_start_door_rest()
 
 
 func _rest_ready() -> bool:
@@ -270,6 +345,7 @@ func _free_spot(prefer: Vector3) -> Vector3:
 func _build_markers() -> void:
 	var tex := load(FRUIT_TEX) as Texture2D
 	berry = _marker("ForageBerry", berry_pos, tex)
+	berry.pixel_size = 0.85
 	berry_area = Area3D.new()
 	berry_area.name = "ForageBerryArea"
 	berry_area.collision_layer = 32
@@ -297,7 +373,7 @@ func _build_markers() -> void:
 	held = Sprite3D.new()
 	held.name = "CarriedBerry"
 	held.texture = tex
-	held.pixel_size = 0.35
+	held.pixel_size = 0.7
 	held.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 	held.shaded = true
 	held.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
@@ -315,13 +391,40 @@ func _build_markers() -> void:
 	held_shape.shape = held_sphere
 	held_area.add_child(held_shape)
 	held.add_child(held_area)
+	goal_bubble = Sprite3D.new()
+	goal_bubble.name = "GoalBubble"
+	goal_bubble.pixel_size = 0.55
+	goal_bubble.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+	goal_bubble.shaded = false
+	goal_bubble.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	goal_bubble.visible = false
+	walker.add_child(goal_bubble)
+	goal_bubble.position = Vector3(0, 36, 0)
+
+
+func _pulse_markers(phase: String) -> void:
+	if berry and berry.visible:
+		berry.position.y = 8.0 + sin(float(Time.get_ticks_msec()) / 280.0) * 2.0
+	if goal_bubble == null:
+		return
+	var bubble_path := ""
+	if phase == "to_rest" or phase == "asleep":
+		bubble_path = "res://art/m1-icons/bubble_need_sleep.png"
+	elif phase == "to_pick" or phase == "carry" or phase == "to_eat":
+		bubble_path = "res://art/m1-icons/bubble_need_eat.png"
+	if bubble_path == "" or not ResourceLoader.exists(bubble_path):
+		goal_bubble.visible = false
+		return
+	var inside := main != null and bool(main.get("in_interior"))
+	goal_bubble.texture = load(bubble_path)
+	goal_bubble.visible = not inside
 
 
 func _marker(node_name: String, pos: Vector3, tex: Texture2D) -> Sprite3D:
 	var spr := Sprite3D.new()
 	spr.name = node_name
 	spr.texture = tex
-	spr.pixel_size = 0.35
+	spr.pixel_size = 0.7
 	spr.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
 	spr.shaded = true
 	spr.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
@@ -343,9 +446,15 @@ func _restore_visual() -> void:
 		if held_area:
 			held_area.collision_layer = 32 if held.visible else 0
 	if home:
-		home.visible = not inside
-		var fed := int(_task().get("meals", 0)) >= 1
-		home.modulate = Color(1, 1, 1, 1.0 if fed else 0.45)
+		var shown := offer()
+		home.visible = not inside and shown != ""
+		if shown == "rest" and ResourceLoader.exists("res://art/m1-icons/need_sleep.png"):
+			home.texture = load("res://art/m1-icons/need_sleep.png")
+		elif shown == "food" and ResourceLoader.exists("res://art/m1-icons/need_eat.png"):
+			home.texture = load("res://art/m1-icons/need_eat.png")
+		else:
+			home.texture = load(FRUIT_TEX)
+		home.modulate = Color(1, 1, 1, 1)
 	if home_area:
 		home_area.collision_layer = 32 if home != null and home.visible else 0
 

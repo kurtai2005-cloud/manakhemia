@@ -7,15 +7,19 @@ Rule, from the existing specs
 - data/sim.json care.feed_meal is 40 hunger and food_mood_bonus_warm is 3. One stored fruit calls Sim.feed("meal"). feed_refuse_at 90, an egg, or sleep spends nothing.
 - Personality daily_shift on eat_together moves the social axis by its existing delta, inside the existing daily cap. That is the bond.
 - data/sim.json sick_threshold is 15. Online growth_sec moves only while the pet is not unwell. The meal does not add growth time. It raises hunger so the existing clock can move.
-- The first meal from a gathered fruit makes the home marker solid. Rest is allowed below sleep_min_energy_to_sleep (90). Below 50, rest wins over another meal and also starts on its own. The pet walks to the home marker, enter_house, and Sim.set_sleeping. Energy uses sleep_regen_per_hour and wakes at sleep_wake_at, then exit_house.
+- Stored fruit count is the existing starberry picture plus a number. It is not a new currency.
+- The ground berry is the same starberry picture, drawn larger, with the same forage hit area.
+- The home marker uses the existing eat or sleep icon for the action a click will take. It is hidden when neither action is available. Two icon buttons do the same thing explicitly: food spends one fruit, rest starts the existing door walk. Below 50 energy, rest can still start on its own.
+- Rest does not call enter_house by itself. The door goal is the existing exterior stand. The body uses the same footprint steering as the berry walk, because the nav agent does not cross this garden. Arrival then uses the existing commit_enter. Sleep starts inside. Waking clears sleep and leaves the pet indoors until the existing 返回 button. A click on the upper door does the same enter.
+- The normal HUD hides 開發者 unless VC27_DEV_HUD=1. 欣賞 sits at the top and does not cover the action buttons.
 - Offline time stays on the existing cap and does not finish a delivery or add this fruit. A backwards clock is ignored.
 - Shop furniture in data/economy.json has prices. This loop does not buy it and does not grant a free shop item.
 
 What you can do
 - Click the berry. The pet walks, carries it, and walks to the home marker.
 - Click the berry again to cancel. Click again to retry the same delivery.
-- Click the home marker to walk there and eat one stored fruit. The coat plays eat, then the pet wanders.
-- After that meal, click the home marker while tired. The pet walks home, goes inside, sleeps, and comes back out awake.
+- The food icon spends one stored fruit. The pet walks to the home marker, the coat plays eat, then the pet wanders.
+- The sleep icon, after that meal and while energy is below 90, walks to the door and sleeps inside. 返回 leaves. The pet does not walk itself back out.
 - Feed, pat, and clean on the pet still use the one coat.
 
 Not in this slice
@@ -23,3 +27,4 @@ Not in this slice
 - A growth stage that jumps because of the meal itself.
 - Room art, lighting, or a new picture.
 - A phone or GPU result. Windows still has to look at the head.
+- A new marker drawing. These icons are the existing eat, sleep, and fruit pictures. A clearer custom marker would be a separate art request.

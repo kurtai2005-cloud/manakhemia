@@ -243,6 +243,8 @@ func play_care(id: String) -> bool:
 	_care_id = id
 	_care_elapsed = 0.0
 	_show_care_frame(0)
+	if walker and walker.errand_active:
+		walker.errand_hold = true
 	return true
 
 

@@ -39,6 +39,7 @@ var cam_mode := CamMode.OVERVIEW
 var follow_walker: Walker
 var play_frames := 0
 var play_inputs := 0
+var _door_pending := false
 var play_focus_events := 0
 var play_mouse_events := 0
 var _play_pulse_ms := 0
@@ -671,6 +672,7 @@ func _process(dt: float) -> void:
 		_play_pulse_ms = now
 		print("play pulse wall_ms=", now, " frames=", play_frames, " max_frame_ms=", _play_max_frame_ms, " inputs=", play_inputs, " focus=", play_focus_events, " mouse=", play_mouse_events, " display=", DisplayServer.get_name())
 	_place_cam(dt)
+	_commit_door_if_arrived()
 	if HuntSystem:
 		HuntSystem.tick_watch(dt)
 		if hunt_field and hunt_field.active:
@@ -738,8 +740,12 @@ func _try_tap(pos: Vector2) -> void:
 	if not in_interior and not in_hunt_view:
 		var house := _ray_area(pos, 16)
 		if house:
-			if _hd2d_host != null and bool(_hd2d_host.get("active")):
-				_hd2d_host.call("begin_approach")
+			if _hd2d_host != null and bool(_hd2d_host.get("active")) and _hd2d_host.has_method("begin_approach"):
+				if bool(_hd2d_host.call("begin_approach")):
+					_door_pending = true
+					var stand: Vector3 = _hd2d_host.get("goal")
+					if pet:
+						pet.set_errand(stand)
 			else:
 				enter_house()
 			return
@@ -2047,12 +2053,16 @@ func _setup_house_click() -> void:
 	_house_click.collision_mask = 0
 	var cs := CollisionShape3D.new()
 	var box := BoxShape3D.new()
-	# 小屋 bounds 約 71×142×52；包實門同牆
-	box.size = Vector3(72, 140, 56)
+	# 可走到嘅門口站位，唔綁喺收起咗嘅 H1 小屋上，亦唔蓋住草地。
+	box.size = Vector3(36, 48, 28)
 	cs.shape = box
-	cs.position = Vector3(0, 70, 0)
+	cs.position = Vector3(0, 0, 0)
 	_house_click.add_child(cs)
-	house.add_child(_house_click)
+	add_child(_house_click)
+	var stand := Vector3(94.0, 12.0, -29.0)
+	if ClassDB.class_exists("Hd2dDoor"):
+		stand = Hd2dDoor.exterior_anchor() + Vector3(0, 12, 0)
+	_house_click.global_position = stand
 
 
 func _setup_fade() -> void:
@@ -2106,6 +2116,18 @@ func disable_hd2d_exterior() -> void:
 			_hd2d_exterior.call("restore_root_view")
 		_hd2d_exterior.queue_free()
 	_hd2d_exterior = null
+
+
+func _commit_door_if_arrived() -> void:
+	if not _door_pending or in_interior:
+		return
+	if _hd2d_host == null or not bool(_hd2d_host.get("arrived")):
+		return
+	if pet:
+		pet.clear_errand()
+	if _hd2d_host.has_method("commit_enter"):
+		_hd2d_host.call("commit_enter")
+	_door_pending = false
 
 
 func cottage_door_world() -> Vector3:

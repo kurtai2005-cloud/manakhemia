@@ -29,6 +29,10 @@ var time_lbl: Label
 var book_panel: PanelContainer
 var care_target: Walker
 var shard_lbl: Label
+var food_lbl: Label
+var goal_bar: BoxContainer
+var btn_goal_food: Button
+var btn_goal_rest: Button
 
 
 func _ready() -> void:
@@ -52,6 +56,23 @@ func _ready() -> void:
 	shard_lbl.position = Vector2(16, 36)
 	shard_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shard_lbl)
+
+	var food_icon := TextureRect.new()
+	food_icon.name = "FoodIcon"
+	food_icon.texture = load("res://art-pet/sprites/hunt/fruits/starberry.png")
+	food_icon.position = Vector2(150, 32)
+	food_icon.custom_minimum_size = Vector2(22, 22)
+	food_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	food_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	food_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(food_icon)
+	food_lbl = _lbl("0", 16)
+	food_lbl.name = "FoodCount"
+	food_lbl.anchor_left = 0
+	food_lbl.anchor_top = 0
+	food_lbl.position = Vector2(176, 36)
+	food_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(food_lbl)
 
 	# 左上收藏（屋 ×2 之後右上會同煙囪重疊）
 	btn_book = _btn("圖鑑")
@@ -150,6 +171,29 @@ func _ready() -> void:
 	care_bar.add_child(btn_snack)
 	care_bar.add_child(btn_pat)
 
+	goal_bar = VBoxContainer.new()
+	goal_bar.name = "GoalBar"
+	goal_bar.anchor_left = 0.0
+	goal_bar.anchor_right = 0.0
+	goal_bar.anchor_top = 0.0
+	goal_bar.anchor_bottom = 0.0
+	goal_bar.offset_left = 8
+	goal_bar.offset_right = 96
+	goal_bar.offset_top = 180
+	goal_bar.offset_bottom = 276
+	goal_bar.add_theme_constant_override("separation", 8)
+	goal_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	goal_bar.visible = false
+	root.add_child(goal_bar)
+	btn_goal_food = _icon_btn("need_eat", "")
+	btn_goal_food.name = "GoalFood"
+	btn_goal_rest = _icon_btn("need_sleep", "")
+	btn_goal_rest.name = "GoalRest"
+	btn_goal_food.pressed.connect(_press_goal_food)
+	btn_goal_rest.pressed.connect(_press_goal_rest)
+	goal_bar.add_child(btn_goal_food)
+	goal_bar.add_child(btn_goal_rest)
+
 	# 總結卡：提高，避開欣賞／開發者
 	card = PanelContainer.new()
 	card.anchor_left = 0.5
@@ -180,14 +224,14 @@ func _ready() -> void:
 	root.add_child(card)
 
 	hide_btn = _btn("欣賞")
-	hide_btn.anchor_left = 0
-	hide_btn.anchor_top = 1
-	hide_btn.anchor_right = 0
-	hide_btn.anchor_bottom = 1
-	hide_btn.offset_left = 16
-	hide_btn.offset_top = -172
-	hide_btn.offset_right = 120
-	hide_btn.offset_bottom = -128
+	hide_btn.anchor_left = 1
+	hide_btn.anchor_top = 0
+	hide_btn.anchor_right = 1
+	hide_btn.anchor_bottom = 0
+	hide_btn.offset_left = -120
+	hide_btn.offset_top = 12
+	hide_btn.offset_right = -16
+	hide_btn.offset_bottom = 52
 	hide_btn.pressed.connect(func():
 		if AudioManager:
 			_play_press()  # was: hardcoded _a
@@ -201,9 +245,10 @@ func _ready() -> void:
 	dev_btn.anchor_right = 1
 	dev_btn.anchor_bottom = 1
 	dev_btn.offset_left = -136
-	dev_btn.offset_top = -172
+	dev_btn.offset_top = 60
 	dev_btn.offset_right = -16
-	dev_btn.offset_bottom = -128
+	dev_btn.offset_bottom = 104
+	dev_btn.visible = _dev_allowed()
 	dev_btn.pressed.connect(func():
 		if AudioManager:
 			_play_press()  # was: hardcoded _a
@@ -478,7 +523,7 @@ func _toggle_hide() -> void:
 	hidden = not hidden
 	bar.visible = not hidden
 	care_bar.visible = (not hidden) and observing and care_target != null
-	dev_btn.visible = not hidden and not card.visible
+	dev_btn.visible = _dev_allowed() and not hidden and not card.visible
 	time_lbl.visible = not hidden
 	shard_lbl.visible = not hidden
 	btn_book.visible = not hidden
@@ -677,7 +722,7 @@ func _sync_side_buttons() -> void:
 	if hide_btn:
 		hide_btn.visible = not hidden and not hide_side
 	if dev_btn:
-		dev_btn.visible = not hidden and not hide_side
+		dev_btn.visible = _dev_allowed() and not hidden and not hide_side
 
 
 func _refresh() -> void:
@@ -709,6 +754,9 @@ func _refresh() -> void:
 		book_dot.visible = CollectionSystem.has_dot("collection")
 	if shard_lbl and CollectionSystem:
 		shard_lbl.text = "★ %d" % CollectionSystem.stardust()
+	if food_lbl and CollectionSystem and CollectionSystem.has_method("fruit_count"):
+		food_lbl.text = str(int(CollectionSystem.call("fruit_count", "starberry")))
+	_refresh_goal()
 	_sync_side_buttons()
 
 
@@ -716,6 +764,10 @@ func _process(dt: float) -> void:
 	if time_lbl and not hidden and TimeService:
 		var d: Dictionary = TimeService.local_dict(TimeService.now_ms())
 		time_lbl.text = "%02d:%02d" % [int(d.get("hour", 0)), int(d.get("minute", 0))]
+	if food_lbl and not hidden and CollectionSystem and CollectionSystem.has_method("fruit_count"):
+		food_lbl.text = str(int(CollectionSystem.call("fruit_count", "starberry")))
+	if not hidden:
+		_refresh_goal()
 	if card_t > 0.0:
 		card_t -= dt
 		if card_t <= 0.0:
@@ -723,6 +775,44 @@ func _process(dt: float) -> void:
 			_sync_side_buttons()
 			if not observing and not card_queue.is_empty():
 				_show_card(card_queue.pop_front())
+
+
+func _dev_allowed() -> bool:
+	return OS.get_environment("VC27_DEV_HUD") == "1"
+
+
+func _press_goal_food() -> void:
+	var errand := _errand()
+	if errand and errand.has_method("press_food"):
+		errand.call("press_food")
+
+
+func _press_goal_rest() -> void:
+	var errand := _errand()
+	if errand and errand.has_method("press_rest"):
+		errand.call("press_rest")
+
+
+func _errand() -> Node:
+	var main := get_tree().get_first_node_in_group("glimmer_main")
+	if main == null:
+		return null
+	return main.get_node_or_null("GardenErrand")
+
+
+func _refresh_goal() -> void:
+	if goal_bar == null:
+		return
+	var errand := _errand()
+	var food := errand != null and errand.has_method("food_choice") and bool(errand.call("food_choice"))
+	var rest := errand != null and errand.has_method("rest_offered") and bool(errand.call("rest_offered"))
+	var food_live := errand != null and errand.has_method("food_offered") and bool(errand.call("food_offered"))
+	if btn_goal_food:
+		btn_goal_food.visible = food
+		btn_goal_food.modulate = Color.WHITE if food_live else Color(1, 1, 1, 0.45)
+	if btn_goal_rest:
+		btn_goal_rest.visible = rest
+	goal_bar.visible = not hidden and (food or rest)
 
 
 func set_in_interior(on: bool) -> void:
