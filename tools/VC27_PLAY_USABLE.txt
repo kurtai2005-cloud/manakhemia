@@ -16,7 +16,10 @@ Optional narrow wake check. Synthetic. Same isolation rules, profile vc27_rest_w
 
 powershell -NoProfile -File .\tools\Play-Usable.ps1 -Mode Wake -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -OutputDir C:\Users\nasa2\hd2d_test\vc27_rest_wake_out
 
-Continuous motion, after the overlay that includes the toss. Do not rerun Picture or Layers for this. Empty absolute output folder. The clip is sampled game time at about 6 frames per game second, not a claim of wall-clock realtime.
+Continuous feeding clip. Do not rerun Picture or Layers for this. Empty absolute output folder.
+Before Godot starts, the script checks for ffmpeg. If ffmpeg is missing it says so and still treats frames\f_####.jpg plus trace.jsonl and result.json as success. It does not install ffmpeg and it does not retry. If ffmpeg is present it also writes motion.mp4.
+Playback at 8 fps is a review rate. The toss uses consecutive engine frames. Each eat and happy pose is repeated so it stays on screen. That is not wall-clock realtime.
+The feeding clip does not include carry, refusal, pat, the garden return, or auto-wake. Those are not in this video.
 
 powershell -NoProfile -File .\tools\Play-Usable.ps1 -Mode Motion -GodotExe C:\Users\nasa2\hd2d_test\godot\Godot_v4.7.2-stable_win64.exe -OutputDir C:\Users\nasa2\hd2d_test\vc27_motion_out
 

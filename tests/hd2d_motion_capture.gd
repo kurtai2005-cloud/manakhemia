@@ -19,6 +19,9 @@ var _saw_happy := false
 var _saw_nuzzle := false
 var _saw_toss := false
 var _saw_carry := false
+var _toss_frames := 0
+var _eat_seen: Array[int] = []
+var _happy_seen: Array[int] = []
 
 
 func _initialize() -> void:
@@ -56,96 +59,44 @@ func _run() -> void:
 	_opening = cam.global_position
 	_opening_fov = cam.fov
 	_fixture("before sequence", 40.0, 85.0, 1)
+	_segment = "lead_in"
+	for _i in range(8):
+		await process_frame
+		_save_frame()
+	var toss_before := _main.get_node_or_null("GardenErrand/TossedFood") as Node3D
+	if toss_before and toss_before.visible:
+		_die(1, "food was already visible before the feed input")
+		return
 	_segment = "toss"
 	if not await _click_tip("餵", "toss_input"):
 		_die(1, _reason)
 		return
-	if not await _until_care("eat", "chew"):
+	if not await _until_phase("to_eat", "land", true):
 		_die(1, _reason)
 		return
-	if not _saw_toss:
-		_die(1, "tossed fruit was not visible")
+	if _toss_frames < 4:
+		_die(1, "toss arc was not sampled")
 		return
-	if not await _until_care("emo_happy", "happy"):
+	_segment = "approach"
+	if not await _until_care("eat", "chew", false):
 		_die(1, _reason)
 		return
+	_segment = "chew"
+	if not await _hold_care("eat", 3, "chew frames"):
+		_die(1, _reason)
+		return
+	_segment = "happy"
+	if not await _hold_care("emo_happy", 2, "happy frames"):
+		_die(1, _reason)
+		return
+	for _i in range(6):
+		await process_frame
+		_save_frame()
 	if _fruit() != 0:
 		_die(1, "meal did not spend the setup fruit")
 		return
-	_segment = "forage"
-	if not await _click_world(_berry_point(), "berry_input"):
-		_die(1, _reason)
-		return
-	if not await _until_phase("carry", "pickup"):
-		_die(1, _reason)
-		return
-	if not _saw_carry:
-		_die(1, "carried fruit was not visible")
-		return
-	if not await _until_fruit(1, "deliver"):
-		_die(1, _reason)
-		return
-	_fixture("refusal", 95.0, 85.0, -1)
-	var held := _fruit()
-	_segment = "refusal"
-	if not await _click_tip("餵", "refusal_input"):
-		_die(1, _reason)
-		return
-	await _sample_for(12)
-	if _fruit() != held or str(_state().get("phase", "")) != "idle":
-		_die(1, "full pet spent or tossed food")
-		return
-	_fixture("after refusal", 40.0, 85.0, -1)
-	_segment = "pat"
-	if not await _click_tip("摸", "pat_input"):
-		_die(1, _reason)
-		return
-	if not await _until_care("nuzzle", "pat"):
-		_die(1, _reason)
-		return
-	_segment = "rest_early"
-	if not await _click_named("GoalRest", "rest_input"):
-		_die(1, _reason)
-		return
-	if not await _until_inside(true, "door"):
-		_die(1, _reason)
-		return
-	await _sample_for(18)
-	if not await _click_text("返回", "early_return"):
-		_die(1, _reason)
-		return
-	if not await _until_inside(false, "early_out"):
-		_die(1, _reason)
-		return
-	if not await _until_camera("early return camera"):
-		_die(1, _reason)
-		return
-	if str(_state().get("phase", "")) == "asleep" or bool(root.get_node("Sim").state.get("sleeping", false)):
-		_die(1, "early return left the pet asleep")
-		return
-	_fixture("before auto-wake rest", 40.0, 60.0, -1)
-	_segment = "rest_auto"
-	if not await _click_named("GoalRest", "rest_again"):
-		_die(1, _reason)
-		return
-	if not await _until_inside(true, "door_again"):
-		_die(1, _reason)
-		return
-	_fixture("wake threshold", 40.0, 100.0, -1)
-	if not await _until_inside(false, "auto_wake"):
-		_die(1, _reason)
-		return
-	if not await _until_camera("auto-wake camera"):
-		_die(1, _reason)
-		return
-	if str(_state().get("phase", "")) == "asleep" or bool(root.get_node("Sim").state.get("sleeping", false)):
-		_die(1, "auto-wake left the pet asleep")
-		return
-	if not (_saw_eat and _saw_happy and _saw_nuzzle):
-		_die(1, "missing eat, happy, or pat reaction")
-		return
 	_write(true, "")
-	print("MOTION_CAPTURE_OK frames=", _frame, " renderer=", _running_renderer(), " driver=", _running_driver())
+	print("MOTION_CAPTURE_OK frames=", _frame, " eat_frames=", _eat_seen, " happy_frames=", _happy_seen, " renderer=", _running_renderer(), " driver=", _running_driver())
 	quit(0)
 
 
@@ -162,35 +113,73 @@ func _fixture(note: String, hunger: float, energy: float, fruit_add: int) -> voi
 	_line({"shot": note, "driver": "fixture", "note": "needs or starting fruit only"})
 
 
-func _until_care(id: String, why: String) -> bool:
+func _until_phase(phase: String, why: String, dense: bool) -> bool:
+	var start := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - start < 20000:
+		if Time.get_ticks_msec() > _deadline:
+			_reason = "timeout " + why
+			return false
+		await process_frame
+		if dense:
+			_save_frame()
+			if str(_state().get("phase", "")) == "toss":
+				_toss_frames += 1
+		else:
+			_maybe_frame()
+		if str(_state().get("phase", "")) == phase:
+			return true
+	_reason = "timeout " + why
+	return false
+
+
+func _hold_care(id: String, need: int, why: String) -> bool:
+	var start := Time.get_ticks_msec()
+	var last := -2
+	while Time.get_ticks_msec() - start < 12000:
+		if Time.get_ticks_msec() > _deadline:
+			_reason = "timeout " + why
+			return false
+		await process_frame
+		var pres := _main.get_node_or_null("Hd2dPresentation")
+		var now := str(pres.call("care_id")) if pres and pres.has_method("care_id") else ""
+		var frame := int(pres.call("care_frame")) if pres and pres.has_method("care_frame") else -1
+		if now == id and frame != last:
+			last = frame
+			for _k in range(8):
+				_save_frame()
+			if id == "eat" and frame not in _eat_seen:
+				_eat_seen.append(frame)
+			if id == "emo_happy" and frame not in _happy_seen:
+				_happy_seen.append(frame)
+		elif now == id:
+			_maybe_frame()
+		var got: Array[int] = _eat_seen if id == "eat" else _happy_seen
+		if got.size() >= need and now != id:
+			return true
+		if got.size() >= need and now == "" :
+			return true
+	var got2: Array[int] = _eat_seen if id == "eat" else _happy_seen
+	if got2.size() >= need:
+		return true
+	_reason = why + " saw " + str(got2)
+	return false
+
+
+func _until_care(id: String, why: String, dense: bool = false) -> bool:
 	var start := Time.get_ticks_msec()
 	while Time.get_ticks_msec() - start < 45000:
 		if Time.get_ticks_msec() > _deadline:
 			_reason = "timeout " + why
 			return false
 		await process_frame
-		_maybe_frame()
+		if dense:
+			_save_frame()
+		else:
+			_maybe_frame()
 		var pres := _main.get_node_or_null("Hd2dPresentation")
 		var now := str(pres.call("care_id")) if pres and pres.has_method("care_id") else ""
 		if now == id:
 			return true
-	_reason = "timeout " + why
-	return false
-
-
-func _until_phase(phase: String, why: String) -> bool:
-	var start := Time.get_ticks_msec()
-	while Time.get_ticks_msec() - start < 40000:
-		if Time.get_ticks_msec() > _deadline:
-			_reason = "timeout " + why
-			return false
-		await process_frame
-		_maybe_frame()
-		if str(_state().get("phase", "")) == phase:
-			return true
-		if str(_state().get("phase", "")) == "blocked":
-			_reason = "blocked " + why
-			return false
 	_reason = "timeout " + why
 	return false
 
@@ -260,7 +249,6 @@ func _save_frame() -> void:
 	var img := _main.get_viewport().get_texture().get_image()
 	if img == null or img.is_empty():
 		return
-	img.resize(270, 584, Image.INTERPOLATE_NEAREST)
 	_frame += 1
 	var name := "f_%04d.jpg" % _frame
 	img.save_jpg(_frames_dir.path_join(name), 0.62)

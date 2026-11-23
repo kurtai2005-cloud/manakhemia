@@ -83,6 +83,16 @@ function Set-IsolatedProfile([string]$name) {
     $script:wroteOverride = $true
 }
 
+$script:wantMp4 = $false
+if ($Mode -eq 'Motion') {
+    $ffmpegPre = Get-Command ffmpeg -ErrorAction SilentlyContinue
+    if ($ffmpegPre) {
+        $script:wantMp4 = $true
+        Write-Output "PREFLIGHT ffmpeg=$($ffmpegPre.Source). After the capture this run will also write motion.mp4."
+    } else {
+        Write-Output "PREFLIGHT ffmpeg is not on PATH. No install will be attempted. Success is frames\f_####.jpg plus trace.jsonl and result.json. motion.mp4 will not be created."
+    }
+}
 Set-Location -LiteralPath $project
 $logDir = Join-Path $outFull 'logs'
 New-Item -ItemType Directory -Path $logDir | Out-Null
@@ -155,25 +165,31 @@ try {
         $trace = Join-Path $outFull 'trace.jsonl'
         $result = Join-Path $outFull 'result.json'
         $clip = Join-Path $outFull 'motion.mp4'
-        if (-not (Test-Path -LiteralPath $trace) -or -not (Test-Path -LiteralPath $result)) {
-            $code = 1
-            [System.IO.File]::WriteAllText($exitPath, "$code`r`n", $utf8)
-            throw "expected trace.jsonl and result.json"
-        }
         $frames = Join-Path $outFull 'frames'
-        if (-not (Test-Path -LiteralPath $clip) -and (Test-Path -LiteralPath $frames)) {
-            $ffmpeg = Get-Command ffmpeg -ErrorAction SilentlyContinue
-            if ($ffmpeg) {
-                & $ffmpeg.Source -y -framerate 6 -i (Join-Path $frames 'f_%04d.jpg') -c:v libx264 -pix_fmt yuv420p -crf 28 $clip
-            }
-        }
-        if (-not (Test-Path -LiteralPath $clip)) {
+        if (-not (Test-Path -LiteralPath $trace) -or -not (Test-Path -LiteralPath $result) -or -not (Test-Path -LiteralPath $frames)) {
             $code = 1
             [System.IO.File]::WriteAllText($exitPath, "$code`r`n", $utf8)
-            throw "motion.mp4 missing"
+            throw "expected frames, trace.jsonl, and result.json"
         }
-        Write-Output "PLAY_USABLE_CAPTURE mode=Motion exit=$code output=$outFull"
-        Write-Output "Sampled game frames, not a claim of wall-clock realtime. Not an RTX or phone pass."
+        $jpgs = @(Get-ChildItem -LiteralPath $frames -Filter 'f_*.jpg' -File)
+        if ($jpgs.Count -lt 8) {
+            $code = 1
+            [System.IO.File]::WriteAllText($exitPath, "$code`r`n", $utf8)
+            throw "too few frames"
+        }
+        if ($script:wantMp4) {
+            $ffmpeg = Get-Command ffmpeg -ErrorAction SilentlyContinue
+            & $ffmpeg.Source -y -framerate 8 -i (Join-Path $frames 'f_%04d.jpg') -c:v libx264 -pix_fmt yuv420p -crf 26 $clip
+            if (-not (Test-Path -LiteralPath $clip)) {
+                $code = 1
+                [System.IO.File]::WriteAllText($exitPath, "$code`r`n", $utf8)
+                throw "ffmpeg did not write motion.mp4"
+            }
+            Write-Output "PLAY_USABLE_CAPTURE mode=Motion evidence=mp4 exit=$code frames=$($jpgs.Count) output=$outFull"
+        } else {
+            Write-Output "PLAY_USABLE_CAPTURE mode=Motion evidence=frames exit=$code frames=$($jpgs.Count) output=$outFull"
+        }
+        Write-Output "Playback 8 fps is a review rate. Care holds repeat the same game frame. Not wall-clock realtime. Not an RTX or phone pass."
     } else {
         throw "godot exit $code"
     }

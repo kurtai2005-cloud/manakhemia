@@ -264,7 +264,6 @@ func _eat_one() -> Dictionary:
 	task["phase"] = "idle"
 	task["active_id"] = ""
 	_write(task)
-	_hide_toss()
 	var pres := _presentation()
 	if pres and pres.has_method("play_care"):
 		pres.call("play_care", "eat")
@@ -602,6 +601,9 @@ func _tick_reaction() -> void:
 	if _after_eat == "eat":
 		if id == "eat":
 			_saw_eat = true
+			var frame := int(pres.call("care_frame")) if pres.has_method("care_frame") else 0
+			if frame >= 2:
+				_hide_toss()
 		elif _saw_eat and not active and pres.has_method("play_care"):
 			pres.call("play_care", "emo_happy")
 			_after_eat = "happy"
