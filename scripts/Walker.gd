@@ -105,6 +105,10 @@ func _process(dt: float) -> void:
 				agent.target_position = dest
 			_fallback_dest = dest
 			pause_t = 0.0
+	if errand_active:
+		_step_errand(dt)
+		_anim(dt)
+		return
 	if pause_t > 0.0:
 		pause_t -= dt
 		moving = false
@@ -153,6 +157,67 @@ func _process(dt: float) -> void:
 
 
 var _fallback_dest: Vector3 = Vector3.ZERO
+var errand_active := false
+var errand_hold := false
+var errand_blocked := false
+var errand_dest := Vector3.ZERO
+
+
+func set_errand(dest: Vector3) -> void:
+	errand_active = true
+	errand_hold = false
+	errand_blocked = false
+	errand_dest = Vector3(dest.x, 0.0, dest.z)
+	pause_t = 0.0
+	moving = true
+
+
+func clear_errand() -> void:
+	errand_active = false
+	errand_hold = false
+	errand_blocked = false
+	moving = false
+
+
+func _step_errand(dt: float) -> void:
+	if errand_hold:
+		moving = false
+		return
+	var dest := errand_dest
+	var pos := global_position
+	var to := Vector3(dest.x - pos.x, 0.0, dest.z - pos.z)
+	var dist := to.length()
+	if dist < 1.6:
+		moving = false
+		return
+	var dir := to / dist
+	var step_len := minf(speed * maxf(speed_mul, 0.1) * dt, dist)
+	var best: Vector3 = pos
+	var best_d := dist
+	var found := false
+	for deg in [0.0, 28.0, -28.0, 55.0, -55.0, 85.0, -85.0]:
+		var ang := deg_to_rad(deg)
+		var c := cos(ang)
+		var s := sin(ang)
+		var steer := Vector3(dir.x * c - dir.z * s, 0.0, dir.x * s + dir.z * c)
+		var alt := pos + steer * step_len
+		if feet and feet.blocked(alt.x, alt.z, radius):
+			continue
+		var d := Vector2(alt.x, alt.z).distance_to(Vector2(dest.x, dest.z))
+		if d < best_d - 0.001:
+			best = alt
+			best_d = d
+			found = true
+	if not found:
+		errand_blocked = true
+		moving = false
+		return
+	errand_blocked = false
+	best.y = 0.0
+	var step := best - pos
+	global_position = best
+	moving = true
+	_update_dir(step.x, step.z)
 
 func _pick_target() -> void:
 	var t: Vector3

@@ -110,6 +110,11 @@ func _ready() -> void:
 			enable_hd2d_presentation()
 		if hud and hud.has_method("set_care_target"):
 			hud.set_care_target(pet)
+		var errand_script := load("res://scripts/GardenErrand.gd") as GDScript
+		if errand_script:
+			var errand: Node = errand_script.new()
+			add_child(errand)
+			errand.call("setup", self, pet)
 
 
 func _build_world(objs_doc: Dictionary, objects: Array, lights: Dictionary) -> void:
@@ -714,6 +719,12 @@ func _ray_area(pos: Vector2, mask: int) -> Area3D:
 func _try_tap(pos: Vector2) -> void:
 	if cam == null:
 		return
+	var forage_hit := _ray_area(pos, 32)
+	if forage_hit:
+		var errand := get_node_or_null("GardenErrand")
+		if errand and errand.has_method("player_press"):
+			errand.call("player_press")
+			return
 	var pet_hit := _ray_area(pos, 4)
 	if pet_hit:
 		var w := pet_hit.get_parent()

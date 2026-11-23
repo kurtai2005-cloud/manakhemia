@@ -1,0 +1,25 @@
+First spatial loop on the current Main and the 675 garden. This is not the finished product.
+
+What you can do
+- Click the berry in the garden. The pet walks to it across the lawn.
+- The berry leaves the ground and sits on the pet. The pet walks to the pale home marker.
+- The existing fruit collection gains one starberry. A second delivery does not pay again.
+- Click the berry again before it is picked up, or click the berry on the pet, to cancel. Click once more to retry.
+- A solid footprint stops the walk and pays nothing.
+- Feed, pat, and clean stay on the one coat. The feet wait during that clip, then walking continues.
+- Closing the game mid-carry keeps the task in the existing save. Opening it again does not pay until the pet reaches the marker.
+
+Controls are the existing window. Left click or a screen tap. The isolated profile is still vc27_play_36bfd, started by tools/Play-Main.ps1 with the mobile renderer. Do not use the default 微光小圃 save.
+
+Not in this slice
+- A field of objects, indoor foraging, a shop, or a second creature.
+- The house door still uses the existing enter and exit.
+- Growth is still the existing clock. Offline time still uses the existing cap and does not complete this delivery.
+- Room art, lighting, and materials are unchanged.
+- A headless run is not a phone or GPU picture. Windows still needs one later look when a pack is ready.
+- The old "not responding" flag is not treated as a blocker. A click landing on the pet only showed that the window takes a click.
+
+Known stderr on the headless runs, exit 0, not hidden
+- Parameter "material" is null (existing garden materials).
+- Capture not registered: beehave.
+- Resources still in use at exit.
