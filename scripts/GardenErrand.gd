@@ -277,7 +277,7 @@ func _eat_one() -> Dictionary:
 
 
 func _start_door_rest() -> String:
-	if main == null or bool(main.get("in_interior")):
+	if main == null or bool(main.get("in_interior")) or str(main.get("_house_leg")) != "":
 		return "busy"
 	if not _rest_ready():
 		return "none"
@@ -293,6 +293,8 @@ func _start_door_rest() -> String:
 
 
 func _watch_door() -> void:
+	if main != null and str(main.get("_house_leg")) != "":
+		return
 	var pres := _presentation()
 	if pres != null and bool(pres.get("arrived")):
 		walker.clear_errand()

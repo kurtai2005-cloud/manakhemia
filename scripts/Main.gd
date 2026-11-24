@@ -49,6 +49,10 @@ var follow_walker: Walker
 var play_frames := 0
 var play_inputs := 0
 var _door_pending := false
+var _house_leg := ""
+var _house_stand := Vector3.ZERO
+var _house_cool := 0.0
+var _house_look := Vector3.ZERO
 var play_focus_events := 0
 var play_mouse_events := 0
 var _play_pulse_ms := 0
@@ -654,7 +658,7 @@ func phase1_pan(delta: Vector2) -> void:
 	if Ecosystem and Ecosystem.has_method("stop_follow"):
 		Ecosystem.stop_follow()
 	phase1_to.x = clampf(phase1_to.x - delta.x * 0.35, -460.0, 460.0)
-	phase1_to.z = clampf(phase1_to.z - delta.y * 0.35, -460.0, 100.0)
+	phase1_to.z = clampf(phase1_to.z - delta.y * 0.35, -720.0, 100.0)
 	phase1_from = phase1_to
 	follow_pos = phase1_to
 
@@ -766,6 +770,7 @@ func _process(dt: float) -> void:
 		print("play pulse wall_ms=", now, " frames=", play_frames, " max_frame_ms=", _play_max_frame_ms, " inputs=", play_inputs, " focus=", play_focus_events, " mouse=", play_mouse_events, " display=", DisplayServer.get_name())
 	_place_cam(dt)
 	_remember_pet_lawn()
+	_tick_house_door(dt)
 	_commit_door_if_arrived()
 	_release_hunt_travel()
 	_mark_work_arrived()
@@ -785,6 +790,12 @@ func _notification(what: int) -> void:
 		play_focus_events += 1
 	elif what == NOTIFICATION_WM_MOUSE_ENTER or what == NOTIFICATION_WM_MOUSE_EXIT:
 		play_mouse_events += 1
+	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		if in_interior:
+			request_house_exit()
+		elif Phase1 and Phase1.hud and Phase1.hud.modal and Phase1.hud.modal.visible:
+			Phase1.close_modal()
+		get_viewport().set_input_as_handled()
 
 
 func _input(_event: InputEvent) -> void:
@@ -888,17 +899,15 @@ func _try_tap(pos: Vector2) -> void:
 	if poop_hit:
 		_clean_poop(poop_hit)
 		return
-	if not in_interior and not in_hunt_view:
+	if in_interior:
+		var inside_door := _ray_area(pos, 16)
+		if inside_door:
+			request_house_exit()
+			return
+	elif not in_hunt_view and _house_cool <= 0.0 and _house_leg == "":
 		var house := _ray_area(pos, 16)
 		if house:
-			if _hd2d_host != null and bool(_hd2d_host.get("active")) and _hd2d_host.has_method("begin_approach"):
-				if bool(_hd2d_host.call("begin_approach")):
-					_door_pending = true
-					var stand: Vector3 = _hd2d_host.get("goal")
-					if pet:
-						pet.set_errand(stand)
-			else:
-				enter_house()
+			request_house_enter()
 			return
 	var bld := _ray_area(pos, 8)
 	if bld:
@@ -2606,6 +2615,79 @@ func _pick_interior_guest() -> Walker:
 	return pet
 
 
+func request_house_enter() -> void:
+	if in_interior or interior_room == null or _house_leg != "" or _house_cool > 0.0:
+		return
+	_door_pending = false
+	if _hd2d_host != null and _hd2d_host.has_method("cancel_approach"):
+		_hd2d_host.call("cancel_approach")
+	var stand := Hd2dDoor.exterior_anchor()
+	_house_look = phase1_to
+	_house_stand = stand
+	if pet and pet.global_position.distance_to(stand) < 7.0:
+		_house_cool = 0.3
+		enter_house(false)
+		return
+	_house_leg = "to_enter"
+	if Phase1 and Phase1.active and Phase1.actions and Phase1.actions.has_method("walk_door"):
+		Phase1.actions.call("walk_door", stand)
+	elif pet:
+		pet.set_errand(stand)
+	if Phase1 and Phase1.has_method("toast"):
+		Phase1.toast("去門口")
+
+
+func request_house_exit() -> void:
+	if not in_interior or interior_room == null or _house_leg != "":
+		return
+	_house_stand = interior_room.interior_exit_stand()
+	if pet and pet.global_position.distance_to(_house_stand) < 7.0:
+		_house_cool = 1.2
+		exit_house(false)
+		return
+	_house_leg = "to_exit"
+	if pet:
+		pet.set("phase1_scripted", true)
+		pet.set("moving", true)
+		pet.pause_t = 0.0
+	if Phase1 and Phase1.has_method("toast"):
+		Phase1.toast("去門口")
+
+
+func _tick_house_door(dt: float) -> void:
+	if _house_cool > 0.0:
+		_house_cool = maxf(0.0, _house_cool - dt)
+	if _house_leg == "" or pet == null:
+		return
+	var flat := Vector3(pet.global_position.x, 0.0, pet.global_position.z)
+	var goal := Vector3(_house_stand.x, 0.0, _house_stand.z)
+	var gap := flat.distance_to(goal)
+	if _house_leg == "to_exit":
+		var step := minf(32.0 * dt, gap)
+		if gap > 0.4:
+			var dir := (goal - flat) / gap
+			pet.global_position = Vector3(flat.x + dir.x * step, 0.0, flat.z + dir.z * step)
+			if pet.has_method("_update_dir"):
+				pet.call("_update_dir", dir.x, dir.z)
+			pet.set("moving", true)
+		if pet.global_position.distance_to(goal) < 6.0:
+			_house_leg = ""
+			pet.set("moving", false)
+			pet.set("phase1_scripted", false)
+			_house_cool = 1.2
+			exit_house(false)
+		return
+	if _house_leg == "to_enter" and gap < 7.0:
+		_house_leg = ""
+		if Phase1 and Phase1.actions and Phase1.actions.has_method("cancel"):
+			Phase1.actions.call("cancel")
+		if pet:
+			pet.global_position = goal
+			pet.set("phase1_scripted", false)
+		_house_cool = 0.4
+		enter_house(false)
+
+
 func enter_house(instant: bool = false, guest: Walker = null) -> void:
 	if in_interior or in_hunt_view or interior_room == null:
 		return
@@ -2728,13 +2810,15 @@ func _run_exit_transition() -> void:
 	, 0.0, 1.0, close_s).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tw.set_parallel(false)
 	tw.tween_callback(func():
-		if _hd2d_exterior != null and is_instance_valid(_hd2d_exterior):
-			if _hd2d_exterior.has_method("_apply_opening_to_root_cam"):
-				_hd2d_exterior.call("_apply_opening_to_root_cam")
-			if _hd2d_exterior.has_method("_lock_play_camera"):
-				_hd2d_exterior.call("_lock_play_camera")
-			return
 		_interior_lock_cam = false
+		if phase1_on:
+			var home := phase1_open_look()
+			var back := _house_stand if _house_stand != Vector3.ZERO else _house_look
+			phase1_from = phase1_to
+			phase1_to = Vector3(back.x, home.y, back.z)
+			phase1_t = 0.0
+			_place_cam(0.0)
+			return
 		_place_cam(0.0)
 	)
 
@@ -2754,8 +2838,15 @@ func _cut_to_interior() -> void:
 		guest.pause_t = 0.0
 		if guest.agent and interior_room.nav_region:
 			guest.agent.set_navigation_map(interior_room.nav_region.get_navigation_map())
-		# 入屋後行兩步，顯得房間用得
-		guest.go_to(interior_room.walk_point(rng if rng else RandomNumberGenerator.new()))
+		guest.set("phase1_scripted", false)
+		guest.pause_t = 1.2
+		guest.set("moving", false)
+	if Sim:
+		Sim.state["phase1_inside"] = true
+		if Sim.has_method("_save_now"):
+			Sim._save_now(true)
+	if Phase1 and Phase1.has_method("set_inside"):
+		Phase1.set_inside(true)
 	if hud and hud.has_method("set_in_interior"):
 		hud.set_in_interior(true)
 	cam_mode = CamMode.OVERVIEW
@@ -2770,11 +2861,10 @@ func _cut_to_interior() -> void:
 func _cut_to_garden() -> void:
 	var guest: Walker = _interior_guest
 	if guest and is_instance_valid(guest):
-		var home := _pet_lawn_pos if guest == pet and _pet_lawn_pos != Vector3.ZERO else _interior_guest_home
-		if home == Vector3.ZERO:
-			home = cottage_door_world() + Vector3(0, 0, 36)
+		var home := Hd2dDoor.exterior_anchor() + Vector3(0, 0, 16)
 		home.y = 0
 		guest.global_position = home
+		_house_stand = home
 		guest.brain_driven = true
 		guest.use_nav = true
 		if guest.agent and nav_region:
@@ -2790,6 +2880,12 @@ func _cut_to_garden() -> void:
 	_rehide_exterior_legacy()
 	if interior_room:
 		interior_room.visible = false
+	if Sim:
+		Sim.state["phase1_inside"] = false
+		if Sim.has_method("_save_now"):
+			Sim._save_now(true)
+	if Phase1 and Phase1.has_method("set_inside"):
+		Phase1.set_inside(false)
 	if hud and hud.has_method("set_in_interior"):
 		hud.set_in_interior(false)
 	cam_mode = CamMode.OVERVIEW
@@ -2799,8 +2895,13 @@ func _cut_to_garden() -> void:
 	if _hd2d_exterior != null and is_instance_valid(_hd2d_exterior):
 		if _hd2d_exterior.has_method("_apply_opening_to_root_cam"):
 			_hd2d_exterior.call("_apply_opening_to_root_cam")
-		if _hd2d_exterior.has_method("_lock_play_camera"):
-			_hd2d_exterior.call("_lock_play_camera")
+		if phase1_on:
+			var home_look := phase1_open_look()
+			var back := _house_stand if _house_stand != Vector3.ZERO else home_look
+			phase1_from = Vector3(back.x, home_look.y, back.z)
+			phase1_to = phase1_from
+			phase1_t = 1.0
+		_interior_lock_cam = false
 		return
 	var door := cottage_door_world()
 	if cam:

@@ -38,6 +38,7 @@ const PROP_SCALE := 2.4
 const POOL_N := 28
 const NODES := {
 	"home": Vector3(0, 0, 45),
+	"door": Vector3(94, 0, -29.5),
 	"west": Vector3(-125, 0, 15),
 	"farm_gate": Vector3(-302, 0, 20),
 	"farm": Vector3(-365, 0, 25),
@@ -50,6 +51,7 @@ const NODES := {
 	"prairie": Vector3(240, 0, -385),
 }
 const LINKS := [
+	["home", "door"],
 	["home", "west"], ["west", "farm_gate"], ["farm_gate", "farm"],
 	["home", "east"], ["east", "shop_gate"], ["shop_gate", "shop"],
 	["east", "east_north"], ["east_north", "prairie_east"], ["prairie_east", "prairie_gate"], ["prairie_gate", "prairie"],
@@ -119,7 +121,8 @@ func play_garden(bed_pos: Vector3, harvest: bool) -> void:
 
 
 func play_stove(stove_pos: Vector3) -> void:
-	_travel("stove", Vector3(stove_pos.x + 22.0, 0.0, stove_pos.z + 16.0), stove_pos, true)
+	# Stand in front of the mouth, a little to the side, so the pet does not cover the stove.
+	_travel("stove", Vector3(stove_pos.x + 10.0, 0.0, stove_pos.z + 30.0), stove_pos, true)
 
 
 func play_post(post_pos: Vector3) -> void:
@@ -132,6 +135,10 @@ func play_forage(spot: Vector3) -> void:
 
 func jog_to(dest: Vector3) -> void:
 	_travel("jog", Vector3(dest.x, 0.0, dest.z), dest, false)
+
+
+func walk_door(dest: Vector3) -> void:
+	_travel("door", Vector3(dest.x, 0.0, dest.z), dest, true)
 
 
 func goal_distance() -> float:
@@ -271,7 +278,7 @@ func _tick_run(pet: Node3D, dt: float) -> void:
 func _finish_run(pet: Node3D) -> void:
 	pet.global_position = Vector3(_dest.x, 0.0, _dest.z)
 	pet.set("moving", false)
-	if _kind == "jog":
+	if _kind == "jog" or _kind == "door":
 		pet.set("phase1_scripted", false)
 		var done := _kind
 		_kind = ""

@@ -375,6 +375,7 @@ func _apply_r14_budget() -> void:
 	_keep_low_lights_quiet()
 	_trim_far_clumps()
 	_keep_dapple_off_prairie()
+	_open_sightlines()
 
 
 func _keep_low_lights_quiet() -> void:
@@ -388,6 +389,45 @@ func _keep_low_lights_quiet() -> void:
 	var pool := get_node_or_null("SunPool") as Light3D
 	if pool:
 		pool.visible = false
+
+
+func _open_sightlines() -> void:
+	# Moves are from the live camera projection, not a guessed screen offset.
+	# Pots and the front crate sit on the door approach. The two thick trunks
+	# read as the farm's right-front tree and the workshop's left-front tree.
+	_shift_near(Vector3(100, 0, -30), Vector3(150, 0, -78))
+	_shift_near(Vector3(81, 0, 54), Vector3(40, 0, 86))
+	_shift_near(Vector3(128, 0, 8), Vector3(170, 0, -36))
+	_shift_near(Vector3(22, 0, 18), Vector3(-46, 0, 8))
+	_shift_near(Vector3(-145, 0, 10), Vector3(-236, 0, -156))
+	_shift_near(Vector3(165, 0, -70), Vector3(96, 0, -196))
+
+
+func _shift_near(from: Vector3, to: Vector3) -> void:
+	var best: Node3D = null
+	var best_d := 8.0
+	for node in find_children("*", "Node3D", true, false):
+		if node.global_position.y > 8.0:
+			continue
+		var dist := Vector2(node.global_position.x, node.global_position.z).distance_to(Vector2(from.x, from.z))
+		if dist < best_d:
+			best = node
+			best_d = dist
+	if best == null:
+		print("SIGHT_MISS ", from)
+		return
+	var top := best
+	var guard := 0
+	while guard < 6 and top.get_parent() is Node3D:
+		guard += 1
+		var parent := top.get_parent() as Node3D
+		if parent == self or parent.name == "Phase1ZonesRoot":
+			break
+		if Vector2(parent.global_position.x, parent.global_position.z).distance_to(Vector2(from.x, from.z)) > 8.0:
+			break
+		top = parent
+	top.global_position = Vector3(to.x, top.global_position.y, to.z)
+	print("SIGHT_SHIFT ", top.name, " -> ", top.global_position)
 
 
 func _keep_dapple_off_prairie() -> void:

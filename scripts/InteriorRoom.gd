@@ -41,7 +41,23 @@ func setup() -> void:
 	furniture_root = Node3D.new()
 	furniture_root.name = "InteriorFurniture"
 	add_child(furniture_root)
+	_add_door_click()
 	apply_tier()
+
+
+func _add_door_click() -> void:
+	var area := Area3D.new()
+	area.name = "InteriorDoorClick"
+	area.input_ray_pickable = true
+	area.collision_layer = 16
+	area.collision_mask = 0
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(36, 48, 20)
+	shape.shape = box
+	area.add_child(shape)
+	add_child(area)
+	area.global_position = door_pivot.global_position if door_pivot else door_world()
 
 
 func _load_cfg() -> Dictionary:
@@ -67,6 +83,16 @@ func slot_pos(sl: String) -> Vector3:
 	if a is Array and a.size() >= 3:
 		return Vector3(float(a[0]), float(a[1]), float(a[2]))
 	return Vector3.ZERO
+
+
+func interior_exit_stand() -> Vector3:
+	var door := door_pivot.global_position if door_pivot else door_world()
+	var inside := pet_enter_pos()
+	var dir := inside - door
+	dir.y = 0.0
+	if dir.length() < 1.0:
+		dir = Vector3(0, 0, -1)
+	return door + dir.normalized() * 10.0
 
 
 func pet_enter_pos() -> Vector3:

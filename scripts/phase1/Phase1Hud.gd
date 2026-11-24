@@ -23,6 +23,7 @@ var import_box: TextEdit
 var name_btn: Button
 var shard_lbl: Label
 var expand_btn: Button
+var leave_btn: Button
 var bars: Dictionary = {}
 var collapsed := false
 var zone_buttons: Dictionary = {}
@@ -84,6 +85,9 @@ func build() -> void:
 		shard_pill.add_child(shard_lbl)
 	top_row.add_child(shard_pill)
 	top_row.add_child(_btn("HideHud", "收起", _on_hide, "icon_hide_32.png"))
+	leave_btn = _btn("LeaveHouse", "出門", _on_leave)
+	leave_btn.visible = false
+	root.add_child(leave_btn)
 	top_row.add_child(_btn("OpenTools", "工具", _on_tools, "icon_tools_32.png"))
 	care_row = HBoxContainer.new()
 	care_row.name = "CareRow"
@@ -176,7 +180,7 @@ func build() -> void:
 
 
 func blocks_point(pt: Vector2) -> bool:
-	for node in [top, care_row, dock, feed_row, train_row, map_row, drawer, modal, expand_btn]:
+	for node in [top, care_row, dock, feed_row, train_row, map_row, drawer, modal, expand_btn, leave_btn]:
 		if node is Control and (node as Control).visible and (node as Control).get_global_rect().has_point(pt):
 			return true
 	return false
@@ -234,6 +238,9 @@ func apply_layout() -> void:
 	_place_rows(safe)
 	expand_btn.position = Vector2(safe.end.x - 72, safe.position.y)
 	expand_btn.size = Vector2(68, 34)
+	if leave_btn:
+		leave_btn.position = Vector2(safe.position.x + safe.size.x * 0.5 - 40.0, safe.position.y + 78.0)
+		leave_btn.size = Vector2(80, 36)
 	var toast_pill := root.get_node_or_null("ToastPill") as Control
 	if toast_pill and toast_pill.visible:
 		_hug(toast_pill, toast, Vector2(safe.position.x + safe.size.x * 0.5, safe.position.y + 74), false)
@@ -418,6 +425,17 @@ func _place_emote() -> void:
 
 func _on_name() -> void:
 	_call("open_info")
+
+
+func set_inside(v: bool) -> void:
+	if leave_btn:
+		leave_btn.visible = v
+	if v:
+		set_collapsed(false)
+
+
+func _on_leave() -> void:
+	_call("leave_house")
 
 
 func _on_hide() -> void:

@@ -69,6 +69,8 @@ func attach(main: Node) -> void:
 	var away := OfflineIdleEngine.settle(Sim.state, int(Time.get_unix_time_from_system() * 1000.0))
 	if bool(away.get("show", false)):
 		_show_idle(away)
+	if bool(Sim.state.get("phase1_inside", false)) and main.has_method("enter_house"):
+		main.enter_house(true)
 	mark("boot")
 
 
@@ -84,6 +86,8 @@ func _process(dt: float) -> void:
 		return
 	_patrol_wait = randf_range(25.0, 40.0)
 	if actions and actions.has_method("busy") and bool(actions.call("busy")):
+		return
+	if host and (bool(host.get("in_interior")) or str(host.get("_house_leg")) != ""):
 		return
 	if world == null or actions == null:
 		return
@@ -437,7 +441,25 @@ func _hide_rows() -> void:
 	hud.apply_layout()
 
 
+func set_inside(v: bool) -> void:
+	if hud and hud.has_method("set_inside"):
+		hud.set_inside(v)
+
+
+func leave_house() -> void:
+	if host and host.has_method("request_house_exit"):
+		host.request_house_exit()
+	mark("leave")
+
+
+func _indoors() -> bool:
+	return host != null and bool(host.get("in_interior"))
+
+
 func tend_bed(bed_at: Vector3, harvest: bool, index: int = -1) -> void:
+	if _indoors():
+		toast("先出門")
+		return
 	_bed_i = index
 	_bed_harvest = harvest
 	_harvest_all = false
@@ -449,6 +471,9 @@ func tend_bed(bed_at: Vector3, harvest: bool, index: int = -1) -> void:
 
 
 func harvest_all() -> void:
+	if _indoors():
+		toast("先出門")
+		return
 	var ripe := _ripe_indexes()
 	if ripe.is_empty():
 		toast("尚未成熟")
@@ -465,6 +490,9 @@ func harvest_all() -> void:
 
 
 func act_stove() -> void:
+	if _indoors():
+		toast("先出門")
+		return
 	_after = ""
 	_run_stove()
 	toast("跑去煮")
@@ -472,6 +500,9 @@ func act_stove() -> void:
 
 
 func act_post() -> void:
+	if _indoors():
+		toast("先出門")
+		return
 	_after = ""
 	_run_post()
 	toast("跑去寄")
@@ -479,6 +510,9 @@ func act_post() -> void:
 
 
 func act_forage() -> void:
+	if _indoors():
+		toast("先出門")
+		return
 	_after = ""
 	if actions and world:
 		actions.call("play_forage", world.prairie_pos())
@@ -497,6 +531,8 @@ func _run_post() -> void:
 
 
 func _on_arrived(kind: String) -> void:
+	if kind == "door" or kind == "jog":
+		return
 	arrivals += 1
 	if kind == "harvest" or kind == "water":
 		if _harvest_all:
