@@ -374,6 +374,7 @@ func _apply_r14_budget() -> void:
 		depth.set_process(false)
 	_keep_low_lights_quiet()
 	_trim_far_clumps()
+	_keep_dapple_off_prairie()
 
 
 func _keep_low_lights_quiet() -> void:
@@ -387,6 +388,18 @@ func _keep_low_lights_quiet() -> void:
 	var pool := get_node_or_null("SunPool") as Light3D
 	if pool:
 		pool.visible = false
+
+
+func _keep_dapple_off_prairie() -> void:
+	# The wide leaf-shadow sheet covers the old north lawn and painted a grey
+	# semicircle on the meadow. The home lawn stays inside the trimmed sheet.
+	var dapple := find_child("GroundDapple_v67", true, false) as MeshInstance3D
+	if dapple == null or not (dapple.mesh is PlaneMesh):
+		return
+	var plane := (dapple.mesh as PlaneMesh).duplicate() as PlaneMesh
+	plane.size = Vector2(920.0, 640.0)
+	dapple.mesh = plane
+	dapple.position = Vector3(0.0, 0.2, 80.0)
 
 
 func _trim_far_clumps() -> void:

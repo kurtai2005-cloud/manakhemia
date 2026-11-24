@@ -6,13 +6,13 @@ const LOOK := {
 	"garden": Vector3(12, 58, -26),
 	"zone_farm": Vector3(-410, 58, 20),
 	"zone_workshop": Vector3(410, 58, 20),
-	"prairie_edge": Vector3(0, 58, -410),
+	"prairie_edge": Vector3(240, 58, -680),
 }
 const ANCHOR := {
 	"garden": Vector3(0, 0, 45),
 	"zone_farm": Vector3(-365, 0, 25),
 	"zone_workshop": Vector3(410, 0, 22),
-	"prairie_edge": Vector3(0, 0, -395),
+	"prairie_edge": Vector3(240, 0, -385),
 }
 const SOIL := "res://art/phase1/props/farm_soil_albedo.png"
 const COBBLE := "res://art/phase1/props/workshop_cobble_albedo.png"
@@ -27,7 +27,7 @@ var host: Node
 var zones: Node3D
 var _stove := Vector3(358, 0, -18)
 var _post := Vector3(465, 0, -16)
-var _prairie := Vector3(0, 0, -395)
+var _prairie := Vector3(240, 0, -385)
 
 
 func build(exterior: Node) -> void:
@@ -35,19 +35,22 @@ func build(exterior: Node) -> void:
 	zones = Node3D.new()
 	zones.name = "Phase1ZonesRoot"
 	exterior.add_child(zones)
-	_ground_pad("FarmSoil", Vector3(-410, 0.03, 20), Vector2(220, 180), SOIL, Vector3(3.5, 2.8, 1.0))
-	_ground_pad("WorkshopCobble", Vector3(410, 0.03, 20), Vector2(220, 180), COBBLE, Vector3(4.0, 3.2, 1.0))
-	_ground_pad("PrairieMeadow", Vector3(0, 0.03, -410), Vector2(300, 220), MEADOW, Vector3(4.7, 3.5, 1.0))
+	_ground_pad("FarmSoil", Vector3(-410, 0.03, 20), Vector2(220, 180), SOIL, Vector3(3.5, 2.8, 1.0), Color(0.90, 0.88, 0.85))
+	_ground_pad("WorkshopCobble", Vector3(410, 0.03, 20), Vector2(220, 180), COBBLE, Vector3(4.0, 3.2, 1.0), Color(0.84, 0.82, 0.78))
+	_ground_pad("PrairieMeadow", Vector3(240, 0.05, -400), Vector2(300, 220), MEADOW, Vector3(4.7, 3.5, 1.0), Color(0.68, 0.74, 0.64))
 	_dirt_path("PathWest", Vector3(-125, 0.04, 15), Vector3(-302, 0.04, 20))
 	_dirt_path("PathEast", Vector3(125, 0.04, 15), Vector3(302, 0.04, 20))
-	_dirt_path("PathNorth", Vector3(0, 0.04, -125), Vector3(0, 0.04, -302))
+	_dirt_path("PathPrairieEast", Vector3(125, 0.04, -125), Vector3(240, 0.04, -125))
+	_dirt_path("PathPrairieNorth", Vector3(240, 0.04, -125), Vector3(240, 0.04, -720))
 	var beds := [Vector3(-450, 0, -20), Vector3(-395, 0, -20), Vector3(-450, 0, 25), Vector3(-395, 0, 25)]
 	for i in beds.size():
 		_bed(i, beds[i])
-	for i in 4:
-		_spawn_prop("garden_fence_seg", "FenceBack_%d" % i, Vector3(-490 + i * 45.0, 0, -62), 0.0, _fence_fallback)
-	for i in 3:
-		_spawn_prop("garden_fence_seg", "FenceWest_%d" % i, Vector3(-512, 0, -40 + i * 35.0), PI * 0.5, _fence_fallback)
+	for i in 11:
+		_spawn_prop("garden_fence_seg", "FenceBack_%d" % i, Vector3(-504 + i * 18.0, 0, -62), 0.0, _fence_fallback)
+	for i in 9:
+		_spawn_prop("garden_fence_seg", "FenceWest_%d" % i, Vector3(-512, 0, -54 + i * 18.0), PI * 0.5, _fence_fallback)
+	_spawn_prop("prairie_flower_clump", "FarmCornerL", Vector3(-500, 0, 100), 0.2, _flower_fallback, 1.3)
+	_spawn_prop("prairie_flower_clump", "FarmCornerR", Vector3(-320, 0, 100), -0.4, _flower_fallback, 1.3)
 	_sign("SignFarm", "農圃", Vector3(-320, 0, 42), 1.2)
 	_spawn_prop("garden_lantern", "FarmLantern", Vector3(-320, 0, -25), 0.0, _lantern_fallback, 1.4)
 	var stove := _spawn_prop("outdoor_stove", "WorkOutdoorStove", _stove, deg_to_rad(18.0), _stove_fallback, 1.6)
@@ -55,21 +58,21 @@ func build(exterior: Node) -> void:
 	var post := _spawn_prop("outdoor_post_rack", "WorkOutdoorPost", _post, deg_to_rad(-18.0), _post_fallback, 1.6)
 	_spot(post, "post", Vector3(36, 46, 24))
 	_spawn_prop("wood_crate", "ShopCrate", Vector3(482, 0, 34), 0.4, _crate_fallback, 1.4)
-	_spawn_prop("wood_crate", "ShopCrateB", Vector3(334, 0, 48), -0.3, _crate_fallback, 1.3)
+	_spawn_prop("wood_crate", "ShopCrateB", Vector3(362, 0, 48), -0.3, _crate_fallback, 1.3)
+	_spawn_prop("stepping_stone", "ShopCornerL", Vector3(320, 0, 100), 0.3, _stone_fallback, 1.3)
+	_spawn_prop("stepping_stone", "ShopCornerR", Vector3(500, 0, 100), -0.2, _stone_fallback, 1.3)
 	_spawn_prop("garden_lantern", "ShopLantern", Vector3(322, 0, -22), 0.0, _lantern_fallback, 1.4)
 	_sign("SignShop", "工坊", Vector3(326, 0, 48), 1.2)
-	var flowers := [Vector3(-68, 0, -375), Vector3(74, 0, -415), Vector3(-28, 0, -445)]
+	var flowers := [Vector3(150, 0, -640), Vector3(340, 0, -670), Vector3(190, 0, -760), Vector3(360, 0, -730)]
 	for i in flowers.size():
-		var flower := _spawn_prop("prairie_flower_clump", "Flower_%d" % i, flowers[i], 0.3, _flower_fallback, 1.6)
+		var flower := _spawn_prop("prairie_flower_clump", "Flower_%d" % i, flowers[i], 0.4 * float(i), _flower_fallback, 3.2)
 		if i == 0:
-			_spot(flower, "prairie", Vector3(36, 16, 36))
-	var stones := [Vector3(-18, 0, -332), Vector3(0, 0, -348), Vector3(20, 0, -362)]
+			_spot(flower, "prairie", Vector3(48, 20, 48))
+	var stones := [Vector3(210, 0, -620), Vector3(245, 0, -690), Vector3(275, 0, -750)]
 	for i in stones.size():
-		_spawn_prop("stepping_stone", "PrairieStep_%d" % i, stones[i], 0.2, _stone_fallback, 1.4)
-	_sign("SignPrairie", "草原", Vector3(55, 0, -335), 1.2)
-	_backdrop_tree("PrairieTree_0", Vector3(-125, 0, -492))
-	_backdrop_tree("PrairieTree_1", Vector3(-35, 0, -508))
-	_backdrop_tree("PrairieTree_2", Vector3(95, 0, -486))
+		_spawn_prop("stepping_stone", "PrairieStep_%d" % i, stones[i], 0.4 * float(i), _stone_fallback, 2.4)
+	_spawn_prop("garden_lantern", "PrairieLantern", Vector3(130, 0, -700), 0.2, _lantern_fallback, 2.8)
+	_sign("SignPrairie", "草原", Vector3(360, 0, -620), 2.0)
 	_horizon()
 	_seed_plots()
 	_refresh_beds()
@@ -137,7 +140,7 @@ func _spawn_prop(key: String, node_name: String, pos: Vector3, rot_y: float, fal
 	node.rotation.y = rot_y
 	if scale_v != 1.0:
 		node.scale = Vector3.ONE * scale_v
-	if key in ["dirt_path_tile", "stepping_stone", "prairie_flower_clump", "wood_crate", "garden_fence_seg"]:
+	if key in ["dirt_path_tile", "stepping_stone", "prairie_flower_clump", "wood_crate", "garden_fence_seg", "garden_lantern"]:
 		_no_shadow(node)
 	zones.add_child(node)
 	return node
@@ -335,7 +338,13 @@ func _horizon() -> void:
 	mi.position = Vector3(0, -0.08, -80)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color("#495e2e")
+	var tex := load("res://hd2d_stage/textures/grass_outer_512.png") as Texture2D
+	if tex:
+		mat.albedo_texture = tex
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	# GroundOuter repeats grass_outer_512 once per 512 wu. Same density, unshaded.
+	mat.uv1_scale = Vector3(3600.0 / 512.0, 3600.0 / 512.0, 1.0)
+	mat.albedo_color = Color(0.74, 0.78, 0.58)
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.roughness = 1.0
 	mat.metallic = 0.0
@@ -344,7 +353,7 @@ func _horizon() -> void:
 	zones.add_child(mi)
 
 
-func _ground_pad(node_name: String, pos: Vector3, size: Vector2, tex_path: String, uv: Vector3) -> void:
+func _ground_pad(node_name: String, pos: Vector3, size: Vector2, tex_path: String, uv: Vector3, tint: Color) -> void:
 	var mi := MeshInstance3D.new()
 	mi.name = node_name
 	var plane := PlaneMesh.new()
@@ -352,7 +361,7 @@ func _ground_pad(node_name: String, pos: Vector3, size: Vector2, tex_path: Strin
 	mi.mesh = plane
 	mi.position = pos
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	mi.material_override = _tile_mat(tex_path, uv)
+	mi.material_override = _tile_mat(tex_path, uv, tint)
 	zones.add_child(mi)
 
 
@@ -369,7 +378,7 @@ func _dirt_path(node_name: String, a: Vector3, b: Vector3) -> void:
 	mi.position = (a + b) * 0.5
 	mi.basis = Basis(along, Vector3.UP, side)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var uv := Vector3(maxf(length / 40.0, 1.0), 2.0, 1.0)
+	var uv := Vector3(length / 26.0, 1.0, 1.0)
 	mi.material_override = _tile_mat(PATH_TEX, uv)
 	zones.add_child(mi)
 	for t in [0.34, 0.68]:
@@ -378,11 +387,12 @@ func _dirt_path(node_name: String, a: Vector3, b: Vector3) -> void:
 		_spawn_prop("stepping_stone", "%sStone_%d" % [node_name, int(t * 10.0)], at, 0.2, _stone_fallback, 1.3)
 
 
-func _tile_mat(tex_path: String, uv: Vector3) -> StandardMaterial3D:
+func _tile_mat(tex_path: String, uv: Vector3, tint: Color = Color.WHITE) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
 	var tex := load(tex_path) as Texture2D
 	if tex:
 		mat.albedo_texture = tex
+	mat.albedo_color = tint
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	mat.uv1_scale = uv
 	mat.roughness = 1.0

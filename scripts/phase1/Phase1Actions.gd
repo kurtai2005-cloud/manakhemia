@@ -45,14 +45,14 @@ const NODES := {
 	"shop_gate": Vector3(302, 0, 20),
 	"shop": Vector3(410, 0, 22),
 	"east_north": Vector3(125, 0, -125),
-	"north": Vector3(0, 0, -125),
-	"prairie_gate": Vector3(0, 0, -302),
-	"prairie": Vector3(0, 0, -395),
+	"prairie_east": Vector3(240, 0, -125),
+	"prairie_gate": Vector3(240, 0, -330),
+	"prairie": Vector3(240, 0, -385),
 }
 const LINKS := [
 	["home", "west"], ["west", "farm_gate"], ["farm_gate", "farm"],
 	["home", "east"], ["east", "shop_gate"], ["shop_gate", "shop"],
-	["east", "east_north"], ["east_north", "north"], ["north", "prairie_gate"], ["prairie_gate", "prairie"],
+	["east", "east_north"], ["east_north", "prairie_east"], ["prairie_east", "prairie_gate"], ["prairie_gate", "prairie"],
 ]
 
 

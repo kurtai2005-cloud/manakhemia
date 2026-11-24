@@ -654,7 +654,7 @@ func phase1_pan(delta: Vector2) -> void:
 	if Ecosystem and Ecosystem.has_method("stop_follow"):
 		Ecosystem.stop_follow()
 	phase1_to.x = clampf(phase1_to.x - delta.x * 0.35, -460.0, 460.0)
-	phase1_to.z = clampf(phase1_to.z - delta.y * 0.35, -440.0, 100.0)
+	phase1_to.z = clampf(phase1_to.z - delta.y * 0.35, -460.0, 100.0)
 	phase1_from = phase1_to
 	follow_pos = phase1_to
 

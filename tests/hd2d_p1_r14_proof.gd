@@ -68,6 +68,31 @@ func _initialize() -> void:
 	p1.go_zone("prairie_edge")
 	await _wait_ms(900)
 	await _shot(OUT + "/r14_shot4_prairie.png")
+	fails += _trees(p1)
+	pet.set("phase1_scripted", false)
+	pet.global_position = Vector3(0, 0, 24)
+	p1.act_forage()
+	var clip := 0
+	var run_start := Time.get_ticks_msec()
+	var mid_ok := false
+	while Time.get_ticks_msec() - run_start < 14000:
+		await process_frame
+		var elapsed := Time.get_ticks_msec() - run_start
+		var at: Vector3 = pet.global_position
+		if at.x > 46.0 and at.x < 120.0 and at.z > -100.0 and at.z < -42.0:
+			clip += 1
+		if elapsed >= 2000 and elapsed < 4500 and float(actions.call("goal_distance")) > 100.0 and not bool(actions.get("vfx_fired")):
+			mid_ok = true
+		if at.distance_to(Vector3(240, 0, -385)) < 14.0 and bool(actions.get("vfx_fired")):
+			break
+	var prairie_left: float = pet.global_position.distance_to(Vector3(240, 0, -385))
+	print("PRAIRIE_CLIP=", clip, " PRAIRIE_MID=", mid_ok, " PRAIRIE_LEFT=", snappedf(prairie_left, 0.1))
+	if clip > 0 or not mid_ok or prairie_left > 14.0:
+		print("PRAIRIE_ROUTE_BAD")
+		fails += 1
+	else:
+		print("PRAIRIE_ROUTE_OK")
+	actions.call("cancel")
 	pet.set("phase1_scripted", false)
 	pet.global_position = Vector3(0, 0, 24)
 	p1.go_zone("garden")
@@ -237,9 +262,30 @@ func _walk_skirts(node: Node, tally: Dictionary) -> void:
 				tally["giant"] = int(tally["giant"]) + 1
 			if node.name == "HorizonOlive" and mat is StandardMaterial3D:
 				var sm := mat as StandardMaterial3D
-				tally["horizon"] = sm.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED and sm.albedo_color.is_equal_approx(Color("#495e2e"))
+				var tex := sm.albedo_texture
+				var grass := tex != null and str(tex.resource_path).find("grass_outer_512") >= 0
+				tally["horizon"] = sm.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED and grass and mi.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	for child in node.get_children():
 		_walk_skirts(child, tally)
+
+
+func _trees(p1: Node) -> int:
+	var zones: Node = p1.get("world").get("zones")
+	var tally := {"n": 0}
+	if zones:
+		_count_trees(zones, tally)
+	print("PRAIRIE_TREES=", tally["n"])
+	if int(tally["n"]) > 0:
+		print("PRAIRIE_TREES_BAD")
+		return 1
+	return 0
+
+
+func _count_trees(node: Node, tally: Dictionary) -> void:
+	if str(node.name).begins_with("PrairieTree"):
+		tally["n"] = int(tally["n"]) + 1
+	for child in node.get_children():
+		_count_trees(child, tally)
 
 
 func _pool_count(p1: Node) -> int:
