@@ -19,7 +19,11 @@ var root_walker: Node3D
 var opening_transform := Transform3D.IDENTITY
 var opening_fov := 50.0
 var opening_near := 10.0
-var opening_far := 4000.0
+var opening_far := 1800.0
+var _depth_boots := 0
+var _depth_cam := Vector3.INF
+var _depth_yaw := Vector3.INF
+var _depth_idle := 0.0
 var opening_keep := Camera3D.KEEP_WIDTH
 var opening_attrs: CameraAttributesPractical
 var frame_index := 0
@@ -63,6 +67,7 @@ func _ready() -> void:
 	_keep_opening_camera()
 	_bind_walker_visual()
 	_ensure_cloud_tex()
+	_apply_r14_budget()
 	if OS.get_environment("HD2D_COMPARE_FIXED") == "1":
 		begin_fixed_steps()
 
@@ -71,6 +76,7 @@ func _process(dt: float) -> void:
 	if _fixed:
 		return
 	_tick_bump(dt)
+	_tick_art_depth(dt)
 
 
 func _unhandled_input(_event: InputEvent) -> void:
@@ -355,6 +361,87 @@ func restore_root_view() -> void:
 		if _have_lock:
 			root_main.set("_interior_lock_cam", _lock_prev)
 	_hold_walker(false)
+
+
+func _apply_r14_budget() -> void:
+	# One unshaded horizon replaces the lit skirts. 1800 still holds the
+	# four zones at ±410 and the far prairie trunks.
+	opening_far = 1800.0
+	if _camera:
+		_camera.far = 1800.0
+	var depth := get_node_or_null("ArtDepth")
+	if depth:
+		depth.set_process(false)
+	_keep_low_lights_quiet()
+	_trim_far_clumps()
+
+
+func _keep_low_lights_quiet() -> void:
+	# Mobile Vulkan still reserves a per-mesh light slot for a visible
+	# OmniLight3D whose energy is 0. Low daytime keeps Sun + Fill only.
+	if str(_mode) == "night" or str(_mode) == "high":
+		return
+	for omni in _omnis:
+		if omni and omni.light_energy <= 0.001:
+			omni.visible = false
+	var pool := get_node_or_null("SunPool") as Light3D
+	if pool:
+		pool.visible = false
+
+
+func _trim_far_clumps() -> void:
+	# Cards inside the opening view stay. Only the ring past 980 wu of that
+	# camera is parked under the ground, then the node fades at 1100.
+	var eye := opening_transform.origin
+	var parked := 0
+	for node in find_children("Clumps_*", "MultiMeshInstance3D", true, false):
+		var gi := node as GeometryInstance3D
+		gi.visibility_range_end = 1100.0
+		gi.visibility_range_end_margin = 80.0
+		gi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+		var mmi := node as MultiMeshInstance3D
+		var mm := mmi.multimesh
+		if mm == null:
+			continue
+		for i in mm.instance_count:
+			var xf := mm.get_instance_transform(i)
+			var at := mmi.global_transform * xf.origin
+			if at.distance_to(eye) <= 980.0:
+				continue
+			var flat := Transform3D(Basis(), Vector3(at.x, -400.0, at.z))
+			mm.set_instance_transform(i, mmi.global_transform.affine_inverse() * flat)
+			parked += 1
+	print("R14_CLUMP_PARKED=", parked)
+
+
+func _tick_art_depth(dt: float) -> void:
+	var depth := get_node_or_null("ArtDepth")
+	if depth == null:
+		return
+	_keep_low_lights_quiet()
+	var cam := _camera as Camera3D
+	_depth_boots += 1
+	if cam == null or _depth_boots <= 24:
+		depth._process(dt)
+		if cam:
+			_depth_cam = cam.global_position
+			_depth_yaw = cam.global_transform.basis.z
+		return
+	var cp := cam.global_position
+	var yaw := cam.global_transform.basis.z
+	var moved := cp.distance_to(_depth_cam) > 0.35 or yaw.angle_to(_depth_yaw) > 0.012
+	if moved:
+		_depth_cam = cp
+		_depth_yaw = yaw
+		depth._process(dt)
+		return
+	_depth_idle += dt
+	if _depth_idle < 0.12:
+		return
+	_depth_idle = 0.0
+	var night := str(_mode) == "night"
+	depth.call("_dynamics", night, dt)
+	depth.call("_low_fake_shadow", night)
 
 
 func _keep_opening_camera() -> void:

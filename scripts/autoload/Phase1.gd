@@ -16,6 +16,14 @@ var layout_safe := Rect2i()
 var layout_viewport := Vector2.ZERO
 var _save_wait := 0.0
 var _import_text := ""
+var _bed_i := -1
+var _bed_harvest := false
+var _harvest_all := false
+var _after := ""
+var _patrol_i := 0
+var _patrol_wait := 30.0
+var arrivals := 0
+const _PATROL := ["garden", "zone_farm", "zone_workshop", "prairie_edge"]
 
 
 func _ready() -> void:
@@ -53,6 +61,8 @@ func attach(main: Node) -> void:
 	actions.name = "Phase1Actions"
 	add_child(actions)
 	actions.call("bind", main, world.zones)
+	if not actions.is_connected("arrived", _on_arrived):
+		actions.connect("arrived", _on_arrived)
 	_apply_visual()
 	if main.has_method("phase1_hold_opening"):
 		main.phase1_hold_opening()
@@ -69,6 +79,16 @@ func _process(dt: float) -> void:
 	if _save_wait >= 10.0:
 		_save_wait = 0.0
 		_save()
+	_patrol_wait -= dt
+	if _patrol_wait > 0.0:
+		return
+	_patrol_wait = randf_range(25.0, 40.0)
+	if actions and actions.has_method("busy") and bool(actions.call("busy")):
+		return
+	if world == null or actions == null:
+		return
+	_patrol_i = (_patrol_i + 1) % _PATROL.size()
+	actions.call("jog_to", world.anchor_for(_PATROL[_patrol_i]))
 
 
 func mark(kind: String) -> void:
@@ -86,6 +106,7 @@ func toast(text: String) -> void:
 
 
 func open_info() -> void:
+	_hide_rows()
 	var pet := Phase1Registry.primary(Sim.state)
 	var care: Dictionary = pet.get("care", {})
 	var stats: Dictionary = pet.get("stats", {})
@@ -158,6 +179,7 @@ func pat() -> void:
 	if actions:
 		actions.call("play_pat")
 	if hud:
+		hud.show_toast("")
 		hud.show_emote("好舒服")
 	mark("pat")
 
@@ -209,8 +231,6 @@ func go_zone(zone_id: String) -> void:
 	_hide_rows()
 	if host and host.has_method("phase1_glide_to") and world:
 		host.phase1_glide_to(world.look_for(zone_id))
-	if actions and world:
-		actions.call("jog_to", world.anchor_for(zone_id))
 	var spec := Phase1Config.zone(doc, zone_id)
 	toast(str(spec.get("zh", zone_id)))
 	mark("zone")
@@ -221,12 +241,14 @@ func follow_pet() -> void:
 		host.phase1_follow(host.get("pet"))
 	if Ecosystem:
 		Ecosystem.follow_pet("tuanrong")
-	toast("跟寵")
+	toast("回寵")
 	mark("follow")
 
 
 func set_collapsed(v: bool) -> void:
 	if hud:
+		if v:
+			hud.modal.visible = false
 		hud.set_collapsed(v)
 	mark("collapse" if v else "expand")
 
@@ -415,32 +437,129 @@ func _hide_rows() -> void:
 	hud.apply_layout()
 
 
-func tend_bed(bed_at: Vector3, harvest: bool) -> void:
+func tend_bed(bed_at: Vector3, harvest: bool, index: int = -1) -> void:
+	_bed_i = index
+	_bed_harvest = harvest
+	_harvest_all = false
+	_after = ""
 	if actions:
 		actions.call("play_garden", bed_at, harvest)
-	if hud:
-		hud.show_emote("收成" if harvest else "澆水")
+	toast("跑過去")
+	mark("bed_run")
+
+
+func harvest_all() -> void:
+	var ripe := _ripe_indexes()
+	if ripe.is_empty():
+		toast("尚未成熟")
+		mark("harvest_none")
+		return
+	_harvest_all = true
+	_bed_i = int(ripe[0])
+	_bed_harvest = true
+	_after = "stove"
+	if actions and world:
+		actions.call("play_garden", world.bed_pos(_bed_i), true)
+	toast("跑去收成")
+	mark("harvest_all")
 
 
 func act_stove() -> void:
-	if actions and world:
-		actions.call("play_stove", world.stove_pos())
-	_spark_reward("熱騰騰")
+	_after = ""
+	_run_stove()
+	toast("跑去煮")
 	mark("stove")
 
 
 func act_post() -> void:
-	if actions and world:
-		actions.call("play_post", world.post_pos())
-	_spark_reward("郵")
+	_after = ""
+	_run_post()
+	toast("跑去寄")
 	mark("post")
 
 
 func act_forage() -> void:
+	_after = ""
 	if actions and world:
 		actions.call("play_forage", world.prairie_pos())
-	_spark_reward("尋寶")
+	toast("跑去草地")
 	mark("forage")
+
+
+func _run_stove() -> void:
+	if actions and world:
+		actions.call("play_stove", world.stove_pos())
+
+
+func _run_post() -> void:
+	if actions and world:
+		actions.call("play_post", world.post_pos())
+
+
+func _on_arrived(kind: String) -> void:
+	arrivals += 1
+	if kind == "harvest" or kind == "water":
+		if _harvest_all:
+			_apply_all_ripe()
+		elif _bed_i >= 0:
+			_apply_one(_bed_i, kind == "harvest")
+		if world:
+			world._refresh_beds()
+		if hud:
+			hud.show_emote("收成" if kind == "harvest" else "澆水")
+		if _after == "stove":
+			_after = "post"
+			_run_stove()
+		_harvest_all = false
+		return
+	if kind == "stove":
+		_spark_reward("熱騰騰")
+		if _after == "post":
+			_after = ""
+			_run_post()
+		return
+	if kind == "post":
+		_spark_reward("郵")
+		return
+	if kind == "forage":
+		_spark_reward("尋寶")
+
+
+func _ripe_indexes() -> Array:
+	var out: Array = []
+	if Sim == null:
+		return out
+	var plots: Array = Sim.state.get("phase1_plots", [])
+	for i in plots.size():
+		if str(plots[i]) == "ripe":
+			out.append(i)
+	return out
+
+
+func _apply_all_ripe() -> void:
+	for i in _ripe_indexes():
+		_apply_one(int(i), true)
+
+
+func _apply_one(index: int, harvest: bool) -> void:
+	if Sim == null:
+		return
+	var state: Dictionary = Sim.state
+	var plots: Array = state.get("phase1_plots", ["empty", "sprout", "growing", "ripe"])
+	while plots.size() < 4:
+		plots.append("empty")
+	var stage := str(plots[index])
+	if harvest and stage == "ripe":
+		plots[index] = "empty"
+		var fruits: Dictionary = state.get("collection", {})
+		var fruit_bag: Dictionary = fruits.get("fruits", {})
+		fruit_bag["berry"] = int(fruit_bag.get("berry", 0)) + 1
+		fruits["fruits"] = fruit_bag
+		state["collection"] = fruits
+	elif not harvest:
+		plots[index] = "sprout" if stage == "empty" else ("growing" if stage == "sprout" else "ripe")
+	state["phase1_plots"] = plots
+	Sim.state = state
 
 
 func _spark_reward(word: String) -> void:
@@ -448,6 +567,7 @@ func _spark_reward(word: String) -> void:
 		Ecosystem.grant_shards(1, "phase1_play")
 	if hud:
 		hud.show_emote(word)
+		hud.refresh()
 
 
 func _save() -> void:

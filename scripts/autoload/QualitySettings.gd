@@ -52,6 +52,10 @@ func apply() -> void:
 		Engine.max_fps = max_fps_low
 	else:
 		Engine.max_fps = 60
+	# Note10+ was racing the panel and then thermal-throttling. Vsync keeps
+	# the 60 fps cap without a busy unbound loop. Desktop proof reads the same flag.
+	if OS.has_feature("android") or OS.has_feature("mobile") or tier == Tier.LOW:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	var vp := get_viewport()
 	if vp:
 		vp.scaling_3d_scale = render_scale()

@@ -25,6 +25,7 @@ var _ground_mats: Array = []
 var _tod := "day"
 var follow_pos := Vector3(0, 30, -72)
 var phase1_on := false
+var phase1_manual := false
 var _pan_from := Vector2.ZERO
 var _pan_moved := Vector2.ZERO
 var _pan_live := false
@@ -636,6 +637,7 @@ func phase1_hold_opening() -> void:
 
 func phase1_follow(w: Walker) -> void:
 	phase1_on = true
+	phase1_manual = false
 	follow_walker = w
 	cam_mode = CamMode.FOLLOW
 	if Ecosystem and Ecosystem.has_method("follow_pet"):
@@ -646,12 +648,13 @@ func phase1_pan(delta: Vector2) -> void:
 	if not phase1_on:
 		return
 	phase1_t = 1.0
+	phase1_manual = true
 	follow_walker = null
 	cam_mode = CamMode.OVERVIEW
 	if Ecosystem and Ecosystem.has_method("stop_follow"):
 		Ecosystem.stop_follow()
-	phase1_to.x = clampf(phase1_to.x - delta.x * 0.35, -280.0, 340.0)
-	phase1_to.z = clampf(phase1_to.z - delta.y * 0.35, -280.0, 80.0)
+	phase1_to.x = clampf(phase1_to.x - delta.x * 0.35, -460.0, 460.0)
+	phase1_to.z = clampf(phase1_to.z - delta.y * 0.35, -440.0, 100.0)
 	phase1_from = phase1_to
 	follow_pos = phase1_to
 

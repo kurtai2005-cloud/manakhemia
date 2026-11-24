@@ -21,6 +21,7 @@ var pause_t := 0.0
 var rng := RandomNumberGenerator.new()
 var feet: Footprints
 var use_nav := true
+var phase1_scripted := false
 var pixel_size := 1.0
 var pivot := Vector2(32, 61)
 var frame_size := Vector2(64, 64)
@@ -96,6 +97,9 @@ func set_feet(f: Footprints) -> void:
 
 func _process(dt: float) -> void:
 	if frames.is_empty() or sprite == null:
+		return
+	if phase1_scripted:
+		_anim(dt)
 		return
 	if follow_target and is_instance_valid(follow_target):
 		var gap := global_position.distance_to(follow_target.global_position)

@@ -126,7 +126,8 @@ func build() -> void:
 		var b := _btn(str(pair[0]), str(pair[1]), _call1.bind("go_zone", zid))
 		zone_buttons[zid] = b
 		map_row.add_child(b)
-	map_row.add_child(_btn("FollowPet", "跟寵", _call.bind("follow_pet")))
+	map_row.add_child(_btn("FollowPet", "回寵", _call.bind("follow_pet")))
+	map_row.add_child(_btn("HarvestAll", "一鍵收成", _call.bind("harvest_all")))
 	root.add_child(map_row)
 	expand_btn = _btn("ExpandHud", "展開", _on_expand)
 	expand_btn.visible = false
@@ -328,7 +329,9 @@ func show_modal(title: String, body: String) -> void:
 	import_box.custom_minimum_size = Vector2.ZERO
 	_modal_btn("ModalConfirm").visible = false
 	_modal_btn("ModalCancel").visible = false
-	_modal_btn("ModalClaim").visible = true
+	var claim := _modal_btn("ModalClaim")
+	claim.visible = true
+	claim.text = "關閉" if title == "寵物資料" else "領取並關閉"
 	modal.visible = true
 	_fit_modal()
 	call_deferred("_fit_modal")
@@ -359,6 +362,8 @@ func set_collapsed(v: bool) -> void:
 		train_row.visible = false
 		map_row.visible = false
 		drawer.visible = false
+		if modal:
+			modal.visible = false
 	expand_btn.visible = v
 
 
@@ -504,7 +509,7 @@ func _build_modal() -> void:
 	import_box.visible = false
 	import_box.custom_minimum_size = Vector2.ZERO
 	box.add_child(import_box)
-	box.add_child(_btn("ModalClaim", "領取並關閉", _call.bind("close_modal")))
+	box.add_child(_btn("ModalClaim", "關閉", _call.bind("close_modal")))
 	box.add_child(_btn("ModalConfirm", "確認", _call.bind("confirm_modal")))
 	box.add_child(_btn("ModalCancel", "取消", _call.bind("close_modal")))
 	root.add_child(modal)
@@ -532,10 +537,11 @@ func _place_rows(safe: Rect2) -> void:
 			continue
 		row.position = Vector2(safe.position.x, dock.position.y - 56)
 		row.size = Vector2(safe.size.x, 44)
+		var min_w := 48.0 if row == map_row else 72.0
 		for child in row.get_children():
 			if child is Control:
 				(child as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				(child as Control).custom_minimum_size = Vector2(72, 40)
+				(child as Control).custom_minimum_size = Vector2(min_w, 40)
 
 
 func _hug_toast() -> void:
