@@ -1,0 +1,59 @@
+{
+ "id": "H1_interior",
+ "assumed": true,
+ "waitingFor": "遊程室內 GIF（最終房間尺寸）",
+ "units": "1 unit = 1 art px = 1 world unit",
+ "size": {
+  "width": 160,
+  "depth": 128,
+  "ceiling": 120,
+  "wallThickness": 3
+ },
+ "metres": {
+  "basis": "L pet visible height 54 u = 0.80 m",
+  "mPerUnit": 0.014815,
+  "width_m": 2.37,
+  "depth_m": 1.896,
+  "ceiling_m": 1.778
+ },
+ "door": {
+  "width": 56,
+  "height": 96,
+  "wall": "right",
+  "note": "1.78× L 可見高 54；闊 56 ＞ L 可見闊 44"
+ },
+ "window": {
+  "width": 48,
+  "height": 48,
+  "sill": 52,
+  "wall": "back"
+ },
+ "texelDensity": "1 px/unit（1x）；@3x 最近鄰 ×3",
+ "palette": "H1 cottage.png 21 色＋窗發光 #ffc870／#ffe9a0",
+ "tileable": {
+  "floor_tile": 64,
+  "wall_tile": 64
+ },
+ "furnitureHint": {
+  "pixel_size": 1.0,
+  "keep": [
+   "flowerpots",
+   "lamp_posts",
+   "fence",
+   "trees",
+   "mushrooms",
+   "can",
+   "jar",
+   "lanterns",
+   "veg_bed"
+  ],
+  "moveInside": [
+   "bed",
+   "table",
+   "rug",
+   "lamp",
+   "wall",
+   "window"
+  ]
+ }
+}

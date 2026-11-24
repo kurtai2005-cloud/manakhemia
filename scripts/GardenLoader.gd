@@ -8,7 +8,13 @@ const CAM_PATH := ROOT + "camera.json"
 const LIGHT_PATH := ROOT + "lights.json"
 
 static func load_json(path: String) -> Dictionary:
+	if path == "" or not FileAccess.file_exists(path):
+		push_error("GardenLoader: missing JSON " + path)
+		return {}
 	var raw := FileAccess.get_file_as_string(path)
+	if raw.strip_edges() == "":
+		push_error("GardenLoader: empty JSON " + path)
+		return {}
 	var p: Variant = JSON.parse_string(raw)
 	return p if typeof(p) == TYPE_DICTIONARY else {}
 

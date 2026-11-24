@@ -60,13 +60,59 @@ func can_dispatch(id: String, ids: Array) -> Dictionary:
 		return {"ok": false, "reason": "busy", "status": sit.get("status")}
 	if ids.is_empty():
 		return {"ok": false, "reason": "no_team"}
+	if site_done_today(id):
+		return {"ok": false, "reason": "done_today"}
 	for pid in ids:
 		if HuntSystem and HuntSystem.hunts_today(str(pid)) >= 0:
 			var h: Dictionary = HuntSystem.ensure()
 			var used: Dictionary = h.get("worked_or_hunted", {})
-			if bool(used.get(str(pid), false)):
+			if bool(used.get(str(pid), false)) and not _preview_round():
 				return {"ok": false, "reason": "work_or_hunt", "id": str(pid)}
 	return {"ok": true}
+
+
+func _preview_round() -> bool:
+	# Preview only: a finished job does not block a different one the same day.
+	# The same building still pays once. A normal save keeps the one-a-day lock.
+	return Sim != null and bool(Sim.state.get("preview_fixture", false))
+
+
+func site_done_today(id: String) -> bool:
+	var st: Dictionary = ensure()
+	var dk := Sim._day_key() if Sim else ""
+	if str(st.get("day_key", "")) != dk:
+		return false
+	var done: Dictionary = st.get("done_today", {})
+	return bool(done.get(id, false))
+
+
+func note_carried_jobs() -> void:
+	# An r3 preview already did the kitchen, but that save has no done_today field.
+	# Remember the empty building it assigned today so the post can be next. Nothing else is cleared.
+	if not _preview_round() or HuntSystem == null or Sim == null:
+		return
+	var h: Dictionary = HuntSystem.ensure()
+	if str(h.get("day_key", "")) != Sim._day_key():
+		return
+	var used: Dictionary = h.get("worked_or_hunted", {})
+	if not bool(used.get("tuanrong", false)):
+		return
+	var st: Dictionary = ensure()
+	var last: Dictionary = st.get("last_assign", {})
+	for id in ["kitchen", "post"]:
+		if last.has(id) and str(site(id).get("status", ST_EMPTY)) == ST_EMPTY:
+			_mark_done(id)
+
+
+func _mark_done(id: String) -> void:
+	var st: Dictionary = ensure()
+	var dk := Sim._day_key() if Sim else ""
+	if str(st.get("day_key", "")) != dk:
+		st["day_key"] = dk
+		st["done_today"] = {}
+	var done: Dictionary = st.get("done_today", {})
+	done[id] = true
+	st["done_today"] = done
 
 
 func auto_team(prefer: Array) -> Array:
@@ -93,6 +139,7 @@ func dispatch(id: String, ids: Array) -> Dictionary:
 		sit["pets"].append(str(pid))
 	sit["started_ms"] = TimeService.now_ms() if TimeService else 0
 	sit["watch"] = 0.0
+	sit["arrived"] = false
 	var st: Dictionary = ensure()
 	var last: Dictionary = st.get("last_assign", {})
 	last[id] = sit["pets"].duplicate()
@@ -104,6 +151,8 @@ func dispatch(id: String, ids: Array) -> Dictionary:
 	if Sim:
 		Sim._dirty = true
 	dispatched.emit(id, sit["pets"])
+	if Sim:
+		Sim._save_now(true)
 	return {"ok": true, "building": id, "pets": sit["pets"]}
 
 
@@ -113,6 +162,8 @@ func tick_watch(dt: float) -> void:
 		var id := str(b.get("id", ""))
 		var sit: Dictionary = site(id)
 		if str(sit.get("status", "")) != ST_WORK:
+			continue
+		if sit.has("arrived") and not bool(sit.get("arrived", false)):
 			continue
 		sit["watch"] = float(sit.get("watch", 0.0)) + dt
 		if float(sit["watch"]) >= dur:
@@ -185,6 +236,7 @@ func collect(id: String = "") -> Dictionary:
 		sit["pets"] = []
 		sit["watch"] = 0.0
 		sit["started_ms"] = 0
+		_mark_done(str(bid))
 	if recs.is_empty():
 		return {"ok": false, "reason": "none", "act": "work", "shards": 0, "items": []}
 	var rec := {"ok": true, "act": "work", "shards": total, "items": recs}
@@ -194,4 +246,6 @@ func collect(id: String = "") -> Dictionary:
 	collected.emit(rec)
 	if CollectionSystem and not is_ready():
 		CollectionSystem.notify("work", false)
+	if Sim:
+		Sim._save_now(true)
 	return rec

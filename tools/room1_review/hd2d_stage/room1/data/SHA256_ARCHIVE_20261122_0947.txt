@@ -1,0 +1,40 @@
+# SHA-256 archive — interior_room1_art_r1
+Time: 2026-11-22 09:47 Asia/Hong_Kong UTC+8
+Status: parent-reviewed composition; not for user delivery; all locked:false
+Pack: /workspace/interior_room1_art_r1/
+Keep: /home/box/keep/interior_room1_art_r1/
+Rollback: /workspace/interior_room1_art_r1_rollback_20261122_0934/
+Algorithm: SHA-256 (sha256sum). Paths relative to pack root.
+This manifest is written after art_notes.json and HANDOFF.md. shell.glb / textures / pack.json / previews were not rebuilt in this archive step.
+
+93317762523fbce6fb5dc5695c349704f447b4357bd0232800951d9faa2d6f64      145212  shell.glb
+9b55130e593c2f8aabe032fcba6cfab13c04cd5f600d4c66e121e7b9a901121f        2773  pack.json
+3fdab42eb876afeb74f5b259ef4bcfa022afade8d63672f046d25ff59b0cebbc        7252  HANDOFF.md
+7e811a3fe5906e52f1e573c324f94a23f9098153a5e5d4e02e121c803940eac0        1231  README.md
+7dbd467f60f3529e22ccc0d1ddfa52aa3a6c4d5832d5fea872417a3fd13b20fa        3413  SPEC.md
+9042cafebdf19eaa5391c6ebc0c5b2ce312fd17c8717210cff232147f3de9572        1819  QA.md
+a7ca95609a132533d4fb118a4987f26e382d3e44923e6283548be6e6280754fa        1422  RIGHTS.md
+5897e3c07752afe602a1d0e17a5de1bd46e16cf9161b211b8e720562b8328bc9       14310  data/art_notes.json
+03f6568e3793f038b3196c85e8b54ca28d920e3d4b5d1d6c86e0853af9dada2d        3517  data/room1_layout.json
+6d8617b44759fa68d399df6d2a77d3ab736a44bcc2b2632aec09638b12346186        2204  data/room1_collision.json
+77ca1062c653bd321b8b6b344a0b57d6adac71092403e5ccc5ae537deccaf377        1340  data/shell.glb.json
+b8c1aaea3184dbdb55fa38c6a74bad7631f5837324342d53848506699cfa6172         473  refs/CONTRACT_POINTER.txt
+660c6ce2b70fd0b9ba27e316e77d537246fcbd7dc5db5ae77d9b70feb4225540         282  textures/room1_curtain.png
+e224d2d614dc31f15b58bd8fc04b7b848250059fe629c7bad01180c61a0d635d          78  textures/room1_daylight.png
+874aa9a25a59b10f05e5e719fb94c0c5463ecbb6757407e1352af5f2072d0bc1        3581  textures/room1_floor.png
+eb73d57bb03d4d1ee028ae48c084a26edd6b50321a2768f3fa56add97055e000        6450  textures/room1_floor_n.png
+f5e0884e64c7973ec38c40fd54d692dae67d7c37bc6e5e3a14b8e97e293451d0        2201  textures/room1_furn_atlas.png
+2705efdda1ece511405880a7786144ee3a2c91ab72a9b80d12820bdab95e365a         111  textures/room1_glass.png
+c622db704c0693a82fea295de4ba451e576e4438c1c5cd04bed3b7af30e2457b        3631  textures/room1_plaster.png
+2a5616781caf6e42d38a194fba7d10c1644d162f3644dc61030c91ecf0e50198        7192  textures/room1_plaster_n.png
+70d028ca7c3d6b684678b63c8a21d21ecb82c3c0830a19188198c6d5da3d792c         281  textures/room1_timber.png
+07dde705c186ef8ea163d297368c4e4af2de307a5d224dd4e796d707ad11fe7e         771  textures/room1_timber_n.png
+184c40e0ac738e15d803cfbe08e0e4e6f1e11ddd5b94a05fc65b5fd6850cfd7c        4728  textures/room1_wall.png
+8e9503f7c60417d3d475bf75a4ea6e92909cc04d33f851887fc670bc2f8feb6f       10180  textures/room1_wall_n.png
+bae7b5b23ae593323bbce4add2d824d6f1ce48d55b46dd6840b08501ad32485e        1133  textures/room1_wood.png
+062870e8b15a580b6421cb285ac335977cf2c89f1561e2772d1075ded789f60a        7200  textures/room1_wood_n.png
+047a0cca2ce952fe7b3fda75b64de8ba0ebe515494be26f37c9599c5fa430afd      355705  previews/room1_19x9_hero.png
+2bb842a1abeb2c7e11af1da72b642344c2808d5b3752837c0fd2f59abec6ba90      363266  previews/room1_19x9_hero_shell.png
+9f38d7bfe47342bdadca0019d71066d97e6d58de5fe2510100901a66642e37fc      329179  previews/room1_19x9_door_approach.png
+ff7b26180237412306e9a02fbc78fdc50aaec1ee41337ce1965de2d5547be9e2      150871  previews/room1_19x9_pet_scale.png
+a6234e78728b6c6024138142c772951021c1a23e71b0c10463d2d3d601eb67fd       66689  previews/room1_ortho_top.png

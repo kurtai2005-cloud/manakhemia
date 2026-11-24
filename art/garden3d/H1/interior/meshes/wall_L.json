@@ -1,0 +1,102 @@
+{
+ "format": "garden3d.mesh/2",
+ "id": "wall_L",
+ "zh": "左牆（橫木板，可平鋪）",
+ "units": "1 unit＝1x art px；Y 上；原點＝物件底中（局部座標）；+Z 向鏡頭。放置用 objects.json 嘅 x／z／y＋yawDeg",
+ "texture": "meshes/wall_side.png",
+ "texture3x": "meshes/wall_side@3x.png",
+ "textureSize": [
+  128,
+  128
+ ],
+ "alphaTest": 0.5,
+ "doubleSided": false,
+ "material": {
+  "filter": "nearest",
+  "mipmap": false,
+  "lit": true,
+  "sRGB": true,
+  "bakedLight": false
+ },
+ "positions": [
+  -80.0,
+  0.0,
+  -64.0,
+  -80.0,
+  0.0,
+  64.0,
+  -80.0,
+  120.0,
+  64.0,
+  -80.0,
+  120.0,
+  -64.0
+ ],
+ "normals": [
+  1.0,
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  0.0,
+  1.0,
+  0.0,
+  0.0
+ ],
+ "uvs": [
+  0.0,
+  0.0625,
+  1.0,
+  0.0625,
+  1.0,
+  1.0,
+  0.0,
+  1.0
+ ],
+ "indices": [
+  0,
+  1,
+  2,
+  0,
+  2,
+  3,
+  0,
+  2,
+  1,
+  0,
+  3,
+  2
+ ],
+ "bounds": {
+  "min": [
+   -80.0,
+   0.0,
+   -64.0
+  ],
+  "max": [
+   -80.0,
+   120.0,
+   64.0
+  ]
+ },
+ "footprint": {
+  "rect": {
+   "x": [
+    -81.0,
+    -79.0
+   ],
+   "z": [
+    -64.0,
+    64.0
+   ]
+  },
+  "pad": 0
+ },
+ "castShadow": true,
+ "receiveShadow": true,
+ "vertexCount": 4,
+ "triangleCount": 4
+}

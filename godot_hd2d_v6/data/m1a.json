@@ -1,0 +1,23 @@
+{
+  "_file": "m1a",
+  "_title": "M1a 觀察鏡頭／需要泡泡／一鍵（數值只由呢份＋sim.json／personality.json 讀）",
+  "_src": "core-loop-3d-v1.md §0.5／§3／§5；遊策 11-11 補：預設花園填滿畫面闊、寵物高 ≥10%、跟拍 ≥20%；遊美：billboard 整數倍 ×2／×3",
+  "camera": {
+    "overview_pet_min_frac": 0.10,
+    "follow_pet_min_frac": 0.20,
+    "overview_texel_scale": 2,
+    "follow_texel_scale": 3,
+    "pet_y_frac": 0.575,
+    "pet_y_frac_min": 0.55,
+    "pet_y_frac_max": 0.60,
+    "sky_frac_max": 0.25,
+    "garden_width": 256,
+    "overview_look": [0, 24, 16]
+  },
+  "bubbles": {
+    "want_threshold": 70,
+    "_note": "§3 心聲：需要最高項 ≥70% 先出想食／想玩／想瞓／想摸泡泡。想要值＝100−照顧值。"
+  },
+  "summary_card_sec": 3.0,
+  "observe_ui_fade_sec": 3.0
+}

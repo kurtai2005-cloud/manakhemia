@@ -178,6 +178,58 @@ func unlock_badge(mon: String, grade: String = "bronze") -> void:
 	unlocked.emit("badge", key)
 
 
+func discover_fruit(art_id: String) -> String:
+	# m1b maps a dex fruit onto the picture already used in the garden.
+	# The stack count can return to zero. This record stays.
+	if art_id == "":
+		return ""
+	var dex_id := art_id
+	var zh := art_id
+	if GameData:
+		var hunt: Dictionary = GameData.m1b.get("hunt", {})
+		var mapped: Dictionary = hunt.get("art_fruit", {})
+		for key in mapped.keys():
+			if str(mapped[key]) == art_id:
+				dex_id = str(key)
+				break
+		var areas: Dictionary = GameData.hunting.get("areas", {})
+		for area in areas.values():
+			if not (area is Dictionary):
+				continue
+			var fruits: Variant = (area as Dictionary).get("fruits", [])
+			if not (fruits is Array):
+				continue
+			for item in fruits:
+				if item is Dictionary and str((item as Dictionary).get("id", "")) == dex_id:
+					zh = str((item as Dictionary).get("zh", dex_id))
+	var col: Dictionary = ensure()["collection"]
+	if not col.has("discovered") or not (col["discovered"] is Dictionary):
+		col["discovered"] = {}
+	var found: Dictionary = col["discovered"]
+	if bool(found.get(dex_id, false)):
+		return dex_id
+	found[dex_id] = true
+	col["discovered"] = found
+	if not col.has("discovered_zh") or not (col["discovered_zh"] is Dictionary):
+		col["discovered_zh"] = {}
+	var names: Dictionary = col["discovered_zh"]
+	names[dex_id] = zh
+	col["discovered_zh"] = names
+	_mark_new("fruit", dex_id)
+	if Sim:
+		Sim._dirty = true
+	return dex_id
+
+
+func discovered_names() -> PackedStringArray:
+	var col: Dictionary = ensure()["collection"]
+	var names: Dictionary = col.get("discovered_zh", {})
+	var out := PackedStringArray()
+	for key in names.keys():
+		out.append(str(names[key]))
+	return out
+
+
 func add_fruit(id: String, n: int = 1) -> void:
 	if id == "" or n <= 0:
 		return
@@ -189,6 +241,22 @@ func add_fruit(id: String, n: int = 1) -> void:
 
 func fruit_count(id: String) -> int:
 	return int(ensure()["collection"].get("fruits", {}).get(id, 0))
+
+
+func spend_fruit(id: String, n: int = 1) -> bool:
+	if id == "" or n <= 0 or fruit_count(id) < n:
+		return false
+	var col: Dictionary = ensure()["collection"]
+	var fr: Dictionary = col.get("fruits", {})
+	var left := int(fr.get(id, 0)) - n
+	if left <= 0:
+		fr.erase(id)
+	else:
+		fr[id] = left
+	col["fruits"] = fr
+	if Sim:
+		Sim._dirty = true
+	return true
 
 
 func _mark_new(kind: String, id: String) -> void:

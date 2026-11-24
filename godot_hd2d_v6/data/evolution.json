@@ -1,0 +1,506 @@
+{
+  "_file": "evolution.json",
+  "_title": "《微光小圃》進化／細佬定系資料表（Godot M1）",
+  "_code_root": "/workspace/glimmer-3d-h1/src/glimmer-a/src/",
+  "_missing": [],
+  "_doc_vs_code": [
+    {
+      "id": "moon_window",
+      "doc": "pet-template-v1 早期同任務 brief 寫月眠 21:00–03:00；圖鑑舊句「夜晚 9 點至凌晨 3 點」。",
+      "code": "data.js windows.moon ＝ 20:00–03:00（v5；pet-template 後段「時段放寬到 20:00–03:00」）。ROUTE_HINT 已改「夜晚 8 點後」。sim.js careWindow 註解仍寫 21–03。",
+      "used": "code 20:00–03:00",
+      "_src": [
+        "data.js:72-75,775",
+        "pet-template-v1.md:153,162,203",
+        "sim.js:140"
+      ]
+    },
+    {
+      "id": "ember_mg_weight",
+      "doc": "evo6.branch.kinds.mg.w＝2（v8 原文）。",
+      "code": "minigames2.routePtsPerGame＝1 覆蓋 kinds.mg.w；每日最多 4 局（同浮動撳兩下共用）。",
+      "used": "code route_pts_per_game=1",
+      "_src": [
+        "data.js:66,111-112",
+        "sim.js:633-640"
+      ]
+    },
+    {
+      "id": "series2_timeline_v1",
+      "doc": "series2-egg-v1 早期：孵 1 日、S1 2 日；v1.5 寫最少 3 堂先揀系。",
+      "code": "series2.js／4a4b：蛋 3 晚、S1 1 日、S2 2 日、S3–S5 各 3 日；每日最多 2 堂、最多 6 堂；冇「最少 3 堂」條件。",
+      "used": "code",
+      "_src": [
+        "series2.js:2-4,33-39",
+        "series2-4a4b-spec.md:15-33",
+        "series2-egg-v1.md:v1.1,v1.5"
+      ]
+    },
+    {
+      "id": "lumi_comment_stale",
+      "doc": "sim.js lumiCheck 註解仍寫夜晚佔比 30→50%＝0→25%、CQ <40 冇。",
+      "code": "data.js evo6.branch.lumi：maxChancePct 20、minCQ 25。",
+      "used": "code",
+      "_src": [
+        "data.js:77",
+        "sim.js:241"
+      ]
+    },
+    {
+      "id": "branch_order_comment",
+      "doc": "data.js BRANCH5 註解寫「螢絨 → 5 條 → 燦光／柔光／微塵」。",
+      "code": "sim.js decideBranch：DEV → 螢絨 → 燦光 → 新 5 條 → 柔光 → 微塵。",
+      "used": "code decideBranch",
+      "_src": [
+        "data.js:652-653",
+        "sim.js:248-258"
+      ]
+    }
+  ],
+  "routes": {
+    "_src": "data.js:651-653,772-776",
+    "count": 9,
+    "list": [
+      {
+        "id": "tide",
+        "zh": "水珠",
+        "group": "b5"
+      },
+      {
+        "id": "shroom",
+        "zh": "菇傘",
+        "group": "b5"
+      },
+      {
+        "id": "crystal",
+        "zh": "晶角",
+        "group": "b5"
+      },
+      {
+        "id": "moon",
+        "zh": "月眠",
+        "group": "b5"
+      },
+      {
+        "id": "ember",
+        "zh": "火苗",
+        "group": "b5"
+      },
+      {
+        "id": "bright",
+        "zh": "燦光",
+        "group": "cq"
+      },
+      {
+        "id": "soft",
+        "zh": "柔光",
+        "group": "cq"
+      },
+      {
+        "id": "dust",
+        "zh": "微塵",
+        "group": "fallback"
+      },
+      {
+        "id": "lumi",
+        "zh": "螢絨",
+        "group": "hidden"
+      }
+    ],
+    "branch5_ids": [
+      "tide",
+      "shroom",
+      "crystal",
+      "moon",
+      "ember"
+    ],
+    "decide_order": [
+      "dev_force",
+      "lumi",
+      "bright",
+      "b5",
+      "soft",
+      "dust"
+    ],
+    "hints": {
+      "tide": "朝早 6–9 點照顧，或者成日淋水",
+      "moon": "夜晚 8 點後陪佢、哄佢瞓",
+      "shroom": "落雨陰天陪佢食多啲",
+      "crystal": "一返嚟就執乾淨",
+      "ember": "玩得最多（包括小遊戲）",
+      "bright": "樣樣都照顧好",
+      "soft": "普通照顧",
+      "dust": "好少理佢",
+      "lumi": "？？？"
+    }
+  },
+  "stages": {
+    "_src": "data.js:37,772,834; sim.js:110-111",
+    "count": 6,
+    "branch_at": "juvenile → adult",
+    "list": [
+      {
+        "id": "egg",
+        "zh": "光卵",
+        "duration_sec": 600
+      },
+      {
+        "id": "newborn",
+        "zh": "絨點",
+        "duration_sec": 21600,
+        "sub_zh": "絨點仔"
+      },
+      {
+        "id": "sprout",
+        "zh": "芽崽",
+        "duration_sec": 64800,
+        "sub_zh": "絨芽"
+      },
+      {
+        "id": "juvenile",
+        "zh": "跳跳期",
+        "duration_sec": 259200,
+        "sub_zh": "跳跳絨"
+      },
+      {
+        "id": "adult",
+        "zh": "守夜者",
+        "duration_sec": 604800
+      },
+      {
+        "id": "elder",
+        "zh": "靜光",
+        "duration_sec": 345600,
+        "next": "fade 化光（要玩家確認）"
+      }
+    ],
+    "care_stages_for_scoring": [
+      "sprout",
+      "juvenile"
+    ],
+    "dex_unlock_at": "adult"
+  },
+  "care_windows": {
+    "_src": "data.js:72-75,39; sim.js:118,139-141",
+    "interval": "[from, to) 半開；to < from 即跨午夜",
+    "unit": "本機鐘點",
+    "windows": [
+      {
+        "id": "moon",
+        "from": 20,
+        "to": 3,
+        "only": "moon",
+        "zh": "20:00–03:00 只計月眠"
+      },
+      {
+        "id": "dew",
+        "from": 6,
+        "to": 9,
+        "only": "tide",
+        "zh": "06:00–09:00 只計水珠"
+      }
+    ],
+    "lumi_night_for_share": {
+      "from": 17,
+      "to": 7,
+      "note": "螢絨夜晚照顧佔比用，唔係月眠時窗"
+    },
+    "in_window_rule": "時段內照顧只計 only 嗰條，唔計本身類型、唔計天氣；瞓覺撫摸（petSleep）永遠計月眠"
+  },
+  "scoring": {
+    "_src": "data.js:45-86,111-112; sim.js:145-175,203-216,633-640",
+    "unit": "路線分（pt）；百分比用總照顧次數 N",
+    "kinds_outside_window": [
+      {
+        "kind": "rinse",
+        "zh": "淋水",
+        "to": "tide",
+        "w": 1
+      },
+      {
+        "kind": "play",
+        "zh": "玩耍",
+        "to": "ember",
+        "w": 1
+      },
+      {
+        "kind": "mg",
+        "zh": "小遊戲",
+        "to": "ember",
+        "w_in_kinds": 2,
+        "w_used": 1,
+        "w_used_src": "minigames2.routePtsPerGame",
+        "per_day_cap": 4
+      },
+      {
+        "kind": "feed",
+        "zh": "餵食",
+        "to": "shroom",
+        "w": 0,
+        "note": "本身 0；菇傘靠天氣權重"
+      },
+      {
+        "kind": "poop",
+        "zh": "執屎",
+        "to": null,
+        "w": null,
+        "note": "唔直接加分；晶角用即清上線比率"
+      }
+    ],
+    "weather_weights": {
+      "probs_percent": [
+        [
+          "clear",
+          60
+        ],
+        [
+          "overcast",
+          20
+        ],
+        [
+          "fog",
+          5
+        ],
+        [
+          "rain",
+          15
+        ]
+      ],
+      "route": {
+        "overcast": {
+          "to": "shroom",
+          "w": 0.4
+        },
+        "fog": {
+          "to": "shroom",
+          "w": 0.4
+        },
+        "rain": {
+          "to": "shroom",
+          "w": 0.8
+        },
+        "clear": {
+          "to": null,
+          "w": 0
+        }
+      }
+    },
+    "lull": {
+      "to": "moon",
+      "pts": 2,
+      "per_night": 3,
+      "drowsy_energy": 30,
+      "night_cut_hour": 12
+    },
+    "pet_sleep": {
+      "to": "moon",
+      "w": 1
+    },
+    "crystal": {
+      "window_sec": 120,
+      "k": 0.45,
+      "login_gap_sec": 300,
+      "formula": "score = (quick_logins / poop_logins) × k × total_care"
+    },
+    "systems_route_share_cap_pct": 25,
+    "quest_route_pts": 1
+  },
+  "thresholds": {
+    "_src": "data.js:45-77; sim.js:198-258",
+    "unit_cq": "CQ（0–100）",
+    "lumi": {
+      "event": "firefly_walk",
+      "event_stages": [
+        "sprout",
+        "juvenile"
+      ],
+      "from_night_care_pct": 30,
+      "to_night_care_pct": 50,
+      "max_chance_pct": 20,
+      "min_cq": 25,
+      "formula": "chance = clamp((nightShare×100 − 30) / (50 − 30), 0, 1) × 20%"
+    },
+    "bright": {
+      "min_cq": 30,
+      "care_days_window": 7,
+      "care_days_min": 5,
+      "scale_to_age": true,
+      "max_top_pct": 45
+    },
+    "b5": {
+      "cq_full_7d": 25,
+      "cq_floor": 18.5,
+      "cq_scale_to_age": true,
+      "cq_need": "max(ceil(25 × span / 7), 18.5)",
+      "top_pct": 30,
+      "draw_gap_pt": 5,
+      "draw_rule": "第一同第二差 < 5pt（佔總分%）→ 按兩者分數比例抽；否則最高分贏"
+    },
+    "soft_min_cq": 18,
+    "dust": "燦光同新 5 條都唔中，而且 CQ < soft_min_cq",
+    "cq_params": {
+      "_src": "data.js:34,80",
+      "start": 50,
+      "good_at": 60,
+      "bad_below": 30,
+      "min": 0,
+      "max": 100,
+      "care_gain": 0.5,
+      "care_gain_per_hour_max": 2,
+      "partial_max": 0.5,
+      "decay_after_h": 6,
+      "decay_per_h": 1,
+      "floor": 15
+    }
+  },
+  "series2": {
+    "_src": "series2.js:1-39,113-202; series2-4a4b-spec.md:§4a; series2-egg-v1.md:開頭（8×3 圖鑑）",
+    "lines": [
+      {
+        "id": "A",
+        "zh": "潮",
+        "prop_zh": "水壺",
+        "care_zh": "淋花／飲水"
+      },
+      {
+        "id": "B",
+        "zh": "螢",
+        "prop_zh": "泡泡棒",
+        "care_zh": "沖涼／吹泡泡"
+      },
+      {
+        "id": "C",
+        "zh": "火",
+        "prop_zh": "火柴",
+        "care_zh": "取暖／點燈"
+      },
+      {
+        "id": "D",
+        "zh": "晶",
+        "prop_zh": "石仔",
+        "care_zh": "執石仔／砌嘢"
+      },
+      {
+        "id": "E",
+        "zh": "辣",
+        "prop_zh": "辣椒",
+        "care_zh": "食嘢（辣）"
+      },
+      {
+        "id": "F",
+        "zh": "陽",
+        "prop_zh": "望遠鏡",
+        "care_zh": "睇星"
+      },
+      {
+        "id": "G",
+        "zh": "月",
+        "prop_zh": "書",
+        "care_zh": "講故仔"
+      },
+      {
+        "id": "H",
+        "zh": "塵",
+        "prop_zh": "月亮燈",
+        "care_zh": "開夜燈陪瞓"
+      }
+    ],
+    "dex_forms_per_line": 3,
+    "dex_slots": 24,
+    "dex_forms_note": "圖鑑 8 系 × 現有 3 階美術（S3＝系1、S5＝系2、S6＝系3）；成長線另有 S1／S2 共用同 S4 少年",
+    "egg_nights": 3,
+    "hatch_dream_pts_per_night": 1,
+    "hatch_dream_max_pts": 3,
+    "dream_from_hour": 21,
+    "dream_catchup_hour": 6,
+    "growth_stages": [
+      {
+        "id": "egg",
+        "zh": "細佬蛋",
+        "days": null,
+        "nights": 3
+      },
+      {
+        "id": "S1",
+        "zh": "蛋殼仔",
+        "days": 1
+      },
+      {
+        "id": "S2",
+        "zh": "BB",
+        "days": 2
+      },
+      {
+        "id": "S3",
+        "zh": "初現",
+        "days": 3
+      },
+      {
+        "id": "S4",
+        "zh": "少年",
+        "days": 3
+      },
+      {
+        "id": "S5",
+        "zh": "成長",
+        "days": 3
+      },
+      {
+        "id": "S6",
+        "zh": "成年",
+        "days": null
+      }
+    ],
+    "lessons": {
+      "stages": [
+        "S1",
+        "S2"
+      ],
+      "per_day": 2,
+      "max_total": 6,
+      "pts_per_lesson": 1
+    },
+    "settle_at": "S3",
+    "settle_rule": "夢分＋堂分最高勝；打和揀最近一堂；冇堂揀最近一個夢；乜都冇就隨機",
+    "care_to_line": {
+      "water": "A",
+      "rinse": "B",
+      "poop": "B",
+      "hold": "C",
+      "walk": "D",
+      "feed": "E",
+      "mg": "F",
+      "play": "G",
+      "pat": "G",
+      "sleep": "H",
+      "lull": "H"
+    },
+    "closeness": {
+      "_src": "series2.js:4,37-39,185-188; series2-4a4b-spec.md:§4a.5-6",
+      "daily_cap": 10,
+      "friend_at": 30,
+      "family_at": 80,
+      "family_also_requires_stage": "S6",
+      "gains": {
+        "comfort": 2,
+        "eat": 1,
+        "lesson": 2,
+        "sleep": 2,
+        "duo": 2
+      },
+      "sleep_together_hours": [
+        21,
+        3
+      ],
+      "duo_per_day": 2,
+      "cry_per_day": [
+        2,
+        3
+      ],
+      "cry_timeout_sec": 600
+    },
+    "no_route_pts": true,
+    "no_shards": true,
+    "duo_minigame_does_not_consume_ember_quota": true
+  }
+}

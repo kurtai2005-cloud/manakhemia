@@ -1,0 +1,5 @@
+Archive stamp: 2026-11-22 09:47 Asia/Hong_Kong UTC+8
+Manifest: data/SHA256_ARCHIVE_20261122_0947.txt
+Manifest SHA-256: b48e77f3582932500f7b2dd9233443ffb1ea364c9f8698132af9329f755bb8ae
+Parent reviewed new hero (full room/door/bed readable). Not for user delivery. locked:false.
+Do not flip locked:true. Do not change 675 pet. Wait for Mobile fixture frames.

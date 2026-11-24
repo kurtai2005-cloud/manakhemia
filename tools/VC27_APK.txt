@@ -1,0 +1,64 @@
+VC27 internal phone APK. Not a store release. Do not upload this file from here.
+The coordinator hands the new APK to 遊美. Do not upload the older APKs again.
+
+Kurt, 2026-11-24 03:24: r2 phone feedback 無問題. That accepts the three reported blockers only.
+Kurt, 2026-11-24 03:26: 唔好我地指揮,應該佢自己識得自己做. 另外其他功能都一併整埋.
+The older GAPS manual-command plan is not this batch.
+
+Before this batch: the player tapped the berry or 派工 to make the pet move.
+Target, from data already in the repo:
+- data/m1b.json care: the pet, not a ground tap, uses the berry trip, the meal, and the door rest.
+- data/m1b.json work kitchen and post, watch_sec 12, economy pay level+1. data/hunting.json one work or one hunt a day, hunt watch_sec 18, offline 2 hours. The pet walks to the post door, then later to the fence and the existing prairie.
+- data/economy.json shop. 葉仔地氈 is 15 stars. The player taps it. Nothing spends stars by itself.
+- data/evolution.json egg duration stays 600. Preview still uses only the existing preview_fixture shortcuts.
+
+Done:
+- Empty pantry, or hunger below the existing refuse line: the pet walks to the berry and brings it home. The book records 微光莓.
+- Not an egg, fruit stored, not full: the pet eats one.
+- Existing rest rule: the pet walks to the door and sleeps. Exit returns that same pet to the lawn spot that was on screen.
+- Kitchen once that day, then the existing 12 seconds, then the stars.
+- Ground taps do not start or cancel those trips. Pet tap still watches. House tap still visits. 派工 still exists and closes the feed row.
+- r2 touch fix stays: the synthesized mouse click does not cancel a trip.
+
+Evidence, Linux only. The r2 touch route still prints TOUCH_OK. It stops at an egg and does not prove eat, rest, or the kitchen.
+The idle preview is tests/hd2d_life_idle.gd. No forage, feed, rest, or dispatch calls. Observed: to_pick, carry, newborn with 微光莓, toss, to_eat, meals=1, to_rest, asleep, wake on the ordinary sleep clock, kitchen work, ready, shards 25 to 27. Two lines are the existing preview shortcut, not a test clock: the delivery fills the egg, and sleep starts one below wake. Wake itself was about 250s of Sim's own tick. A later process tapped 圖鑑 then 葉仔地氈. The next process read newborn, meals=1, glow, shards=12, rug=rug_leaf. An already-newborn full preview was not reset and did not gather again; it started the kitchen. Not an Android launch and not a Note10+. The r3 APK bytes are unchanged.
+
+r4. The post door stand is two units toward the camera, clear of the lamp and watering-can pocket. The pet follows the open ground. The hunt clock stays held until the pet is on the lawn side of the fence. The existing 18 second prairie then plays, and the pet moves on that field. A normal save still does one work or one hunt per day. A 試玩 save, labelled 試玩·各一次, lets the kitchen, the post, and one hunt happen the same day. Each pays once. An r3 試玩 that already did the kitchen is not reset. The kitchen is remembered and the post is next.
+
+Linux, no gameplay calls, on a copy of the r3 preview (newborn, meals 1, 微光莓, rug, 12 stars). The pet walked to the post door near (-150, 64) and the stars went from 12 to 14. It walked toward the fence with the hunt clock held, then stood on the prairie: z 523, then 446 while hunting, then 328 while carrying. Stars 14 to 17, three fruit, critter rumble_root. The next process read the same newborn, meal, rug, 17 stars, and fruit. A second copy paused during the post at watch 1.03 and 12 stars. The next process paid once, to 14, then paused on the field at z 539, watch 2.17. The process after that paid once, to 16, and did not pay again. The touch route still prints TOUCH_OK and TOUCH_RESTART_OK. Not an Android launch and not a Note10+.
+
+Still out: eating frames, a redrawn interior, a second pet, the kid as new scope, more hunt areas, a letter scene beyond this post job.
+
+r6. The two replay buttons follow the preview launch, not the old preview_fixture flag. They sit under 圖鑑, inside the safe area, in a font that contains 看, 狩, and 獵. Vc27PreviewApp always adds --vc27-preview. 微光試稿 does not.
+
+r7 adds the living-ecosystem draft on top of the r6 preview buttons. Numbers come from data/ecosystem_v1.json. PetOverlayService is still deferred.
+
+r8 wires those packaged pictures into the live scene. Zone pills use the 9-slice art and the seven zone icons. A portrait chip follows a pet until a finger drag lets go. The farm plot swaps one texture through empty, sprout, growing, and ripe. The pantry pile switches low and full. The family wall shows the board and frame slots. Pets walk to the outdoor stove and the outdoor post. Kids A–H change idle, walk, eat, sleep, and cry strips. The leaf rug rolls on its own and stops when hunger drops to 20. A temporary fusion shows the echo, the gold and cyan tint, and the halo, then split puts both pets back. PetOverlayService is still deferred.
+
+r9 binds one project font: GenWanMin plus vc27_label_fallback, including on the ecosystem HUD. The fallback now covers every non-ASCII character in data, scripts, and scenes. The ecosystem controls sit inside the Note10+ safe area and do not cover 圖鑑, the replay buttons, or the bottom bar. The contact sheet is not in the package. PetOverlayService is still deferred.
+
+r10 keeps that build and makes the sparse pack index match project.binary. The mobile renderer entry is in both the file and the index, so Android does not cut the settings file short. PetOverlayService is still deferred.
+
+r11 replaces the piled-up panels with one top bar and a five-button dock. The camera can move to the cottage, the farm, the workshop, and the prairie. Feeding, cleaning, patting, and training change the pet. The test drawer holds the one-hour idle settlement. PetOverlayService is still deferred.
+
+r12 keeps that yard and replaces the gray controls with the warm pixel kit. The pet walks, eats, cleans, pats, and trains with a bowl, broom, watering can, and dumbbell. Farm beds, the stove, the post, and the prairie flowers load the 675 glb models when those files are present. PetOverlayService is still deferred.
+
+r13 answers the Note10+ pass of r12. The old canvas layer is paused so the dock receives taps. The phone window is no longer resized to 390x844, and a short drag on a button does not pan the camera. Low quality targets 60fps. The extra yard trees are five backdrop trees. PetOverlayService is still deferred.
+
+This APK: /opt/cursor/artifacts/r13/微光試稿-vc27-11fb9c14-r13.apk
+bytes: 69723176
+sha256: a5580cbc5116cd77c416fde9a7e17c9e9bffdc8d170080bf6cd4969e0a3f656e
+versionName: vc27-11fb9c14-r13
+versionCode: 23
+package: hk.vizard.glimmer.fpet.vc27draft
+Same debug signer CN=VC27 Debug, cert a5e16b2ab309a3478e0cd28304daae179bd0e85c7a7940592101b2aa77127b10. v2 only. arm64-v8a. Portrait. Renderer mobile. Install over the test app. Do not clear its data.
+Do not upload r5 again: vc27-draft-11fb9c14-r5.apk, 68659140 bytes, sha256 be39075c7d19b305c79a7baf07c890c5321bac56d1ebdb915f0f3e125a71cedc.
+Gameplay head remains 11fb9c140d54d1bac61d2a965af32d79069a4447.
+
+Phone. Use 微光試稿·試玩. Do not clear storage. An already hatched preview save should still show the buttons.
+1. Install over the test app. Leave 微光小圃 installed.
+2. Under 圖鑑: 試玩·各一次, then 重看郵局, then 重看狩獵. Tap one. Stars and fruit do not change.
+3. Leave during a replay and open the same icon. Nothing extra was paid. The buttons are still there.
+4. 微光試稿 has no replay buttons.
+5. The cottage yard stations, farm sprout, and zone labels are the new living-ecosystem draft. Do not expect a finished art pass. PetOverlayService is not in this build.
+6. On r12, the screen is the walnut top bar, four colored care bars, and five buttons: 餵食, 清潔, 摸摸, 鍛鍊, 地圖. 地圖 moves the view to 小屋, 農圃, 工坊, or 草原. 工具 holds the one-hour idle test. Feeding, cleaning, and training show the bowl, broom, and dumbbell.

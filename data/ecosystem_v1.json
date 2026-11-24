@@ -1,0 +1,578 @@
+{
+  "_file": "ecosystem-v1-data-draft.json",
+  "_title": "《微光小圃》活生態圈統一實施規格 v1 數值草稿",
+  "_updated": "2026-11-24 05:49 Asia/Hong_Kong UTC+8",
+  "_recommended_scheme": "standard",
+  "_sim": "/home/box/keep/遊策/ecosystem-v1-sim.py",
+  "_notes": "數字入呢份 JSON，規格只引用 key。沿用現有星星碎上限，唔開新貨幣。模擬見 support。",
+  "existing_caps_unchanged": {
+    "stardust_daily_total": 47,
+    "jobs_and_trips_daily": 12,
+    "job_pay_by_level_lv1": 2,
+    "hunt_shards_min": 1,
+    "hunt_shards_max": 3,
+    "hunt_cooldown_hours": 2,
+    "currency_zh": "星星碎",
+    "currency_code": "shards"
+  },
+  "reward_rules": {
+    "work_or_hunt_per_pet_per_day": true,
+    "early_paid_actions_per_pet_per_day": 1,
+    "hunts_per_pet_per_day_after_zone_prairie_deep": {
+      "fast": 4,
+      "standard": 3,
+      "slow": 2,
+      "used": 3
+    },
+    "still_clamped_by_jobs_and_trips_daily": 12,
+    "still_clamped_by_hunt_cooldown_hours": 2,
+    "after_paid_cap_unrewarded_life_continues": true,
+    "preview_relax_same_day_plant_work_hunt": true,
+    "already_worked_enter_prairie_behavior": "allow_observe_patrol_0_shards",
+    "already_worked_prairie_label_zh": "今日已打工，今次輕鬆巡場（0 碎）",
+    "after_paid_hunts_capped_behavior": "allow_observe_patrol_0_shards",
+    "overrides_legacy_hunting_json_max_4": true,
+    "kid_independent_shard_reward": false,
+    "on_jt_cap_hit": "allow_0_shard_patrol_and_drop_non_shard_items",
+    "on_jt_cap_hit_note": "撞 12 碎後嚴格派 0 碎（唔突破 cap），但唔鎖門，仍可巡場並維持非碎生態產出（果／種子／圖鑑）"
+  },
+  "combat_stats": {
+    "ids": [
+      "力量",
+      "身手",
+      "耐力"
+    ],
+    "min": 0,
+    "max": 10,
+    "initial": {
+      "力量": 1,
+      "身手": 1,
+      "耐力": 1
+    },
+    "growth_standard": {
+      "per_care_tick": {
+        "力量": 0.08,
+        "身手": 0.08,
+        "耐力": 0.12
+      },
+      "per_paid_hunt": {
+        "力量": 0.28,
+        "身手": 0.32,
+        "耐力": 0.22
+      }
+    },
+    "shown_on": [
+      "pet_card",
+      "prairie_observe"
+    ],
+    "effects": {
+      "力量": "撲擊節奏略快、搬大物較穩（唔加碎）",
+      "身手": "降低撲空率（沿現有撲空規則做修正，唔改必中上限結構）",
+      "耐力": "可喺較深區域留耐啲先返屋休息"
+    },
+    "no_death": true,
+    "no_heavy_penalty": true,
+    "no_gear_table": true,
+    "live_pet_clamp": [
+      1,
+      10
+    ],
+    "daily_growth_cap_per_stat_normal": 1.0,
+    "daily_growth_cap_per_stat_preview": 9.0,
+    "anti_deadlock": {
+      "miss_or_low_stamina_never_drains_hunger_below": 20,
+      "miss_or_low_stamina_never_drains_energy_below": 20,
+      "never_deducts_shards": true,
+      "low_stamina_action": "end_deep_stay_and_return_rest"
+    },
+    "scope": "per_pet",
+    "legacy_top_level_mirror": "pets[0].combat",
+    "fusion_stat_rule": "min(max, max(petA.combat[s], petB.combat[s]) + fusion.while_active_stat_add[s])",
+    "formulas": {
+      "power_pounce_interval_mul": {
+        "expr": "clamp(1.0 - (力量 - 1) * 0.03, 0.73, 1.0)",
+        "min": 0.73,
+        "max": 1.0,
+        "samples": {
+          "stat_1": 1.0,
+          "stat_5": 0.88,
+          "stat_10": 0.73
+        }
+      },
+      "agility_miss_rate": {
+        "base_miss_rate": 0.25,
+        "expr": "clamp(0.25 - min(0.15, (身手 - 1) * 0.015), 0.05, 0.35)",
+        "min": 0.05,
+        "max": 0.35,
+        "samples": {
+          "stat_1": 0.25,
+          "stat_5": 0.19,
+          "stat_10": 0.115
+        }
+      },
+      "stamina_deep_stay_sec": {
+        "expr": "clamp(24 + (耐力 - 1) * 4, 24, 60)",
+        "min": 24,
+        "max": 60,
+        "combo_max_cap_sec": 64,
+        "samples": {
+          "stat_1": 24,
+          "stat_5": 40,
+          "stat_10": 60
+        }
+      }
+    }
+  },
+  "division_weights": {
+    "_note": "基礎權重；再乘性格三軸同進化路線修正。加總後正規化。",
+    "base": {
+      "plant": 0.25,
+      "forage": 0.25,
+      "work": 0.25,
+      "hunt": 0.25
+    },
+    "route_bias": {
+      "tide": {
+        "plant": 0.2,
+        "forage": 0.0,
+        "work": 0.0,
+        "hunt": -0.1
+      },
+      "shroom": {
+        "plant": 0.0,
+        "forage": 0.1,
+        "work": 0.1,
+        "hunt": -0.1
+      },
+      "crystal": {
+        "plant": -0.1,
+        "forage": 0.0,
+        "work": 0.0,
+        "hunt": 0.2
+      },
+      "ember": {
+        "plant": -0.1,
+        "forage": 0.0,
+        "work": 0.0,
+        "hunt": 0.2
+      },
+      "moon": {
+        "plant": 0.05,
+        "forage": 0.0,
+        "work": -0.05,
+        "hunt": 0.0
+      },
+      "bright": {
+        "plant": 0.0,
+        "forage": 0.05,
+        "work": 0.05,
+        "hunt": 0.0
+      },
+      "soft": {
+        "plant": 0.05,
+        "forage": 0.05,
+        "work": 0.0,
+        "hunt": -0.05
+      },
+      "dust": {
+        "plant": 0.0,
+        "forage": 0.1,
+        "work": -0.05,
+        "hunt": 0.0
+      },
+      "lumi": {
+        "plant": 0.05,
+        "forage": 0.0,
+        "work": 0.05,
+        "hunt": 0.0
+      }
+    },
+    "personality_axis_to_params": {
+      "motion": {
+        "plus_zh": "活潑",
+        "minus_zh": "文靜",
+        "drives": [
+          "action_rest_interval",
+          "hunt_pounce_tempo"
+        ]
+      },
+      "work": {
+        "plus_zh": "勤力",
+        "minus_zh": "懶散",
+        "drives": [
+          "division_weight_work_or_forage",
+          "action_rest_interval"
+        ]
+      },
+      "social": {
+        "plus_zh": "黐人",
+        "minus_zh": "獨立",
+        "drives": [
+          "combo_synergy_tendency",
+          "follow_camera_or_wander"
+        ]
+      }
+    },
+    "visible_params": [
+      "division_weights",
+      "action_rest_interval",
+      "bump_and_furniture_reaction",
+      "hunt_pounce_and_combo_tendency"
+    ],
+    "action_rest_interval_sec": {
+      "base": 18,
+      "energetic_mul": 0.85,
+      "quiet_mul": 1.15,
+      "diligent_mul": 0.9,
+      "lazy_mul": 1.2
+    },
+    "walk_speed_mul": {
+      "energetic": 1.2,
+      "quiet": 0.85
+    }
+  },
+  "combo_bonuses": {
+    "_note": "唔加星星碎、唔突破每日上限。只改可見行動同非碎產出。",
+    "parent_child": {
+      "miss_rate_mul": 0.85,
+      "kid_learns_action": true
+    },
+    "plant_hunt_pair": {
+      "rare_seed_chance_add": 0.08
+    },
+    "diligent_work_pair": {
+      "work_visible_extra_material": true,
+      "shard_pay_unchanged": true
+    },
+    "tide_on_farm": {
+      "crop_phase_sec_mul": 0.9
+    },
+    "ember_crystal_hunt": {
+      "deep_stay_sec_add": 4,
+      "miss_rate_mul": 0.9
+    }
+  },
+  "zones": {
+    "starting_always_on": [
+      "garden",
+      "cottage_yard_work",
+      "prairie_edge"
+    ],
+    "unlockable": {
+      "zone_farm": {
+        "zh": "農圃",
+        "requires_previous": [],
+        "require_all": {
+          "day_min": 3
+        },
+        "require_any": {
+          "seeds": 1,
+          "empty_pantry": 2,
+          "paid_actions": 4
+        },
+        "sim_normal_day_standard": 4
+      },
+      "zone_workshop": {
+        "zh": "開放工作角",
+        "requires_previous": [
+          "zone_farm"
+        ],
+        "require_all": {
+          "day_min": 6,
+          "pets": 2,
+          "lifetime_shards": 10
+        },
+        "require_any": {},
+        "sim_normal_day_standard": 6
+      },
+      "zone_prairie_deep": {
+        "zh": "草原深處",
+        "requires_previous": [],
+        "stat_check_scope": "best_adult_pet",
+        "require_all": {
+          "hunts": 5,
+          "力量": 3.8,
+          "身手": 3.8,
+          "耐力": 3.5
+        },
+        "require_any": {},
+        "sim_normal_day_standard": 7
+      },
+      "zone_family_wall": {
+        "zh": "家族牆空間",
+        "requires_previous": [],
+        "require_all": {
+          "day_min": 10,
+          "pets": 2,
+          "unique_collect": 5
+        },
+        "require_any": {},
+        "sim_normal_day_standard": 10
+      }
+    }
+  },
+  "fusion": {
+    "type": "temporary",
+    "keep_both_pets_and_tree": true,
+    "trigger": {
+      "both_adult": true,
+      "closeness_min": 8,
+      "together_in_world": true,
+      "autonomous": true
+    },
+    "duration": {
+      "normal_hours": 2,
+      "preview_sec": 45
+    },
+    "cooldown": {
+      "normal_hours": 8,
+      "preview_sec": 90
+    },
+    "while_active_stat_add": {
+      "力量": 2,
+      "身手": 2,
+      "耐力": 1
+    },
+    "after_split": "兩隻都喺場同族譜，唔合併節點",
+    "save_contract": {
+      "fields": {
+        "active": false,
+        "pet_ids": [],
+        "started_at_ms": 0,
+        "ends_at_ms": 0,
+        "cooldown_until_ms": 0
+      },
+      "keep_source_pets_in_pets_array_during_fusion": true,
+      "pet_flag_while_fused": "fusion_state = 'fused'",
+      "on_load_recovery": "if active and (now_ms >= ends_at_ms or len(pet_ids) != 2 or any_pet_missing): split_and_restore_both_pets_to_none"
+    }
+  },
+  "preview": {
+    "wall_clock_min_target": [
+      10,
+      15
+    ],
+    "recommended_script_sec": 720,
+    "threshold_mul": 0.4,
+    "relax_same_day_plant_work_hunt": true,
+    "visible_beats_sec_min": 620,
+    "beats": [
+      {
+        "id": "solo_life_work",
+        "sec": 70
+      },
+      {
+        "id": "prairie_auto_combat_stats",
+        "sec": 80
+      },
+      {
+        "id": "after_cap_rug",
+        "sec": 50
+      },
+      {
+        "id": "unlock_farm_plant",
+        "sec": 70
+      },
+      {
+        "id": "second_pet_division_camera",
+        "sec": 80
+      },
+      {
+        "id": "kid_combo_evolution",
+        "sec": 70
+      },
+      {
+        "id": "unlock_workshop_deep",
+        "sec": 70
+      },
+      {
+        "id": "fusion_split",
+        "sec": 60
+      },
+      {
+        "id": "family_wall_save",
+        "sec": 70
+      }
+    ],
+    "beats_sum_sec": 620,
+    "transition_buffer_sec": 100
+  },
+  "save_migration": {
+    "package": "hk.vizard.glimmer.fpet.vc27draft",
+    "keep_profiles_on_overwrite": true,
+    "keep_fields": [
+      "shards",
+      "fruits",
+      "critters",
+      "meals",
+      "stage",
+      "form",
+      "house.owned",
+      "house.placed",
+      "collection",
+      "glow_berry",
+      "preview",
+      "personality",
+      "needs",
+      "growth"
+    ],
+    "schema_version": 1,
+    "defaults_if_missing": {
+      "ecosystem_schema": 1,
+      "combat": {
+        "力量": 1,
+        "身手": 1,
+        "耐力": 1
+      },
+      "zones_unlocked": {
+        "garden": true,
+        "cottage_yard_work": true,
+        "prairie_edge": true,
+        "zone_farm": false,
+        "zone_workshop": false,
+        "zone_prairie_deep": false,
+        "zone_family_wall": false
+      },
+      "fusion": {
+        "active": false,
+        "pet_ids": [],
+        "started_at_ms": 0,
+        "ends_at_ms": 0,
+        "cooldown_until_ms": 0
+      },
+      "division_lock": null,
+      "seeds": 0,
+      "unique_collect": "recompute_from_existing_collection_else_0",
+      "pets": "auto_migrate_single_main_pet_into_pets_0_and_two_way_sync_legacy_top_fields",
+      "family_tree": {
+        "nodes": [],
+        "edges": []
+      },
+      "relationships": [],
+      "farm_plots": [],
+      "daily_ledger": {
+        "day_key": "",
+        "jt_shards": 0,
+        "total_shards": 0,
+        "pet_mode": {},
+        "pet_paid_count": {}
+      },
+      "personality": {
+        "motion": 0,
+        "work": 0,
+        "social": 0
+      }
+    },
+    "migration_cases": {
+      "new_save": "init_schema_1_all_defaults_clean_normal_and_preview_profiles",
+      "legacy_r3_r4_r5_normal": "preserve_all_keep_fields_backfill_defaults_if_missing_recompute_unique_collect_never_reset_wallet_or_furniture",
+      "legacy_r3_r4_r5_preview": "preserve_preview_wallet_and_furniture_unlock_stale_preview_fixture_backfill_missing_preview_buttons_and_ecosystem_fields_never_touch_normal_profile"
+    },
+    "trigger_condition": "missing_ecosystem_schema_or_lt_1",
+    "do_not_gate_on_legacy_save_system_version_1": true,
+    "never_overwrite_existing_fields": true,
+    "preview_buttons_source_of_truth": "VC27_DRAFT_PREVIEW == \"1\""
+  },
+  "autonomy_boundaries": {
+    "interrupt_priority_order": [
+      "1_critical_survival_or_bedtime",
+      "2_active_paid_work_or_hunt",
+      "3_urgent_mature_harvest",
+      "4_normal_eat_or_nap",
+      "5_free_life_forage_rug_patrol_social"
+    ],
+    "critical_hunger_threshold": 15,
+    "critical_energy_threshold": 15,
+    "normal_eat_threshold": 45,
+    "normal_nap_threshold": 45,
+    "bedtime_window_local": [
+      "21:00",
+      "03:00"
+    ],
+    "active_paid_cycle_interrupt_rule": "finish_if_remaining_sec_lte_8_else_abort_and_refund_paid_slot",
+    "active_paid_cycle_finish_grace_sec": 8
+  },
+  "camera_rules": {
+    "manual_pan_pauses_follow": true,
+    "resume_follow_triggers": [
+      "tap_pet_avatar",
+      "tap_zone_tab",
+      "tap_refollow_button"
+    ],
+    "auto_resume_fight_user_thumb": false,
+    "clamp_to_zone_bounds": true,
+    "cross_zone_follow_smooth_sec": 0.45
+  },
+  "rug_leaf_rules": {
+    "cooldown_sec_normal": 90,
+    "cooldown_sec_preview": 20,
+    "roll_duration_sec": [
+      4,
+      6
+    ],
+    "constrain_to_rug_footprint": true,
+    "exit_immediately_on_hunger_lte": 25,
+    "exit_immediately_on_energy_lte": 25,
+    "exit_immediately_on_bedtime": true,
+    "exit_reset_pose": "idle"
+  },
+  "qa_personality_assertions": {
+    "axis_threshold_abs": 5,
+    "bump_cooldown_sec": 30,
+    "motion_high_vs_low": {
+      "walk_speed_mul": [
+        1.2,
+        0.85
+      ],
+      "action_rest_interval_sec": [
+        15.3,
+        20.7
+      ]
+    },
+    "work_high_vs_low": {
+      "action_rest_interval_sec": [
+        16.2,
+        21.6
+      ],
+      "work_and_forage_weight_delta": [
+        0.15,
+        -0.15
+      ],
+      "bump_reaction": [
+        "walk_away_immediately",
+        "sit_down"
+      ]
+    },
+    "social_high_vs_low": {
+      "combo_synergy_weight_delta": [
+        0.2,
+        -0.2
+      ],
+      "follow_vs_wander_distance_m": [
+        1.0,
+        6.0
+      ],
+      "bump_reaction": [
+        "look_back_at_player",
+        "keep_independent_roam"
+      ]
+    }
+  },
+  "farm": {
+    "stages": [
+      "seed",
+      "sprout",
+      "mature"
+    ],
+    "phases_to_mature": 2,
+    "crop_phase_sec": {
+      "normal": 3600,
+      "preview": 15
+    },
+    "full_cycle_sec": {
+      "normal": 7200,
+      "preview": 30
+    },
+    "tide_on_farm_mul": 0.9
+  }
+}

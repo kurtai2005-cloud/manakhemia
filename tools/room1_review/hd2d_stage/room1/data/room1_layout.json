@@ -1,0 +1,192 @@
+{
+  "note": "Loader entry is /pack.json (HD2D_LOADER_CONTRACT.md schema). This file is an art sidecar pointer.",
+  "see": "art_notes.json",
+  "slots": [
+    {
+      "key": "bed",
+      "id": "bed_leaf",
+      "candidate_local": [
+        28.0,
+        0.0,
+        -42.0
+      ],
+      "locked": false
+    },
+    {
+      "key": "rug",
+      "id": "rug_leaf",
+      "candidate_local": [
+        2.0,
+        0.2,
+        6.0
+      ],
+      "locked": false
+    },
+    {
+      "key": "table",
+      "id": "table_stump",
+      "candidate_local": [
+        -46.0,
+        0.0,
+        28.0
+      ],
+      "locked": false
+    },
+    {
+      "key": "lamp",
+      "id": "lamp_mushroom",
+      "candidate_local": [
+        -34.0,
+        0.0,
+        -50.0
+      ],
+      "locked": false
+    },
+    {
+      "key": "wall",
+      "id": "wall_shelf",
+      "candidate_local": [
+        28.0,
+        58.0,
+        -71.0
+      ],
+      "locked": false
+    },
+    {
+      "key": "window",
+      "id": "win_curtain",
+      "candidate_local": [
+        -30.0,
+        54.0,
+        -71.0
+      ],
+      "locked": false
+    }
+  ],
+  "room": {
+    "width": 128.0,
+    "depth": 148.0,
+    "ceiling": 108.0,
+    "wall_thickness": 3.0,
+    "open_front": true,
+    "bounds_x": [
+      -64.0,
+      64.0
+    ],
+    "bounds_z": [
+      -74.0,
+      74.0
+    ],
+    "inner_x": [
+      -61.0,
+      61.0
+    ],
+    "inner_z": [
+      -71.0,
+      74.0
+    ],
+    "locked": false,
+    "basis": "Circulation for a 44-wide pet (corridor >= 48) plus 19:9 front-stable framing. Not copied from old 160×128×120 as a lock, and not from 2D 92px furniture."
+  },
+  "camera_candidates": {
+    "convention": "19:9 cutaway (slight -X offset) so the right-wall door face is readable; not yaw26 as a style copy, and not 675 exterior proportions.",
+    "aspect": "19:9",
+    "locked": false,
+    "hero_before_20261122_0934": {
+      "eye": [
+        0.0,
+        48.0,
+        170.0
+      ],
+      "target": [
+        0.0,
+        28.0,
+        -20.0
+      ],
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "vfov": 50.0,
+      "znear": 2,
+      "zfar": 500,
+      "apron": true,
+      "measured_1080x2280_pet_bbox": {
+        "width_pct": 63.2,
+        "height_pct": 37.7,
+        "px": [
+          198,
+          755,
+          880,
+          1614
+        ]
+      },
+      "fails": "pet too large; bed cropped on the right; door not in frame; ceiling press; apron hid near-edge void"
+    },
+    "hero_19x9": {
+      "eye": [
+        -55.0,
+        48.0,
+        400.0
+      ],
+      "target": [
+        10.0,
+        40.0,
+        -20.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vfov": 46.0,
+      "znear": 2.0,
+      "zfar": 900.0,
+      "yaw": 0
+    },
+    "door_clear_19x9": {
+      "eye": [
+        -12.0,
+        50.0,
+        125.0
+      ],
+      "target": [
+        44.0,
+        30.0,
+        24.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vfov": 48.0,
+      "znear": 2.0,
+      "zfar": 900.0,
+      "yaw": 0
+    },
+    "pet_scale_19x9": {
+      "eye": [
+        18.0,
+        42.0,
+        130.0
+      ],
+      "target": [
+        10.0,
+        22.0,
+        -14.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vfov": 44.0,
+      "znear": 2.0,
+      "zfar": 900.0,
+      "yaw": 0
+    },
+    "note": "Indoor framing candidates only. 19:9 previews may add a +Z floor apron; that apron is not in shell.glb and is not walkable."
+  }
+}

@@ -8,10 +8,76 @@ const OVERLAY_PATH := "user://overlay_snapshot.json"
 
 var last_overlay_snapshot: Dictionary = {}
 
+func _ready() -> void:
+	_activate_preview_flag()
+
+
+func is_preview() -> bool:
+	_activate_preview_flag()
+	return OS.get_environment("VC27_DRAFT_PREVIEW") == "1"
+
+
+func _activate_preview_flag() -> void:
+	if OS.get_environment("VC27_DRAFT_PREVIEW") == "1":
+		return
+	if _args_request_preview() or _process_is_preview():
+		OS.set_environment("VC27_DRAFT_PREVIEW", "1")
+
+
+func _args_request_preview() -> bool:
+	var seen: Array = []
+	seen.append_array(OS.get_cmdline_user_args())
+	seen.append_array(OS.get_cmdline_args())
+	for a in seen:
+		if str(a) == "--vc27-preview":
+			return true
+	return false
+
+
+func _process_is_preview() -> bool:
+	# The preview icon is the activity in process :vc27preview. Android may drop
+	# the intent extra, but the process name is still on /proc/self/cmdline.
+	return text_is_preview_process(read_proc_cmdline())
+
+
+func text_is_preview_process(text: String) -> bool:
+	return text.find(":vc27preview") >= 0 and text.find("hk.vizard.glimmer.fpet.vc27draft") >= 0
+
+
+func read_proc_cmdline() -> String:
+	if not FileAccess.file_exists("/proc/self/cmdline"):
+		return ""
+	var f := FileAccess.open("/proc/self/cmdline", FileAccess.READ)
+	if f == null:
+		return ""
+	# /proc files report length 0, so read a fixed window.
+	var raw := f.get_buffer(4096)
+	f.close()
+	return raw.get_string_from_utf8().replace("\u0000", " ")
+
+
+func _save_path() -> String:
+	# Play-Draft already isolates vc27_draft_preview. Android uses one package,
+	# so the preview icon keeps its save beside the normal one.
+	_activate_preview_flag()
+	if OS.get_environment("VC27_DRAFT_PREVIEW") == "1" and OS.get_user_data_dir().find("vc27_draft_preview") < 0:
+		var nested := "user://vc27_draft_preview/save_v1.json"
+		# An older phone build that never saw the preview flag kept progress in the shared file.
+		# Do not hide that file behind an empty nested save.
+		if FileAccess.file_exists(nested) or not FileAccess.file_exists(SAVE_PATH):
+			return nested
+	return SAVE_PATH
+
+
+func _tmp_path() -> String:
+	return _save_path() + ".tmp"
+
+
 func load_state() -> Dictionary:
-	if not FileAccess.file_exists(SAVE_PATH):
+	var path := _save_path()
+	if not FileAccess.file_exists(path):
 		return {}
-	var raw := FileAccess.get_file_as_string(SAVE_PATH)
+	var raw := FileAccess.get_file_as_string(path)
 	if raw.strip_edges() == "":
 		return {}
 	var parsed: Variant = JSON.parse_string(raw)
@@ -29,7 +95,12 @@ func save_state(data: Dictionary) -> bool:
 	var out := data.duplicate(true)
 	out["version"] = VERSION
 	var json := JSON.stringify(out)
-	var f := FileAccess.open(TMP_PATH, FileAccess.WRITE)
+	var path := _save_path()
+	var tmp := _tmp_path()
+	var folder := path.get_base_dir()
+	if folder != "user://" and not DirAccess.dir_exists_absolute(folder):
+		DirAccess.make_dir_recursive_absolute(folder)
+	var f := FileAccess.open(tmp, FileAccess.WRITE)
 	if f == null:
 		push_error("SaveSystem: cannot write tmp")
 		return false
@@ -37,9 +108,9 @@ func save_state(data: Dictionary) -> bool:
 	f.flush()
 	f.close()
 	# 原子：Godot 冇 rename overwrite 保證；先刪舊再搬
-	if FileAccess.file_exists(SAVE_PATH):
-		DirAccess.remove_absolute(SAVE_PATH)
-	var err := DirAccess.rename_absolute(TMP_PATH, SAVE_PATH)
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(path)
+	var err := DirAccess.rename_absolute(tmp, path)
 	if err != OK:
 		push_error("SaveSystem: rename failed " + str(err))
 		return false
@@ -58,10 +129,12 @@ func migrate(data: Dictionary, from_v: int, to_v: int) -> Dictionary:
 
 
 func clear() -> void:
-	if FileAccess.file_exists(SAVE_PATH):
-		DirAccess.remove_absolute(SAVE_PATH)
-	if FileAccess.file_exists(TMP_PATH):
-		DirAccess.remove_absolute(TMP_PATH)
+	var path := _save_path()
+	var tmp := _tmp_path()
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(path)
+	if FileAccess.file_exists(tmp):
+		DirAccess.remove_absolute(tmp)
 
 
 func build_overlay_snapshot(s: Dictionary) -> Dictionary:

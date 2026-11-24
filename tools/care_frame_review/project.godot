@@ -1,0 +1,15 @@
+; Review-only viewer for the baked 64 care frames. No autoload, no save, no care logic.
+config_version=5
+
+[application]
+config/name="Care Frame Review"
+run/main_scene="res://scenes/show_frame.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[display]
+window/size/viewport_width=390
+window/size/viewport_height=844
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="mobile"

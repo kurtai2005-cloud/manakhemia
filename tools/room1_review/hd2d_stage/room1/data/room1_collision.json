@@ -1,0 +1,149 @@
+{
+  "note": "Loader entry is /pack.json. Collision list uses aabb [x,y,z,w,h,d] (min corner + size).",
+  "collision": [
+    {
+      "name": "bed",
+      "aabb": [
+        0.0,
+        0.0,
+        -65.0,
+        56.0,
+        34.0,
+        40.0
+      ]
+    },
+    {
+      "name": "table",
+      "aabb": [
+        -56.0,
+        0.0,
+        18.0,
+        20.0,
+        14.0,
+        20.0
+      ]
+    },
+    {
+      "name": "lamp",
+      "aabb": [
+        -44.0,
+        0.0,
+        -60.0,
+        20.0,
+        32.0,
+        20.0
+      ]
+    },
+    {
+      "name": "wall_back",
+      "aabb": [
+        -64.0,
+        0.0,
+        -74.0,
+        128.0,
+        108.0,
+        3.0
+      ]
+    },
+    {
+      "name": "wall_left",
+      "aabb": [
+        -64.0,
+        0.0,
+        -74.0,
+        3.0,
+        108.0,
+        148.0
+      ]
+    },
+    {
+      "name": "wall_right_b",
+      "aabb": [
+        61.0,
+        0.0,
+        -74.0,
+        3.0,
+        108.0,
+        74.0
+      ]
+    },
+    {
+      "name": "wall_right_f",
+      "aabb": [
+        61.0,
+        0.0,
+        48.0,
+        3.0,
+        108.0,
+        26.0
+      ]
+    },
+    {
+      "name": "wall_right_head",
+      "aabb": [
+        61.0,
+        60.0,
+        0.0,
+        3.0,
+        48.0,
+        48.0
+      ]
+    },
+    {
+      "name": "door_leaf",
+      "aabb": [
+        59.8,
+        0.0,
+        1.0,
+        1.2,
+        60.0,
+        46.0
+      ]
+    }
+  ],
+  "walkable": {
+    "mesh": "",
+    "locked": false
+  },
+  "occlusion": {
+    "mesh": "",
+    "locked": false
+  },
+  "door_anchor": {
+    "threshold_local": [
+      61.0,
+      0.0,
+      24.0
+    ],
+    "outward": [
+      1,
+      0,
+      0
+    ],
+    "locked": false
+  },
+  "walkable_intent": {
+    "plane_y": 0,
+    "x": [
+      -61.0,
+      61.0
+    ],
+    "z": [
+      -71.0,
+      74.0
+    ],
+    "subtract": [
+      "bed",
+      "table",
+      "lamp",
+      "walls",
+      "door_leaf"
+    ],
+    "do_not_block": [
+      "rug",
+      "wall_shelf",
+      "window_curtains"
+    ],
+    "note": "Pet visible width 44 wu; recommended corridor >= 48. pack.json walkable.mesh is empty and locked:false until a walk mesh is authored and explicitly locked."
+  }
+}

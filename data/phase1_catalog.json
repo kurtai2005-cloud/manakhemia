@@ -1,0 +1,47 @@
+{
+  "stages": [
+    {"id": "egg", "zh": "蛋", "species": "egg"},
+    {"id": "baby", "zh": "幼年期", "species": "baby"},
+    {"id": "child", "zh": "成長期", "species": "child"},
+    {"id": "adult", "zh": "成熟期", "species": "tide"},
+    {"id": "ultimate", "zh": "完全體", "species": "lumi"}
+  ],
+  "species": [
+    {"id": "egg", "zh": "微光蛋", "stage": "egg", "tint": "F4E2B0", "scale": 0.7, "passive": "等待"},
+    {"id": "baby", "zh": "小團絨", "stage": "baby", "tint": "F7C6D0", "scale": 0.85, "passive": "黏人"},
+    {"id": "child", "zh": "步步絨", "stage": "child", "tint": "F2B48C", "scale": 1.0, "passive": "好奇"},
+    {"id": "tide", "zh": "潮汐絨", "stage": "adult", "tint": "7EC8C3", "scale": 1.05, "passive": "潮息"},
+    {"id": "shroom", "zh": "菌菇絨", "stage": "adult", "tint": "C4A15A", "scale": 1.05, "passive": "孢子"},
+    {"id": "crystal", "zh": "晶石絨", "stage": "adult", "tint": "B7D4F0", "scale": 1.08, "passive": "折射"},
+    {"id": "ember", "zh": "餘燼絨", "stage": "adult", "tint": "E07A4C", "scale": 1.08, "passive": "餘溫"},
+    {"id": "moon", "zh": "月影絨", "stage": "adult", "tint": "9AA4D6", "scale": 1.08, "passive": "夜行"},
+    {"id": "bright", "zh": "明光絨", "stage": "ultimate", "tint": "F6E27A", "scale": 1.2, "passive": "照路"},
+    {"id": "soft", "zh": "軟絨絨", "stage": "ultimate", "tint": "F3D2E4", "scale": 1.18, "passive": "安撫"},
+    {"id": "dust", "zh": "星塵絨", "stage": "ultimate", "tint": "D7C6F5", "scale": 1.18, "passive": "拾光"},
+    {"id": "lumi", "zh": "微光絨", "stage": "ultimate", "tint": "FFF4D2", "scale": 1.22, "passive": "微光"}
+  ],
+  "fusions": [
+    {"id": "star_tide", "zh": "星潮雙輝", "pair": ["tide", "bright"]},
+    {"id": "ember_crystal", "zh": "燼晶共鳴", "pair": ["ember", "crystal"]},
+    {"id": "moon_lumi", "zh": "月光和鳴", "pair": ["moon", "lumi"]}
+  ],
+  "synergies": [
+    {"id": "family_guard", "zh": "家族守護"},
+    {"id": "kindred", "zh": "心有靈犀"},
+    {"id": "farm_hunt", "zh": "耕獵互補"},
+    {"id": "work_pair", "zh": "勤工拍檔"},
+    {"id": "dual_line", "zh": "雙系共鳴"}
+  ],
+  "foods": [
+    {"id": "dew", "zh": "露水莓", "hunger": 18, "mood": 8, "bond": 0, "stamina": 0, "power": 0},
+    {"id": "star", "zh": "星星果", "hunger": 12, "mood": 0, "bond": 0, "stamina": 0, "power": 1},
+    {"id": "soup", "zh": "暖心湯", "hunger": 16, "mood": 0, "bond": 10, "stamina": 12, "power": 0}
+  ],
+  "zones": [
+    {"id": "garden", "zh": "小屋", "look": [0, 18, 12]},
+    {"id": "zone_farm", "zh": "農圃", "look": [-280, 18, 30]},
+    {"id": "zone_workshop", "zh": "工坊", "look": [280, 18, 30]},
+    {"id": "prairie_edge", "zh": "草原", "look": [0, 18, -320]}
+  ],
+  "world": {"min_x": -400, "max_x": 400, "min_z": -480, "max_z": 180, "old_span": 256}
+}

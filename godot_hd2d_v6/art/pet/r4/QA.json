@@ -1,0 +1,29 @@
+{
+  "side_frame_count": 6,
+  "frame_size": [
+    64,
+    64
+  ],
+  "stride_wu": 12,
+  "wu_per_frame": 2,
+  "plant_spacing_wu": [
+    6,
+    6
+  ],
+  "stance_sample_max_slip_wu": 0,
+  "body_rows_0_to_57_unchanged": true,
+  "palette_count": 12,
+  "side_palette_extras": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
+  "side_sole_span_pixels": 6,
+  "side_contact_center_separation_px": 6,
+  "front_back_bytes_unchanged": true,
+  "alpha_binary": true,
+  "continuous_runtime_lock": false
+}

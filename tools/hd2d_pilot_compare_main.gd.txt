@@ -1,0 +1,101 @@
+extends SceneTree
+
+var _node: Node
+var _wait := 0
+var _info: Dictionary = {}
+var _out_dir := ""
+var _png_path := ""
+
+func _initialize() -> void:
+	root.size = Vector2i(1080, 2280)
+	var udir := OS.get_user_data_dir()
+	print("pilot_compare user_dir=", udir)
+	if udir.find("vc27_root_adapter") < 0:
+		print("FAIL user dir is not an isolated adapter profile")
+		quit(2)
+		return
+	var Host := load("res://hd2d_pilot_compare_host.gd")
+	_node = Host.new()
+	root.add_child(_node)
+	process_frame.connect(_tick)
+
+
+func _tick() -> void:
+	if _node.get("_camera") == null:
+		_wait += 1
+		if _wait > 180:
+			print("FAIL pilot visual init did not finish")
+			quit(1)
+		return
+	process_frame.disconnect(_tick)
+	var steps := int(OS.get_environment("HD2D_COMPARE_STEPS")) if OS.get_environment("HD2D_COMPARE_STEPS") != "" else 20
+	var dt := 1.0 / 60.0
+	for _i in steps:
+		_node.call("step_visual", dt)
+	var info: Dictionary = _node.call("comparison_state")
+	var out_dir := OS.get_environment("HD2D_COMPARE_OUT")
+	if out_dir == "":
+		out_dir = OS.get_user_data_dir().path_join("hd2d_compare")
+	DirAccess.make_dir_recursive_absolute(out_dir)
+	info["headless"] = OS.has_feature("headless")
+	var grab := OS.get_environment("HD2D_COMPARE_GRAB") == "1"
+	_info = info
+	_out_dir = out_dir
+	_png_path = out_dir.path_join("pilot_standalone.png")
+	if grab and not _display_blocked():
+		process_frame.connect(_capture_png)
+		return
+	_write(false)
+	if grab:
+		print("FAIL pilot viewport PNG missing or not 1080x2280")
+		quit(1)
+		return
+	quit(0)
+
+
+func _capture_png() -> void:
+	process_frame.disconnect(_capture_png)
+	var vp := _node.get_viewport()
+	var tex: ViewportTexture = vp.get_texture() if vp else null
+	var img: Image = tex.get_image() if tex else null
+	var wrote := _png_ok(img, _png_path)
+	_write(wrote)
+	if not wrote:
+		print("FAIL pilot viewport PNG missing or not 1080x2280")
+		quit(1)
+		return
+	quit(0)
+
+
+func _write(wrote: bool) -> void:
+	_info["png"] = _png_path if wrote else ""
+	_info["png_written"] = wrote
+	_info["display_blocked"] = _display_blocked()
+	var path := _out_dir.path_join("pilot_standalone.json")
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(_info, "\t"))
+	f.close()
+	print("pilot_compare json=", path, " renderer=", _info.get("renderer_actual", ""), " follow=", _info.get("follow_camera_steps", 0), " png_written=", wrote)
+
+
+func _display_blocked() -> bool:
+	if OS.get_environment("HD2D_COMPARE_DISPLAY") != "1":
+		return true
+	if OS.has_feature("headless") or DisplayServer.get_name() == "headless":
+		return true
+	return false
+
+
+func _png_ok(img: Image, png_path: String) -> bool:
+	if img == null or img.is_empty():
+		return false
+	if img.get_width() != 1080 or img.get_height() != 2280:
+		return false
+	if img.save_png(png_path) != OK:
+		return false
+	if not FileAccess.file_exists(png_path) or FileAccess.get_size(png_path) < 32:
+		return false
+	var back := Image.new()
+	if back.load(png_path) != OK:
+		return false
+	return back.get_width() == 1080 and back.get_height() == 2280

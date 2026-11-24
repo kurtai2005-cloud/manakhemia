@@ -29,11 +29,19 @@ var time_lbl: Label
 var book_panel: PanelContainer
 var care_target: Walker
 var shard_lbl: Label
+var food_lbl: Label
+var goal_bar: BoxContainer
+var btn_goal_food: Button
+var btn_goal_rest: Button
+var btn_replay_post: Button
+var btn_replay_hunt: Button
+var replay_reason: Label
+var preview_lbl: Label
 
 
 func _ready() -> void:
 	layer = 20
-	font = load("res://art/fonts/GenWanMin2TC-R.subset.otf")
+	font = Vc27Fonts.ensure()
 	root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -52,6 +60,28 @@ func _ready() -> void:
 	shard_lbl.position = Vector2(16, 36)
 	shard_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shard_lbl)
+
+	var food_icon := TextureRect.new()
+	food_icon.name = "FoodIcon"
+	food_icon.texture = load("res://art-pet/sprites/hunt/fruits/starberry.png")
+	food_icon.position = Vector2(150, 32)
+	food_icon.custom_minimum_size = Vector2(22, 22)
+	food_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	food_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	food_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(food_icon)
+	food_lbl = _lbl("0", 16)
+	food_lbl.name = "FoodCount"
+	food_lbl.anchor_left = 0
+	food_lbl.anchor_top = 0
+	food_lbl.position = Vector2(176, 36)
+	food_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(food_lbl)
+	if _show_replay_buttons():
+		preview_lbl = _lbl("試玩·各一次", 14)
+		preview_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(preview_lbl)
+		_build_replay_buttons(root)
 
 	# 左上收藏（屋 ×2 之後右上會同煙囪重疊）
 	btn_book = _btn("圖鑑")
@@ -150,6 +180,29 @@ func _ready() -> void:
 	care_bar.add_child(btn_snack)
 	care_bar.add_child(btn_pat)
 
+	goal_bar = VBoxContainer.new()
+	goal_bar.name = "GoalBar"
+	goal_bar.anchor_left = 1.0
+	goal_bar.anchor_right = 1.0
+	goal_bar.anchor_top = 0.0
+	goal_bar.anchor_bottom = 0.0
+	goal_bar.offset_left = -100
+	goal_bar.offset_right = -8
+	goal_bar.offset_top = 56
+	goal_bar.offset_bottom = 248
+	goal_bar.add_theme_constant_override("separation", 8)
+	goal_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	goal_bar.visible = false
+	root.add_child(goal_bar)
+	btn_goal_food = _icon_btn("need_eat", "")
+	btn_goal_food.name = "GoalFood"
+	btn_goal_rest = _icon_btn("need_sleep", "")
+	btn_goal_rest.name = "GoalRest"
+	btn_goal_food.pressed.connect(_press_goal_food)
+	btn_goal_rest.pressed.connect(_press_goal_rest)
+	goal_bar.add_child(btn_goal_food)
+	goal_bar.add_child(btn_goal_rest)
+
 	# 總結卡：提高，避開欣賞／開發者
 	card = PanelContainer.new()
 	card.anchor_left = 0.5
@@ -180,14 +233,14 @@ func _ready() -> void:
 	root.add_child(card)
 
 	hide_btn = _btn("欣賞")
-	hide_btn.anchor_left = 0
-	hide_btn.anchor_top = 1
-	hide_btn.anchor_right = 0
-	hide_btn.anchor_bottom = 1
-	hide_btn.offset_left = 16
-	hide_btn.offset_top = -172
-	hide_btn.offset_right = 120
-	hide_btn.offset_bottom = -128
+	hide_btn.anchor_left = 1
+	hide_btn.anchor_top = 0
+	hide_btn.anchor_right = 1
+	hide_btn.anchor_bottom = 0
+	hide_btn.offset_left = -120
+	hide_btn.offset_top = 12
+	hide_btn.offset_right = -16
+	hide_btn.offset_bottom = 52
 	hide_btn.pressed.connect(func():
 		if AudioManager:
 			_play_press()  # was: hardcoded _a
@@ -201,9 +254,10 @@ func _ready() -> void:
 	dev_btn.anchor_right = 1
 	dev_btn.anchor_bottom = 1
 	dev_btn.offset_left = -136
-	dev_btn.offset_top = -172
+	dev_btn.offset_top = 60
 	dev_btn.offset_right = -16
-	dev_btn.offset_bottom = -128
+	dev_btn.offset_bottom = 104
+	dev_btn.visible = _dev_allowed()
 	dev_btn.pressed.connect(func():
 		if AudioManager:
 			_play_press()  # was: hardcoded _a
@@ -398,7 +452,15 @@ func _refresh_book() -> void:
 	var info: Label = book_panel.find_child("BookInfo", true, false) as Label
 	if info:
 		var forms: Dictionary = CollectionSystem.ensure()["collection"].get("forms", {})
-		info.text = "星星碎 %d　圖鑑 %d／54　家具 %d" % [CollectionSystem.stardust(), forms.size(), CollectionSystem.owned().size()]
+		var found := ""
+		if CollectionSystem.has_method("discovered_names"):
+			var names: PackedStringArray = CollectionSystem.discovered_names()
+			if names.size() > 0:
+				found = "　已發現 " + "、".join(names)
+		var stage_name := ""
+		if Sim and Sim.has_method("stage_zh"):
+			stage_name = Sim.stage_zh() + "　"
+		info.text = "%s星星碎 %d　圖鑑 %d／54　家具 %d%s" % [stage_name, CollectionSystem.stardust(), forms.size(), CollectionSystem.owned().size(), found]
 	var shop: VBoxContainer = book_panel.find_child("Shop", true, false) as VBoxContainer
 	if shop == null:
 		return
@@ -478,7 +540,7 @@ func _toggle_hide() -> void:
 	hidden = not hidden
 	bar.visible = not hidden
 	care_bar.visible = (not hidden) and observing and care_target != null
-	dev_btn.visible = not hidden and not card.visible
+	dev_btn.visible = _dev_allowed() and not hidden and not card.visible
 	time_lbl.visible = not hidden
 	shard_lbl.visible = not hidden
 	btn_book.visible = not hidden
@@ -530,6 +592,8 @@ func _hand(act: String, food: String) -> void:
 		rec = main.hand_pat(care_target)
 	if rec.is_empty():
 		return
+	card_queue.clear()
+	set_observing(false)
 	# 團絨經 Sim.care_done 出卡；flavor（細佬／訪客）或者食唔落先喺呢度出
 	if bool(rec.get("flavor", false)) or str(rec.get("reason", "")) == "full":
 		_on_care(act, rec)
@@ -558,6 +622,9 @@ func _one_tap(act: String) -> void:
 				_play_error()
 	if rec.is_empty():
 		return
+	if bool(rec.get("ok", false)):
+		card_queue.clear()
+		set_observing(false)
 	_on_care(str(rec.get("act", act)), rec)
 
 
@@ -677,7 +744,7 @@ func _sync_side_buttons() -> void:
 	if hide_btn:
 		hide_btn.visible = not hidden and not hide_side
 	if dev_btn:
-		dev_btn.visible = not hidden and not hide_side
+		dev_btn.visible = _dev_allowed() and not hidden and not hide_side
 
 
 func _refresh() -> void:
@@ -709,13 +776,187 @@ func _refresh() -> void:
 		book_dot.visible = CollectionSystem.has_dot("collection")
 	if shard_lbl and CollectionSystem:
 		shard_lbl.text = "★ %d" % CollectionSystem.stardust()
+	if food_lbl and CollectionSystem and CollectionSystem.has_method("fruit_count"):
+		food_lbl.text = str(int(CollectionSystem.call("fruit_count", "starberry")))
+	_refresh_goal()
 	_sync_side_buttons()
+
+
+func _show_replay_buttons() -> bool:
+	# Preview launch, not the saved egg shortcut. An upgraded save may lack preview_fixture.
+	return SaveSystem != null and SaveSystem.has_method("is_preview") and SaveSystem.is_preview()
+
+
+func _replay_font() -> Font:
+	# Same chain as every other label: the subset, then the CJK fallback.
+	return Vc27Fonts.ensure()
+
+
+func _build_replay_buttons(root_node: Control) -> void:
+	# Left column, under 圖鑑, inside the portrait safe area. Not the top-right corner.
+	var face := _replay_font()
+	var panel := StyleBoxFlat.new()
+	panel.bg_color = Color(1.0, 0.96, 0.88, 0.96)
+	panel.border_color = Color(0.25, 0.16, 0.08, 1)
+	panel.set_border_width_all(2)
+	panel.set_corner_radius_all(8)
+	panel.content_margin_left = 8
+	panel.content_margin_right = 8
+	btn_replay_post = _replay_btn("重看郵局", face, panel)
+	btn_replay_post.pressed.connect(func(): _press_replay("post"))
+	root_node.add_child(btn_replay_post)
+	btn_replay_hunt = _replay_btn("重看狩獵", face, panel)
+	btn_replay_hunt.pressed.connect(func(): _press_replay("hunt"))
+	root_node.add_child(btn_replay_hunt)
+	replay_reason = _lbl("", 16)
+	replay_reason.add_theme_font_override("font", face)
+	root_node.add_child(replay_reason)
+	btn_replay_post.z_index = 20
+	btn_replay_hunt.z_index = 20
+	_apply_replay_safe()
+
+
+func _safe_viewport_rect() -> Rect2:
+	var vp: Vector2 = get_viewport().get_visible_rect().size
+	var win: Vector2i = DisplayServer.window_get_size()
+	var safe: Rect2i = DisplayServer.get_display_safe_area()
+	var fit := 1.0
+	var ox := 0.0
+	var oy := 0.0
+	if win.x > 0 and win.y > 0 and vp.x > 1.0 and vp.y > 1.0:
+		fit = minf(float(win.x) / vp.x, float(win.y) / vp.y)
+		if fit <= 0.0:
+			fit = 1.0
+		ox = (float(win.x) - vp.x * fit) * 0.5
+		oy = (float(win.y) - vp.y * fit) * 0.5
+	var left := maxf(0.0, (float(safe.position.x) - ox) / fit)
+	var top := maxf(0.0, (float(safe.position.y) - oy) / fit)
+	var right := minf(vp.x, (float(safe.position.x + safe.size.x) - ox) / fit)
+	var bottom := minf(vp.y, (float(safe.position.y + safe.size.y) - oy) / fit)
+	left += 16.0
+	top += 8.0
+	right -= 16.0
+	bottom -= 8.0
+	return Rect2(Vector2(left, top), Vector2(maxf(0.0, right - left), maxf(0.0, bottom - top)))
+
+
+func _min_tap_px() -> float:
+	var dpi := float(DisplayServer.screen_get_dpi())
+	if dpi < 10.0:
+		dpi = 160.0
+	var win: Vector2i = DisplayServer.window_get_size()
+	var vp: Vector2 = get_viewport().get_visible_rect().size
+	var fit := 1.0
+	if win.x > 0 and win.y > 0 and vp.x > 1.0 and vp.y > 1.0:
+		fit = minf(float(win.x) / vp.x, float(win.y) / vp.y)
+	if fit <= 0.0:
+		fit = 1.0
+	# 48dp on the phone, and at least 64 design px so Note10+ 19:9 stays above that.
+	return maxf(64.0, (48.0 * dpi / 160.0) / fit)
+
+
+func _place_box(node: Control, x: float, y: float, w: float, h: float) -> void:
+	node.anchor_left = 0
+	node.anchor_right = 0
+	node.anchor_top = 0
+	node.anchor_bottom = 0
+	node.offset_left = x
+	node.offset_top = y
+	node.offset_right = x + w
+	node.offset_bottom = y + h
+
+
+func _apply_replay_safe() -> void:
+	if btn_replay_post == null or btn_replay_hunt == null:
+		return
+	var area := _safe_viewport_rect()
+	var tap := _min_tap_px()
+	# 圖鑑 occupies y 64–108. Stay under it even if its rect is not ready yet.
+	var book_end := 108.0
+	if btn_book:
+		var br: Rect2 = btn_book.get_global_rect()
+		if br.size.y > 1.0:
+			book_end = br.end.y
+	var y := maxf(area.position.y, book_end + 12.0)
+	var x := area.position.x
+	var w := minf(220.0, area.size.x)
+	if w < tap:
+		w = area.size.x
+	if preview_lbl:
+		_place_box(preview_lbl, x, y, w, 28.0)
+		y += 32.0
+	_place_box(btn_replay_post, x, y, w, tap)
+	_place_box(btn_replay_hunt, x, y + tap + 8.0, w, tap)
+	if replay_reason:
+		_place_box(replay_reason, x, y + (tap + 8.0) * 2.0, w, 28.0)
+
+
+func _replay_btn(text: String, face: Font, panel: StyleBox) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.add_theme_font_override("font", face)
+	b.add_theme_font_size_override("font_size", 22)
+	b.add_theme_color_override("font_color", Color(0.15, 0.08, 0.04))
+	b.add_theme_color_override("font_disabled_color", Color(0.35, 0.28, 0.22))
+	b.add_theme_stylebox_override("normal", panel)
+	b.add_theme_stylebox_override("hover", panel)
+	b.add_theme_stylebox_override("pressed", panel)
+	b.add_theme_stylebox_override("disabled", panel)
+	b.custom_minimum_size = Vector2(204, 52)
+	b.anchor_left = 0
+	b.anchor_right = 0
+	b.anchor_top = 0
+	b.anchor_bottom = 0
+	b.offset_left = 16
+	b.offset_right = 220
+	return b
+
+
+func _press_replay(kind: String) -> void:
+	var main := get_tree().get_first_node_in_group("glimmer_main")
+	if main == null:
+		return
+	var rec: Dictionary = {}
+	if kind == "post" and main.has_method("replay_post"):
+		rec = main.replay_post()
+	elif kind == "hunt" and main.has_method("replay_hunt"):
+		rec = main.replay_hunt()
+	if bool(rec.get("ok", false)):
+		_play_press()
+		if replay_reason:
+			replay_reason.text = ""
+	else:
+		_play_error()
+		if replay_reason:
+			replay_reason.text = str(rec.get("reason", ""))
+
+
+func _sync_replay_buttons() -> void:
+	if btn_replay_post == null or btn_replay_hunt == null:
+		return
+	var main := get_tree().get_first_node_in_group("glimmer_main")
+	var why := ""
+	if main and main.has_method("replay_block_reason"):
+		why = str(main.replay_block_reason())
+	var blocked := why != ""
+	btn_replay_post.disabled = blocked
+	btn_replay_hunt.disabled = blocked
+	btn_replay_post.modulate = Color(1, 1, 1, 0.45) if blocked else Color.WHITE
+	btn_replay_hunt.modulate = Color(1, 1, 1, 0.45) if blocked else Color.WHITE
+	if replay_reason:
+		replay_reason.text = why
+	_apply_replay_safe()
 
 
 func _process(dt: float) -> void:
 	if time_lbl and not hidden and TimeService:
 		var d: Dictionary = TimeService.local_dict(TimeService.now_ms())
 		time_lbl.text = "%02d:%02d" % [int(d.get("hour", 0)), int(d.get("minute", 0))]
+	if food_lbl and not hidden and CollectionSystem and CollectionSystem.has_method("fruit_count"):
+		food_lbl.text = str(int(CollectionSystem.call("fruit_count", "starberry")))
+	if not hidden:
+		_refresh_goal()
+	_sync_replay_buttons()
 	if card_t > 0.0:
 		card_t -= dt
 		if card_t <= 0.0:
@@ -723,6 +964,44 @@ func _process(dt: float) -> void:
 			_sync_side_buttons()
 			if not observing and not card_queue.is_empty():
 				_show_card(card_queue.pop_front())
+
+
+func _dev_allowed() -> bool:
+	return OS.get_environment("VC27_DEV_HUD") == "1"
+
+
+func _press_goal_food() -> void:
+	var errand := _errand()
+	if errand and errand.has_method("press_food"):
+		errand.call("press_food")
+
+
+func _press_goal_rest() -> void:
+	var errand := _errand()
+	if errand and errand.has_method("press_rest"):
+		errand.call("press_rest")
+
+
+func _errand() -> Node:
+	var main := get_tree().get_first_node_in_group("glimmer_main")
+	if main == null:
+		return null
+	return main.get_node_or_null("GardenErrand")
+
+
+func _refresh_goal() -> void:
+	if goal_bar == null:
+		return
+	var errand := _errand()
+	var food := errand != null and errand.has_method("food_choice") and bool(errand.call("food_choice"))
+	var rest := errand != null and errand.has_method("rest_offered") and bool(errand.call("rest_offered"))
+	var food_live := errand != null and errand.has_method("food_offered") and bool(errand.call("food_offered"))
+	if btn_goal_food:
+		btn_goal_food.visible = food
+		btn_goal_food.modulate = Color.WHITE if food_live else Color(1, 1, 1, 0.45)
+	if btn_goal_rest:
+		btn_goal_rest.visible = rest
+	goal_bar.visible = not hidden and (food or rest)
 
 
 func set_in_interior(on: bool) -> void:

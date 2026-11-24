@@ -1,0 +1,168 @@
+{
+  "_doc": "團絨撞道具：彈簧－阻尼原型參數。遊美之後只需改呢份 JSON（軸心／重量／搖幅），唔使改 script。match 係 node 名前綴，同名會加 2、3…（Godot 自動改名）。groups 把蓋同箱綁成一件。blocked_rects 用 Godot Rect2（x, z, w, h），推位移唔可入內。pet_shader_param 暫時叫 pet_pos_ws，等你確定草／花 shader uniform 名再改呢個欄同 project.godot。",
+  "enabled": true,
+  "pet_radius": 12.0,
+  "active_radius": 80.0,
+  "impulse_scale": 1.0,
+  "contact_cooldown": 0.18,
+  "settle_tilt_deg": 0.12,
+  "settle_speed": 0.4,
+  "pet_shader_param": "pet_pos_ws",
+  "pet_shader_y_mode": "center",
+  "bounds": {
+    "x_min": -140.0,
+    "x_max": 150.0,
+    "z_min": -110.0,
+    "z_max": 90.0
+  },
+  "blocked_rects": [
+    {
+      "name": "cottage",
+      "x": 47.0,
+      "z": -100.0,
+      "w": 72.0,
+      "h": 60.0
+    },
+    {
+      "name": "fence",
+      "x": -120.0,
+      "z": -60.0,
+      "w": 182.0,
+      "h": 14.0
+    },
+    {
+      "name": "fence_inner",
+      "x": -84.0,
+      "z": -43.0,
+      "w": 74.0,
+      "h": 24.0
+    }
+  ],
+  "types": {
+    "pot_s": {
+      "_doc": "細花盆：輕搖。pivot_y 係世界高度（底部軸心）。radius 係 XZ 碰撞半徑（未加 pet_radius）。",
+      "match": [
+        "pot_S"
+      ],
+      "pivot_y": 0.0,
+      "mass": 1.0,
+      "radius": 7.0,
+      "max_tilt_deg": 12.0,
+      "stiffness": 64.0,
+      "damping": 5.5,
+      "max_push": 6.0,
+      "residual_frac": 0.22,
+      "angular_gain": 0.045,
+      "linear_gain": 0.12
+    },
+    "pot_s_fill": {
+      "_doc": "Dense-fill small pot at (100,-30); same pot as pot_s but sits among bushes, so lighter push",
+      "match": [
+        "pot_S_100_-30"
+      ],
+      "pivot_y": 0.0,
+      "mass": 1.0,
+      "radius": 7.0,
+      "max_tilt_deg": 10.0,
+      "stiffness": 70.0,
+      "damping": 6.0,
+      "max_push": 3.0,
+      "residual_frac": 0.18,
+      "angular_gain": 0.04,
+      "linear_gain": 0.08
+    },
+    "pot_l": {
+      "_doc": "大花盆：比重盆輕搖少少。",
+      "match": [
+        "pot_L",
+        "pot_R"
+      ],
+      "pivot_y": 0.0,
+      "mass": 1.5,
+      "radius": 9.0,
+      "max_tilt_deg": 9.0,
+      "stiffness": 72.0,
+      "damping": 6.0,
+      "max_push": 4.5,
+      "residual_frac": 0.16,
+      "angular_gain": 0.035,
+      "linear_gain": 0.09
+    },
+    "can": {
+      "_doc": "水壺：更輕，搖幅比花盆大、更快停。",
+      "match": [
+        "can"
+      ],
+      "pivot_y": 0.0,
+      "mass": 0.55,
+      "radius": 8.0,
+      "max_tilt_deg": 16.0,
+      "stiffness": 48.0,
+      "damping": 4.6,
+      "max_push": 7.0,
+      "residual_frac": 0.28,
+      "angular_gain": 0.06,
+      "linear_gain": 0.16
+    },
+    "jar": {
+      "_doc": "螢火瓶：預設當輕小容器。唔需要可刪呢類。",
+      "match": [
+        "jar"
+      ],
+      "pivot_y": 0.0,
+      "mass": 0.8,
+      "radius": 5.0,
+      "max_tilt_deg": 10.0,
+      "stiffness": 70.0,
+      "damping": 6.2,
+      "max_push": 4.0,
+      "residual_frac": 0.18,
+      "angular_gain": 0.04,
+      "linear_gain": 0.1
+    },
+    "crate": {
+      "_doc": "木箱：重，幾乎唔郁，只微震。",
+      "match": [
+        "CrateWood2",
+        "CrateWood"
+      ],
+      "pivot_y": 0.0,
+      "mass": 9.0,
+      "radius": 11.0,
+      "max_tilt_deg": 2.4,
+      "stiffness": 140.0,
+      "damping": 11.0,
+      "max_push": 1.4,
+      "residual_frac": 0.08,
+      "angular_gain": 0.012,
+      "linear_gain": 0.03
+    },
+    "mushrooms": {
+      "_doc": "suggested: soft squash, no travel",
+      "match": [
+        "mushrooms"
+      ],
+      "pivot_y": 0.0,
+      "mass": 0.3,
+      "radius": 5.0,
+      "max_tilt_deg": 18.0,
+      "stiffness": 90.0,
+      "damping": 7.0,
+      "max_push": 0.0,
+      "residual_frac": 0.0,
+      "angular_gain": 0.06,
+      "linear_gain": 0.0
+    }
+  },
+  "groups": [
+    {
+      "_doc": "木箱蓋跟住箱一齊搖。parent_match 要先於較短前綴處理（CrateWood2 唔好食 CrateWood）。",
+      "type": "crate",
+      "parent_match": "CrateWood",
+      "attach_match": [
+        "CrateTimberLid"
+      ],
+      "same_xz_wu": 2.0
+    }
+  ]
+}

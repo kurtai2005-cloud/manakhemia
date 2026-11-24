@@ -19,6 +19,7 @@ var pending_tap := ""  # "pet" | "poke" | ""
 var expr_name := ""
 var expr_t := 0.0
 var busy := false
+var _life_wait := 0.0
 
 func setup(w: Walker, id: String, fam: Node = null) -> void:
 	walker = w
@@ -97,6 +98,15 @@ func _family_kind() -> String:
 	return ""
 
 
+func _coat_owner() -> Node:
+	if walker == null:
+		return null
+	var host := walker.get_parent()
+	if host == null:
+		return null
+	return host.get_node_or_null("Hd2dPresentation")
+
+
 func notify_tap(kind: String = "pet") -> void:
 	pending_tap = kind if kind != "" else "pet"
 	if tree:
@@ -110,11 +120,125 @@ func _process(dt: float) -> void:
 		expr_t -= dt
 		if expr_t <= 0.0:
 			expr_name = ""
+	if actor_id == "tuanrong":
+		_life(dt)
 	if pending_tap != "" or _family_kind() != "":
 		return
 	rechoose_t -= dt
 	if rechoose_t <= 0.0 and not busy:
 		_pick_action(false)
+
+
+func _life(dt: float) -> void:
+	# The pet chooses. Ground taps do not send it.
+	if pending_tap != "":
+		return
+	var main := walker.get_parent() if walker else null
+	if main == null or bool(main.get("in_interior")):
+		return
+	if str(main.get("replay_kind")) != "":
+		busy = true
+		return
+	if Ecosystem and Ecosystem.has_method("drive_rug"):
+		if bool(Ecosystem.drive_rug(walker, dt)):
+			busy = true
+			return
+	var errand := main.get_node_or_null("GardenErrand")
+	if errand == null:
+		return
+	var phase := str(errand.call("_task").get("phase", "idle"))
+	if phase != "idle" and phase != "blocked":
+		busy = true
+		return
+	if Sim and bool(Sim.state.get("sleeping", false)):
+		return
+	_life_wait -= dt
+	if _life_wait > 0.0:
+		return
+	_life_wait = 2.0
+	if bool(main.get("in_hunt_view")):
+		busy = true
+		return
+	if HuntSystem and HuntSystem.phase == HuntSystem.PHASE_READY:
+		var hunted: Dictionary = HuntSystem.collect()
+		if bool(hunted.get("ok", false)):
+			_show_gift(main, int(hunted.get("shards", 0)))
+		return
+	if HuntSystem and HuntSystem.phase != HuntSystem.PHASE_IDLE:
+		busy = true
+		return
+	if WorkSystem and WorkSystem.is_ready("kitchen"):
+		var got: Dictionary = WorkSystem.collect("kitchen")
+		if bool(got.get("ok", false)):
+			_show_gift(main, int(got.get("shards", 0)))
+		return
+	if WorkSystem and WorkSystem.is_ready("post"):
+		var posted: Dictionary = WorkSystem.collect("post")
+		if bool(posted.get("ok", false)):
+			_show_gift(main, int(posted.get("shards", 0)))
+		return
+	if WorkSystem and WorkSystem.any_working():
+		busy = true
+		return
+	if bool(errand.call("rest_offered")):
+		_hold_for_life()
+		errand.call("press_rest")
+		return
+	if bool(errand.call("food_offered")):
+		_hold_for_life()
+		errand.call("press_food")
+		return
+	var fruit := 0
+	if CollectionSystem:
+		fruit = int(CollectionSystem.fruit_count("starberry"))
+	var hunger := 100.0
+	if Sim:
+		hunger = float(Sim.state.get("needs", {}).get("hunger", 100))
+	var filled := int(errand.call("_task").get("paid_through", 0)) > 0
+	var roomy := Sim == null or hunger < float(Sim.FEED_REFUSE_AT)
+	if fruit <= 0 and (not filled or roomy):
+		_hold_for_life()
+		errand.call("player_press")
+		return
+	if str(Sim.state.get("stage", "egg")) == "egg":
+		busy = false
+		return
+	var energy := float(Sim.state.get("needs", {}).get("energy", 100)) if Sim else 100.0
+	if energy < 40.0 or hunger < 40.0:
+		busy = false
+		return
+	if main.has_method("one_tap_dispatch"):
+		var sent: Dictionary = main.call("one_tap_dispatch")
+		if bool(sent.get("ok", false)):
+			_hold_for_life()
+			return
+	if main.has_method("start_hunt"):
+		var went: Dictionary = main.call("start_hunt")
+		if bool(went.get("ok", false)):
+			_hold_for_life()
+			return
+		var why := str(went.get("reason", ""))
+		if why == "work_or_hunt" or why == "preview_once" or why == "daily_pet_cap":
+			if Ecosystem and Ecosystem.has_method("observe_patrol"):
+				var patrol: Dictionary = Ecosystem.observe_patrol()
+				if bool(patrol.get("ok", false)):
+					_hold_for_life()
+					return
+	busy = false
+
+
+func _show_gift(main: Node, shards: int) -> void:
+	var hud: Node = main.get("hud")
+	if hud and hud.has_method("_queue_or_show"):
+		var items: Array = [{"icon": "ev_gift", "num": "+%d" % shards}]
+		hud.call("_queue_or_show", items)
+
+
+func _hold_for_life() -> void:
+	busy = true
+	if tree:
+		tree.interrupt()
+	chosen = "life"
 
 
 func _pick_action(force: bool) -> void:
@@ -176,18 +300,27 @@ func _tick_tap(_a: Node, _b: Blackboard) -> int:
 		action_t = 0.01
 		expr_name = Personality.expr_icon(actor_id) if Personality else "mood_happy"
 		expr_t = 2.2
-		if walker:
-			var clip := "nuzzle"
-			if pending_tap == "feed":
-				clip = "eat"
-			elif pending_tap == "poke":
-				clip = "emo_surprised"
+		var care_id := "nuzzle"
+		if pending_tap == "feed":
+			care_id = "eat"
+		elif pending_tap == "poke":
+			care_id = "emo_surprised"
+		elif pending_tap == "emo_happy":
+			care_id = "emo_happy"
+		var coat := _coat_owner()
+		if coat and coat.has_method("play_care"):
+			coat.play_care(care_id)
+		elif walker:
+			var clip := care_id
 			if not walker.play_live_clip(clip):
 				walker.play_live_clip("emo_happy" if pending_tap != "feed" else "nuzzle")
-			if AudioManager and pending_tap != "feed":
-				# 餵食聲由 Main.hand_feed 喺入口嗰下播 sfx_feed_meal／snack
-				AudioManager.play("sfx_pet_nuzzle_purr" if pending_tap == "pet" or pending_tap == "pat" else "sfx_pet_curious", walker)
+		if AudioManager and pending_tap != "feed":
+			# 餵食聲由 Main.hand_feed 喺入口嗰下播 sfx_feed_meal／snack
+			AudioManager.play("sfx_pet_nuzzle_purr" if pending_tap == "pet" or pending_tap == "pat" else "sfx_pet_curious", walker)
 		pending_tap = "running"
+	var coat_now := _coat_owner()
+	if coat_now and coat_now.has_method("care_active") and bool(coat_now.call("care_active")):
+		return R
 	if walker and walker.live_clip != "":
 		return R
 	pending_tap = ""

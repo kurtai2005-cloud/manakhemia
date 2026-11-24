@@ -1,0 +1,25 @@
+; Isolated room1 review. Not the root game. No autoload, no save.
+config_version=5
+
+[application]
+config/name="Room1 Review Fixture"
+config/description="Standalone room1 review. locked false. Not integrated."
+run/main_scene="res://scenes/room1_review.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[display]
+window/size/viewport_width=1080
+window/size/viewport_height=2280
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="mobile"
+textures/vram_compression/import_etc2_astc=true
+
+[importer_defaults]
+
+scene={
+"gltf/embedded_image_handling": 3
+}

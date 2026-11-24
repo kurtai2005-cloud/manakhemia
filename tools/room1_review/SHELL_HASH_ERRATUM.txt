@@ -1,0 +1,14 @@
+Erratum for refs/HANDOFF.md. That file is an original handoff copy and is not edited.
+
+HANDOFF.md says shell.glb is 120736 bytes, SHA-256
+a29777868cd214e0ef805dfabdd0f753d950242cea4bc51bb1697bf16f92bc96.
+Those figures are an older sentence. They are not the bytes in this fixture.
+
+This fixture's shell.glb is the room1-fixture-input-r1 member, unchanged:
+145212 bytes
+SHA-256 93317762523fbce6fb5dc5695c349704f447b4357bd0232800951d9faa2d6f64
+Input archive SHA-256 6916ba5b8c2a17a947471a41188418c87f74aebb4ed9d856ec0345f39a2c20d0
+
+The glTF node list still names the root interior_room1. Godot's importer may
+report that root as interior_room12. The review state records both names.
+The source glb is not renamed.

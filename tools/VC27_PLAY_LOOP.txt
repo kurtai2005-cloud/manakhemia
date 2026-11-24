@@ -1,0 +1,61 @@
+WAIT_AFTER_BATCH_DELIVERY
+Kurt, 2026-11-23 18:07, 遊美: 唔好再修住,整好哂draft先修.
+Kurt, 2026-11-23 18:15, 遊美: 要轉方式,你整完比我試,我睇完就去下步.
+Kurt, 2026-11-23 18:33, 遊美: ok 見到食物, 可以整下步. Food seen is not a full pass.
+Kurt, 2026-11-23 18:35, 遊美: 因為我要出去關電腦,今次可以整個大約4到5個鐘既內容等我番黎check.
+Batch checklist. Specs already in the repo. Not a new mode.
+Current at 9671: one berry, a book name and red dot, and preview shortcuts. That is a checkpoint, not this batch.
+Target, now wired:
+- data/m1b.json art_fruit glow_berry = starberry, and data/hunting.json 微光莓. Carrying that berry home records it in the book. A normal egg still uses evolution.json duration_sec 600.
+- data/m1b.json work.buildings post 郵局 and kitchen 廚房, watch_sec 12. data/m1d.json garden post_pos and kitchen_pos place them. data/economy.json pay is level + 1. The post door is behind the lamp and the watering can in art/garden3d/H1/objects.json, and the existing walk cannot reach it. 派工 therefore sends the pet to the kitchen door, which that walk can reach, and the camera follows. After the existing 12 seconds, 收成 pays 2 stars into the book. A click while the job is running does not pay. Collecting twice does not pay. HuntSystem.mark_worked still blocks the post on that same day.
+- The meal button and the door rest stay the existing care path.
+- Play-Draft -Preview is a separate profile. It does not reset vc27_draft_try. The 12 second watch is not skipped there.
+Not in this batch: the hunt field, a second pet, combat, shop purchases, later growth stages, and a new feeding animation.
+Do not use, wait on, or wake his PC. No merge, no publish, no APK.
+No merge, no publish, no deploy onto the Windows PC, no APK.
+The feeding-face pass is cancelled. Do not resume the bite, chew, capture, or hash loop.
+3988cad9 stays a partial feeding clip. It is not a gate and it is not a fix.
+The eight old root-suite failures were not rerun. Do not call them fixed.
+Do not install a polish build on the c0df Windows tree. Do not touch vc27_play_36bfd.
+No APK, no merge, no publish.
+
+This file is the playable draft, not the finished pet.
+Same Godot project, same 675 scene, same art, normal Main and the existing buttons.
+Pet actions stay the placeholders already in the scene. No chewing, face, lighting, material, camera, or art work in this pass.
+
+Loop the existing pieces already implement
+- Click the ground berry. The pet walks, carries it, and delivers it once. The same delivery does not pay twice, including after a reload. The berry comes back for the next delivery.
+- A new save stays an egg until data/evolution.json says so (600 seconds of the existing Sim clock). Main no longer skips that and forces sprout.
+- While it is an egg, feeding and rest do nothing and spend nothing. The stored fruit waits.
+- When the clock hatches it, the existing collection records radiant_<stage>. That is the unlock. Later stages use the same signal. Adult still uses the existing CQ form (bright, soft, or dust).
+- After hatching, the meal button tosses one stored fruit. A full pet spends nothing. One fruit, one meal.
+- Rest is the existing door walk, after at least one meal, while energy is below the existing sleep line. Wake still leaves the house. 返回 is optional.
+- The save is still save_v1.json. Old fields stay. A second process that opens the same isolated profile sees the stage, the fruit count, the meal count, and the unlock.
+
+Normal stage lengths stay in evolution.json. A smoke test may call Sim.advance or Sim.tick and must print FIXTURE. That is not a shorter game.
+
+What to try
+1. Normal Play-Draft, profile vc27_draft_try, save kept. Click the berry and carry it home. One fruit is stored. 圖鑑 gains a red dot and, when opened, says 微光莓. The egg still takes 600 seconds. This delivery does not skip that.
+2. Press 派工. The camera follows the pet to the kitchen. Wait the real 12 seconds. Press 收成. The book stars increase by 2. Pressing the kitchen while it is working does not pay. The post does not start the same day. Quit and open the same profile. The fruit, 微光莓, and the stars are still there. The egg is still an egg.
+3. Play-Draft -Preview, profile vc27_draft_preview. The screen says 試玩. The same delivery hatches the egg, the book shows 絨點, then the kitchen job, then feed and rest. Quit and run the same command. That preview save remains. It does not reset vc27_draft_try.
+
+Preview fixtures, only on a save marked preview_fixture: 20 seconds left on the egg clock, the delivery fills the rest of the egg, energy becomes 85 after that hatch, and sleep starts one point below the wake line. The smoke also calls Sim.tick to finish that sleep. Data file durations, decay, and regen are unchanged. The kitchen's 12 seconds are not a fixture.
+Earned either way: the stored fruit, the 微光莓 record, the kitchen's 2 stars, a real meal spend, and a real door rest.
+
+WAIT_AFTER_BATCH_DELIVERY: stop after this package. Do not start the next stage until Kurt has checked it.
+
+Not in this draft
+- A second creature, a shop purchase, paid or cloud AI, combat, or a new project.
+- Redrawing the room or the pet.
+- Chewing that reads as eating. The current eat frames are a face change. That stays deferred.
+- Claiming the Windows machine was missing stage PNGs. The delivered project zip already has those files. A git archive of c0df omitting gitignored copies is a different list.
+
+Deferred until the full draft is playable
+- 3988 feeding clip is only partial. Do not treat it as the draft.
+- Eight root failures, names unchanged, not rerun: _test_g01_actor_anim_and_lut 569, _test_m1a_art_fix1 695 and 697, _test_m1d_interior 1828, 1832, 1833, 1834, 1855.
+- Main still drops one poop on a save that has none, so the clean button is immediately usable.
+- Boot still unlocks kid A1 without a played action.
+- The hunt field and the shop stay out of this loop. The kitchen job uses the existing 派工 and 收成 buttons. The post door stays blocked by the lamp and the watering can.
+- Stages after newborn are hours or days on the normal clock.
+- The collection grid is route times stage from evolution.json. The pre-adult id is radiant_<stage>, which is the id Main already wrote. It may not sit on a route cell.
+- Walk sheets differ mostly in the feet. That is an art limit, not a missing file on the PC.

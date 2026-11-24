@@ -36,12 +36,30 @@ func setup() -> void:
 	texel_wu = float(ic.get("texel_wu", 1.0))
 	visible = false
 	_build_from_art()
+	_build_ceiling()
+	_build_threshold()
 	_build_nav()
 	_build_window_light()
 	furniture_root = Node3D.new()
 	furniture_root.name = "InteriorFurniture"
 	add_child(furniture_root)
+	_add_door_click()
 	apply_tier()
+
+
+func _add_door_click() -> void:
+	var area := Area3D.new()
+	area.name = "InteriorDoorClick"
+	area.input_ray_pickable = true
+	area.collision_layer = 16
+	area.collision_mask = 0
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(36, 48, 20)
+	shape.shape = box
+	area.add_child(shape)
+	add_child(area)
+	area.global_position = door_pivot.global_position if door_pivot else door_world()
 
 
 func _load_cfg() -> Dictionary:
@@ -69,6 +87,15 @@ func slot_pos(sl: String) -> Vector3:
 	return Vector3.ZERO
 
 
+func interior_exit_stand() -> Vector3:
+	# A floor point in front of the open leaf, not 10 wu from the hinge.
+	# The hinge stand walked the pet into the door.
+	var a: Variant = interior_cfg().get("exit_stand", [8, 0, 14])
+	if a is Array and a.size() >= 3:
+		return to_global(Vector3(float(a[0]), float(a[1]), float(a[2])))
+	return to_global(Vector3(8, 0, 14))
+
+
 func pet_enter_pos() -> Vector3:
 	var a: Variant = interior_cfg().get("pet_enter", [48, 0, 8])
 	if a is Array and a.size() >= 3:
@@ -93,6 +120,10 @@ func cam_dist() -> float:
 
 func cam_yaw() -> float:
 	return float(interior_cfg().get("camera", {}).get("yawDeg", 26))
+
+
+func cam_fov() -> float:
+	return float(interior_cfg().get("camera", {}).get("fovDeg", 58))
 
 
 func door_world() -> Vector3:
@@ -125,8 +156,9 @@ func room_bounds_local() -> AABB:
 func set_door_open(weight: float) -> void:
 	if door_pivot == null:
 		return
-	# 0 = 關（貼牆），1 = 開（轉入房約 85°）
-	door_pivot.rotation_degrees.y = lerpf(0.0, -85.0, clampf(weight, 0.0, 1.0))
+	# 0 = shut against the wall. Positive yaw swings into the room.
+	# 48° leaves the leaf beside the right wall and the floor path in front of it clear.
+	door_pivot.rotation_degrees.y = lerpf(0.0, 48.0, clampf(weight, 0.0, 1.0))
 
 
 func _build_from_art() -> void:
@@ -191,6 +223,69 @@ func _build_from_art() -> void:
 			set_door_open(0.0)
 		else:
 			add_child(mi)
+
+
+func _build_ceiling() -> void:
+	# The delivered shell is an open-top box. A ceiling at the art height keeps the
+	# 19:9 frame on the room instead of the outdoor sky.
+	var plane := PlaneMesh.new()
+	# Extends past the open front so a low 19:9 camera does not see sky above the walls.
+	plane.size = Vector2(size.x, size.z + 80.0)
+	var mi := MeshInstance3D.new()
+	mi.name = "ceiling"
+	mi.mesh = plane
+	mi.position = Vector3(0, size.y - 0.4, 28.0)
+	var mat := StandardMaterial3D.new()
+	var tex_path := str(interior_cfg().get("textures", {}).get("wall_tile", ""))
+	if tex_path != "" and ResourceLoader.exists(tex_path):
+		mat.albedo_texture = load(tex_path)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.albedo_color = Color(0.93, 0.78, 0.58)
+	mat.uv1_scale = Vector3(size.x / tile_wu, size.z / tile_wu, 1.0)
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mi)
+	_mats.append(mat)
+
+
+func _build_threshold() -> void:
+	# Open front is toward +Z. The 19:9 bottom-right ray lands a few units past
+	# the floor edge; a wood lip catches it so the frame stays on the room.
+	var lip := 80.0
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(size.x + 28.0, lip)
+	var mi := MeshInstance3D.new()
+	mi.name = "threshold"
+	mi.mesh = plane
+	mi.position = Vector3(0, 0.02, size.z * 0.5 + lip * 0.5)
+	var mat := StandardMaterial3D.new()
+	var tex_path := str(interior_cfg().get("textures", {}).get("floor_tile", ""))
+	if tex_path != "" and ResourceLoader.exists(tex_path):
+		mat.albedo_texture = load(tex_path)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.albedo_color = Color(0.86, 0.62, 0.40)
+	mat.uv1_scale = Vector3(4.0, 1.0, 1.0)
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mi)
+	_mats.append(mat)
+	# The right wall ended at the open front, so the lower-right corner of a
+	# 19:9 frame looked past the door. A short return keeps that ray on wood.
+	var jamb := BoxMesh.new()
+	jamb.size = Vector3(8.0, size.y, 36.0)
+	var post := MeshInstance3D.new()
+	post.name = "DoorJamb"
+	post.mesh = jamb
+	post.position = Vector3(size.x * 0.5 - 2.0, size.y * 0.5, size.z * 0.5 + 10.0)
+	var jm := mat.duplicate() as StandardMaterial3D
+	post.material_override = jm
+	post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(post)
+	_mats.append(jm)
 
 
 func _build_window_light() -> void:

@@ -1,0 +1,21 @@
+Room1 review fixture. Isolated. Not formal integration.
+Input zip SHA-256 6916ba5b8c2a17a947471a41188418c87f74aebb4ed9d856ec0345f39a2c20d0
+Input size 134948 bytes. 31 members. 30 listed hashes verified before copy.
+shell.glb, textures/*.png, pack.json, data/*, and refs/* are those bytes.
+data/shell.glb.json keeps its original absolute path. The review script records it and does not open it.
+All 10 locked flags stay false. The real root loader is not changed and does not read this folder.
+Pet frame is a copy of godot_hd2d_v6/art/pet/r4/pet_tuanrong_radiant_front_idle_01.png.
+Node y=29, offset.y=2, pixel_size 1, feet at world y=0, one shadow quad at y=0.25.
+Camera full room is art_notes hero_after_20261122_0938: eye [-55,48,400], target [10,40,-20], vfov 46.
+Close-up is art_notes pet_scale_19x9: eye [18,42,130], target [10,22,-14], vfov 44.
+Both are candidates. Day and night light numbers are the frozen capture.gd Mobile set.
+Rights are unverified. That blocks release. This pack does not claim commercial use.
+Exterior 2b45 support, assets, and delta are not part of this folder and are not rebuilt.
+
+Open: Godot 4.7.2, project.godot in this folder, run the main scene.
+Windows grab, from this folder, in a PowerShell session:
+
+& .\run_room1_review.ps1 -GodotExe <Godot.exe> -OutputDir <empty directory>
+
+Four files: day_fullroom.png, night_fullroom.png, day_closeup.png, night_closeup.png.
+Each must be 1080x2280 or the script exits non-zero. Headless grab is a failure.
