@@ -25,6 +25,10 @@ var _ground_mats: Array = []
 var _tod := "day"
 var follow_pos := Vector3(0, 30, -72)
 var phase1_on := false
+var _pan_from := Vector2.ZERO
+var _pan_moved := Vector2.ZERO
+var _pan_live := false
+var _pan_over_ui := false
 var phase1_from := Vector3.ZERO
 var phase1_to := Vector3.ZERO
 var phase1_t := 1.0
@@ -780,14 +784,10 @@ func _notification(what: int) -> void:
 		play_mouse_events += 1
 
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventScreenDrag:
-		if phase1_on:
-			phase1_pan((event as InputEventScreenDrag).relative)
-		elif Ecosystem and Ecosystem.has_method("stop_follow"):
-			Ecosystem.stop_follow()
-	elif event is InputEventMouseMotion and phase1_on and (event as InputEventMouseMotion).button_mask != 0:
-		phase1_pan((event as InputEventMouseMotion).relative)
+func _input(_event: InputEvent) -> void:
+	# GUI controls must see the finger before the camera. Panning lives in
+	# _unhandled_input so a dock tap is not stolen.
+	pass
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -800,16 +800,29 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
-			_try_tap(mb.position)
+			_pan_begin(mb.position)
+			if not _pan_over_ui:
+				_try_tap(mb.position)
+		elif not mb.pressed:
+			_pan_live = false
+	elif event is InputEventMouseMotion and phase1_on and (event as InputEventMouseMotion).button_mask != 0:
+		_pan_drag((event as InputEventMouseMotion).relative, (event as InputEventMouseMotion).position)
 	elif event is InputEventScreenDrag:
+		var drag := event as InputEventScreenDrag
+		if _hud_covers(drag.position):
+			return
 		if phase1_on:
-			phase1_pan((event as InputEventScreenDrag).relative)
+			_pan_drag(drag.relative, drag.position)
 		elif Ecosystem and Ecosystem.has_method("stop_follow"):
 			Ecosystem.stop_follow()
 	elif event is InputEventScreenTouch:
 		var st := event as InputEventScreenTouch
 		if st.pressed:
-			_try_tap(st.position)
+			_pan_begin(st.position)
+			if not _pan_over_ui:
+				_try_tap(st.position)
+		else:
+			_pan_live = false
 
 
 func _ray_area(pos: Vector2, mask: int) -> Area3D:
@@ -827,8 +840,34 @@ func _ray_area(pos: Vector2, mask: int) -> Area3D:
 	return null
 
 
+func _pan_begin(pos: Vector2) -> void:
+	_pan_from = pos
+	_pan_moved = Vector2.ZERO
+	_pan_live = false
+	_pan_over_ui = _hud_covers(pos)
+
+
+func _pan_drag(relative: Vector2, pos: Vector2) -> void:
+	if not phase1_on or _pan_over_ui or _hud_covers(pos):
+		return
+	_pan_moved += relative
+	if not _pan_live and _pan_moved.length() < 9.0:
+		return
+	_pan_live = true
+	phase1_pan(relative)
+
+
+func _hud_covers(pos: Vector2) -> bool:
+	if not phase1_on or Phase1 == null or not Phase1.active:
+		return false
+	var phase_hud: Node = Phase1.hud
+	return phase_hud != null and phase_hud.has_method("blocks_point") and bool(phase_hud.call("blocks_point", pos))
+
+
 func _try_tap(pos: Vector2) -> void:
 	if cam == null:
+		return
+	if _hud_covers(pos):
 		return
 	if Phase1 and Phase1.active and Phase1.has_method("try_world_tap") and bool(Phase1.try_world_tap(pos)):
 		return

@@ -29,6 +29,8 @@ var zone_buttons: Dictionary = {}
 var _btn_normal: StyleBox
 var _btn_pressed: StyleBox
 var _btn_disabled: StyleBox
+var _layout_sig := ""
+var _bar_cache: Dictionary = {}
 
 
 func build() -> void:
@@ -158,12 +160,45 @@ func build() -> void:
 	root.add_child(emote)
 	_build_drawer()
 	_build_modal()
+	_pass_through(root)
+	_pass_through(top)
+	_pass_through(care_row)
+	_pass_through(emote)
+	var toast_panel := root.get_node_or_null("ToastPill") as Control
+	_pass_through(toast_panel)
+	if get_viewport():
+		get_viewport().size_changed.connect(apply_layout)
 	apply_layout()
 	refresh()
+	call_deferred("apply_layout")
 	call_deferred("refresh")
 
 
+func blocks_point(pt: Vector2) -> bool:
+	for node in [top, care_row, dock, feed_row, train_row, map_row, drawer, modal, expand_btn]:
+		if node is Control and (node as Control).visible and (node as Control).get_global_rect().has_point(pt):
+			return true
+	return false
+
+
+func _pass_through(node: Control) -> void:
+	if node:
+		node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _sync_layout() -> void:
+	var vp := get_viewport().get_visible_rect().size
+	var win := DisplayServer.window_get_size()
+	var area := DisplayServer.get_display_safe_area()
+	var sig := "%s|%s|%s" % [vp, win, area]
+	if sig == _layout_sig:
+		return
+	_layout_sig = sig
+	apply_layout()
+
+
 func _process(dt: float) -> void:
+	_sync_layout()
 	if emote_left <= 0.0 or emote == null or not emote.visible:
 		return
 	emote_left -= dt
@@ -188,12 +223,12 @@ func apply_layout() -> void:
 		shard.custom_minimum_size = Vector2(78, 36)
 	care_row.position = Vector2(safe.position.x, safe.position.y + 44)
 	care_row.size = Vector2(safe.size.x, 22)
-	var dock_h := 52.0
+	var dock_h := 56.0
 	dock.position = Vector2(safe.position.x, safe.end.y - dock_h)
 	dock.size = Vector2(safe.size.x, dock_h)
 	for c in dock.get_children():
 		if c is Control:
-			(c as Control).custom_minimum_size = Vector2((safe.size.x - 24.0) / 5.0, 48)
+			(c as Control).custom_minimum_size = Vector2((safe.size.x - 24.0) / 5.0, 52)
 			(c as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_place_rows(safe)
 	expand_btn.position = Vector2(safe.end.x - 72, safe.position.y)
@@ -217,22 +252,39 @@ func refresh() -> void:
 	var p1 := Phase1Config.node("Phase1")
 	var catalog: Dictionary = p1.get("doc") if p1 else {}
 	var spec := Phase1Config.species(catalog, str(pet.get("species_id", "baby")))
-	var stage_zh := EvolutionEngine.zh(catalog, str(pet.get("stage", "baby")))
-	name_btn.text = "%s · %s Lv.%d" % [spec.get("zh", pet.get("name", "小團絨")), stage_zh, int(pet.get("stats", {}).get("lv", 1))]
+	var stage_id := str(pet.get("stage", "egg"))
+	var live := str(state.get("stage", stage_id))
+	if live == "newborn" or live == "sprout":
+		live = "baby"
+	if stage_id == "egg" and live != "egg" and live != "":
+		stage_id = live
+	var stage_zh := EvolutionEngine.zh(catalog, stage_id)
+	var name_zh := str(spec.get("zh", pet.get("name", "團絨")))
+	if stage_id != "egg" and (name_zh == "微光蛋" or str(pet.get("species_id", "")) == "egg"):
+		name_zh = "團絨"
+	var name_line := "%s · %s Lv.%d" % [name_zh, stage_zh, int(pet.get("stats", {}).get("lv", 1))]
+	if name_btn.text != name_line:
+		name_btn.text = name_line
 	var shards := 0
 	var bag := Phase1Config.node("CollectionSystem")
 	if bag and bag.has_method("stardust"):
 		shards = int(bag.call("stardust"))
-	shard_lbl.text = "碎 %d" % shards
+	var shard_line := "碎 %d" % shards
+	if shard_lbl.text != shard_line:
+		shard_lbl.text = shard_line
 	var care: Dictionary = pet.get("care", {})
 	for key in bars.keys():
 		var bar := bars[key] as Control
+		var value := int(care.get(key, 0))
 		var fill := bar.get_node_or_null("Fill") as Control
-		if fill:
-			fill.anchor_right = clampf(float(care.get(key, 0)) / 100.0, 0.0, 1.0)
+		if fill and int(_bar_cache.get(key, -1)) != value:
+			fill.anchor_right = clampf(float(value) / 100.0, 0.0, 1.0)
+			_bar_cache[key] = value
 		var lab := bar.get_node_or_null("Cap") as Label
 		if lab:
-			lab.text = "%s %d" % [key, int(care.get(key, 0))]
+			var cap := "%s %d" % [key, value]
+			if lab.text != cap:
+				lab.text = cap
 	var zone := str(pet.get("zone_id", "garden"))
 	for zid in zone_buttons.keys():
 		var b := zone_buttons[zid] as Button
@@ -478,7 +530,7 @@ func _place_rows(safe: Rect2) -> void:
 			row.size = Vector2.ZERO
 			row.position = Vector2(-4000, -4000)
 			continue
-		row.position = Vector2(safe.position.x, dock.position.y - 50)
+		row.position = Vector2(safe.position.x, dock.position.y - 56)
 		row.size = Vector2(safe.size.x, 44)
 		for child in row.get_children():
 			if child is Control:
@@ -565,6 +617,8 @@ func _btn(node_name: String, text: String, cb: Callable, icon_file: String = "")
 	b.add_theme_font_size_override("font_size", 14)
 	b.add_theme_constant_override("h_separation", 2)
 	b.clip_text = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.mouse_filter = Control.MOUSE_FILTER_STOP
 	b.add_theme_stylebox_override("normal", _btn_normal)
 	b.add_theme_stylebox_override("hover", _btn_normal)
 	b.add_theme_stylebox_override("pressed", _btn_pressed)
@@ -674,5 +728,5 @@ func _safe() -> Rect2:
 	var left := maxf(0.0, (float(safe.position.x) - ox) / fit) + 8.0
 	var top_y := maxf(0.0, (float(safe.position.y) - oy) / fit) + 4.0
 	var right := minf(vp.x, (float(safe.position.x + safe.size.x) - ox) / fit) - 8.0
-	var bottom := minf(vp.y, (float(safe.position.y + safe.size.y) - oy) / fit) - 4.0
+	var bottom := minf(vp.y, (float(safe.position.y + safe.size.y) - oy) / fit) - 20.0
 	return Rect2(Vector2(left, top_y), Vector2(maxf(0.0, right - left), maxf(0.0, bottom - top_y)))

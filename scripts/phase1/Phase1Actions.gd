@@ -96,6 +96,7 @@ func play_stove(stove_pos: Vector3) -> void:
 	glow.light_color = Color(1.0, 0.55, 0.18)
 	glow.light_energy = 2.4
 	glow.omni_range = 36.0
+	glow.shadow_enabled = false
 	if _fx:
 		_fx.add_child(glow)
 		glow.global_position = stove_pos + Vector3(0, 16, 0)

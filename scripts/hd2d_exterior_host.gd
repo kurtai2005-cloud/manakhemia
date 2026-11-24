@@ -162,6 +162,10 @@ func comparison_state() -> Dictionary:
 func _ensure_visual_viewport() -> void:
 	if _compare_view or root_main == null:
 		return
+	# The 1080x2280 compare view is only for the desktop grab. Creating it on
+	# a phone reparents the scene and breaks touch coordinates.
+	if OS.has_feature("android") and OS.get_environment("HD2D_COMPARE_GRAB") != "1":
+		return
 	_compare_view = SubViewport.new()
 	_compare_view.name = "Hd2dCompareViewport"
 	_compare_view.size = Vector2i(1080, 2280)
@@ -176,6 +180,9 @@ func _ensure_visual_viewport() -> void:
 
 
 func _restore_ui_window() -> void:
+	# Resizing the OS window on Android shifts touch hits away from the dock.
+	if OS.has_feature("android"):
+		return
 	# _apply_measure_viewport also asks the OS window for 1080x2280. Put the
 	# root UI viewport back. The visual viewport is the SubViewport.
 	var window := root_main.get_viewport() if root_main else null
@@ -224,9 +231,11 @@ func present_on_window() -> void:
 	# runs on the same thread as the window, and the Windows session stayed
 	# Not Responding while frames and this log kept moving.
 	# The root camera uses the opening transform already stored. Numbers are unchanged.
-	if _compare_view == null or root_main == null:
+	# Android play skips that child viewport, and still presents on the root window.
+	if root_main == null:
 		return
-	_compare_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	if _compare_view:
+		_compare_view.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	_hide_root_scenery()
 	_use_exterior_environment()
 	_lock_play_camera()
@@ -235,7 +244,8 @@ func present_on_window() -> void:
 	if cam:
 		cam.current = true
 	var root_vp := root_main.get_viewport()
-	print("hd2d garden on root window viewport=", root_vp.size if root_vp else Vector2i.ZERO, " child=", _compare_view.size, " child_update=disabled renderer=", RenderingServer.get_current_rendering_method())
+	var child_size := _compare_view.size if _compare_view else Vector2i.ZERO
+	print("hd2d garden on root window viewport=", root_vp.size if root_vp else Vector2i.ZERO, " child=", child_size, " child_update=disabled renderer=", RenderingServer.get_current_rendering_method())
 
 
 func apply_same_view() -> void:

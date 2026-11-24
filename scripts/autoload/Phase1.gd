@@ -34,8 +34,7 @@ func attach(main: Node) -> void:
 		if int(Sim.state.get("last_tick_ts", 0)) <= 0:
 			Sim.state["last_tick_ts"] = int(Time.get_unix_time_from_system() * 1000.0)
 	var old_hud: Node = main.get("hud")
-	if old_hud is CanvasItem:
-		(old_hud as CanvasItem).visible = false
+	_pause_old_hud(old_hud)
 	var old := main.get_node_or_null("EcosystemHud")
 	if old:
 		old.visible = false
@@ -99,7 +98,8 @@ func open_info() -> void:
 
 
 func open_feed() -> void:
-	hud.feed_row.visible = true
+	var show := not hud.feed_row.visible
+	hud.feed_row.visible = show
 	hud.train_row.visible = false
 	hud.map_row.visible = false
 	hud.apply_layout()
@@ -163,7 +163,8 @@ func pat() -> void:
 
 
 func open_train() -> void:
-	hud.train_row.visible = true
+	var show := not hud.train_row.visible
+	hud.train_row.visible = show
 	hud.feed_row.visible = false
 	hud.map_row.visible = false
 	hud.apply_layout()
@@ -388,6 +389,21 @@ func _apply_visual() -> void:
 	if sprite:
 		sprite.modulate = col
 	pet.scale = Vector3(sc, sc, sc)
+
+
+func _pause_old_hud(old_hud: Node) -> void:
+	if old_hud == null:
+		return
+	if old_hud is CanvasLayer or old_hud is CanvasItem:
+		old_hud.visible = false
+	old_hud.set_process(false)
+	old_hud.set_process_input(false)
+	old_hud.set_process_unhandled_input(false)
+	var old_root: Node = old_hud.get("root")
+	if old_root is CanvasItem:
+		(old_root as CanvasItem).visible = false
+	if old_root is Control:
+		(old_root as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _hide_rows() -> void:

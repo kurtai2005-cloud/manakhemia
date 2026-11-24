@@ -43,11 +43,13 @@ r11 replaces the piled-up panels with one top bar and a five-button dock. The ca
 
 r12 keeps that yard and replaces the gray controls with the warm pixel kit. The pet walks, eats, cleans, pats, and trains with a bowl, broom, watering can, and dumbbell. Farm beds, the stove, the post, and the prairie flowers load the 675 glb models when those files are present. PetOverlayService is still deferred.
 
-This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r12.apk
-bytes: 69718860
-sha256: 6b7bdacccbd9429b11b6d8bcd1e5c53f472e1690d5467b041d648a766f3e3590
-versionName: vc27-11fb9c14-r12
-versionCode: 22
+r13 answers the Note10+ pass of r12. The old canvas layer is paused so the dock receives taps. The phone window is no longer resized to 390x844, and a short drag on a button does not pan the camera. Low quality targets 60fps. The extra yard trees are five backdrop trees. PetOverlayService is still deferred.
+
+This APK: /opt/cursor/artifacts/r13/微光試稿-vc27-11fb9c14-r13.apk
+bytes: 69723176
+sha256: a5580cbc5116cd77c416fde9a7e17c9e9bffdc8d170080bf6cd4969e0a3f656e
+versionName: vc27-11fb9c14-r13
+versionCode: 23
 package: hk.vizard.glimmer.fpet.vc27draft
 Same debug signer CN=VC27 Debug, cert a5e16b2ab309a3478e0cd28304daae179bd0e85c7a7940592101b2aa77127b10. v2 only. arm64-v8a. Portrait. Renderer mobile. Install over the test app. Do not clear its data.
 Do not upload r5 again: vc27-draft-11fb9c14-r5.apk, 68659140 bytes, sha256 be39075c7d19b305c79a7baf07c890c5321bac56d1ebdb915f0f3e125a71cedc.
