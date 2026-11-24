@@ -1407,7 +1407,9 @@ func _setup_far_forest() -> void:
 				cy.height = h
 				cy.radial_segments = 8
 				trunk.mesh = cy
-				trunk.position = Vector3(x, h * 0.5, row.x + jz)
+				# Row 0, trunk 6 rose through the cottage roof. Shift it sideways.
+				var px := x + (55.0 if ri == 0 and n == 6 else 0.0)
+				trunk.position = Vector3(px, h * 0.5, row.x + jz)
 				trunk.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 				var hz := 0.05 + 0.06 * float(ri)
 				var tm := _tiling_mat(bark, Vector2(maxf(1.0, round(TAU * 6.0 * sc / 32.0)), maxf(1.0, round(h / 64.0))), false)
@@ -1415,7 +1417,7 @@ func _setup_far_forest() -> void:
 					(tm as ShaderMaterial).set_shader_parameter("haze_amt", hz)
 				trunk.material_override = tm
 				root.add_child(trunk)
-				_leaf_cluster(root, Vector3(x, h + 30.0 * sc, row.x + jz), 42.0 * sc, 6, k, false, 0.05 + 0.06 * float(ri))
+				_leaf_cluster(root, Vector3(px, h + 30.0 * sc, row.x + jz), 42.0 * sc, 6, k, false, 0.05 + 0.06 * float(ri))
 			x += step * (0.85 + 0.3 * fposmod(float(k) * 0.7548, 1.0))
 			n += 1
 

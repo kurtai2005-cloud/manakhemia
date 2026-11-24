@@ -5,6 +5,7 @@ const OUT := "/opt/cursor/artifacts/vc27_r15"
 const FRAMES := "/tmp/r15_frames"
 var _grab := false
 var _frame := 0
+var _approach_saved := false
 
 
 func _initialize() -> void:
@@ -44,7 +45,8 @@ func _initialize() -> void:
 	var start := Time.get_ticks_msec()
 	while Time.get_ticks_msec() - start < 9000 and not bool(main.get("in_interior")):
 		await _tick()
-		if Time.get_ticks_msec() - start > 1200 and not FileAccess.file_exists(OUT + "/r15_door_approach.png"):
+		if Time.get_ticks_msec() - start > 1200 and not _approach_saved:
+			_approach_saved = true
 			await _still(OUT + "/r15_door_approach.png")
 	await _ms(500)
 	await _still(OUT + "/r15_door_inside.png")

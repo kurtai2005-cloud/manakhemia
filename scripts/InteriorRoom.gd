@@ -229,11 +229,12 @@ func _build_ceiling() -> void:
 	# The delivered shell is an open-top box. A ceiling at the art height keeps the
 	# 19:9 frame on the room instead of the outdoor sky.
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(size.x, size.z)
+	# Extends past the open front so a low 19:9 camera does not see sky above the walls.
+	plane.size = Vector2(size.x, size.z + 80.0)
 	var mi := MeshInstance3D.new()
 	mi.name = "ceiling"
 	mi.mesh = plane
-	mi.position = Vector3(0, size.y - 0.4, 0)
+	mi.position = Vector3(0, size.y - 0.4, 28.0)
 	var mat := StandardMaterial3D.new()
 	var tex_path := str(interior_cfg().get("textures", {}).get("wall_tile", ""))
 	if tex_path != "" and ResourceLoader.exists(tex_path):
@@ -252,9 +253,9 @@ func _build_ceiling() -> void:
 func _build_threshold() -> void:
 	# Open front is toward +Z. The 19:9 bottom-right ray lands a few units past
 	# the floor edge; a wood lip catches it so the frame stays on the room.
-	var lip := 28.0
+	var lip := 80.0
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(size.x + 16.0, lip)
+	plane.size = Vector2(size.x + 28.0, lip)
 	var mi := MeshInstance3D.new()
 	mi.name = "threshold"
 	mi.mesh = plane
@@ -272,6 +273,19 @@ func _build_threshold() -> void:
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(mi)
 	_mats.append(mat)
+	# The right wall ended at the open front, so the lower-right corner of a
+	# 19:9 frame looked past the door. A short return keeps that ray on wood.
+	var jamb := BoxMesh.new()
+	jamb.size = Vector3(8.0, size.y, 36.0)
+	var post := MeshInstance3D.new()
+	post.name = "DoorJamb"
+	post.mesh = jamb
+	post.position = Vector3(size.x * 0.5 - 2.0, size.y * 0.5, size.z * 0.5 + 10.0)
+	var jm := mat.duplicate() as StandardMaterial3D
+	post.material_override = jm
+	post.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(post)
+	_mats.append(jm)
 
 
 func _build_window_light() -> void:
