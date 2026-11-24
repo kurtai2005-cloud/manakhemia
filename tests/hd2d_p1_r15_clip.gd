@@ -1,10 +1,13 @@
 extends SceneTree
-## One continuous 19:9 software capture: door approach, entry, exit, then the
-## camera travels across the farm and workshop. Not a phone frame-rate proof.
+## Real enter/exit input, one simulation step per rendered frame.
+## Software render is slow; time_scale keeps each step near 1/20s.
+## Not a phone frame-rate measurement, and frames are not interpolated.
 
 const OUT := "/tmp/r15_clip"
+const STEP := 0.05
 var _n := 0
 var _grab := false
+var _last_us := 0
 
 
 func _initialize() -> void:
@@ -23,34 +26,53 @@ func _initialize() -> void:
 		main.exit_house(true)
 		await process_frame
 	var pet: Node3D = main.get("pet")
-	pet.global_position = Vector3(8, 0, 48)
+	pet.global_position = Vector3(20, 0, 36)
 	if main.has_method("phase1_follow"):
 		main.phase1_follow(pet)
 	main._place_cam(0.0)
+	_scale_log(pet, "YARD")
 	_grab = true
-	await _ms(350)
+	_last_us = Time.get_ticks_usec()
+	Engine.time_scale = 1.0
+	await _steps(8)
 	main.request_house_enter()
-	var start := Time.get_ticks_msec()
-	while Time.get_ticks_msec() - start < 12000 and not bool(main.get("in_interior")):
-		await _tick()
-	await _ms(800)
+	var guard := 0
+	while guard < 400 and not bool(main.get("in_interior")):
+		await _steps(1)
+		guard += 1
+	_scale_log(pet, "INSIDE")
+	await _steps(14)
 	main.request_house_exit()
-	start = Time.get_ticks_msec()
-	while Time.get_ticks_msec() - start < 8000 and bool(main.get("in_interior")):
-		await _tick()
-	await _ms(500)
-	for look in [Vector3(12, 58, -26), Vector3(-180, 58, 10), Vector3(-410, 58, 20), Vector3(80, 58, 16), Vector3(410, 58, 20)]:
-		var began := Time.get_ticks_msec()
-		main.phase1_glide_to(look)
-		while Time.get_ticks_msec() - began < 1600:
-			await _tick()
+	guard = 0
+	while guard < 240 and bool(main.get("in_interior")):
+		await _steps(1)
+		guard += 1
+	_scale_log(pet, "OUTSIDE")
+	await _steps(10)
 	_grab = false
-	print("CLIP_FRAMES=", _n, " inside=", main.get("in_interior"))
+	Engine.time_scale = 1.0
+	print("CLIP_FRAMES=", _n, " inside=", main.get("in_interior"), " step=", STEP)
 	quit(0)
+
+
+func _scale_log(pet: Node3D, tag: String) -> void:
+	var coat := pet.get_node_or_null("Hd2dCoat") as Sprite3D
+	var px := coat.pixel_size if coat else -1.0
+	print("PET_SCALE ", tag, " node=", pet.scale, " pixel_size=", px, " pos=", pet.global_position)
+
+
+func _steps(count: int) -> void:
+	for _i in count:
+		await _tick()
 
 
 func _tick() -> void:
 	await process_frame
+	var now := Time.get_ticks_usec()
+	var wall := maxf(float(now - _last_us) / 1000000.0, 0.016)
+	_last_us = now
+	# Next rendered frame advances about one short simulation step.
+	Engine.time_scale = clampf(STEP / wall, 0.01, 1.0)
 	if not _grab:
 		return
 	var img := root.get_viewport().get_texture().get_image()
@@ -61,9 +83,3 @@ func _tick() -> void:
 		img.resize(540, 1140, Image.INTERPOLATE_NEAREST)
 	img.save_png(OUT + "/f%04d.png" % _n)
 	_n += 1
-
-
-func _ms(ms: int) -> void:
-	var start := Time.get_ticks_msec()
-	while Time.get_ticks_msec() - start < ms:
-		await _tick()

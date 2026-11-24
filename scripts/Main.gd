@@ -2736,6 +2736,7 @@ func enter_house(instant: bool = false, guest: Walker = null) -> void:
 		enter_interior.emit()
 		return
 	_interior_lock_cam = true
+	_keep_pet_scale()
 	_run_enter_transition()
 
 
@@ -2750,6 +2751,7 @@ func exit_house(instant: bool = false) -> void:
 		exit_interior.emit()
 		return
 	_interior_lock_cam = true
+	_keep_pet_scale()
 	_run_exit_transition()
 
 
@@ -2762,7 +2764,13 @@ func _run_enter_transition() -> void:
 	var open_s := interior_room.door_open_sec()
 	var start_pos := cam.global_position
 	var door := cottage_door_world()
-	var dolly_pos := door + Vector3(0, 16, 70)
+	# Stay on the approach axis. 70 wu from the door made the same pet fill the frame.
+	var away := start_pos - door
+	away.y = 0.0
+	if away.length() < 1.0:
+		away = Vector3(0, 0, 1)
+	var dolly_pos := door + away.normalized() * 160.0
+	dolly_pos.y = maxf(door.y + 36.0, 48.0)
 	_emit_audio_hook("door_open")
 	door_open.emit()
 	set_exterior_door(0.0)
@@ -2876,6 +2884,7 @@ func _cut_to_interior() -> void:
 		Sim.state["phase1_inside"] = true
 		if Sim.has_method("_save_now"):
 			Sim._save_now(true)
+	_keep_pet_scale()
 	if Phase1 and Phase1.has_method("set_inside"):
 		Phase1.set_inside(true)
 	if hud and hud.has_method("set_in_interior"):
@@ -2887,6 +2896,12 @@ func _cut_to_interior() -> void:
 	# 過渡中途切鏡：鏡頭已對準室內，鎖住直到 fade in 完
 	if mid_fade:
 		_interior_lock_cam = true
+
+
+func _keep_pet_scale() -> void:
+	# Door travel used to leave the yard scale at 1. The species scale stays put.
+	if Phase1 and Phase1.has_method("_apply_visual"):
+		Phase1.call("_apply_visual")
 
 
 func _cut_to_garden() -> void:
@@ -2905,6 +2920,7 @@ func _cut_to_garden() -> void:
 	_interior_guest = null
 	in_interior = false
 	set_garden_hidden_for_interior(false)
+	_keep_pet_scale()
 	# That unhide is the H1 garden. The 675 host had already hidden those
 	# actors. Putting them back draws the old cottage plus Kid and Visitor
 	# on top of the approved garden.

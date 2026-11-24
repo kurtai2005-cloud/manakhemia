@@ -279,6 +279,8 @@ func _finish_run(pet: Node3D) -> void:
 	pet.global_position = Vector3(_dest.x, 0.0, _dest.z)
 	pet.set("moving", false)
 	if _kind == "jog" or _kind == "door":
+		if _scale != Vector3.ZERO:
+			pet.scale = _scale
 		pet.set("phase1_scripted", false)
 		var done := _kind
 		_kind = ""

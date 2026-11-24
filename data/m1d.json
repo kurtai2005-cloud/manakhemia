@@ -54,14 +54,14 @@
     },
     "camera": {
       "look": [
-        40,
-        36,
-        -10
+        8,
+        32,
+        -14
       ],
-      "pitchDeg": 30,
-      "dist": 96,
-      "fovDeg": 70,
-      "yawDeg": -54
+      "pitchDeg": 32,
+      "dist": 100,
+      "fovDeg": 78,
+      "yawDeg": -46
     },
     "slots": {
       "bed": [
@@ -96,9 +96,14 @@
       ]
     },
     "pet_enter": [
-      48,
+      -24,
       0,
-      8
+      20
+    ],
+    "exit_stand": [
+      -4,
+      0,
+      10
     ],
     "walk": {
       "margin": 12

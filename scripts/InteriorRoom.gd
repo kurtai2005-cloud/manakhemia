@@ -37,6 +37,7 @@ func setup() -> void:
 	visible = false
 	_build_from_art()
 	_build_ceiling()
+	_build_threshold()
 	_build_nav()
 	_build_window_light()
 	furniture_root = Node3D.new()
@@ -87,13 +88,12 @@ func slot_pos(sl: String) -> Vector3:
 
 
 func interior_exit_stand() -> Vector3:
-	var door := door_pivot.global_position if door_pivot else door_world()
-	var inside := pet_enter_pos()
-	var dir := inside - door
-	dir.y = 0.0
-	if dir.length() < 1.0:
-		dir = Vector3(0, 0, -1)
-	return door + dir.normalized() * 10.0
+	# A floor point in front of the open leaf, not 10 wu from the hinge.
+	# The hinge stand walked the pet into the door.
+	var a: Variant = interior_cfg().get("exit_stand", [8, 0, 14])
+	if a is Array and a.size() >= 3:
+		return to_global(Vector3(float(a[0]), float(a[1]), float(a[2])))
+	return to_global(Vector3(8, 0, 14))
 
 
 func pet_enter_pos() -> Vector3:
@@ -156,8 +156,9 @@ func room_bounds_local() -> AABB:
 func set_door_open(weight: float) -> void:
 	if door_pivot == null:
 		return
-	# 0 = 關（貼牆），1 = 開（轉入房約 85°）。正角先係向房內；負角會轉出牆外，鏡頭只見到木牆。
-	door_pivot.rotation_degrees.y = lerpf(0.0, 85.0, clampf(weight, 0.0, 1.0))
+	# 0 = shut against the wall. Positive yaw swings into the room.
+	# 48° leaves the leaf beside the right wall and the floor path in front of it clear.
+	door_pivot.rotation_degrees.y = lerpf(0.0, 48.0, clampf(weight, 0.0, 1.0))
 
 
 func _build_from_art() -> void:
@@ -242,6 +243,31 @@ func _build_ceiling() -> void:
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.albedo_color = Color(0.93, 0.78, 0.58)
 	mat.uv1_scale = Vector3(size.x / tile_wu, size.z / tile_wu, 1.0)
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mi)
+	_mats.append(mat)
+
+
+func _build_threshold() -> void:
+	# Open front is toward +Z. The 19:9 bottom-right ray lands a few units past
+	# the floor edge; a wood lip catches it so the frame stays on the room.
+	var lip := 28.0
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(size.x + 16.0, lip)
+	var mi := MeshInstance3D.new()
+	mi.name = "threshold"
+	mi.mesh = plane
+	mi.position = Vector3(0, 0.02, size.z * 0.5 + lip * 0.5)
+	var mat := StandardMaterial3D.new()
+	var tex_path := str(interior_cfg().get("textures", {}).get("floor_tile", ""))
+	if tex_path != "" and ResourceLoader.exists(tex_path):
+		mat.albedo_texture = load(tex_path)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.albedo_color = Color(0.86, 0.62, 0.40)
+	mat.uv1_scale = Vector3(4.0, 1.0, 1.0)
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(mi)
