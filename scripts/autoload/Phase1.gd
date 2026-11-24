@@ -102,6 +102,7 @@ func open_feed() -> void:
 	hud.feed_row.visible = true
 	hud.train_row.visible = false
 	hud.map_row.visible = false
+	hud.apply_layout()
 	mark("feed_open")
 
 
@@ -118,10 +119,11 @@ func feed(fid: String) -> void:
 	stats["力量"] = int(stats.get("力量", 1)) + int(food.get("power", 0))
 	pet["stats"] = stats
 	Phase1Registry.put(Sim.state, pet)
+	_hide_rows()
 	if actions:
 		actions.call("play_feed", str(food.get("zh", "")))
 	if hud:
-		hud.show_emote("好好味")
+		hud.show_emote("開飯")
 	mark("feed")
 
 
@@ -141,7 +143,7 @@ func clean() -> void:
 	if actions:
 		actions.call("play_clean")
 	if hud:
-		hud.show_emote("清潔")
+		hud.show_emote("香噴噴")
 	mark("clean")
 
 
@@ -156,7 +158,7 @@ func pat() -> void:
 	if actions:
 		actions.call("play_pat")
 	if hud:
-		hud.show_emote("心")
+		hud.show_emote("好舒服")
 	mark("pat")
 
 
@@ -164,6 +166,7 @@ func open_train() -> void:
 	hud.train_row.visible = true
 	hud.feed_row.visible = false
 	hud.map_row.visible = false
+	hud.apply_layout()
 	mark("train_open")
 
 
@@ -186,7 +189,7 @@ func train(stat: String) -> void:
 	if actions:
 		actions.call("play_train", stat)
 	if hud:
-		hud.show_emote(stat)
+		hud.show_emote("加油")
 	mark("train")
 
 
@@ -194,6 +197,7 @@ func open_map() -> void:
 	hud.map_row.visible = not hud.map_row.visible
 	hud.feed_row.visible = false
 	hud.train_row.visible = false
+	hud.apply_layout()
 	mark("map")
 
 
@@ -392,6 +396,7 @@ func _hide_rows() -> void:
 	hud.feed_row.visible = false
 	hud.train_row.visible = false
 	hud.map_row.visible = false
+	hud.apply_layout()
 
 
 func tend_bed(bed_at: Vector3, harvest: bool) -> void:
@@ -404,7 +409,7 @@ func tend_bed(bed_at: Vector3, harvest: bool) -> void:
 func act_stove() -> void:
 	if actions and world:
 		actions.call("play_stove", world.stove_pos())
-	_spark_reward("灶")
+	_spark_reward("熱騰騰")
 	mark("stove")
 
 
@@ -418,7 +423,7 @@ func act_post() -> void:
 func act_forage() -> void:
 	if actions and world:
 		actions.call("play_forage", world.prairie_pos())
-	_spark_reward("花")
+	_spark_reward("尋寶")
 	mark("forage")
 
 

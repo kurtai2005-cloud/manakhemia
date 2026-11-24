@@ -44,8 +44,8 @@ r11 replaces the piled-up panels with one top bar and a five-button dock. The ca
 r12 keeps that yard and replaces the gray controls with the warm pixel kit. The pet walks, eats, cleans, pats, and trains with a bowl, broom, watering can, and dumbbell. Farm beds, the stove, the post, and the prairie flowers load the 675 glb models when those files are present. PetOverlayService is still deferred.
 
 This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r12.apk
-bytes: 69710604
-sha256: b3ee1fd5c6a1227ff56b35688a702deb78f4fac30a5684e8cf6ea34723a8ddc7
+bytes: 69718860
+sha256: 6b7bdacccbd9429b11b6d8bcd1e5c53f472e1690d5467b041d648a766f3e3590
 versionName: vc27-11fb9c14-r12
 versionCode: 22
 package: hk.vizard.glimmer.fpet.vc27draft

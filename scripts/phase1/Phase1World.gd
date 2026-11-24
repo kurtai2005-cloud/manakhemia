@@ -5,14 +5,14 @@ extends Node
 const LOOK := {
 	"garden": Vector3(12, 58, -26),
 	"zone_farm": Vector3(-190, 58, 48),
-	"zone_workshop": Vector3(440, 58, 30),
-	"prairie_edge": Vector3(-450, 58, 70),
+	"zone_workshop": Vector3(220, 58, -40),
+	"prairie_edge": Vector3(-240, 58, -140),
 }
 const ANCHOR := {
 	"garden": Vector3(0, 0, 8),
 	"zone_farm": Vector3(-190, 0, 112),
-	"zone_workshop": Vector3(440, 0, 50),
-	"prairie_edge": Vector3(-450, 0, 132),
+	"zone_workshop": Vector3(236, 0, -6),
+	"prairie_edge": Vector3(-200, 0, -88),
 }
 const OLD_SPAN := 256.0
 const WOOD := "res://hd2d_stage/textures/tiles/wood_a.png"
@@ -21,8 +21,8 @@ const BARK := "res://hd2d_stage/textures/tiles/bark_a.png"
 
 var host: Node
 var zones: Node3D
-var _stove := Vector3(404, 0, 68)
-var _post := Vector3(478, 0, 76)
+var _stove := Vector3(190, 0, -12)
+var _post := Vector3(278, 0, -8)
 
 
 func build(exterior: Node) -> void:
@@ -36,20 +36,32 @@ func build(exterior: Node) -> void:
 		_spawn_prop("garden_fence_seg", "Fence_%d" % i, Vector3(-261 + i * 18.0, 0, 96), 0.0, _fence_fallback)
 	for i in range(4):
 		_bed(i, Vector3(-244 + i * 36, 0, 124))
-	_sign("SignFarm", "農圃", Vector3(-168, 0, 205))
-	var stove := _spawn_prop("outdoor_stove", "WorkOutdoorStove", _stove, 0.0, _stove_fallback)
-	_spot(stove, "stove", Vector3(22, 20, 16))
-	var post := _spawn_prop("outdoor_post_rack", "WorkOutdoorPost", _post, 0.0, _post_fallback)
-	_spot(post, "post", Vector3(18, 24, 12))
-	_spawn_prop("wood_crate", "ShopCrate", _post + Vector3(-16, 0, 8), 0.2, _crate_fallback)
-	_spawn_prop("garden_lantern", "ShopLantern", _stove + Vector3(-16, 0, 6), 0.0, _lantern_fallback)
-	_sign("SignShop", "工坊", Vector3(400, 0, 185))
-	for i in range(4):
-		_spawn_prop("stepping_stone", "Step_%d" % i, Vector3(-492 + i * 16, 0, 118 + i * 6), 0.0, _stone_fallback)
-		var flower := _spawn_prop("prairie_flower_clump", "Flower_%d" % i, Vector3(-480 + i * 16, 0, 150), 0.4, _flower_fallback)
+	_sign("SignFarm", "農圃", Vector3(-168, 0, 205), 1.0)
+	var stove := _spawn_prop("outdoor_stove", "WorkOutdoorStove", _stove, 0.2, _stove_fallback, 1.9)
+	_spot(stove, "stove", Vector3(42, 36, 32))
+	var post := _spawn_prop("outdoor_post_rack", "WorkOutdoorPost", _post, -0.2, _post_fallback, 1.9)
+	_spot(post, "post", Vector3(36, 46, 24))
+	_spawn_prop("wood_crate", "ShopCrate", Vector3(262, 0, 16), 0.4, _crate_fallback, 1.6)
+	_spawn_prop("garden_lantern", "ShopLantern", Vector3(168, 0, 10), 0.0, _lantern_fallback, 1.7)
+	for i in range(6):
+		_spawn_prop("dirt_path_tile", "ShopPath_%d" % i, Vector3(214, 0, 28 - i * 12), 0.0, _path_fallback)
+		_spawn_prop("garden_fence_seg", "ShopFence_%d" % i, Vector3(150 + i * 18, 0, -48), 0.0, _fence_fallback)
+	_sign("SignShop", "工坊", Vector3(214, 0, 36), 1.4)
+	_dress_yard(Vector3(220, 0, -55), 8, 120.0)
+	var flower_scales := [1.5, 1.8, 2.0, 1.4, 1.7, 1.9, 1.6, 2.0]
+	for i in range(8):
+		var fx := -280.0 + (i % 4) * 28.0
+		var fz := -108.0 + int(i / 4) * 22.0
+		_spawn_prop("stepping_stone", "Step_%d" % i, Vector3(-250 + i * 12, 0, -60 - i * 4), 0.2, _stone_fallback, 1.6)
+		var flower := _spawn_prop("prairie_flower_clump", "Flower_%d" % i, Vector3(fx, 0, fz), 0.4, _flower_fallback, flower_scales[i])
 		if i == 0:
-			_spot(flower, "prairie", Vector3(12, 10, 12))
-	_sign("SignPrairie", "草原", Vector3(-420, 0, 230))
+			_spot(flower, "prairie", Vector3(18, 14, 18))
+	for i in range(5):
+		_spawn_prop("dirt_path_tile", "PrairiePath_%d" % i, Vector3(-210, 0, -40 - i * 12), 0.0, _path_fallback)
+		_spawn_prop("garden_fence_seg", "PrairieFence_%d" % i, Vector3(-300 + i * 18, 0, -130), 0.0, _fence_fallback)
+	_sign("SignPrairie", "草原", Vector3(-188, 0, -48), 1.4)
+	_dress_yard(Vector3(-240, 0, -160), 10, 130.0)
+	_extend_lawn()
 	_seed_plots()
 	_refresh_beds()
 
@@ -63,8 +75,8 @@ func anchor_for(zone_id: String) -> Vector3:
 
 
 func span_ratio() -> float:
-	var width := 440.0 - (-450.0)
-	var depth := 70.0 - (-26.0)
+	var width := 220.0 - (-240.0)
+	var depth := 48.0 - (-140.0)
 	return (width * depth) / (90.0 * 70.0)
 
 
@@ -103,7 +115,7 @@ func prop_named(prop_name: String) -> Node3D:
 	return zones.find_child(prop_name, true, false) as Node3D
 
 
-func _spawn_prop(key: String, node_name: String, pos: Vector3, rot_y: float, fallback: Callable) -> Node3D:
+func _spawn_prop(key: String, node_name: String, pos: Vector3, rot_y: float, fallback: Callable, scale_v: float = 1.0) -> Node3D:
 	var path := "res://art/phase1/props/%s.glb" % key
 	var node: Node3D
 	if ResourceLoader.exists(path):
@@ -117,6 +129,8 @@ func _spawn_prop(key: String, node_name: String, pos: Vector3, rot_y: float, fal
 	node.name = node_name
 	node.position = pos
 	node.rotation.y = rot_y
+	if scale_v != 1.0:
+		node.scale = Vector3.ONE * scale_v
 	zones.add_child(node)
 	return node
 
@@ -214,8 +228,8 @@ func _bed(index: int, pos: Vector3) -> void:
 	zones.add_child(mark)
 
 
-func _sign(node_name: String, text: String, pos: Vector3) -> void:
-	var root := _spawn_prop("zone_signpost", node_name, pos, 0.0, _sign_fallback)
+func _sign(node_name: String, text: String, pos: Vector3, scale_v: float = 1.0) -> void:
+	var root := _spawn_prop("zone_signpost", node_name, pos, 0.0, _sign_fallback, scale_v)
 	var label := Label3D.new()
 	label.name = node_name + "Text"
 	label.text = text
@@ -267,6 +281,56 @@ func _box(parent: Node3D, node_name: String, pos: Vector3, size: Vector3, mat: M
 	box.position = pos
 	parent.add_child(box)
 	return box
+
+
+func _dress_yard(center: Vector3, count: int, radius: float) -> void:
+	var tree_scene := load("res://hd2d_stage/art/meshes/tree.glb") as PackedScene
+	var bush_scene := load("res://hd2d_stage/art/meshes/bush_bL.glb") as PackedScene
+	for i in count:
+		var ang := -0.4 + float(i) * 2.2 / float(maxi(count - 1, 1))
+		var pos := center + Vector3(sin(ang) * radius, 0, -absf(cos(ang)) * radius * 0.65)
+		if tree_scene:
+			var tree := tree_scene.instantiate() as Node3D
+			tree.name = "YardTree_%d_%d" % [int(center.x), i]
+			tree.position = pos
+			tree.scale = Vector3.ONE * (0.82 + float(i % 3) * 0.08)
+			zones.add_child(tree)
+		if bush_scene and i % 2 == 0:
+			var bush := bush_scene.instantiate() as Node3D
+			bush.name = "YardBush_%d_%d" % [int(center.x), i]
+			bush.position = pos + Vector3(14, 0, 18)
+			bush.scale = Vector3.ONE * 1.05
+			zones.add_child(bush)
+
+
+func _extend_lawn() -> void:
+	var tex := load("res://hd2d_stage/textures/grass_outer_512.png") as Texture2D
+	var sh := load("res://hd2d_stage/shaders/texel_lit.gdshader") as Shader
+	# The live lawn ends at x ±640 and z -480..320. These skirts continue that grass
+	# so the downward camera never sees the yellow void past the square edge.
+	_lawn_strip(Vector3(0, -0.05, -1240), Vector2(3600, 1520), tex, sh)
+	_lawn_strip(Vector3(0, -0.05, 760), Vector2(3600, 880), tex, sh)
+	_lawn_strip(Vector3(-1420, -0.05, -80), Vector2(1560, 800), tex, sh)
+	_lawn_strip(Vector3(1420, -0.05, -80), Vector2(1560, 800), tex, sh)
+
+
+func _lawn_strip(pos: Vector3, size: Vector2, tex: Texture2D, sh: Shader) -> void:
+	var mi := MeshInstance3D.new()
+	var plane := PlaneMesh.new()
+	plane.size = size
+	mi.mesh = plane
+	mi.position = pos
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if sh and tex:
+		var mat := ShaderMaterial.new()
+		mat.shader = sh
+		mat.set_shader_parameter("albedo_tex", tex)
+		mat.set_shader_parameter("uv_scale", Vector2(size.x / 512.0, size.y / 512.0))
+		mat.set_shader_parameter("roughness_val", 1.0)
+		mat.set_shader_parameter("alpha_cut", 0.0)
+		mat.set_shader_parameter("flip_v", false)
+		mi.material_override = mat
+	zones.add_child(mi)
 
 
 func _pad(node_name: String, pos: Vector3, size: Vector3) -> void:

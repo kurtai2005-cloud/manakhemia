@@ -15,6 +15,10 @@ var _bowl: Node3D
 var _flag: Node3D
 var _berry: Node3D
 var _bell: Node3D
+var _floaters: Array[Node3D] = []
+var _focus := Vector3.ZERO
+const CLEAR := Vector3(6, 0, 62)
+const PROP_SCALE := 2.4
 
 
 func bind(main: Node, yard: Node3D) -> void:
@@ -36,40 +40,69 @@ func cancel() -> void:
 	_bowl = null
 	_berry = null
 	_bell = null
+	_floaters.clear()
 
 
 func play_feed(food_zh: String) -> void:
+	_stage_clear()
 	_start("feed")
-	_bowl = _prop("prop_food_bowl", _origin + Vector3(18, 0, 14), 0.0, _bowl_fallback)
+	_bowl = _prop("prop_food_bowl", _origin + Vector3(0, 0, 20), 0.0, _bowl_fallback)
 	_note(food_zh)
 
 
 func play_clean() -> void:
+	_stage_clear()
 	_start("clean")
-	_prop("prop_broom", _origin + Vector3(18, 0, 12), 0.6, _broom_fallback)
+	_prop("prop_broom", _origin + Vector3(24, 0, 8), 0.5, _broom_fallback)
+	for i in 8:
+		var bubble := _orb(Color(0.72, 0.94, 1.0, 0.62), randf_range(3.0, 6.0), _origin + Vector3(randf_range(-18, 18), 14, randf_range(-8, 14)))
+		if bubble:
+			_floaters.append(bubble)
 
 
 func play_pat() -> void:
+	_stage_clear()
 	_start("pat")
+	for i in 6:
+		var heart := _heart(_origin + Vector3(randf_range(-10, 10), 20, randf_range(-6, 8)))
+		if heart:
+			_floaters.append(heart)
 
 
 func play_train(stat: String) -> void:
+	_stage_clear()
 	_start(stat)
 	if stat == "力量":
-		_bell = _prop("prop_dumbbell", _origin + Vector3(16, 0, 10), 0.0, _bell_fallback)
+		_bell = _prop("prop_dumbbell", _origin + Vector3(22, 0, 8), 0.3, _bell_fallback)
 
 
 func play_garden(bed_pos: Vector3, harvest: bool) -> void:
 	_start("harvest" if harvest else "water")
-	_dest = Vector3(bed_pos.x, 0.0, bed_pos.z + 14.0)
-	_prop("prop_watering_can", _dest + Vector3(8, 0, 4), -0.5, _can_fallback)
+	_dest = Vector3(bed_pos.x + 22.0, 0.0, bed_pos.z + 16.0)
+	_prop("prop_watering_can", bed_pos + Vector3(16, 8, 18), -0.9, _can_fallback)
 	if harvest:
-		_berry = _sphere(Color(0.85, 0.2, 0.35), 3.2, bed_pos + Vector3(0, 28, 0))
+		_berry = _sphere(Color(0.9, 0.16, 0.28), 5.0, bed_pos + Vector3(0, 30, 0))
+	for i in 6:
+		var drop := _orb(Color(0.35, 0.72, 1.0, 0.9), 1.6, bed_pos + Vector3(0, 22 - i * 2.0, 6))
+		if drop:
+			_floaters.append(drop)
 
 
 func play_stove(stove_pos: Vector3) -> void:
 	_start("stove")
-	_dest = Vector3(stove_pos.x - 10.0, 0.0, stove_pos.z + 12.0)
+	_dest = Vector3(stove_pos.x + 38.0, 0.0, stove_pos.z + 2.0)
+	_focus = stove_pos
+	var glow := OmniLight3D.new()
+	glow.light_color = Color(1.0, 0.55, 0.18)
+	glow.light_energy = 2.4
+	glow.omni_range = 36.0
+	if _fx:
+		_fx.add_child(glow)
+		glow.global_position = stove_pos + Vector3(0, 16, 0)
+	for i in 6:
+		var puff := _orb(Color(0.95, 0.95, 0.92, 0.7), 2.4 + float(i) * 0.35, stove_pos + Vector3(0, 22, 0))
+		if puff:
+			_floaters.append(puff)
 
 
 func play_post(post_pos: Vector3) -> void:
@@ -81,7 +114,11 @@ func play_post(post_pos: Vector3) -> void:
 
 func play_forage(spot: Vector3) -> void:
 	_start("forage")
-	_dest = Vector3(spot.x, 0.0, spot.z + 10.0)
+	_dest = Vector3(spot.x + 22.0, 0.0, spot.z + 8.0)
+	for i in 8:
+		var petal := _orb(Color(0.95, 0.55, 0.72, 0.9), 1.8, spot + Vector3(randf_range(-8, 8), 8, randf_range(-6, 6)))
+		if petal:
+			_floaters.append(petal)
 
 
 func jog_to(dest: Vector3) -> void:
@@ -156,7 +193,7 @@ func _tick_feed(pet: Node3D, u: float) -> void:
 	if u > 0.82:
 		bob = sin((u - 0.82) * TAU) * 6.0
 		if _bowl:
-			_bowl.scale = Vector3.ONE * (1.0 - (u - 0.82) / 0.18)
+			_bowl.scale = Vector3.ONE * PROP_SCALE * (1.0 - (u - 0.82) / 0.18)
 	pet.global_position = at
 	pet.global_position.y = bob
 	pet.scale = _scale * Vector3(1.0, 0.86 if bob > 1.0 else 1.0, 1.0)
@@ -165,20 +202,21 @@ func _tick_feed(pet: Node3D, u: float) -> void:
 func _tick_clean(pet: Node3D, u: float) -> void:
 	pet.global_position = _origin
 	pet.global_position.y = sin(u * TAU * 5.0) * 1.6
-	pet.rotation.z = sin(u * TAU * 4.0) * 0.12
-	if int(_t * 10.0) % 2 == 0:
-		var ang := u * TAU * 2.0
-		_spark(_origin + Vector3(cos(ang) * 14.0, 16.0 + sin(u * 6.0) * 4.0, sin(ang) * 14.0), Color(0.75, 0.9, 1.0, 0.8))
-		_spark(_origin + Vector3(0, 22, 0), Color(1.0, 0.92, 0.55))
+	pet.rotation.z = sin(u * TAU * 4.0) * 0.18
+	_orbit(_floaters, 20.0, 16.0, u)
+	if int(_t * 8.0) % 2 == 0:
+		_spark(_origin + Vector3(0, 26, 6), Color(1.0, 0.88, 0.35))
 
 
 func _tick_pat(pet: Node3D, u: float) -> void:
-	var squash := 1.0 + sin(u * TAU * 2.0) * 0.12
-	pet.scale = Vector3(_scale.x * (2.0 - squash), _scale.y * squash, _scale.z * (2.0 - squash))
-	pet.global_position = _origin + Vector3(sin(u * TAU) * 2.0, absf(sin(u * TAU * 2.0)) * 5.0, 0)
-	if int(_t * 8.0) % 2 == 0:
-		_spark(_origin + Vector3(randf_range(-8, 8), 18 + u * 20.0, randf_range(-6, 6)), Color(0.95, 0.4, 0.5))
-	_ring(_origin, 8.0 + u * 18.0)
+	var squash_y := 1.0 + sin(u * TAU * 2.0) * 0.18
+	pet.scale = Vector3(_scale.x * (2.0 - squash_y), _scale.y * squash_y, _scale.z * (2.0 - squash_y))
+	pet.global_position = _origin + Vector3(sin(u * TAU) * 3.0, absf(sin(u * TAU * 2.0)) * 6.0, 0)
+	for i in _floaters.size():
+		var heart := _floaters[i]
+		if heart:
+			heart.global_position = _origin + Vector3(sin(u * TAU + float(i)) * 12.0, 22.0 + u * 28.0 + float(i) * 3.0, 8.0)
+	_ring(_origin, 12.0 + u * 16.0)
 
 
 func _tick_power(pet: Node3D, u: float) -> void:
@@ -186,7 +224,7 @@ func _tick_power(pet: Node3D, u: float) -> void:
 	pet.global_position = _origin + Vector3(0, lift * 4.0, 0)
 	pet.scale = _scale * Vector3(1.08, 0.9 + lift * 0.15, 1.08)
 	if _bell:
-		_bell.global_position = _origin + Vector3(16, 6.0 + lift * 14.0, 10)
+		_bell.global_position = _origin + Vector3(22, 16.0 + lift * 18.0, 6)
 	if int(_t * 9.0) % 2 == 0:
 		_spark(_origin + Vector3(10, 16 + lift * 8.0, 4), Color(0.55, 0.8, 1.0))
 		_spark(_origin + Vector3(-4, 24, 0), Color(1.0, 0.84, 0.35))
@@ -225,9 +263,12 @@ func _tick_stove(pet: Node3D, u: float) -> void:
 	var walk := clampf(u / 0.3, 0.0, 1.0)
 	pet.global_position = _origin.lerp(_dest, _smooth(walk))
 	pet.global_position.y = sin(u * TAU * 4.0) * 1.2
-	if u > 0.3 and int(_t * 8.0) % 2 == 0:
-		_spark(_dest + Vector3(8, 18 + u * 10.0, -6), Color(0.95, 0.95, 0.95))
-		_spark(_dest + Vector3(8, 12, -6), Color(1.0, 0.45, 0.15))
+	for i in _floaters.size():
+		var puff := _floaters[i]
+		if puff:
+			puff.global_position = _focus + Vector3(sin(float(i)) * 5.0, 24.0 + u * 28.0 + float(i) * 2.5, 0)
+	if u > 0.2 and int(_t * 6.0) % 2 == 0:
+		_spark(_focus + Vector3(0, 18, 4), Color(1.0, 0.42, 0.1))
 
 
 func _tick_post(pet: Node3D, u: float) -> void:
@@ -244,10 +285,9 @@ func _tick_forage(pet: Node3D, u: float) -> void:
 	var walk := clampf(u / 0.4, 0.0, 1.0)
 	pet.global_position = _origin.lerp(_dest, _smooth(walk))
 	pet.global_position.y = sin(u * TAU * 2.0) * 1.2
-	if u > 0.4 and int(_t * 9.0) % 2 == 0:
-		var ang := u * TAU * 3.0
-		_spark(pet.global_position + Vector3(cos(ang) * 8.0, 14, sin(ang) * 8.0), Color(0.95, 0.55, 0.7))
-		_spark(pet.global_position + Vector3(0, 8, 0), Color(0.45, 0.7, 0.35))
+	_orbit(_floaters, 16.0, 12.0, u * 1.4)
+	if u > 0.35 and int(_t * 8.0) % 2 == 0:
+		_spark(pet.global_position + Vector3(0, 18, 0), Color(1.0, 0.82, 0.35))
 
 
 func _pet() -> Node3D:
@@ -270,7 +310,14 @@ func _note(_text: String) -> void:
 	pass
 
 
-func _prop(key: String, pos: Vector3, rot_y: float, fallback: Callable) -> Node3D:
+func _stage_clear() -> void:
+	var pet := _pet()
+	if pet:
+		pet.global_position = CLEAR
+		pet.global_position.y = 0.0
+
+
+func _prop(key: String, pos: Vector3, rot_y: float, fallback: Callable, scale_v: float = PROP_SCALE) -> Node3D:
 	if zones == null or _fx == null:
 		return null
 	var path := "res://art/phase1/props/%s.glb" % key
@@ -284,9 +331,72 @@ func _prop(key: String, pos: Vector3, rot_y: float, fallback: Callable) -> Node3
 	else:
 		_crisp(node)
 	node.rotation.y = rot_y
+	node.scale = Vector3.ONE * scale_v
 	_fx.add_child(node)
 	node.global_position = pos
 	return node
+
+
+func _orbit(nodes: Array[Node3D], radius: float, height: float, u: float) -> void:
+	for i in nodes.size():
+		var node := nodes[i]
+		if node == null:
+			continue
+		var ang := u * TAU + float(i) * TAU / maxf(float(nodes.size()), 1.0)
+		node.global_position = _origin + Vector3(cos(ang) * radius, height + sin(u * TAU + float(i)) * 6.0, sin(ang) * radius * 0.6)
+
+
+func _orb(color: Color, radius: float, pos: Vector3) -> MeshInstance3D:
+	if _fx == null:
+		return null
+	var bit := MeshInstance3D.new()
+	var mesh := SphereMesh.new()
+	mesh.radius = radius
+	mesh.height = radius * 2.0
+	bit.mesh = mesh
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = color
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.emission_enabled = true
+	mat.emission = Color(color.r, color.g, color.b)
+	mat.emission_energy_multiplier = 0.8
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	bit.material_override = mat
+	_fx.add_child(bit)
+	bit.global_position = pos
+	return bit
+
+
+func _heart(pos: Vector3) -> Node3D:
+	if _fx == null:
+		return null
+	var root := Node3D.new()
+	_fx.add_child(root)
+	root.global_position = pos
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.95, 0.35, 0.48)
+	mat.emission_enabled = true
+	mat.emission = Color(0.95, 0.28, 0.42)
+	mat.emission_energy_multiplier = 1.1
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	for off in [Vector3(-2.2, 2.2, 0), Vector3(2.2, 2.2, 0)]:
+		var lobe := MeshInstance3D.new()
+		var sphere := SphereMesh.new()
+		sphere.radius = 3.2
+		sphere.height = 6.4
+		lobe.mesh = sphere
+		lobe.material_override = mat
+		lobe.position = off
+		root.add_child(lobe)
+	var tip := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(6.4, 6.4, 3.2)
+	tip.mesh = box
+	tip.material_override = mat
+	tip.position = Vector3(0, -1.2, 0)
+	tip.rotation.z = PI * 0.25
+	root.add_child(tip)
+	return root
 
 
 func _spark(pos: Vector3, color: Color) -> void:
@@ -294,14 +404,14 @@ func _spark(pos: Vector3, color: Color) -> void:
 		return
 	var bit := MeshInstance3D.new()
 	var mesh := SphereMesh.new()
-	mesh.radius = 2.4
-	mesh.height = 4.8
+	mesh.radius = 3.2
+	mesh.height = 6.4
 	bit.mesh = mesh
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = color
 	mat.emission_enabled = true
 	mat.emission = color
-	mat.emission_energy_multiplier = 0.4
+	mat.emission_energy_multiplier = 1.4
 	bit.material_override = mat
 	_fx.add_child(bit)
 	bit.global_position = pos

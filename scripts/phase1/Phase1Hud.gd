@@ -133,7 +133,7 @@ func build() -> void:
 	toast_pill.name = "ToastPill"
 	toast_pill.visible = false
 	toast_pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	toast_pill.add_theme_stylebox_override("panel", _slice("ui_pill_9slice.png", 8.0, _flat(Color(0.16, 0.1, 0.06, 0.88), Color(0.78, 0.62, 0.28))))
+	toast_pill.add_theme_stylebox_override("panel", _pill_style(Color(0.16, 0.1, 0.06, 0.88)))
 	toast = Label.new()
 	toast.name = "Toast"
 	Vc27Fonts.bind(toast)
@@ -146,7 +146,7 @@ func build() -> void:
 	emote.name = "Emote"
 	emote.visible = false
 	emote.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	emote.add_theme_stylebox_override("panel", _slice("ui_pill_9slice.png", 8.0, _flat(Color(0.18, 0.1, 0.06, 0.9), Color(0.86, 0.7, 0.32))))
+	emote.add_theme_stylebox_override("panel", _pill_style(Color(0.18, 0.1, 0.06, 0.9)))
 	emote.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	emote_label = Label.new()
 	emote_label.name = "EmoteText"
@@ -160,6 +160,7 @@ func build() -> void:
 	_build_modal()
 	apply_layout()
 	refresh()
+	call_deferred("refresh")
 
 
 func _process(dt: float) -> void:
@@ -194,15 +195,12 @@ func apply_layout() -> void:
 		if c is Control:
 			(c as Control).custom_minimum_size = Vector2((safe.size.x - 24.0) / 5.0, 48)
 			(c as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for row in [feed_row, train_row, map_row]:
-		row.position = Vector2(safe.position.x, dock.position.y - 50)
-		row.size = Vector2(safe.size.x, 44)
+	_place_rows(safe)
 	expand_btn.position = Vector2(safe.end.x - 72, safe.position.y)
 	expand_btn.size = Vector2(68, 34)
 	var toast_pill := root.get_node_or_null("ToastPill") as Control
-	if toast_pill:
-		toast_pill.position = Vector2(safe.position.x + 8, safe.position.y + 72)
-		toast_pill.size = Vector2(minf(160.0, safe.size.x * 0.4), 28)
+	if toast_pill and toast_pill.visible:
+		_hug(toast_pill, toast, Vector2(safe.position.x + safe.size.x * 0.5, safe.position.y + 74), false)
 	if drawer:
 		drawer.position = Vector2(safe.position.x + 24, safe.position.y + 96)
 		drawer.size = Vector2(safe.size.x - 48, 250)
@@ -231,8 +229,7 @@ func refresh() -> void:
 		var bar := bars[key] as Control
 		var fill := bar.get_node_or_null("Fill") as Control
 		if fill:
-			fill.size.x = maxf(8.0, (bar.size.x - 4.0) * clampf(float(care.get(key, 0)) / 100.0, 0.0, 1.0))
-			fill.size.y = bar.size.y - 4.0
+			fill.anchor_right = clampf(float(care.get(key, 0)) / 100.0, 0.0, 1.0)
 		var lab := bar.get_node_or_null("Cap") as Label
 		if lab:
 			lab.text = "%s %d" % [key, int(care.get(key, 0))]
@@ -244,9 +241,14 @@ func refresh() -> void:
 
 func show_toast(text: String) -> void:
 	toast.text = text
-	var pill := root.get_node_or_null("ToastPill") as CanvasItem
-	if pill:
-		pill.visible = text != ""
+	var pill := root.get_node_or_null("ToastPill") as Control
+	if pill == null:
+		return
+	pill.visible = text != ""
+	if pill.visible:
+		var safe := _safe()
+		_hug(pill, toast, Vector2(safe.position.x + safe.size.x * 0.5, safe.position.y + 74), false)
+		call_deferred("_hug_toast")
 
 
 func show_bubble(text: String) -> void:
@@ -260,6 +262,7 @@ func show_emote(text: String) -> void:
 	emote_left = 2.2 if text != "" else 0.0
 	if emote.visible:
 		_place_emote()
+		call_deferred("_place_emote")
 
 
 func show_modal(title: String, body: String) -> void:
@@ -351,11 +354,9 @@ func _place_emote() -> void:
 		head = coat.global_position + Vector3(0, 24, 0)
 	var pt := cam.unproject_position(head)
 	var safe := _safe()
-	var w := 120.0
-	var x := clampf(pt.x - w * 0.5, safe.position.x, safe.end.x - w)
-	var y := clampf(pt.y - 40.0, safe.position.y + 70.0, safe.end.y - 80.0)
-	emote.position = Vector2(x, y)
-	emote.size = Vector2(w, 32)
+	_hug(emote, emote_label, Vector2(pt.x, pt.y - 8.0))
+	emote.position.x = clampf(emote.position.x, safe.position.x, safe.end.x - emote.size.x)
+	emote.position.y = clampf(emote.position.y, safe.position.y + 70.0, safe.end.y - 80.0)
 
 
 func _on_name() -> void:
@@ -461,8 +462,51 @@ func _strip(node_name: String) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.name = node_name
 	row.visible = false
+	row.clip_contents = true
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", 6)
+	row.size = Vector2.ZERO
+	row.position = Vector2(-4000, -4000)
 	return row
+
+
+func _place_rows(safe: Rect2) -> void:
+	for row in [feed_row, train_row, map_row]:
+		if row == null:
+			continue
+		if not row.visible:
+			row.size = Vector2.ZERO
+			row.position = Vector2(-4000, -4000)
+			continue
+		row.position = Vector2(safe.position.x, dock.position.y - 50)
+		row.size = Vector2(safe.size.x, 44)
+		for child in row.get_children():
+			if child is Control:
+				(child as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				(child as Control).custom_minimum_size = Vector2(72, 40)
+
+
+func _hug_toast() -> void:
+	var pill := root.get_node_or_null("ToastPill") as Control
+	if pill == null or not pill.visible:
+		return
+	var safe := _safe()
+	_hug(pill, toast, Vector2(safe.position.x + safe.size.x * 0.5, safe.position.y + 74), false)
+
+
+func _hug(panel: Control, label: Label, anchor: Vector2, above: bool = true) -> void:
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	panel.custom_minimum_size = Vector2.ZERO
+	label.custom_minimum_size = Vector2.ZERO
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	var need := label.get_combined_minimum_size()
+	var box := Vector2(maxf(need.x + 20.0, 48.0), maxf(need.y + 8.0, 28.0))
+	panel.size = box
+	if above:
+		panel.position = anchor - Vector2(box.x * 0.5, box.y)
+	else:
+		panel.position = Vector2(anchor.x - box.x * 0.5, anchor.y)
 
 
 func _bar(key: String, tone: Color) -> Control:
@@ -480,7 +524,16 @@ func _bar(key: String, tone: Color) -> Control:
 	var fill := Panel.new()
 	fill.name = "Fill"
 	fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fill.position = Vector2(2, 2)
+	fill.anchor_left = 0.0
+	fill.anchor_top = 0.0
+	fill.anchor_bottom = 1.0
+	fill.anchor_right = 1.0
+	fill.offset_left = 2.0
+	fill.offset_top = 2.0
+	fill.offset_right = -2.0
+	fill.offset_bottom = -2.0
+	fill.grow_horizontal = Control.GROW_DIRECTION_END
+	fill.grow_vertical = Control.GROW_DIRECTION_BOTH
 	var fill_style := _slice("ui_bar_fill_9slice.png", 6.0, _flat(Color.WHITE, Color(0.35, 0.22, 0.12)))
 	fill.add_theme_stylebox_override("panel", fill_style)
 	fill.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -524,6 +577,21 @@ func _btn(node_name: String, text: String, cb: Callable, icon_file: String = "")
 		b.expand_icon = false
 	b.pressed.connect(cb)
 	return b
+
+
+func _pill_style(fill: Color) -> StyleBox:
+	var box := _slice("ui_pill_9slice.png", 8.0, _flat(fill, Color(0.8, 0.64, 0.3)), 4.0)
+	if box is StyleBoxTexture:
+		box.content_margin_left = 10.0
+		box.content_margin_right = 10.0
+		box.content_margin_top = 4.0
+		box.content_margin_bottom = 4.0
+	elif box is StyleBoxFlat:
+		box.content_margin_left = 10.0
+		box.content_margin_right = 10.0
+		box.content_margin_top = 4.0
+		box.content_margin_bottom = 4.0
+	return box
 
 
 func _slice(file: String, margin: float, fallback: StyleBox, content: float = -1.0) -> StyleBox:
