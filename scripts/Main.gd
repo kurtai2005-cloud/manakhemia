@@ -24,6 +24,10 @@ var _sky_w := 1634.3
 var _ground_mats: Array = []
 var _tod := "day"
 var follow_pos := Vector3(0, 30, -72)
+var phase1_on := false
+var phase1_from := Vector3.ZERO
+var phase1_to := Vector3.ZERO
+var phase1_t := 1.0
 var sway_t := 0.0
 var rng := RandomNumberGenerator.new()
 var show_visitor := true
@@ -591,8 +595,53 @@ func set_cam_follow(w: Walker) -> void:
 	_fit_sky_card()
 
 
+func phase1_glide_to(target: Vector3) -> void:
+	phase1_on = true
+	phase1_from = follow_pos
+	phase1_to = target
+	phase1_t = 0.0
+	cam_mode = CamMode.OVERVIEW
+	follow_walker = null
+
+
+func phase1_follow(w: Walker) -> void:
+	phase1_on = true
+	set_cam_follow(w)
+
+
+func phase1_pan(delta: Vector2) -> void:
+	if not phase1_on:
+		return
+	phase1_t = 1.0
+	follow_walker = null
+	cam_mode = CamMode.OVERVIEW
+	if Ecosystem and Ecosystem.has_method("stop_follow"):
+		Ecosystem.stop_follow()
+	phase1_to.x = clampf(phase1_to.x - delta.x * 0.45, -400.0, 400.0)
+	phase1_to.z = clampf(phase1_to.z - delta.y * 0.45, -480.0, 180.0)
+	phase1_from = phase1_to
+	follow_pos = phase1_to
+
+
 func _place_cam(dt: float) -> void:
 	if cam == null:
+		return
+	if phase1_on and not in_interior:
+		if follow_walker and is_instance_valid(follow_walker):
+			phase1_to = Vector3(follow_walker.global_position.x, 18.0, follow_walker.global_position.z)
+			phase1_t = 1.0
+		elif phase1_t < 1.0:
+			phase1_t = minf(1.0, phase1_t + dt / 0.45)
+			var u := phase1_t * phase1_t * (3.0 - 2.0 * phase1_t)
+			follow_pos = phase1_from.lerp(phase1_to, u)
+		else:
+			follow_pos = phase1_to
+		var zone_dist := 140.0
+		if phase1_to.x < -100.0:
+			zone_dist = 70.0
+		elif phase1_to.x > 100.0:
+			zone_dist = 340.0
+		_apply_cam_offset(0.0, 62.0, zone_dist)
 		return
 	var A := 0.0 if rest_look else float(cam_data.get("swayAmplitudeDeg", 5))
 	var T := float(cam_data.get("swayHalfPeriodSec", 6))
@@ -702,8 +751,13 @@ func _notification(what: int) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventScreenDrag and Ecosystem and Ecosystem.has_method("stop_follow"):
-		Ecosystem.stop_follow()
+	if event is InputEventScreenDrag:
+		if phase1_on:
+			phase1_pan((event as InputEventScreenDrag).relative)
+		elif Ecosystem and Ecosystem.has_method("stop_follow"):
+			Ecosystem.stop_follow()
+	elif event is InputEventMouseMotion and phase1_on and (event as InputEventMouseMotion).button_mask != 0:
+		phase1_pan((event as InputEventMouseMotion).relative)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -718,7 +772,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 			_try_tap(mb.position)
 	elif event is InputEventScreenDrag:
-		if Ecosystem and Ecosystem.has_method("stop_follow"):
+		if phase1_on:
+			phase1_pan((event as InputEventScreenDrag).relative)
+		elif Ecosystem and Ecosystem.has_method("stop_follow"):
 			Ecosystem.stop_follow()
 	elif event is InputEventScreenTouch:
 		var st := event as InputEventScreenTouch
@@ -1226,6 +1282,9 @@ func _setup_gameplay_ai() -> void:
 
 
 func _on_pet_tapped(w: Walker) -> void:
+	if Phase1 and Phase1.active:
+		Phase1.pat()
+		return
 	set_cam_follow(w)
 	if hud and hud.has_method("set_care_target"):
 		hud.set_care_target(w)
@@ -1470,6 +1529,8 @@ func _setup_m1b() -> void:
 		HuntSystem.restore()
 		if HuntSystem.travel_hold:
 			_send_hunt_to_stand()
+	if Phase1 and Phase1.has_method("attach"):
+		Phase1.attach(self)
 
 
 func _apply_visitor_own_walk(w: Walker) -> void:
@@ -2931,4 +2992,4 @@ func _sync_rotate_overlay() -> void:
 	if _rotate_layer:
 		_rotate_layer.visible = not portrait
 	if hud:
-		hud.visible = portrait
+		hud.visible = portrait and not phase1_on
