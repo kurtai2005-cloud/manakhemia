@@ -7,11 +7,11 @@ GODOT="${GODOT:-/tmp/godot-bin/Godot_v4.7.2-stable_linux.x86_64}"
 export JAVA_HOME="${JAVA_HOME:-$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")}"
 export ANDROID_HOME="${ANDROID_HOME:-/tmp/android-sdk}"
 export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$PATH"
-FINAL="${FINAL:-/opt/cursor/artifacts/vc27-draft-11fb9c14-r11.apk}"
-OUT="${OUT:-/tmp/vc27-apk/vc27-draft-11fb9c14-r11.apk}"
+FINAL="${FINAL:-/opt/cursor/artifacts/vc27-draft-11fb9c14-r12.apk}"
+OUT="${OUT:-/tmp/vc27-apk/vc27-draft-11fb9c14-r12.apk}"
 PKG="hk.vizard.glimmer.fpet.vc27draft"
-VER_CODE=21
-VER_NAME="vc27-11fb9c14-r11"
+VER_CODE=22
+VER_NAME="vc27-11fb9c14-r12"
 KS="${VC27_DEBUG_KEYSTORE:-/tmp/vc27-apk/vc27-debug.keystore}"
 mkdir -p "$(dirname "$OUT")" "$(dirname "$KS")" /tmp/vc27-apk
 

@@ -6,6 +6,8 @@ var active := false
 var host: Node
 var world: Phase1World
 var hud: Phase1Hud
+const _Actions := preload("res://scripts/phase1/Phase1Actions.gd")
+var actions: Node
 var action := ""
 var action_n := 0
 var layout_override := false
@@ -48,6 +50,10 @@ func attach(main: Node) -> void:
 	hud.name = "Phase1Hud"
 	main.add_child(hud)
 	hud.build()
+	actions = _Actions.new()
+	actions.name = "Phase1Actions"
+	add_child(actions)
+	actions.call("bind", main, world.zones)
 	_apply_visual()
 	if main.has_method("phase1_hold_opening"):
 		main.phase1_hold_opening()
@@ -112,12 +118,10 @@ func feed(fid: String) -> void:
 	stats["力量"] = int(stats.get("力量", 1)) + int(food.get("power", 0))
 	pet["stats"] = stats
 	Phase1Registry.put(Sim.state, pet)
-	if world and host:
-		world.set_food(host, str(food.get("zh", "")))
-	_bounce()
-	toast("吃了%s" % str(food.get("zh", "")))
-	hud.show_bubble("好好味")
-	hud.feed_row.visible = false
+	if actions:
+		actions.call("play_feed", str(food.get("zh", "")))
+	if hud:
+		hud.show_emote("好好味")
 	mark("feed")
 
 
@@ -133,7 +137,11 @@ func clean() -> void:
 	care["心情"] = mini(100, int(care.get("心情", 0)) + 8)
 	pet["care"] = care
 	Phase1Registry.put(Sim.state, pet)
-	toast("清潔完成 +心情" if cleaned > 0 else "梳毛 +心情")
+	_hide_rows()
+	if actions:
+		actions.call("play_clean")
+	if hud:
+		hud.show_emote("清潔")
 	mark("clean")
 
 
@@ -144,10 +152,11 @@ func pat() -> void:
 	care["親密"] = mini(100, int(care.get("親密", 0)) + 6)
 	pet["care"] = care
 	Phase1Registry.put(Sim.state, pet)
-	_bounce()
+	_hide_rows()
+	if actions:
+		actions.call("play_pat")
 	if hud:
-		hud.show_bubble("心 好舒服")
-	toast("+心情 +親密")
+		hud.show_emote("心")
 	mark("pat")
 
 
@@ -173,9 +182,11 @@ func train(stat: String) -> void:
 	stats["lv"] = 1 + int(stats["exp"]) / 20
 	pet["stats"] = stats
 	Phase1Registry.put(Sim.state, pet)
-	_bounce()
-	toast("+%s +EXP" % stat)
-	hud.train_row.visible = false
+	_hide_rows()
+	if actions:
+		actions.call("play_train", stat)
+	if hud:
+		hud.show_emote(stat)
 	mark("train")
 
 
@@ -190,8 +201,11 @@ func go_zone(zone_id: String) -> void:
 	var pet := Phase1Registry.primary(Sim.state)
 	pet["zone_id"] = zone_id
 	Phase1Registry.put(Sim.state, pet)
+	_hide_rows()
 	if host and host.has_method("phase1_glide_to") and world:
 		host.phase1_glide_to(world.look_for(zone_id))
+	if actions and world:
+		actions.call("jog_to", world.anchor_for(zone_id))
 	var spec := Phase1Config.zone(doc, zone_id)
 	toast(str(spec.get("zh", zone_id)))
 	mark("zone")
@@ -319,6 +333,17 @@ func try_world_tap(screen: Vector2) -> bool:
 	if col is Node and (col as Node).has_meta("bed"):
 		world.tap_bed(int((col as Node).get_meta("bed")))
 		return true
+	if col is Node and (col as Node).has_meta("spot"):
+		var spot := str((col as Node).get_meta("spot"))
+		if spot == "stove":
+			act_stove()
+		elif spot == "post":
+			act_post()
+		elif spot == "prairie":
+			act_forage()
+		else:
+			return false
+		return true
 	return false
 
 
@@ -361,12 +386,47 @@ func _apply_visual() -> void:
 	pet.scale = Vector3(sc, sc, sc)
 
 
-func _bounce() -> void:
-	if host == null:
+func _hide_rows() -> void:
+	if hud == null:
 		return
-	var pet := host.get("pet") as Node3D
-	if pet:
-		pet.position.y = 4.0
+	hud.feed_row.visible = false
+	hud.train_row.visible = false
+	hud.map_row.visible = false
+
+
+func tend_bed(bed_at: Vector3, harvest: bool) -> void:
+	if actions:
+		actions.call("play_garden", bed_at, harvest)
+	if hud:
+		hud.show_emote("收成" if harvest else "澆水")
+
+
+func act_stove() -> void:
+	if actions and world:
+		actions.call("play_stove", world.stove_pos())
+	_spark_reward("灶")
+	mark("stove")
+
+
+func act_post() -> void:
+	if actions and world:
+		actions.call("play_post", world.post_pos())
+	_spark_reward("郵")
+	mark("post")
+
+
+func act_forage() -> void:
+	if actions and world:
+		actions.call("play_forage", world.prairie_pos())
+	_spark_reward("花")
+	mark("forage")
+
+
+func _spark_reward(word: String) -> void:
+	if Ecosystem and Ecosystem.has_method("grant_shards"):
+		Ecosystem.grant_shards(1, "phase1_play")
+	if hud:
+		hud.show_emote(word)
 
 
 func _save() -> void:

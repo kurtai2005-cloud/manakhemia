@@ -41,11 +41,13 @@ r10 keeps that build and makes the sparse pack index match project.binary. The m
 
 r11 replaces the piled-up panels with one top bar and a five-button dock. The camera can move to the cottage, the farm, the workshop, and the prairie. Feeding, cleaning, patting, and training change the pet. The test drawer holds the one-hour idle settlement. PetOverlayService is still deferred.
 
-This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r11.apk
-bytes: 69375025
-sha256: 8a9998ba4846346dffc26e54534aa54ba2946e0f1484f941de145282dbb7bde4
-versionName: vc27-11fb9c14-r11
-versionCode: 21
+r12 keeps that yard and replaces the gray controls with the warm pixel kit. The pet walks, eats, cleans, pats, and trains with a bowl, broom, watering can, and dumbbell. Farm beds, the stove, the post, and the prairie flowers load the 675 glb models when those files are present. PetOverlayService is still deferred.
+
+This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r12.apk
+bytes: 69710604
+sha256: b3ee1fd5c6a1227ff56b35688a702deb78f4fac30a5684e8cf6ea34723a8ddc7
+versionName: vc27-11fb9c14-r12
+versionCode: 22
 package: hk.vizard.glimmer.fpet.vc27draft
 Same debug signer CN=VC27 Debug, cert a5e16b2ab309a3478e0cd28304daae179bd0e85c7a7940592101b2aa77127b10. v2 only. arm64-v8a. Portrait. Renderer mobile. Install over the test app. Do not clear its data.
 Do not upload r5 again: vc27-draft-11fb9c14-r5.apk, 68659140 bytes, sha256 be39075c7d19b305c79a7baf07c890c5321bac56d1ebdb915f0f3e125a71cedc.
@@ -57,4 +59,4 @@ Phone. Use 微光試稿·試玩. Do not clear storage. An already hatched previe
 3. Leave during a replay and open the same icon. Nothing extra was paid. The buttons are still there.
 4. 微光試稿 has no replay buttons.
 5. The cottage yard stations, farm sprout, and zone labels are the new living-ecosystem draft. Do not expect a finished art pass. PetOverlayService is not in this build.
-6. On r11, the screen is the top bar, the open yard, and five buttons: 餵食, 清潔, 摸摸, 鍛鍊, 地圖. 地圖 moves the view to 小屋, 農圃, 工坊, or 草原. 工具 holds the one-hour idle test. A finger drag lets go of the pet.
+6. On r12, the screen is the walnut top bar, four colored care bars, and five buttons: 餵食, 清潔, 摸摸, 鍛鍊, 地圖. 地圖 moves the view to 小屋, 農圃, 工坊, or 草原. 工具 holds the one-hour idle test. Feeding, cleaning, and training show the bowl, broom, and dumbbell.
