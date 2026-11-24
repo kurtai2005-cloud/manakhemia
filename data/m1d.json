@@ -54,14 +54,14 @@
     },
     "camera": {
       "look": [
-        -12,
-        42,
-        -12
+        40,
+        36,
+        -10
       ],
-      "pitchDeg": 32,
-      "dist": 210,
-      "fovDeg": 40,
-      "yawDeg": 26
+      "pitchDeg": 30,
+      "dist": 96,
+      "fovDeg": 70,
+      "yawDeg": -54
     },
     "slots": {
       "bed": [

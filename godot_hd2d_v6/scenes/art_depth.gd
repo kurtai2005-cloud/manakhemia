@@ -1505,12 +1505,45 @@ func _outer_ring() -> void:
 			z += 62.0 + 30.0 * fposmod(float(k) * 0.7548, 1.0)
 	for e in [Vector3(-200, 300, 1.0), Vector3(205, 310, 0.95), Vector3(-60, 360, 1.1), Vector3(90, 370, 1.0)]:
 		trees.append(e)
+	# r15: six outer-ring trunks sit in the combined RingTrunks mesh and cover the
+	# farm sign / right approach and the workshop lower-left entry. Split only those
+	# out, same bark and caster policy, and park them on the back edge of that yard.
+	var ring_shift := {
+		5: ["RingTrunk_FarmRightBack_k6", Vector2(-299.6, 49.7), Vector2(-188.0, -130.0)],
+		6: ["RingTrunk_FarmRightBack_k7", Vector2(-272.8, 127.5), Vector2(-248.0, -240.0)],
+		7: ["RingTrunk_FarmRightBack_k8", Vector2(-316.1, 198.0), Vector2(-175.0, -95.0)],
+		13: ["RingTrunk_ShopLeftBack_k14", Vector2(295.7, 55.4), Vector2(240.0, -230.0)],
+		14: ["RingTrunk_ShopLeftBack_k15", Vector2(268.9, 134.4), Vector2(190.0, -320.0)],
+		15: ["RingTrunk_ShopLeftBack_k16", Vector2(312.2, 206.1), Vector2(270.0, -150.0)],
+	}
+	var bark := _bark_mat()
+	var idx := 0
 	for t in trees:
 		var s: float = t.z
 		var base := Vector3(t.x, 0, t.y)
 		var h := 120.0 * s
 		var tm := _groove_trunk(11.0 * s, 8.0 * s, h, k, 12, 6)
-		st.append_from(tm, 0, Transform3D(Basis(), base))
+		if ring_shift.has(idx):
+			var spec: Array = ring_shift[idx]
+			var was: Vector2 = spec[1]
+			var nxt: Vector2 = spec[2]
+			if Vector2(base.x, base.z).distance_to(was) > 2.0:
+				push_error("r15 ring shift missed %s at %s" % [spec[0], base])
+				st.append_from(tm, 0, Transform3D(Basis(), base))
+			else:
+				base = Vector3(nxt.x, 0.0, nxt.y)
+				var mi := MeshInstance3D.new()
+				mi.name = str(spec[0])
+				mi.mesh = tm
+				mi.material_override = bark
+				mi.position = base
+				mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+				root.add_child(mi)
+				_register_tree_caster(mi)
+				print("r15 ring relocate ", spec[0], " from ", was, " to ", nxt)
+		else:
+			st.append_from(tm, 0, Transform3D(Basis(), base))
+		idx += 1
 		k += 1
 		var lobes := [Vector4(0, h + 16.0 * s, 0, 36.0 * s), Vector4(-24.0 * s, h - 6.0 * s, 6.0 * s, 25.0 * s), Vector4(22.0 * s, h - 2.0 * s, -8.0 * s, 26.0 * s)]
 		for lb in lobes:
@@ -1533,7 +1566,7 @@ func _outer_ring() -> void:
 	var tr := MeshInstance3D.new()
 	tr.name = "RingTrunks_v67"
 	tr.mesh = st.commit()
-	tr.material_override = _bark_mat()
+	tr.material_override = bark
 	root.add_child(tr)
 	_register_tree_caster(tr)
 	# v6.8 (Kurt 0.6.7 low_2 / high_2: bushes in straight rows): organic CLUSTERS of 1–4 bushes

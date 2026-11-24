@@ -36,6 +36,7 @@ func setup() -> void:
 	texel_wu = float(ic.get("texel_wu", 1.0))
 	visible = false
 	_build_from_art()
+	_build_ceiling()
 	_build_nav()
 	_build_window_light()
 	furniture_root = Node3D.new()
@@ -121,6 +122,10 @@ func cam_yaw() -> float:
 	return float(interior_cfg().get("camera", {}).get("yawDeg", 26))
 
 
+func cam_fov() -> float:
+	return float(interior_cfg().get("camera", {}).get("fovDeg", 58))
+
+
 func door_world() -> Vector3:
 	var a: Variant = interior_cfg().get("door", {}).get("local", [80, 0, 0])
 	if a is Array and a.size() >= 3:
@@ -151,8 +156,8 @@ func room_bounds_local() -> AABB:
 func set_door_open(weight: float) -> void:
 	if door_pivot == null:
 		return
-	# 0 = 關（貼牆），1 = 開（轉入房約 85°）
-	door_pivot.rotation_degrees.y = lerpf(0.0, -85.0, clampf(weight, 0.0, 1.0))
+	# 0 = 關（貼牆），1 = 開（轉入房約 85°）。正角先係向房內；負角會轉出牆外，鏡頭只見到木牆。
+	door_pivot.rotation_degrees.y = lerpf(0.0, 85.0, clampf(weight, 0.0, 1.0))
 
 
 func _build_from_art() -> void:
@@ -217,6 +222,30 @@ func _build_from_art() -> void:
 			set_door_open(0.0)
 		else:
 			add_child(mi)
+
+
+func _build_ceiling() -> void:
+	# The delivered shell is an open-top box. A ceiling at the art height keeps the
+	# 19:9 frame on the room instead of the outdoor sky.
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(size.x, size.z)
+	var mi := MeshInstance3D.new()
+	mi.name = "ceiling"
+	mi.mesh = plane
+	mi.position = Vector3(0, size.y - 0.4, 0)
+	var mat := StandardMaterial3D.new()
+	var tex_path := str(interior_cfg().get("textures", {}).get("wall_tile", ""))
+	if tex_path != "" and ResourceLoader.exists(tex_path):
+		mat.albedo_texture = load(tex_path)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.albedo_color = Color(0.93, 0.78, 0.58)
+	mat.uv1_scale = Vector3(size.x / tile_wu, size.z / tile_wu, 1.0)
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(mi)
+	_mats.append(mat)
 
 
 func _build_window_light() -> void:

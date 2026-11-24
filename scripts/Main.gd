@@ -708,15 +708,17 @@ func _place_cam(dt: float) -> void:
 		look = glook
 	if look is Array and look.size() >= 3:
 		desired = Vector3(float(look[0]), float(look[1]), float(look[2]))
-	if in_interior and interior_room:
-		desired = interior_room.look_target()
-	elif hunt_overview:
+	if hunt_overview:
 		desired = hunt_field.look_target()
 	var subject: Walker = pet
 	if cam_mode == CamMode.FOLLOW and follow_walker and is_instance_valid(follow_walker):
 		subject = follow_walker
 		var ppos := subject.global_position
 		desired = Vector3(ppos.x, 28.0, ppos.z)
+	if in_interior and interior_room:
+		desired = interior_room.look_target()
+		cam.keep_aspect = Camera3D.KEEP_WIDTH
+		cam.fov = interior_room.cam_fov()
 	var damp := float(cam_data.get("followDamping", 2.0))
 	if rest_look:
 		follow_pos = desired
@@ -2454,30 +2456,59 @@ func set_garden_hidden_for_interior(on: bool) -> void:
 	for w in [kid, visitor]:
 		if w and is_instance_valid(w) and w != _interior_guest:
 			w.visible = not on
+	_set_exterior_draw_hidden(on)
 	_apply_interior_background(on)
 
 
-func _apply_interior_background(on: bool) -> void:
-	if env == null or env.environment == null:
+func _set_exterior_draw_hidden(on: bool) -> void:
+	# The near lawn and sky dome ride with the camera, so an indoor pose otherwise
+	# frames outdoor grass and sky. Hide the exterior draws; keep the environment node.
+	if _hd2d_exterior == null or not is_instance_valid(_hd2d_exterior):
 		return
-	var e := env.environment
+	for n in _hd2d_exterior.find_children("*", "GeometryInstance3D", true, false):
+		if on:
+			if not n.has_meta("_vis_before_interior"):
+				n.set_meta("_vis_before_interior", n.visible)
+			n.visible = false
+		elif n.has_meta("_vis_before_interior"):
+			n.visible = bool(n.get_meta("_vis_before_interior"))
+			n.remove_meta("_vis_before_interior")
+
+
+func _exterior_environment() -> Environment:
+	if _hd2d_exterior == null or not is_instance_valid(_hd2d_exterior):
+		return null
+	var found: Variant = _hd2d_exterior.get("_env")
+	return found if found is Environment else null
+
+
+func _apply_interior_background(on: bool) -> void:
 	var col_a: Variant = GameData.m1d.get("interior", {}).get("bg_color", [0.14, 0.09, 0.07]) if GameData and "m1d" in GameData else [0.14, 0.09, 0.07]
 	var warm := Color(0.14, 0.09, 0.07)
 	if col_a is Array and col_a.size() >= 3:
 		warm = Color(float(col_a[0]), float(col_a[1]), float(col_a[2]))
+	var active := _exterior_environment()
+	if active == null and env != null:
+		active = env.environment
+	if active == null:
+		return
 	if on:
-		e.background_mode = Environment.BG_COLOR
-		e.background_color = warm
-		e.ambient_light_color = warm
+		if not active.has_meta("_bg_before_interior"):
+			active.set_meta("_bg_before_interior", active.background_mode)
+		active.background_mode = Environment.BG_COLOR
+		active.background_color = warm
 		if _sky_mat:
 			_sky_mat.sky_top_color = warm
 			_sky_mat.sky_horizon_color = warm
 			_sky_mat.ground_horizon_color = warm
 			_sky_mat.ground_bottom_color = warm
 	else:
-		e.background_mode = Environment.BG_SKY
-		# 交返 set_time_of_day 恢復晝夜色
-		set_time_of_day(_tod if _tod != "" else "noon")
+		if active.has_meta("_bg_before_interior"):
+			active.background_mode = int(active.get_meta("_bg_before_interior"))
+			active.remove_meta("_bg_before_interior")
+		elif env != null and env.environment == active:
+			active.background_mode = Environment.BG_SKY
+			set_time_of_day(_tod if _tod != "" else "noon")
 
 
 func furniture_zone(id: String, sl: String = "") -> String:
