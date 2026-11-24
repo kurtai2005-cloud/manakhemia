@@ -42,8 +42,8 @@ r10 keeps that build and makes the sparse pack index match project.binary. The m
 r11 replaces the piled-up panels with one top bar and a five-button dock. The camera can move to the cottage, the farm, the workshop, and the prairie. Feeding, cleaning, patting, and training change the pet. The test drawer holds the one-hour idle settlement. PetOverlayService is still deferred.
 
 This APK: /opt/cursor/artifacts/vc27-draft-11fb9c14-r11.apk
-bytes: 69371065
-sha256: 00c76a8113a022074e86f638db88e4d55c83afd509fb3f8999564369bf26cb3c
+bytes: 69375025
+sha256: 8a9998ba4846346dffc26e54534aa54ba2946e0f1484f941de145282dbb7bde4
 versionName: vc27-11fb9c14-r11
 versionCode: 21
 package: hk.vizard.glimmer.fpet.vc27draft

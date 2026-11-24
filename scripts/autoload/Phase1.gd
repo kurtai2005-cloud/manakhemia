@@ -39,15 +39,18 @@ func attach(main: Node) -> void:
 		old.visible = false
 	world = Phase1World.new()
 	world.name = "Phase1World"
-	main.add_child(world)
-	world.build(main)
+	var exterior: Node = main.get("_hd2d_exterior")
+	if exterior == null:
+		exterior = main
+	exterior.add_child(world)
+	world.build(exterior)
 	hud = Phase1Hud.new()
 	hud.name = "Phase1Hud"
 	main.add_child(hud)
 	hud.build()
 	_apply_visual()
-	if main.has_method("phase1_glide_to"):
-		main.phase1_glide_to(world.look_for("garden"))
+	if main.has_method("phase1_hold_opening"):
+		main.phase1_hold_opening()
 	var away := OfflineIdleEngine.settle(Sim.state, int(Time.get_unix_time_from_system() * 1000.0))
 	if bool(away.get("show", false)):
 		_show_idle(away)
@@ -189,46 +192,9 @@ func go_zone(zone_id: String) -> void:
 	Phase1Registry.put(Sim.state, pet)
 	if host and host.has_method("phase1_glide_to") and world:
 		host.phase1_glide_to(world.look_for(zone_id))
-	_tint_zone(zone_id)
 	var spec := Phase1Config.zone(doc, zone_id)
 	toast(str(spec.get("zh", zone_id)))
 	mark("zone")
-
-
-func _tint_zone(zone_id: String) -> void:
-	if host == null:
-		return
-	var tile := host.get_node_or_null("GroundTile") as GeometryInstance3D
-	if tile == null or tile.material_override == null:
-		return
-	var mat := tile.material_override as BaseMaterial3D
-	if mat == null:
-		return
-	if zone_id == "zone_farm":
-		mat.albedo_color = Color(0.85, 0.55, 0.28)
-	elif zone_id == "zone_workshop":
-		mat.albedo_color = Color(0.45, 0.55, 0.75)
-	elif zone_id == "prairie_edge":
-		mat.albedo_color = Color(0.55, 0.8, 0.45)
-	else:
-		mat.albedo_color = Color(1, 1, 1)
-	_wash(zone_id)
-
-
-func _wash(zone_id: String) -> void:
-	if hud == null or hud.root == null:
-		return
-	var wash := hud.root.get_node_or_null("ZoneWash") as ColorRect
-	if wash == null:
-		return
-	if zone_id == "zone_farm":
-		wash.color = Color(0.95, 0.45, 0.12, 0.42)
-	elif zone_id == "zone_workshop":
-		wash.color = Color(0.15, 0.35, 0.9, 0.42)
-	elif zone_id == "prairie_edge":
-		wash.color = Color(0.2, 0.75, 0.3, 0.28)
-	else:
-		wash.color = Color(1, 1, 1, 0)
 
 
 func follow_pet() -> void:
@@ -256,8 +222,8 @@ func idle_hour() -> void:
 	var now := int(Time.get_unix_time_from_system() * 1000.0)
 	var report := OfflineIdleEngine.settle(Sim.state, now, 3600000)
 	_show_idle(report)
-	if world and host:
-		world._refresh_beds(host)
+	if world:
+		world._refresh_beds()
 	mark("idle")
 
 
@@ -334,6 +300,26 @@ func reset_profile() -> void:
 	_apply_visual()
 	toast("已重置測試檔")
 	mark("reset")
+
+
+func try_world_tap(screen: Vector2) -> bool:
+	if host == null or world == null or world.zones == null:
+		return false
+	var cam := host.get("cam") as Camera3D
+	if cam == null:
+		return false
+	var from := cam.project_ray_origin(screen)
+	var dir := cam.project_ray_normal(screen)
+	var q := PhysicsRayQueryParameters3D.create(from, from + dir * 800.0)
+	q.collide_with_areas = true
+	q.collide_with_bodies = true
+	var space: PhysicsDirectSpaceState3D = host.get_world_3d().direct_space_state
+	var hit: Dictionary = space.intersect_ray(q)
+	var col: Object = hit.get("collider")
+	if col is Node and (col as Node).has_meta("bed"):
+		world.tap_bed(int((col as Node).get_meta("bed")))
+		return true
+	return false
 
 
 func replay(kind: String) -> void:

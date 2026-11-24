@@ -11,6 +11,11 @@ func _initialize() -> void:
 		await process_frame
 		if main.get_node_or_null("Phase1Hud") != null:
 			break
+	if root.get_node_or_null("Phase1") == null or main.get_node_or_null("Phase1Hud") == null:
+		_fail("phase1 missing")
+		print("P1_R11_GATES_FAIL ", _fails)
+		quit(1)
+		return
 	_font(main)
 	await _overlap(main)
 	_buttons()
@@ -97,6 +102,10 @@ func _overlap(main: Node) -> void:
 				break
 		rects.append(rr)
 	print("HUD_OVERLAP_COUNT=%d" % overlap)
+	if main.find_child("ZoneWash", true, false) == null:
+		print("NO_ZONE_WASH_PASS")
+	else:
+		_fail("zone wash")
 
 
 func _buttons() -> void:
@@ -156,6 +165,40 @@ func _map() -> void:
 			_fail("camera still")
 			return
 	print("EXPANDED_MAP_ZONES_PASS")
+	await _frustum(main)
+
+
+func _frustum(main: Node) -> void:
+	var p1: Node = root.get_node("Phase1")
+	var world: Phase1World = p1.world
+	var cam := main.get("cam") as Camera3D
+	if cam == null or world == null:
+		_fail("frustum cam")
+		return
+	var checks := {
+		"zone_farm": ["BedCrop_1", "SignFarmText", "FarmBed_0"],
+		"zone_workshop": ["WorkOutdoorStove", "WorkOutdoorPost", "SignShopText"],
+		"prairie_edge": ["SignPrairieText", "Flower_0", "Flower_1"],
+	}
+	for zone in checks.keys():
+		p1.call("go_zone", str(zone))
+		for _i in range(30):
+			await process_frame
+		var names: Array = checks[zone]
+		for prop_name in names:
+			var node := world.prop_named(str(prop_name))
+			if node == null or not node.is_visible_in_tree():
+				_fail("hidden " + str(prop_name))
+				return
+			if cam.is_position_behind(node.global_position):
+				_fail("behind " + str(prop_name))
+				return
+			var pt := cam.unproject_position(node.global_position)
+			var vp := cam.get_viewport().get_visible_rect().size
+			if pt.x < -40.0 or pt.y < -40.0 or pt.x > vp.x + 40.0 or pt.y > vp.y + 40.0:
+				_fail("offscreen %s %s" % [str(prop_name), str(pt)])
+				return
+	print("ZONES_IN_FRUSTUM_PASS")
 
 
 func _idle_evo_save() -> void:

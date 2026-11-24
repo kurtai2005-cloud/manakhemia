@@ -36,10 +36,17 @@ func build() -> void:
 	root.add_child(top)
 	name_btn = _btn("TopName", "小團絨 · 幼年期", _on_name)
 	top.add_child(name_btn)
+	var shard_pill := Panel.new()
+	shard_pill.name = "ShardPill"
+	var pill := StyleBoxFlat.new()
+	pill.bg_color = Color(0.12, 0.08, 0.05, 0.72)
+	pill.set_corner_radius_all(8)
+	shard_pill.add_theme_stylebox_override("panel", pill)
+	top.add_child(shard_pill)
 	shard_lbl = Label.new()
 	shard_lbl.name = "Shards"
 	Vc27Fonts.bind(shard_lbl)
-	top.add_child(shard_lbl)
+	shard_pill.add_child(shard_lbl)
 	top.add_child(_btn("HideHud", "收起", _on_hide))
 	top.add_child(_btn("OpenTools", "工具", _on_tools))
 	for key in ["飽食", "心情", "親密", "體力"]:
@@ -76,11 +83,12 @@ func build() -> void:
 	expand_btn = _btn("ExpandHud", "展開", _on_expand)
 	expand_btn.visible = false
 	root.add_child(expand_btn)
-	var wash := ColorRect.new()
-	wash.name = "ZoneWash"
-	wash.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	wash.color = Color(1, 1, 1, 0)
-	root.add_child(wash)
+	var toast_bg := ColorRect.new()
+	toast_bg.name = "ToastBg"
+	toast_bg.color = Color(0.1, 0.07, 0.04, 0.82)
+	toast_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_bg.visible = false
+	root.add_child(toast_bg)
 	toast = Label.new()
 	toast.name = "Toast"
 	toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -103,8 +111,11 @@ func apply_layout() -> void:
 	top.size = Vector2(safe.size.x, 78)
 	name_btn.position = Vector2(0, 0)
 	name_btn.size = Vector2(safe.size.x * 0.46, 34)
-	shard_lbl.position = Vector2(safe.size.x * 0.46, 6)
-	shard_lbl.size = Vector2(70, 28)
+	var pill_node := top.get_node("ShardPill") as Control
+	pill_node.position = Vector2(safe.size.x * 0.46, 2)
+	pill_node.size = Vector2(78, 32)
+	shard_lbl.position = Vector2(8, 4)
+	shard_lbl.size = Vector2(64, 24)
 	var hide_b := top.get_node("HideHud") as Control
 	var tool_b := top.get_node("OpenTools") as Control
 	hide_b.position = Vector2(safe.size.x - 132, 0)
@@ -128,22 +139,22 @@ func apply_layout() -> void:
 	map_row.position = Vector2(safe.position.x, dock.position.y - 48)
 	for row in [feed_row, train_row, map_row]:
 		row.size = Vector2(safe.size.x, 44)
-	var wash := root.get_node_or_null("ZoneWash") as Control
-	if wash:
-		wash.position = Vector2(safe.position.x, safe.position.y + 84)
-		wash.size = Vector2(safe.size.x, safe.size.y - 84 - 64)
 	expand_btn.position = Vector2(safe.end.x - 72, safe.position.y)
 	expand_btn.size = Vector2(68, 32)
-	toast.position = Vector2(safe.position.x, safe.position.y + safe.size.y * 0.42)
-	toast.size = Vector2(safe.size.x, 32)
-	bubble.position = Vector2(safe.position.x, safe.position.y + 96)
+	toast.position = Vector2(safe.position.x + 12, safe.position.y + 86)
+	toast.size = Vector2(minf(220.0, safe.size.x - 24.0), 26)
+	var toast_bg := root.get_node_or_null("ToastBg") as Control
+	if toast_bg:
+		toast_bg.position = toast.position
+		toast_bg.size = toast.size
+	bubble.position = Vector2(safe.position.x, safe.position.y + 130)
 	bubble.size = Vector2(safe.size.x, 28)
 	if drawer:
 		drawer.position = Vector2(safe.position.x + 16, safe.position.y + 88)
 		drawer.size = Vector2(safe.size.x - 32, 280)
 	if modal:
-		modal.position = Vector2(safe.position.x + 24, safe.position.y + 120)
-		modal.size = Vector2(safe.size.x - 48, 220)
+		modal.position = Vector2(safe.position.x + 28, safe.position.y + 110)
+		modal.size = Vector2(safe.size.x - 56, modal.get_combined_minimum_size().y)
 
 
 func refresh() -> void:
@@ -179,6 +190,9 @@ func refresh() -> void:
 
 func show_toast(text: String) -> void:
 	toast.text = text
+	var bg := root.get_node_or_null("ToastBg") as CanvasItem
+	if bg:
+		bg.visible = text != ""
 
 
 func show_bubble(text: String) -> void:
@@ -186,18 +200,43 @@ func show_bubble(text: String) -> void:
 
 
 func show_modal(title: String, body: String) -> void:
+	if drawer:
+		drawer.visible = false
+	show_toast("")
+	show_bubble("")
 	modal_title.text = title
 	modal_body.text = body
 	import_box.visible = false
+	_modal_btn("ModalConfirm").visible = false
+	_modal_btn("ModalCancel").visible = false
+	_modal_btn("ModalClaim").visible = true
 	modal.visible = true
+	_fit_modal()
 
 
 func show_import(text: String) -> void:
+	if drawer:
+		drawer.visible = false
 	modal_title.text = "匯入存檔"
 	modal_body.text = "貼上存檔文字後按確認"
 	import_box.text = text
 	import_box.visible = true
+	_modal_btn("ModalConfirm").visible = true
+	_modal_btn("ModalCancel").visible = true
+	_modal_btn("ModalClaim").visible = false
 	modal.visible = true
+	_fit_modal()
+
+
+func _fit_modal() -> void:
+	var box := modal.get_child(0) as Control
+	if box:
+		var h := box.get_combined_minimum_size().y + 16.0
+		modal.size.y = h
+
+
+func _modal_btn(node_name: String) -> Button:
+	return modal.find_child(node_name, true, false) as Button
 
 
 func set_collapsed(v: bool) -> void:
@@ -280,8 +319,9 @@ func _build_modal() -> void:
 	import_box.custom_minimum_size = Vector2(200, 80)
 	import_box.visible = false
 	box.add_child(import_box)
+	box.add_child(_btn("ModalClaim", "領取並關閉", _call.bind("close_modal")))
 	box.add_child(_btn("ModalConfirm", "確認", _call.bind("confirm_modal")))
-	box.add_child(_btn("ModalClose", "關閉", _call.bind("close_modal")))
+	box.add_child(_btn("ModalCancel", "取消", _call.bind("close_modal")))
 	root.add_child(modal)
 
 

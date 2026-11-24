@@ -18,13 +18,22 @@ func _initialize() -> void:
 	for _i in range(40):
 		await process_frame
 	await _shot("/opt/cursor/artifacts/p1_shot3_map_workshop.png")
+	root.get_node("Phase1").go_zone("garden")
+	for _i in range(40):
+		await process_frame
+	root.get_node("Phase1").open_feed()
+	root.get_node("Phase1").feed("dew")
 	root.get_node("Phase1").open_feed()
 	await process_frame
 	await _shot("/opt/cursor/artifacts/p1_shot4_feed_action.png")
-	root.get_node("Phase1").toggle_drawer()
 	root.get_node("Phase1").idle_hour()
 	await process_frame
 	await _shot("/opt/cursor/artifacts/p1_shot5_offline_modal.png")
+	root.get_node("Phase1").close_modal()
+	root.get_node("Phase1").go_zone("prairie_edge")
+	for _i in range(40):
+		await process_frame
+	await _shot("/opt/cursor/artifacts/p1_shot6_map_prairie.png")
 	print("P1_SHOTS_DONE")
 	quit(0)
 

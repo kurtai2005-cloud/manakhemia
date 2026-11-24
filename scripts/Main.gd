@@ -120,6 +120,8 @@ func _ready() -> void:
 			exterior.call("present_on_window")
 		elif _hd2d_host == null:
 			enable_hd2d_presentation()
+		if Phase1 and Phase1.has_method("attach"):
+			Phase1.attach(self)
 		var errand_script := load("res://scripts/GardenErrand.gd") as GDScript
 		if errand_script:
 			var errand: Node = errand_script.new()
@@ -595,18 +597,45 @@ func set_cam_follow(w: Walker) -> void:
 	_fit_sky_card()
 
 
+func phase1_open_look() -> Vector3:
+	if _hd2d_exterior == null:
+		return Vector3(12, 58, -26)
+	var xf: Transform3D = _hd2d_exterior.get("opening_transform")
+	var fwd := -xf.basis.z
+	if absf(fwd.y) < 0.05:
+		return Vector3(12, 58, -26)
+	var t := (58.0 - xf.origin.y) / fwd.y
+	return xf.origin + fwd * t
+
+
 func phase1_glide_to(target: Vector3) -> void:
+	var home := phase1_open_look()
 	phase1_on = true
-	phase1_from = follow_pos
-	phase1_to = target
+	phase1_from = phase1_to if phase1_t > 0.0 else home
+	if phase1_from == Vector3.ZERO:
+		phase1_from = home
+	phase1_to = Vector3(target.x, home.y, target.z)
 	phase1_t = 0.0
 	cam_mode = CamMode.OVERVIEW
 	follow_walker = null
 
 
+func phase1_hold_opening() -> void:
+	var home := phase1_open_look()
+	phase1_on = true
+	phase1_from = home
+	phase1_to = home
+	phase1_t = 1.0
+	follow_walker = null
+	_place_cam(0.0)
+
+
 func phase1_follow(w: Walker) -> void:
 	phase1_on = true
-	set_cam_follow(w)
+	follow_walker = w
+	cam_mode = CamMode.FOLLOW
+	if Ecosystem and Ecosystem.has_method("follow_pet"):
+		Ecosystem.follow_pet("tuanrong")
 
 
 func phase1_pan(delta: Vector2) -> void:
@@ -617,8 +646,8 @@ func phase1_pan(delta: Vector2) -> void:
 	cam_mode = CamMode.OVERVIEW
 	if Ecosystem and Ecosystem.has_method("stop_follow"):
 		Ecosystem.stop_follow()
-	phase1_to.x = clampf(phase1_to.x - delta.x * 0.45, -400.0, 400.0)
-	phase1_to.z = clampf(phase1_to.z - delta.y * 0.45, -480.0, 180.0)
+	phase1_to.x = clampf(phase1_to.x - delta.x * 0.35, -280.0, 340.0)
+	phase1_to.z = clampf(phase1_to.z - delta.y * 0.35, -280.0, 80.0)
 	phase1_from = phase1_to
 	follow_pos = phase1_to
 
@@ -626,22 +655,23 @@ func phase1_pan(delta: Vector2) -> void:
 func _place_cam(dt: float) -> void:
 	if cam == null:
 		return
-	if phase1_on and not in_interior:
+	if phase1_on and not in_interior and _hd2d_exterior != null:
+		var home := phase1_open_look()
 		if follow_walker and is_instance_valid(follow_walker):
-			phase1_to = Vector3(follow_walker.global_position.x, 18.0, follow_walker.global_position.z)
+			phase1_to = Vector3(follow_walker.global_position.x, home.y, follow_walker.global_position.z)
 			phase1_t = 1.0
-		elif phase1_t < 1.0:
+		var look := phase1_to
+		if phase1_t < 1.0:
 			phase1_t = minf(1.0, phase1_t + dt / 0.45)
 			var u := phase1_t * phase1_t * (3.0 - 2.0 * phase1_t)
-			follow_pos = phase1_from.lerp(phase1_to, u)
-		else:
-			follow_pos = phase1_to
-		var zone_dist := 140.0
-		if phase1_to.x < -100.0:
-			zone_dist = 70.0
-		elif phase1_to.x > 100.0:
-			zone_dist = 340.0
-		_apply_cam_offset(0.0, 62.0, zone_dist)
+			look = phase1_from.lerp(phase1_to, u)
+		look.y = home.y
+		var xf: Transform3D = _hd2d_exterior.get("opening_transform")
+		var delta := Vector3(look.x - home.x, 0.0, look.z - home.z)
+		cam.global_position = xf.origin + delta
+		cam.fov = float(_hd2d_exterior.get("opening_fov"))
+		cam.look_at(home + delta, Vector3.UP)
+		follow_pos = look
 		return
 	var A := 0.0 if rest_look else float(cam_data.get("swayAmplitudeDeg", 5))
 	var T := float(cam_data.get("swayHalfPeriodSec", 6))
@@ -799,6 +829,8 @@ func _ray_area(pos: Vector2, mask: int) -> Area3D:
 
 func _try_tap(pos: Vector2) -> void:
 	if cam == null:
+		return
+	if Phase1 and Phase1.active and Phase1.has_method("try_world_tap") and bool(Phase1.try_world_tap(pos)):
 		return
 	var forage_hit := _ray_area(pos, 32)
 	if forage_hit:
@@ -1529,8 +1561,6 @@ func _setup_m1b() -> void:
 		HuntSystem.restore()
 		if HuntSystem.travel_hold:
 			_send_hunt_to_stand()
-	if Phase1 and Phase1.has_method("attach"):
-		Phase1.attach(self)
 
 
 func _apply_visitor_own_walk(w: Walker) -> void:
